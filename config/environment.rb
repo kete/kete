@@ -53,6 +53,6 @@ end
 # Include your application configuration below
 
 # Walter McGinnis (walter@katipo.co.nz), 2006-09-26
-include Globalize # put that thing here
-Locale.set_base_language('en-NZ') # and here :)'')
+# include Globalize # put that thing here
+# Locale.set_base_language('en-NZ') # and here :)'')
 
