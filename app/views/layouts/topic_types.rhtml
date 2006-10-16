@@ -1,0 +1,21 @@
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <title>Topic Types</title>
+  <%= ajax_scaffold_includes %>
+</head>
+<body>
+   <table>
+        <tr>
+                <td>
+                        <%= link_to "Topic Type Fields", :controller => 'topic_type_fields', :action => 'list' %>
+                </td>
+                <td>
+                        <%= @content_for_layout %>
+                </td>
+        </tr>
+   </table>
+</body>
+</html>
