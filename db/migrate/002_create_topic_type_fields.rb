@@ -1,6 +1,6 @@
-class CreateTopicTypes < ActiveRecord::Migration
+class CreateTopicTypeFields < ActiveRecord::Migration
   def self.up
-    create_table :topic_types do |t|
+    create_table :topic_type_fields do |t|
       t.column :name, :string
       t.column :description, :text
       t.column :created_at, :datetime, :null => false
@@ -9,6 +9,6 @@ class CreateTopicTypes < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :topic_types
+    drop_table :topic_type_fields
   end
 end
