@@ -3,9 +3,9 @@ require File.dirname(__FILE__) + '/../test_helper'
 class TopicTypeTest < Test::Unit::TestCase
   fixtures :topic_types
 
-  # The TopicType model contains many things that are better
+  # The TopicType model contains many things that
   # need to be tested using the join model TopicTypeToFieldMapping
-  # and TopicTypeFields, so we load their fixtures here
+  # and TopicTypeField, so we load their fixtures here
   fixtures :topic_type_fields
   fixtures :topic_type_to_field_mappings
 
