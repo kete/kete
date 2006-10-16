@@ -1,0 +1,29 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+first_names:
+  id: 1
+  name: First Names
+  description: Non-sir names.
+last_name:
+  id: 2
+  name: Last Name
+  description: Sir name.
+place_of_birth:
+  id: 3
+  name: Place of Birth
+  description: Where was the person born?
+city:
+  id: 4
+  name: City
+  description: The name of the locale, like city, town, or village?
+date_of_birth:
+  id: 5
+  name: Date of Birth
+  description: When was the person born?
+name:
+  id: 6
+  name: Name
+  description:
+capacity:
+  id: 7
+  name: Capacity
+  description: How many people can this place hold?
