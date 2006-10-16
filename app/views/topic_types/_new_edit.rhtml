@@ -34,9 +34,10 @@
         <%= loading_indicator_tag @options %>
         </p>
     <%= end_form_tag %>
-
-  <%= render(:partial => scaffold_partial_path('current_fields'), :locals => { :local_id => @options[:id], :scaffold_name => @scaffold_singular_name }) %>
-  <%= render(:partial => scaffold_partial_path('available_fields_form'), :locals => { :local_id => @options[:id], :scaffold_name => @scaffold_singular_name }) %>
+  <% if @options[:id] %>
+        <%= render(:partial => scaffold_partial_path('current_fields'), :locals => { :local_id => @options[:id], :scaffold_name => @scaffold_singular_name }) %>
+        <%= render(:partial => scaffold_partial_path('available_fields_form'), :locals => { :local_id => @options[:id], :scaffold_name => @scaffold_singular_name }) %>
+  <% end %>
     </td>
    </tr>
   </td>
