@@ -45,7 +45,7 @@ class TopicTypeTest < Test::Unit::TestCase
     field = @person_type.topic_type_to_field_mappings.create(:topic_type_field_id => topic_type_fields(:city).id)
     assert_equal topic_type_fields(:city).id, field.topic_type_field_id
     assert_equal @person_type.topic_type_to_field_mappings.size, field.position
-    assert_equal false, field.required?
+    assert !field.required?, "The default for required in topic_type_to_field_mappings should be false or nil."
   end
 
   # delete a topic type, makes sure dependent topic_type_to_field_mappings are deleted
@@ -53,7 +53,7 @@ class TopicTypeTest < Test::Unit::TestCase
     topic_type_id = @person_type.id
     @person_type.destroy
     should_be_empty_list = TopicTypeToFieldMapping.find_all_by_topic_type_id(topic_type_id)
-    assert_equal should_be_empty_list.size, 0
+    assert_equal should_be_empty_list.size, 0, "After deleting a topic_type, it's associated form fields (mappings) should be deleted, too."
   end
 
   ## the has_many :through association extensions
@@ -68,7 +68,7 @@ class TopicTypeTest < Test::Unit::TestCase
                                    :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
                                                    {:topic_type_field_id => @name_field.id, :topic_type_id => @place_type.id }] )
     assert_equal @place_type.form_fields.size, mapping.position
-    assert_equal false, mapping.required?
+    assert !mapping.required?, "The default for required in form_fields should be false or nil."
   end
 
   # topic_type.form_fields should be ordered by position
@@ -99,7 +99,7 @@ class TopicTypeTest < Test::Unit::TestCase
                                    :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
                                                    {:topic_type_field_id => @capacity_field.id, :topic_type_id => @place_type.id }] )
     assert_equal @place_type.form_fields.size, mapping.position
-    assert_equal true, mapping.required?
+    assert mapping.required?, "The default for required in required_form_fields should be true."
   end
 
 
@@ -126,7 +126,7 @@ class TopicTypeTest < Test::Unit::TestCase
     @place_type.available_fields.each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
                                               {:topic_type_field_id => field.id, :topic_type_id => @place_type.id }]
-      assert fcount == 0 , "There is a field listed in available_fields that has already been mapped to this topic_type."
+      assert_equal fcount, 0, "There is a field listed in available_fields that has already been mapped to this topic_type."
     end
   end
 end
