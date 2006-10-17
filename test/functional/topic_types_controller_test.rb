@@ -45,8 +45,7 @@ class TopicTypesControllerTest < Test::Unit::TestCase
     # a simple test to make sure this worked... there should no longer be any available fields
     assert_equal @place_type.available_fields.size, 0
     # this will need to change to edit, possibly
-    # TODO: figure out why this is sending a double render error when asserted
-    # assert_redirected_to :index
+    assert_redirected_to :controller => 'topic_types' , :action => 'index'
   end
 
   # this test reordering without using acts_as_tree functionality
@@ -62,7 +61,6 @@ class TopicTypesControllerTest < Test::Unit::TestCase
     temp_hash = { }
 
     @person_type.topic_type_to_field_mappings.each do |mapping|
-      puts mapping.id
       if mapping.id == org_first_mapping_id
         temp_hash = { mapping.id => {:position => num_fields} }
       elsif mapping.id == org_last_mapping_id
@@ -82,7 +80,6 @@ class TopicTypesControllerTest < Test::Unit::TestCase
     assert_equal @person_type.topic_type_to_field_mappings.first.id, org_last_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     assert_equal @person_type.topic_type_to_field_mappings.last.id, org_first_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     # this will need to change to edit, possibly
-    # TODO: figure out why this is sending a double render error when asserted
-    # assert_redirected_to :index
+    assert_redirected_to :controller => 'topic_types', :action => 'index'
   end
 end
