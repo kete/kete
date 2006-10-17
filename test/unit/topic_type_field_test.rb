@@ -44,7 +44,7 @@ class TopicTypeFieldTest < Test::Unit::TestCase
     form = @name_field.topic_type_to_field_mappings.create(:topic_type_id => @place_type.id)
     assert_equal @place_type.id, form.topic_type_id
     assert_equal @place_type.topic_type_to_field_mappings.size, form.position
-    assert_equal false, form.required?
+    assert !form.required?
   end
 
   # delete a topic type, makes sure dependent topic_type_to_field_mappings are deleted
@@ -62,7 +62,7 @@ class TopicTypeFieldTest < Test::Unit::TestCase
     TopicTypeField.find_available_fields(@person_type).each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
                                               {:topic_type_field_id => field.id, :topic_type_id => @person_type.id }]
-      assert fcount == 0 , "find_available_fields list is returning a field that has already been mapped to this topic_type."
+      assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this topic_type."
     end
   end
 
