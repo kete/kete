@@ -7,6 +7,7 @@ svn://rubyforge.org/var/svn/redhillonrails/trunk/vendor/plugins/redhillonrails_c
 svn://rubyforge.org/var/svn/redhillonrails/trunk/vendor/plugins/foreign_key_migrations
 https://secure.near-time.com/svn/plugins/trunk/validates_xml
 http://svn.techno-weenie.net/projects/plugins/acts_as_versioned/
+svn://railsexpress.de/plugins/piggy_back/trunk
 
 Gems:
 Rmagick? etc? these aren't used yet
