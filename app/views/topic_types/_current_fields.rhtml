@@ -7,7 +7,7 @@
                    # TODO: figure out how to refresh display with new order
                    # revert to form_remote_tag then, also in _available_form_fields.rhtml
                 %>
-                <% @form_field_mappings = TopicType.find_by_id(local_id).topic_type_to_field_mappings %>
+                <% @form_field_mappings = TopicType.find(local_id).topic_type_to_field_mappings %>
                 <% if @form_field_mappings.size > 0 %>
                         <%= form_tag :action => :reorder_fields_for_topic_type, :id => local_id %>
                                 <% for @mapping in @form_field_mappings %>
