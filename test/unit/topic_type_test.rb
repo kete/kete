@@ -9,30 +9,55 @@ class TopicTypeTest < Test::Unit::TestCase
   fixtures :topic_type_fields
   fixtures :topic_type_to_field_mappings
 
-  # cover the basics first
-  def test_truth
-    assert true
-  end
-
-  def test_invalid_with_empty_attributes
-    topic_type = TopicType.new
-    assert !topic_type.valid?
-    assert topic_type.errors.invalid?(:name)
-    assert topic_type.errors.invalid?(:description)
-  end
-
-  def test_unique_name
-    topic_type = TopicType.new(:name       => topic_types(:person).name,
-                               :description => "yyy")
-    assert !topic_type.save
-    assert_equal ActiveRecord::Errors.default_error_messages[:taken], topic_type.errors.on(:name)
-  end
+  NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy'} # e.g. {:name => 'Test TopicType', :description => 'Dummy'}
+  REQ_ATTR_NAMES       = %w(name description) # name of fields that must be present, e.g. %(name description)
+  DUPLICATE_ATTR_NAMES = %w(name) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup
+    # Retrieve fixtures via their name
+    # @first = topic_types(:first)
     @person_type = topic_types(:person)
     @place_type = topic_types(:place)
     @name_field = topic_type_fields(:name)
     @capacity_field = topic_type_fields(:capacity)
+  end
+
+  def test_raw_validation
+    topic_type = TopicType.new
+    if REQ_ATTR_NAMES.blank?
+      assert topic_type.valid?, "TopicType should be valid without initialisation parameters"
+    else
+      # If TopicType has validation, then use the following:
+      assert !topic_type.valid?, "TopicType should not be valid without initialisation parameters"
+      REQ_ATTR_NAMES.each {|attr_name| assert topic_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+    end
+  end
+
+  def test_new
+    topic_type = TopicType.new(NEW_TOPIC_TYPE)
+    assert topic_type.valid?, "TopicType should be valid"
+    NEW_TOPIC_TYPE.each do |attr_name|
+      assert_equal NEW_TOPIC_TYPE[attr_name], topic_type.attributes[attr_name], "TopicType.@#{attr_name.to_s} incorrect"
+    end
+  end
+
+  def test_validates_presence_of
+    REQ_ATTR_NAMES.each do |attr_name|
+      tmp_topic_type = NEW_TOPIC_TYPE.clone
+      tmp_topic_type.delete attr_name.to_sym
+      topic_type = TopicType.new(tmp_topic_type)
+      assert !topic_type.valid?, "TopicType should be invalid, as @#{attr_name} is invalid"
+      assert topic_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+    end
+  end
+
+  def test_duplicate
+    current_topic_type = TopicType.find(:first)
+    DUPLICATE_ATTR_NAMES.each do |attr_name|
+      topic_type = TopicType.new(NEW_TOPIC_TYPE.merge(attr_name.to_sym => current_topic_type[attr_name]))
+      assert !topic_type.valid?, "TopicType should be invalid, as @#{attr_name} is a duplicate"
+      assert topic_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+    end
   end
 
   ### now for our joins
@@ -130,3 +155,4 @@ class TopicTypeTest < Test::Unit::TestCase
     end
   end
 end
+
