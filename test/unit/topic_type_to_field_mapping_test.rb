@@ -41,7 +41,7 @@ class TopicTypeToFieldMappingTest < Test::Unit::TestCase
     mapping2.move_to_top
 
     # i found this a bit confusing, you have to refresh the object
-    # after manipulating it's list
+    # after manipulating it's list (sometimes)
     @person_type = TopicType.find_by_name(@person_type[:name])
 
     mapping1 = @person_type.topic_type_to_field_mappings[0]
