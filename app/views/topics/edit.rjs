@@ -1,0 +1,16 @@
+@options = { :scaffold_id => params[:scaffold_id], :action => "update", :id => params[:id] }
+@view_options = @options.merge(:action => "view")
+
+if @successful
+  page.hide element_row_id(@view_options)
+  page.insert_html :bottom, scaffold_tbody_id(@options), :partial => 'new_edit'
+  page << "new TableRow.MoveAfter('#{element_row_id(@view_options)}', '#{element_row_id(@options)}');"  
+  page.show element_row_id(@options)
+  page << "Form.focusFirstElement('#{element_form_id(@options)}');"
+  page.visual_effect :highlight, element_cell_id(@options)
+  page.replace_html element_messages_id(@options), :partial => 'form_messages'
+else
+  page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+end
+
+page.hide loading_indicator_id(@view_options)

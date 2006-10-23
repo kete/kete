@@ -1,0 +1,16 @@
+   <% pagination_params = params.merge(:controller => '/topics', :action => 'component_update') %>
+   <% indicator_params = pagination_params.merge(:action => 'pagination') %>
+   <%= loading_indicator_tag indicator_params %>
+   <%= link_to_remote('Previous',
+           { :url => pagination_params.merge(:page => paginator.current.previous),
+           :loading => "Element.show('#{loading_indicator_id(indicator_params)}');",
+           :update => scaffold_content_id(pagination_params) },
+           { :href => url_for(pagination_params.merge(:page => paginator.current.previous)),
+           :class => "previous"}) if @paginator.current.previous %>
+   <%= pagination_ajax_links @paginator, pagination_params %>
+   <%= link_to_remote('Next',
+           { :url => pagination_params.merge(:page => paginator.current.next),
+           :loading => "Element.show('#{loading_indicator_id(indicator_params)}');",
+           :update => scaffold_content_id(pagination_params) },
+           { :href => url_for(pagination_params.merge(:page => paginator.current.next)),
+           :class => "next"}) if @paginator.current.next %>

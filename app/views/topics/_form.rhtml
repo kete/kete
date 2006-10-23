@@ -1,0 +1,46 @@
+<fieldset>
+  <div class="row">
+    <!--[form:topic]-->
+        <% if @topic %>
+                <% # this is an edit %>
+                <% @form_fields = TopicType.find(@topic.topic_type_id).topic_type_to_field_mappings %>
+        <% else %>
+                <% @form_fields = TopicType.find(params[:topic][:topic_type_id]).topic_type_to_field_mappings %>
+        <% end %>
+        <% if @form_fields.size > 0 %>
+                <% for @mapping in @form_fields %>
+                        <div class="form-element">
+                                <% f_id = @mapping.topic_type_field_name.downcase.gsub(/ /, '_') %>
+                                <% if @mapping.required %>
+                                        <label class="required" for="<%= f_id  -%>"><%= h(@mapping.topic_type_field_name) -%></label>
+                                <% else %>
+                                        <label for="<%= f_id -%>"><%= h(@mapping.topic_type_field_name) -%></label>
+                                <% end %>
+                                <% # TODO: replace xml_value with a method in topic_type_to_field_mapping
+                                   # that returns current value from xml
+                                %>
+                                <% if @topic %>
+                                        <%= text_field_tag(f_id, @topic.xml_attributes[f_id], {:class => "text-input"}) %>
+                                <% else %>
+                                        <%= text_field_tag(f_id, nil, {:class => "text-input"}) %>
+                                <% end %>
+
+                        </div>
+                <% end %>
+        <% else %>
+                <p>No form fields currently mapped to this topic type. Please use your back button and choose another.</p>
+        <% end %>
+
+        <div class="form-element">
+                <label for="topic_description">Short Summary:</label>
+                <%= text_area 'topic', 'description', {:class => "text-area"} %>
+        </div>
+        <% if @topic %>
+                <%= hidden_field_tag 'topic_type_id', @topic.topic_type_id %>
+        <% else %>
+                <%= hidden_field_tag 'topic_type_id', params[:topic][:topic_type_id] %>
+        <% end %>
+<!--[eoform:topic]-->
+
+  </div>
+</fieldset>

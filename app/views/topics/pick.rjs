@@ -1,0 +1,18 @@
+@options = { :scaffold_id => params[:scaffold_id], :action => "create", :id => generate_temporary_id }
+@pick_options = @options.merge(:action => "pick_topic_type", :id => nil)
+
+if @successful
+  page.insert_html :bottom, scaffold_tbody_id(@options), :partial => 'new_edit'
+  page << "new TableRow.MoveAfter('#{element_row_id(@pick_options)}', '#{element_row_id(@options)}');"
+  page.remove element_row_id(@pick_options)
+  page.show element_row_id(@options)
+  page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');"
+  page << "AjaxScaffold.removeSortClasses('#{@options[:scaffold_id]}');"
+  page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+else
+  page.replace_html element_messages_id(@pick_options), :partial => 'form_messages'
+  page << "Form.enable('#{element_form_id(@pick_options)}');"
+  page.hide loading_indicator_id(@pick_options)
+end
+
+
