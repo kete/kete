@@ -1,0 +1,30 @@
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <title>Topics</title>
+  <%= stylesheet_link_tag 'ajax_scaffold', :media => 'all' %>
+  <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag 'rico_corner', 'ajax_scaffold' %>
+</head>
+<body>
+
+   <table>
+        <tr>
+                <td>
+                        <ul>
+
+                                <li><%= link_to "Topics", :controller => 'topics', :action => 'list' %></li>
+                                <li><%= link_to "Topic Types", :controller => 'topic_types', :action => 'list' %></li>
+                                <li><%= link_to "Topic Type Fields", :controller => 'topic_type_fields', :action => 'list' %></li>
+                        </ul>
+                </td>
+                <td>
+                        <%= @content_for_layout %>
+                </td>
+        </tr>
+   </table>
+
+</body>
+</html>
