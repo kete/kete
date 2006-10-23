@@ -1,0 +1,36 @@
+<% # The following is used when the browser doesn't have javascript enabled %>
+<% classAttr = cycle("", "class=\"even\"") %>
+<% @options = params.merge(:controller => '/topic_types', :action => "view", :id => topic_type.send("#{TopicType.primary_key}")) %>
+
+<tr <%= classAttr %> id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
+  <% for scaffold_column in scaffold_columns %>
+    <% column_value = eval(scaffold_column.eval) rescue nil %>
+    <td class="<%= column_class(scaffold_column.name, column_value, current_sort(params), scaffold_column.class_name) %>" >
+      <%= format_column(column_value, scaffold_column.sanitize?) %>
+    </td>
+  <% end %>
+  <td class="actions">
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="indicator-container">
+          <%= loading_indicator_tag(@options) %>
+        </td>
+        <td>
+          <% edit_options = @options.merge(:action => 'edit') %>
+          <%= link_to_remote "Edit",
+                         { :url => edit_options,
+                           :loading => "Element.show('#{loading_indicator_id(@options)}');" },
+                         { :href => url_for(edit_options) } %>
+        </td>
+        <td>
+          <% delete_options = @options.merge(:action => 'destroy') %>
+          <%= link_to_remote "Delete",
+                         { :url => delete_options,
+                           :confirm => 'Are you sure?',
+                           :loading => "Element.show('#{loading_indicator_id(@options)}');" },
+                         { :href => url_for( delete_options ) } %>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>

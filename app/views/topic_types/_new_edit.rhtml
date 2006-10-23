@@ -7,36 +7,36 @@
     <table>
     <tr>
     <td>
-    <%= form_remote_tag :url => @options.merge(:controller => @scaffold_controller),
-                        :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
-                        :html => { :href => url_for(@options.merge(:controller => @scaffold_controller)),
-                           :id => element_form_id(@options) } %>
+    <%= form_remote_tag :url => @options.merge(:controller => '/topic_types'),
+          :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
+          :html => { :href => url_for(@options.merge(:controller => '/topic_types')),
+          :id => element_form_id(@options) } %>
 
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
 
-      <h4><%= Inflector.titleize(@options[:action]) %> <%= @scaffold_singular_name.titleize if @suffix.empty? %></h4>
+      <h4><%= Inflector.titleize(@options[:action]) %> Topic Type</h4>
 
       <% if request.xhr? %>
         <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
       <% else %>
-        <%= render :partial => scaffold_partial_path('form_messages') %>
+        <%= render :partial => 'form_messages' %>
       <% end %>
 
-      <%= render :partial => scaffold_partial_path('form'), :locals => { :scaffold_class => @scaffold_class, :scaffold_name => @scaffold_singular_name } %>
+      <%= render :partial => 'form' %>
 
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
-        <% cancel_params = @options.merge(:controller => @scaffold_controller, :action => 'cancel'+@suffix, :referring_action => @options[:action]) %>
+        <% cancel_params = @options.merge(:controller => '/topic_types', :action => 'cancel', :referring_action => @options[:action]) %>
         <%= link_to_remote "Cancel",
           { :url => cancel_params,
             :loading => "Element.show('#{loading_indicator_id(@options)}');" },
-              { :href => url_for(cancel_params) } %>
+          { :href => url_for(cancel_params) } %>
         <%= loading_indicator_tag @options %>
-        </p>
+      </p>
     <%= end_form_tag %>
-  <% if @options[:id] %>
-        <%= render(:partial => scaffold_partial_path('current_fields'), :locals => { :local_id => @options[:id], :scaffold_name => @scaffold_singular_name }) %>
-        <%= render(:partial => scaffold_partial_path('available_fields_form'), :locals => { :local_id => @options[:id], :scaffold_name => @scaffold_singular_name }) %>
+  <% if !@options[:id].nil? %>
+        <%= render(:partial => 'current_fields', :locals => { :local_id => @options[:id], :scaffold_name => 'topic' }) %>
+        <%= render(:partial => 'available_fields_form', :locals => { :local_id => @options[:id], :scaffold_name => 'topic' }) %>
   <% end %>
     </td>
    </tr>
