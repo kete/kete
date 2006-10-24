@@ -8,8 +8,11 @@ svn://rubyforge.org/var/svn/redhillonrails/trunk/vendor/plugins/foreign_key_migr
 https://secure.near-time.com/svn/plugins/trunk/validates_xml
 http://svn.techno-weenie.net/projects/plugins/acts_as_versioned/
 svn://railsexpress.de/plugins/piggy_back/trunk
+https://secure.near-time.com/svn/plugins/trunk/tiny_mce
 
 Gems:
+sudo gem install ajax_scaffold_generator
 Rmagick? etc? these aren't used yet
 
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
+-- updated 2006-10-20
