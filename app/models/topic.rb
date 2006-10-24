@@ -22,8 +22,10 @@ class Topic < ActiveRecord::Base
   # about cascading eager associations, note that patch mentioned is now in edge
   acts_as_versioned
   validates_xml :content
-  validates_presence_of :name_for_url
-  validates_uniqueness_of :name_for_url
+  validates_presence_of :name
+  # this may change
+  validates_uniqueness_of :name
+  # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
   # translates :name_for_url, :description
   def xml_attributes

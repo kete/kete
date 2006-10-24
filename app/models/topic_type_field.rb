@@ -4,6 +4,7 @@ class TopicTypeField < ActiveRecord::Base
   has_many :topic_type_forms, :through => :topic_type_to_field_mappings, :source => :topic_type, :order => 'position'
   validates_presence_of :name
   validates_uniqueness_of :name
+  # TODO: add validation that prevents the generic topic fields from being re-added
   # globalize stuff, uncomment later
   # translates :name, description
   def self.find_available_fields(topic_type)

@@ -8,6 +8,8 @@ class TopicsController < ApplicationController
   # and use app/views/topics/_form.rhtml to customize
   # we'll start with using the override syntax for ajaxscaffold
   # the code should easily transferred to something else if we decide to drop it
+
+  ### ajaxscaffold stuff
   include AjaxScaffold::Controller
 
   after_filter :clear_flashes
@@ -230,4 +232,5 @@ class TopicsController < ApplicationController
 
     return_to_main
   end
+  ### end ajaxscaffold stuff
 end

@@ -10,6 +10,7 @@
     <%= form_remote_tag :url => @options.merge(:controller => '/topic_types'),
           :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
           :html => { :href => url_for(@options.merge(:controller => '/topic_types')),
+          :before => fckeditor_before_js('topic', 'description'),
           :id => element_form_id(@options) } %>
 
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
