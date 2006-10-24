@@ -1,30 +1,34 @@
 <tr>
   <td>
         <h4>Current Form Fields</h4>
-                <% # required, position, and acts_as_list functionality are in mappings
-                   # but we also need field name attribute from topic_type_fields
-                   # we use piggy_back plugin to get the name attribute, see model
-                   # TODO: figure out how to refresh display with new order
-                   # revert to form_remote_tag then, also in _available_form_fields.rhtml
-                %>
-                <% @form_field_mappings = TopicType.find(local_id).topic_type_to_field_mappings %>
-                <% if @form_field_mappings.size > 0 %>
-                        <%= form_tag :action => :reorder_fields_for_topic_type, :id => local_id %>
-                                <% for @mapping in @form_field_mappings %>
-                                        <p>
-                                                <%= text_field("mapping[]", 'position', :size => "3") %>
-                                                <%= h(@mapping.topic_type_field_name) %>
-                                                <% if @mapping.required %>
-                                                        (required)
-                                                <% else %>
-                                                        (optional)
-                                                <% end %>
-                                        </p>
-                                <% end %>
-                                <%= submit_tag "Reorder Topic Type Form" %>
-                        <%= end_form_tag %>
+                <% if local_id.to_i == 1 %>
+                        <p>You cannot add any additional fields to this topic type, see above.</p>
                 <% else %>
-                        <p>No form fields currently mapped to this topic type.</p>
+                        <% # required, position, and acts_as_list functionality are in mappings
+                           # but we also need field name attribute from topic_type_fields
+                           # we use piggy_back plugin to get the name attribute, see model
+                           # TODO: figure out how to refresh display with new order
+                           # revert to form_remote_tag then, also in _available_form_fields.rhtml
+                        %>
+                        <% @form_field_mappings = TopicType.find(local_id).topic_type_to_field_mappings %>
+                        <% if @form_field_mappings.size > 0 %>
+                                <%= form_tag :action => :reorder_fields_for_topic_type, :id => local_id %>
+                                        <% for @mapping in @form_field_mappings %>
+                                                <p>
+                                                        <%= text_field("mapping[]", 'position', :size => "3") %>
+                                                        <%= h(@mapping.topic_type_field_name) %>
+                                                        <% if @mapping.required %>
+                                                                (required)
+                                                        <% else %>
+                                                                (optional)
+                                                        <% end %>
+                                                </p>
+                                        <% end %>
+                                        <%= submit_tag "Reorder Topic Type Form" %>
+                                <%= end_form_tag %>
+                        <% else %>
+                                <p>No form fields currently mapped to this topic type.</p>
+                        <% end %>
                 <% end %>
   </td>
 </tr>

@@ -34,9 +34,10 @@
         <%= loading_indicator_tag @options %>
       </p>
     <%= end_form_tag %>
-  <% if !@options[:id].nil? %>
-        <%= render(:partial => 'current_fields', :locals => { :local_id => @options[:id], :scaffold_name => 'topic' }) %>
-        <%= render(:partial => 'available_fields_form', :locals => { :local_id => @options[:id], :scaffold_name => 'topic' }) %>
+  <%= render(:partial => 'generic_topic_fields', :locals => { :local_id => @options[:id] }) %>
+  <% if !@options[:id].nil? and @options[:id] != 1 %>
+        <%= render(:partial => 'current_fields', :locals => { :local_id => @options[:id] }) %>
+        <%= render(:partial => 'available_fields_form', :locals => { :local_id => @options[:id] }) %>
   <% end %>
     </td>
    </tr>

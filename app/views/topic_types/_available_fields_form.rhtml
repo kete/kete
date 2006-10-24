@@ -1,21 +1,25 @@
 <tr>
   <td>
         <h4>Available Form Fields</h4>
-                <% @available_fields = TopicType.find_by_id(local_id).available_fields %>
-                <% if @available_fields.size > 0 %>
-                        <%= form_tag :action => :add_to_topic_type, :id => local_id %>
-
-                                <% for @topic_type_field in @available_fields %>
-                                        <p>
-                                                <%= h(@topic_type_field.name) %>:<br>
-                                                (optional) <%= check_box("topic_type_field[]", 'add_checkbox') %>
-                                                (required) <%= check_box("topic_type_field[]", 'required_checkbox') %>
-                                        </p>
-                                <% end %>
-                                <%= submit_tag "Add to Topic Type" %>
-                        <%= end_form_tag %>
+                <% if local_id.to_i == 1 %>
+                        <p>You cannot add any additional fields to this topic type, see above.</p>
                 <% else %>
-                        <p>No form fields are available.</p>
+                        <% @available_fields = TopicType.find_by_id(local_id).available_fields %>
+                        <% if @available_fields.size > 0 %>
+                                <%= form_tag :action => :add_to_topic_type, :id => local_id %>
+
+                                        <% for @topic_type_field in @available_fields %>
+                                                <p>
+                                                        <%= h(@topic_type_field.name) %>:<br>
+                                                        (optional) <%= check_box("topic_type_field[]", 'add_checkbox') %>
+                                                        (required) <%= check_box("topic_type_field[]", 'required_checkbox') %>
+                                                </p>
+                                        <% end %>
+                                        <%= submit_tag "Add to Topic Type" %>
+                                <%= end_form_tag %>
+                        <% else %>
+                                <p>No form fields are available.</p>
+                        <% end %>
                 <% end %>
   </td>
 </tr>
