@@ -22,12 +22,12 @@ class Topic < ActiveRecord::Base
   # about cascading eager associations, note that patch mentioned is now in edge
   acts_as_versioned
   validates_xml :content
-  validates_presence_of :name
+  validates_presence_of :title
   # this may change
-  validates_uniqueness_of :name
+  validates_uniqueness_of :title
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
-  # translates :name_for_url, :description
+  # translates :title, :description, :short_summary, :content
   def xml_attributes
     temp_hash = Hash.from_xml("<dummy_root>#{self.content}</dummy_root>")
     return temp_hash['dummy_root']
