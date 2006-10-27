@@ -8,6 +8,24 @@ class TopicsController < ApplicationController
   # and use app/views/topics/_form.rhtml to customize
   # we'll start with using the override syntax for ajaxscaffold
   # the code should easily transferred to something else if we decide to drop it
+  ### TinyMCE WYSIWYG editor stuff
+
+  uses_tiny_mce(:options => { :theme => 'advanced',
+                  :browsers => %w{ msie gecko},
+                  :mode => "textareas",
+                  :theme_advanced_toolbar_location => "top",
+                  :theme_advanced_toolbar_align => "left",
+                  :theme_advanced_resizing => true,
+                  :theme_advanced_resize_horizontal => false,
+                  :paste_auto_cleanup_on_paste => true,
+                  :theme_advanced_buttons1 => %w{ formatselect fontselect fontsizeselect bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo},
+                  :theme_advanced_buttons2 => [],
+                  :theme_advanced_buttons3 => [],
+                  :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
+                  :editor_selector => 'mceEditor',
+                  :plugins => %w{ contextmenu paste table fullscreen} },
+                :only => [:new, :pick, :list, :create, :edit, :update, :pick_topic_type])
+  ### end TinyMCE WYSIWYG editor stuff
 
   ### ajaxscaffold stuff
   include AjaxScaffold::Controller
@@ -92,9 +110,6 @@ class TopicsController < ApplicationController
       topic_type = TopicType.find(params[:topic_type_id])
       params[:topic][:topic_type_id] = params[:topic_type_id]
       @fields = topic_type.topic_type_to_field_mappings
-
-      # create the value for name_for_url
-
       # TODO: elimenate this HACK for determining name_for_url
       # ultimately I would like url's for peole to do look like the following:
       # topics/people/mcginnis/john
@@ -106,28 +121,34 @@ class TopicsController < ApplicationController
       # topics/events/2006/10/31
       # in the meantime we'll just use :name or :first_names and :last_names
       # TODO: helper for downcasing and underscoring
-      name_1_key = @fields[0].topic_type_field_name.downcase.gsub(/ /, '_')
-      n_for_url = params[name_1_key]
-
-      if topic_type.name == "Person"
-        # this assumes first_names and last_names are 0 and 1 in list
-        name_2_key = @fields[1].topic_type_field_name.downcase.gsub(/ /, '_')
-        n_for_url = "#{n_for_url} #{params[name_2_key]}"
-      else
-      end
-      params[:topic][:name_for_url] = n_for_url.downcase.gsub(/ /, '_')
 
       # here's where we populate the content with our xml
-      params[:topic][:content] = render_to_string(:partial => 'field_to_xml',
-                                                  :collection => @fields,
-                                                  :layout => false)
+      if @fields.size > 0
+        params[:topic][:content] = render_to_string(:partial => 'field_to_xml',
+                                                    :collection => @fields,
+                                                    :layout => false)
+      end
 
-      @topic = Topic.new(params[:topic])
+      # in order to get the ajax to work, we put form values in the topic hash
+      # in parameters, this will break new and update, because they aren't apart of the model
+      # directly, so strip them out of parameters
+
+      replacement_topic_hash = { }
+      params[:topic].keys.each do |field_key|
+        # we only want real topic columns, not pseudo ones that are handled by content xml
+        if Topic.column_names.include?(field_key)
+            replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
+        end
+      end
+
+      @topic = Topic.new(replacement_topic_hash)
       @successful = @topic.save
+
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
 
+    params[:topic] = replacement_topic_hash
     return render(:action => 'create.rjs') if request.xhr?
 
     if @successful
@@ -168,34 +189,11 @@ class TopicsController < ApplicationController
       params[:topic][:topic_type_id] = params[:topic_type_id]
       @fields = topic_type.topic_type_to_field_mappings
 
-      # create the value for name_for_url
-
-      # TODO: elimenate this HACK for determining name_for_url
-      # ultimately I would like url's for peole to do look like the following:
-      # topics/people/mcginnis/john
-      # topics/people/mcginnis/john_marshall
-      # topics/people/mcginnis/john_robert
-      # for places:
-      # topics/places/nz/wellington/island_bay/the_parade/206
-      # events:
-      # topics/events/2006/10/31
-      # in the meantime we'll just use :name or :first_names and :last_names
-      # TODO: helper for downcasing and underscoring
-      name_1_key = @fields[0].topic_type_field_name.downcase.gsub(/ /, '_')
-      n_for_url = params[name_1_key]
-
-      if topic_type.name == "Person"
-        # this assumes first_names and last_names are 0 and 1 in list
-        name_2_key = @fields[1].topic_type_field_name.downcase.gsub(/ /, '_')
-        n_for_url = "#{n_for_url} #{params[name_2_key]}"
-      else
+      if @fields.size > 0
+        params[:topic][:content] = render_to_string(:partial => 'field_to_xml',
+                                                    :collection => @fields,
+                                                    :layout => false)
       end
-      params[:topic][:name_for_url] = n_for_url.downcase.gsub(/ /, '_')
-
-      # here's where we populate the content with our xml
-      params[:topic][:content] = render_to_string(:partial => 'field_to_xml',
-                                                  :collection => @fields,
-                                                  :layout => false)
 
       @successful = @topic.update_attributes(params[:topic])
     rescue
