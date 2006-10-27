@@ -195,11 +195,21 @@ class TopicsController < ApplicationController
                                                     :layout => false)
       end
 
-      @successful = @topic.update_attributes(params[:topic])
+      # TODO: DRY this up, see create
+      replacement_topic_hash = { }
+      params[:topic].keys.each do |field_key|
+        # we only want real topic columns, not pseudo ones that are handled by content xml
+        if Topic.column_names.include?(field_key)
+            replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
+        end
+      end
+
+      @successful = @topic.update_attributes(replacement_topic_hash)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
 
+    params[:topic] = replacement_topic_hash
     return render(:action => 'update.rjs') if request.xhr?
 
     if @successful
