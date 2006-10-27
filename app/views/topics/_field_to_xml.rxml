@@ -1,2 +1,2 @@
 field_name = field_to_xml.topic_type_field_name.downcase.gsub(/ /, '_')
-xml.tag!(field_name, params[field_name])
+xml.tag!(field_name, params[:topic][field_name])

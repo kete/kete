@@ -10,7 +10,6 @@
     <%= form_remote_tag :url => @options.merge(:controller => '/topic_types'),
           :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
           :html => { :href => url_for(@options.merge(:controller => '/topic_types')),
-          :before => fckeditor_before_js('topic', 'description'),
           :id => element_form_id(@options) } %>
 
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
@@ -36,7 +35,7 @@
       </p>
     <%= end_form_tag %>
   <%= render(:partial => 'generic_topic_fields', :locals => { :local_id => @options[:id] }) %>
-  <% if !@options[:id].nil? and @options[:id] != 1 %>
+  <% if @topic_type.id and @options[:id] != 1 %>
         <%= render(:partial => 'current_fields', :locals => { :local_id => @options[:id] }) %>
         <%= render(:partial => 'available_fields_form', :locals => { :local_id => @options[:id] }) %>
   <% end %>

@@ -7,6 +7,7 @@
 
     <%= form_remote_tag :url => @options.merge(:controller => '/topics'),
           :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
+          :before =>  "tinyMCE.triggerSave(true,true)",
           :html => { :href => url_for(@options.merge(:controller => '/topics')),
           :id => element_form_id(@options) } %>
 
