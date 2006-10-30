@@ -6,6 +6,7 @@ class PopulateTopLevelGenericTopicType < ActiveRecord::Migration
   end
 
   def self.down
+    TopicTypeToFieldMapping.delete_all
     TopicType.delete_all
   end
 end

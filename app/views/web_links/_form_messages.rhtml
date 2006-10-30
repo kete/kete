@@ -1,0 +1,5 @@
+<%= render :partial => 'messages' %>
+
+<% unless @web_link.nil? %>
+<%= error_messages_for 'web_link' %>
+<% end %>
