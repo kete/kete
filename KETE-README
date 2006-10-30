@@ -8,14 +8,9 @@ svn://rubyforge.org/var/svn/redhillonrails/trunk/vendor/plugins/foreign_key_migr
 https://secure.near-time.com/svn/plugins/trunk/validates_xml
 http://svn.techno-weenie.net/projects/plugins/acts_as_versioned/
 svn://railsexpress.de/plugins/piggy_back/trunk
-
-Tricky installs...:
-unfreeze rails as follows:
-# from outside of an existing emacs session
-svn propedit svn:externals vendor
-# delete the line "rails http://dev.rubyonrails.org/svn/rails/trunk/"
-# if already installed "ruby script/plugin remove fckeditor"
-ruby script/plugin install -x svn://rubyforge.org//var/svn/fckeditorp/trunk/fckeditor
+https://secure.near-time.com/svn/plugins/trunk/tiny_mce
+# also needs this from root dir "rake tiny_mce:scripts:install"
+svn://visioni.st/plugins/validates_http_url/trunk
 
 Gems:
 sudo gem install ajax_scaffold_generator
