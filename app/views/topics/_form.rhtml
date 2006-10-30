@@ -9,10 +9,6 @@
                 <label for="topic_description">Short Summary:</label>
                 <%= text_area 'topic', 'short_summary', {:class => "text-area"} %>
         </div>
-        <div class="form-element">
-                <label for="topic_description">Keywords:</label>
-                <%= text_field 'topic', 'keywords', {:class => "text-input"} %>
-        </div>
         <% if @topic %>
                 <% # this is an edit %>
                 <% @form_fields = TopicType.find(@topic.topic_type_id).topic_type_to_field_mappings %>
