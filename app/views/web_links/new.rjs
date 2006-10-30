@@ -11,4 +11,5 @@ else
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
 end
 
-page.hide loading_indicator_id(@new_options), empty_message_id(@options)
+page.hide loading_indicator_id(@new_options)
+# page.hide loading_indicator_id(@new_options), empty_message_id(@options)
