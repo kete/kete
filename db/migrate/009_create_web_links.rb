@@ -3,7 +3,7 @@ class CreateWebLinks < ActiveRecord::Migration
     create_table :web_links do |t|
       t.column :title, :string, :null => false
       t.column :description, :text
-      t.column :url, :text
+      t.column :url, :string, :null => false
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
     end

@@ -2,8 +2,13 @@
   <div class="row">
     <!--[form:web_link]-->
 <div class="form-element">
-  <label for="web_link_title">Title</label>
+  <label class="required" for="web_link_title">Title</label>
   <%= text_field 'web_link', 'title' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label class="required" for="web_link_url">Url</label>
+  <%= text_field 'web_link', 'url', {:class=>"text-input"} %>
 </div>
 
 <div class="form-element">
@@ -11,10 +16,6 @@
   <%= text_area 'web_link', 'description'  %>
 </div>
 
-<div class="form-element">
-  <label for="web_link_url">Url</label>
-  <%= text_area 'web_link', 'url'  %>
-</div>
 
 <!--[eoform:web_link]-->
 
