@@ -14,7 +14,7 @@ class TopicType < ActiveRecord::Base
       TopicTypeToFieldMapping.with_scope(:create => { :required => "false"}) { self.concat topic_type_field }
     end
   end
-  has_many :required_form_fields, :through => :topic_type_to_field_mappings, :source => :required_form_field, :select => "distinct topic_type_to_field_mappings.position, topic_type_fields.*", :conditions => "topic_type_to_field_mappings.required = 'true'", :order => 'position', :uniq => true do
+  has_many :required_form_fields, :through => :topic_type_to_field_mappings, :source => :required_form_field, :select => "distinct topic_type_to_field_mappings.position, topic_type_fields.*", :conditions => "topic_type_to_field_mappings.required = 'true'", :order => 'position' do
     def <<(required_form_field)
       TopicTypeToFieldMapping.with_scope(:create => { :required => "true"}) { self.concat required_form_field }
     end
