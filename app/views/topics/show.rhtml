@@ -1,0 +1,37 @@
+<% @options = params.merge(:controller => '/topics', :action => "show", :id => params[:id]) %>
+
+<!-- begin display of Topic data -->
+<h3><%= h(@topic.topic_type.name) %>: <%= h(@topic.title) %></h3>
+
+<% if @topic.xml_attributes %>
+        <%= display_xml_attributes(@topic) %>
+<% end %>
+
+<p><%= @topic.description %></p>
+
+<!-- end display of Topic data -->
+
+<!-- begin related web links -->
+
+        <!-- begin add a related web link -->
+        <!-- end add a related web link -->
+<!-- end related web links -->
+
+<!-- begin related topics -->
+
+        <!-- begin add a related topic -->
+        <!-- end add a related topic -->
+<!-- end related topics -->
+
+<% edit_options = @options.merge(:action => 'edit') %>
+<%= link_to_remote "Edit",
+        { :url => edit_options,
+          :loading => "Element.show('#{loading_indicator_id(@options)}');" },
+        { :href => url_for(edit_options) } %>
+
+<% delete_options = @options.merge(:action => 'destroy') %>
+<%= link_to_remote "Delete",
+        { :url => delete_options,
+          :confirm => 'Are you sure?',
+          :loading => "Element.show('#{loading_indicator_id(@options)}');" },
+        { :href => url_for( delete_options ) } %>
