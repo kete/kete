@@ -159,7 +159,6 @@ class TopicsController < ApplicationController
     end
   end
 
-  # TODO: modify to generate dynamic form based on topic_type_id
   def edit
     begin
       @topic = Topic.find(params[:id])
@@ -178,10 +177,6 @@ class TopicsController < ApplicationController
     end
   end
 
-  # TODO: modify to render_to_string and rxml
-  # to take the dynamic attributes from the form
-  # and create the value for name_for_url
-  # and content
   def update
     begin
       @topic = Topic.find(params[:id])
@@ -241,4 +236,9 @@ class TopicsController < ApplicationController
     return_to_main
   end
   ### end ajaxscaffold stuff
+
+  def show
+    @topic = Topic.find(params[:id])
+  end
+
 end

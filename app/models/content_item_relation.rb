@@ -1,4 +1,4 @@
-class ContentRelation < ActiveRecord::Base
+class ContentItemRelation < ActiveRecord::Base
   # this is where we store our polymorphic "related to" between topics and items, and topics and topics
   belongs_to :topic
   belongs_to :related_item, :polymorphic => true
@@ -9,7 +9,7 @@ class ContentRelation < ActiveRecord::Base
   belongs_to :web_link, :class_name => "WebLink", :foreign_key => "related_item_id"
   # TODO: would like to do something like below,
   # because a topic can be related to another topic
-  # belongs_to :topic, :class_name => "WebLink", :foreign_key => "related_item_id"
+  belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
 
   acts_as_list
 end

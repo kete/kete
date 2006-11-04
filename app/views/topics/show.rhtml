@@ -12,12 +12,37 @@
 <!-- end display of Topic data -->
 
 <!-- begin related web links -->
+        <% if @topic.web_links.size > 0 %>
+                <p>Related Web Links:
+                <ul>
+                <% @topic.web_links.each do |web_link| %>
+                        <li><a href="<%= web_link.url %>"><%= h(web_link.title) %></a> or
+                                <%= link_to     'our internal information about this link',
+                                                :controller => 'web_links',
+                                                :action => :show,
+                                                :id => web_link.id %></li>
+                <% end %>
+                </ul>
+                </p>
+        <% end %>
 
         <!-- begin add a related web link -->
         <!-- end add a related web link -->
 <!-- end related web links -->
 
 <!-- begin related topics -->
+        <% if @topic.related_topics.size > 0 %>
+                <p>Related Topics:
+                <ul>
+                <% @topic.related_topics.each do |related_topic| %>
+                        <li><%= link_to         h(related_topic.title),
+                                                :controller => 'topics',
+                                                :action => :show,
+                                                :id => related_topic.id %></li>
+                <% end %>
+                </ul>
+                </p>
+        <% end %>
 
         <!-- begin add a related topic -->
         <!-- end add a related topic -->

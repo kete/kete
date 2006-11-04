@@ -31,6 +31,7 @@ class Topic < ActiveRecord::Base
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
   has_many :web_links, :through => :content_item_relations, :source => :web_link, :conditions => "content_item_relations.related_item_type = 'WebLink'", :order => 'position'
+  has_many :related_topics, :through => :content_item_relations, :source => :topic, :conditions => "content_item_relations.related_item_type = 'Topic'", :order => 'position'
 
   acts_as_versioned
   validates_xml :content
