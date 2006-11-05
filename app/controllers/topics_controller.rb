@@ -148,14 +148,19 @@ class TopicsController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
-    params[:topic] = replacement_topic_hash
-    return render(:action => 'create.rjs') if request.xhr?
-
-    if @successful
-      return_to_main
+    if params[:relate_to_topic_id] and @successful
+      ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @topic)
+      redirect_to :action => 'show', :controller => '/topics', :id => params[:relate_to_topic_id]
     else
-      @options = { :scaffold_id => params[:scaffold_id], :action => "create" }
-      render :partial => 'new_edit', :layout => true
+      params[:topic] = replacement_topic_hash
+      return render(:action => 'create.rjs') if request.xhr?
+
+      if @successful
+        return_to_main
+      else
+        @options = { :scaffold_id => params[:scaffold_id], :action => "create" }
+        render :partial => 'new_edit', :layout => true
+      end
     end
   end
 

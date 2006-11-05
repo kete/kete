@@ -39,7 +39,10 @@
                 <%= text_area 'topic', 'description', :class => "mceEditor", :cols => 120 %>
         </div>
 
-        <%= javascript_tag "tinyMCE.execCommand('mceAddControl', true, 'topic[description]')" %>
+        <% if !params[:relate_to_topic_id] %>
+                <% # this is only necessary if there is conflicting ajax stuff %>
+                <%= javascript_tag "tinyMCE.execCommand('mceAddControl', true, 'topic[description]')" %>
+        <% end %>
 
         <% if @topic %>
                 <%= hidden_field_tag 'topic_type_id', @topic.topic_type_id %>

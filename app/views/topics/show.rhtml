@@ -27,9 +27,19 @@
         <% end %>
 
         <!-- begin add a related web link -->
+        <p>
+                <ul>
+                        <li><%= link_to         'Add a related web link',
+                                                :controller => 'web_links',
+                                                :action => :new,
+                                                :relate_to_topic_id => @topic.id %></li>
+                </ul>
+        </p>
         <!-- end add a related web link -->
 <!-- end related web links -->
 
+<!-- TODO: figure out how to show the other side of the relationship -->
+<!-- TODO: get the right topic when this is a topic to topic relationship -->
 <!-- begin related topics -->
         <% if @topic.related_topics.size > 0 %>
                 <p>Related Topics:
@@ -45,6 +55,14 @@
         <% end %>
 
         <!-- begin add a related topic -->
+        <p>
+                <ul>
+                        <li><%= link_to         'Add a related topic',
+                                                :controller => 'topics',
+                                                :action => :new,
+                                                :relate_to_topic_id => @topic.id %></li>
+                </ul>
+        </p>
         <!-- end add a related topic -->
 <!-- end related topics -->
 

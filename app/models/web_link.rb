@@ -9,7 +9,8 @@ class WebLink < ActiveRecord::Base
   validates_presence_of :title, :url
   # this may change
   validates_uniqueness_of :title, :url
-  validates_http_url :url
+  # TODO: hunt down problem with this validates false positives
+  # validates_http_url :url
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
   # translates :title, :description

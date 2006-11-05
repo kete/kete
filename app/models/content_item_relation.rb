@@ -12,4 +12,10 @@ class ContentItemRelation < ActiveRecord::Base
   belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
 
   acts_as_list
+
+  def self.new_relation_to_topic(topic_id, related_item)
+      content_item_relation = self.new(:topic_id => topic_id)
+      content_item_relation.related_item = related_item
+      content_item_relation.save!
+  end
 end
