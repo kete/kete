@@ -1,7 +1,7 @@
 <% @options = params.merge(:controller => '/web_links', :action => "show", :id => params[:id]) %>
 
 <!-- begin display of WebLink data -->
-<h3><%= h(@web_link.title) %></h3>
+<h3><%= link_to h(@web_link.title), @web_link.url %></h3>
 
 <p><%= @web_link.description %></p>
 
