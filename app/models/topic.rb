@@ -24,14 +24,13 @@ class Topic < ActiveRecord::Base
   # this is where we handled "related to"
   # this is self-referential, may break in expected ways
   has_many :content_item_relations, :order => 'position'
-  # this is where we'll have to catch related topics for the time being
-  has_many :related_items, :through => :content_item_relations
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
   has_many :web_links, :through => :content_item_relations, :source => :web_link, :conditions => "content_item_relations.related_item_type = 'WebLink'", :order => 'position'
-  has_many :related_topics, :through => :content_item_relations, :source => :topic, :conditions => "content_item_relations.related_item_type = 'Topic'", :order => 'position'
+  # topics related to a topic
+  has_many :related_topics, :through => :content_item_relations, :source => :related_topic, :conditions => "content_item_relations.related_item_type = 'Topic'", :order => 'position'
 
   acts_as_versioned
   validates_xml :content

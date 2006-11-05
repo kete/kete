@@ -38,8 +38,6 @@
         <!-- end add a related web link -->
 <!-- end related web links -->
 
-<!-- TODO: figure out how to show the other side of the relationship -->
-<!-- TODO: get the right topic when this is a topic to topic relationship -->
 <!-- begin related topics -->
         <% if @topic.related_topics.size > 0 %>
                 <p>Related Topics:
@@ -66,15 +64,14 @@
         <!-- end add a related topic -->
 <!-- end related topics -->
 
-<% edit_options = @options.merge(:action => 'edit') %>
-<%= link_to_remote "Edit",
-        { :url => edit_options,
-          :loading => "Element.show('#{loading_indicator_id(@options)}');" },
-        { :href => url_for(edit_options) } %>
-
-<% delete_options = @options.merge(:action => 'destroy') %>
+<%= link_to "Edit",
+        :action => :edit,
+        :controller => '/topics',
+        :id => @topic %>
+|
 <%= link_to_remote "Delete",
-        { :url => delete_options,
-          :confirm => 'Are you sure?',
-          :loading => "Element.show('#{loading_indicator_id(@options)}');" },
-        { :href => url_for( delete_options ) } %>
+        :action => :destroy,
+        :controller => '/topics',
+        :confirm => 'Are you sure?',
+        :id => @topic %>
+

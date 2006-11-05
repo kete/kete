@@ -1,0 +1,34 @@
+<% @options = params.merge(:controller => '/web_links', :action => "show", :id => params[:id]) %>
+
+<!-- begin display of WebLink data -->
+<h3><%= h(@web_link.title) %></h3>
+
+<p><%= @web_link.description %></p>
+
+<!-- end display of WebLink data -->
+
+<!-- begin related topics -->
+        <% if @web_link.topics.size > 0 %>
+                <p>Related Topics:
+                <ul>
+                <% @web_link.topics.each do |related_topic| %>
+                        <li><%= link_to         h(related_topic.title),
+                                                :controller => 'topics',
+                                                :action => :show,
+                                                :id => related_topic.id %></li>
+                <% end %>
+                </ul>
+                </p>
+        <% end %>
+<!-- end related topics -->
+
+<%= link_to "Edit",
+        :action => :edit,
+        :controller => '/web_links',
+        :id => @web_link %>
+|
+<%= link_to_remote "Delete",
+        :action => :destroy,
+        :controller => '/web_links',
+        :confirm => 'Are you sure?',
+        :id => @web_link %>
