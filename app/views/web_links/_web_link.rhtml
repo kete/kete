@@ -6,7 +6,12 @@
   <% for scaffold_column in scaffold_columns %>
     <% column_value = eval(scaffold_column.eval) rescue nil %>
     <td class="<%= column_class(scaffold_column.name, column_value, current_sort(params), scaffold_column.class_name) %>" >
-      <%= format_column(column_value, scaffold_column.sanitize?) %>
+      <% if scaffold_column.name == "title" %>
+
+        <%= link_to "#{column_value}", :action => "show", :id => web_link %>
+      <% else %>
+        <%= format_column(column_value, scaffold_column.sanitize?) %>
+      <% end %>
     </td>
   <% end %>
   <td class="actions">
