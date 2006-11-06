@@ -28,9 +28,9 @@ class Topic < ActiveRecord::Base
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
-  has_many :web_links, :through => :content_item_relations, :source => :web_link, :conditions => "content_item_relations.related_item_type = 'WebLink'", :order => 'position'
+  has_many :web_links, :through => :content_item_relations, :source => :web_link, :order => 'position'
   # topics related to a topic
-  has_many :related_topics, :through => :content_item_relations, :source => :related_topic, :conditions => "content_item_relations.related_item_type = 'Topic'", :order => 'position'
+  has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
 
   acts_as_versioned
   validates_xml :content
@@ -43,5 +43,12 @@ class Topic < ActiveRecord::Base
   def xml_attributes
     temp_hash = Hash.from_xml("<dummy_root>#{self.content}</dummy_root>")
     return temp_hash['dummy_root']
+  end
+
+  def related_topics
+    parent_topics = self.class.find(:all,
+                              :joins => "INNER JOIN content_item_relations ON topics.id = content_item_relations.topic_id",
+                              :conditions => ["((content_item_relations.related_item_id = :object_id) AND (content_item_relations.related_item_type = :class_name))", { :object_id => self.id, :class_name => self.class.to_s}])
+    return parent_topics + self.child_related_topics
   end
 end
