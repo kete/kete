@@ -1,0 +1,37 @@
+<fieldset>
+  <div class="row">
+
+    <!--[form:zoom_db]-->
+        <div class="form-element">
+                <label class="required" for="zoom_db_database_name">Database Name:</label>
+                <%= text_field 'zoom_db', 'database_name', {:class => "text-input"} %>
+        </div>
+        <div class="form-element">
+                <label for="zoom_db_description">Short Summary:</label>
+                <%= text_area 'zoom_db', 'description', {:class => "text-area"} %>
+        </div>
+        <div class="form-element">
+                <label class="required" for="zoom_db_host">Host:</label>
+                <%= text_field 'zoom_db', 'host', {:class => "text-input"} %>
+        </div>
+        <div class="form-element">
+                <label class="required" for="zoom_db_post">Port:</label>
+                <%= text_field 'zoom_db', 'port', {:class => "text-input"} %>
+        </div>
+        <div class="form-element">
+                <label class="required" for="zoom_db_zoom_user">Zoom User:</label>
+                <%= text_field 'zoom_db', 'zoom_user', {:class => "text-input"} %>
+        </div>
+        <div class="form-element">
+                <label class="required" for="zoom_db_password">Zoom Password:</label>
+                <%= password_field 'zoom_db', 'password', {:class => "text-input"} %>
+        </div>
+        <div class="form-element">
+                <label class="required" for="zoom_db_password_confirmed">Zoom Password Confirmation:</label>
+                <%= password_field 'zoom_db', 'password_confirmation', {:class => "text-input"} %>
+        </div>
+
+<!--[eoform:zoom_db]-->
+
+  </div>
+</fieldset>
