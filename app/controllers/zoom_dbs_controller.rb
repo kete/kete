@@ -1,3 +1,3 @@
 class ZoomDbsController < ApplicationController
-  ajax_scaffold :topic_type_field
+  ajax_scaffold :zoom_db
 end
