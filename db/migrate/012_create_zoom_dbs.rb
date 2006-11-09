@@ -1,7 +1,7 @@
-Class CreateZoomDbs < ActiveRecord::Migration
+class CreateZoomDbs < ActiveRecord::Migration
   def self.up
     create_table :zoom_dbs do |t|
-      t.column :name, :string, :null => false
+      t.column :database_name, :string, :null => false
       t.column :description, :text
       t.column :host, :string, :null => false
       t.column :port, :text, :null => false
