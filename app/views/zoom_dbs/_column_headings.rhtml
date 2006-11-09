@@ -1,5 +1,5 @@
 <% for scaffold_column in @scaffold_columns %>
-  <% if scaffold_column.name != "hashed_zoom_password" and scaffold_column.name != "zoom_user" and scaffold_column.name != "salt" %>
+  <% if scaffold_column.name != "zoom_password" and scaffold_column.name != "zoom_user" and scaffold_column.name != "salt" %>
         <% column_sort_direction = column_sort_direction(scaffold_column.name, params) %>
         <% sort_params = params.merge(:controller => @scaffold_controller, :action => 'update_'+@prefix+'table',
                                       :sort => scaffold_column.name, :sort_direction => column_sort_direction, :page => 1) %>

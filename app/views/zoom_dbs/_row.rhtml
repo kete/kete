@@ -5,7 +5,7 @@
 
 <tr <%= classAttr %> id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
         <% for scaffold_column in @scaffold_columns %>
-          <% if scaffold_column.name != "hashed_zoom_password" and scaffold_column.name != "zoom_user" and scaffold_column.name != "salt"  %>
+          <% if scaffold_column.name != "zoom_password" and scaffold_column.name != "zoom_user" and scaffold_column.name != "salt"  %>
                 <% column_value = eval(scaffold_column.eval) rescue nil %>
                 <% if show_totals_for_column?(scaffold_column.name) %>
                         <% scaffold_column.add_to_total(column_value) %>
