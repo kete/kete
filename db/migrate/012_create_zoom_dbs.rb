@@ -7,6 +7,7 @@ class CreateZoomDbs < ActiveRecord::Migration
       t.column :port, :text, :null => false
       t.column :zoom_user, :string
       t.column :hashed_zoom_password, :string
+      t.column :salt, :string
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
     end
