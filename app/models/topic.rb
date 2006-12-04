@@ -32,9 +32,14 @@ class Topic < ActiveRecord::Base
   # topics related to a topic
   has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
 
-  # TODO: creat a virtual attribute that holds the topic's entire content
+  # TODO: create a virtual attribute that holds the topic's entire content
   # as xml formated how we like it
-  # for use by acts_as_zoom :virtual_field_name, :raw => true
+  # for use by acts_as_zoom virtual_field_name, :raw => true
+  # this virtual attribue will be populated/updated in our controller
+  # in create and update
+  # i.e. before save, which triggers our acts_as_zoom record being shot off to zebra
+  attr_accessor :oai_record
+  # acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['hlt-kete.katipo.co.nz', 'public'], :raw => true
 
   acts_as_versioned
   validates_xml :content
