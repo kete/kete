@@ -142,6 +142,11 @@ class TopicsController < ApplicationController
       end
 
       @topic = Topic.new(replacement_topic_hash)
+      # update our oai_record virtual attribute
+      # TODO: pass tags (when they are added) as dc_subjects
+      # TODO: pass related topics and items as dc_relations
+      @topic.oai_record = render_to_string(:template => 'topics/oai_record',
+                                           :layout => false)
       @successful = @topic.save
 
     rescue
@@ -203,7 +208,11 @@ class TopicsController < ApplicationController
             replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
         end
       end
-
+      # update our oai_record virtual attribute
+      # TODO: pass tags (when they are added) as dc_subjects
+      # TODO: pass related topics and items as dc_relations
+      @topic.oai_record = render_to_string(:template => 'topics/oai_record',
+                                           :layout => false)
       @successful = @topic.update_attributes(replacement_topic_hash)
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -244,6 +253,13 @@ class TopicsController < ApplicationController
 
   def show
     @topic = Topic.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
+    end
   end
 
+  # this uses the values from parameters to create the virtual attribute xml string value
+  def populate_oai_record(topic)
+  end
 end
