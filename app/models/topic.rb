@@ -23,7 +23,7 @@ class Topic < ActiveRecord::Base
 
   # this is where we handled "related to"
   # this is self-referential, may break in expected ways
-  has_many :content_item_relations, :order => 'position'
+  has_many :content_item_relations, :order => 'position', :dependent => :destroy
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
@@ -32,14 +32,14 @@ class Topic < ActiveRecord::Base
   # topics related to a topic
   has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
 
-  # TODO: create a virtual attribute that holds the topic's entire content
+  # a virtual attribute that holds the topic's entire content
   # as xml formated how we like it
   # for use by acts_as_zoom virtual_field_name, :raw => true
   # this virtual attribue will be populated/updated in our controller
   # in create and update
   # i.e. before save, which triggers our acts_as_zoom record being shot off to zebra
   attr_accessor :oai_record
-  # acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['hlt-kete.katipo.co.nz', 'public'], :raw => true
+  acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['hlt-kete.katipo.co.nz', 'public'], :raw => true
 
   acts_as_versioned
   validates_xml :content
