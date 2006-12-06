@@ -1,7 +1,7 @@
 xml.instruct!
 xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns".to_sym => "http://www.openarchives.org/OAI/2.0/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd") do
         xml.responseDate(Time.now.to_s(:db))
-        xml.request("http://hlt-kete.katipo.co.nz/link_to_oai/interface", :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@topic.class.name}:#{@topic.id}", :metadataPrefix => "oai_dc")
+        xml.request("http://#{request.host}#{request.request_uri}", :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@topic.class.name}:#{@topic.id}", :metadataPrefix => "oai_dc")
         xml.GetRecord do
                 xml.record do
                         xml.header do
@@ -10,7 +10,7 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                         end
                         xml.metadata do
                                 xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
-                                        xml.tag!("dc:identifier", "http://hlt-kete.katipo.co.nz/topics/show/#{@topic.id}")
+                                        xml.tag!("dc:identifier", "http://#{request.host}#{url_for(:controller => 'topics', :action => 'show', :id => @topic.id, :format => nil)}")
                                         xml.tag!("dc:title", @topic.title)
                                         # TODO: short_summary should become description
                                         # TODO: @topic.description should become @topic.body_of_text
