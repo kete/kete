@@ -56,3 +56,11 @@ end
 # include Globalize # put that thing here
 # Locale.set_base_language('en-NZ') # and here :)'')
 
+# Walter McGinnis (walter@katipo.co.nz), 2006-12-06
+# used by the acts_as_zoom plugin
+ZoomDb.zoom_id_stub = "oai:hlt-kete.katipo.co.nz:"
+ZoomDb.zoom_id_element_name = "identifier"
+# in case your zoom_id is in a nested element
+# separated by /'s
+# no preceding / necessary
+ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
