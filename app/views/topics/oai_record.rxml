@@ -1,0 +1,33 @@
+xml.instruct!
+xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns".to_sym => "http://www.openarchives.org/OAI/2.0/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd") do
+        xml.responseDate(Time.now.to_s(:db))
+        xml.request("http://hlt-kete.katipo.co.nz/link_to_oai/interface", :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@topic.class.name}:#{@topic.id}", :metadataPrefix => "oai_dc")
+        xml.GetRecord do
+                xml.record do
+                        xml.header do
+                                xml.identifier("#{ZoomDb.zoom_id_stub}#{@topic.class.name}:#{@topic.id}")
+                                xml.datestamp(Date.today.to_s(:db))
+                        end
+                        xml.metadata do
+                                xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
+                                        xml.tag!("dc:identifier", "http://hlt-kete.katipo.co.nz/topics/show/#{@topic.id}")
+                                        xml.tag!("dc:title", @topic.title)
+                                        # TODO: short_summary should become description
+                                        # TODO: @topic.description should become @topic.body_of_text
+                                        # TODO: @topic.content needs to be parsed for other dc: elements
+                                        xml.tag!("dc:description", params[:short_summary] || @topic.short_summary)
+                                        xml.tag!("dc:description", params[:description] || @topic.description)
+                                        # TODO: get the updated value for content
+                                        xml.tag!("dc:description", params[:content] || @topic.content)
+                                        # TODO: related topics and items should have dc:subject elem here with their title
+                                        # TODO: related topics and items should have dc:relation with their dc:identifier here
+                                        xml.tag!("dc:date", @topic.created_at || Time.now.to_s(:db) )
+                                        xml.tag!("dc:type", "InteractiveResource")
+                                        # TODO: make this grab mimetype?
+                                        xml.tag!("dc:format", "text/html")
+                                        # TODO: add creator/contributor after we add users
+                                end
+                        end
+                end
+        end
+end
