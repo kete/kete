@@ -30,7 +30,7 @@ class TopicsController < ApplicationController
   ### ajaxscaffold stuff
   include AjaxScaffold::Controller
 
-  after_filter :clear_flashes
+  # after_filter :clear_flashes
   before_filter :update_params_filter
 
   def update_params_filter
@@ -257,9 +257,5 @@ class TopicsController < ApplicationController
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
     end
-  end
-
-  # this uses the values from parameters to create the virtual attribute xml string value
-  def populate_oai_record(topic)
   end
 end
