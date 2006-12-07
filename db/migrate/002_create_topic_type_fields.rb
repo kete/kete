@@ -2,7 +2,7 @@ class CreateTopicTypeFields < ActiveRecord::Migration
   def self.up
     create_table :topic_type_fields do |t|
       t.column :label, :string, :null => false
-      t.column :xml_element_name, :text
+      t.column :xml_element_name, :string
       t.column :description, :text
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
