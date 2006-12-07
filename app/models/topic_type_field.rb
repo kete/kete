@@ -4,6 +4,8 @@ class TopicTypeField < ActiveRecord::Base
   has_many :topic_type_forms, :through => :topic_type_to_field_mappings, :source => :topic_type, :order => 'position'
   validates_presence_of :label
   validates_uniqueness_of :label
+  # don't allow spaces
+  validates_format_of :xml_element_name , :with => /[^\S]/, :message => "Spaces aren't allowed in XML elment names."
   # TODO: add validation that prevents the generic topic fields from being re-added
   # globalize stuff, uncomment later
   # translates :label, :description
