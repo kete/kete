@@ -11,7 +11,7 @@
                                         <% for @topic_type_field in @available_fields %>
                                                 <p>
                                                         <%= h(@topic_type_field.label) %>
-                                                        <% if @topic_type_field.xml_element_name %>
+                                                        <% if !@topic_type_field.xml_element_name.empty? %>
                                                                 (<%= h(@topic_type_field.xml_element_name) %>)
                                                         <% end -%>
                                                         :<br>
