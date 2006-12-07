@@ -5,8 +5,8 @@
                         <p>You cannot add any additional fields to this topic type, see above.</p>
                 <% else %>
                         <% # required, position, and acts_as_list functionality are in mappings
-                           # but we also need field name attribute from topic_type_fields
-                           # we use piggy_back plugin to get the name attribute, see model
+                           # but we also need field label attribute from topic_type_fields
+                           # we use piggy_back plugin to get the label attribute, see model
                            # TODO: figure out how to refresh display with new order
                            # revert to form_remote_tag then, also in _available_form_fields.rhtml
                         %>
@@ -16,7 +16,10 @@
                                         <% for @mapping in @form_field_mappings %>
                                                 <p>
                                                         <%= text_field("mapping[]", 'position', :size => "3") %>
-                                                        <%= h(@mapping.topic_type_field_name) %>
+                                                        <%= h(@mapping.topic_type_field_label) %>
+                                                        <% if @mapping.topic_type_field_xml_element_name %>
+                                                                (<%= h(@mapping.topic_type_field_xml_element_name) %>)
+                                                        <% end -%>
                                                         <% if @mapping.required %>
                                                                 (required)
                                                         <% else %>

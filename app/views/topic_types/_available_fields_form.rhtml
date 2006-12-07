@@ -10,7 +10,11 @@
 
                                         <% for @topic_type_field in @available_fields %>
                                                 <p>
-                                                        <%= h(@topic_type_field.name) %>:<br>
+                                                        <%= h(@topic_type_field.label) %>
+                                                        <% if @topic_type_field.xml_element_name %>
+                                                                (<%= h(@topic_type_field.xml_element_name) %>)
+                                                        <% end -%>
+                                                        :<br>
                                                         (optional) <%= check_box("topic_type_field[]", 'add_checkbox') %>
                                                         (required) <%= check_box("topic_type_field[]", 'required_checkbox') %>
                                                 </p>
