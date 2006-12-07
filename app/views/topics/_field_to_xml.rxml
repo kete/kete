@@ -1,2 +1,11 @@
-field_name = field_to_xml.topic_type_field_name.downcase.gsub(/ /, '_')
-xml.tag!(field_name, params[:topic][field_name])
+# label is unique, whereas xml_element_name is not
+# thus we use label for our internal (topic.content) storage of arbitrary attributes
+# xml_element_name is used for exported topics, such as oai/dc records
+field_name = field_to_xml.topic_type_field_label.downcase.gsub(/ /, '_')
+if field_to_xml.topic_type_field_xml_element_name
+        xml.tag!(field_name, params[:topic][field_name], :xml_element_name => field_to_xml.topic_type_field_xml_element_name )
+else
+        xml.tag!(field_name, params[:topic][field_name])
+end
+
+

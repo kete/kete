@@ -2,7 +2,7 @@
   <div class="row">
     <!--[form:topic]-->
         <div class="form-element">
-                <label class="required" for="topic_description">Title:</label>
+                <label class="required" for="topic_title">Title:</label>
                 <%= text_field 'topic', 'title', {:class => "text-input"} %>
         </div>
         <div class="form-element">
@@ -19,11 +19,13 @@
         <% if @form_fields.size > 0 %>
                 <% for @mapping in @form_fields %>
                         <div class="form-element">
-                                 <% f_id = @mapping.topic_type_field_name.downcase.gsub(/ /, '_') %>
+                                 <% # we organize our custom form fields by label, because they have to be unique %>
+                                 <% # xml_element_name do not %>
+                                 <% f_id = @mapping.topic_type_field_label.downcase.gsub(/ /, '_') %>
                                  <% if @mapping.required %>
-                                        <label class="required" for="<%= f_id  -%>"><%= h(@mapping.topic_type_field_name) -%></label>
+                                        <label class="required" for="<%= f_id  -%>"><%= h(@mapping.topic_type_field_label) -%></label>
                                  <% else %>
-                                        <label for="<%= 'topic['+f_id+']' -%>"><%= h(@mapping.topic_type_field_name) -%></label>
+                                        <label for="<%= 'topic['+f_id+']' -%>"><%= h(@mapping.topic_type_field_label) -%></label>
                                  <% end %>
                                  <% if @topic %>
                                         <%= text_field_tag('topic['+f_id+']', @topic.xml_attributes[f_id], {:class => "text-input"}) %>
