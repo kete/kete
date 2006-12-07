@@ -143,8 +143,6 @@ class TopicsController < ApplicationController
 
       @topic = Topic.new(replacement_topic_hash)
       # update our oai_record virtual attribute
-      # TODO: pass tags (when they are added) as dc_subjects
-      # TODO: pass related topics and items as dc_relations
       @topic.oai_record = render_to_string(:template => 'topics/oai_record',
                                            :layout => false)
       @successful = @topic.save
@@ -209,8 +207,7 @@ class TopicsController < ApplicationController
         end
       end
       # update our oai_record virtual attribute
-      # TODO: pass tags (when they are added) as dc_subjects
-      # TODO: pass related topics and items as dc_relations
+      # see oai_record for TODOs
       @topic.oai_record = render_to_string(:template => 'topics/oai_record',
                                            :layout => false)
       @successful = @topic.update_attributes(replacement_topic_hash)
