@@ -1,0 +1,50 @@
+--- 
+topic_type_fields_001: 
+  xml_element_name: dc:description
+  updated_at: 0000-00-00 00:00:00
+  id: "1"
+  description: Non-sir names.
+  label: First Names
+  created_at: 0000-00-00 00:00:00
+topic_type_fields_002: 
+  xml_element_name: 
+  updated_at: 0000-00-00 00:00:00
+  id: "2"
+  description: Sir name.
+  label: Last Name
+  created_at: 0000-00-00 00:00:00
+topic_type_fields_003: 
+  xml_element_name: dc:subject
+  updated_at: 0000-00-00 00:00:00
+  id: "3"
+  description: Where was the person born?
+  label: Place of Birth
+  created_at: 0000-00-00 00:00:00
+topic_type_fields_004: 
+  xml_element_name: dc:spatial
+  updated_at: 0000-00-00 00:00:00
+  id: "4"
+  description: The name of the locale, like city, town, or village?
+  label: City
+  created_at: 0000-00-00 00:00:00
+topic_type_fields_005: 
+  xml_element_name: dc:temporal
+  updated_at: 0000-00-00 00:00:00
+  id: "5"
+  description: When was the person born?
+  label: Date of Birth
+  created_at: 0000-00-00 00:00:00
+topic_type_fields_006: 
+  xml_element_name: dc:subject
+  updated_at: 0000-00-00 00:00:00
+  id: "6"
+  description: 
+  label: Name
+  created_at: 0000-00-00 00:00:00
+topic_type_fields_007: 
+  xml_element_name: 
+  updated_at: 0000-00-00 00:00:00
+  id: "7"
+  description: How many people can this place hold?
+  label: Capacity
+  created_at: 0000-00-00 00:00:00
