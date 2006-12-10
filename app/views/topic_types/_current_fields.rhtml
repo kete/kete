@@ -17,7 +17,7 @@
                                                 <p>
                                                         <%= text_field("mapping[]", 'position', :size => "3") %>
                                                         <%= h(@mapping.topic_type_field_label) %>
-                                                        <% if !@mapping.topic_type_field_xml_element_name.empty? %>
+                                                        <% if !@mapping.topic_type_field_xml_element_name.blank? %>
                                                                 (<%= h(@mapping.topic_type_field_xml_element_name) %>)
                                                         <% end -%>
                                                         <% if @mapping.required %>
