@@ -230,7 +230,12 @@ class TopicsController < ApplicationController
 
   def destroy
     begin
-      @successful = Topic.find(params[:id]).destroy
+      @topic = Topic.find(params[:id])
+      # TODO: because id isn't available until after a save, we have a HACK
+      # to add id into record during acts_as_zoom
+      @topic.oai_record = render_to_string(:template => 'topics/oai_record',
+                                           :layout => false)
+      @successful = @topic.destroy
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
