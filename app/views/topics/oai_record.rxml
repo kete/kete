@@ -1,5 +1,5 @@
 xml.instruct!
-xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns".to_sym => "http://www.openarchives.org/OAI/2.0/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd") do
+xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
         xml.responseDate(Time.now.to_s(:db))
         xml.request("http://#{request.host}#{request.request_uri}", :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@topic.class.name}:#{@topic.id}", :metadataPrefix => "oai_dc")
         xml.GetRecord do
@@ -29,10 +29,10 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                                         non_dc_content_hash = Hash.new
                                         re = Regexp.new("^dc")
                                         content_hash.keys.each do |field|
-                                                if !content_hash[field]['xml_element_name'].empty? && re.match(content_hash[field]['xml_element_name'])
+                                                if !content_hash[field]['xml_element_name'].blank? && re.match(content_hash[field]['xml_element_name'])
                                                         # it's a dublin core tag, just spit it out
                                                         xml.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'])
-                                                elsif !content_hash[field]['xml_element_name'].empty?
+                                                elsif !content_hash[field]['xml_element_name'].blank?
                                                         # use xml_element_name, but append to non_dc_content
                                                         x = Builder::XmlMarkup.new
                                                         non_dc_content += x.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'])
