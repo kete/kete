@@ -1,0 +1,398 @@
+body {
+	color:#000;
+	background: #FFF;
+	margin:0;
+}
+/* --- base styles --- */
+a:link {
+	color: #C50
+}
+a:visited {
+	color: #C60
+}
+a:hover {
+	color: #900
+}
+a img {
+	border:none
+}
+/* font sizes */
+p, th, td, ul, ol, li, div, input, textarea, select, option {
+	font-family:arial,helvetica,sans-serif;
+	font-size: small;
+}
+.small {
+	font-size: 0.8em
+}
+/* headings */
+h1 {
+	font-family:arial,helvetica,sans-serif;
+	color:#A84;
+	margin:0;
+	font-size:xx-large
+}
+h2 {
+	font-family:arial,helvetica,sans-serif;
+	color: #A84;
+	margin:0;
+	font-size:x-large
+}
+h3 {
+	font-family:arial,helvetica,sans-serif;
+	color: #A84;
+	margin:0;
+	font-size:large
+}
+h4 {
+	font-family:arial,helvetica,sans-serif;
+	color: #A84;
+	margin:0;
+	font-size:small
+}
+/* forms */
+form {
+	margin:0
+}
+.searchbutton {
+	background:#140;
+	border:solid 1px #000;
+	color:#ccc
+}
+.searchbutton:hover {
+	background:#584
+}
+/* --- /base styles --- */
+/* --- MAIN LAYOUT --- */
+#wrapper {
+	min-width:740px;
+	width:100%;
+	background:#FFF
+}
+/* --- banner --- */
+/* #banner { spare for top of page } */
+/* --- header --- */
+#header {
+	padding:16px 16px 0 16px
+}
+#header h1 {
+	clear:left
+}
+#header #topnav {
+	color:#C50;
+	float:right;
+	font-weight:bold
+}
+#header #description {
+	color:#A84;
+	font-weight:bold;
+	padding-left:20px
+}
+/* --- main content --- */
+#container {
+	padding:16px 16px 20px 16px;
+}
+#searchheader {
+	padding:10px 0 10px 0
+}
+#searchheader-results {
+	float:left;
+	padding-left:20px;
+	padding-right:10px
+}
+input.searchheader-search {
+	border:solid 1px #999;
+	width:150px;
+	padding-left:2px
+}
+.cleaner {
+	clear:both;
+	height:1px;
+	font-size:1px;
+	border:none;
+	margin:0;
+	padding:0;
+	background:transparent;
+}
+
+/* --- SEARCH RESULTS -- */
+/* --- tabs at top of results --- */
+#tablist {
+	padding: 5px 0;
+	margin-left: 0;
+	margin-bottom:0;
+	border-bottom: 1px solid #DCA;
+	font-weight: bold;
+}
+#tablist li {
+	list-style: none;
+	margin: 0;
+	display: inline;
+}
+#tablist li a {
+	padding: 5px;
+	margin-left: 5px;
+	border-top: 1px solid #DCA;
+	border-right: 1px solid #DCA;
+	border-left: 1px solid #DCA;
+	background: #FED;
+	text-decoration: underline;
+}
+#tablist li a:link {
+	color: #C50;
+}
+#tablist li a:visited {
+	color: #C50;
+}
+#tablist li a:hover {
+	color: #900;
+	background: #FFF;
+	border-color: #DCA;
+}
+#tablist li a#current {
+	background: #FFF;
+	border-bottom: 1px solid #FFF;
+	color:#A84; /*A85 */
+	text-decoration:none
+}
+#result-container {
+	border-left:solid 1px #DCA;
+	border-right:solid 1px #DCA;
+	border-bottom:solid 1px #DCA;
+	padding:16px;
+}
+#result-container h3 {
+	margin-bottom:.5em
+}
+#prev-next {
+	float:right;
+	font-weight:bold;
+	color:#DCA
+}
+#result-show {
+	font-weight:bold;
+	color:#A84
+}
+/* --- topics search results --- */
+.generic-result-wrapper {
+	clear:both;
+	margin-top:1em
+}
+.generic-result-header h4 {
+	margin:0
+}
+/* spare style 
+.generic-result-description { }
+*/
+.generic-result-more {
+	display:inline
+}
+/* --- Images search results --- */
+.image-result-wrapper {
+	clear:both;
+	margin-top:1em;
+	border:solid 1px #fff  /* add border to fix display in Opera 0.02 */
+}
+.image-result-thumb {
+	float:left;
+	width:65px; /* width of thumbnail image */
+	padding:0 10px 0 0
+}
+.image-result-thumb a img {
+	border:solid 1px #C50
+}
+.image-result-thumb a img:visited {
+	border:solid 1px #C60
+}
+.image-result-thumb a img:hover {
+	border:solid 1px #900
+}
+.image-result-description {
+	margin-left:75px /* width of thumbnail + padding */
+}
+.image-result-header h4 {
+	margin:0
+}
+/* spare style 
+.image-result-description { }
+*/
+.image-result-more {
+	display:block
+}
+#bottomlinks {
+	margin-top:1em
+}
+#result-container #showlinks {
+	float:right;
+	font-weight:bold;
+	color:#A84
+}
+#result-container #showlinks a {
+	margin: 0 4px 0 4px
+}
+#showlinks a#thisnumber {
+	color:#A84;
+	text-decoration:none
+}
+#result-container #addnew {
+	font-weight:bold;
+	color:#A84
+}
+/* --- TOPICS DETAILS --- */
+#detail-header {
+	padding:0 16px 0 16px
+}
+#detail-header h2 {
+	margin:10px 0 5px 0
+}
+#detail-header p {
+	margin-top:0.8em;
+	margin-bottom:0
+}
+.detail-lead {
+	font-weight:bold
+}
+/* Get Involved */
+.detail-tools {
+	padding:16px 16px 0 16px
+}
+.detail-tools h3 {
+	margin-bottom:.4em
+}
+.detail-tools ul {
+	margin-left: 0;
+	padding-left: 0;
+	display: inline;
+}
+.detail-tools ul li {
+	margin-left: 0;
+	padding: 1px 2px 2px 3px;
+	border-left: 1px solid #A84;
+	list-style: none;
+	display: inline;
+}
+.detail-tools ul li.first {
+	margin-left: 0;
+	border-left: none;
+	list-style: none;
+	display: inline;
+}
+/* Other Kete Users have linked this topic to */
+#detail-linked {
+	padding:16px 16px 16px 16px
+}
+#detail-linked-topics {
+	float:left;
+	width:33%;
+	padding-top:.5em
+}
+#detail-linked-topics ul {
+	list-style-position: inside;
+	margin:0;
+	padding:0
+}
+#detail-linked-audio {
+	float:left;
+	width:33%;
+	padding-top:.5em
+}
+#detail-linked-audio ul {
+	list-style-position: inside;
+	margin:0;
+	padding:0
+}
+#detail-linked-video {
+	float:left;
+	width:33%;
+	padding-top:.5em
+}
+#detail-linked-video ul {
+	list-style-position: inside;
+	margin:0;
+	padding:0
+}
+#detail-linked-documents {
+	float:left;
+	width:33%;
+	padding-top:.5em
+}
+#detail-linked-documents ul {
+	list-style-position: inside;
+	margin:0;
+	padding:0
+}
+#detail-linked-web {
+	float:left;
+	width:33%;
+	padding-top:.5em
+}
+#detail-linked-web ul {
+	list-style-position: inside;
+	margin:0;
+	padding:0
+}
+#detail-linked-library {
+	float:left;
+	width:33%;
+	padding-top:.5em
+}
+#detail-linked-library ul {
+	list-style-position: inside;
+	margin:0;
+	padding:0
+}
+#detail-linked-images {
+	padding-top:0.5em
+}
+.detail-linked-thumb {
+	float:left;
+	padding:10px 15px 0 0
+}
+.detail-linked-thumb a img {
+	border:solid 1px #C50
+}
+.detail-linked-thumb a img:visited {
+	border:solid 1px #C60
+}
+.detail-linked-thumb a img:hover {
+	border:solid 1px #900
+}
+.detail-linked-thumbmore {
+	float:left;
+	padding:30px 0 0 0 /* approx. half thumbnail height */
+}
+/* --- links at bottom of page --- */
+#linkcontainer {
+	padding:16px 16px 0 16px
+}
+#linklist {
+	padding: 5px 0 5px 0;
+	margin:0.5em 0 0 0;
+	font-weight: bold;
+}
+#linklist li {
+	list-style: none;
+	margin: 0;
+	display: inline;
+}
+#linklist li a {
+	padding: 5px;
+	border: 1px solid #DCA;
+	background: #FED;
+	text-decoration: underline;
+}
+#linklist li a:link {
+	color: #C50;
+}
+#linklist li a:visited {
+	color: #C50;
+}
+#linklist li a:hover {
+	color: #900;
+	background: #FFF;
+	border-color: #DCA;
+}
+#detail-discuss {
+	padding:16px 16px 0 16px
+}
+/* --- FOOTER -- */
+/* #footer { spare for bottom of page } */

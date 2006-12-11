@@ -1,0 +1,23 @@
+/* hacks for msie 5 */
+#wrapper {width:expression(document.body.clientWidth < 770 ? "770px" : "auto" )}
+/* font sizes */
+p, th, td, ul, ol, li, div, input, textarea, select, option {
+	font-family:arial,helvetica,sans-serif;
+	font-size: x-small;
+}
+.small {
+	font-size: 0.8em
+}
+/* headings */
+h1 {
+	font-size:x-large
+}
+h2 {
+	font-size:large
+}
+h3 {
+	font-size:medium
+}
+h4 {
+	font-size:x-small
+}
