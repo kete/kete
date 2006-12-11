@@ -142,7 +142,9 @@ class TopicsController < ApplicationController
       end
 
       @topic = Topic.new(replacement_topic_hash)
-      # update our oai_record virtual attribute
+
+      # TODO: because id isn't available until after a save, we have a HACK
+      # to add id into record during acts_as_zoom
       @topic.oai_record = render_to_string(:template => 'topics/oai_record',
                                            :layout => false)
       @successful = @topic.save
