@@ -64,3 +64,13 @@ ZoomDb.zoom_id_element_name = "identifier"
 # separated by /'s
 # no preceding / necessary
 ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
+
+DEFAULT_RECORDS_PER_PAGE = 5
+RECORDS_PER_PAGE_CHOICES = [5, 10, 20, 50]
+DEFAULT_SEARCH_CLASS = 'Topic'
+
+# TODO: make this dynamic if possible
+# from acts_as_zoom declarations in models
+ZOOM_CLASSES = ['Topic', 'WebLink']
+
+
