@@ -60,6 +60,10 @@ class WebLinksController < ApplicationController
   def create
     begin
       @web_link = WebLink.new(params[:web_link])
+      # TODO: because id isn't available until after a save, we have a HACK
+      # to add id into record during acts_as_zoom
+      @web_link.oai_record = render_to_string(:template => 'web_links/oai_record',
+                                              :layout => false)
       @successful = @web_link.save
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -100,6 +104,10 @@ class WebLinksController < ApplicationController
   def update
     begin
       @web_link = WebLink.find(params[:id])
+      # TODO: because id isn't available until after a save, we have a HACK
+      # to add id into record during acts_as_zoom
+      @web_link.oai_record = render_to_string(:template => 'web_links/oai_record',
+                                              :layout => false)
       @successful = @web_link.update_attributes(params[:web_link])
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -139,6 +147,10 @@ class WebLinksController < ApplicationController
 
   def show
     @web_link = WebLink.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
+    end
   end
 
 end

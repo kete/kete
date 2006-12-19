@@ -1,0 +1,12 @@
+
+                        <div class="generic-result-wrapper">
+                                <div class="generic-result-header">
+                                        <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                        </div>
+                                <div class="generic-result-description"><%= h(short_summary) %>
+                                        <div class="generic-result-more">
+                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+                                        </div>
+                                </div>
+                        </div>
+

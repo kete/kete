@@ -1,0 +1,110 @@
+
+
+                <% if flash[:notice] %>
+                <!-- TODO: look up if there is a style sheet class for flash, add here -->
+                <p><%= flash[:notice] %></p>
+                <% end %>
+
+                <form action="/search" method="post">
+                <div id="searchheader">
+                        <div id="searchheader-results">
+                                <h3>Results for your Search</h3>
+                        </div>
+                        <% if !@search_terms.blank? %>
+                                <input type="text" class="searchheader-search" name="search_terms" value="<%= @search_terms %>" size="30" />
+                        <% else %>
+                                <input type="text" class="searchheader-search" name="search_terms" value="" size="30" />
+                        <% end %>
+                        <input type="submit" class="searchbutton" value="Search" />
+                </div>
+                </form>
+                <% # beginning of display if we have search terms -%>
+                <% if !@search_terms.blank? %>
+                <div id="tabcontainer">
+                        <ul id="tablist">
+                                <% ZOOM_CLASSES.each do |zoom_class| %>
+                                        <% if zoom_class == @current_class %>
+                                                <li><a href="#" id="current"><%= zoom_class.humanize.pluralize %> (<%= @result_sets[zoom_class].size %>)</a></li>
+                                        <% else %>
+                                                <li><%= link_to("#{zoom_class.humanize.pluralize} (#{@result_sets[zoom_class].size})",
+        :action => 'index',
+        :search_terms => @search_terms,
+        :result_sets => @result_sets,
+        :current_class => zoom_class) -%></li>
+                                        <% end %>
+
+                                <% end %>
+                        </ul>
+                </div><!-- /tabcontainer -->
+                <div id="result-container">
+                        <h3>
+                                Results in <%= @current_class.humanize.pluralize %> for for your search &quot;<%= h(@search_terms.to_s) -%>&quot;
+                        </h3>
+                        <div id="prev-next">
+                                <% if @current_page > 1 %>
+                                        <%= link_to '&lt;&lt; previous', { :action => 'index',
+                                                                           :search_terms => @search_terms,
+                                                                           :result_sets => @result_sets,
+                                                                           :page => @previous_page,
+                                                                           :current_class => @current_class } %>
+
+                                <% else %>
+                                        &lt;&lt; previous
+                                <% end %>
+                                &nbsp;
+                                <% if @current_page < @last_page  %>
+                                        <%= link_to 'next &gt;&gt;', { :action => 'index',
+                                                                       :search_terms => @search_terms,
+                                                                       :result_sets => @result_sets,
+                                                                       :page => @next_page,
+                                                                       :current_class => @current_class } %>
+
+                                <% else %>
+                                        next &gt;&gt;
+                                <% end %>
+                                <a href="#"></a>
+                        </div>
+                        <div id="result-show">
+                                Showing <%= @start %>-<%= @end_record %> results of <%= @result_sets[@current_class].size %>
+                        </div>
+
+<%# we will have result sets for each type of record we are returning %>
+<%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
+<%# for now lets just get this up with one set of results %>
+
+<% @results.each do |result|  %>
+    <%= render(:partial => "generic", :locals => {:title => result['title'],
+                                                  :source_url => result['url'],
+                                                  :short_summary => result['short_summary']}) %>
+<% end %>
+
+                        <div id="bottomlinks">
+                                <div id="showlinks">
+                                        Show
+                                        <% # TODO: a helper? %>
+                                        <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
+                                                <% if @number_per_page != choice %>
+                                                        <%= link_to(choice, { :action => 'index',
+                                                                              :number_or_results_per_page => choice,
+                                                                              :search_terms => @search_terms,
+                                                                              :result_sets => @result_sets,
+                                                                              :page => 1,
+                                                                              :current_class => @current_class }) %>
+                                                <% else %>
+                                                        <a href="#" id="thisnumber"><%= choice %></a>
+                                                <% end %>
+                                        <% end %>
+                                        results on this page
+                                </div>
+                                <div id="addnew">
+                                        <% # TODO: helper that does the right thing for the current class and eventually group %>
+                                        <%= link_to("Add a new #{@current_class.humanize}", :controller => "/#{@current_class.tableize}", :action => 'new') %>
+                                        to these search results
+                                </div>
+                        </div>
+
+                </div><!-- /result-container -->
+
+                <div class="cleaner">&nbsp;</div>
+                <% # end of display if we have search terms %>
+                <% end %>
