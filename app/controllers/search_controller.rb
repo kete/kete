@@ -67,7 +67,8 @@ class SearchController < ApplicationController
           # this says, in essence, limit to objects in our class
           # and sort by dynamic relevance ranking (based on query)
           # and match partial words (truncated on either the left or right, i.e. both)
-          # TODO: relevancee appears broken, but this may be our zoom db, rather than query
+          # relevancee relies on our zoom dbs having it configured
+          # kete zebra servers should be configured properly to use it
           query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
           # quote each term to handle phrases
           if prepped_terms.size > 1
