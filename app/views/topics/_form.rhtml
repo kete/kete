@@ -41,10 +41,13 @@
                 <%= text_area 'topic', 'description', :class => "mceEditor", :cols => 120 %>
         </div>
 
-        <% if !params[:relate_to_topic_id] %>
+        <% # Walter McGinnis (walter@katipo.co.nz), 2006-12-20 %>
+        <% # even though we have removed ajaxscaffold, we may need this back if we have other conflicts  %>
+        <% # therefore keeping for refence  %>
+        <% # if !params[:relate_to_topic_id] %>
                 <% # this is only necessary if there is conflicting ajax stuff %>
-                <%= javascript_tag "tinyMCE.execCommand('mceAddControl', true, 'topic[description]')" %>
-        <% end %>
+                <% #= javascript_tag "tinyMCE.execCommand('mceAddControl', true, 'topic[description]')" %>
+        <% # end %>
 
         <% if @topic %>
                 <%= hidden_field_tag 'topic_type_id', @topic.topic_type_id %>

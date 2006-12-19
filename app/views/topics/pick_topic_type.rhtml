@@ -1,0 +1,9 @@
+<% # This is where the actual forme the new topic is displayed, dynamically created in partial %>
+<h1>New topic</h1>
+
+<% form_tag :action => 'create' do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Create" %>
+<% end %>
+
+<%= link_to 'Cancel', :action => 'list' %>

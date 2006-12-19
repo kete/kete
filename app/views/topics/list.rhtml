@@ -1,1 +1,27 @@
-<%= render_component :controller => '/topics', :action => 'component', :params => params %>
+<h1>Listing topics</h1>
+
+<table>
+  <tr>
+  <% for column in Topic.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for topic in @topics %>
+  <tr>
+  <% for column in Topic.content_columns %>
+    <td><%=h topic.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => topic %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => topic %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => topic }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @topic_pages.current.previous } if @topic_pages.current.previous %>
+<%= link_to 'Next page', { :page => @topic_pages.current.next } if @topic_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New topic', :action => 'new' %>

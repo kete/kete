@@ -1,0 +1,8 @@
+<h1>Choose a topic type</h1>
+
+<% form_tag :action => 'pick_topic_type' do %>
+  <%= render :partial => 'pick_form' %>
+  <%= submit_tag "Choose" %>
+<% end %>
+
+<%= link_to 'Cancel', :action => 'list' %>
