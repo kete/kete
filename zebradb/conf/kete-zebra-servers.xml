@@ -7,7 +7,7 @@
 <!-- [scheme:]host[:port][/databaseName] -->
         <!-- scheme: tcp, ssl, unix, http, sru? -->
 <!-- look into changing private server to unix socket and how that effects our acts_as_zoom stuff -->
-<!-- this is limited to ONLY localhost for security -->
+<!-- private is limited to ONLY localhost for security, since passwords are passed in clear text, i believe -->
 <listen id="privateserver" >tcp:localhost:9900</listen>
 <!-- this should catch with the @ wildcard, both localhost and any outside ip interface -->
 <listen id="publicserver" >tcp:@:9999</listen>
@@ -20,11 +20,6 @@
          see: http://www.indexdata.com/yaz/doc/tools.tkl#tools.cql.map -->
     <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
 </server>
-<serverinfo id="privateserver">
-        <user>kete</user>
-        <password>k3t3r0ck5</password>
-        <database>private</database>
-</serverinfo>
 
 <!-- PUBLIC KETE SERVER -->
 <server id="publicserver"  listenref="publicserver">
@@ -34,10 +29,4 @@
          see: http://www.indexdata.com/yaz/doc/tools.tkl#tools.cql.map -->
     <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
 </server>
-<serverinfo id="publicserver">
-    <user>kete</user>
-    <password>k3t3r0ck5</password>
-    <database>public</database>
-</serverinfo>
-
 </yazgfs>
