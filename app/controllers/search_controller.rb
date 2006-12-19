@@ -11,6 +11,7 @@ class SearchController < ApplicationController
     search
   end
 
+  # TODO: catch no results returned, or zoom_db down errors
   # query our ZoomDbs for results, grab only the Kete objects we need
   def search
 
