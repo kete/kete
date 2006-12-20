@@ -1,7 +1,6 @@
 class WebLinksController < ApplicationController
   def index
-    list
-    render :action => 'list'
+    redirect_to :action => 'index', :controller => '/search', :current_class => 'WebLink', :all => true
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -9,7 +8,7 @@ class WebLinksController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @web_link_pages, @web_links = paginate :web_links, :per_page => 10
+    redirect_to :action => 'index', :controller => '/search', :current_class => 'WebLink', :all => true
   end
 
   def show

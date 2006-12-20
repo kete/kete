@@ -14,6 +14,11 @@ class SearchController < ApplicationController
   # TODO: catch no results returned, or zoom_db down errors
   # query our ZoomDbs for results, grab only the Kete objects we need
   def search
+    # all returns all results for a class
+    # search_terms overrides
+    if params[:all].nil? or !params[:search_terms].nil?
+      params[:all] = false
+    end
 
     if params[:current_class].nil?
       params[:current_class] = DEFAULT_SEARCH_CLASS
@@ -43,12 +48,14 @@ class SearchController < ApplicationController
 
     @search_terms = String.new
 
-    if params['search_terms'].nil? then
+    if params['search_terms'].nil? and !params[:all] then
       # TODO: have this message be derived from globalize
       flash[:notice] = "You haven't entered any search terms."
     else
-      # TODO: rejigger search terms in form so that "" and '' work
-      @search_terms = params[:search_terms]
+      @search_terms = String.new
+      if !params['search_terms'].nil?
+        @search_terms = params[:search_terms]
+      end
 
       # TODO: skipping multiple source (federated) search for now
       # should really search public zoom_db by class
@@ -60,22 +67,29 @@ class SearchController < ApplicationController
 
        ZOOM_CLASSES.each do |zoom_class|
         if @result_sets[zoom_class].nil?
-          # process query and get a ZOOM::RecordSet back
-          prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
 
-          # TODO: this is what we will need to adjust when we have kete scope
-          # this says, in essence, limit to objects in our class
-          # and sort by dynamic relevance ranking (based on query)
-          # and match partial words (truncated on either the left or right, i.e. both)
-          # relevancee relies on our zoom dbs having it configured
-          # kete zebra servers should be configured properly to use it
-          query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
-          # quote each term to handle phrases
-          if prepped_terms.size > 1
-            query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\""
+          query = String.new
+          # search_terms overrides :all, see above
+          if params[:all]
+            query = "@attr 1=12 #{zoom_class}"
           else
-            # @and will break query if only single term
-            query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\""
+            # process query and get a ZOOM::RecordSet back
+            prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
+
+            # TODO: this is what we will need to adjust when we have kete scope
+            # this says, in essence, limit to objects in our class
+            # and sort by dynamic relevance ranking (based on query)
+            # and match partial words (truncated on either the left or right, i.e. both)
+            # relevancee relies on our zoom dbs having it configured
+            # kete zebra servers should be configured properly to use it
+            query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
+            # quote each term to handle phrases
+            if prepped_terms.size > 1
+              query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\""
+            else
+              # @and will break query if only single term
+              query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\""
+            end
           end
 
           @result_sets[zoom_class] = Module.class_eval(zoom_class).process_query( :zoom_db => zoom_db,
