@@ -1,79 +1,148 @@
-<% @options = params.merge(:controller => '/topics', :action => "show", :id => params[:id]) %>
+                <div id="detail-wrapper">
+                        <div id="detail-header">
+                                <h4><a href="topics.html">&lt;&lt; Back to search results for &quot;TODO: Make this dynamic&quot;</a></h4>
+                                <h2>Topic: <%= h(@topic.title) %></h2>
+                                <h4>Topic Type: <%= h(@topic.topic_type.name) %></h4>
+                                <p><b><%= @topic.short_summary %></b></p>
+                                <% if @topic.xml_attributes %>
+                                        <%= display_xml_attributes(@topic) %>
+                                <% end %>
+                                <p><%= @topic.description %></p>
+                        </div>
+                        <div class="detail-tools">
+                                <h3>Get Involved</h3>
+                                <ul>
+                                        <li><%= link_to 'Add a related topic',
+                                                                :controller => 'topics',
+                                                                :action => :new,
+                                                                :relate_to_topic_id => @topic.id %></li>
+                                        <li><%= link_to 'Add a related web link',
+                                                                :controller => 'web_links',
+                                                                :action => :new,
+                                                                :relate_to_topic_id => @topic.id %></li>
+                                        <li><%= link_to "Edit",
+                                                                :action => :edit,
+                                                                :controller => '/topics',
+                                                                :id => @topic %></li>
+                                        <li><%= link_to "Delete",
+                                                                :action => :destroy,
+                                                                :controller => '/topics',
+                                                                :confirm => 'Are you sure?',
+                                                                :id => @topic %></li>
 
-<!-- begin display of Topic data -->
-<h3><%= h(@topic.topic_type.name) %>: <%= h(@topic.title) %></h3>
-
-<% if @topic.xml_attributes %>
-        <%= display_xml_attributes(@topic) %>
-<% end %>
-
-<p><%= @topic.description %></p>
-
-<!-- end display of Topic data -->
-
-<!-- begin related web links -->
-        <% if @topic.web_links.size > 0 %>
-                <p>Related Web Links:
-                <ul>
-                <% @topic.web_links.each do |web_link| %>
-                        <li><a href="<%= web_link.url %>"><%= h(web_link.title) %></a> or
-                                <%= link_to     'our internal information about this link',
-                                                :controller => 'web_links',
-                                                :action => :show,
-                                                :id => web_link.id %></li>
-                <% end %>
-                </ul>
-                </p>
-        <% end %>
-
-        <!-- begin add a related web link -->
-        <p>
-                <ul>
-                        <li><%= link_to         'Add a related web link',
-                                                :controller => 'web_links',
-                                                :action => :new,
-                                                :relate_to_topic_id => @topic.id %></li>
-                </ul>
-        </p>
-        <!-- end add a related web link -->
-<!-- end related web links -->
-
-<!-- begin related topics -->
-        <% if @topic.related_topics.size > 0 %>
-                <p>Related Topics:
-                <ul>
-                <% @topic.related_topics.each do |related_topic| %>
-                        <li><%= link_to         h(related_topic.title),
-                                                :controller => 'topics',
-                                                :action => :show,
-                                                :id => related_topic.id %></li>
-                <% end %>
-                </ul>
-                </p>
-        <% end %>
-
-        <!-- begin add a related topic -->
-        <p>
-                <ul>
-                        <li><%= link_to         'Add a related topic',
-                                                :controller => 'topics',
-                                                :action => :new,
-                                                :relate_to_topic_id => @topic.id %></li>
-                </ul>
-        </p>
-        <!-- end add a related topic -->
-<!-- end related topics -->
-
-<!--
-<%= link_to "Edit",
-        :action => :edit,
-        :controller => '/topics',
-        :id => @topic %>
-|
-<%= link_to_remote "Delete",
-        :action => :destroy,
-        :controller => '/topics',
-        :confirm => 'Are you sure?',
-        :id => @topic %>
-
--->
+                                </ul>
+                        </div>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="detail-linked">
+                        <h3>Other Kete Users have linked this topic to:</h3>
+                        <div id="detail-linked-toprow">
+                                <div id="detail-linked-images">
+                                        <h4><a href="images.html">Dummy Images (35)</a></h4>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumbmore">
+                                                <a href="/images.html">30 more like this &gt;&gt;</a>
+                                        </div>
+                                        <div class="cleaner">&nbsp;</div>
+                                </div>
+                        </div>
+                        <div id="detail-linked-midrow">
+                                <div id="detail-linked-topics">
+                                        <% # TODO: a listing page of topics, limited to related_topics %>
+                                        <% # limit to specified amount in list than provide more link %>
+                                        <h4><a href="#">Topics (<%= @topic.related_topics.size -%>)</a></h4>
+                                        <% if @topic.related_topics.size > 0 %>
+                                                <ul>
+                                                <% @topic.related_topics.each do |related_topic| %>
+                                                        <li><%= link_to         h(related_topic.title),
+                                                                                :controller => 'topics',
+                                                                                :action => :show,
+                                                                                :id => related_topic.id %></li>
+                                                <% end %>
+                                                <li><a href="/" class="small">3 more like this &gt;&gt;</a></li>
+                                                </ul>
+                                        <% end %>
+                                        </ul>
+                                </div>
+                                <div id="detail-linked-audio">
+                                        <h4><a href="/">Dummy Audio (4)</a></h4>
+                                        <ul>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/" class="small">1 more like this &gt;&gt;</a></li>
+                                        </ul>
+                                </div>
+                                <div id="detail-linked-video">
+                                        <h4><a href="/">Dummy Video (0)</a></h4>
+                                </div>
+                                <div class="cleaner">&nbsp;</div>
+                        </div>
+                        <div id="detail-linked-bottomrow">
+                                <div id="detail-linked-documents">
+                                        <h4><a href="/">Dummy Documents (6)</a></h4>
+                                        <ul>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/" class="small">3 more like this &gt;&gt;</a></li>
+                                        </ul>
+                                </div>
+                                <div id="detail-linked-web">
+                                        <h4><a href="/">Web Link (<%= @topic.web_links.size -%>)</a></h4>
+                                        <% if @topic.web_links.size > 0 %>
+                                                <ul>
+                                                <% @topic.web_links.each do |web_link| %>
+                                                        <li><%= link_to web_link.title,
+                                                                                        :controller => 'web_links',
+                                                                                        :action => :show,
+                                                                                        :id => web_link.id %></li>
+                                                <% end %>
+                                                        <li><a href="/" class="small">1 more like this &gt;&gt;</a></li>
+                                                <% end %>
+                                                </ul>
+                                </div>
+                                <div id="detail-linked-library">
+                                        <h4><a href="/">Dummy Library (1)</a></h4>
+                                        <ul>
+                                                <li><a href="/">nibh euismod</a></li>
+                                        </ul>
+                                </div>
+                                <div class="cleaner">&nbsp;</div>
+                        </div>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="linkcontainer">
+                        <h3>You may also be interested in these search results:</h3>
+                        <div id="link-list-container">
+                                <ul id="linklist">
+                                        <li><a href="topics.html">Topics (9)</a></li>
+                                        <li><a href="images.html">Images (35)</a></li>
+                                        <li><a href="#">Audio (1)</a></li>
+                                        <li><a href="#">Video (1)</a></li>
+                                        <li><a href="#">Documents (6)</a></li>
+                                        <li><a href="#">Web Link (5)</a></li>
+                                        <li><a href="#">Library (1)</a></li>
+                                </ul>
+                        </div><!-- /linkcontainer -->
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="detail-discuss">
+                        <h3>Dummy: Discuss This Topic</h3>
+                        There are 13 posts in this discussion. <a href="/">Read and join this discussion</a>
+                </div>
+                <div class="cleaner">&nbsp;</div>
