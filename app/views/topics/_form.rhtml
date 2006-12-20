@@ -1,13 +1,13 @@
 <fieldset>
-  <div class="row">
+  <%= error_messages_for 'topic' %>
     <!--[form:topic]-->
         <div class="form-element">
                 <label class="required" for="topic_title">Title:</label>
                 <%= text_field 'topic', 'title', {:class => "text-input"} %>
         </div>
         <div class="form-element">
-                <label for="topic_description">Short Summary:</label>
-                <%= text_area 'topic', 'short_summary', {:class => "text-area"} %>
+                <label for="topic_short_summary">Short Summary:</label>
+                <%= text_area 'topic', 'short_summary', {:class => "text-area", :cols => 120} %>
         </div>
         <% if @topic %>
                 <% # this is an edit %>
@@ -56,5 +56,4 @@
         <% end %>
 <!--[eoform:topic]-->
 
-  </div>
 </fieldset>
