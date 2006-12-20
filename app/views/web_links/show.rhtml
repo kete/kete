@@ -12,10 +12,10 @@
                                                                 :controller => '/web_links',
                                                                 :id => @web_link %></li>
                                         <li><%= link_to "Delete",
-                                                                :action => :destroy,
+                                                                {:action => :destroy,
                                                                 :controller => '/web_links',
-                                                                :confirm => 'Are you sure?',
-                                                                :id => @web_link %></li>
+                                                                :id => @web_link},
+                                                                :confirm => 'Are you sure?'%></li>
                                 </ul>
                         </div>
                         <div class="cleaner">&nbsp;</div>

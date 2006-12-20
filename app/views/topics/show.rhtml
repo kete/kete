@@ -25,10 +25,10 @@
                                                                 :controller => '/topics',
                                                                 :id => @topic %></li>
                                         <li><%= link_to "Delete",
-                                                                :action => :destroy,
+                                                                {:action => :destroy,
                                                                 :controller => '/topics',
-                                                                :confirm => 'Are you sure?',
-                                                                :id => @topic %></li>
+                                                                :id => @topic},
+                                                                :confirm => 'Are you sure?'%></li>
 
                                 </ul>
                         </div>
