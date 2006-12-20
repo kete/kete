@@ -1,5 +1,9 @@
 <fieldset>
     <!--[form:topic]-->
+    <% if !params[:relate_to_topic_id].nil? %>
+        <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+    <% end %>
+
         <div class="form-element">
                 <label for="topic_name_for_url">Type of Topic?</label>
                 <% @topic_types = TopicType.find(:all) %>
