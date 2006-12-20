@@ -63,19 +63,24 @@
                                         next &gt;&gt;
                                 <% end %>
                         </div>
-                        <div id="result-show">
-                                Showing <%= @start %>-<%= @end_record %> results of <%= @result_sets[@current_class].size %>
-                        </div>
+                        <% if @results.size > 0 %>
+                                <div id="result-show">
+                                        Showing <%= @start %>-<%= @end_record %> results of <%= @result_sets[@current_class].size %>
+                                </div>
+                                <%# we will have result sets for each type of record we are returning %>
+                                <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
+                                <%# for now lets just get this up with one set of results %>
 
-<%# we will have result sets for each type of record we are returning %>
-<%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
-<%# for now lets just get this up with one set of results %>
-
-<% @results.each do |result|  %>
-    <%= render(:partial => "generic", :locals => {:title => result['title'],
-                                                  :source_url => result['url'],
-                                                  :short_summary => result['short_summary']}) %>
-<% end %>
+                                <% @results.each do |result|  %>
+                                        <%= render(:partial => "generic", :locals => {:title => result['title'],
+                                                                          :source_url => result['url'],
+                                                                          :short_summary => result['short_summary']}) %>
+                                <% end %>
+                        <% else %>
+                                <div id="result-show">
+                                        No results found.
+                                 </div>
+                        <% end %>
 
                         <div id="bottomlinks">
                                 <div id="showlinks">

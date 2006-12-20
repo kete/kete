@@ -108,16 +108,18 @@ class SearchController < ApplicationController
 
       # results are limited to this page's display of search results
       # grab them from zoom
-      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
+      @results = Array.new
+
+      if @result_sets[@current_class].size > 0
+          raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
                                                                                     :start_record => @start_record,
                                                                                     :end_record => @end_record)
-      @results = Array.new
-      # create a hash of link, title, description for each record
-      raw_results.each do |raw_record|
-        result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
-        @results << result_from_xml_hash
+        # create a hash of link, title, description for each record
+        raw_results.each do |raw_record|
+          result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
+          @results << result_from_xml_hash
+        end
       end
-
     end
   end
 
