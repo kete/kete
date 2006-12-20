@@ -33,6 +33,12 @@
                 <div id="description">
                         The stories of the district as told by its people
                 </div>
+
+                <% if flash[:notice] %>
+                <!-- TODO: look up if there is a style sheet class for flash, add here -->
+                <p><%= flash[:notice] %></p>
+                <% end %>
+
         </div><!-- /header -->
         <div id="container">
 
