@@ -13,7 +13,7 @@
                 </div>
                 </form>
                 <% # beginning of display if we have search terms -%>
-                <% if !@search_terms.blank? %>
+                <% if !@search_terms.blank? or params[:all] %>
                 <div id="tabcontainer">
                         <ul id="tablist">
                                 <% ZOOM_CLASSES.each do |zoom_class| %>
@@ -23,6 +23,7 @@
                                                 <li><%= link_to("#{zoom_class.humanize.pluralize} (#{@result_sets[zoom_class].size})",
         :action => 'index',
         :search_terms => @search_terms,
+        :all => params[:all],
         :result_sets => @result_sets,
         :current_class => zoom_class) -%></li>
                                         <% end %>
@@ -32,12 +33,16 @@
                 </div><!-- /tabcontainer -->
                 <div id="result-container">
                         <h3>
-                                Results in <%= @current_class.humanize.pluralize %> for for your search &quot;<%= h(@search_terms.to_s) -%>&quot;
+                                Results in <%= @current_class.humanize.pluralize %>
+                                <% if !@search_terms.blank? %>
+                                for your search &quot;<%= h(@search_terms.to_s) -%>&quot;
+                                <% end %>
                         </h3>
                         <div id="prev-next">
                                 <% if @current_page > 1 %>
                                         <%= link_to '&lt;&lt; previous', { :action => 'index',
                                                                            :search_terms => @search_terms,
+                                                                           :all => params[:all],
                                                                            :result_sets => @result_sets,
                                                                            :page => @previous_page,
                                                                            :current_class => @current_class } %>
@@ -49,6 +54,7 @@
                                 <% if @current_page < @last_page  %>
                                         <%= link_to 'next &gt;&gt;', { :action => 'index',
                                                                        :search_terms => @search_terms,
+                                                                       :all => params[:all],
                                                                        :result_sets => @result_sets,
                                                                        :page => @next_page,
                                                                        :current_class => @current_class } %>
@@ -56,7 +62,6 @@
                                 <% else %>
                                         next &gt;&gt;
                                 <% end %>
-                                <a href="#"></a>
                         </div>
                         <div id="result-show">
                                 Showing <%= @start %>-<%= @end_record %> results of <%= @result_sets[@current_class].size %>
@@ -81,6 +86,7 @@
                                                         <%= link_to(choice, { :action => 'index',
                                                                               :number_or_results_per_page => choice,
                                                                               :search_terms => @search_terms,
+                                                                              :all => params[:all],
                                                                               :result_sets => @result_sets,
                                                                               :page => 1,
                                                                               :current_class => @current_class }) %>

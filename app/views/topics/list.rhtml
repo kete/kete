@@ -1,5 +1,22 @@
-<h2>Listing topics</h2>
-
+                <%= render :partial => "/search/blank_tabs", :locals => {:current_class => 'Topic'} -%>
+                <div id="result-container">
+                        <h3>Listing topics</h3>
+                        <div id="prev-next">
+                                <% if @topic_pages.current.previous %>
+                                        <%= link_to '&lt;&lt; previous', { :page => @topic_pages.current.previous } %>
+                                <% else %>
+                                        &lt;&lt; previous
+                                <% end %>
+                                &nbsp;
+                                <% if if @topic_pages.current.next %>
+                                        <%= link_to 'next &gt;&gt;', { :page => @topic_pages.current.next } %>
+                                <% else %>
+                                        next &gt;&gt;
+                                <% end %>
+                        </div>
+                        <div id="result-show">
+                                Showing <%= @start %>-<%= @end_record %> results of <%= @topics.size %>
+                        </div>
 <table>
   <tr>
   <% for column in Topic.content_columns %>
@@ -19,9 +36,30 @@
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @topic_pages.current.previous } if @topic_pages.current.previous %>
-<%= link_to 'Next page', { :page => @topic_pages.current.next } if @topic_pages.current.next %>
+                        <div id="bottomlinks">
+                                <div id="showlinks">
+                                        Show
+                                        <% # TODO: a helper? %>
+                                        <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
+                                                <% if @number_per_page != choice %>
+                                                        <%= link_to(choice, { :action => 'index',
+                                                                              :number_or_results_per_page => choice,
+                                                                              :search_terms => @search_terms,
+                                                                              :result_sets => @result_sets,
+                                                                              :page => 1,
+                                                                              :current_class => @current_class }) %>
+                                                <% else %>
+                                                        <a href="#" id="thisnumber"><%= choice %></a>
+                                                <% end %>
+                                        <% end %>
+                                        results on this page
+                                </div>
+                                <div id="addnew">
+                                        <%= link_to("Add a new Topic", :action => 'new') %>
+                                </div>
+                        </div>
+                </div><!-- /result-container -->
 
-<br />
-
-<%= link_to 'New topic', :action => 'new' %>
+                <div class="cleaner">&nbsp;</div>
+                <% # end of display if we have topics %>
+                <% end %>
