@@ -1,4 +1,4 @@
-<h1>Listing topics</h1>
+<h2>Listing topics</h2>
 
 <table>
   <tr>
@@ -6,7 +6,7 @@
     <th><%= column.human_name %></th>
   <% end %>
   </tr>
-  
+
 <% for topic in @topics %>
   <tr>
   <% for column in Topic.content_columns %>
@@ -20,7 +20,7 @@
 </table>
 
 <%= link_to 'Previous page', { :page => @topic_pages.current.previous } if @topic_pages.current.previous %>
-<%= link_to 'Next page', { :page => @topic_pages.current.next } if @topic_pages.current.next %> 
+<%= link_to 'Next page', { :page => @topic_pages.current.next } if @topic_pages.current.next %>
 
 <br />
 
