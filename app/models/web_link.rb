@@ -5,7 +5,7 @@ class WebLink < ActiveRecord::Base
   has_many :content_item_relations, :as => :related_item, :dependent => :destroy
   has_many :topics, :through => :content_item_relations
 
-  # a virtual attribute that holds the topic's entire content
+  # a virtual attribute that holds the web_link's entire content
   # as xml formated how we like it
   # for use by acts_as_zoom virtual_field_name, :raw => true
   # this virtual attribue will be populated/updated in our controller
