@@ -1,0 +1,25 @@
+<%= error_messages_for 'audio_item' %>
+
+<!--[form:audio_item]-->
+<p><label for="audio_item_title">Title</label><br/>
+<%= text_field 'audio_item', 'title'  %></p>
+
+<p><label for="audio_item_description">Description</label><br/>
+<%= text_area 'audio_item', 'description'  %></p>
+
+<p><label for="audio_item_content_type">Content type</label><br/>
+<%= text_field 'audio_item', 'content_type'  %></p>
+
+<p><label for="audio_item_filename">Filename</label><br/>
+<%= text_field 'audio_item', 'filename'  %></p>
+
+<p><label for="audio_item_path">Path</label><br/>
+<%= text_field 'audio_item', 'path'  %></p>
+
+<p><label for="audio_item_created_at">Created at</label><br/>
+<%= datetime_select 'audio_item', 'created_at'  %></p>
+
+<p><label for="audio_item_updated_at">Updated at</label><br/>
+<%= datetime_select 'audio_item', 'updated_at'  %></p>
+<!--[eoform:audio_item]-->
+

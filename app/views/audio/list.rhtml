@@ -1,0 +1,27 @@
+<h1>Listing audio_items</h1>
+
+<table>
+  <tr>
+  <% for column in AudioItem.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for audio_item in @audio_items %>
+  <tr>
+  <% for column in AudioItem.content_columns %>
+    <td><%=h audio_item.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => audio_item %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => audio_item %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => audio_item }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @audio_item_pages.current.previous } if @audio_item_pages.current.previous %>
+<%= link_to 'Next page', { :page => @audio_item_pages.current.next } if @audio_item_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New audio_item', :action => 'new' %>
