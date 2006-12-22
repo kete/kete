@@ -6,6 +6,7 @@ class AddAudioItems < ActiveRecord::Migration
       t.column :content_type, :string, :limit => 100
       t.column :filename,     :string, :limit => 255
       t.column :path,         :string, :limit => 255
+      t.column :size,        :integer
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
     end
