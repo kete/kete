@@ -1,17 +1,25 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-person:
-  id: 2
-  name: Person
-  description: The top most Topic Type for all types of people.
-place:
-  id: 3
-  name: Place
-  description: The top most Topic Type for all types of locations.
-event:
-  id: 4
+--- 
+topic_types_003: 
   name: Event
+  updated_at: 0000-00-00 00:00:00
+  id: "4"
   description: The top most Topic Type for all types of stuff that takes place over a period of time.
-organization:
-  id: 5
+  created_at: 0000-00-00 00:00:00
+topic_types_004: 
   name: Organization
+  updated_at: 0000-00-00 00:00:00
+  id: "5"
   description: The top most Topic Type for groups of people, like companies and clubs, etc.
+  created_at: 0000-00-00 00:00:00
+topic_types_001: 
+  name: Person
+  updated_at: 0000-00-00 00:00:00
+  id: "2"
+  description: The top most Topic Type for all types of people.
+  created_at: 0000-00-00 00:00:00
+topic_types_002: 
+  name: Place
+  updated_at: 0000-00-00 00:00:00
+  id: "3"
+  description: The top most Topic Type for all types of locations.
+  created_at: 0000-00-00 00:00:00
