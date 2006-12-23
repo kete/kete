@@ -71,6 +71,6 @@ DEFAULT_SEARCH_CLASS = 'Topic'
 
 # TODO: make this dynamic if possible
 # from acts_as_zoom declarations in models
-ZOOM_CLASSES = ['Topic', 'WebLink']
+ZOOM_CLASSES = ['Topic', 'WebLink', 'AudioRecording']
 
 
