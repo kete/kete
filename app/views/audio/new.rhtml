@@ -1,6 +1,6 @@
 <h2>New audio recording</h2>
 
-<% form_tag { :action => 'create' }, { :multipart => true } do %>
+<% form_tag :action => 'create', :multipart => true do %>
   <%= render :partial => 'form' %>
   <%= submit_tag "Create" %>
 <% end %>

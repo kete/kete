@@ -1,4 +1,5 @@
 <fieldset>
+
 <%= error_messages_for 'audio_recording' %>
 
 <!--[form:audio_recording]-->
@@ -15,7 +16,7 @@
 <p><label for="audio_recording_filename">Filename</label><br/>
 <%= text_field 'audio_recording', 'filename'  %></p>
 
-<%= file_field_tag 'audio_recording', 'uploaded_data' %>
+<% # file_field_tag 'audio_recording', :uploaded_data %>
 
 <!--[eoform:audio_recording]-->
 

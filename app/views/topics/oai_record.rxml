@@ -6,7 +6,7 @@ end
 xml.instruct!
 xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
         xml.responseDate(Time.now.to_s(:db))
-        xml.request("http://#{request.host}#{request.request_uri}", :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@topic.class.name}:#{@topic.id}", :metadataPrefix => "oai_dc")
+        xml.request(request.protocol + request.host + request.request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@topic.class.name}:#{@topic.id}", :metadataPrefix => "oai_dc")
         xml.GetRecord do
                 xml.record do
                         xml.header do
