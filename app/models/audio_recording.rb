@@ -26,7 +26,8 @@ class AudioRecording < ActiveRecord::Base
   # for images this will include thumbnails
   # this will require overriding full_filename method locally
   # TODO: add more content_types
-  has_attachment :storage => :file_system, :file_system_path => 'private', :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'application/ogg']
+  # file_system_path => 'private',
+  has_attachment :storage => :file_system, :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'application/ogg']
   validates_as_attachment
 
   # overriding full_filename to handle our customizations

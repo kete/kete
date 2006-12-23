@@ -29,6 +29,9 @@ class WebLinksController < ApplicationController
 
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @web_link)
+      # TODO: translation
+      flash[:notice] = 'The web link was successfully created.'
+      # TODO: make this a helper
       redirect_to :action => 'show', :controller => '/topics', :id => params[:relate_to_topic_id]
     elsif @successful
       flash[:notice] = 'WebLink was successfully created.'

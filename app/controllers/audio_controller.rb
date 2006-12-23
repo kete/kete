@@ -1,7 +1,6 @@
 class AudioController < ApplicationController
   def index
-    list
-    render :action => 'list'
+    redirect_to :action => 'index', :controller => '/search', :current_class => 'AudioRecording', :all => true
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -9,7 +8,7 @@ class AudioController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @audio_recording_pages, @audio_recordings = paginate :audio_recordings, :per_page => 10
+    redirect_to :action => 'index', :controller => '/search', :current_class => 'AudioRecording', :all => true
   end
 
   def show
@@ -22,8 +21,21 @@ class AudioController < ApplicationController
 
   def create
     @audio_recording = AudioRecording.new(params[:audio_recording])
-    if @audio_recording.save
-      flash[:notice] = 'AudioRecording was successfully created.'
+    # TODO: because id isn't available until after a save, we have a HACK
+    # to add id into record during acts_as_zoom
+    @audio_recording.oai_record = render_to_string(:template => 'audio/oai_record',
+                                                   :layout => false)
+    @successful = @audio_recording.save
+
+    if params[:relate_to_topic_id] and @successful
+      ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @audio_recording)
+      # TODO: translation
+      flash[:notice] = 'The audio recording was successfully created.'
+      # TODO: make this a helper
+      redirect_to :action => 'show', :controller => '/topics', :id => params[:relate_to_topic_id]
+    elsif @successful
+      # TODO: translation
+      flash[:notice] = 'The audio recording was successfully created.'
       redirect_to :action => 'list'
     else
       render :action => 'new'
@@ -36,6 +48,10 @@ class AudioController < ApplicationController
 
   def update
     @audio_recording = AudioRecording.find(params[:id])
+    # TODO: because id isn't available until after a save, we have a HACK
+    # to add id into record during acts_as_zoom
+    @audio_recording.oai_record = render_to_string(:template => 'audio/oai_record',
+                                                   :layout => false)
     if @audio_recording.update_attributes(params[:audio_recording])
       flash[:notice] = 'AudioRecording was successfully updated.'
       redirect_to :action => 'show', :id => @audio_recording

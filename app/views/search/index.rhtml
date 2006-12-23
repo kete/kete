@@ -18,9 +18,9 @@
                         <ul id="tablist">
                                 <% ZOOM_CLASSES.each do |zoom_class| %>
                                         <% if zoom_class == @current_class %>
-                                                <li><a href="#" id="current"><%= zoom_class.humanize.pluralize %> (<%= @result_sets[zoom_class].size %>)</a></li>
+                                                <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= @result_sets[zoom_class].size %>)</a></li>
                                         <% else %>
-                                                <li><%= link_to("#{zoom_class.humanize.pluralize} (#{@result_sets[zoom_class].size})",
+                                                <li><%= link_to("#{zoom_class_plural_humanize(zoom_class)} (#{@result_sets[zoom_class].size})",
         :action => 'index',
         :search_terms => @search_terms,
         :all => params[:all],
@@ -33,7 +33,7 @@
                 </div><!-- /tabcontainer -->
                 <div id="result-container">
                         <h3>
-                                Results in <%= @current_class.humanize.pluralize %>
+                                Results in <%= zoom_class_plural_humanize(@current_class) %>
                                 <% if !@search_terms.blank? %>
                                 for your search &quot;<%= h(@search_terms.to_s) -%>&quot;
                                 <% end %>
@@ -103,7 +103,7 @@
                                 </div>
                                 <div id="addnew">
                                         <% # TODO: helper that does the right thing for the current class and eventually group %>
-                                        <%= link_to("Add a new #{@current_class.humanize}", :controller => "/#{@current_class.tableize}", :action => 'new') %>
+                                        <%= link_to("Add a new #{zoom_class_humanize(@current_class)}", :controller => "/#{zoom_class_controller(@current_class)}", :action => 'new') %>
                                         to these search results
                                 </div>
                         </div>
