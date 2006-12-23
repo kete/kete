@@ -1,0 +1,8 @@
+<% for column in AudioRecording.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @audio_recording.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @audio_recording %> |
+<%= link_to 'Back', :action => 'list' %>

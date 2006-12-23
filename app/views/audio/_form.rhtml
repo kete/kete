@@ -1,0 +1,28 @@
+<%= error_messages_for 'audio_recording' %>
+
+<!--[form:audio_recording]-->
+<p><label for="audio_recording_title">Title</label><br/>
+<%= text_field 'audio_recording', 'title'  %></p>
+
+<p><label for="audio_recording_description">Description</label><br/>
+<%= text_area 'audio_recording', 'description'  %></p>
+
+<p><label for="audio_recording_path">Path</label><br/>
+<%= text_field 'audio_recording', 'path'  %></p>
+
+<p><label for="audio_recording_filename">Filename</label><br/>
+<%= text_field 'audio_recording', 'filename'  %></p>
+
+<p><label for="audio_recording_content_type">Content type</label><br/>
+<%= text_field 'audio_recording', 'content_type'  %></p>
+
+<p><label for="audio_recording_size">Size</label><br/>
+<%= text_field 'audio_recording', 'size'  %></p>
+
+<p><label for="audio_recording_created_at">Created at</label><br/>
+<%= datetime_select 'audio_recording', 'created_at'  %></p>
+
+<p><label for="audio_recording_updated_at">Updated at</label><br/>
+<%= datetime_select 'audio_recording', 'updated_at'  %></p>
+<!--[eoform:audio_recording]-->
+
