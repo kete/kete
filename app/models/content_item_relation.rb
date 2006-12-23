@@ -7,7 +7,7 @@ class ContentItemRelation < ActiveRecord::Base
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
   belongs_to :web_link, :class_name => "WebLink", :foreign_key => "related_item_id"
-  belongs_to :audio_item, :class_name => "AudioItem", :foreign_key => "related_item_id"
+  belongs_to :audio_recording, :class_name => "AudioRecording", :foreign_key => "related_item_id"
   # a topic can be related to another topic
   belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
 

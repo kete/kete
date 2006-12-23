@@ -29,7 +29,7 @@ class Topic < ActiveRecord::Base
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
   has_many :web_links, :through => :content_item_relations, :source => :web_link, :order => 'position'
-  has_many :audio_items, :through => :content_item_relations, :source => :audio_item, :order => 'position'
+  has_many :audio_recordings, :through => :content_item_relations, :source => :audio_recording, :order => 'position'
   # topics related to a topic
   has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
 
