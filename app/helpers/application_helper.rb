@@ -29,6 +29,8 @@ module ApplicationHelper
   def zoom_class_controller(zoom_class)
     zoom_class_controller = String.new
     case zoom_class
+      when "Video"
+      zoom_class_controller = 'video'
       when "AudioRecording"
       zoom_class_controller = 'audio'
       else
