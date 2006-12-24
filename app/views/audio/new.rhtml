@@ -1,7 +1,33 @@
 <h2>New audio recording</h2>
 
-<% form_tag :action => 'create', :multipart => true do %>
-  <%= render :partial => 'form' %>
+<% form_for :audio_recording,
+            :url => { :action => 'create'},
+            :html => { :multipart => true } do |form| %>
+
+        <fieldset>
+
+                <%= error_messages_for 'audio_recording' %>
+
+                <!--[form:audio_recording]-->
+                <% if !params[:relate_to_topic_id].nil? %>
+                        <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+                <% end %>
+
+                <p><label for="audio_recording_title">Title</label><br/>
+                <%= form.text_field :title  %></p>
+
+                <p><label for="audio_recording_description">Description</label><br/>
+                <%= form.text_area :description  %></p>
+
+                <p><label for="audio_recording_filename">Filename</label><br/>
+                <%= form.text_field :filename %></p>
+
+                <%= form.file_field :uploaded_data %>
+
+                <!--[eoform:audio_recording]-->
+
+        </fieldset>
+
   <%= submit_tag "Create" %>
 <% end %>
 

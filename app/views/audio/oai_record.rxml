@@ -19,7 +19,6 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                                         xml.tag!("dc:title", @audio_recording.title)
                                         # TODO: publisher should be this instance of Kete
                                         xml.tag!("dc:description", params[:description] || @audio_recording.description)
-                                        xml.tag!("dc:description", params[:url] || @audio_recording.url)
 
                                         # TODO: add dc:creator for either initial poster, or person chosen by initial poster
                                         # TODO: add dc:contributor for anyone who edits, beyond dc:creator
