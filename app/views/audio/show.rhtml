@@ -1,8 +1,128 @@
-<% for column in AudioRecording.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @audio_recording.send(column.name) %>
-</p>
-<% end %>
-
-<%= link_to 'Edit', :action => 'edit', :id => @audio_recording %> |
-<%= link_to 'Back', :action => 'list' %>
+                <div id="detail-wrapper">
+                        <div id="detail-header">
+                                <h4><a href=#>&lt;&lt; Back to search results for &quot;TODO: Make this dynamic&quot;</a></h4>
+                                <h2><%= h(@audio_recording.title) %></h2>
+                                <p><%= @audio_recording.description %></p>
+                                <p>Filename: <%= @audio_recording.filename %>
+                                   (<%= link_to 'download', @audio_recording.public_filename -%>)
+                                </p>
+                                <p>Size: <%= @audio_recording.size %></p>
+                                <p>Recording type: <%= @audio_recording.content_type %></p>
+                        </div>
+                        <div class="detail-tools">
+                                <h3>Get Involved</h3>
+                                <ul>
+                                        <li><%= link_to "Edit",
+                                                                :action => :edit,
+                                                                :controller => '/audio',
+                                                                :id => @audio_recording %></li>
+                                        <li><%= link_to "Delete",
+                                                                {:action => :destroy,
+                                                                :controller => '/audio',
+                                                                :id => @audio_recording},
+                                                                :method => :post,
+                                                                :confirm => 'Are you sure?'%></li>
+                                </ul>
+                        </div>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="detail-linked">
+                        <h3>Other Kete Users have linked this topic to:</h3>
+                        <div id="detail-linked-toprow">
+                                <div id="detail-linked-images">
+                                        <h4><a href="images.html">Dummy Images (35)</a></h4>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumb">
+                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
+                                        </div>
+                                        <div class="detail-linked-thumbmore">
+                                                <a href="/images.html">30 more like this &gt;&gt;</a>
+                                        </div>
+                                        <div class="cleaner">&nbsp;</div>
+                                </div>
+                        </div>
+                        <div id="detail-linked-midrow">
+                                <div id="detail-linked-topics">
+                                        <% # TODO: a listing page of topics, limited to related_topics %>
+                                        <% # limit to specified amount in list than provide more link %>
+                                        <h4><a href="#">Topics (<%= @audio_recording.topics.size -%>)</a></h4>
+                                        <% if @audio_recording.topics.size > 0 %>
+                                                <ul>
+                                                <% @audio_recording.topics.each do |related_topic| %>
+                                                        <li><%= link_to         h(related_topic.title),
+                                                                                :controller => 'topics',
+                                                                                :action => :show,
+                                                                                :id => related_topic.id %></li>
+                                                <% end %>
+                                                <li><a href="/" class="small">3 more like this &gt;&gt;</a></li>
+                                                </ul>
+                                        <% end %>
+                                        </ul>
+                                </div>
+                                <div id="detail-linked-audio">
+                                        <h4><a href="/">Dummy Audio (4)</a></h4>
+                                        <ul>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/" class="small">1 more like this &gt;&gt;</a></li>
+                                        </ul>
+                                </div>
+                                <div id="detail-linked-video">
+                                        <h4><a href="/">Dummy Video (0)</a></h4>
+                                </div>
+                                <div class="cleaner">&nbsp;</div>
+                        </div>
+                        <div id="detail-linked-bottomrow">
+                                <div id="detail-linked-documents">
+                                        <h4><a href="/">Dummy Documents (6)</a></h4>
+                                        <ul>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/">nibh euismod</a></li>
+                                                <li><a href="/" class="small">3 more like this &gt;&gt;</a></li>
+                                        </ul>
+                                </div>
+                                <div id="detail-linked-web">
+                                        <h4><a href="/">Dummy Web Link (0)</a></h4>
+                                                <ul>
+                                                        <li><a href="/" class="small">1 more like this &gt;&gt;</a></li>
+                                                </ul>
+                                </div>
+                                <div id="detail-linked-library">
+                                        <h4><a href="/">Dummy Library (1)</a></h4>
+                                        <ul>
+                                                <li><a href="/">nibh euismod</a></li>
+                                        </ul>
+                                </div>
+                                <div class="cleaner">&nbsp;</div>
+                        </div>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="linkcontainer">
+                        <h3>You may also be interested in these search results:</h3>
+                        <div id="link-list-container">
+                                <ul id="linklist">
+                                        <li><a href="topics.html">Topics (9)</a></li>
+                                        <li><a href="images.html">Images (35)</a></li>
+                                        <li><a href="#">Audio (1)</a></li>
+                                        <li><a href="#">Video (1)</a></li>
+                                        <li><a href="#">Documents (6)</a></li>
+                                        <li><a href="#">Web Link (5)</a></li>
+                                        <li><a href="#">Library (1)</a></li>
+                                </ul>
+                        </div><!-- /linkcontainer -->
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div class="cleaner">&nbsp;</div>

@@ -1,10 +1,10 @@
 <h2>Editing audio recording</h2>
 
-<% form_form :audio_recording,
+<% form_for :audio_recording,
              :url => { :action => 'update',
                        :id => @audio_recording },
              :html => { :multipart => true } do |form| %>
-  <%= render :partial => 'form' %>
+  <%= render :partial => 'form', :object => form %>
   <%= submit_tag 'Edit' %>
 <% end %>
 

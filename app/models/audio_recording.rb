@@ -28,7 +28,9 @@ class AudioRecording < ActiveRecord::Base
   # TODO: add more content_types
   # processor none means we don't have to load expensive image manipulation
   # dependencies that we don't need
-  has_attachment :storage => :file_system, :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}", :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'application/ogg'], :processor => :none
+  # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
+  # will rework with when we get to public/private split
+  has_attachment :storage => :file_system, :file_system_path => "public/audio", :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'application/ogg'], :processor => :none
   validates_as_attachment
 
   # overriding full_filename to handle our customizations

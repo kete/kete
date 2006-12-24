@@ -16,6 +16,10 @@
                                                                 :controller => 'topics',
                                                                 :action => :new,
                                                                 :relate_to_topic_id => @topic.id %></li>
+                                        <li><%= link_to 'Add a related audio recording',
+                                                                :controller => 'audio',
+                                                                :action => :new,
+                                                                :relate_to_topic_id => @topic.id %></li>
                                         <li><%= link_to 'Add a related web link',
                                                                 :controller => 'web_links',
                                                                 :action => :new,
@@ -80,12 +84,20 @@
                                         </ul>
                                 </div>
                                 <div id="detail-linked-audio">
-                                        <h4><a href="/">Dummy Audio (4)</a></h4>
-                                        <ul>
-                                                <li><a href="/">nibh euismod</a></li>
-                                                <li><a href="/">nibh euismod</a></li>
-                                                <li><a href="/">nibh euismod</a></li>
-                                                <li><a href="/" class="small">1 more like this &gt;&gt;</a></li>
+                                        <% # TODO: a listing page of topics, limited to related_topics %>
+                                        <% # limit to specified amount in list than provide more link %>
+                                        <h4><a href="#">Audio (<%= @topic.audio_recordings.size -%>)</a></h4>
+                                        <% if @topic.audio_recordings.size > 0 %>
+                                                <ul>
+                                                <% @topic.audio_recordings.each do |audio| %>
+                                                        <li><%= link_to         h(audio.title),
+                                                                                :controller => 'audio',
+                                                                                :action => :show,
+                                                                                :id => audio.id %></li>
+                                                <% end %>
+                                                <li><a href="/" class="small">3 more like this &gt;&gt;</a></li>
+                                                </ul>
+                                        <% end %>
                                         </ul>
                                 </div>
                                 <div id="detail-linked-video">
