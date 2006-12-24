@@ -1,0 +1,12 @@
+<h2>Editing video</h2>
+
+<% form_for :video,
+             :url => { :action => 'update',
+                       :id => @video },
+             :html => { :multipart => true } do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @video %> |
+<%= link_to 'Cancel', :action => 'list' %>
