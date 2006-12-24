@@ -1,6 +1,9 @@
 <h2>Editing audio recording</h2>
 
-<% form_tag :action => 'update', :id => @audio_recording do %>
+<% form_form :audio_recording,
+             :url => { :action => 'update',
+                       :id => @audio_recording },
+             :html => { :multipart => true } do |form| %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
 <% end %>

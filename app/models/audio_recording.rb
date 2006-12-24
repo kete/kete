@@ -13,7 +13,7 @@ class AudioRecording < ActiveRecord::Base
   acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['localhost', 'public'], :raw => true
 
   acts_as_versioned
-  validates_presence_of :title, :path, :filename
+  validates_presence_of :title
   # this may change
   validates_uniqueness_of :title
   # TODO: add validation that prevents markup in short_summary
@@ -26,8 +26,9 @@ class AudioRecording < ActiveRecord::Base
   # for images this will include thumbnails
   # this will require overriding full_filename method locally
   # TODO: add more content_types
-  # file_system_path => 'private',
-  has_attachment :storage => :file_system, :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'application/ogg']
+  # processor none means we don't have to load expensive image manipulation
+  # dependencies that we don't need
+  has_attachment :storage => :file_system, :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}", :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'application/ogg'], :processor => :none
   validates_as_attachment
 
   # overriding full_filename to handle our customizations
