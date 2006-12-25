@@ -6,9 +6,6 @@ class AddImages < ActiveRecord::Migration
       t.column :filename, :string, :null => false
       t.column :content_type, :string, :null => false
       t.column :size, :integer, :null => false
-      # doing parent_id as a separate step,
-      # after we do versioning
-      t.column :thumbnail, :string
       t.column :width, :integer
       t.column :height, :integer
       t.column :created_at, :datetime, :null => false
