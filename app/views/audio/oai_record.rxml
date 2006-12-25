@@ -1,7 +1,7 @@
 if @audio_recording.id
         id_sub = ''
 else
-        id_sub = '!!!ID!!!'
+        id_sub = ID_SUB
 end
 xml.instruct!
 xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
