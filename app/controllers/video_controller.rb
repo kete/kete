@@ -13,6 +13,10 @@ class VideoController < ApplicationController
 
   def show
     @video = Video.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
+    end
   end
 
   def new
