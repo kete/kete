@@ -1,6 +1,6 @@
 class AddVideoVersioning < ActiveRecord::Migration
   def self.up
-    # create versioning table for audio_recordings
+    # create versioning table for videos
     Video.create_versioned_table
   end
 

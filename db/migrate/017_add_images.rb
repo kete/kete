@@ -6,9 +6,8 @@ class AddImages < ActiveRecord::Migration
       t.column :filename, :string, :null => false
       t.column :content_type, :string, :null => false
       t.column :size, :integer, :null => false
-      # foreing_key_migrations auto constraint building
-      # parent_id in this case, is self-referential
-      t.column :parent_id, :integer, :references => :images
+      # doing parent_id as a separate step,
+      # after we do versioning
       t.column :thumbnail, :string
       t.column :width, :integer
       t.column :height, :integer
