@@ -1,7 +1,12 @@
-class AddImageThumbs < ActiveRecord::Migration
+class AddImageFiles < ActiveRecord::Migration
   def self.up
-    create_table :image_thumbs do |t|
-      t.column :parent_id, :integer, :references => :images
+    create_table :image_files do |t|
+      # image model holds meta data about an image
+      # image_files is only for the actual binary files
+      # including thumbnails
+      t.column :image_id, :integer
+      # parent_id is the original version of the file
+      t.column :parent_id, :integer, :references => nil
       t.column :thumbnail, :string, :null => false
       t.column :filename, :string, :null => false
       t.column :content_type, :string, :null => false
@@ -12,6 +17,6 @@ class AddImageThumbs < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :image_thumbs
+    drop_table :image_files
   end
 end
