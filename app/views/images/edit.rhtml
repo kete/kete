@@ -1,0 +1,13 @@
+<h2>Editing image</h2>
+
+<% form_for :image,
+             :url => { :action => 'update',
+                       :id => @image },
+             :html => { :multipart => true } do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @image %> |
+<%= link_to 'Cancel', :action => 'list' %>
+

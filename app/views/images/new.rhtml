@@ -1,0 +1,10 @@
+<h2>New image</h2>
+
+<% form_for :image,
+            :url => { :action => 'create'},
+            :html => { :multipart => true } do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag "Create" %>
+<% end %>
+
+<%= link_to 'Cancel', :action => 'list' %>

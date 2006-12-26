@@ -1,21 +1,20 @@
         <fieldset>
 
-                <%= error_messages_for 'video' %>
+                <%= error_messages_for 'image' %>
 
-                <!--[form:video]-->
+                <!--[form:image]-->
                 <% if !params[:relate_to_topic_id].nil? %>
                         <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
                 <% end %>
 
-                <p><label for="video_title">Title</label><br/>
+                <p><label for="image_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
 
-                <p><label for="video_description">Description</label><br/>
+                <p><label for="image_description">Description</label><br/>
                 <%= form.text_area :description  %></p>
 
                 <%= form.file_field :uploaded_data %>
 
-                <!--[eoform:video]-->
+                <!--[eoform:image]-->
 
         </fieldset>
-

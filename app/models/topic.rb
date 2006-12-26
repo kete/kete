@@ -1,5 +1,3 @@
-require 'ajax_scaffold'
-
 class Topic < ActiveRecord::Base
   belongs_to :topic_type
   # this is where the actual content lives
@@ -30,6 +28,8 @@ class Topic < ActiveRecord::Base
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
   has_many :web_links, :through => :content_item_relations, :source => :web_link, :order => 'position'
   has_many :audio_recordings, :through => :content_item_relations, :source => :audio_recording, :order => 'position'
+  has_many :videos, :through => :content_item_relations, :source => :video, :order => 'position'
+  has_many :images, :through => :content_item_relations, :source => :image, :order => 'position'
   # topics related to a topic
   has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
 

@@ -8,6 +8,8 @@ class ContentItemRelation < ActiveRecord::Base
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
   belongs_to :web_link, :class_name => "WebLink", :foreign_key => "related_item_id"
   belongs_to :audio_recording, :class_name => "AudioRecording", :foreign_key => "related_item_id"
+  belongs_to :video, :class_name => "Video", :foreign_key => "related_item_id"
+  belongs_to :image, :class_name => "Image", :foreign_key => "related_item_id"
   # a topic can be related to another topic
   belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
 

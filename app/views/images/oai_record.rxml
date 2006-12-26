@@ -1,0 +1,39 @@
+if @image.id
+        id_sub = ''
+else
+        id_sub = ID_SUB
+end
+xml.instruct!
+xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
+        xml.responseDate(Time.now.to_s(:db))
+        xml.request(request.protocol + request.host + request.request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@image.class.name}:#{@image.id}", :metadataPrefix => "oai_dc")
+        xml.GetRecord do
+                xml.record do
+                        xml.header do
+                                xml.identifier("#{ZoomDb.zoom_id_stub}#{@image.class.name}:#{@image.id || id_sub}")
+                                xml.datestamp(Date.today.to_s(:db))
+                        end
+                        xml.metadata do
+                                xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
+                                        xml.tag!("dc:identifier", "http://#{request.host}#{url_for(:controller => 'image', :action => 'show', :id => @image.id, :format => nil)}#{"/" + id_sub unless id_sub.blank?}")
+                                        xml.tag!("dc:title", @image.title)
+                                        # TODO: publisher should be this instance of Kete
+                                        xml.tag!("dc:description", params[:description] || @image.description)
+
+                                        # TODO: add dc:creator for either initial poster, or person chosen by initial poster
+                                        # TODO: add dc:contributor for anyone who edits, beyond dc:creator
+                                        # TODO: add dcterms:modified field for every version date
+                                        # TODO: related topics and items should have dc:subject elem here with their title
+                                        # TODO: related topics and items should have dc:relation with their dc:identifier here
+                                        # TODO: we may want to provide the list of thumbnails here, too
+                                        xml.tag!("dc:date", @image.created_at || Time.now.to_s(:db) )
+                                        xml.tag!("dc:type", "StillImage")
+                                        # TODO: when tagging is implemented, get all tags and make them dc:subjects
+                                        # TODO: because of the order of processing, on save
+                                        # this apparently isn't available yet, audio/video have this problem,too
+                                        xml.tag!("dc:format", "@image.content_type")
+                                end
+                        end
+                end
+        end
+end

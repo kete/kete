@@ -1,5 +1,3 @@
-require 'ajax_scaffold'
-
 class WebLink < ActiveRecord::Base
   # this is where we handled "related to"
   has_many :content_item_relations, :as => :related_item, :dependent => :destroy
