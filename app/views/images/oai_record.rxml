@@ -15,7 +15,7 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                         end
                         xml.metadata do
                                 xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
-                                        xml.tag!("dc:identifier", "http://#{request.host}#{url_for(:controller => 'image', :action => 'show', :id => @still_image.id, :format => nil)}#{"/" + id_sub unless id_sub.blank?}")
+                                        xml.tag!("dc:identifier", "http://#{request.host}#{url_for(:controller => 'images', :action => 'show', :id => @still_image.id, :format => nil)}#{"/" + id_sub unless id_sub.blank?}")
                                         xml.tag!("dc:title", @still_image.title)
                                         # TODO: publisher should be this instance of Kete
                                         xml.tag!("dc:description", params[:description] || @still_image.description)
