@@ -76,7 +76,7 @@ DEFAULT_SEARCH_CLASS = 'Topic'
 
 # TODO: make this dynamic if possible
 # from acts_as_zoom declarations in models
-ZOOM_CLASSES = ['Topic', 'AudioRecording', 'Video', 'WebLink']
+ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink']
 
 # has to do with use of attachment_fu
 BASE_PRIVATE_PATH = 'private'
