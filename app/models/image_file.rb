@@ -4,7 +4,7 @@ class ImageFile < ActiveRecord::Base
   # the Image class is for the image meta data
   # although each version's dimension's and filename are stored here
   # not that where parent_id is nil = the original of the file
-  belongs_to :image
+  belongs_to :still_image
 
   # handles file uploads
   # this will require overriding full_filename method locally

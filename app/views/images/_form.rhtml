@@ -1,20 +1,24 @@
         <fieldset>
 
-                <%= error_messages_for 'image' %>
+                <%= error_messages_for 'still_image' %>
 
-                <!--[form:image]-->
+                <!--[form:still_image]-->
                 <% if !params[:relate_to_topic_id].nil? %>
                         <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
                 <% end %>
 
                 <p><label for="image_title">Title</label><br/>
-                <%= text_field_tag 'image[title]'  %></p>
+                <%= form.text_field :title  %></p>
 
                 <p><label for="image_description">Description</label><br/>
-                <%= text_area_tag 'image[description]' %></p>
+                <%= form.text_area :description %></p>
 
-                <%= form.file_field :uploaded_data %>
+                <%= file_field_tag 'image_file[uploaded_data]' %>
 
-                <!--[eoform:image]-->
+                <% if !params[:id].nil? %>
+                        <%= hidden_field_tag 'image_file[still_image_id]', params[:id] %>
+                <% end %>
+
+                <!--[eoform:still_image]-->
 
         </fieldset>

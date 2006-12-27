@@ -1,4 +1,4 @@
-class Image < ActiveRecord::Base
+class StillImage < ActiveRecord::Base
   # image files, including different sized versions of the original
   # are handled by ImageFile model
   has_many :image_files, :dependent => :delete_all
@@ -10,7 +10,7 @@ class Image < ActiveRecord::Base
   has_many :content_item_relations, :as => :related_item, :dependent => :destroy
   has_many :topics, :through => :content_item_relations
 
-  # a virtual attribute that holds the image's entire content (sans binary file)
+  # a virtual attribute that holds the still_image's entire content (sans binary file)
   # as xml formated how we like it
   # for use by acts_as_zoom virtual_field_name, :raw => true
   # this virtual attribue will be populated/updated in our controller

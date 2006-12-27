@@ -1,8 +1,8 @@
 <h2>Editing image</h2>
 
-<% form_for :image,
+<% form_for :still_image,
              :url => { :action => 'update',
-                       :id => @image },
+                       :id => @still_image },
              :html => { :multipart => true } do |form| %>
   <%= render :partial => 'form', :object => form %>
   <%= submit_tag 'Edit' %>

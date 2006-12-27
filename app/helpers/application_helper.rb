@@ -7,6 +7,8 @@ module ApplicationHelper
       humanized = 'Audio'
       when "WebLink"
       humanized = 'Web Link'
+      when "StillImage"
+      humanized = 'Image'
       else
       humanized = zoom_class.humanize
     end
@@ -20,6 +22,8 @@ module ApplicationHelper
       plural_humanized = 'Audio'
       when "WebLink"
       plural_humanized = 'Web Links'
+      when "StillImage"
+      plural_humanized = 'Images'
       else
       plural_humanized = zoom_class.humanize.pluralize
     end
@@ -29,6 +33,8 @@ module ApplicationHelper
   def zoom_class_controller(zoom_class)
     zoom_class_controller = String.new
     case zoom_class
+      when "StillImage"
+      zoom_class_controller = 'images'
       when "Video"
       zoom_class_controller = 'video'
       when "AudioRecording"
