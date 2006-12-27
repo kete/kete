@@ -1,10 +1,10 @@
 class AddImageFiles < ActiveRecord::Migration
   def self.up
     create_table :image_files do |t|
-      # image model holds meta data about an image
+      # still_image model holds meta data about an image
       # image_files is only for the actual binary files
       # including thumbnails
-      t.column :image_id, :integer
+      t.column :still_image_id, :integer
       # parent_id is the original version of the file
       t.column :parent_id, :integer, :references => nil
       t.column :thumbnail, :string
