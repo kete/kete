@@ -1,6 +1,6 @@
 <h2>New image</h2>
 
-<% form_for :image,
+<% form_for :image_file,
             :url => { :action => 'create'},
             :html => { :multipart => true } do |form| %>
   <%= render :partial => 'form', :object => form %>

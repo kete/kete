@@ -8,10 +8,10 @@
                 <% end %>
 
                 <p><label for="image_title">Title</label><br/>
-                <%= form.text_field :title  %></p>
+                <%= text_field_tag 'image[title]'  %></p>
 
                 <p><label for="image_description">Description</label><br/>
-                <%= form.text_area :description  %></p>
+                <%= text_area_tag 'image[description]' %></p>
 
                 <%= form.file_field :uploaded_data %>
 
