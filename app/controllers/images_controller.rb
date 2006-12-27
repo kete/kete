@@ -31,6 +31,12 @@ class ImagesController < ApplicationController
                                          :layout => false)
     @successful = @image.save
 
+    if @successful
+      @original_file = ImageFile.new(params[:image_file])
+      @original_file.image_id = @image.id
+      @original_file.save
+    end
+
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @image)
       # TODO: translation
