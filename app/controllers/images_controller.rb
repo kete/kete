@@ -13,6 +13,8 @@ class ImagesController < ApplicationController
 
   def show
     @still_image = StillImage.find(params[:id])
+    @view_size = params[:view_size] || "medium"
+    @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, @still_image)
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
@@ -35,6 +37,12 @@ class ImagesController < ApplicationController
       @original_file = ImageFile.new(params[:image_file])
       @original_file.still_image_id = @still_image.id
       @original_file.save
+      # attachment_fu doesn't insert our still_image_id into the thumbnails
+      # automagically
+      @original_file.thumbnails.each do |thumb|
+        thumb.still_image_id = @still_image
+        thumb.save!
+      end
     end
 
     if params[:relate_to_topic_id] and @successful
