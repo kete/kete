@@ -40,7 +40,7 @@ class ImagesController < ApplicationController
       # attachment_fu doesn't insert our still_image_id into the thumbnails
       # automagically
       @original_file.thumbnails.each do |thumb|
-        thumb.still_image_id = @still_image
+        thumb.still_image_id = @still_image.id
         thumb.save!
       end
     end

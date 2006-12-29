@@ -11,11 +11,11 @@ class SearchController < ApplicationController
     search
   end
 
-  # TODO: catch no results returned, or zoom_db down errors
-  # query our ZoomDbs for results, grab only the Kete objects we need
+  # TODO: catch zoom_db errors or zoom_db down
+  # query our ZoomDbs for results, grab only the xml records for the results we need
   def search
     # all returns all results for a class
-    # search_terms overrides
+    # search_terms overrides :all
     if params[:all].nil? or !params[:search_terms].nil?
       params[:all] = false
     end
@@ -58,14 +58,14 @@ class SearchController < ApplicationController
       end
 
       # TODO: skipping multiple source (federated) search for now
-      # should really search public zoom_db by class
       zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
       if @result_sets.nil?
         @result_sets = Hash.new
       end
 
-       ZOOM_CLASSES.each do |zoom_class|
+      # iterate through all record types and build up a result set for each
+      ZOOM_CLASSES.each do |zoom_class|
         if @result_sets[zoom_class].nil?
 
           query = String.new
@@ -82,6 +82,7 @@ class SearchController < ApplicationController
             # and match partial words (truncated on either the left or right, i.e. both)
             # relevancee relies on our zoom dbs having it configured
             # kete zebra servers should be configured properly to use it
+            # we may need to adjust when querying non-kete zoom_dbs (koha for example)
             query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
             # quote each term to handle phrases
             if prepped_terms.size > 1
@@ -111,13 +112,33 @@ class SearchController < ApplicationController
       @results = Array.new
 
       if @result_sets[@current_class].size > 0
-          raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
-                                                                                    :start_record => @start_record,
-                                                                                    :end_record => @end_record)
+        still_image_results = Array.new
+
+        raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
+                                                                                      :start_record => @start_record,
+                                                                                      :end_record => @end_record)
         # create a hash of link, title, description for each record
         raw_results.each do |raw_record|
           result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
           @results << result_from_xml_hash
+
+          # we want to load local thumbnails for image results
+          # we'll collect the still_image_ids as keys and then run one query below
+          if result_from_xml_hash['locally_hosted'] && result_from_xml_hash['class'] == 'StillImage'
+            still_image_results << result_from_xml_hash['id']
+          end
+        end
+        if @current_class == 'StillImage'
+          ImageFile.find_all_by_thumbnail('small_sq', :conditions => ["still_image_id in (?)", still_image_results]).each do |thumb|
+            # now work through results array and add image_file
+            # if appropriate
+            @results.each do |result|
+              if result['locally_hosted'] && result['id'].to_i == thumb.still_image_id
+                logger.debug("inside thumb assignment")
+                result['image_file'] = thumb
+              end
+            end
+          end
         end
       end
     end
@@ -135,6 +156,29 @@ class SearchController < ApplicationController
     # when the xml had multiples of the same element
     # we only want the first
     result_hash = Hash.new
+
+    # we should be able to deduce the class
+    # whether the result is local
+    # and the object's id from the oai_identifier
+    oai_identifier = record.elements.to_a("//header/identifier")[0].get_text.to_s
+
+    local_re = Regexp.new("^#{ZoomDb.zoom_id_stub}")
+    class_id_re = Regexp.new("([^:]+):([0-9]+)$")
+
+    class_id_match = oai_identifier.match class_id_re
+    # index 0 is whole matching string
+    result_hash['class'] = class_id_match[1]
+    result_hash['id'] = class_id_match[2]
+
+    if oai_identifier =~ local_re
+      result_hash['locally_hosted'] = true
+    else
+      result_hash['locally_hosted'] = false
+    end
+
+    # make this nil by defualt
+    # overwrite for local results with actual thumbnail object
+    result_hash['image_file'] = nil
 
     desired_fields = [['identifier', 'url'], ['title'], ['description', 'short_summary']]
 

@@ -1,0 +1,18 @@
+                        <div class="image-result-wrapper">
+                                <div class="image-result-thumb">
+                                <% if locally_hosted && !image_file.nil? %>
+                                        <p><%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}")  %></p>
+                                <% else %>
+                                        <p><%= link_to "View Image", "#{source_url}"  %></p>
+                                <% end %>
+                                </div>
+                                <div class="image-result-header">
+                                        <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                        </div>
+                                <div class="image-result-description"><%= h(short_summary) %>
+                                        <div class="image-result-more">
+                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+                                        </div>
+                                </div>
+                        </div>
+

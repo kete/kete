@@ -72,9 +72,17 @@
                                 <%# for now lets just get this up with one set of results %>
 
                                 <% @results.each do |result|  %>
-                                        <%= render(:partial => "generic", :locals => {:title => result['title'],
-                                                                          :source_url => result['url'],
-                                                                          :short_summary => result['short_summary']}) %>
+                                        <% if result['class'] == 'StillImage' %>
+                                                <%= render(:partial => "image", :locals => {:title => result['title'],
+                                                                                            :source_url => result['url'],
+                                                                                            :locally_hosted => result['locally_hosted'],
+                                                                                            :image_file => result['image_file'],
+                                                                                            :short_summary => result['short_summary']}) %>
+                                        <% else %>
+                                                <%= render(:partial => "generic", :locals => {:title => result['title'],
+                                                                                              :source_url => result['url'],
+                                                                                              :short_summary => result['short_summary']}) %>
+                                        <% end %>
                                 <% end %>
                         <% else %>
                                 <div id="result-show">
