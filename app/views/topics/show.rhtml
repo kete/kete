@@ -16,6 +16,10 @@
                                                                 :controller => 'topics',
                                                                 :action => :new,
                                                                 :relate_to_topic_id => @topic.id %></li>
+                                        <li><%= link_to 'Add a related image',
+                                                                :controller => 'images',
+                                                                :action => :new,
+                                                                :relate_to_topic_id => @topic.id %></li>
                                         <li><%= link_to 'Add a related audio recording',
                                                                 :controller => 'audio',
                                                                 :action => :new,
@@ -43,25 +47,21 @@
                         <h3>Other Kete Users have linked this topic to:</h3>
                         <div id="detail-linked-toprow">
                                 <div id="detail-linked-images">
-                                        <h4><a href="images.html">Dummy Images (35)</a></h4>
-                                        <div class="detail-linked-thumb">
-                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
-                                        </div>
-                                        <div class="detail-linked-thumb">
-                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
-                                        </div>
-                                        <div class="detail-linked-thumb">
-                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
-                                        </div>
-                                        <div class="detail-linked-thumb">
-                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
-                                        </div>
-                                        <div class="detail-linked-thumb">
-                                                <a href="/"><img alt="thumb" src="image-thumb.jpg" height="65" width="65" /></a>
-                                        </div>
-                                        <div class="detail-linked-thumbmore">
-                                                <a href="/images.html">30 more like this &gt;&gt;</a>
-                                        </div>
+                                        <% # TODO: a listing page of still_images, limited to still_images %>
+                                        <% # limit to specified amount in list than provide more link %>
+                                        <h4><a href="#">Images (<%= @topic.still_images.size -%>)</a></h4>
+                                        <% if @topic.still_images.size > 0 %>
+                                                <% @topic.still_images.each do |still_image| %>
+                                                        <div class="detail-linked-thumb"><%= link_to(image_tag(still_image.thumbnail_file.public_filename, :size => still_image.thumbnail_file.image_size),
+                                                                                        :controller => 'images',
+                                                                                        :action => :show,
+                                                                                        :id => still_image.id)
+                                                        -%></div>
+                                                <% end %>
+                                                <div class="detail-linked-thumbmore">
+                                                        <a href="/images.html">30 more like this &gt;&gt;</a>
+                                                </div>
+                                        <% end %>
                                         <div class="cleaner">&nbsp;</div>
                                 </div>
                         </div>
@@ -101,7 +101,21 @@
                                         </ul>
                                 </div>
                                 <div id="detail-linked-video">
-                                        <h4><a href="/">Dummy Video (0)</a></h4>
+                                        <% # TODO: a listing page of topics, limited to related_topics %>
+                                        <% # limit to specified amount in list than provide more link %>
+                                        <h4><a href="#">Video (<%= @topic.videos.size -%>)</a></h4>
+                                        <% if @topic.videos.size > 0 %>
+                                                <ul>
+                                                <% @topic.videos.each do |video| %>
+                                                        <li><%= link_to         h(video.title),
+                                                                                :controller => 'video',
+                                                                                :action => :show,
+                                                                                :id => video.id %></li>
+                                                <% end %>
+                                                <li><a href="/" class="small">3 more like this &gt;&gt;</a></li>
+                                                </ul>
+                                        <% end %>
+                                        </ul>
                                 </div>
                                 <div class="cleaner">&nbsp;</div>
                         </div>

@@ -29,7 +29,7 @@ class Topic < ActiveRecord::Base
   has_many :web_links, :through => :content_item_relations, :source => :web_link, :order => 'position'
   has_many :audio_recordings, :through => :content_item_relations, :source => :audio_recording, :order => 'position'
   has_many :videos, :through => :content_item_relations, :source => :video, :order => 'position'
-  has_many :images, :through => :content_item_relations, :source => :image, :order => 'position'
+  has_many :still_images, :through => :content_item_relations, :source => :still_image, :order => 'position'
   # topics related to a topic
   has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
 

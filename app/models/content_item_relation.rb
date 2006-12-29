@@ -9,7 +9,7 @@ class ContentItemRelation < ActiveRecord::Base
   belongs_to :web_link, :class_name => "WebLink", :foreign_key => "related_item_id"
   belongs_to :audio_recording, :class_name => "AudioRecording", :foreign_key => "related_item_id"
   belongs_to :video, :class_name => "Video", :foreign_key => "related_item_id"
-  belongs_to :image, :class_name => "Image", :foreign_key => "related_item_id"
+  belongs_to :still_image, :class_name => "StillImage", :foreign_key => "related_item_id"
   # a topic can be related to another topic
   belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
 
