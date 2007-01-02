@@ -1,7 +1,7 @@
 <tr>
   <td>
         <h4>Available Form Fields</h4>
-                <% if local_id.to_i == 1 %>
+                <% if local_id == 1 %>
                         <p>You cannot add any additional fields to this topic type, see above.</p>
                 <% else %>
                         <% @available_fields = TopicType.find_by_id(local_id).available_fields %>
