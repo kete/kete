@@ -25,6 +25,8 @@ Configuration:
 
 In this directory, use the htpasswd command to update the keteaccess file.
 
+If you have installed on Debian using the above mentioned howto, that is all there is to it.  If not, you may need to adjust settings for paths in your conf/zebra-private.cfg and conf/zebra-public.cfg files.  See comments there.
+
 ----
 Initialize Your Zebra Databases:
 
