@@ -1,16 +1,4 @@
 ---
-topic_types_004:
-  name: Event
-  updated_at: 2007-01-01 00:00:01
-  id: "4"
-  description: The top most Topic Type for all types of stuff that takes place over a period of time.
-  created_at: 2007-01-01 00:00:01
-topic_types_005:
-  name: Organization
-  updated_at: 2007-01-01 00:00:01
-  id: "5"
-  description: The top most Topic Type for groups of people, like companies and clubs, etc.
-  created_at: 2007-01-01 00:00:01
 topic_types_001:
   name: Topic
   updated_at: 2007-01-01 00:00:01
@@ -28,4 +16,16 @@ topic_types_003:
   updated_at: 2007-01-01 00:00:01
   id: "3"
   description: The top most Topic Type for all types of locations.
+  created_at: 2007-01-01 00:00:01
+topic_types_004:
+  name: Event
+  updated_at: 2007-01-01 00:00:01
+  id: "4"
+  description: The top most Topic Type for all types of stuff that takes place over a period of time.
+  created_at: 2007-01-01 00:00:01
+topic_types_005:
+  name: Organization
+  updated_at: 2007-01-01 00:00:01
+  id: "5"
+  description: The top most Topic Type for groups of people, like companies and clubs, etc.
   created_at: 2007-01-01 00:00:01
