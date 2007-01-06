@@ -21,6 +21,10 @@ Zebra:
 
 See README under the zebradb directory, note that you will probably want to update zebradb/keteaccess and db/bootstrap/zoom_dbs.yml to suit.  Do this before bootstrapping.
 
+Perl Zoom.pm:
+
+You may encounter an error where Zoom.pm isn't found, even after installing it.  This is caused by the she-bang line pointing at the wrong installation of perl.  If you have installed perl/Zoom.pm via my Macports instructions for Mac OS X, you will need to change it to /opt/local/bin/perl as noted in comments in the acts_as_zoom/lib/zoom_ext_services_action.pl file.
+
 Bootstrapping:
 To get your migrations in and then load with some baseline data use the following:
 
