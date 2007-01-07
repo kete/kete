@@ -17,7 +17,7 @@ http://svn.techno-weenie.net/projects/plugins/attachment_fu/
 http://svn.techno-weenie.net/projects/plugins/acts_as_authenticated
 to use:
 script/generate authenticated user account --svn
-Note: when I used the generator on my Mac OS X machine, I got an error about zoom not being found.  See the comment in vendor/plugins/acts_as_zoom/lib/acts_as_zoom.rb for how to work around this.
+Note: when I used the generator on my Mac OS X machine, I got an error about zoom not being found.  See the comment in vendor/plugins/acts_as_zoom/lib/acts_as_zoom.rb for how to work around this.  Basically, you probably have the non-Macports version of ruby being selected.  Use "which ruby" to see.  This may also cause postgres ruby driver not to be found.
 
 http://opensvn.csie.org/ezra/rails/plugins/dev/acl_system2/
 
