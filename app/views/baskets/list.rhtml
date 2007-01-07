@@ -1,0 +1,27 @@
+<h1>Listing baskets</h1>
+
+<table>
+  <tr>
+  <% for column in Basket.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for basket in @baskets %>
+  <tr>
+  <% for column in Basket.content_columns %>
+    <td><%=h basket.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => basket %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => basket %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => basket }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @basket_pages.current.previous } if @basket_pages.current.previous %>
+<%= link_to 'Next page', { :page => @basket_pages.current.next } if @basket_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New basket', :action => 'new' %>

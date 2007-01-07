@@ -1,0 +1,8 @@
+<% for column in Basket.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @basket.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @basket %> |
+<%= link_to 'Back', :action => 'list' %>

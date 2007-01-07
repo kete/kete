@@ -1,0 +1,9 @@
+<h1>Editing basket</h1>
+
+<% form_tag :action => 'update', :id => @basket do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @basket %> |
+<%= link_to 'Back', :action => 'list' %>
