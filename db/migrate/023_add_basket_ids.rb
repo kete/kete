@@ -10,9 +10,11 @@ class AddBasketIds < ActiveRecord::Migration
     add_column :video_versions, :basket_id, :integer
     add_column :still_images, :basket_id, :integer
     add_column :still_image_versions, :basket_id, :integer
+    add_column :image_files, :basket_id, :integer
   end
 
   def self.down
+    remove_column :image_files, :basket_id
     remove_column :still_image_versions, :basket_id
     remove_column :still_images, :basket_id
     remove_column :video_versions, :basket_id
