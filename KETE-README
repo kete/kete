@@ -14,6 +14,13 @@ https://secure.near-time.com/svn/plugins/trunk/tiny_mce
 svn://visioni.st/plugins/validates_http_url/trunk
 http://svn.techno-weenie.net/projects/plugins/attachment_fu/
 
+http://svn.techno-weenie.net/projects/plugins/acts_as_authenticated
+to use:
+script/generate authenticated user account --svn
+Note: when I used the generator on my Mac OS X machine, I got an error about zoom not being found.  See the comment in vendor/plugins/acts_as_zoom/lib/acts_as_zoom.rb for how to work around this.
+
+http://opensvn.csie.org/ezra/rails/plugins/dev/acl_system2/
+
 Gems:
 Rmagick, used by attachment_fu, see install directions in blog.katipo.co.nz
 
