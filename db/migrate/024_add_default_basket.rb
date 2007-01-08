@@ -1,4 +1,4 @@
-class AddDefault
+class AddDefaultBasket < ActiveRecord::Migration
   def self.up
     Basket.create(:name => 'Default', :urlified_name => 'default')
   end
