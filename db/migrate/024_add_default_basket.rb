@@ -1,6 +1,6 @@
 class AddDefaultBasket < ActiveRecord::Migration
   def self.up
-    Basket.create(:name => 'Default', :urlified_name => 'default')
+    Basket.create(:name => 'Site', :urlified_name => 'site')
   end
 
   def self.down
