@@ -48,6 +48,21 @@
         <div class="cleaner">&nbsp;</div>
         <div id="footer">
                 <!--Footer-->
+                <% Basket.find(:all).each do |basket| %>
+                   <% if basket == @current_basket %>
+                      <%= h(basket.name) %>
+                   <% else %>
+                      <% if basket.urlified_name == 'site' %>
+                         <%= link_to(h(basket.name), :controller => :search) %>
+                      <% else %>
+                         <%= link_to(h(basket.name), :controller => :search,
+                                                     :urlified_name => basket.urlified_name) %>
+                      <% end %>
+                   <% end %>
+                    |
+                <% end %>
+                <%= link_to("add basket", :controller => :baskets,
+                                          :action => :new) %>
         </div>
 </div><!-- /wrapper -->
 
