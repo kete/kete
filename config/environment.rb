@@ -4,6 +4,12 @@
 # you don't control web/app server and can't set it the proper way
 # ENV['RAILS_ENV'] ||= 'production'
 
+# Walter McGinnis (walter@katipo.co.nz), 2007-01-07
+# You can override default authorization system constants here.
+AUTHORIZATION_MIXIN = "object roles"
+#DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
+#STORE_LOCATION_METHOD = :store_return_location
+
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '1.1.6'
 
@@ -58,7 +64,7 @@ end
 
 # Walter McGinnis (walter@katipo.co.nz), 2006-12-06
 # used by the acts_as_zoom plugin
-ZoomDb.zoom_id_stub = "oai:hlt-kete.katipo.co.nz:"
+ZoomDb.zoom_id_stub = "oai:casanova.katipo.co.nz:"
 ZoomDb.zoom_id_element_name = "identifier"
 # in case your zoom_id is in a nested element
 # separated by /'s
