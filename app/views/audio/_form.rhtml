@@ -15,6 +15,7 @@
 
                 <%= form.file_field :uploaded_data %>
 
+                <%= hidden_field_tag 'audio_recording[basket_id]', @current_basket.id %>
                 <!--[eoform:audio_recording]-->
 
         </fieldset>

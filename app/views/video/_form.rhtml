@@ -13,6 +13,8 @@
                 <p><label for="video_description">Description</label><br/>
                 <%= form.text_area :description  %></p>
 
+                <%= hidden_field_tag 'video[basket_id]', @current_basket.id %>
+
                 <%= form.file_field :uploaded_data %>
 
                 <!--[eoform:video]-->

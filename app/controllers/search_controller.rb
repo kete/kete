@@ -15,9 +15,14 @@ class SearchController < ApplicationController
   # query our ZoomDbs for results, grab only the xml records for the results we need
   def search
     # all returns all results for a class
-    # search_terms overrides :all
-    if params[:all].nil? or !params[:search_terms].nil?
+    # it is the default if the search_terms parameter is not defined
+    # however, if search_terms is defined (but not necessarily populated)
+    # i.e. search_terms is not nil, but possibly blank
+    # it overrides :all
+    if !params[:search_terms].nil?
       params[:all] = false
+      else
+      params[:all] = true
     end
 
     if params[:current_class].nil?
@@ -48,14 +53,11 @@ class SearchController < ApplicationController
 
     @search_terms = String.new
 
-    if params['search_terms'].nil? and !params[:all] then
+    if params['search_terms'].blank? and !params[:all] then
       # TODO: have this message be derived from globalize
       flash[:notice] = "You haven't entered any search terms."
     else
-      @search_terms = String.new
-      if !params['search_terms'].nil?
-        @search_terms = params[:search_terms]
-      end
+      @search_terms = params[:search_terms]
 
       # TODO: skipping multiple source (federated) search for now
       zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
@@ -71,19 +73,30 @@ class SearchController < ApplicationController
           query = String.new
           # search_terms overrides :all, see above
           if params[:all]
-            query = "@attr 1=12 #{zoom_class}"
+            # default, special case, search all baskets for public topics and items
+            # all others are limited to what is in their basket
+            if @current_basket.urlified_name == 'site'
+              query = "@attr 1=12 #{zoom_class}"
+            else
+              query = "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class}"
+            end
           else
             # process query and get a ZOOM::RecordSet back
             prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
 
-            # TODO: this is what we will need to adjust when we have kete scope
             # this says, in essence, limit to objects in our class
             # and sort by dynamic relevance ranking (based on query)
             # and match partial words (truncated on either the left or right, i.e. both)
             # relevancee relies on our zoom dbs having it configured
             # kete zebra servers should be configured properly to use it
             # we may need to adjust when querying non-kete zoom_dbs (koha for example)
-            query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
+            # see comment above about current_basket
+            if @current_basket.urlified_name == 'site'
+              query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
+            else
+              query = "@and @attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} @attr 2=102 @attr 5=3 "
+            end
+
             # quote each term to handle phrases
             if prepped_terms.size > 1
               query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\""

@@ -1,5 +1,7 @@
 class Topic < ActiveRecord::Base
   belongs_to :topic_type
+  # each topic or content item lives in exactly one basket
+  has_one :basket
   # this is where the actual content lives
   # using the topic_type_fields associated with this topic's topic_type
   # generate a form
@@ -21,7 +23,7 @@ class Topic < ActiveRecord::Base
 
   # this is where we handled "related to"
   # this is self-referential, may break in expected ways
-  has_many :content_item_relations, :order => 'position', :dependent => :destroy
+  has_many :content_item_relations, :order => 'position', :dependent => :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
@@ -40,7 +42,8 @@ class Topic < ActiveRecord::Base
   # in create and update
   # i.e. before save, which triggers our acts_as_zoom record being shot off to zebra
   attr_accessor :oai_record
-  acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['localhost', 'public'], :raw => true
+  attr_accessor :basket_urlified_name
+  acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['localhost', 'public'], :raw => true, :additional_zoom_id_attribute => :basket_urlified_name
 
   acts_as_versioned
   validates_xml :content

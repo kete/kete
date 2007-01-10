@@ -4,7 +4,6 @@
   <% if !params[:relate_to_topic_id].nil? %>
     <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
   <% end %>
-
         <div class="form-element">
                 <label class="required" for="topic_title">Title:</label>
                 <%= text_field 'topic', 'title', {:class => "text-input"} %>
@@ -58,6 +57,8 @@
         <% else %>
                 <%= hidden_field_tag 'topic_type_id', params[:topic][:topic_type_id] %>
         <% end %>
+        <%= hidden_field_tag "topic[basket_id]", @current_basket.id %>
+
 <!--[eoform:topic]-->
 
 </fieldset>

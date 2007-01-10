@@ -1,4 +1,6 @@
 class StillImage < ActiveRecord::Base
+  # each topic or content item lives in exactly one basket
+  has_one :basket
   # image files, including different sized versions of the original
   # are handled by ImageFile model
   has_many :image_files, :dependent => :delete_all
@@ -17,7 +19,8 @@ class StillImage < ActiveRecord::Base
   # in create and update
   # i.e. before save, which triggers our acts_as_zoom record being shot off to zebra
   attr_accessor :oai_record
-  acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['localhost', 'public'], :raw => true
+  attr_accessor :basket_urlified_name
+  acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['localhost', 'public'], :raw => true, :additional_zoom_id_attribute => :basket_urlified_name
 
   acts_as_versioned
   validates_presence_of :title

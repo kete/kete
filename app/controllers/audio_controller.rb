@@ -1,6 +1,6 @@
 class AudioController < ApplicationController
   def index
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'AudioRecording', :all => true
+    redirect_to_search_for_class('AudioRecording')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -8,11 +8,11 @@ class AudioController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'AudioRecording', :all => true
+    redirect_to :action => 'index'
   end
 
   def show
-    @audio_recording = AudioRecording.find(params[:id])
+    @audio_recording = @current_basket.audio_recordings.find(params[:id])
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
@@ -29,14 +29,14 @@ class AudioController < ApplicationController
     # to add id into record during acts_as_zoom
     @audio_recording.oai_record = render_to_string(:template => 'audio/oai_record',
                                                    :layout => false)
+    @audio_recording.basket_urlified_name = @current_basket.urlified_name
     @successful = @audio_recording.save
 
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @audio_recording)
       # TODO: translation
       flash[:notice] = 'The audio recording was successfully created.'
-      # TODO: make this a helper
-      redirect_to :action => 'show', :controller => '/topics', :id => params[:relate_to_topic_id]
+      redirect_to_related_topic(params[:relate_to_topic_id])
     elsif @successful
       # TODO: translation
       flash[:notice] = 'The audio recording was successfully created.'
@@ -65,7 +65,9 @@ class AudioController < ApplicationController
   end
 
   def destroy
+    # TODO: use the code in topics_controller
     AudioRecording.find(params[:id]).destroy
     redirect_to :action => 'list'
   end
+
 end

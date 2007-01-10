@@ -1,6 +1,6 @@
 class ImagesController < ApplicationController
   def index
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'StillImage', :all => true
+    redirect_to_search_for_class('StillImage')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -8,11 +8,11 @@ class ImagesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'StillImage', :all => true
+    index
   end
 
   def show
-    @still_image = StillImage.find(params[:id])
+    @still_image = @current_basket.still_images.find(params[:id])
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, @still_image)
     respond_to do |format|
@@ -31,6 +31,7 @@ class ImagesController < ApplicationController
     # to add id into record during acts_as_zoom
     @still_image.oai_record = render_to_string(:template => 'images/oai_record',
                                                :layout => false)
+    @still_image.basket_urlified_name = @current_basket.urlified_name
     @successful = @still_image.save
 
     if @successful
@@ -49,8 +50,7 @@ class ImagesController < ApplicationController
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @still_image)
       # TODO: translation
       flash[:notice] = 'The image was successfully created.'
-      # TODO: make this a helper
-      redirect_to :action => 'show', :controller => '/topics', :id => params[:relate_to_topic_id]
+      redirect_to_related_topic(params[:relate_to_topic_id])
     elsif @successful
       # TODO: translation
       flash[:notice] = 'The image was successfully created.'
@@ -84,6 +84,7 @@ class ImagesController < ApplicationController
   end
 
   def destroy
+    # TODO: use the code in topics_controller.rb
     StillImage.find(params[:id]).destroy
     redirect_to :action => 'list'
   end

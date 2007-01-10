@@ -1,0 +1,5 @@
+# Default basket, all sites need it
+one:
+  id: 1
+  name: Site
+  urlified_name: site

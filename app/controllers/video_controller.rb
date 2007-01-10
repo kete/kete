@@ -1,6 +1,6 @@
 class VideoController < ApplicationController
   def index
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'Video', :all => true
+    redirect_to_search_for_class('Video')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -8,11 +8,11 @@ class VideoController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'Video', :all => true
+    index
   end
 
   def show
-    @video = Video.find(params[:id])
+    @video = @current_basket.videos.find(params[:id])
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
@@ -29,14 +29,14 @@ class VideoController < ApplicationController
     # to add id into record during acts_as_zoom
     @video.oai_record = render_to_string(:template => 'video/oai_record',
                                                    :layout => false)
+    @video.basket_urlified_name = @current_basket.urlified_name
     @successful = @video.save
 
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @video)
       # TODO: translation
       flash[:notice] = 'The video was successfully created.'
-      # TODO: make this a helper
-      redirect_to :action => 'show', :controller => '/topics', :id => params[:relate_to_topic_id]
+      redirect_to_related_topic(params[:relate_to_topic_id])
     elsif @successful
       # TODO: translation
       flash[:notice] = 'The video was successfully created.'
@@ -65,6 +65,7 @@ class VideoController < ApplicationController
   end
 
   def destroy
+    # TODO: use the code in topics_controller
     Video.find(params[:id]).destroy
     redirect_to :action => 'list'
   end

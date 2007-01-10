@@ -1,6 +1,6 @@
 class WebLinksController < ApplicationController
   def index
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'WebLink', :all => true
+    redirect_to_search_for_class('WebLink')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -8,11 +8,11 @@ class WebLinksController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    redirect_to :action => 'index', :controller => '/search', :current_class => 'WebLink', :all => true
+    index
   end
 
   def show
-    @web_link = WebLink.find(params[:id])
+    @web_link = @current_basket.web_links.find(params[:id])
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
@@ -29,14 +29,14 @@ class WebLinksController < ApplicationController
     # to add id into record during acts_as_zoom
     @web_link.oai_record = render_to_string(:template => 'web_links/oai_record',
                                             :layout => false)
+    @web_link.basket_urlified_name = @current_basket.urlified_name
     @successful = @web_link.save
 
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @web_link)
       # TODO: translation
       flash[:notice] = 'The web link was successfully created.'
-      # TODO: make this a helper
-      redirect_to :action => 'show', :controller => '/topics', :id => params[:relate_to_topic_id]
+      redirect_to_related_topic(params[:relate_to_topic_id])
     elsif @successful
       flash[:notice] = 'WebLink was successfully created.'
       redirect_to :action => 'list'
@@ -68,6 +68,7 @@ class WebLinksController < ApplicationController
       @web_link = WebLink.find(params[:id])
       @web_link.oai_record = render_to_string(:template => 'web_links/oai_record',
                                          :layout => false)
+      @web_link.basket_urlified_name = @web_link.basket.urlified_name
       @successful = @web_link.destroy
     rescue
       flash[:error], @successful  = $!.to_s, false

@@ -17,6 +17,8 @@ class User < ActiveRecord::Base
   validates_uniqueness_of   :login, :email, :case_sensitive => false
   before_save :encrypt_password
 
+  after_save :add_as_member_to_default_basket
+
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     u = find_by_login(login) # need to get the salt
@@ -64,5 +66,12 @@ class User < ActiveRecord::Base
 
     def password_required?
       crypted_password.blank? || !password.blank?
+    end
+
+    # after_save
+    def add_as_member_to_default_basket
+      basket = Basket.find_by_name('Default')
+
+      self.has_role('member',basket)
     end
 end
