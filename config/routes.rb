@@ -13,6 +13,12 @@ ActionController::Routing::Routes.draw do |map|
   # -- just remember to delete public/index.html.
   # map.connect '', :controller => "welcome"
 
+  # Walter McGinnis, 2007-01-08
+  # adding route for basket.urlified_name param
+  # may also need route without format?
+  map.connect ':urlified_name/:controller/:action/:id.:format'
+  map.basket ':urlified_name/:controller/:action/:id'
+
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   map.connect ':controller/service.wsdl', :action => 'wsdl'
@@ -23,6 +29,8 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
 
-  # route site root to topics
-  map.connect '', :controller => "topics"
+  # will default to site basket (special case of basket)
+  # route site to search with DEFAULT_SEARCH_CLASS
+  # :all is true by default if there are no search_terms
+  map.connect '', :controller => "search"
 end
