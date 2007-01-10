@@ -40,7 +40,10 @@ class TopicsController < ApplicationController
   end
 
   def new
-    @topic = Topic.new
+    # TODO: this is just for show, redo as specified
+    permit "admin of :current_basket" do
+      @topic = Topic.new
+    end
   end
 
   def edit

@@ -1,4 +1,7 @@
 class BasketsController < ApplicationController
+  # only permit site members to do anything with baskets
+  before_filter :login_required
+
   def index
     list
     render :action => 'list'
@@ -23,8 +26,10 @@ class BasketsController < ApplicationController
   def create
     @basket = Basket.new(params[:basket])
     if @basket.save
+      @basket.accepts_role 'admin', @current_user
+
       flash[:notice] = 'Basket was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :controler => 'search'
     else
       render :action => 'new'
     end

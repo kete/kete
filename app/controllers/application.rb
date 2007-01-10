@@ -15,6 +15,16 @@ class ApplicationController < ActionController::Base
     else
       # the first basket is always the default
       @current_basket = Basket.find(1)
+      # we have a special case with :urlified_name_or_controller for things like accounts
+      if !params[:urlified_name_or_controller].blank?
+        # see if there is a matching basket
+        @current_basket = Basket.find_by_urlified_name(params[:urlified_name_or_controller])
+        if @current_basket.blank?
+          # TODO: still getting wrong controller
+          params[:controller] = params[:urlified_name_or_controller]
+          @current_basket = Basket.find(1)
+        end
+      end
     end
     return @current_basket
   end

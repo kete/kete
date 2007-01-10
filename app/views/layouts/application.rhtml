@@ -25,7 +25,21 @@
         </div>
         <div id="header">
                 <div id="topnav">
-                        <a href="/">Kete Home</a> | <a href="/">About Kete</a> | <a href="/">Register</a> | <a href="/">Login</a>
+                        <a href="/">Kete Home</a> |
+                        <a href="/">About Kete</a> |
+                        <%= link_to_unless_current "Register", :controller => 'account',
+                                                               :action => :signup -%>
+                        |
+                        <% if !logged_in? %>
+                           <%= link_to_unless_current "Login", :controller => 'account',
+                                                               :action => :login -%>
+                           |
+                           Logout
+                        <% else %>
+                           Logged In |
+                           <%= link_to_unless_current "Logout", :controller => 'account',
+                                                                :action => :logout -%>
+                        <% end %>
                 </div>
                 <h1>
                         Kete Horowhenua
@@ -61,7 +75,7 @@
                    <% end %>
                     |
                 <% end %>
-                <%= link_to("add basket", :controller => :baskets,
+                <%= link_to("add basket", :controller => '/baskets',
                                           :action => :new) %>
         </div>
 </div><!-- /wrapper -->

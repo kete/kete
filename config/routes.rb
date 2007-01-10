@@ -18,7 +18,7 @@ ActionController::Routing::Routes.draw do |map|
   # may also need route without format?
   map.connect ':urlified_name/:controller/:action/:id.:format'
   map.basket ':urlified_name/:controller/:action/:id'
-  map.basket_root ':urlified_name', :controller => "search"
+  map.connect ':urlified_name_or_controller', :controller => 'search'
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
