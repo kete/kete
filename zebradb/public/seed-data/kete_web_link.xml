@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/">
+  <responseDate>2007-01-14 18:30:51</responseDate>
+  <request metadataPrefix="oai_dc" identifier="oai:casanova.katipo.co.nz:site:WebLink:1" verb="GetRecord">http://localhost/site/web_links/show/1.xml</request>
+  <GetRecord>
+    <record>
+      <header>
+        <identifier>oai:casanova.katipo.co.nz:site:WebLink:1</identifier>
+        <datestamp>2007-01-14</datestamp>
+      </header>
+      <metadata>
+        <oai_dc:dc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+          <dc:identifier>http://localhost/site/web_links/show/1</dc:identifier>
+          <dc:title>Kete.net</dc:title>
+          <dc:description>This is the site that describes the Kete project.</dc:description>
+          <dc:description>http://kete.net.nz/</dc:description>
+          <dc:date>Sun Jan 14 18:29:54 +1300 2007</dc:date>
+          <dc:type>InteractiveResource</dc:type>
+          <dc:format>text/html</dc:format>
+        </oai_dc:dc>
+      </metadata>
+    </record>
+  </GetRecord>
+</OAI-PMH>
