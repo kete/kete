@@ -25,8 +25,8 @@ class Basket < ActiveRecord::Base
   # before filter
   def urlify_name
     return if name.blank?
-    formatted_name = name.to_s.gsub(/ /, '-').
-      gsub(/_/,'-').
+    formatted_name = name.to_s.gsub(/ /, '_').
+      gsub(/-/,'_').
       downcase
     self.urlified_name = formatted_name
   end
