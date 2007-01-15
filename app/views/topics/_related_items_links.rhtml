@@ -1,0 +1,16 @@
+                                <div id="detail-linked-<%= zoom_class_controller(related_class) -%>">
+                                  <h4><%= "#{zoom_class_plural_humanize(related_class)} (#{items.size})" -%></h4>
+                                  <ul>
+                                  <% if items.size > 0 -%>
+                                      <% items[0..end_range].each do |related_item| -%>
+                                        <li><%= link_to_item(related_item) -%></li>
+                                      <% end -%>
+                                      <% if items.size > last_item_n -%>
+                                        <li><%= link_to_related_to_source(:phrase => more_message, :source_item => source_item, :related_class => related_class) -%></li>
+                                      <% end -%>
+                                  <% end -%>
+                                  <% if !relate_to_topic_id.blank? -%>
+                                      <li><%= link_to_add_related_item(:relate_to_topic_id => relate_to_topic_id, :phrase => 'Add related ', :item_class => related_class) -%></li>
+                                  <% end -%>
+                                  </ul>
+                                </div>
