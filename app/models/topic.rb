@@ -1,7 +1,7 @@
 class Topic < ActiveRecord::Base
   belongs_to :topic_type
   # each topic or content item lives in exactly one basket
-  has_one :basket
+  belongs_to :basket
   # this is where the actual content lives
   # using the topic_type_fields associated with this topic's topic_type
   # generate a form

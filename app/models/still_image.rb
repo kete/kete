@@ -1,6 +1,6 @@
 class StillImage < ActiveRecord::Base
   # each topic or content item lives in exactly one basket
-  has_one :basket
+  belongs_to :basket
   # image files, including different sized versions of the original
   # are handled by ImageFile model
   has_many :image_files, :dependent => :delete_all
