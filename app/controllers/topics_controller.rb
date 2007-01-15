@@ -28,10 +28,11 @@ class TopicsController < ApplicationController
   ### end TinyMCE WYSIWYG editor stuff
 
   def index
+    redirect_to_search_for('Topic')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :pick_topic_type, :destroy, :create, :update ],
          :redirect_to => { :action => :list }
 
   def list
@@ -40,7 +41,6 @@ class TopicsController < ApplicationController
 
   def new
     # TODO: this is just for show, redo as specified
-    store_location
     if @current_basket.id == 1
       permit "member of :current_basket" do
         @topic = Topic.new

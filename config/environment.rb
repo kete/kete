@@ -87,3 +87,6 @@ ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink']
 # has to do with use of attachment_fu
 BASE_PRIVATE_PATH = 'private'
 
+# how many related items or topics to display
+NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE = 5
+NUMBER_OF_RELATED_IMAGES_TO_DISPLAY = 5

@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   before_filter :load_basket
 
   # setup return_to for the session
-  after_filter :store_location, :only => [ :index, :new, :show, :edit]
+  after_filter :store_location, :only => [ :search, :index, :new, :show, :edit]
 
   def load_basket
     @current_basket = Basket.new
@@ -40,4 +40,9 @@ class ApplicationController < ActionController::Base
     session[:return_to] = request.request_uri
     session[:return_to_title] = @title
   end
+
+  def redirect_to_search_for(zoom_class)
+    redirect_to(:controller => 'search', :current_class => zoom_class)
+  end
+
 end

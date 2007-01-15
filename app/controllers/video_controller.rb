@@ -1,11 +1,11 @@
 class VideoController < ApplicationController
-  def index
-    render_results_for('Video')
-  end
-
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
+
+  def index
+    redirect_to_search_for('Video')
+  end
 
   def list
     index

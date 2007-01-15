@@ -16,19 +16,19 @@ ActionController::Routing::Routes.draw do |map|
   # Walter McGinnis, 2007-01-08
   # adding route for basket.urlified_name param
   # may also need route without format?
-  map.connect ':urlified_name/:controller/:action/:id.:format'
+  map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
   map.basket ':urlified_name/:controller/:action/:id'
-  map.connect ':urlified_name_or_controller', :controller => 'search'
+  map.basket_root ':urlified_name', :controller => "search"
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
-  map.connect ':controller/service.wsdl', :action => 'wsdl'
+  # map.connect ':controller/service.wsdl', :action => 'wsdl'
 
   # default format route
-  map.connect ':controller/:action/:id.:format'
+  # map.connect ':controller/:action/:id.:format'
 
   # Install the default route as the lowest priority.
-  map.connect ':controller/:action/:id'
+  # map.connect ':controller/:action/:id'
 
   # will default to site basket (special case of basket)
   # route site to search with DEFAULT_SEARCH_CLASS
