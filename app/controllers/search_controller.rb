@@ -14,6 +14,8 @@ class SearchController < ApplicationController
   # TODO: catch zoom_db errors or zoom_db down
   # query our ZoomDbs for results, grab only the xml records for the results we need
   def search
+    store_location
+
     # all returns all results for a class
     # it is the default if the search_terms parameter is not defined
     # however, if search_terms is defined (but not necessarily populated)

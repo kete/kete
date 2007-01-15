@@ -1,4 +1,6 @@
-<h1>Editing topic type</h1>
+<% @title = 'Editing topic type' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'update', :id => @topic_type do %>
   <%= render :partial => 'form' %>

@@ -38,6 +38,6 @@ class AccountController < ApplicationController
     cookies.delete :auth_token
     reset_session
     flash[:notice] = "You have been logged out."
-    redirect_back_or_default(:controller => '/account', :action => 'index')
+    redirect_back_or_default(:urlified_name => 'site', :controller => 'search', :action => 'index')
   end
 end

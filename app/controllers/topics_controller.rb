@@ -28,7 +28,6 @@ class TopicsController < ApplicationController
   ### end TinyMCE WYSIWYG editor stuff
 
   def index
-    redirect_to_search_for_class('Topic')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -41,8 +40,15 @@ class TopicsController < ApplicationController
 
   def new
     # TODO: this is just for show, redo as specified
-    permit "admin of :current_basket" do
-      @topic = Topic.new
+    store_location
+    if @current_basket.id == 1
+      permit "member of :current_basket" do
+        @topic = Topic.new
+      end
+    else
+      permit "admin of :current_basket" do
+        @topic = Topic.new
+      end
     end
   end
 
@@ -189,6 +195,7 @@ class TopicsController < ApplicationController
   # renders oai_record.rxml if xml request
   def show
     @topic = @current_basket.topics.find(params[:id])
+    @title = @topic.title
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }

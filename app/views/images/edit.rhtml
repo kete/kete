@@ -1,4 +1,6 @@
-<h2>Editing image</h2>
+<% @title = 'Editing image' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_for :still_image,
              :url => { :action => 'update',

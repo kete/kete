@@ -13,7 +13,7 @@
                 <p><label for="image_description">Description</label><br/>
                 <%= form.text_area :description %></p>
 
-                <%= hidden_field_tag 'image_file[basket_id]', @current_basket.id %>
+                <%= hidden_field_tag 'still_image[basket_id]', @current_basket.id %>
 
                 <%= file_field_tag 'image_file[uploaded_data]' %>
 

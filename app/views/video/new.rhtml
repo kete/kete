@@ -1,4 +1,6 @@
-<h2>New video</h2>
+<% @title = 'New video' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_for :video,
             :url => { :action => 'create'},

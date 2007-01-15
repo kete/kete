@@ -1,4 +1,6 @@
-<h2>Editing audio recording</h2>
+<% @title = 'Editing audio recording' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_for :audio_recording,
              :url => { :action => 'update',

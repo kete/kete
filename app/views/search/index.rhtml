@@ -1,5 +1,5 @@
-
-                <form action="/search" method="post">
+<% @title = 'Results' -%>
+                <form action="search" method="post">
                 <div id="searchheader">
                         <div id="searchheader-results">
                                 <h3>Results for your Search</h3>
@@ -110,8 +110,7 @@
                                         results on this page
                                 </div>
                                 <div id="addnew">
-                                        <% # TODO: helper that does the right thing for the current class and eventually group %>
-                                        <%= link_to("Add a new #{zoom_class_humanize(@current_class)}", :controller => "/#{zoom_class_controller(@current_class)}", :action => 'new') %>
+                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => @current_class) -%>
                                         to these search results
                                 </div>
                         </div>

@@ -1,4 +1,6 @@
-<h2>New web link</h2>
+<% @title = 'New web link' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'create' do %>
   <%= render :partial => 'form' %>

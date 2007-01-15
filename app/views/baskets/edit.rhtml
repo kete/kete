@@ -1,4 +1,6 @@
-<h1>Editing basket</h1>
+<% @title = 'Edit kete' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'update', :id => @basket do %>
   <%= render :partial => 'form' %>

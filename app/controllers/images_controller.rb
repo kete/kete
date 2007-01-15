@@ -1,6 +1,6 @@
 class ImagesController < ApplicationController
   def index
-    redirect_to_search_for_class('StillImage')
+    render_results_for('StillImage')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -13,6 +13,7 @@ class ImagesController < ApplicationController
 
   def show
     @still_image = @current_basket.still_images.find(params[:id])
+    @title = @still_image.title
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, @still_image)
     respond_to do |format|

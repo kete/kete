@@ -1,6 +1,6 @@
 class VideoController < ApplicationController
   def index
-    redirect_to_search_for_class('Video')
+    render_results_for('Video')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -13,6 +13,7 @@ class VideoController < ApplicationController
 
   def show
     @video = @current_basket.videos.find(params[:id])
+    @title = @video.title
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }

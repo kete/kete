@@ -1,4 +1,6 @@
-<h2>New image</h2>
+<% @title = 'New image' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_for :still_image,
             :url => { :action => 'create'},

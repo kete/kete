@@ -1,4 +1,6 @@
-<h2>Choose a topic type</h2>
+<% @title = 'Choose a topic type' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'pick_topic_type' do %>
   <%= render :partial => 'pick_form' %>

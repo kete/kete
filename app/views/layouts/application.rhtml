@@ -6,7 +6,7 @@
 <head>
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Topics</title>
+  <title><%= h(@title) -%></title>
   <% # Include TinyMCE before other JS to avoid problems -%>
   <%= javascript_include_tiny_mce_if_used %>
   <%= tiny_mce if using_tiny_mce? %>
@@ -28,17 +28,20 @@
                         <a href="/">Kete Home</a> |
                         <a href="/">About Kete</a> |
                         <%= link_to_unless_current "Register", :controller => 'account',
-                                                               :action => :signup -%>
+                                                               :action => :signup,
+                                                               :urlified_name => 'site' -%>
                         |
                         <% if !logged_in? %>
                            <%= link_to_unless_current "Login", :controller => 'account',
-                                                               :action => :login -%>
+                                                               :action => :login,
+                                                               :urlified_name => 'site' -%>
                            |
                            Logout
                         <% else %>
                            Logged In |
                            <%= link_to_unless_current "Logout", :controller => 'account',
-                                                                :action => :logout -%>
+                                                                :action => :logout,
+                                                                :urlified_name => 'site' -%>
                         <% end %>
                 </div>
                 <h1>
@@ -62,21 +65,20 @@
         <div class="cleaner">&nbsp;</div>
         <div id="footer">
                 <!--Footer-->
-                <% Basket.find(:all).each do |basket| %>
-                   <% if basket == @current_basket %>
-                      <%= h(basket.name) %>
-                   <% else %>
-                      <% if basket.urlified_name == 'site' %>
-                         <%= link_to(h(basket.name), :controller => :search) %>
+                <% if logged_in? and site_admin?  %>
+                   <% Basket.find(:all).each do |basket| %>
+                      <% if basket == @current_basket %>
+                         <%= h(basket.name) %>
                       <% else %>
                          <%= link_to(h(basket.name), :controller => :search,
                                                      :urlified_name => basket.urlified_name) %>
                       <% end %>
-                   <% end %>
-                    |
+                      |
+                      <% end %>
+                      <%= link_to("add basket", :urlified_name => 'site',
+                                                :controller => 'baskets',
+                                                :action => :new) %>
                 <% end %>
-                <%= link_to("add basket", :controller => '/baskets',
-                                          :action => :new) %>
         </div>
 </div><!-- /wrapper -->
 

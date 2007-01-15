@@ -1,5 +1,7 @@
 <% # This is where the actual forme the new topic is displayed, dynamically created in partial %>
-<h1>New topic</h1>
+<% @title = 'New topic' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'create' do %>
   <%= render :partial => 'form' %>

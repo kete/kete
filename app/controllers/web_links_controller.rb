@@ -1,6 +1,6 @@
 class WebLinksController < ApplicationController
   def index
-    redirect_to_search_for_class('WebLink')
+    render_results_for('WebLink')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -13,6 +13,7 @@ class WebLinksController < ApplicationController
 
   def show
     @web_link = @current_basket.web_links.find(params[:id])
+    @title = @web_link.title
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }

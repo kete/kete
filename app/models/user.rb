@@ -70,7 +70,7 @@ class User < ActiveRecord::Base
 
     # after_save
     def add_as_member_to_default_basket
-      basket = Basket.find_by_name('Default')
+      basket = Basket.find_by_id(1)
 
       self.has_role('member',basket)
     end

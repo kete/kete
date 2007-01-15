@@ -1,6 +1,6 @@
 class AudioController < ApplicationController
   def index
-    redirect_to_search_for_class('AudioRecording')
+    render_results_for('AudioRecording')
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -13,6 +13,7 @@ class AudioController < ApplicationController
 
   def show
     @audio_recording = @current_basket.audio_recordings.find(params[:id])
+    @title = @audio_controller.title
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
