@@ -37,6 +37,8 @@ $ zebraidx -c ../conf/zebra-private.cfg -d private commit
 $ cd ../public
 $ zebraidx -c ../conf/zebra-public.cfg -d public init
 $ zebraidx -c ../conf/zebra-public.cfg -d public commit
+$ zebraidx -c ../conf/zebra-public.cfg -d public update seed-data/kete_web_link.xml
+$ zebraidx -c ../conf/zebra-public.cfg -d public commit
 
 ----
 Startup Zebra:
