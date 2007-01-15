@@ -1,31 +1,32 @@
 ---
 topic_types_001:
   name: Topic
-  updated_at: 2007-01-01 00:00:01
+  updated_at: <%= Time.now.to_s :db %>
   id: "1"
   description: The top most and most basic Topic Type.
-  created_at: 2007-01-01 00:00:01
+  created_at: <%= Time.now.to_s :db %>
 topic_types_002:
   name: Person
-  updated_at: 2007-01-01 00:00:01
+  updated_at: <%= Time.now.to_s :db %>
   id: "2"
   description: The top most Topic Type for all types of people.
-  created_at: 2007-01-01 00:00:01
+  created_at: <%= Time.now.to_s :db %>
 topic_types_003:
   name: Place
-  updated_at: 2007-01-01 00:00:01
+  updated_at: <%= Time.now.to_s :db %>
   id: "3"
   description: The top most Topic Type for all types of locations.
-  created_at: 2007-01-01 00:00:01
+  created_at: <%= Time.now.to_s :db %>
 topic_types_004:
   name: Event
-  updated_at: 2007-01-01 00:00:01
+  updated_at: <%= Time.now.to_s :db %>
   id: "4"
   description: The top most Topic Type for all types of stuff that takes place over a period of time.
-  created_at: 2007-01-01 00:00:01
+  created_at: <%= Time.now.to_s :db %>
 topic_types_005:
   name: Organization
-  updated_at: 2007-01-01 00:00:01
+  updated_at: <%= Time.now.to_s :db %>
   id: "5"
   description: The top most Topic Type for groups of people, like companies and clubs, etc.
-  created_at: 2007-01-01 00:00:01
+  created_at: <%= Time.now.to_s :db %>
+
