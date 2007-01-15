@@ -27,9 +27,8 @@ class ApplicationController < ActionController::Base
 
   def redirect_to_related_topic(topic_id)
     # TODO: doublecheck this isn't too expensive, maybe better to find_by_sql
-
     basket = Basket.find_by_sql(["select b.id, b.urlified_name from baskets as b inner join topics as t on b.id = t.basket_id where t.id = ?", topic_id])
-    redirect_to :action => 'show', :controller => 'topics', :id => topic_id, :urlified_name => basket.urlified_name
+    redirect_to :action => 'show', :controller => 'topics', :id => topic_id, :urlified_name => basket[0]
   end
 
   # overriding here, to grab title of page, too
