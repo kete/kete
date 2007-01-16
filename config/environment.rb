@@ -47,6 +47,13 @@ Rails::Initializer.run do |config|
   # See Rails::Configuration for more options
 end
 
+# date styles:
+ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
+    :date => "%Y-%m-%d",
+    :presentable_datetime => "%a %b %d, %Y %H:%M",
+    :euro_date => "%d/%m/%Y"
+)
+
 # Add new inflection rules using the following format
 # (all these examples are active by default):
 # Inflector.inflections do |inflect|
