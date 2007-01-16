@@ -62,6 +62,6 @@ class Topic < ActiveRecord::Base
     parent_topics = self.class.find(:all,
                               :joins => "INNER JOIN content_item_relations ON topics.id = content_item_relations.topic_id",
                               :conditions => ["((content_item_relations.related_item_id = :object_id) AND (content_item_relations.related_item_type = :class_name))", { :object_id => self.id, :class_name => self.class.to_s}])
-    return parent_topics + self.child_related_topics
+    return parent_topics + self.child_related_topics - [self]
   end
 end
