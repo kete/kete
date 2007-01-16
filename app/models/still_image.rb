@@ -1,6 +1,7 @@
 class StillImage < ActiveRecord::Base
   # each topic or content item lives in exactly one basket
   belongs_to :basket
+
   # image files, including different sized versions of the original
   # are handled by ImageFile model
   has_many :image_files, :dependent => :delete_all
@@ -11,6 +12,30 @@ class StillImage < ActiveRecord::Base
   # this is where we handled "related to"
   has_many :content_item_relations, :as => :related_item, :dependent => :destroy
   has_many :topics, :through => :content_item_relations
+
+  # this is where we handle contributed and created items by users
+  has_many :contributions, :as => :contributed_item, :dependent => :delete_all
+  # :select => "distinct contributions.role, users.*",
+  # creator is intended to be just one, but we need :through functionality
+  has_many :creators, :through => :contributions, :source => :user, :order => 'created_at' do
+    def <<(user)
+      begin
+        Contribution.with_scope(:create => { :contributor_role => "creator", :version => 1}) { self.concat user }
+      rescue
+        logger.debug("what is contrib error: " + $!.to_s)
+      end
+    end
+  end
+  has_many :contributors, :through => :contributions, :source => :user, :order => 'created_at' do
+    def <<(user)
+      # TODO: figure out a better way of getting version
+      begin
+        Contribution.with_scope(:create => { :contributor_role => "contributor", :version => user.version}) { self.concat user }
+      rescue
+        logger.debug("what is contrib error: " + $!.to_s)
+      end
+    end
+  end
 
   # a virtual attribute that holds the still_image's entire content (sans binary file)
   # as xml formated how we like it
