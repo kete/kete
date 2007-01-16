@@ -2,7 +2,11 @@
                 <form action="search" method="post">
                 <div id="searchheader">
                         <div id="searchheader-results">
+                          <% if !@search_terms.blank? -%>
                                 <h3>Results for your Search</h3>
+                          <% else -%>
+                                <h3>Search Kete</h3>
+                          <% end -%>
                         </div>
                         <% if !@search_terms.blank? %>
                                 <input type="text" class="searchheader-search" name="search_terms" value="<%= @search_terms %>" size="30" />
