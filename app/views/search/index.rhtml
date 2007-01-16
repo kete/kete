@@ -28,7 +28,6 @@
         :action => 'index',
         :search_terms => @search_terms,
         :all => params[:all],
-        :result_sets => @result_sets,
         :current_class => zoom_class) -%></li>
                                         <% end %>
 
@@ -47,7 +46,6 @@
                                         <%= link_to '&lt;&lt; previous', { :action => 'index',
                                                                            :search_terms => @search_terms,
                                                                            :all => params[:all],
-                                                                           :result_sets => @result_sets,
                                                                            :page => @previous_page,
                                                                            :current_class => @current_class } %>
 
@@ -59,7 +57,6 @@
                                         <%= link_to 'next &gt;&gt;', { :action => 'index',
                                                                        :search_terms => @search_terms,
                                                                        :all => params[:all],
-                                                                       :result_sets => @result_sets,
                                                                        :page => @next_page,
                                                                        :current_class => @current_class } %>
 
@@ -104,7 +101,6 @@
                                                                               :number_or_results_per_page => choice,
                                                                               :search_terms => @search_terms,
                                                                               :all => params[:all],
-                                                                              :result_sets => @result_sets,
                                                                               :page => 1,
                                                                               :current_class => @current_class }) %>
                                                 <% else %>
