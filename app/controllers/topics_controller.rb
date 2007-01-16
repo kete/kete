@@ -109,6 +109,10 @@ class TopicsController < ApplicationController
       @topic.basket_urlified_name = @current_basket.urlified_name
       @successful = @topic.save
 
+      # add this to the user's empire of creations
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as creator
+      @topic.creators << current_user
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -156,6 +160,14 @@ class TopicsController < ApplicationController
                                            :layout => false)
       @topic.basket_urlified_name = @topic.basket.urlified_name
       @successful = @topic.update_attributes(replacement_topic_hash)
+
+      # add this to the user's empire of contributions
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as contributor
+      # uses virtual attr as hack to pass version to << method
+      @current_user = current_user
+      @current_user.version = @topic.version
+      @topic.contributors << @current_user
     rescue
       flash[:error], @successful  = $!.to_s, false
     end

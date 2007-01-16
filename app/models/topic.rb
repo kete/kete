@@ -1,7 +1,4 @@
 class Topic < ActiveRecord::Base
-  belongs_to :topic_type
-  # each topic or content item lives in exactly one basket
-  belongs_to :basket
   # this is where the actual content lives
   # using the topic_type_fields associated with this topic's topic_type
   # generate a form
@@ -9,20 +6,19 @@ class Topic < ActiveRecord::Base
   # as an xml doc
   # when displaying the topic we pull the xml doc out
   # and make the tag's values available as variables to the template
+  belongs_to :topic_type
+
+  # each topic or content item lives in exactly one basket
+  belongs_to :basket
 
   # other points:
   # should be versioned see acts_as_versioned
   # we need to store the topic_type_id
-  # we need the results available for searching, possibly using ferrit
-  # see acts_as_ferrit plugin
-  # and alternative is to use zebra for searching
-  # we will probably want validates_xml plugin for the content column
-  # we probably also want acts_as_commentable - the question being how one can see comments by commenter
+  # we probably want acts_as_commentable or role our own - the question being how one can see comments by commenter
   # see http://blog.caboo.se/articles/2006/02/21/eager-loading-with-cascaded-associations
   # about cascading eager associations, note that patch mentioned is now in edge
 
   # this is where we handled "related to"
-  # this is self-referential, may break in expected ways
   has_many :content_item_relations, :order => 'position', :dependent => :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
@@ -34,6 +30,30 @@ class Topic < ActiveRecord::Base
   has_many :still_images, :through => :content_item_relations, :source => :still_image, :order => 'position'
   # topics related to a topic
   has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
+
+  # this is where we handle contributed and created items by users
+  has_many :contributions, :as => :contributed_item, :dependent => :delete_all
+  # :select => "distinct contributions.role, users.*",
+  # creator is intended to be just one, but we need :through functionality
+  has_many :creators, :through => :contributions, :source => :user, :order => 'created_at' do
+    def <<(user)
+      begin
+        Contribution.with_scope(:create => { :contributor_role => "creator", :version => 1}) { self.concat user }
+      rescue
+        logger.debug("what is contrib error: " + $!.to_s)
+      end
+    end
+  end
+  has_many :contributors, :through => :contributions, :source => :user, :order => 'created_at' do
+    def <<(user)
+      # TODO: figure out a better way of getting version
+      begin
+        Contribution.with_scope(:create => { :contributor_role => "contributor", :version => user.version}) { self.concat user }
+      rescue
+        logger.debug("what is contrib error: " + $!.to_s)
+      end
+    end
+  end
 
   # a virtual attribute that holds the topic's entire content
   # as xml formated how we like it

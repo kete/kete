@@ -14,6 +14,7 @@ class TopicTypeField < ActiveRecord::Base
          :conditions => ["id not in (select topic_type_field_id from topic_type_to_field_mappings where topic_type_id = ?)", topic_type.id])
   end
   # TODO: make this DRY!
+  # use alias
   def add_checkbox
     # used by a form of available fields where 0 is always going to be the starting value
     return 0

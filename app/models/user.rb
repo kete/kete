@@ -1,5 +1,33 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
+  # this is where we handle contributions of different kinds
+  has_many :contributions, :order => 'created_at', :dependent => :delete_all
+  # by using has_many :through associations we gain some bidirectional flexibility
+  # with our polymorphic join model
+  # basicaly specifically name the classes on the other side of the relationship here
+  # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
+
+  # we want to have plain contributor vs creator for our contributor_roles
+  # we also want to insert versions, but only list by distinct contributor_role
+  # rather than for every single version
+  # since we are going to use our z39.50 search to accumulate our contributed or created objects
+  # this is mainly for convenience methods rather than finders
+  has_many :created_web_links, :through => :contributions, :source => :web_link, :order => 'created_at'
+  has_many :contributed_web_links, :through => :contributions, :source => :web_link, :order => 'created_at'
+  has_many :created_audio_recordings, :through => :contributions, :source => :audio_recording, :order => 'created_at'
+  has_many :contributed_audio_recordings, :through => :contributions, :source => :audio_recording, :order => 'created_at'
+  has_many :created_videos, :through => :contributions, :source => :video, :order => 'created_at'
+  has_many :contributed_videos, :through => :contributions, :source => :video, :order => 'created_at'
+  has_many :created_still_images, :through => :contributions, :source => :still_image, :order => 'created_at'
+  has_many :contributed_still_images, :through => :contributions, :source => :still_image, :order => 'created_at'
+  has_many :created_topics, :through => :contributions, :source => :topic, :order => 'created_at'
+  has_many :contributed_topics, :through => :contributions, :source => :topic, :order => 'created_at'
+
+  # Virtual attribute for the contribution.version join model
+  # a hack to be able to pass it in
+  # see topics_controller update action for example
+  attr_accessor :version
+
   # set up authorization plugin
   acts_as_authorized_user
   acts_as_authorizable
