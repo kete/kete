@@ -14,6 +14,8 @@ class AudioController < ApplicationController
   def show
     @audio_recording = @current_basket.audio_recordings.find(params[:id])
     @title = @audio_recording.title
+    @creator = @audio_recording.creators.first
+    @last_contributor = @audio_recording.contributors.last
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }

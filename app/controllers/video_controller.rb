@@ -14,6 +14,9 @@ class VideoController < ApplicationController
   def show
     @video = @current_basket.videos.find(params[:id])
     @title = @video.title
+    @creator = @video.creators.first
+    @last_contributor = @video.contributors.last
+
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }

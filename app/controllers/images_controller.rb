@@ -14,6 +14,8 @@ class ImagesController < ApplicationController
   def show
     @still_image = @current_basket.still_images.find(params[:id])
     @title = @still_image.title
+    @creator = @still_image.creators.first
+    @last_contributor = @still_image.contributors.last
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, @still_image)
     respond_to do |format|

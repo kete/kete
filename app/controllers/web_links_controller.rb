@@ -14,6 +14,9 @@ class WebLinksController < ApplicationController
   def show
     @web_link = @current_basket.web_links.find(params[:id])
     @title = @web_link.title
+    @creator = @web_link.creators.first
+    @last_contributor = @web_link.contributors.last
+
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
