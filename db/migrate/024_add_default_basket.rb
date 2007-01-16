@@ -4,12 +4,11 @@ class AddDefaultBasket < ActiveRecord::Migration
   end
 
   def self.down
-    ImageFile.delete_all
-    StillImage.delete_all
-    Video.delete_all
-    AudioRecording.delete_all
-    WebLink.delete_all
-    Topic.delete_all
-    Basket.delete_all
+    basket = Basket.find_by_id(1)
+    # work around versioning
+    ZOOM_CLASSES.each do |zoom_class|
+      Module.class_eval(zoom_class).drop_versioned_table
+    end
+    basket.destroy
   end
 end

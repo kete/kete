@@ -3,6 +3,9 @@ class AddBaskets < ActiveRecord::Migration
     create_table :baskets do |t|
       t.column :name, :string, :null => false
       t.column :urlified_name, :string
+      t.column :created_at, :datetime
+      t.column :updated_at, :datetime
+
     end
   end
 

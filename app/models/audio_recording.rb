@@ -2,7 +2,7 @@ class AudioRecording < ActiveRecord::Base
   # each topic or content item lives in exactly one basket
   belongs_to :basket
   # this is where we handled "related to"
-  has_many :content_item_relations, :as => :related_item, :dependent => :destroy
+  has_many :content_item_relations, :as => :related_item, :dependent => :delete_all
   has_many :topics, :through => :content_item_relations
 
   # a virtual attribute that holds the audio_item's entire content (sans binary file)
