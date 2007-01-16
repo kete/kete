@@ -45,4 +45,24 @@ class ApplicationController < ActionController::Base
     redirect_to(:controller => 'search', :current_class => zoom_class)
   end
 
+  def zoom_class_controller(zoom_class)
+    zoom_class_controller = String.new
+    case zoom_class
+      when "StillImage"
+      zoom_class_controller = 'images'
+      when "Video"
+      zoom_class_controller = 'video'
+      when "AudioRecording"
+      zoom_class_controller = 'audio'
+      else
+      zoom_class_controller = zoom_class.tableize
+    end
+    return zoom_class_controller
+  end
+
+  # TODO: replace with in oai_record where appropriate
+  def url_for_dc_identifier(item)
+    return url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item.id, :format => nil, :urlified_name => item.basket.urlified_name)
+  end
+
 end

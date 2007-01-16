@@ -14,11 +14,14 @@ class SearchController < ApplicationController
   # TODO: catch zoom_db errors or zoom_db down
   # query our ZoomDbs for results, grab only the xml records for the results we need
   def search
-    # all returns all results for a class
+    # all returns all results for a class or source_item (i.e. all related items to source)
     # it is the default if the search_terms parameter is not defined
     # however, if search_terms is defined (but not necessarily populated)
     # i.e. search_terms is not nil, but possibly blank
     # it overrides :all
+    # in the case of search_terms and source_item both being present
+    # the search is done with the limitations of the source_item
+    # i.e. search for 'bob smith' within topics related to source_item 'daddy smith'
     if !params[:search_terms].nil?
       params[:all] = false
       else
@@ -71,14 +74,22 @@ class SearchController < ApplicationController
         if @result_sets[zoom_class].nil?
 
           query = String.new
+          if !params[:source_item].blank?
+            # this looks in the dc_relation index in the z30.50 server
+            # must be exact string
+            # get the item
+            item = Module.class_eval(params[:source_item_class]).find(params[:source_item])
+            query += "@and @attr 1=1026 @attr 4=3 \"#{url_for_dc_identifier(item)}\" "
+          end
+
           # search_terms overrides :all, see above
           if params[:all]
             # default, special case, search all baskets for public topics and items
             # all others are limited to what is in their basket
             if @current_basket.urlified_name == 'site'
-              query = "@attr 1=12 #{zoom_class}"
+              query += "@attr 1=12 #{zoom_class} "
             else
-              query = "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class}"
+              query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
             end
           else
             # process query and get a ZOOM::RecordSet back

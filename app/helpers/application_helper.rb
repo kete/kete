@@ -59,7 +59,7 @@ module ApplicationHelper
   end
 
   def link_to_related_to_source(options={})
-    link_to(options[:phrase], { :controller => 'search', :source_item => options[:source_item], :current_class => options[:related_class], :urlified_name => 'site' }, { :class => 'small'})
+    link_to(options[:phrase], { :controller => 'search', :source_item => options[:source_item], :source_item_class => options[:source_item_class], :current_class => options[:related_class], :urlified_name => 'site' }, { :class => 'small'})
   end
 
   def link_to_add_item(options={})
@@ -90,7 +90,7 @@ module ApplicationHelper
 
     middle_html = String.new
     if !options[:topics].nil?
-      middle_html = related_items_links(:source_item => options[:source_item], :items => options[:topics], :related_class => 'Topic')
+      middle_html = related_items_links(:source_item => options[:source_item], :source_item_class => options[:source_item_class], :items => options[:topics], :related_class => 'Topic')
     end
 
     end_html = %q(
@@ -102,6 +102,7 @@ module ApplicationHelper
 
   def related_items_links(options={})
     source_item = options[:source_item]
+    source_item_class = options[:source_item_class]
     related_class = options[:related_class]
 
     items = options[:items]
@@ -141,6 +142,7 @@ module ApplicationHelper
                     :end_range => end_range,
                     :more_message => more_message,
                     :source_item => source_item,
+                    :source_item_class => source_item_class,
                     :last_item_n => last_item_n,
                     :relate_to_topic_id => relate_to_topic_id})
   end
@@ -153,5 +155,4 @@ module ApplicationHelper
       return :true
     end
   end
-
 end

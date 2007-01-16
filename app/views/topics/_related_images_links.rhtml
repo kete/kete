@@ -9,7 +9,7 @@
                                                         -%></div>
                                                 <% end -%>
                                                 <% if items.size > last_item_n -%>
-                                                        <li><%= link_to_related_to_source(:phrase => more_message, :source_item => source_item, :related_class => related_class) -%></li>
+                                                        <li><%= link_to_related_to_source(:phrase => more_message, :source_item => source_item, :source_item_class => source_item_class, :related_class => related_class) -%></li>
                                                 <% end -%>
                                         <% end -%>
                                         <% if !relate_to_topic_id.blank? -%>

@@ -31,6 +31,7 @@
                         <h3>Other Kete Users have linked this topic to:</h3>
                         <div id="detail-linked-toprow">
                           <%= related_items_links(:source_item => @topic,
+                                                  :source_item_class => 'Topic',
                                                   :related_class => 'StillImage',
                                                   :items => @topic.still_images,
                                                   :relate_to_topic_id => @topic.id) %>
@@ -40,16 +41,19 @@
                         </div>
                         <div id="detail-linked-midrow">
                           <%= related_items_links(:source_item => @topic,
+                                                  :source_item_class => 'Topic',
                                                   :related_class => 'Topic',
                                                   :items => @topic.related_topics,
                                                   :relate_to_topic_id => @topic.id) %>
 
                           <%= related_items_links(:source_item => @topic,
+                                                  :source_item_class => 'Topic',
                                                   :related_class => 'AudioRecording',
                                                   :items => @topic.audio_recordings,
                                                   :relate_to_topic_id => @topic.id) %>
 
                           <%= related_items_links(:source_item => @topic,
+                                                  :source_item_class => 'Topic',
                                                   :related_class => 'Video',
                                                   :items => @topic.videos,
                                                   :relate_to_topic_id => @topic.id) %>
@@ -69,6 +73,7 @@
                                 </div>
                                 -->
                                 <%= related_items_links(:source_item => @topic,
+                                                        :source_item_class => 'Topic',
                                                         :related_class => 'WebLink',
                                                         :items => @topic.web_links,
                                                         :relate_to_topic_id => @topic.id) %>

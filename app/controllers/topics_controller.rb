@@ -42,7 +42,7 @@ class TopicsController < ApplicationController
   def new
     # TODO: this is just for show, redo as specified
     if @current_basket.id == 1
-      permit "member of :current_basket" do
+      permit "member or admin of :current_basket" do
         @topic = Topic.new
       end
     else

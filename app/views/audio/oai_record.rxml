@@ -24,7 +24,28 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                                         # TODO: add dc:contributor for anyone who edits, beyond dc:creator
                                         # TODO: add dcterms:modified field for every version date
                                         # TODO: related topics and items should have dc:subject elem here with their title
-                                        # TODO: related topics and items should have dc:relation with their dc:identifier here
+                                        # related topics and items should have dc:subject elem here with their title
+                                        if @audio_recording.id
+                                                ['Topic'].each do |zoom_class|
+                                                        related_items = @audio_recording.send(zoom_class.tableize)
+
+                                                        related_items.each do |related|
+                                                            xml.tag!("dc:subject", related.title)
+                                                            xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+                                                        end
+
+                                                end
+                                        else
+                                                # this is a new, the only relation we know about is relate_to_topic_id
+                                                # if it exists
+                                                if !params[:relate_to_topic_id].blank?
+                                                    relate_to_topic = Topic.find_by_id(params[:relate_to_topic_id])
+                                                    xml.tag!("dc:subject", relate_to_topic.title)
+                                                    xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => 'topics', :action => 'show', :id => relate_to_topic.id, :format => nil, :urlified_name => relate_to_topic.basket.urlified_name)}")
+
+                                                end
+
+                                        end
                                         xml.tag!("dc:date", @audio_recording.created_at || Time.now.to_s(:db) )
                                         xml.tag!("dc:type", "Sound")
                                         # TODO: when tagging is implemented, get all tags and make them dc:subjects
