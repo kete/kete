@@ -454,6 +454,30 @@ div.progressBar div.background {
   width: 0%;
 }
 
+/* IMAGE DETAILS */
+/* --- standard pipe-list --- */
+.pipe-list {
+        padding:10px 0 10px 0
+}
+.pipe-list ul {
+        margin-left: 0;
+        padding-left: 0;
+        display: inline;
+}
+.pipe-list ul li {
+        margin-left: 0;
+        padding: 1px 2px 2px 3px;
+        border-left: 1px solid #A84;
+        list-style: none;
+        display: inline;
+}
+.pipe-list ul li.first {
+        margin-left: 0;
+        border-left: none;
+        list-style: none;
+        display: inline;
+}
+
 /* --- FOOTER -- */
 /* #footer { spare for bottom of page } */
 #adminToolbox {
