@@ -39,6 +39,11 @@ class WebLinksController < ApplicationController
       flash[:notice] = 'The web link was successfully created.'
       redirect_to_related_topic(params[:relate_to_topic_id])
     elsif @successful
+      # add this to the user's empire of creations
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as creator
+      @web_link.creators << current_user
+
       flash[:notice] = 'WebLink was successfully created.'
       redirect_to :action => 'list'
     else
@@ -57,6 +62,14 @@ class WebLinksController < ApplicationController
     @web_link.oai_record = render_to_string(:template => 'web_links/oai_record',
                                             :layout => false)
     if @web_link.update_attributes(params[:web_link])
+      # add this to the user's empire of contributions
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as contributor
+      # uses virtual attr as hack to pass version to << method
+      @current_user = current_user
+      @current_user.version = @web_link.version
+      @web_link.contributors << @current_user
+
       flash[:notice] = 'WebLink was successfully updated.'
       redirect_to :action => 'show', :id => @web_link
     else

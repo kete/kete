@@ -33,6 +33,11 @@ class VideoController < ApplicationController
     @video.basket_urlified_name = @current_basket.urlified_name
     @successful = @video.save
 
+    # add this to the user's empire of creations
+    # TODO: allow current_user whom is at least moderator to pick another user
+    # as creator
+    @video.creators << current_user
+
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @video)
       # TODO: translation
@@ -58,6 +63,14 @@ class VideoController < ApplicationController
     @video.oai_record = render_to_string(:template => 'video/oai_record',
                                                    :layout => false)
     if @video.update_attributes(params[:video])
+      # add this to the user's empire of contributions
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as contributor
+      # uses virtual attr as hack to pass version to << method
+      @current_user = current_user
+      @current_user.version = @video.version
+      @video.contributors << @current_user
+
       flash[:notice] = 'Video was successfully updated.'
       redirect_to :action => 'show', :id => @video
     else

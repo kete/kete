@@ -42,6 +42,10 @@ class AudioController < ApplicationController
     @audio_recording.basket_urlified_name = @current_basket.urlified_name
     @successful = @audio_recording.save
 
+    # add this to the user's empire of creations
+    # TODO: allow current_user whom is at least moderator to pick another user
+    # as creator
+    @audio_recording.creators << current_user
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @audio_recording)
       # TODO: translation
@@ -67,6 +71,14 @@ class AudioController < ApplicationController
     @audio_recording.oai_record = render_to_string(:template => 'audio/oai_record',
                                                    :layout => false)
     if @audio_recording.update_attributes(params[:audio_recording])
+      # add this to the user's empire of contributions
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as contributor
+      # uses virtual attr as hack to pass version to << method
+      @current_user = current_user
+      @current_user.version = @audio_recording.version
+      @audio_recording.contributors << @current_user
+
       flash[:notice] = 'AudioRecording was successfully updated.'
       redirect_to :action => 'show', :id => @audio_recording
     else

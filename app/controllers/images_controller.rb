@@ -36,6 +36,11 @@ class ImagesController < ApplicationController
     @successful = @still_image.save
 
     if @successful
+      # add this to the user's empire of creations
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as creator
+      @still_image.creators << current_user
+
       @original_file = ImageFile.new(params[:image_file])
       @original_file.still_image_id = @still_image.id
       @original_file.save
@@ -72,6 +77,14 @@ class ImagesController < ApplicationController
     @still_image.oai_record = render_to_string(:template => 'images/oai_record',
                                                    :layout => false)
     if @still_image.update_attributes(params[:still_image])
+      # add this to the user's empire of contributions
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as contributor
+      # uses virtual attr as hack to pass version to << method
+      @current_user = current_user
+      @current_user.version = @still_image.version
+      @still_image.contributors << @current_user
+
       if !params[:image_file][:uploaded_file].blank?
         # if they have uploaded something new, insert it
         @original_file = ImageFile.update_attributes(params[:image_file])
