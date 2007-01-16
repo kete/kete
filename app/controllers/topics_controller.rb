@@ -208,6 +208,8 @@ class TopicsController < ApplicationController
   def show
     @topic = @current_basket.topics.find(params[:id])
     @title = @topic.title
+    @creator = @topic.creators.first
+    @last_contributor = @topic.contributors.last
     respond_to do |format|
       format.html
       format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }

@@ -25,6 +25,21 @@
 
                                 </ul>
                         </div>
+                        <div class="detail-tools">
+                                <ul>
+                                        <li class="first"><%= link_to "Created by: #{@creator.login}",
+                                                                :urlified_name => 'site',
+                                                                :controller => 'search',
+                                                                :contributor_id => @creator.id %></li>
+                                        <li><%= link_to "Last Edited by: #{@last_contributor.login}",
+                                                                :urlified_name => 'site',
+                                                                :controller => 'search',
+                                                                :contributor_id => @last_contributor.id %></li>
+                                        <li>Last Edited Date: <%= @topic.update_at.england -%>
+
+                                </ul>
+                        </div>
+
                         <div class="cleaner">&nbsp;</div>
                 </div>
                 <div id="detail-linked">
