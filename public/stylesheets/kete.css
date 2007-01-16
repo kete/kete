@@ -456,3 +456,8 @@ div.progressBar div.background {
 
 /* --- FOOTER -- */
 /* #footer { spare for bottom of page } */
+#adminToolbox {
+        border-left:solid 1px #DCA;
+        border-right:solid 1px #DCA;
+        padding:16px;
+}

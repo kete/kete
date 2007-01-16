@@ -66,18 +66,37 @@
         <div id="footer">
                 <!--Footer-->
                 <% if logged_in? and site_admin?  %>
-                   <% Basket.find(:all).each do |basket| %>
-                      <% if basket == @current_basket %>
-                         <%= h(basket.name) %>
-                      <% else %>
-                         <%= link_to(h(basket.name), :controller => :search,
-                                                     :urlified_name => basket.urlified_name) %>
-                      <% end %>
-                      |
-                      <% end %>
-                      <%= link_to("add basket", :urlified_name => 'site',
-                                                :controller => 'baskets',
-                                                :action => :new) %>
+                   <!-- admin toolbox, temp -->
+                   <div id="adminToolbox">
+                        <h4>Administrator's Toolbox (prototype)</h4>
+                        <p>Kete collections:
+                        <% Basket.find(:all).each do |basket| %>
+                           <% if basket == @current_basket %>
+                              <%= h(basket.name) %>
+                           <% else %>
+                              <%= link_to(h(basket.name), :controller => :search,
+                                                          :urlified_name => basket.urlified_name) %>
+                           <% end %>
+                           |
+                        <% end %>
+                        <%= link_to_unless_current("add kete", :urlified_name => 'site',
+                                                               :controller => 'baskets',
+                                                               :action => :new) %>
+                        </p>
+                        <p>Controls:
+                        <%= link_to_unless_current "topic types", :controller => '/topic_types',
+                                                                  :action => :list,
+                                                                  :urlified_name => 'site' -%>
+                        |
+                        <%= link_to_unless_current "topic type fields", :controller => '/topic_type_fields',
+                                                                        :action => :list,
+                                                                        :urlified_name => 'site' -%>
+                        |
+                        <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
+                                                                              :action => :list,
+                                                                              :urlified_name => 'site' -%>
+                        </p>
+                   </div>
                 <% end %>
         </div>
 </div><!-- /wrapper -->
