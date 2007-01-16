@@ -116,13 +116,15 @@ att 1022            Geographic-class
 att 1023            Indexed-by
 att 1024            Map-scale
 att 1025            Music-key
-att 1026            Related-periodical
+#att 1026            Related-periodical
+att 1026            dc_relation
 att 1027            Report-number
 att 1028            Stock-number
 att 1030            Thematic-number
 att 1031            Material-type
 att 1032            Doc-id
 att 1033            Host-item
-att 1034            Content-type
+# att 1034            Content-type
+att 1034            dc_type
 att 1035            Anywhere
 att 1036            Author-Title-Subject
