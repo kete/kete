@@ -83,14 +83,14 @@ module ApplicationHelper
                         <h3>This #{options[:class_phrase]} is not related to any topics at this time.</h3>"
     else
       beginning_html += "
-                        <h3>This #{options[:class_phrase]} is related to the following topics:</h3>"
+                        <h3>Related Topics:</h3>"
     end
     beginning_html +=%q(
-                        <div id="detail-linked-toprow">)
+                        <div id="pipe-list">)
 
     middle_html = String.new
     if !options[:topics].nil?
-      middle_html = related_items_links(:source_item => options[:source_item], :source_item_class => options[:source_item_class], :items => options[:topics], :related_class => 'Topic')
+      middle_html = related_items_links(:source_item => options[:source_item], :source_item_class => options[:source_item_class], :items => options[:topics], :related_class => 'Topic', :pipe_list => :true )
     end
 
     end_html = %q(
@@ -144,6 +144,7 @@ module ApplicationHelper
                     :source_item => source_item,
                     :source_item_class => source_item_class,
                     :last_item_n => last_item_n,
+                    :pipe_list => options[:pipe_list],
                     :relate_to_topic_id => relate_to_topic_id})
   end
 

@@ -1,5 +1,10 @@
-                                <div id="detail-linked-<%= zoom_class_controller(related_class) -%>">
-                                  <h4><%= "#{zoom_class_plural_humanize(related_class)} (#{items.size})" -%></h4>
+                                <% if !pipe_list -%>
+                                        <div id="detail-linked-<%= zoom_class_controller(related_class) -%>">
+                                          <h4><%= "#{zoom_class_plural_humanize(related_class)} (#{items.size})" -%></h4>
+                                <% else -%>
+
+                                        <div class="pipe-list">
+                                <% end -%>
                                   <ul>
                                   <% if items.size > 0 -%>
                                       <% items[0..end_range].each do |related_item| -%>

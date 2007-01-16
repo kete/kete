@@ -2,28 +2,32 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@still_image.title) %></h2>
-                                <p><%= @still_image.description %></p>
                                 <p>Original Filename: <%= @still_image.original_file.filename %>
                                    (<%= link_to 'download', @still_image.original_file.public_filename -%>)
                                 </p>
-                                <p>Original Size: <%= @still_image.original_file.size %></p>
                                 <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
                                 <% # default to medium view %>
                                 <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
+                                <div class="pipe-list">
+                                <ul>
                                 <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
                                         <% # not sure why, but link_to_unless_current wasn't working %>
                                         <% if key.to_s == @view_size %>
-                                                <p><%= key.to_s.humanize -%></p>
+                                                <li><%= key.to_s.humanize -%></li>
                                         <% else %>
-                                                <p><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></p>
+                                                <li><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
                                         <% end -%>
                                 <% end -%>
+                                </ul>
+                               </div>
+                               <h4>Caption</h4>
+                               <p><%= @still_image.description %></p>
 
                         </div>
                         <div class="detail-tools">
                                 <h3>Get Involved</h3>
                                 <ul>
-                                        <li><%= link_to "Edit",
+                                        <li class="first"><%= link_to "Edit",
                                                                 :action => :edit,
                                                                 :controller => '/images',
                                                                 :id => @still_image %></li>
@@ -47,6 +51,11 @@
                                                                 :contributor_id => @last_contributor.id %></li>
                                         <li>Last Edited Date: <%= @still_image.updated_at.to_s(:euro_date) -%>
 
+                                </ul>
+                        </div>
+                        <div class="detail-tools">
+                                <ul>
+                                        <li class="first">Original Size: <%= @still_image.original_file.size %></li>
                                 </ul>
                         </div>
                         <div class="cleaner">&nbsp;</div>
