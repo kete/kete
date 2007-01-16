@@ -7,7 +7,7 @@ class CreateContributions < ActiveRecord::Migration
       t.column :user_id, :integer, :null => false
       t.column :contributed_item_id, :integer, :null => false, :references => nil
       t.column :contributed_item_type, :string, :null => false
-      t.column :role, :string, :null => false
+      t.column :contributor_role, :string, :null => false
       t.column :version, :integer, :null => false
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
