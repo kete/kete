@@ -478,6 +478,49 @@ div.progressBar div.background {
         display: inline;
 }
 
+/* --- HOMEPAGE --- */
+#home-container {
+        float:left;
+        padding-left:16px
+}
+#home-searchheader {
+        padding:10px 0 10px 0
+}
+.home-feature-wrapper {
+        padding:16px 16px 0 0
+}
+.home-feature-toprow {
+        clear:both;
+}
+.home-feature-left {
+        float:left;
+        background:#FED;
+        padding:4px
+}
+.home-feature-left img {
+        padding:0 10px 0 10px
+}
+.home-feature-right {
+        float:left;
+        background:#FED;
+        padding:4px;
+        margin-left:20px
+}
+.home-feature-right img {
+        padding:0 10px 0 10px
+}
+.home-feature-secondrow {
+        clear:both;
+        padding-top:20px
+}
+#home-right {
+        float:left;
+        margin-left:16px;
+        background:#FED;
+        padding:10px;
+        width:200px
+}
+
 /* --- FOOTER -- */
 /* #footer { spare for bottom of page } */
 #adminToolbox {
