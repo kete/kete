@@ -101,12 +101,6 @@ class TopicsController < ApplicationController
       end
 
       @topic = Topic.new(replacement_topic_hash)
-
-      # TODO: because id isn't available until after a save, we have a HACK
-      # to add id into record during acts_as_zoom
-      @topic.oai_record = render_to_string(:template => 'topics/oai_record',
-                                           :layout => false)
-      @topic.basket_urlified_name = @current_basket.urlified_name
       @successful = @topic.save
 
       # add this to the user's empire of creations
@@ -117,19 +111,27 @@ class TopicsController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
+    where_to_redirect = 'show_self'
     if params[:relate_to_topic_id] and @successful
       ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @topic)
-      redirect_to_related_topic(params[:relate_to_topic_id])
-    else
-      params[:topic] = replacement_topic_hash
+      where_to_redirect = 'show_related'
+    end
 
-      if @successful
+    if @successful
+      prepare_and_save_to_zoom(@topic)
+
+      if where_to_redirect == 'show_related'
+        # TODO: replace with translation stuff when we get globalize going
+        flash[:notice] = 'Related topic was successfully created.'
+        redirect_to_related_topic(params[:relate_to_topic_id])
+      else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = 'Topic was successfully created.'
+        params[:topic] = replacement_topic_hash
         redirect_to :action => 'show', :id => @topic
-      else
-        render :action => 'pick_topic_type'
       end
+    else
+        render :action => 'pick_topic_type'
     end
   end
 
@@ -154,11 +156,7 @@ class TopicsController < ApplicationController
             replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
         end
       end
-      # update our oai_record virtual attribute
-      # see oai_record for TODOs
-      @topic.oai_record = render_to_string(:template => 'topics/oai_record',
-                                           :layout => false)
-      @topic.basket_urlified_name = @topic.basket.urlified_name
+
       @successful = @topic.update_attributes(replacement_topic_hash)
 
       # add this to the user's empire of contributions
@@ -175,6 +173,8 @@ class TopicsController < ApplicationController
     params[:topic] = replacement_topic_hash
 
     if @successful
+      prepare_and_save_to_zoom(@topic)
+
       # TODO: replace with translation stuff when we get globalize going
       flash[:notice] = 'Topic was successfully edited.'
       redirect_to :action => 'show', :id => @topic
@@ -208,6 +208,7 @@ class TopicsController < ApplicationController
   def show
     @topic = @current_basket.topics.find(params[:id])
     @title = @topic.title
+    # TODO: likely to be inefficient, switch to more direct sql
     @creator = @topic.creators.first
     @last_contributor = @topic.contributors.last
     respond_to do |format|

@@ -1,34 +1,23 @@
-if @topic.id
-        id_sub = ''
-else
-        id_sub = ID_SUB
-end
 xml.instruct!
 xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
         xml.responseDate(Time.now.to_s(:db))
-        xml.request(request.protocol + request.host + request.request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@current_basket.urlified_name}:#{@topic.class.name}:#{@topic.id}", :metadataPrefix => "oai_dc")
+        oai_dc_xml_request(xml,@topic)
         xml.GetRecord do
                 xml.record do
                         xml.header do
-                                xml.identifier("#{ZoomDb.zoom_id_stub}#{@current_basket.urlified_name}:#{@topic.class.name}:#{@topic.id || id_sub}")
+                                oai_dc_xml_oai_identifier(xml,@topic)
                                 xml.datestamp(Date.today.to_s(:db))
                         end
                         xml.metadata do
                                 xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
-                                        xml.tag!("dc:identifier", "http://#{request.host}#{url_for(:controller => 'topics', :action => 'show', :id => @topic.id, :format => nil, :urlified_name => @current_basket.urlified_name)}#{"/" + id_sub unless id_sub.blank?}")
-                                        xml.tag!("dc:title", @topic.title)
-                                        # TODO: publisher should be this instance of Kete
-                                        xml.tag!("dc:description", params[:short_summary] || @topic.short_summary)
-                                        xml.tag!("dc:description", params[:description] || @topic.description)
-
+                                        oai_dc_xml_dc_identifier(xml,@topic)
+                                        oai_dc_xml_dc_title(xml,@topic)
+                                        oai_dc_xml_dc_publisher(xml)
+                                        oai_dc_xml_dc_description(xml,@topic.short_summary)
+                                        oai_dc_xml_dc_description(xml,@topic.description)
                                         # work through content, see what should be it's own dc element
                                         # and what should go in a group dc:description
-                                        temp_content = ''
-                                        if params[:content]
-                                                temp_content = params[:content]
-                                        else
-                                                temp_content = @topic.content
-                                        end
+                                        temp_content = @topic.content
                                         content_hash = XmlSimple.xml_in("<dummy>#{temp_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
 
                                         non_dc_content_hash = Hash.new
@@ -46,43 +35,31 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                                                 end
                                         end
 
-                                        xml.tag!("dc:description") do
-                                                non_dc_content_hash.each do |key, value|
-                                                        xml.tag!(key, value)
+                                        if !non_dc_content_hash.blank?
+                                                xml.tag!("dc:description") do
+                                                        non_dc_content_hash.each do |key, value|
+                                                                xml.tag!(key, value)
+                                                        end
                                                 end
                                         end
-                                        # add dc:creator for either initial poster, or person chosen by initial poster
-                                        # TODO: add dc:contributor for anyone who edits, beyond dc:creator
-                                        # TODO: add dcterms:modified field for every version date
+
+                                        oai_dc_xml_dc_creators_and_date(xml,@topic)
+                                        oai_dc_xml_dc_contributors_and_modified_dates(xml,@topic)
+
                                         # related topics and items should have dc:subject elem here with their title
-                                        if @topic.id
-                                                ZOOM_CLASSES.each do |zoom_class|
-                                                        related_items = ''
-                                                        if zoom_class == 'Topic'
-                                                            related_items = @topic.related_topics
-                                                        else
-                                                            related_items = @topic.send(zoom_class.tableize)
-                                                        end
-
-                                                        related_items.each do |related|
-                                                            xml.tag!("dc:subject", related.title)
-                                                            xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
-                                                        end
-
+                                        oai_dc_xml_dc_relations_and_subjects(xml,@topic)
+                                        ZOOM_CLASSES.each do |zoom_class|
+                                            related_items = ''
+                                                if zoom_class == 'Topic'
+                                                    related_items = @topic.related_topics
+                                                else
+                                                    related_items = @topic.send(zoom_class.tableize)
                                                 end
-                                        else
-                                                # this is a new, the only relation we know about is relate_to_topic_id
-                                                # if it exists
-                                                if !params[:relate_to_topic_id].blank?
-                                                    relate_to_topic = Topic.find_by_id(params[:relate_to_topic_id])
-                                                    xml.tag!("dc:subject", relate_to_topic.title)
-                                                    xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => 'topics', :action => 'show', :id => relate_to_topic.id, :format => nil, :urlified_name => relate_to_topic.basket.urlified_name)}")
-
+                                                related_items.each do |related|
+                                                    xml.tag!("dc:subject", related.title)
+                                                    xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
                                                 end
-
                                         end
-                                        # TODO: related topics and items should have dc:relation with their dc:identifier here
-                                        xml.tag!("dc:date", @topic.created_at || Time.now.to_s(:db) )
                                         xml.tag!("dc:type", "InteractiveResource")
                                         # TODO: when tagging is implemented, get all tags and make them dc:subjects
                                         # TODO: this is mime type

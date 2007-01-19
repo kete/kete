@@ -14,11 +14,11 @@
                                 <ul>
                                         <li><%= link_to "Edit",
                                                                 :action => :edit,
-                                                                :controller => '/topics',
+                                                                :controller => 'topics',
                                                                 :id => @topic %></li>
                                         <li><%= link_to "Delete",
                                                                 {:action => :destroy,
-                                                                :controller => '/topics',
+                                                                :controller => 'topics',
                                                                 :id => @topic},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>

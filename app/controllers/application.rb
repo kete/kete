@@ -65,4 +65,21 @@ class ApplicationController < ActionController::Base
     return url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item.id, :format => nil, :urlified_name => item.basket.urlified_name)
   end
 
+  def prepare_and_save_to_zoom(item)
+    # only do this for members of ZOOM_CLASSES
+    if ZOOM_CLASSES.include?(item.class.name)
+      begin
+        item.oai_record = render_to_string(:template => "#{zoom_class_controller(item.class.name)}/oai_record",
+                                           :layout => false)
+        logger.debug("what is oai_record: #{item.oai_record}")
+        item.basket_urlified_name = @current_basket.urlified_name
+
+        # that should do it for preparing our record for zoom
+        # shoot it off to our z39.50 server
+        item.zoom_save
+      rescue
+        logger.error("prepare_and_save_to_zoom error: #{$!.to_s}")
+      end
+    end
+  end
 end
