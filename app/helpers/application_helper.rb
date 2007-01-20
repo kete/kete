@@ -218,4 +218,32 @@ module ApplicationHelper
     end
   end
 
+  def oai_dc_xml_dc_type(xml,item)
+    # topic's type is the default
+    type = "InteractiveResource"
+    case item.class.name
+    when "AudioRecording"
+      type = 'Sound'
+    when "WebLink"
+      type = 'Web Link'
+    when "StillImage"
+      type = 'StillImage'
+    when 'Video'
+      type = 'MovingImage'
+    end
+      xml.tag!("dc:type", type)
+  end
+  def oai_dc_xml_dc_format(xml,item)
+    # item's content type is the default
+    format = String.new
+    case item.class.name
+    when 'Topic' || 'Web Link'
+      format = 'text/html'
+    when 'StillImage'
+      format = item..original_file.content_type
+    else
+      format = item.content_type
+    end
+    xml.tag!("dc:format", format)
+  end
 end
