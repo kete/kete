@@ -45,6 +45,7 @@ class ApplicationController < ActionController::Base
     redirect_to(:controller => 'search', :current_class => zoom_class)
   end
 
+  # is this redundant with application_helper def?
   def zoom_class_controller(zoom_class)
     zoom_class_controller = String.new
     case zoom_class
@@ -60,7 +61,6 @@ class ApplicationController < ActionController::Base
     return zoom_class_controller
   end
 
-  # TODO: replace with in oai_record where appropriate
   def url_for_dc_identifier(item)
     return url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item.id, :format => nil, :urlified_name => item.basket.urlified_name)
   end

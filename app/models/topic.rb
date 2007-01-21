@@ -11,70 +11,40 @@ class Topic < ActiveRecord::Base
   # each topic or content item lives in exactly one basket
   belongs_to :basket
 
+  # where we handle creator and contributor tracking
+  include HasContributors
+
+  # all our ZOOM_CLASSES need this to be searchable by zebra
+  include ConfigureActsAsZoomForKete
+
   # other points:
   # should be versioned see acts_as_versioned
-  # we need to store the topic_type_id
   # we probably want acts_as_commentable or role our own - the question being how one can see comments by commenter
   # see http://blog.caboo.se/articles/2006/02/21/eager-loading-with-cascaded-associations
   # about cascading eager associations, note that patch mentioned is now in edge
 
   # this is where we handled "related to"
-  has_many :content_item_relations, :order => 'position', :dependent => :delete_all
+  has_many :content_item_relations,
+  :order => 'position', :dependent => :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
-  has_many :web_links, :through => :content_item_relations, :source => :web_link, :order => 'position'
-  has_many :audio_recordings, :through => :content_item_relations, :source => :audio_recording, :order => 'position'
-  has_many :videos, :through => :content_item_relations, :source => :video, :order => 'position'
-  has_many :still_images, :through => :content_item_relations, :source => :still_image, :order => 'position'
-  # topics related to a topic
-  has_many :child_related_topics, :through => :content_item_relations, :source => :related_topic, :order => 'position'
-
-  # this is where we handle contributed and created items by users
-  has_many :contributions, :as => :contributed_item, :dependent => :delete_all
-  # :select => "distinct contributions.role, users.*",
-  # creator is intended to be just one, but we need :through functionality
-  has_many :creators, :through => :contributions,
-  :source => :user,
-  :conditions => "contributions.contributor_role = 'creator'",
-  :order => 'contributions.created_at' do
-    def <<(user)
-      begin
-        Contribution.with_scope(:create => { :contributor_role => "creator",
-                                  :version => 1}) { self.concat user }
-      rescue
-        logger.debug("what is contrib error: " + $!.to_s)
-      end
+  ZOOM_CLASSES.each do |zoom_class|
+    if zoom_class == 'Topic'
+      # special case
+      # topics related to a topic
+      has_many :child_related_topics, :through => :content_item_relations,
+      :source => :related_topic,
+      :include => :basket,
+      :order => 'position'
+    else
+      has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
+      :source => zoom_class.tableize.singularize.to_sym,
+      :include => :basket,
+      :order => 'position'
     end
   end
-  has_many :contributors, :through => :contributions,
-  :source => :user,
-  :select => "contributions.version, contributions.created_at as version_created_at, users.*",
-  :conditions => "contributions.contributor_role = 'contributor'",
-  :order => 'contributions.created_at' do
-    def <<(user)
-      # TODO: assumes user has a version method (virtual attribute on user set before this is called)
-      begin
-        Contribution.with_scope(:create => { :contributor_role => "contributor",
-                                  :version => user.version}) { self.concat user }
-      rescue
-        logger.debug("what is contrib error: " + $!.to_s)
-      end
-    end
-  end
-
-  # a virtual attribute that holds the topic's entire content
-  # as xml formated how we like it
-  # for use by acts_as_zoom virtual_field_name, :raw => true
-  # this virtual attribue will be populated/updated in our controller
-  # in create and update
-  # we also opt to explicitly call the zoom_save method ourselves
-  # otherwise lots of attributes we need for the oai_record
-  # aren't available
-  attr_accessor :oai_record
-  attr_accessor :basket_urlified_name
-  acts_as_zoom :fields => [:oai_record], :save_to_public_zoom => ['localhost', 'public'], :raw => true, :additional_zoom_id_attribute => :basket_urlified_name, :use_save_callback => true
 
   acts_as_versioned
   validates_xml :content

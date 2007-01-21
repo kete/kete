@@ -54,8 +54,11 @@ module ApplicationHelper
     end
   end
 
+  # TODO: this needs basket.urlified_name
   def link_to_item(item)
-    link_to h(item.title), :controller => zoom_class_controller(item.class.name), :action => :show, :id => item.id
+    link_to h(item.title), :controller => zoom_class_controller(item.class.name),
+    :urlified_name => item.basket.urlified_name,
+    :action => :show, :id => item.id
   end
 
   def link_to_related_to_source(options={})

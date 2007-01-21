@@ -23,6 +23,7 @@ class Basket < ActiveRecord::Base
 
   protected
   # before filter
+  # TODO: look up to_param and whether we should use it
   def urlify_name
     return if name.blank?
     formatted_name = name.to_s.gsub(/ /, '_').
