@@ -1,34 +1,36 @@
 xml.instruct!
 xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
         xml.responseDate(Time.now.to_s(:db))
-        oai_dc_xml_request(xml,@topic)
+        oai_dc_xml_request(xml,item)
         xml.GetRecord do
                 xml.record do
                         xml.header do
-                                oai_dc_xml_oai_identifier(xml,@topic)
+                                oai_dc_xml_oai_identifier(xml,item)
                                 xml.datestamp(Date.today.to_s(:db))
                         end
                         xml.metadata do
                                 xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
-                                        oai_dc_xml_dc_identifier(xml,@topic)
-                                        oai_dc_xml_dc_title(xml,@topic)
+                                        oai_dc_xml_dc_identifier(xml,item)
+                                        oai_dc_xml_dc_title(xml,item)
                                         oai_dc_xml_dc_publisher(xml)
-                                        oai_dc_xml_dc_description(xml,@topic.short_summary)
-                                        oai_dc_xml_dc_description(xml,@topic.description)
                                         # topic specific
-                                        oai_dc_xml_dc_topic_content(xml,@topic)
-
-                                        oai_dc_xml_dc_creators_and_date(xml,@topic)
-                                        oai_dc_xml_dc_contributors_and_modified_dates(xml,@topic)
+                                        if item.class.name == 'Topic'
+                                                oai_dc_xml_dc_description(xml,item.short_summary)
+                                                oai_dc_xml_dc_topic_content(xml,item)
+                                        end
+                                        oai_dc_xml_dc_description(xml,item.description)
+                                        oai_dc_xml_dc_creators_and_date(xml,item)
+                                        oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
 
                                         # related topics and items should have dc:subject elem here with their title
-                                        oai_dc_xml_dc_relations_and_subjects(xml,@topic)
+                                        oai_dc_xml_dc_relations_and_subjects(xml,item)
 
-                                        oai_dc_xml_dc_type(xml,@topic)
+                                        oai_dc_xml_dc_type(xml,item)
 
                                         # TODO: when tagging is implemented, get all tags and make them dc:subjects
-                                        # TODO: this is mime type
-                                        oai_dc_xml_dc_format(xml,@topic)
+
+                                        # this is mime type
+                                        oai_dc_xml_dc_format(xml,item)
                                 end
                         end
                 end

@@ -186,10 +186,7 @@ class TopicsController < ApplicationController
   def destroy
     begin
       @topic = Topic.find(params[:id])
-      # necessary to do a proper delete with acts_as_zoom
-      @topic.oai_record = render_to_string(:template => 'topics/oai_record',
-                                           :layout => false)
-      @topic.basket_urlified_name = @topic.basket.urlified_name
+      prepare_zoom(@topic)
       @successful = @topic.destroy
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -213,7 +210,7 @@ class TopicsController < ApplicationController
     @last_contributor = @topic.contributors.last
     respond_to do |format|
       format.html
-      format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
+      format.xml { render_oai_record_xml(@topic) }
     end
   end
 end

@@ -65,21 +65,32 @@ class ApplicationController < ActionController::Base
     return url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item.id, :format => nil, :urlified_name => item.basket.urlified_name)
   end
 
-  def prepare_and_save_to_zoom(item)
+  def prepare_zoom(item)
     # only do this for members of ZOOM_CLASSES
     if ZOOM_CLASSES.include?(item.class.name)
       begin
-        item.oai_record = render_to_string(:template => "#{zoom_class_controller(item.class.name)}/oai_record",
-                                           :layout => false)
+        item.oai_record = render_oai_record_xml(:item => item, :to_string => true)
         logger.debug("what is oai_record: #{item.oai_record}")
         item.basket_urlified_name = @current_basket.urlified_name
-
-        # that should do it for preparing our record for zoom
-        # shoot it off to our z39.50 server
-        item.zoom_save
       rescue
         logger.error("prepare_and_save_to_zoom error: #{$!.to_s}")
       end
     end
+  end
+
+  def prepare_and_save_to_zoom(item)
+    prepare_zoom(item)
+    item.zoom_save
+  end
+
+  def render_oai_record_xml(options = {})
+    item = options[:item]
+    to_string = options[:to_string] || false
+    if to_string
+      render_to_string(:file => "#{RAILS_ROOT}/app/views/search/oai_record.rxml", :layout => false, :content_type => 'text/xml', :locals => { :item => item })
+    else
+      render :file => "#{RAILS_ROOT}/app/views/search/oai_record.rxml", :layout => false, :content_type => 'text/xml', :locals => { :item => item }
+    end
+
   end
 end
