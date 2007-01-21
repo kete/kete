@@ -207,7 +207,7 @@ class TopicsController < ApplicationController
     @title = @topic.title
     # TODO: likely to be inefficient, switch to more direct sql
     @creator = @topic.creators.first
-    @last_contributor = @topic.contributors.last
+    @last_contributor = @topic.contributors.last || @creator
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(@topic) }
