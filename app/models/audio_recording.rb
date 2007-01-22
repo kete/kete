@@ -1,23 +1,6 @@
 class AudioRecording < ActiveRecord::Base
-  # each topic or content item lives in exactly one basket
-  belongs_to :basket
-
-  # relate to topics
-  include RelatedContent
-
-  # where we handle creator and contributor tracking
-  include HasContributors
-
-  # all our ZOOM_CLASSES need this to be searchable by zebra
-  include ConfigureActsAsZoomForKete
-
-  acts_as_versioned
-  validates_presence_of :title
-  # this may change
-  validates_uniqueness_of :title
-  # TODO: add validation that prevents markup in short_summary
-  # globalize stuff, uncomment later
-  # translates :title, :description
+  # all the common configuration is handled by this module
+  include ConfigureAsKeteContentItem
 
   # handles file uploads
   # we'll want to adjust the filename to include "...-1..." for each
