@@ -4,11 +4,6 @@ class AddDefaultBasket < ActiveRecord::Migration
   end
 
   def self.down
-    basket = Basket.find_by_id(1)
-    # work around versioning
-    ZOOM_CLASSES.each do |zoom_class|
-      Module.class_eval(zoom_class).drop_versioned_table
-    end
-    basket.destroy
+    Basket.find_by_id(1).destroy
   end
 end
