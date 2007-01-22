@@ -160,6 +160,7 @@ module ApplicationHelper
     end
   end
 
+  # TODO: this is duplicated in application.rb, fix
   def user_to_dc_creator_or_contributor(user)
     user.login
   end

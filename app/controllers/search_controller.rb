@@ -13,14 +13,15 @@ class SearchController < ApplicationController
 
   # TODO: catch zoom_db errors or zoom_db down
   # query our ZoomDbs for results, grab only the xml records for the results we need
+  # TODO: possibly move result sets to session var
   def search
-    # all returns all results for a class or source_item (i.e. all related items to source)
+    # all returns all results for a class, contributor_id, or source_item (i.e. all related items to source)
     # it is the default if the search_terms parameter is not defined
     # however, if search_terms is defined (but not necessarily populated)
     # i.e. search_terms is not nil, but possibly blank
     # it overrides :all
-    # in the case of search_terms and source_item both being present
-    # the search is done with the limitations of the source_item
+    # in the case of search_terms and contributor_id or source_item both being present
+    # the search is done with the limitations of the contributor_id or source_item
     # i.e. search for 'bob smith' within topics related to source_item 'daddy smith'
     if !params[:search_terms].nil?
       params[:all] = false
@@ -110,15 +111,24 @@ class SearchController < ApplicationController
 
             # quote each term to handle phrases
             if prepped_terms.size > 1
-              query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\""
+              query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\" "
             else
               # @and will break query if only single term
-              query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\""
+              query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
             end
           end
 
-          @result_sets[zoom_class] = Module.class_eval(zoom_class).process_query( :zoom_db => zoom_db,
-                                                                                  :query => query)
+          # this should go last because of "or contributor"
+          if !params[:contributor_id].blank?
+            # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
+            # must be exact string
+            @contributor = User.find(params[:contributor_id])
+            query += "@or @attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" @attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
+            query = "@and " + query unless query[0,4] == "@and"
+          end
+
+          @result_sets[zoom_class] = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
+                                                                                 :query => query)
         end
       end
 

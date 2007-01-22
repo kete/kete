@@ -91,6 +91,10 @@ class ApplicationController < ActionController::Base
     else
       render :file => "#{RAILS_ROOT}/app/views/search/oai_record.rxml", :layout => false, :content_type => 'text/xml', :locals => { :item => item }
     end
-
   end
+
+  def user_to_dc_creator_or_contributor(user)
+    user.login
+  end
+
 end
