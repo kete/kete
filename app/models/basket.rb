@@ -7,11 +7,12 @@ class Basket < ActiveRecord::Base
 
   # everything falls under one basket or another
   # we have a default basket for the site
-  has_many :topics, :dependent => :delete_all
-  has_many :web_links, :dependent => :delete_all
-  has_many :audio_recordings, :dependent => :delete_all
-  has_many :videos, :dependent => :delete_all
-  has_many :still_images, :dependent => :delete_all
+  # can't use delete_all, throws off versioning
+  has_many :topics, :dependent => :destroy
+  has_many :web_links, :dependent => :destroy
+  has_many :audio_recordings, :dependent => :destroy
+  has_many :videos, :dependent => :destroy
+  has_many :still_images, :dependent => :destroy
 
   validates_presence_of :name
   validates_uniqueness_of :name
