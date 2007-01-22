@@ -1,4 +1,4 @@
-class AddBaskets < ActiveRecord::Migration
+class CreateBaskets < ActiveRecord::Migration
   def self.up
     create_table :baskets do |t|
       t.column :name, :string, :null => false
