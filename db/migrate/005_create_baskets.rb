@@ -5,7 +5,6 @@ class CreateBaskets < ActiveRecord::Migration
       t.column :urlified_name, :string
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
-
     end
   end
 
