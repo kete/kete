@@ -1,4 +1,4 @@
-class AddStillImagesVersioning < ActiveRecord::Migration
+class AddStillImageVersioning < ActiveRecord::Migration
   def self.up
     # create versioning table for images
     StillImage.create_versioned_table

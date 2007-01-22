@@ -1,4 +1,4 @@
-class AddVersionsToTopics < ActiveRecord::Migration
+class AddTopicVersioning < ActiveRecord::Migration
   def self.up
     # create versioning table for topics
     Topic.create_versioned_table

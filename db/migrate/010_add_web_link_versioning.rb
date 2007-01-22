@@ -1,4 +1,4 @@
-class AddVersioningToWebLinks < ActiveRecord::Migration
+class AddWebLinkVersioning < ActiveRecord::Migration
   def self.up
     # create versioning table for web_links
     WebLink.create_versioned_table
