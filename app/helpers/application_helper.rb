@@ -160,6 +160,10 @@ module ApplicationHelper
     end
   end
 
+  def user_to_dc_creator_or_contributor(user)
+    user.login
+  end
+
 #### oai dublin core xml helpers
   def oai_dc_xml_request(xml,item)
     xml.request(request.protocol + request.host + request.request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@current_basket.urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
@@ -194,7 +198,7 @@ module ApplicationHelper
     item_created = item.created_at.to_date
     xml.tag!("dc:date", item_created)
     item.creators.each do |creator|
-      xml.tag!("dc:creator", creator.login)
+      xml.tag!("dc:creator", user_to_dc_creator_or_contributor(creator))
     end
   end
 
@@ -202,7 +206,7 @@ module ApplicationHelper
     item.contributors.each do |contributor|
       contribution_date = contributor.version_created_at.to_date
       xml.tag!("dcterms:modified", contribution_date)
-      xml.tag!("dc:contributor", contributor.login)
+      xml.tag!("dc:contributor", user_to_dc_creator_or_contributor(contributor))
     end
   end
 
