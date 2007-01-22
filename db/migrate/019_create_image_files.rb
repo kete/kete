@@ -1,4 +1,4 @@
-class AddImageFiles < ActiveRecord::Migration
+class CreateImageFiles < ActiveRecord::Migration
   def self.up
     create_table :image_files do |t|
       # still_image model holds meta data about an image
