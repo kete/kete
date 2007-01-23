@@ -8,11 +8,9 @@ class Basket < ActiveRecord::Base
   # everything falls under one basket or another
   # we have a default basket for the site
   # can't use delete_all, throws off versioning
-  has_many :topics, :dependent => :destroy
-  has_many :web_links, :dependent => :destroy
-  has_many :audio_recordings, :dependent => :destroy
-  has_many :videos, :dependent => :destroy
-  has_many :still_images, :dependent => :destroy
+  ZOOM_CLASSES.each do |zoom_class|
+    has_many zoom_class.tableize.to_sym, :dependent => :destroy
+  end
 
   validates_presence_of :name
   validates_uniqueness_of :name
