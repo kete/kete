@@ -6,18 +6,25 @@ class ContentItemRelation < ActiveRecord::Base
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
-  belongs_to :web_link, :class_name => "WebLink", :foreign_key => "related_item_id"
-  belongs_to :audio_recording, :class_name => "AudioRecording", :foreign_key => "related_item_id"
-  belongs_to :video, :class_name => "Video", :foreign_key => "related_item_id"
-  belongs_to :still_image, :class_name => "StillImage", :foreign_key => "related_item_id"
-  # a topic can be related to another topic
-  belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
+  ZOOM_CLASSES.each do |zoom_class|
+    if zoom_class == 'Topic'
+      # a topic can be related to another topic
+      # but it needs a special name
+      belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
+    else
+      belongs_to zoom_class.tableize.singularize.to_sym, :class_name => zoom_class, :foreign_key => "related_item_id"
+    end
+  end
 
   acts_as_list
 
+  # wish we could update the topic and new relation
+  # in zoom here
+  # so that this relationship is reflected in searches
+  # but it has to be done in controller space because it requires a render
   def self.new_relation_to_topic(topic_id, related_item)
-      content_item_relation = self.new(:topic_id => topic_id)
-      content_item_relation.related_item = related_item
-      content_item_relation.save!
+    content_item_relation = self.new(:topic_id => topic_id)
+    content_item_relation.related_item = related_item
+    content_item_relation.save!
   end
 end

@@ -12,16 +12,10 @@ class User < ActiveRecord::Base
   # rather than for every single version
   # since we are going to use our z39.50 search to accumulate our contributed or created objects
   # this is mainly for convenience methods rather than finders
-  has_many :created_web_links, :through => :contributions, :source => :web_link, :order => 'created_at'
-  has_many :contributed_web_links, :through => :contributions, :source => :web_link, :order => 'created_at'
-  has_many :created_audio_recordings, :through => :contributions, :source => :audio_recording, :order => 'created_at'
-  has_many :contributed_audio_recordings, :through => :contributions, :source => :audio_recording, :order => 'created_at'
-  has_many :created_videos, :through => :contributions, :source => :video, :order => 'created_at'
-  has_many :contributed_videos, :through => :contributions, :source => :video, :order => 'created_at'
-  has_many :created_still_images, :through => :contributions, :source => :still_image, :order => 'created_at'
-  has_many :contributed_still_images, :through => :contributions, :source => :still_image, :order => 'created_at'
-  has_many :created_topics, :through => :contributions, :source => :topic, :order => 'created_at'
-  has_many :contributed_topics, :through => :contributions, :source => :topic, :order => 'created_at'
+  ZOOM_CLASSES.each do |zoom_class|
+    has_many "created_#{zoom_class.tableize}".to_sym, :through => :contributions, :source => zoom_class.tableize.singularize.to_sym, :order => 'created_at'
+    has_many "contributed_#{zoom_class.tableize}".to_sym, :through => :contributions, :source => zoom_class.tableize.singularize.to_sym, :order => 'created_at'
+  end
 
   # Virtual attribute for the contribution.version join model
   # a hack to be able to pass it in
@@ -98,7 +92,7 @@ class User < ActiveRecord::Base
 
     # after_save
     def add_as_member_to_default_basket
-      basket = Basket.find_by_id(1)
+      basket = Basket.find(1)
       self.has_role('member',basket)
     end
 end
