@@ -8,7 +8,8 @@ class TopicTypesController < ApplicationController
   end
 
   def list
-    @topic_type_pages, @topic_types = paginate :topic_types, :per_page => 10
+    @topic_type_pages = Paginator.new self, TopicType.count, 10, params[:page]
+    @topic_types = TopicType.find(1).full_set
   end
 
   def show

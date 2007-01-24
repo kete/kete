@@ -1,4 +1,6 @@
-<h1>Listing topic types</h1>
+<% @title = 'Listing topic types' -%>
+
+<h2><%= h(@title) -%></h2>
 
 <table>
   <tr>
@@ -10,12 +12,12 @@
 <% for topic_type in @topic_types %>
   <tr>
   <% for column in TopicType.content_columns %>
-    <td><%=h topic_type.send(column.name) %></td>
+    <td><span style="margin-left:<%= topic_type.level %>em;"><%=h topic_type.send(column.name) %></span></td>
   <% end %>
     <td><%= link_to 'Show', :action => 'show', :id => topic_type %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => topic_type %></td>
     <td><%= link_to 'Add sub-type', :action => 'new', :parent_id => topic_type.id %></td>
-    <td><%= link_to 'Destroy', { :action => 'destroy', :id => topic_type }, :confirm => 'Are you sure?', :method => :post %></td>
+    <td><%= link_to 'Delete', { :action => 'destroy', :id => topic_type }, :confirm => 'Are you sure?', :method => :post %></td>
   </tr>
 <% end %>
 </table>
