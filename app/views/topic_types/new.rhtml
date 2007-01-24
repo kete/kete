@@ -8,7 +8,8 @@
 <% end %>
 
 <%= render(:partial => 'generic_topic_fields', :locals => { :local_id => @topic_type.id }) %>
-# TODO: make this render for passed in parent_id
-<%= render(:partial => 'inherited_fields', :locals => { :local_id => @topic_type.id }) %>
+
+<% # this renders for passed in parent, rather than the new topic -%>
+<%= render(:partial => 'inherited_fields', :locals => { :parent_id => params[:parent_id] }) %>
 
 <%= link_to 'Cancel', :action => 'list' %>

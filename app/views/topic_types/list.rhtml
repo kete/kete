@@ -14,6 +14,7 @@
   <% end %>
     <td><%= link_to 'Show', :action => 'show', :id => topic_type %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => topic_type %></td>
+    <td><%= link_to 'Add sub-type', :action => 'new', :parent_id => topic_type.id %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => topic_type }, :confirm => 'Are you sure?', :method => :post %></td>
   </tr>
 <% end %>
