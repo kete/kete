@@ -19,11 +19,17 @@ class TopicType < ActiveRecord::Base
   end
   validates_presence_of :name, :description
   validates_uniqueness_of :name
-  # globalize stuff, uncomment later
+
+  # to support inheritance of fields from ancestor topic types
+  acts_as_nested_set
+
+  # TODO: globalize stuff, uncomment later
   # translates :name, :description
 
   # we have a generic topic_type of Topic from which all types inherit their attributes
   # since these default fields reflect the state of the Topic model
+  # then we also have ancestor fields for all the topic types above this topic type
+
   def available_fields
     @available_fields = TopicTypeField.find_available_fields(self)
   end

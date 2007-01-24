@@ -10,4 +10,5 @@ class TopicTypeToFieldMapping < ActiveRecord::Base
   # there is a test for it though
 
   # TODO: add validation that prevents adding any fields to the generic topic_type of id 1
+
 end
