@@ -2,15 +2,19 @@
   <%= error_messages_for 'topic_type' %>
   <div class="row">
     <!--[form:topic_type]-->
-<div class="form-element">
-  <label class="required" for="topic_type_name">Name</label>
-  <%= text_field 'topic_type', 'name' , {:class=>"text-input"} %>
-</div>
+        <% if !params[:parent_id].nil? %>
+          <%= hidden_field_tag 'parent_id', params[:parent_id] %>
+        <% end %>
 
-<div class="form-element">
-  <label for="topic_type_description">Description</label>
-  <%= text_area 'topic_type', 'description'  %>
-</div>
+        <div class="form-element">
+          <label class="required" for="topic_type_name">Name</label>
+          <%= text_field 'topic_type', 'name' , {:class=>"text-input"} %>
+        </div>
+
+        <div class="form-element">
+          <label for="topic_type_description">Description</label>
+          <%= text_area 'topic_type', 'description'  %>
+        </div>
 
 <!--[eoform:topic_type]-->
 

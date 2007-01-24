@@ -18,9 +18,13 @@ class TopicTypesController < ApplicationController
   def new
     @topic_type = TopicType.new
   end
+
   def create
     @topic_type = TopicType.new(params[:topic_type])
     if @topic_type.save
+      set_ancestory(@topic_type)
+
+      # TODO: globalize translate
       flash[:notice] = 'TopicType was successfully created.'
       redirect_to :action => 'list'
     else
@@ -35,6 +39,9 @@ class TopicTypesController < ApplicationController
   def update
     @topic_type = TopicType.find(params[:id])
     if @topic_type.update_attributes(params[:topic_type])
+      set_ancestory(@topic_type)
+
+      # TODO: globalize translate
       flash[:notice] = 'TopicType was successfully updated.'
       redirect_to :action => 'show', :id => @topic_type
     else
@@ -77,9 +84,18 @@ class TopicTypesController < ApplicationController
     end
     redirect_to :action => :index
   end
+
   def reorder_fields_for_topic_type
     # update position in the topic_type's form
     TopicTypeToFieldMapping.update(params[:mapping].keys, params[:mapping].values)
     redirect_to :action => :index
   end
+
+  private
+  def set_ancestory(topic_type)
+      # setup of ancestory
+      parent_id = params[:parent_id] || topic_type.parent_id || 1
+      topic_type.move_to_child_of TopicType.find(parent_id)
+  end
+
 end

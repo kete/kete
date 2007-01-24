@@ -8,6 +8,7 @@
 <% end %>
 
 <%= render(:partial => 'generic_topic_fields', :locals => { :local_id => @topic_type.id }) %>
+<%= render(:partial => 'inherited_fields', :locals => { :local_id => @topic_type.id }) %>
 <% if @topic_type.id and @topic_type.id != 1 %>
   <%= render(:partial => 'current_fields', :locals => { :local_id => @topic_type.id }) %>
   <%= render(:partial => 'available_fields_form', :locals => { :local_id => @topic_type }) %>

@@ -113,7 +113,15 @@ class TopicsController < ApplicationController
 
     where_to_redirect = 'show_self'
     if params[:relate_to_topic_id] and @successful
-      ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @topic)
+      # TODO: wrap this up into method
+      # move to other controllers
+      @new_related_topic = find(params[:relate_to_topic_id])
+      ContentItemRelation.new_relation_to_topic(@new_related_topic, @topic)
+
+      # update the related topic
+      # so this new relationship is reflected in search
+      prepare_and_save_to_zoom(@new_related_topic)
+
       where_to_redirect = 'show_related'
     end
 
@@ -123,7 +131,7 @@ class TopicsController < ApplicationController
       if where_to_redirect == 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = 'Related topic was successfully created.'
-        redirect_to_related_topic(params[:relate_to_topic_id])
+        redirect_to_related_topic(@new_related_topic.id)
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = 'Topic was successfully created.'
