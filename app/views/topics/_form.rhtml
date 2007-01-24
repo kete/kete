@@ -10,7 +10,7 @@
         </div>
         <div class="form-element">
                 <label for="topic_short_summary">Short Summary:</label>
-                <%= text_area 'topic', 'short_summary', {:class => "text-area", :cols => 120} %>
+                <%= text_area 'topic', 'short_summary', {:class => "text-area", :cols => 120, :rows => 2 } %>
         </div>
         <% if @topic
                 # this is an edit

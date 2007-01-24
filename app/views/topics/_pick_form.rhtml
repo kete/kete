@@ -6,8 +6,8 @@
 
         <div class="form-element">
                 <label for="topic_name_for_url">Type of Topic?</label>
-                <% @topic_types = TopicType.find(:all) %>
-                <%= collection_select('topic', 'topic_type_id' , @topic_types, :id, :name, {:class=>"select"}) %>
+                <% @topic_types = TopicType.find(1).full_set %>
+                <%= topic_type_select_with_indent('topic', 'topic_type_id' , @topic_types, :id, :name, {:class=>"select"}) %>
         </div>
 
 <!--[eoform:topic]-->
