@@ -212,16 +212,23 @@ module ApplicationHelper
   end
 
   def oai_dc_xml_dc_relations_and_subjects(xml,item)
-    ZOOM_CLASSES.each do |zoom_class|
-      related_items = ''
-      if zoom_class == 'Topic'
-        related_items = item.related_topics
-      else
-        related_items = item.send(zoom_class.tableize)
+    if item.class.name == 'Topic'
+      ZOOM_CLASSES.each do |zoom_class|
+        related_items = ''
+        if zoom_class == 'Topic'
+          related_items = item.related_topics
+        else
+          related_items = item.send(zoom_class.tableize)
+        end
+        related_items.each do |related|
+          xml.tag!("dc:subject", related.title)
+          xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+        end
       end
-      related_items.each do |related|
-        xml.tag!("dc:subject", related.title)
-        xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+    else
+      item.topics.each do |related|
+          xml.tag!("dc:subject", related.title)
+          xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => :topics, :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
       end
     end
   end
@@ -232,8 +239,6 @@ module ApplicationHelper
     case item.class.name
     when "AudioRecording"
       type = 'Sound'
-    when "WebLink"
-      type = 'Web Link'
     when "StillImage"
       type = 'StillImage'
     when 'Video'
@@ -245,13 +250,45 @@ module ApplicationHelper
     # item's content type is the default
     format = String.new
     case item.class.name
-    when 'Topic' || 'Web Link'
+    when 'Topic'
+      format = 'text/html'
+    when 'WebLink'
       format = 'text/html'
     when 'StillImage'
-      format = item..original_file.content_type
+      format = item.original_file.content_type
     else
       format = item.content_type
     end
     xml.tag!("dc:format", format)
+  end
+
+  def oai_dc_xml_dc_topic_content(xml,topic)
+    # work through content, see what should be it's own dc element
+    # and what should go in a group dc:description
+    temp_content = topic.content
+    content_hash = XmlSimple.xml_in("<dummy>#{temp_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
+
+    non_dc_content_hash = Hash.new
+    re = Regexp.new("^dc")
+    content_hash.keys.each do |field|
+      if !content_hash[field]['xml_element_name'].blank? && re.match(content_hash[field]['xml_element_name'])
+        # it's a dublin core tag, just spit it out
+        xml.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'])
+      elsif !content_hash[field]['xml_element_name'].blank?
+        # use xml_element_name, but append to non_dc_content
+        x = Builder::XmlMarkup.new
+        non_dc_content += x.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'])
+      else
+        non_dc_content_hash[field] = content_hash[field]['value']
+      end
+    end
+
+    if !non_dc_content_hash.blank?
+      xml.tag!("dc:description") do
+        non_dc_content_hash.each do |key, value|
+          xml.tag!(key, value)
+        end
+      end
+    end
   end
 end

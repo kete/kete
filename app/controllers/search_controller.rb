@@ -244,4 +244,15 @@ class SearchController < ApplicationController
     search
     render 'opensearch/rss'
   end
+
+  # this probably won't scale, only use for demo right now
+  def rebuild_zoom_index
+    permit "admin of :current_basket" do
+      ZOOM_CLASSES.each do |zoom_class|
+        Module.class_eval(zoom_class).find(:all).each {|item| prepare_and_save_to_zoom(item)}
+      end
+      render :text => "ZOOM index rebuilt"
+    end
+  end
+
 end
