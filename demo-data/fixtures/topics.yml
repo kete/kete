@@ -1,0 +1,103 @@
+--- 
+topics_008: 
+  updated_at: 2007-01-18 15:03:25
+  title: charlie smart dog
+  short_summary: charlie smart dog is our dog.  he loves eating, walking, swimming and sleeping.
+  id: "8"
+  version: "1"
+  description: <h1>charlie smart dog</h1><p>charlie smart dog was&nbsp;born in northern california about 8 years ago.&nbsp; he has found his way to new zealand and become the most famous and well-loved dog on all of the parade.</p>
+  content: |
+    <first_names xml_element_name="dc:description">charlie</first_names>
+    <last_name>dog</last_name>
+    <place_of_birth xml_element_name="dc:subject">northern california</place_of_birth>
+
+  basket_id: "1"
+  topic_type_id: "2"
+  created_at: 2007-01-18 15:03:25
+topics_001: 
+  updated_at: 2007-01-17 09:22:05
+  title: Mike Walker
+  short_summary: Photographer/Film maker
+  id: "1"
+  version: "1"
+  description: <p>               Mike               Walker started his film               career as a cadet graphic               artist in the National               Publicity Studios of the               Tourist and Publicity               Department. In 1951 he               joined Bob Morrow, a film               animation artist, at Morrow               Productions an independent               company specialising in             animated documentaries.              </p> <p>For Morrow Productions               Mike Walker worked as               a director, producer and               co-writer on <em>Kingi&rsquo;s               Story</em> (1981), <em>Kingpin</em>              (1985) and <em>Mark               II</em> (1987).               Dealing with the lives               of young Maori in contemporary               New Zealand, the trilogy   received critical acclaim for raising   important social issues.</p>              In 1992 Mike Walker left             filmmaking to concentrate             on photography. A large             collection of films and             documentation from Morrow             Productions is deposited             with the Film Archive. <br /> <p>&nbsp;</p> <p>&nbsp;</p><p>&nbsp;</p>
+  content: |
+    <first_names xml_element_name="dc:description">Mike</first_names>
+    <last_name>Walker</last_name>
+    <place_of_birth xml_element_name="dc:subject"></place_of_birth>
+
+  basket_id: "1"
+  topic_type_id: "2"
+  created_at: 2007-01-17 09:22:05
+topics_002: 
+  updated_at: 2007-01-17 09:24:20
+  title: Mike Walker Collection
+  short_summary: A collection of photographs taken by Mike Walker for the Horowhenua District Council
+  id: "2"
+  version: "2"
+  description: <p><font size="2" color="#000000"> The Horowhenua District Council asked me, in 1999, to produce this collection of photographs.</font></p> <p><font size="2" color="#000000"> My task was to capture, during the course of a year, images of the people and places of the Horowhenua landscape. They would be photographed under the changing light of the weather and seasons. The quest was to produce an extensive collection of images in a uniform style and quality that hadn&#39;t been available previously to promote the District. </font></p> <p><font size="2" color="#000000">For my part creating the work has been a fulfilling experience. I hope you find the images useful and interesting and that you may derive some pleasure from them too. Good Viewing - Mike Walker. Photographer.</font></p>
+  content: 
+  basket_id: "1"
+  topic_type_id: "1"
+  created_at: 2007-01-17 09:24:00
+topics_003: 
+  updated_at: 2007-01-17 09:36:23
+  title: Waitarere Beach
+  short_summary: "West coast beach within the Horowhenua District. "
+  id: "3"
+  version: "1"
+  description: <font face="Verdana, Arial, Helvetica, sans-serif" size="-1">Waitarere          Beach, one of the best-kept secrets of the North Islands west coast is          regarded as the place to go when you want to get away from it all. Within          easy commuting distance from New Zealand&#39;s Capital city Wellington, and          from nearby Palmerston North, Waitarere beach is an ideal spot for either          a weekend getaway or as a permanent residence. </font>           <p><font face="Verdana, Arial, Helvetica, sans-serif" size="-1">The Waitarere            Beach community includes a well-stocked 4 Square Store, takeaways, caf&eacute;            and restaurant. Levin, the nearest town is 10 minutes easy drive should            you need something more.</font></p>           <p><font face="Verdana, Arial, Helvetica, sans-serif" size="-1">The            Waitarere beach is wide and sandy allowing plenty of room for all your            favourite beach activities including land yachts, 4 wheel motor bikes,            surfing and fishing. The beach slowly drops off into deep water so there&#39;s            plenty of safe paddling space for the youngsters and during the summer            months, the surf club set up patrol. </font></p>           <p><font face="Verdana, Arial, Helvetica, sans-serif" size="-1">Waitarere            Beach is also a popular fishing spot where Kowhai, Snapper, Groper,            Gurnard, Flounder and Soul are the most common catches. The large, flat            beach is ideal to back your boat with a tractor or a four-wheel drive.            During the Whitebait season you can find a spot to sit your net at the            Manawatu or the Ohau river mouths.</font></p>           <p><font face="Verdana, Arial, Helvetica, sans-serif" size="-1">A            well-established forest surrounds Waitarere Beach and is host to several            popular annual events such as the &#39;Great Forest Marathon&#39;. Orienteering,            and Mountain biking also make use of the forest floor and bring in a            lot of interest from outside the Horowhenua. The forest is a popular            spot to walk your dog and with the many tracks cutting through to the            beach, you can enjoy the forest one way and the beach on the way back!</font></p>           <p><font face="Verdana, Arial, Helvetica, sans-serif" size="-1">Come and            discover for yourself the peace and tranquillity of this waterfront            paradise that is Waitarere Beach.</font></p>
+  content: |
+    <city xml_element_name="dc:spatial">Waitarere</city>
+
+  basket_id: "1"
+  topic_type_id: "3"
+  created_at: 2007-01-17 09:36:23
+topics_004: 
+  updated_at: 2007-01-17 09:46:28
+  title: NZ Idol Matt
+  short_summary: Matt Saunoa winner of NZ Idol in 2006
+  id: "4"
+  version: "2"
+  description: "<p><font color=\"#000000\">The 21-year-old garage builder from Levin rose to national prominance in 2006 when he won the NZ Idol contest. Matt nudged pasted Aucklander Indira in the final, to claim the title it was has been called the closed NZ Idol race in years.&nbsp;</font></p><br /><p>He was not expected by betting agency Centrebet to win, rather they expected his competitor Indira Moala to win. His profession prior to entering Idol is building garages in Levin. Just like fellow competitor Indira Moala, week after week he received positive comments from the judges making him a very consistent performer.</p><p>&nbsp;</p><p>He and Indira went face to face on Sunday 22nd of October, 2006 singing a song chosen by the judges and the band. He also sang, &quot;You Give Me Something&quot; by James Morrison along with runner-up, Indira. The next day they went into a &#39;Head 2 Head&#39; competition singing 5 songs each, some of them already previously sung. On Indira&#39;s last performance, Stables, one of the judges, mentioned that he thought Matt did better on all performances for that night. On October the 28th, 2006, he could not bungee jump off the Auckland Sky Tower because of his weight.</p><p>&nbsp;</p><p> He went on to win NZ Idol on October the 29th, 2006. His winner&#39;s single, <em>Hold Out</em>, went to number one on the New Zealand Chart starting 6th November 2006. However his single failed to achieve the same success as the two previous winners and Matt will not be releasing an album under the NZ Idol record contract.</p><p>&nbsp;</p><h2>Matt&#39;s Performances On NZ Idol</h2><p>&nbsp;</p><p>Top 18: To Love Somebody - The Bee Gees</p> <p>Top 10: Living For The City - Stevie Wonder</p> <p>Top 9: I Don&#39;t Want to Be - Gavin DeGraw</p> <p>Top 8: Amazed - Lonestar</p> <p>Top 7: Something About The Way You Look Tonight - Elton John</p> <p>Top 6: Try A Little Tenderness - Otis Redding/The Commitments</p> <p>Top 5: Crazy - Gnarls Barkley</p> <p>Top 4: Sitting Inside My Head - Supergroove</p> <p>Top 4: Welcome Home - Dave Dobbyn</p> <p>Top 3: Let&#39;s Get It On - Al Green</p> <p>Top 3: Forever Now - Cold Chisel</p> <p>Top 2: How Can You Mend A Broken Heart? - The Bee Gees</p> <p>Top 2: This Love - Maroon 5</p> <p>Top 2: Every Breath You Take - The Police</p> <p>Top 2: Crazy - Gnarls Barkley</p> <p>Top 2: I Don&#39;t Want To Miss A Thing - Aerosmith</p> <p>Top 2: Living For The City - Stevie Wonder</p> <p>Top 2 (Grand Finale): When I Get You Alone - Thicke</p> <p>Top 2 (Grand Finale): Hold Out (winners single)</p>"
+  content: |
+    <first_names xml_element_name="dc:description">Matt</first_names>
+    <last_name>Saunoa</last_name>
+    <place_of_birth xml_element_name="dc:subject">Levin</place_of_birth>
+
+  basket_id: "1"
+  topic_type_id: "2"
+  created_at: 2007-01-17 09:46:06
+topics_005: 
+  updated_at: 2007-01-17 10:08:06
+  title: The Beige Brigade
+  short_summary: "Group of NZ cricket supporters who are noted for wearing the 80's style Brown and Tan cricket uniforms. "
+  id: "5"
+  version: "2"
+  description: <p>We are the one and only Beige Brigade&reg; - accept no imitations! We are the relentless clappers, the bearers of Larry the Small Horse, the residents of Beige 13. Kicking off in 1999 and then making a name for ourselves in 2002 when we rampaged around Australia letting Michael Bevan know about his custard arm. </p> <p>The Beige Brigade&reg; love cricket and we want to get New Zealanders passionate and excited about the game. Wins are nice but we&#39;re long haul supporters - not some disgruntled, cynical bunch of old buggers who leap on a loss like it&#39;s the end of the world. </p> <p>The hardcore of the Beige Brigade&reg; is a bunch of everyday chaps from heartland New Zealand (Tauranga, Hamilton, Wellington, Westport, Christchurch, New Plymouth, Marlborough) who believe clamorous, optimistic, boisterous support is what every New Zealand cricket team needs. </p> <p>The Beige Brigade&reg; has been piling along to games in New Zealand for many years, just quietly going about our support, and occasionally doling out a bit of abuse where it was warranted. Generally it&#39;s all about being relentlessly positive but Glenn McGrath (lived in a caravan), Damien Martyn (shagged a girl off the telly), Michael Clarke (shaves his arms), Inzamam ul-Haq (fat), Abdul/Abdur Razzaq (keeps changing his name), Brian Strang (can&#39;t bowl straight), Mark Boucher (angry), Andre Nel (nutcase) and Runako Morton (psycho) have all deserved a word or two of advice. </p> <p>Certainly things went off their tits during the 2002 Carlton United series. We went quite silly in Sydney where Australia self-destructed. We got totally carried away in Brisbane where NZ shrugged off the South African monkey on their back thanks to a man named Cairns. We went pretty hard in Adelaide, and let Australia know what we thought of their Australia Day party. Backing up for the South African game the next day was tough but we did that too. In Melbourne Michael &#39;Custard Arm&#39; Bevan broke our collective hearts but not our spirit in an unforgettable game of cricket. </p> <p><strong>We&#39;ve done a lot.</strong> We went to England in May 2004 for a month of magical days including every ball of a Test match at Lord&#39;s, went to to the appalling Super Series in Melbourne (2005), spent our money in Queenstown, plus a bunch of games in Auckland and Wellington to boot. This summer we&#39;re heading back to Aussie for the VB Series and some of us will get to the World Cup cricket. We bought the Ball from the unforgettable underarm81 game in 2005, we led the return to beige for the Black Caps in 2004, we held the hugely successful Moustache and Facial Hair competition for the NZ team in the first 20/20 international, we lycra clad Mark Richardson (and Darren Lehmann), we issued the Pash For Cash challenge, we&#39;ve got in behind the legends at <a href="http://www.pulpsport.co.nz">Pulp Sport.</a></p> <p>As well as the trusty Beige Brigade Shop we now have one idiot stationed in an office in Covent Garden as our northern hemispehere logistics maanger (on zero pay), we have a Podcast (The BYC - yeah you know me), a Blog and most importantly we have a bloody good time. </p> <p>So, if you see our marvellous home sewed banner emblazoned with &quot;Beige 13&quot; or the Kiwi flag flying high, wander over and have a quiet jar or two with us at the New Zealand games. Rest assured, (if we can get the leave from work) we&#39;ll be making ourselves at home in our little corner of the ground. </p> <p>The Beige Brigade&reg; is a 100% Kiwi institution and we will be here for a long time to come. The shirts are an icon of Kiwi pride, halcyon days of success and fun and mirth in connection with sport. That&#39;s the way it should be - after all it is about passion, not fashion. </p>
+  content: 
+  basket_id: "1"
+  topic_type_id: "5"
+  created_at: 2007-01-17 09:52:16
+topics_006: 
+  updated_at: 2007-01-17 11:36:45
+  title: Call and Response
+  short_summary: A show at adfadklfhalsd
+  id: "6"
+  version: "1"
+  description: test
+  content: 
+  basket_id: "2"
+  topic_type_id: "4"
+  created_at: 2007-01-17 11:36:45
+topics_007: 
+  updated_at: 2007-01-17 11:45:10
+  title: Floor Talk
+  short_summary: test
+  id: "7"
+  version: "1"
+  description: test
+  content: 
+  basket_id: "2"
+  topic_type_id: "4"
+  created_at: 2007-01-17 11:45:10

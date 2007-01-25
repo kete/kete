@@ -1,0 +1,262 @@
+--- 
+contributions_024: 
+  updated_at: 2007-01-17 11:40:50
+  contributed_item_type: StillImage
+  id: "24"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "13"
+  created_at: 2007-01-17 11:40:50
+contributions_013: 
+  updated_at: 2007-01-17 09:46:07
+  contributed_item_type: Topic
+  id: "13"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "4"
+  created_at: 2007-01-17 09:46:07
+contributions_002: 
+  updated_at: 2007-01-17 09:24:00
+  contributed_item_type: Topic
+  id: "2"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "2"
+  created_at: 2007-01-17 09:24:00
+contributions_025: 
+  updated_at: 2007-01-17 11:42:21
+  contributed_item_type: StillImage
+  id: "25"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "14"
+  created_at: 2007-01-17 11:42:21
+contributions_014: 
+  updated_at: 2007-01-17 09:46:28
+  contributed_item_type: Topic
+  id: "14"
+  version: "2"
+  contributor_role: contributor
+  user_id: "2"
+  contributed_item_id: "4"
+  created_at: 2007-01-17 09:46:28
+contributions_003: 
+  updated_at: 2007-01-17 09:24:21
+  contributed_item_type: Topic
+  id: "3"
+  version: "2"
+  contributor_role: contributor
+  user_id: "2"
+  contributed_item_id: "2"
+  created_at: 2007-01-17 09:24:21
+contributions_026: 
+  updated_at: 2007-01-17 11:42:45
+  contributed_item_type: StillImage
+  id: "26"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "15"
+  created_at: 2007-01-17 11:42:45
+contributions_015: 
+  updated_at: 2007-01-17 09:52:17
+  contributed_item_type: Topic
+  id: "15"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "5"
+  created_at: 2007-01-17 09:52:17
+contributions_004: 
+  updated_at: 2007-01-17 09:27:18
+  contributed_item_type: StillImage
+  id: "4"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "1"
+  created_at: 2007-01-17 09:27:18
+contributions_027: 
+  updated_at: 2007-01-17 11:43:12
+  contributed_item_type: StillImage
+  id: "27"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "16"
+  created_at: 2007-01-17 11:43:12
+contributions_016: 
+  updated_at: 2007-01-17 09:53:38
+  contributed_item_type: StillImage
+  id: "16"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "8"
+  created_at: 2007-01-17 09:53:38
+contributions_005: 
+  updated_at: 2007-01-17 09:28:22
+  contributed_item_type: StillImage
+  id: "5"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "2"
+  created_at: 2007-01-17 09:28:22
+contributions_028: 
+  updated_at: 2007-01-17 11:45:11
+  contributed_item_type: Topic
+  id: "28"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "7"
+  created_at: 2007-01-17 11:45:11
+contributions_017: 
+  updated_at: 2007-01-17 09:55:17
+  contributed_item_type: StillImage
+  id: "17"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "9"
+  created_at: 2007-01-17 09:55:17
+contributions_006: 
+  updated_at: 2007-01-17 09:29:06
+  contributed_item_type: StillImage
+  id: "6"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "3"
+  created_at: 2007-01-17 09:29:06
+contributions_029: 
+  updated_at: 2007-01-18 15:03:26
+  contributed_item_type: Topic
+  id: "29"
+  version: "1"
+  contributor_role: creator
+  user_id: "5"
+  contributed_item_id: "8"
+  created_at: 2007-01-18 15:03:26
+contributions_018: 
+  updated_at: 2007-01-17 09:56:20
+  contributed_item_type: StillImage
+  id: "18"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "10"
+  created_at: 2007-01-17 09:56:20
+contributions_007: 
+  updated_at: 2007-01-17 09:30:07
+  contributed_item_type: StillImage
+  id: "7"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "4"
+  created_at: 2007-01-17 09:30:07
+contributions_019: 
+  updated_at: 2007-01-17 09:57:53
+  contributed_item_type: StillImage
+  id: "19"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "11"
+  created_at: 2007-01-17 09:57:53
+contributions_008: 
+  updated_at: 2007-01-17 09:30:57
+  contributed_item_type: StillImage
+  id: "8"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "5"
+  created_at: 2007-01-17 09:30:57
+contributions_020: 
+  updated_at: 2007-01-17 10:08:07
+  contributed_item_type: Topic
+  id: "20"
+  version: "2"
+  contributor_role: contributor
+  user_id: "4"
+  contributed_item_id: "5"
+  created_at: 2007-01-17 10:08:07
+contributions_009: 
+  updated_at: 2007-01-17 09:31:59
+  contributed_item_type: StillImage
+  id: "9"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "6"
+  created_at: 2007-01-17 09:31:59
+contributions_021: 
+  updated_at: 2007-01-17 10:11:52
+  contributed_item_type: Video
+  id: "21"
+  version: "1"
+  contributor_role: creator
+  user_id: "3"
+  contributed_item_id: "2"
+  created_at: 2007-01-17 10:11:52
+contributions_010: 
+  updated_at: 2007-01-17 09:32:58
+  contributed_item_type: StillImage
+  id: "10"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "7"
+  created_at: 2007-01-17 09:32:58
+contributions_022: 
+  updated_at: 2007-01-17 11:36:46
+  contributed_item_type: Topic
+  id: "22"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "6"
+  created_at: 2007-01-17 11:36:46
+contributions_011: 
+  updated_at: 2007-01-17 09:36:24
+  contributed_item_type: Topic
+  id: "11"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "3"
+  created_at: 2007-01-17 09:36:24
+contributions_023: 
+  updated_at: 2007-01-17 11:40:19
+  contributed_item_type: StillImage
+  id: "23"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "12"
+  created_at: 2007-01-17 11:40:19
+contributions_012: 
+  updated_at: 2007-01-17 09:43:06
+  contributed_item_type: Video
+  id: "12"
+  version: "1"
+  contributor_role: creator
+  user_id: "3"
+  contributed_item_id: "1"
+  created_at: 2007-01-17 09:43:06
+contributions_001: 
+  updated_at: 2007-01-17 09:22:05
+  contributed_item_type: Topic
+  id: "1"
+  version: "1"
+  contributor_role: creator
+  user_id: "2"
+  contributed_item_id: "1"
+  created_at: 2007-01-17 09:22:05
