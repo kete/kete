@@ -1,6 +1,12 @@
 Current Dependencies:
 
 Plugins:
+
+note that this is largely irrelevant for future installs of kete
+svn checkouts will grab extenal deps
+or tarballs will include them
+more for dev notes (and additional steps)
+
 used "ruby script/plugin install -x" for the following
 ! TODO: need line for acts_as_zoom
 svn://rubyforge.org/var/svn/ajaxscaffoldp/trunk
@@ -20,6 +26,8 @@ script/generate authenticated user account --svn
 Note: when I used the generator on my Mac OS X machine, I got an error about zoom not being found.  See the comment in vendor/plugins/acts_as_zoom/lib/acts_as_zoom.rb for how to work around this.  Basically, you probably have the non-Macports version of ruby being selected.  Use "which ruby" to see.  This may also cause postgres ruby driver not to be found.
 
 http://svn.writertopia.com/svn/plugins/authorization
+
+svn://rubyforge.org/var/svn/betternestedset/trunk
 
 Gems:
 Rmagick, used by attachment_fu, see install directions in blog.katipo.co.nz
