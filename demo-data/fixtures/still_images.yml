@@ -7,14 +7,6 @@ still_images_011:
   description: Paul and Mike from the Beige Brigade on scooters at the Basin Reserve
   basket_id: "1"
   created_at: 2007-01-17 09:57:53
-still_images_012: 
-  updated_at: 2007-01-17 11:40:19
-  title: Image 1
-  id: "12"
-  version: "1"
-  description: First in the series.
-  basket_id: "2"
-  created_at: 2007-01-17 11:40:19
 still_images_001: 
   updated_at: 2007-01-17 09:27:17
   title: "Land Yachts at Waitarere Beach "
@@ -23,14 +15,6 @@ still_images_001:
   description: Land yachts at Waitarere Beach 13 April 1999. A number of unidentified persons stand alongside the land yachts. Taken looking south, this photograph shows Kapiti Island in the background.
   basket_id: "1"
   created_at: 2007-01-17 09:27:17
-still_images_013: 
-  updated_at: 2007-01-17 11:40:49
-  title: 2nd image
-  id: "13"
-  version: "1"
-  description: test
-  basket_id: "2"
-  created_at: 2007-01-17 11:40:49
 still_images_002: 
   updated_at: 2007-01-17 09:28:22
   title: "Land Yachts at Waitarere Beach 2 "
@@ -39,14 +23,6 @@ still_images_002:
   description: Land yachts at Waitarere Beach 13 April 1999. In the foreground one land yacht is on the sand above the water-line, while three other land yachts are closer to the water. Kapiti Island is in the background.
   basket_id: "1"
   created_at: 2007-01-17 09:28:22
-still_images_014: 
-  updated_at: 2007-01-17 11:42:21
-  title: test a
-  id: "14"
-  version: "1"
-  description: ""
-  basket_id: "2"
-  created_at: 2007-01-17 11:42:21
 still_images_003: 
   updated_at: 2007-01-17 09:29:05
   title: Tararua Range from Queen Street East
@@ -55,14 +31,6 @@ still_images_003:
   description: The Tararua Ranges taken from Queen Street East, past the Highway 57 intersection.
   basket_id: "1"
   created_at: 2007-01-17 09:29:05
-still_images_015: 
-  updated_at: 2007-01-17 11:42:45
-  title: testa b
-  id: "15"
-  version: "1"
-  description: test
-  basket_id: "2"
-  created_at: 2007-01-17 11:42:45
 still_images_004: 
   updated_at: 2007-01-17 09:30:06
   title: Waitarere Beach Plaque
@@ -71,14 +39,6 @@ still_images_004:
   description: Heritage Trail plaque on the foreshore at Waitarere Beach commemorating the sinking of the Hydrabad 24 June 1878.
   basket_id: "1"
   created_at: 2007-01-17 09:30:06
-still_images_016: 
-  updated_at: 2007-01-17 11:43:12
-  title: tesat;sadf
-  id: "16"
-  version: "1"
-  description: ""
-  basket_id: "2"
-  created_at: 2007-01-17 11:43:12
 still_images_005: 
   updated_at: 2007-01-17 09:30:57
   title: Waitarere Beach

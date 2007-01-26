@@ -15,14 +15,6 @@ content_item_relations_009:
   related_item_type: WebLink
   position: "9"
   created_at: 2007-01-17 09:47:58
-content_item_relations_021: 
-  topic_id: "6"
-  updated_at: 2007-01-17 11:39:01
-  related_item_id: "9"
-  id: "21"
-  related_item_type: WebLink
-  position: "21"
-  created_at: 2007-01-17 11:39:01
 content_item_relations_010: 
   topic_id: "4"
   updated_at: 2007-01-17 09:48:42
@@ -31,14 +23,6 @@ content_item_relations_010:
   related_item_type: WebLink
   position: "10"
   created_at: 2007-01-17 09:48:42
-content_item_relations_022: 
-  topic_id: "6"
-  updated_at: 2007-01-17 11:40:20
-  related_item_id: "12"
-  id: "22"
-  related_item_type: StillImage
-  position: "22"
-  created_at: 2007-01-17 11:40:20
 content_item_relations_011: 
   topic_id: "5"
   updated_at: 2007-01-17 09:53:39
@@ -47,14 +31,6 @@ content_item_relations_011:
   related_item_type: StillImage
   position: "11"
   created_at: 2007-01-17 09:53:39
-content_item_relations_023: 
-  topic_id: "6"
-  updated_at: 2007-01-17 11:40:51
-  related_item_id: "13"
-  id: "23"
-  related_item_type: StillImage
-  position: "23"
-  created_at: 2007-01-17 11:40:51
 content_item_relations_012: 
   topic_id: "5"
   updated_at: 2007-01-17 09:55:18
@@ -71,14 +47,6 @@ content_item_relations_001:
   related_item_type: Topic
   position: "1"
   created_at: 2007-01-17 09:24:00
-content_item_relations_024: 
-  topic_id: "6"
-  updated_at: 2007-01-17 11:42:22
-  related_item_id: "14"
-  id: "24"
-  related_item_type: StillImage
-  position: "24"
-  created_at: 2007-01-17 11:42:22
 content_item_relations_013: 
   topic_id: "5"
   updated_at: 2007-01-17 09:56:21
@@ -95,14 +63,6 @@ content_item_relations_002:
   related_item_type: StillImage
   position: "2"
   created_at: 2007-01-17 09:27:19
-content_item_relations_025: 
-  topic_id: "6"
-  updated_at: 2007-01-17 11:42:46
-  related_item_id: "15"
-  id: "25"
-  related_item_type: StillImage
-  position: "25"
-  created_at: 2007-01-17 11:42:46
 content_item_relations_014: 
   topic_id: "5"
   updated_at: 2007-01-17 09:57:54
@@ -119,14 +79,6 @@ content_item_relations_003:
   related_item_type: StillImage
   position: "3"
   created_at: 2007-01-17 09:28:23
-content_item_relations_026: 
-  topic_id: "6"
-  updated_at: 2007-01-17 11:43:12
-  related_item_id: "16"
-  id: "26"
-  related_item_type: StillImage
-  position: "26"
-  created_at: 2007-01-17 11:43:12
 content_item_relations_015: 
   topic_id: "5"
   updated_at: 2007-01-17 10:01:30
