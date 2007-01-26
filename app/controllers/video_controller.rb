@@ -15,7 +15,7 @@ class VideoController < ApplicationController
     @video = @current_basket.videos.find(params[:id])
     @title = @video.title
     @creator = @video.creators.first
-    @last_contributor = @video.contributors.last
+    @last_contributor = @video.contributors.last || @creator
 
     respond_to do |format|
       format.html
