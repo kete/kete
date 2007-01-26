@@ -1,5 +1,5 @@
---- 
-contributions_013: 
+---
+contributions_013:
   updated_at: 2007-01-17 09:46:07
   contributed_item_type: Topic
   id: "13"
@@ -8,7 +8,7 @@ contributions_013:
   user_id: "2"
   contributed_item_id: "4"
   created_at: 2007-01-17 09:46:07
-contributions_002: 
+contributions_002:
   updated_at: 2007-01-17 09:24:00
   contributed_item_type: Topic
   id: "2"
@@ -17,7 +17,7 @@ contributions_002:
   user_id: "2"
   contributed_item_id: "2"
   created_at: 2007-01-17 09:24:00
-contributions_014: 
+contributions_014:
   updated_at: 2007-01-17 09:46:28
   contributed_item_type: Topic
   id: "14"
@@ -26,7 +26,7 @@ contributions_014:
   user_id: "2"
   contributed_item_id: "4"
   created_at: 2007-01-17 09:46:28
-contributions_003: 
+contributions_003:
   updated_at: 2007-01-17 09:24:21
   contributed_item_type: Topic
   id: "3"
@@ -35,7 +35,7 @@ contributions_003:
   user_id: "2"
   contributed_item_id: "2"
   created_at: 2007-01-17 09:24:21
-contributions_015: 
+contributions_015:
   updated_at: 2007-01-17 09:52:17
   contributed_item_type: Topic
   id: "15"
@@ -44,7 +44,7 @@ contributions_015:
   user_id: "2"
   contributed_item_id: "5"
   created_at: 2007-01-17 09:52:17
-contributions_004: 
+contributions_004:
   updated_at: 2007-01-17 09:27:18
   contributed_item_type: StillImage
   id: "4"
@@ -53,7 +53,7 @@ contributions_004:
   user_id: "2"
   contributed_item_id: "1"
   created_at: 2007-01-17 09:27:18
-contributions_016: 
+contributions_016:
   updated_at: 2007-01-17 09:53:38
   contributed_item_type: StillImage
   id: "16"
@@ -62,7 +62,7 @@ contributions_016:
   user_id: "2"
   contributed_item_id: "8"
   created_at: 2007-01-17 09:53:38
-contributions_005: 
+contributions_005:
   updated_at: 2007-01-17 09:28:22
   contributed_item_type: StillImage
   id: "5"
@@ -71,7 +71,7 @@ contributions_005:
   user_id: "2"
   contributed_item_id: "2"
   created_at: 2007-01-17 09:28:22
-contributions_017: 
+contributions_017:
   updated_at: 2007-01-17 09:55:17
   contributed_item_type: StillImage
   id: "17"
@@ -80,7 +80,7 @@ contributions_017:
   user_id: "2"
   contributed_item_id: "9"
   created_at: 2007-01-17 09:55:17
-contributions_006: 
+contributions_006:
   updated_at: 2007-01-17 09:29:06
   contributed_item_type: StillImage
   id: "6"
@@ -89,7 +89,7 @@ contributions_006:
   user_id: "2"
   contributed_item_id: "3"
   created_at: 2007-01-17 09:29:06
-contributions_018: 
+contributions_018:
   updated_at: 2007-01-17 09:56:20
   contributed_item_type: StillImage
   id: "18"
@@ -98,7 +98,7 @@ contributions_018:
   user_id: "2"
   contributed_item_id: "10"
   created_at: 2007-01-17 09:56:20
-contributions_007: 
+contributions_007:
   updated_at: 2007-01-17 09:30:07
   contributed_item_type: StillImage
   id: "7"
@@ -107,7 +107,7 @@ contributions_007:
   user_id: "2"
   contributed_item_id: "4"
   created_at: 2007-01-17 09:30:07
-contributions_019: 
+contributions_019:
   updated_at: 2007-01-17 09:57:53
   contributed_item_type: StillImage
   id: "19"
@@ -116,7 +116,7 @@ contributions_019:
   user_id: "2"
   contributed_item_id: "11"
   created_at: 2007-01-17 09:57:53
-contributions_008: 
+contributions_008:
   updated_at: 2007-01-17 09:30:57
   contributed_item_type: StillImage
   id: "8"
@@ -125,16 +125,16 @@ contributions_008:
   user_id: "2"
   contributed_item_id: "5"
   created_at: 2007-01-17 09:30:57
-contributions_020: 
+contributions_020:
   updated_at: 2007-01-17 10:08:07
   contributed_item_type: Topic
   id: "20"
   version: "2"
   contributor_role: contributor
-  user_id: "4"
+  user_id: "3"
   contributed_item_id: "5"
   created_at: 2007-01-17 10:08:07
-contributions_009: 
+contributions_009:
   updated_at: 2007-01-17 09:31:59
   contributed_item_type: StillImage
   id: "9"
@@ -143,7 +143,7 @@ contributions_009:
   user_id: "2"
   contributed_item_id: "6"
   created_at: 2007-01-17 09:31:59
-contributions_021: 
+contributions_021:
   updated_at: 2007-01-17 10:11:52
   contributed_item_type: Video
   id: "21"
@@ -152,7 +152,7 @@ contributions_021:
   user_id: "3"
   contributed_item_id: "2"
   created_at: 2007-01-17 10:11:52
-contributions_010: 
+contributions_010:
   updated_at: 2007-01-17 09:32:58
   contributed_item_type: StillImage
   id: "10"
@@ -161,7 +161,7 @@ contributions_010:
   user_id: "2"
   contributed_item_id: "7"
   created_at: 2007-01-17 09:32:58
-contributions_011: 
+contributions_011:
   updated_at: 2007-01-17 09:36:24
   contributed_item_type: Topic
   id: "11"
@@ -170,7 +170,7 @@ contributions_011:
   user_id: "2"
   contributed_item_id: "3"
   created_at: 2007-01-17 09:36:24
-contributions_012: 
+contributions_012:
   updated_at: 2007-01-17 09:43:06
   contributed_item_type: Video
   id: "12"
@@ -179,7 +179,7 @@ contributions_012:
   user_id: "3"
   contributed_item_id: "1"
   created_at: 2007-01-17 09:43:06
-contributions_001: 
+contributions_001:
   updated_at: 2007-01-17 09:22:05
   contributed_item_type: Topic
   id: "1"
