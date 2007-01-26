@@ -32,6 +32,56 @@ class ApplicationController < ActionController::Base
     redirect_to :action => 'show', :controller => 'topics', :id => topic_id, :urlified_name => basket.urlified_name
   end
 
+  def setup_related_topic_and_zoom_and_redirect(item)
+    where_to_redirect = 'show_self'
+    if params[:relate_to_topic_id] and @successful
+      @new_related_topic = find(params[:relate_to_topic_id])
+      ContentItemRelation.new_relation_to_topic(@new_related_topic, item)
+
+      # update the related topic
+      # so this new relationship is reflected in search
+      prepare_and_save_to_zoom(@new_related_topic)
+
+      where_to_redirect = 'show_related'
+    end
+
+    if @successful
+      prepare_and_save_to_zoom(item)
+
+      if where_to_redirect == 'show_related'
+        # TODO: replace with translation stuff when we get globalize going
+        flash[:notice] = 'Related #{item.class.name.humanize} was successfully created.'
+        redirect_to_related_topic(@new_related_topic.id)
+      else
+        # TODO: replace with translation stuff when we get globalize going
+        flash[:notice] = "#{item.class.name.humanize} was successfully created."
+        params[:topic] = replacement_topic_hash
+        redirect_to :action => 'show', :id => item
+      end
+    else
+        render :action => 'new'
+    end
+  end
+
+  def zoom_destroy_and_redirect(zoom_class,pretty_zoom_class = nil)
+    if pretty_zoom_class.nil?
+      pretty_zoom_class = zoom_class
+    end
+    begin
+      item = Module.class_eval(zoom_class).find(params[:id])
+
+      prepare_zoom(item)
+      @successful = item.destroy
+    rescue
+      flash[:error], @successful  = $!.to_s, false
+    end
+
+    if @successful
+      flash[:notice] = "#{pretty_zoom_class} was successfully deleted."
+    end
+    redirect_to :action => 'list'
+  end
+
   # overriding here, to grab title of page, too
   # Store the URI of the current request in the session.
   #

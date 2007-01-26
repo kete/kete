@@ -29,11 +29,6 @@ class VideoController < ApplicationController
 
   def create
     @video = Video.new(params[:video])
-    # TODO: because id isn't available until after a save, we have a HACK
-    # to add id into record during acts_as_zoom
-    @video.oai_record = render_to_string(:template => 'video/oai_record',
-                                                   :layout => false)
-    @video.basket_urlified_name = @current_basket.urlified_name
     @successful = @video.save
 
     # add this to the user's empire of creations
@@ -41,18 +36,7 @@ class VideoController < ApplicationController
     # as creator
     @video.creators << current_user
 
-    if params[:relate_to_topic_id] and @successful
-      ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @video)
-      # TODO: translation
-      flash[:notice] = 'The video was successfully created.'
-      redirect_to_related_topic(params[:relate_to_topic_id])
-    elsif @successful
-      # TODO: translation
-      flash[:notice] = 'The video was successfully created.'
-      redirect_to :action => 'list'
-    else
-      render :action => 'new'
-    end
+    setup_related_topic_and_zoom_and_redirect(@video)
   end
 
   def edit
@@ -61,10 +45,7 @@ class VideoController < ApplicationController
 
   def update
     @video = Video.find(params[:id])
-    # TODO: because id isn't available until after a save, we have a HACK
-    # to add id into record during acts_as_zoom
-    @video.oai_record = render_to_string(:template => 'video/oai_record',
-                                                   :layout => false)
+
     if @video.update_attributes(params[:video])
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
@@ -74,6 +55,8 @@ class VideoController < ApplicationController
       @current_user.version = @video.version
       @video.contributors << @current_user
 
+      prepare_and_save_to_zoom(@video)
+
       flash[:notice] = 'Video was successfully updated.'
       redirect_to :action => 'show', :id => @video
     else
@@ -82,8 +65,6 @@ class VideoController < ApplicationController
   end
 
   def destroy
-    # TODO: use the code in topics_controller
-    Video.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    zoom_destroy_and_redirect('Video')
   end
 end

@@ -203,10 +203,10 @@ module ApplicationHelper
     end
   end
 
+  # xml.tag!("dcterms:modified", contribution_date)
   def oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
     item.contributors.each do |contributor|
       contribution_date = contributor.version_created_at.to_date
-      xml.tag!("dcterms:modified", contribution_date)
       xml.tag!("dc:contributor", user_to_dc_creator_or_contributor(contributor))
     end
   end

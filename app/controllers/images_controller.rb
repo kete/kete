@@ -30,11 +30,6 @@ class ImagesController < ApplicationController
 
   def create
     @still_image = StillImage.new(params[:still_image])
-    # TODO: because id isn't available until after a save, we have a HACK
-    # to add id into record during acts_as_zoom
-    @still_image.oai_record = render_to_string(:template => 'images/oai_record',
-                                               :layout => false)
-    @still_image.basket_urlified_name = @current_basket.urlified_name
     @successful = @still_image.save
 
     if @successful
@@ -54,18 +49,7 @@ class ImagesController < ApplicationController
       end
     end
 
-    if params[:relate_to_topic_id] and @successful
-      ContentItemRelation.new_relation_to_topic(params[:relate_to_topic_id], @still_image)
-      # TODO: translation
-      flash[:notice] = 'The image was successfully created.'
-      redirect_to_related_topic(params[:relate_to_topic_id])
-    elsif @successful
-      # TODO: translation
-      flash[:notice] = 'The image was successfully created.'
-      redirect_to :action => 'list'
-    else
-      render :action => 'new'
-    end
+    setup_related_topic_and_zoom_and_redirect(@still_image)
   end
 
   def edit
@@ -74,10 +58,7 @@ class ImagesController < ApplicationController
 
   def update
     @still_image = StillImage.find(params[:id])
-    # TODO: because id isn't available until after a save, we have a HACK
-    # to add id into record during acts_as_zoom
-    @still_image.oai_record = render_to_string(:template => 'images/oai_record',
-                                                   :layout => false)
+
     if @still_image.update_attributes(params[:still_image])
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
@@ -92,6 +73,8 @@ class ImagesController < ApplicationController
         @original_file = ImageFile.update_attributes(params[:image_file])
       end
 
+      prepare_and_save_to_zoom(@still_image)
+
       flash[:notice] = 'Image was successfully updated.'
       redirect_to :action => 'show', :id => @still_image
     else
@@ -100,8 +83,6 @@ class ImagesController < ApplicationController
   end
 
   def destroy
-    # TODO: use the code in topics_controller.rb
-    StillImage.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    zoom_destroy_and_redirect('StillImage','Image')
   end
 end

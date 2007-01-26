@@ -192,18 +192,7 @@ class TopicsController < ApplicationController
   end
 
   def destroy
-    begin
-      @topic = Topic.find(params[:id])
-      prepare_zoom(@topic)
-      @successful = @topic.destroy
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
-
-    if @successful
-      flash[:notice] = 'Topic was successfully deleted.'
-    end
-    redirect_to :action => 'list'
+    zoom_destroy_and_redirect('Topic')
   end
 
   ### end ajaxscaffold stuff
