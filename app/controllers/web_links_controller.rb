@@ -14,7 +14,7 @@ class WebLinksController < ApplicationController
   def show
     @web_link = @current_basket.web_links.find(params[:id])
     @title = @web_link.title
-    @creator = @web_link.creators.first || User.find(1)
+    @creator = @web_link.creators.first
     @last_contributor = @web_link.contributors.last || @creator
 
     respond_to do |format|
