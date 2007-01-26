@@ -51,5 +51,13 @@ Starting server with Mongrel on port 80 for development:
 
 sudo mongrel_rails start -p 80 --user your_user --group your_group
 
+Demo:
+
+To create a demo with included data do the following (you may want your demo on development instead, adjust to suit):
+
+rake db:make_demo RAILS_ENV=production FIXTURES=zoom_dbs.yml,topic_types.yml,topic_type_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,users.yml,roles.yml,roles_users.yml,topics.yml,topic_versions.yml,web_links.yml,web_link_versions.yml,videos.yml,video_versions.yml,audio_recordings.yml,audio_recording_versions.yml,still_images.yml,still_image_versions.yml,image_files.yml,contributions.yml,content_item_relations.yml
+
+TODO: add line about calling site/search/rebuild_zoom_index
+
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
 -- updated 2007-01-07
