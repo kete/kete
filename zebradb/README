@@ -45,8 +45,15 @@ Startup Zebra:
 
 In this directory (it is important to actualy run commands while in the directory):
 
-TODO: update this to reflect that you probably want to run this in the background.
+For debugging, run in foreground
+
 $ zebrasrv -f conf/kete-zebra-servers.xml
+
+To run in background as daemon:
+
+$ zebrasrv -f conf/kete-zebra-servers.xml -l zebra.log -D
+
+Note: you will probably want to setup log rotation, Kete doesn't do it automatically!
 
 You may want to change the ports your Zebra databases are listening on, if so you'll need to edit your Kete setup below to reflect that.
 
