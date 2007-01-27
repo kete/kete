@@ -51,6 +51,16 @@ Starting server with Mongrel on port 80 for development:
 
 sudo mongrel_rails start -p 80 --user your_user --group your_group
 
+or to run the production environment in the background (i.e. a daemon)
+
+sudo mongrel_rails start -e production -p 80 --user your_user --group your_group -d
+
+to shutdown daemon:
+
+mongrel_rails stop
+
+TODO: mongrel_cluster notes
+
 Demo:
 
 To create a demo with included data do the following (you may want your demo on development instead, adjust to suit):
