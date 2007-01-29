@@ -69,7 +69,18 @@ class TopicsController < ApplicationController
       # since this is creation, grab the topic_type fields
       topic_type = TopicType.find(params[:topic_type_id])
       params[:topic][:topic_type_id] = params[:topic_type_id]
+
       @fields = topic_type.topic_type_to_field_mappings
+
+      # work through inherited fields as well as current topic_type
+      @ancestors = TopicType.find(topic_type).ancestors
+      # everything descends from topic topic_type,
+      # so there is always at least one ancestor
+      if @ancestors.size > 1
+        @ancestors.each do |ancestor|
+          @fields = @fields + ancestor.topic_type_to_field_mappings
+        end
+      end
 
       # ultimately I would like url's for peole to do look like the following:
       # topics/people/mcginnis/john
@@ -148,7 +159,18 @@ class TopicsController < ApplicationController
       @topic = Topic.find(params[:id])
       topic_type = TopicType.find(@topic.topic_type_id)
       params[:topic][:topic_type_id] = params[:topic_type_id]
+
       @fields = topic_type.topic_type_to_field_mappings
+
+      # work through inherited fields as well as current topic_type
+      @ancestors = TopicType.find(topic_type).ancestors
+      # everything descends from topic topic_type,
+      # so there is always at least one ancestor
+      if @ancestors.size > 1
+        @ancestors.each do |ancestor|
+          @fields = @fields + ancestor.topic_type_to_field_mappings
+        end
+      end
 
       if @fields.size > 0
         params[:topic][:content] = render_to_string(:partial => 'field_to_xml',
