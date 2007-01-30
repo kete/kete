@@ -1,0 +1,10 @@
+---
+contributions_001:
+  updated_at: <%= Time.now.to_s :db %>
+  contributed_item_type: WebLink
+  id: "1"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "1"
+  created_at: <%= Time.now.to_s :db %>
