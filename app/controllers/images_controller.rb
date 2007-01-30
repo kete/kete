@@ -20,7 +20,7 @@ class ImagesController < ApplicationController
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, @still_image)
     respond_to do |format|
       format.html
-      format.xml { render :action => 'oai_record.rxml', :layout => false, :content_type => 'text/xml' }
+      format.xml { render_oai_record_xml(:item => @still_image) }
     end
   end
 

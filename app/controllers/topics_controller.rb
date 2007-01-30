@@ -229,7 +229,7 @@ class TopicsController < ApplicationController
     @last_contributor = @topic.contributors.last || @creator
     respond_to do |format|
       format.html
-      format.xml { render_oai_record_xml(@topic) }
+      format.xml { render_oai_record_xml(:item => @topic) }
     end
   end
 end
