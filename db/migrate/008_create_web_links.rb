@@ -4,6 +4,7 @@ class CreateWebLinks < ActiveRecord::Migration
       t.column :title, :string, :null => false
       t.column :description, :text
       t.column :url, :string, :null => false
+      t.column :extended_content, :text
       t.column :basket_id, :integer, :null => false
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false

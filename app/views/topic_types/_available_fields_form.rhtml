@@ -8,20 +8,20 @@
                         <% if @available_fields.size > 0 %>
                                 <%= form_tag :action => :add_to_topic_type, :id => local_id %>
 
-                                        <% for @topic_type_field in @available_fields %>
+                                        <% for @extended_field in @available_fields %>
                                                 <p>
-                                                        <%= h(@topic_type_field.label) %>
-                                                        <% if !@topic_type_field.xml_element_name.blank? %>
-                                                                <% if !@topic_type_field.xsi_type.blank? %>
-                                                                        (<%= h("#{@topic_type_field.xml_element_name} xsi:type=\"#{@topic_type_field.xsi_type}\"") %>)
+                                                        <%= h(@extended_field.label) %>
+                                                        <% if !@extended_field.xml_element_name.blank? %>
+                                                                <% if !@extended_field.xsi_type.blank? %>
+                                                                        (<%= h("#{@extended_field.xml_element_name} xsi:type=\"#{@extended_field.xsi_type}\"") %>)
                                                                 <% else -%>
-                                                                        (<%= h(@topic_type_field.xml_element_name) %>)
+                                                                        (<%= h(@extended_field.xml_element_name) %>)
                                                                 <% end -%>
                                                         <% end -%>
-                                                        <%= "(multiple)" if @topic_type_field.multiple? -%>
+                                                        <%= "(multiple)" if @extended_field.multiple? -%>
                                                         :<br>
-                                                        (optional) <%= check_box("topic_type_field[]", 'add_checkbox') %>
-                                                        (required) <%= check_box("topic_type_field[]", 'required_checkbox') %>
+                                                        (optional) <%= check_box("extended_field[]", 'add_checkbox') %>
+                                                        (required) <%= check_box("extended_field[]", 'required_checkbox') %>
                                                 </p>
                                         <% end %>
                                         <%= submit_tag "Add to Topic Type" %>

@@ -5,8 +5,8 @@ class TopicTypeTest < Test::Unit::TestCase
 
   # The TopicType model contains many things that
   # need to be tested using the join model TopicTypeToFieldMapping
-  # and TopicTypeField, so we load their fixtures here
-  fixtures :topic_type_fields
+  # and ExtendedField, so we load their fixtures here
+  fixtures :extended_fields
   fixtures :topic_type_to_field_mappings
 
   NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy'} # e.g. {:name => 'Test TopicType', :description => 'Dummy'}
@@ -18,8 +18,8 @@ class TopicTypeTest < Test::Unit::TestCase
     # @first = topic_types(:first)
     @person_type = topic_types(:person)
     @place_type = topic_types(:place)
-    @name_field = topic_type_fields(:name)
-    @capacity_field = topic_type_fields(:capacity)
+    @name_field = extended_fields(:name)
+    @capacity_field = extended_fields(:capacity)
   end
 
   def test_raw_validation
@@ -67,8 +67,8 @@ class TopicTypeTest < Test::Unit::TestCase
 
   # add a new field to the form, make sure that position and required are set correctly for defaults
   def test_straight_add_field_has_correct_defaults
-    field = @person_type.topic_type_to_field_mappings.create(:topic_type_field_id => topic_type_fields(:city).id)
-    assert_equal topic_type_fields(:city).id, field.topic_type_field_id
+    field = @person_type.topic_type_to_field_mappings.create(:extended_field_id => extended_fields(:city).id)
+    assert_equal extended_fields(:city).id, field.extended_field_id
     assert_equal @person_type.topic_type_to_field_mappings.size, field.position
     assert !field.required?, "The default for required in topic_type_to_field_mappings should be false or nil."
   end
@@ -90,8 +90,8 @@ class TopicTypeTest < Test::Unit::TestCase
 
     mapping =
       TopicTypeToFieldMapping.find(:first,
-                                   :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
-                                                   {:topic_type_field_id => @name_field.id, :topic_type_id => @place_type.id }] )
+                                   :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+                                                   {:extended_field_id => @name_field.id, :topic_type_id => @place_type.id }] )
     assert_equal @place_type.form_fields.size, mapping.position
     assert !mapping.required?, "The default for required in form_fields should be false or nil."
   end
@@ -106,8 +106,8 @@ class TopicTypeTest < Test::Unit::TestCase
     @place_type.form_fields.each do |field|
       mapping =
         TopicTypeToFieldMapping.find(:first,
-                                     :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
-                                                     {:topic_type_field_id => field.id, :topic_type_id => @place_type.id }] )
+                                     :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+                                                     {:extended_field_id => field.id, :topic_type_id => @place_type.id }] )
       test_position = mapping.position.to_i
       last_position = test_position
       assert test_position <= last_position, "form_fields not listed in order of position"
@@ -121,8 +121,8 @@ class TopicTypeTest < Test::Unit::TestCase
 
     mapping =
       TopicTypeToFieldMapping.find(:first,
-                                   :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
-                                                   {:topic_type_field_id => @capacity_field.id, :topic_type_id => @place_type.id }] )
+                                   :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+                                                   {:extended_field_id => @capacity_field.id, :topic_type_id => @place_type.id }] )
     assert_equal @place_type.form_fields.size, mapping.position
     assert mapping.required?, "The default for required in required_form_fields should be true."
   end
@@ -138,8 +138,8 @@ class TopicTypeTest < Test::Unit::TestCase
     @place_type.required_form_fields.each do |field|
       mapping =
         TopicTypeToFieldMapping.find(:first,
-                                     :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
-                                                     {:topic_type_field_id => field.id, :topic_type_id => @place_type.id }] )
+                                     :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+                                                     {:extended_field_id => field.id, :topic_type_id => @place_type.id }] )
       test_position = mapping.position.to_i
       last_position = test_position
       assert test_position <= last_position, "required_form_fields not listed in order of position"
@@ -149,8 +149,8 @@ class TopicTypeTest < Test::Unit::TestCase
   # we shouldn't see any fields that have been mapped to this topic_type already
   def test_available_fields_not_already_mapped
     @place_type.available_fields.each do |field|
-      fcount = TopicTypeToFieldMapping.count :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
-                                              {:topic_type_field_id => field.id, :topic_type_id => @place_type.id }]
+      fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+                                              {:extended_field_id => field.id, :topic_type_id => @place_type.id }]
       assert_equal fcount, 0, "There is a field listed in available_fields that has already been mapped to this topic_type."
     end
   end

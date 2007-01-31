@@ -4,6 +4,6 @@ class AddDefaultBasket < ActiveRecord::Migration
   end
 
   def self.down
-    Basket.find_by_id(1).destroy
+    Basket.find(1).destroy
   end
 end

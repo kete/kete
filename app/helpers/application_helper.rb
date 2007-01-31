@@ -269,46 +269,46 @@ module ApplicationHelper
     xml.tag!("dc:format", format)
   end
 
-  def non_dc_content_field_xml(content_hash,non_dc_content_hash,field)
-    # use xml_element_name, but append to non_dc_content
-    if !content_hash[field]['xml_element_name'].blank?
+  def non_dc_extended_content_field_xml(extended_content_hash,non_dc_extended_content_hash,field)
+    # use xml_element_name, but append to non_dc_extended_content
+    if !extended_content_hash[field]['xml_element_name'].blank?
       x = Builder::XmlMarkup.new
-      if !content_hash[field]['xml_element_name']['xsi_type'].blank?
-        non_dc_content += x.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'], "xsi:type".to_sym => content_hash[field]['xml_element_name']['xsi_type'])
+      if !extended_content_hash[field]['xml_element_name']['xsi_type'].blank?
+        non_dc_extended_content += x.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'], "xsi:type".to_sym => extended_content_hash[field]['xml_element_name']['xsi_type'])
       else
-        non_dc_content += x.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'])
+        non_dc_extended_content += x.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'])
       end
     else
-      non_dc_content_hash[field] = content_hash[field]
+      non_dc_extended_content_hash[field] = extended_content_hash[field]
     end
   end
 
-  def content_hash_field_xml(xml,content_hash,non_dc_content_hash,field,re)
-    if !content_hash[field]['value'].blank? || !content_hash[field].blank?
-      if !content_hash[field]['xml_element_name'].blank? && re.match(content_hash[field]['xml_element_name'])
+  def extended_content_hash_field_xml(xml,extended_content_hash,non_dc_extended_content_hash,field,re)
+    if !extended_content_hash[field]['value'].blank? || !extended_content_hash[field].blank?
+      if !extended_content_hash[field]['xml_element_name'].blank? && re.match(extended_content_hash[field]['xml_element_name'])
         # it's a dublin core tag, just spit it out
         # we allow for xsi:type specification
-        if !content_hash[field]['xml_element_name']['xsi_type'].blank?
-          xml.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'], "xsi:type".to_sym => content_hash[field]['xml_element_name']['xsi_type'])
+        if !extended_content_hash[field]['xml_element_name']['xsi_type'].blank?
+          xml.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'], "xsi:type".to_sym => extended_content_hash[field]['xml_element_name']['xsi_type'])
         else
-          xml.tag!(content_hash[field]['xml_element_name'], content_hash[field]['value'])
+          xml.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'])
         end
       else
-        non_dc_content_field_xml(content_hash,non_dc_content_hash,field)
+        non_dc_extended_content_field_xml(extended_content_hash,non_dc_extended_content_hash,field)
       end
     end
   end
 
-  def oai_dc_xml_dc_topic_content(xml,topic)
-    # work through content, see what should be it's own dc element
+  def oai_dc_xml_dc_topic_extended_content(xml,topic)
+    # work through extended_content, see what should be it's own dc element
     # and what should go in a group dc:description
-    temp_content = topic.content
-    content_hash = XmlSimple.xml_in("<dummy>#{temp_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
+    temp_extended_content = topic.extended_content
+    extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
 
-    non_dc_content_hash = Hash.new
+    non_dc_extended_content_hash = Hash.new
     re = Regexp.new("^dc")
     multi_re = Regexp.new("_multiple$")
-    content_hash.keys.each do |field|
+    extended_content_hash.keys.each do |field|
       # condition that checks if this is a multiple field
       # if so move into it and does the following for each
       if multi_re.match(field)
@@ -317,28 +317,28 @@ module ApplicationHelper
         # "1" => {field_name => value}, "2" => ...
         # we want the first field name followed by a :
         # and all values, separated by spaces (for now)
-        hash_of_values = content_hash[field]
+        hash_of_values = extended_content_hash[field]
         hash_of_values.keys.each do |key|
           hash_of_values[key].keys.each do |subfield|
-            content_hash_field_xml(xml,hash_of_values[key],non_dc_content_hash,subfield,re)
+            extended_content_hash_field_xml(xml,hash_of_values[key],non_dc_extended_content_hash,subfield,re)
           end
         end
       else
-        content_hash_field_xml(xml,content_hash,non_dc_content_hash,field,re)
+        extended_content_hash_field_xml(xml,extended_content_hash,non_dc_extended_content_hash,field,re)
       end
     end
 
-    if !non_dc_content_hash.blank?
+    if !non_dc_extended_content_hash.blank?
       xml.tag!("dc:description") do
-        non_dc_content_hash.each do |key, value|
+        non_dc_extended_content_hash.each do |key, value|
           xml.tag!(key, value)
         end
       end
     end
   end
 
-  # content_xml_helpers
-  def content_field_xml_tag(options = {})
+  # extended_content_xml_helpers
+  def extended_content_field_xml_tag(options = {})
     begin
       xml = options[:xml]
       field = options[:field]

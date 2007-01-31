@@ -1,50 +1,50 @@
---- 
-topic_type_fields_001: 
+---
+extended_fields_001:
   xml_element_name: dc:description
   updated_at: 2007-01-01 00:00:01
   id: "1"
   description: Non-sir names.
   label: First Names
-  created_at: 2007-01-17 08:39:32
-topic_type_fields_002: 
-  xml_element_name: 
+  created_at: <%= Time.now.to_s :db %>
+extended_fields_002:
+  xml_element_name:
   updated_at: 2007-01-01 00:00:01
   id: "2"
   description: Sir name.
   label: Last Name
-  created_at: 2007-01-17 08:39:32
-topic_type_fields_003: 
+  created_at: <%= Time.now.to_s :db %>
+extended_fields_003:
   xml_element_name: dc:subject
   updated_at: 2007-01-01 00:00:01
   id: "3"
   description: Where was the person born?
   label: Place of Birth
-  created_at: 2007-01-17 08:39:32
-topic_type_fields_004: 
-  xml_element_name: dc:spatial
+  created_at: <%= Time.now.to_s :db %>
+extended_fields_004:
+  xml_element_name: dc:coverage
   updated_at: 2007-01-01 00:00:01
   id: "4"
   description: The name of the locale, like city, town, or village?
   label: City
-  created_at: 2007-01-17 08:39:32
-topic_type_fields_005: 
-  xml_element_name: dc:temporal
+  created_at: <%= Time.now.to_s :db %>
+extended_fields_005:
+  xml_element_name: dc:coverage
   updated_at: 2007-01-01 00:00:01
   id: "5"
   description: When was the person born?
   label: Date of Birth
-  created_at: 2007-01-17 08:39:32
-topic_type_fields_006: 
+  created_at: <%= Time.now.to_s :db %>
+extended_fields_006:
   xml_element_name: dc:subject
   updated_at: 2007-01-01 00:00:01
   id: "6"
-  description: 
+  description:
   label: Name
-  created_at: 2007-01-17 08:39:32
-topic_type_fields_007: 
-  xml_element_name: 
+  created_at: <%= Time.now.to_s :db %>
+extended_fields_007:
+  xml_element_name:
   updated_at: 2007-01-01 00:00:01
   id: "7"
   description: How many people can this place hold?
   label: Capacity
-  created_at: 2007-01-17 08:39:32
+  created_at: <%= Time.now.to_s :db %>

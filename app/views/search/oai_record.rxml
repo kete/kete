@@ -16,7 +16,7 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                                         # topic specific
                                         if item.class.name == 'Topic'
                                                 oai_dc_xml_dc_description(xml,item.short_summary)
-                                                oai_dc_xml_dc_topic_content(xml,item)
+                                                oai_dc_xml_dc_topic_extended_content(xml,item)
                                         end
                                         oai_dc_xml_dc_description(xml,item.description)
                                         oai_dc_xml_dc_creators_and_date(xml,item)

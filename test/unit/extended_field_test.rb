@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TopicTypeFieldTest < Test::Unit::TestCase
-  fixtures :topic_type_fields
+class ExtendedFieldTest < Test::Unit::TestCase
+  fixtures :extended_fields
 
-  # The TopicTypeField model contains many things that
+  # The ExtendedField model contains many things that
   # need to be tested using the join model TopicTypeToFieldMapping
   # and TopicType, so we load their fixtures here
   fixtures :topic_types
@@ -15,23 +15,23 @@ class TopicTypeFieldTest < Test::Unit::TestCase
   end
 
   def test_invalid_with_empty_name
-    topic_type_field = TopicTypeField.new
-    assert !topic_type_field.valid?
-    assert topic_type_field.errors.invalid?(:name)
+    extended_field = ExtendedField.new
+    assert !extended_field.valid?
+    assert extended_field.errors.invalid?(:name)
   end
 
   def test_unique_name
-    topic_type_field = TopicTypeField.new(:name       => topic_type_fields(:first_names).name,
+    extended_field = ExtendedField.new(:name       => extended_fields(:first_names).name,
                           :description => "yyy")
-    assert !topic_type_field.save
-    assert_equal ActiveRecord::Errors.default_error_messages[:taken], topic_type_field.errors.on(:name)
+    assert !extended_field.save
+    assert_equal ActiveRecord::Errors.default_error_messages[:taken], extended_field.errors.on(:name)
   end
 
   def setup
     @person_type = topic_types(:person)
     @place_type = topic_types(:place)
-    @name_field = topic_type_fields(:name)
-    @capacity_field = topic_type_fields(:capacity)
+    @name_field = extended_fields(:name)
+    @capacity_field = extended_fields(:capacity)
   end
 
   ### now for our joins
@@ -49,9 +49,9 @@ class TopicTypeFieldTest < Test::Unit::TestCase
 
   # delete a topic type, makes sure dependent topic_type_to_field_mappings are deleted
   def test_straight_delete_topic_deletes_mappings
-    topic_type_field_id = @name_field.id
+    extended_field_id = @name_field.id
     @name_field.destroy
-    should_be_empty_list = TopicTypeToFieldMapping.find_all_by_topic_type_field_id(topic_type_field_id)
+    should_be_empty_list = TopicTypeToFieldMapping.find_all_by_extended_field_id(extended_field_id)
     assert_equal should_be_empty_list.size, 0
   end
 
@@ -59,9 +59,9 @@ class TopicTypeFieldTest < Test::Unit::TestCase
 
   # should never return a field that has already been mapped to a certain topic_type
   def test_find_available_fields
-    TopicTypeField.find_available_fields(@person_type).each do |field|
-      fcount = TopicTypeToFieldMapping.count :conditions => ["topic_type_field_id = :topic_type_field_id and topic_type_id = :topic_type_id",
-                                              {:topic_type_field_id => field.id, :topic_type_id => @person_type.id }]
+    ExtendedField.find_available_fields(@person_type).each do |field|
+      fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+                                              {:extended_field_id => field.id, :topic_type_id => @person_type.id }]
       assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this topic_type."
     end
   end

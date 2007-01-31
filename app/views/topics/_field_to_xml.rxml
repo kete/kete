@@ -1,11 +1,11 @@
 # label is unique, whereas xml_element_name is not
-# thus we use label for our internal (topic.content) storage of arbitrary attributes
+# thus we use label for our internal (topic.extended_content) storage of arbitrary attributes
 # xml_element_name is used for exported topics, such as oai/dc records
-field_name = field_to_xml.topic_type_field_label.downcase.gsub(/ /, '_')
+field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
 
 # because we piggyback multiple, it doesn't have a ? method
 # even though it is boolean
-if field_to_xml.topic_type_field_multiple
+if field_to_xml.extended_field_multiple
         # we have multiple values for this field in the form
         # collect them in an outer tag
         # do an explicit key, so we end up with a hash
@@ -13,18 +13,18 @@ if field_to_xml.topic_type_field_multiple
                 hash_of_values = params[:topic][field_name]
                 hash_of_values.keys.each do |key|
                         xml.tag!(key) do
-                                content_field_xml_tag(:xml => xml,
-                                                      :field => field_name,
-                                                      :value => params[:topic][field_name][key],
-                                                      :xml_element_name => field_to_xml.topic_type_field_xml_element_name,
-                                                      :xsi_type => field_to_xml.topic_type_field_xsi_type)
+                                extended_content_field_xml_tag(:xml => xml,
+                                                               :field => field_name,
+                                                               :value => params[:topic][field_name][key],
+                                                               :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                                                               :xsi_type => field_to_xml.extended_field_xsi_type)
                         end
                 end
         end
 else
-        content_field_xml_tag(:xml => xml,
-                              :field => field_name,
-                              :value => params[:topic][field_name],
-                              :xml_element_name => field_to_xml.topic_type_field_xml_element_name,
-                              :xsi_type => field_to_xml.topic_type_field_xsi_type)
+        extended_content_field_xml_tag(:xml => xml,
+                                       :field => field_name,
+                                       :value => params[:topic][field_name],
+                                       :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                                       :xsi_type => field_to_xml.extended_field_xsi_type)
 end

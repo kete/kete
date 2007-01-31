@@ -7,12 +7,12 @@ class TopicType < ActiveRecord::Base
   # code based on work by hasmanythrough.com
   # you have to do the elimination of dupes through the sql
   # otherwise, rails will reorder by topic_type_to_field_mapping.id after the sql has bee run
-  has_many :form_fields, :through => :topic_type_to_field_mappings, :source => :topic_type_field, :select => "distinct topic_type_to_field_mappings.position, topic_type_fields.*", :order => 'position' do
-    def <<(topic_type_field)
-      TopicTypeToFieldMapping.with_scope(:create => { :required => "false"}) { self.concat topic_type_field }
+  has_many :form_fields, :through => :topic_type_to_field_mappings, :source => :extended_field, :select => "distinct topic_type_to_field_mappings.position, extended_fields.*", :order => 'position' do
+    def <<(extended_field)
+      TopicTypeToFieldMapping.with_scope(:create => { :required => "false"}) { self.concat extended_field }
     end
   end
-  has_many :required_form_fields, :through => :topic_type_to_field_mappings, :source => :required_form_field, :select => "distinct topic_type_to_field_mappings.position, topic_type_fields.*", :conditions => "topic_type_to_field_mappings.required = 'true'", :order => 'position' do
+  has_many :required_form_fields, :through => :topic_type_to_field_mappings, :source => :required_form_field, :select => "distinct topic_type_to_field_mappings.position, extended_fields.*", :conditions => "topic_type_to_field_mappings.required = 'true'", :order => 'position' do
     def <<(required_form_field)
       TopicTypeToFieldMapping.with_scope(:create => { :required => "true"}) { self.concat required_form_field }
     end
@@ -31,6 +31,6 @@ class TopicType < ActiveRecord::Base
   # then we also have ancestor fields for all the topic types above this topic type
 
   def available_fields
-    @available_fields = TopicTypeField.find_available_fields(self)
+    @available_fields = ExtendedField.find_available_fields(self)
   end
 end

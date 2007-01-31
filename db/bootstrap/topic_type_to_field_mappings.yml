@@ -6,7 +6,7 @@ topic_type_to_field_mappings_001:
   topic_type_id: "2"
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
-  topic_type_field_id: "1"
+  extended_field_id: "1"
 topic_type_to_field_mappings_002:
   id: "2"
   required: "1"
@@ -14,7 +14,7 @@ topic_type_to_field_mappings_002:
   topic_type_id: "2"
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
-  topic_type_field_id: "2"
+  extended_field_id: "2"
 topic_type_to_field_mappings_003:
   id: "3"
   required: "0"
@@ -22,7 +22,7 @@ topic_type_to_field_mappings_003:
   topic_type_id: "3"
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
-  topic_type_field_id: "4"
+  extended_field_id: "4"
 topic_type_to_field_mappings_004:
   id: "4"
   required: "0"
@@ -30,4 +30,4 @@ topic_type_to_field_mappings_004:
   topic_type_id: "2"
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
-  topic_type_field_id: "3"
+  extended_field_id: "3"

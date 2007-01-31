@@ -62,13 +62,13 @@ class TopicTypesController < ApplicationController
     # we want to separate out plain form fields from required ones
 
     # params has a hash of hashes for field with field_id as the key
-    params[:topic_type_field].keys.each do |field_id|
-      field = TopicTypeField.find(field_id)
+    params[:extended_field].keys.each do |field_id|
+      field = ExtendedField.find(field_id)
 
       # into the field's hash
       # now we can grab the field's attributes that are being updated
-      params[:topic_type_field][field_id].keys.each do |to_add_attr|
-        to_add_attr_value = params[:topic_type_field][field_id][to_add_attr]
+      params[:extended_field][field_id].keys.each do |to_add_attr|
+        to_add_attr_value = params[:extended_field][field_id][to_add_attr]
 
         # if we are supposed to add the field
         if to_add_attr_value.to_i == 1

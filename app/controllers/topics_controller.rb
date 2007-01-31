@@ -1,5 +1,5 @@
 class TopicsController < ApplicationController
-  # since we use dynamic forms based on topic_types and topic_type_fields
+  # since we use dynamic forms based on topic_types and extended_fields
   # and topics have their main attributes stored in an xml doc
   # within their content field
   # in fact none of the topics table fields are edited directly
@@ -92,14 +92,14 @@ class TopicsController < ApplicationController
       # topics/events/2006/10/31
       # in the meantime we'll just use :name or :first_names and :last_names
 
-      # here's where we populate the content with our xml
+      # here's where we populate the extended_content with our xml
       if @fields.size > 0
-        params[:topic][:content] = render_to_string(:partial => 'field_to_xml',
+        params[:topic][:extended_content] = render_to_string(:partial => 'field_to_xml',
                                                     :collection => @fields,
                                                     :layout => false)
       end
 
-      logger.debug("what is content: #{params[:topic][:content]}")
+      logger.debug("what is extended_content: #{params[:topic][:extended_content]}")
 
       # in order to get the ajax to work, we put form values in the topic hash
       # in parameters, this will break new and update, because they aren't apart of the model
@@ -107,7 +107,7 @@ class TopicsController < ApplicationController
 
       replacement_topic_hash = { }
       params[:topic].keys.each do |field_key|
-        # we only want real topic columns, not pseudo ones that are handled by content xml
+        # we only want real topic columns, not pseudo ones that are handled by extended_content xml
         if Topic.column_names.include?(field_key) || field_key == 'tag_list'
             replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
         end
@@ -175,7 +175,7 @@ class TopicsController < ApplicationController
       end
 
       if @fields.size > 0
-        params[:topic][:content] = render_to_string(:partial => 'field_to_xml',
+        params[:topic][:extended_content] = render_to_string(:partial => 'field_to_xml',
                                                     :collection => @fields,
                                                     :layout => false)
       end
@@ -183,7 +183,7 @@ class TopicsController < ApplicationController
       # TODO: DRY this up, see create
       replacement_topic_hash = { }
       params[:topic].keys.each do |field_key|
-        # we only want real topic columns, not pseudo ones that are handled by content xml
+        # we only want real topic columns, not pseudo ones that are handled by extended_content xml
         if Topic.column_names.include?(field_key) || field_key == 'tag_list'
             replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
         end

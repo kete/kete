@@ -30,14 +30,14 @@
                         <div class="form-element">
                                  <% # we organize our custom form fields by label, because it is unique %>
                                  <% # xml_element_name do not have to be %>
-                                 <% f_id = @mapping.topic_type_field_label.downcase.gsub(/ /, '_') %>
+                                 <% f_id = @mapping.extended_field_label.downcase.gsub(/ /, '_') %>
                                  <% if @mapping.required -%>
-                                         <label class="required" for="<%= f_id  -%>"><%= h(@mapping.topic_type_field_label) -%></label>
+                                         <label class="required" for="<%= f_id  -%>"><%= h(@mapping.extended_field_label) -%></label>
                                  <% else -%>
-                                         <label for="<%= 'topic['+f_id+']' -%>"><%= h(@mapping.topic_type_field_label) -%></label>
+                                         <label for="<%= 'topic['+f_id+']' -%>"><%= h(@mapping.extended_field_label) -%></label>
                                  <% end -%>
                                  <% # TODO: too much logic in here for presentation! -%>
-                                 <% if @mapping.topic_type_field_multiple -%>
+                                 <% if @mapping.extended_field_multiple -%>
                                          <% edit = 0
                                             if @topic
                                                  edit = 1

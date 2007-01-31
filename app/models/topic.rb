@@ -1,8 +1,8 @@
 class Topic < ActiveRecord::Base
   # this is where the actual content lives
-  # using the topic_type_fields associated with this topic's topic_type
+  # using the extended_fields associated with this topic's topic_type
   # generate a form
-  # the results of the form are stored in a content column for the topic
+  # the results of the form are stored in a extended_content column for the topic
   # as an xml doc
   # when displaying the topic we pull the xml doc out
   # and make the tag's values available as variables to the template
@@ -48,15 +48,15 @@ class Topic < ActiveRecord::Base
 
   acts_as_taggable
   acts_as_versioned
-  validates_xml :content
+  validates_xml :extended_content
   validates_presence_of :title
   # this may change
   validates_uniqueness_of :title
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
-  # translates :title, :description, :short_summary, :content
+  # translates :title, :description, :short_summary, :extended_content
   def xml_attributes
-    temp_hash = Hash.from_xml("<dummy_root>#{self.content}</dummy_root>")
+    temp_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
     return temp_hash['dummy_root']
   end
 

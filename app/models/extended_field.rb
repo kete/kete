@@ -1,4 +1,4 @@
-class TopicTypeField < ActiveRecord::Base
+class ExtendedField < ActiveRecord::Base
   has_many :topic_type_to_field_mappings, :dependent => :destroy
   # if we ever use this association, we'll want to add a test for it
   has_many :topic_type_forms, :through => :topic_type_to_field_mappings, :source => :topic_type, :order => 'position'
@@ -19,7 +19,7 @@ class TopicTypeField < ActiveRecord::Base
     # exclude ancestor's fields as well
     topic_types_to_exclude = topic_type.ancestors + [topic_type]
     find(:all, :readonly => false,
-         :conditions => ["id not in (select topic_type_field_id from topic_type_to_field_mappings where topic_type_id in (?))", topic_types_to_exclude])
+         :conditions => ["id not in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", topic_types_to_exclude])
   end
 
   def add_checkbox

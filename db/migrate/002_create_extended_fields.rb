@@ -1,8 +1,10 @@
-class CreateTopicTypeFields < ActiveRecord::Migration
+class CreateExtendedFields < ActiveRecord::Migration
   def self.up
-    create_table :topic_type_fields do |t|
+    create_table :extended_fields do |t|
       t.column :label, :string, :null => false
       t.column :xml_element_name, :string
+      t.column :xsi_type, :string
+      t.column :multiple, :boolean, :default => false
       t.column :description, :text
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
@@ -10,6 +12,6 @@ class CreateTopicTypeFields < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :topic_type_fields
+    drop_table :extended_fields
   end
 end

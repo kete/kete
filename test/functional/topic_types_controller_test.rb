@@ -6,7 +6,7 @@ class TopicTypesController; def rescue_action(e) raise e end; end
 
 class TopicTypesControllerTest < Test::Unit::TestCase
   fixtures :topic_types
-  fixtures :topic_type_fields
+  fixtures :extended_fields
   fixtures :topic_type_to_field_mappings
 
   NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy'} # e.g. {:name => 'Test TopicType', :description => 'Dummy'}
@@ -21,8 +21,8 @@ class TopicTypesControllerTest < Test::Unit::TestCase
     @first = TopicType.find(:first)
     @person_type = topic_types(:person)
     @place_type = topic_types(:place)
-    @name_field = topic_type_fields(:name)
-    @capacity_field = topic_type_fields(:capacity)
+    @name_field = extended_fields(:name)
+    @capacity_field = extended_fields(:capacity)
   end
 
   def test_component
@@ -113,7 +113,7 @@ class TopicTypesControllerTest < Test::Unit::TestCase
 
   def test_add_to_topic_type
     # create a hash in the format we need
-    topic_type_fields_hash = { }
+    extended_fields_hash = { }
     temp_hash = { }
 
     @place_type.available_fields.each do |field|
@@ -122,10 +122,10 @@ class TopicTypesControllerTest < Test::Unit::TestCase
       else
         temp_hash = { field.id => {:add_checkbox => '1', :required_checkbox => '0'} }
       end
-      topic_type_fields_hash.merge!(temp_hash)
+      extended_fields_hash.merge!(temp_hash)
     end
 
-    post :add_to_topic_type, :id => @place_type.id, :topic_type_field => topic_type_fields_hash
+    post :add_to_topic_type, :id => @place_type.id, :extended_field => extended_fields_hash
 
     # a simple test to make sure this worked... there should no longer be any available fields
     assert_equal @place_type.available_fields.size, 0

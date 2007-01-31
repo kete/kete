@@ -3,6 +3,7 @@ class CreateVideos < ActiveRecord::Migration
     create_table :videos do |t|
       t.column :title, :string, :null => false
       t.column :description, :text
+      t.column :extended_content, :text
       t.column :filename, :string, :null => false
       t.column :content_type, :string, :null => false
       t.column :size, :integer, :null => false

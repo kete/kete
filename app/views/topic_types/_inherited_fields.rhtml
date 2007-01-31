@@ -13,7 +13,7 @@
                         <% if @ancestors.size > 1 -%>
                                 <% @ancestors.each do |ancestor| -%>
                                     <% # required, position, and acts_as_list functionality are in mappings
-                                       # but we also need field label attribute from topic_type_fields
+                                       # but we also need field label attribute from extended_fields
                                        # we use piggy_back plugin to get the label attribute, see model
                                      -%>
 
@@ -21,15 +21,15 @@
                                         <% if form_field_mappings.size > 0 -%>
                                             <% for mapping in form_field_mappings -%>
                                             <p>
-                                                <%= h(mapping.topic_type_field_label) -%>
-                                                <% if !mapping.topic_type_field_xml_element_name.blank? -%>
-                                                                <% if !mapping.topic_type_field_xsi_type.blank? -%>
-                                                                        (<%= h("#{mapping.topic_type_field_xml_element_name} xsi:type=\"#{mapping.topic_type_field_xsi_type}\"") %>)
+                                                <%= h(mapping.extended_field_label) -%>
+                                                <% if !mapping.extended_field_xml_element_name.blank? -%>
+                                                                <% if !mapping.extended_field_xsi_type.blank? -%>
+                                                                        (<%= h("#{mapping.extended_field_xml_element_name} xsi:type=\"#{mapping.extended_field_xsi_type}\"") %>)
                                                                 <% else -%>
-                                                                        (<%= h(mapping.topic_type_field_xml_element_name) %>)
+                                                                        (<%= h(mapping.extended_field_xml_element_name) %>)
                                                                 <% end -%>
                                                 <% end -%>
-                                                <%= "(multiple)" if mapping.topic_type_field_multiple -%>
+                                                <%= "(multiple)" if mapping.extended_field_multiple -%>
                                                 <% if mapping.required -%>
                                                     (required)
                                                 <% else -%>
@@ -46,9 +46,9 @@
                                         <% if form_field_mappings.size > 0 -%>
                                             <% for mapping in form_field_mappings -%>
                                             <p>
-                                                <%= h(mapping.topic_type_field_label) -%>
-                                                <% if !mapping.topic_type_field_xml_element_name.blank? -%>
-                                                    (<%= h(mapping.topic_type_field_xml_element_name) -%>)
+                                                <%= h(mapping.extended_field_label) -%>
+                                                <% if !mapping.extended_field_xml_element_name.blank? -%>
+                                                    (<%= h(mapping.extended_field_xml_element_name) -%>)
                                                 <% end -%>
                                                 <% if mapping.required -%>
                                                     (required)
