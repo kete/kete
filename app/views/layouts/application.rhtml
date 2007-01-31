@@ -43,7 +43,7 @@
                            |
                            Logout
                         <% else %>
-                           <% # TODO: currently a security rish -%>
+                           <% # TODO: currently a security risk -%>
                            Welcome <%= h(current_user.login) -%> |
                            <%= link_to_unless_current "Logout", :controller => 'account',
                                                                 :action => :logout,
@@ -58,8 +58,8 @@
                 </div>
 
                 <% if flash[:notice] %>
-                <!-- TODO: look up if there is a style sheet class for flash, add here -->
-                <div id="notice"><%= flash[:notice] %></div>
+                        <!-- TODO: look up if there is a style sheet class for flash, add here -->
+                        <div id="notice"><%= flash[:notice] %></div>
                 <% end %>
 
         </div><!-- /header -->

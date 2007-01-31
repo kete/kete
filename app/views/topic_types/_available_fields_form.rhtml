@@ -12,8 +12,13 @@
                                                 <p>
                                                         <%= h(@topic_type_field.label) %>
                                                         <% if !@topic_type_field.xml_element_name.blank? %>
-                                                                (<%= h(@topic_type_field.xml_element_name) %>)
+                                                                <% if !@topic_type_field.xsi_type.blank? %>
+                                                                        (<%= h("#{@topic_type_field.xml_element_name} xsi:type=\"#{@topic_type_field.xsi_type}\"") %>)
+                                                                <% else -%>
+                                                                        (<%= h(@topic_type_field.xml_element_name) %>)
+                                                                <% end -%>
                                                         <% end -%>
+                                                        <%= "(multiple)" if @topic_type_field.multiple? -%>
                                                         :<br>
                                                         (optional) <%= check_box("topic_type_field[]", 'add_checkbox') %>
                                                         (required) <%= check_box("topic_type_field[]", 'required_checkbox') %>

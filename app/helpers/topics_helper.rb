@@ -22,8 +22,31 @@ module TopicsHelper
     html_string = ""
     # TODO: these should have their order match the specified order for the topic_type
     topic.xml_attributes.each do |field_key, field_value|
-      field_name = field_key.humanize
-      html_string += "<p> #{field_name}: #{field_value} </p>\n"
+      # we now handle multiples
+      multi_re = Regexp.new("_multiple$")
+      if multi_re.match(field_key)
+        # value is going to be a hash like this:
+        # "1" => {field_name => value}, "2" => ...
+        # we want the first field name followed by a :
+        # and all values, separated by spaces (for now)
+        field_name = String.new
+        field_values = Array.new
+        field_value.keys.each do |subfield_key|
+          field_hash = topic.xml_attributes[field_key][subfield_key]
+          field_hash.keys.each do |key|
+            if field_name.blank?
+              field_name = key.humanize
+            end
+            if !field_hash[key].blank? && !field_hash[key].to_s.match("xml_element_name")
+              field_values << field_hash[key]
+            end
+          end
+        end
+        html_string += "<p> #{field_name}: #{field_values.to_sentence} </p>\n"
+      else
+        field_name = field_key.humanize
+        html_string += "<p> #{field_name}: #{field_value} </p>\n"
+      end
     end
     return html_string
   end

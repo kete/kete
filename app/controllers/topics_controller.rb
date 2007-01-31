@@ -99,6 +99,8 @@ class TopicsController < ApplicationController
                                                     :layout => false)
       end
 
+      logger.debug("what is content: #{params[:topic][:content]}")
+
       # in order to get the ajax to work, we put form values in the topic hash
       # in parameters, this will break new and update, because they aren't apart of the model
       # directly, so strip them out of parameters
@@ -126,7 +128,7 @@ class TopicsController < ApplicationController
     if params[:relate_to_topic_id] and @successful
       # TODO: wrap this up into method
       # move to other controllers
-      @new_related_topic = find(params[:relate_to_topic_id])
+      @new_related_topic = Topic.find(params[:relate_to_topic_id])
       ContentItemRelation.new_relation_to_topic(@new_related_topic, @topic)
 
       # update the related topic

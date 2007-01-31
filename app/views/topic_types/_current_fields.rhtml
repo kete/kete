@@ -18,8 +18,13 @@
                                                         <%= text_field("mapping[]", 'position', :size => "3") %>
                                                         <%= h(@mapping.topic_type_field_label) %>
                                                         <% if !@mapping.topic_type_field_xml_element_name.blank? %>
-                                                                (<%= h(@mapping.topic_type_field_xml_element_name) %>)
+                                                                <% if !@mapping.topic_type_field_xsi_type.blank? %>
+                                                                        (<%= h("#{@mapping.topic_type_field_xml_element_name} xsi:type=\"#{@mapping.topic_type_field_xsi_type}\"") %>)
+                                                                <% else -%>
+                                                                        (<%= h(@mapping.topic_type_field_xml_element_name) %>)
+                                                                <% end -%>
                                                         <% end -%>
+                                                        <%= "(multiple)" if @mapping.topic_type_field_multiple -%>
                                                         <% if @mapping.required %>
                                                                 (required)
                                                         <% else %>

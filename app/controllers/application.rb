@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   def setup_related_topic_and_zoom_and_redirect(item)
     where_to_redirect = 'show_self'
     if params[:relate_to_topic_id] and @successful
-      @new_related_topic = find(params[:relate_to_topic_id])
+      @new_related_topic = Topic.find(params[:relate_to_topic_id])
       ContentItemRelation.new_relation_to_topic(@new_related_topic, item)
 
       # update the related topic

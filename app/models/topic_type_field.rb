@@ -5,7 +5,10 @@ class TopicTypeField < ActiveRecord::Base
   validates_presence_of :label
   validates_uniqueness_of :label
   # don't allow spaces
-  validates_format_of :xml_element_name , :with => /^[^\s]*$/, :message => ": spaces aren't allowed"
+  validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => ": spaces aren't allowed"
+
+
+  # TODO: add validation that prevents adding xsi_type without xml_element_name
 
   # TODO: add validation that prevents the generic topic fields from being re-added
 
