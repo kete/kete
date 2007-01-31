@@ -43,8 +43,9 @@
                                          <% num_field_inputs = DEFAULT_NUMBER_OF_MULTIPLES.to_i -%>
                                          <% input_count = 1 -%>
                                          <% num_field_inputs.times do -%>
-                                                <% temp_hash = @topic.xml_attributes[f_multiple] %>
-                                                <% if edit == 1 && !temp_hash[input_count.to_s][f_id].to_s.match("xml_element_name") -%>
+                                                <% if edit == 1 && !@topic.xml_attributes[f_multiple][input_count.to_s][f_id].to_s.match("xml_element_name") -%>
+                                                <% temp_hash = @topic.xml_attributes[f_multiple] -%>
+
                                                         <%= text_field_tag("topic[#{f_id}][#{input_count}]", temp_hash[input_count.to_s][f_id], {:class => "text-input"}) %>
                                                  <% else %>
                                                         <%= text_field_tag("topic[#{f_id}][#{input_count}]", nil, {:class => "text-input"}) %>
@@ -52,7 +53,7 @@
                                                  <% input_count += 1 -%>
                                          <% end %>
                                  <% else -%>
-                                         <% if @topic %>
+                                         <% if @topic && !@topic.xml_attributes[f_id].to_s.match("xml_element_name") %>
                                                 <%= text_field_tag('topic['+f_id+']', @topic.xml_attributes[f_id], {:class => "text-input"}) %>
                                          <% else %>
                                                 <%= text_field_tag('topic['+f_id+']', nil, {:class => "text-input"}) %>

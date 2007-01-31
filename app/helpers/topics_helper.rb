@@ -44,8 +44,11 @@ module TopicsHelper
         end
         html_string += "<p> #{field_name}: #{field_values.to_sentence} </p>\n"
       else
-        field_name = field_key.humanize
-        html_string += "<p> #{field_name}: #{field_value} </p>\n"
+        html_string += "<p> #{field_key.humanize}: "
+        if !field_value.to_s.match("xml_element_name")
+          html_string += field_value
+        end
+        html_string += " </p>\n"
       end
     end
     return html_string
