@@ -85,6 +85,9 @@
     <z:index name="dc_subject" type="p">
       <xsl:value-of select="."/>
     </z:index>
+    <z:index name="dc_subject" type="w">
+      <xsl:value-of select="."/>
+    </z:index>
     <z:index name="dc_all" type="w">
       <xsl:value-of select="."/>
     </z:index>
@@ -93,7 +96,6 @@
     </z:index>
   </xsl:template>
 
-  <!-- TODO: does it make sense to have a phrase index on this? -->
   <xsl:template match="oai:record/oai:metadata/oai_dc:dc/dc:description">
     <z:index name="dc_description" type="w">
       <xsl:value-of select="."/>
@@ -220,6 +222,21 @@
       <xsl:value-of select="."/>
     </z:index>
     <z:index name="dc_relation" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_all" type="w">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_all" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
+  </xsl:template>
+
+  <xsl:template match="oai:record/oai:metadata/oai_dc:dc/dc:coverage">
+    <z:index name="dc_rights" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_rights" type="w">
       <xsl:value-of select="."/>
     </z:index>
     <z:index name="dc_all" type="w">
