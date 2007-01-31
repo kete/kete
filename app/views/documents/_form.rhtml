@@ -1,0 +1,25 @@
+        <fieldset>
+
+                <%= error_messages_for 'document' %>
+
+                <!--[form:document]-->
+                <% if !params[:relate_to_topic_id].nil? %>
+                        <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+                <% end %>
+
+                <p><label for="document_title">Title</label><br/>
+                <%= form.text_field :title  %></p>
+
+                <%= tags_input_field(form,"document_tag_list") %>
+
+                <p><label for="document_description">Description</label><br/>
+                <%= form.text_area :description  %></p>
+
+                <%= hidden_field_tag 'document[basket_id]', @current_basket.id %>
+
+                <%= form.file_field :uploaded_data %>
+
+                <!--[eoform:document]-->
+
+        </fieldset>
+

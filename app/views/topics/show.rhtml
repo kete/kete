@@ -72,34 +72,21 @@
                                                   :related_class => 'Video',
                                                   :items => @topic.videos,
                                                   :relate_to_topic_id => @topic.id) %>
-
                                 <div class="cleaner">&nbsp;</div>
+
                         </div>
                         <div id="detail-linked-bottomrow">
-                                <!--
-                                <div id="detail-linked-documents">
-                                        <h4><a href="/">Dummy Documents (6)</a></h4>
-                                        <ul>
-                                                <li><a href="/">nibh euismod</a></li>
-                                                <li><a href="/">nibh euismod</a></li>
-                                                <li><a href="/">nibh euismod</a></li>
-                                                <li><a href="/" class="small">3 more like this &gt;&gt;</a></li>
-                                        </ul>
-                                </div>
-                                -->
-                                <%= related_items_links(:source_item => @topic,
-                                                        :source_item_class => 'Topic',
-                                                        :related_class => 'WebLink',
-                                                        :items => @topic.web_links,
-                                                        :relate_to_topic_id => @topic.id) %>
-                                <!--
-                                <div id="detail-linked-library">
-                                        <h4><a href="/">Dummy Library (1)</a></h4>
-                                        <ul>
-                                                <li><a href="/">nibh euismod</a></li>
-                                        </ul>
-                                </div>
-                                -->
+                          <%= related_items_links(:source_item => @topic,
+                                                  :source_item_class => 'Topic',
+                                                  :related_class => 'Documents',
+                                                  :items => @topic.documents,
+                                                  :relate_to_topic_id => @topic.id) %>
+
+                        <%= related_items_links(:source_item => @topic,
+                                                  :source_item_class => 'Topic',
+                                                  :related_class => 'WebLink',
+                                                  :items => @topic.web_links,
+                                                  :relate_to_topic_id => @topic.id) %>
                                 <div class="cleaner">&nbsp;</div>
                         </div>
                         <div class="cleaner">&nbsp;</div>

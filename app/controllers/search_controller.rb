@@ -66,6 +66,7 @@ class SearchController < ApplicationController
       # TODO: skipping multiple source (federated) search for now
       zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
+      # @result_sets = Hash.new
       @result_sets = @results_sets || session[:results_sets] || Hash.new
 
       # iterate through all record types and build up a result set for each

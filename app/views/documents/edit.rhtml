@@ -1,0 +1,14 @@
+<% @title = 'Editing document' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_for :document,
+             :url => { :action => 'update',
+                       :id => @document },
+             :html => { :multipart => true } do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @document %> |
+<%= link_to 'Cancel', :action => 'list' %>

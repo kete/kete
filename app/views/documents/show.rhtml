@@ -1,0 +1,45 @@
+                <div id="detail-wrapper">
+                        <div id="detail-header">
+                                <h4><%= link_to_last_stored_location -%></h4>
+                                <h2><%= h(@document.title) %></h2>
+                                <%= tags_for(@document) -%>
+                                <p><%= @document.description %></p>
+                                <p>Filename: <%= @document.filename %>
+                                   (<%= link_to 'view', @document.public_filename -%>)
+                                </p>
+                                <p>Size: <%= @document.size %></p>
+                                <p>Recording type: <%= @document.content_type %></p>
+                        </div>
+                        <div class="detail-tools">
+                                <h3>Get Involved</h3>
+                                <ul>
+                                        <li><%= link_to "Edit",
+                                                                :action => :edit,
+                                                                :controller => '/documents',
+                                                                :id => @document %></li>
+                                        <li><%= link_to "Delete",
+                                                                {:action => :destroy,
+                                                                :controller => '/documents',
+                                                                :id => @document},
+                                                                :method => :post,
+                                                                :confirm => 'Are you sure?'%></li>
+                                </ul>
+                        </div>
+                        <div class="detail-tools">
+                                <ul>
+                                        <li class="first">Created by: <%= link_to h(@creator.login),
+                                                                :urlified_name => 'site',
+                                                                :controller => 'search',
+                                                                :contributor_id => @creator.id %></li>
+                                        <li>Last Edited by: <%= link_to h(@last_contributor.login),
+                                                                :urlified_name => 'site',
+                                                                :controller => 'search',
+                                                                :contributor_id => @last_contributor.id %></li>
+                                        <li>Last Edited Date: <%= @document.updated_at.to_s(:euro_date) -%>
+
+                                </ul>
+                        </div>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+
+                <%= item_related_topics_wrapper(:class_phrase => 'document', :source_item => @document, :source_item_class => 'Document', :topics => @document.topics) %>
