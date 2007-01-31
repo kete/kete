@@ -10,6 +10,8 @@
                 <p><label for="video_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
 
+                <%= tags_input_field(form,"video_tag_list") %>
+
                 <p><label for="video_description">Description</label><br/>
                 <%= form.text_area :description  %></p>
 

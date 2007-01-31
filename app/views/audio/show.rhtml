@@ -2,9 +2,10 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@audio_recording.title) %></h2>
+                                <%= tags_for(@audio_recording) -%>
                                 <p><%= @audio_recording.description %></p>
                                 <p>Filename: <%= @audio_recording.filename %>
-                                   (<%= link_to 'download', @audio_recording.public_filename -%>)
+                                   (<%= link_to 'listen', @audio_recording.public_filename -%>)
                                 </p>
                                 <p>Size: <%= @audio_recording.size %></p>
                                 <p>Recording type: <%= @audio_recording.content_type %></p>

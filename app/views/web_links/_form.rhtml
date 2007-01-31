@@ -16,6 +16,11 @@
 </div>
 
 <div class="form-element">
+  <label for="web_link_tag_list">Tags (separated by commas):</label>
+  <%= text_field 'web_link', 'tag_list', {:class => "text-input"} %>
+</div>
+
+<div class="form-element">
   <label for="web_link_description">Description</label>
   <%= text_area 'web_link', 'description'  %>
 </div>

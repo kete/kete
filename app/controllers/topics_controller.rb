@@ -108,7 +108,7 @@ class TopicsController < ApplicationController
       replacement_topic_hash = { }
       params[:topic].keys.each do |field_key|
         # we only want real topic columns, not pseudo ones that are handled by content xml
-        if Topic.column_names.include?(field_key)
+        if Topic.column_names.include?(field_key) || field_key == 'tag_list'
             replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
         end
       end
@@ -184,7 +184,7 @@ class TopicsController < ApplicationController
       replacement_topic_hash = { }
       params[:topic].keys.each do |field_key|
         # we only want real topic columns, not pseudo ones that are handled by content xml
-        if Topic.column_names.include?(field_key)
+        if Topic.column_names.include?(field_key) || field_key == 'tag_list'
             replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
         end
       end

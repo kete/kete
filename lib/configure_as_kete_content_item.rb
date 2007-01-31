@@ -15,6 +15,8 @@ module ConfigureAsKeteContentItem
 
       klass.send :acts_as_versioned
 
+      klass.send :acts_as_taggable
+
       klass.send :validates_presence_of, :title
 
       # this probably should change, particularly in still_image case

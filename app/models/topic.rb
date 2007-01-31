@@ -46,6 +46,7 @@ class Topic < ActiveRecord::Base
     end
   end
 
+  acts_as_taggable
   acts_as_versioned
   validates_xml :content
   validates_presence_of :title

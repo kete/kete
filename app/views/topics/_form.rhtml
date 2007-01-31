@@ -12,6 +12,10 @@
                 <label for="topic_short_summary">Short Summary:</label>
                 <%= text_area 'topic', 'short_summary', {:class => "text-area", :cols => 120, :rows => 2 } %>
         </div>
+        <div class="form-element">
+                <label for="topic_tag_list">Tags (separated by commas):</label>
+                <%= text_field 'topic', 'tag_list', {:class => "text-input"} %>
+        </div>
         <% if @topic
                 # this is an edit
                 @self_topic_type_and_ancestors = TopicType.find(@topic.topic_type_id).self_and_ancestors

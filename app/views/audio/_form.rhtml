@@ -10,6 +10,8 @@
                 <p><label for="audio_recording_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
 
+                <%= tags_input_field(form,"audio_recording_tag_list") %>">
+
                 <p><label for="audio_recording_description">Description</label><br/>
                 <%= form.text_area :description  %></p>
 

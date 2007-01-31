@@ -66,9 +66,7 @@ class SearchController < ApplicationController
       # TODO: skipping multiple source (federated) search for now
       zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
-      if @result_sets.nil?
-        @result_sets = Hash.new
-      end
+      @result_sets = @results_sets || session[:results_sets] || Hash.new
 
       # iterate through all record types and build up a result set for each
       ZOOM_CLASSES.each do |zoom_class|
@@ -81,6 +79,15 @@ class SearchController < ApplicationController
             # get the item
             item = Module.class_eval(params[:source_item_class]).find(params[:source_item])
             query += "@and @attr 1=1026 @attr 4=3 \"#{url_for_dc_identifier(item)}\" "
+          end
+
+          if !params[:tag].blank?
+            # this looks in the dc_subject index in the z30.50 server
+            tag = Tag.find(params[:tag])
+            # TODO: attr 1=21 was throwing unsupported
+            # not sure why, see zebradb/tab/bib1.att
+            # switch from "any" to "subject heading"
+            query += "@and @attr 1=1016 \"#{tag.name}\" "
           end
 
           # search_terms overrides :all, see above
@@ -143,6 +150,7 @@ class SearchController < ApplicationController
 
       # results are limited to this page's display of search results
       # grab them from zoom
+      # TODO: probably where things are getting lost
       @results = Array.new
 
       if @result_sets[@current_class].size > 0

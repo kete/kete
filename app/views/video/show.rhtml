@@ -2,9 +2,10 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@video.title) %></h2>
+                                <%= tags_for(@video) -%>
                                 <p><%= @video.description %></p>
                                 <p>Filename: <%= @video.filename %>
-                                   (<%= link_to 'download', @video.public_filename -%>)
+                                   (<%= link_to 'view', @video.public_filename -%>)
                                 </p>
                                 <p>Size: <%= @video.size %></p>
                                 <p>Recording type: <%= @video.content_type %></p>

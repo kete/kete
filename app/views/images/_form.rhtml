@@ -10,6 +10,8 @@
                 <p><label for="image_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
 
+                <%= tags_input_field(form,"image_tag_list") %>
+
                 <p><label for="image_description">Description</label><br/>
                 <%= form.text_area :description %></p>
 

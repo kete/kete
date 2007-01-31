@@ -2,6 +2,7 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= link_to h(@web_link.title), @web_link.url %></h2>
+                                <%= tags_for(@web_link) -%>
                                 <p><%= @web_link.description %></p>
                         </div>
                         <div class="detail-tools">

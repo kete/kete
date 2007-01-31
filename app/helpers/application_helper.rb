@@ -202,10 +202,11 @@ module ApplicationHelper
     end
   end
 
+  # TODO: this attribute isn't coming over even though it's in the select
+  # contribution_date = contributor.version_created_at.to_date
   # xml.tag!("dcterms:modified", contribution_date)
   def oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
     item.contributors.each do |contributor|
-      contribution_date = contributor.version_created_at.to_date
       xml.tag!("dc:contributor", user_to_dc_creator_or_contributor(contributor))
     end
   end
@@ -229,6 +230,12 @@ module ApplicationHelper
           xml.tag!("dc:subject", related.title)
           xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => :topics, :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
       end
+    end
+  end
+
+  def oai_dc_xml_tags_to_dc_subjects(xml,item)
+    item.tags.each do |tag|
+      xml.tag!("dc:subject", tag.name)
     end
   end
 
@@ -354,4 +361,32 @@ module ApplicationHelper
       logger.error("failed to format xml: #{$!.to_s}")
     end
   end
+
+  # tag related helpers
+  def link_to_tagged(tag,zoom_class)
+    link_to(h(tag.name), { :controller => 'search', :tag => tag, :current_class => zoom_class, :urlified_name => 'site' })
+  end
+
+  def tags_for(item)
+    html_string = String.new
+    if item.tags.size > 0
+      html_string = "<p>Tags: "
+      tag_count = 1
+      item.tags.each do |tag|
+        if item.tags.size != tag_count
+          html_string += link_to_tagged(tag,'Topic') +", "
+        else
+          html_string += link_to_tagged(tag,'Topic')
+        end
+        tag_count += 1
+      end
+      html_string += "</p>"
+    end
+  end
+
+  def tags_input_field(form,label_for)
+    "<p><label for=\"#{label_for}\">Tags (separated by commas):</label>
+                #{form.text_field :tag_list}</p>"
+  end
+
 end

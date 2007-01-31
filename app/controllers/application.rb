@@ -55,7 +55,6 @@ class ApplicationController < ActionController::Base
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{item.class.name.humanize} was successfully created."
-        params[:topic] = replacement_topic_hash
         redirect_to :action => 'show', :id => item
       end
     else

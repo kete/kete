@@ -2,8 +2,9 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@still_image.title) %></h2>
+                                <%= tags_for(@still_image) -%>
                                 <p>Original Filename: <%= @still_image.original_file.filename %>
-                                   (<%= link_to 'download', @still_image.original_file.public_filename -%>)
+                                   (<%= link_to 'view', @still_image.original_file.public_filename -%>)
                                 </p>
                                 <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
                                 <% # default to medium view %>

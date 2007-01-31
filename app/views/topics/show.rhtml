@@ -7,6 +7,7 @@
                                 <% if @topic.xml_attributes %>
                                         <%= display_xml_attributes(@topic) %>
                                 <% end %>
+                                <%= tags_for(@topic) -%>
                                 <p><%= @topic.description %></p>
                         </div>
                         <div class="detail-tools">
@@ -22,7 +23,6 @@
                                                                 :id => @topic},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
-
                                 </ul>
                         </div>
                         <div class="detail-tools">
