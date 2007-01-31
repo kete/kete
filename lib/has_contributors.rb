@@ -2,7 +2,7 @@ module HasContributors
   # this is where we handle contributed and created items by users
   unless included_modules.include? HasContributors
     def self.included(klass)
-      klass.send :has_many, :contributions, :as => :contributed_item, :dependent => :delete_all
+      klass.send :has_many, :contributions, :as => :contributed_item, :dependent => :destroy
       # :select => "distinct contributions.role, users.*",
       # creator is intended to be just one, but we need :through functionality
       klass.send :has_many, :creators, :through => :contributions,
