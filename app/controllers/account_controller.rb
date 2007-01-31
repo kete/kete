@@ -6,7 +6,13 @@ class AccountController < ApplicationController
 
   # say something nice, you goof!  something sweet.
   def index
-    redirect_to(:action => 'signup') unless logged_in? || User.count > 0
+    if logged_in? || User.count > 0
+      redirect_to(:urlified_name => 'site', :controller => 'search', :action => 'index')
+    else
+      redirect_to(:action => 'signup')
+    end
+
+    # redirect_to(:action => 'signup') unless logged_in? || User.count > 0
   end
 
   def login
@@ -38,6 +44,6 @@ class AccountController < ApplicationController
     cookies.delete :auth_token
     reset_session
     flash[:notice] = "You have been logged out."
-    redirect_back_or_default(:urlified_name => 'site', :controller => 'search', :action => 'index')
+    redirect_back_or_default(:controller => '/account', :action => 'index')
   end
 end
