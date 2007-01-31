@@ -45,7 +45,7 @@ module TopicsHelper
         html_string += "<p> #{field_name}: #{field_values.to_sentence} </p>\n"
       else
         html_string += "<p> #{field_key.humanize}: "
-        if !field_value.to_s.match("xml_element_name")
+        if !field_value.is_a?(Hash) && !field_value.blank?
           html_string += field_value
         end
         html_string += " </p>\n"
