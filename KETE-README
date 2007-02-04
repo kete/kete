@@ -72,6 +72,7 @@ rake db:make_demo RAILS_ENV=production FIXTURES=zoom_dbs.yml,topic_types.yml,ext
 
 TODO: add line about calling site/search/rebuild_zoom_index
 
+
 When you have different Zebra port and password settings than the distribution:
 
 First off, you should!! Since having the defaults is a security liability, albeit one limited to your kete instance and your zebra databases.
@@ -84,6 +85,19 @@ mysql> update zoom_dbs set port = NUMBER_OF_CORRECT_PORT where database_name = '
 Using mysql for example, but the same concept applies for postgresql databases.
 
 Do the same thing for zoom_password column (not currently encrypted, so no encrypting necessary) to match the password set in zebradb/keteaccess (although that is encrypted, so note your unencrypted password when use set it with htpasswd command).
+
+
+Loading a limited number of fixtures (for default data, but after rake db:boostrap):
+
+Loading a fixture deletes all data in the corresponding table before loading.  If you want to load data into a specific empty table, loading a specific fixture is handy. The fixture file needs to be under test/fixtures to work (you may want back up the corresponding file that is already there).  Copy .yml to there, then run this:
+
+rake db:fixtures:load FIXTURES=fixture_file.yml
+
+for an environment other than development, use this:
+
+rake db:fixtures:load RAILS_ENV=production FIXTURES=fixture_file.yml
+
+NOTE: IF YOU RUN THIS WITHOUT THE FIXTURES PARAMETER, YOU WILL DELETE ALL DATA IN YOUR DB!!!!
 
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
 -- updated 2007-05-05
