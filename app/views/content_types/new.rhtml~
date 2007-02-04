@@ -1,0 +1,15 @@
+<% @title = 'New topic type' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_tag :action => 'create' do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Create" %>
+<% end %>
+
+<%= render(:partial => 'generic_topic_fields', :locals => { :local_id => @topic_type.id }) %>
+
+<% # this renders for passed in parent, rather than the new topic -%>
+<%= render(:partial => 'inherited_fields', :locals => { :parent_id => params[:parent_id] }) %>
+
+<%= link_to 'Cancel', :action => 'list' %>

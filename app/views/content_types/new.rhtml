@@ -1,0 +1,12 @@
+<% @title = 'New content type' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_tag :action => 'create' do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Create" %>
+<% end %>
+
+<%= render(:partial => 'generic_fields', :locals => { :local_id => @content_type.id }) %>
+
+<%= link_to 'Cancel', :action => 'list' %>

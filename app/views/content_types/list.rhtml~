@@ -1,0 +1,32 @@
+<% @title = 'Listing topic types' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Created at</th>
+    <th>Updated at</th>
+    <th>Options</th>
+  </tr>
+
+<% for topic_type in @topic_types %>
+  <tr>
+    <td><span style="margin-left:<%= topic_type.level %>em;"><%=h topic_type.name %></span></td>
+    <td><%=h topic_type.description %></td>
+    <td><%=h topic_type.created_at.to_s(:euro_date) %></td>
+    <td><%=h topic_type.updated_at.to_s(:euro_date) %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => topic_type %> |
+    <%= link_to 'Add sub-type', :action => 'new', :parent_id => topic_type.id %> |
+    <%= link_to 'Delete', { :action => 'destroy', :id => topic_type }, :confirm => 'Are you sure? This will delete all topics of this type.', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @topic_type_pages.current.previous } if @topic_type_pages.current.previous %>
+<%= link_to 'Next page', { :page => @topic_type_pages.current.next } if @topic_type_pages.current.next %>
+
+<br />
+
+
