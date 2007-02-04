@@ -46,7 +46,7 @@ You may encounter an error where Zoom.pm isn't found, even after installing it. 
 Bootstrapping:
 To get your migrations in and then load with some baseline data use the following:
 
-rake db:bootstrap FIXTURES=zoom_dbs.yml,topic_types.yml,extended_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,web_links.yml,web_link_versions.yml,users.yml,roles.yml,roles_users.yml,contributions.yml
+rake db:bootstrap FIXTURES=zoom_dbs.yml,topic_types.yml,extended_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,web_links.yml,web_link_versions.yml,users.yml,roles.yml,roles_users.yml,contributions.yml,content_types.yml
 
 Note the fixtures argument is important for the correct order of loading of the data.  Foreign keys will fail in PostgreSQL otherwise.
 
@@ -68,7 +68,7 @@ Demo:
 
 To create a demo with included data do the following (you may want your demo on development instead, adjust to suit):
 
-rake db:make_demo RAILS_ENV=production FIXTURES=zoom_dbs.yml,topic_types.yml,extended_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,users.yml,roles.yml,roles_users.yml,topics.yml,topic_versions.yml,web_links.yml,web_link_versions.yml,videos.yml,video_versions.yml,audio_recordings.yml,audio_recording_versions.yml,still_images.yml,still_image_versions.yml,image_files.yml,contributions.yml,content_item_relations.yml
+rake db:make_demo RAILS_ENV=production FIXTURES=zoom_dbs.yml,topic_types.yml,extended_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,users.yml,roles.yml,roles_users.yml,topics.yml,topic_versions.yml,web_links.yml,web_link_versions.yml,videos.yml,video_versions.yml,audio_recordings.yml,audio_recording_versions.yml,still_images.yml,still_image_versions.yml,image_files.yml,contributions.yml,content_item_relations.yml,content_types.yml
 
 TODO: add line about calling site/search/rebuild_zoom_index
 
