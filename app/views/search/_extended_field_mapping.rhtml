@@ -1,0 +1,34 @@
+                        <div class="form-element">
+                                 <% # we organize our custom form fields by label, because it is unique %>
+                                 <% # xml_element_name do not have to be %>
+                                 <% f_id = extended_field_mapping.extended_field_label.downcase.gsub(/ /, '_') %>
+                                 <% if extended_field_mapping.required -%>
+                                         <label class="required" for="<%= f_id  -%>"><%= h(extended_field_mapping.extended_field_label) -%></label>
+                                 <% else -%>
+                                         <label for="<%= "#{item_key}[#{f_id}]" -%>"><%= h(extended_field_mapping.extended_field_label) -%></label>
+                                 <% end -%>
+                                 <% if extended_field_mapping.extended_field_multiple -%>
+                                         <% if edit
+                                                 # there should be a subhash with a pluaralized name for the field
+                                                 f_multiple = "#{f_id}_multiple"
+                                            end -%>
+                                         <% num_field_inputs = DEFAULT_NUMBER_OF_MULTIPLES.to_i -%>
+                                         <% input_count = 1 -%>
+                                         <% num_field_inputs.times do -%>
+                                                <% if edit && !extended_item.xml_attributes[f_multiple][input_count.to_s][f_id].to_s.match("xml_element_name") -%>
+                                                <% temp_hash = extended_item.xml_attributes[f_multiple] -%>
+
+                                                        <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", temp_hash[input_count.to_s][f_id], {:class => "text-input"}) %>
+                                                 <% else %>
+                                                        <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", nil, {:class => "text-input"}) %>
+                                                 <% end %>
+                                                 <% input_count += 1 -%>
+                                         <% end %>
+                                 <% else -%>
+                                         <% if edit && !extended_item.xml_attributes[f_id].to_s.match("xml_element_name") %>
+                                                <%= text_field_tag("#{item_key}[#{f_id}]", extended_item.xml_attributes[f_id], {:class => "text-input"}) %>
+                                         <% else %>
+                                                <%= text_field_tag("#{item_key}[#{f_id}]", nil, {:class => "text-input"}) %>
+                                         <% end %>
+                                 <% end %>
+                        </div>
