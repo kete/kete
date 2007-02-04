@@ -1,3 +1,7 @@
+<% edit = false
+   if !@video.id.blank?
+        edit = true
+   end -%>
         <fieldset>
 
                 <%= error_messages_for 'video' %>
@@ -11,6 +15,15 @@
                 <%= form.text_field :title  %></p>
 
                 <%= tags_input_field(form,"video_tag_list") %>
+
+                <% form_fields = @content_type.content_type_to_field_mappings -%>
+                <% if form_fields.size > 0 %>
+                        <%= render(:partial => 'search/extended_field_mapping',
+                                   :collection => form_fields,
+                                   :locals => { :edit => edit,
+                                                :extended_item => @video,
+                                                :item_key => 'video'}) %>
+                <% end %>
 
                 <p><label for="video_description">Description</label><br/>
                 <%= form.text_area :description  %></p>

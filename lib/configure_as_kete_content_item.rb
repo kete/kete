@@ -13,6 +13,9 @@ module ConfigureAsKeteContentItem
       # all our ZOOM_CLASSES need this to be searchable by zebra
       klass.send :include, ConfigureActsAsZoomForKete
 
+      # methods related to handling the xml kept in extended_content column
+      klass.send :include, ExtendedContent
+
       klass.send :acts_as_versioned
 
       klass.send :acts_as_taggable

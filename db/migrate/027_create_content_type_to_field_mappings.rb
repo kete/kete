@@ -1,7 +1,7 @@
 class CreateContentTypeToFieldMappings < ActiveRecord::Migration
   def self.up
     create_table :content_type_to_field_mappings do |t|
-      t.column :content_type, :string, :null => false
+      t.column :content_type_id, :integer, :null => false
       t.column :extended_field_id, :integer, :null => false
       t.column :position, :integer, :null => false
       t.column :required, :boolean, :default => false

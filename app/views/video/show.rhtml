@@ -3,6 +3,9 @@
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@video.title) %></h2>
                                 <%= tags_for(@video) -%>
+                                <% if @video.xml_attributes %>
+                                        <%= display_xml_attributes(@video) %>
+                                <% end %>
                                 <p><%= @video.description %></p>
                                 <p>Filename: <%= @video.filename %>
                                    (<%= link_to 'view', @video.public_filename -%>)

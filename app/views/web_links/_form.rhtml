@@ -1,8 +1,13 @@
+<% edit = false
+   if !@web_link.id.blank?
+        edit = true
+   end -%>
+
 <fieldset>
 <%= error_messages_for 'web_link' %>
     <!--[form:web_link]-->
-<% if !params[:relate_to_topic_id].nil? %>
-      <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+<% if !params[:relate_to_web_link_id].nil? %>
+      <%= hidden_field_tag "relate_to_web_link_id", params[:relate_to_web_link_id] %>
 <% end %>
 
 <div class="form-element">
@@ -20,6 +25,14 @@
   <%= text_field 'web_link', 'tag_list', {:class => "text-input"} %>
 </div>
 
+<% form_fields = web_link_type.web_link_type_to_field_mappings -%>
+<% if form_fields.size > 0 %>
+        <%= render(:partial => 'search/extended_field_mapping',
+                           :collection => form_fields,
+                           :locals => { :edit => edit,
+                                        :extended_item => @web_link,
+                                        :item_key => 'web_link'}) %>
+<% end %>
 <div class="form-element">
   <label for="web_link_description">Description</label>
   <%= text_area 'web_link', 'description'  %>

@@ -3,6 +3,9 @@
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@still_image.title) %></h2>
                                 <%= tags_for(@still_image) -%>
+                                <% if @still_image.xml_attributes %>
+                                        <%= display_xml_attributes(@still_image) %>
+                                <% end %>
                                 <p>Original Filename: <%= @still_image.original_file.filename %>
                                    (<%= link_to 'view', @still_image.original_file.public_filename -%>)
                                 </p>

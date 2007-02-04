@@ -77,7 +77,7 @@
                         <h4>Administrator's Toolbox (prototype)</h4>
                         <p>Kete collections:
                         <% Basket.find(:all).each do |basket| %>
-                           <% if basket == @current_basket %>
+                           <% if basket == @current_basket && request.request_uri == "/#{@current_basket.urlified_name}/" %>
                               <%= h(basket.name) %>
                            <% else %>
                               <%= link_to(h(basket.name), :controller => :search,
@@ -91,6 +91,10 @@
                         </p>
                         <p>Controls:
                         <%= link_to_unless_current "topic types", :controller => '/topic_types',
+                                                                  :action => :list,
+                                                                  :urlified_name => 'site' -%>
+                        |
+                        <%= link_to_unless_current "content types", :controller => '/content_types',
                                                                   :action => :list,
                                                                   :urlified_name => 'site' -%>
                         |

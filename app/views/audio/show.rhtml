@@ -3,6 +3,9 @@
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@audio_recording.title) %></h2>
                                 <%= tags_for(@audio_recording) -%>
+                                <% if @audio_recording.xml_attributes %>
+                                        <%= display_xml_attributes(@audio_recording) %>
+                                <% end %>
                                 <p><%= @audio_recording.description %></p>
                                 <p>Filename: <%= @audio_recording.filename %>
                                    (<%= link_to 'listen', @audio_recording.public_filename -%>)

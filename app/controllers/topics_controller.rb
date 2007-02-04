@@ -94,24 +94,14 @@ class TopicsController < ApplicationController
 
       # here's where we populate the extended_content with our xml
       if @fields.size > 0
-        params[:topic][:extended_content] = render_to_string(:partial => 'field_to_xml',
-                                                    :collection => @fields,
-                                                    :layout => false)
+        extended_fields_update_param_for_item(:fields => @fields, :item_key => 'topic')
       end
-
-      logger.debug("what is extended_content: #{params[:topic][:extended_content]}")
 
       # in order to get the ajax to work, we put form values in the topic hash
       # in parameters, this will break new and update, because they aren't apart of the model
       # directly, so strip them out of parameters
 
-      replacement_topic_hash = { }
-      params[:topic].keys.each do |field_key|
-        # we only want real topic columns, not pseudo ones that are handled by extended_content xml
-        if Topic.column_names.include?(field_key) || field_key == 'tag_list'
-            replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
-        end
-      end
+      replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
 
       @topic = Topic.new(replacement_topic_hash)
       @successful = @topic.save
@@ -175,19 +165,14 @@ class TopicsController < ApplicationController
       end
 
       if @fields.size > 0
-        params[:topic][:extended_content] = render_to_string(:partial => 'field_to_xml',
-                                                    :collection => @fields,
-                                                    :layout => false)
+        extended_fields_update_param_for_item(:fields => @fields, :item_key => 'topic')
       end
 
-      # TODO: DRY this up, see create
-      replacement_topic_hash = { }
-      params[:topic].keys.each do |field_key|
-        # we only want real topic columns, not pseudo ones that are handled by extended_content xml
-        if Topic.column_names.include?(field_key) || field_key == 'tag_list'
-            replacement_topic_hash = replacement_topic_hash.merge(field_key => params[:topic][field_key])
-        end
-      end
+      # in order to get the ajax to work, we put form values in the topic hash
+      # in parameters, this will break new and update, because they aren't apart of the model
+      # directly, so strip them out of parameters
+
+      replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
 
       @successful = @topic.update_attributes(replacement_topic_hash)
 

@@ -1,4 +1,6 @@
 class DocumentsController < ApplicationController
+  include ExtendedContentController
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -28,6 +30,7 @@ class DocumentsController < ApplicationController
   end
 
   def create
+    @document = Document.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
     @document = Document.new(params[:document])
     @successful = @document.save
 
@@ -46,7 +49,7 @@ class DocumentsController < ApplicationController
   def update
     @document = Document.find(params[:id])
 
-    if @document.update_attributes(params[:document])
+    if @document.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
       # as contributor
@@ -66,5 +69,10 @@ class DocumentsController < ApplicationController
 
   def destroy
     zoom_destroy_and_redirect('Document')
+  end
+
+  private
+  def load_content_type
+    @content_type = ContentType.find_by_class_name('Document')
   end
 end

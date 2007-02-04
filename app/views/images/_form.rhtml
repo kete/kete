@@ -1,3 +1,8 @@
+<% edit = false
+   if !@still_image.id.blank?
+        edit = true
+   end -%>
+
         <fieldset>
 
                 <%= error_messages_for 'still_image' %>
@@ -14,6 +19,15 @@
 
                 <p><label for="image_description">Description</label><br/>
                 <%= form.text_area :description %></p>
+
+                <% form_fields = @content_type.content_type_to_field_mappings -%>
+                <% if form_fields.size > 0 %>
+                        <%= render(:partial => 'search/extended_field_mapping',
+                                   :collection => form_fields,
+                                   :locals => { :edit => edit,
+                                                :extended_item => @still_image,
+                                                :item_key => 'still_image'}) %>
+                <% end %>
 
                 <%= hidden_field_tag 'still_image[basket_id]', @current_basket.id %>
 

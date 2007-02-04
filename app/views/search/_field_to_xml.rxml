@@ -10,12 +10,12 @@ if field_to_xml.extended_field_multiple
         # collect them in an outer tag
         # do an explicit key, so we end up with a hash
         xml.tag!("#{field_name}_multiple") do
-                hash_of_values = params[:topic][field_name]
+                hash_of_values = params[item_key][field_name]
                 hash_of_values.keys.each do |key|
                         xml.tag!(key) do
                                 extended_content_field_xml_tag(:xml => xml,
                                                                :field => field_name,
-                                                               :value => params[:topic][field_name][key],
+                                                               :value => params[item_key][field_name][key],
                                                                :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                                                :xsi_type => field_to_xml.extended_field_xsi_type)
                         end
@@ -24,7 +24,7 @@ if field_to_xml.extended_field_multiple
 else
         extended_content_field_xml_tag(:xml => xml,
                                        :field => field_name,
-                                       :value => params[:topic][field_name],
+                                       :value => params[item_key][field_name],
                                        :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                        :xsi_type => field_to_xml.extended_field_xsi_type)
 end

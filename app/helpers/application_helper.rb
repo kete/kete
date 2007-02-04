@@ -299,10 +299,10 @@ module ApplicationHelper
     end
   end
 
-  def oai_dc_xml_dc_topic_extended_content(xml,topic)
+  def oai_dc_xml_dc_extended_content(xml,item)
     # work through extended_content, see what should be it's own dc element
     # and what should go in a group dc:description
-    temp_extended_content = topic.extended_content
+    temp_extended_content = item.extended_content
     extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
 
     non_dc_extended_content_hash = Hash.new
@@ -387,6 +387,43 @@ module ApplicationHelper
   def tags_input_field(form,label_for)
     "<p><label for=\"#{label_for}\">Tags (separated by commas):</label>
                 #{form.text_field :tag_list}</p>"
+  end
+
+  #---- related to extended_fields for either topic_types or content_types
+  def display_xml_attributes(item)
+    html_string = ""
+    # TODO: these should have their order match the specified order for the item_type
+    item.xml_attributes.each do |field_key, field_value|
+      # we now handle multiples
+      multi_re = Regexp.new("_multiple$")
+      if multi_re.match(field_key)
+        # value is going to be a hash like this:
+        # "1" => {field_name => value}, "2" => ...
+        # we want the first field name followed by a :
+        # and all values, separated by spaces (for now)
+        field_name = String.new
+        field_values = Array.new
+        field_value.keys.each do |subfield_key|
+          field_hash = item.xml_attributes[field_key][subfield_key]
+          field_hash.keys.each do |key|
+            if field_name.blank?
+              field_name = key.humanize
+            end
+            if !field_hash[key].blank? && !field_hash[key].to_s.match("xml_element_name")
+              field_values << field_hash[key]
+            end
+          end
+        end
+        html_string += "<p> #{field_name}: #{field_values.to_sentence} </p>\n"
+      else
+        html_string += "<p> #{field_key.humanize}: "
+        if !field_value.is_a?(Hash) && !field_value.blank?
+          html_string += field_value
+        end
+        html_string += " </p>\n"
+      end
+    end
+    return html_string
   end
 
 end

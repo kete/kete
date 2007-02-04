@@ -1,4 +1,6 @@
 class VideoController < ApplicationController
+  include ExtendedContentController
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -28,7 +30,7 @@ class VideoController < ApplicationController
   end
 
   def create
-    @video = Video.new(params[:video])
+    @video = Video.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
     @successful = @video.save
 
     # add this to the user's empire of creations
@@ -46,7 +48,7 @@ class VideoController < ApplicationController
   def update
     @video = Video.find(params[:id])
 
-    if @video.update_attributes(params[:video])
+    if @video.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
       # as contributor
@@ -67,4 +69,10 @@ class VideoController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('Video')
   end
+
+  private
+  def load_content_type
+    @content_type = ContentType.find_by_class_name('Video')
+  end
+
 end

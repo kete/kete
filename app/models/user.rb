@@ -1,5 +1,8 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
+  # methods related to handling the xml kept in extended_content column
+  include ExtendedContent
+
   # this is where we handle contributions of different kinds
   has_many :contributions, :order => 'created_at', :dependent => :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility

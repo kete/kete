@@ -1,3 +1,7 @@
+<% edit = false
+   if !@audio_recording.id.blank?
+        edit = true
+   end -%>
         <fieldset>
 
                 <%= error_messages_for 'audio_recording' %>
@@ -10,7 +14,16 @@
                 <p><label for="audio_recording_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
 
-                <%= tags_input_field(form,"audio_recording_tag_list") %>">
+                <%= tags_input_field(form,"audio_recording_tag_list") %>
+
+                <% form_fields = @content_type.content_type_to_field_mappings -%>
+                <% if form_fields.size > 0 %>
+                        <%= render(:partial => 'search/extended_field_mapping',
+                                   :collection => form_fields,
+                                   :locals => { :edit => edit,
+                                                :extended_item => @audio_recording,
+                                                :item_key => 'audio_recording'}) %>
+                <% end %>
 
                 <p><label for="audio_recording_description">Description</label><br/>
                 <%= form.text_area :description  %></p>

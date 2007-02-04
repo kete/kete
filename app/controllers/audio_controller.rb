@@ -1,4 +1,6 @@
 class AudioController < ApplicationController
+  include ExtendedContentController
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -36,7 +38,8 @@ class AudioController < ApplicationController
   end
 
   def create
-    @audio_recording = AudioRecording.new(params[:audio_recording])
+    @audio_recording = AudioRecording.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
+
     @successful = @audio_recording.save
 
     # add this to the user's empire of creations
@@ -54,7 +57,7 @@ class AudioController < ApplicationController
   def update
     @audio_recording = AudioRecording.find(params[:id])
 
-    if @audio_recording.update_attributes(params[:audio_recording])
+    if @audio_recording.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
       # as contributor
@@ -76,4 +79,8 @@ class AudioController < ApplicationController
     zoom_destroy_and_redirect('AudioRecording','Audio recording')
   end
 
+  private
+  def load_content_type
+    @content_type = ContentType.find_by_class_name('AudioRecording')
+  end
 end

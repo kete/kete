@@ -1,4 +1,4 @@
-class TopicTypesController < ApplicationController
+class ContentTypesController < ApplicationController
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -8,55 +8,47 @@ class TopicTypesController < ApplicationController
   end
 
   def list
-    @topic_type_pages = Paginator.new self, TopicType.count, 10, params[:page]
-    @topic_types = TopicType.find(1).full_set
-  end
-
-  def show
-    @topic_type = TopicType.find(params[:id])
+    @content_type_pages, @content_types = paginate(:content_types, :order => 'controller')
   end
 
   def new
-    @topic_type = TopicType.new
+    @content_type = ContentType.new
   end
 
   def create
-    @topic_type = TopicType.new(params[:topic_type])
-    if @topic_type.save
-      set_ancestory(@topic_type)
-
+    @content_type = ContentType.new(params[:content_type])
+    if @content_type.save
       # TODO: globalize translate
-      flash[:notice] = 'TopicType was successfully created.'
-      redirect_to :action => 'edit', :id => @topic_type
+      flash[:notice] = 'Content type was successfully created.'
+      redirect_to :action => 'edit', :id => @content_type
     else
       render :action => 'new'
     end
   end
 
   def edit
-    @topic_type = TopicType.find(params[:id])
+    @content_type = ContentType.find(params[:id])
   end
 
   def update
-    @topic_type = TopicType.find(params[:id])
-    if @topic_type.update_attributes(params[:topic_type])
-      set_ancestory(@topic_type)
-
+    @content_type = ContentType.find(params[:id])
+    if @content_type.update_attributes(params[:content_type])
       # TODO: globalize translate
-      flash[:notice] = 'TopicType was successfully updated.'
-      redirect_to :action => 'edit', :id => @topic_type
+      flash[:notice] = 'Content type was successfully updated.'
+      redirect_to :action => 'edit', :id => @content_type
     else
       render :action => 'edit'
     end
   end
 
+  # TODO: possibly remove, at the least put high restrictions on
   def destroy
-    TopicType.find(params[:id]).destroy
+    ContentType.find(params[:id]).destroy
     redirect_to :action => 'list'
   end
 
-  def add_to_topic_type
-    topic_type = TopicType.find(params[:id])
+  def add_to_content_type
+    content_type = ContentType.find(params[:id])
 
     # this is setup for a form that has multiple fields
     # we want to separate out plain form fields from required ones
@@ -76,27 +68,20 @@ class TopicTypesController < ApplicationController
           # determine if it should be a required field
           # or just an optional one
           if to_add_attr =~ /required/
-            topic_type.required_form_fields << field
+            content_type.required_form_fields << field
           else
-            topic_type.form_fields << field
+            content_type.form_fields << field
           end
         end
       end
     end
-    redirect_to :action => :edit, :id => topic_type
+    redirect_to :action => :edit, :id => content_type
   end
 
-  def reorder_fields_for_topic_type
-    # update position in the topic_type's form
-    TopicTypeToFieldMapping.update(params[:mapping].keys, params[:mapping].values)
+  def reorder_fields_for_content_type
+    # update position in the content_type's form
+    ContentTypeToFieldMapping.update(params[:mapping].keys, params[:mapping].values)
     redirect_to :action => :edit, :id => params[:id]
-  end
-
-  private
-  def set_ancestory(topic_type)
-      # setup of ancestory
-      parent_id = params[:parent_id] || topic_type.parent_id || 1
-      topic_type.move_to_child_of TopicType.find(parent_id)
   end
 
 end

@@ -1,4 +1,6 @@
 class AccountController < ApplicationController
+  before_filter :load_content_type, :only => [:signup]
+
   # Be sure to include AuthenticationSystem in Application Controller instead
   # include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
@@ -29,8 +31,12 @@ class AccountController < ApplicationController
   end
 
   def signup
-    @user = User.new(params[:user])
+    @user = User.new
     return unless request.post?
+    @user = User.new(extended_fields_and_params_hash_prepare(:content_type => @content_type,
+                                                             :item_key => 'user',
+                                                             :item_class => 'User',
+                                                             :extra_fields => ['password', 'password_confirmation']))
     @user.save!
     self.current_user = @user
     redirect_back_or_default(:controller => '/account', :action => 'index')
@@ -45,5 +51,10 @@ class AccountController < ApplicationController
     reset_session
     flash[:notice] = "You have been logged out."
     redirect_back_or_default(:controller => '/account', :action => 'index')
+  end
+
+  private
+  def load_content_type
+    @content_type = ContentType.find_by_class_name('User')
   end
 end

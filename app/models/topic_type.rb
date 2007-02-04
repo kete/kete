@@ -31,6 +31,6 @@ class TopicType < ActiveRecord::Base
   # then we also have ancestor fields for all the topic types above this topic type
 
   def available_fields
-    @available_fields = ExtendedField.find_available_fields(self)
+    @available_fields = ExtendedField.find_available_fields(self,'TopicType')
   end
 end

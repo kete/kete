@@ -1,4 +1,6 @@
 class WebLinksController < ApplicationController
+  include ExtendedContentController
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -28,7 +30,7 @@ class WebLinksController < ApplicationController
   end
 
   def create
-    @web_link = WebLink.new(params[:web_link])
+    @web_link = WebLink.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
     @successful = @web_link.save
 
     @web_link.creators << current_user
@@ -43,7 +45,7 @@ class WebLinksController < ApplicationController
   def update
     @web_link = WebLink.find(params[:id])
 
-    if @web_link.update_attributes(params[:web_link])
+    if @web_link.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
       # as contributor
@@ -64,4 +66,10 @@ class WebLinksController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('WebLink','Web link')
   end
+
+  private
+  def load_content_type
+    @content_type = ContentType.find_by_class_name('WebLink')
+  end
+
 end

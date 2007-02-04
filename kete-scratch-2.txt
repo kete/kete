@@ -1,0 +1,78 @@
+todos for weekend:
+
+* reorganize and setup casanova for bob, richard
+ - create kete.kete user on casanova, setup keys for kete users on both hosts --done
+ - set it up to match /home/kete/apps on mao for horowhenua, and demo -- partially done, nginx done, no dbs yet, no checkouts yet
+ - make all users kete group --done
+ - add *.casanova dns --done
+ - move bobs zebra ports to different number, move /home/walter/projects/kete zebra ports to a different number --done
+ - setup nginx on casanova --done
+ - setup mongrel_cluster config for each server --done only for kete server, need to do demo and horowhenua
+ - add certs for nginx on mao and casanova
+
+* add content types mapping to extended_fields
+ - add migration for content type and join model --done
+ - controller for content types --done
+ - join model for extended_fields to content_types --done
+ - update forms for zoom classes
+   + where possible generalize code from topic types
+ - replace ZOOM_CLASSES with ContentType.find(:all), etc. --skipped for now
+ - add bootstrap data for content type model
+ - add extended_content to xml of oai_record
+ - deal with Topic in ZOOM_CLASSES (probably only search)  -- not necessary for now
+
+* refactor search to match notes in config/routes.rb
+
+
+task for capistrano setup:
+
+
+adduser kete --done, password file in that account, made key, set my user group to kete, added key for my user to casanova
+
+move subversion for kete and acts_as_zoom to /home/kete/svn/kete /home/kete/svn/acts_as_zoom --done
+
+add svn.kete.net.nz dns --done
+add development.kete.net.nz dns --done
+
+setup http for svn --done for port 8000
+
+setup nginx --done, at least a config that works with rails
+
+deploy app to /home/kete/apps/horowhenua --done, by hand
+
+move demo to /home/kete/apps/demo --done kind of, needs to be rechecked out for new repository, capistrano recipe best
+
+setup colloboa on /home/kete/apps/ --done
+
+other stuff that would be nice for tomorrow:
+
+see demo for errors like adding new topic, listing inherited topic fields on topic show page --done
+
+revamp migrations to be extended_fields --done
+
+documents --done
+
+tagging to dc:subjects --done
+
+multiple fields --done
+
+doublecheck that simple dublin core is covered by zebra!!! --done
+
+fix dcterms in zebra parsing and oai_record # delayed
+
+fix greedy @topics.related_items
+
+----------
+
+multiple scratch:
+
+------
+
+mime type scratch
+
+'application/mac-binhex40', 'application/msword', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain'
+
+
+good thumbmails?
+    acts_as_attachment :thumbnails => { :large => '485>',:medium => '291>', :small => '95' }
+

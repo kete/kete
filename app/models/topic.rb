@@ -55,10 +55,9 @@ class Topic < ActiveRecord::Base
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
   # translates :title, :description, :short_summary, :extended_content
-  def xml_attributes
-    temp_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
-    return temp_hash['dummy_root']
-  end
+
+  # methods related to handling the xml kept in extended_content column
+  include ExtendedContent
 
   def related_topics
     parent_topics = self.class.find(:all,

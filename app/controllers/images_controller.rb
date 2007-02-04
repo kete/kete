@@ -1,4 +1,6 @@
 class ImagesController < ApplicationController
+  include ExtendedContentController
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -29,7 +31,7 @@ class ImagesController < ApplicationController
   end
 
   def create
-    @still_image = StillImage.new(params[:still_image])
+    @still_image = StillImage.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
     @successful = @still_image.save
 
     if @successful
@@ -59,7 +61,7 @@ class ImagesController < ApplicationController
   def update
     @still_image = StillImage.find(params[:id])
 
-    if @still_image.update_attributes(params[:still_image])
+    if @still_image.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
       # as contributor
@@ -85,4 +87,10 @@ class ImagesController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('StillImage','Image')
   end
+
+  private
+  def load_content_type
+    @content_type = ContentType.find_by_class_name('StillImage')
+  end
+
 end

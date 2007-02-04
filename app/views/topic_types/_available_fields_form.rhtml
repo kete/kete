@@ -4,7 +4,7 @@
                 <% if local_id == 1 %>
                         <p>You cannot add any additional fields to this topic type, see above.</p>
                 <% else %>
-                        <% @available_fields = TopicType.find_by_id(local_id).available_fields %>
+                        <% @available_fields = TopicType.find(local_id).available_fields %>
                         <% if @available_fields.size > 0 %>
                                 <%= form_tag :action => :add_to_topic_type, :id => local_id %>
 
