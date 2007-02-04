@@ -15,7 +15,7 @@
                                          <% num_field_inputs = DEFAULT_NUMBER_OF_MULTIPLES.to_i -%>
                                          <% input_count = 1 -%>
                                          <% num_field_inputs.times do -%>
-                                                <% if edit && !extended_item.xml_attributes[f_multiple].blank? && !extended_item.xml_attributes[f_multiple][input_count.to_s][f_id].to_s.match("xml_element_name") -%>
+                                                <% if edit && !extended_item.xml_attributes.blank? && !extended_item.xml_attributes[f_multiple].blank? && !extended_item.xml_attributes[f_multiple][input_count.to_s][f_id].to_s.match("xml_element_name") -%>
                                                 <% temp_hash = extended_item.xml_attributes[f_multiple] -%>
 
                                                         <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", temp_hash[input_count.to_s][f_id], {:class => "text-input"}) %>
@@ -25,7 +25,7 @@
                                                  <% input_count += 1 -%>
                                          <% end %>
                                  <% else -%>
-                                         <% if edit && !extended_item.xml_attributes[f_id].blank? && !extended_item.xml_attributes[f_id].to_s.match("xml_element_name") %>
+                                         <% if edit && !extended_item.xml_attributes.blank? && !extended_item.xml_attributes[f_id].blank? && !extended_item.xml_attributes[f_id].to_s.match("xml_element_name") %>
                                                 <%= text_field_tag("#{item_key}[#{f_id}]", extended_item.xml_attributes[f_id], {:class => "text-input"}) %>
                                          <% else %>
                                                 <%= text_field_tag("#{item_key}[#{f_id}]", nil, {:class => "text-input"}) %>
