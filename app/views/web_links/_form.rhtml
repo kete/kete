@@ -25,7 +25,7 @@
   <%= text_field 'web_link', 'tag_list', {:class => "text-input"} %>
 </div>
 
-<% form_fields = web_link_type.web_link_type_to_field_mappings -%>
+<% form_fields = @content_type.content_type_to_field_mappings -%>
 <% if form_fields.size > 0 %>
         <%= render(:partial => 'search/extended_field_mapping',
                            :collection => form_fields,
