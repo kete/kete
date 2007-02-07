@@ -1,0 +1,31 @@
+<%= error_messages_for 'user' %>
+
+<!--[form:user]-->
+<p><label for="user_login">Login</label><br/>
+<%= text_field 'user', 'login'  %></p>
+
+<p><label for="user_email">Email</label><br/>
+<%= text_field 'user', 'email'  %></p>
+
+<p><label for="user_crypted_password">Crypted password</label><br/>
+<%= password_field 'user', 'crypted_password'  %></p>
+
+<p><label for="user_salt">Salt</label><br/>
+<%= text_field 'user', 'salt'  %></p>
+
+<p><label for="user_extended_content">Extended content</label><br/>
+<%= text_area 'user', 'extended_content'  %></p>
+
+<p><label for="user_created_at">Created at</label><br/>
+<%= datetime_select 'user', 'created_at'  %></p>
+
+<p><label for="user_updated_at">Updated at</label><br/>
+<%= datetime_select 'user', 'updated_at'  %></p>
+
+<p><label for="user_remember_token">Remember token</label><br/>
+<%= text_field 'user', 'remember_token'  %></p>
+
+<p><label for="user_remember_token_expires_at">Remember token expires at</label><br/>
+<%= datetime_select 'user', 'remember_token_expires_at'  %></p>
+<!--[eoform:user]-->
+

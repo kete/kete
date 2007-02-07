@@ -8,9 +8,9 @@
         <!-- scheme: tcp, ssl, unix, http, sru? -->
 <!-- look into changing private server to unix socket and how that effects our acts_as_zoom stuff -->
 <!-- private is limited to ONLY localhost for security, since passwords are passed in clear text, i believe -->
-<listen id="privateserver" >tcp:localhost:9900</listen>
+<listen id="privateserver" >tcp:localhost:9914</listen>
 <!-- this should catch with the @ wildcard, both localhost and any outside ip interface -->
-<listen id="publicserver" >tcp:@:9999</listen>
+<listen id="publicserver" >tcp:@:9915</listen>
 
 <!-- PRIVATE KETE RECORDS -->
 <server id="privateserver"  listenref="privateserver">

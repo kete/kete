@@ -1,0 +1,72 @@
+<h1>Listing users</h1>
+
+<% @non_member_roles_plural.each do |role_key, role_plural| %>
+  <div><h2 style="display:inline;text-transform:capitalize"><%= role_plural %></h2>
+  <%= link_to "New "+role_key, :action => 'new_'+role_key %></div>
+  <table>
+    <tr valign="top">
+      <th>Login</th>
+      <th>Email</th>
+      <th>Extended content</th>
+      <th>Created at</th>
+      <th>Updated at</th>
+      <th>Remember token</th>
+      <th>Token expires</th>
+      <th colspan="3"></th>
+    </tr>
+    <% for user in eval("@" << role_plural) %>
+      <tr>
+        <td><%=h user.login %></td>
+        <td><%=h user.email %></td>
+        <td><%=h user.extended_content %></td> 
+        <td><%=h user.created_at %></span></td>
+        <td><%=h user.updated_at %></td>
+        <td><%=h user.remember_token %></td>
+  	<td><%=h user.remember_token_expires_at %></td>
+        <td><%= link_to 'Show', :action => 'show', :id => user %></td>
+        <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+        <td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :method => :post %></td>
+      </tr>
+    <% end %>    
+</table>
+<% end %>
+
+<div><h2 style="display:inline;text-transform:capitalize">members</h2>
+<%= link_to 'New member', :action => 'new_member' %></div>
+<% if @members.nil? %>
+  <p>Currently no members</p>
+<% else %>
+  <table>
+    <tr valign="top">
+      <th>Login</th>
+      <th>Email</th>
+      <th>Extended content</th>
+      <th>Created at</th>
+      <th>Updated at</th>
+      <th>Remember token</th>
+      <th>Token expires</th>
+      <th colspan="3"></th>
+    </tr>
+    <% for user in @members %>
+      <tr>
+        <td><%=h user.login %></td>
+        <td><%=h user.email %></td>
+        <td><%=h user.extended_content %></td> 
+        <td><%=h user.created_at %></span></td>
+        <td><%=h user.updated_at %></td>
+        <td><%=h user.remember_token %></td>
+  	<td><%=h user.remember_token_expires_at %></td>
+        <td><%= link_to 'Show', :action => 'show', :id => user %></td>
+        <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+        <td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :method => :post %></td>
+      </tr>
+    <% end %>    
+</table>
+
+    <p><%= link_to 'Previous page', { :page => @members_pages.current.previous } if @members_pages.current.previous %></p>
+    <p><%= link_to 'Next page', { :page => @members_pages.current.next } if @members_pages.current.next %></p>
+<% end %>
+
+<br />
+
+
