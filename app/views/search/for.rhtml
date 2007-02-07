@@ -1,6 +1,10 @@
                 <% @title = 'Results in ' + @controller_name_for_zoom_class.gsub(/_/, " ") -%>
                 <% if !@search_terms.blank?
-                      @title += " for your search \"#{h(@search_terms.to_s)}\" and #{last_part_of_title_if_refinement_of}"
+                      @title += " for your search \"#{h(@search_terms.to_s)}\""
+                      refinements = last_part_of_title_if_refinement_of
+                      if !refinements.blank?
+                          @title += " and #{refinements}"
+                      end
                 end %>
 
                 <% # switch for contributed_by and related_to appending to headline, extract to helper -%>
