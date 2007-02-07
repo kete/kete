@@ -65,4 +65,13 @@ class Topic < ActiveRecord::Base
                               :conditions => ["((content_item_relations.related_item_id = :object_id) AND (content_item_relations.related_item_type = :class_name))", { :object_id => self.id, :class_name => self.class.to_s}])
     return parent_topics + self.child_related_topics - [self]
   end
+
+  # make ids look like this for urls
+    # /7-my-title-for-topic-7/
+  # i.e. /id-title/
+  # rails strips the non integers after the id
+  def to_param
+    require 'unicode'
+    "#{id}"+Unicode::normalize_KD("-"+title+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+  end
 end

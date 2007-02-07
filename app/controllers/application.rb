@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
   # only permit site members to add/delete things
-  before_filter :login_required, :except => [ :login, :signup, :logout, :show, :search, :index, :list]
+  before_filter :login_required, :except => [ :login, :signup, :logout, :show, :all, :for, :index, :list]
 
   # all topics and content items belong in a basket
   # some controllers won't need it, but it shouldn't hurt have it available
@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
       if where_to_redirect == 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = 'Related #{item.class.name.humanize} was successfully created.'
-        redirect_to_related_topic(@new_related_topic.id)
+        redirect_to_related_topic(@new_related_topic)
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{item.class.name.humanize} was successfully created."
@@ -94,6 +94,10 @@ class ApplicationController < ActionController::Base
     redirect_to(:controller => 'search', :current_class => zoom_class)
   end
 
+  def redirect_to_default_all
+    redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS)))
+  end
+
   # is this redundant with application_helper def?
   def zoom_class_controller(zoom_class)
     zoom_class_controller = String.new
@@ -107,11 +111,24 @@ class ApplicationController < ActionController::Base
       else
       zoom_class_controller = zoom_class.tableize
     end
-    return zoom_class_controller
+  end
+
+  def zoom_class_from_controller(controller)
+    zoom_class = String.new
+    case controller
+      when "images"
+      zoom_class = 'StillImage'
+      when "video"
+      zoom_class = 'Video'
+      when "audio"
+      zoom_class = 'AudioRecording'
+      else
+      zoom_class = controller.classify
+    end
   end
 
   def url_for_dc_identifier(item)
-    return url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item.id, :format => nil, :urlified_name => item.basket.urlified_name)
+    url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => item.basket.urlified_name)
   end
 
   def prepare_zoom(item)

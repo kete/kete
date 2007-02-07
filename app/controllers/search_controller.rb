@@ -8,12 +8,58 @@ class SearchController < ApplicationController
   layout "application" , :except => [:rss, :description]
 
   def index
-    search
   end
+
+  # REFACTOR SCRATCH:
+  # split search action into "all", "for", and "index"
+  # index: where somone can enter search terms
+  # all: search results that are not based on search_terms
+  # for: results for search terms
+  # search currently handles results "for" these types of results
+  #
+  # bare search terms with no other criteria
+  #
+  # all items of a type - criteria only zoom_class_to_controller_name
+  #
+  # all items contributed by a user - criteria zoom_class_to_controller_name, user.id
+  #
+  # all items related to an item - criteria zoom_class_to_controller_name, source_item_class, source_item_id
+  #
+  # all items with tag - criteria zoom_class_to_controller_name, tag
+  #
+  # -> search within results of "all items..."
+
+  # REFACTOR TODOS:
+  # * all actions should set title
 
   # TODO: catch zoom_db errors or zoom_db down
   # query our ZoomDbs for results, grab only the xml records for the results we need
-  # TODO: possibly move result sets to session var
+
+  # all returns all results for a class, contributor_id, or source_item (i.e. all related items to source)
+  # it is the default if the search_terms parameter is not defined
+  def all
+    @search_terms = params[:search_terms]
+    if @search_terms.nil?
+      search
+    else
+      # TODO: redirect_to search form of the same url
+    end
+  end
+
+  # this action is the action that relies on search_terms being defined
+  # it can be thought of as "for/search_terms"
+  def for
+    # setup our variables derived from the url
+    # several of these are valid if nil
+    @search_terms = params[:search_terms]
+    if @search_terms.nil?
+      # TODO: have this message be derived from globalize
+      flash[:notice] = "You haven't entered any search terms."
+    else
+      search
+    end
+  end
+
   def search
     # all returns all results for a class, contributor_id, or source_item (i.e. all related items to source)
     # it is the default if the search_terms parameter is not defined
@@ -23,168 +69,157 @@ class SearchController < ApplicationController
     # in the case of search_terms and contributor_id or source_item both being present
     # the search is done with the limitations of the contributor_id or source_item
     # i.e. search for 'bob smith' within topics related to source_item 'daddy smith'
-    if !params[:search_terms].nil?
-      params[:all] = false
-      else
-      params[:all] = true
+
+    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(DEFAULT_SEARCH_CLASS)
+
+    @current_class = zoom_class_from_controller(@controller_name_for_zoom_class)
+
+    @source_controller_singular = params[:source_controller_singular]
+
+    if !@source_controller_singular.nil?
+      @source_class = ContentType.find_by_controller(@source_controller_singular.pluralize).class_name
+      @source_item = Module.class_eval(@source_class).find(params[:source_item])
+    else
+      @source_class = nil
+      @source_item = nil
     end
 
-    if params[:current_class].nil?
-      params[:current_class] = DEFAULT_SEARCH_CLASS
-    end
+    @tag = params[:tag] ? Tag.find(params[:tag]) : nil
 
-    @current_class = params[:current_class]
+    @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
 
     # calculate where to start and end based on page
-    if params[:page].nil?
-      params[:page] = 1
-    end
-
-    @current_page = params[:page].to_i
+    @current_page = params[:page] ? params[:page].to_i : 1
     @next_page = @current_page + 1
     @previous_page = @current_page - 1
 
-    if params[:number_or_results_per_page].nil?
-      params[:number_or_results_per_page] = DEFAULT_RECORDS_PER_PAGE
-    end
-
-    @number_per_page = params[:number_or_results_per_page].to_i
+    @number_per_page = params[:number_or_results_per_page] ? params[:number_or_results_per_page].to_i : DEFAULT_RECORDS_PER_PAGE
 
     # 0 is the first index, so it's valid for start
     @start_record = @number_per_page * @current_page - @number_per_page
     @start = @start_record + 1
     @end_record = @number_per_page * @current_page
+    # TODO: skipping multiple source (federated) search for now
+    zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
-    @search_terms = String.new
+    # @result_sets = Hash.new
+    @result_sets ||= session[:results_sets] || Hash.new
 
-    if params['search_terms'].blank? and !params[:all] then
-      # TODO: have this message be derived from globalize
-      flash[:notice] = "You haven't entered any search terms."
-    else
-      @search_terms = params[:search_terms]
+    # iterate through all record types and build up a result set for each
+    ZOOM_CLASSES.each do |zoom_class|
+      if @result_sets[zoom_class].nil?
+        populate_result_sets_for(zoom_class,zoom_db)
+      end
+    end
 
-      # TODO: skipping multiple source (federated) search for now
-      zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
+    @last_page = @result_sets[@current_class].size / @number_per_page
 
-      # @result_sets = Hash.new
-      @result_sets = @results_sets || session[:results_sets] || Hash.new
+    # we always want to round up if there is a remainder
+    if (@result_sets[@current_class].size % @number_per_page) > 0
+      @last_page += 1
+    end
 
-      # iterate through all record types and build up a result set for each
-      ZOOM_CLASSES.each do |zoom_class|
-        if @result_sets[zoom_class].nil?
+    @end_record = @result_sets[@current_class].size if @result_sets[@current_class].size < @end_record
 
-          query = String.new
-          if !params[:source_item].blank?
-            # this looks in the dc_relation index in the z30.50 server
-            # must be exact string
-            # get the item
-            item = Module.class_eval(params[:source_item_class]).find(params[:source_item])
-            query += "@and @attr 1=1026 @attr 4=3 \"#{url_for_dc_identifier(item)}\" "
-          end
+    # results are limited to this page's display of search results
+    # grab them from zoom
+    # TODO: probably where things are getting lost
+    @results ||= Array.new
 
-          if !params[:tag].blank?
-            # this looks in the dc_subject index in the z30.50 server
-            tag = Tag.find(params[:tag])
-            # TODO: attr 1=21 was throwing unsupported
-            # not sure why, see zebradb/tab/bib1.att
-            # switch from "any" to "subject heading"
-            query += "@and @attr 1=1016 \"#{tag.name}\" "
-          end
+    if @result_sets[@current_class].size > 0
+      still_image_results = Array.new
 
-          # search_terms overrides :all, see above
-          if params[:all]
-            # default, special case, search all baskets for public topics and items
-            # all others are limited to what is in their basket
-            if @current_basket.urlified_name == 'site'
-              query += "@attr 1=12 #{zoom_class} "
-            else
-              query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
-            end
-          else
-            # process query and get a ZOOM::RecordSet back
-            prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
+      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
+                                                                                    :start_record => @start_record,
+                                                                                    :end_record => @end_record)
+      # create a hash of link, title, description for each record
+      raw_results.each do |raw_record|
+        result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
+        @results << result_from_xml_hash
 
-            # this says, in essence, limit to objects in our class
-            # and sort by dynamic relevance ranking (based on query)
-            # and match partial words (truncated on either the left or right, i.e. both)
-            # relevancee relies on our zoom dbs having it configured
-            # kete zebra servers should be configured properly to use it
-            # we may need to adjust when querying non-kete zoom_dbs (koha for example)
-            # see comment above about current_basket
-            if @current_basket.urlified_name == 'site'
-              query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
-            else
-              query = "@and @attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} @attr 2=102 @attr 5=3 "
-            end
-
-            # quote each term to handle phrases
-            if prepped_terms.size > 1
-              query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\" "
-            else
-              # @and will break query if only single term
-              query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
-            end
-          end
-
-          # this should go last because of "or contributor"
-          if !params[:contributor_id].blank?
-            # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
-            # must be exact string
-            @contributor = User.find(params[:contributor_id])
-            query += "@or @attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" @attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
-            query = "@and " + query unless query[0,4] == "@and"
-          end
-
-          @result_sets[zoom_class] = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
-                                                                                 :query => query)
+        # we want to load local thumbnails for image results
+        # we'll collect the still_image_ids as keys and then run one query below
+        if result_from_xml_hash['locally_hosted'] && result_from_xml_hash['class'] == 'StillImage'
+          still_image_results << result_from_xml_hash['id']
         end
       end
-
-      @last_page = @result_sets[@current_class].size / @number_per_page
-
-      # we always want to round up if there is a remainder
-      if (@result_sets[@current_class].size % @number_per_page) > 0
-        @last_page += 1
-      end
-
-      @end_record = @result_sets[@current_class].size if @result_sets[@current_class].size < @end_record
-
-      # results are limited to this page's display of search results
-      # grab them from zoom
-      # TODO: probably where things are getting lost
-      @results = Array.new
-
-      if @result_sets[@current_class].size > 0
-        still_image_results = Array.new
-
-        raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
-                                                                                      :start_record => @start_record,
-                                                                                      :end_record => @end_record)
-        # create a hash of link, title, description for each record
-        raw_results.each do |raw_record|
-          result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
-          @results << result_from_xml_hash
-
-          # we want to load local thumbnails for image results
-          # we'll collect the still_image_ids as keys and then run one query below
-          if result_from_xml_hash['locally_hosted'] && result_from_xml_hash['class'] == 'StillImage'
-            still_image_results << result_from_xml_hash['id']
-          end
-        end
-        if @current_class == 'StillImage'
-          ImageFile.find_all_by_thumbnail('small_sq', :conditions => ["still_image_id in (?)", still_image_results]).each do |thumb|
-            # now work through results array and add image_file
-            # if appropriate
-            @results.each do |result|
-              if result['locally_hosted'] && result['id'].to_i == thumb.still_image_id
-                logger.debug("inside thumb assignment")
-                result['image_file'] = thumb
-              end
+      if @current_class == 'StillImage'
+        ImageFile.find_all_by_thumbnail('small_sq', :conditions => ["still_image_id in (?)", still_image_results]).each do |thumb|
+          # now work through results array and add image_file
+          # if appropriate
+          @results.each do |result|
+            if result['locally_hosted'] && result['id'].to_i == thumb.still_image_id
+              result['image_file'] = thumb
             end
           end
         end
       end
     end
+  end
+
+  def populate_result_sets_for(zoom_class,zoom_db)
+    query = String.new
+    if !@source_item.nil?
+      # this looks in the dc_relation index in the z30.50 server
+      # must be exact string
+      # get the item
+      query += "@and @attr 1=1026 @attr 4=3 \"#{url_for_dc_identifier(@source_item)}\" "
+    end
+
+    if !@tag.nil?
+      # this looks in the dc_subject index in the z30.50 server
+      # TODO: attr 1=21 was throwing unsupported
+      # not sure why, see zebradb/tab/bib1.att
+      # switch from "any" to "subject heading"
+      query += "@and @attr 1=1016 \"#{@tag.name}\" "
+    end
+
+    # process query and get a ZOOM::RecordSet back
+
+    # this says, in essence, limit to objects in our class
+    # and sort by dynamic relevance ranking (based on query)
+    # and match partial words (truncated on either the left or right, i.e. both)
+    # relevancee relies on our zoom dbs having it configured
+    # kete zebra servers should be configured properly to use it
+    # we may need to adjust when querying non-kete zoom_dbs (koha for example)
+    # see comment above about current_basket
+
+    if @search_terms.nil?
+      # this is an "all" search
+      if @current_basket.urlified_name == 'site'
+        query += "@attr 1=12 #{zoom_class} "
+      else
+        query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
+      end
+    else
+      prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
+      if @current_basket.urlified_name == 'site'
+        query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
+      else
+        query = "@and @attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} @attr 2=102 @attr 5=3 "
+      end
+
+      # quote each term to handle phrases
+      if !prepped_terms.blank?
+        if prepped_terms.size > 1
+          query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\" "
+        else
+          # @and will break query if only single term
+          query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
+        end
+      end
+    end
+
+    # this should go last because of "or contributor"
+    if !@contributor.nil?
+      # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
+      # must be exact string
+      query += "@or @attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" @attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
+      query = "@and " + query unless query[0,4] == "@and"
+    end
+
+    @result_sets[zoom_class] = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
+                                                                                 :query => query)
   end
 
   # grab the values we want from the zoom_record
@@ -241,6 +276,43 @@ class SearchController < ApplicationController
     end
 
     return result_hash
+  end
+
+  def redirect_to_default_all
+    redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS))
+  end
+
+  # takes search_terms from form
+  # and redirects to .../for/seach-term1-and-search-term2 url
+  def terms_to_page_url_redirect
+    if params[:controller_name_for_zoom_class].nil?
+      redirect_to url_for(:overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS), :action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil})
+    else
+      redirect_to url_for(:overwrite_params => {:action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil})
+    end
+  end
+
+  def to_search_terms_slug(search_terms)
+    require 'unicode'
+
+    # Find all phrases enclosed in quotes and pull
+    # them into a flat array of phrases
+    search_terms = search_terms.to_s
+    double_phrases = search_terms.scan(/"(.*?)"/).flatten
+    single_phrases = search_terms.scan(/'(.*?)'/).flatten
+
+    # Remove those phrases from the original string
+    left_over = search_terms.gsub(/"(.*?)"/, "").squeeze(" ").strip
+    left_over = left_over.gsub(/'(.*?)'/, "").squeeze(" ").strip
+
+    # Break up the remaining keywords on whitespace
+    keywords = left_over.split(/ /)
+
+    terms = keywords + double_phrases + single_phrases
+
+    slug = terms.join('-and-')
+
+    slug = Unicode::normalize_KD(slug+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
   end
 
   def description

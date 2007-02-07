@@ -1,0 +1,80 @@
+                <div id="tabcontainer">
+                        <ul id="tablist">
+                                <% ZOOM_CLASSES.each do |zoom_class| %>
+                                        <% if zoom_class == current_class %>
+                                                <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= result_sets[zoom_class].size %>)</a></li>
+                                        <% else %>
+                                                <li><%= link_to_zoom_class_results(zoom_class,result_sets[zoom_class].size) -%></li>
+                                        <% end %>
+
+                                <% end %>
+                        </ul>
+                </div><!-- /tabcontainer -->
+                <div id="result-container">
+                        <h3>
+                                <%= title %>
+                        </h3>
+                        <div id="prev-next">
+                                <% if current_page > 1 %>
+                                        <%= link_to_previous_page('&lt;&lt; previous',previous_page) %>
+
+                                <% else %>
+                                        &lt;&lt; previous
+                                <% end %>
+                                &nbsp;
+                                <% if current_page < last_page  %>
+                                        <%= link_to_next_page('next &gt;&gt;',next_page) %>
+
+                                <% else %>
+                                        next &gt;&gt;
+                                <% end %>
+                        </div>
+                        <% if results.size > 0 %>
+                                <div id="result-show">
+                                        Showing <%= start %>-<%= end_record %> results of <%= result_sets[current_class].size %>
+                                </div>
+                                <%# we will have result sets for each type of record we are returning %>
+                                <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
+                                <%# for now lets just get this up with one set of results %>
+
+                                <% results.each do |result|  %>
+                                        <% if result['class'] == 'StillImage' %>
+                                                <%= render(:partial => "image", :locals => {:title => result['title'],
+                                                                                            :source_url => result['url'],
+                                                                                            :locally_hosted => result['locally_hosted'],
+                                                                                            :image_file => result['image_file'],
+                                                                                            :short_summary => result['short_summary']}) %>
+                                        <% else %>
+                                                <%= render(:partial => "generic", :locals => {:title => result['title'],
+                                                                                              :source_url => result['url'],
+                                                                                              :short_summary => result['short_summary']}) %>
+                                        <% end %>
+                                <% end %>
+                        <% else %>
+                                <div id="result-show">
+                                        No results found.
+                                 </div>
+                        <% end %>
+
+                        <div id="bottomlinks">
+                                <div id="showlinks">
+                                        Show
+                                        <% # TODO: a helper? %>
+                                        <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
+                                                <% if number_per_page != choice %>
+                                                        <%= link_to(choice, :overwrite_params => { :number_or_results_per_page => choice, :page => 1 }) %>
+                                                <% else %>
+                                                        <a href="#" id="thisnumber"><%= choice %></a>
+                                                <% end %>
+                                        <% end %>
+                                        results on this page
+                                </div>
+                                <div id="addnew">
+                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => current_class) -%>
+                                        to these search results
+                                </div>
+                        </div>
+
+                </div><!-- /result-container -->
+
+                <div class="cleaner">&nbsp;</div>

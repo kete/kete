@@ -28,8 +28,7 @@
                         <a href="/">Kete Home</a> |
                         <a href="/">About Kete</a> |
                         <%= link_to_unless_current "Search", :controller => 'search',
-                                                             :action => :index,
-                                                             :all => :false -%>
+                                                             :action => :index -%>
                         |
 
                         <%= link_to_unless_current "Register", :controller => 'account',

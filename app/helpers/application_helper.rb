@@ -57,7 +57,14 @@ module ApplicationHelper
   def link_to_item(item)
     link_to h(item.title), :controller => zoom_class_controller(item.class.name),
     :urlified_name => item.basket.urlified_name,
-    :action => :show, :id => item.id
+    :action => :show, :id => item
+  end
+
+  def link_to_contributions_of(user,zoom_class)
+    link_to h(user.login), :controller => 'search',
+    :urlified_name => 'site',
+    :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+    :action => :all, :contributor => user
   end
 
   def link_to_related_to_source(options={})
@@ -222,13 +229,13 @@ module ApplicationHelper
         end
         related_items.each do |related|
           xml.tag!("dc:subject", related.title)
-          xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
         end
       end
     else
       item.topics.each do |related|
           xml.tag!("dc:subject", related.title)
-          xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => :topics, :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          xml.tag!("dc:relation", "http://#{request.host}#{url_for(:controller => :topics, :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
       end
     end
   end
@@ -364,7 +371,8 @@ module ApplicationHelper
 
   # tag related helpers
   def link_to_tagged(tag,zoom_class)
-    link_to(h(tag.name), { :controller => 'search', :tag => tag, :current_class => zoom_class, :urlified_name => 'site' })
+    link_to(h(tag.name), { :controller => 'search', :action => 'all',
+:tag => tag, :controller_name_for_zoom_class => zoom_class_controller(zoom_class), :urlified_name => 'site' })
   end
 
   def tags_for(item)
@@ -374,9 +382,9 @@ module ApplicationHelper
       tag_count = 1
       item.tags.each do |tag|
         if item.tags.size != tag_count
-          html_string += link_to_tagged(tag,'Topic') +", "
+          html_string += link_to_tagged(tag,item.class.name) +", "
         else
-          html_string += link_to_tagged(tag,'Topic')
+          html_string += link_to_tagged(tag,item.class.name)
         end
         tag_count += 1
       end

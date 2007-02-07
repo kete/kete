@@ -27,14 +27,8 @@
                         </div>
                         <div class="detail-tools">
                                 <ul>
-                                        <li class="first">Created by: <%= link_to h(@creator.login),
-                                                                :urlified_name => 'site',
-                                                                :controller => 'search',
-                                                                :contributor_id => @creator.id %></li>
-                                        <li>Last Edited by: <%= link_to h(@last_contributor.login),
-                                                                :urlified_name => 'site',
-                                                                :controller => 'search',
-                                                                :contributor_id => @last_contributor.id %></li>
+                                        <li class="first">Created by: <%= link_to_contributions_of(@creator,'Topic') %></li>
+                                        <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'Topic') %></li>
                                         <li>Last Edited Date: <%= @topic.updated_at.to_s(:euro_date) -%>
 
                                 </ul>

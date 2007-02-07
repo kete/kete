@@ -1,0 +1,12 @@
+                <% # TODO: this should look at current request and construct the form :action accordingly -%>
+                <% form_tag :overwrite_params => {:action => 'terms_to_page_url_redirect', :page => nil} do %>
+                        <div id="searchheader">
+                                <div id="searchheader-results">
+                                        <h3><%= headline -%></h3>
+                                </div>
+                                <%= text_field_tag 'search_terms', search_terms, :class => 'searchheader-search', :size => '30' %>
+
+                                <%= submit_tag "Search", :class => 'searchbutton' %>
+                        </div>
+                <% end %>
+

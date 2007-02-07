@@ -1,0 +1,19 @@
+                <% @title = 'Results in ' + @controller_name_for_zoom_class.gsub(/_/, " ") + last_part_of_title_if_refinement_of -%>
+
+                <% # switch for contributed_by and related_to appending to headline, extract to helper -%>
+
+                <%= render :partial => 'form', :locals => {:headline => 'Refine your results', :search_terms => nil} %>
+
+                <%= render :partial => 'results',
+                           :locals => {:title => @title,
+                                       :current_page => @current_page,
+                                       :next_page => @next_page,
+                                       :previous_page => @previous_page,
+                                       :last_page => @last_page,
+                                       :start => @start,
+                                       :end_record => @end_record,
+                                       :result_sets => @result_sets,
+                                       :results => @results,
+                                       :current_class => @current_class,
+                                       :number_per_page => @number_per_page
+                                      } %>

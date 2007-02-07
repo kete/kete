@@ -81,6 +81,15 @@ class User < ActiveRecord::Base
     save(false)
   end
 
+  # make ids look like this for urls
+  # /7-my-title-for-topic-7/
+  # i.e. /id-title/
+  # rails strips the non integers after the id
+  def to_param
+    require 'unicode'
+    "#{id}"+Unicode::normalize_KD("-"+login+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+  end
+
   protected
     # before filter
     def encrypt_password
