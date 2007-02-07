@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
   # only permit site members to add/delete things
-  before_filter :login_required, :except => [ :login, :signup, :logout, :show, :all, :for, :index, :list]
+  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy]
 
   # all topics and content items belong in a basket
   # some controllers won't need it, but it shouldn't hurt have it available
@@ -35,12 +35,12 @@ class ApplicationController < ActionController::Base
   def setup_related_topic_and_zoom_and_redirect(item)
     where_to_redirect = 'show_self'
     if params[:relate_to_topic_id] and @successful
-      @new_related_topic = Topic.find(params[:relate_to_topic_id])
-      ContentItemRelation.new_relation_to_topic(@new_related_topic, item)
+      new_related_topic = Topic.find(params[:relate_to_topic_id])
+      ContentItemRelation.new_relation_to_topic(new_related_topic, item)
 
       # update the related topic
       # so this new relationship is reflected in search
-      prepare_and_save_to_zoom(@new_related_topic)
+      prepare_and_save_to_zoom(new_related_topic)
 
       where_to_redirect = 'show_related'
     end
@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
       if where_to_redirect == 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = 'Related #{item.class.name.humanize} was successfully created.'
-        redirect_to_related_topic(@new_related_topic)
+        redirect_to_related_topic(new_related_topic)
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{item.class.name.humanize} was successfully created."
