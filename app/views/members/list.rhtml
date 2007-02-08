@@ -1,13 +1,15 @@
-<h3>Listing users</h3>
+<% @title = 'Listing users' -%>
+<h3><%= @title %></h3>
+
 <% @possible_roles = {'site_admin' => 'Site Admin',
                       'admin' => 'Admin',
-		      'moderator' => 'Moderator',
-		      'member' => 'Member'
-		     } -%>
+                      'moderator' => 'Moderator',
+                      'member' => 'Member'
+                     } -%>
 
 <% @non_member_roles_plural.each do |role_key, role_plural| %>
   <div><h4 style="text-transform:capitalize"><%= role_plural %></h4>
-  <!-- <%= link_to "New "+role_key, :action => 'new_'+role_key %> --></div> 
+  <!-- <%= link_to "New "+role_key, :action => 'new_'+role_key %> --></div>
   <table>
     <tr valign="top">
       <th>Login</th>
@@ -24,7 +26,7 @@
         <td><%= link_to_contributions_of(user,'Topic') %></td>
         <td><%= mail_to h(user.email) %></td>
 <!--        <td><%=h user.extended_content %></td> -->
-        <td><%=h user.created_at.strftime("%b %d, %Y %H:%M%p") %></span></td> 
+        <td><%=h user.created_at.strftime("%b %d, %Y %H:%M%p") %></span></td>
 <!--        <td><%=h user.updated_at %></td> -->
 <!--        <td><%=h user.remember_token %></td> -->
 <!--        <td><%=h user.remember_token_expires_at %></td> -->
@@ -34,10 +36,10 @@
             <% @possible_roles.each do |possible_role_key,possible_role| %>
               <% if role_key != possible_role_key -%>
                 <td><%= link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key, :old_role => role_key ) %></td>
-	      <% end %>
-	    <% end %>
+              <% end %>
+            <% end %>
       </tr>
-    <% end %>    
+    <% end %>
 </table>
 <% end %>
 
@@ -55,7 +57,7 @@
 <!--      <th>Updated at</th> -->
 <!--      <th>Remember token</th> -->
 <!--      <th>Token expires</th> -->
-      <th colspan="3">Change to:</th>  
+      <th colspan="3">Change to:</th>
     </tr>
     <% for user in @members %>
       <tr>
@@ -65,17 +67,17 @@
         <td><%=h user.created_at.strftime("%b %d, %Y %H:%M%p") %></span></td>
 <!--        <td><%=h user.updated_at %></td> -->
 <!--        <td><%=h user.remember_token %></td> -->
-<!--  	<td><%=h user.remember_token_expires_at %></td> -->
+<!--    <td><%=h user.remember_token_expires_at %></td> -->
 <!--        <td><%= link_to 'Show', :action => 'show', :id => user %></td> -->
 <!--        <td><%= link_to 'Edit', :action => 'edit', :id => user %></td> -->
 <!--        <td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :method => :post %></td> -->
             <% @possible_roles.each do |possible_role_key,possible_role| %>
               <% if 'member' != possible_role_key -%>
                 <td><%= link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key, :old_role => 'member' ) %></td>
-	      <% end %>
-	    <% end %>
+              <% end %>
+            <% end %>
       </tr>
-    <% end %>    
+    <% end %>
 </table>
 
     <p><%= link_to 'Previous page', { :page => @members_pages.current.previous } if @members_pages.current.previous %></p>
