@@ -77,7 +77,7 @@ class SearchController < ApplicationController
     @source_controller_singular = params[:source_controller_singular]
 
     if !@source_controller_singular.nil?
-      @source_class = ContentType.find_by_controller(@source_controller_singular.pluralize).class_name
+      @source_class = zoom_class_from_controller(@source_controller_singular.pluralize)
       @source_item = Module.class_eval(@source_class).find(params[:source_item])
     else
       @source_class = nil

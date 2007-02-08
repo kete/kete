@@ -64,11 +64,17 @@ module ApplicationHelper
     link_to h(user.login), :controller => 'search',
     :urlified_name => 'site',
     :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-    :action => :all, :contributor => user
+    :action => :all, :contributor => user, :trailing_slash => true
   end
 
   def link_to_related_to_source(options={})
-    link_to(options[:phrase], { :controller => 'search', :source_item => options[:source_item], :source_item_class => options[:source_item_class], :current_class => options[:related_class], :urlified_name => 'site' }, { :class => 'small'})
+    link_to(options[:phrase], { :controller => 'search',
+              :action => :all,
+              :trailing_slash => true,
+              :source_item => options[:source_item],
+              :source_controller_singular => zoom_class_controller(options[:source_item_class]).singularize,
+              :controller_name_for_zoom_class => zoom_class_controller(options[:related_class]),
+            :urlified_name => 'site' }, { :class => 'small'})
   end
 
   def link_to_add_item(options={})
@@ -161,7 +167,7 @@ module ApplicationHelper
   # on the site basket?
   def site_admin?
     @site = Basket.find_by_id(1)
-    permit? "admin on :site" do
+    permit? "site_admin or admin on :site" do
       return :true
     end
   end
@@ -372,7 +378,10 @@ module ApplicationHelper
   # tag related helpers
   def link_to_tagged(tag,zoom_class)
     link_to(h(tag.name), { :controller => 'search', :action => 'all',
-:tag => tag, :controller_name_for_zoom_class => zoom_class_controller(zoom_class), :urlified_name => 'site' })
+              :tag => tag,
+              :trailing_slash => true,
+              :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+              :urlified_name => 'site' })
   end
 
   def tags_for(item)
