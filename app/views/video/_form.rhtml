@@ -13,6 +13,13 @@
 
                 <p><label for="video_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
+		
+                <p><label for="video_description">Description</label><br/>
+                <%= form.text_area :description  %></p>
+
+                <%= hidden_field_tag 'video[basket_id]',
+@current_basket.id, :id => 'video_basket_id' %>
+
 
                 <%= tags_input_field(form,"video_tag_list") %>
 
@@ -24,13 +31,8 @@
                                                 :extended_item => @video,
                                                 :item_key => 'video'}) %>
                 <% end %>
-
-                <p><label for="video_description">Description</label><br/>
-                <%= form.text_area :description  %></p>
-
-                <%= hidden_field_tag 'video[basket_id]', @current_basket.id %>
-
-                <%= form.file_field :uploaded_data %>
+		<br />
+                <%= form.file_field :uploaded_data %>		
 
                 <!--[eoform:video]-->
 
