@@ -27,20 +27,20 @@ class ApplicationController < ActionController::Base
 
   def redirect_to_related_topic(topic_id)
     # TODO: doublecheck this isn't too expensive, maybe better to find_by_sql
-    topic = Topic.find_by_id(topic_id)
+    topic = Topic.find(topic_id)
     basket = topic.basket
-    redirect_to :action => 'show', :controller => 'topics', :id => topic_id, :urlified_name => basket.urlified_name
+    redirect_to :action => 'show', :controller => 'topics', :id => topic, :urlified_name => basket.urlified_name
   end
 
   def setup_related_topic_and_zoom_and_redirect(item)
     where_to_redirect = 'show_self'
     if params[:relate_to_topic_id] and @successful
-      new_related_topic = Topic.find(params[:relate_to_topic_id])
-      ContentItemRelation.new_relation_to_topic(new_related_topic, item)
+      @new_related_topic = Topic.find(params[:relate_to_topic_id])
+      ContentItemRelation.new_relation_to_topic(@new_related_topic, item)
 
       # update the related topic
       # so this new relationship is reflected in search
-      prepare_and_save_to_zoom(new_related_topic)
+      prepare_and_save_to_zoom(@new_related_topic)
 
       where_to_redirect = 'show_related'
     end
@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
       if where_to_redirect == 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = 'Related #{item.class.name.humanize} was successfully created.'
-        redirect_to_related_topic(new_related_topic)
+        redirect_to_related_topic(@new_related_topic)
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{item.class.name.humanize} was successfully created."

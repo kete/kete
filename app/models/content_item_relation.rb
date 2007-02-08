@@ -16,7 +16,7 @@ class ContentItemRelation < ActiveRecord::Base
     end
   end
 
-  acts_as_list
+  acts_as_list :scope => :topic_id
 
   # wish we could update the topic and new relation
   # in zoom here

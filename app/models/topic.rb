@@ -25,7 +25,7 @@ class Topic < ActiveRecord::Base
 
   # this is where we handled "related to"
   has_many :content_item_relations,
-  :order => 'position', :dependent => :delete_all
+  :order => 'position', :dependent => :destroy
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
