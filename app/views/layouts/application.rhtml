@@ -20,8 +20,9 @@
   <!--[if IE 6]><%= stylesheet_link_tag 'kete-ie6', :media => 'screen' %><![endif]-->
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
   <% # TODO: turn this on if we need js fx for kete -%>
-  <% #= javascript_include_tag :defaults %>
+
   <% if params[:controller] == 'zoom_dbs' || params[:controller] == 'extended_fields' -%>
+        <%= javascript_include_tag :defaults %>
         <%= javascript_include_tag 'rico_corner', 'ajax_scaffold' %>
   <% end -%>
 </head>
