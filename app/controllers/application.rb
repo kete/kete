@@ -91,7 +91,10 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_search_for(zoom_class)
-    redirect_to(:controller => 'search', :current_class => zoom_class)
+    redirect_to(:controller => 'search',
+                :trailing_slash => true,
+                :action => :all,
+                :controller_name_for_zoom_class => zoom_class_controller(zoom_class))
   end
 
   def redirect_to_default_all
