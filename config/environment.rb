@@ -78,11 +78,6 @@ ZoomDb.zoom_id_element_name = "identifier"
 # no preceding / necessary
 ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
 
-# used in acts_as_zoom to replace missing object id
-# at the time it works through oai_record.xml output
-# during after_save callback
-ID_SUB = '!!!ID!!!'
-
 DEFAULT_RECORDS_PER_PAGE = 5
 RECORDS_PER_PAGE_CHOICES = [5, 10, 20, 50]
 DEFAULT_SEARCH_CLASS = 'Topic'
