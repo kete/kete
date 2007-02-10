@@ -35,12 +35,14 @@
                                                                 :action => :edit,
                                                                 :controller => '/images',
                                                                 :id => @still_image %></li>
-                                        <li><%= link_to "Delete",
+                                        <% if logged_in? and at_least_a_moderator? -%>
+                                                <li><%= link_to "Delete",
                                                                 {:action => :destroy,
                                                                 :controller => '/images',
                                                                 :id => @still_image},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
+                                        <% end -%>
                                 </ul>
                         </div>
                         <div class="detail-tools">

@@ -15,12 +15,14 @@
                                                                 :action => :edit,
                                                                 :controller => '/web_links',
                                                                 :id => @web_link %></li>
-                                        <li><%= link_to "Delete",
+                                        <% if logged_in? and at_least_a_moderator? -%>
+                                                <li><%= link_to "Delete",
                                                                 {:action => :destroy,
                                                                 :controller => '/web_links',
                                                                 :id => @web_link},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
+                                        <% end -%>
                                 </ul>
                         </div>
                         <div class="detail-tools">
