@@ -23,9 +23,15 @@ class ContentItemRelation < ActiveRecord::Base
   # so that this relationship is reflected in searches
   # but it has to be done in controller space because it requires a render
   def self.new_relation_to_topic(topic_id, related_item)
-    logger.debug("what is topic_id: #{topic_id}")
-    content_item_relation = self.new(:topic_id => topic_id)
-    logger.debug("what is topic_id: #{content_item_relation.topic_id}")
+    content_item_relation = self.new
+
+    if topic_id.is_a?(Topic)
+      topic = topic_id
+      content_item_relation.topic_id = topic.id
+    else
+      content_item_relation.topic_id = topic_id
+    end
+
     content_item_relation.related_item = related_item
     content_item_relation.save!
   end

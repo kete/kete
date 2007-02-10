@@ -39,8 +39,6 @@ class ApplicationController < ActionController::Base
     if params[:relate_to_topic_id] and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic_id])
 
-      logger.info("what is new related topic id: #{@new_related_topic.id}")
-
       ContentItemRelation.new_relation_to_topic(@new_related_topic.id, item)
 
       # update the related topic
