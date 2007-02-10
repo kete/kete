@@ -11,6 +11,9 @@ class ApplicationController < ActionController::Base
   # and will always be specified in our routes
   before_filter :load_basket
 
+  # sets up instance variables for authentication
+  include KeteAuthorization
+
   # setup return_to for the session
   after_filter :store_location, :only => [ :search, :index, :new, :show, :edit]
 
@@ -22,7 +25,6 @@ class ApplicationController < ActionController::Base
       # the first basket is always the default
       @current_basket = Basket.find(1)
     end
-    return @current_basket
   end
 
   def redirect_to_related_topic(topic_id)

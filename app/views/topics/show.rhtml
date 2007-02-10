@@ -17,7 +17,7 @@
                                                                 :action => :edit,
                                                                 :controller => 'topics',
                                                                 :id => @topic %></li>
-                                        <% if logged_in? and at_least_a_moderator? -%>
+                                        <% if logged_in? and @at_least_a_moderator -%>
                                                 <li><%= link_to "Delete",
                                                                 {:action => :destroy,
                                                                 :controller => 'topics',

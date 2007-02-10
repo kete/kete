@@ -163,21 +163,6 @@ module ApplicationHelper
                     :relate_to_topic_id => relate_to_topic_id})
   end
 
-  # does the current user have the admin role
-  # on the site basket?
-  def site_admin?
-    @site = Basket.find_by_id(1)
-    permit? "site_admin or admin on :site" do
-      return :true
-    end
-  end
-
-  def at_least_a_moderator?
-    permit? "moderator or site_admin or admin on :current_basket" do
-      return :true
-    end
-  end
-
   # TODO: this is duplicated in application.rb, fix
   def user_to_dc_creator_or_contributor(user)
     user.login
