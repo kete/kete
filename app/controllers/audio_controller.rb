@@ -25,16 +25,7 @@ class AudioController < ApplicationController
   end
 
   def new
-    # TODO: this is just for show, redo as specified
-    if @current_basket.id == 1
-      permit "member or admin of :current_basket" do
-        @audio_recording = AudioRecording.new
-      end
-    else
-      permit "admin of :current_basket" do
-        @audio_recording = AudioRecording.new
-      end
-    end
+    @audio_recording = AudioRecording.new
   end
 
   def create

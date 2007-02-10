@@ -36,7 +36,10 @@ class ApplicationController < ActionController::Base
     where_to_redirect = 'show_self'
     if params[:relate_to_topic_id] and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic_id])
-      ContentItemRelation.new_relation_to_topic(@new_related_topic, item)
+
+      logger.info("what is new related topic id: #{@new_related_topic.id}")
+
+      ContentItemRelation.new_relation_to_topic(@new_related_topic.id, item)
 
       # update the related topic
       # so this new relationship is reflected in search
@@ -50,7 +53,7 @@ class ApplicationController < ActionController::Base
 
       if where_to_redirect == 'show_related'
         # TODO: replace with translation stuff when we get globalize going
-        flash[:notice] = 'Related #{item.class.name.humanize} was successfully created.'
+        flash[:notice] = "Related #{item.class.name.humanize} was successfully created."
         redirect_to_related_topic(@new_related_topic)
       else
         # TODO: replace with translation stuff when we get globalize going

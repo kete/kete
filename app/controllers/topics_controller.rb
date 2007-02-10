@@ -1,4 +1,8 @@
 class TopicsController < ApplicationController
+  permit "site_admin or moderator or member or admin of :current_basket", :only => [ :new, :pick_topic_type, :create, :edit, :update]
+  # put revert in here when we get to it
+  permit "site_admin or moderator or admin of :current_basket", :only =>  [ :destroy ]
+
   # since we use dynamic forms based on topic_types and extended_fields
   # and topics have their main attributes stored in an xml doc
   # within their content field
@@ -40,16 +44,7 @@ class TopicsController < ApplicationController
   end
 
   def new
-    # TODO: this is just for show, redo as specified
-    if @current_basket.id == 1
-      permit "site_admin or member or admin of :current_basket" do
-        @topic = Topic.new
-      end
-    else
-      permit "admin of :current_basket" do
-        @topic = Topic.new
-      end
-    end
+    @topic = Topic.new
   end
 
   def edit

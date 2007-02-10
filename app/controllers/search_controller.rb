@@ -102,7 +102,7 @@ class SearchController < ApplicationController
     # TODO: skipping multiple source (federated) search for now
     zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
-    # @result_sets = Hash.new
+    @result_sets = Hash.new
     @result_sets ||= session[:results_sets] || Hash.new
 
     # iterate through all record types and build up a result set for each
@@ -124,7 +124,7 @@ class SearchController < ApplicationController
     # results are limited to this page's display of search results
     # grab them from zoom
     # TODO: probably where things are getting lost
-    @results ||= Array.new
+    @results = Array.new
 
     if @result_sets[@current_class].size > 0
       still_image_results = Array.new
@@ -132,9 +132,13 @@ class SearchController < ApplicationController
       raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
                                                                                     :start_record => @start_record,
                                                                                     :end_record => @end_record)
+      logger.debug("what is start_record: #{@start_record} ")
+      logger.debug("what is end_record: #{@end_record} ")
+      logger.debug("what is raw_results size: #{raw_results.size} ")
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
         result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
+        logger.debug("what is result_from_xml_hash: #{result_from_xml_hash} ")
         @results << result_from_xml_hash
 
         # we want to load local thumbnails for image results
@@ -328,7 +332,7 @@ class SearchController < ApplicationController
 
   # this probably won't scale, only use for demo right now
   def rebuild_zoom_index
-    permit "admin of :current_basket" do
+    permit "site_admin of :current_basket" do
       ZOOM_CLASSES.each do |zoom_class|
         Module.class_eval(zoom_class).find(:all).each {|item| prepare_and_save_to_zoom(item)}
       end
