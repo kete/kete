@@ -35,12 +35,14 @@ class Topic < ActiveRecord::Base
       # special case
       # topics related to a topic
       has_many :child_related_topics, :through => :content_item_relations,
-      :source => :related_topic,
+      :source => :child_related_topic,
+      :conditions => "content_item_relations.related_item_type = 'Topic'",
       :include => :basket,
       :order => 'position'
     else
       has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
       :source => zoom_class.tableize.singularize.to_sym,
+      :conditions => ["content_item_relations.related_item_type = ?", zoom_class],
       :include => :basket,
       :order => 'position'
     end

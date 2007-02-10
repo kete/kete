@@ -10,7 +10,7 @@ class ContentItemRelation < ActiveRecord::Base
     if zoom_class == 'Topic'
       # a topic can be related to another topic
       # but it needs a special name
-      belongs_to :related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
+      belongs_to :child_related_topic, :class_name => "Topic", :foreign_key => "related_item_id"
     else
       belongs_to zoom_class.tableize.singularize.to_sym, :class_name => zoom_class, :foreign_key => "related_item_id"
     end
