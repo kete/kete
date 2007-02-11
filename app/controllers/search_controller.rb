@@ -127,42 +127,7 @@ class SearchController < ApplicationController
 
     # results are limited to this page's display of search results
     # grab them from zoom
-    # TODO: probably where things are getting lost
-    @results = Array.new
-
-    if @result_sets[@current_class].size > 0
-      still_image_results = Array.new
-
-      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
-                                                                                    :start_record => @start_record,
-                                                                                    :end_record => @end_record)
-      logger.debug("what is start_record: #{@start_record} ")
-      logger.debug("what is end_record: #{@end_record} ")
-      logger.debug("what is raw_results size: #{raw_results.size} ")
-      # create a hash of link, title, description for each record
-      raw_results.each do |raw_record|
-        result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
-        logger.debug("what is result_from_xml_hash: #{result_from_xml_hash} ")
-        @results << result_from_xml_hash
-
-        # we want to load local thumbnails for image results
-        # we'll collect the still_image_ids as keys and then run one query below
-        if result_from_xml_hash['locally_hosted'] && result_from_xml_hash['class'] == 'StillImage'
-          still_image_results << result_from_xml_hash['id']
-        end
-      end
-      if @current_class == 'StillImage'
-        ImageFile.find_all_by_thumbnail('small_sq', :conditions => ["still_image_id in (?)", still_image_results]).each do |thumb|
-          # now work through results array and add image_file
-          # if appropriate
-          @results.each do |result|
-            if result['locally_hosted'] && result['id'].to_i == thumb.still_image_id
-              result['image_file'] = thumb
-            end
-          end
-        end
-      end
-    end
+    load_results
   end
 
   def rss
@@ -202,18 +167,19 @@ class SearchController < ApplicationController
 
     # results are limited to this page's display of search results
     # grab them from zoom
-    # TODO: probably where things are getting lost
+    load_results
+  end
+
+  def load_results
     @results = Array.new
 
     if @result_sets[@current_class].size > 0
       still_image_results = Array.new
 
+      # check if the result set is stale
       raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
                                                                                     :start_record => @start_record,
                                                                                     :end_record => @end_record)
-      logger.debug("what is start_record: #{@start_record} ")
-      logger.debug("what is end_record: #{@end_record} ")
-      logger.debug("what is raw_results size: #{raw_results.size} ")
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
         result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
