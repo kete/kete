@@ -9,15 +9,19 @@ module KeteAuthorization
     # on the site basket?
     def site_admin?
       @site = Basket.find_by_id(1)
-      permit? "site_admin or admin on :site" do
-        return true
+      if logged_in?
+        permit? "site_admin or admin on :site" do
+          return true
+        end
       end
     end
 
     def at_least_a_moderator?
       if @site_admin == false
-        permit? "moderator on :current_basket" do
-          return true
+        if logged_in?
+          permit? "moderator on :current_basket" do
+            return true
+          end
         end
       else
         return true
