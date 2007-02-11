@@ -31,9 +31,9 @@ svn://rubyforge.org/var/svn/betternestedset/trunk
 
 http://svn.viney.net.nz/things/rails/plugins/acts_as_taggable_on_steroids
 
-
 Gems:
 Rmagick, used by attachment_fu, see install directions in blog.katipo.co.nz
+Unicode, also covered in blog
 
 Zebra:
 
