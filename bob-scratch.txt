@@ -1,0 +1,7 @@
+past perfect script:
+
+* determine create or update
+
+* figure out the field mappings (i.e. extended fields need to exist for you data)
+
+* web request that is post for either create or update that is correctly formatted form for topice_type or content_type
