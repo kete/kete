@@ -5,7 +5,7 @@ require "rexml/document"
 class SearchController < ApplicationController
   include REXML
 
-  layout "application" , :except => [:rss, :description]
+  layout "application" , :except => [:rss]
 
   def index
   end
@@ -40,6 +40,8 @@ class SearchController < ApplicationController
   def all
     @search_terms = params[:search_terms]
     if @search_terms.nil?
+      @rss_tag_auto = rss_tag
+      @rss_tag_link = rss_tag(:auto_detect => false)
       search
     else
       # TODO: redirect_to search form of the same url
@@ -56,6 +58,8 @@ class SearchController < ApplicationController
       # TODO: have this message be derived from globalize
       flash[:notice] = "You haven't entered any search terms."
     else
+      @rss_tag_auto = rss_tag
+      @rss_tag_link = rss_tag(:auto_detect => false)
       search
     end
   end
@@ -103,13 +107,13 @@ class SearchController < ApplicationController
     zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
     @result_sets = Hash.new
-    @result_sets ||= session[:results_sets] || Hash.new
+    # @result_sets ||= session[:results_sets] || Hash.new
 
     # iterate through all record types and build up a result set for each
     ZOOM_CLASSES.each do |zoom_class|
-      if @result_sets[zoom_class].nil?
-        populate_result_sets_for(zoom_class,zoom_db)
-      end
+      #if @result_sets[zoom_class].nil?
+      populate_result_sets_for(zoom_class,zoom_db)
+      # end
     end
 
     @last_page = @result_sets[@current_class].size / @number_per_page
@@ -120,6 +124,81 @@ class SearchController < ApplicationController
     end
 
     @end_record = @result_sets[@current_class].size if @result_sets[@current_class].size < @end_record
+
+    # results are limited to this page's display of search results
+    # grab them from zoom
+    # TODO: probably where things are getting lost
+    @results = Array.new
+
+    if @result_sets[@current_class].size > 0
+      still_image_results = Array.new
+
+      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
+                                                                                    :start_record => @start_record,
+                                                                                    :end_record => @end_record)
+      logger.debug("what is start_record: #{@start_record} ")
+      logger.debug("what is end_record: #{@end_record} ")
+      logger.debug("what is raw_results size: #{raw_results.size} ")
+      # create a hash of link, title, description for each record
+      raw_results.each do |raw_record|
+        result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
+        logger.debug("what is result_from_xml_hash: #{result_from_xml_hash} ")
+        @results << result_from_xml_hash
+
+        # we want to load local thumbnails for image results
+        # we'll collect the still_image_ids as keys and then run one query below
+        if result_from_xml_hash['locally_hosted'] && result_from_xml_hash['class'] == 'StillImage'
+          still_image_results << result_from_xml_hash['id']
+        end
+      end
+      if @current_class == 'StillImage'
+        ImageFile.find_all_by_thumbnail('small_sq', :conditions => ["still_image_id in (?)", still_image_results]).each do |thumb|
+          # now work through results array and add image_file
+          # if appropriate
+          @results.each do |result|
+            if result['locally_hosted'] && result['id'].to_i == thumb.still_image_id
+              result['image_file'] = thumb
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def rss
+    @headers["Content-Type"] = "application/xml; charset=utf-8"
+
+    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(DEFAULT_SEARCH_CLASS)
+
+    @current_class = zoom_class_from_controller(@controller_name_for_zoom_class)
+
+    @source_controller_singular = params[:source_controller_singular]
+
+    if !@source_controller_singular.nil?
+      @source_class = zoom_class_from_controller(@source_controller_singular.pluralize)
+      @source_item = Module.class_eval(@source_class).find(params[:source_item])
+    else
+      @source_class = nil
+      @source_item = nil
+    end
+
+    @tag = params[:tag] ? Tag.find(params[:tag]) : nil
+
+    @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
+
+    # 0 is the first index, so it's valid for start
+    @start_record = 0
+    @start = 1
+
+    # TODO: skipping multiple source (federated) search for now
+    zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
+
+    @result_sets = Hash.new
+    # @result_sets ||= session[:results_sets] || Hash.new
+
+    populate_result_sets_for(@current_class,zoom_db)
+
+    @end_record = @result_sets[@current_class].size
 
     # results are limited to this page's display of search results
     # grab them from zoom
@@ -223,7 +302,7 @@ class SearchController < ApplicationController
     end
 
     @result_sets[zoom_class] = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
-                                                                                 :query => query)
+                                                                           :query => query)
   end
 
   # grab the values we want from the zoom_record
@@ -258,11 +337,11 @@ class SearchController < ApplicationController
       result_hash['locally_hosted'] = false
     end
 
-    # make this nil by defualt
+    # make this nil by default
     # overwrite for local results with actual thumbnail object
     result_hash['image_file'] = nil
 
-    desired_fields = [['identifier', 'url'], ['title'], ['description', 'short_summary']]
+    desired_fields = [['identifier', 'url'], ['title'], ['description', 'short_summary'], ['date']]
 
     desired_fields.each do |field|
       # // xpath short cut to go right to element that matches
@@ -319,17 +398,6 @@ class SearchController < ApplicationController
     slug = Unicode::normalize_KD(slug+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
   end
 
-  def description
-    @headers["Content-Type"] = "text/xml"
-    render 'opensearch/description'
-  end
-  # TODO: is this our rss feed for search results, even if we aren't using opensearch?
-  def rss
-    @headers["Content-Type"] = "text/xml"
-    search
-    render 'opensearch/rss'
-  end
-
   # this probably won't scale, only use for demo right now
   def rebuild_zoom_index
     permit "site_admin of :current_basket" do
@@ -340,4 +408,31 @@ class SearchController < ApplicationController
     end
   end
 
+  def rss_tag(options = {:auto_detect => true})
+    auto_detect = options[:auto_detect]
+
+    tag = String.new
+
+    if auto_detect
+      tag = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" "
+    else
+      tag = "<a "
+    end
+
+    tag += "href=\""+ request.protocol + request.host
+    # split everything before the query string and the query string
+    url = request.request_uri.split('?')
+
+    # now split the path up and add rss to it
+    path_elements = url[0].split('/')
+    path_elements << 'rss'
+    new_path = path_elements.join('/')
+    tag +=  new_path
+    # if there is a query string, tack it on the end
+    if !url[1].nil?
+      logger.debug("what is query string: #{url[1].to_s}")
+      tag += "?#{url[1].to_s}"
+    end
+    tag +=  "\" />"
+  end
 end

@@ -21,26 +21,41 @@ ActionController::Routing::Routes.draw do |map|
   map.basket ':urlified_name/:controller/:action/:id'
   map.basket_index ':urlified_name', :controller => "search", :action => 'redirect_to_default_all'
 
+  map.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss', :controller => "search", :action => 'rss'
+
   map.basket_all ':urlified_name/all/:controller_name_for_zoom_class/', :controller => "search", :action => 'all'
 
+  map.basket_all_contributed_by_rss ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss', :controller => "search", :action => 'rss'
 
   map.basket_all_contributed_by ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/', :controller => "search", :action => 'all'
 
+  map.basket_all_related_to_rss ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss', :controller => "search", :action => 'rss'
+
   map.basket_all_related_to ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/', :controller => "search", :action => 'all'
 
+  map.basket_all_tagged_rss ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/rss', :controller => "search", :action => 'rss'
+
   map.basket_all_tagged ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/', :controller => "search", :action => 'all'
+
+  map.basket_search_contributed_by_rss ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss', :controller => "search", :action => 'rss'
 
   map.basket_search_contributed_by ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug', :controller => "search", :action => 'for'
 
   map.basket_search_contributed_by_empty ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug', :controller => "search", :action => 'for', :search_terms => nil
 
+  map.basket_search_related_to_rss ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss', :controller => "search", :action => 'rss'
+
   map.basket_search_related_to ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug', :controller => "search", :action => 'for'
 
   map.basket_search_related_to_empty ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for', :controller => "search", :action => 'for', :search_terms => nil
 
+  map.basket_search_tagged_rss ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss', :controller => "search", :action => 'rss'
+
   map.basket_search_tagged ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug', :controller => "search", :action => 'for'
 
   map.basket_search_tagged_empty ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for', :controller => "search", :action => 'for', :search_terms => nil
+
+  map.basket_search_rss ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug', :controller => "search", :action => 'rss'
 
   map.basket_search ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug', :controller => "search", :action => 'for'
 

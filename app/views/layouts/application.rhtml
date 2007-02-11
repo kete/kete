@@ -25,6 +25,9 @@
         <%= javascript_include_tag :defaults %>
         <%= javascript_include_tag 'rico_corner', 'ajax_scaffold' %>
   <% end -%>
+  <% if !@rss_tag_auto.nil?  -%>
+        <%= @rss_tag_auto %>
+  <% end -%>
 </head>
 <body>
 <div id="wrapper">
@@ -78,6 +81,9 @@
         <div class="cleaner">&nbsp;</div>
         <div id="footer">
                 <!--Footer-->
+                <% if !@rss_tag_link.nil? -%>
+                        <div id="linkToRSS"><%= @rss_tag_link -%>RSS</a></div>
+                <% end -%>
                 <% if logged_in? and @site_admin  %>
                    <!-- admin toolbox, temp -->
                    <div id="adminToolbox">

@@ -1,7 +1,5 @@
                 <% @title = 'Results in ' + @controller_name_for_zoom_class.gsub(/_/, " ") + last_part_of_title_if_refinement_of -%>
 
-                <% # switch for contributed_by and related_to appending to headline, extract to helper -%>
-
                 <%= render :partial => 'form', :locals => {:headline => 'Refine your results', :search_terms => nil} %>
 
                 <%= render :partial => 'results',
