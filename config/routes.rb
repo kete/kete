@@ -55,7 +55,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.basket_search_tagged_empty ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for', :controller => "search", :action => 'for', :search_terms => nil
 
-  map.basket_search_rss ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug', :controller => "search", :action => 'rss'
+  map.basket_search_rss ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug/rss', :controller => "search", :action => 'rss'
 
   map.basket_search ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug', :controller => "search", :action => 'for'
 
