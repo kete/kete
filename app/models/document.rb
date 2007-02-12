@@ -13,7 +13,7 @@ class Document < ActiveRecord::Base
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
   # TODO: needs some of the new filetypes like openoffice, pages, plenty of old ones, too
-  has_attachment :storage => :file_system, :file_system_path => "public/documents", :content_type => ['application/mac-binhex40', 'application/msword', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain'], :processor => :none
+  has_attachment :storage => :file_system, :file_system_path => "public/documents", :content_type => ['application/mac-binhex40', 'application/msword', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain'], :processor => :none, :max_size => 500.megabyte
   validates_as_attachment
 
   # overriding full_filename to handle our customizations
