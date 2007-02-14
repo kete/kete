@@ -17,10 +17,17 @@
                 <label for="topic_short_summary">Short Summary:</label>
                 <%= text_area 'topic', 'short_summary', {:class => "text-area", :cols => 120, :rows => 2 } %>
         </div>
+	
+        <div class="form-element">
+                <label for="topic_description">Description:</label>
+                <%= text_area 'topic', 'description', :class => "mceEditor", :cols => 120 %>
+        </div>
+
         <div class="form-element">
                 <label for="topic_tag_list">Tags (separated by commas):</label>
                 <%= text_field 'topic', 'tag_list', {:class => "text-input"} %>
-        </div>
+        </div>	
+
         <% if edit
                 # this is an edit
                 @self_topic_type_and_ancestors = TopicType.find(@topic.topic_type_id).self_and_ancestors
@@ -38,12 +45,7 @@
                                                 :item_key => 'topic'}) %>
                 <% end %>
         <% end %>
-
-        <div class="form-element">
-                <label for="topic_description">Description:</label>
-                <%= text_area 'topic', 'description', :class => "mceEditor", :cols => 120 %>
-        </div>
-
+	
         <% # Walter McGinnis (walter@katipo.co.nz), 2006-12-20 %>
         <% # even though we have removed ajaxscaffold, we may need this back if we have other conflicts  %>
         <% # therefore keeping for refence  %>
