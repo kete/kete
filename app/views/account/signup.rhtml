@@ -5,17 +5,18 @@
 
 <%= error_messages_for :user %>
 <% form_for :user do |f| -%>
-<p><label for="login">Login</label><br/>
-<%= f.text_field :login %></p>
-
-<p><label for="email">Email</label><br/>
-<%= f.text_field :email %></p>
-
-<p><label for="password">Password</label><br/>
-<%= f.password_field :password %></p>
-
-<p><label for="password_confirmation">Confirm Password</label><br/>
-<%= f.password_field :password_confirmation %></p>
+<div class="form-element"> 
+<label for="login">Login</label> <%= f.text_field :login %>
+</div>
+<div class="form-element">
+<label for="email">Email</label> <%= f.text_field :email %>
+</div>
+<div class="form-element">
+<label for="password">Password</label> <%= f.password_field :password %>
+</div>
+<div class="form-element">
+<label for="password_confirmation">Confirm Password</label> <%= f.password_field :password_confirmation %>
+</div>
 
 <% form_fields = @content_type.content_type_to_field_mappings -%>
         <% if form_fields.size > 0 %>
