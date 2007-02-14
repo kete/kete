@@ -521,14 +521,41 @@ div.progressBar div.background {
         width:200px
 }
 
+/* --- STATIC PAGES --- */
+#static-left {
+    margin-right:216px;
+}
+#static-right {
+    background:#FED;
+    float:right;
+    padding:10px;
+    width:180px;
+}
+#static-right ul {
+    list-style:none;
+    margin-left:0
+    padding-left:0
+}
+/* --- LOGIN PAGE --- */
+.form-element {
+      padding:5px 0 5px 0;
+      clear:left
+}
+.form-element label {
+      float:left;
+      width:7em;
+      display:inline;
+      padding-top:3px
+}
+
 /* --- FOOTER -- */
 /* #footer { spare for bottom of page } */
-#linkToRSS {
+#adminToolbox {
         border-left:solid 1px #DCA;
         border-right:solid 1px #DCA;
         padding:16px;
 }
-#adminToolbox {
+#linkToRSS {
         border-left:solid 1px #DCA;
         border-right:solid 1px #DCA;
         padding:16px;
