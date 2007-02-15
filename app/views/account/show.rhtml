@@ -1,0 +1,17 @@
+
+<% @valid_columns = ['Login','Email','Extended content'] %>
+
+<% for column in User.content_columns %>
+  <% for valid_col in @valid_columns %>
+    <% if valid_col == column.human_name %>
+    <p>
+      <b><%= column.human_name %>:</b> <%=h @user.send(column.name) %>
+    </p>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= @user.has_roles %>
+<%= link_to 'Edit', :action => 'edit', :id => @user %> |
+<%= link_to 'Change Password', :action => 'change_password' %> |
+<%= link_to 'Back', :action => 'index' %>
