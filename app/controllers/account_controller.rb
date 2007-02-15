@@ -54,7 +54,11 @@ class AccountController < ApplicationController
   end
   
   def show
-    @user = self.current_user
+    if logged_in?
+      @user = self.current_user
+    else 
+      redirect_to :action => 'index'
+    end
   end
   
   def edit
