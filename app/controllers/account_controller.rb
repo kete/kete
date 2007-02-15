@@ -52,6 +52,43 @@ class AccountController < ApplicationController
     flash[:notice] = "You have been logged out."
     redirect_back_or_default(:controller => '/account', :action => 'index')
   end
+  
+  def show
+    @user = self.current_user
+  end
+  
+  def edit
+    @user = User.find(self.current_user.id)
+  end
+  
+  def update
+    @user = User.find(self.current_user.id)
+    if @user.update_attributes(params[:user])
+      flash[:notice] = 'User was successfully updated.'
+      redirect_to :action => 'index'
+    else
+      render :action => 'edit'
+    end
+  end
+  
+  def change_password
+    return unless request.post?
+    if User.authenticate(current_user.login, params[:old_password])
+      if (params[:password] == params[:password_confirmation])
+        current_user.password_confirmation = params[:password_confirmation]
+        current_user.password = params[:password]
+	flash[:notice] = current_user.save ?
+	  "Password changed" :
+	  "Password not changed"
+	  redirect_to :action => 'show'
+      else
+        flash[:notice] = "Password mismatch"
+        @old_password = params[:old_password]
+      end
+    else
+      flash[:notice] = "Wrong password"
+    end
+  end
 
   private
   def load_content_type
