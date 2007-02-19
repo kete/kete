@@ -1,3 +1,4 @@
+require 'RMagick'
 class AccountController < ApplicationController
   before_filter :load_content_type, :only => [:signup]
   
