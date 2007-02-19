@@ -18,6 +18,7 @@
 <label for="password_confirmation">Confirm Password</label> <%= f.password_field :password_confirmation %>
 </div>
 
+
 <% form_fields = @content_type.content_type_to_field_mappings -%>
         <% if form_fields.size > 0 %>
                 <%= render(:partial => 'search/extended_field_mapping',
@@ -27,5 +28,15 @@
                                                 :item_key => 'user'}) %>
 <% end %>
 
+
+<div class="form-element">
+<label for="human_check">Enter the text from the image</label> 
+<%= f.text_field :security_code, :size => '8' %> 
+<% id = generate_captcha() -%>
+<% session[:captcha_id] = id -%>
+<img src="<%= captcha_url(id) %>" />
+</div>
+
 <p><%= submit_tag 'Sign up' %></p>
+
 <% end -%>

@@ -1,5 +1,8 @@
 class AccountController < ApplicationController
   before_filter :load_content_type, :only => [:signup]
+  
+#  include GenerateCaptcha
+  include ExtendedContent
 
   # Be sure to include AuthenticationSystem in Application Controller instead
   # include AuthenticatedSystem
@@ -37,13 +40,46 @@ class AccountController < ApplicationController
                                                              :item_key => 'user',
                                                              :item_class => 'User',
                                                              :extra_fields => ['password', 'password_confirmation']))
-    @user.save!
+							     
+
+    if simple_captcha_valid?
+      @user.security_code = params[:user][:security_code]
+    end
+    
+    if simple_captcha_confirm_valid?
+      @res = Captcha.find(session[:captcha_id])
+      @user.security_code_confirmation = @res.text
+    else 
+      @user.security_code_confirmation = false    
+    end    
+    
+    @user.save! 
+
     self.current_user = @user
     redirect_back_or_default(:controller => '/account', :action => 'index')
     flash[:notice] = "Thanks for signing up!"
   rescue ActiveRecord::RecordInvalid
     render :action => 'signup'
   end
+
+  def simple_captcha_valid?
+    if params[:user][:security_code] != ''
+      return true
+    end
+  end
+  
+  def simple_captcha_confirm_valid?
+    if params[:user][:security_code]
+      @res = Captcha.find(session[:captcha_id])
+      if @res.text == params[:user][:security_code]
+        return true
+      else
+        return false
+      end
+    else
+      return false
+    end
+  end  
 
   def logout
     self.current_user.forget_me if logged_in?
@@ -52,7 +88,7 @@ class AccountController < ApplicationController
     flash[:notice] = "You have been logged out."
     redirect_back_or_default(:controller => '/account', :action => 'index')
   end
-  
+    
   def show
     if logged_in?
       @user = self.current_user
@@ -93,7 +129,19 @@ class AccountController < ApplicationController
       flash[:notice] = "Wrong password"
     end
   end
-
+  
+  
+  def show_captcha
+    return unless !params[:id].nil?
+    captcha = Captcha.find(params[:id])
+    imgdata = captcha.imageblob
+    send_data(imgdata,
+              :filename => 'captcha.jpg',
+	      :type => 'image/jpeg',
+	      :disposition => 'inline')
+  end
+					      
+  
   private
   def load_content_type
     @content_type = ContentType.find_by_class_name('User')

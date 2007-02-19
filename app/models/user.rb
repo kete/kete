@@ -2,7 +2,7 @@ require 'digest/sha1'
 class User < ActiveRecord::Base
   # methods related to handling the xml kept in extended_content column
   include ExtendedContent
-
+  
   # this is where we handle contributions of different kinds
   has_many :contributions, :order => 'created_at', :dependent => :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility
@@ -31,16 +31,22 @@ class User < ActiveRecord::Base
 
   # Virtual attribute for the unencrypted password
   attr_accessor :password
+  
+  # For the security code
+  attr_accessor :security_code, :security_code_confirmation
+  
 
-  validates_presence_of     :login, :email
+  validates_presence_of     :login, :email, :security_code
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
+  validates_confirmation_of :security_code
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
   before_save :encrypt_password
+  
 
   after_save :add_as_member_to_default_basket
 
