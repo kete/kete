@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
   # only permit site members to add/delete things
-  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy]
+#  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy]
 
   # all topics and content items belong in a basket
   # some controllers won't need it, but it shouldn't hurt have it available
@@ -173,16 +173,19 @@ class ApplicationController < ActionController::Base
 
   # populate extended_fields param with xml
   # based on params from the form
-  def extended_fields_update_param_for_item(options = {})
-    fields = options[:fields]
+  def extended_fields_update_hash_for_item(options = {})
+    hash_name = options[:hash_name] || 'params'
+    fields = options[:fields]    
     item_key = options[:item_key].to_sym
     logger.debug("inside update param for item")
-    params[item_key][:extended_content] = render_to_string(:partial => 'search/field_to_xml',
+    hash_name[item_key][:extended_content] = render_to_string(:partial => 'search/field_to_xml',
                                                            :collection => @fields,
                                                            :layout => false,
                                                            :locals => { :item_key => item_key})
     logger.debug("after field_to_xml")
   end
+  
+  alias extended_fields_update_param_for_item extended_fields_update_hash_for_item
 
   # strip out raw extended_fields and create a valid params hash for new/create/update
   def extended_fields_replacement_params_hash(options = {})
