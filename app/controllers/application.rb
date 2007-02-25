@@ -174,17 +174,17 @@ class ApplicationController < ActionController::Base
   # populate extended_fields param with xml
   # based on params from the form
   def extended_fields_update_hash_for_item(options = {})
-    hash_name = options[:hash_name] || 'params'
-    fields = options[:fields]    
+    fields = options[:fields]
     item_key = options[:item_key].to_sym
     logger.debug("inside update param for item")
-    hash_name[item_key][:extended_content] = render_to_string(:partial => 'search/field_to_xml',
+    params[item_key][:extended_content] = render_to_string(:partial => 'search/field_to_xml',
                                                            :collection => @fields,
                                                            :layout => false,
                                                            :locals => { :item_key => item_key})
     logger.debug("after field_to_xml")
+    return params
   end
-  
+
   alias extended_fields_update_param_for_item extended_fields_update_hash_for_item
 
   # strip out raw extended_fields and create a valid params hash for new/create/update

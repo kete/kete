@@ -31,7 +31,6 @@ class DocumentsController < ApplicationController
 
   def create
     @document = Document.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
-    @document = Document.new(params[:document])
     @successful = @document.save
 
     # add this to the user's empire of creations
