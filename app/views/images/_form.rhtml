@@ -17,11 +17,11 @@
 
                 <p><label for="image_description">Description</label><br/>
                 <%= form.text_area :description %></p>
-		
-                <%= tags_input_field(form,"image_tag_list") %>		
-		
-                <p><label for="image_file_uploaded_data">Upload image</label><br/>		
-                <%= file_field_tag 'image_file[uploaded_data]', :id => 'image_file_uploaded_data' %>		
+
+                <%= tags_input_field(form,"image_tag_list") %>
+
+                <p><label for="image_file_uploaded_data">Upload image</label><br/>
+                <%= file_field_tag 'image_file[uploaded_data]', :id => 'image_file_uploaded_data' %></p>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
                 <% if form_fields.size > 0 %>

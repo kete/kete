@@ -13,14 +13,14 @@
 
                 <p><label for="document_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
-		
+
                 <p><label for="document_description">Description</label><br/>
-                <%= form.text_area :description  %></p>		
+                <%= form.text_area :description  %></p>
 
                 <%= tags_input_field(form,"document_tag_list") %>
-		
+
                 <p><label for="document_uploaded_data">Upload document</label><br/>
-                <%= form.file_field :uploaded_data %>
+                <%= form.file_field :uploaded_data %></p>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
                 <% if form_fields.size > 0 %>

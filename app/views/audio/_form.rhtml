@@ -16,12 +16,12 @@
 
                 <p><label for="audio_recording_description">Description</label><br/>
                 <%= form.text_area :description  %></p>
-		
-                <%= tags_input_field(form,"audio_recording_tag_list") %>		
+
+                <%= tags_input_field(form,"audio_recording_tag_list") %>
 
                 <p><label for="audio_recording_uploaded_data">Upload audio file</label><br/>
-                <%= form.file_field :uploaded_data %>
-		
+                <%= form.file_field :uploaded_data %></p>
+
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
                 <% if form_fields.size > 0 %>
                         <%= render(:partial => 'search/extended_field_mapping',
