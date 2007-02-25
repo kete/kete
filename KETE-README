@@ -99,6 +99,9 @@ rake db:fixtures:load RAILS_ENV=production FIXTURES=fixture_file.yml
 
 NOTE: IF YOU RUN THIS WITHOUT THE FIXTURES PARAMETER, YOU WILL DELETE ALL DATA IN YOUR DB!!!!
 
+For the captcha table we need to make a cron job or similar to remove old captcha rows as they will only be valid for a short period of time
+- not a big problem to begin with but table will fill up over time
+
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
 -- updated 2007-05-05
 
