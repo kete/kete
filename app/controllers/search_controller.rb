@@ -122,12 +122,6 @@ class SearchController < ApplicationController
     if (@result_sets[@current_class].size % @number_per_page) > 0
       @last_page += 1
     end
-
-    @end_record = @result_sets[@current_class].size if @result_sets[@current_class].size < @end_record
-
-    # results are limited to this page's display of search results
-    # grab them from zoom
-    load_results
   end
 
   def rss
@@ -162,22 +156,22 @@ class SearchController < ApplicationController
     # @result_sets ||= session[:results_sets] || Hash.new
 
     populate_result_sets_for(@current_class,zoom_db)
-
-    @end_record = @result_sets[@current_class].size
-
-    # results are limited to this page's display of search results
-    # grab them from zoom
-    load_results
   end
 
-  def load_results
+  def load_results(from_result_set)
     @results = Array.new
 
-    if @result_sets[@current_class].size > 0
+    if params[:action] == 'rss'
+      @end_record = from_result_set.size
+    else
+      @end_record = from_result_set.size if from_result_set.size < @end_record
+    end
+
+    if from_result_set.size > 0
       still_image_results = Array.new
 
       # check if the result set is stale
-      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => @result_sets[@current_class],
+      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => from_result_set,
                                                                                     :start_record => @start_record,
                                                                                     :end_record => @end_record)
       # create a hash of link, title, description for each record
@@ -267,8 +261,17 @@ class SearchController < ApplicationController
       query = "@and " + query unless query[0,4] == "@and"
     end
 
-    @result_sets[zoom_class] = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
-                                                                           :query => query)
+    this_result_set = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
+                                                                  :query => query)
+
+    @result_sets[zoom_class] = this_result_set
+
+    if zoom_class == @current_class
+      # results are limited to this page's display of search results
+      # grab them from zoom
+      load_results(this_result_set)
+    end
+
   end
 
   # grab the values we want from the zoom_record
