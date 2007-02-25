@@ -101,6 +101,8 @@ NOTE: IF YOU RUN THIS WITHOUT THE FIXTURES PARAMETER, YOU WILL DELETE ALL DATA I
 
 For the captcha table we need to make a cron job or similar to remove old captcha rows as they will only be valid for a short period of time
 - not a big problem to begin with but table will fill up over time
+- also talks about having the captcha image being saved in session table
+- see http://www.jason-palmer.com/ruby-on-rails-tutorials/database-driven-captcha
 
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
 -- updated 2007-05-05
