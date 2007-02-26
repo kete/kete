@@ -548,6 +548,11 @@ div.progressBar div.background {
       padding-top:3px
 }
 
+.form-element .form_example {
+      padding-left: 7em;
+      color: grey;
+     
+}
 /* --- FOOTER -- */
 /* #footer { spare for bottom of page } */
 #adminToolbox {
@@ -559,4 +564,11 @@ div.progressBar div.background {
         border-left:solid 1px #DCA;
         border-right:solid 1px #DCA;
         padding:16px;
+}
+
+.disclaimer_text {
+  background: #EEEEEE;
+  padding: 10px;
+  font-size:smaller;
+  border: 1px dotted #800000;
 }
