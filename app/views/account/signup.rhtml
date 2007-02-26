@@ -6,8 +6,8 @@
 <h2>Registration</h2>
 
 <%= error_messages_for :user %>
-<fieldset>
 <% form_for :user do |f| -%>
+<fieldset>
 <div class="form-element"> 
 <label for="login">Login</label> <%= f.text_field :login %>
 </div>
@@ -37,7 +37,7 @@
 <%= f.text_field :security_code, :size => '8' %> 
 <% id = generate_captcha() -%>
 <% session[:captcha_id] = id -%>
-<img src="<%= captcha_url(id) %>" />
+<img src="<%= captcha_url(id) %>" alt="security image" />
 </div>
 
 <div class="form-element">
