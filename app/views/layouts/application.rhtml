@@ -25,6 +25,7 @@
         <%= javascript_include_tag :defaults %>
         <%= javascript_include_tag 'rico_corner', 'ajax_scaffold' %>
   <% end -%>
+  <%= javascript_include_tag 'prototype' %>
   <% if !@rss_tag_auto.nil?  -%>
         <%= @rss_tag_auto %>
   <% end -%>
@@ -50,8 +51,8 @@
                            <%= link_to_unless_current "Login", :controller => 'account',
                                                                :action => :login,
                                                                :urlified_name => 'site' -%>
-                           |
-                           Logout
+                         <!--  |
+                           Logout -->
                         <% else %>
                            <% # TODO: currently a security risk -%>
                            Welcome <%= h(current_user.login) -%> |
