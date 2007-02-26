@@ -572,3 +572,10 @@ div.progressBar div.background {
   font-size:smaller;
   border: 1px dotted #800000;
 }
+
+fieldset {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-top: 10px;  
+  border: 1px solid #666666;
+}

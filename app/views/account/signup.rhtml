@@ -3,7 +3,10 @@
         edit = true
    end -%>
 
+<h2>Registration</h2>
+
 <%= error_messages_for :user %>
+<fieldset>
 <% form_for :user do |f| -%>
 <div class="form-element"> 
 <label for="login">Login</label> <%= f.text_field :login %>
@@ -44,6 +47,9 @@
 <%= link_to_remote("House Rules", :update => 'disclaimer', :url => { :action => :disclaimer, :version => 'rules' }) %>.
 </div>
 <div id="disclaimer"></div>
-<p><%= submit_tag 'Sign up' %></p>
+
+</fieldset>
+
+<%= submit_tag 'Sign up' %>
 
 <% end -%>
