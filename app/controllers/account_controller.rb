@@ -52,7 +52,13 @@ class AccountController < ApplicationController
       @user.security_code_confirmation = @res.text
     else 
       @user.security_code_confirmation = false    
+    end
+    
+    if agreed_terms?
+      @user.agree_to_terms = params[:user][:agree_to_terms]
     end    
+    
+    logger.debug(params.to_s)
     
     @user.save! 
 
@@ -68,6 +74,12 @@ class AccountController < ApplicationController
       return true
     end
   end
+  
+  def agreed_terms?
+    if params[:user][:agree_to_terms] == '1'
+      return true
+    end
+  end  
   
   def simple_captcha_confirm_valid?
     if params[:user][:security_code]
@@ -140,6 +152,11 @@ class AccountController < ApplicationController
               :filename => 'captcha.jpg',
 	      :type => 'image/jpeg',
 	      :disposition => 'inline')
+  end
+  
+  def disclaimer
+    version = params[:version]
+    render(:file => "#{RAILS_ROOT}/public/about/#{version}.inc", :layout => false)
   end
 					      
   

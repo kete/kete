@@ -37,6 +37,13 @@
 <img src="<%= captcha_url(id) %>" />
 </div>
 
+<div class="form-element">
+<%= f.check_box :agree_to_terms %> I agree that I have read and accept the
+<%= link_to_remote("Terms and conditions", :update => 'disclaimer', :url => { :action => :disclaimer, :version => 'terms' }) %>
+<%= link_to_remote("Privacy policy", :update => 'disclaimer', :url => { :action => :disclaimer, :version => 'privacy' }) %>
+<%= link_to_remote("House Rules", :update => 'disclaimer', :url => { :action => :disclaimer, :version => 'rules' }) %>.
+</div>
+<div id="disclaimer"></div>
 <p><%= submit_tag 'Sign up' %></p>
 
 <% end -%>

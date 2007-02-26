@@ -35,8 +35,10 @@ class User < ActiveRecord::Base
   # For the security code
   attr_accessor :security_code, :security_code_confirmation
   
+  # For accepting terms
+  attr_accessor :agree_to_terms
 
-  validates_presence_of     :login, :email, :security_code
+  validates_presence_of     :login, :email, :security_code, :agree_to_terms
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
