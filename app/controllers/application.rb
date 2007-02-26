@@ -225,6 +225,12 @@ class ApplicationController < ActionController::Base
 
     return extended_fields_replacement_params_hash(:item_key => item_key, :item_class => item_class, :extra_fields => extra_fields )
   end
-
-
+  
+  # http://wiki.rubyonrails.com/rails/pages/HowtoConfigureTheErrorPageForYourRailsApp
+  def rescue_action_in_public(exception)
+    render(:file => "#{RAILS_ROOT}/public/404.inc", :layout => true)
+  end
+  def local_request?
+    false
+  end
 end
