@@ -10,6 +10,7 @@
 <fieldset>
 <div class="form-element"> 
 <label for="login">Login</label> <%= f.text_field :login %>
+<div class="form_example">Unique identifier Eg 'JohnSmith1976'</div>
 </div>
 <div class="form-element">
 <label for="email">Email</label> <%= f.text_field :email %>
@@ -38,6 +39,7 @@
 <% id = generate_captcha() -%>
 <% session[:captcha_id] = id -%>
 <img src="<%= captcha_url(id) %>" alt="security image" />
+<div class="form_example">Text is case sensitive</div>
 </div>
 
 <div class="form-element">
