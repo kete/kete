@@ -7,7 +7,7 @@
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title><%= h(@title) -%></title>
-  <% if params[:controller] == 'topics' && params[:action] == 'pick_topic_type' || params[:action] == 'edit' -%>
+  <% if params[:controller] == 'topics' || params[:controller] == 'documents' && params[:action] == 'pick_topic_type' || params[:action] == 'edit' || params[:action] == 'new' -%>
         <% # Include TinyMCE before other JS to avoid problems -%>
         <%= javascript_include_tiny_mce_if_used %>
         <%= tiny_mce if using_tiny_mce? %>
