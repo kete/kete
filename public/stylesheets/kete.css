@@ -1,17 +1,17 @@
 body {
-        color:#000;
-        background: #FFF;
+        color:#000000;
+        background: #FFFFFF;
         margin:0;
 }
 /* --- base styles --- */
 a:link {
-        color: #C50
+        color: #CC5500
 }
 a:visited {
-        color: #C60
+        color: #CC6600
 }
 a:hover {
-        color: #900
+        color: #990000
 }
 a img {
         border:none
@@ -27,25 +27,25 @@ p, th, td, ul, ol, li, div, input, textarea, select, option {
 /* headings */
 h1 {
         font-family:arial,helvetica,sans-serif;
-        color:#A84;
+        color:#AA8844;
         margin:0;
         font-size:xx-large
 }
 h2 {
         font-family:arial,helvetica,sans-serif;
-        color: #A84;
+        color: #AA8844;
         margin:0;
         font-size:x-large
 }
 h3 {
         font-family:arial,helvetica,sans-serif;
-        color: #A84;
+        color: #AA8844;
         margin:0;
         font-size:large
 }
 h4 {
         font-family:arial,helvetica,sans-serif;
-        color: #A84;
+        color: #AA8844;
         margin:0;
         font-size:small
 }
@@ -54,55 +54,55 @@ form {
         margin:0
 }
 .searchbutton {
-        background:#140;
-        border:solid 1px #000;
-        color:#ccc
+        background:#114400;
+        border:solid 1px #000000;
+        color:#cccccc;
 }
 .searchbutton:hover {
-        background:#584
+        background:#558844;
 }
 /* --- /base styles --- */
 /* --- MAIN LAYOUT --- */
 #wrapper {
         min-width:740px;
         width:100%;
-        background:#FFF
+        background:#FFFFFF;
 }
 /* --- banner --- */
 /* #banner { spare for top of page } */
 /* --- header --- */
 #header {
-        padding:16px 16px 0 16px
+        padding:16px 16px 0 16px;
 }
 #header h1 {
-        clear:left
+        clear:left;
 }
 #header #topnav {
-        color:#C50;
+        color:#CC5500;
         float:right;
-        font-weight:bold
+        font-weight:bold;
 }
 #header #description {
-        color:#A84;
+        color:#AA8844;
         font-weight:bold;
-        padding-left:20px
+        padding-left:20px;
 }
 /* --- main content --- */
 #container {
-        padding:16px 16px 20px 16px;
+        padding:16px 16px 3px 16px;
 }
 #searchheader {
-        padding:10px 0 10px 0
+        padding:10px 0 10px 0;
 }
 #searchheader-results {
         float:left;
         padding-left:20px;
-        padding-right:10px
+        padding-right:10px;
 }
 input.searchheader-search {
-        border:solid 1px #999;
+        border:solid 1px #999999;
         width:150px;
-        padding-left:2px
+        padding-left:2px;
 }
 .cleaner {
         clear:both;
@@ -120,7 +120,7 @@ input.searchheader-search {
         padding: 5px 0;
         margin-left: 0;
         margin-bottom:0;
-        border-bottom: 1px solid #DCA;
+        border-bottom: 1px solid #DDCCAA;
         font-weight: bold;
 }
 #tablist li {
@@ -131,33 +131,33 @@ input.searchheader-search {
 #tablist li a {
         padding: 5px;
         margin-left: 5px;
-        border-top: 1px solid #DCA;
-        border-right: 1px solid #DCA;
-        border-left: 1px solid #DCA;
-        background: #FED;
+        border-top: 1px solid #DDCCAA;
+        border-right: 1px solid #DDCCAA;
+        border-left: 1px solid #DDCCAA;
+        background: #FFEEDD;
         text-decoration: underline;
 }
 #tablist li a:link {
-        color: #C50;
+        color: #CC5500;
 }
 #tablist li a:visited {
-        color: #C50;
+        color: #CC5500;
 }
 #tablist li a:hover {
-        color: #900;
-        background: #FFF;
-        border-color: #DCA;
+        color: #990000;
+        background: #FFFFFF;
+        border-color: #DDCCAA;
 }
 #tablist li a#current {
-        background: #FFF;
-        border-bottom: 1px solid #FFF;
+        background: #FFFFFF;
+        border-bottom: 1px solid #FFFFFF;
         color:#A84; /*A85 */
         text-decoration:none
 }
 #result-container {
-        border-left:solid 1px #DCA;
-        border-right:solid 1px #DCA;
-        border-bottom:solid 1px #DCA;
+        border-left:solid 1px #DDCCAA;
+        border-right:solid 1px #DDCCAA;
+        border-bottom:solid 1px #DDCCAA;
         padding:16px;
 }
 #result-container h3 {
@@ -166,11 +166,11 @@ input.searchheader-search {
 #prev-next {
         float:right;
         font-weight:bold;
-        color:#DCA
+        color:#DDCCAA
 }
 #result-show {
         font-weight:bold;
-        color:#A84
+        color:#AA8844
 }
 /* --- topics search results --- */
 .generic-result-wrapper {
@@ -479,51 +479,64 @@ div.progressBar div.background {
 }
 
 /* --- HOMEPAGE --- */
-#home-container {
-        float:left;
-        padding-left:16px
+#home-right {
+        background: #FFEEDD;
+        float: left;
+        padding: 10px;
+        width:200px
 }
+#home-container {
+        padding: 0 16px 0 16px;
+        width:65%;
+        float:left;
+}
+
 #home-searchheader {
-        padding:10px 0 10px 0
+        padding: 10px 0 30px 0;
 }
 .home-feature-wrapper {
-        padding:16px 16px 0 0
+        padding: 16px 16px 0 0;
+        position:relative;
 }
+/* 
+use if want homepage features to appear as a two row table
 .home-feature-toprow {
-        clear:both;
-}
-.home-feature-left {
-        float:left;
-        background:#FED;
-        padding:4px
-}
-.home-feature-left img {
-        padding:0 10px 0 10px
-}
-.home-feature-right {
-        float:left;
-        background:#FED;
-        padding:4px;
-        margin-left:20px
-}
-.home-feature-right img {
-        padding:0 10px 0 10px
+        clear: both;
 }
 .home-feature-secondrow {
-        clear:both;
-        padding-top:20px
+        clear: both;
+        padding-top: 20px;
 }
-#home-right {
-        float:left;
-        margin-left:16px;
-        background:#FED;
-        padding:10px;
-        width:200px
+*/
+.home-feature-left {
+        background: #FFEEDD;
+        float: left;
+        padding: 4px;
+        margin:10px 20px 10px 0; /*comment out for two row table */
+        position:relative;
+}
+.home-feature-left img {
+        padding: 0 10px 0 10px;
+}
+.home-feature-right {
+        background: #FFEEDD;
+        float: left;
+	/*      margin-left: 20px;  for tow row table */
+        margin:10px 20px 10px 0; /*comment out for two row table */
+        padding: 4px;
+        position:relative;
+}
+
+.home-feature-right img {
+        padding:0 10px 0 10px
 }
 
 /* --- STATIC PAGES --- */
 #static-left {
     margin-right:216px;
+}
+#static-left ul {
+        list-style-position: inside;
 }
 #static-right {
     background:#FED;
@@ -548,11 +561,6 @@ div.progressBar div.background {
       padding-top:3px
 }
 
-.form-element .form_example {
-      padding-left: 7em;
-      color: grey;
-     
-}
 /* --- FOOTER -- */
 /* #footer { spare for bottom of page } */
 #adminToolbox {
@@ -561,9 +569,21 @@ div.progressBar div.background {
         padding:16px;
 }
 #linkToRSS {
-        border-left:solid 1px #DCA;
-        border-right:solid 1px #DCA;
-        padding:16px;
+        border: 1px solid #DDCCAA;
+        margin:0px 16px 5px 16px;
+	padding: 1px;
+	width: 36px;
+	text-align: center;
+	background-color: #FFFFFF;
+}
+
+#linkToRSS A{
+	font-size: 0.9em;
+	background-color: #DDCCAA;
+	color: #CC5500;
+	display: block;
+	font-weight: bold;
+	text-decoration: none;
 }
 
 .disclaimer_text {
