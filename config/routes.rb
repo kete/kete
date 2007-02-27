@@ -74,7 +74,8 @@ ActionController::Routing::Routes.draw do |map|
   # will default to site basket (special case of basket)
   # route site to search with DEFAULT_SEARCH_CLASS
   # :all is true by default if there are no search_terms
-  map.connect '', :controller => "search"
+  map.connect '/search', :controller => "search"
+  map.connect '', :controller => "index_page"
 end
 
 # route scratch
