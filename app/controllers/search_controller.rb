@@ -402,6 +402,10 @@ class SearchController < ApplicationController
       logger.debug("what is query string: #{url[1].to_s}")
       tag += "?#{url[1].to_s}"
     end
-    tag +=  "\" />"
+    if auto_detect
+      tag +=  "\" />"
+    else
+      tag += "\">" # A tag has a closing </a>
+    end
   end
 end
