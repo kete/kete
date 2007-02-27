@@ -5,6 +5,24 @@ class DocumentsController < ApplicationController
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
 
+  ### TinyMCE WYSIWYG editor stuff
+  uses_tiny_mce(:options => { :theme => 'advanced',
+                  :browsers => %w{ msie gecko safari},
+                  :mode => "textareas",
+                  :theme_advanced_toolbar_location => "top",
+                  :theme_advanced_toolbar_align => "left",
+                  :theme_advanced_resizing => true,
+                  :theme_advanced_resize_horizontal => false,
+                  :paste_auto_cleanup_on_paste => true,
+                  :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo},
+                  :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect},
+                  :theme_advanced_buttons3 => [],
+                  :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
+                  :editor_selector => 'mceEditor',
+                  :plugins => %w{ contextmenu paste table fullscreen} },
+                :only => [:new, :create, :edit, :update])
+  ### end TinyMCE WYSIWYG editor stuff
+
   def index
     redirect_to_search_for('Document')
   end

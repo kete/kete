@@ -15,7 +15,7 @@ class TopicsController < ApplicationController
 
   ### TinyMCE WYSIWYG editor stuff
   uses_tiny_mce(:options => { :theme => 'advanced',
-                  :browsers => %w{ msie gecko},
+                  :browsers => %w{ msie gecko safaris},
                   :mode => "textareas",
                   :theme_advanced_toolbar_location => "top",
                   :theme_advanced_toolbar_align => "left",
@@ -28,7 +28,7 @@ class TopicsController < ApplicationController
                   :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
                   :editor_selector => 'mceEditor',
                   :plugins => %w{ contextmenu paste table fullscreen} },
-                :only => [:new, :pick, :list, :create, :edit, :update, :pick_topic_type])
+                :only => [:new, :pick, :create, :edit, :update, :pick_topic_type])
   ### end TinyMCE WYSIWYG editor stuff
 
   def index

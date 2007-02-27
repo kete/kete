@@ -18,7 +18,7 @@
                 <%= form.text_area :short_summary  %></p>
 
                 <p><label for="document_description">Description</label><br/>
-                <%= form.text_area :description  %></p>
+                <%= form.text_area :description, :class => "mceEditor"  %></p>
 
                 <%= tags_input_field(form,"document_tag_list") %>
 
