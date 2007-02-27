@@ -15,9 +15,10 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
                                         oai_dc_xml_dc_publisher(xml)
 
                                         # topic specific
-                                        if item.class.name == 'Topic'
+                                        if item.class.name == 'Topic' || item.class.name == 'Document'
                                                 oai_dc_xml_dc_description(xml,item.short_summary)
                                         end
+
                                         oai_dc_xml_dc_description(xml,item.description)
 
                                         # all types at this point have an extended_content attribute
