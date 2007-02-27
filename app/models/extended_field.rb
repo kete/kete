@@ -8,7 +8,7 @@ class ExtendedField < ActiveRecord::Base
   has_many :content_type_forms, :through => :content_type_to_field_mappings, :source => :content_type, :order => 'position'
 
   validates_presence_of :label
-  validates_uniqueness_of :label
+  validates_uniqueness_of :label, :import_synonyms
   # don't allow spaces
   validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => ": spaces aren't allowed"
 
