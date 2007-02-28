@@ -178,7 +178,7 @@ module ApplicationHelper
   end
 
   def oai_dc_xml_dc_identifier(xml,item)
-    xml.tag!("dc:identifier", "http://#{request.host}#{url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item.id, :format => nil, :urlified_name => @current_basket.urlified_name)}")
+    xml.tag!("dc:identifier", "http://#{request.host}#{url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => @current_basket.urlified_name)}")
   end
 
   def oai_dc_xml_dc_title(xml,item)
