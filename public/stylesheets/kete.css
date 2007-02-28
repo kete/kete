@@ -92,7 +92,7 @@ form {
 }
 /* --- main content --- */
 #container {
-	padding: 16px 16px 20px 16px;
+	padding: 16px 16px 5px 16px;
 }
 #searchheader {
 	padding: 10px 0 10px 0;
@@ -562,4 +562,36 @@ use if want homepage features to appear as a two row table
 	border-left: solid 1px #DDCCAA;
 	border-right: solid 1px #DDCCAA;
 	padding: 16px;
+}
+
+#linkToRSS {
+        border: 1px solid #DDCCAA;
+        margin:0px 16px 5px 16px;
+        padding: 1px;
+        width: 36px;
+        text-align: center;
+        background-color: #FFFFFF;
+}
+
+#linkToRSS A{
+        font-size: 0.9em;
+        background-color: #DDCCAA;
+        color: #CC5500;
+        display: block;
+        font-weight: bold;
+        text-decoration: none;
+}
+
+.disclaimer_text {
+  background: #EEEEEE;
+  padding: 10px;
+  font-size:smaller;
+  border: 1px dotted #800000;
+}
+
+fieldset {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  border: 1px solid #666666;
 }
