@@ -422,14 +422,21 @@ module ApplicationHelper
             end
           end
         end
-        html_string += "<p> #{field_name}: #{field_values.to_sentence} </p>\n"
-      else
-        html_string += "<p> #{field_key.humanize}: "
-        if !field_value.is_a?(Hash) && !field_value.blank?
-          html_string += field_value
+        if !field_values.to_s.strip.blank?
+          html_string += "<li> #{field_name}: #{field_values.to_sentence} </li>\n"
         end
-        html_string += " </p>\n"
+      else
+        if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash)
+          html_string += "<li> #{field_key.humanize}: "
+          if !field_value.is_a?(Hash)
+            html_string += field_value
+          end
+          html_string += " </li>\n"
+        end
       end
+    end
+    if !html_string.blank?
+      html_string = "<div id=\"detail-topic-extended\">\n<ul>\n#{html_string}\n</ul>\n</div>"
     end
     return html_string
   end
