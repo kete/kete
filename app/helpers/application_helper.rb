@@ -423,20 +423,16 @@ module ApplicationHelper
           end
         end
         if !field_values.to_s.strip.blank?
-          html_string += "<li> #{field_name}: #{field_values.to_sentence} </li>\n"
+          html_string += "<tr><td id=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
         end
       else
         if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash)
-          html_string += "<li> #{field_key.humanize}: "
-          if !field_value.is_a?(Hash)
-            html_string += field_value
-          end
-          html_string += " </li>\n"
+          html_string += "<tr><td id=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
         end
       end
     end
     if !html_string.blank?
-      html_string = "<div id=\"detail-topic-extended\">\n<ul>\n#{html_string}\n</ul>\n</div>"
+      html_string = "<table class=\"detail-extended-field-table\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
     end
     return html_string
   end
