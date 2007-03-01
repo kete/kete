@@ -428,7 +428,7 @@ module ApplicationHelper
             if field_value =~ /^\w+:\/\/[^ ]+/
               # this is a url protocal of somesort, make link
               field_values[field_value_index] = link_to(field_value,field_value)
-            elsif field_value =~ /^\w+.*\@\w+\.\w/
+            elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
               field_values[field_value_index] = mail_to(field_value,field_value, :encode => "javascript")
             else
               field_values[field_value_index] = sanitize(field_value)
@@ -442,7 +442,7 @@ module ApplicationHelper
           if field_value =~ /^\w+:\/\/[^ ]+/
             # this is a url protocal of somesort, make link
             field_value = link_to(field_value,field_value)
-          elsif field_value =~ /^\w+.*\@\w+\.\w/
+          elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
             field_value = mail_to(field_value,field_value, :encode => "javascript")
           else
             field_value = sanitize(field_value)
@@ -458,3 +458,4 @@ module ApplicationHelper
   end
 
 end
+
