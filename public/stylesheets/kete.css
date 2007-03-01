@@ -253,11 +253,33 @@ input.searchheader-search {
 .detail-lead {
 	font-weight: bold;
 }
-#detail-topic-extended ul {
-	list-style:none;
-	margin: 0;
-	padding: 0;
+
+
+/* Comment this out to display Extended Fields in line with rest of content */
+/* INFO BOX DISPLAY*/
+
+#detail-extended  {
+	float: right;
+	width: 250px;
+	border: 1px solid #DDCCAA;
 }
+table.detail-extended-field-table  {
+	width: 248px;
+	border-collapse:collapse;
+	border-spacing:0;
+}
+table.detail-extended-field-table td {
+	vertical-align: top;
+	padding:3px;
+	overflow:hidden;
+	white-space: normal;
+}
+td.detail-extended-field-label {
+	font-weight: bold;
+}
+
+/* END INFO BOX */	
+	
 /* Get Involved */
 .detail-tools {
 	padding: 16px 16px 0 16px;
@@ -291,6 +313,13 @@ input.searchheader-search {
 	float: left;
 	padding-top: .5em;
 	width: 33%;
+}
+.command {
+        padding-left: 12px;
+        background-image: url(/images/plus.gif);
+        background-repeat: no-repeat;
+        background-position: 0 .5em;
+        list-style: none;
 }
 #detail-linked-topics ul {
 	list-style-position: inside;
