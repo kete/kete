@@ -2,11 +2,18 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@document.title) %></h2>
+
+                                <% extended_fields_html = display_xml_attributes(@document) -%>
+                                <% if !extended_fields_html.blank? %>
+                                        <div id="detail-extended">
+                                                <h4 id="detail-extended-heading"><%= h(@document.title) %></h4>
+                                                <%= extended_fields_html %>
+                                        </div>
+                                <% end %>
+
                                 <p><b><%= @document.short_summary %></b></p>
                                 <%= tags_for(@document) -%>
-                                <% if @document.xml_attributes %>
-                                        <%= display_xml_attributes(@document) %>
-                                <% end %>
+
                                 <p><%= @document.description %></p>
                                 <p>Filename: <%= @document.filename %>
                                    (<%= link_to 'view', @document.public_filename -%>)

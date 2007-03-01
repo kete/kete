@@ -2,11 +2,15 @@
                                   <h4><%= "#{zoom_class_plural_humanize(related_class)} (#{items.size})" -%></h4>
                                         <% if items.size > 0 -%>
                                                 <% items[0..end_range].each do |related_item| -%>
-                                                        <div class="detail-linked-thumb"><%= link_to(image_tag(related_item.thumbnail_file.public_filename, :size => related_item.thumbnail_file.image_size),
-                                                                                        :controller => 'images',
-                                                                                        :action => :show,
-                                                                                        :id => related_item.id)
-                                                        -%></div>
+                                                        <% if !related_item.thumbnail_file.nil? -%>
+                                                                <div class="detail-linked-thumb"><%= link_to(image_tag(related_item.thumbnail_file.public_filename, :size => related_item.thumbnail_file.image_size),
+                                                                                                :controller => 'images',
+                                                                                                :action => :show,
+                                                                                                :id => related_item.id)
+                                                                -%></div>
+                                                        <% else -%>
+                                                            bad image file, please alert
+                                                        <% end -%>
                                                 <% end -%>
                                                 <% if items.size > last_item_n -%>
                                                         <li><%= link_to_related_to_source(:phrase => more_message, :source_item => source_item, :source_item_class => source_item_class, :related_class => related_class) -%></li>

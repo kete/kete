@@ -120,6 +120,10 @@
                                                                         :action => :list,
                                                                         :urlified_name => 'site' -%>
                         |
+                        <%= link_to_unless_current "importers", :controller => '/importers',
+                                                                        :action => :index,
+                                                                        :urlified_name => 'site' -%>
+                        |
                         <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
                                                                               :action => :list,
                                                                               :urlified_name => 'site' -%>

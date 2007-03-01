@@ -2,10 +2,17 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= h(@audio_recording.title) %></h2>
-                                <%= tags_for(@audio_recording) -%>
-                                <% if @audio_recording.xml_attributes %>
-                                        <%= display_xml_attributes(@audio_recording) %>
+
+                                <% extended_fields_html = display_xml_attributes(@audio_recording) -%>
+                                <% if !extended_fields_html.blank? %>
+                                        <div id="detail-extended">
+                                                <h4 id="detail-extended-heading"><%= h(@audio_recording.title) %></h4>
+                                                <%= extended_fields_html %>
+                                        </div>
                                 <% end %>
+
+                                <%= tags_for(@audio_recording) -%>
+
                                 <p><%= @audio_recording.description %></p>
                                 <p>Filename: <%= @audio_recording.filename %>
                                    (<%= link_to 'listen', @audio_recording.public_filename -%>)

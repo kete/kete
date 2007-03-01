@@ -2,10 +2,17 @@
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2><%= link_to h(@web_link.title), @web_link.url %></h2>
-                                <%= tags_for(@web_link) -%>
-                                <% if @web_link.xml_attributes %>
-                                        <%= display_xml_attributes(@web_link) %>
+
+                                <% extended_fields_html = display_xml_attributes(@web_link) -%>
+                                <% if !extended_fields_html.blank? %>
+                                        <div id="detail-extended">
+                                                <h4 id="detail-extended-heading"><%= h(@web_link.title) %></h4>
+                                                <%= extended_fields_html %>
+                                        </div>
                                 <% end %>
+
+                                <%= tags_for(@web_link) -%>
+
                                 <p><%= @web_link.description %></p>
                         </div>
                         <div class="detail-tools">
