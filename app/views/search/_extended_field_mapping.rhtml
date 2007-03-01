@@ -23,7 +23,7 @@
                                          <% num_field_inputs = DEFAULT_NUMBER_OF_MULTIPLES.to_i -%>
                                          <% input_count = 1 -%>
                                          <% num_field_inputs.times do -%>
-                                                <% if edit && !extended_item.xml_attributes.blank? && !extended_item.xml_attributes[f_multiple].blank? && !extended_item.xml_attributes[f_multiple][input_count.to_s][f_id].to_s.match("xml_element_name") -%>
+                                                <% if edit && !extended_item.xml_attributes.blank? && !extended_item.xml_attributes[f_multiple].blank? && extended_item.xml_attributes[f_multiple][input_count.to_s] && !extended_item.xml_attributes[f_multiple][input_count.to_s][f_id].to_s.match("xml_element_name") -%>
                                                 <% temp_hash = extended_item.xml_attributes[f_multiple] -%>
 					            <% if @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag'  %>
 					              <% z = @field_types[the_field_type] + '("' %>
