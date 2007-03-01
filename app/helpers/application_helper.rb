@@ -432,7 +432,7 @@ module ApplicationHelper
       end
     end
     if !html_string.blank?
-      html_string = "<table class=\"detail-extended-field-table\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
+      html_string = "<table class=\"detail-extended-field-table\" summary=\"Extended details\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
     end
     return html_string
   end
