@@ -399,60 +399,62 @@ module ApplicationHelper
 
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item)
-    html_string = ""
+    html_string = String.new
     # TODO: these should have their order match the specified order for the item_type
-    item.xml_attributes.each do |field_key, field_value|
-      # we now handle multiples
-      multi_re = Regexp.new("_multiple$")
-      if multi_re.match(field_key)
-        # value is going to be a hash like this:
-        # "1" => {field_name => value}, "2" => ...
-        # we want the first field name followed by a :
-        # and all values, separated by spaces (for now)
-        field_name = String.new
-        field_values = Array.new
-        field_value.keys.each do |subfield_key|
-          field_hash = item.xml_attributes[field_key][subfield_key]
-          field_hash.keys.each do |key|
-            if field_name.blank?
-              field_name = key.humanize
-            end
-            if !field_hash[key].blank? && !field_hash[key].to_s.match("xml_element_name")
-              field_values << field_hash[key]
+    if item.xml_attributes
+      item.xml_attributes.each do |field_key, field_value|
+        # we now handle multiples
+        multi_re = Regexp.new("_multiple$")
+        if multi_re.match(field_key)
+          # value is going to be a hash like this:
+          # "1" => {field_name => value}, "2" => ...
+          # we want the first field name followed by a :
+          # and all values, separated by spaces (for now)
+          field_name = String.new
+          field_values = Array.new
+          field_value.keys.each do |subfield_key|
+            field_hash = item.xml_attributes[field_key][subfield_key]
+            field_hash.keys.each do |key|
+              if field_name.blank?
+                field_name = key.humanize
+              end
+              if !field_hash[key].blank? && !field_hash[key].to_s.match("xml_element_name")
+                field_values << field_hash[key]
+              end
             end
           end
-        end
-        if !field_values.to_s.strip.blank?
-          field_value_index = 0
-          field_values.each do |field_value|
+          if !field_values.to_s.strip.blank?
+            field_value_index = 0
+            field_values.each do |field_value|
+              if field_value =~ /^\w+:\/\/[^ ]+/
+                # this is a url protocal of somesort, make link
+                field_values[field_value_index] = link_to(field_value,field_value)
+              elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
+                field_values[field_value_index] = mail_to(field_value,field_value, :encode => "javascript")
+              else
+                field_values[field_value_index] = sanitize(field_value)
+              end
+              field_value_index += 1
+            end
+            html_string += "<tr><td class=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
+          end
+        else
+          if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash)
             if field_value =~ /^\w+:\/\/[^ ]+/
               # this is a url protocal of somesort, make link
-              field_values[field_value_index] = link_to(field_value,field_value)
+              field_value = link_to(field_value,field_value)
             elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
-              field_values[field_value_index] = mail_to(field_value,field_value, :encode => "javascript")
+              field_value = mail_to(field_value,field_value, :encode => "javascript")
             else
-              field_values[field_value_index] = sanitize(field_value)
+              field_value = sanitize(field_value)
             end
-            field_value_index += 1
+            html_string += "<tr><td class=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
           end
-          html_string += "<tr><td class=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
-        end
-      else
-        if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash)
-          if field_value =~ /^\w+:\/\/[^ ]+/
-            # this is a url protocal of somesort, make link
-            field_value = link_to(field_value,field_value)
-          elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
-            field_value = mail_to(field_value,field_value, :encode => "javascript")
-          else
-            field_value = sanitize(field_value)
-          end
-          html_string += "<tr><td class=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
         end
       end
-    end
-    if !html_string.blank?
-      html_string = "<table class=\"detail-extended-field-table\" summary=\"Extended details\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
+      if !html_string.blank?
+        html_string = "<table class=\"detail-extended-field-table\" summary=\"Extended details\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
+      end
     end
     return html_string
   end
