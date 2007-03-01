@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
   # only permit site members to add/delete things
-#  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy]
+  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy]
 
   # all topics and content items belong in a basket
   # some controllers won't need it, but it shouldn't hurt have it available
@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   include KeteAuthorization
 
   # setup return_to for the session
-  after_filter :store_location, :only => [ :search, :index, :new, :show, :edit]
+  after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
   def load_basket
     @current_basket = Basket.new
@@ -225,7 +225,7 @@ class ApplicationController < ActionController::Base
 
     return extended_fields_replacement_params_hash(:item_key => item_key, :item_class => item_class, :extra_fields => extra_fields )
   end
-  
+
   # http://wiki.rubyonrails.com/rails/pages/HowtoConfigureTheErrorPageForYourRailsApp
   def rescue_action_in_public(exception)
     render(:file => "#{RAILS_ROOT}/public/404.inc", :layout => true)
