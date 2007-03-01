@@ -1,0 +1,36 @@
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+  <!-- TODO: helper for content type? -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title><%= h(@title) -%></title>
+  <%= stylesheet_link_tag 'kete', :media => 'screen' %>
+  <!--[if IE 5]><%= stylesheet_link_tag 'kete-ie5', :media => 'screen' %><![endif]-->
+  <!--[if IE 6]><%= stylesheet_link_tag 'kete-ie6', :media => 'screen' %><![endif]-->
+  <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
+  <% # TODO: turn this on if we need js fx for kete -%>
+  <%= javascript_include_tag 'prototype' %>
+  <% if !@rss_tag_auto.nil?  -%>
+        <%= @rss_tag_auto %>
+  <% end -%>
+</head>
+<body>
+<div id="wrapper">
+                <% if flash[:notice] %>
+                        <!-- TODO: look up if there is a style sheet class for flash, add here -->
+                        <div id="notice"><%= flash[:notice] %></div>
+                <% end %>
+
+        <div id="container">
+
+                        <%= @content_for_layout %>
+
+        </div><!--  /container -->
+        <div class="cleaner">&nbsp;</div>
+</div><!-- /wrapper -->
+
+</body>
+</html>
