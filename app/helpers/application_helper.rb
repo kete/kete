@@ -423,11 +423,11 @@ module ApplicationHelper
           end
         end
         if !field_values.to_s.strip.blank?
-          html_string += "<tr><td id=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
+          html_string += "<tr><td class=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
         end
       else
         if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash)
-          html_string += "<tr><td id=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
+          html_string += "<tr><td class=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
         end
       end
     end
