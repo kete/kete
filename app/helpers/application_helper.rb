@@ -459,5 +459,33 @@ module ApplicationHelper
     return html_string
   end
 
+  # return an array of hashes of related items
+  # where class is the key
+  # and id is the value
+  def items_to_rebuild(item)
+    # first entry is self
+    items_to_rebuild = [ "#{item.class.name}-#{item.id}" ]
+
+    # grab all zoom_classes for topics
+    # everything else is just related topics
+    if item.class.name == 'Topic'
+      ZOOM_CLASSES.each do |zoom_class|
+        if zoom_class == 'Topic'
+          item.related_topics.each do |related_topic|
+            items_to_rebuild << "Topic-#{related_topic.id}"
+          end
+        else
+          item.send(zoom_class.tableize).each do |related_item|
+            items_to_rebuild << "#{zoom_class}-#{related_item.id}"
+          end
+        end
+      end
+    else
+      item.topics.each do |related_item|
+        items_to_rebuild << "Topic-#{related_item.id}"
+      end
+    end
+    return items_to_rebuild.join(",")
+  end
 end
 

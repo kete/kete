@@ -367,6 +367,30 @@ class SearchController < ApplicationController
     slug = Unicode::normalize_KD(slug+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
   end
 
+  # expects a comma separated list of zoom_class-id
+  # for the objects to be reindexed
+  def rebuild_zoom_for_items
+    permit "site_admin of :current_basket" do
+      items_to_rebuild = params[:items_to_rebuild].split(",")
+      items_count = 1
+      first_item_class = String.new
+      first_item_id = String.new
+      items_to_rebuild.each do |item_class_and_id|
+        item_array = item_class_and_id.split("-")
+        if items_count == 1
+          first_item_class = item_array[0]
+          first_item_id = item_array[1]
+        end
+        item = Module.class_eval(item_array[0]).find(item_array[1])
+        prepare_and_save_to_zoom(item)
+        items_count += 1
+      end
+      flash[:notice] = "ZOOM indexes rebuilt"
+      # first item in list should be self
+      redirect_to :action => 'show', :controller => zoom_class_controller(first_item_class), :id => first_item_id
+    end
+  end
+
   # this probably won't scale, only use for demo right now
   def rebuild_zoom_index
     permit "site_admin of :current_basket" do

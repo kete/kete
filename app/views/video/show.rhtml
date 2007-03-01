@@ -23,7 +23,7 @@
                         <div class="detail-tools">
                                 <h3>Get Involved</h3>
                                 <ul>
-                                        <li><%= link_to "Edit",
+                                        <li class="first"><%= link_to "Edit",
                                                                 :action => :edit,
                                                                 :controller => '/video',
                                                                 :id => @video %></li>
@@ -34,6 +34,14 @@
                                                                 :id => @video},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
+                                        <% end -%>
+                                        <% if logged_in? and @site_admin -%>
+                                                <li><%= link_to "Zoom Update this item and it's related items",
+                                                                {:action => :rebuild_zoom_for_items,
+                                                                :controller => 'search',
+                                                                :items_to_rebuild => items_to_rebuild(@video)},
+                                                                :method => :post,
+                                                                :confirm => 'Are you sure you want to update?'%></li>
                                         <% end -%>
                                 </ul>
                         </div>

@@ -50,6 +50,14 @@
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
                                         <% end -%>
+                                        <% if logged_in? and @site_admin -%>
+                                                <li><%= link_to "Zoom Update this item and it's related items",
+                                                                {:action => :rebuild_zoom_for_items,
+                                                                :controller => 'search',
+                                                                :items_to_rebuild => items_to_rebuild(@still_image)},
+                                                                :method => :post,
+                                                                :confirm => 'Are you sure you want to update?'%></li>
+                                        <% end -%>
                                 </ul>
                         </div>
                         <div class="detail-tools">
