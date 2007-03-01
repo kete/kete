@@ -423,10 +423,27 @@ module ApplicationHelper
           end
         end
         if !field_values.to_s.strip.blank?
+          # mail_to "me@domain.com", "My email", :encode => "javascript"
+          field_value_index = 0
+          field_values.each do |field_value|
+            if field_value =~ /^\w+:\/\//
+              # this is a url protocal of somesort, make link
+              field_values[field_value_index] = link_to(field_value,field_value)
+            elsif field_value =~ /\w+.*\@\w+\.\w/
+              field_values[field_value_index] = mail_to(field_value,field_value, :encode => "javascript")
+            end
+            field_value_index += 1
+          end
           html_string += "<tr><td class=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
         end
       else
         if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash)
+          if field_value =~ /^\w+:\/\//
+            # this is a url protocal of somesort, make link
+            field_value = link_to(field_value,field_value)
+          elsif field_value =~ /\w+.*\@\w+\.\w/
+            field_value = mail_to(field_value,field_value, :encode => "javascript")
+          end
           html_string += "<tr><td class=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
         end
       end
