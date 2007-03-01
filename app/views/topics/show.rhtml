@@ -3,12 +3,12 @@
                                 <h4><%= link_to_last_stored_location -%></h4>
                                 <h2>Topic: <%= h(@topic.title) %></h2>
 
-                                <div id="detail-topic-extended">
-                                        <h4><%= h(@topic.title) %></h4>
                                         <% if @topic.xml_attributes %>
-                                                <%= display_xml_attributes(@topic) %>
+                                                <div id="detail-extended">
+                                                        <h4 id="detail-extended-heading><%= h(@topic.title) %></h4>
+                                                        <%= display_xml_attributes(@topic) %>
+                                                </div>
                                         <% end %>
-                                </div>
 
                                 <h4>Topic Type: <%= h(@topic.topic_type.name) %></h4>
                                 <p><b><%= @topic.short_summary %></b></p>
