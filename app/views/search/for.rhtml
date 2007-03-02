@@ -9,8 +9,7 @@
 
                 <% # switch for contributed_by and related_to appending to headline, extract to helper -%>
 
-                <%= render :partial => 'form', :locals => {:headline
-=> 'Results for', :search_terms => @search_terms} %>
+                <%= render :partial => 'form', :locals => {:headline => 'Results for', :search_terms => @search_terms} %>
 
                 <% if !@search_terms.blank? -%>
                         <%= render :partial => 'results',
