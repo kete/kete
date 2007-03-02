@@ -1,4 +1,4 @@
-                <% @title = 'Results in ' + @controller_name_for_zoom_class.gsub(/_/, " ") -%>
+                <% @title = 'Results for ' + @controller_name_for_zoom_class.gsub(/_/, " ") -%>
                 <% if !@search_terms.blank?
                       @title += " for your search \"#{h(@search_terms.to_s)}\""
                       refinements = last_part_of_title_if_refinement_of
@@ -9,7 +9,8 @@
 
                 <% # switch for contributed_by and related_to appending to headline, extract to helper -%>
 
-                <%= render :partial => 'form', :locals => {:headline => 'Results in', :search_terms => @search_terms} %>
+                <%= render :partial => 'form', :locals => {:headline
+=> 'Results for', :search_terms => @search_terms} %>
 
                 <% if !@search_terms.blank? -%>
                         <%= render :partial => 'results',
