@@ -54,6 +54,14 @@ module ApplicationHelper
     end
   end
 
+  def link_to_cancel
+    if session[:return_to].blank?
+      return link_to("Cancel", :action => 'list')
+    else
+      return link_to("Cancel", session[:return_to])
+    end
+  end
+
   def link_to_item(item)
     link_to h(item.title), :controller => zoom_class_controller(item.class.name),
     :urlified_name => item.basket.urlified_name,
