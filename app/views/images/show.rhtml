@@ -18,19 +18,23 @@
                                 </p>
                                 <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
                                 <% # default to medium view %>
-                                <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
-                                <div class="pipe-list">
-                                <ul>
-                                <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
-                                        <% # not sure why, but link_to_unless_current wasn't working %>
-                                        <% if key.to_s == @view_size %>
-                                                <li><%= key.to_s.humanize -%></li>
-                                        <% else %>
-                                                <li><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
+                                <% if !@image_file.nil? %>
+                                        <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
+                                        <div class="pipe-list">
+                                        <ul>
+                                        <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
+                                                <% # not sure why, but link_to_unless_current wasn't working %>
+                                                <% if key.to_s == @view_size %>
+                                                        <li><%= key.to_s.humanize -%></li>
+                                                <% else %>
+                                                        <li><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
+                                                <% end -%>
                                         <% end -%>
+                                        </ul>
+                                        </div>
+                                <% else -%>
+                                        <p>Only available as original.</p>
                                 <% end -%>
-                                </ul>
-                               </div>
                                <h4>Caption</h4>
                                <p><%= @still_image.description %></p>
 
