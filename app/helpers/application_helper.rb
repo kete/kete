@@ -1,5 +1,7 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  include ExtendedFieldsHelpers
+
   def zoom_class_humanize(zoom_class)
     humanized = String.new
     case zoom_class
@@ -411,6 +413,8 @@ module ApplicationHelper
     # TODO: these should have their order match the specified order for the item_type
     if item.xml_attributes
       item.xml_attributes.each do |field_key, field_value|
+        logger.debug("what is field_key: #{field_key.to_s}")
+        logger.debug("what is field_value: #{field_value.to_s}")
         # we now handle multiples
         multi_re = Regexp.new("_multiple$")
         if multi_re.match(field_key)
@@ -467,6 +471,8 @@ module ApplicationHelper
     return html_string
   end
 
+  #---- end related to extended_fields for either topic_types or content_types
+
   # return an array of hashes of related items
   # where class is the key
   # and id is the value
@@ -496,4 +502,3 @@ module ApplicationHelper
     return items_to_rebuild.join(",")
   end
 end
-
