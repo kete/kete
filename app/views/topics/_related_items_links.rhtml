@@ -19,7 +19,12 @@
                                       <% end -%>
                                   <% end -%>
                                   <% if !relate_to_topic_id.blank? -%>
-                                      <li><%= link_to_add_related_item(:relate_to_topic_id => relate_to_topic_id, :phrase => 'Add related ', :item_class => related_class) -%></li>
+                                      <li class="command"><%= link_to_add_related_item(:relate_to_topic_id => relate_to_topic_id, :phrase => 'Add related ', :item_class => related_class) -%></li>
                                   <% end -%>
+                                  <% if !relate_to_topic_id.blank? && related_class =='Topic' -%>
+                                      <li class="command"><%= link_to_link_related_item(:relate_to_topic_id => relate_to_topic_id, :related_class => related_class, :phrase => 'Link to related ', :item_class => related_class) -%></li>
+				  <% else -%>
+                                      <li class="command"><%= link_to_link_related_item(:relate_to_topic_id => relate_to_topic_id, :related_class => related_class, :phrase => 'Link ', :item_class => related_class) -%></li>				  
+                                  <% end -%>				  
                                   </ul>
                                 </div>
