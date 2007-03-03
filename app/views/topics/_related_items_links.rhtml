@@ -7,8 +7,12 @@
                                 <% end -%>
                                   <ul>
                                   <% if items.size > 0 -%>
+                                      <% sizes_count = 1 -%>
+                                      <% class_statement = String.new -%>
                                       <% items[0..end_range].each do |related_item| -%>
-                                        <li><%= link_to_item(related_item) -%></li>
+                                              <% class_statement = " class=\"first\"" if sizes_count ==1 -%>
+                                              <li<%= class_statement -%>><%= link_to_item(related_item) -%></li>
+                                              <% sizes_count += 1 -%>
                                       <% end -%>
                                       <% if items.size > last_item_n -%>
                                         <li><%= link_to_related_to_source(:phrase => more_message, :source_item => source_item, :source_item_class => source_item_class, :related_class => related_class) -%></li>
