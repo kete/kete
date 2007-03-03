@@ -62,6 +62,9 @@ class SearchController < ApplicationController
       @rss_tag_link = rss_tag(:auto_detect => false)
       search
     end
+    if params[:relate_to_topic]
+      render(:layout => "layouts/simple") # get it so the popup version has no layout 
+    end    
   end
 
   def search
@@ -342,6 +345,7 @@ class SearchController < ApplicationController
     else
       redirect_to url_for(:overwrite_params => {:action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil})
     end
+    
   end
 
   def to_search_terms_slug(search_terms)
@@ -432,4 +436,9 @@ class SearchController < ApplicationController
       tag += "\">" # A tag has a closing </a>
     end
   end
+  
+  def find_related
+    render(:layout => "layouts/simple")
+  end
+	  
 end
