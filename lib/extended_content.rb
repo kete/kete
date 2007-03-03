@@ -19,4 +19,10 @@ module ExtendedContent
 
     return temp_hash
   end
+
+  def xml_attributes_without_position
+    # we use rexml for better handling of the order of the hash
+    extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
+    return extended_content_hash["dummy_root"]
+  end
 end
