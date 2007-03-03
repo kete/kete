@@ -1,6 +1,13 @@
 
-                        <div class="generic-result-wrapper">
+                        <div class="generic-result-wrapper" id="item_<%= result %>_wrapper">
                                 <div class="generic-result-header">
+				<% if params[:relate_to_topic] and !(params[:relate_to_topic] == result and params[:related_class] =='Topic') %>
+				        <%=
+check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
+:onclick => "new Ajax.Updater('item_#{result}_wrapper',
+'/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}',
+{asynchronous:true, evalScripts:true}); return false;"}) %>
+				<% end %>				
                                         <h4><%= link_to h(title), "#{source_url}"  %></h4>
                                         </div>
                                 <div class="generic-result-description"><%= h(short_summary) %>
