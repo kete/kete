@@ -117,6 +117,15 @@ input.searchheader-search {
 	margin: 0;
 	padding: 0;
 }
+.cleaner-left {
+	background: transparent;
+	border: none;
+	clear: left;
+	font-size: 1px;
+	height: 1px;
+	margin: 0;
+	padding: 0;
+}
 /* --- SEARCH RESULTS -- */
 /* --- tabs at top of results --- */
 #tablist {
