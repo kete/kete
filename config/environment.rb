@@ -32,7 +32,7 @@ Rails::Initializer.run do |config|
   # Use the database for sessions instead of the file system
   # (create the session table with 'rake db:sessions:create')
   # config.action_controller.session_store = :active_record_store
-  
+
   config.action_controller.session_store = :mem_cache_store
 
   # Use SQL instead of Active Record's schema dumper when creating the test database.
@@ -53,6 +53,7 @@ end
 ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
     :date => "%Y-%m-%d",
     :presentable_datetime => "%a %b %d, %Y %H:%M",
+    :filename_datetime => "%Y-%m-%d-%H-%M",
     :euro_date => "%d/%m/%Y"
 )
 
@@ -95,6 +96,15 @@ BASE_PRIVATE_PATH = 'private'
 NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE = 5
 NUMBER_OF_RELATED_IMAGES_TO_DISPLAY = 5
 DEFAULT_NUMBER_OF_MULTIPLES = 5
+
+# import related
+# import synonyms for non-extended fields
+TAGS_SYNONYMS = ['COLLECTION', 'OBJNAME', 'PEOPLE', 'PLACE', 'CLASSES',
+                 'SUBJECTS', 'STERMS', 'PERIOD', 'EARLYDATE', 'LATEDATE', 'CAT',
+                 'CULTURE', 'EVENT', 'FOUND', 'MATERIAL', 'OTHERNAME',
+                 'PUBPLACE', 'NARRATOR']
+# couldn't find fields for scope and content
+DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES']
 
 # For handling pre controller errors
 # see http://wiki.rubyonrails.org/rails/pages/HandlingPreControllerErrors
