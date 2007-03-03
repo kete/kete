@@ -523,16 +523,16 @@ div.progressbar div.background {
 	padding: 16px 16px 0 0;
 	position:relative;
 }
-/*
-use if want homepage features to appear as a two row table
+
+/* use if want homepage features to appear as a two row table */
 .home-feature-toprow {
-	clear: both;
+/*	clear: both; */
 }
 .home-feature-secondrow {
 	clear: both;
 	padding-top: 20px;
 }
-*/
+
 .home-feature-left {
 	background: #FFEEDD;
 	float: left;
