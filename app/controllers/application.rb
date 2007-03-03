@@ -65,6 +65,35 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def link_related
+    @related_to_topic = Module.class_eval(params[:related_class]).find(params[:related_to_topic])
+
+    if params[:related_class] =='Topic'
+      @existing_relation = @related_to_topic.child_related_topics.count(["topics.id = ?", params[:topic]])
+    else 
+      related_items = topic.send(params[:related_class].tableize.to_sym)
+      @existing_relation = @related_to_topic.related_items.count(["topics.id = ?", params[:topic]])
+    end
+
+    if @existing_relation.to_i == 0
+      item = Module.class_eval(params[:related_class]).find(params[:topic])
+      @successful = ContentItemRelation.new_relation_to_topic(@related_to_topic.id, item)
+
+      if @successful
+        # update the related topic
+        # so this new relationship is reflected in search
+        prepare_and_save_to_zoom(@related_to_topic)
+
+        # in this context, the item being related needs updating, too
+        prepare_and_save_to_zoom(item)
+
+        render(:layout => false, :exists => false, :success => true)
+      end
+    else
+      render(:layout => false, :exists => '1')
+    end
+  end
+
   def zoom_destroy_and_redirect(zoom_class,pretty_zoom_class = nil)
     if pretty_zoom_class.nil?
       pretty_zoom_class = zoom_class
