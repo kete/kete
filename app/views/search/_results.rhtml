@@ -4,7 +4,9 @@
                                         <% if zoom_class == current_class %>
                                                 <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= result_sets[zoom_class].size %>)</a></li>
                                         <% else %>
-                                                <li><%= link_to_zoom_class_results(zoom_class,result_sets[zoom_class].size) -%></li>
+					        <% if !params[:relate_to_topic] %>
+                                                  <li><%= link_to_zoom_class_results(zoom_class,result_sets[zoom_class].size) -%></li>
+						<% end %>
                                         <% end %>
 
                                 <% end %>
@@ -36,8 +38,8 @@
                                 <%# we will have result sets for each type of record we are returning %>
                                 <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
                                 <%# for now lets just get this up with one set of results %>
-
                                 <% results.each do |result|  %>
+			
                                         <% if result['class'] == 'StillImage' %>
                                                 <%= render(:partial => "image", :locals => {:title => result['title'],
                                                                                             :source_url => result['url'],
@@ -47,7 +49,8 @@
                                         <% else %>
                                                 <%= render(:partial => "generic", :locals => {:title => result['title'],
                                                                                               :source_url => result['url'],
-                                                                                              :short_summary => result['short_summary']}) %>
+											      :short_summary => result['short_summary'],
+											      :result => result['id']}) %>
                                         <% end %>
                                 <% end %>
                         <% else %>
