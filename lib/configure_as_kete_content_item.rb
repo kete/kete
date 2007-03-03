@@ -23,7 +23,7 @@ module ConfigureAsKeteContentItem
       klass.send :validates_presence_of, :title
 
       # this probably should change, particularly in still_image case
-      klass.send :validates_uniqueness_of, :title
+      # klass.send :validates_uniqueness_of, :title
 
       # TODO: globalize stuff, uncomment later
       # translates :title, :description
