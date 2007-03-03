@@ -416,9 +416,10 @@ module ApplicationHelper
       # i.e. "1" => {"some_field" => "some_field_value"}, "2" =>...
       # so you have to go down one to get the actual fields
       item_xml_hash = item.xml_attributes
-      item_xml_hash.keys.each do |field_position|
-        logger.debug("what is field_position: #{field_position.to_s}")
-        subhash = item_xml_hash[field_position]
+      item_xml_array = item_xml_hash.sort
+      item_xml_array.each do |field_array|
+        logger.info("what is field_position: #{field_array.to_s}")
+        subhash = item_xml_hash[field_array[0]]
         subhash.each do |field_key, field_value|
           logger.debug("what is field_key: #{field_key.to_s}")
           logger.debug("what is field_value: #{field_value.to_s}")
@@ -432,7 +433,7 @@ module ApplicationHelper
             field_name = String.new
             field_values = Array.new
             field_value.keys.each do |subfield_key|
-              field_hash = item_xml_hash[field_position][field_key][subfield_key]
+              field_hash = item_xml_hash[field_array[0]][field_key][subfield_key]
               field_hash.keys.each do |key|
                 if field_name.blank?
                   field_name = key.humanize
