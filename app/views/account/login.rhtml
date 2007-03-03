@@ -1,8 +1,10 @@
 <% form_tag do -%>
-<p><label for="login">Login</label><br/>
+<h2>Login To Kete</h2>
+<p>Are you registered? You will need to <a href="/site/account/signup">register</a> first before you can login.</p>
+<p><label for="login"><strong>Login</strong></label><br />
 <%= text_field_tag 'login' %></p>
 
-<p><label for="password">Password</label><br/>
+<p><label for="password"><strong>Password</strong></label><br />
 <%= password_field_tag 'password' %></p>
 
 <!-- Uncomment this if you want this functionality
