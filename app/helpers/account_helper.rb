@@ -13,7 +13,7 @@ module AccountHelper
     #Generate text layer
     text = Magick::Draw.new
     text.pointsize = 25
-    text.fill = '#666'
+    text.fill = '#000'
     text.gravity = Magick::CenterGravity
     #Rotate text 5 degrees up or down
     text.rotation = (rand(2)==1 ? 5 : -5)
