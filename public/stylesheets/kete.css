@@ -53,6 +53,7 @@ h4 {
 form {
 	margin: 0;
 }
+
 .searchbutton {
 	background: #114400;
 	border: solid 1px #000000;
@@ -262,9 +263,11 @@ input.searchheader-search {
 	float: right;
 	width: 250px;
 	border: 1px solid #DDCCAA;
+        padding:5px;
+        overflow:hidden
 }
 table.detail-extended-field-table  {
-	width: 248px;
+	width: 250x;
 	border-collapse:collapse;
 	border-spacing:0;
 }
@@ -581,7 +584,10 @@ use if want homepage features to appear as a two row table
 	display:inline;
 	padding-top:3px
 }
-
+.form_example {
+	margin-left:7em;
+	color: #999;
+}
 /* --- FOOTER -- */
 /* #footer {
 	spare for bottom of page;
