@@ -66,17 +66,17 @@ class ApplicationController < ActionController::Base
   end
 
   def link_related
-    @related_to_topic = Module.class_eval(params[:related_class]).find(params[:related_to_topic])
+    @related_to_topic = Topic.find(params[:related_to_topic])
+    item = Module.class_eval(params[:related_class]).find(params[:topic])
 
     if params[:related_class] =='Topic'
-      @existing_relation = @related_to_topic.child_related_topics.count(["topics.id = ?", params[:topic]])
-    else 
-      related_items = topic.send(params[:related_class].tableize.to_sym)
-      @existing_relation = @related_to_topic.related_items.count(["topics.id = ?", params[:topic]])
+      @existing_relation = @related_to_topic.child_related_topics.count(["topics.id = ?", item])
+    else
+      related_items = @related_to_topic.send(params[:related_class].tableize.to_sym)
+      @existing_relation = related_items.count(["content_item_relations.related_item_id = ?", item])
     end
 
     if @existing_relation.to_i == 0
-      item = Module.class_eval(params[:related_class]).find(params[:topic])
       @successful = ContentItemRelation.new_relation_to_topic(@related_to_topic.id, item)
 
       if @successful
