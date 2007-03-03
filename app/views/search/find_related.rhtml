@@ -1,0 +1,17 @@
+<% @title = "Search for related #{zoom_class_controller(params[:related_class])}" -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_tag :overwrite_params => {:controller => 'search', :action => 'terms_to_page_url_redirect', :page => nil, :search_terms => nil} do %>
+
+  <% if !params[:relate_to_topic].nil? %>
+    <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+    <%= hidden_field_tag "controller_name_for_zoom_class",params[:related_class] %>
+  <% end %>
+  <%= text_field_tag :search_terms, params[:search_terms], :class => 'searchheader-search', :size => '30' %>
+
+
+  <%= submit_tag "Search", :class => 'searchbutton' %>
+<% end %>
+
+<a href="#" onclick="javascript:window.close()">Close</a>
