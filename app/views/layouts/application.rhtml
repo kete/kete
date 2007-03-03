@@ -11,6 +11,20 @@
         <% # Include TinyMCE before other JS to avoid problems -%>
         <%= javascript_include_tiny_mce_if_used %>
         <%= tiny_mce if using_tiny_mce? %>
+  <script type="text/javascript">
+	function convertWord(type, content) {
+	    switch (type) { // Gets executed before the built in logic performes it's cleanups
+              case "before":
+	           content = content.toLowerCase(); // Some dummy logic
+	           break;
+	           // Gets executed after the built in logic performes it's cleanups
+              case "after":
+	           content = content.toLowerCase(); // Some dummy logic
+                   break;
+	    }
+	    return content;
+	}
+  </script>
   <% end -%>
   <% if params[:controller] == 'zoom_dbs' || params[:controller] == 'extended_fields' -%>
         <%= stylesheet_link_tag 'ajax_scaffold', :media => 'screen' %>
