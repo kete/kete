@@ -1,4 +1,12 @@
-                        <div class="image-result-wrapper">
+                        <div class="image-result-wrapper" id="item_<%= result %>_wrapper">
+			        <% if params[:relate_to_topic] %>
+				  <% @existing_relations = params[:existing_array_string].split(',') %>
+                                  <% if (@existing_relations.detect { |x| x == result} == nil) %>
+				       <%= 
+check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
+:onclick => "new Ajax.Updater('item_#{result}_wrapper',
+'/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}',
+{asynchronous:true, evalScripts:true}); return false;"}) %>
                                 <div class="image-result-thumb">
                                 <% if locally_hosted && !image_file.nil? %>
                                         <p><%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}")  %></p>
@@ -14,5 +22,23 @@
                                         <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
                                         </div>
                                 </div>
+				  <% end %>
+				<% else %>				     
+                                <div class="image-result-thumb">
+                                <% if locally_hosted && !image_file.nil? %>
+                                        <p><%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}")  %></p>
+                                <% else %>
+                                        <p><%= link_to "View Image", "#{source_url}"  %></p>
+                                <% end %>
+                                </div>
+                                <div class="image-result-header">
+                                        <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                        </div>
+                                <div class="image-result-description"><%= h(short_summary) %>
+                                        <div class="image-result-more">
+                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+                                        </div>
+                                </div>
+				<% end %>
                         </div>
 
