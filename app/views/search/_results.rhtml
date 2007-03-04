@@ -1,6 +1,6 @@
                 <div id="tabcontainer">
                         <ul id="tablist">
-                                <% existing_count = 0 %>
+                            <% existing_count = 0 %>
                                 <% if params[:relate_to_topic] %>
                                   <% @existing_relations = params[:existing_array_string].split(',') %>
                                   <% matched_totals = 0 %>
@@ -66,7 +66,8 @@
                                                                                             :source_url => result['url'],
                                                                                             :locally_hosted => result['locally_hosted'],
                                                                                             :image_file => result['image_file'],
-                                                                                            :short_summary => result['short_summary']}) %>
+											    :short_summary => result['short_summary'],
+											    :result => result['id']}) %>
                                         <% else %>
                                                 <%= render(:partial => "generic", :locals => {:title => result['title'],
                                                                                               :source_url => result['url'],
