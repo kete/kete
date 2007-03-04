@@ -12,7 +12,13 @@ class Video < ActiveRecord::Base
   # dependencies that we don't need
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
-  has_attachment :storage => :file_system, :file_system_path => "public/video", :content_type => ['application/x-shockwave-flash', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/quicktime', 'application/x-director', 'application/x-dvi'], :processor => :none, :max_size => 500.megabyte
+  has_attachment :storage => :file_system, :file_system_path => "public/video",
+  :content_type => ['application/x-shockwave-flash', 'video/mpeg',
+                    'video/quicktime', 'video/x-msvideo', 'video/avi',
+                    'video/quicktime', 'application/x-director',
+                    'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2',
+                    'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx',
+                    'application/x-dvi'], :processor => :none, :max_size => 500.megabyte
   validates_as_attachment
 
   # overriding full_filename to handle our customizations

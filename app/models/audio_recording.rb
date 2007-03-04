@@ -12,7 +12,10 @@ class AudioRecording < ActiveRecord::Base
   # dependencies that we don't need
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
-  has_attachment :storage => :file_system, :file_system_path => "public/audio", :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'application/ogg'], :processor => :none, :max_size => 500.megabyte
+  has_attachment :storage => :file_system, :file_system_path => "public/audio",
+  :content_type => ['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav',
+                    'audio/x-ms-wma', 'audio/x-ms-waxaudio',
+                    'application/ogg'], :processor => :none, :max_size => 500.megabyte
   validates_as_attachment
 
   # overriding full_filename to handle our customizations
