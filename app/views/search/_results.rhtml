@@ -1,15 +1,32 @@
                 <div id="tabcontainer">
                         <ul id="tablist">
+                                <% existing_count = 0 %>			
+                                <% if params[:relate_to_topic] %>
+				  <% @existing_relations = params[:existing_array_string].split(',') %>
+				  <% matched_totals = 0 %>
+				  <% if results.size > 0 %>
+				    <% results.each do |result|  %>
+				      <% if params[:relate_to_topic] and !(params[:relate_to_topic] == result['id'] and params[:related_class] =='Topic') %>
+                                        <% if (@existing_relations.detect { |x| x == result} == nil) %>
+					  <% matched_totals = matched_totals + 1 %>
+					<% end %> 	
+			              <% end %> 
+				    <% end %>
+				  <% existing_count = matched_totals %>
+				  <% end %>
+                                <% end %>				
                                 <% ZOOM_CLASSES.each do |zoom_class| %>
                                         <% if zoom_class == current_class %>
-                                                <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= result_sets[zoom_class].size %>)</a></li>
+                                                <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= result_sets[zoom_class].size - existing_count %>)</a></li>
                                         <% else %>
 					        <% if !params[:relate_to_topic] %>
                                                   <li><%= link_to_zoom_class_results(zoom_class,result_sets[zoom_class].size) -%></li>
 						<% end %>
                                         <% end %>
-
                                 <% end %>
+			        <% if params[:relate_to_topic] %>
+				  <li><a href="javascript:parent.window.location.reload();self.close()">Close</a></li>
+				<% end %>						  
                         </ul>
                 </div><!-- /tabcontainer -->
                 <div id="result-container">
@@ -31,9 +48,13 @@
                                         next &gt;&gt;
                                 <% end %>
                         </div>
-                        <% if results.size > 0 %>
+                        <% if (results.size-existing_count) > 0 %>
                                 <div id="result-show">
-                                        Showing <%= start %>-<%= end_record %> results of <%= result_sets[current_class].size %>
+                                        Showing <%= start %>-<% if current_page < last_page  -%>
+					                     <%= end_record %>
+							     <% else -%>
+					                     <%= end_record-existing_count %>
+							     <% end -%> results of <%= result_sets[current_class].size-existing_count %>
                                 </div>
                                 <%# we will have result sets for each type of record we are returning %>
                                 <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
