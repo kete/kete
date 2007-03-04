@@ -76,6 +76,11 @@
                                                                 :action => :logout,
                                                                 :urlified_name => 'site' -%>
                         <% end %>
+			|
+			<%= link_to("help", {:controller => 'index_page', 
+			                     :action => :help_file,
+					     :urlified_name => 'site' }, :popup => ['Help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %>
+
                 </div>
                 <h1>
                         Kete Horowhenua

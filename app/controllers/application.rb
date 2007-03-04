@@ -262,8 +262,5 @@ class ApplicationController < ActionController::Base
   def local_request?
     false
   end
-  
-  def help_file
-    render(:layout => "layouts/simple", :file => "#{RAILS_ROOT}/public/about/manual-source.html")
-  end
+
 end
