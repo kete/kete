@@ -14,7 +14,10 @@ class Basket < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name
-  # TODO: don't allow special characters in names
+
+  # don't allow special characters in label that will break our xml
+  validates_format_of :name, :with => /^[^\'\"<>\&,\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
+
   # TODO: handle non-ascii characters with entities? i.e. url_encode
 
   # we have an urlified_name attribute that hold the urlified version of the basket name
@@ -22,7 +25,6 @@ class Basket < ActiveRecord::Base
 
   protected
   # before filter
-  # TODO: look up to_param and whether we should use it
   def urlify_name
     return if name.blank?
     formatted_name = name.to_s.gsub(/ /, '_').
