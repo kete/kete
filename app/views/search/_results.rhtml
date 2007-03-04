@@ -7,7 +7,7 @@
                                   <% if results.size > 0 %>
                                     <% results.each do |result|  %>
                                       <% if params[:relate_to_topic] and !(params[:relate_to_topic] == result['id'] and params[:related_class] =='Topic') %>
-                                        <% if @existing_relations.include?(result[:id]) %>
+                                        <% if @existing_relations.include?(result['id']) %>
                                           <% matched_totals = matched_totals + 1 %>
                                         <% end %>
                                       <% end %>
