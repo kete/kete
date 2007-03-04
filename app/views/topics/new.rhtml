@@ -7,4 +7,6 @@
   <%= submit_tag "Choose" %>
 <% end %>
 
-<%= link_to_cancel %>
+
+<%= link_to_cancel %> | 
+<%= link_to("help", { :action => :help_file }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %>
