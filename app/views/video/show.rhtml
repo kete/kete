@@ -15,7 +15,8 @@
 
                                 <p><%= @video.description %></p>
                                 <p>Filename: <%= @video.filename %>
-                                   (<%= link_to 'view', @video.public_filename -%>)
+                                   (<%= link_to 'view', @video.public_filename,
+                                                        :confirm => DOWNLOAD_WARNING -%>)
                                 </p>
                                 <p>Size: <%= @video.size %></p>
                                 <p>Recording type: <%= @video.content_type %></p>

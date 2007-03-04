@@ -109,3 +109,13 @@ DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES']
 # For handling pre controller errors
 # see http://wiki.rubyonrails.org/rails/pages/HandlingPreControllerErrors
 require 'error_handler_basic' # defines AC::Base#rescue_action_in_public
+
+# mailer setup
+SITE_NAME = "horowhenua.kete.net.nz"
+SITE_URL = "http://horowhenua.kete.net.nz/"
+NOTIFIER_EMAIL = "do-not-reply@horowhenua.kete.net.nz"
+
+# warnings
+DOWNLOAD_WARNING = "You are about to download a file from Kete. Kete is an open digital repository and as such we can not guarantee the integrity of any file in the repository. Please ensure that your virus scan software is operating and is configured to scan this download.
+
+Are you sure you want to proceed?"

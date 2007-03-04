@@ -15,7 +15,8 @@
 
                                 <p><%= @audio_recording.description %></p>
                                 <p>Filename: <%= @audio_recording.filename %>
-                                   (<%= link_to 'listen', @audio_recording.public_filename -%>)
+                                   (<%= link_to 'listen', @audio_recording.public_filename,
+                                                        :confirm => DOWNLOAD_WARNING -%>)
                                 </p>
                                 <p>Size: <%= @audio_recording.size %></p>
                                 <p>Recording type: <%= @audio_recording.content_type %></p>
