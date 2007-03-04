@@ -1,6 +1,5 @@
 # See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
 Disallow: /site/index_page/help_file
-Disallow: /site/baskets
 Disallow: /site/audio/new
 Disallow: /site/video/new
 Disallow: /site/topics/new
@@ -11,5 +10,14 @@ Disallow: /site/video/edit
 Disallow: /site/topics/edit
 Disallow: /site/documents/edit
 Disallow: /site/images/edit
+Disallow: /site/account
+Disallow: /site/baskets
+Disallow: /site/members
+Disallow: /site/extended_fields
+Disallow: /site/topic_types
+Disallow: /site/content_types
+Disallow: /site/zoom_dbs
+Disallow: /site/importers
+
 
 
