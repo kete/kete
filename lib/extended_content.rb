@@ -2,12 +2,10 @@ require "rexml/document"
 
 # not much here for now, but could expand later
 module ExtendedContent
-  include REXML
-
   # simply pulls xml attributes in extended_content column out into a hash
   def xml_attributes
     # we use rexml for better handling of the order of the hash
-    extended_content = Document.new("<dummy_root>#{self.extended_content}</dummy_root>")
+    extended_content = REXML::Document.new("<dummy_root>#{self.extended_content}</dummy_root>")
 
     temp_hash = Hash.new
     root = extended_content.root
