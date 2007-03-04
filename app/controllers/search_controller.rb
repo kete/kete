@@ -63,7 +63,7 @@ class SearchController < ApplicationController
       search
     end
     if params[:relate_to_topic]
-      render(:layout => "layouts/simple") # get it so the popup version has no layout 
+      render(:layout => "layouts/simple") # get it so the popup version has no layout
     end    
   end
 
@@ -341,7 +341,7 @@ class SearchController < ApplicationController
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
     if params[:controller_name_for_zoom_class].nil?
-      redirect_to url_for(:overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS), :action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil})
+      redirect_to url_for(:overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS), :action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil, :existing_relations => params[:existing_array_string]})
     else
       redirect_to url_for(:overwrite_params => {:action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil})
     end
@@ -439,7 +439,9 @@ class SearchController < ApplicationController
   
   def find_related
     @existing_relations = ContentItemRelation.find(:all, 
-                  :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class", params])
+                  :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class",
+		  {:relate_to_topic => params[:relate_to_topic],
+:related_class =>params[:related_class].singularize}])
     render(:layout => "layouts/simple")
   end
 	  
