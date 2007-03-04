@@ -7,7 +7,11 @@
                                  <% else -%>
                                          <label for="<%= "#{item_key}[#{f_id}]" -%>"><%= extended_field_mapping.extended_field_label -%></label>
                                  <% end -%>
-                                 <% item_extended_xml = extended_item.xml_attributes_without_position %>
+                                 <% if !extended_item.nil?
+                                        item_extended_xml = extended_item.xml_attributes_without_position
+                                    else
+                                        item_extended_xml = nil
+                                    end -%>
                                  <% # TODO: date_select_tag doesn't currently exist but hopefully will soon %>
                                  <% @field_types = {'checkbox' => 'check_box_tag',
                                                     'radio'    => 'radio_button_tag',
