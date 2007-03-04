@@ -438,6 +438,8 @@ class SearchController < ApplicationController
   end
   
   def find_related
+    @existing_relations = ContentItemRelation.find(:all, 
+                  :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class", params])
     render(:layout => "layouts/simple")
   end
 	  
