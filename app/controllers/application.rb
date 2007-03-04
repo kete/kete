@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
   # only permit site members to add/delete things
-  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy]
+  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy, :link_related]
 
   # all topics and content items belong in a basket
   # some controllers won't need it, but it shouldn't hurt have it available
@@ -261,5 +261,9 @@ class ApplicationController < ActionController::Base
   end
   def local_request?
     false
+  end
+  
+  def help_file
+    render(:layout => "layouts/simple", :file => "#{RAILS_ROOT}/public/about/manual-source.html")
   end
 end
