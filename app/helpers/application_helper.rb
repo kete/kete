@@ -121,7 +121,7 @@ module ApplicationHelper
                         <h3>Related Topics:</h3>"
     end
     beginning_html +=%q(
-                        <div id="pipe-list">)
+                        <div id="related_topics">)
 
     middle_html = String.new
     if !options[:topics].nil?
