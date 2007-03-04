@@ -94,8 +94,12 @@
                                         results on this page
                                 </div>
                                 <div id="addnew">
+				<% if !params[:relate_to_topic] %>				
                                         <%= link_to_add_item(:phrase => "Add a new ", :item_class => current_class) -%>
                                         to these search results
+				<% else -%>
+				        &nbsp;
+				<% end -%>					
                                 </div>
                         </div>
 
