@@ -30,11 +30,9 @@ class SearchController < ApplicationController
   # -> search within results of "all items..."
 
   # REFACTOR TODOS:
-  # * all actions should set title
-
   # TODO: catch zoom_db errors or zoom_db down
-  # query our ZoomDbs for results, grab only the xml records for the results we need
 
+  # query our ZoomDbs for results, grab only the xml records for the results we need
   # all returns all results for a class, contributor_id, or source_item (i.e. all related items to source)
   # it is the default if the search_terms parameter is not defined
   def all
@@ -64,7 +62,7 @@ class SearchController < ApplicationController
     end
     if params[:relate_to_topic]
       render(:layout => "layouts/simple") # get it so the popup version has no layout
-    end    
+    end
   end
 
   def search
@@ -110,13 +108,14 @@ class SearchController < ApplicationController
     zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
     @result_sets = Hash.new
-    # @result_sets ||= session[:results_sets] || Hash.new
 
     # iterate through all record types and build up a result set for each
-    ZOOM_CLASSES.each do |zoom_class|
-      #if @result_sets[zoom_class].nil?
-      populate_result_sets_for(zoom_class,zoom_db)
-      # end
+    if params[:relate_to_class].nil?
+      ZOOM_CLASSES.each do |zoom_class|
+        populate_result_sets_for(zoom_class,zoom_db)
+      end
+    else
+      populate_result_sets_for(relate_to_class,zoom_db)
     end
 
     @last_page = @result_sets[@current_class].size / @number_per_page
@@ -345,7 +344,7 @@ class SearchController < ApplicationController
     else
       redirect_to url_for(:overwrite_params => {:action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil})
     end
-    
+
   end
 
   def to_search_terms_slug(search_terms)
@@ -436,13 +435,13 @@ class SearchController < ApplicationController
       tag += "\">" # A tag has a closing </a>
     end
   end
-  
+
   def find_related
-    @existing_relations = ContentItemRelation.find(:all, 
-                  :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class",
-		  {:relate_to_topic => params[:relate_to_topic],
-:related_class =>params[:related_class].singularize}])
+    @existing_relations = ContentItemRelation.find(:all,
+                                                   :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class",
+                                                                   {:relate_to_topic => params[:relate_to_topic],
+                                                                     :related_class =>params[:related_class].singularize}])
     render(:layout => "layouts/simple")
   end
-	  
+
 end
