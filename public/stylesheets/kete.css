@@ -513,6 +513,9 @@ div.progressbar div.background {
 	list-style: none;
 	margin-left: 0;
 }
+#related_topics .pipe-list ul li.command {
+        background-image: none;
+}
 /* --- HOMEPAGE --- */
 #home-right {
 	background: #FFEEDD;
