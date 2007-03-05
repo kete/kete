@@ -19,7 +19,7 @@
                                    (<%= link_to 'view', @document.public_filename,
                                                         :confirm => DOWNLOAD_WARNING -%>)
                                 </p>
-                                <p>Size: <%= @document.size %></p>
+                                <p>Size: <%= number_to_human_size(@document.size) %></p>
                                 <p>Recording type: <%= @document.content_type %></p>
                         </div>
                         <div class="detail-tools">

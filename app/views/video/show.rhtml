@@ -18,7 +18,7 @@
                                    (<%= link_to 'view', @video.public_filename,
                                                         :confirm => DOWNLOAD_WARNING -%>)
                                 </p>
-                                <p>Size: <%= @video.size %></p>
+                                <p>Size: <%= number_to_human_size(@video.size) %></p>
                                 <p>Recording type: <%= @video.content_type %></p>
                         </div>
                         <div class="detail-tools">

@@ -18,7 +18,7 @@
                                    (<%= link_to 'listen', @audio_recording.public_filename,
                                                         :confirm => DOWNLOAD_WARNING -%>)
                                 </p>
-                                <p>Size: <%= @audio_recording.size %></p>
+                                <p>Size: <%= number_to_human_size(@audio_recording.size) %></p>
                                 <p>Recording type: <%= @audio_recording.content_type %></p>
                         </div>
                         <div class="detail-tools">

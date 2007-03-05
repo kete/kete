@@ -16,6 +16,7 @@
                                 <p>Original Filename: <%= @still_image.original_file.filename %>
                                    (<%= link_to 'view', @still_image.original_file.public_filename -%>)
                                 </p>
+                                <p>Original Size: <%= number_to_human_size(@still_image.original_file.size) %></p>
                                 <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
                                 <% # default to medium view %>
                                 <% if !@image_file.nil? %>
