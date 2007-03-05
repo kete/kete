@@ -21,8 +21,13 @@
 
                 <%= tags_input_field(form,"video_tag_list") %>
 
-                <p><label for="video_uploaded_data">Upload Video</label><br/>
-                <%= form.file_field :uploaded_data %></p>
+                <% # disabling overwriting of original document for the timebeing
+                   # when we support versioning of document and image files,
+                   # we'll likely re-enable this -%>
+                <% if !edit -%>
+                        <p><label for="video_uploaded_data">Upload Video</label><br/>
+                        <%= form.file_field :uploaded_data %></p>
+                <% end -%>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
                 <% if form_fields.size > 0 %>
