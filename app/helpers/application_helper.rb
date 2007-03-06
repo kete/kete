@@ -98,17 +98,17 @@ module ApplicationHelper
     item_class = options[:item_class]
     return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", :controller => zoom_class_controller(item_class), :action => :new, :relate_to_topic_id => options[:relate_to_topic_id])
   end
-  
+
   def link_to_link_related_item(options={})
     phrase = options[:phrase]
     item_class = options[:item_class]
     return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", {
                                :controller => 'search', #zoom_class_controller(item_class),
-                               :action => :find_related, 
+                               :action => :find_related,
                                :related_class => options[:related_class],
-			       :relate_to_topic => options[:relate_to_topic_id] },
-			       :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100'])
-  end  
+             :relate_to_topic => options[:relate_to_topic_id] },
+             :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100'])
+  end
 
   def item_related_topics_wrapper(options={})
     beginning_html = %q(
@@ -219,7 +219,7 @@ module ApplicationHelper
   end
 
   def oai_dc_xml_dc_creators_and_date(xml,item)
-    item_created = item.created_at.to_date
+    item_created = item.created_at.to_s(:db)
     xml.tag!("dc:date", item_created)
     item.creators.each do |creator|
       xml.tag!("dc:creator", user_to_dc_creator_or_contributor(creator))
