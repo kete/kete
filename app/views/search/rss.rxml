@@ -1,3 +1,4 @@
+@title = SITE_NAME + ' - Results in ' + @controller_name_for_zoom_class.gsub(/_/, " ") + last_part_of_title_if_refinement_of
 xml.instruct! :xml, :version=>"1.0"
 xml.rss(:version=>"2.0"){
   xml.channel{
