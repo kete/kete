@@ -7,6 +7,15 @@ class SearchController < ApplicationController
 
   layout "application" , :except => [:rss]
 
+  # we mimic caches_page so we have more control
+  # note we specify extenstion .xml for rss url
+  # in order to get caching to work correctly
+  # i.e. served directly from webserver
+  # rss caching is limited to "all" rather than "for"
+  # i.e. no search_terms
+  after_filter :write_rss_cache, :only => [:rss]
+  # caches_page :rss
+
   def index
   end
 
@@ -155,7 +164,6 @@ class SearchController < ApplicationController
     zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
     @result_sets = Hash.new
-    # @result_sets ||= session[:results_sets] || Hash.new
 
     populate_result_sets_for(@current_class,zoom_db)
   end
@@ -421,7 +429,7 @@ class SearchController < ApplicationController
 
     # now split the path up and add rss to it
     path_elements = url[0].split('/')
-    path_elements << 'rss'
+    path_elements << 'rss.xml'
     new_path = path_elements.join('/')
     tag +=  new_path
     # if there is a query string, tack it on the end
@@ -444,4 +452,15 @@ class SearchController < ApplicationController
     render(:layout => "layouts/simple")
   end
 
+  private
+
+  def write_rss_cache
+    # start of caching code, work in progress
+    request_string = request.request_uri
+    if request_string.split("?")[1].nil? and request_string.scan("contributed_by").blank? and request_string.scan("related_to").blank? and request_string.scan("tagged").blank?
+      # mimic page caching
+      # by writing the file to fs under public
+      cache_page(params)
+    end
+  end
 end

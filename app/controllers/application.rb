@@ -17,6 +17,10 @@ class ApplicationController < ActionController::Base
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
+  # if anything is added, edited, or deleted
+  # we need to rebuild our rss caches
+  after_filter :expire_rss_caches, :only => [ :create, :edit, :destroy]
+
   def load_basket
     @current_basket = Basket.new
     if !params[:urlified_name].blank?
@@ -25,6 +29,21 @@ class ApplicationController < ActionController::Base
       # the first basket is always the default
       @current_basket = Basket.find(1)
     end
+  end
+
+  # remove rss feeds under all and search directories
+  # for the class of thing that was just added
+  def expire_rss_caches(basket = nil)
+    basket ||= @current_basket
+
+    # since site searches all other baskets, too
+    # we need to expire it's cache, too
+    if @current_basket.urlified_name != 'site'
+      expire_page(:controller => 'search', :action => 'rss', :urlified_name => 'site', :controller_name_for_zoom_class => params[:controller])
+    end
+
+    expire_page(:controller => 'search', :action => 'rss', :urlified_name => basket.urlified_name, :controller_name_for_zoom_class => params[:controller])
+
   end
 
   def redirect_to_related_topic(topic_id)
@@ -118,8 +137,12 @@ class ApplicationController < ActionController::Base
   #
   # We can return to this location by calling #redirect_back_or_default.
   def store_location
-    session[:return_to] = request.request_uri
-    session[:return_to_title] = @title
+    # this should prevent the same page from being added to return_to
+    # but does not prevent case of differnt size images...
+    if session[:return_to].scan(request.request_uri).blank?
+      session[:return_to] = request.request_uri
+      session[:return_to_title] = @title
+    end
   end
 
   def redirect_to_search_for(zoom_class)
