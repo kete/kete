@@ -605,10 +605,11 @@ div.progressbar div.background {
 	spare for bottom of page;
 }
  */
-#admintoolbox {
-	border-left: solid 1px #DDCCAA;
-	border-right: solid 1px #DDCCAA;
-	padding: 16px;
+#adminToolbox {
+        border: solid 1px #DDCCAA;
+        margin: 10px;
+        padding: 6px;
+        background-color: #EEDDCC;
 }
 
 #linkToRSS {
