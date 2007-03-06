@@ -13,7 +13,7 @@ class SearchController < ApplicationController
   # i.e. served directly from webserver
   # rss caching is limited to "all" rather than "for"
   # i.e. no search_terms
-  after_filter :write_rss_cache, :only => [:rss]
+  # after_filter :write_rss_cache, :only => [:rss]
   # caches_page :rss
 
   def index
@@ -172,13 +172,9 @@ class SearchController < ApplicationController
     @results = Array.new
 
     if params[:action] == 'rss'
-      # adding max of fifty for rss for now
+      # TODO: limit this to a more reasonable number
       # TODO: make sure these are the latest records
-      if from_result_set.size < 50
-        @end_record = from_result_set.size
-      else
-        @end_record = 50
-      end
+      @end_record = from_result_set.size
     else
       @end_record = from_result_set.size if from_result_set.size < @end_record
     end
