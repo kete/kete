@@ -139,10 +139,8 @@ class ApplicationController < ActionController::Base
   def store_location
     # this should prevent the same page from being added to return_to
     # but does not prevent case of differnt size images...
-    if session[:return_to].scan(request.request_uri).blank?
       session[:return_to] = request.request_uri
       session[:return_to_title] = @title
-    end
   end
 
   def redirect_to_search_for(zoom_class)
