@@ -13,7 +13,7 @@ class SearchController < ApplicationController
   # i.e. served directly from webserver
   # rss caching is limited to "all" rather than "for"
   # i.e. no search_terms
-  # after_filter :write_rss_cache, :only => [:rss]
+  after_filter :write_rss_cache, :only => [:rss]
   # caches_page :rss
 
   def index
@@ -462,7 +462,7 @@ class SearchController < ApplicationController
     if request_string.split("?")[1].nil? and request_string.scan("contributed_by").blank? and request_string.scan("related_to").blank? and request_string.scan("tagged").blank?
       # mimic page caching
       # by writing the file to fs under public
-      cache_page(params)
+      cache_page(response.body,params)
     end
   end
 end
