@@ -172,7 +172,13 @@ class SearchController < ApplicationController
     @results = Array.new
 
     if params[:action] == 'rss'
-      @end_record = from_result_set.size
+      # adding max of fifty for rss for now
+      # TODO: make sure these are the latest records
+      if from_result_set.size < 50
+        @end_record = from_result_set.size
+      else
+        @end_record = 50
+      end
     else
       @end_record = from_result_set.size if from_result_set.size < @end_record
     end
