@@ -36,6 +36,11 @@ class ApplicationController < ActionController::Base
   def expire_rss_caches(basket = nil)
     basket ||= @current_basket
 
+    if @current_basket.nil?
+      load_basket
+      basket ||= @current_basket
+    end
+
     # since site searches all other baskets, too
     # we need to expire it's cache, too
     if @current_basket.urlified_name != 'site'
@@ -224,7 +229,6 @@ class ApplicationController < ActionController::Base
   # populate extended_fields param with xml
   # based on params from the form
   def extended_fields_update_hash_for_item(options = {})
-    fields = options[:fields]
     item_key = options[:item_key].to_sym
     logger.debug("inside update param for item")
     params[item_key][:extended_content] = render_to_string(:partial => 'search/field_to_xml',
