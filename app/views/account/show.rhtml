@@ -1,17 +1,34 @@
 
-<% @valid_columns = ['Login','Email','Extended content'] %>
+<% @valid_columns = ['Login'] -%>
 
-<% for column in User.content_columns %>
-  <% for valid_col in @valid_columns %>
-    <% if valid_col == column.human_name %>
+<% if @user.attributes['extended_content'].include? '<email_visible?>yes<' -%>
+  <% @valid_columns << 'Email' -%>
+<% end -%>
+
+<% for column in User.content_columns -%>
+  <% for valid_col in @valid_columns -%>
+    <% if valid_col == column.human_name -%>
     <p>
-      <b><%= column.human_name %>:</b> <%=h @user.send(column.name) %>
+      <b><%= column.human_name %>:</b>
+        <%if column.human_name == 'Email' -%>
+	  <%= mail_to(@user.send(column.name),@user.send(column.name), :encode => "javascript") %>
+	<% else -%>
+	  <%=h @user.send(column.name) %>
+	<% end -%>
     </p>
-    <% end %>
-  <% end %>
-<% end %>
+    <% end -%>
+  <% end -%>
+<% end -%>
 
-<%= @user.has_roles %>
+<% item_xml_hash = @extended_fields -%>
+<% item_xml_array = item_xml_hash.sort -%>
+<% item_xml_array.each do |field_array| -%>
+  <% subhash = item_xml_hash[field_array[0]] -%>
+  <% subhash.each do |field_key, field_value| -%>
+    <%= "<p><b>#{field_key.humanize}:</b> #{field_value}</p>" %>
+  <% end -%>
+<% end -%>
+
 <%= link_to 'Edit', :action => 'edit', :id => @user %> |
 <%= link_to 'Change Password', :action => 'change_password' %> |
 <%= link_to 'Back', :action => 'index' %>

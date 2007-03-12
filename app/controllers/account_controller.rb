@@ -1,10 +1,10 @@
 require 'RMagick'
 class AccountController < ApplicationController
   before_filter :load_content_type, :only => [:signup]
-  
-#  include GenerateCaptcha
-  include ExtendedContent
 
+  include ExtendedContent
+  include ExtendedContentController
+  
   # Be sure to include AuthenticationSystem in Application Controller instead
   # include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
@@ -105,6 +105,7 @@ class AccountController < ApplicationController
   def show
     if logged_in?
       @user = self.current_user
+      @extended_fields = @user.xml_attributes
     else 
       redirect_to :action => 'index'
     end
