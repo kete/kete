@@ -7,18 +7,25 @@ class DocumentsController < ApplicationController
 
   ### TinyMCE WYSIWYG editor stuff
   uses_tiny_mce(:options => { :theme => 'advanced',
-                  :browsers => %w{ msie gecko safari},
+                  :browsers => %w{ msie gecko safaris},
                   :mode => "textareas",
                   :theme_advanced_toolbar_location => "top",
                   :theme_advanced_toolbar_align => "left",
                   :theme_advanced_resizing => true,
                   :theme_advanced_resize_horizontal => false,
-                  :paste_auto_cleanup_on_paste => true,
                   :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo},
-                  :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect},
+                  :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect pastetext pasteword selectall },
                   :theme_advanced_buttons3 => [],
                   :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
                   :editor_selector => 'mceEditor',
+                  :paste_create_paragraphs => true,
+                  :paste_create_linebreaks => true,
+                  :paste_use_dialog => true,
+                  :paste_auto_cleanup_on_paste => true,
+                  :paste_convert_middot_lists => false,
+                  :paste_unindented_list_class => "unindentedList",
+                  :paste_convert_headers_to_strong => true,
+                  :paste_insert_word_content_callback => "convertWord",
                   :plugins => %w{ contextmenu paste table fullscreen} },
                 :only => [:new, :create, :edit, :update])
   ### end TinyMCE WYSIWYG editor stuff
