@@ -22,7 +22,7 @@ module SearchHelper
     if !@tag.nil?
       return " tagged as \"#{@tag.name}\""
     elsif !@contributor.nil?
-      return " contributed by \"#{@contributor.login}\""
+      return " contributed by \"#{link_to_profile_for(@contributor)}\""
     elsif !@source_item.nil?
       return " related to \"#{@source_item.title}\""
     else
