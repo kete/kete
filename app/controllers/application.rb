@@ -3,6 +3,13 @@
 class ApplicationController < ActionController::Base
   include AuthenticatedSystem
 
+  include ZoomControllerHelpers
+
+  include ExtendedFieldsControllerHelpers
+
+  # for the remember me functionality
+  before_filter :login_from_cookie
+
   # only permit site members to add/delete things
   before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy, :link_related]
 
@@ -118,25 +125,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def zoom_destroy_and_redirect(zoom_class,pretty_zoom_class = nil)
-    if pretty_zoom_class.nil?
-      pretty_zoom_class = zoom_class
-    end
-    begin
-      item = Module.class_eval(zoom_class).find(params[:id])
-
-      prepare_zoom(item)
-      @successful = item.destroy
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
-
-    if @successful
-      flash[:notice] = "#{pretty_zoom_class} was successfully deleted."
-    end
-    redirect_to :action => 'list'
-  end
-
   # overriding here, to grab title of page, too
   # Store the URI of the current request in the session.
   #
@@ -159,55 +147,9 @@ class ApplicationController < ActionController::Base
     redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS)))
   end
 
-  # is this redundant with application_helper def?
-  def zoom_class_controller(zoom_class)
-    zoom_class_controller = String.new
-    case zoom_class
-      when "StillImage"
-      zoom_class_controller = 'images'
-      when "Video"
-      zoom_class_controller = 'video'
-      when "AudioRecording"
-      zoom_class_controller = 'audio'
-      else
-      zoom_class_controller = zoom_class.tableize
-    end
-  end
-
-  def zoom_class_from_controller(controller)
-    zoom_class = String.new
-    case controller
-      when "images"
-      zoom_class = 'StillImage'
-      when "video"
-      zoom_class = 'Video'
-      when "audio"
-      zoom_class = 'AudioRecording'
-      else
-      zoom_class = controller.classify
-    end
-  end
 
   def url_for_dc_identifier(item)
     url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => item.basket.urlified_name)
-  end
-
-  def prepare_zoom(item)
-    # only do this for members of ZOOM_CLASSES
-    if ZOOM_CLASSES.include?(item.class.name)
-      begin
-        item.oai_record = render_oai_record_xml(:item => item, :to_string => true)
-        logger.debug("what is oai_record: #{item.oai_record}")
-        item.basket_urlified_name = @current_basket.urlified_name
-      rescue
-        logger.error("prepare_and_save_to_zoom error: #{$!.to_s}")
-      end
-    end
-  end
-
-  def prepare_and_save_to_zoom(item)
-    prepare_zoom(item)
-    item.zoom_save
   end
 
   def render_oai_record_xml(options = {})
@@ -221,63 +163,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_to_dc_creator_or_contributor(user)
-    user.login
-  end
-
-  #---- related to extended_fields for content_types
-
-  # populate extended_fields param with xml
-  # based on params from the form
-  def extended_fields_update_hash_for_item(options = {})
-    item_key = options[:item_key].to_sym
-    logger.debug("inside update param for item")
-    params[item_key][:extended_content] = render_to_string(:partial => 'search/field_to_xml',
-                                                           :collection => @fields,
-                                                           :layout => false,
-                                                           :locals => { :item_key => item_key})
-    logger.debug("after field_to_xml")
-    return params
-  end
-
-  alias extended_fields_update_param_for_item extended_fields_update_hash_for_item
-
-  # strip out raw extended_fields and create a valid params hash for new/create/update
-  def extended_fields_replacement_params_hash(options = {})
-    item_key = options[:item_key].to_sym
-    item_class = options[:item_class]
-
-    extra_fields = options[:extra_fields] || Array.new
-    extra_fields << 'tag_list'
-    extra_fields << 'uploaded_data'
-
-    logger.debug("what are extra fields : #{extra_fields.to_s}")
-    replacement_hash = Hash.new
-
-    params[item_key].keys.each do |field_key|
-      # we only want real topic columns, not pseudo ones that are handled by extended_content xml
-      if Module.class_eval(item_class).column_names.include?(field_key) || extra_fields.include?(field_key)
-        replacement_hash = replacement_hash.merge(field_key => params[item_key][field_key])
-      end
-    end
-    logger.debug("end of replacement")
-    return replacement_hash
-  end
-
-  def extended_fields_and_params_hash_prepare(options = {})
-    item_key = options[:item_key]
-    item_class = options[:item_class]
-    content_type = options[:content_type]
-    extra_fields = options[:extra_fields] || Array.new
-
-    logger.debug("inside prepare")
-    # grab the content_type fields
-    @fields = content_type.content_type_to_field_mappings
-
-    if @fields.size > 0
-      extended_fields_update_param_for_item(:fields => @fields, :item_key => item_key)
-    end
-
-    return extended_fields_replacement_params_hash(:item_key => item_key, :item_class => item_class, :extra_fields => extra_fields )
+    user.user_name
   end
 
   # http://wiki.rubyonrails.com/rails/pages/HowtoConfigureTheErrorPageForYourRailsApp

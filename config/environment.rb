@@ -54,7 +54,8 @@ ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
     :date => "%Y-%m-%d",
     :presentable_datetime => "%a %b %d, %Y %H:%M",
     :filename_datetime => "%Y-%m-%d-%H-%M",
-    :euro_date => "%d/%m/%Y"
+    :euro_date => "%d/%m/%Y",
+    :euro_date_time => "%d/%m/%Y %H:%M"
 )
 
 # Add new inflection rules using the following format
@@ -99,21 +100,27 @@ DEFAULT_NUMBER_OF_MULTIPLES = 5
 
 # import related
 # import synonyms for non-extended fields
-TAGS_SYNONYMS = ['COLLECTION', 'OBJNAME', 'PEOPLE', 'PLACE', 'CLASSES',
-                 'SUBJECTS', 'STERMS', 'PERIOD', 'EARLYDATE', 'LATEDATE', 'CAT',
+TAGS_SYNONYMS = ['COLLECTION', 'PEOPLE', 'PLACE', 'CLASSES',
+                 'SUBJECTS', 'STERMS', 'PERIOD', 'EARLYDATE', 'LATEDATE',
                  'CULTURE', 'EVENT', 'FOUND', 'MATERIAL', 'OTHERNAME',
                  'PUBPLACE', 'NARRATOR']
 # couldn't find fields for scope and content
-DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES']
+DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES', 'CUSTODIAL']
 
 # For handling pre controller errors
 # see http://wiki.rubyonrails.org/rails/pages/HandlingPreControllerErrors
 require 'error_handler_basic' # defines AC::Base#rescue_action_in_public
 
+# user related settings
+REQUIRE_ACTIVATION = true
+EXTENDED_FIELD_FOR_USER_NAME = "user_name"
+
+# for making the site look pretty
+PRETTY_SITE_NAME = "Kete"
 # mailer setup
 SITE_NAME = "horowhenua.kete.net.nz"
 SITE_URL = "http://horowhenua.kete.net.nz/"
-NOTIFIER_EMAIL = "do-not-reply@horowhenua.kete.net.nz"
+NOTIFIER_EMAIL = "kete@horowhenua.kete.net.nz"
 
 # warnings
 DOWNLOAD_WARNING = "You are about to download a file from Kete. Kete is an open digital repository and as such we can not guarantee the integrity of any file in the repository. Please ensure that your virus scan software is operating and is configured to scan this download.

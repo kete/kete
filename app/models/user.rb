@@ -1,8 +1,17 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
+  # Walter McGinnis, 2007-03-23
+  # added activation supporting code
+  # it's use it set by REQUIRE_ACTIVATION in config/environment.rb
+  # even if you have REQUIRE_ACTIVATION = false
+  # the code in this file needs to be here to support it
+  # we if false, we simple auto activate the user in user_observer
+  # rather than sending the sign up email
+  before_create :make_activation_code
+
   # methods related to handling the xml kept in extended_content column
   include ExtendedContent
-  
+
   # this is where we handle contributions of different kinds
   has_many :contributions, :order => 'created_at', :dependent => :delete_all
   # by using has_many :through associations we gain some bidirectional flexibility
@@ -31,31 +40,45 @@ class User < ActiveRecord::Base
 
   # Virtual attribute for the unencrypted password
   attr_accessor :password
-  
+
   # For the security code
   attr_accessor :security_code, :security_code_confirmation
-  
+
   # For accepting terms
   attr_accessor :agree_to_terms
 
-  validates_presence_of     :login, :email, :security_code, :agree_to_terms
+  validates_presence_of     :login, :email
+  validates_presence_of     :agree_to_terms,             :if => :terms_required?
+  validates_presence_of     :security_code,              :if => :security_required?
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
-  validates_confirmation_of :security_code
+  validates_confirmation_of :security_code,              :if => :security_required?
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
+
   before_save :encrypt_password
-  
 
   after_save :add_as_member_to_default_basket
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
-    u = find_by_login(login) # need to get the salt
+    # hide records with a nil activated_at
+    u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login]
     u && u.authenticated?(password) ? u : nil
+  end
+
+  # Activates the user in the database.
+  def activate
+    @activated = true
+    update_attributes(:activated_at => Time.now.utc, :activation_code => nil)
+  end
+
+  # Returns true if the user has just been activated.
+  def recently_activated?
+      @activated
   end
 
   # Encrypts some data with the salt.
@@ -95,24 +118,84 @@ class User < ActiveRecord::Base
   # rails strips the non integers after the id
   def to_param
     require 'unicode'
-    "#{id}"+Unicode::normalize_KD("-"+login+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+    "#{id}"+Unicode::normalize_KD("-"+user_name+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+  end
+
+  # password reset related
+  def forgot_password
+    self.make_password_reset_code
+    @forgotten_password = true
+  end
+
+  def reset_password
+    # First update the password_reset_code before setting the
+    # reset_password flag to avoid duplicate email notifications.
+    update_attributes(:password_reset_code => nil)
+    @reset_password = true
+  end
+
+  def recently_reset_password?
+    @reset_password
+  end
+
+  def recently_forgot_password?
+    @forgotten_password
+  end
+
+  def user_name
+    user_name_field = EXTENDED_FIELD_FOR_USER_NAME
+    extended_content_hash = self.xml_attributes_without_position
+    @user_name = self.login
+    if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field].to_s.match("xml_element_name")
+      # most likely have to pull the other attributes out
+      @user_name = extended_content_hash[user_name_field].strip
+    end
+    return @user_name
+  end
+
+  def show_email?
+    extended_content_hash = self.xml_attributes_without_position
+    @show_email = false
+    if !extended_content_hash.blank? && !extended_content_hash["email_visible"].blank? && !extended_content_hash["email_visible"].to_s.match("xml_element_name") && extended_content_hash["email_visible"].strip == 'yes'
+      @show_email = true
+    end
+    return @show_email
   end
 
   protected
-    # before filter
-    def encrypt_password
-      return if password.blank?
-      self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
-      self.crypted_password = encrypt(password)
-    end
 
-    def password_required?
-      crypted_password.blank? || !password.blank?
-    end
+  # supporting activation
+  def make_activation_code
+    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by { rand}.join )
+  end
 
-    # after_save
-    def add_as_member_to_default_basket
-      basket = Basket.find(1)
-      self.has_role('member',basket)
-    end
+  # supporting password reset
+  def make_password_reset_code
+    self.password_reset_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+  end
+
+  # before filter
+  def encrypt_password
+    return if password.blank?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+    self.crypted_password = encrypt(password)
+  end
+
+  def password_required?
+    crypted_password.blank? || !password.blank?
+  end
+
+   def terms_required?
+    self.id.nil?
+  end
+
+   def security_required?
+    self.id.nil?
+  end
+
+  # after_save
+  def add_as_member_to_default_basket
+    basket = Basket.find(1)
+    self.has_role('member',basket)
+  end
 end
