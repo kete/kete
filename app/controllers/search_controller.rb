@@ -3,8 +3,6 @@ require 'zoom'
 require "rexml/document"
 
 class SearchController < ApplicationController
-  include REXML
-
   layout "application" , :except => [:rss]
 
   # we mimic caches_page so we have more control
@@ -189,7 +187,6 @@ class SearchController < ApplicationController
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
         result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
-        logger.debug("what is result_from_xml_hash: #{result_from_xml_hash} ")
         @results << result_from_xml_hash
 
         # we want to load local thumbnails for image results
@@ -291,7 +288,7 @@ class SearchController < ApplicationController
   # uses REXML rather than Hash.from_xml
   # for more control
   def parse_from_xml_oai_dc(zoom_record)
-    record = Document.new zoom_record.xml
+    record = REXML::Document.new zoom_record.xml
 
     # work through record and grab the values
     # we do this step because there may be a sub array for values
@@ -325,6 +322,8 @@ class SearchController < ApplicationController
     desired_fields = [['identifier', 'url'], ['title'], ['description', 'short_summary'], ['date']]
 
     desired_fields.each do |field|
+      # TODO: this xpath is expensive, replace if possible!
+      # moving the record to a hash is much faster
       # // xpath short cut to go right to element that matches
       # regardless of path that led to it
       field_value = record.elements.to_a("//dc:#{field[0]}")
@@ -336,7 +335,16 @@ class SearchController < ApplicationController
         field_name = field[1]
       end
 
-      result_hash[field_name] = field_value[0].get_text
+      value_for_return_hash = field_value[0].text()
+
+      # short_summary may have some html
+      # which is being handed back as rexml object
+      # rather than string
+      if field_name == 'short_summary'
+        value_for_return_hash = prepare_short_summary(value_for_return_hash.to_s)
+      end
+
+      result_hash[field_name] = value_for_return_hash
     end
 
     return result_hash
@@ -464,5 +472,11 @@ class SearchController < ApplicationController
       # by writing the file to fs under public
       cache_page(response.body,params)
     end
+  end
+  def prepare_short_summary(source_string,length = 30,end_string = '')
+    source_string = source_string.to_s
+    # length is how many words, rather than characters
+    words = source_string.split()
+    short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
   end
 end

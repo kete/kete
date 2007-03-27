@@ -1,0 +1,40 @@
+<% @title = 'Import' -%>
+<h2><%= @title -%></h2>
+
+<fieldset>
+        <p>This is the import facility. It allows you to pick the XML file you want to import.</p>
+
+        <p><b>Remember to map your import fields to "import synonyms" for your extended fields first!</b></p>
+
+        <%= error_messages_for 'import' %>
+        <% form_tag :action => 'import' do %>
+                <div class="form-element">
+                        <label class="required" for="zoom_class">What are we importing?</label>
+                        <%= select_tag :zoom_class, options_for_select(ZOOM_CLASSES)%>
+                </div>
+                <div class="form-element">
+                        <label class="required" for="import_dir_path">Where at is the directory where import files are stored?</label>
+                        <%= text_field_tag 'import_dir_path' %>
+                </div>
+
+                <div class="form-element">
+                        <label class="required" for="import_parent_dir_for_image_dirs">What is the directory that holds the images directory?</label>
+                        <%= text_field_tag 'import_parent_dir_for_image_dirs' %>
+                </div>
+
+                <div class="form-element">
+                        <label class="required" for="import_topic_type_for_related_topic">What's the name of the Topic Type to created for groups of related items (e.g. 'Archive', 'Collection', 'Album')?</label>
+                        <%= text_field_tag 'import_topic_type_for_related_topic' %>
+                </div>
+                <div class="form-element">
+                        <label class="required" for="path_to_skipped_records">What should we call file to store information about skipped records (full path, please)?</label>
+                        <%= text_field_tag 'path_to_skipped_records' %>
+                </div>
+
+                <% # when we have multiple types of importers, make this a dropdown -%>
+                <%= hidden_field_tag "import_type", 'pp4_xml' %>
+                <div class="form-element">
+                        <%= submit_tag 'Import' %>
+                </div>
+        <% end %>
+</fieldset>
