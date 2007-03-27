@@ -42,6 +42,9 @@
     <z:index name="oai_datestamp" type="d">
       <xsl:value-of select="."/>
     </z:index>
+    <z:index name="date_modified" type="s">
+      <xsl:value-of select="."/>
+    </z:index>
   </xsl:template>
 
   <xsl:template match="oai:record/oai:header/oai:setSpec">
@@ -64,6 +67,9 @@
     <z:index name="dc_all" type="p">
       <xsl:value-of select="."/>
     </z:index>
+    <z:index name="sort_by_title" type="s">
+      <xsl:value-of select="."/>
+    </z:index>
   </xsl:template>
 
   <xsl:template match="oai:record/oai:metadata/oai_dc:dc/dc:creator">
@@ -77,6 +83,9 @@
       <xsl:value-of select="."/>
     </z:index>
     <z:index name="dc_all" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="sort_by_creator" type="s">
       <xsl:value-of select="."/>
     </z:index>
   </xsl:template>
