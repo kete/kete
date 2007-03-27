@@ -1,14 +1,13 @@
-<% edit = false
-   if !@user.id.blank?
-        edit = true
-   end -%>
+<% @title = 'Registration'  -%>
 
-<h2>Registration</h2>
+<h2><%= h(@title) -%></h2>
 
-<%= error_messages_for :user %>
 <% form_for :user do |f| -%>
 <fieldset>
-<div class="form-element"> 
+
+<%= error_messages_for :user %>
+
+<div class="form-element">
 <label for="login">Login</label> <%= f.text_field :login %>
 <div class="form_example">Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.</div>
 </div>
@@ -24,18 +23,18 @@
 
 
 <% form_fields = @content_type.content_type_to_field_mappings -%>
-        <% if form_fields.size > 0 %>
+<% if form_fields.size > 0 -%>
                 <%= render(:partial => 'search/extended_field_mapping',
-                                   :collection => form_fields,
-                                   :locals => { :edit => edit,
-                                                :extended_item => @user,
-                                                :item_key => 'user'}) %>
-<% end %>
+                           :collection => form_fields,
+                           :locals => { :edit => false,
+                                        :extended_item => @user,
+                                        :item_key => 'user'}) %>
+<% end -%>
 
 
 <div class="form-element">
-<label for="human_check">Security Code: Please enter the text from the image to the right</label> 
-<%= f.text_field :security_code, :size => '8' %> 
+<label for="human_check">Security Code: Please enter the text from the image to the right</label>
+<%= f.text_field :security_code, :size => '8' %>
 <% id = generate_captcha() -%>
 <% session[:captcha_id] = id -%>
 <img src="<%= captcha_url(id) %>" alt="security image" />

@@ -1,11 +1,11 @@
 
                         <div class="generic-result-wrapper" id="item_<%= result %>_wrapper">
                                 <div class="generic-result-header">
-				<% if params[:relate_to_topic] %>
-				  <% if !(params[:relate_to_topic] == result and params[:related_class] =='Topic') %>
-				    <% @existing_relations = params[:existing_array_string].split(',') %>				
-				    <% if (@existing_relations.detect { |x| x == result} == nil) %>
-				        <%=
+                                <% if params[:relate_to_topic] %>
+                                  <% if !(params[:relate_to_topic] == result and params[:related_class] =='Topic') %>
+                                    <% @existing_relations = params[:existing_array_string].split(',') %>
+                                    <% if (@existing_relations.detect { |x| x == result} == nil) %>
+                                        <%=
 check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
 :onclick => "new Ajax.Updater('item_#{result}_wrapper',
 '/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}',
@@ -13,21 +13,21 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
                                         <h4><%= link_to h(title), "#{source_url}"  %></h4>
                                         </div>
 
-                                <div class="generic-result-description"><%= h(short_summary) %>
+                                <div class="generic-result-description"><%= strip_tags(short_summary) %>
                                         <div class="generic-result-more">
                                         <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
                                         </div>
-				    <% end %>					
-			          <% end %>									    
+                                    <% end %>
+                                  <% end %>
                                 </div>
-				<% else %>  
+                                <% else %>
                                         <h4><%= link_to h(title), "#{source_url}"  %></h4>
                                         </div>
-                                <div class="generic-result-description"><%= h(short_summary) %>
+                                <div class="generic-result-description"><%= strip_tags(short_summary) %>
                                         <div class="generic-result-more">
                                         <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
                                         </div>
                                 </div>
-				<% end %>													
+                                <% end %>
                         </div>
 

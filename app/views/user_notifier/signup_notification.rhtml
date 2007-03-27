@@ -1,0 +1,12 @@
+Your account has been created.
+
+  Username: <%= @user.login %>
+  Password: <%= @user.password %>
+
+Visit this url to activate your account:
+
+  <%= @url %>
+
+If you aren't automatically activated, please enter this code:
+
+  Code: <%= @user.activation_code %>

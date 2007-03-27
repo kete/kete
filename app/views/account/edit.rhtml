@@ -1,5 +1,39 @@
-<p>Edit your details</p>
-<%= start_form_tag :action => 'update' %>
-<%= render :partial => 'userForm' %>
-<%= submit_tag 'Edit' %>
-<%= end_form_tag %>
+<% @title = 'Edit your details'  -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_for :user, :url => { :action => 'update',
+                             :id => @user } do |f| -%>
+<fieldset>
+
+<%= error_messages_for :user %>
+
+<div class="form-element">
+<label for="login">Login</label> <%= f.text_field :login %>
+<div class="form_example">Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.</div>
+</div>
+<div class="form-element">
+<label for="email">Email</label> <%= f.text_field :email %>
+</div>
+
+<% form_fields = @content_type.content_type_to_field_mappings -%>
+<% if form_fields.size > 0 -%>
+                <%= render(:partial => 'search/extended_field_mapping',
+                           :collection => form_fields,
+                           :locals => { :edit => true,
+                                        :extended_item => @user,
+                                        :item_key => 'user'}) %>
+<% end -%>
+
+
+</fieldset>
+
+<%= submit_tag 'Save' %>
+
+<% end -%>
+
+<div class="detail-tools">
+        <ul>
+                <li class="first"><%= link_to 'Change Password', :action => 'change_password' %></li>
+        </ul>
+</div>

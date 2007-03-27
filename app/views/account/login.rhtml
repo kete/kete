@@ -1,16 +1,31 @@
+<% @title = "Login to #{PRETTY_SITE_NAME}"  -%>
+
+<h2><%= h(@title) -%></h2>
+
 <% form_tag do -%>
-<h2>Login To Kete</h2>
-<p>Are you registered? You will need to <a href="/site/account/signup">register</a> first before you can login.</p>
-<p><label for="login"><strong>Login</strong></label><br />
-<%= text_field_tag 'login' %></p>
 
-<p><label for="password"><strong>Password</strong></label><br />
-<%= password_field_tag 'password' %></p>
+        <fieldset>
+                <!--[form:login]-->
+                <p>Are you registered? You will need to <%= link_to("register", :controller => 'account', :action => 'register', :urlified_name => 'site') -%> first before you can login.</p>
 
-<!-- Uncomment this if you want this functionality
-<p><label for="remember_me">Remember me:</label>
-<%= check_box_tag 'remember_me' %></p>
--->
+                <div class="form-element">
+                        <label for="login"><strong>Login</strong></label>
+                        <%= text_field_tag 'login' %>
+                </div>
 
-<p><%= submit_tag 'Log in' %></p>
+                <div class="form-element">
+                        <label for="password"><strong>Password</strong></label>
+                        <%= password_field_tag 'password' %>
+                </div>
+
+                <div class="form-element">
+                        <label for="remember_me">Remember me:</label>
+                        <%= check_box_tag 'remember_me' %>
+                </div>
+
+                <p>Forgot your password? <%= link_to('Click here', :controller => 'account', :action => 'forgot_password', :urlified_name => 'site') -%></p>
+
+        </fieldset>
+
+        <%= submit_tag 'Log in' %></p>
 <% end -%>

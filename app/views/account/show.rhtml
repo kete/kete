@@ -1,34 +1,31 @@
+<% @title = 'Profile of ' + h(@user.user_name) -%>
+<% @viewer_is_user = false -%>
+<% @viewer_is_user = true if @user == @current_user -%>
 
-<% @valid_columns = ['Login'] -%>
+<h2><%= h(@title) -%></h2>
 
-<% if @user.attributes['extended_content'].include? '<email_visible?>yes<' -%>
-  <% @valid_columns << 'Email' -%>
+<p><b>Login:</b> <%= h(@user.login) -%></p>
+
+<%if @user.show_email? or @viewer_is_user -%>
+        <p><b>Email:</b> <%= mail_to(@user.email, @user.email, :encode => "javascript") -%></p>
 <% end -%>
 
-<% for column in User.content_columns -%>
-  <% for valid_col in @valid_columns -%>
-    <% if valid_col == column.human_name -%>
-    <p>
-      <b><%= column.human_name %>:</b>
-        <%if column.human_name == 'Email' -%>
-	  <%= mail_to(@user.send(column.name),@user.send(column.name), :encode => "javascript") %>
-	<% else -%>
-	  <%=h @user.send(column.name) %>
-	<% end -%>
-    </p>
-    <% end -%>
-  <% end -%>
-<% end -%>
+<p><b>Created:</b> <%= h(@user.created_at.to_s(:euro_date_time)) -%></p>
 
-<% item_xml_hash = @extended_fields -%>
-<% item_xml_array = item_xml_hash.sort -%>
-<% item_xml_array.each do |field_array| -%>
-  <% subhash = item_xml_hash[field_array[0]] -%>
-  <% subhash.each do |field_key, field_value| -%>
-    <%= "<p><b>#{field_key.humanize}:</b> #{field_value}</p>" %>
-  <% end -%>
-<% end -%>
+<% extended_fields_html = display_xml_attributes(@user) %>
+<% if !extended_fields_html.blank? %>
+        <!-- <div id="detail-extended"> -->
+                <%= extended_fields_html %>
+        <!-- </div> -->
+<% end %>
 
-<%= link_to 'Edit', :action => 'edit', :id => @user %> |
-<%= link_to 'Change Password', :action => 'change_password' %> |
-<%= link_to 'Back', :action => 'index' %>
+<p>Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%></p>
+
+<% if @viewer_is_user -%>
+        <div class="detail-tools">
+                <ul>
+                        <li class="first"><%= link_to 'Edit', :action => 'edit' %></li>
+                        <li><%= link_to 'Change Password', :action => 'change_password' %></li>
+                </ul>
+        </div>
+<% end -%>
