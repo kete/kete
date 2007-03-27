@@ -112,7 +112,7 @@ DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES', 'CUSTODIAL']
 require 'error_handler_basic' # defines AC::Base#rescue_action_in_public
 
 # user related settings
-REQUIRE_ACTIVATION = true
+REQUIRE_ACTIVATION = false
 EXTENDED_FIELD_FOR_USER_NAME = "user_name"
 
 # for making the site look pretty
