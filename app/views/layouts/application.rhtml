@@ -12,18 +12,18 @@
         <%= javascript_include_tiny_mce_if_used %>
         <%= tiny_mce if using_tiny_mce? %>
   <script type="text/javascript">
-	function convertWord(type, content) {
-	    switch (type) { // Gets executed before the built in logic performes it's cleanups
+        function convertWord(type, content) {
+            switch (type) { // Gets executed before the built in logic performes it's cleanups
               case "before":
-	           content = content.toLowerCase(); // Some dummy logic
-	           break;
-	           // Gets executed after the built in logic performes it's cleanups
-              case "after":
-	           content = content.toLowerCase(); // Some dummy logic
+                   content = content.toLowerCase(); // Some dummy logic
                    break;
-	    }
-	    return content;
-	}
+                   // Gets executed after the built in logic performes it's cleanups
+              case "after":
+                   content = content.toLowerCase(); // Some dummy logic
+                   break;
+            }
+            return content;
+        }
   </script>
   <% end -%>
   <% if params[:controller] == 'zoom_dbs' || params[:controller] == 'extended_fields' -%>
@@ -36,7 +36,7 @@
   <% # TODO: turn this on if we need js fx for kete -%>
   <% if params[:controller] == 'zoom_dbs' || params[:controller] == 'extended_fields' -%>
         <%= javascript_include_tag 'rico_corner', 'ajax_scaffold' %>
-        <%= javascript_include_tag :defaults %>	
+        <%= javascript_include_tag :defaults %>
   <% else -%>
     <%= javascript_include_tag 'application' %>
     <%= javascript_include_tag 'prototype' %>
@@ -55,6 +55,12 @@
                 <div id="topnav">
                         <a href="/">Kete Home</a> |
                         <a href="/about/">About Kete</a> |
+                        <%= link_to_unless_current "Browse", :controller => 'search',
+                                                             :action => 'all',
+                                                             :urlified_name => 'site',
+                                                             :controller_name_for_zoom_class => 'topics',
+                                                             :trailing_slash => true -%>
+                        |
                         <%= link_to_unless_current "Search", :controller => 'search',
                                                              :action => :index -%>
                         |
@@ -71,15 +77,17 @@
                            Logout -->
                         <% else %>
                            <% # TODO: currently a security risk -%>
-                           Welcome <%= h(current_user.login) -%> |
+                           Welcome <%= link_to_unless_current current_user.user_name, :controller => 'account',
+                                                                                      :action => 'show',
+                                                                                      :urlified_name => 'site' -%> |
                            <%= link_to_unless_current "Logout", :controller => 'account',
                                                                 :action => :logout,
                                                                 :urlified_name => 'site' -%>
                         <% end %>
-			|
-			<%= link_to("Help", {:controller => 'index_page', 
-			                     :action => :help_file,
-					     :urlified_name => 'site' }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %>
+                        |
+                        <%= link_to("Help", {:controller => 'index_page',
+                                             :action => :help_file,
+                                             :urlified_name => 'site' }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %>
 
                 </div>
                 <h1>
@@ -140,10 +148,12 @@
                         <%= link_to_unless_current "members", :controller => '/members',
                                                                         :action => :list,
                                                                         :urlified_name => 'site' -%>
+                        <% if current_user.login == 'walter' -%>
                         |
                         <%= link_to_unless_current "importers", :controller => '/importers',
                                                                         :action => :index,
                                                                         :urlified_name => 'site' -%>
+                        <% end -%>
                         |
                         <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
                                                                               :action => :list,
