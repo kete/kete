@@ -14,10 +14,15 @@ class VideoController < ApplicationController
   end
 
   def show
-    @video = @current_basket.videos.find(params[:id])
-    @title = @video.title
-    @creator = @video.creators.first
-    @last_contributor = @video.contributors.last || @creator
+    if !has_all_fragments? or params[:format] == 'xml'
+      @video = @current_basket.videos.find(params[:id])
+      @title = @video.title
+    end
+
+    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+      @creator = @video.creators.first
+      @last_contributor = @video.contributors.last || @creator
+    end
 
     respond_to do |format|
       format.html

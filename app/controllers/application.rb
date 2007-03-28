@@ -24,6 +24,10 @@ class ApplicationController < ActionController::Base
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
+  # if anything is updated or deleted
+  # we need toss our show action fragments
+  after_filter :expire_show_caches, :only => [ :update, :destroy ]
+
   # if anything is added, edited, or deleted
   # we need to rebuild our rss caches
   after_filter :expire_rss_caches, :only => [ :create, :edit, :destroy]
@@ -36,6 +40,81 @@ class ApplicationController < ActionController::Base
       # the first basket is always the default
       @current_basket = Basket.find(1)
     end
+  end
+
+  # caching related
+  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex']
+
+  # expire the cache fragments for the show action
+  # excluding the related cache, this we handle separately
+  def expire_show_caches
+    SHOW_PARTS.each do |part|
+      expire_fragment(:action => 'show', :id => params[:id], :part => part)
+    end
+    # images have an additional cache
+    if params[:controller] == 'images'
+      expire_fragment(:action => 'show', :id => params[:id], :part => 'caption')
+    end
+
+    # if we are deleting the thing
+    # also delete it's related caches
+    if params[:action] == 'destroy'
+      if params[:controller] != 'topics'
+        expire_fragment(:action => 'show', :id => params[:id], :related => 'topics')
+      else
+        # topics need all it's related things expired
+        ZOOM_CLASSES.each do |zoom_class|
+          expire_fragment(:action => 'show', :id => params[:id], :related => zoom_class_controller(zoom_class))
+        end
+      end
+    end
+  end
+
+  def expire_related_caches_for(item, controller = nil)
+    if !controller.nil?
+      expire_fragment(:urlified_name => item.basket.urlified_name,
+                      :controller => controller,
+                      :action => 'show',
+                      :id => item,
+                      :related => 'topics')
+    else
+      if item.class.name != 'topics'
+        expire_fragment(:urlified_name => item.basket.urlified_name,
+                        :controller => zoom_class_controller(item.class.name),
+                        :action => 'show',
+                        :id => item,
+                        :related => 'topics')
+      else
+        # topics need all it's related things expired
+        ZOOM_CLASSES.each do |zoom_class|
+          expire_fragment(:urlified_name => item.basket.urlified_name,
+                          :controller => zoom_class_controller(item.class.name),
+                          :action => 'show',
+                          :id => item,
+                          :related => zoom_class_controller(zoom_class))
+        end
+      end
+    end
+  end
+
+  # cheating, we know that we are using file store, rather than mem_cache
+  def has_fragment?(name = {})
+    File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
+  end
+
+  # used by show actions to determine whether to load item
+  def has_all_fragments?
+    SHOW_PARTS.each do |part|
+      return false unless has_fragment?({:part => part})
+    end
+    if params[:controller] == 'topics'
+      ZOOM_CLASSES.each do |zoom_class|
+        return false unless has_fragment?({:related => zoom_class_controller(zoom_class)})
+      end
+    else
+        return false unless has_fragment?({:related => 'topics'})
+    end
+    return true
   end
 
   # remove rss feeds under all and search directories
@@ -76,11 +155,16 @@ class ApplicationController < ActionController::Base
       # so this new relationship is reflected in search
       prepare_and_save_to_zoom(@new_related_topic)
 
+      # make sure the topics cache for this type of item is cleared
+      expire_related_caches_for(@new_relate_topic, zoom_class_controller(item.class.name))
+
       where_to_redirect = 'show_related'
     end
 
     if @successful
       prepare_and_save_to_zoom(item)
+
+      expire_related_caches_for(item)
 
       if where_to_redirect == 'show_related'
         # TODO: replace with translation stuff when we get globalize going
@@ -115,8 +199,12 @@ class ApplicationController < ActionController::Base
         # so this new relationship is reflected in search
         prepare_and_save_to_zoom(@related_to_topic)
 
+        expire_related_caches_for(@related_to_topic, zoom_class_controller(item.class.name))
+
         # in this context, the item being related needs updating, too
         prepare_and_save_to_zoom(item)
+
+        expire_related_caches_for(item)
 
         render(:layout => false, :exists => false, :success => true)
       end
@@ -173,5 +261,6 @@ class ApplicationController < ActionController::Base
   def local_request?
     false
   end
+
 
 end

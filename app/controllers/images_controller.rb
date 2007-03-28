@@ -14,12 +14,19 @@ class ImagesController < ApplicationController
   end
 
   def show
-    @still_image = @current_basket.still_images.find(params[:id])
-    @title = @still_image.title
-    @creator = @still_image.creators.first
-    @last_contributor = @still_image.contributors.last || @creator
+    if !has_all_fragments? or params[:format] == 'xml'
+      @still_image = @current_basket.still_images.find(params[:id])
+      @title = @still_image.title
+    end
+
     @view_size = params[:view_size] || "medium"
-    @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, @still_image)
+    @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
+
+    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+      @creator = @still_image.creators.first
+      @last_contributor = @still_image.contributors.last || @creator
+    end
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @still_image) }

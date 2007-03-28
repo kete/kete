@@ -39,10 +39,15 @@ class DocumentsController < ApplicationController
   end
 
   def show
-    @document = @current_basket.documents.find(params[:id])
-    @title = @document.title
-    @creator = @document.creators.first
-    @last_contributor = @document.contributors.last || @creator
+    if !has_all_fragments? or params[:format] == 'xml'
+      @document = @current_basket.documents.find(params[:id])
+      @title = @document.title
+    end
+
+    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+      @creator = @document.creators.first
+      @last_contributor = @document.contributors.last || @creator
+    end
 
     respond_to do |format|
       format.html

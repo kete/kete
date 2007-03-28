@@ -1,3 +1,4 @@
+<% cache ({:part => 'details'}) do -%>
                 <div id="detail-wrapper">
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
@@ -16,31 +17,39 @@
                                 <%= tags_for(@topic) -%>
                                 <p><%= @topic.description %></p>
                         </div>
+<% end -%>
                         <div class="detail-tools">
                                 <h3>Get Involved</h3>
                                 <ul>
+<% cache ({:part => 'edit'}) do -%>
                                         <li class="first"><%= link_to "Edit",
                                                                 :action => :edit,
                                                                 :controller => 'topics',
                                                                 :id => @topic %></li>
+<% end -%>
                                         <% if logged_in? and @at_least_a_moderator -%>
+<% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
                                                                 {:action => :destroy,
                                                                 :controller => 'topics',
                                                                 :id => @topic},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
+<% end -%>
                                         <% end -%>
                                         <% if logged_in? and @site_admin -%>
+<% cache ({:part => 'zoom_reindex'}) do -%>
                                                 <li><%= link_to "Zoom Update this item and it's related items",
                                                                 {:action => :rebuild_zoom_for_items,
                                                                 :controller => 'search',
                                                                 :items_to_rebuild => items_to_rebuild(@topic)},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure you want to update?'%></li>
+<% end -%>
                                         <% end -%>
                                 </ul>
                         </div>
+<% cache ({:part => 'contributions'}) do -%>
                         <div class="detail-tools">
                                 <ul>
                                         <li class="first">Created by: <%= link_to_contributions_of(@creator,'Topic') %></li>
@@ -52,68 +61,64 @@
 
                         <div class="cleaner-left">&nbsp;</div>
                 </div>
+<% end -%>
                 <div id="detail-linked">
                         <h3>Other Kete Users have linked this topic to:</h3>
                         <div id="detail-linked-toprow">
+<% cache ({:related => 'images'}) do -%>
                           <%= related_items_links(:source_item => @topic,
                                                   :source_item_class => 'Topic',
                                                   :related_class => 'StillImage',
                                                   :items => @topic.still_images,
                                                   :relate_to_topic_id => @topic.id) %>
-
+<% end -%>
                                         <div class="cleaner-left">&nbsp;</div>
                         </div>
                         <div id="detail-linked-midrow">
+<% cache ({:related => 'topics'}) do -%>
                           <%= related_items_links(:source_item => @topic,
                                                   :source_item_class => 'Topic',
                                                   :related_class => 'Topic',
                                                   :items => @topic.related_topics,
                                                   :relate_to_topic_id => @topic.id) %>
-
+<% end -%>
+<% cache ({:related => 'audio'}) do -%>
                           <%= related_items_links(:source_item => @topic,
                                                   :source_item_class => 'Topic',
                                                   :related_class => 'AudioRecording',
                                                   :items => @topic.audio_recordings,
                                                   :relate_to_topic_id => @topic.id) %>
-
+<% end -%>
+<% cache ({:related => 'video'}) do -%>
                           <%= related_items_links(:source_item => @topic,
                                                   :source_item_class => 'Topic',
                                                   :related_class => 'Video',
                                                   :items => @topic.videos,
                                                   :relate_to_topic_id => @topic.id) %>
+
+<% end -%>
                                 <div class="cleaner-left">&nbsp;</div>
 
                         </div>
                         <div id="detail-linked-bottomrow">
+<% cache ({:related => 'documents'}) do -%>
                           <%= related_items_links(:source_item => @topic,
                                                   :source_item_class => 'Topic',
                                                   :related_class => 'Documents',
                                                   :items => @topic.documents,
                                                   :relate_to_topic_id => @topic.id) %>
-
+<% end -%>
+<% cache ({:related => 'web_links'}) do -%>
                         <%= related_items_links(:source_item => @topic,
                                                   :source_item_class => 'Topic',
                                                   :related_class => 'WebLink',
                                                   :items => @topic.web_links,
                                                   :relate_to_topic_id => @topic.id) %>
+<% end -%>
                                 <div class="cleaner">&nbsp;</div>
                         </div>
                         <div class="cleaner">&nbsp;</div>
                 </div>
-                <!--
-                <div id="linkcontainer">
-                        <h3>You may also be interested in these search results:</h3>
-                        <div id="link-list-container">
-                                <ul id="linklist">
-                                        <li><a href="topics.html">Topics (9)</a></li>
-                                        <li><a href="images.html">Images (35)</a></li>
-                                        <li><a href="#">Audio (1)</a></li>
-                                        <li><a href="#">Video (1)</a></li>
-                                        <li><a href="#">Documents (6)</a></li>
-                                        <li><a href="#">Web Link (5)</a></li>
-                                        <li><a href="#">Library (1)</a></li>
-                                </ul>
-                        </div>--><!-- /linkcontainer -->
                 <!--
                         <div class="cleaner">&nbsp;</div>
                 </div>

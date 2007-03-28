@@ -14,11 +14,16 @@ class WebLinksController < ApplicationController
   end
 
   def show
-    @web_link = @current_basket.web_links.find(params[:id])
-    @title = @web_link.title
-    @creator = @web_link.creators.first
-    @last_contributor = @web_link.contributors.last || @creator
+    # unfortunately we need to find the object, almost no matter what
+    if !has_all_fragments? or params[:format] == 'xml'
+      @web_link = @current_basket.web_links.find(params[:id])
+      @title = @web_link.title
+    end
 
+    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+      @creator = @web_link.creators.first
+      @last_contributor = @web_link.contributors.last || @creator
+    end
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @web_link) }

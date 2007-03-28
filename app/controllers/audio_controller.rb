@@ -14,10 +14,15 @@ class AudioController < ApplicationController
   end
 
   def show
-    @audio_recording = @current_basket.audio_recordings.find(params[:id])
-    @title = @audio_recording.title
-    @creator = @audio_recording.creators.first
-    @last_contributor = @audio_recording.contributors.last || @creator
+    if !has_all_fragments? or params[:format] == 'xml'
+      @audio_recording = @current_basket.audio_recordings.find(params[:id])
+      @title = @audio_recording.title
+    end
+
+    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+      @creator = @audio_recording.creators.first
+      @last_contributor = @audio_recording.contributors.last || @creator
+    end
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @audio_recording) }

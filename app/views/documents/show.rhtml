@@ -1,3 +1,4 @@
+<% cache ({:part => 'details'}) do -%>
                 <div id="detail-wrapper">
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
@@ -22,14 +23,18 @@
                                 <p>Size: <%= number_to_human_size(@document.size) %></p>
                                 <p>Recording type: <%= @document.content_type %></p>
                         </div>
+<% end -%>
                         <div class="detail-tools">
                                 <h3>Get Involved</h3>
                                 <ul>
+<% cache ({:part => 'edit'}) do -%>
                                         <li class="first"><%= link_to "Edit",
                                                                 :action => :edit,
                                                                 :controller => '/documents',
                                                                 :id => @document %></li>
+<% end -%>
                                         <% if logged_in? and @at_least_a_moderator -%>
+<% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
                                                                 {:action => :destroy,
                                                                 :controller => '/documents',
@@ -37,7 +42,9 @@
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
                                         <% end -%>
+<% end -%>
                                         <% if logged_in? and @site_admin -%>
+<% cache ({:part => 'zoom_reindex'}) do -%>
                                                 <li><%= link_to "Zoom Update this item and it's related items",
                                                                 {:action => :rebuild_zoom_for_items,
                                                                 :controller => 'search',
@@ -45,8 +52,10 @@
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure you want to update?'%></li>
                                         <% end -%>
+<% end -%>
                                 </ul>
                         </div>
+<% cache ({:part => 'contributions'}) do -%>
                         <div class="detail-tools">
                                 <ul>
                                         <li class="first">Created by: <%= link_to_contributions_of(@creator,'Document') %></li>
@@ -57,5 +66,7 @@
                         </div>
                         <div class="cleaner">&nbsp;</div>
                 </div>
-
+<% end -%>
+<% cache ({:related => 'topics'}) do -%>
                 <%= item_related_topics_wrapper(:class_phrase => 'document', :source_item => @document, :source_item_class => 'Document', :topics => @document.topics) %>
+<% end -%>

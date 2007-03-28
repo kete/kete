@@ -65,7 +65,6 @@ class TopicsController < ApplicationController
   def pick_topic_type
   end
 
-  # partially based on ajaxscaffold stuff, but basically are own code at this point
   def create
     begin
       # since this is creation, grab the topic_type fields
@@ -206,16 +205,19 @@ class TopicsController < ApplicationController
     zoom_destroy_and_redirect('Topic')
   end
 
-  ### end ajaxscaffold stuff
-
   # defaults to html if no extension
   # renders oai_record.rxml if xml request
   def show
-    @topic = @current_basket.topics.find(params[:id])
-    @title = @topic.title
-    # TODO: likely to be inefficient, switch to more direct sql
-    @creator = @topic.creators.first
-    @last_contributor = @topic.contributors.last || @creator
+    if !has_all_fragments? or params[:format] == 'xml'
+      @topic = @current_basket.topics.find(params[:id])
+      @title = @topic.title
+    end
+
+    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+      @creator = @topic.creators.first
+      @last_contributor = @topic.contributors.last || @creator
+    end
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @topic) }

@@ -1,3 +1,4 @@
+<% cache ({:part => 'details'}) do -%>
                 <div id="detail-wrapper">
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
@@ -18,6 +19,7 @@
                                 </p>
                                 <p>Original Size: <%= number_to_human_size(@still_image.original_file.size) %></p>
                                 <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
+<% end -%>
                                 <% # default to medium view %>
                                 <% if !@image_file.nil? %>
                                         <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
@@ -40,26 +42,33 @@
                                 <% else -%>
                                         <p>Only available as original.</p>
                                 <% end -%>
+<% cache ({:part => 'caption'}) do -%>
                                <h4>Caption</h4>
                                <p><%= @still_image.description %></p>
 
                         </div>
+<% end -%>
                         <div class="detail-tools">
                                 <h3>Get Involved</h3>
                                 <ul>
+<% cache ({:part => 'edit'}) do -%>
                                         <li class="first"><%= link_to "Edit",
                                                                 :action => :edit,
                                                                 :controller => '/images',
                                                                 :id => @still_image %></li>
+<% end -%>
                                         <% if logged_in? and @at_least_a_moderator -%>
+<% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
                                                                 {:action => :destroy,
                                                                 :controller => '/images',
                                                                 :id => @still_image},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
+<% end -%>
                                         <% end -%>
                                         <% if logged_in? and @site_admin -%>
+<% cache ({:part => 'zoom_reindex'}) do -%>
                                                 <li><%= link_to "Zoom Update this item and it's related items",
                                                                 {:action => :rebuild_zoom_for_items,
                                                                 :controller => 'search',
@@ -67,8 +76,10 @@
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure you want to update?'%></li>
                                         <% end -%>
+<% end -%>
                                 </ul>
                         </div>
+<% cache ({:part => 'contributions'}) do -%>
                         <div class="detail-tools">
                                 <ul>
                                         <li class="first">Created by: <%= link_to_contributions_of(@creator,'StillImage') %></li>
@@ -79,5 +90,7 @@
                         </div>
                         <div class="cleaner">&nbsp;</div>
                 </div>
-
+<% end -%>
+<% cache ({:related => 'topics'}) do -%>
                 <%= item_related_topics_wrapper(:class_phrase => 'image', :source_item => @still_image, :source_item_class => 'StilImage', :topics => @still_image.topics) %>
+<% end -%>
