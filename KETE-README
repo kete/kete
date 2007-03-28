@@ -33,7 +33,15 @@ http://svn.viney.net.nz/things/rails/plugins/acts_as_taggable_on_steroids
 
 http://svn.devjavu.com/backgroundrb/trunk -- of note, http://backgroundrb.devjavu.com/projects/backgroundrb/ticket/27, see gem dependencies below
 besides dependency gems, also needs to have following run in RAILS_ROOT:
+
 rake backgroundrb:setup
+
+then modify config/backgroundrb.yml
+
+then start with this from RAILS_ROOT:
+
+script/backgroundrb start # for dev
+script/backgroundrb start -- -r production # for production
 
 Gems:
 Rmagick, used by attachment_fu, see install directions in blog.katipo.co.nz
@@ -41,6 +49,7 @@ Unicode, also covered in blog
 Mimetypes: 'sudo gem install mime-types'
 Slave: 'sudo gem install slave' -- BackgroundRB dependency
 Daemons: 'sudo gem install daemons' -- BackgroundRB dependency
+RedCloth: 'sudo gem install RedCloth' -- used in imports to give our plain text fields better html output
 
 Zebra:
 
