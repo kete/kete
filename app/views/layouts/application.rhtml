@@ -124,7 +124,7 @@
                            <% if basket == @current_basket && request.request_uri == "/#{@current_basket.urlified_name}/" %>
                               <%= h(basket.name) %>
                            <% else %>
-                              <%= link_to(h(basket.name), :controller => :search,
+                              <%= link_to(h(basket.name), :controller => 'search',
                                                           :urlified_name => basket.urlified_name) %>
                            <% end %>
                            |
