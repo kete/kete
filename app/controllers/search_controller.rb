@@ -430,7 +430,7 @@ class SearchController < ApplicationController
   # expects a comma separated list of zoom_class-id
   # for the objects to be reindexed
   def rebuild_zoom_for_items
-    permit "site_admin of :current_basket" do
+    permit "site_admin" do
       items_to_rebuild = params[:items_to_rebuild].split(",")
       items_count = 1
       first_item_class = String.new
