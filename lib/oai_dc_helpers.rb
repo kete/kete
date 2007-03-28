@@ -123,11 +123,15 @@ module OaiDcHelpers
       when 'WebLink'
         format = 'text/html'
       when 'StillImage'
-        format = item.original_file.content_type
+        if !item.original_file.nil?
+          format = item.original_file.content_type
+        end
       else
         format = item.content_type
       end
-      xml.tag!("dc:format", format)
+      if !format.blank?
+        xml.tag!("dc:format", format)
+      end
     end
   end
 end

@@ -1,7 +1,7 @@
-<% cache ({:part => 'details'}) do -%>
                 <div id="detail-wrapper">
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
+<% cache ({:part => 'details'}) do -%>
                                 <h2><%= h(@video.title) %></h2>
 
                                 <% extended_fields_html = display_xml_attributes(@video) -%>
