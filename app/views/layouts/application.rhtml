@@ -53,8 +53,7 @@
         </div>
         <div id="header">
                 <div id="topnav">
-                        <a href="/">Kete Home</a> |
-                        <a href="/about/">About Kete</a> |
+                        <a href="/">Home</a> |
                         <%= link_to_unless_current "Browse", :controller => 'search',
                                                              :action => 'all',
                                                              :urlified_name => 'site',
@@ -84,6 +83,8 @@
                                                                 :action => :logout,
                                                                 :urlified_name => 'site' -%>
                         <% end %>
+                        |
+                        <a href="/about/">About</a>
                         |
                         <%= link_to("Help", {:controller => 'index_page',
                                              :action => :help_file,
