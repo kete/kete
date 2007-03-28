@@ -45,3 +45,4 @@ Disallow: /site/all/documents/related_to
 Disallow: /site/all/audio/related_to
 Disallow: /site/all/video/related_to
 Disallow: /site/all/web_links/related_to
+Disallow: /site/search/find_related
