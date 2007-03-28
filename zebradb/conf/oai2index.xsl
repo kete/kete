@@ -42,7 +42,7 @@
     <z:index name="oai_datestamp" type="d">
       <xsl:value-of select="."/>
     </z:index>
-    <z:index name="date_modified" type="s">
+    <z:index name="oai_datestamp" type="s">
       <xsl:value-of select="."/>
     </z:index>
   </xsl:template>
@@ -67,7 +67,7 @@
     <z:index name="dc_all" type="p">
       <xsl:value-of select="."/>
     </z:index>
-    <z:index name="sort_by_title" type="s">
+    <z:index name="dc_title" type="s">
       <xsl:value-of select="."/>
     </z:index>
   </xsl:template>
@@ -85,7 +85,7 @@
     <z:index name="dc_all" type="p">
       <xsl:value-of select="."/>
     </z:index>
-    <z:index name="sort_by_creator" type="s">
+    <z:index name="dc_creator" type="s">
       <xsl:value-of select="."/>
     </z:index>
   </xsl:template>
@@ -154,6 +154,9 @@
       <xsl:value-of select="."/>
     </z:index>
     <z:index name="dc_all" type="w">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_date" type="s">
       <xsl:value-of select="."/>
     </z:index>
   </xsl:template>

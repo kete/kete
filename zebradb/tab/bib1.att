@@ -44,7 +44,8 @@ att 27              LC-subject-heading
 att 28              RVM-subject-heading
 att 29              Local-subject-index
 att 30              Date
-att 31              Date-of-publication
+# att 31              Date-of-publication
+att 31              oai_datestamp
 att 32              Date-of-acquisition
 att 33              Title-key
 att 34              Title-collective
@@ -96,7 +97,7 @@ att 1009            Subject-name-personal
 # att 1010            Body-of-text
 att 1010            dc_description
 # att 1011            Date/time-added-to-db
-att 1011            dc_date
+att 1011            oai_datestamp
 # att 1012            Date/time-last-modified
 att 1012            oai_datestamp
 att 1013            Authority/format-id

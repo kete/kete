@@ -142,6 +142,12 @@ class SearchController < ApplicationController
 
     @source_controller_singular = params[:source_controller_singular]
 
+    # the max we want returned for rss is always the latest created or modified 50
+    # this will be be overwritten by the actual number of records that are available
+    # if less than 50
+    # see also sort_type
+    @end_record = 50
+
     if !@source_controller_singular.nil?
       @source_class = zoom_class_from_controller(@source_controller_singular.pluralize)
       @source_item = Module.class_eval(@source_class).find(params[:source_item])
@@ -169,13 +175,8 @@ class SearchController < ApplicationController
   def load_results(from_result_set)
     @results = Array.new
 
-    if params[:action] == 'rss'
-      # TODO: limit this to a more reasonable number
-      # TODO: make sure these are the latest records
-      @end_record = from_result_set.size
-    else
-      @end_record = from_result_set.size if from_result_set.size < @end_record
-    end
+
+    @end_record = from_result_set.size if from_result_set.size < @end_record
 
     if from_result_set.size > 0
       still_image_results = Array.new
@@ -211,6 +212,7 @@ class SearchController < ApplicationController
 
   def populate_result_sets_for(zoom_class,zoom_db)
     query = String.new
+    sort_type = 'none'
     if !@source_item.nil?
       # this looks in the dc_relation index in the z30.50 server
       # must be exact string
@@ -220,10 +222,7 @@ class SearchController < ApplicationController
 
     if !@tag.nil?
       # this looks in the dc_subject index in the z30.50 server
-      # TODO: attr 1=21 was throwing unsupported
-      # not sure why, see zebradb/tab/bib1.att
-      # switch from "any" to "subject heading"
-      query += "@and @attr 1=1016 \"#{@tag.name}\" "
+      query += "@and @attr 1=21 \"#{@tag.name}\" "
     end
 
     # process query and get a ZOOM::RecordSet back
@@ -238,12 +237,21 @@ class SearchController < ApplicationController
 
     if @search_terms.nil?
       # this is an "all" search
+      # sort by date last modified, i.e. oai_datestamp
+      sort_type = 'last_modified'
+
       if @current_basket.urlified_name == 'site'
         query += "@attr 1=12 #{zoom_class} "
       else
         query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
       end
     else
+      # if this rss, we want last_modified to be taken into account
+      # otherwise, strictly relevance
+      if params[:action] == 'rss'
+        sort_type = 'last_modified'
+      end
+
       prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
       if @current_basket.urlified_name == 'site'
         query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
@@ -270,6 +278,11 @@ class SearchController < ApplicationController
       query = "@and " + query unless query[0,4] == "@and"
     end
 
+    case sort_type
+    when 'last_modified'
+      query = "@or " + query + "@attr 7=2 @attr 1=1012 0"
+    end
+
     this_result_set = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
                                                                   :query => query)
 
@@ -285,10 +298,30 @@ class SearchController < ApplicationController
 
   # grab the values we want from the zoom_record
   # and return them as a hash
-  # uses REXML rather than Hash.from_xml
-  # for more control
   def parse_from_xml_oai_dc(zoom_record)
-    record = REXML::Document.new zoom_record.xml
+    # TODO: speed up more!
+    # i still went with a middle ground and used REXML
+    # since Hash.from_xml was falling over on multiple elements with the same name
+    # break the record up into a hash with subhashes - partially done
+    # which is faster than using XPath on an REXML doc
+    # since we know the structure of the xml anyway
+    # because of the instruct, we add an additional level
+    record_parts = zoom_record.to_s.split("</header>")
+
+    header_parts = record_parts[0].split("<header>")
+    header_xml = '<header>' + header_parts[1] + '</header>'
+    header = Hash.from_xml(header_xml)
+    header = header['header']
+
+    metadata_parts = record_parts[1].split("xsd\">")
+    metadata_parts = metadata_parts[1].split("</oai_dc:dc>")
+
+    dc_xml = metadata_parts[0].gsub("<dc:", "<").gsub("</dc:", "</")
+
+    # record_xml = REXML::Document.new zoom_record.xml
+    dublin_core = REXML::Document.new "<root>#{dc_xml}</root>"
+
+    root = dublin_core.root
 
     # work through record and grab the values
     # we do this step because there may be a sub array for values
@@ -299,7 +332,8 @@ class SearchController < ApplicationController
     # we should be able to deduce the class
     # whether the result is local
     # and the object's id from the oai_identifier
-    oai_identifier = record.elements.to_a("//header/identifier")[0].get_text.to_s
+    # oai_identifier = root.elements["header/identifier"].get_text.to_s
+    oai_identifier = header["identifier"]
 
     local_re = Regexp.new("^#{ZoomDb.zoom_id_stub}")
     class_id_re = Regexp.new("([^:]+):([0-9]+)$")
@@ -324,9 +358,13 @@ class SearchController < ApplicationController
     desired_fields.each do |field|
       # TODO: this xpath is expensive, replace if possible!
       # moving the record to a hash is much faster
+      # but i'm stuck on how to get "from_xml" to handle namespace stuff
       # // xpath short cut to go right to element that matches
       # regardless of path that led to it
-      field_value = record.elements.to_a("//dc:#{field[0]}")
+      # field_value = root.elements["//dc:#{field[0]}"]
+      field_value = root.elements[field[0]]
+      # field_value = dublin_core[field[0]]
+      # field_value = dc_attributes["oai_dc:dc"]["dc:#{field[0]}"]
 
       field_name = String.new
       if field[1].nil?
@@ -335,7 +373,8 @@ class SearchController < ApplicationController
         field_name = field[1]
       end
 
-      value_for_return_hash = field_value[0].text()
+      # value_for_return_hash = field_value
+      value_for_return_hash = field_value.text
 
       # short_summary may have some html
       # which is being handed back as rexml object
@@ -457,7 +496,7 @@ class SearchController < ApplicationController
   def find_related
     @existing_relations = ContentItemRelation.find(:all,
                                                    :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class",
-                                                                   {:relate_to_topic => params[:relate_to_topic],
+                                                                   { :relate_to_topic => params[:relate_to_topic],
                                                                      :related_class =>params[:related_class].singularize}])
     render(:layout => "layouts/simple")
   end
@@ -473,6 +512,7 @@ class SearchController < ApplicationController
       cache_page(response.body,params)
     end
   end
+
   def prepare_short_summary(source_string,length = 30,end_string = '')
     source_string = source_string.to_s
     # length is how many words, rather than characters
