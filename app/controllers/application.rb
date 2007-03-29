@@ -114,6 +114,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def expire_contributions_caches_for(item)
+    expire_fragment(:urlified_name => item.basket.urlified_name,
+                    :controller => zoom_class_controller(item.class.name),
+                    :action => 'show',
+                    :id => item,
+                    :part => 'contributions')
+  end
+
   # cheating, we know that we are using file store, rather than mem_cache
   def has_fragment?(name = {})
     File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
@@ -173,7 +181,6 @@ class ApplicationController < ActionController::Base
       prepare_and_save_to_zoom(@new_related_topic)
 
       # make sure the topics cache for this type of item is cleared
-      logger.debug("what is zoom_class_controller: " + zoom_class_controller(item.class.name))
       expire_related_caches_for(@new_related_topic, zoom_class_controller(item.class.name))
 
       where_to_redirect = 'show_related'

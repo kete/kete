@@ -25,8 +25,17 @@ class User < ActiveRecord::Base
   # since we are going to use our z39.50 search to accumulate our contributed or created objects
   # this is mainly for convenience methods rather than finders
   ZOOM_CLASSES.each do |zoom_class|
-    has_many "created_#{zoom_class.tableize}".to_sym, :through => :contributions, :source => zoom_class.tableize.singularize.to_sym, :order => 'created_at'
-    has_many "contributed_#{zoom_class.tableize}".to_sym, :through => :contributions, :source => zoom_class.tableize.singularize.to_sym, :order => 'created_at'
+    has_many "created_#{zoom_class.tableize}".to_sym,
+    :through => :contributions,
+    :source => "created_#{zoom_class.tableize.singularize}".to_sym,
+    :include => :basket,
+    :order => "#{zoom_class.tableize}.created_at"
+
+    has_many "contributed_#{zoom_class.tableize}".to_sym,
+    :through => :contributions,
+    :source => "contributed_#{zoom_class.tableize.singularize}".to_sym,
+    :include => :basket,
+    :order => "#{zoom_class.tableize}.created_at"
   end
 
   # Virtual attribute for the contribution.version join model
@@ -160,6 +169,27 @@ class User < ActiveRecord::Base
       @show_email = true
     end
     return @show_email
+  end
+
+  # we only need distinct items contributed to
+  # because we have a polymorphic foreign key
+  # this is tricky to do in sql,
+  # at least without making it db specific
+  def distinct_contributions
+    @distinct_contributions = Array.new
+    ZOOM_CLASSES.each do |zoom_class|
+      self.send("created_#{zoom_class.tableize}".to_sym).each do |contribution|
+        if !@distinct_contributions.include?(contribution)
+          @distinct_contributions << contribution
+        end
+      end
+      self.send("contributed_#{zoom_class.tableize}".to_sym).each do |contribution|
+        if !@distinct_contributions.include?(contribution)
+          @distinct_contributions << contribution
+        end
+      end
+    end
+    return @distinct_contributions
   end
 
   protected

@@ -133,9 +133,21 @@ class AccountController < ApplicationController
   def update
     @user = User.find(self.current_user.id)
 
+    original_user_name = @user.user_name
     if @user.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type,
                                                                        :item_key => 'user',
                                                                        :item_class => 'User'))
+      # @user.user_name has changed
+      if original_user_name != @user.user_name
+        # we want to flush contribution caches
+        # incase they updated something we display
+        # we also want to update zoom for all items they have contributed to
+        @user.distinct_contributions.each do |contribution|
+          expire_contributions_caches_for(contribution)
+          prepare_and_save_to_zoom(contribution)
+        end
+      end
+
       flash[:notice] = 'User was successfully updated.'
       redirect_to :action => 'show', :id => @user
     else
