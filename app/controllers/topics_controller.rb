@@ -126,6 +126,9 @@ class TopicsController < ApplicationController
       # so this new relationship is reflected in search
       prepare_and_save_to_zoom(@new_related_topic)
 
+      # make sure the related topics cache is cleared for related topic
+      expire_related_caches_for(@new_related_topic, 'topics')
+
       where_to_redirect = 'show_related'
     end
 

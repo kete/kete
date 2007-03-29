@@ -21,12 +21,12 @@ class ApplicationController < ActionController::Base
   # sets up instance variables for authentication
   include KeteAuthorization
 
-  # setup return_to for the session
-  after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
-
   # if anything is updated or deleted
   # we need toss our show action fragments
-  after_filter :expire_show_caches, :only => [ :update, :destroy ]
+  before_filter :expire_show_caches, :only => [ :update, :destroy ]
+
+  # setup return_to for the session
+  after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
   # if anything is added, edited, or deleted
   # we need to rebuild our rss caches
@@ -58,13 +58,30 @@ class ApplicationController < ActionController::Base
 
     # if we are deleting the thing
     # also delete it's related caches
+    # as well as related caches of things it's related to
     if params[:action] == 'destroy'
+      things_class = zoom_class_from_controller(params[:controller])
+      thing_to_delete = Module.class_eval(things_class).find(params[:id])
+
       if params[:controller] != 'topics'
-        expire_fragment(:action => 'show', :id => params[:id], :related => 'topics')
+        expire_fragment(:action => 'show', :id => thing_to_delete, :related => 'topics')
+        # expire any related topics related caches
+        thing_to_delete.topics.each do |topic|
+          expire_related_caches_for(topic, 'topics')
+        end
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment(:action => 'show', :id => params[:id], :related => zoom_class_controller(zoom_class))
+          expire_fragment(:action => 'show', :id => thing_to_delete, :related => zoom_class_controller(zoom_class))
+          if zoom_class == 'Topic'
+            thing_to_delete.related_topics.each do |item|
+              expire_related_caches_for(item, 'topics')
+            end
+          else
+            thing_to_delete.send(zoom_class.tableize).each do |item|
+              expire_related_caches_for(item, params[:controller])
+            end
+          end
         end
       end
     end
@@ -73,10 +90,10 @@ class ApplicationController < ActionController::Base
   def expire_related_caches_for(item, controller = nil)
     if !controller.nil?
       expire_fragment(:urlified_name => item.basket.urlified_name,
-                      :controller => controller,
+                      :controller => zoom_class_controller(item.class.name),
                       :action => 'show',
                       :id => item,
-                      :related => 'topics')
+                      :related => zoom_class_controller(controller))
     else
       if item.class.name != 'topics'
         expire_fragment(:urlified_name => item.basket.urlified_name,
@@ -156,7 +173,8 @@ class ApplicationController < ActionController::Base
       prepare_and_save_to_zoom(@new_related_topic)
 
       # make sure the topics cache for this type of item is cleared
-      expire_related_caches_for(@new_relate_topic, zoom_class_controller(item.class.name))
+      logger.debug("what is zoom_class_controller: " + zoom_class_controller(item.class.name))
+      expire_related_caches_for(@new_related_topic, zoom_class_controller(item.class.name))
 
       where_to_redirect = 'show_related'
     end
