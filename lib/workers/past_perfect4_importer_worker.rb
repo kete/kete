@@ -336,8 +336,8 @@ class PastPerfect4ImporterWorker < BackgrounDRb::Worker::RailsBase
       results[:error], @successful  = $!.to_s, false
       results[:done_with_do_work] = true
     end
-    ActiveRecord::Base.connection.disconnect!
-    ::BackgrounDRb::MiddleMan.instance.delete_worker @_job_key
+    # ActiveRecord::Base.connection.disconnect!
+    # ::BackgrounDRb::MiddleMan.instance.delete_worker @_job_key
   end
 
   def prepare_extended_field(options = {})
