@@ -14,7 +14,6 @@ class WebLinksController < ApplicationController
   end
 
   def show
-    # unfortunately we need to find the object, almost no matter what
     if !has_all_fragments? or params[:format] == 'xml'
       @web_link = @current_basket.web_links.find(params[:id])
       @title = @web_link.title
@@ -24,6 +23,11 @@ class WebLinksController < ApplicationController
       @creator = @web_link.creators.first
       @last_contributor = @web_link.contributors.last || @creator
     end
+
+    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+      @comments = @web_link.comments
+    end
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @web_link) }

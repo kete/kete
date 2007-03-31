@@ -17,11 +17,8 @@ class Topic < ActiveRecord::Base
   # all our ZOOM_CLASSES need this to be searchable by zebra
   include ConfigureActsAsZoomForKete
 
-  # other points:
-  # should be versioned see acts_as_versioned
-  # we probably want acts_as_commentable or role our own - the question being how one can see comments by commenter
-  # see http://blog.caboo.se/articles/2006/02/21/eager-loading-with-cascaded-associations
-  # about cascading eager associations, note that patch mentioned is now in edge
+  # we can't use object.comments, because that is used by related content stuff
+  has_many :comments, :as => :commentable, :dependent => :destroy, :order => 'position'
 
   # this is where we handled "related to"
   has_many :content_item_relations,
@@ -40,11 +37,13 @@ class Topic < ActiveRecord::Base
       :include => :basket,
       :order => 'position'
     else
-      has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
-      :source => zoom_class.tableize.singularize.to_sym,
-      :conditions => ["content_item_relations.related_item_type = ?", zoom_class],
-      :include => :basket,
-      :order => 'position'
+      unless zoom_class == 'Comment'
+        has_many zoom_class.tableize.to_sym, :through => :content_item_relations,
+        :source => zoom_class.tableize.singularize.to_sym,
+        :conditions => ["content_item_relations.related_item_type = ?", zoom_class],
+        :include => :basket,
+        :order => 'position'
+      end
     end
   end
 

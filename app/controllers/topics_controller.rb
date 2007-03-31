@@ -221,6 +221,10 @@ class TopicsController < ApplicationController
       @last_contributor = @topic.contributors.last || @creator
     end
 
+    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+      @comments = @topic.comments
+    end
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @topic) }

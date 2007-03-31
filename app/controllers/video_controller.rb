@@ -24,6 +24,10 @@ class VideoController < ApplicationController
       @last_contributor = @video.contributors.last || @creator
     end
 
+    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+      @comments = @video.comments
+    end
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @video) }

@@ -59,6 +59,7 @@
                                                                 :controller => '/images',
                                                                 :id => @still_image %></li>
 <% end -%>
+                                        <li><a href="#comments">Discuss</a></li>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
@@ -96,3 +97,12 @@
 <% cache ({:related => 'topics'}) do -%>
                 <%= item_related_topics_wrapper(:class_phrase => 'image', :source_item => @still_image, :source_item_class => 'StilImage', :topics => @still_image.topics) %>
 <% end -%>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="detail-discuss">
+                        <h3><a name="comments">Discuss This Image</a></h3>
+<% cache ({:part => 'comments'}) do -%>
+        <%= show_comments_for(@still_image) %>
+<% end -%>
+                </div>
+                <div class="cleaner">&nbsp;</div>

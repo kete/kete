@@ -7,6 +7,8 @@ module ZoomHelpers
         humanized = 'Audio'
       when "WebLink"
         humanized = 'Web Link'
+      when "Comment"
+        humanized = 'Discussion'
       when "StillImage"
         humanized = 'Image'
       else
@@ -22,6 +24,8 @@ module ZoomHelpers
         plural_humanized = 'Audio'
       when "WebLink"
         plural_humanized = 'Web Links'
+      when "Comment"
+        plural_humanized = 'Discussion'
       when "StillImage"
         plural_humanized = 'Images'
       else
@@ -37,6 +41,8 @@ module ZoomHelpers
         zoom_class_controller = 'images'
       when "Video"
         zoom_class_controller = 'video'
+      when "Comment"
+        zoom_class_controller = 'comments'
       when "AudioRecording"
         zoom_class_controller = 'audio'
       else

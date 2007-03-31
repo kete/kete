@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
 
   # if anything is added, edited, or deleted
   # we need to rebuild our rss caches
-  after_filter :expire_rss_caches, :only => [ :create, :edit, :destroy]
+  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy]
 
   def load_basket
     @current_basket = Basket.new
@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex']
+  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'comments']
 
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
@@ -122,6 +122,14 @@ class ApplicationController < ActionController::Base
                     :part => 'contributions')
   end
 
+  def expire_comments_caches_for(item)
+    expire_fragment(:urlified_name => item.basket.urlified_name,
+                    :controller => zoom_class_controller(item.class.name),
+                    :action => 'show',
+                    :id => item,
+                    :part => 'comments')
+  end
+
   # cheating, we know that we are using file store, rather than mem_cache
   def has_fragment?(name = {})
     File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
@@ -169,9 +177,11 @@ class ApplicationController < ActionController::Base
     redirect_to :action => 'show', :controller => 'topics', :id => topic, :urlified_name => basket.urlified_name
   end
 
-  def setup_related_topic_and_zoom_and_redirect(item)
+  def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil)
     where_to_redirect = 'show_self'
-    if params[:relate_to_topic_id] and @successful
+    if !commented_item.nil? and @successful
+      where_to_redirect = 'commentable'
+    elsif params[:relate_to_topic_id] and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic_id])
 
       ContentItemRelation.new_relation_to_topic(@new_related_topic.id, item)
@@ -191,10 +201,16 @@ class ApplicationController < ActionController::Base
 
       expire_related_caches_for(item)
 
-      if where_to_redirect == 'show_related'
+      case where_to_redirect
+      when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "Related #{item.class.name.humanize} was successfully created."
         redirect_to_related_topic(@new_related_topic)
+      when 'commentable'
+        redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
+                            :action => 'show',
+                            :id => commented_item,
+                            :urlified_name => commented_item.basket.urlified_name)
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{item.class.name.humanize} was successfully created."
@@ -286,6 +302,5 @@ class ApplicationController < ActionController::Base
   def local_request?
     false
   end
-
 
 end

@@ -1,0 +1,13 @@
+<% @title = 'Editing comment' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_for :comment,
+             :url => { :action => 'update',
+                       :id => @comment },
+             :html => { :multipart => true } do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to_cancel %>

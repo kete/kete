@@ -23,6 +23,11 @@ class AudioController < ApplicationController
       @creator = @audio_recording.creators.first
       @last_contributor = @audio_recording.contributors.last || @creator
     end
+
+    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+      @comments = @audio_recording.comments
+    end
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @audio_recording) }

@@ -21,7 +21,7 @@
                                                         :confirm => DOWNLOAD_WARNING -%>)
                                 </p>
                                 <p>Size: <%= number_to_human_size(@document.size) %></p>
-                                <p>Recording type: <%= @document.content_type %></p>
+                                <p>Document type: <%= @document.content_type %></p>
                         </div>
 <% end -%>
                         <div class="detail-tools">
@@ -33,6 +33,7 @@
                                                                 :controller => '/documents',
                                                                 :id => @document %></li>
 <% end -%>
+                                        <li><a href="#comments">Discuss</a></li>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
@@ -70,3 +71,12 @@
 <% cache ({:related => 'topics'}) do -%>
                 <%= item_related_topics_wrapper(:class_phrase => 'document', :source_item => @document, :source_item_class => 'Document', :topics => @document.topics) %>
 <% end -%>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="detail-discuss">
+                        <h3><a name="comments">Discuss This Document</a></h3>
+<% cache ({:part => 'comments'}) do -%>
+        <%= show_comments_for(@document) %>
+<% end -%>
+                </div>
+                <div class="cleaner">&nbsp;</div>

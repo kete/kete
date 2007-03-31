@@ -284,4 +284,39 @@ module ApplicationHelper
     end
     return items_to_rebuild.join(",")
   end
+
+  # related to comments
+  def show_comments_for(item)
+    html_string = "<p>There are #{@comments.size} comments in this discussion."
+    if @comments.size > 0
+      html_string += "Read and "
+    end
+
+    html_string += link_to("join this discussion",
+                           {:action => :new,
+                             :controller => 'comments',
+                             :commentable_id => item,
+                             :commentable_type => item.class.name
+                           },
+                           :method => :post)
+
+    html_string += "</p>\n"
+
+    if @comments.size > 0
+      @comments.each do |comment|
+        html_string += "<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
+        html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5>\n"
+        html_string += comment.description + "\n"
+        html_string += tags_for(comment) + "\n"
+      end
+      html_string += "<p>" + link_to("join this discussion",
+                                     {:action => :new,
+                                       :controller => 'comments',
+                                       :commentable_id => item,
+                                       :commentable_type => item.class.name
+                                     },
+                                     :method => :post) + "</p>"
+    end
+    return html_string
+  end
 end

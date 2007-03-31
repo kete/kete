@@ -1,26 +1,21 @@
+<% # not in use at this time, since comments should only show up on the thing that they are commented on's page -%>
                 <div id="detail-wrapper">
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
 <% cache ({:part => 'details'}) do -%>
-                                <h2><%= h(@video.title) %></h2>
+                                <h2><%= h(@comment.title) %></h2>
 
-                                <% extended_fields_html = display_xml_attributes(@video) -%>
+                                <% extended_fields_html = display_xml_attributes(@comment) -%>
                                 <% if !extended_fields_html.blank? %>
                                         <div id="detail-extended">
-                                                <h4 id="detail-extended-heading"><%= h(@video.title) %></h4>
+                                                <h4 id="detail-extended-heading"><%= h(@comment.title) %></h4>
                                                 <%= extended_fields_html %>
                                         </div>
                                 <% end %>
 
-                                <%= tags_for(@video) -%>
+                                <%= tags_for(@comment) -%>
 
-                                <p><%= @video.description %></p>
-                                <p>Filename: <%= @video.filename %>
-                                   (<%= link_to 'view', @video.public_filename,
-                                                        :confirm => DOWNLOAD_WARNING -%>)
-                                </p>
-                                <p>Size: <%= number_to_human_size(@video.size) %></p>
-                                <p>Recording type: <%= @video.content_type %></p>
+                                <p><%= @comment.description %></p>
                         </div>
 <% end -%>
                         <div class="detail-tools">
@@ -29,53 +24,41 @@
 <% cache ({:part => 'edit'}) do -%>
                                         <li class="first"><%= link_to "Edit",
                                                                 :action => :edit,
-                                                                :controller => '/video',
-                                                                :id => @video %></li>
+                                                                :controller => '/comments',
+                                                                :id => @comment %></li>
 <% end -%>
-                                        <li><a href="#comments">Discuss</a></li>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
                                                                 {:action => :destroy,
-                                                                :controller => '/video',
-                                                                :id => @video},
+                                                                :controller => '/comments',
+                                                                :id => @comment},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
-<% end -%>
                                         <% end -%>
+<% end -%>
                                         <% if logged_in? and @site_admin -%>
 <% cache ({:part => 'zoom_reindex'}) do -%>
                                                 <li><%= link_to "Zoom Update this item and it's related items",
                                                                 {:action => :rebuild_zoom_for_items,
                                                                 :controller => 'search',
-                                                                :items_to_rebuild => items_to_rebuild(@video)},
+                                                                :items_to_rebuild => "Comment-#{@comment.id}"},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure you want to update?'%></li>
-<% end -%>
                                         <% end -%>
+<% end -%>
                                 </ul>
                         </div>
 <% cache ({:part => 'contributions'}) do -%>
                         <div class="detail-tools">
                                 <ul>
-                                        <li class="first">Created by: <%= link_to_contributions_of(@creator,'Video') %></li>
-                                        <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'Video') %></li>
-                                        <li>Last Edited Date: <%= @video.updated_at.to_s(:euro_date) -%>
+                                        <li class="first">Created by: <%= link_to_contributions_of(@creator,'Comment') %></li>
+                                        <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'Comment') %></li>
+                                        <li>Last Edited Date: <%= @comment.updated_at.to_s(:euro_date) -%>
 
                                 </ul>
                         </div>
                         <div class="cleaner">&nbsp;</div>
                 </div>
 <% end -%>
-<% cache ({:related => 'topics'}) do -%>
-                <%= item_related_topics_wrapper(:class_phrase => 'video', :source_item => @video, :source_item_class => 'Video', :topics => @video.topics) %>
-<% end -%>
-                        <div class="cleaner">&nbsp;</div>
-                </div>
-                <div id="detail-discuss">
-                        <h3><a name="comments">Discuss This Video</a></h3>
-<% cache ({:part => 'comments'}) do -%>
-        <%= show_comments_for(@video) %>
-<% end -%>
-                </div>
-                <div class="cleaner">&nbsp;</div>
+

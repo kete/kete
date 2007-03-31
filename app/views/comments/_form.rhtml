@@ -1,0 +1,42 @@
+<% edit = false
+   if !@comment.id.blank?
+        edit = true
+   end -%>
+        <fieldset>
+
+                <%= error_messages_for 'comment' %>
+
+                <!--[form:comment]-->
+                <% if !params[:relate_to_topic_id].nil? %>
+                        <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+                <% end %>
+
+                <p><label for="comment_title">Title</label><br/>
+                <%= form.text_field :title  %></p>
+
+                <p><label for="comment_description">Description</label><br/>
+                <%= form.text_area :description, :class => "mceEditor", :cols => 120  %></p>
+
+                <%= tags_input_field(form,"comment_tag_list") %>
+
+                <% form_fields = @content_type.content_type_to_field_mappings -%>
+                <% if form_fields.size > 0 %>
+                        <%= render(:partial => 'search/extended_field_mapping',
+                                   :collection => form_fields,
+                                   :locals => { :edit => edit,
+                                                :extended_item => @comment,
+                                                :item_key => 'comment'}) %>
+                <% end %>
+
+                <%= hidden_field_tag 'comment[basket_id]', @current_basket.id %>
+
+                <% if !edit -%>
+                        <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] %>
+
+                        <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] %>
+                <% end %>
+
+                <!--[eoform:comment]-->
+
+        </fieldset>
+

@@ -32,6 +32,7 @@
                                                                 :controller => '/audio',
                                                                 :id => @audio_recording %></li>
 <% end -%>
+                                        <li><a href="#comments">Discuss</a></li>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
@@ -70,3 +71,12 @@
 <% cache ({:related => 'topics'}) do -%>
                 <%= item_related_topics_wrapper(:class_phrase => 'audio recording', :source_item => @audio_recording, :source_item_class => 'AudioRecording', :topics => @audio_recording.topics) %>
 <% end -%>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="detail-discuss">
+                        <h3><a name="comments">Discuss This Audio Recording</a></h3>
+<% cache ({:part => 'comments'}) do -%>
+        <%= show_comments_for(@audio_recording) %>
+<% end -%>
+                </div>
+                <div class="cleaner">&nbsp;</div>

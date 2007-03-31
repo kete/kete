@@ -27,6 +27,7 @@
                                                                 :controller => 'topics',
                                                                 :id => @topic %></li>
 <% end -%>
+                                        <li><a href="#comments">Discuss</a></li>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
@@ -119,12 +120,13 @@
                         </div>
                         <div class="cleaner">&nbsp;</div>
                 </div>
-                <!--
                         <div class="cleaner">&nbsp;</div>
                 </div>
                 <div id="detail-discuss">
-                        <h3>Dummy: Discuss This Topic</h3>
-                        There are 13 posts in this discussion. <a href="/">Read and join this discussion</a>
+                        <h3><a name="comments">Discuss This Topic</a></h3>
+<% cache ({:part => 'comments'}) do -%>
+        <%= show_comments_for(@topic) %>
+<% end -%>
                 </div>
-                -->
+
                 <div class="cleaner">&nbsp;</div>

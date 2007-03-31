@@ -26,6 +26,7 @@
                                                                 :controller => '/web_links',
                                                                 :id => @web_link %></li>
 <% end -%>
+                                        <li><a href="#comments">Discuss</a></li>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
                                                 <li><%= link_to "Delete",
@@ -63,3 +64,12 @@
 <% cache ({:related => 'topics'}) do -%>
                 <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @web_link, :source_item_class => 'WebLink', :topics => @web_link.topics) %>
 <% end -%>
+                        <div class="cleaner">&nbsp;</div>
+                </div>
+                <div id="detail-discuss">
+                        <h3><a name="comments">Discuss This Web Link</a></h3>
+<% cache ({:part => 'comments'}) do -%>
+        <%= show_comments_for(@web_link) %>
+<% end -%>
+                </div>
+                <div class="cleaner">&nbsp;</div>

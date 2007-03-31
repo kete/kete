@@ -1,4 +1,4 @@
-class DocumentsController < ApplicationController
+class CommentsController < ApplicationController
   include ExtendedContentController
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -31,7 +31,7 @@ class DocumentsController < ApplicationController
   ### end TinyMCE WYSIWYG editor stuff
 
   def index
-    redirect_to_search_for('Document')
+    redirect_to_search_for('Comment')
   end
 
   def list
@@ -40,72 +40,75 @@ class DocumentsController < ApplicationController
 
   def show
     if !has_all_fragments? or params[:format] == 'xml'
-      @document = @current_basket.documents.find(params[:id])
-      @title = @document.title
+      @comment = @current_basket.comments.find(params[:id])
+      @title = @comment.title
     end
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @document.creators.first
-      @last_contributor = @document.contributors.last || @creator
-    end
-
-    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
-      @comments = @document.comments
+      @creator = @comment.creators.first
+      @last_contributor = @comment.contributors.last || @creator
     end
 
     respond_to do |format|
       format.html
-      format.xml { render_oai_record_xml(:item => @document) }
+      format.xml { render_oai_record_xml(:item => @comment) }
     end
   end
 
   def new
-    @document = Document.new
+    @comment = Comment.new
   end
 
   def create
-    @document = Document.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
-    @successful = @document.save
+    @comment = Comment.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
+    @successful = @comment.save
 
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @document.creators << current_user
+    @comment.creators << current_user
 
-    setup_related_topic_and_zoom_and_redirect(@document)
+    # make sure that we wipe comments cache for thing we are commenting on
+    commented_item = Module.class_eval(params[:comment][:commentable_type]).find(params[:comment][:commentable_id])
+    expire_comments_caches_for(commented_item)
+
+    # although we shouldn't be using the related_topic aspect here
+    # i.e. there is never going to be params[:related_topic_id]
+    # this method is smart enough to do the right thing when that is the case
+    setup_related_topic_and_zoom_and_redirect(@comment, commented_item)
   end
 
   def edit
-    @document = Document.find(params[:id])
+    @comment = Comment.find(params[:id])
   end
 
   def update
-    @document = Document.find(params[:id])
+    @comment = Comment.find(params[:id])
 
-    if @document.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
+    if @comment.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
       # add this to the user's empire of contributions
       # TODO: allow current_user whom is at least moderator to pick another user
       # as contributor
       # uses virtual attr as hack to pass version to << method
       @current_user = current_user
-      @current_user.version = @document.version
-      @document.contributors << @current_user
+      @current_user.version = @comment.version
+      @comment.contributors << @current_user
 
-      prepare_and_save_to_zoom(@document)
+      prepare_and_save_to_zoom(@comment)
 
-      flash[:notice] = 'Document was successfully updated.'
-      redirect_to :action => 'show', :id => @document
+      flash[:notice] = 'Comment was successfully updated.'
+      redirect_to :action => 'show', :id => @comment
     else
       render :action => 'edit'
     end
   end
 
   def destroy
-    zoom_destroy_and_redirect('Document')
+    zoom_destroy_and_redirect('Comment')
   end
 
   private
   def load_content_type
-    @content_type = ContentType.find_by_class_name('Document')
+    @content_type = ContentType.find_by_class_name('Comment')
   end
 end

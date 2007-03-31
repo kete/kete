@@ -1,0 +1,12 @@
+<% @title = 'New discussion' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_for :comment,
+            :url => { :action => 'create'},
+            :html => { :multipart => true } do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag "Create" %>
+<% end %>
+
+<%= link_to_cancel %>

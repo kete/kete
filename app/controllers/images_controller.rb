@@ -27,6 +27,10 @@ class ImagesController < ApplicationController
       @last_contributor = @still_image.contributors.last || @creator
     end
 
+    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+      @comments = @still_image.comments
+    end
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @still_image) }

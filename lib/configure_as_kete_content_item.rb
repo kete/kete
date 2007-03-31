@@ -4,9 +4,6 @@ module ConfigureAsKeteContentItem
       # each topic or content item lives in exactly one basket
       klass.send :belongs_to, :basket
 
-      # relate to topics
-      klass.send :include, RelatedContent
-
       # where we handle creator and contributor tracking
       klass.send :include, HasContributors
 
@@ -15,6 +12,15 @@ module ConfigureAsKeteContentItem
 
       # methods related to handling the xml kept in extended_content column
       klass.send :include, ExtendedContent
+
+      # everything except comments themselves is commentable
+      # we also skip related stuff for comments
+      unless klass.name == 'Comment'
+        # relate to topics
+        klass.send :include, RelatedContent
+
+        klass.send :include, KeteCommentable
+      end
 
       klass.send :acts_as_versioned
 
