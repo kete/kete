@@ -7,6 +7,12 @@ module ZoomControllerHelpers
       begin
         item = Module.class_eval(zoom_class).find(params[:id])
 
+        # delete any comments this is on
+        item.comments.each do |comment|
+          prepare_zoom(comment)
+          comment.destroy
+        end
+
         prepare_zoom(item)
         @successful = item.destroy
       rescue
