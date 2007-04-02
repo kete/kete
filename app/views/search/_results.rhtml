@@ -66,8 +66,8 @@
                                                                                             :source_url => result['url'],
                                                                                             :locally_hosted => result['locally_hosted'],
                                                                                             :image_file => result['image_file'],
-											    :short_summary => result['short_summary'],
-											    :result => result['id']}) %>
+                                                                                            :short_summary => result['short_summary'],
+                                                                                            :result => result['id']}) %>
                                         <% else %>
                                                 <%= render(:partial => "generic", :locals => {:title => result['title'],
                                                                                               :source_url => result['url'],
@@ -95,7 +95,7 @@
                                         results on this page
                                 </div>
                                 <div id="addnew">
-                                <% if !params[:relate_to_topic] %>
+                                <% if !params[:relate_to_topic] and current_class != 'Comment' %>
                                         <%= link_to_add_item(:phrase => "Add a new ", :item_class => current_class) -%>
                                         to these search results
                                 <% else -%>
