@@ -15,7 +15,7 @@
                 <%= form.text_field :title  %></p>
 
                 <p><label for="audio_recording_description">Description</label><br/>
-                <%= form.text_area :description  %></p>
+                <%= form.text_area :description, :class => "mceEditor", :cols => 120 %></p>
 
                 <%= tags_input_field(form,"audio_recording_tag_list") %>
 
@@ -36,8 +36,14 @@
                                                 :item_key => 'audio_recording'}) %>
                 <% end %>
 
-
-
+                <% if edit -%>
+                        <div class="form-element">
+                                <label for="audio_recording_version_comment">Comment on this edit:</label>
+                                <%  # delete the last version_comment's value
+                                    @audio_recording.version_comment = nil -%>
+                                  <%= form.text_field :version_comment %>
+                        </div>
+                <% end -%>
 
                 <%= hidden_field_tag 'audio_recording[basket_id]', @current_basket.id %>
                 <!--[eoform:audio_recording]-->

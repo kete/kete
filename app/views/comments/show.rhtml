@@ -16,8 +16,10 @@
                                 <%= tags_for(@comment) -%>
 
                                 <p><%= @comment.description %></p>
-                        </div>
+                                <%= pending_review(@video) %>
 <% end -%>
+                        </div>
+
                         <div class="detail-tools">
                                 <h3>Get Involved</h3>
                                 <ul>
@@ -26,6 +28,9 @@
                                                                 :action => :edit,
                                                                 :controller => '/comments',
                                                                 :id => @comment %></li>
+                                        <li><%= link_to "History",
+                                                         :action => :history,
+                                                         :id => @video %></li>
 <% end -%>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
@@ -45,7 +50,10 @@
                                                                 :items_to_rebuild => "Comment-#{@comment.id}"},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure you want to update?'%></li>
+<% end -%>
                                         <% end -%>
+<% cache ({:part => 'flagging_links'}) do -%>
+                                        <%= flagging_links_for(@video) %>
 <% end -%>
                                 </ul>
                         </div>
@@ -54,7 +62,7 @@
                                 <ul>
                                         <li class="first">Created by: <%= link_to_contributions_of(@creator,'Comment') %></li>
                                         <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'Comment') %></li>
-                                        <li>Last Edited Date: <%= @comment.updated_at.to_s(:euro_date) -%>
+                                        <li>Last Edited: <%= @comment.updated_at.to_s(:euro_date_time) -%></li>
 
                                 </ul>
                         </div>

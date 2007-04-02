@@ -319,4 +319,61 @@ module ApplicationHelper
     end
     return html_string
   end
+
+  # related to flagging
+  def flagging_links_for(item)
+    html_string = "                                         <li>Flag as:
+                                                <ul>\n"
+    flag_count = 1
+    FLAGGING_TAGS.each do |flag|
+      if flag_count == 1
+        html_string += "<li class=\"first\">"
+      else
+        html_string += "<li>"
+      end
+      html_string += link_to(flag,
+                             :action => :flag_version,
+                             :flag => flag,
+                             :id => item) + "</li>\n"
+      flag_count += 1
+    end
+    html_string += "                                            </ul>
+                                        </li>\n"
+  end
+
+  def reverted?(item)
+    item.version != item.versions.last.version
+  end
+
+  def disputed?(item)
+    item.versions.last.tags.size > 0
+  end
+
+  def pending_review(item)
+    html_string = String.new
+    if disputed?(item)
+      html_string = "<h4>Review Pending: "
+      if reverted?(item)
+        html_string += "currently reverted to non-disputed version \# #{item.version}"
+      else
+        html_string += "displaying version flagged as "
+        tag_names = Array.new
+        item.versions.last.tags.each do |tag|
+          tag_names << tag.name
+        end
+        html_string += tag_names.to_sentence
+      end
+    end
+    return html_string
+  end
+
+  def link_to_preview_of(item, version)
+    link_to "preview",
+    :controller => zoom_class_controller(item.class.name),
+    :urlified_name => item.basket.urlified_name,
+    :action => :preview,
+    :id => item,
+    :version => version.version
+  end
+
 end

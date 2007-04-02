@@ -15,8 +15,12 @@
                                 <%= tags_for(@web_link) -%>
 
                                 <p><%= @web_link.description %></p>
-                        </div>
+
+                                <%= pending_review(@web_link) %>
 <% end -%>
+
+              </div>
+
                         <div class="detail-tools">
                                 <h3>Get Involved</h3>
                                 <ul>
@@ -25,6 +29,9 @@
                                                                 :action => :edit,
                                                                 :controller => '/web_links',
                                                                 :id => @web_link %></li>
+                                        <li><%= link_to "History",
+                                                         :action => :history,
+                                                         :id => @web_link %></li>
 <% end -%>
                                         <li><a href="#comments">Discuss</a></li>
                                         <% if logged_in? and @at_least_a_moderator -%>
@@ -47,6 +54,10 @@
                                                                 :confirm => 'Are you sure you want to update?'%></li>
 <% end -%>
                                         <% end -%>
+<% cache ({:part => 'flagging_links'}) do -%>
+                                        <%= flagging_links_for(@web_link) %>
+<% end -%>
+
                                 </ul>
                         </div>
 <% cache ({:part => 'contributions'}) do -%>
@@ -54,7 +65,7 @@
                                 <ul>
                                         <li class="first">Created by: <%= link_to_contributions_of(@creator,'WebLink') %></li>
                                         <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'WebLink') %></li>
-                                        <li>Last Edited Date: <%= @web_link.updated_at.to_s(:euro_date) -%>
+                                        <li>Last Edited: <%= @web_link.updated_at.to_s(:euro_date_time) -%></li>
 
                                 </ul>
                         </div>
@@ -64,12 +75,10 @@
 <% cache ({:related => 'topics'}) do -%>
                 <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @web_link, :source_item_class => 'WebLink', :topics => @web_link.topics) %>
 <% end -%>
-                        <div class="cleaner">&nbsp;</div>
-                </div>
                 <div id="detail-discuss">
                         <h3><a name="comments">Discuss This Web Link</a></h3>
 <% cache ({:part => 'comments'}) do -%>
-        <%= show_comments_for(@web_link) %>
+                        <%= show_comments_for(@web_link) %>
 <% end -%>
                 </div>
                 <div class="cleaner">&nbsp;</div>

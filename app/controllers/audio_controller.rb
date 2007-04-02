@@ -1,10 +1,6 @@
 class AudioController < ApplicationController
   include ExtendedContentController
 
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
-
   def index
     redirect_to_search_for('AudioRecording')
   end
@@ -78,10 +74,5 @@ class AudioController < ApplicationController
 
   def destroy
     zoom_destroy_and_redirect('AudioRecording','Audio recording')
-  end
-
-  private
-  def load_content_type
-    @content_type = ContentType.find_by_class_name('AudioRecording')
   end
 end

@@ -22,9 +22,23 @@ module ConfigureAsKeteContentItem
         klass.send :include, KeteCommentable
       end
 
-      klass.send :acts_as_versioned
-
+      # note, since acts_as_taggable doesn't support versioning
+      # out of the box
+      # we also track each versions raw_tag_list input
+      # so we can revert later if necessary
       klass.send :acts_as_taggable
+
+      # we override acts_as_versioned dependent => delete_all
+      # because of the complexity our relationships of our models
+      # delete_all won't do the right thing (at least not in migrations)
+      klass.send :acts_as_versioned, :association_options => { :dependent => :destroy }
+
+      # this is a little tricky
+      # the acts_as_taggable declaration for the original
+      # is different than how we use tags on the versioned model
+      # where we use it for flagging moderator options, like 'flag as inappropriate'
+      # where 'inappropriate' is actually a tag on that particular version
+      Module.class_eval("#{klass.name}::Version").send(:acts_as_taggable)
 
       klass.send :validates_presence_of, :title
 

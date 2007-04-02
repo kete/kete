@@ -16,7 +16,7 @@
                 <%= form.text_field :title  %></p>
 
                 <p><label for="image_description">Description</label><br/>
-                <%= form.text_area :description %></p>
+                <%= form.text_area :description, :class => "mceEditor", :cols => 120 %></p>
 
                 <%= tags_input_field(form,"image_tag_list") %>
 
@@ -37,9 +37,18 @@
                                                 :item_key => 'still_image'}) %>
                 <% end %>
 
+
+                <% if edit -%>
+                        <div class="form-element">
+                                <label for="still_image_version_comment">Comment on this edit:</label>
+                                <%  # delete the last version_comment's value
+                                    @still_image.version_comment = nil -%>
+                                  <%= form.text_field :version_comment %>
+                        </div>
+                <% end -%>
+
+
                 <%= hidden_field_tag 'still_image[basket_id]', @current_basket.id %>
-
-
 
                 <% if !params[:id].nil? %>
                         <%= hidden_field_tag 'image_file[still_image_id]', params[:id] %>

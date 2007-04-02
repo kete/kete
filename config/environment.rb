@@ -86,7 +86,6 @@ DEFAULT_RECORDS_PER_PAGE = 5
 RECORDS_PER_PAGE_CHOICES = [5, 10, 20, 50]
 DEFAULT_SEARCH_CLASS = 'Topic'
 
-# TODO: make this dynamic if possible
 # from acts_as_zoom declarations in models
 ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document', 'Comment']
 
@@ -121,6 +120,11 @@ PRETTY_SITE_NAME = "Kete"
 SITE_NAME = "horowhenua.kete.net.nz"
 SITE_URL = "http://horowhenua.kete.net.nz/"
 NOTIFIER_EMAIL = "kete@horowhenua.kete.net.nz"
+
+# flagging tags
+# i.e. tags for moderation that are on VERSIONS of items
+# rather than on the item itself
+FLAGGING_TAGS = ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
 
 # warnings
 DOWNLOAD_WARNING = "You are about to download a file from Kete. Kete is an open digital repository and as such we can not guarantee the integrity of any file in the repository. Please ensure that your virus scan software is operating and is configured to scan this download.

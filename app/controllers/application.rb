@@ -11,7 +11,10 @@ class ApplicationController < ActionController::Base
   before_filter :login_from_cookie
 
   # only permit site members to add/delete things
-  before_filter :login_required, :only => [ :new, :pick_topic_type, :create, :edit, :update, :destroy, :link_related]
+  before_filter :login_required, :only => [ :new, :pick_topic_type, :create,
+                                            :edit, :update, :destroy,
+                                            :link_related, :flag_version,
+                                            :restore ]
 
   # all topics and content items belong in a basket
   # some controllers won't need it, but it shouldn't hurt have it available
@@ -24,6 +27,9 @@ class ApplicationController < ActionController::Base
   # if anything is updated or deleted
   # we need toss our show action fragments
   before_filter :expire_show_caches, :only => [ :update, :destroy ]
+
+  # keep track of tag_list input by version
+  before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]
 
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
@@ -43,7 +49,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'comments']
+  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments']
 
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
@@ -303,4 +309,170 @@ class ApplicationController < ActionController::Base
     false
   end
 
+  def update_params_with_raw_tag_list
+    # only do this for a zoom_class
+    # this will return the model's tableized name
+    # if it can't find it, so we have to doublecheck it's a zoom_class
+    zoom_class = zoom_class_from_controller(params[:controller])
+    if ZOOM_CLASSES.include?(zoom_class)
+      item_key = zoom_class.underscore.to_sym
+      params[item_key][:raw_tag_list] = params[item_key][:tag_list]
+    end
+  end
+
+  # flagging related
+
+  def find_version_from_item_and_version(item, version)
+    class_name = item.class.name
+    return Module.class_eval("#{class_name}::Version").find(:first,
+                                                            :conditions => ["#{class_name.underscore}_id = ? and version = ?", item.id, version])
+  end
+
+  def flag_version
+    # get the item in question based on controller and id passed
+    zoom_class = zoom_class_from_controller(params[:controller])
+    item = Module.class_eval(zoom_class).find(params[:id])
+    flag = params[:flag]
+
+    # we tag the current version with the flag passed
+    current_version = find_version_from_item_and_version(item, item.version)
+    current_version.tag_list = flag
+    current_version.save_tags
+
+    # we revert to most recent version without a flag
+    # if one is available, except for duplicates
+    reverted = false
+    if current_version.version > 1 and flag != 'duplicate'
+      last_version_version = current_version.version - 1
+
+      last_version = find_version_from_item_and_version(item, last_version_version)
+
+      last_version_tags_count = last_version.tags.size
+      if last_version_version > 1
+        while last_version_tags_count > 0
+          last_version_version = last_version_version - 1
+          last_version = find_version_from_item_and_version(item, last_version_version)
+          last_version_tags_count = last_version.tags.size
+        end
+      end
+
+      if last_version_tags_count == 0
+        item.revert_to!(last_version_version)
+        item.tag_list = item.raw_tag_list
+        item.save_tags
+        reverted = true
+      end
+    end
+
+    # clear caches for the item and rss
+    expire_show_caches
+    expire_rss_caches
+
+    # update zoom for item
+    # TODO: should we update related in case title has changed
+    if reverted
+      prepare_and_save_to_zoom(item)
+    end
+
+    # notify moderators for the basket
+    item_url = url_for(:action => 'show', :id => params[:id])
+    moderators = find_moderators_for_basket_or_next_in_line(@current_basket)
+    moderators.each do |moderator|
+      UserNotifier.deliver_item_flagged(moderator, flag, item_url, @current_user)
+    end
+
+    flash[:notice] = "Thank you for your input.  A moderator has been notified and will review the item in question."
+    flash[:notice] += " The item has been reverted to an earlier version for the time being." if reverted
+
+    redirect_to item_url
+
+  end
+
+  # permission check in controller
+  def restore
+    zoom_class = zoom_class_from_controller(params[:controller])
+    @item = Module.class_eval(zoom_class).find(params[:id])
+
+    # unlike flag_version, we create a new version
+    # so we track the restore in our version history
+    @item.revert_to(params[:version])
+    @item.tag_list = @item.raw_tag_list
+    @item.version_comment = "Restored content from revision \# #{params[:version]}."
+    @item.save
+
+    # keep track of the moderator's contribution
+    @current_user = current_user
+    @current_user.version = @item.version
+    @item.contributors << @current_user
+
+    # clear caches for the item and rss
+    expire_show_caches
+    expire_rss_caches
+
+    # update zoom for item
+    # TODO: should we update related in case title has changed
+    prepare_and_save_to_zoom(@item)
+
+    flash[:notice] = "The content of this #{@item.class.name.humanize} has been restored from the selected revision."
+
+    redirect_to url_for(:action => 'show', :id => params[:id])
+  end
+
+  # view history of edits to an item
+  # including each version's flags
+  # this expects a rhtml template within each controller's view directory
+  # so that different types of items can have their history display customized
+  def history
+    # get the item in question based on controller and id passed
+    zoom_class = zoom_class_from_controller(params[:controller])
+    @item = Module.class_eval(zoom_class).find(params[:id])
+
+    @versions = @item.versions
+  end
+
+  # preview a version of an item
+  # assumes a preview templates under the controller
+  def preview
+    # get the item in question based on controller and id passed
+    zoom_class = zoom_class_from_controller(params[:controller])
+    @item = Module.class_eval(zoom_class).find(params[:id])
+    # no need to preview live version
+    if @item.version.to_s == params[:version]
+      redirect_to url_for(:action => 'show', :id => params[:id])
+    else
+      @preview_version = @item.versions.find_by_version(params[:version])
+      @flags = Array.new
+      @preview_version.tags.each do |tag|
+        @flags << tag.name
+      end
+      @item.revert_to(@preview_version)
+    end
+  end
+
+  # if we don't have any moderators specified
+  # find admins for basket
+  # if no admins for basket, go with basket 1 (site) admins
+  # if no admins for site, go with any site_admins
+  def find_moderators_for_basket_or_next_in_line(basket)
+    moderator_role = Role.find(:first,
+                               :conditions => ["name = \'moderator\' and authorizable_type = \'Basket\' and authorizable_id = ?", basket.id])
+    moderators = moderator_role.users
+
+    if moderators.size == 0
+      moderator_role = Role.find(:first,
+                                 :conditions => ["name = \'admin\' and authorizable_type = \'Basket\' and authorizable_id = ?", basket.id])
+      moderators = moderator_role.users
+      if moderators.size == 0
+        moderator_role = Role.find(:first,
+                                   :conditions => "name = \'admin\' and authorizable_type = \'Basket\' and authorizable_id = 1")
+        moderators = moderator_role.users
+        if moderators.size == 0
+          moderator_role = Role.find(:first,
+                                     :conditions => "name = \'site_admin\'")
+          moderators = moderator_role.users
+        end
+      end
+    end
+    return moderators
+  end
 end

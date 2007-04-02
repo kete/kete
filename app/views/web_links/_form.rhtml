@@ -17,7 +17,7 @@
 
 <div class="form-element">
   <label for="web_link_description">Description</label>
-  <%= text_area 'web_link', 'description'  %>
+  <%= text_area 'web_link', 'description', :class => "mceEditor", :cols => 120 %>
 </div>
 
 <div class="form-element">
@@ -38,6 +38,15 @@
                                         :extended_item => @web_link,
                                         :item_key => 'web_link'}) %>
 <% end %>
+
+<% if edit -%>
+<div class="form-element">
+  <label for="web_link_version_comment">Comment on this edit:</label>
+  <%  # delete the last version_comment's value
+      @web_link.version_comment = nil -%>
+  <%= text_field 'web_link', 'version_comment', {:class => "text-input"} %>
+</div>
+<% end -%>
 
 <%= hidden_field_tag "web_link[basket_id]", @current_basket.id %>
 

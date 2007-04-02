@@ -39,6 +39,15 @@
                                                 :item_key => 'document'}) %>
                 <% end %>
 
+                <% if edit -%>
+                        <div class="form-element">
+                                <label for="document_version_comment">Comment on this edit:</label>
+                                <%  # delete the last version_comment's value
+                                    @document.version_comment = nil -%>
+                                  <%= form.text_field :version_comment %>
+                        </div>
+                <% end -%>
+
                 <%= hidden_field_tag 'document[basket_id]', @current_basket.id %>
 
                 <!--[eoform:document]-->

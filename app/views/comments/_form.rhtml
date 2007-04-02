@@ -15,7 +15,7 @@
                 <%= form.text_field :title  %></p>
 
                 <p><label for="comment_description">Description</label><br/>
-                <%= form.text_area :description, :class => "mceEditor", :cols => 120  %></p>
+                <%= form.text_area :description, :class => "mceEditor", :cols => 120 %></p>
 
                 <%= tags_input_field(form,"comment_tag_list") %>
 
@@ -27,6 +27,15 @@
                                                 :extended_item => @comment,
                                                 :item_key => 'comment'}) %>
                 <% end %>
+
+                <% if edit -%>
+                        <div class="form-element">
+                                <label for="comment_version_comment">Comment on this edit:</label>
+                                <%  # delete the last version_comment's value
+                                    @comment.version_comment = nil -%>
+                                  <%= form.text_field :version_comment %>
+                        </div>
+                <% end -%>
 
                 <%= hidden_field_tag 'comment[basket_id]', @current_basket.id %>
 
