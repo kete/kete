@@ -1,5 +1,24 @@
 # See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
 User-agent: *
+Disallow: /site/comments
+Disallow: /site/web_links/history
+Disallow: /site/audio/history
+Disallow: /site/video/history
+Disallow: /site/topics/history
+Disallow: /site/documents/history
+Disallow: /site/images/history
+Disallow: /site/web_links/flag_version
+Disallow: /site/audio/flag_version
+Disallow: /site/video/flag_version
+Disallow: /site/topics/flag_version
+Disallow: /site/documents/flag_version
+Disallow: /site/images/flag_version
+Disallow: /site/web_links/preview
+Disallow: /site/audio/preview
+Disallow: /site/video/preview
+Disallow: /site/topics/preview
+Disallow: /site/documents/preview
+Disallow: /site/images/preview
 Disallow: /site/index_page/help_file
 Disallow: /site/web_links/new
 Disallow: /site/audio/new
@@ -46,3 +65,4 @@ Disallow: /site/all/audio/related_to
 Disallow: /site/all/video/related_to
 Disallow: /site/all/web_links/related_to
 Disallow: /site/search/find_related
+
