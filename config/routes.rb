@@ -61,6 +61,11 @@ ActionController::Routing::Routes.draw do |map|
 
   map.basket_search_empty ':urlified_name/search/:controller_name_for_zoom_class/for', :controller => "search", :action => 'for', :search_terms => nil
 
+  # Walter McGinnis, 2007-04-03
+  # active_scaffold routes
+  map.resources :extended_fields, :active_scaffold => true
+  map.resources :zoom_dbs, :active_scaffold => true
+
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   # map.connect ':controller/service.wsdl', :action => 'wsdl'
