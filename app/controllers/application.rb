@@ -54,6 +54,10 @@ class ApplicationController < ActionController::Base
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
   def expire_show_caches
+    # only do this for zoom_classes
+    things_class = zoom_class_from_controller(params[:controller])
+    return unless ZOOM_CLASSES.include?(things_class)
+
     SHOW_PARTS.each do |part|
       expire_fragment(:action => 'show', :id => params[:id], :part => part)
     end
@@ -159,6 +163,9 @@ class ApplicationController < ActionController::Base
   # remove rss feeds under all and search directories
   # for the class of thing that was just added
   def expire_rss_caches(basket = nil)
+    # only applicable to zoom classes
+    return unless ZOOM_CLASSES.include?(zoom_class_from_controller(params[:controller]))
+
     basket ||= @current_basket
 
     if @current_basket.nil?
