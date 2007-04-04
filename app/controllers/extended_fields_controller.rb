@@ -5,7 +5,7 @@ class ExtendedFieldsController < ApplicationController
   permit "site_admin or admin of :current_basket"
 
   active_scaffold :extended_field do |config|
-    config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms]
+    config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example]
     list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type]
   end
 end
