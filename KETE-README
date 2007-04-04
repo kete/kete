@@ -20,6 +20,7 @@ https://secure.near-time.com/svn/plugins/trunk/tiny_mce
 svn://visioni.st/plugins/validates_http_url/trunk
 http://svn.techno-weenie.net/projects/plugins/attachment_fu/
 
+# not necessary to do the script/generate bit for out current setup!!!
 http://svn.techno-weenie.net/projects/plugins/acts_as_authenticated
 to use:
 script/generate authenticated user account --svn
@@ -78,7 +79,37 @@ to shutdown daemon:
 
 mongrel_rails stop
 
-TODO: mongrel_cluster notes
+Mongrel clustering:
+
+cd /path/to/my/app
+
+mongrel_rails cluster::configure -e production \
+    -p 8000 -N 3 -c /path/to/app -a 127.0.0.1 \
+    --user your_app_user --group your_app_group
+
+mongrel_rails cluster::start
+
+If that works then do the following (note that if you have done this for another rails app on the same server, some of these steps are unnecessary):
+
+sudo mkdir /etc/mongrel_cluster
+sudo ln -s /path/to/your/app/config/mongrel_cluster.yml /etc/mongrel_cluster/your_app.yml
+sudo cp /var/lib/gems/1.8/gems/mongrel_cluster-0.2.1/resources/mongrel_cluster /etc/init.d/
+sudo chmod +x /etc/init.d/mongrel_cluster
+sudo /usr/sbin/update-rc.d -f mongrel_cluster defaults
+
+
+Edit config/environment.rb for your server:
+
+There are a several site specific settings you will want to edit, they should be self-explanatory.
+
+Edit app/views/layouts/application.rhtml for your server:
+
+self explanatory
+
+Edit public/stylesheets/* for your server:
+
+change your stylesheets to suit
+
 
 Demo:
 
