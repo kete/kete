@@ -2,7 +2,11 @@
                         <ul id="tablist">
                             <% existing_count = 0 %>
                                 <% if params[:relate_to_topic] %>
-                                  <% @existing_relations = params[:existing_array_string].split(',') %>
+				  <% if !params[:existing_array_string].nil?
+                                  	@existing_relations = params[:existing_array_string].split(',')
+				     else
+                                  	@existing_relations = Array.new
+			 	     end -%>
                                   <% matched_totals = 0 %>
                                   <% if results.size > 0 %>
                                     <% results.each do |result|  %>
