@@ -287,7 +287,8 @@ module ApplicationHelper
 
   # related to comments
   def show_comments_for(item)
-    html_string = "<p>There are #{@comments.size} comments in this discussion."
+    html_string = "<p>There are #{@comments.size} comments in this discussion.</p>\n<p>"
+    
     if @comments.size > 0
       html_string += "Read and "
     end
