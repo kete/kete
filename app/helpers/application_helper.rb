@@ -307,11 +307,11 @@ module ApplicationHelper
         html_string += "<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
         html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5>\n"
         if !comment.description.blank?
-          html_string += comment.description + "\n"
+          html_string += "#{comment.description}\n"
         end
         tags_for_comment = tags_for(comment)
         if !tags_for_comment.blank?
-          html_string += tags_for_comment + "\n"
+          html_string += "#{tags_for_comment}\n"
         end
       end
       html_string += "<p>" + link_to("join this discussion",
