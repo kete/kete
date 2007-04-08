@@ -110,6 +110,11 @@ Edit public/stylesheets/* for your server:
 
 change your stylesheets to suit
 
+Updating:
+
+If you pull across a rails update, you will want to run this command to update scripts/ and public/javascripts in your app:
+
+rake rails:update
 
 Demo:
 
@@ -152,5 +157,5 @@ For the captcha table we need to make a cron job or similar to remove old captch
 - see http://www.jason-palmer.com/ruby-on-rails-tutorials/database-driven-captcha
 
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
--- updated 2007-05-05
+-- updated 2007-04-08
 
