@@ -218,7 +218,7 @@ class TopicsController < ApplicationController
       @last_contributor = @topic.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
       @comments = @topic.comments
     end
 

@@ -23,7 +23,7 @@ class ImagesController < ApplicationController
       @last_contributor = @still_image.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
       @comments = @still_image.comments
     end
 

@@ -20,7 +20,7 @@ class VideoController < ApplicationController
       @last_contributor = @video.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
       @comments = @video.comments
     end
 

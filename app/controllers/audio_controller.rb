@@ -20,7 +20,7 @@ class AudioController < ApplicationController
       @last_contributor = @audio_recording.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or params[:format] == 'xml'
+    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
       @comments = @audio_recording.comments
     end
 
