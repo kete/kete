@@ -160,7 +160,9 @@ class ApplicationController < ActionController::Base
     end
     if params[:controller] == 'topics'
       ZOOM_CLASSES.each do |zoom_class|
-        return false unless has_fragment?({:related => zoom_class_controller(zoom_class)})
+        if zoom_class != 'Comment'
+          return false unless has_fragment?({:related => zoom_class_controller(zoom_class)})
+        end
       end
     else
         return false unless has_fragment?({:related => 'topics'})
