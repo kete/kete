@@ -3,6 +3,9 @@ User-agent: *
 Disallow: /site/comments
 Disallow: /site/comments/new
 Disallow: /site/comments/edit
+Disallow: /site/comments/flag_version
+Disallow: /site/comments/history
+Disallow: /site/comments/preview
 Disallow: /site/web_links/history
 Disallow: /site/audio/history
 Disallow: /site/video/history
