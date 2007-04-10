@@ -80,6 +80,8 @@ ActionController::Routing::Routes.draw do |map|
   # route site to search with DEFAULT_SEARCH_CLASS
   # :all is true by default if there are no search_terms
   map.connect '/search', :controller => "search"
+  # to make sure the rails process is answering
+  map.connect 'uptime.txt', :controller => "index_page", :action => 'uptime'
   map.connect '', :controller => "index_page"
 end
 
