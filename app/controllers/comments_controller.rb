@@ -65,16 +65,44 @@ class CommentsController < ApplicationController
       @current_user.version = @comment.version
       @comment.contributors << @current_user
 
+      # make sure that we wipe comments cache for thing we are commenting on
+      commented_item = @comment.commentable
+      expire_comments_caches_for(commented_item)
+
       prepare_and_save_to_zoom(@comment)
 
+      prepare_and_save_to_zoom(commented_item)
+
       flash[:notice] = 'Comment was successfully updated.'
-      redirect_to :action => 'show', :id => @comment
+      redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
+                          :action => 'show',
+                          :id => commented_item,
+                          :anchor => @comment.id,
+                          :urlified_name => commented_item.basket.urlified_name)
     else
       render :action => 'edit'
     end
   end
 
   def destroy
-    zoom_destroy_and_redirect('Comment')
+    @comment = Comment.find(params[:id])
+
+    # make sure that we wipe comments cache for thing we are commenting on
+    commented_item = @comment.commentable
+
+    prepare_zoom(@comment)
+    @successful = @comment.destroy
+
+    if @successful
+      expire_comments_caches_for(commented_item)
+      prepare_and_save_to_zoom(commented_item)
+
+      flash[:notice] = 'Comment was successfully deleted.'
+
+      redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
+                          :action => 'show',
+                          :id => commented_item,
+                          :urlified_name => commented_item.basket.urlified_name)
+    end
   end
 end

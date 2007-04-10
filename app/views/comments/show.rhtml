@@ -16,7 +16,7 @@
                                 <%= tags_for(@comment) -%>
 
                                 <p><%= @comment.description %></p>
-                                <%= pending_review(@video) %>
+                                <%= pending_review(@comment) %>
 <% end -%>
                         </div>
 
@@ -30,7 +30,7 @@
                                                                 :id => @comment %></li>
                                         <li><%= link_to "History",
                                                          :action => :history,
-                                                         :id => @video %></li>
+                                                         :id => @comment %></li>
 <% end -%>
                                         <% if logged_in? and @at_least_a_moderator -%>
 <% cache ({:part => 'delete'}) do -%>
@@ -53,7 +53,7 @@
 <% end -%>
                                         <% end -%>
 <% cache ({:part => 'flagging_links'}) do -%>
-                                        <%= flagging_links_for(@video) %>
+                                        <%= flagging_links_for(@comment) %>
 <% end -%>
                                 </ul>
                         </div>

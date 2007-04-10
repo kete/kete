@@ -131,9 +131,15 @@
 
                 <div id="detail-discuss">
                         <h3><a name="comments">Discuss This Topic</a></h3>
-<% cache ({:part => 'comments'}) do -%>
-        <%= show_comments_for(@topic) %>
+                        <% if logged_in? and @at_least_a_moderator -%>
+<% cache ({:part => 'comments-moderators'}) do -%>
+                                <%= show_comments_for(@topic) %>
 <% end -%>
+                        <% else -%>
+<% cache ({:part => 'comments'}) do -%>
+                                <%= show_comments_for(@topic) %>
+<% end -%>
+                        <% end -%>
                 </div>
 
                 <div class="cleaner">&nbsp;</div>

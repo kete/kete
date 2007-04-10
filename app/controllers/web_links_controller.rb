@@ -1,3 +1,6 @@
+require 'net/http'
+require 'uri'
+
 class WebLinksController < ApplicationController
   include ExtendedContentController
 

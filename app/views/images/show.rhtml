@@ -108,8 +108,14 @@
 <% end -%>
                 <div id="detail-discuss">
                         <h3><a name="comments">Discuss This Image</a></h3>
-<% cache ({:part => 'comments'}) do -%>
-                        <%= show_comments_for(@still_image) %>
+                        <% if logged_in? and @at_least_a_moderator -%>
+<% cache ({:part => 'comments-moderators'}) do -%>
+                                <%= show_comments_for(@still_image) %>
 <% end -%>
+                        <% else -%>
+<% cache ({:part => 'comments'}) do -%>
+                                <%= show_comments_for(@still_image) %>
+<% end -%>
+                        <% end -%>
                 </div>
                 <div class="cleaner">&nbsp;</div>

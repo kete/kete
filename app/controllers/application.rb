@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments']
+  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments-moderators', 'comments']
 
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
@@ -76,8 +76,11 @@ class ApplicationController < ActionController::Base
       if params[:controller] != 'topics'
         expire_fragment(:action => 'show', :id => thing_to_delete, :related => 'topics')
         # expire any related topics related caches
-        thing_to_delete.topics.each do |topic|
-          expire_related_caches_for(topic, 'topics')
+        # comments don't have related topics, so skip it for them
+        if things_class != 'Comment'
+          thing_to_delete.topics.each do |topic|
+            expire_related_caches_for(topic, 'topics')
+          end
         end
       else
         # topics need all it's related things expired
@@ -138,6 +141,11 @@ class ApplicationController < ActionController::Base
                     :action => 'show',
                     :id => item,
                     :part => 'comments')
+    expire_fragment(:urlified_name => item.basket.urlified_name,
+                    :controller => zoom_class_controller(item.class.name),
+                    :action => 'show',
+                    :id => item,
+                    :part => 'comments-moderators')
   end
 
   # cheating, we know that we are using file store, rather than mem_cache
@@ -382,7 +390,20 @@ class ApplicationController < ActionController::Base
     end
 
     # notify moderators for the basket
-    item_url = url_for(:action => 'show', :id => params[:id])
+    if item.class.name == 'Comment'
+      commented_item = item.commentable
+
+      expire_comments_caches_for(commented_item)
+      prepare_and_save_to_zoom(commented_item)
+
+      item_url = url_for(:controller => zoom_class_controller(commented_item.class.name),
+                         :action => 'show',
+                         :id => commented_item,
+                         :anchor => @item.id,
+                         :urlified_name => commented_item.basket.urlified_name)
+    else
+      item_url = url_for(:action => 'show', :id => params[:id])
+    end
     moderators = find_moderators_for_basket_or_next_in_line(@current_basket)
     moderators.each do |moderator|
       UserNotifier.deliver_item_flagged(moderator, flag, item_url, @current_user)
@@ -392,7 +413,6 @@ class ApplicationController < ActionController::Base
     flash[:notice] += " The item has been reverted to an earlier version for the time being." if reverted
 
     redirect_to item_url
-
   end
 
   # permission check in controller
@@ -422,7 +442,17 @@ class ApplicationController < ActionController::Base
 
     flash[:notice] = "The content of this #{@item.class.name.humanize} has been restored from the selected revision."
 
-    redirect_to url_for(:action => 'show', :id => params[:id])
+    if @item.class.name == 'Comment'
+      commented_item = @item.commentable
+      prepare_and_save_to_zoom(commented_item)
+      redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
+                          :action => 'show',
+                          :id => commented_item,
+                          :anchor => @item.id,
+                          :urlified_name => commented_item.basket.urlified_name)
+    else
+      redirect_to url_for(:action => 'show', :id => params[:id])
+    end
   end
 
   # view history of edits to an item
@@ -463,20 +493,32 @@ class ApplicationController < ActionController::Base
   def find_moderators_for_basket_or_next_in_line(basket)
     moderator_role = Role.find(:first,
                                :conditions => ["name = \'moderator\' and authorizable_type = \'Basket\' and authorizable_id = ?", basket.id])
-    moderators = moderator_role.users
+    moderators = Array.new
+    if !moderator_role.nil?
+      moderators = moderator_role.users
+    end
 
     if moderators.size == 0
       moderator_role = Role.find(:first,
                                  :conditions => ["name = \'admin\' and authorizable_type = \'Basket\' and authorizable_id = ?", basket.id])
-      moderators = moderator_role.users
+
+      if !moderator_role.nil?
+        moderators = moderator_role.users
+      end
+
       if moderators.size == 0
         moderator_role = Role.find(:first,
                                    :conditions => "name = \'admin\' and authorizable_type = \'Basket\' and authorizable_id = 1")
-        moderators = moderator_role.users
+        if !moderator_role.nil?
+          moderators = moderator_role.users
+        end
+
         if moderators.size == 0
           moderator_role = Role.find(:first,
                                      :conditions => "name = \'site_admin\'")
-          moderators = moderator_role.users
+          if !moderator_role.nil?
+            moderators = moderator_role.users
+          end
         end
       end
     end

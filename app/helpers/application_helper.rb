@@ -314,6 +314,28 @@ module ApplicationHelper
         if !tags_for_comment.blank?
           html_string += "#{tags_for_comment}\n"
         end
+        html_string += pending_review(comment) + "\n"
+
+        html_string += "<div class=\"comment-tools\">
+                                <ul>\n"
+        html_string += flagging_links_for(comment,true,'comments')
+        if logged_in? and @at_least_a_moderator
+          html_string += "<li>" + link_to("Edit",
+                                          :controller => 'comments',
+                                          :action => :edit,
+                                          :id => comment) + "</li>\n"
+          html_string += "<li>" + link_to("History",
+                                          :controller => 'comments',
+                                          :action => :history,
+                                          :id => comment) + "</li>\n"
+          html_string += "<li>" + link_to("Delete",
+                                          {:action => :destroy,
+                                            :controller => 'comments',
+                                            :id => comment},
+                                          :method => :post,
+                                          :confirm => 'Are you sure?') + "</li>\n"
+        end
+        html_string += "<\ul>\n</div>"
       end
       html_string += "<p>" + link_to("join this discussion",
                                      {:action => :new,
@@ -327,9 +349,13 @@ module ApplicationHelper
   end
 
   # related to flagging
-  def flagging_links_for(item)
-    html_string = "                                         <li>Flag as:
-                                                <ul>\n"
+  def flagging_links_for(item, first = false, controller = nil)
+    if first
+      html_string = "                                         <li class=\"first\">Flag as:\n"
+    else
+      html_string = "                                         <li>Flag as:\n"
+    end
+    html_string += "<ul>\n"
     flag_count = 1
     FLAGGING_TAGS.each do |flag|
       if flag_count == 1
@@ -337,10 +363,19 @@ module ApplicationHelper
       else
         html_string += "<li>"
       end
-      html_string += link_to(flag,
-                             :action => :flag_version,
-                             :flag => flag,
-                             :id => item) + "</li>\n"
+      if !controller.nil?
+        html_string += link_to(flag,
+                               :controller => controller,
+                               :action => :flag_version,
+                               :flag => flag,
+                               :id => item) + "</li>\n"
+      else
+        html_string += link_to(flag,
+                               :action => :flag_version,
+                               :flag => flag,
+                               :id => item) + "</li>\n"
+      end
+
       flag_count += 1
     end
     html_string += "                                            </ul>

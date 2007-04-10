@@ -4,7 +4,7 @@
                 <div id="detail-wrapper">
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
-                                <h2>Preview revision #<%= @item.version -%><% if @flags.size > 0 -%> - Flagged <%= h(@flags.to_sentence) -%><% end -%>: view live <%= link_to_item(@item) -%></h2>
+                                <h2>Preview revision #<%= @item.version -%><% if @flags.size > 0 -%> - Flagged <%= h(@flags.to_sentence) -%><% end -%>: view live as comment on <%= link_to_item(@item.commentable) -%></h2>
                                 <h2><%= "#{zoom_class_humanize(@item.class.name)}: #{h(@item.title)}" %></h2>
                                         <% extended_fields_html = display_xml_attributes(@item) -%>
                                         <% if !extended_fields_html.blank? %>
