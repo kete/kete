@@ -3,7 +3,11 @@
                                 <div class="generic-result-header">
                                 <% if params[:relate_to_topic] %>
                                   <% if !(params[:relate_to_topic] == result and params[:related_class] =='Topic') %>
-                                    <% @existing_relations = params[:existing_array_string].split(',') %>
+                                          <% if !params[:existing_array_string].nil?
+                                                @existing_relations = params[:existing_array_string].split(',')
+                                             else
+                                                @existing_relations = Array.new
+                                             end -%>
                                     <% if (@existing_relations.detect { |x| x == result} == nil) %>
                                         <%=
 check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
