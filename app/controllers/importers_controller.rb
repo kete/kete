@@ -23,23 +23,16 @@ class ImportersController < ApplicationController
   # add to queue to add/update zoom
   def import
     # TODO: switch contributing user to choice
-
-    @zoom_class = params[:zoom_class]
     @import_topic_type_for_related_topic = params[:import_topic_type_for_related_topic]
     @import_type = params[:import_type]
     @import_dir_path = params[:import_dir_path]
-    @path_to_skipped_records = params[:path_to_skipped_records]
-    @import_parent_dir_for_image_dirs = params[:import_parent_dir_for_image_dirs]
+    @import_parent_dir_for_image_dirs = @import_dir_path + '/images'
     @contributing_user = User.find(1)
-    # TODO: do a database dump
-    # conventions: in rails_root/db/dumps
-    # filenamed date and time
-    # TODO: zebra output file
-    # conventions: in rails_root/zebradb/imports
-    # filenamed date and time
-    # TODO: add an action for running zebraidx on file
+
     case @import_type
     when 'pp4_xml'
+      @zoom_class = 'StillImage'
+
       # prevents more than one instance of this worker from getting run
       logger.debug("what are params :" + params.to_s)
       logger.debug("what is contributing_user :" + @contributing_user.login)
@@ -53,7 +46,30 @@ class ImportersController < ApplicationController
                                 :import_topic_type_for_related_topic => @import_topic_type_for_related_topic,
                                 :import_type => @import_type,
                                 :import_dir_path => @import_dir_path,
-                                :path_to_skipped_records => @path_to_skipped_records,
+                                :import_parent_dir_for_image_dirs => @import_parent_dir_for_image_dirs,
+                                :params => params,
+                                :import_request => import_request,
+                                :contributing_user => @contributing_user.id
+                              },
+                              :job_key => :importer )
+      end
+    when 'adopt_an_anzac'
+      @contributing_user = User.find_by_login('anzac')
+      @zoom_class = 'Topic'
+
+      # prevents more than one instance of this worker from getting run
+      logger.debug("what are params :" + params.to_s)
+      logger.debug("what is contributing_user :" + @contributing_user.login)
+      import_request = { :host => request.host,
+        :protocol => request.protocol,
+        :request_uri => request.request_uri }
+
+      unless MiddleMan[:importer]
+        MiddleMan.new_worker( :class => :adopt_an_anzac_importer_worker,
+                              :args => {  :zoom_class => @zoom_class,
+                                :import_topic_type_for_related_topic => @import_topic_type_for_related_topic,
+                                :import_type => @import_type,
+                                :import_dir_path => @import_dir_path,
                                 :import_parent_dir_for_image_dirs => @import_parent_dir_for_image_dirs,
                                 :params => params,
                                 :import_request => import_request,

@@ -104,7 +104,10 @@ TAGS_SYNONYMS = ['COLLECTION', 'PEOPLE', 'PLACE', 'CLASSES',
                  'CULTURE', 'EVENT', 'FOUND', 'MATERIAL', 'OTHERNAME',
                  'PUBPLACE', 'NARRATOR']
 # couldn't find fields for scope and content
-DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES', 'CUSTODIAL']
+DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES', 'CUSTODIAL', 'OTHER_INFO']
+
+# html to prime the serviceman descriptions
+SERVICEMAN_DESC_TEMPLATE = "<p><img src=\"http://horowhenua.kete.net.nz/image_files/11258/Do_you_have_a_photo_image.jpg\" border=\"1\" alt=\"Do you have a photo?\" title=\"Do you have a photo?\" hspace=\"20\" vspace=\"2\" width=\"121\" height=\"189\" align=\"left\" /></p>"
 
 # For handling pre controller errors
 # see http://wiki.rubyonrails.org/rails/pages/HandlingPreControllerErrors
