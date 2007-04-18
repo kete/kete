@@ -174,7 +174,7 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
 
           new_record = nil
           if existing_item.nil?
-            citation = "copyright: Adopt an Anzac Project"
+            citation = "Any use of this item must be accompanied by the credit \"Adopt an Anzac Project\""
 
             new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :citation => citation, :user_reference => full_anzac_id, :basket_id => @current_basket.id })
           else
@@ -205,7 +205,13 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
 
                 params[:image_file] = { :uploaded_data => copy_and_load_to_temp_file(image_filepath) }
 
-                still_image = StillImage.new(:title => image_filename, :basket_id => @current_basket.id, :tag_list => title)
+                title_for_image = String.new
+                if !image_filename.scan("\.i\.1\.").blank?
+                  title_for_image = title
+                else
+                  title_for_image = image_filename
+                end
+                still_image = StillImage.new(:title => title_for_image, :description => citation, :basket_id => @current_basket.id, :tag_list => title)
                 still_image.save
 
                 new_image_file = ImageFile.new(params[:image_file])
@@ -221,15 +227,12 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
                   thumb.save!
                 end
 
-                logger.info("after thumbs save")
-
                 still_image.creators << @contributing_user
-                logger.info("after still image creator")
+
                 # this should only be the first image
                 if image_success and !image_filename.scan("\.i\.1\.").blank?
                   # should stay nil if the filetype can't be converted to medium thumbnail
                   image_file_to_insert_in_description = ImageFile.find_by_thumbnail_and_still_image_id('medium',still_image)
-                  logger.info("after file to insert")
                 end
                 ContentItemRelation.new_relation_to_topic(new_record.id, still_image)
               else
@@ -261,7 +264,7 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
             document_filepaths.each do |document_filepath|
               document_filename = File.basename(document_filepath)
 
-              params[:document] = { :uploaded_data => copy_and_load_to_temp_file(document_filepath), :title => document_filename, :basket_id => @current_basket.id, :tag_list => title }
+              params[:document] = { :uploaded_data => copy_and_load_to_temp_file(document_filepath), :title => document_filename, :description => citation, :basket_id => @current_basket.id, :tag_list => title }
 
               document = Document.new(params[:document])
 
@@ -454,6 +457,7 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
           params[zoom_class_for_params][:user_reference] = user_reference
         when "TITLE"
           params[zoom_class_for_params][:title] = value
+          tag_list_array << value.strip
         when *DESCRIPTION_SYNONYMS
           if params[zoom_class_for_params][:description].nil?
             params[zoom_class_for_params][:description] = value
