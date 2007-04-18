@@ -37,7 +37,7 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
   # fourth is sequence number for type of thing
   # i.e. 1.2.i.3 is soldier in memorial 1, with id of 2, and third image associated with him
   def do_work(args)
-    logger.info('Adoptananzac4ImporterWorker do work')
+    logger.info('AdoptananzacImporterWorker do work')
     memorials_hash = { 'foxton'=>{:anzac_id => '1',:object => nil,:topic_id => '72'},
       'levin'=>{:anzac_id =>'2',:object => nil,:topic_id => '73'},
       'manakau'=>{:anzac_id =>'3',:object => nil,:topic_id => '74'},
@@ -74,35 +74,23 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
 
       @import_anzacs_file_path = "#{@import_dir_path}/anzacs.xml"
 
-      logger.info("xml exists" + File.exists?(@import_anzacs_file_path).to_s)
-
       # this may not work because of scope
       params = args[:params]
 
       # skip trimming of file
       @path_to_trimmed_anzacs = @import_anzacs_file_path
 
-      logger.info("xml exists" + File.exists?(@path_to_trimmed_anzacs).to_s)
-
       @import_anzacs_xml = REXML::Document.new File.open(@path_to_trimmed_anzacs)
 
-      logger.info("opened xml")
-
       @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
-
-      logger.info("got basket: basket is: #{@current_basket.id}")
 
       @successful = false
 
       @related_topic_type = TopicType.find_by_name(@import_topic_type_for_topic)
 
-      logger.info("got related topic type")
-
       @last_related_topic = nil
 
       @last_related_topic_objectid = nil
-
-      logger.info("made it to just before start of records")
 
       # we work from the anzacs
       # enter topic for them
@@ -154,12 +142,14 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
         memorial_hash = memorials_hash[memorial_key]
         if !memorial_hash.nil?
           logger.debug("record #{current_record} : memorial_hash exists")
-          related_topic_anzac_id = memorial_hash[:anzac_id]
+          related_topic_anzac_id = memorial_hash[:anzac_id].to_i
+          logger.debug("record #{current_record} : memorial_hash anzac_id : #{memorial_hash[:anzac_id]}")
         end
 
         # we should always have an related_topic_anzac_id, but it maybe 0
         if !related_topic_anzac_id.nil?
           if related_topic_anzac_id == 0
+            logger.debug("record #{current_record} : no related topic")
             # related_topic stays nil
           elsif !@last_related_topic_anzac_id.nil? and related_topic_anzac_id == @last_related_topic_anzac_id
             # this item has the same related_topic as the last
@@ -209,38 +199,42 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
 
             image_file_to_insert_in_description = nil
             image_filepaths.each do |image_filepath|
-              params[:image_file] = { :uploaded_data => copy_and_load_to_temp_file(image_filepath) }
-
               image_filename = File.basename(image_filepath)
+              # skipping bmg files for now
+              if image_filename.downcase.scan("\.bmp").blank?
 
-              still_image = StillImage.new(:title => image_filename, :basket_id => @current_basket.id, :tag_list => title)
-              still_image.save
+                params[:image_file] = { :uploaded_data => copy_and_load_to_temp_file(image_filepath) }
 
-              new_image_file = ImageFile.new(params[:image_file])
+                still_image = StillImage.new(:title => image_filename, :basket_id => @current_basket.id, :tag_list => title)
+                still_image.save
 
-              new_image_file.still_image_id = still_image.id
+                new_image_file = ImageFile.new(params[:image_file])
 
-              image_success = new_image_file.save
+                new_image_file.still_image_id = still_image.id
 
-              # attachment_fu doesn't insert our still_image_id into the thumbnails
-              # automagically
-              new_image_file.thumbnails.each do |thumb|
-                thumb.still_image_id = still_image.id
-                thumb.save!
+                image_success = new_image_file.save
+
+                # attachment_fu doesn't insert our still_image_id into the thumbnails
+                # automagically
+                new_image_file.thumbnails.each do |thumb|
+                  thumb.still_image_id = still_image.id
+                  thumb.save!
+                end
+
+                logger.info("after thumbs save")
+
+                still_image.creators << @contributing_user
+                logger.info("after still image creator")
+                # this should only be the first image
+                if image_success and !image_filename.scan("\.i\.1\.").blank?
+                  # should stay nil if the filetype can't be converted to medium thumbnail
+                  image_file_to_insert_in_description = ImageFile.find_by_thumbnail_and_still_image_id('medium',still_image)
+                  logger.info("after file to insert")
+                end
+                ContentItemRelation.new_relation_to_topic(new_record.id, still_image)
+              else
+                logger.info("skipping bmp image: #{image_filename}")
               end
-
-              logger.info("after thumbs save")
-
-              still_image.creators << @contributing_user
-              logger.info("after still image creator")
-              # this should only be the first image
-              if image_success and !image_filename.scan("\.i\.1\.").blank?
-                # should stay nil if the filetype can't be converted to medium thumbnail
-                image_file_to_insert_in_description = ImageFile.find_by_thumbnail_and_still_image_id('medium',still_image)
-                logger.info("after file to insert")
-              end
-              ContentItemRelation.new_relation_to_topic(new_record.id, still_image)
-              logger.info("after still image relation add")
             end
 
             # slap first image into description

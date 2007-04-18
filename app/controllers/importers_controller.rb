@@ -1,5 +1,5 @@
 class ImportersController < ApplicationController
-  # permit "site_admin or admin of :current_basket"
+  permit "site_admin or admin of :current_basket"
 
   # fields to add
   # type of import which equates to an action
