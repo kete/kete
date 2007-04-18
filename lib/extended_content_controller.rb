@@ -6,10 +6,10 @@ module ExtendedContentController
       klass.send :before_filter, :load_content_type,
       :only => [:new, :show, :edit, :create, :update]
 
-      klass.send :permit, "site_admin or moderator or member or admin of :current_basket",
+      klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket",
       :only => [ :new, :create, :edit, :update]
 
-      klass.send :permit, "site_admin or moderator or admin of :current_basket",
+      klass.send :permit, "site_admin or moderator of :current_basket or admin of :current_basket",
       :only =>  [ :destroy, :restore ]
 
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
