@@ -38,20 +38,20 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
   # i.e. 1.2.i.3 is soldier in memorial 1, with id of 2, and third image associated with him
   def do_work(args)
     logger.info('AdoptananzacImporterWorker do work')
-    memorials_hash = { 'foxton'=>{:anzac_id => '1',:object => nil,:topic_id => '72'},
-      'levin'=>{:anzac_id =>'2',:object => nil,:topic_id => '73'},
-      'manakau'=>{:anzac_id =>'3',:object => nil,:topic_id => '74'},
-      'moutoa gates'=>{:anzac_id =>'4',:object => nil,:topic_id => '75'},
-      'opiki roll of honour'=>{:anzac_id =>'5',:object => nil,:topic_id => '76'},
-      'percy nation memorial'=>{:anzac_id =>'6',:object => nil,:topic_id => '77'},
-      'shannon'=>{:anzac_id =>'7',:object => nil,:topic_id => '78'},
-      'tokomaru'=>{:anzac_id =>'8',:object => nil,:topic_id => '79'},
-      'weraroa peace gates'=>{:anzac_id =>'9',:object => nil,:topic_id => '80'},
-      'foxton school'=>{:anzac_id =>'10',:object => nil,:topic_id => '81'},
-      'levin RSA memorial'=>{:anzac_id =>'11',:object => nil,:topic_id => '82'},
-      'ohau school roll of honour'=>{:anzac_id =>'12',:object => nil,:topic_id => '83'},
-      'manakau school roll of honour'=>{:anzac_id =>'13',:object => nil,:topic_id => '84'},
-      'ihakara hall'=>{:anzac_id =>'14',:object => nil,:topic_id => '85'},
+    memorials_hash = { 'foxton'=>{:anzac_id => '1',:object => nil,:topic_id => '314'},
+      'levin'=>{:anzac_id =>'2',:object => nil,:topic_id => '313'},
+      'manakau'=>{:anzac_id =>'3',:object => nil,:topic_id => '316'},
+      'moutoa gates'=>{:anzac_id =>'4',:object => nil,:topic_id => '331'},
+      'opiki roll of honour'=>{:anzac_id =>'5',:object => nil,:topic_id => '332'},
+      'percy nation memorial'=>{:anzac_id =>'6',:object => nil,:topic_id => '334'},
+      'shannon'=>{:anzac_id =>'7',:object => nil,:topic_id => '311'},
+      'tokomaru'=>{:anzac_id =>'8',:object => nil,:topic_id => '315'},
+      'weraroa peace gates'=>{:anzac_id =>'9',:object => nil,:topic_id => '335'},
+      'foxton school'=>{:anzac_id =>'10',:object => nil,:topic_id => '329'},
+      'levin rsa memorial'=>{:anzac_id =>'11',:object => nil,:topic_id => '379'},
+      'ohau school roll of honour'=>{:anzac_id =>'12',:object => nil,:topic_id => '380'},
+      'manakau school roll of honour'=>{:anzac_id =>'13',:object => nil,:topic_id => '381'},
+      'ihakara hall'=>{:anzac_id =>'14',:object => nil,:topic_id => '382'},
       'not recorded locally'=>{:anzac_id =>'0',:object => nil,:topic_id => nil}
     }
     results[:do_work_time] = Time.now.to_s
