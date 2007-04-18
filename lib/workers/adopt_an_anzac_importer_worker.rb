@@ -576,6 +576,8 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
     end
 
     if @fields.size > 0
+      logger.debug("fields larger than 0")
+
       # we use our version of this method
       # that calls xml builder directly, rather than using partial template
       params[zoom_class_for_params.to_sym] = params[zoom_class_for_params]
@@ -645,15 +647,18 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
     @fields.each do |field_to_xml|
       field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
       if field_to_xml.extended_field_multiple
-        xml.tag!("#{field_name}_multiple") do
-          hash_of_values = params[item_key][field_name]
-          hash_of_values.keys.each do |key|
-            xml.tag!(key) do
-              extended_content_field_xml_tag(:xml => xml,
-                                             :field => field_name,
-                                             :value => params[item_key][field_name][key],
-                                             :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                                             :xsi_type => field_to_xml.extended_field_xsi_type)
+        logger.debug("in anzac_extended_fields_update_hash_for_item: multiple : field_name: " + field_name)
+        hash_of_values = params[item_key][field_name]
+        if !hash_of_values.nil?
+          xml.tag!("#{field_name}_multiple") do
+            hash_of_values.keys.each do |key|
+              xml.tag!(key) do
+                extended_content_field_xml_tag(:xml => xml,
+                                               :field => field_name,
+                                               :value => params[item_key][field_name][key],
+                                               :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                                               :xsi_type => field_to_xml.extended_field_xsi_type)
+              end
             end
           end
         end
