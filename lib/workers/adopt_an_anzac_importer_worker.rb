@@ -359,7 +359,19 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
       end
 
       if !extended_field.nil? and extended_field != 'not available'
-        params[zoom_class_for_params][extended_field.label_for_params] = value
+        # add some smarts for handling fields that are multiple
+        # assumes comma separated values
+        if extended_field.multiple
+          multiple_values = value.split(",")
+          m_field_count = 1
+          params[zoom_class_for_params][extended_field.label_for_params] = Hash.new
+          multiple_values.each do |m_field_value|
+            params[zoom_class_for_params][extended_field.label_for_params][m_field_count] = m_field_value.strip
+            m_field_count += 1
+          end
+        else
+          params[zoom_class_for_params][extended_field.label_for_params] = value
+        end
       end
     end
     return params
@@ -647,15 +659,16 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
     @fields.each do |field_to_xml|
       field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
       if field_to_xml.extended_field_multiple
-        logger.debug("in anzac_extended_fields_update_hash_for_item: multiple : field_name: " + field_name)
         hash_of_values = params[item_key][field_name]
         if !hash_of_values.nil?
           xml.tag!("#{field_name}_multiple") do
             hash_of_values.keys.each do |key|
-              xml.tag!(key) do
+              xml.tag!(key.to_s) do
+                logger.debug("inside hash: key: " + key.to_s)
+                m_value = hash_of_values[key].to_s
                 extended_content_field_xml_tag(:xml => xml,
                                                :field => field_name,
-                                               :value => params[item_key][field_name][key],
+                                               :value => m_value,
                                                :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                                :xsi_type => field_to_xml.extended_field_xsi_type)
               end
