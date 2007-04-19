@@ -780,7 +780,7 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
       host = request.host
     end
     # HACK, brittle, but can't use url_for here
-    xml.tag!("dc:identifier", anzac_item_url(:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => @current_basket.urlified_name))
+    xml.tag!("dc:identifier", anzac_item_url(:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name))
   end
 
   def anzac_oai_dc_xml_dc_relations_and_subjects(xml,item,passed_request = nil)

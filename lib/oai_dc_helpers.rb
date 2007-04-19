@@ -20,7 +20,7 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_oai_identifier(xml, item)
-      xml.identifier("#{ZoomDb.zoom_id_stub}#{@current_basket.urlified_name}:#{item.class.name}:#{item.id}")
+      xml.identifier("#{ZoomDb.zoom_id_stub}#{item.basket.urlified_name}:#{item.class.name}:#{item.id}")
     end
 
     def oai_dc_xml_dc_identifier(xml, item, passed_request = nil)
