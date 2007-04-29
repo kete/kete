@@ -2,11 +2,11 @@
                         <ul id="tablist">
                             <% existing_count = 0 %>
                                 <% if params[:relate_to_topic] %>
-				  <% if !params[:existing_array_string].nil?
-                                  	@existing_relations = params[:existing_array_string].split(',')
-				     else
-                                  	@existing_relations = Array.new
-			 	     end -%>
+                                  <% if !params[:existing_array_string].nil?
+                                        @existing_relations = params[:existing_array_string].split(',')
+                                     else
+                                        @existing_relations = Array.new
+                                     end -%>
                                   <% matched_totals = 0 %>
                                   <% if results.size > 0 %>
                                     <% results.each do |result|  %>
@@ -91,7 +91,7 @@
                                         <% # TODO: a helper? %>
                                         <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
                                                 <% if number_per_page != choice %>
-                                                        <%= link_to(choice, :overwrite_params => { :number_or_results_per_page => choice, :page => 1 }) %>
+                                                        <%= link_to(choice, :overwrite_params => { :number_of_results_per_page => choice, :page => 1 }) %>
                                                 <% else %>
                                                         <a href="#" id="thisnumber"><%= choice %></a>
                                                 <% end %>

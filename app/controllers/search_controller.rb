@@ -105,7 +105,14 @@ class SearchController < ApplicationController
     @next_page = @current_page + 1
     @previous_page = @current_page - 1
 
-    @number_per_page = params[:number_or_results_per_page] ? params[:number_or_results_per_page].to_i : DEFAULT_RECORDS_PER_PAGE
+    if params[:number_of_results_per_page].nil?
+      @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : DEFAULT_RECORDS_PER_PAGE
+    else
+      @number_per_page = params[:number_of_results_per_page].to_i
+    end
+
+    # update session with user preference for number of results per page
+    store_number_of_results_per_page
 
     # 0 is the first index, so it's valid for start
     @start_record = @number_per_page * @current_page - @number_per_page
@@ -175,13 +182,20 @@ class SearchController < ApplicationController
   def load_results(from_result_set)
     @results = Array.new
 
-
     @end_record = from_result_set.size if from_result_set.size < @end_record
 
     if from_result_set.size > 0
       still_image_results = Array.new
 
-      # check if the result set is stale
+      # protect against malformed requests
+      # for a start record that is more than the numbers of matching records
+      # not handling adjust @start_record in view
+      # since it only seems to be bots that make the malformed request
+      if @start_record > @end_record
+        @start_record = 0
+      end
+
+      # get the raw xml results from zoom
       raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => from_result_set,
                                                                                     :start_record => @start_record,
                                                                                     :end_record => @end_record)
@@ -499,6 +513,13 @@ class SearchController < ApplicationController
                                                                    { :relate_to_topic => params[:relate_to_topic],
                                                                      :related_class =>params[:related_class].singularize}])
     render(:layout => "layouts/simple")
+  end
+
+  # keep the user's preference for number of results per page
+  # stored in a session cookie
+  # so they don't have to reset it everytime they go to new search results
+  def store_number_of_results_per_page
+      session[:number_of_results_per_page] = @number_per_page
   end
 
   private
