@@ -111,7 +111,9 @@ class PastPerfect4ImporterWorker < BackgrounDRb::Worker::RailsBase
 
         path_to_file_to_grab = prepare_path_to_image_file(image_file)
 
-        if image_file.nil? or !File.exists?(path_to_file_to_grab)
+        logger.debug("record #{current_record} : path_to_file_to_grab : " + path_to_file_to_grab)
+
+        if image_file.blank? or !File.exists?(path_to_file_to_grab)
           reason_skipped =  'no image file specified or the image file isn\'t available'
           logger.debug("record #{current_record} : reason skipped image")
         else
@@ -796,50 +798,55 @@ class PastPerfect4ImporterWorker < BackgrounDRb::Worker::RailsBase
   end
 
   def prepare_path_to_image_file(image_file)
-    image_path_array = image_file.split("\\")
+    begin
+      image_path_array = image_file.split("\\")
 
-    # prep alternative versions of the filename
-    directories_up_to = @import_parent_dir_for_image_dirs + "/" + image_path_array[0] + "/"
-    the_file_name = image_path_array[1]
+      # prep alternative versions of the filename
+      directories_up_to = @import_parent_dir_for_image_dirs + "/" + image_path_array[0] + "/"
+      the_file_name = image_path_array[1]
 
-    path_to_file_to_grab = directories_up_to + the_file_name
+      path_to_file_to_grab = directories_up_to + the_file_name
 
-    # if we can't find the file, try downcasing or upcasing the extension
-    # also try escaping any spaces
+      # if we can't find the file, try downcasing or upcasing the extension
+      # also try escaping any spaces
 
-    if !File.exists?(path_to_file_to_grab)
-      logger.debug("path_to_file_to_grab no match yet")
+      if !File.exists?(path_to_file_to_grab)
+        logger.debug("path_to_file_to_grab no match yet")
 
-      file_name_array = the_file_name.scan(/(.+)(\.[^\d]+$)/)[0]
-      file_name_no_extension = file_name_array[0]
-      extension = file_name_array[1]
+        file_name_array = the_file_name.scan(/(.+)(\.[^\d]+$)/)[0]
+        file_name_no_extension = file_name_array[0]
+        extension = file_name_array[1]
 
-      downer = directories_up_to + file_name_no_extension + extension.downcase
-      upper = directories_up_to + file_name_no_extension + extension.upcase
+        downer = directories_up_to + file_name_no_extension + extension.downcase
+        upper = directories_up_to + file_name_no_extension + extension.upcase
 
-      if File.exists?(downer)
-        path_to_file_to_grab = downer
-        logger.debug("path_to_file_to_grab is downer: " + path_to_file_to_grab)
-      elsif File.exists?(upper)
-        path_to_file_to_grab = upper
-        logger.debug("path_to_file_to_grab is upper: " + path_to_file_to_grab)
+        if File.exists?(downer)
+          path_to_file_to_grab = downer
+          logger.debug("path_to_file_to_grab is downer: " + path_to_file_to_grab)
+        elsif File.exists?(upper)
+          path_to_file_to_grab = upper
+          logger.debug("path_to_file_to_grab is upper: " + path_to_file_to_grab)
+        end
       end
-    end
 
-    # make a copy of any files that have spaces in their name
-    # a better formed name
-    # to avoid problems later
-    if !the_file_name.scan(" ").blank? and  File.exists?(path_to_file_to_grab)
-      the_new_file_name = the_file_name.gsub(" ", "\.")
-      new_file_path = directories_up_to + the_new_file_name
+      # make a copy of any files that have spaces in their name
+      # a better formed name
+      # to avoid problems later
+      if !the_file_name.scan(" ").blank? and  File.exists?(path_to_file_to_grab)
+        the_new_file_name = the_file_name.gsub(" ", "\.")
+        new_file_path = directories_up_to + the_new_file_name
 
-      if !File.exists?(new_file_path)
-        FileUtils.copy_file path_to_file_to_grab, new_file_path
+        if !File.exists?(new_file_path)
+          FileUtils.copy_file path_to_file_to_grab, new_file_path
+        end
+        path_to_file_to_grab = new_file_path
       end
-      path_to_file_to_grab = new_file_path
-    end
 
-    return path_to_file_to_grab
+      return path_to_file_to_grab
+    rescue
+      logger.error("path_to_file_to_grab no extension probably, should skip")
+      return ""
+    end
   end
 end
 PastPerfect4ImporterWorker.register
