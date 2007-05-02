@@ -467,7 +467,7 @@ class SearchController < ApplicationController
 
   # this probably won't scale, only use for demo right now
   def rebuild_zoom_index
-    permit "site_admin of :current_basket" do
+    permit "site_admin" do
       if !params[:zoom_class].nil?
         Module.class_eval(params[:zoom_class]).find(:all).each {|item| prepare_and_save_to_zoom(item)}
       else
