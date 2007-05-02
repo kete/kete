@@ -468,8 +468,12 @@ class SearchController < ApplicationController
   # this probably won't scale, only use for demo right now
   def rebuild_zoom_index
     permit "site_admin of :current_basket" do
-      ZOOM_CLASSES.each do |zoom_class|
-        Module.class_eval(zoom_class).find(:all).each {|item| prepare_and_save_to_zoom(item)}
+      if !params[:zoom_class].nil?
+        Module.class_eval(params[:zoom_class]).find(:all).each {|item| prepare_and_save_to_zoom(item)}
+      else
+        ZOOM_CLASSES.each do |zoom_class|
+          Module.class_eval(zoom_class).find(:all).each {|item| prepare_and_save_to_zoom(item)}
+        end
       end
       render :text => "ZOOM index rebuilt"
     end
