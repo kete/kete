@@ -44,6 +44,13 @@ then start with this from RAILS_ROOT:
 script/backgroundrb start # for dev
 script/backgroundrb start -- -r production # for production
 
+#### considering, not in use yet
+We also use production log analyzer.  See here for details:
+
+http://nubyonrails.com/articles/2007/01/03/a-hodel-3000-compliant-logger-for-the-rest-of-us
+
+http://topfunky.net/svn/plugins/hodel_3000_compliant_logger/
+
 Gems:
 Rmagick, used by attachment_fu, see install directions in blog.katipo.co.nz
 Unicode, also covered in blog
@@ -51,6 +58,10 @@ Mimetypes: 'sudo gem install mime-types'
 Slave: 'sudo gem install slave' -- BackgroundRB dependency
 Daemons: 'sudo gem install daemons' -- BackgroundRB dependency
 RedCloth: 'sudo gem install RedCloth' -- used in imports to give our plain text fields better html output
+
+for logger plugin
+production_log_analyzer, 'sudo gem install production_log_analyzer'
+rails_analyzer_tools will be installed as a dependency
 
 Zebra:
 
@@ -157,5 +168,5 @@ For the captcha table we need to make a cron job or similar to remove old captch
 - see http://www.jason-palmer.com/ruby-on-rails-tutorials/database-driven-captcha
 
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
--- updated 2007-04-08
+-- updated 2007-05-10
 
