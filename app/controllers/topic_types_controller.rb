@@ -42,7 +42,14 @@ class TopicTypesController < ApplicationController
   def update
     @topic_type = TopicType.find(params[:id])
     if @topic_type.update_attributes(params[:topic_type])
-      set_ancestory(@topic_type)
+      # this isn't a move, so resetting ancestory isn't necessary
+      # set_ancestory(@topic_type)
+
+      # expire show details for all topics of this type
+      # since it displays the topic_type.name
+      @topic_type.topics.each do |topic|
+        expire_fragment(:controller => 'topics', :urlified_name => topic.basket.urlified_name, :action => 'show', :id => topic, :part => 'details')
+      end
 
       # TODO: globalize translate
       flash[:notice] = 'TopicType was successfully updated.'
