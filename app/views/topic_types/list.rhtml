@@ -19,7 +19,7 @@
     <td><%=h topic_type.updated_at.to_s(:euro_date) %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => topic_type %> |
     <%= link_to 'Add sub-type', :action => 'new', :parent_id => topic_type.id %><% if topic_type.id != 1 -%><%if topic_type.topics.size == 0 -%> |
-                <%= link_to 'Delete', { :action => 'destroy', :id => topic_type }, :confirm => 'Are you sure? This will delete all topics of this type.', :method => :post %>
+                <%= link_to 'Delete', { :action => 'destroy', :id => topic_type }, :confirm => 'Are you sure?', :method => :post %>
         <% else  -%>
                 Has topics.
         <% end -%>
