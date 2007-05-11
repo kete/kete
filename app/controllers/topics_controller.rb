@@ -56,6 +56,7 @@ class TopicsController < ApplicationController
 
   def edit
     @topic = Topic.find(params[:id])
+    @topic_types = @topic.topic_type.full_set
   end
 
   # the first step in creating a new topic
@@ -66,8 +67,7 @@ class TopicsController < ApplicationController
   def create
     begin
       # since this is creation, grab the topic_type fields
-      topic_type = TopicType.find(params[:topic_type_id])
-      params[:topic][:topic_type_id] = params[:topic_type_id]
+      topic_type = TopicType.find(params[:topic][:topic_type_id])
 
       @fields = topic_type.topic_type_to_field_mappings
 
@@ -150,8 +150,9 @@ class TopicsController < ApplicationController
   def update
     begin
       @topic = Topic.find(params[:id])
-      topic_type = TopicType.find(@topic.topic_type_id)
-      params[:topic][:topic_type_id] = params[:topic_type_id]
+      # using the new topic type value, just in case we add ajax update
+      # of form in the future
+      topic_type = TopicType.find(params[:topic][:topic_type_id])
 
       @fields = topic_type.topic_type_to_field_mappings
 

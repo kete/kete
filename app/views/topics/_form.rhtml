@@ -6,9 +6,12 @@
 <fieldset>
   <%= error_messages_for 'topic' %>
     <!--[form:topic]-->
-  <% if !params[:relate_to_topic_id].nil? %>
-    <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
-  <% end %>
+        <% if !params[:relate_to_topic_id].nil? %>
+                <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+        <% end %>
+        <% if edit %>
+            <%= render :partial => 'topic_types', :locals => {:topic_types => @topic_types} %>
+        <% end %>
         <div class="form-element">
                 <label class="required" for="topic_title">Title:</label>
                 <%= text_field 'topic', 'title', {:class => "text-input"} %>
@@ -30,7 +33,7 @@
 
         <% if edit
                 # this is an edit
-                @self_topic_type_and_ancestors = TopicType.find(@topic.topic_type_id).self_and_ancestors
+                @self_topic_type_and_ancestors = @topic.topic_type.self_and_ancestors
         else
                 @self_topic_type_and_ancestors = TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors
         end -%>
@@ -63,10 +66,8 @@
                 <% #= javascript_tag "tinyMCE.execCommand('mceAddControl', true, 'topic[description]')" %>
         <% # end %>
 
-        <% if edit %>
-                <%= hidden_field_tag 'topic_type_id', @topic.topic_type_id %>
-        <% else %>
-                <%= hidden_field_tag 'topic_type_id', params[:topic][:topic_type_id] %>
+        <% if edit == false %>
+                <%= hidden_field_tag 'topic[topic_type_id]', params[:topic][:topic_type_id] %>
         <% end %>
         <%= hidden_field_tag "topic[basket_id]", @current_basket.id %>
 
