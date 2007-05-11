@@ -11,7 +11,9 @@
         <% end %>
         <% if edit %>
             <%= render :partial => 'topic_types', :locals => {:topic_types => @topic_types} %>
-        <% end %>
+        <% else -%>
+            <%= hidden_field_tag 'topic[topic_type_id]', params[:topic][:topic_type_id] %>
+        <% end -%>
         <div class="form-element">
                 <label class="required" for="topic_title">Title:</label>
                 <%= text_field 'topic', 'title', {:class => "text-input"} %>
@@ -66,9 +68,6 @@
                 <% #= javascript_tag "tinyMCE.execCommand('mceAddControl', true, 'topic[description]')" %>
         <% # end %>
 
-        <% if edit == false %>
-                <%= hidden_field_tag 'topic[topic_type_id]', params[:topic][:topic_type_id] %>
-        <% end %>
         <%= hidden_field_tag "topic[basket_id]", @current_basket.id %>
 
 <!--[eoform:topic]-->
