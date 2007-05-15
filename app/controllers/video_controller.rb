@@ -38,10 +38,11 @@ class VideoController < ApplicationController
     @video = Video.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
     @successful = @video.save
 
+
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @video.creators << current_user
+    @video.creators << current_user if @successful
 
     setup_related_topic_and_zoom_and_redirect(@video)
   end

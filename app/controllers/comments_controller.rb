@@ -34,19 +34,21 @@ class CommentsController < ApplicationController
     @comment = Comment.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
     @successful = @comment.save
 
-    # add this to the user's empire of creations
-    # TODO: allow current_user whom is at least moderator to pick another user
-    # as creator
-    @comment.creators << current_user
+    if @successful
+      # add this to the user's empire of creations
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as creator
+      @comment.creators << current_user
 
-    # make sure that we wipe comments cache for thing we are commenting on
-    commented_item = Module.class_eval(params[:comment][:commentable_type]).find(params[:comment][:commentable_id])
-    expire_comments_caches_for(commented_item)
+      # make sure that we wipe comments cache for thing we are commenting on
+      commented_item = Module.class_eval(params[:comment][:commentable_type]).find(params[:comment][:commentable_id])
+      expire_comments_caches_for(commented_item)
 
-    # although we shouldn't be using the related_topic aspect here
-    # i.e. there is never going to be params[:related_topic_id]
-    # this method is smart enough to do the right thing when that is the case
-    setup_related_topic_and_zoom_and_redirect(@comment, commented_item)
+      # although we shouldn't be using the related_topic aspect here
+      # i.e. there is never going to be params[:related_topic_id]
+      # this method is smart enough to do the right thing when that is the case
+      setup_related_topic_and_zoom_and_redirect(@comment, commented_item)
+    end
   end
 
   def edit

@@ -42,7 +42,7 @@ class AudioController < ApplicationController
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @audio_recording.creators << current_user
+    @audio_recording.creators << current_user if @successful
 
     setup_related_topic_and_zoom_and_redirect(@audio_recording)
   end

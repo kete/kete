@@ -104,10 +104,11 @@ class TopicsController < ApplicationController
       @topic = Topic.new(replacement_topic_hash)
       @successful = @topic.save
 
+
       # add this to the user's empire of creations
       # TODO: allow current_user whom is at least moderator to pick another user
       # as creator
-      @topic.creators << current_user
+      @topic.creators << current_user if @successful
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
