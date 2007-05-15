@@ -4,6 +4,5 @@ class WebLink < ActiveRecord::Base
 
   validates_presence_of :url
   validates_uniqueness_of :url
-  # TODO: hunt down problem with this validates false positives
-  # validates_http_url :url, :content_type => "text/html"
+  validates_http_url :url
 end
