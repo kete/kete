@@ -17,7 +17,7 @@ http://svn.techno-weenie.net/projects/plugins/acts_as_versioned/
 svn://railsexpress.de/plugins/piggy_back/trunk
 https://secure.near-time.com/svn/plugins/trunk/tiny_mce
 # also needs this from root dir "rake tiny_mce:scripts:install"
-svn://visioni.st/plugins/validates_http_url/trunk
+https://modzer0.cs.uaf.edu/repos/hank/code/http_url_validation_improved
 http://svn.techno-weenie.net/projects/plugins/attachment_fu/
 
 # not necessary to do the script/generate bit for out current setup!!!
@@ -58,6 +58,7 @@ Mimetypes: 'sudo gem install mime-types'
 Slave: 'sudo gem install slave' -- BackgroundRB dependency
 Daemons: 'sudo gem install daemons' -- BackgroundRB dependency
 RedCloth: 'sudo gem install RedCloth' -- used in imports to give our plain text fields better html output
+(Optional, but used by default) Memcached: on debian or ubuntu: 'sudo apt-get install memcached'  and then 'sudo gem install -y memcache-client'
 
 for logger plugin
 production_log_analyzer, 'sudo gem install production_log_analyzer'
@@ -168,5 +169,5 @@ For the captcha table we need to make a cron job or similar to remove old captch
 - see http://www.jason-palmer.com/ruby-on-rails-tutorials/database-driven-captcha
 
 -- Walter McGinnis (walter a t katipo dot co dot nz), 2006-10-18
--- updated 2007-05-10
+-- updated 2007-05-15
 
