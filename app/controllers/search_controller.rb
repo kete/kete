@@ -3,6 +3,8 @@ require 'zoom'
 require "rexml/document"
 
 class SearchController < ApplicationController
+  ZOOM_BOOLEAN_OPERATORS = ['and', 'or', 'not']
+
   layout "application" , :except => [:rss]
 
   # we mimic caches_page so we have more control
@@ -266,6 +268,12 @@ class SearchController < ApplicationController
         sort_type = 'last_modified'
       end
 
+      # possibly move this to acts_as_zoom
+      # handles case were someone is searching for a url
+      # there may be other special characters to handle
+      # but this seems to do the trick
+      @search_terms = @search_terms.gsub("/", "\/")
+
       prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
       if @current_basket.urlified_name == 'site'
         query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
@@ -276,7 +284,62 @@ class SearchController < ApplicationController
       # quote each term to handle phrases
       if !prepped_terms.blank?
         if prepped_terms.size > 1
-          query += "@attr 1=1016 @and \"#{prepped_terms.join("\" \"")}\" "
+          query += "@attr 1=1016 "
+          # work through terms
+          # if there is a boolean operator specified
+          # add it to the correct spot
+          # if not specified add another "@and"
+
+          term_count = 1
+          terms_string = String.new
+          operators_string = String.new
+          query_starts_with_not = false
+          last_term_an_operator = false
+          prepped_terms.each do |term|
+            # if first term is boolean operator "not"
+            # then replace the @and at the beginning of whole query with @not
+            # all other boolean operators are treated as normal words if first term
+            if term_count == 1
+              if term.downcase == 'not'
+                query = query.gsub(/^\@and/, "@not")
+                query_starts_with_not = true
+              else
+                terms_string += "\"#{term}\" "
+              end
+            else
+              if term_count > 1
+                # in the rare case that @not has replaced
+                # @and at the front of the whole query
+                # and this is the second term
+                # skip adding a boolean operator
+                if query_starts_with_not == true and term_count == 2
+                  # this just treats even terms found in
+                  # ZOOM_BOOLEAN_OPERATORS as regular words
+                  # since their placement makes them meaningless as boolean operators
+                  terms_string += "\"#{term}\" "
+                else
+                  if ZOOM_BOOLEAN_OPERATORS.include?(term)
+                    # we got ourselves an operator
+                    operators_string += "@#{term} "
+                    last_term_an_operator = true
+                  else
+                    # just a plain term
+                    if last_term_an_operator == false
+                      # need to add an operator
+                      # assume "and" since none-specified
+                      operators_string += "@and "
+                    end
+
+                    terms_string += "\"#{term}\" "
+                    last_term_an_operator = false
+                  end
+                end
+              end
+            end
+
+            term_count += 1
+          end
+          query += operators_string + " " + terms_string
         else
           # @and will break query if only single term
           query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
