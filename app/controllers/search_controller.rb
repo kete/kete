@@ -291,8 +291,8 @@ class SearchController < ApplicationController
           # if not specified add another "@and"
 
           term_count = 1
-          terms_string = String.new
-          operators_string = String.new
+          terms_array = Array.new
+          operators_array = Array.new
           query_starts_with_not = false
           last_term_an_operator = false
           prepped_terms.each do |term|
@@ -304,7 +304,7 @@ class SearchController < ApplicationController
                 query = query.gsub(/^\@and/, "@not")
                 query_starts_with_not = true
               else
-                terms_string += "\"#{term}\" "
+                terms_array << term
               end
             else
               if term_count > 1
@@ -316,21 +316,21 @@ class SearchController < ApplicationController
                   # this just treats even terms found in
                   # ZOOM_BOOLEAN_OPERATORS as regular words
                   # since their placement makes them meaningless as boolean operators
-                  terms_string += "\"#{term}\" "
+                  terms_array << term
                 else
                   if ZOOM_BOOLEAN_OPERATORS.include?(term)
                     # we got ourselves an operator
-                    operators_string += "@#{term} "
+                    operators_array << "@#{term}"
                     last_term_an_operator = true
                   else
                     # just a plain term
                     if last_term_an_operator == false
                       # need to add an operator
                       # assume "and" since none-specified
-                      operators_string += "@and "
+                      operators_array << "@and "
                     end
 
-                    terms_string += "\"#{term}\" "
+                    terms_array << term
                     last_term_an_operator = false
                   end
                 end
@@ -339,7 +339,17 @@ class SearchController < ApplicationController
 
             term_count += 1
           end
-          query += operators_string + " " + terms_string
+
+          # handle case where the user has enterd two or more operators in a row
+          # we just subtract one from the beginning of operators_array
+          while operators_array.size >= terms_array.size
+            operators_array.delete_at(0)
+          end
+
+          if operators_array.size > 0
+            query += operators_array.join(" ") + " "
+          end
+          query += "\"" + terms_array.join("\" \"") + "\" "
         else
           # @and will break query if only single term
           query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
