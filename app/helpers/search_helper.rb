@@ -4,9 +4,14 @@ module SearchHelper
   # take current url, replace :controller_for_zoom_class
   # with passed with one for passed in zoom_class
   def link_to_zoom_class_results(zoom_class,results_count)
-    link_to("#{zoom_class_plural_humanize(zoom_class)} (#{results_count})",
-            :overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil},
-            :trailing_slash => true)
+    if params[:action] == 'all'
+      link_to("#{zoom_class_plural_humanize(zoom_class)} (#{results_count})",
+              :overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil},
+              :trailing_slash => true)
+    else
+      link_to("#{zoom_class_plural_humanize(zoom_class)} (#{results_count})",
+              :overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil})
+    end
 
   end
 
@@ -15,7 +20,7 @@ module SearchHelper
   end
 
   def link_to_next_page(phrase,next_page)
-    link_to(phrase, :overwrite_params => { :page => next_page })
+     link_to(phrase, :overwrite_params => { :page => next_page })
   end
 
   # look in parameters for what this is a refinement of
