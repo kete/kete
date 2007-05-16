@@ -37,21 +37,10 @@
                         <h3>
                                 <%= title %>
                         </h3>
-                        <div id="prev-next">
-                                <% if current_page > 1 %>
-                                        <%= link_to_previous_page('&lt;&lt; previous',previous_page) %>
-
-                                <% else %>
-                                        &lt;&lt; previous
-                                <% end %>
-                                &nbsp;
-                                <% if current_page < last_page  %>
-                                        <%= link_to_next_page('next &gt;&gt;',next_page) %>
-
-                                <% else %>
-                                        next &gt;&gt;
-                                <% end %>
-                        </div>
+                        <%= pagination_links(:current_page => current_page,
+                                             :previous_page => previous_page,
+                                             :next_page => next_page,
+                                             :last_page => last_page) %>
                         <% if (results.size-existing_count) > 0 %>
                                 <div id="result-show">
                                         Showing <%= start %>-<% if current_page < last_page  -%>
@@ -85,6 +74,13 @@
                                  </div>
                         <% end %>
 
+                        <%= pagination_links(:current_page => current_page,
+                                             :previous_page => previous_page,
+                                             :next_page => next_page,
+                                             :last_page => last_page,
+                                             :placement => 'bottom',
+                                             :number_per_page => number_per_page) %>
+                        <p>&nbsp;</p>
                         <div id="bottomlinks">
                                 <div id="showlinks">
                                         Show
