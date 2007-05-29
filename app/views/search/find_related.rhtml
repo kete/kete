@@ -6,7 +6,11 @@
 
 <h2><%= h(@title) -%></h2>
 
-<% form_tag :overwrite_params => {:controller => 'search', :action => 'terms_to_page_url_redirect', :page => nil, :search_terms => nil} do %>
+<% form_tag :overwrite_params => {:controller => 'search',
+                                  :action => 'terms_to_page_url_redirect',
+                                  :page => nil,
+                                  :urlified_name => 'site',
+                                  :search_terms => nil} do %>
 
   <% if !params[:relate_to_topic].nil? %>
     <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
