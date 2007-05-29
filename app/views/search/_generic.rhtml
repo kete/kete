@@ -14,12 +14,20 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
 :onclick => "new Ajax.Updater('item_#{result}_wrapper',
 '/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}',
 {asynchronous:true, evalScripts:true}); return false;"}) %>
-                                        <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                        <% if params[:relate_to_topic] %>
+                                                <h4><%= link_to h(title), "#{source_url}", { :popup => true }  %></h4>
+                                        <% else -%>
+                                                <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                        <% end -%>
                                         </div>
 
                                 <div class="generic-result-description"><%= strip_tags(short_summary) %>
                                         <div class="generic-result-more">
-                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+                                        <% if params[:relate_to_topic] %>
+                                                <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}", :popup => true })%>
+                                        <% else -%>
+                                                <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+                                        <% end -%>
                                         </div>
                                     <% end %>
                                   <% end %>

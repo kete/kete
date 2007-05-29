@@ -1,10 +1,10 @@
                         <div class="image-result-wrapper" id="item_<%= result %>_wrapper">
                                 <% if params[:relate_to_topic] %>
-				  <% if !params[:existing_array_string].nil?
-                                  	@existing_relations = params[:existing_array_string].split(',')
-				     else
-                                  	@existing_relations = Array.new
-			 	     end -%>
+                                  <% if !params[:existing_array_string].nil?
+                                        @existing_relations = params[:existing_array_string].split(',')
+                                     else
+                                        @existing_relations = Array.new
+                                     end -%>
                                   <% if (@existing_relations.detect { |x| x == result} == nil) %>
                                        <%=
 check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
@@ -13,17 +13,17 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
 {asynchronous:true, evalScripts:true}); return false;"}) %>
                                 <div class="image-result-thumb">
                                 <% if locally_hosted && !image_file.nil? %>
-                                        <p><%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}")  %></p>
+                                        <p><%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}", { :popup => true })  %></p>
                                 <% else %>
-                                        <p><%= link_to "View Image", "#{source_url}"  %></p>
+                                        <p><%= link_to "View Image", "#{source_url}", { :popup => true }  %></p>
                                 <% end %>
                                 </div>
                                 <div class="image-result-header">
-                                        <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                        <h4><%= link_to h(title), "#{source_url}", { :popup => true }   %></h4>
                                         </div>
                                 <div class="image-result-description"><%= strip_tags(short_summary) %>
                                         <div class="image-result-more">
-                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}", :popup => true })%>
                                         </div>
                                 </div>
                                   <% end %>
