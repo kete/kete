@@ -228,17 +228,43 @@ class SearchController < ApplicationController
 
   def populate_result_sets_for(zoom_class,zoom_db)
     query = String.new
+    query_operators = String.new
     sort_type = 'none'
+
+    # potential elements of query
+    # zoom_class and optionally basket
+    # search_terms which search both title attribute and all content attribute
+    # source_item for things related to item
+    # tag for things tagged with the tag/subject
+    # contributor for things contributed to or created by a user
+    # sort_type for last_modified
+
+    if @current_basket.urlified_name == 'site'
+      query += "@attr 1=12 #{zoom_class} "
+    else
+      query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
+    end
+
     if !@source_item.nil?
       # this looks in the dc_relation index in the z30.50 server
       # must be exact string
       # get the item
-      query += "@and @attr 1=1026 @attr 4=3 \"#{url_for_dc_identifier(@source_item)}\" "
+      query += "@attr 1=1026 @attr 4=3 \"#{url_for_dc_identifier(@source_item)}\" "
+      query_operators += "@and "
     end
 
     if !@tag.nil?
       # this looks in the dc_subject index in the z30.50 server
-      query += "@and @attr 1=21 \"#{@tag.name}\" "
+      query += "@attr 1=21 \"#{@tag.name}\" "
+      query_operators += "@and "
+    end
+
+    # this should go last because of "or contributor"
+    if !@contributor.nil?
+      # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
+      # must be exact string
+      query += "@or @attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" @attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
+      query_operators += "@and "
     end
 
     # process query and get a ZOOM::RecordSet back
@@ -255,18 +281,17 @@ class SearchController < ApplicationController
       # this is an "all" search
       # sort by date last modified, i.e. oai_datestamp
       sort_type = 'last_modified'
-
-      if @current_basket.urlified_name == 'site'
-        query += "@attr 1=12 #{zoom_class} "
-      else
-        query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
-      end
     else
       # if this rss, we want last_modified to be taken into account
       # otherwise, strictly relevance
       if params[:action] == 'rss'
         sort_type = 'last_modified'
       end
+
+      # add the dynamic relevance ranking
+      # allowing for incomplete search terms
+      # and fuzzy (one character misspelled)
+      query += "@attr 2=102 @attr 5=3 @attr 5=103 "
 
       # possibly move this to acts_as_zoom
       # handles case were someone is searching for a url
@@ -275,16 +300,17 @@ class SearchController < ApplicationController
       @search_terms = @search_terms.gsub("/", "\/")
 
       prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
-      if @current_basket.urlified_name == 'site'
-        query = "@and @attr 1=12 #{zoom_class} @attr 2=102 @attr 5=3 "
-      else
-        query = "@and @attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} @attr 2=102 @attr 5=3 "
-      end
 
       # quote each term to handle phrases
       if !prepped_terms.blank?
         if prepped_terms.size > 1
-          query += "@attr 1=1016 "
+          # give precedence in relevance
+          # to items that have the terms in their title
+          # by adding title to attribute and "or" all attribute
+          # rather than just searching all attribute
+          title_query = "@or @attr 1=4 "
+          all_content_query = "@attr 1=1016 "
+
           # work through terms
           # if there is a boolean operator specified
           # add it to the correct spot
@@ -297,11 +323,10 @@ class SearchController < ApplicationController
           last_term_an_operator = false
           prepped_terms.each do |term|
             # if first term is boolean operator "not"
-            # then replace the @and at the beginning of whole query with @not
+            # then replace the @and for this element of the query with @not
             # all other boolean operators are treated as normal words if first term
             if term_count == 1
               if term.downcase == 'not'
-                query = query.gsub(/^\@and/, "@not")
                 query_starts_with_not = true
               else
                 terms_array << term
@@ -347,23 +372,28 @@ class SearchController < ApplicationController
           end
 
           if operators_array.size > 0
-            query += operators_array.join(" ") + " "
+            title_query += operators_array.join(" ") + " "
+            all_content_query += operators_array.join(" ") + " "
           end
-          query += "\"" + terms_array.join("\" \"") + "\" "
+
+          if query_starts_with_not == true
+            query_operators += "@not "
+          else
+            query_operators += "@and "
+          end
+
+          title_query += "\"" + terms_array.join("\" \"") + "\" "
+          all_content_query += "\"" + terms_array.join("\" \"") + "\" "
+          query += title_query + all_content_query
         else
           # @and will break query if only single term
-          query += "@attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
+          query += "@or @attr 1=4 \"#{prepped_terms.join("\" \"")}\" @attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
+          query_operators += "@and "
         end
       end
     end
 
-    # this should go last because of "or contributor"
-    if !@contributor.nil?
-      # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
-      # must be exact string
-      query += "@or @attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" @attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
-      query = "@and " + query unless query[0,4] == "@and"
-    end
+    query = query_operators + query
 
     case sort_type
     when 'last_modified'
