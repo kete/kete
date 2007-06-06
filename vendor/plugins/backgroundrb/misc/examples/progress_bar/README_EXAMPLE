@@ -1,0 +1,32 @@
+In this example directory is all the code for a simple worker with 
+an ajax progress bar.
+
+First create an empty rails application.
+  rails progressbar_demo
+  cd progressbar_demo
+
+Second: install a clean version of backgrounddrb.
+  cd vendor/plugins
+  svn co http://svn.devjavu.com/backgroundrb/tags/release-0.2.1 backgroundrb
+  cd ../../
+  rake backgroundrb:setup
+
+Copy the following files to the appropriate directory within your Rails app.
+  drb_controller.rb => app/controllers dir
+  drb/ => app/views/ dir
+  drb.css => public/stylesheets
+  drb.js => public/javascripts
+  progress_worker.rb => lib/workers
+
+Next, run the app.
+  script/backgroundrb start
+  script/server start
+  
+View the magic at:
+  http://localhost:3000/drb
+  
+When you feel up to some higher level backgroundrb magic, it is a good idea to stop the current app.
+  script/server stop
+  script/backgroundrb stop
+  
+ 

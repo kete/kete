@@ -1,0 +1,20 @@
+[23 April 2007]
+
+* Make tag_list to respect Tag.delimiter
+
+[31 March 2007]
+
+* Add Tag.delimiter accessor to change how tags are parsed.
+* Fix :include => :tags when used with find_tagged_with
+
+[7 March 2007]
+
+* Fix tag_counts for SQLServer [Brad Young]
+
+[21 Feb 2007]
+
+* Use scoping instead of TagCountsExtension [Michael Schuerig]
+
+[7 Jan 2007]
+
+* Add :match_all to find_tagged_with [Michael Sheakoski]
