@@ -8,6 +8,7 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def after_save(user)
+    UserNotifier.banned(user) unless user.banned_at.nil?
     UserNotifier.deliver_activation(user) if user.recently_activated?
     UserNotifier.deliver_forgot_password(user) if user.recently_forgot_password?
     UserNotifier.deliver_reset_password(user) if user.recently_reset_password?

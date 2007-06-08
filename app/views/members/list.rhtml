@@ -20,37 +20,13 @@
         <td><%= link_to_contributions_of(user,'Topic') -%></td>
         <td><%= mail_to h(user.email) -%></td>
         <td><%=h user.created_at.to_s(:euro_date_time) -%></td>
-        <td>
-        <ul>
-        <% tool_count = 1 -%>
-        <% @possible_roles.each do |possible_role_key,possible_role| -%>
-                <% if role_key != possible_role_key -%>
-                        <%= li_with_correct_class(tool_count) + link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key ) %></li>
-                        <% tool_count += 1 -%>
-                <% end -%>
-        <% end -%>
-        </ul>
-        </td>
-        <% if !@site_admin_actions.blank? -%>
-        <td>
-        <ul>
-        <% tool_count = 1 -%>
-        <% @site_admin_actions.each do |action_key,action_label| -%>
-                <% if action_key == 'destroy'  -%>
-                        <% user_contributions = user.contributions.size -%>
-                        <% if user_contributions == 0 -%>
-                                <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => :destroy, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
-                        <% else -%>
-                                <%= li_with_correct_class(tool_count) + user_contributions.to_s -%> contributions</li>
-                        <% end -%>
-                <% else -%>
-                        <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => action_key, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
-                <% end -%>
-                <% tool_count += 1 -%>
-        <% end -%>
-        </ul>
-        </td>
-        <% end -%>
+        <%= render :partial =>'possible_roles',
+                   :locals => { :user => user,
+                                :role_key => role_key,
+                                :possible_roles => @possible_roles } %>
+        <%= render :partial =>'site_admin_actions',
+                   :locals => { :user => user,
+                                :site_admin_actions => @site_admin_actions } %>
       </tr>
     <% end %>
 <% end %>
@@ -65,37 +41,13 @@
         <td><%= link_to_contributions_of(user,'Topic') -%></td>
         <td><%= mail_to h(user.email) -%></td>
         <td><%=h user.created_at.to_s(:euro_date_time) -%></td>
-        <td>
-        <ul>
-        <% tool_count = 1 -%>
-        <% @possible_roles.each do |possible_role_key,possible_role| %>
-                <% if 'member' != possible_role_key -%>
-                        <%= li_with_correct_class(tool_count) + link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key ) %></li>
-                        <% tool_count += 1 -%>
-                <% end -%>
-        <% end -%>
-        </ul>
-        </td>
-        <% if !@site_admin_actions.blank? -%>
-        <td>
-        <ul>
-        <% tool_count = 1 -%>
-        <% @site_admin_actions.each do |action_key,action_label| -%>
-                <% if action_key == 'destroy'  -%>
-                        <% user_contributions = user.contributions.size -%>
-                        <% if user_contributions == 0 -%>
-                                <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => :destroy, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
-                        <% else -%>
-                                <%= li_with_correct_class(tool_count) + user_contributions.to_s -%> contributions</li>
-                        <% end -%>
-                <% else -%>
-                        <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => action_key, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
-                <% end -%>
-                <% tool_count += 1 -%>
-        <% end -%>
-        </ul>
-        </td>
-        <% end -%>
+        <%= render :partial =>'possible_roles',
+                :locals => { :user => user,
+                             :role_key => 'member',
+                             :possible_roles => @possible_roles } %>
+        <%= render :partial =>'site_admin_actions',
+                   :locals => { :user => user,
+                                :site_admin_actions => @site_admin_actions } %>
       </tr>
     <% end %>
 <% end %>

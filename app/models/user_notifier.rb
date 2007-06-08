@@ -30,6 +30,12 @@ class UserNotifier < ActionMailer::Base
     @body[:flag] = flag
   end
 
+  def banned(user)
+    setup_email(user)
+    @subject    += 'Your account has been banned!'
+    @body[:url]  = "#{SITE_URL}"
+  end
+
   protected
   def setup_email(user)
     @recipients  = "#{user.email}"

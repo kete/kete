@@ -27,6 +27,7 @@ class MembersController < ApplicationController
       @possible_roles['site_admin'] = 'Site Admin'
       @site_admin_actions['become_user'] = 'Login as user'
       @site_admin_actions['destroy'] = 'Delete'
+      @site_admin_actions['ban'] = 'Ban'
     end
 
     @current_basket.accepted_roles.each do |role|
@@ -121,6 +122,24 @@ class MembersController < ApplicationController
     if logged_in?
       redirect_back_or_default(:controller => '/account', :action => 'index')
       flash[:notice] = "Logged in successfully"
+    end
+  end
+
+  def ban
+    @user = User.find(params[:id])
+    @user.banned_at = Time.now
+    if @user.save
+      flash[:notice] = "Successfully banned user."
+      redirect_to :action => 'list'
+    end
+  end
+
+  def unban
+    @user = User.find(params[:id])
+    @user.banned_at = nil
+    if @user.save
+      flash[:notice] = "Successfully removed ban on user."
+      redirect_to :action => 'list'
     end
   end
 

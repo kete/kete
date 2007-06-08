@@ -76,7 +76,9 @@ class User < ActiveRecord::Base
   def self.authenticate(login, password)
     # hide records with a nil activated_at
     u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login]
-    u && u.authenticated?(password) ? u : nil
+    # Walter McGinnis, 2007-06-08
+    # can't login if they are banned
+    u && u.authenticated?(password) && u.banned_at.nil? ? u : nil
   end
 
   # Activates the user in the database.
