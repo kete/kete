@@ -109,6 +109,14 @@ class MembersController < ApplicationController
   # added so site admins can assume identities of users if necessary
   def become_user
     return unless request.post?
+
+    # logout the old user first
+    # stolen from account_controller.logout, should make DRY
+    self.current_user.forget_me if logged_in?
+    cookies.delete :auth_token
+    reset_session
+
+    # now login as new user
     self.current_user = User.find(params[:id])
     if logged_in?
       redirect_back_or_default(:controller => '/account', :action => 'index')

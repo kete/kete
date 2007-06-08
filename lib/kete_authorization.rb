@@ -19,7 +19,7 @@ module KeteAuthorization
     def at_least_a_moderator?
       if @site_admin == false
         if logged_in?
-          permit? "moderator on :current_basket" do
+          permit? "admin on :current_basket or moderator on :current_basket" do
             return true
           end
         end
