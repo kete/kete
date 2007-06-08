@@ -288,7 +288,7 @@ module ApplicationHelper
   # related to comments
   def show_comments_for(item)
     html_string = "<p>There are #{@comments.size} comments in this discussion.</p>\n<p>"
-    
+
     if @comments.size > 0
       html_string += "Read and "
     end
@@ -365,15 +365,17 @@ module ApplicationHelper
       end
       if !controller.nil?
         html_string += link_to(flag,
-                               :controller => controller,
-                               :action => :flag_version,
-                               :flag => flag,
-                               :id => item) + "</li>\n"
+                               { :controller => controller,
+                                 :action => :flag_version,
+                                 :flag => flag,
+                                 :id => item },
+                               :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
       else
         html_string += link_to(flag,
-                               :action => :flag_version,
-                               :flag => flag,
-                               :id => item) + "</li>\n"
+                               { :action => :flag_version,
+                                 :flag => flag,
+                                 :id => item },
+                               :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
       end
 
       flag_count += 1
@@ -417,4 +419,11 @@ module ApplicationHelper
     :version => version.version
   end
 
+  def li_with_correct_class(count)
+    html_string = "<li"
+    if count == 1
+      html_string += ' class="first"'
+    end
+    html_string += ">"
+  end
 end

@@ -1,78 +1,107 @@
 <% @title = 'Listing users' -%>
 <h3><%= @title %></h3>
 
-<% @possible_roles = {'site_admin' => 'Site Admin',
-                      'admin' => 'Admin',
-                      'moderator' => 'Moderator',
-                      'member' => 'Member'
-                     } -%>
-
-<% @non_member_roles_plural.each do |role_key, role_plural| %>
-  <div><h4 style="text-transform:capitalize"><%= role_plural %></h4>
-  <!-- <%= link_to "New "+role_key, :action => 'new_'+role_key %> --></div>
+<div class="detail-tools">
   <table>
     <tr valign="top">
       <th>User name or Login</th>
       <th>Email</th>
       <th>Created at</th>
-      <th colspan="3">Change to:</th>
+      <th>Change to:</th>
+      <% if !@site_admin_actions.blank? -%>
+              <th>Administrative Actions</th>
+      <% end -%>
     </tr>
+
+<% @non_member_roles_plural.each do |role_key, role_plural| %>
+  <tr><td>&nbsp;<h4><%= role_plural.humanize -%></h4></td></tr>
     <% for user in eval("@" << role_plural) %>
       <tr>
-        <td><%= link_to_contributions_of(user,'Topic') %></td>
-        <td><%= mail_to h(user.email) %></td>
-        <td><%=h user.created_at.to_s(:euro_date_time) %></span></td>
-            <% @possible_roles.each do |possible_role_key,possible_role| %>
-              <% if role_key != possible_role_key -%>
-                <td><%= link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key, :old_role => role_key ) %></td>
-              <% end %>
-            <% end %>
+        <td><%= link_to_contributions_of(user,'Topic') -%></td>
+        <td><%= mail_to h(user.email) -%></td>
+        <td><%=h user.created_at.to_s(:euro_date_time) -%></td>
+        <td>
+        <ul>
+        <% tool_count = 1 -%>
+        <% @possible_roles.each do |possible_role_key,possible_role| -%>
+                <% if role_key != possible_role_key -%>
+                        <%= li_with_correct_class(tool_count) + link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key ) %></li>
+                        <% tool_count += 1 -%>
+                <% end -%>
+        <% end -%>
+        </ul>
+        </td>
+        <% if !@site_admin_actions.blank? -%>
+        <td>
+        <ul>
+        <% tool_count = 1 -%>
+        <% @site_admin_actions.each do |action_key,action_label| -%>
+                <% if action_key == 'destroy'  -%>
+                        <% user_contributions = user.contributions.size -%>
+                        <% if user_contributions == 0 -%>
+                                <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => :destroy, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
+                        <% else -%>
+                                <%= li_with_correct_class(tool_count) + user_contributions.to_s -%> contributions</li>
+                        <% end -%>
+                <% else -%>
+                        <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => action_key, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
+                <% end -%>
+                <% tool_count += 1 -%>
+        <% end -%>
+        </ul>
+        </td>
+        <% end -%>
       </tr>
     <% end %>
-</table>
 <% end %>
 
-<div><h4 style="text-transform:capitalize">members</h4>
-<!-- <%= link_to 'New member', :action => 'new_member' %> --></div>
-<% if @members.nil? %>
-  <p>Currently no members</p>
+<tr><td>&nbsp;<h4>Members</h4></td></tr>
+<!-- TODO: replace with auto complete search function <%= link_to 'New member', :action => 'new_member' %> -->
+<% if @members.blank? %>
+  <tr><td><p>Currently no members</p></td></tr>
 <% else %>
-  <table>
-    <tr valign="top">
-      <th>Login</th>
-      <th>Email</th>
-<!--      <th>Extended content</th> -->
-      <th>Created at</th>
-<!--      <th>Updated at</th> -->
-<!--      <th>Remember token</th> -->
-<!--      <th>Token expires</th> -->
-      <th colspan="3">Change to:</th>
-    </tr>
     <% for user in @members %>
       <tr>
-        <td><%= link_to_contributions_of(user,'Topic') %></td>
-        <td><%= mail_to h(user.email) %></td>
-<!--        <td><%=h user.extended_content %></td> -->
-        <td><%=h user.created_at.strftime("%b %d, %Y %H:%M%p") %></span></td>
-<!--        <td><%=h user.updated_at %></td> -->
-<!--        <td><%=h user.remember_token %></td> -->
-<!--    <td><%=h user.remember_token_expires_at %></td> -->
-<!--        <td><%= link_to 'Show', :action => 'show', :id => user %></td> -->
-<!--        <td><%= link_to 'Edit', :action => 'edit', :id => user %></td> -->
-<!--        <td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :method => :post %></td> -->
-            <% @possible_roles.each do |possible_role_key,possible_role| %>
-              <% if 'member' != possible_role_key -%>
-                <td><%= link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key, :old_role => 'member' ) %></td>
-              <% end %>
-            <% end %>
+        <td><%= link_to_contributions_of(user,'Topic') -%></td>
+        <td><%= mail_to h(user.email) -%></td>
+        <td><%=h user.created_at.to_s(:euro_date_time) -%></td>
+        <td>
+        <ul>
+        <% tool_count = 1 -%>
+        <% @possible_roles.each do |possible_role_key,possible_role| %>
+                <% if 'member' != possible_role_key -%>
+                        <%= li_with_correct_class(tool_count) + link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key ) %></li>
+                        <% tool_count += 1 -%>
+                <% end -%>
+        <% end -%>
+        </ul>
+        </td>
+        <% if !@site_admin_actions.blank? -%>
+        <td>
+        <ul>
+        <% tool_count = 1 -%>
+        <% @site_admin_actions.each do |action_key,action_label| -%>
+                <% if action_key == 'destroy'  -%>
+                        <% user_contributions = user.contributions.size -%>
+                        <% if user_contributions == 0 -%>
+                                <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => :destroy, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
+                        <% else -%>
+                                <%= li_with_correct_class(tool_count) + user_contributions.to_s -%> contributions</li>
+                        <% end -%>
+                <% else -%>
+                        <%= li_with_correct_class(tool_count) + link_to( action_label, { :action => action_key, :id => user }, :confirm => 'Are you sure?', :method => :post ) %></li>
+                <% end -%>
+                <% tool_count += 1 -%>
+        <% end -%>
+        </ul>
+        </td>
+        <% end -%>
       </tr>
     <% end %>
+<% end %>
 </table>
 
-    <p><%= link_to 'Previous page', { :page => @members_pages.current.previous } if @members_pages.current.previous %></p>
-    <p><%= link_to 'Next page', { :page => @members_pages.current.next } if @members_pages.current.next %></p>
-<% end %>
-
+</div>
 <br />
 
 

@@ -27,7 +27,7 @@ module KeteAuthorization
         return true
       end
     end
-    
+
     def load_site_admin
       session[:site_admin] = site_admin? if session[:site_admin].nil?
       @site_admin ||= session[:site_admin]
@@ -38,6 +38,6 @@ module KeteAuthorization
       @at_least_a_moderator ||= at_least_a_moderator?
       return true
     end
-    
+
   end
 end

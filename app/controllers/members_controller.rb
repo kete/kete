@@ -1,24 +1,36 @@
 class MembersController < ApplicationController
   permit "site_admin or admin of :current_basket"
 
+  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
+  verify :method => :post, :only => [ :destroy, :create, :update ],
+         :redirect_to => { :action => :list }
+
   def index
     list
     render :action => 'list'
   end
 
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
-
   def list
     @non_member_roles_plural = Hash.new
     @members = nil
+    @possible_roles = {'admin' => 'Admin',
+      'moderator' => 'Moderator',
+      'member' => 'Member'
+    }
+
+    @site_admin_actions = Hash.new
+
+    if @current_basket.urlified_name == 'site' and site_admin?
+      @possible_roles['site_admin'] = 'Site Admin'
+      @site_admin_actions['become_user'] = 'Login as user'
+      @site_admin_actions['destroy'] = 'Delete'
+    end
+
     @current_basket.accepted_roles.each do |role|
       role_plural = role.name.pluralize
       instance_variable_set("@#{role_plural}", @current_basket.send("has_#{role_plural}"))
       if role_plural == 'members'
         @members = @current_basket.has_members
-        @members_pages = Paginator.new self, @members.size, 10, params[:page]
       else
         @non_member_roles_plural[role.name] = role_plural
       end
@@ -64,14 +76,15 @@ class MembersController < ApplicationController
 
   def change_membership_type
     membership_type = params[:role]
-    old_membership_type = params[:old_role]
-    can_change = true
-    if old_membership_type == 'site_admin' # to pick up the chance we are changing  from site admin to something else
-      can_change = need_one_site_admin?
+    @user = User.find(params[:id])
+
+    can_change = false
+
+    if !@user.has_role?('site_admin') or more_than_one_site_admin?
+      can_change = true
     end
 
     if can_change == true
-      @user = User.find(params[:id])
       # bit to do the change
       @current_basket.accepted_roles.each do |role|
         @user.has_no_role(role.name,@current_basket)
@@ -85,11 +98,18 @@ class MembersController < ApplicationController
     end
   end
 
-  def need_one_site_admin?
-    if @current_basket.has_site_admins.size >= 2 #currently only one site_admin so cant remove it
-      return true
-    else
-      return false
+  # we need at least one site admin at all times
+  def more_than_one_site_admin?
+    Basket.find(1).has_site_admins.size > 1
+  end
+
+  # added so site admins can assume identities of users if necessary
+  def become_user
+    return unless request.post?
+    self.current_user = User.find(params[:id])
+    if logged_in?
+      redirect_back_or_default(:controller => '/account', :action => 'index')
+      flash[:notice] = "Logged in successfully"
     end
   end
 

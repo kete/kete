@@ -1,5 +1,6 @@
 class TopicTypesController < ApplicationController
-  permit "site_admin or admin of :current_basket"
+  @site = Basket.find_by_id(1)
+  permit "site_admin or admin of :site"
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],

@@ -223,6 +223,7 @@ class User < ActiveRecord::Base
     self.id.nil?
   end
 
+  private
   # after_save
   def add_as_member_to_default_basket
     basket = Basket.find(1)
