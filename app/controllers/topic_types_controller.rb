@@ -1,4 +1,7 @@
 class TopicTypesController < ApplicationController
+  # everything else is handled by application.rb
+  before_filter :login_required, :only => [:list, :index]
+
   @site = Basket.find_by_id(1)
   permit "site_admin or admin of :site"
 

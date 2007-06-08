@@ -1,4 +1,7 @@
 class ImportersController < ApplicationController
+  # everything else is handled by application.rb
+  before_filter :login_required, :only => [:list, :index]
+
   permit "site_admin or admin of :current_basket"
 
   # fields to add

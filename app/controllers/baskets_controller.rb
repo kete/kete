@@ -1,6 +1,7 @@
 class BasketsController < ApplicationController
   # only permit site members to do anything with baskets
-  before_filter :login_required
+  # everything else is handled by application.rb
+  before_filter :login_required, :only => [:list, :index]
 
   def index
     list
