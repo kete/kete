@@ -26,4 +26,7 @@ class Document < ActiveRecord::Base
     # rails_root/private/kete_path_name/documents/recording_id/filename
     # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
   # end
+
+  include HandleLegacyAttachmentFuPaths
+
 end

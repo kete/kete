@@ -36,4 +36,5 @@ class ImageFile < ActiveRecord::Base
     # File.join(RAILS_ROOT, file_system_path, attachment_path_id, thumbnail_name_for(thumbnail))
   # end
 
+  include HandleLegacyAttachmentFuPaths
 end
