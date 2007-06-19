@@ -6,7 +6,14 @@ class IndexPageController < ApplicationController
       @is_fully_cached = has_all_fragments?
       prepare_topic_for_show
 
-      @title = @current_basket.name
+      if @current_basket != @site_basket
+        @title = @current_basket.name
+      else
+        if @is_fully_cached == false
+          @title = @topic.title
+        end
+      end
+
       if @current_basket.index_page_topic_is_entire_page
         render :action => :topic_as_full_page
       else
