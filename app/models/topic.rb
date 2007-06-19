@@ -9,7 +9,11 @@ class Topic < ActiveRecord::Base
   belongs_to :topic_type
 
   # each topic or content item lives in exactly one basket
+  # , :counter_cache => true
   belongs_to :basket
+
+  # a topic may be the designated index page for it's basket
+  belongs_to :index_for_basket, :class_name => 'Basket', :foreign_key => 'index_for_basket_id'
 
   # where we handle creator and contributor tracking
   include HasContributors

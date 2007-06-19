@@ -7,13 +7,11 @@
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title><%= h(@title) -%></title>
-  <% if params[:controller] == 'topics' || params[:controller] == 'documents' && params[:action] == 'pick_topic_type' || params[:action] == 'edit' || params[:action] == 'new' -%>
+  <% if params[:controller] == 'topics' || params[:controller] == 'documents' || params[:controller] == 'baskets' && params[:action] == 'pick_topic_type' || params[:action] == 'edit' || params[:action] == 'new' -%>
         <% # Include TinyMCE before other JS to avoid problems -%>
         <%= javascript_include_tiny_mce_if_used %>
         <%= tiny_mce if using_tiny_mce? %>
-  <!-- TODO: replace this javascript whereever it's called and get rid of this -->
-  <!-- should be handled by a helper instead -->
-  <script type="text/javascript">
+        <script type="text/javascript">
         function convertWord(type, content) {
             switch (type) { // Gets executed before the built in logic performes it's cleanups
               case "before":
@@ -26,14 +24,13 @@
             }
             return content;
         }
-  </script>
+        </script>
   <% end -%>
   <%= stylesheet_link_tag 'kete', :media => 'screen' %>
   <!--[if IE 5]><%= stylesheet_link_tag 'kete-ie5', :media => 'screen' %><![endif]-->
   <!--[if IE 6]><%= stylesheet_link_tag 'kete-ie6', :media => 'screen' %><![endif]-->
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
-  <% # TODO: turn this on if we need js fx for kete -%>
-    <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag :defaults %>
   <% if params[:controller] == 'zoom_dbs' || params[:controller] == 'extended_fields' -%>
         <%= active_scaffold_includes %>
   <% end -%>
@@ -111,25 +108,50 @@
                 <% if !@rss_tag_link.nil? -%>
                         <div id="linkToRSS"><%= @rss_tag_link -%>RSS</a></div>
                 <% end -%>
+                <div class="browse-baskets">
+                        <h4>Featured baskets:</h4>
+                        <ul>
+                        <% basket_count = 1 -%>
+                        <% # TODO: possibly limit this and provide a "more" link to a complete listing -%>
+                        <% Basket.find(:all).each do |basket| %>
+                               <%= li_with_correct_class(basket_count) +
+                                   link_to_unless_current(h(basket.name),
+                                   basket_index_url(:urlified_name => basket.urlified_name)) %></li>
+                                <% basket_count += 1 %>
+                        <% end %>
+                        </ul>
+                </div>
+                <% if logged_in? and @basket_admin -%>
+                        <div class="basket-toolbox">
+                                <h4><%= h(@current_basket.name) -%>:</h4>
+                                <ul>
+                                <li class="first"><%= link_to_unless_current "edit",
+                                                                              :id => @current_basket,
+                                                                              :controller => '/baskets',
+                                                                              :action => :edit -%></li>
+                                <li><%= link_to_unless_current "members",
+                                                                :controller => '/members',
+                                                                :action => :list -%></li>
+                                <% if @current_basket.urlified_name != 'site' -%>
+                                        <li><%= link_to_unless_current "delete",
+                                                                       { :id => @current_basket,
+                                                                         :controller => '/baskets',
+                                                                         :action => :destroy },
+                                                                         :confirm => 'Are you sure? All items in this basket will be deleted forever!', :method => :post -%></li>
+                                <% end %>
+                                </ul>
+                                </p>
+                        </div>
+                <% end %>
                 <% if logged_in? and @site_admin %>
                    <!-- admin toolbox, temp -->
                    <div id="adminToolbox">
                         <h4>Administrator's Toolbox (prototype)</h4>
-                        <p>Kete collections:
-                        <% Basket.find(:all).each do |basket| %>
-                           <% if basket == @current_basket && request.request_uri == "/#{@current_basket.urlified_name}/" %>
-                              <%= h(basket.name) %>
-                           <% else %>
-                              <%= link_to(h(basket.name), :controller => 'search',
-                                                          :urlified_name => basket.urlified_name) %>
-                           <% end %>
-                           |
-                        <% end %>
+                        <p>Controls:
                         <%= link_to_unless_current("add kete", :urlified_name => 'site',
                                                                :controller => 'baskets',
                                                                :action => :new) %>
-                        </p>
-                        <p>Controls:
+                        |
                         <%= link_to_unless_current "topic types", :controller => '/topic_types',
                                                                   :action => :list,
                                                                   :urlified_name => 'site' -%>
@@ -150,11 +172,11 @@
                         <%= link_to_unless_current "importers", :controller => '/importers',
                                                                         :action => :index,
                                                                         :urlified_name => 'site' -%>
-                        <% end -%>
                         |
                         <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
                                                                               :action => :list,
                                                                               :urlified_name => 'site' -%>
+                        <% end -%>
                         </p>
                    </div>
                 <% end %>

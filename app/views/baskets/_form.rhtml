@@ -1,7 +1,66 @@
-<%= error_messages_for 'basket' %>
+<fieldset>
+        <%= error_messages_for 'basket' %>
 
-<!--[form:basket]-->
-<p><label for="basket_name">Name</label><br/>
-<%= text_field 'basket', 'name'  %></p>
-<!--[eoform:basket]-->
+        <!--[form:basket]-->
+                <p><label for="basket_name">Name</label><br/>
+                <%= form.text_field :name  %></p>
 
+                <h3>Basket Homepage Preferences</h3>
+
+                <p><label for="basket_index_page_redirect_to_all">Redirect to results of?</label>
+                <%= form.select :index_page_redirect_to_all, zoom_controllers_as_options([["Don't redirect", '']]) %></p>
+
+                <h4>Or Choose What Should Appear on the Basket Homepage</h4>
+
+                <p><label for="basket_index_page_topic_is_entire_page">Only homepage topic?</label>
+                <%= form.check_box :index_page_topic_is_entire_page %></p>
+
+                <h4>Or homepage topic and the following:</h4>
+
+                <p><label for="basket_index_page_link_to_index_topic_as">A link to the homepage topic's?</label>
+                <%= form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options %></p>
+
+                <h5>Recent topics:</h5>
+
+                <p>Including a rolling list of recent topics is an excellent way to present this basket as a blog or a news site.</p>
+                <p><label for="basket_index_page_number_of_topics">List how many recent topics?</label>
+                <%= form.text_field :index_page_number_of_recent_topics, :size => '3' %></p>
+
+                <p><label for="basket_index_page_topics_as">List basket's topics as?</label>
+                <%= form.select :index_page_recent_topics_as, Basket.recent_topics_as_options %></p>
+
+                <h5>Search:</h5>
+
+                <p><label for="basket_index_basket_search">Include basket search form?</label>
+                <%= form.check_box :index_page_basket_search %></p>
+
+                <h5>Content in side bar after search:</h5>
+
+                <p><label for="basket_index_extra_side_bar_html">Do you have anything else to put in side bar?</label>
+                <%= form.text_area :index_page_extra_side_bar_html, :class => "mceEditor", :cols => 120 %></p>
+                <p>Note: forms and javascript are not allowed for security reasons.</p>
+
+                <h5>Selected Image:</h5>
+
+                <p><label for="basket_index_image_as">Show image from basket?</label>
+                <%= form.select :index_page_image_as, Basket.image_as_options %></p>
+
+                <h5>Archives:</h5>
+
+                <p><label for="basket_index_page_archives_as">List basket's archive contents as?</label>
+                <%= form.select :index_page_archives_as, Basket.archives_as_options %></p>
+
+                <h5>Tags:</h5>
+
+                <p><label for="basket_index_page_number_of_tags">List how many tags?</label>
+                <%= form.text_field :index_page_number_of_tags, :size => '3' %></p>
+
+                <p><label for="basket_index_page_tags_as">List basket's tags as?</label>
+                <%= form.select :index_page_tags_as, Basket.tags_as_options %></p>
+
+                <p><label for="basket_index_page_order_tags_by">Order tags by?</label>
+                <%= form.select :index_page_order_tags_by, Basket.order_tags_by_options %></p>
+
+        <!--[eoform:basket]-->
+
+</fieldset>

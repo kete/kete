@@ -108,7 +108,7 @@ class ImportersController < ApplicationController
           redirect_to :action => 'index'
         end
       else
-         flash[:notice] = 'Import failed. You need javascript enabled for this feature.'
+        flash[:notice] = 'Import failed. You need javascript enabled for this feature.'
         redirect_to :action => 'index'
       end
     rescue

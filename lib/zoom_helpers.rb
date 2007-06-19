@@ -34,22 +34,20 @@ module ZoomHelpers
       return plural_humanized
     end
 
-    def zoom_class_controller(zoom_class)
-      zoom_class_controller = String.new
-      case zoom_class
-      when "StillImage"
-        zoom_class_controller = 'images'
-      when "Video"
-        zoom_class_controller = 'video'
-      when "Comment"
-        zoom_class_controller = 'comments'
-      when "AudioRecording"
-        zoom_class_controller = 'audio'
-      else
-        zoom_class_controller = zoom_class.tableize
+    # class methods for options for different attributes
+    # optionally takes a additional_options array
+    # which are added at the start
+    def zoom_controllers_as_options(start_with_additional_options = nil)
+      options = Array.new
+      if !start_with_additional_options.nil?
+        start_with_additional_options.each do |additional_option|
+          options << [additional_option[0], additional_option[1]]
+        end
       end
-      return zoom_class_controller
+      ZOOM_CLASSES.each do |zoom_class|
+        options << ["All " + zoom_class_plural_humanize(zoom_class), zoom_class_controller(zoom_class)]
+      end
+      return options
     end
-
   end
 end

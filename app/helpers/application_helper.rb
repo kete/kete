@@ -33,14 +33,14 @@ module ApplicationHelper
 
   def link_to_contributions_of(user,zoom_class)
     link_to h(user.user_name), :controller => 'search',
-    :urlified_name => 'site',
+    :urlified_name => @site_basket.urlified_name,
     :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
     :action => :all, :contributor => user, :trailing_slash => true
   end
 
   def link_to_profile_for(user)
     link_to h(user.user_name), :controller => 'account',
-    :urlified_name => 'site',
+    :urlified_name => @site_basket.urlified_name,
     :action => :show, :id => user
   end
 
@@ -51,7 +51,7 @@ module ApplicationHelper
               :source_item => options[:source_item],
               :source_controller_singular => zoom_class_controller(options[:source_item_class]).singularize,
               :controller_name_for_zoom_class => zoom_class_controller(options[:related_class]),
-            :urlified_name => 'site' }, { :class => 'small'})
+              :urlified_name => @site_basket.urlified_name }, { :class => 'small'})
   end
 
   def link_to_add_item(options={})
@@ -70,11 +70,11 @@ module ApplicationHelper
     phrase = options[:phrase]
     item_class = options[:item_class]
     return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", {
-                               :controller => 'search', #zoom_class_controller(item_class),
-                               :action => :find_related,
-                               :related_class => options[:related_class],
-             :relate_to_topic => options[:relate_to_topic_id] },
-             :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100'])
+                     :controller => 'search',
+                     :action => :find_related,
+                     :related_class => options[:related_class],
+                     :relate_to_topic => options[:relate_to_topic_id] },
+                   :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100'])
   end
 
   def item_related_topics_wrapper(options={})
@@ -156,7 +156,7 @@ module ApplicationHelper
               :tag => tag,
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-              :urlified_name => 'site' })
+              :urlified_name => @site_basket.urlified_name })
   end
 
   def tags_for(item)

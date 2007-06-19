@@ -7,8 +7,9 @@ svn checkouts will grab extenal deps
 or tarballs will include them
 more for dev notes (and additional steps)
 
-used "ruby script/plugin install -x" for the following
-! TODO: need line for acts_as_zoom
+used "piston import the_external_subversion_repository_to_plugin vendor/plugins/the_plugin_name" for the following
+http://svn.kete.net.nz/home/kete/projects/acts_as_zoom/trunk
+svn://errtheblog.com/svn/plugins/will_paginate
 svn://rubyforge.org/var/svn/ajaxscaffoldp/trunk
 svn://rubyforge.org/var/svn/redhillonrails/trunk/vendor/plugins/redhillonrails_core
 svn://rubyforge.org/var/svn/redhillonrails/trunk/vendor/plugins/foreign_key_migrations

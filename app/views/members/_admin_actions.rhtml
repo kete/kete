@@ -1,0 +1,11 @@
+        <% if !admin_actions.blank? -%>
+                <td width="25%">
+                <ul>
+                <% tool_count = 1 -%>
+                <% admin_actions.each do |action_key,action_label| -%>
+                        <%= admin_actions_correct_list_item(user, action_key, action_label, tool_count) %>
+                        <% tool_count += 1 -%>
+                <% end -%>
+                </ul>
+                </td>
+        <% end -%>

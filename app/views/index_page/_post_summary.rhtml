@@ -1,0 +1,13 @@
+<% post_url = url_for :controller => 'topics', :action => 'show', :id => post_summary, :urlified_name => post_summary.basket.urlified_name
+   post_excerpt = !post_summary.description.blank? ? post_summary.description : post_summary.short_summary
+-%>
+<div class="generic-result-wrapper" id="item_<%= post_summary.id %>_wrapper">
+        <div class="generic-result-header">
+                <h4><%= link_to h(post_summary.title), post_url -%></h4>
+        </div>
+        <div class="generic-result-description"><%= prepare_short_summary(post_excerpt,100) %>
+                <div class="generic-result-more">
+                        <%= link_to("read more &gt;&gt;", post_url, { :title => "Read More about #{post_summary.title}" })%>
+                </div>
+        </div>
+</div>

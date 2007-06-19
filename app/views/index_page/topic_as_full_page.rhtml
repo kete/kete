@@ -1,0 +1,37 @@
+<% cache({:part => 'details'}) do -%>
+        <% extended_fields_html = display_xml_attributes(@topic) -%>
+        <% if !extended_fields_html.blank? %>
+                <div id="detail-extended">
+                        <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+                        <%= extended_fields_html %>
+                </div>
+        <% end %>
+        <%= @topic.description %>
+
+        <%= pending_review(@topic) %>
+<% end -%>
+                                        <% if logged_in? and @at_least_a_moderator -%>
+                        <div class="detail-tools">
+                                <ul>
+<% cache({:part => 'edit'}) do -%>
+                                        <li class="first"><%= link_to "Edit",
+                                                                :action => :edit,
+                                                                :urlified_name => @topic.basket.urlified_name,
+                                                                :controller => 'topics',
+                                                                :id => @topic %></li>
+                                        <li><%= link_to "History",
+                                                         :action => :history,
+                                                         :urlified_name => @topic.basket.urlified_name,
+                                                         :controller => 'topics',
+                                                         :id => @topic %></li>
+
+<% end -%>
+                                        <% end -%>
+                                </ul>
+                        </div>
+<% cache({:part => 'blog'}) do -%>
+<% end -%>
+<% cache({:part => 'archives'}) do -%>
+<% end -%>
+<% cache({:part => 'tags'}) do -%>
+<% end -%>

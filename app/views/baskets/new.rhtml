@@ -1,10 +1,9 @@
-<% @title = 'New kete' -%>
+<% @title = 'New basket' -%>
 
 <h2><%= h(@title) -%></h2>
 
-<% form_tag :action => 'create' do %>
-  <%= render :partial => 'form' %>
+<% form_for :basket, :url => {:action => 'create'} do |form| %>
+  <%= render :partial => 'form', :object => form %>
   <%= submit_tag "Create" %>
 <% end %>
 
-<%= link_to 'Back', :action => 'list' %>

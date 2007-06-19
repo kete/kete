@@ -1,0 +1,137 @@
+<% tool_count = 1 -%>
+                <div id="home-container">
+                        <div id="home-intro">
+<% cache({:part => 'details'}) do -%>
+        <% extended_fields_html = display_xml_attributes(@topic) -%>
+        <% if !extended_fields_html.blank? %>
+                <div id="detail-extended">
+                        <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+                        <%= extended_fields_html %>
+                </div>
+        <% end %>
+        <%= @topic.description %>
+
+        <%= pending_review(@topic) %>
+
+                        </div>
+                        <div class="detail-tools">
+                                <ul>
+                                        <% if !@url_to_full_topic.nil? -%>
+                                                <%= li_with_correct_class(tool_count) + link_to("Full Version of this Topic", @url_to_full_topic) %></li>
+                                                <% tool_count += 1 -%>
+                                        <% end -%>
+                                        <% if !@url_to_comments.nil? -%>
+                                                <% if @comments.size > 0 -%>
+                                                        <%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li>
+                                                        <% tool_count += 1 -%>
+                                                <% end -%>
+                                        <% end -%>
+<% end -%>
+                                        <% if logged_in? and @at_least_a_moderator -%>
+<% cache({:part => 'edit'}) do -%>
+                                                <%= li_with_correct_class(tool_count) + link_to( "Edit",
+                                                                        :action => :edit,
+                                                                        :urlified_name => @topic.basket.urlified_name,
+                                                                        :controller => 'topics',
+                                                                        :id => @topic ) %></li>
+                                                <% tool_count += 1 -%>
+                                                <li><%= link_to "History",
+                                                                 :action => :history,
+                                                                 :urlified_name => @topic.basket.urlified_name,
+                                                                 :controller => 'topics',
+                                                                 :id => @topic %></li>
+<% end -%>
+                                        <% end -%>
+                                </ul>
+                        </div>
+<% cache({:part => 'recent_topics'}) do -%>
+                        <% if @recent_topics_limit > 0 and @recent_topics_items.size > 0 -%>
+                                <div class="home-feature-wrapper">
+                                        <h3>Latest <%= @recent_topics_limit -%> topics</h3>
+                                        <% case @current_basket.index_page_recent_topics_as
+                                           when 'summaries' -%>
+                                                <%= render :partial => 'post_summary',
+                                                           :collection => @recent_topics_items %>
+                                        <% when 'headlines' -%>
+                                                <%= render :partial => 'post_headline',
+                                                           :collection => @recent_topics_items %>
+                                        <% end -%>
+                                </div>
+                        <% end -%>
+<% end -%>
+                </div>
+                        <div id="home-right">
+<% cache({:part => 'search'}) do -%>
+                                <% if @current_basket.index_page_basket_search -%>
+                                        <% @headline = 'Keyword Search'
+                                           if @current_basket != @site_basket
+                                                @headline += ' ' + @title
+                                           end
+                                        -%>
+                                        <%= render :partial => '/search/form', :locals => {:headline => @headline, :search_terms => nil} %>
+                                <% end -%>
+<% end -%>
+
+<% cache({:part => 'extra_side_bar_html'}) do -%>
+                                <% if !@current_basket.index_page_extra_side_bar_html.blank? -%>
+                                        <%= @current_basket.index_page_extra_side_bar_html -%>
+                                <% end -%>
+<% end -%>
+
+<% cache({:part => 'archives'}) do -%>
+                                <% if !@basket_stats_hash.blank? -%>
+                                        <div id="archive-by-type-headline"><h4>Archives by type</h4></div>
+                                        <%= render :partial => 'archive_by_type',
+                                                   :locals => { :basket_stats_hash => @basket_stats_hash } %>
+                                <% end -%>
+<% end -%>
+                                <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil?-%>
+                                        <div id="selected-image-headline"><h4><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h4></div>
+                                        <div id="selected-image-display">
+                                                <%= render :partial =>'selected_image',
+                                                   :locals => { :selected_image_file => @selected_image_file,
+                                                   :selected_still_image => @selected_still_image } %>
+                                        </div>
+                                        <% if @current_basket.index_page_image_as == 'random' -%>
+                                                <p>Slideshow:
+                                                        <%= link_to_remote("Next", :update => 'selected-image-display',
+                                                                                   :url => { :action => 'selected_image' },
+                                                                                   :href => url_for(:action => 'index')) -%>
+                                                </p>
+                                                <%= periodically_call_remote :update => 'selected-image-display',
+                                                                             :url => { :action => 'selected_image' },
+                                                                             :frequency => 15 %>
+                                         <% end -%>
+                                <% end -%>
+<% cache({:part => 'tags'}) do -%>
+                                <% if @tag_counts_array.size > 0 -%>
+                                        <% case @current_basket.index_page_tags_as
+                                           when 'tag cloud' -%>
+                                                <div id="tags-headline"><h4>Tags</h4></div>
+                                                <div id="tag-cloud">
+                                                <% tag_cloud @tag_counts_array, %w(tag_cloud1 tag_cloud2 tag_cloud3 tag_cloud4 tag_cloud5) do |id, name, css_class| -%>
+                                                        <%= link_to_tagged_in_basket :name => name,
+                                                                                     :id => id,
+                                                                                     :zoom_class => 'Topic',
+                                                                                     :css_class => css_class %>
+                                                <% end -%>
+                                                </div>
+                                        <% when 'categories' -%>
+                                                <div id="tags-headline"><h4>Categories</h4></div>
+                                                <div id="categories">
+                                                        <ul>
+                                                        <% @tag_counts_array.each do |tag| -%>
+                                                                <li><%= link_to_tagged_in_basket :name => tag[:name] + " (#{tag[:taggings_count]})",
+                                                                                     :id => tag[:id],
+                                                                                     :zoom_class => 'Topic' %></li>
+                                                        <% end -%>
+                                                        </ul>
+                                                </div>
+                                        <% end -%>
+                                <% end -%>
+<% end -%>
+                        <% # TODO: add following with logic
+                           # archive_by_date - requires adding searching by date
+                        -%>
+                        </div>
+                <div class="cleaner">&nbsp;</div>

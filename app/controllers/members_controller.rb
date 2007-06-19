@@ -9,33 +9,20 @@ class MembersController < ApplicationController
          :redirect_to => { :action => :list }
 
   def index
-    list
-    render :action => 'list'
+    redirect_to :action => 'list'
   end
 
   def list
-    @non_member_roles_plural = Hash.new
-    @members = nil
-    @possible_roles = {'admin' => 'Admin',
-      'moderator' => 'Moderator',
-      'member' => 'Member'
-    }
+    # this sets up all instance variables
+    # as well as preparing @members
+    list_members
 
-    @site_admin_actions = Hash.new
-
-    if @current_basket.urlified_name == 'site' and site_admin?
-      @possible_roles['site_admin'] = 'Site Admin'
-      @site_admin_actions['become_user'] = 'Login as user'
-      @site_admin_actions['destroy'] = 'Delete'
-      @site_admin_actions['ban'] = 'Ban'
-    end
-
+    # list people who have all other roles
     @current_basket.accepted_roles.each do |role|
       role_plural = role.name.pluralize
-      instance_variable_set("@#{role_plural}", @current_basket.send("has_#{role_plural}"))
-      if role_plural == 'members'
-        @members = @current_basket.has_members
-      else
+      # we cover members above
+      if role_plural != 'members'
+        instance_variable_set("@#{role_plural}", @current_basket.send("has_#{role_plural}"))
         @non_member_roles_plural[role.name] = role_plural
       end
     end
@@ -78,6 +65,62 @@ class MembersController < ApplicationController
     redirect_to :action => 'list'
   end
 
+  def list_members
+    @non_member_roles_plural = Hash.new
+    @possible_roles = {'admin' => 'Admin',
+      'moderator' => 'Moderator',
+      'member' => 'Member'
+    }
+
+    @admin_actions = Hash.new
+
+    if @current_basket == @site_basket and site_admin?
+      @possible_roles['site_admin'] = 'Site Admin'
+      @admin_actions['become_user'] = 'Login as user'
+      @admin_actions['destroy'] = 'Delete'
+      @admin_actions['ban'] = 'Ban'
+    else
+      @admin_actions['remove'] = 'Remove from Basket'
+    end
+
+    # members are paginated
+    # since we are paginating we need to break a part
+    # what the @current_basket.has_members method would do
+    @member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member','Basket', @current_basket)
+    if @member_role.nil?
+      # no members
+      @members = User.paginate_by_id(0)
+    else
+      @members = User.paginate(:joins => "as u inner join roles_users as ru on u.id = ru.user_id",
+                               :conditions => ["ru.role_id = ?", @member_role.id],
+                               :page => params[:page],
+                               :per_page => 10)
+    end
+
+    if request.xhr?
+      render :partial =>'list_members',
+      :locals => { :members => @members,
+        :possible_roles => @possible_roles,
+        :admin_actions => @admin_actions }
+    else
+      if params[:action] == 'list_members'
+        redirect_to params.merge(:action => 'list')
+      end
+    end
+  end
+
+  def potential_new_members
+    @existing_users = User.find(:all,
+                                :joins => 'as u inner join roles_users as ru on u.id = ru.user_id',
+                                :conditions => ["ru.role_id in (?)", @current_basket.accepted_roles])
+
+    @potential_new_members = User.find(:all,
+                                       :conditions => ["id not in (:existing_users) and login like :searchtext or extended_content like :searchtext",
+                                                       { :existing_users => @existing_users,
+                                                         :searchtext => '%' + params[:search_name] + '%' }])
+
+  end
+
   def change_membership_type
     membership_type = params[:role]
     @user = User.find(params[:id])
@@ -104,7 +147,7 @@ class MembersController < ApplicationController
 
   # we need at least one site admin at all times
   def more_than_one_site_admin?
-    Basket.find(1).has_site_admins.size > 1
+    @site_basket.has_site_admins.size > 1
   end
 
   # added so site admins can assume identities of users if necessary
@@ -141,6 +184,39 @@ class MembersController < ApplicationController
       flash[:notice] = "Successfully removed ban on user."
       redirect_to :action => 'list'
     end
+  end
+
+  def add_members
+    if !params[:user]
+      params[:user] = Hash.new
+      params[:user][params[:id]] = 1
+    end
+
+    params[:user].keys.each do |user|
+      if params[:user][user][:add_checkbox].to_i != 0
+        user = User.find(user)
+        user.has_role('member', @current_basket)
+      end
+    end
+
+    flash[:notice] = "Successfully added new "
+
+    if params[:user].size > 1
+      flash[:notice] += "members."
+    else
+      flash[:notice] += "member."
+    end
+
+    redirect_to :action => 'list'
+  end
+
+  def remove
+    @user = User.find(params[:id])
+    @current_basket.accepted_roles.each do |role|
+      @user.has_no_role(role.name,@current_basket)
+    end
+    flash[:notice] = "Successfully removed user."
+    redirect_to :action => 'list'
   end
 
 end

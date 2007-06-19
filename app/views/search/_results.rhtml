@@ -1,7 +1,13 @@
+                <% if !params[:relate_to_topic].nil? or !params[:index_for_basket].nil?
+                        results_as_form = true
+                   else
+                        results_as_form = false
+                   end
+                -%>
                 <div id="tabcontainer">
                         <ul id="tablist">
                             <% existing_count = 0 %>
-                                <% if params[:relate_to_topic] %>
+                                <% if results_as_form %>
                                   <% if !params[:existing_array_string].nil?
                                         @existing_relations = params[:existing_array_string].split(',')
                                      else
@@ -23,12 +29,12 @@
                                         <% if zoom_class == current_class %>
                                                 <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= result_sets[zoom_class].size - existing_count %>)</a></li>
                                         <% else %>
-                                                <% if !params[:relate_to_topic] %>
+                                                <% if !results_as_form %>
                                                   <li><%= link_to_zoom_class_results(zoom_class,result_sets[zoom_class].size) -%></li>
                                                 <% end %>
                                         <% end %>
                                 <% end %>
-                                <% if params[:relate_to_topic] %>
+                                <% if results_as_form %>
                                   <li><a href="javascript:window.opener.location.reload();window.close();">Close</a></li>
                                 <% end %>
                         </ul>
@@ -95,7 +101,7 @@
                                         results on this page
                                 </div>
                                 <div id="addnew">
-                                <% if !params[:relate_to_topic] and current_class != 'Comment' %>
+                                <% if !results_as_form and current_class != 'Comment' %>
                                         <%= link_to_add_item(:phrase => "Add a new ", :item_class => current_class) -%>
                                         to these search results
                                 <% else -%>

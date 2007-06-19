@@ -3,16 +3,29 @@ module KeteAuthorization
     def self.included(klass)
       klass.send :before_filter, :load_site_admin
       klass.send :before_filter, :load_at_least_a_moderator
+      klass.send :before_filter, :load_basket_admin
     end
 
     # does the current user have the admin role
     # on the site basket?
     def site_admin?
-      @site = Basket.find_by_id(1)
+      @site = @site_basket
       if logged_in?
         permit? "site_admin or admin on :site" do
           return true
         end
+      end
+    end
+
+    def basket_admin?
+      if @site_admin == false
+        if logged_in?
+          permit? "admin on :current_basket" do
+            return true
+          end
+        end
+      else
+        return true
       end
     end
 
@@ -39,5 +52,9 @@ module KeteAuthorization
       return true
     end
 
+    def load_basket_admin
+      @basket_admin ||= basket_admin?
+      return true
+    end
   end
 end

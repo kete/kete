@@ -1,26 +1,13 @@
-<% @title = "Search for related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}" -%>
-<% existing_array_string ='' %>
-<% @existing_relations.each do |item| %>
-<%   existing_array_string += "#{item.related_item_id}," %>
-<% end %>
+<% @title = "Search for related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}"
+   existing_array_string = String.new
+   @existing_relations.each do |item|
+           existing_array_string += "#{item.related_item_id},"
+   end
+-%>
 
-<h2><%= h(@title) -%></h2>
-
-<% form_tag :overwrite_params => {:controller => 'search',
-                                  :action => 'terms_to_page_url_redirect',
-                                  :page => nil,
-                                  :urlified_name => 'site',
-                                  :search_terms => nil} do %>
-
-  <% if !params[:relate_to_topic].nil? %>
-    <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-    <%= hidden_field_tag "controller_name_for_zoom_class",zoom_class_controller(params[:related_class]) %>
-    <%= hidden_field_tag "existing_array_string", existing_array_string.chop %>
-  <% end %>
-  <%= text_field_tag :search_terms, params[:search_terms], :class => 'searchheader-search', :size => '30' %>
-
-
-  <%= submit_tag "Search", :class => 'searchbutton' %>
-<% end %>
+<%= render :partial => 'form', :locals => { :headline => @title,
+                                            :existing_array_string => existing_array_string.chop,
+                                            :simple_layout => :true,
+                                            :search_terms => nil } %>
 
 <a href="#" onclick="javascript:window.close()">Close</a>

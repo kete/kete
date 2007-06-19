@@ -13,11 +13,17 @@ class ApplicationController < ActionController::Base
   # only permit site members to add/delete things
   before_filter :login_required, :only => [ :new, :pick_topic_type, :create,
                                             :edit, :update, :destroy,
-                                            :link_related, :flag_version,
+                                            :link_related,
+                                            :link_index_topic,
+                                            :flag_version,
                                             :restore ]
 
+  # basket.urlified_name may change for the default basket
+  # so can't rely on it being 'site'
+  # this is a good candidate for memcaching
+  before_filter :site_basket
+
   # all topics and content items belong in a basket
-  # some controllers won't need it, but it shouldn't hurt have it available
   # and will always be specified in our routes
   before_filter :load_basket
 
@@ -26,10 +32,13 @@ class ApplicationController < ActionController::Base
 
   # if anything is updated or deleted
   # we need toss our show action fragments
-  before_filter :expire_show_caches, :only => [ :update, :destroy ]
+  before_filter :expire_show_caches, :only => [ :edit, :destroy ]
 
   # keep track of tag_list input by version
   before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]
+
+  # see method definition for details
+  before_filter :delete_zoom_record, :only => [ :update ]
 
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
@@ -38,61 +47,111 @@ class ApplicationController < ActionController::Base
   # we need to rebuild our rss caches
   after_filter :expire_rss_caches, :only => [ :create, :update, :destroy]
 
+  # if anything is added, edited, or deleted in a basket
+  # we need toss our basket index page fragments
+  after_filter :expire_basket_index_caches, :only => [ :create, :update, :destroy]
+
+  def site_basket
+    # TODO: cache
+    @site_basket ||= Basket.find(1)
+  end
+
+  # set the current basket to the default
+  # unless we have urlified_name that is different
+  # than the default
+  # TODO: cache in memcache
   def load_basket
-    @current_basket = Basket.new
-    if !params[:urlified_name].blank?
+    @current_basket = @site_basket
+
+    if !params[:urlified_name].blank? and params[:urlified_name] != @site_basket.urlified_name
       @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
-    else
-      # the first basket is always the default
-      @current_basket = Basket.find(1)
+    end
+  end
+
+  # some updates will change the item so that the updating of zoom record
+  # will no longer match the existing record
+  # and create a new one instead
+  # so we delete the existing zoom record here
+  # and create a new zoom record in the update
+  def delete_zoom_record
+    zoom_class = zoom_class_from_controller(params[:controller])
+    if ZOOM_CLASSES.include?(zoom_class)
+      item = Module.class_eval(zoom_class).find(params[:id])
+      zoom_destroy_for(item)
     end
   end
 
   # caching related
   SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments-moderators', 'comments']
 
+  INDEX_PARTS = [ 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
+
+  # if anything is added, edited, or destroyed in a basket
+  # expire the basket index page caches
+  def expire_basket_index_caches
+    INDEX_PARTS.each do |part|
+      expire_fragment(:controller => 'index_page',
+                      :action => 'index',
+                      :urlified_name => @current_basket.urlified_name,
+                      :part => part)
+    end
+  end
+
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
   def expire_show_caches
+    item = Module.class_eval(zoom_class_from_controller(params[:controller])).find(params[:id])
+    expire_show_caches_for(item)
+  end
+
+  def expire_show_caches_for(item)
     # only do this for zoom_classes
-    things_class = zoom_class_from_controller(params[:controller])
-    return unless ZOOM_CLASSES.include?(things_class)
+    item_class = item.class.name
+    controller = zoom_class_controller(item_class)
+    return unless ZOOM_CLASSES.include?(item_class)
 
     SHOW_PARTS.each do |part|
-      expire_fragment(:action => 'show', :id => params[:id], :part => part)
+      expire_fragment(:controller => controller, :action => 'show', :id => item, :part => part)
     end
+
     # images have an additional cache
-    if params[:controller] == 'images'
-      expire_fragment(:action => 'show', :id => params[:id], :part => 'caption')
+    # and topics may also have a basket index page cached
+    if controller == 'images'
+      expire_fragment(:controller => controller, :action => 'show', :id => params[:id], :part => 'caption')
+    elsif controller== 'topics'
+      if item == @current_basket.index_topic
+        # slight overkill, but currently 2 out of 3 parts
+        # would need to be expired
+        INDEX_PARTS.each do |part|
+          expire_fragment(:urlified_name => @current_basket.urlified_name, :part => part)
+        end
+      end
     end
 
     # if we are deleting the thing
     # also delete it's related caches
     # as well as related caches of things it's related to
     if params[:action] == 'destroy'
-      things_class = zoom_class_from_controller(params[:controller])
-      thing_to_delete = Module.class_eval(things_class).find(params[:id])
-
-      if params[:controller] != 'topics'
-        expire_fragment(:action => 'show', :id => thing_to_delete, :related => 'topics')
+      if controller != 'topics'
+        expire_fragment(:controller => controller, :action => 'show', :id => item, :related => 'topics')
         # expire any related topics related caches
         # comments don't have related topics, so skip it for them
-        if things_class != 'Comment'
-          thing_to_delete.topics.each do |topic|
+        if item_class != 'Comment'
+          item.topics.each do |topic|
             expire_related_caches_for(topic, 'topics')
           end
         end
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment(:action => 'show', :id => thing_to_delete, :related => zoom_class_controller(zoom_class))
+          expire_fragment(:action => 'show', :id => item, :related => zoom_class_controller(zoom_class))
           if zoom_class == 'Topic'
-            thing_to_delete.related_topics.each do |item|
-              expire_related_caches_for(item, 'topics')
+            item.related_topics.each do |related_item|
+              expire_related_caches_for(related_item, 'topics')
             end
           else
-            thing_to_delete.send(zoom_class.tableize).each do |item|
-              expire_related_caches_for(item, params[:controller])
+            item.send(zoom_class.tableize).each do |related_item|
+              expire_related_caches_for(related_item, controller)
             end
           end
         end
@@ -155,10 +214,18 @@ class ApplicationController < ActionController::Base
 
   # used by show actions to determine whether to load item
   def has_all_fragments?
-    SHOW_PARTS.each do |part|
-      return false unless has_fragment?({:part => part})
+    if params[:controller] != 'index_page'
+      SHOW_PARTS.each do |part|
+        return false unless has_fragment?({:part => part})
+      end
     end
-    if params[:controller] == 'topics'
+
+    case params[:controller]
+    when 'index_page'
+      INDEX_PARTS.each do |part|
+        return false unless has_fragment?({:part => part})
+      end
+    when 'topics'
       ZOOM_CLASSES.each do |zoom_class|
         if zoom_class != 'Comment'
           return false unless has_fragment?({:related => zoom_class_controller(zoom_class)})
@@ -185,8 +252,8 @@ class ApplicationController < ActionController::Base
 
     # since site searches all other baskets, too
     # we need to expire it's cache, too
-    if @current_basket.urlified_name != 'site'
-      expire_page(:controller => 'search', :action => 'rss', :urlified_name => 'site', :controller_name_for_zoom_class => params[:controller])
+    if @current_basket != @site_basket
+      expire_page(:controller => 'search', :action => 'rss', :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => params[:controller])
     end
 
     expire_page(:controller => 'search', :action => 'rss', :urlified_name => basket.urlified_name, :controller_name_for_zoom_class => params[:controller])
@@ -299,6 +366,9 @@ class ApplicationController < ActionController::Base
     redirect_to(basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS)))
   end
 
+  def redirect_to_all_for(controller)
+    redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
+  end
 
   def url_for_dc_identifier(item)
     url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => item.basket.urlified_name)
@@ -526,4 +596,62 @@ class ApplicationController < ActionController::Base
     end
     return moderators
   end
+
+  def prepare_topic_for_show
+    if !@is_fully_cached or params[:format] == 'xml'
+      if params[:id].nil?
+        # this is for a basket homepage
+        @topic = @current_basket.index_topic
+      else
+        # plain old topic show
+        @topic = @current_basket.topics.find(params[:id])
+      end
+      if !@topic.nil?
+        @title = @topic.title
+      end
+    end
+
+    if !@is_fully_cached and @topic.nil?
+      return
+    else
+      if !@is_fully_cached
+        if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+          @creator = @topic.creators.first
+          @last_contributor = @topic.contributors.last || @creator
+        end
+
+        if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
+          @comments = @topic.comments
+        end
+      end
+    end
+  end
+
+  def stats_by_type_for(basket)
+    # prepare a hash of all the stats, so it's nice and easy to pass to partial
+    @basket_stats_hash = Hash.new
+    # special case: site basket contains everything
+    # all contents of site basket plus all other baskets' contents
+    if basket == @site_basket
+      ZOOM_CLASSES.each do |zoom_class|
+        @basket_stats_hash[zoom_class] = Module.class_eval(zoom_class).count
+      end
+    else
+      ZOOM_CLASSES.each do |zoom_class|
+        items = basket.send(zoom_class.tableize)
+        @basket_stats_hash[zoom_class] = items.size
+      end
+    end
+  end
+
+  def prepare_short_summary(source_string,length = 30,end_string = '')
+    source_string = source_string.to_s
+    # length is how many words, rather than characters
+    words = source_string.split()
+    short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+  end
+
+  # methods that should be available in views as well
+  helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller
+
 end

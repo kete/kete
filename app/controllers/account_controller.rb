@@ -15,12 +15,10 @@ class AccountController < ApplicationController
   # say something nice, you goof!  something sweet.
   def index
     if logged_in? || User.count > 0
-      redirect_to(:urlified_name => 'site', :controller => 'search', :action => 'index')
+      redirect_to_default_all
     else
       redirect_to(:action => 'signup')
     end
-
-    # redirect_to(:action => 'signup') unless logged_in? || User.count > 0
   end
 
   def login
@@ -47,7 +45,6 @@ class AccountController < ApplicationController
                                                              :item_class => 'User',
                                                              :extra_fields => ['password', 'password_confirmation']))
 
-
     if simple_captcha_valid?
       @user.security_code = params[:user][:security_code]
     end
@@ -63,9 +60,9 @@ class AccountController < ApplicationController
       @user.agree_to_terms = params[:user][:agree_to_terms]
     end
 
-    logger.debug(params.to_s)
-
     @user.save!
+
+    @user.add_as_member_to_site_basket
 
     if !REQUIRE_ACTIVATION
       self.current_user = @user

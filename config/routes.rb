@@ -17,9 +17,10 @@ ActionController::Routing::Routes.draw do |map|
   # adding route for basket.urlified_name param
   # may also need route without format?
   # TODO: DRY this up
+  site_basket = Basket.find(1)
   map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
   map.basket ':urlified_name/:controller/:action/:id'
-  map.basket_index ':urlified_name', :controller => "search", :action => 'redirect_to_default_all'
+  map.basket_index ':urlified_name', :controller => "index_page", :action => 'index'
 
   map.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss.xml', :controller => "search", :action => 'rss'
 
@@ -82,7 +83,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/search', :controller => "search"
   # to make sure the rails process is answering
   map.connect 'uptime.txt', :controller => "index_page", :action => 'uptime'
-  map.connect '', :controller => "index_page"
+  map.connect '', :controller => "index_page", :urlified_name => site_basket.urlified_name
 end
 
 # route scratch

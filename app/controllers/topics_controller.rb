@@ -21,7 +21,7 @@ class TopicsController < ApplicationController
                   :theme_advanced_toolbar_align => "left",
                   :theme_advanced_resizing => true,
                   :theme_advanced_resize_horizontal => false,
-                  :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo},
+                  :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo code},
                   :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect pastetext pasteword selectall },
                   :theme_advanced_buttons3 => [],
                   :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
@@ -56,7 +56,16 @@ class TopicsController < ApplicationController
 
   def edit
     @topic = Topic.find(params[:id])
-    @topic_types = @topic.topic_type.full_set
+
+    # logic to prevent plain old members from editing
+    # site basket homepage
+    if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
+        @topic_types = @topic.topic_type.full_set
+    else
+      # this is the site's index page, but they don't have permission to edit
+      flash[:notice] = 'You don\'t have permission to edit this topic.'
+      redirect_to :action => 'show', :id => params[:id]
+    end
   end
 
   # the first step in creating a new topic
@@ -115,8 +124,6 @@ class TopicsController < ApplicationController
 
     where_to_redirect = 'show_self'
     if params[:relate_to_topic_id] and @successful
-      # TODO: wrap this up into method
-      # move to other controllers
       @new_related_topic = Topic.find(params[:relate_to_topic_id])
       ContentItemRelation.new_relation_to_topic(@new_related_topic, @topic)
 
@@ -130,15 +137,23 @@ class TopicsController < ApplicationController
       where_to_redirect = 'show_related'
     end
 
+    if params[:index_for_basket] and @successful
+      where_to_redirect = 'basket'
+    end
+
     if @successful
       prepare_and_save_to_zoom(@topic)
 
-      if where_to_redirect == 'show_related'
-        # TODO: replace with translation stuff when we get globalize going
+      case where_to_redirect
+      when 'show_related'
         flash[:notice] = 'Related topic was successfully created.'
         redirect_to_related_topic(@new_related_topic.id)
+      when 'basket'
+        redirect_to :action => 'add_index_topic',
+        :controller => 'baskets',
+        :index_for_basket => params[:index_for_basket],
+        :topic => @topic
       else
-        # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = 'Topic was successfully created.'
         params[:topic] = replacement_topic_hash
         redirect_to :action => 'show', :id => @topic
@@ -151,41 +166,52 @@ class TopicsController < ApplicationController
   def update
     begin
       @topic = Topic.find(params[:id])
-      # using the new topic type value, just in case we add ajax update
-      # of form in the future
-      topic_type = TopicType.find(params[:topic][:topic_type_id])
 
-      @fields = topic_type.topic_type_to_field_mappings
+      # logic to prevent plain old members from editing
+      # site basket homepage
+      if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
+        # using the new topic type value, just in case we add ajax update
+        # of form in the future
+        topic_type = TopicType.find(params[:topic][:topic_type_id])
 
-      # work through inherited fields as well as current topic_type
-      @ancestors = TopicType.find(topic_type).ancestors
-      # everything descends from topic topic_type,
-      # so there is always at least one ancestor
-      if @ancestors.size > 1
-        @ancestors.each do |ancestor|
-          @fields = @fields + ancestor.topic_type_to_field_mappings
+        @fields = topic_type.topic_type_to_field_mappings
+
+        # work through inherited fields as well as current topic_type
+        @ancestors = TopicType.find(topic_type).ancestors
+        # everything descends from topic topic_type,
+        # so there is always at least one ancestor
+        if @ancestors.size > 1
+          @ancestors.each do |ancestor|
+            @fields = @fields + ancestor.topic_type_to_field_mappings
+          end
         end
+
+        if @fields.size > 0
+          extended_fields_update_param_for_item(:fields => @fields, :item_key => 'topic')
+        end
+
+        # in order to get the ajax to work, we put form values in the topic hash
+        # in parameters, this will break new and update, because they aren't apart of the model
+        # directly, so strip them out of parameters
+
+        replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
+
+        @successful = @topic.update_attributes(replacement_topic_hash)
+
+        # add this to the user's empire of contributions
+        # TODO: allow current_user whom is at least moderator to pick another user
+        # as contributor
+        # uses virtual attr as hack to pass version to << method
+        @current_user = current_user
+        @current_user.version = @topic.version
+        @topic.contributors << @current_user
+      else
+        # they don't have permission
+        # this will redirect them to edit
+        # which will bump them back to show for the topic
+        # with flash message
+        @successful = false
       end
-
-      if @fields.size > 0
-        extended_fields_update_param_for_item(:fields => @fields, :item_key => 'topic')
-      end
-
-      # in order to get the ajax to work, we put form values in the topic hash
-      # in parameters, this will break new and update, because they aren't apart of the model
-      # directly, so strip them out of parameters
-
-      replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
-
-      @successful = @topic.update_attributes(replacement_topic_hash)
-
-      # add this to the user's empire of contributions
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as contributor
-      # uses virtual attr as hack to pass version to << method
-      @current_user = current_user
-      @current_user.version = @topic.version
-      @topic.contributors << @current_user
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -204,25 +230,19 @@ class TopicsController < ApplicationController
   end
 
   def destroy
+    # delete relationship to any basket
+    # basket's index page cache is already handled
+    @topic = Topic.find(params[:id])
+    @topic.index_for_basket.update_index_topic(nil)
+
     zoom_destroy_and_redirect('Topic')
   end
 
   # defaults to html if no extension
   # renders oai_record.rxml if xml request
   def show
-    if !has_all_fragments? or params[:format] == 'xml'
-      @topic = @current_basket.topics.find(params[:id])
-      @title = @topic.title
-    end
-
-    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @topic.creators.first
-      @last_contributor = @topic.contributors.last || @creator
-    end
-
-    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @topic.comments
-    end
+    @is_fully_cached = has_all_fragments?
+    prepare_topic_for_show
 
     respond_to do |format|
       format.html

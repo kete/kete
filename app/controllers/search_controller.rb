@@ -69,7 +69,7 @@ class SearchController < ApplicationController
       @rss_tag_link = rss_tag(:auto_detect => false)
       search
     end
-    if params[:relate_to_topic]
+    if params[:relate_to_topic] or params[:index_for_basket]
       render(:layout => "layouts/simple") # get it so the popup version has no layout
     end
   end
@@ -239,7 +239,7 @@ class SearchController < ApplicationController
     # contributor for things contributed to or created by a user
     # sort_type for last_modified
 
-    if @current_basket.urlified_name == 'site'
+    if @current_basket == @site_basket
       query += "@attr 1=12 #{zoom_class} "
     else
       query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
@@ -514,9 +514,15 @@ class SearchController < ApplicationController
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
     if params[:controller_name_for_zoom_class].nil?
-      redirect_to url_for(:overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS), :action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil, :existing_relations => params[:existing_array_string]})
+      redirect_to url_for( :overwrite_params => { :controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS),
+                             :action => 'for',
+                             :search_terms_slug => to_search_terms_slug(params[:search_terms]),
+                             :commit => nil,
+                             :existing_relations => params[:existing_array_string]})
     else
-      redirect_to url_for(:overwrite_params => {:action => 'for', :search_terms_slug => to_search_terms_slug(params[:search_terms]), :commit => nil})
+      redirect_to url_for( :overwrite_params => { :action => 'for',
+                             :search_terms_slug => to_search_terms_slug(params[:search_terms]),
+                             :commit => nil})
     end
 
   end
@@ -614,6 +620,11 @@ class SearchController < ApplicationController
     end
   end
 
+  # used to choose a topic as homepage for a basket
+  def find_index
+    render(:layout => "layouts/simple")
+  end
+
   def find_related
     @existing_relations = ContentItemRelation.find(:all,
                                                    :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class",
@@ -639,12 +650,5 @@ class SearchController < ApplicationController
       # by writing the file to fs under public
       cache_page(response.body,params)
     end
-  end
-
-  def prepare_short_summary(source_string,length = 30,end_string = '')
-    source_string = source_string.to_s
-    # length is how many words, rather than characters
-    words = source_string.split()
-    short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
   end
 end

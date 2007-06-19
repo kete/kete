@@ -1,12 +1,37 @@
-                <% # TODO: this should look at current request and construct the form :action accordingly -%>
-                <% form_tag :overwrite_params => {:action => 'terms_to_page_url_redirect', :page => nil, :search_terms => nil} do %>
-                        <div id="searchheader">
-                                <div id="searchheader-results">
-                                        <h3><%= headline -%></h3>
-                                </div>
+                <% if params[:action] == 'find_related'
+                        urlified_name = 'site'
+                   else
+                        urlified_name = @current_basket.urlified_name
+                   end
+                   simple_layout ||= false
+                -%>
+
+                <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
+                                                   :controller => 'search',
+                                                   :page => nil,
+                                                   :urlified_name => urlified_name,
+                                                   :search_terms => nil} do %>
+                        <% if !simple_layout -%>
+                                <div id="searchheader">
+                                        <div id="searchheader-results">
+                                                <h3><%= headline -%></h3>
+                                        </div>
+                        <% else -%>
+                                <h2><%= headline -%></h2>
+                        <% end -%>
                                 <%= text_field_tag 'search_terms', search_terms, :class => 'searchheader-search', :size => '30' %>
 
+                                <% if !params[:relate_to_topic].nil? -%>
+                                        <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+                                        <%= hidden_field_tag "controller_name_for_zoom_class", zoom_class_controller(params[:related_class]) %>
+                                        <%= hidden_field_tag "existing_array_string", existing_array_string %>
+                                <% elsif !params[:index_for_basket].nil? -%>
+                                        <%= hidden_field_tag 'index_for_basket', params[:index_for_basket] %>
+                                <% end -%>
+
                                 <%= submit_tag "Search", :class => 'searchbutton' %>
-                        </div>
+                        <% if !simple_layout -%>
+                                </div>
+                        <% end -%>
                 <% end %>
 

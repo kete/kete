@@ -1,0 +1,14 @@
+<h4>Potential New Members</h4>
+<% if @potential_new_members.size > 0 %>
+        <% form_tag :action => :add_members do -%>
+                <% @potential_new_members.each do |@user| %>
+                        <p>
+                                <%= check_box('user[]', 'add_checkbox') %> <%= h(@user.user_name) %>
+                        </p>
+                <% end %>
+                <%= submit_tag "Add members" %>
+        <% end -%>
+<% else %>
+        <p>No potential members are available.</p>
+<% end %>
+

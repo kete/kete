@@ -1,0 +1,30 @@
+                <table width="100%">
+                        <tr><td>&nbsp;<h4>Members</h4></td></tr>
+                        <% if members.blank? %>
+                                <tr><td><p>Currently no members</p></td></tr>
+                        <% else %>
+                                <% for user in members %>
+                                        <tr>
+                                                <td width="25%"><%= link_to_contributions_of(user,'Topic') -%></td>
+                                                <td width="25%"><%= mail_to h(user.email) -%></td>
+                                                <%= render :partial =>'possible_roles',
+                                                           :locals => { :user => user,
+                                                                        :role_key => 'member',
+                                                                        :possible_roles => possible_roles } %>
+                                                <%= render :partial =>'admin_actions',
+                                                           :locals => { :user => user,
+                                                                        :admin_actions => admin_actions } %>
+                                        </tr>
+                                <% end %>
+                        <% end %>
+                </table>
+                <div id="prev-next"><%= will_paginate members %></div>
+                <% if @current_basket.urlified_name != 'site' -%>
+                        <% form_tag :action => 'potential_new_members' do %>
+                                <div id="searchheader">
+                                        <h4>Search for new members</h4>
+                                        <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' %>
+                                        <%= submit_tag "Search", :class => 'searchbutton' %>
+                                </div>
+                        <% end %>
+                <% end %>

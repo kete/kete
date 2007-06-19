@@ -70,8 +70,6 @@ class User < ActiveRecord::Base
 
   before_save :encrypt_password
 
-  after_save :add_as_member_to_default_basket
-
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     # hide records with a nil activated_at
@@ -194,6 +192,17 @@ class User < ActiveRecord::Base
     return @distinct_contributions
   end
 
+  def add_checkbox
+    # used by a form when adding user as member of a basket
+    # where 0 is always going to be the starting value
+    return 0
+  end
+
+  def add_as_member_to_site_basket
+    basket = Basket.find(1)
+    self.has_role('member',basket)
+  end
+
   protected
 
   # supporting activation
@@ -225,10 +234,4 @@ class User < ActiveRecord::Base
     self.id.nil?
   end
 
-  private
-  # after_save
-  def add_as_member_to_default_basket
-    basket = Basket.find(1)
-    self.has_role('member',basket)
-  end
 end

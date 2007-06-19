@@ -1,5 +1,26 @@
 module ZoomControllerHelpers
   unless included_modules.include? ZoomControllerHelpers
+    # this keeps the RoR item around, just destroys zoom record
+    # doesn't delete zoom records for any relations
+    # mainly for cleaning out old zoom record
+    # before we generate a new one
+    def zoom_destroy_for(item)
+      prepare_zoom(item)
+      @successful = item.zoom_destroy
+    end
+
+    # destroy zoom and then item itself
+    def zoom_item_destroy(item)
+      # delete any comments this is on
+      item.comments.each do |comment|
+        prepare_zoom(comment)
+        comment.destroy
+      end
+
+      prepare_zoom(item)
+      @successful = item.destroy
+    end
+
     def zoom_destroy_and_redirect(zoom_class,pretty_zoom_class = nil)
       if pretty_zoom_class.nil?
         pretty_zoom_class = zoom_class
@@ -7,14 +28,7 @@ module ZoomControllerHelpers
       begin
         item = Module.class_eval(zoom_class).find(params[:id])
 
-        # delete any comments this is on
-        item.comments.each do |comment|
-          prepare_zoom(comment)
-          comment.destroy
-        end
-
-        prepare_zoom(item)
-        @successful = item.destroy
+        @successful = zoom_item_destroy(item)
       rescue
         flash[:error], @successful  = $!.to_s, false
       end
@@ -24,7 +38,7 @@ module ZoomControllerHelpers
       end
       redirect_to :action => 'list'
     end
-    # TODO: this redundant with application_helper def?
+
     def zoom_class_controller(zoom_class)
       zoom_class_controller = String.new
       case zoom_class

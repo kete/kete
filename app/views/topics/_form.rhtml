@@ -9,6 +9,9 @@
         <% if !params[:relate_to_topic_id].nil? %>
                 <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
         <% end %>
+        <% if !params[:index_for_basket].nil? %>
+                <%= hidden_field_tag "index_for_basket", params[:index_for_basket] %>
+        <% end %>
         <% if edit %>
             <%= render :partial => 'topic_types', :locals => {:topic_types => @topic_types} %>
         <% else -%>

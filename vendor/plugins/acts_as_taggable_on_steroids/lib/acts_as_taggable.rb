@@ -2,7 +2,7 @@ module ActiveRecord
   module Acts #:nodoc:
     module Taggable #:nodoc:
       def self.included(base)
-        base.extend(ClassMethods)  
+        base.extend(ClassMethods)
       end
       
       module ClassMethods
@@ -10,13 +10,22 @@ module ActiveRecord
           has_many :taggings, :as => :taggable, :dependent => :destroy, :include => :tag
           has_many :tags, :through => :taggings
           
-          after_save :save_tags
+          before_save :save_cached_tag_list
+          after_save :save_tag_list
           
           include ActiveRecord::Acts::Taggable::InstanceMethods
           extend ActiveRecord::Acts::Taggable::SingletonMethods
           
           alias_method :reload_without_tag_list, :reload
           alias_method :reload, :reload_with_tag_list
+        end
+        
+        def cached_tag_list_column_name
+          "cached_tag_list"
+        end
+        
+        def set_cached_tag_list_column_name(value = nil, &block)
+          define_attr_method :cached_tag_list_column_name, value, &block
         end
       end
       
@@ -27,7 +36,7 @@ module ActiveRecord
         #   :exclude - Find models that are not tagged with the given tags
         #   :match_all - Find models that match all of the gievn tags, not just one
         #   :conditions - A piece of SQL conditions to add to the query
-        def find_tagged_with(tags, options = {})
+        def find_options_for_tagged_with(tags, options = {})
           tags = Tag.parse(tags) if tags.is_a?(String)
           return [] if tags.empty?
           tags.map!(&:to_s)
@@ -37,11 +46,16 @@ module ActiveRecord
           
           group = "#{table_name}_taggings.taggable_id HAVING COUNT(#{table_name}_taggings.taggable_id) = #{tags.size}" if options.delete(:match_all)
           
-          find(:all, { :select => "DISTINCT #{table_name}.*",
+          { :select => "DISTINCT #{table_name}.*",
             :joins => "LEFT OUTER JOIN taggings #{table_name}_taggings ON #{table_name}_taggings.taggable_id = #{table_name}.#{primary_key} AND #{table_name}_taggings.taggable_type = '#{name}' " +
                       "LEFT OUTER JOIN tags #{table_name}_tags ON #{table_name}_tags.id = #{table_name}_taggings.tag_id",
             :conditions => conditions,
-            :group      => group }.merge(options))
+            :group      => group
+          }.update(options)
+        end
+        
+        def find_tagged_with(*args)
+          find(:all, find_options_for_tagged_with(*args))
         end
         
         # Options:
@@ -89,18 +103,30 @@ module ActiveRecord
         attr_writer :tag_list
         
         def tag_list
-          defined?(@tag_list) ? @tag_list : read_tags
+          if defined?(@tag_list)
+            @tag_list
+          elsif self.class.column_names.include?(self.class.cached_tag_list_column_name) and !send(self.class.cached_tag_list_column_name).nil?
+            send(self.class.cached_tag_list_column_name)
+          else
+            read_tags
+          end
         end
         
-        def save_tags
-          if defined?(@tag_list)
+        def save_tag_list
+          if defined?("@tag_list")
             write_tags(@tag_list)
             remove_tag_list
           end
         end
         
+        def save_cached_tag_list
+          if self.class.column_names.include?(self.class.cached_tag_list_column_name)
+            self[self.class.cached_tag_list_column_name] = format_tag_names(Tag.parse(tag_list))
+          end
+        end
+        
         def write_tags(list)
-          new_tag_names = Tag.parse(list).uniq
+          new_tag_names = Tag.parse(list)
           old_tagging_ids = []
           
           Tag.transaction do
@@ -123,8 +149,12 @@ module ActiveRecord
         end
 
         def read_tags
-          tags.map do |tag|
-            tag.name.include?(Tag.delimiter) ? "\"#{tag.name}\"" : tag.name
+          format_tag_names(tags.map(&:name))
+        end
+        
+        def format_tag_names(tag_names)
+          tag_names.map do |tag_name|
+            tag_name.include?(Tag.delimiter) ? "\"#{tag_name}\"" : tag_name
           end.join(Tag.delimiter.ends_with?(" ") ? Tag.delimiter : "#{Tag.delimiter} ")
         end
         
@@ -135,7 +165,7 @@ module ActiveRecord
         
        private
         def remove_tag_list
-          remove_instance_variable(:@tag_list) if defined?(@tag_list)
+          remove_instance_variable("@tag_list") if defined?(@tag_list)
         end
       end
     end

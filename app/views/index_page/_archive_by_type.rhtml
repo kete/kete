@@ -1,0 +1,8 @@
+<div id="archive-by-type">
+        <ul>
+        <% ZOOM_CLASSES.each do |zoom_class| -%>
+                <li><%= link_to zoom_class_plural_humanize(zoom_class) + " (#{basket_stats_hash[zoom_class]})",
+                                basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(zoom_class)) -%></li>
+        <% end -%>
+        </ul>
+</div>
