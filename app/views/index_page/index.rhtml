@@ -86,7 +86,7 @@
 
 <% cache({:part => 'archives'}) do -%>
                                 <% if !@basket_stats_hash.blank? -%>
-                                        <div id="archive-by-type-headline"><h3>Archives by type</h3></div>
+                                        <div id="archive-by-type-headline"><h3>Contents by type</h3></div>
                                         <%= render :partial => 'archive_by_type',
                                                    :locals => { :basket_stats_hash => @basket_stats_hash } %>
                                 <% end -%>
