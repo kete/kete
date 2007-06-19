@@ -86,13 +86,13 @@
 
 <% cache({:part => 'archives'}) do -%>
                                 <% if !@basket_stats_hash.blank? -%>
-                                        <div id="archive-by-type-headline"><h4>Archives by type</h4></div>
+                                        <div id="archive-by-type-headline"><h3>Archives by type</h3></div>
                                         <%= render :partial => 'archive_by_type',
                                                    :locals => { :basket_stats_hash => @basket_stats_hash } %>
                                 <% end -%>
 <% end -%>
                                 <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil?-%>
-                                        <div id="selected-image-headline"><h4><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h4></div>
+                                        <div id="selected-image-headline"><h3><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h3></div>
                                         <div id="selected-image-display">
                                                 <%= render :partial =>'selected_image',
                                                    :locals => { :selected_image_file => @selected_image_file,
@@ -113,7 +113,7 @@
                                 <% if @tag_counts_array.size > 0 -%>
                                         <% case @current_basket.index_page_tags_as
                                            when 'tag cloud' -%>
-                                                <div id="tags-headline"><h4>Tags</h4></div>
+                                                <div id="tags-headline"><h3>Tags</h3></div>
                                                 <div id="tag-cloud">
                                                 <% tag_cloud @tag_counts_array, %w(tag_cloud1 tag_cloud2 tag_cloud3 tag_cloud4 tag_cloud5) do |id, name, css_class| -%>
                                                         <%= link_to_tagged_in_basket :name => name,
@@ -123,7 +123,7 @@
                                                 <% end -%>
                                                 </div>
                                         <% when 'categories' -%>
-                                                <div id="tags-headline"><h4>Categories</h4></div>
+                                                <div id="tags-headline"><h3>Categories</h3></div>
                                                 <div id="categories">
                                                         <ul>
                                                         <% @tag_counts_array.each do |tag| -%>
