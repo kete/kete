@@ -6,14 +6,11 @@ class IndexPageController < ApplicationController
       @is_fully_cached = has_all_fragments?
       prepare_topic_for_show
 
-      if @current_basket != @site_basket or @topic.nil?
+      if @current_basket != @site_basket or ( @topic.nil? and @is_fully_cached == false )
         @title = @current_basket.name
       else
         if @is_fully_cached == false
-          if @topic.nil
-          else
             @title = @topic.title
-          end
         end
       end
 
