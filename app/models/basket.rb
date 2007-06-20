@@ -34,9 +34,9 @@ class Basket < ActiveRecord::Base
   before_save :urlify_name
 
   def update_index_topic(index_topic)
-    if !index_topic.nil?
+    if !index_topic.nil? and index_topic.is_a?(Topic)
       self.index_topic = index_topic
-    else
+    elsif index_topic == 'destroy'
       self.index_topic = nil
     end
     self.save

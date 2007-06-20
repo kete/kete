@@ -235,7 +235,10 @@ class TopicsController < ApplicationController
     # delete relationship to any basket
     # basket's index page cache is already handled
     @topic = Topic.find(params[:id])
-    @topic.index_for_basket.update_index_topic(nil)
+    index_for_basket = @topic.index_for_basket
+    if !index_for_basket.nil?
+      index_for_basket.update_index_topic('destroy')
+    end
 
     zoom_destroy_and_redirect('Topic')
   end
