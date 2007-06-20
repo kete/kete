@@ -4,7 +4,7 @@ class StillImage < ActiveRecord::Base
 
   # image files, including different sized versions of the original
   # are handled by ImageFile model
-  has_many :image_files, :dependent => :delete_all
+  has_many :image_files, :dependent => :destroy
   has_one :original_file, :conditions => 'parent_id is null', :class_name => 'ImageFile'
   has_one :thumbnail_file, :conditions => "parent_id is not null and thumbnail = 'small_sq'", :class_name => 'ImageFile'
   has_many :resized_image_files, :conditions => 'parent_id is not null', :class_name => 'ImageFile'
