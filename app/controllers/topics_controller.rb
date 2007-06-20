@@ -204,9 +204,7 @@ class TopicsController < ApplicationController
         # TODO: allow current_user whom is at least moderator to pick another user
         # as contributor
         # uses virtual attr as hack to pass version to << method
-        @current_user = current_user
-        @current_user.version = @topic.version
-        @topic.contributors << @current_user
+        add_contributor_to(@topic,current_user)
       else
         # they don't have permission
         # this will redirect them to edit

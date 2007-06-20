@@ -145,17 +145,24 @@ class BasketsController < ApplicationController
   end
 
   def add_index_topic
-    @successful = Basket.find(params[:index_for_basket]).update_index_topic(Topic.find(params[:topic]))
+    @topic = Topic.find(params[:topic])
+    @successful = Basket.find(params[:index_for_basket]).update_index_topic(@topic)
     if @successful
+      # this action saves a new version of the topic
+      # add this as a contribution
+      add_contributor_to(@topic,current_user)
       flash[:notice] = 'Basket homepage was successfully created.'
       redirect_to :action => 'edit', :controller => 'baskets', :id => params[:index_for_basket]
     end
   end
 
   def link_index_topic
-    @successful = Basket.find(params[:index_for_basket]).update_index_topic(Topic.find(params[:topic]))
-
+    @topic = Topic.find(params[:topic])
+    @successful = Basket.find(params[:index_for_basket]).update_index_topic(@topic)
     if @successful
+      # this action saves a new version of the topic
+      # add this as a contribution
+      add_contributor_to(@topic,current_user)
       render :text => 'Basket homepage was successfully chosen.  Please close this window. Clicking on another topic will replace this topic with the new topic clicked.'
     end
   end

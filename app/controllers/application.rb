@@ -653,6 +653,11 @@ class ApplicationController < ActionController::Base
     short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
   end
 
+  def add_contributor_to(item,user)
+    user.version = item.version
+    item.contributors << user
+  end
+
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller
 
