@@ -106,7 +106,7 @@ module OaiDcHelpers
       else
         item.topics.each do |related|
           xml.tag!("dc:subject", related.title)
-          xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => :topics, :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => 'topics', :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
         end
       end
     end
