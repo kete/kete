@@ -192,11 +192,8 @@ module ApplicationHelper
       item_xml_hash = item.xml_attributes
       item_xml_array = item_xml_hash.sort
       item_xml_array.each do |field_array|
-        logger.info("what is field_position: #{field_array.to_s}")
         subhash = item_xml_hash[field_array[0]]
         subhash.each do |field_key, field_value|
-          logger.debug("what is field_key: #{field_key.to_s}")
-          logger.debug("what is field_value: #{field_value.to_s}")
           # we now handle multiples
           multi_re = Regexp.new("_multiple$")
           if multi_re.match(field_key)
