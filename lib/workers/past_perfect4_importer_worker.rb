@@ -22,6 +22,8 @@ class PastPerfect4ImporterWorker < BackgrounDRb::Worker::RailsBase
 
   include ZoomHelpers
 
+  include ZoomControllerHelpers
+
   include ExtendedContentHelpers
 
   def do_work(args)

@@ -22,6 +22,8 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
 
   include ZoomHelpers
 
+  include ZoomControllerHelpers
+
   include ExtendedContentHelpers
 
   # changes from past perfect
