@@ -15,7 +15,6 @@ class BasketsController < ApplicationController
                   :theme_advanced_resize_horizontal => false,
                   :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo code},
                   :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect pastetext pasteword selectall },
-                  :theme_advanced_buttons3 => [],
                   :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
                   :editor_selector => 'mceEditor',
                   :paste_create_paragraphs => true,
