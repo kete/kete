@@ -585,7 +585,6 @@ class SearchController < ApplicationController
         @start_id = !params[:start].nil? ? params[:start] : 1
         @end_id = !params[:end] .nil? ? params[:end] : 'end'
       end
-      render :action => 'rebuild_zoom_index'
 
       if @type.to_s != 'all'
         if @end_id.to_s == 'end'
