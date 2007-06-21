@@ -590,11 +590,11 @@ class SearchController < ApplicationController
       if @type.to_s != 'all'
         if @end_id.to_s == 'end'
           Module.class_eval(params[:zoom_class]).find(:all,
-                                                      :conditions => ["id => :start_id", { :start_id => @start_id }],
+                                                      :conditions => ["id >= :start_id", { :start_id => @start_id }],
                                                       :order => 'updated_at' ).each {|item| prepare_and_save_to_zoom(item)}
         else
           Module.class_eval(params[:zoom_class]).find(:all,
-                                                      :conditions => ["id => :start_id and id <= :end_id",
+                                                      :conditions => ["id >= :start_id and id =< :end_id",
                                                                       { :start_id => @start_id, :end_id => @end_id }],
                                                       :order => 'updated_at' ).each {|item| prepare_and_save_to_zoom(item)}
         end
