@@ -11,6 +11,13 @@
                         <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
                 <% end %>
 
+                <% if edit and @site_admin %>
+                        <p>
+                                <label for="basket_for_url">Move to another basket?</label>
+                                <%= form.select 'basket_id', @baskets %>
+                        </p>
+                <% end -%>
+
                 <p><label for="document_title">Title</label><br/>
                 <%= form.text_field :title  %></p>
 

@@ -55,18 +55,12 @@ class AudioController < ApplicationController
     @audio_recording = AudioRecording.find(params[:id])
 
     if @audio_recording.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
-      # add this to the user's empire of contributions
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as contributor
-      # uses virtual attr as hack to pass version to << method
-      @current_user = current_user
-      @current_user.version = @audio_recording.version
-      @audio_recording.contributors << @current_user
 
-      prepare_and_save_to_zoom(@audio_recording)
+      after_successful_zoom_item_update(@audio_recording)
 
       flash[:notice] = 'AudioRecording was successfully updated.'
-      redirect_to :action => 'show', :id => @audio_recording
+
+      redirect_to_show_for(@audio_recording)
     else
       render :action => 'edit'
     end

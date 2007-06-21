@@ -54,18 +54,12 @@ class WebLinksController < ApplicationController
     @web_link = WebLink.find(params[:id])
 
     if @web_link.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
-      # add this to the user's empire of contributions
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as contributor
-      # uses virtual attr as hack to pass version to << method
-      @current_user = current_user
-      @current_user.version = @web_link.version
-      @web_link.contributors << @current_user
 
-      prepare_and_save_to_zoom(@web_link)
+      after_successful_zoom_item_update(@web_link)
 
       flash[:notice] = 'WebLink was successfully updated.'
-      redirect_to :action => 'show', :id => @web_link
+
+      redirect_to_show_for(@web_link)
     else
       render :action => 'edit'
     end

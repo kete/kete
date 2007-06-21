@@ -10,6 +10,14 @@
       <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
 <% end %>
 
+<% if edit and @site_admin%>
+        <div class="form-element">
+                <label for="basket_for_url">Move to another basket?</label>
+                <% # TODO: ugly hack till we move this to form.select -%>
+                <%= collection_select('web_link', 'basket_id', Basket.find(:all), :id, :name) %>
+        </div>
+<% end -%>
+
 <div class="form-element">
   <label class="required" for="web_link_title">Title</label>
   <%= text_field 'web_link', 'title' , {:class=>"text-input"} %>

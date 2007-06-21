@@ -76,7 +76,7 @@ module ZoomControllerHelpers
       if ZOOM_CLASSES.include?(item.class.name)
         begin
           item.oai_record = render_oai_record_xml(:item => item, :to_string => true)
-          item.basket_urlified_name = @current_basket.urlified_name
+          item.basket_urlified_name = item.basket.urlified_name
         rescue
           logger.error("prepare_and_save_to_zoom error: #{$!.to_s}")
         end

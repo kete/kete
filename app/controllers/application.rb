@@ -40,6 +40,9 @@ class ApplicationController < ActionController::Base
   # see method definition for details
   before_filter :delete_zoom_record, :only => [ :update ]
 
+  # we often need baskets for edits
+  before_filter :load_array_of_baskets, :only => [ :edit ]
+
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
@@ -78,6 +81,14 @@ class ApplicationController < ActionController::Base
     if ZOOM_CLASSES.include?(zoom_class)
       item = Module.class_eval(zoom_class).find(params[:id])
       zoom_destroy_for(item)
+    end
+  end
+
+  # so we can transfer an item from one basket to another
+  def load_array_of_baskets
+    zoom_class = zoom_class_from_controller(params[:controller])
+    if ZOOM_CLASSES.include?(zoom_class) and zoom_class != 'Comment'
+      @baskets = Basket.find(:all, :order => 'name').map { |basket| [ basket.name, basket.id ] }
     end
   end
 
@@ -372,6 +383,13 @@ class ApplicationController < ActionController::Base
     redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
   end
 
+  def redirect_to_show_for(item)
+    redirect_to(url_for(:urlified_name => item.basket.urlified_name,
+                        :controller => params[:controller],
+                        :action => 'show',
+                        :id => item))
+  end
+
   def url_for_dc_identifier(item)
     url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => item.basket.urlified_name)
   end
@@ -656,6 +674,42 @@ class ApplicationController < ActionController::Base
   def add_contributor_to(item,user)
     user.version = item.version
     item.contributors << user
+  end
+
+  # this happens after the basket on the item has been changed already
+  def update_comments_basket_for(item,original_basket)
+    if item.class.name != 'Comment'
+      new_basket = item.basket
+      if new_basket != original_basket
+        item.comments.each do |comment|
+          # get rid of zoom record that it tied to basket
+          # these will be regenerated when the parent item
+          # has it's zoom record recreated
+          zoom_destroy_for(comment)
+          comment.basket = new_basket
+          comment.save
+
+          # moving the comment adds a version
+          add_contributor_to(comment,current_user)
+
+          prepare_and_save_to_zoom(comment)
+        end
+      end
+    end
+  end
+
+  def after_successful_zoom_item_update(item)
+    # add this to the user's empire of contributions
+    # TODO: allow current_user whom is at least moderator to pick another user
+    # as contributor
+    # uses virtual attr as hack to pass version to << method
+    add_contributor_to(item,current_user)
+
+    # if the basket has been changed, make sure comments are moved, too
+    update_comments_basket_for(item,@current_basket)
+
+    # finally, sync up our search indexes
+    prepare_and_save_to_zoom(item)
   end
 
   # methods that should be available in views as well

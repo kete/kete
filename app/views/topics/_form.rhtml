@@ -12,6 +12,13 @@
         <% if !params[:index_for_basket].nil? %>
                 <%= hidden_field_tag "index_for_basket", params[:index_for_basket] %>
         <% end %>
+        <% if edit and @site_admin%>
+                <div class="form-element">
+                        <label for="basket_for_url">Move to another basket?</label>
+                        <% # TODO: ugly hack till we move this to form.select -%>
+                        <%= collection_select('topic', 'basket_id', Basket.find(:all), :id, :name, {:class=>"select"}) %>
+                </div>
+        <% end -%>
         <% if edit %>
             <%= render :partial => 'topic_types', :locals => {:topic_types => @topic_types} %>
         <% else -%>

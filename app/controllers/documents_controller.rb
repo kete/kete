@@ -54,18 +54,12 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
 
     if @document.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
-      # add this to the user's empire of contributions
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as contributor
-      # uses virtual attr as hack to pass version to << method
-      @current_user = current_user
-      @current_user.version = @document.version
-      @document.contributors << @current_user
 
-      prepare_and_save_to_zoom(@document)
+      after_successful_zoom_item_update(@document)
 
       flash[:notice] = 'Document was successfully updated.'
-      redirect_to :action => 'show', :id => @document
+
+      redirect_to_show_for(@document)
     else
       render :action => 'edit'
     end

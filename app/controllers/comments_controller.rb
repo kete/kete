@@ -59,13 +59,8 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:id])
 
     if @comment.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
-      # add this to the user's empire of contributions
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as contributor
-      # uses virtual attr as hack to pass version to << method
-      @current_user = current_user
-      @current_user.version = @comment.version
-      @comment.contributors << @current_user
+
+      add_contributor_to(@comment,current_user)
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable

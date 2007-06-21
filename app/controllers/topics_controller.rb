@@ -61,7 +61,7 @@ class TopicsController < ApplicationController
     # logic to prevent plain old members from editing
     # site basket homepage
     if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
-        @topic_types = @topic.topic_type.full_set
+      @topic_types = @topic.topic_type.full_set
     else
       # this is the site's index page, but they don't have permission to edit
       flash[:notice] = 'You don\'t have permission to edit this topic.'
@@ -198,12 +198,6 @@ class TopicsController < ApplicationController
         replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
 
         @successful = @topic.update_attributes(replacement_topic_hash)
-
-        # add this to the user's empire of contributions
-        # TODO: allow current_user whom is at least moderator to pick another user
-        # as contributor
-        # uses virtual attr as hack to pass version to << method
-        add_contributor_to(@topic,current_user)
       else
         # they don't have permission
         # this will redirect them to edit
@@ -218,11 +212,12 @@ class TopicsController < ApplicationController
     params[:topic] = replacement_topic_hash
 
     if @successful
-      prepare_and_save_to_zoom(@topic)
+      after_successful_zoom_item_update(@topic)
 
       # TODO: replace with translation stuff when we get globalize going
       flash[:notice] = 'Topic was successfully edited.'
-      redirect_to :action => 'show', :id => @topic
+
+      redirect_to_show_for(@topic)
     else
       render :action => 'edit'
     end

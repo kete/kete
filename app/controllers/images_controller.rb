@@ -69,23 +69,17 @@ class ImagesController < ApplicationController
     @still_image = StillImage.find(params[:id])
 
     if @still_image.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
-      # add this to the user's empire of contributions
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as contributor
-      # uses virtual attr as hack to pass version to << method
-      @current_user = current_user
-      @current_user.version = @still_image.version
-      @still_image.contributors << @current_user
 
       if !params[:image_file][:uploaded_file].blank?
         # if they have uploaded something new, insert it
         @original_file = ImageFile.update_attributes(params[:image_file])
       end
 
-      prepare_and_save_to_zoom(@still_image)
+      after_successful_zoom_item_update(@still_image)
 
       flash[:notice] = 'Image was successfully updated.'
-      redirect_to :action => 'show', :id => @still_image
+
+      redirect_to_show_for(@still_image)
     else
       render :action => 'edit'
     end

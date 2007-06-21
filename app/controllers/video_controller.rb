@@ -55,18 +55,12 @@ class VideoController < ApplicationController
     @video = Video.find(params[:id])
 
     if @video.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
-      # add this to the user's empire of contributions
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as contributor
-      # uses virtual attr as hack to pass version to << method
-      @current_user = current_user
-      @current_user.version = @video.version
-      @video.contributors << @current_user
 
-      prepare_and_save_to_zoom(@video)
+      after_successful_zoom_item_update(@video)
 
       flash[:notice] = 'Video was successfully updated.'
-      redirect_to :action => 'show', :id => @video
+
+      redirect_to_show_for(@video)
     else
       render :action => 'edit'
     end
