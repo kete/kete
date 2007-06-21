@@ -51,7 +51,7 @@ $ zebrasrv -f conf/kete-zebra-servers.xml
 
 To run in background as daemon:
 
-$ zebrasrv -f conf/kete-zebra-servers.xml -l zebra.log -D
+$ zebrasrv -f conf/kete-zebra-servers.xml -l ../log/zebra.log -D
 
 Note: you will probably want to setup log rotation, Kete doesn't do it automatically!
 
