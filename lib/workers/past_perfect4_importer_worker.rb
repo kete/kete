@@ -6,6 +6,7 @@ require 'builder'
 require 'redcloth'
 require "oai_dc_helpers"
 require "zoom_helpers"
+require "zoom_controller_helpers"
 require "extended_content_helpers"
 # past perfect 4 xml output importer
 # only handling photos for the moment

@@ -6,6 +6,7 @@ require 'builder'
 require 'redcloth'
 require "oai_dc_helpers"
 require "zoom_helpers"
+require "zoom_controller_helpers"
 require "extended_content_helpers"
 # adopt an anzac xml output importer
 # only handling anzacs for the moment
