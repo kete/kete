@@ -27,7 +27,7 @@
                                 <% end %>
                                 <% ZOOM_CLASSES.each do |zoom_class| %>
                                         <% if zoom_class == current_class %>
-                                                <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= result_sets[zoom_class].size - existing_count %>)</a></li>
+                                                <li><a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= number_with_delimiter(result_sets[zoom_class].size - existing_count) %>)</a></li>
                                         <% else %>
                                                 <% if !results_as_form %>
                                                   <li><%= link_to_zoom_class_results(zoom_class,result_sets[zoom_class].size) -%></li>
