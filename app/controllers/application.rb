@@ -292,8 +292,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_related_topic(topic_id)
-    # TODO: doublecheck this isn't too expensive, maybe better to find_by_sql
-    redirect_to_show_for(Topic.find(topic_id))
+    redirect_to_show_for(Topic.find(topic_id), 'topics')
   end
 
   def update_zoom_and_related_caches_for(item, controller = nil)
