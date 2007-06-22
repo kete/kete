@@ -341,7 +341,7 @@ class ApplicationController < ActionController::Base
         flash[:notice] = "Related #{item.class.name.humanize} was successfully created."
         redirect_to_related_topic(@new_related_topic)
       when 'commentable'
-        redirect_to_show_for(commented_item)
+        redirect_to_show_for(commented_item, zoom_class_controller(commented_item.class.name))
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{item.class.name.humanize} was successfully created."
@@ -404,9 +404,10 @@ class ApplicationController < ActionController::Base
     redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
   end
 
-  def redirect_to_show_for(item)
+  def redirect_to_show_for(item, controller = nil)
+    controller ||= params[:controller]
     redirect_to(url_for(:urlified_name => item.basket.urlified_name,
-                        :controller => params[:controller],
+                        :controller => controller,
                         :action => 'show',
                         :id => item))
   end
