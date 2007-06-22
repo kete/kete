@@ -21,28 +21,30 @@ class IndexPageController < ApplicationController
           # TODO: DRY up
           @url_to_full_topic = nil
           @url_to_comments = nil
-          case @current_basket.index_page_link_to_index_topic_as
-          when 'full topic and comments'
-            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                          :action => :show,
-                                          :controller => 'topics',
-                                          :id => @topic )
-            @url_to_comments = url_for(:action => 'show',
-                                       :urlified_name => @topic.basket.urlified_name,
-                                       :controller => 'topics',
-                                       :id => @topic,
-                                       :anchor => 'comments')
-          when 'full topic'
-            @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
-                                          :action => :show,
-                                          :controller => 'topics',
-                                          :id => @topic )
-          when 'comments'
-            @url_to_comments = url_for(:action => 'show',
-                                       :urlified_name => @topic.basket.urlified_name,
-                                       :controller => 'topics',
-                                       :id => @topic,
-                                       :anchor => 'comments')
+          if !@topic.nil?
+            case @current_basket.index_page_link_to_index_topic_as
+            when 'full topic and comments'
+              @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
+                                            :action => :show,
+                                            :controller => 'topics',
+                                            :id => @topic )
+              @url_to_comments = url_for(:action => 'show',
+                                         :urlified_name => @topic.basket.urlified_name,
+                                         :controller => 'topics',
+                                         :id => @topic,
+                                         :anchor => 'comments')
+            when 'full topic'
+              @url_to_full_topic = url_for( :urlified_name => @topic.basket.urlified_name,
+                                            :action => :show,
+                                            :controller => 'topics',
+                                            :id => @topic )
+            when 'comments'
+              @url_to_comments = url_for(:action => 'show',
+                                         :urlified_name => @topic.basket.urlified_name,
+                                         :controller => 'topics',
+                                         :id => @topic,
+                                         :anchor => 'comments')
+            end
           end
 
           if !@current_basket.index_page_archives_as.blank? and @current_basket.index_page_archives_as == 'by type'
