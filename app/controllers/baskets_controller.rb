@@ -57,7 +57,7 @@ class BasketsController < ApplicationController
       @current_user.has_role('admin', @basket)
 
       flash[:notice] = 'Basket was successfully created.'
-      redirect_to :action => 'edit', :id => @basket
+      redirect_to :urlified_name => @basket.urlified_name, :action => 'edit', :id => @basket
     else
       render :action => 'new'
     end

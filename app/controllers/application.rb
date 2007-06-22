@@ -55,7 +55,10 @@ class ApplicationController < ActionController::Base
 
   # if anything is added, edited, or deleted in a basket
   # we need toss our basket index page fragments
-  after_filter :expire_basket_index_caches, :only => [ :create, :update, :destroy]
+  after_filter :expire_basket_index_caches, :only => [ :create,
+                                                       :update,
+                                                       :destroy,
+                                                       :add_index_topic, :link_index_topic]
 
   def site_basket
     # TODO: cache
