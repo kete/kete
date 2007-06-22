@@ -99,12 +99,7 @@ class Topic < ActiveRecord::Base
     return parent_topics + self.child_related_topics - [self]
   end
 
-  # make ids look like this for urls
-    # /7-my-title-for-topic-7/
-  # i.e. /id-title/
-  # rails strips the non integers after the id
-  def to_param
-    require 'unicode'
-    "#{id}"+Unicode::normalize_KD("-"+title+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
-  end
+  # turn pretty urls on or off here
+  include FriendlyUrls
+  alias :to_param :format_for_friendly_urls
 end

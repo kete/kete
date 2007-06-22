@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
 
   include ExtendedFieldsControllerHelpers
 
+  include FriendlyUrls
+
   # for the remember me functionality
   before_filter :login_from_cookie
 
@@ -38,6 +40,7 @@ class ApplicationController < ActionController::Base
   before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]
 
   # see method definition for details
+
   before_filter :delete_zoom_record, :only => [ :update ]
 
   # we often need baskets for edits
@@ -108,6 +111,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def expire_fragment_for_all_versions(item, name = {})
+    item.versions.find(:all, :select => 'distinct title').each do |version|
+      expire_fragment(name.merge(:id => item.id.to_s + format_friendly_for(version.title)))
+    end
+  end
+
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
   def expire_show_caches
@@ -124,19 +133,21 @@ class ApplicationController < ActionController::Base
     return unless ZOOM_CLASSES.include?(item_class)
 
     SHOW_PARTS.each do |part|
-      expire_fragment(:controller => controller, :action => 'show', :id => item, :part => part)
+      # we have to do this for each distinct title the item previously had
+      # because old titles' friendly urls won't be matched in our expiry otherwise
+      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => part })
     end
 
     # images have an additional cache
     # and topics may also have a basket index page cached
     if controller == 'images'
-      expire_fragment(:controller => controller, :action => 'show', :id => params[:id], :part => 'caption')
+      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => 'caption' })
     elsif controller== 'topics'
-      if item == @current_basket.index_topic
-        # slight overkill, but currently 2 out of 3 parts
-        # would need to be expired
+      if !item.index_for_basket.nil?
+        # slight overkill, but most parts
+        # would need to be expired anyway
         INDEX_PARTS.each do |part|
-          expire_fragment(:urlified_name => @current_basket.urlified_name, :part => part)
+          expire_fragment(:urlified_name => item.index_for_basket.urlified_name, :part => part)
         end
       end
     end
@@ -146,7 +157,7 @@ class ApplicationController < ActionController::Base
     # as well as related caches of things it's related to
     if params[:action] == 'destroy'
       if controller != 'topics'
-        expire_fragment(:controller => controller, :action => 'show', :id => item, :related => 'topics')
+        expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :related => 'topics' })
         # expire any related topics related caches
         # comments don't have related topics, so skip it for them
         if item_class != 'Comment'
@@ -157,7 +168,7 @@ class ApplicationController < ActionController::Base
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment(:action => 'show', :id => item, :related => zoom_class_controller(zoom_class))
+          expire_fragment_for_all_versions(item, { :action => 'show', :id => item, :related => zoom_class_controller(zoom_class) })
           if zoom_class == 'Topic'
             item.related_topics.each do |related_item|
               expire_related_caches_for(related_item, 'topics')
@@ -173,54 +184,58 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_related_caches_for(item, controller = nil)
+    related = String.new
     if !controller.nil?
-      expire_fragment(:urlified_name => item.basket.urlified_name,
-                      :controller => zoom_class_controller(item.class.name),
-                      :action => 'show',
-                      :id => item,
-                      :related => zoom_class_controller(controller))
+      related = zoom_class_controller(controller)
     else
       if item.class.name != 'topics'
-        expire_fragment(:urlified_name => item.basket.urlified_name,
-                        :controller => zoom_class_controller(item.class.name),
-                        :action => 'show',
-                        :id => item,
-                        :related => 'topics')
+        related = 'topics'
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment(:urlified_name => item.basket.urlified_name,
-                          :controller => zoom_class_controller(item.class.name),
-                          :action => 'show',
-                          :id => item,
-                          :related => zoom_class_controller(zoom_class))
+          expire_fragment_for_all_versions(item,
+                                           { :urlified_name => item.basket.urlified_name,
+                                             :controller => zoom_class_controller(item.class.name),
+                                             :action => 'show',
+                                             :id => item,
+                                             :related => zoom_class_controller(zoom_class) })
         end
+        related = nil
       end
+    end
+    if !related.nil?
+      expire_fragment_for_all_versions(item,
+                                       { :urlified_name => item.basket.urlified_name,
+                                         :controller => zoom_class_controller(item.class.name),
+                                         :action => 'show',
+                                         :id => item,
+                                         :related => related} )
     end
   end
 
   def expire_contributions_caches_for(item)
-    expire_fragment(:urlified_name => item.basket.urlified_name,
-                    :controller => zoom_class_controller(item.class.name),
-                    :action => 'show',
-                    :id => item,
-                    :part => 'contributions')
+    expire_fragment_for_all_versions(item,
+                                     { :urlified_name => item.basket.urlified_name,
+                                       :controller => zoom_class_controller(item.class.name),
+                                       :action => 'show',
+                                       :id => item,
+                                       :part => 'contributions' })
   end
 
   def expire_comments_caches_for(item)
-    expire_fragment(:urlified_name => item.basket.urlified_name,
-                    :controller => zoom_class_controller(item.class.name),
-                    :action => 'show',
-                    :id => item,
-                    :part => 'comments')
-    expire_fragment(:urlified_name => item.basket.urlified_name,
-                    :controller => zoom_class_controller(item.class.name),
-                    :action => 'show',
-                    :id => item,
-                    :part => 'comments-moderators')
+    ['comments-moderators', 'comments'].each do |comment_cache|
+      expire_fragment_for_all_versions(item,
+                                       { :urlified_name => item.basket.urlified_name,
+                                         :controller => zoom_class_controller(item.class.name),
+                                         :action => 'show',
+                                         :id => item,
+                                         :part => comment_cache } )
+    end
   end
 
   # cheating, we know that we are using file store, rather than mem_cache
+  # TODO: put an if mem_cache ... use read_fragment({:part => part})
+  # wrapped in this method
   def has_fragment?(name = {})
     File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
   end
@@ -275,9 +290,31 @@ class ApplicationController < ActionController::Base
 
   def redirect_to_related_topic(topic_id)
     # TODO: doublecheck this isn't too expensive, maybe better to find_by_sql
-    topic = Topic.find(topic_id)
-    basket = topic.basket
-    redirect_to :action => 'show', :controller => 'topics', :id => topic, :urlified_name => basket.urlified_name
+    redirect_to_show_for(Topic.find(topic_id))
+  end
+
+  def update_zoom_and_related_caches_for(item, controller = nil)
+    prepare_and_save_to_zoom(item)
+
+    if controller.nil?
+      expire_related_caches_for(item, controller)
+    else
+      expire_related_caches_for(item, controller)
+    end
+  end
+
+  def add_relation_and_update_zoom_and_related_caches_for(item,new_related_topic)
+    # clear out old zoom records before we change the items
+    # sometimes zoom updates are confused and create a duplicate new record
+    # instead of updating existing one
+    zoom_destroy_for(item)
+    zoom_destroy_for(new_related_topic)
+
+    successful = ContentItemRelation.new_relation_to_topic(new_related_topic.id, item)
+
+    update_zoom_and_related_caches_for(new_related_topic, zoom_class_controller(item.class.name))
+
+    return successful
   end
 
   def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil)
@@ -287,22 +324,13 @@ class ApplicationController < ActionController::Base
     elsif params[:relate_to_topic_id] and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic_id])
 
-      ContentItemRelation.new_relation_to_topic(@new_related_topic.id, item)
-
-      # update the related topic
-      # so this new relationship is reflected in search
-      prepare_and_save_to_zoom(@new_related_topic)
-
-      # make sure the topics cache for this type of item is cleared
-      expire_related_caches_for(@new_related_topic, zoom_class_controller(item.class.name))
+      add_relation_and_update_zoom_and_related_caches_for(item,@new_related_topic)
 
       where_to_redirect = 'show_related'
     end
 
     if @successful
-      prepare_and_save_to_zoom(item)
-
-      expire_related_caches_for(item)
+      update_zoom_and_related_caches_for(item)
 
       case where_to_redirect
       when 'show_related'
@@ -310,14 +338,12 @@ class ApplicationController < ActionController::Base
         flash[:notice] = "Related #{item.class.name.humanize} was successfully created."
         redirect_to_related_topic(@new_related_topic)
       when 'commentable'
-        redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
-                            :action => 'show',
-                            :id => commented_item,
-                            :urlified_name => commented_item.basket.urlified_name)
+        redirect_to_show_for(commented_item)
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{item.class.name.humanize} was successfully created."
-        redirect_to :action => 'show', :id => item
+
+        redirect_to_show_for(item)
       end
     else
         render :action => 'new'
@@ -336,19 +362,11 @@ class ApplicationController < ActionController::Base
     end
 
     if @existing_relation.to_i == 0
-      @successful = ContentItemRelation.new_relation_to_topic(@related_to_topic.id, item)
+      @successful = add_relation_and_update_zoom_and_related_caches_for(item,@related_to_topic)
 
       if @successful
-        # update the related topic
-        # so this new relationship is reflected in search
-        prepare_and_save_to_zoom(@related_to_topic)
-
-        expire_related_caches_for(@related_to_topic, zoom_class_controller(item.class.name))
-
         # in this context, the item being related needs updating, too
-        prepare_and_save_to_zoom(item)
-
-        expire_related_caches_for(item)
+        update_zoom_and_related_caches_for(item)
 
         render(:layout => false, :exists => false, :success => true)
       end
@@ -682,16 +700,15 @@ class ApplicationController < ActionController::Base
       new_basket = item.basket
       if new_basket != original_basket
         item.comments.each do |comment|
-          # get rid of zoom record that it tied to basket
-          # these will be regenerated when the parent item
-          # has it's zoom record recreated
+          # get rid of zoom record that it tied to old basket
           zoom_destroy_for(comment)
           comment.basket = new_basket
-          comment.save
-
-          # moving the comment adds a version
-          add_contributor_to(comment,current_user)
-
+          if comment.save
+            # moving the comment adds a version
+            add_contributor_to(comment,current_user)
+          end
+          # generate the new zoom record
+          # with the new basket
           prepare_and_save_to_zoom(comment)
         end
       end
@@ -714,5 +731,4 @@ class ApplicationController < ActionController::Base
 
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller
-
 end

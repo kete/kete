@@ -556,21 +556,19 @@ class SearchController < ApplicationController
     permit "site_admin" do
       items_to_rebuild = params[:items_to_rebuild].split(",")
       items_count = 1
-      first_item_class = String.new
-      first_item_id = String.new
+      first_item = nil
       items_to_rebuild.each do |item_class_and_id|
         item_array = item_class_and_id.split("-")
-        if items_count == 1
-          first_item_class = item_array[0]
-          first_item_id = item_array[1]
-        end
         item = Module.class_eval(item_array[0]).find(item_array[1])
         prepare_and_save_to_zoom(item)
+        if items_count == 1
+          first_item = item
+        end
         items_count += 1
       end
       flash[:notice] = "ZOOM indexes rebuilt"
       # first item in list should be self
-      redirect_to :action => 'show', :controller => zoom_class_controller(first_item_class), :id => first_item_id
+      redirect_to_show_for(first_item)
     end
   end
 

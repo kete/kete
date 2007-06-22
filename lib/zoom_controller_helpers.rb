@@ -14,11 +14,16 @@ module ZoomControllerHelpers
       # delete any comments this is on
       item.comments.each do |comment|
         prepare_zoom(comment)
-        comment.destroy
+        @successful = comment.destroy
+        if !@successful
+          return @succesful
+        end
       end
 
-      prepare_zoom(item)
-      @successful = item.destroy
+      if @successful
+        prepare_zoom(item)
+        @successful = item.destroy
+      end
     end
 
     def zoom_destroy_and_redirect(zoom_class,pretty_zoom_class = nil)
