@@ -1,4 +1,4 @@
-                <% @title = 'Results in ' + @controller_name_for_zoom_class.gsub(/_/, " ") + last_part_of_title_if_refinement_of -%>
+                <% @title = title_setup_first_part('Results in ') + last_part_of_title_if_refinement_of -%>
 
                 <%= render :partial => 'form', :locals => {:headline => 'Refine your results', :search_terms => nil} %>
 

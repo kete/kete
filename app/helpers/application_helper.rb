@@ -57,7 +57,14 @@ module ApplicationHelper
   def link_to_add_item(options={})
     phrase = options[:phrase]
     item_class = options[:item_class]
-    return link_to("#{phrase} #{zoom_class_humanize(item_class)}", :controller => zoom_class_controller(item_class), :action => :new)
+
+    phrase += ' ' + zoom_class_humanize(item_class)
+
+    if @current_basket != @site_basket
+      phrase += ' in ' + @current_basket.name
+    end
+
+    return link_to(phrase, :controller => zoom_class_controller(item_class), :action => :new)
   end
 
   def link_to_add_related_item(options={})

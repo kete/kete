@@ -64,4 +64,11 @@ module SearchHelper
                        </div>"
     end
   end
+
+  def title_setup_first_part(title_so_far)
+    if @current_basket != @site_basket
+      title_so_far += @current_basket.name + ' '
+    end
+    title_so_far += @controller_name_for_zoom_class.gsub(/_/, " ")
+  end
 end

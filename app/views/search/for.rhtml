@@ -1,4 +1,4 @@
-                <% @title = 'Results in ' + @controller_name_for_zoom_class.gsub(/_/, " ") -%>
+                <% @title = title_setup_first_part('Results in ') -%>
                 <% if !@search_terms.blank?
                       @title += " for your search \"#{h(@search_terms.to_s)}\""
                       refinements = last_part_of_title_if_refinement_of
