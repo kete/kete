@@ -71,6 +71,7 @@ class Topic < ActiveRecord::Base
 
   validates_xml :extended_content
   validates_presence_of :title
+
   # this may change
   # validates_uniqueness_of :title
 

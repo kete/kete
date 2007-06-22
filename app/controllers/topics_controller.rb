@@ -220,6 +220,9 @@ class TopicsController < ApplicationController
 
       redirect_to_show_for(@topic)
     else
+      if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
+        @topic_types = @topic.topic_type.full_set
+      end
       render :action => 'edit'
     end
   end

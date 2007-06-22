@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
   before_filter :delete_zoom_record, :only => [ :update ]
 
   # we often need baskets for edits
-  before_filter :load_array_of_baskets, :only => [ :edit ]
+  before_filter :load_array_of_baskets, :only => [ :edit, :update ]
 
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
