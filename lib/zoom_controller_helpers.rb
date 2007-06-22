@@ -11,6 +11,7 @@ module ZoomControllerHelpers
 
     # destroy zoom and then item itself
     def zoom_item_destroy(item)
+      @successful = true
       # delete any comments this is on
       item.comments.each do |comment|
         prepare_zoom(comment)
