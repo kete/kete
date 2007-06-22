@@ -8,6 +8,7 @@ class BasketsController < ApplicationController
                   :browsers => %w{ msie gecko safaris},
                   :mode => "textareas",
                   :convert_urls => false,
+                  :content_css => "/stylesheets/kete.css",
                   :remove_script_host => true,
                   :theme_advanced_toolbar_location => "top",
                   :theme_advanced_toolbar_align => "left",
