@@ -130,10 +130,14 @@ NOTIFIER_EMAIL = "kete@horowhenua.kete.net.nz"
 FLAGGING_TAGS = ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
 
 # handle legacy files after attachment_fu changed it's filesystem storage paths
-LEGACY_IMAGEFILE_PATHS_UP_TO = 0
+LEGACY_IMAGEFILE_PATHS_UP_TO = 2895
 LEGACY_AUDIORECORDING_PATHS_UP_TO = 0
 LEGACY_VIDEO_PATHS_UP_TO = 0
 LEGACY_DOCUMENT_PATHS_UP_TO = 0
+
+# for default baskets for policies and help links
+ABOUT_BASKET = 2
+HELP_BASKET = 3
 
 # warnings
 DOWNLOAD_WARNING = "You are about to download a file from Kete. Kete is an open digital repository and as such we can not guarantee the integrity of any file in the repository. Please ensure that your virus scan software is operating and is configured to scan this download.
