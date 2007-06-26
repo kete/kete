@@ -20,14 +20,9 @@ class ApplicationController < ActionController::Base
                                             :flag_version,
                                             :restore ]
 
-  # basket.urlified_name may change for the default basket
-  # so can't rely on it being 'site'
-  # this is a good candidate for memcaching
-  before_filter :site_basket
-
   # all topics and content items belong in a basket
   # and will always be specified in our routes
-  before_filter :load_basket
+  before_filter :load_standard_baskets
 
   # sets up instance variables for authentication
   include KeteAuthorization
@@ -59,21 +54,28 @@ class ApplicationController < ActionController::Base
                                                        :update,
                                                        :destroy,
                                                        :add_index_topic, :link_index_topic]
-
-  def site_basket
-    # TODO: cache
-    @site_basket ||= Basket.find(1)
-  end
-
   # set the current basket to the default
   # unless we have urlified_name that is different
   # than the default
   # TODO: cache in memcache
-  def load_basket
-    @current_basket = @site_basket
+  def load_standard_baskets
+    @site_basket ||= Basket.find(1)
+    @help_basket ||= Basket.find(HELP_BASKET)
+    @about_basket ||= Basket.find(ABOUT_BASKET)
 
-    if !params[:urlified_name].blank? and params[:urlified_name] != @site_basket.urlified_name
-      @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
+    if params[:urlified_name].blank?
+      @current_basket = @site_basket
+    else
+      case params[:urlified_name]
+      when @site_basket.urlified_name
+        @current_basket = @site_basket
+      when @about_basket.urlified_name
+        @current_basket = @about_basket
+      when @help_basket.urlified_name
+        @current_basket = @help_basket
+      else
+        @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
+      end
     end
   end
 
