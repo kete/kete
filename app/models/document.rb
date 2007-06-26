@@ -29,4 +29,11 @@ class Document < ActiveRecord::Base
 
   include HandleLegacyAttachmentFuPaths
 
+  def attachment_attributes_valid?
+    [:size, :content_type].each do |attr_name|
+      enum = attachment_options[attr_name]
+      errors.add attr_name, 'is not acceptable. It should be a .pdf, .doc, or other document file.' unless enum.nil? || enum.include?(send(attr_name))
+    end
+  end
+
 end

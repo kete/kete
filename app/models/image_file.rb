@@ -37,4 +37,14 @@ class ImageFile < ActiveRecord::Base
   # end
 
   include HandleLegacyAttachmentFuPaths
+
+  # custom error message, probably overkill
+  # validates the size and content_type attributes according to the current model's options
+  def attachment_attributes_valid?
+    [:size, :content_type].each do |attr_name|
+      enum = attachment_options[attr_name]
+      errors.add attr_name, 'is not acceptable. It should be a .jpg, .gif, or other image file.' unless enum.nil? || enum.include?(send(attr_name))
+    end
+  end
+
 end

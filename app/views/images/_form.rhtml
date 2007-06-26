@@ -7,6 +7,8 @@
 
                 <%= error_messages_for 'still_image' %>
 
+                <%= error_messages_for 'image_file' %>
+
                 <!--[form:still_image]-->
                 <% if !params[:relate_to_topic_id].nil? %>
                         <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>

@@ -38,27 +38,37 @@ class ImagesController < ApplicationController
   end
 
   def create
-    @still_image = StillImage.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
-    @successful = @still_image.save
+    @still_image = StillImage.new
+    # handle problems with image file first
+    @image_file = ImageFile.new(params[:image_file])
+    @successful = @image_file.save
 
     if @successful
-      # add this to the user's empire of creations
-      # TODO: allow current_user whom is at least moderator to pick another user
-      # as creator
-      @still_image.creators << current_user
 
-      @original_file = ImageFile.new(params[:image_file])
-      @original_file.still_image_id = @still_image.id
-      @original_file.save
-      # attachment_fu doesn't insert our still_image_id into the thumbnails
-      # automagically
-      @original_file.thumbnails.each do |thumb|
-        thumb.still_image_id = @still_image.id
-        thumb.save!
+      @still_image = StillImage.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
+      @successful = @still_image.save
+
+      if @successful
+        # add this to the user's empire of creations
+        # TODO: allow current_user whom is at least moderator to pick another user
+        # as creator
+        @still_image.creators << current_user
+
+        @image_file.still_image_id = @still_image.id
+        @image_file.save
+
+        # attachment_fu doesn't insert our still_image_id into the thumbnails
+        # automagically
+        @image_file.thumbnails.each do |thumb|
+          thumb.still_image_id = @still_image.id
+          thumb.save!
+        end
       end
-    end
 
-    setup_related_topic_and_zoom_and_redirect(@still_image)
+      setup_related_topic_and_zoom_and_redirect(@still_image)
+    else
+      render :action => 'new'
+    end
   end
 
   def edit
@@ -72,7 +82,7 @@ class ImagesController < ApplicationController
 
       if !params[:image_file][:uploaded_file].blank?
         # if they have uploaded something new, insert it
-        @original_file = ImageFile.update_attributes(params[:image_file])
+        @image_file = ImageFile.update_attributes(params[:image_file])
       end
 
       after_successful_zoom_item_update(@still_image)
