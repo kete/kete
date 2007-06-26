@@ -54,10 +54,10 @@ class BasketsController < ApplicationController
   def create
     @basket = Basket.new(params[:basket])
     if @basket.save
-      @current_user.has_role('admin', @basket)
+      @basket.accepts_role('admin', current_user)
 
       flash[:notice] = 'Basket was successfully created.'
-      redirect_to :urlified_name => @basket.urlified_name, :action => 'edit', :id => @basket
+      redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
     else
       render :action => 'new'
     end

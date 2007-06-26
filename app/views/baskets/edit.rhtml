@@ -2,11 +2,6 @@
 
 <h2><%= h(@title) -%></h2>
 
-<% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
-  <%= render :partial => 'form', :object => form %>
-  <%= submit_tag 'Edit' %>
-<% end %>
-
 <ul>
         <% if @index_topic.blank? -%>
                 <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add basket homepage') -%></li>
@@ -19,3 +14,8 @@
                 <li class="command"><%= link_to_link_index_topic(:index_for_basket => @basket, :phrase => 'Link to new basket homepage') -%></li>
         <% end -%>
 </ul>
+
+<% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= submit_tag 'Edit' %>
+<% end %>
