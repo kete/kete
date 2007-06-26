@@ -77,11 +77,15 @@
                                                                 :urlified_name => 'site' -%>
                         <% end %>
                         |
-                        <a href="/about/">About</a>
+                           <%= link_to_unless_current(h(@about_basket.name),
+                                   basket_index_url(:urlified_name => @about_basket.urlified_name)) %>
+
                         |
-                        <%= link_to("Help", {:controller => 'index_page',
-                                             :action => :help_file,
-                                             :urlified_name => 'site' }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %>
+                           <%= link_to_unless_current(h(@help_basket.name),
+                                   basket_index_url(:urlified_name => @help_basket.urlified_name)) %>
+                           <!-- <%= link_to("Help", {:controller => 'index_page',
+                                                :action => :help_file,
+                                                :urlified_name => @help_basket.urlified_name }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %> -->
 
                 </div>
                 <h1>
@@ -111,9 +115,11 @@
                 <div class="browse-baskets">
                         <h4>Featured baskets:</h4>
                         <ul>
-                        <% basket_count = 1 -%>
+                        <% basket_count = 1
+                           standard_baskets = [1, HELP_BASKET, ABOUT_BASKET]
+                        -%>
                         <% # TODO: possibly limit this and provide a "more" link to a complete listing -%>
-                        <% Basket.find(:all).each do |basket| %>
+                        <% Basket.find(:all, :conditions => ["id not in (?)", standard_baskets]).each do |basket| %>
                                <%= li_with_correct_class(basket_count) +
                                    link_to_unless_current(h(basket.name),
                                    basket_index_url(:urlified_name => basket.urlified_name)) %></li>
@@ -140,7 +146,6 @@
                                                                          :confirm => 'Are you sure? All items in this basket will be deleted forever!', :method => :post -%></li>
                                 <% end %>
                                 </ul>
-                                </p>
                         </div>
                 <% end %>
                 <% if logged_in? and @site_admin %>

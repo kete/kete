@@ -116,9 +116,17 @@ class IndexPageController < ApplicationController
   end
 
   def help_file
-    # TODO: after we add the default help basket
-    # render it's index_topic with simple layout
-    render(:layout => "layouts/simple", :file => "#{RAILS_ROOT}/public/about/manual-source.html")
+    @is_fully_cached = has_all_fragments?
+    prepare_topic_for_show
+
+    if @topic.nil? and @is_fully_cached == false
+      @title = @current_basket.name
+    else
+      if @is_fully_cached == false
+        @title = @topic.title
+      end
+    end
+    render :action => :topic_as_full_page, :layout => "layouts/simple"
   end
 
   def uptime
