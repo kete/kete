@@ -21,8 +21,10 @@
                         <% end -%>
                                 <%= text_field_tag 'search_terms', search_terms, :class => 'searchheader-search', :size => '30' %>
 
-                                <% if !params[:relate_to_topic].nil? -%>
-                                        <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+                                <% if !params[:relate_to_topic].nil? or (!params[:related_class].nil? and params[:related_class] == 'Topic')-%>
+                                        <% if !params[:relate_to_topic].nil? -%>
+                                                <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+                                        <% end -%>
                                         <%= hidden_field_tag "controller_name_for_zoom_class", zoom_class_controller(params[:related_class]) %>
                                         <% # not sure why this extra check is necessary, but fixes bug -%>
                                         <% if !existing_array_string.nil? -%>
