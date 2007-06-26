@@ -1,3 +1,17 @@
+[23 June 2007]
+
+* Add validation to Tag model.
+
+* find_options_for_tagged_with should always return a hash.
+
+* find_tagged_with passing in no tags should return an empty array.
+
+* Improve compatibility with PostgreSQL.
+
+[21 June 2007]
+
+* Remove extra .rb from generated migration file name.
+
 [15 June 2007]
 
 * Introduce TagList class.

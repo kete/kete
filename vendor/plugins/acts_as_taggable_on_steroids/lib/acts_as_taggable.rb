@@ -38,8 +38,10 @@ module ActiveRecord
         #   :conditions - A piece of SQL conditions to add to the query
         def find_options_for_tagged_with(tags, options = {})
           tags = TagList.from(tags).names if tags.is_a?(String)
-          return [] if tags.empty?
+          tags.compact!
           tags.map!(&:to_s)
+          
+          return {} if tags.empty?
           
           conditions = sanitize_sql(["#{table_name}_tags.name #{"NOT" if options.delete(:exclude)} IN (?)", tags])
           conditions << " AND #{sanitize_sql(options.delete(:conditions))}" if options[:conditions]
@@ -55,7 +57,8 @@ module ActiveRecord
         end
         
         def find_tagged_with(*args)
-          find(:all, find_options_for_tagged_with(*args))
+          options = find_options_for_tagged_with(*args)
+          options.blank? ? [] : find(:all, options)
         end
         
         # Options:
@@ -74,7 +77,7 @@ module ActiveRecord
           end_at = sanitize_sql(['taggings.created_at <= ?', options[:end_at]]) if options[:end_at]
           
           conditions = [
-            "taggings.taggable_type = '#{name}'",
+            "taggings.taggable_type = #{quote_value(name)}",
             options[:conditions],
             scope && scope[:conditions],
             start_at,
@@ -82,11 +85,11 @@ module ActiveRecord
           ]
           conditions = conditions.compact.join(' and ')
           
-          at_least  = sanitize_sql(['count >= ?', options[:at_least]]) if options[:at_least]
-          at_most   = sanitize_sql(['count <= ?', options[:at_most]]) if options[:at_most]
+          at_least  = sanitize_sql(['COUNT(*) >= ?', options[:at_least]]) if options[:at_least]
+          at_most   = sanitize_sql(['COUNT(*) <= ?', options[:at_most]]) if options[:at_most]
           having    = [at_least, at_most].compact.join(' and ')
-          group_by  = 'tags.id, tags.name having count(*) > 0'
-          group_by << " and #{having}" unless having.blank?
+          group_by  = 'tags.id, tags.name HAVING COUNT(*) > 0'
+          group_by << " AND #{having}" unless having.blank?
 
           Tag.find(:all,
             :select     => 'tags.id, tags.name, COUNT(*) AS count', 
