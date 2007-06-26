@@ -575,6 +575,7 @@ class SearchController < ApplicationController
   # this probably won't scale, only use for demo right now
   def rebuild_zoom_index
     permit "site_admin" do
+      zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
       @type = !params[:zoom_class].nil? ? params[:zoom_class] : 'all'
       if @type.to_s == 'all'
         @start_id = 1
@@ -588,16 +589,16 @@ class SearchController < ApplicationController
         if @end_id.to_s == 'end'
           Module.class_eval(params[:zoom_class]).find(:all,
                                                       :conditions => ["id >= :start_id", { :start_id => @start_id }],
-                                                      :order => 'updated_at' ).each {|item| prepare_and_save_to_zoom(item)}
+                                                      :order => 'updated_at' ).each { |item| zoom_update_and_test(item,zoom_db) }
         else
           Module.class_eval(params[:zoom_class]).find(:all,
                                                       :conditions => ["id >= :start_id and id <= :end_id",
                                                                       { :start_id => @start_id, :end_id => @end_id }],
-                                                      :order => 'updated_at' ).each {|item| prepare_and_save_to_zoom(item)}
+                                                      :order => 'updated_at' ).each {|item| zoom_update_and_test(item,zoom_db) }
         end
       else
         ZOOM_CLASSES.each do |zoom_class|
-          Module.class_eval(zoom_class).find(:all, :order => 'updated_at').each {|item| prepare_and_save_to_zoom(item)}
+          Module.class_eval(zoom_class).find(:all, :order => 'updated_at').each {|item| zoom_update_and_test(item,zoom_db)}
         end
       end
     end
@@ -664,6 +665,25 @@ class SearchController < ApplicationController
       # mimic page caching
       # by writing the file to fs under public
       cache_page(response.body,params)
+    end
+  end
+
+  def zoom_update_and_test(item,zoom_db)
+    # test if it's in there first
+    query = "@attr 1=12 @and #{item.class.name} #{item.id} "
+    this_result_set = Module.class_eval(item.class.name).process_query(:zoom_db => zoom_db,
+                                                                       :query => query)
+    sleep(30)
+    # if not, add it
+    if this_result_set.size == 0
+      prepare_and_save_to_zoom(item)
+      sleep(10)
+      # confirm that it's now available
+      this_result_set = Module.class_eval(item.class.name).process_query(:zoom_db => zoom_db,
+                                                                         :query => query)
+      if this_result_set.size == 0
+        logger.warn("failed to add to search: #{item.class.name} : #{item.id} not found in search index")
+      end
     end
   end
 end
