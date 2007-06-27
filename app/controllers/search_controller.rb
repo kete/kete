@@ -575,31 +575,72 @@ class SearchController < ApplicationController
   # this probably won't scale, only use for demo right now
   def rebuild_zoom_index
     permit "site_admin" do
-      zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
-      @type = !params[:zoom_class].nil? ? params[:zoom_class] : 'all'
-      if @type.to_s == 'all'
-        @start_id = 1
-        @end_id = 'end'
+      session[:zoom_class] = !params[:zoom_class].nil? ? params[:zoom_class] : 'Topic'
+      session[:start_id] = !params[:start].nil? ? params[:start] : 1
+      session[:end_id] = !params[:end].nil? ? params[:end] : 'end'
+      session[:skip_existing] = !params[:skip_existing].nil? ? params[:skip_existing] : true
+
+      session[:zoom_db] = ZoomDb.find_by_host_and_database_name('localhost','public')
+
+      # start from scratch
+      session[:last] = nil
+      session[:done] = false
+
+      rebuild_zoom_item
+    end
+  end
+
+  # this rebuilds the next item in queue
+  # and updates page
+  def rebuild_zoom_item
+    @zoom_class = session[:zoom_class]
+    @start_id = session[:start_id]
+    @end_id = session[:end_id]
+    @zoom_db = session[:zoom_db]
+
+    @last_id = session[:last] ? session[:last] : @start_id
+
+    @done = session[:done] ? session[:done] : false
+
+    if !@done
+      if @end_id.to_s != 'end'
+        @item = Module.class_eval(@zoom_class).find(:first,
+                                                    :conditions => ["id > :start_id and id <= :end_id",
+                                                                    { :start_id => @last_id,
+                                                                      :end_id => @end_id }],
+                                                    :order => 'id')
       else
-        @start_id = !params[:start].nil? ? params[:start] : 1
-        @end_id = !params[:end] .nil? ? params[:end] : 'end'
+        @item = Module.class_eval(@zoom_class).find(:first,
+                                                    :conditions => ["id > :start_id",
+                                                                    { :start_id => @last_id }],
+                                                    :order => 'id')
       end
 
-      if @type.to_s != 'all'
-        if @end_id.to_s == 'end'
-          Module.class_eval(params[:zoom_class]).find(:all,
-                                                      :conditions => ["id >= :start_id", { :start_id => @start_id }],
-                                                      :order => 'updated_at' ).each { |item| zoom_update_and_test(item,zoom_db) }
-        else
-          Module.class_eval(params[:zoom_class]).find(:all,
-                                                      :conditions => ["id >= :start_id and id <= :end_id",
-                                                                      { :start_id => @start_id, :end_id => @end_id }],
-                                                      :order => 'updated_at' ).each {|item| zoom_update_and_test(item,zoom_db) }
-        end
+      if @item.nil?
+        @done = true
+        @result_message = 'Done'
       else
-        ZOOM_CLASSES.each do |zoom_class|
-          Module.class_eval(zoom_class).find(:all, :order => 'updated_at').each {|item| zoom_update_and_test(item,zoom_db)}
-        end
+        session[:last] = @item.id
+        @result_message = zoom_update_and_test(@item,@zoom_db)
+      end
+
+      log_path = File.join(RAILS_ROOT, 'log')
+      dest = File.open(log_path + '/zoom_rebuild.log', 'a')
+      dest << @result_message + "\n"
+      dest.close
+
+      session[:done] = @done
+
+    else
+      @result_message = 'Done'
+    end
+
+    if request.xhr?
+      render :partial =>'rebuild_zoom_item',
+      :locals => { :result_message => @result_message }
+    else
+      if params[:action] == 'rebuild_zoom_item'
+        raise "This feature requires javascript"
       end
     end
   end
@@ -669,20 +710,32 @@ class SearchController < ApplicationController
   end
 
   def zoom_update_and_test(item,zoom_db)
-    # test if it's in there first
-    query = "@attr 1=12 @and #{item.class.name} #{item.id} "
-    this_result_set = Module.class_eval(item.class.name).process_query(:zoom_db => zoom_db,
-                                                                       :query => query)
-    sleep(30)
+    record_count = 0
+    item_class = item.class.name
+
+    if !session[:skip_existing].nil? and session[:skip_existing] == true
+      # test if it's in there first
+      query = "@attr 1=12 @and #{item_class} #{item.id} "
+      this_result_set = Module.class_eval(item_class).process_query(:zoom_db => zoom_db,
+                                                                    :query => query)
+
+      record_count = this_result_set.size
+      if record_count > 0
+        return "skipping existing: search record exists: #{item_class} : #{item.id}"
+      end
+    end
+
     # if not, add it
-    if this_result_set.size == 0
+    if record_count == 0
       prepare_and_save_to_zoom(item)
-      sleep(10)
       # confirm that it's now available
-      this_result_set = Module.class_eval(item.class.name).process_query(:zoom_db => zoom_db,
-                                                                         :query => query)
+      this_result_set = Module.class_eval(item_class).process_query(:zoom_db => zoom_db,
+                                                                    :query => query)
+
       if this_result_set.size == 0
-        logger.warn("failed to add to search: #{item.class.name} : #{item.id} not found in search index")
+        return "failed to add to search: #{item_class} : #{item.id} not found in search index"
+      else
+        return "successfully updated search: #{item_class} : #{item.id}"
       end
     end
   end
