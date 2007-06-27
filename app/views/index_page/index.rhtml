@@ -19,7 +19,7 @@
                         <div class="detail-tools">
                                 <ul>
                                 <% if !@url_to_full_topic.nil? -%>
-                                        <%= li_with_correct_class(tool_count) + link_to("Full Version of this Topic", @url_to_full_topic) %></li>
+                                        <%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and it's links", @url_to_full_topic) %></li>
                                         <% tool_count += 1 -%>
                                 <% end -%>
                                 <% if !@url_to_comments.nil? -%>
