@@ -1,0 +1,19 @@
+<% @title = 'Flag this item' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_tag :action => 'flag_version' do %>
+        <fieldset>
+                <%= hidden_field_tag "flag", params[:flag] %>
+                <%= hidden_field_tag "id", params[:id] %>
+                <div class="form-element">
+                        <label for="message">Message for moderator:</label>
+                        <%= text_area 'message', '' %>
+                        <p>Please give details that might be helpful for the moderator reviewing this item.  For example, if flagging as a duplicate, the URL for the item this content duplicates.</p>
+                </div>
+        </fieldset>
+        <%= submit_tag "Flag" %>
+<% end %>
+
+<%= link_to_cancel %>
+

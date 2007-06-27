@@ -457,6 +457,13 @@ class ApplicationController < ActionController::Base
                                                             :conditions => ["#{class_name.underscore}_id = ? and version = ?", item.id, version])
   end
 
+  # added so users can add a helpful message with details for moderator
+  # reviewing the flagging
+  def flag_form
+    # use one form template for all controllers
+    render :template => '/search/flag_form'
+  end
+
   def flag_version
     # get the item in question based on controller and id passed
     zoom_class = zoom_class_from_controller(params[:controller])
@@ -467,6 +474,15 @@ class ApplicationController < ActionController::Base
     current_version = find_version_from_item_and_version(item, item.version)
     current_version.tag_list = flag
     current_version.save_tags
+
+    # if the user entered a message to do with the flag
+    # update the tagging with it
+    if !params[:message].blank?
+      flag_tag = Tag.find_by_name(flag)
+      tagging = current_version.taggings.find(:first, :conditions => ["tag_id = :tag_id", { :tag_id => flag_tag } ])
+      tagging.message = params[:message]
+      tagging.save
+    end
 
     # we revert to most recent version without a flag
     # if one is available, except for duplicates
@@ -520,7 +536,7 @@ class ApplicationController < ActionController::Base
     end
     moderators = find_moderators_for_basket_or_next_in_line(@current_basket)
     moderators.each do |moderator|
-      UserNotifier.deliver_item_flagged(moderator, flag, item_url, @current_user)
+      UserNotifier.deliver_item_flagged(moderator, flag, item_url, @current_user, params[:message])
     end
 
     flash[:notice] = "Thank you for your input.  A moderator has been notified and will review the item in question."

@@ -5,3 +5,8 @@
 Please review the item and take appropriate action:
 
   <%= @url %>
+
+<% if !@message.blank? -%>
+The user has also provided these details about the flagging:
+  <%= @message %>
+<% end -%>

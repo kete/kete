@@ -22,12 +22,13 @@ class UserNotifier < ActionMailer::Base
     @body[:url]  = "#{SITE_URL}"
   end
 
-  def item_flagged(user, flag, item_url, flagging_user)
+  def item_flagged(user, flag, item_url, flagging_user, message)
     setup_email(user)
     @subject    += "Item flagged #{flag} for moderation."
     @body[:url]  = item_url
     @body[:flagging_user]  = flagging_user
     @body[:flag] = flag
+    @body[:message] = message
   end
 
   def banned(user)

@@ -352,7 +352,6 @@ module ApplicationHelper
     return html_string
   end
 
-  # related to flagging
   def flagging_links_for(item, first = false, controller = nil)
     if first
       html_string = "                                         <li class=\"first\">Flag as:\n"
@@ -370,13 +369,13 @@ module ApplicationHelper
       if !controller.nil?
         html_string += link_to(flag,
                                { :controller => controller,
-                                 :action => :flag_version,
+                                 :action => 'flag_form',
                                  :flag => flag,
                                  :id => item },
                                :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
       else
         html_string += link_to(flag,
-                               { :action => :flag_version,
+                               { :action => 'flag_form',
                                  :flag => flag,
                                  :id => item },
                                :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
