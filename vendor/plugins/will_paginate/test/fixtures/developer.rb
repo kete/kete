@@ -1,15 +1,5 @@
-class Developer < ActiveRecord::Base
-  has_and_belongs_to_many :projects
+class Developer < User
+  has_and_belongs_to_many :projects, :include => :topics
 
-  def self.per_page
-    10
-  end
-end
-
-class DeVeLoPeR < ActiveRecord::Base
-  set_table_name "developers"
-
-  def self.per_page
-    10
-  end
+  def self.per_page() 10 end
 end

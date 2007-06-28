@@ -1,3 +1,7 @@
+[REVISION 20070628]
+
+[FIXED] Stack level too deep in 'add_column_without_foreign_key_migrations' (Ronen Barzel).
+
 [REVISION 20070503]
 
 [NEW] Support for SQL92 [NOT] DEFERRABLE on foreign keys.
