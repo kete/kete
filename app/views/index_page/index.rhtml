@@ -74,7 +74,7 @@
                                                 @headline += ' ' + @title
                                            end
                                         -%>
-                                        <%= render :partial => '/search/form', :locals => {:headline => @headline, :search_terms => nil} %>
+                                        <%= render :partial => '/search/form', :locals => {:headline => @headline, :search_terms => nil, :simple_layout => true } %>
                                 <% end -%>
 <% end -%>
 
