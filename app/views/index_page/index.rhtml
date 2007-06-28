@@ -69,12 +69,14 @@
                         <div id="home-right">
 <% cache({:part => 'search'}) do -%>
                                 <% if @current_basket.index_page_basket_search -%>
-                                        <% @headline = 'Keyword Search'
-                                           if @current_basket != @site_basket
-                                                @headline += ' ' + @title
-                                           end
-                                        -%>
-                                        <%= render :partial => '/search/form', :locals => {:headline => @headline, :search_terms => nil, :simple_layout => true } %>
+                                        <div id="right-search-box">
+                                                <% @headline = 'Keyword Search'
+                                                   if @current_basket != @site_basket
+                                                        @headline += ' ' + @title
+                                                   end
+                                                -%>
+                                                <%= render :partial => '/search/form', :locals => {:headline => @headline, :search_terms => nil, :simple_layout => true } %>
+                                        </div>
                                 <% end -%>
 <% end -%>
 

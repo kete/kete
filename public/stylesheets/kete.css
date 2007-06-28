@@ -108,6 +108,9 @@ input.searchheader-search {
         padding-left: 2px;
         width: 150px;
 }
+#right-search-box {
+        padding-bottom: 10px;
+}
 .cleaner {
         background: transparent;
         border: none;
