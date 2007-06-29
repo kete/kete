@@ -108,11 +108,17 @@ class ApplicationController < ActionController::Base
   # if anything is added, edited, or destroyed in a basket
   # expire the basket index page caches
   def expire_basket_index_caches
+    # we always expire the site basket index page, too
+    # since items added, edited, or destroyed from any basket
+    # show up in the contents list, as well as most recent topics, etc.
+    baskets_to_expire = [@current_basket, @site_basket]
     INDEX_PARTS.each do |part|
-      expire_fragment(:controller => 'index_page',
-                      :action => 'index',
-                      :urlified_name => @current_basket.urlified_name,
-                      :part => part)
+      baskets_to_expire.each do |basket|
+        expire_fragment(:controller => 'index_page',
+                        :action => 'index',
+                        :urlified_name => basket.urlified_name,
+                        :part => part)
+      end
     end
   end
 
