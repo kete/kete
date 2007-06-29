@@ -167,21 +167,21 @@ class ApplicationController < ActionController::Base
         # comments don't have related topics, so skip it for them
         if item_class != 'Comment'
           item.topics.each do |topic|
-            expire_related_caches_for(topic, 'topics')
+            expire_related_caches_for(topic, controller)
           end
         end
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
           expire_fragment_for_all_versions(item, { :action => 'show', :id => item, :related => zoom_class_controller(zoom_class) })
+          related_items = Array.new
           if zoom_class == 'Topic'
-            item.related_topics.each do |related_item|
-              expire_related_caches_for(related_item, 'topics')
-            end
+            related_items += item.related_topics
           else
-            item.send(zoom_class.tableize).each do |related_item|
-              expire_related_caches_for(related_item, controller)
-            end
+            related_items += item.send(zoom_class.tableize)
+          end
+          related_items.each do |related_item|
+            expire_related_caches_for(related_item, 'topics')
           end
         end
       end
@@ -189,32 +189,26 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_related_caches_for(item, controller = nil)
-    related = String.new
+    related = Array.new
     if !controller.nil?
-      related = zoom_class_controller(controller)
+      related << controller
     else
-      if item.class.name != 'topics'
-        related = 'topics'
+      if item.class.name != 'Topic'
+        related << 'topics'
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment_for_all_versions(item,
-                                           { :urlified_name => item.basket.urlified_name,
-                                             :controller => zoom_class_controller(item.class.name),
-                                             :action => 'show',
-                                             :id => item,
-                                             :related => zoom_class_controller(zoom_class) })
+          related << zoom_class_controller(zoom_class)
         end
-        related = nil
       end
     end
-    if !related.nil?
+    related.each do |related_controller|
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,
                                          :controller => zoom_class_controller(item.class.name),
                                          :action => 'show',
                                          :id => item,
-                                         :related => related} )
+                                         :related => related_controller} )
     end
   end
 
@@ -298,16 +292,19 @@ class ApplicationController < ActionController::Base
   end
 
   def update_zoom_and_related_caches_for(item, controller = nil)
+    # refresh data for the item
+    item = Module.class_eval(item.class.name).find(item)
+
     prepare_and_save_to_zoom(item)
 
     if controller.nil?
-      expire_related_caches_for(item, controller)
+      expire_related_caches_for(item)
     else
       expire_related_caches_for(item, controller)
     end
   end
 
-  def add_relation_and_update_zoom_and_related_caches_for(item,new_related_topic)
+  def add_relation_and_update_zoom_and_related_caches_for(item, new_related_topic)
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
@@ -328,7 +325,7 @@ class ApplicationController < ActionController::Base
     elsif params[:relate_to_topic_id] and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic_id])
 
-      add_relation_and_update_zoom_and_related_caches_for(item,@new_related_topic)
+      add_relation_and_update_zoom_and_related_caches_for(item, @new_related_topic)
 
       where_to_redirect = 'show_related'
     end
@@ -366,7 +363,7 @@ class ApplicationController < ActionController::Base
     end
 
     if @existing_relation.to_i == 0
-      @successful = add_relation_and_update_zoom_and_related_caches_for(item,@related_to_topic)
+      @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
 
       if @successful
         # in this context, the item being related needs updating, too
@@ -702,20 +699,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def prepare_short_summary(source_string,length = 30,end_string = '')
+  def prepare_short_summary(source_string, length = 30, end_string = '')
     source_string = source_string.to_s
     # length is how many words, rather than characters
     words = source_string.split()
     short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
   end
 
-  def add_contributor_to(item,user)
+  def add_contributor_to(item, user)
     user.version = item.version
     item.contributors << user
   end
 
   # this happens after the basket on the item has been changed already
-  def update_comments_basket_for(item,original_basket)
+  def update_comments_basket_for(item, original_basket)
     if item.class.name != 'Comment'
       new_basket = item.basket
       if new_basket != original_basket
@@ -725,7 +722,7 @@ class ApplicationController < ActionController::Base
           comment.basket = new_basket
           if comment.save
             # moving the comment adds a version
-            add_contributor_to(comment,current_user)
+            add_contributor_to(comment, current_user)
           end
           # generate the new zoom record
           # with the new basket
@@ -740,10 +737,10 @@ class ApplicationController < ActionController::Base
     # TODO: allow current_user whom is at least moderator to pick another user
     # as contributor
     # uses virtual attr as hack to pass version to << method
-    add_contributor_to(item,current_user)
+    add_contributor_to(item, current_user)
 
     # if the basket has been changed, make sure comments are moved, too
-    update_comments_basket_for(item,@current_basket)
+    update_comments_basket_for(item, @current_basket)
 
     # finally, sync up our search indexes
     prepare_and_save_to_zoom(item)
