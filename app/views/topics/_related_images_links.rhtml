@@ -4,16 +4,19 @@
                                                 <% items[0..end_range].each do |related_item| -%>
                                                         <div class="detail-linked-thumb">
                                                         <% if !related_item.thumbnail_file.nil? -%>
-                                                                <%= link_to(image_tag(related_item.thumbnail_file.public_filename, :size => related_item.thumbnail_file.image_size),
-                                                                                                :controller => 'images',
-                                                                                                :action => :show,
-                                                                                                :id => related_item.id)
+                                                                <%= link_to(image_tag(related_item.thumbnail_file.public_filename,
+                                                                                      :size => related_item.thumbnail_file.image_size),
+                                                                            :controller => 'images',
+                                                                            :urlified_name => related_item.basket.urlified_name,
+                                                                            :action => 'show',
+                                                                            :id => related_item)
                                                                 -%>
                                                         <% else -%>
                                                                 <%= link_to('only available as original',
-                                                                                                :controller => 'images',
-                                                                                                :action => :show,
-                                                                                                :id => related_item.id)
+                                                                            :controller => 'images',
+                                                                            :urlified_name => related_item.basket.urlified_name,
+                                                                            :action => 'show',
+                                                                            :id => related_item)
                                                                 -%>
                                                         <% end -%>
                                                         </div>
@@ -23,8 +26,8 @@
                                                 <% end -%>
                                         <% end -%>
                                         <% if !relate_to_topic_id.blank? -%>
-					        <%= link_to_add_related_item(:relate_to_topic_id => relate_to_topic_id, :phrase => "Add related ", :item_class => related_class) -%><br />
-						<%= link_to_link_related_item(:relate_to_topic_id => relate_to_topic_id, :related_class => related_class, :phrase => 'Link ', :item_class => related_class) -%>
-						
+                                                <%= link_to_add_related_item(:relate_to_topic_id => relate_to_topic_id, :phrase => "Add related ", :item_class => related_class) -%><br />
+                                                <%= link_to_link_related_item(:relate_to_topic_id => relate_to_topic_id, :related_class => related_class, :phrase => 'Link ', :item_class => related_class) -%>
+
                                         <% end -%>
                                 </div>
