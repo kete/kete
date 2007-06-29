@@ -67,7 +67,7 @@ class IndexPageController < ApplicationController
               @recent_topics_items = @current_basket.topics.find(:all,
                                                                  :limit => @recent_topics_limit,
                                                                  :conditions => ['id != ?', @topic],
-                                                                 :order => 'created_at')
+                                                                 :order => 'created_at desc')
             end
           end
 
