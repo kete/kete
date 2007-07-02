@@ -56,6 +56,9 @@ class IndexPageController < ApplicationController
           # prepare blog list of most recent topics
           # replace limit with param from basket
           @recent_topics_limit = @current_basket.index_page_number_of_recent_topics
+          if @recent_topics_limit.blank?
+            @recent_topics_limit = 0
+          end
           # exclude index_topic
           if @recent_topics_limit > 0
             if @current_basket == @site_basket
