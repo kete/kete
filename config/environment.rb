@@ -123,6 +123,7 @@ PRETTY_SITE_NAME = "Kete"
 SITE_NAME = "horowhenua.kete.net.nz"
 SITE_URL = "http://horowhenua.kete.net.nz/"
 NOTIFIER_EMAIL = "kete@horowhenua.kete.net.nz"
+CONTACT_EMAIL = "kete@library.org.nz"
 
 # flagging tags
 # i.e. tags for moderation that are on VERSIONS of items
@@ -136,8 +137,11 @@ LEGACY_VIDEO_PATHS_UP_TO = 0
 LEGACY_DOCUMENT_PATHS_UP_TO = 0
 
 # for default baskets for policies and help links
-ABOUT_BASKET = 2
-HELP_BASKET = 3
+ABOUT_BASKET = 10
+HELP_BASKET = 9
+
+# making the attachment_fu upload file error more helpful
+ActiveRecord::Errors.default_error_messages[:inclusion] += '.  Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.'
 
 # warnings
 DOWNLOAD_WARNING = "You are about to download a file from Kete. Kete is an open digital repository and as such we can not guarantee the integrity of any file in the repository. Please ensure that your virus scan software is operating and is configured to scan this download.

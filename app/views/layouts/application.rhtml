@@ -83,10 +83,8 @@
                         |
                            <%= link_to_unless_current(h(@help_basket.name),
                                    basket_index_url(:urlified_name => @help_basket.urlified_name)) %>
-                           <!-- <%= link_to("Help", {:controller => 'index_page',
-                                                :action => :help_file,
-                                                :urlified_name => @help_basket.urlified_name }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %> -->
-
+                        |
+                           <%= mail_to(CONTACT_EMAIL,'Contact', :encode => "javascript") %>
                 </div>
                 <h1>
                         Kete Horowhenua
