@@ -9,7 +9,7 @@ module RedHillConsulting::ForeignKeyMigrations::ActiveRecord::ConnectionAdapters
     def initialize_with_foreign_key_migrations(*args)
       initialize_without_foreign_key_migrations(*args)
       self.class.class_eval do
-        alias_method_chain :add_column, :foreign_key_migrations unless method_defined?(:add_column_with_foreign_key_migrations)
+        alias_method_chain :add_column, :foreign_key_migrations unless method_defined?(:add_column_without_foreign_key_migrations)
       end
     end
 

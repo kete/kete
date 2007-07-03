@@ -1,3 +1,7 @@
+[REVISION 20070703]
+
+[FIXED] Foreign-keys not created when using add_column.
+
 [REVISION 20070628]
 
 [FIXED] Stack level too deep in 'add_column_without_foreign_key_migrations' (Ronen Barzel).
