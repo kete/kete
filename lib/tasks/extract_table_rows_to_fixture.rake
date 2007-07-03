@@ -5,8 +5,8 @@
 # $ID: $
 namespace :db do
   desc 'Create YAML fixture from data in an existing database table and specific rows.
-  set table with TABLE=\'table_name\' set rows with
-  with ROWS as comma separated value in quotes.
+  set table with TABLE=\'table_name\'
+  set rows with ROWS as comma separated value in quotes, i.e. ROWS=\'1,2,3\'.
   Default output to test/fixtures, but you can specify another location by
   setting OUTPUT_FIXTURES_TO_PATH (no trailing /).
 
