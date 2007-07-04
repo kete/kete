@@ -111,19 +111,24 @@
                         <div id="linkToRSS"><%= @rss_tag_link -%>RSS</a></div>
                 <% end -%>
                 <div class="browse-baskets">
-                        <h4>Featured baskets:</h4>
-                        <ul>
                         <% basket_count = 1
                            standard_baskets = [1, HELP_BASKET, ABOUT_BASKET]
                         -%>
                         <% # TODO: possibly limit this and provide a "more" link to a complete listing -%>
                         <% Basket.find(:all, :conditions => ["id not in (?)", standard_baskets]).each do |basket| %>
+                               <% if basket_count == 1 -%>
+                                        <h4>Featured baskets:</h4>
+                                        <ul>
+                                <% end -%>
+
                                <%= li_with_correct_class(basket_count) +
                                    link_to_unless_current(h(basket.name),
                                    basket_index_url(:urlified_name => basket.urlified_name)) %></li>
                                 <% basket_count += 1 %>
                         <% end %>
-                        </ul>
+                        <% if basket_count > 0 -%>
+                                </ul>
+                       <% end -%>
                 </div>
                 <% if logged_in? and @basket_admin -%>
                         <div class="basket-toolbox">
