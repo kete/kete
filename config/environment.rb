@@ -131,7 +131,7 @@ CONTACT_EMAIL = "kete@library.org.nz"
 FLAGGING_TAGS = ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
 
 # handle legacy files after attachment_fu changed it's filesystem storage paths
-LEGACY_IMAGEFILE_PATHS_UP_TO = 2895
+LEGACY_IMAGEFILE_PATHS_UP_TO = 0
 LEGACY_AUDIORECORDING_PATHS_UP_TO = 0
 LEGACY_VIDEO_PATHS_UP_TO = 0
 LEGACY_DOCUMENT_PATHS_UP_TO = 0
