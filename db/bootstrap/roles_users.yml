@@ -1,6 +1,16 @@
-# assign the default user admin to the admin role on the Site basket
-default:
+# assign the default user admin to the admin role on the default baskets
+site:
   user_id: 1
   role_id: 1
+  created_at: <%= Time.now.to_s :db %>
+  updated_at: <%= Time.now.to_s :db %>
+help:
+  user_id: 1
+  role_id: 2
+  created_at: <%= Time.now.to_s :db %>
+  updated_at: <%= Time.now.to_s :db %>
+about:
+  user_id: 1
+  role_id: 3
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
