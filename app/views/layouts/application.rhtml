@@ -86,13 +86,15 @@
                         |
                            <%= mail_to(CONTACT_EMAIL,'Contact', :encode => "javascript") %>
                 </div>
+                <!-- this would be a good place for your logo -->
                 <h1>
-                        Kete Horowhenua
+                        Kete
                 </h1>
+                <!--
                 <div id="description">
-                        The stories of the district as told by its people
+                        Subtitle or description for every page
                 </div>
-
+                -->
                 <% if flash[:notice] %>
                         <!-- TODO: look up if there is a style sheet class for flash, add here -->
                         <div id="notice"><%= flash[:notice] %></div>
