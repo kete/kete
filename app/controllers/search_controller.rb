@@ -603,18 +603,19 @@ class SearchController < ApplicationController
     @done = session[:done] ? session[:done] : false
 
     if !@done
-      if @end_id.to_s != 'end'
-        @item = Module.class_eval(@zoom_class).find(:first,
-                                                    :conditions => ["id > :start_id and id <= :end_id",
-                                                                    { :start_id => @last_id,
-                                                                      :end_id => @end_id }],
-                                                    :order => 'id')
-      else
-        @item = Module.class_eval(@zoom_class).find(:first,
-                                                    :conditions => ["id > :start_id",
-                                                                    { :start_id => @last_id }],
-                                                    :order => 'id')
+      clause = "id > :start_id"
+      clause_values = { :start_id => @last_id }
+
+      if @last_id == @start_id
+        clause = "id = :start_id"
+      elsif @end_id.to_s != 'end'
+        clause += " and id <= :end_id"
+        clause_values[:end_id] = @end_id
       end
+
+      @item = Module.class_eval(@zoom_class).find(:first,
+                                                  :conditions => [clause, clause_values],
+                                                  :order => 'id')
 
       if @item.nil?
         @done = true
