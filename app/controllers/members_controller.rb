@@ -89,7 +89,7 @@ class MembersController < ApplicationController
     @member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member','Basket', @current_basket)
     if @member_role.nil?
       # no members
-      @members = User.paginate_by_id(0)
+      @members = User.paginate_by_id(0, :page => 1)
     else
       @members = User.paginate(:joins => "as u inner join roles_users as ru on u.id = ru.user_id",
                                :conditions => ["ru.role_id = ?", @member_role.id],
