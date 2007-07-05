@@ -585,6 +585,7 @@ class SearchController < ApplicationController
       # start from scratch
       session[:last] = nil
       session[:done] = false
+      session[:record_count] = 0
 
       rebuild_zoom_item
     end
@@ -606,7 +607,8 @@ class SearchController < ApplicationController
       clause = "id > :start_id"
       clause_values = { :start_id => @last_id }
 
-      if @last_id == @start_id
+      # if it's the first record, just grab it
+      if @last_id == @start_id and session[:record_count] == 0
         clause = "id = :start_id"
       elsif @end_id.to_s != 'end'
         clause += " and id <= :end_id"
@@ -631,6 +633,7 @@ class SearchController < ApplicationController
       dest.close
 
       session[:done] = @done
+      session[:record_count] += 1
 
     else
       @result_message = 'Done'
