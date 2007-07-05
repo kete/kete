@@ -712,10 +712,10 @@ class SearchController < ApplicationController
   def zoom_update_and_test(item,zoom_db)
     record_count = 0
     item_class = item.class.name
+    query = "@attr 1=12 @and #{item_class} #{item.id} "
 
     if !session[:skip_existing].nil? and session[:skip_existing] == true
       # test if it's in there first
-      query = "@attr 1=12 @and #{item_class} #{item.id} "
       this_result_set = Module.class_eval(item_class).process_query(:zoom_db => zoom_db,
                                                                     :query => query)
 
