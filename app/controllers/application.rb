@@ -435,8 +435,9 @@ class ApplicationController < ActionController::Base
 
   # http://wiki.rubyonrails.com/rails/pages/HowtoConfigureTheErrorPageForYourRailsApp
   def rescue_action_in_public(exception)
-    render(:file => "#{RAILS_ROOT}/public/404.inc", :layout => true)
+    render(:file => "#{RAILS_ROOT}/public/404.html", :layout => true)
   end
+
   def local_request?
     false
   end
