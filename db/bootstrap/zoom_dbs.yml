@@ -3,7 +3,7 @@ zoom_dbs_001:
   updated_at: <%= Time.now.to_s :db %>
   zoom_user: kete
   database_name: public
-  port: "9999"
+  port: "9913"
   id: "1"
   description: Where we store our publicly searchable records (about topics, images, videos, etc.).
   zoom_password: k3t3r0ck5
@@ -13,7 +13,7 @@ zoom_dbs_002:
   updated_at: <%= Time.now.to_s :db %>
   zoom_user: kete
   database_name: private
-  port: "9900"
+  port: "9912"
   id: "2"
   description: Where we store records that are only searchable to privileged Kete users (about topics, images, video, etc.).
   zoom_password: k3t3r0ck5
