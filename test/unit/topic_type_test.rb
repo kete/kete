@@ -9,17 +9,18 @@ class TopicTypeTest < Test::Unit::TestCase
   fixtures :extended_fields
   fixtures :topic_type_to_field_mappings
 
-  NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy'} # e.g. {:name => 'Test TopicType', :description => 'Dummy'}
+  NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy', :parent_id => 1}
   REQ_ATTR_NAMES       = %w(name description) # name of fields that must be present, e.g. %(name description)
   DUPLICATE_ATTR_NAMES = %w(name) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup
     # Retrieve fixtures via their name
-    # @first = topic_types(:first)
+    @top_level_type = topic_types(:top_level_type)
     @person_type = topic_types(:person)
     @place_type = topic_types(:place)
-    @name_field = extended_fields(:name)
-    @capacity_field = extended_fields(:capacity)
+    @name_field = extended_fields(:extended_fields_006)
+    @city_field = extended_fields(:extended_fields_004)
+    @capacity_field = extended_fields(:extended_fields_007)
   end
 
   def test_raw_validation
@@ -67,8 +68,8 @@ class TopicTypeTest < Test::Unit::TestCase
 
   # add a new field to the form, make sure that position and required are set correctly for defaults
   def test_straight_add_field_has_correct_defaults
-    field = @person_type.topic_type_to_field_mappings.create(:extended_field_id => extended_fields(:city).id)
-    assert_equal extended_fields(:city).id, field.extended_field_id
+    field = @person_type.topic_type_to_field_mappings.create(:extended_field_id => @city_field.id)
+    assert_equal @city_field.id, field.extended_field_id
     assert_equal @person_type.topic_type_to_field_mappings.size, field.position
     assert !field.required?, "The default for required in topic_type_to_field_mappings should be false or nil."
   end
@@ -81,7 +82,7 @@ class TopicTypeTest < Test::Unit::TestCase
     assert_equal should_be_empty_list.size, 0, "After deleting a topic_type, it's associated form fields (mappings) should be deleted, too."
   end
 
-  ## the has_many :through association extensions
+  ### the has_many :through association extensions
 
   # form_fields
   # add a new field to the form using the extension, make sure that position and required are set correctly for defaults
@@ -155,4 +156,3 @@ class TopicTypeTest < Test::Unit::TestCase
     end
   end
 end
-

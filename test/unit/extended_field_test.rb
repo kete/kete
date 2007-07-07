@@ -22,7 +22,7 @@ class ExtendedFieldTest < Test::Unit::TestCase
 
   def test_unique_name
     extended_field = ExtendedField.new(:name       => extended_fields(:first_names).name,
-                          :description => "yyy")
+                                       :description => "yyy")
     assert !extended_field.save
     assert_equal ActiveRecord::Errors.default_error_messages[:taken], extended_field.errors.on(:name)
   end
