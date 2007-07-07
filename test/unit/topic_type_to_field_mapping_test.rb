@@ -4,7 +4,7 @@ class TopicTypeToFieldMappingTest < Test::Unit::TestCase
   # since this is a join model, we need to load test data
   # for the models it joins
   fixtures :topic_types
-  fixtures :topic_type_fields
+  fixtures :extended_fields
 
   fixtures :topic_type_to_field_mappings
 
@@ -16,8 +16,9 @@ class TopicTypeToFieldMappingTest < Test::Unit::TestCase
   def setup
     @person_type = topic_types(:person)
     @place_type = topic_types(:place)
-    @name_field = topic_type_fields(:name)
-    @capacity_field = topic_type_fields(:capacity)
+    @name_field = extended_fields(:extended_fields_006)
+    @city_field = extended_fields(:extended_fields_004)
+    @capacity_field = extended_fields(:extended_fields_007)
   end
 
   ## not much in this model yet, but lets test that acts_as_list is working
@@ -25,7 +26,7 @@ class TopicTypeToFieldMappingTest < Test::Unit::TestCase
   # test it shouldn't be possible to have a null position
   def test_null_position
     topic_type_to_field_mapping = TopicTypeToFieldMapping.new(:topic_type_id => @place_type.id,
-                                                              :topic_type_field_id => @capacity_field.id)
+                                                              :extended_field_id => @capacity_field.id)
     assert topic_type_to_field_mapping.save
     assert topic_type_to_field_mapping.position
   end
