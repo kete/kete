@@ -20,7 +20,9 @@ class ExtendedField < ActiveRecord::Base
 
   # TODO: add validation that prevents adding xsi_type without xml_element_name
 
-  # TODO: add validation that prevents the generic topic fields from being re-added
+  # don't allow topic or content base attributes: title, description
+  invalid_label_names = TopicType.column_names + ContentType.column_names
+  validates_exclusion_of :label, :in => invalid_label_names, :message => ": labels of " + invalid_label_names.join(", ") + " aren't allowed because they already used be default"
 
   # TODO: globalize stuff, uncomment later
   # translates :label, :description

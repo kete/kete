@@ -6,32 +6,70 @@ class ExtendedFieldTest < Test::Unit::TestCase
   # The ExtendedField model contains many things that
   # need to be tested using the join model TopicTypeToFieldMapping
   # and TopicType, so we load their fixtures here
+  # also ContentType
   fixtures :topic_types
+  fixtures :content_types
   fixtures :topic_type_to_field_mappings
+  fixtures :content_type_to_field_mappings
 
   # Replace this with your real tests.
   def test_truth
     assert true
   end
 
-  def test_invalid_with_empty_name
+  def test_invalid_with_empty_label
     extended_field = ExtendedField.new
     assert !extended_field.valid?
-    assert extended_field.errors.invalid?(:name)
+    assert extended_field.errors.invalid?(:label)
   end
 
-  def test_unique_name
-    extended_field = ExtendedField.new(:name       => extended_fields(:first_names).name,
+  def test_unique_label
+    extended_field = ExtendedField.new(:label => extended_fields(:extended_fields_001).label,
                                        :description => "yyy")
     assert !extended_field.save
-    assert_equal ActiveRecord::Errors.default_error_messages[:taken], extended_field.errors.on(:name)
+    assert_equal ActiveRecord::Errors.default_error_messages[:taken], extended_field.errors.on(:label)
+  end
+
+  # format of label - can't have special characters
+  def test_format_of_label_no_special_characters
+    special_chars = ["\'", "\"", "\\", "/", "&", "?", "<", ">"]
+
+    special_chars.each do |sp|
+      extended_field = ExtendedField.new(:label => sp,
+                                         :description => "yyy")
+      assert !extended_field.valid?
+      assert extended_field.errors.invalid?(:label)
+    end
+  end
+
+  # format of label - don't allow labels that are the same as defined columns for topic_type or content_type
+  def test_format_of_label_no_reserved_labels
+  invalid_label_names = TopicType.column_names + ContentType.column_names
+
+    invalid_label_names.uniq.each do |invalid_label|
+      extended_field = ExtendedField.new(:label => invalid_label,
+                                         :description => "yyy")
+      assert !extended_field.valid?
+      assert extended_field.errors.invalid?(:label)
+    end
+  end
+
+  # format of xml_element_name
+  def test_format_of_xml_element_name_no_spaces
+    extended_field = ExtendedField.new(:label => 'some field',
+                                       :xml_element_name => 'some element name',
+                                       :description => "yyy")
+    assert !extended_field.valid?
+    assert extended_field.errors.invalid?(:xml_element_name)
   end
 
   def setup
     @person_type = topic_types(:person)
     @place_type = topic_types(:place)
-    @name_field = extended_fields(:name)
-    @capacity_field = extended_fields(:capacity)
+    @user_type = content_types(:content_types_001)
+    @name_field = extended_fields(:extended_fields_006)
+    @city_field = extended_fields(:extended_fields_004)
+    @capacity_field = extended_fields(:extended_fields_007)
   end
 
   ### now for our joins
@@ -58,11 +96,20 @@ class ExtendedFieldTest < Test::Unit::TestCase
   # skipping testing of the association topic_type_forms, since it doesn't have any extensions and it isn't currently in use
 
   # should never return a field that has already been mapped to a certain topic_type
-  def test_find_available_fields
-    ExtendedField.find_available_fields(@person_type).each do |field|
+  def test_find_available_fields_topic_type
+    ExtendedField.find_available_fields(@person_type,'TopicType').each do |field|
       fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
-                                              {:extended_field_id => field.id, :topic_type_id => @person_type.id }]
+                                                             {:extended_field_id => field.id, :topic_type_id => @person_type.id }]
       assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this topic_type."
+    end
+  end
+
+  # should never return a field that has already been mapped to a certain content_type
+  def test_find_available_fields_content_type
+    ExtendedField.find_available_fields(@user_type,'ContentType').each do |field|
+      fcount = TopicTypeToFieldMapping.count :conditions => ["extended_field_id = :extended_field_id and topic_type_id = :topic_type_id",
+                                                             {:extended_field_id => field.id, :topic_type_id => @user_type.id }]
+      assert_equal fcount, 0, "find_available_fields list is returning a field that has already been mapped to this content_type."
     end
   end
 
@@ -76,5 +123,4 @@ class ExtendedFieldTest < Test::Unit::TestCase
     test_value = @name_field.required_checkbox
     assert_equal test_value, 0, "required_checkbox should always return 0 as it's starting value"
   end
-
 end
