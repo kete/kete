@@ -57,13 +57,13 @@ class User < ActiveRecord::Base
   attr_accessor :agree_to_terms
 
   validates_presence_of     :login, :email
-  validates_presence_of     :agree_to_terms,             :if => :terms_required?
-  validates_presence_of     :security_code,              :if => :security_required?
+  validates_presence_of     :agree_to_terms,             :if => :new_record?
+  validates_presence_of     :security_code,              :if => :new_record?
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
-  validates_confirmation_of :security_code,              :if => :security_required?
+  validates_confirmation_of :security_code,              :if => :new_record?
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
@@ -207,7 +207,7 @@ class User < ActiveRecord::Base
 
   # supporting activation
   def make_activation_code
-    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by { rand}.join )
+    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
   end
 
   # supporting password reset
@@ -224,14 +224,6 @@ class User < ActiveRecord::Base
 
   def password_required?
     crypted_password.blank? || !password.blank?
-  end
-
-   def terms_required?
-    self.id.nil?
-  end
-
-   def security_required?
-    self.id.nil?
   end
 
 end

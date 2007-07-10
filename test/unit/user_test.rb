@@ -1,5 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
+### Walter McGinnis, 2007-07-10
+# TODO: works, but lacks tests for:
+# include ExtendedContent
+# contribution associations
+
 class UserTest < Test::Unit::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead.
   # Then, you can remove it from this and the functional test.
@@ -68,8 +73,15 @@ class UserTest < Test::Unit::TestCase
     assert_nil users(:quentin).remember_token
   end
 
+  def test_should_make_activation_code
+    user = create_user
+    assert_not_nil user.activation_code
+  end
+
   protected
     def create_user(options = {})
-      User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
+      # Walter McGinnis, 2007-07-10
+      # adding terms agreement and capcha vars
+      User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire', :agree_to_terms => true, :security_code => 'test', :security_code_confirmation => 'test' }.merge(options))
     end
 end
