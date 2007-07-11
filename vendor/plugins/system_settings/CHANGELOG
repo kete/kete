@@ -1,0 +1,35 @@
+[REVISION 20061013]
+
+[NEW] install.rb informs user of missing dependencies.
+
+[REVISION 20060909]
+
+[NEW] Dependency on RedHill on Rails Core.
+
+[CHANGED] Removed dependency on defunct Schema Defining.
+
+[REVISION 20060904]
+
+[CHANGED] Migration script generated with a column limit for name to satisfy most databases. If you're using a database such as PostgreSQL--that supports unbounded text fields with no performance penalties--and wish to have the previous behaviour, you can still edit the generated file and change it manually.
+
+[REVISION 20060903]
+
+[CHANGED] Migration script generator determines pluralisation at generation time.
+
+[REVISION 20060902]
+
+[CHANGED] The default generated migration script name is now create_system_settings.rb
+
+[FIXED] Correctly handle pluralisation of the table name via Inflector.
+
+[REVISION 20060802]
+
+[CHANGED] Removed validates_uniqueness_of :name. Install the schema_validations plugin instead.
+
+[REVISION 20060717]
+
+[CHANGED] Removed validates_presence_of :value. Install the schema_validations plugin instead.
+
+[REVISION 20060703]
+
+[NEW] Initial version.

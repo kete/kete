@@ -1,0 +1,45 @@
+= System Settings
+
+System Settings is a plugin that provides a convenient way to store and
+retrieve system configuration settings in the database. The plugin provides a
+single model +SystemSetting+ with two properties: +name+; and +value+. Names
+must be unique whereas values have no such restriction.
+
+To create and retrieve system settings, the usual active record operations can
+be used:
+
+  SystemSetting.create(:name => :environment, :value => 'production')
+  SystemSetting.find_by_name(:environment)    # 'production'
+  SystemSetting[:environment]                 # 'production'
+
+System Settings requires the creation of a single table. You may choose to
+perform this step manually, or use the generator provided. To use the
+generator, run:
+
+  ./script/generate system_settings_migration
+
+This will generate an appropriately numbered migration script named
+<code>NNN_create_system_settings.rb</code> in the <code>db/migrate</code>
+directory. The next time you run rake migrate, the table will automatically be
+created for you.
+
+If you would prefer a different name for the script, simply pass the name as
+an argument. For example:
+
+  ./script/generate system_settings_migration create_the_system_settings_table
+  
+The plugin fully supports and understands the following active-record
+configuration properties:
+
+* <code>config.active_record.pluralize_table_names</code>
+* <code>config.active_record.table_name_prefix</code>
+* <code>config.active_record.table_name_suffix</code>
+
+=== Dependencies
+
+* Schema Validations (schema_validations)--unless you choose to implement the functionality yourself.
+
+=== License
+
+This plugin is copyright 2006 by RedHill Consulting, Pty. Ltd. and is released
+under the MIT license.

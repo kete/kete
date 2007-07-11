@@ -1,0 +1,1 @@
+puts "WARNING: You may also need to install schema_validations unless you choose to implement the functionality yourself" unless File.exists?(File.join(File.dirname(__FILE__), "..", "schema_validations"))
