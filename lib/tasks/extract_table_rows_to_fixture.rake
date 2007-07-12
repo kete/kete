@@ -7,6 +7,7 @@ namespace :db do
   desc 'Create YAML fixture from data in an existing database table and specific rows.
   set table with TABLE=\'table_name\'
   set rows with ROWS as comma separated value in quotes, i.e. ROWS=\'1,2,3\'.
+  or you can set rows as all, i.e. ROWS=\'all\'.
   Default output to test/fixtures, but you can specify another location by
   setting OUTPUT_FIXTURES_TO_PATH (no trailing /).
 
@@ -15,7 +16,11 @@ namespace :db do
   # modified to dump to either db/bootstrap or test/fixtures
   task :extract_table_rows_to_fixture => :environment do
     table_name = ENV['TABLE']
-    sql  = "SELECT * FROM #{table_name} where id in (#{ENV['ROWS']})"
+    rows = ENV['ROWS']
+    sql  = "SELECT * FROM #{table_name} "
+    if rows != 'all'
+      sql += "where id in (#{rows})"
+    end
     ActiveRecord::Base.establish_connection
     i = "000"
     base_path = ENV['OUTPUT_FIXTURES_TO_PATH']
