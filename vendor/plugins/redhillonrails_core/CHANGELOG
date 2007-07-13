@@ -1,3 +1,7 @@
+[REVISION 20070707]
+
+[NEW] Make the table name in table definition accessible.
+
 [REVISION 20070529]
 
 [FIXED] Undefined constant errors when patching connection adapters. Rails now only loads the connection adapter for the specified database (it used to load them all).

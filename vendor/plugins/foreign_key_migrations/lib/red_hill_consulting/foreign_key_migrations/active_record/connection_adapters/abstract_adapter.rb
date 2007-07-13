@@ -1,8 +1,16 @@
 module RedHillConsulting::ForeignKeyMigrations::ActiveRecord::ConnectionAdapters
   module AbstractAdapter
     def self.included(base)
+      base.extend(ClassMethods)
       base.class_eval do
         alias_method_chain :initialize, :foreign_key_migrations
+      end
+    end
+    
+    module ClassMethods
+      def inherited(child)
+        blammo
+        super
       end
     end
 
@@ -15,7 +23,7 @@ module RedHillConsulting::ForeignKeyMigrations::ActiveRecord::ConnectionAdapters
 
     def add_column_with_foreign_key_migrations(table_name, column_name, type, options = {})
       add_column_without_foreign_key_migrations(table_name, column_name, type, options)
-      references_table_name = ActiveRecord::Base.references_table_name(column_name, options)
+      references_table_name = ActiveRecord::Base.references_table_name(table_name, column_name, options)
       add_foreign_key(table_name, column_name, references_table_name, :id, options) if references_table_name
     end
   end

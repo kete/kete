@@ -2,6 +2,7 @@ module RedHillConsulting::Core::ActiveRecord::ConnectionAdapters
   module TableDefinition
     def self.included(base)
       base.class_eval do
+        attr_accessor :name
         alias_method_chain :initialize, :redhillonrails_core
         alias_method_chain :to_sql, :redhillonrails_core
       end

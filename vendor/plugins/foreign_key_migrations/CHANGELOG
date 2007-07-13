@@ -1,3 +1,7 @@
+[REVISION 20070707]
+
+[NEW] Support acts_as_tree convention: if a column is named parent_id it will be treated as a circular reference to the table in which it is defined.
+
 [REVISION 20070703]
 
 [FIXED] Foreign-keys not created when using add_column.

@@ -8,7 +8,7 @@ module RedHillConsulting::ForeignKeyMigrations::ActiveRecord::ConnectionAdapters
 
     def column_with_foreign_key_migrations(name, type, options = {})
       column_without_foreign_key_migrations(name, type, options)
-      references_table_name = ActiveRecord::Base.references_table_name(name, options)
+      references_table_name = ActiveRecord::Base.references_table_name(self.name, name, options)
       foreign_key(name, references_table_name, :id, options) if references_table_name
       self
     end

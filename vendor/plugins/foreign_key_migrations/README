@@ -46,6 +46,9 @@ If your database supports it (for example PostgreSQL) you can also mark the cons
     ...
   end
 
+By convention, if a column is named +parent_id+ it will be treated as a circular reference to
+the table in which it is defined.
+
 The plugin fully supports and understands the following active-record
 configuration properties:
 
