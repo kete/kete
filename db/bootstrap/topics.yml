@@ -150,7 +150,7 @@ topics_013:
   raw_tag_list: ""
   id: "13"
   version: "1"
-  description: "<p>This site is based on the Kete software.  Kete is a knowledge basket of images, audio, video and documents which are collected and catalogued by the community <br />&nbsp;</p> <h2>Introduction</h2> <p>You have successfully installed Kete.</p>"
+  description: "<p>This site is based on the Kete software.  Kete is a knowledge basket of topics, images, audio, video, web links, documents, and discussion which are collected and catalogued by the community.<br />&nbsp;</p> <h2>Introduction</h2> <p>You have successfully installed and configured Kete. This is a good time to further customise it to suit your needs.</p><p>Kete has lots of options which may seem daunting when you get started.  Don't worry, you can customise a little or a lot.  You can also easily change things later.  Feel free to change your Kete incrementally."
   basket_id: "1"
   topic_type_id: "1"
   index_for_basket_id: "1"

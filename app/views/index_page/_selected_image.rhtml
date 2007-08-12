@@ -6,3 +6,31 @@
                 :controller => 'images',
                 :id => selected_still_image
    -%></p>
+
+<p>Slideshow:
+
+<%= link_to_remote ("Previous", :update => 'selected-image-display',
+                                :url => { :action => 'selected_image',
+                                          :show_previous => true },
+                                :href => url_for(:action => 'index',
+                                                 :show_previous => true)) -%>
+
+|
+<% if params[:pause].nil? or params[:pause] == false -%>
+        <%= link_to_remote ("Pause", :update => 'selected-image-display',
+                                     :url => { :action => 'selected_image',
+                                               :pause => true },
+                                     :href => url_for(:action => 'index',
+                                                      :pause => true)) -%>
+<% else -%>
+        <%= link_to_remote ("Play", :update => 'selected-image-display',
+                                    :url => { :action => 'selected_image',
+                                              :pause => false },
+                                    :href => url_for(:action => 'index',
+                                                     :pause => false)) -%>
+<% end -%>
+
+|
+<%= link_to_remote("Next", :update => 'selected-image-display',
+                           :url => { :action => 'selected_image' },
+                           :href => url_for(:action => 'index')) -%>

@@ -14,8 +14,6 @@ ActionController::Routing::Routes.draw do |map|
   # map.connect '', :controller => "welcome"
 
   # Walter McGinnis, 2007-01-08
-  # adding route for basket.urlified_name param
-  # may also need route without format?
   # TODO: DRY this up
   map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
   map.basket ':urlified_name/:controller/:action/:id'
@@ -61,10 +59,40 @@ ActionController::Routing::Routes.draw do |map|
 
   map.basket_search_empty ':urlified_name/search/:controller_name_for_zoom_class/for', :controller => "search", :action => 'for', :search_terms => nil
 
+
+  # will default to site basket (special case of basket)
+  # route site to search with DEFAULT_SEARCH_CLASS
+  # :all is true by default if there are no search_terms
+  map.connect '/search', :controller => "search"
+
+  # Walter McGinnis, 2007-07-13
+  # if the site isn't configured, we don't setup our full routes
+  begin
+    current_migration = (ActiveRecord::Base.connection.select_one("SELECT version FROM schema_info") || {"version" => 0})["version"].to_i
+  rescue
+    current_migration = 0
+  end
+
+  if Object.const_defined?('SystemSetting') and  current_migration > 40 and SystemSetting.find(:all).size > 0
+    is_configured = eval(SystemSetting.find(1).value)
+  else
+    is_configured = false
+  end
+  if is_configured
+    # comment this line and uncomment the next after initial migration
+    site_basket = Basket.find(1)
+    site_urlified_name = !site_basket.nil? ? site_basket.urlified_name : 'site'
+    map.connect '', :controller => "index_page", :urlified_name => site_urlified_name
+  else
+    # not configured, redirect to homepage which is configuration page
+    map.connect '', :controller => "configure", :urlified_name => 'site'
+  end
+
   # Walter McGinnis, 2007-04-03
   # active_scaffold routes
   map.resources :extended_fields, :active_scaffold => true
   map.resources :zoom_dbs, :active_scaffold => true
+  map.resources :system_settings, :active_scaffold => true
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
@@ -76,17 +104,8 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default route as the lowest priority.
   # map.connect ':controller/:action/:id'
 
-  # will default to site basket (special case of basket)
-  # route site to search with DEFAULT_SEARCH_CLASS
-  # :all is true by default if there are no search_terms
-  map.connect '/search', :controller => "search"
   # to make sure the rails process is answering
   map.connect 'uptime.txt', :controller => "index_page", :action => 'uptime'
-  # comment this line and uncomment the next after initial migration
-  site_urlified_name = 'site'
-  # site_basket = Basket.find(1)
-  # site_urlified_name = site_basket.urlified_name
-  map.connect '', :controller => "index_page", :urlified_name => site_urlified_name
 end
 
 # route scratch

@@ -2,7 +2,7 @@ class ImportersController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, :only => [:list, :index]
 
-  permit "site_admin or admin of :current_basket"
+  permit "site_admin or admin of :current_basket or tech_admin of :site"
 
   # fields to add
   # type of import which equates to an action

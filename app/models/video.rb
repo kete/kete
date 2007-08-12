@@ -13,13 +13,9 @@ class Video < ActiveRecord::Base
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
   has_attachment :storage => :file_system, :file_system_path => "public/video",
-  :content_type => ['application/x-shockwave-flash', 'video/mpeg',
-                    'video/quicktime', 'video/x-msvideo', 'video/avi',
-                    'video/x-quicktime', 'application/x-director',
-                    'image/mov',
-                    'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2',
-                    'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx',
-                    'application/x-dvi'], :processor => :none, :max_size => 500.megabyte
+  :content_type => VIDEO_CONTENT_TYPES, :processor => :none,
+  :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+
   validates_as_attachment
 
   # overriding full_filename to handle our customizations

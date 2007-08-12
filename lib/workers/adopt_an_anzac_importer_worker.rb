@@ -248,7 +248,7 @@ class AdoptAnAnzacImporterWorker < BackgrounDRb::Worker::RailsBase
               # first element is empty at this point
               # but this pulls out the existing image tag
               # so we can replace it
-              parts_of_description = new_record.description.split(SERVICEMAN_DESC_TEMPLATE)
+              parts_of_description = new_record.description.split(DESCRIPTION_TEMPLATE)
 
               new_record.description = "<p><img src=\"#{image_file_to_insert_in_description.public_filename}\" border=\"1\" alt=\"Image of #{title}\" title=\"Image of #{title}\" hspace=\"20\" vspace=\"2\" width=\"#{image_file_to_insert_in_description.width.to_s}\" height=\"#{image_file_to_insert_in_description.height.to_s}\" align=\"left\" /></p>" + parts_of_description[1]
 

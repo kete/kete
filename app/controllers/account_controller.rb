@@ -162,7 +162,11 @@ class AccountController < ApplicationController
         flash[:notice] = current_user.save ?
         "Password changed" :
           "Password not changed"
-        redirect_to :action => 'show'
+        if IS_CONFIGURED
+          redirect_to :action => 'show'
+        else
+          redirect_to '/'
+        end
       else
         flash[:notice] = "Password mismatch"
         @old_password = params[:old_password]

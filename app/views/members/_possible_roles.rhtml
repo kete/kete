@@ -3,8 +3,13 @@
                 <% tool_count = 1 -%>
                 <% possible_roles.each do |possible_role_key,possible_role| -%>
                         <% if role_key != possible_role_key -%>
-                                <%= li_with_correct_class(tool_count) + link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key ) %></li>
-                                <% tool_count += 1 -%>
+                                <% if possible_role_key != 'tech_admin' or role_key ==  'site_admin' -%>
+                                <% if role_key ==  'site_admin' and possible_role_key == 'tech_admin' -%>
+                                        <% possible_role = '+ ' + possible_role -%>
+                                <% end -%>
+                                        <%= li_with_correct_class(tool_count) + link_to( possible_role, :action => 'change_membership_type', :id => user, :role => possible_role_key ) %></li>
+                                        <% tool_count += 1 -%>
+                                <% end -%>
                         <% end -%>
                 <% end -%>
                 </ul>

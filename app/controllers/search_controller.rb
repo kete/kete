@@ -583,9 +583,9 @@ class SearchController < ApplicationController
     end
   end
 
-  # this probably won't scale, only use for demo right now
+  # this probably may not scale
   def rebuild_zoom_index
-    permit "site_admin" do
+    permit "tech_admin" do
       session[:zoom_class] = !params[:zoom_class].nil? ? params[:zoom_class] : 'Topic'
       session[:start_id] = !params[:start].nil? ? params[:start] : 1
       session[:end_id] = !params[:end].nil? ? params[:end] : 'end'

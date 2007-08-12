@@ -75,6 +75,7 @@ class MembersController < ApplicationController
     @admin_actions = Hash.new
 
     if @current_basket == @site_basket and site_admin?
+      @possible_roles['tech_admin'] = 'Tech Admin'
       @possible_roles['site_admin'] = 'Site Admin'
       @admin_actions['become_user'] = 'Login as user'
       @admin_actions['destroy'] = 'Delete'
@@ -132,17 +133,37 @@ class MembersController < ApplicationController
     end
 
     if can_change == true
+
       # bit to do the change
-      @current_basket.accepted_roles.each do |role|
-        @user.has_no_role(role.name,@current_basket)
+      # tech admin is essentially the only allowed duplicate role
+      # you have to be a site_admin to be eligable to be tech_admin
+      # because it's sensitive, we don't handle tech_admin rights
+      # in the normal way
+      clear_roles = true
+      if membership_type == 'tech_admin'
+        if @current_basket == @site_basket and @user.has_role?('site_admin')
+          clear_roles = false
+          flash[:notice] = 'User has been made tech admin.'
+        else
+          flash[:notice] = 'User is not eligable to be tech admin. The need to be a site admin, too.'
+          can_change = false
+        end
       end
-      @user.has_role(membership_type,@current_basket)
-      flash[:notice] = 'User successfully changed role.'
-      redirect_to :action => 'list'
+      if can_change
+        if clear_roles
+          @current_basket.accepted_roles.each do |role|
+            @user.has_no_role(role.name,@current_basket)
+          end
+        end
+        @user.has_role(membership_type,@current_basket)
+        if flash[:notice].blank?
+          flash[:notice] = 'User successfully changed role.'
+        end
+      end
     else
-      flash[:notice] = "Unable to have no site administrators"
-      redirect_to :action => 'list'
+      flash[:notice] = "Unable to have no site administrators."
     end
+    redirect_to :action => 'list'
   end
 
   # we need at least one site admin at all times

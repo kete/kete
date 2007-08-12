@@ -1,0 +1,26 @@
+<div id="<%= h(@section) -%>">
+<fieldset>
+        <% form_remote_tag :url => { :action => 'update', :section => @section } do %>
+                <% for @setting in @settings -%>
+                        <% if @setting.name != 'Is Configured' and (@advanced or !@setting.technically_advanced) -%>
+                                <%= error_messages_for :setting %>
+                                <div class="form-element">
+                                <label <% if @setting.required_to_be_configured -%>class="required" <% end -%>for="@setting"><%= h(@setting.name) -%>:</label><br />
+                                <% fields_for "setting[]" do |f| %>
+                                                <%= f.text_field :value %>
+                                                <div class="form_example">
+                                                        <%= @setting.explanation %>
+                                                </div>
+                                <% end -%>
+                                </div>
+                        <% else -%>
+                                <% fields_for "setting[]" do |f| %>
+                                        <%= f.hidden_field :value %>
+                                <% end -%>
+                        <% end -%>
+
+                <% end -%>
+                <p><%= submit_tag 'Save' %></p>
+        <% end -%>
+</fieldset>
+</div>

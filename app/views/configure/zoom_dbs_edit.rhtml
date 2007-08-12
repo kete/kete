@@ -1,0 +1,39 @@
+<div id="zoom-dbs">
+  <fieldset>
+    <% form_remote_tag :url => { :action => 'zoom_dbs_update' } do %>
+    <h4>Security:</h4>
+    <% if @kete_password.blank? -%>
+    <% # TODO: make the error message match -%>
+    <h2 class="#errorExplanation">Password is required</h2>
+    <% end -%>
+    <div class="form-element">
+      <label class="required" for="kete_password">Password:</label><br />
+      <%= text_field_tag :kete_password, @kete_password %>
+      <div class="form_example">
+        Please set a new password to connect to this Search
+        Engine.  Leaving it the default is a security risk.
+      </div>
+    </div>
+
+    <% for @zoom_db in @zoom_dbs -%>
+    <h4>Search Engine Database: <%= @zoom_db.database_name %></h4>
+    <%= error_messages_for :zoom_db %>
+      <% fields_for "zoom_db[]" do |f| %>
+      <div class="form-element">
+        <label class="required" for="@zoom_db">Port:</label><br />
+        <%= f.text_field :port %>
+        <div class="form_example">
+          Advanced: Unless you run more than one Kete site on your
+          host, it is safe to leave this as the default.
+          Otherwise, you will want to check what ports any other Search Engines
+          (Zebra servers) are already running on and change this to a
+          new port.
+        </div>
+      </div>
+
+      <% end -%>
+      <% end -%>
+    <p><%= submit_tag 'Save' %></p>
+    <% end -%>
+  </fieldset>
+</div>

@@ -118,16 +118,9 @@
                                                    :locals => { :selected_image_file => @selected_image_file,
                                                    :selected_still_image => @selected_still_image } %>
                                         </div>
-                                        <% if @current_basket.index_page_image_as == 'random' -%>
-                                                <p>Slideshow:
-                                                        <%= link_to_remote("Next", :update => 'selected-image-display',
-                                                                                   :url => { :action => 'selected_image' },
-                                                                                   :href => url_for(:action => 'index')) -%>
-                                                </p>
-                                                <%= periodically_call_remote :update => 'selected-image-display',
-                                                                             :url => { :action => 'selected_image' },
-                                                                             :frequency => 15 %>
-                                         <% end -%>
+                                        <%= periodically_call_remote :update => 'selected-image-display',
+                                                                     :url => { :action => 'selected_image' },
+                                                                     :frequency => 15 %>
                                 <% end -%>
 <% cache({:part => 'tags'}) do -%>
                                 <% if @tag_counts_array.size > 0 -%>

@@ -17,8 +17,7 @@
 
                                 <p><%= @document.description %></p>
                                 <p>Filename: <%= @document.filename %>
-                                   (<%= link_to 'view', @document.public_filename,
-                                                        :confirm => DOWNLOAD_WARNING -%>)
+                                   (<%= link_to_orginal_of @document, 'view' -%>)
                                 </p>
                                 <p>Size: <%= number_to_human_size(@document.size) %></p>
                                 <p>Document type: <%= @document.content_type %></p>

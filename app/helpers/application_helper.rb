@@ -353,38 +353,41 @@ module ApplicationHelper
   end
 
   def flagging_links_for(item, first = false, controller = nil)
-    if first
-      html_string = "                                         <li class=\"first\">Flag as:\n"
-    else
-      html_string = "                                         <li>Flag as:\n"
-    end
-    html_string += "<ul>\n"
-    flag_count = 1
-    FLAGGING_TAGS.each do |flag|
-      if flag_count == 1
-        html_string += "<li class=\"first\">"
+    html_string = String.new
+    if FLAGGING_TAGS.size > 0
+      if first
+        html_string = "                                         <li class=\"first\">Flag as:\n"
       else
-        html_string += "<li>"
+        html_string = "                                         <li>Flag as:\n"
       end
-      if !controller.nil?
-        html_string += link_to(flag,
-                               { :controller => controller,
-                                 :action => 'flag_form',
-                                 :flag => flag,
-                                 :id => item },
-                               :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
-      else
-        html_string += link_to(flag,
-                               { :action => 'flag_form',
-                                 :flag => flag,
-                                 :id => item },
-                               :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
-      end
+      html_string += "<ul>\n"
+      flag_count = 1
+      FLAGGING_TAGS.each do |flag|
+        if flag_count == 1
+          html_string += "<li class=\"first\">"
+        else
+          html_string += "<li>"
+        end
+        if !controller.nil?
+          html_string += link_to(flag,
+                                 { :controller => controller,
+                                   :action => 'flag_form',
+                                   :flag => flag,
+                                   :id => item },
+                                 :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
+        else
+          html_string += link_to(flag,
+                                 { :action => 'flag_form',
+                                   :flag => flag,
+                                   :id => item },
+                                 :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
+        end
 
-      flag_count += 1
-    end
-    html_string += "                                            </ul>
+        flag_count += 1
+      end
+      html_string += "                                            </ul>
                                         </li>\n"
+    end
   end
 
   def reverted?(item)
@@ -429,4 +432,13 @@ module ApplicationHelper
     end
     html_string += ">"
   end
+
+  def link_to_original_of(item, phrase)
+    if DOWNLOAD_WARNING.blank?
+      link_to phrase, item.public_filename
+    else
+      link_to phrase, item.public_filename, :confirm => DOWNLOAD_WARNING
+    end
+  end
+
 end

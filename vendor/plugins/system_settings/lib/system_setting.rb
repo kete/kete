@@ -3,6 +3,8 @@ class SystemSetting < ActiveRecord::Base
   # don't allow special characters in name
   # since will eventually make them into a constant name
   validates_format_of :name, :with => /^[^\'\"<>\&,\/\\\?]*$/, :message => ": \', \\, /, &, \", ?, <, and > characters aren't allowed"
+  validates_uniqueness_of :name
+  validates_presence_of :name, :section
 
   def self.find_by_name(name)
     super(name.to_s)
@@ -22,5 +24,12 @@ class SystemSetting < ActiveRecord::Base
 
   def to_s
     value
+  end
+
+  # we use a non-validate method, since required_to_be_configured
+  # is only really necessary in a specific context in a controller
+  def add_error_if_required
+    errors.add_to_base("This setting is required") if value.blank? and required_to_be_configured
+    return true
   end
 end

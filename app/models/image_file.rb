@@ -22,7 +22,10 @@ class ImageFile < ActiveRecord::Base
   # we use image_thumbs for our resized images
   # so we that on save for each resized version, we don't get a call to acts_as_zoom
   # :file_system_path => "public/images",
-  has_attachment :storage => :file_system, :content_type => [ 'image/tiff', :image], :thumbnails => { :small_sq => [50, 50], :small => '50', :medium => '200>', :large => '400>' }, :max_size => 500.megabyte
+  has_attachment :storage => :file_system,
+  :content_type => IMAGE_CONTENT_TYPES, :thumbnails => IMAGE_SIZES,
+  :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+
   validates_as_attachment
 
   # overriding full_filename to handle our customizations

@@ -14,3 +14,8 @@ about:
   role_id: 3
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
+tech_admin:
+  user_id: 1
+  role_id: 4
+  created_at: <%= Time.now.to_s :db %>
+  updated_at: <%= Time.now.to_s :db %>

@@ -1,3 +1,5 @@
+THIS WILL BE MAJORLY REWRITTEN SOON!!! TAKE WITH A GRAIN OF SALT
+
 zebradb/README
 
 This README describes the purpose and use of the zebradb directory.  It works in conjunction with the acts_as_zoom plugin in the Kete application.
@@ -37,8 +39,7 @@ $ zebraidx -c ../conf/zebra-private.cfg -d private commit
 $ cd ../public
 $ zebraidx -c ../conf/zebra-public.cfg -d public init
 $ zebraidx -c ../conf/zebra-public.cfg -d public commit
-$ zebraidx -c ../conf/zebra-public.cfg -d public update seed-data/kete_web_link.xml
-$ zebraidx -c ../conf/zebra-public.cfg -d public commit
+
 
 ----
 Startup Zebra:

@@ -40,6 +40,10 @@ Rails::Initializer.run do |config|
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
 
+  # Walter McGinnis, 2007-07-10
+  # TODO: what the deal with depreciated observer in edge and 2.0?
+  # ActiveRecord::Base.observers = [:user_observer]
+
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
 
@@ -69,81 +73,103 @@ ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
 
 # Include your application configuration below
 
-# Walter McGinnis (walter@katipo.co.nz), 2006-09-26
-# include Globalize # put that thing here
-# Locale.set_base_language('en-NZ') # and here :)'')
+# poached and modified to include non-gem/lib requirements
+# from http://www.depixelate.com/2006/8/9/quick-tip-ensuring-required-gems-and-libs-are-available
+# --- [ check that we have all the gems and libs we need ] ---
 
-# Walter McGinnis (walter@katipo.co.nz), 2006-12-06
-# used by the acts_as_zoom plugin
-ZoomDb.zoom_id_stub = "oai:casanova.katipo.co.nz:"
-ZoomDb.zoom_id_element_name = "identifier"
-# in case your zoom_id is in a nested element
-# separated by /'s
-# no preceding / necessary
-ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
+missing_gems = Array.new
+required_gems = %w( unicode slave daemons redcloth mime/types memcache zoom piston RMagick)
+required_gems.each do |lib|
+  begin
+    require lib
+  rescue LoadError
+    missing_gems << lib
+  end
+end
 
-DEFAULT_RECORDS_PER_PAGE = 5
-RECORDS_PER_PAGE_CHOICES = [5, 10, 20, 50]
-DEFAULT_SEARCH_CLASS = 'Topic'
+missing_software = { 'Gems' => missing_gems }
 
-# from acts_as_zoom declarations in models
+# if standard rails things like mysql aren't installed, the server won't start up
+# so they don't need to be done here
+missing_commands = Array.new
+required_commands = { 'Zebra' => 'zebrasrv', 'Memcache Daemon' => 'memcached' }
+required_commands.each do |pretty_name, command|
+  command_found = system('which ' + command)
+  if command_found.blank?
+    missing_commands << pretty_name
+  end
+end
+
+missing_software['Commands'] = missing_commands
+
+MISSING_SOFTWARE = missing_software
+
+# acts_as_zoom declarations in models
 ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document', 'Comment']
 
 # has to do with use of attachment_fu
 BASE_PRIVATE_PATH = 'private'
 
-# how many related items or topics to display
-NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE = 5
-NUMBER_OF_RELATED_IMAGES_TO_DISPLAY = 5
-DEFAULT_NUMBER_OF_MULTIPLES = 5
+# if SystemSetting model doesn't exist, set IS_CONFIGURED to falee
+begin
+  current_migration = (ActiveRecord::Base.connection.select_one("SELECT version FROM schema_info") || {"version" => 0})["version"].to_i
+rescue
+  current_migration = 0
+end
 
-# import related
-# import synonyms for non-extended fields
-TAGS_SYNONYMS = ['COLLECTION', 'PEOPLE', 'PLACE', 'CLASSES',
-                 'SUBJECTS', 'STERMS', 'PERIOD', 'EARLYDATE', 'LATEDATE',
-                 'CULTURE', 'EVENT', 'FOUND', 'MATERIAL', 'OTHERNAME',
-                 'PUBPLACE', 'NARRATOR']
-# couldn't find fields for scope and content
-DESCRIPTION_SYNONYMS = ['DESCRIP', 'NOTES', 'CUSTODIAL', 'OTHER_INFO']
+if Object.const_defined?('SystemSetting') and  current_migration > 40
+  # make each setting a global constant
+  # see reference for Module for more details about constant setting, etc.
+  SystemSetting.find(:all).each do |setting|
+    value = setting.value
+    if !value.blank? and value.match(/^([0-9\{\[]|true|false)/)
+      # Serious potential security issue, we eval user inputed value at startup
+      # for things that are recognized as boolean, integer, hash, or array
+      # by regexp above
+      # Make sure only knowledgable and AUTHORIZED people can edit System Settings
+      value = eval(setting.value)
+    end
+    Object.const_set(setting.name.upcase.gsub(/[^A-Z0-9\s_-]+/,'').gsub(/[\s-]+/,'_'), value)
+  end
 
-# html to prime the serviceman descriptions
-SERVICEMAN_DESC_TEMPLATE = "<p><img src=\"http://horowhenua.kete.net.nz/image_files/11258/Do_you_have_a_photo_image.jpg\" border=\"1\" alt=\"Do you have a photo?\" title=\"Do you have a photo?\" hspace=\"20\" vspace=\"2\" width=\"121\" height=\"189\" align=\"left\" /></p>"
+  if !Object.const_defined?('IS_CONFIGURED')
+    IS_CONFIGURED = false
+  end
+else
+  IS_CONFIGURED = false
+
+  # we have to load meaningless default values for any constant used in our models
+  # since otherwise things like migrations will fail, before we bootstrap the db
+  # these will be set up with system settings after rake db:bootstrap
+  MAXIMUM_UPLOADED_FILE_SIZE = 50.megabyte
+  IMAGE_SIZES = {:small_sq => [50, 50], :small => '50', :medium => '200>', :large => '400>'}
+  AUDIO_CONTENT_TYPES = ['audio/mpeg']
+  DOCUMENT_CONTENT_TYPES = ['text/html']
+  IMAGE_CONTENT_TYPES = [:image]
+  VIDEO_CONTENT_TYPES = ['video/mpeg']
+  SITE_URL = "kete.net.nz"
+  NOTIFIER_EMAIL = "kete@library.org.nz"
+
+end
+
+# Walter McGinnis (walter@katipo.co.nz), 2006-09-26
+# include Globalize # put that thing here
+# Locale.set_base_language('en-NZ') # and here :)'')
+
+if IS_CONFIGURED
+  # Walter McGinnis (walter@katipo.co.nz), 2006-12-06
+  # used by the acts_as_zoom plugin
+  ZoomDb.zoom_id_stub = "oai:" + SITE_NAME + ":"
+  ZoomDb.zoom_id_element_name = "identifier"
+  # in case your zoom_id is in a nested element
+  # separated by /'s
+  # no preceding / necessary
+  ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
+end
 
 # For handling pre controller errors
 # see http://wiki.rubyonrails.org/rails/pages/HandlingPreControllerErrors
 require 'error_handler_basic' # defines AC::Base#rescue_action_in_public
 
-# user related settings
-REQUIRE_ACTIVATION = false
-EXTENDED_FIELD_FOR_USER_NAME = "user_name"
-
-# for making the site look pretty
-PRETTY_SITE_NAME = "Kete"
-# mailer setup
-SITE_NAME = "horowhenua.kete.net.nz"
-SITE_URL = "http://horowhenua.kete.net.nz/"
-NOTIFIER_EMAIL = "kete@horowhenua.kete.net.nz"
-CONTACT_EMAIL = "kete@library.org.nz"
-
-# flagging tags
-# i.e. tags for moderation that are on VERSIONS of items
-# rather than on the item itself
-FLAGGING_TAGS = ['inaccurate', 'duplicate', 'inappropriate', 'entered by mistake', 'has typos']
-
-# handle legacy files after attachment_fu changed it's filesystem storage paths
-LEGACY_IMAGEFILE_PATHS_UP_TO = 0
-LEGACY_AUDIORECORDING_PATHS_UP_TO = 0
-LEGACY_VIDEO_PATHS_UP_TO = 0
-LEGACY_DOCUMENT_PATHS_UP_TO = 0
-
-# for default baskets for policies and help links
-ABOUT_BASKET = 10
-HELP_BASKET = 9
-
 # making the attachment_fu upload file error more helpful
 ActiveRecord::Errors.default_error_messages[:inclusion] += '.  Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.'
-
-# warnings
-DOWNLOAD_WARNING = "You are about to download a file from Kete. Kete is an open digital repository and as such we can not guarantee the integrity of any file in the repository. Please ensure that your virus scan software is operating and is configured to scan this download.
-
-Are you sure you want to proceed?"

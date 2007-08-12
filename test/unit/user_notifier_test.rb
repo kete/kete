@@ -1,6 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'user_notifier'
 
+### Walter McGinnis, 207-07-10
+# TODO: no real tests in here yet
+
 class UserNotifierTest < Test::Unit::TestCase
   FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures'
   CHARSET = "utf-8"

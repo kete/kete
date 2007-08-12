@@ -7,7 +7,12 @@
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title><%= h(@title) -%></title>
-  <% if params[:controller] == 'topics' || params[:controller] == 'documents' || params[:controller] == 'baskets' && params[:action] == 'pick_topic_type' || params[:action] == 'edit' || params[:action] == 'new' -%>
+
+  <% # logic for which javascript to load -%>
+  <% as_controllers = ['system_settings', 'zoom_dbs', 'extended_fields'] -%>
+  <% none_tinymce_controllers = as_controllers + ['members', 'topic_types', 'content_types'] -%>
+  <% tinymce_actions = ['new', 'edit', 'pick_topic_type'] -%>
+  <% if !none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action]) -%>
         <% # Include TinyMCE before other JS to avoid problems -%>
         <%= javascript_include_tiny_mce_if_used %>
         <%= tiny_mce if using_tiny_mce? %>
@@ -30,8 +35,10 @@
   <!--[if IE 5]><%= stylesheet_link_tag 'kete-ie5', :media => 'screen' %><![endif]-->
   <!--[if IE 6]><%= stylesheet_link_tag 'kete-ie6', :media => 'screen' %><![endif]-->
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
+  <%= stylesheet_link_tag 'redbox' %>
   <%= javascript_include_tag :defaults %>
-  <% if params[:controller] == 'zoom_dbs' || params[:controller] == 'extended_fields' -%>
+  <%= javascript_include_tag 'redbox' %>
+  <% if as_controllers.include?(params[:controller]) -%>
         <%= active_scaffold_includes %>
   <% end -%>
 
@@ -40,6 +47,7 @@
   <% end -%>
 </head>
 <body>
+<% if IS_CONFIGURED -%>
 <div id="wrapper">
         <div id="banner">
                 <!-- space for more universal top navigation elements -->
@@ -175,9 +183,13 @@
                         <%= link_to_unless_current "site members", :controller => '/members',
                                                                         :action => :list,
                                                                         :urlified_name => 'site' -%>
-                        <% if current_user.login == 'walter' -%>
+                        <% if @tech_admin -%>
                         |
                         <%= link_to_unless_current "importers", :controller => '/importers',
+                                                                        :action => :index,
+                                                                        :urlified_name => 'site' -%>
+                        |
+                        <%= link_to_unless_current "system settings", :controller => '/system_settings',
                                                                         :action => :index,
                                                                         :urlified_name => 'site' -%>
                         |
@@ -190,6 +202,26 @@
                 <% end %>
         </div>
 </div><!-- /wrapper -->
+<% else -%>
+<div id="wrapper">
+        <div id="header">
+                <h1><%= PRETTY_SITE_NAME -%></h1>
+                <% if flash[:notice] %>
+                        <!-- TODO: look up if there is a style sheet class for flash, add here -->
+                        <div id="notice"><%= flash[:notice] %></div>
+                <% end %>
 
+        </div><!-- /header -->
+        <div id="container">
+
+                        <%= @content_for_layout %>
+
+        </div><!--  /container -->
+        <div class="cleaner">&nbsp;</div>
+        <div id="footer">
+                <!--Footer-->
+        </div>
+</div><!-- /wrapper -->
+<% end -%>
 </body>
 </html>
