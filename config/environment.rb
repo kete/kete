@@ -87,7 +87,7 @@ required_libs.values.each do |lib|
   begin
     require lib
   rescue LoadError
-    missing_gems << lib
+    missing_libs << lib
   end
 end
 

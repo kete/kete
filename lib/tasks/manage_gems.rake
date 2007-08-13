@@ -17,36 +17,37 @@ namespace :manage_gems do
 
     required = YAML.load_file("#{RAILS_ROOT}/config/required_software.yml")
     required[ENV['GEMS_TO_GRAB']].keys.each do |gem_name|
-          `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}`
+      p gem_name
+      `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}`
     end
   end
 
   namespace :required do
-    ENV['GEMS_TO_GRAB'] = 'gems'
-
     desc "Install required gems"
     task :install do
+      ENV['GEMS_TO_GRAB'] = 'gems'
       ENV['GEMS_ACTION'] = 'install -y'
       Rake::Task['manage_gems:exec_action'].execute
     end
 
     desc "Update required gems"
     task :update do
+      ENV['GEMS_TO_GRAB'] = 'gems'
       Rake::Task['manage_gems:exec_action'].execute
     end
   end
 
   namespace :management do
-    ENV['GEMS_TO_GRAB'] = 'management_gems'
-
     desc "Install management gems"
     task :install do
+      ENV['GEMS_TO_GRAB'] = 'management_gems'
       ENV['GEMS_ACTION'] = 'install -y'
       Rake::Task['manage_gems:exec_action'].execute
     end
 
     desc "Update management gems"
     task :update do
+      ENV['GEMS_TO_GRAB'] = 'management_gems'
       Rake::Task['manage_gems:exec_action'].execute
     end
   end
