@@ -10,7 +10,7 @@ require 'yaml'
 
 desc "Tasks related to gems for Kete. Requires sudo privilege. See config/required_software.yml for list. Expect numerous warnings that can ignore."
 namespace :manage_gems do
-  task :exec_action => :environment do
+  task :exec_action do
     p "Requires sudo or root privileges.  You will be prompted for password if necessary."
     # default
     ENV['GEMS_ACTION'] ||= 'update'
@@ -25,13 +25,13 @@ namespace :manage_gems do
     ENV['GEMS_TO_GRAB'] = 'gems'
 
     desc "Install required gems"
-    task :install => :environment do
+    task :install do
       ENV['GEMS_ACTION'] = 'install -y'
       Rake::Task['manage_gems:exec_action'].execute
     end
 
     desc "Update required gems"
-    task :update => :environment do
+    task :update do
       Rake::Task['manage_gems:exec_action'].execute
     end
   end
@@ -40,13 +40,13 @@ namespace :manage_gems do
     ENV['GEMS_TO_GRAB'] = 'management_gems'
 
     desc "Install management gems"
-    task :install => :environment do
+    task :install do
       ENV['GEMS_ACTION'] = 'install -y'
       Rake::Task['manage_gems:exec_action'].execute
     end
 
     desc "Update management gems"
-    task :update => :environment do
+    task :update do
       Rake::Task['manage_gems:exec_action'].execute
     end
   end
