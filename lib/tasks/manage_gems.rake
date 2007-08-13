@@ -10,7 +10,7 @@ require 'yaml'
 
 desc "Tasks related to gems for Kete. Requires sudo privilege. See config/required_software.yml for list. Expect numerous warnings that can ignore."
 namespace :manage_gems do
-  p "Requires sudo or root privileges.  You will prompted for password if necessary."
+  p "Requires sudo or root privileges.  You will be prompted for password if necessary."
   # default
   ENV['GEMS_ACTION'] = 'update'
 
