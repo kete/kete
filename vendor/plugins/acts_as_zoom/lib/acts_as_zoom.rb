@@ -329,25 +329,28 @@ module ZoomMixin
 
           zoom_record = self.zoom_prepare_record
 
-          # in order to pass the record with possible " and 's
-          # we write this to a temp file
-          # this adds an assumption about where tmp is
-          # it would better to use app/tmp
-          dest = File.new('/tmp/tmp-record.xml','w+')
-          dest << zoom_record
-          dest.close
-
           # get the correct zoom database connection parameters
           zoom_db = self.zoom_choose_zoom_db
 
           # here's where we actually add/replace the record on the zoom server
           # specialUpdate will insert if no record exists, or replace if one does
-          `#{RAILS_ROOT}/vendor/plugins/acts_as_zoom/lib/zoom_ext_services_action.pl \"#{zoom_db.host}\" \"#{zoom_db.port}\" \"#{zoom_id}\" \"/tmp/tmp-record.xml\" specialUpdate \"#{zoom_db.database_name}\" \"#{zoom_db.zoom_user}\" \"#{zoom_db.zoom_password}\"`.each_line do |l|
-            logger.debug "zoom_save: #{zoom_id} : #{l}"
-          end
 
-          # erase the temp record file
-          File.delete('/tmp/tmp-record.xml')
+          # ruby-zoom extended services
+          zoom_options = { 'user' => zoom_db.zoom_user, 'password' => zoom_db.zoom_password }
+
+          c = ZOOM::Connection.new(zoom_options).connect(zoom_db.host, zoom_db.port.to_i)
+          c.database_name = zoom_db.database_name
+          p = c.package
+          p.function = 'create'
+          p.wait_action = 'waitIfPossible'
+          p.syntax = 'no syntax'
+
+          p.action = 'specialUpdate'
+          p.record = zoom_record
+          p.record_id_opaque = zoom_id
+
+          p.send('update')
+          p.send('commit')
 
           true
         end
@@ -358,24 +361,25 @@ module ZoomMixin
           # need to pass in whole record as well as zoom_id, even though it's a delete
           zoom_record = self.zoom_prepare_record
 
-          # in order to pass the record with possible " and 's
-          # we write this to a temp file
-          # this adds an assumption about where tmp is
-          # it would better to use app/tmp
-          dest = File.new('/tmp/tmp-record.xml','w+')
-          dest << zoom_record
-          dest.close
-
           # get the correct zoom database connection parameters
           zoom_db = self.zoom_choose_zoom_db
 
-          # here's where we actually delete the record on the zoom server
-          `#{RAILS_ROOT}/vendor/plugins/acts_as_zoom/lib/zoom_ext_services_action.pl \"#{zoom_db.host}\" \"#{zoom_db.port}\" \"#{zoom_id}\" \"/tmp/tmp-record.xml\" recordDelete \"#{zoom_db.database_name}\" \"#{zoom_db.zoom_user}\" \"#{zoom_db.zoom_password}\"`.each_line do |l|
-            logger.debug "zoom_destroy: #{self.class.name} : #{self.id} : #{l}"
-          end
+          # testing ruby-zoom extended services
+          zoom_options = { 'user' => zoom_db.zoom_user, 'password' => zoom_db.zoom_password }
 
-          # erase the temp record file
-          File.delete('/tmp/tmp-record.xml')
+          c = ZOOM::Connection.new(zoom_options).connect(zoom_db.host, zoom_db.port.to_i)
+          c.database_name = zoom_db.database_name
+          p = c.package
+          p.function = 'create'
+          p.wait_action = 'waitIfPossible'
+          p.syntax = 'no syntax'
+
+          p.action = 'recordDelete'
+          p.record = zoom_record
+          p.record_id_opaque = zoom_id
+
+          p.send('update')
+          p.send('commit')
 
           true
         end

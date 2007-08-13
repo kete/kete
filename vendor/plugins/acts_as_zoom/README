@@ -43,10 +43,6 @@ This plugin uses the ruby-zoom library (http://ruby-zoom.rubyforge.org/) to impl
 
 http://blog.katipo.co.nz/?p=26
 
-Currently ruby-zoom doesn't support Zoom Extended Services (a feature request has been submitted) for inserts, updates, and deletes of records. We work around this limitation by calling an included perl script for these actions.  This script requires the ZOOM Perl package which can be found on CPAN or installed on Debian by following the aboved blog article and finishing with this command:
-
-sudo apt-get install libnet-z3950-zoom-perl
-
 Usage:
 ======
 You will need to define at least one Z39.50 server to point acts_as_zoom via ZoomDb class instance.  After that you have several options to specify.
@@ -98,5 +94,9 @@ Horowhenua Library Trust (http://www.library.org.nz/)
 The Zebra team at Index Data (http://indexdata.dk/zebra/)
 
 acts_as_solr plugin team
+
+the Ruby ZOOM project
+
+Nicolai Moles-Benfell for adding ZOOM Extended Services to the Ruby ZOOM project!
 
 Released under the GPL License.
