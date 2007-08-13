@@ -198,12 +198,6 @@ class ConfigureController < ApplicationController
     @success = @is_configured_setting.save
     if @success and !request.xhr?
         redirect_to :action => 'index', :ready_to_restart => :true
-    elseif @success
-      render :update do |page|
-        page.hide('controls')
-        page.hide('status')
-        page.show('ready-to-restart')
-      end
     end
   end
 end

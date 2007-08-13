@@ -1,0 +1,5 @@
+if @success
+  page.hide('controls')
+  page.hide('status')
+  page.show('ready-to-restart')
+end
