@@ -1,0 +1,23 @@
+management_gems:
+  capistrano: capistrano
+  piston: piston
+
+gems:
+  unicode: unicode
+  slave: slave
+  daemons: daemons
+  RedCloth: redcloth
+  mime-types: mime/types
+  memcache-client: memcache
+  zoom: zoom
+
+# these are problematic as gems depending on platform
+# for example, rmagick on debian is best installed with
+# sudo apt-get install librmagick-ruby1.8
+libs:
+  RMagick: RMagick
+
+commands:
+  Zebra: zebrasrv
+  Memcache Daemon: memcached
+

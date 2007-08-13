@@ -77,9 +77,13 @@ ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
 # from http://www.depixelate.com/2006/8/9/quick-tip-ensuring-required-gems-and-libs-are-available
 # --- [ check that we have all the gems and libs we need ] ---
 
-missing_gems = Array.new
-required_gems = %w( unicode slave daemons redcloth mime/types memcache zoom piston RMagick)
-required_gems.each do |lib|
+missing_libs = Array.new
+required_software = YAML.load_file("#{RAILS_ROOT}/config/required_software.yml")
+required_libs = required_software['gems']
+required_software['libs'].each do |key, value|
+  required_libs[key] = value
+end
+required_libs.values.each do |lib|
   begin
     require lib
   rescue LoadError
@@ -87,14 +91,14 @@ required_gems.each do |lib|
   end
 end
 
-missing_software = { 'Gems' => missing_gems }
+missing_software = { 'Gems' => missing_libs }
 
 # if standard rails things like mysql aren't installed, the server won't start up
 # so they don't need to be done here
 missing_commands = Array.new
-required_commands = { 'Zebra' => 'zebrasrv', 'Memcache Daemon' => 'memcached' }
+required_commands = required_software['commands']
 required_commands.each do |pretty_name, command|
-  command_found = system('which ' + command)
+  command_found = `which #{command}`
   if command_found.blank?
     missing_commands << pretty_name
   end
