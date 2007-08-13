@@ -10,11 +10,11 @@ require 'yaml'
 
 desc "Tasks related to gems for Kete. Requires sudo privilege. See config/required_software.yml for list. Expect numerous warnings that can ignore."
 namespace :manage_gems do
-  p "Requires sudo or root privileges.  You will be prompted for password if necessary."
-  # default
-  ENV['GEMS_ACTION'] = 'update'
-
   task :exec_action => :environment do
+    p "Requires sudo or root privileges.  You will be prompted for password if necessary."
+    # default
+    ENV['GEMS_ACTION'] ||= 'update'
+
     required = YAML.load_file("#{RAILS_ROOT}/config/required_software.yml")
     required[ENV['GEMS_TO_GRAB']].keys.each do |gem_name|
           `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}`
