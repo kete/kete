@@ -11,7 +11,8 @@ desc "A wrapper task that does most everything that we need done after initial c
 task :prep_app do
   p "This may take awhile and have a lot of output.  You can ignore warnings."
 
-  the_tasks = [ 'manage_gems:management:install', 'manage_gems:required:install', 'db:bootstrap']
+  # this is for tasks that don't need to load enviroment (or shouldn't have it loaded)
+  the_tasks = [ 'manage_gems:management:install', 'manage_gems:required:install']
 
   the_tasks.each do |t|
     Rake::Task[t].invoke
