@@ -73,40 +73,10 @@ ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
 
 # Include your application configuration below
 
-# poached and modified to include non-gem/lib requirements
-# from http://www.depixelate.com/2006/8/9/quick-tip-ensuring-required-gems-and-libs-are-available
-# --- [ check that we have all the gems and libs we need ] ---
-
-missing_libs = Array.new
-required_software = YAML.load_file("#{RAILS_ROOT}/config/required_software.yml")
-required_libs = required_software['gems']
-required_software['libs'].each do |key, value|
-  required_libs[key] = value
-end
-required_libs.values.each do |lib|
-  begin
-    require lib
-  rescue LoadError
-    missing_libs << lib
-  end
-end
-
-missing_software = { 'Gems' => missing_libs }
-
-# if standard rails things like mysql aren't installed, the server won't start up
-# so they don't need to be done here
-missing_commands = Array.new
-required_commands = required_software['commands']
-required_commands.each do |pretty_name, command|
-  command_found = `which #{command}`
-  if command_found.blank?
-    missing_commands << pretty_name
-  end
-end
-
-missing_software['Commands'] = missing_commands
-
-MISSING_SOFTWARE = missing_software
+# check for missing software
+include RequiredSoftware
+required_software = load_required_software
+MISSING_SOFTWARE = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
 
 # acts_as_zoom declarations in models
 ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document', 'Comment']

@@ -1,12 +1,14 @@
 # lib/tasks/manage_gems.rake
 #
-# tasks related to required gems, these need to be run with sudo
+# tasks related to required gems and software, some may need to be run with sudo
 #
 # Walter McGinnis, 2007-08-13
 #
 # $ID: $
 
 require 'yaml'
+require 'required_software'
+include RequiredSoftware
 
 desc "Tasks related to gems for Kete. Requires sudo privilege. See config/required_software.yml for list. Expect numerous warnings that can ignore."
 namespace :manage_gems do
@@ -15,7 +17,7 @@ namespace :manage_gems do
     # default
     ENV['GEMS_ACTION'] ||= 'update'
 
-    required = YAML.load_file("#{RAILS_ROOT}/config/required_software.yml")
+    required = load_required_software
     required[ENV['GEMS_TO_GRAB']].keys.each do |gem_name|
       p gem_name
       `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}`
@@ -35,6 +37,24 @@ namespace :manage_gems do
       ENV['GEMS_TO_GRAB'] = 'gems'
       Rake::Task['manage_gems:exec_action'].execute
     end
+
+    desc "Check that you have required gems"
+    task :check do
+      required_software = load_required_software
+
+      missing_lib_count = 0
+      p "Missing Gems or Libs:"
+      missing_libs(required_software).each do |lib|
+        p lib
+        missing_lib_count += 0
+      end
+      if missing_lib_count > 0
+        p "You have to install the above for Kete to work.\nUsually \"sudo gem install -y gem_name\", but double check documentation.  For example Rmagick is usually best installed via a port or package."
+      else
+        p "None.  Feel free to proceed."
+      end
+    end
+
   end
 
   namespace :management do
