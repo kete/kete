@@ -7,3 +7,4 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 load "lib/recipes/tools"
 load "lib/recipes/mongrel"
 load "lib/recipes/deploy"
+load "lib/recipes/kete"
