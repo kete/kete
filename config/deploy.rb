@@ -15,8 +15,9 @@ role :web, "your web-server here"
 role :db,  "your db-server here", :primary => true
 
 set :user, "kete"
+set :group, "kete"
 
-# set :config_files, %w(database.yml)
+set :config_files, []
 
 # keeps a svn working copy locally under shared/cached-copy
 # rather than do a full svn checkout each deploy:update_code
