@@ -1,41 +1,58 @@
 <% @title = "Login to #{PRETTY_SITE_NAME}"  -%>
 
+<% if !MISSING_SOFTWARE.blank? and !IS_CONFIGURED-%>
+<div id="required-software">
+  <h3>Missing Software!</h3>
+  Kete requires you to install the following
+  software and restart your server.
+
+  <ul>
+    <% MISSING_SOFTWARE['Gems'].each do |gem| -%>
+    <li><%= gem -%> gem</li>
+    <% end -%>
+    <% MISSING_SOFTWARE['Commands'].each do |command| -%>
+    <li><%= command -%></li>
+    <% end -%>
+  </ul>
+
+</div>
+<% else -%>
+
 <% if IS_CONFIGURED -%>
-        <h2><%= h(@title) -%></h2>
+<h2><%= h(@title) -%></h2>
 <% end -%>
 
 <% form_tag do -%>
 
-        <fieldset>
-                <!--[form:login]-->
-                <% if IS_CONFIGURED -%>
-                        <p>Are you registered? You will need to <%= link_to("register",
-                                                                            :controller => 'account',
-                                                                            :action => 'signup',
-                                                                            :urlified_name => 'site') -%> first before you can login.</p>
-                <% else -%>
-                        <p>You will need to login using the default account to proceed to configuring your site.</p>
-                <% end -%>
+<fieldset>
+  <!--[form:login]-->
+  <% if IS_CONFIGURED -%>
+  <p>Are you registered? You will need to <%= link_to("register",
+                                              :controller => 'account',
+    :action => 'signup',
+    :urlified_name => 'site') -%> first before you can login.</p>
+  <% end -%>
 
-                <div class="form-element">
-                        <label for="login"><strong>Login</strong></label>
-                        <%= text_field_tag 'login' %>
-                </div>
+  <div class="form-element">
+    <label for="login"><strong>Login</strong></label>
+    <%= text_field_tag 'login' %>
+  </div>
 
-                <div class="form-element">
-                        <label for="password"><strong>Password</strong></label>
-                        <%= password_field_tag 'password' %>
-                </div>
+  <div class="form-element">
+    <label for="password"><strong>Password</strong></label>
+    <%= password_field_tag 'password' %>
+  </div>
 
-                <% if IS_CONFIGURED -%>
-                        <div class="form-element">
-                                <label for="remember_me">Remember me:</label>
-                                <%= check_box_tag 'remember_me' %>
-                        </div>
+  <% if IS_CONFIGURED -%>
+  <div class="form-element">
+    <label for="remember_me">Remember me:</label>
+    <%= check_box_tag 'remember_me' %>
+  </div>
 
-                        <p>Forgot your password? <%= link_to('Click here', :controller => 'account', :action => 'forgot_password', :urlified_name => 'site') -%></p>
-                <% end -%>
-        </fieldset>
+  <p>Forgot your password? <%= link_to('Click here', :controller => 'account', :action => 'forgot_password', :urlified_name => 'site') -%></p>
+  <% end -%>
+</fieldset>
 
-        <%= submit_tag 'Log in' %></p>
+<%= submit_tag 'Log in' %></p>
+<% end -%>
 <% end -%>
