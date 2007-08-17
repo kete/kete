@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
       when @help_basket.urlified_name
         @current_basket = @help_basket
       when @documentation_basket.urlified_name
-        @current_basket = @help_basket
+        @current_basket = @documentation_basket
       else
         @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
       end
