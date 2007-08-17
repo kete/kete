@@ -162,7 +162,6 @@
                    <div id="adminToolbox">
                         <h4>Administrator's Toolbox (prototype)</h4>
                         <p>
-                        <%= link_to_unless_current("documentation", basket_index_url(:urlified_name => 'documentation') %>
                         Controls:
                         <%= link_to_unless_current("add basket", :urlified_name => 'site',
                                                                :controller => 'baskets',
@@ -197,6 +196,10 @@
                                                                               :action => :list,
                                                                               :urlified_name => 'site' -%>
                         <% end -%>
+                        </p>
+                        <p>
+                         Support:
+                        <%= link_to_unless_current("documentation", basket_index_url(:urlified_name => @documentation_basket.urlified_name)) %>
                         </p>
                    </div>
                 <% end %>

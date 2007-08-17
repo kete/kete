@@ -81,7 +81,7 @@ module ApplicationHelper
                      :action => :find_related,
                      :related_class => options[:related_class],
                      :relate_to_topic => options[:relate_to_topic_id] },
-                   :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100'])
+                   :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100,resizable=yes'])
   end
 
   def item_related_topics_wrapper(options={})
