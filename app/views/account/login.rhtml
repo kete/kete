@@ -1,6 +1,7 @@
 <% @title = "Login to #{PRETTY_SITE_NAME}"  -%>
 
-<% if !MISSING_SOFTWARE.blank? and !IS_CONFIGURED-%>
+<% if !MISSING_SOFTWARE['Gems'].blank? and
+   !MISSING_SOFTWARE['Commands'].blank? and !IS_CONFIGURED-%>
 <div id="required-software">
   <h3>Missing Software!</h3>
   Kete requires you to install the following
@@ -31,6 +32,9 @@
                                               :controller => 'account',
     :action => 'signup',
     :urlified_name => 'site') -%> first before you can login.</p>
+  <% else -%>
+  <p>Please enter the default administrator account login and password
+  to continue to configuration of the site.</p>
   <% end -%>
 
   <div class="form-element">
