@@ -164,21 +164,24 @@ topics_013:
     <p>The <a href="/about/" onclick="window.open(this.href,'links','height=600,width=740,scrollbars=yes,top=100,left=100');return false;">About basket</a>, in Kete terms a section of the site is called a basket, is meant to contain a description of your site and its policies.  It comes with starter topics for both.  We recommend that you give these a quick edit to reflect your needs.</p>
     <p>The <a href="/help/" onclick="window.open(this.href,'links','height=600,width=740,scrollbars=yes,top=100,left=100');return false;">Help basket</a> is for your user manual.  It certainly can't hurt to familiarise yourself with these and adjust where appropriate.</p>
     <p>The default topics were originally written by <a href="http://horowhenua.kete.net.nz/">Kete Horowhenua</a>.  We owe them a great big thank you for them.</p>
-    <h2>The Administrator's Toolbox</h2>
+    <h3>The Administrator's Toolbox</h3>
     <p>Not surprisingly, the Adminstrator's Toolbox at the bottom of each page will appear if you are logged in as a site administrator.  Here you will find links to add a new area of the site (add basket), add or edit fields that may appear in forms of topics or content items (extended fields), manage users of the site (site members), and setting up the various topic types and content types to use the extended fields that you have.</p>
     <p>In addition, if you are also a technical administrator, you gain the ability to run imports or manage which search databases (Z39.50 search databases) are used.</p>
     <p>The Administrator's Toolbox is where to start if you want to manage your Kete later.</p>
     <h3>Extended Fields, Topic Types, and Content Types</h3>
+    <p>Need to summarise setting up fields, topic types and hierarchy, and content types here.
     <h3>The Site Basket</h3>
+    <p>How to change what the settings for the site basket, like whether to have a search box, random image, etc.</p>
     <h3>This Topic (Site Homepage)</h3>
     <p>Lastly you will want to edit this topic using the edit link below.  You can also replace it, either with another topic or by redirecting users to results for all topics, images, audio, video, web links, documents, or discussion via the site basket edit page.</p>
     <p>A copy of this topic is available for future reference on the index of the Documentation basket, linked to in the Administrator's Toolbox.</a>
     <h5>Credits</h5>
     <p>This topic was originally written by Walter McGinnis at <a href="http://katipo.co.nz/">Katipo Communications</a> and Russel Garlick at <a href="http://liblime.com/">Liblime</a>.</p>
+
 topics_014:
   updated_at: <%= Time.now.to_s :db %>
-  title: Welcome
-  short_summary: Homepage for site
+  title: Documentation
+  short_summary: Documentation for site
   raw_tag_list: ""
   id: "14"
   version: "1"
@@ -196,14 +199,15 @@ topics_014:
     <p>The <a href="/about/" onclick="window.open(this.href,'links','height=600,width=740,scrollbars=yes,top=100,left=100');return false;">About basket</a>, in Kete terms a section of the site is called a basket, is meant to contain a description of your site and its policies.  It comes with starter topics for both.  We recommend that you give these a quick edit to reflect your needs.</p>
     <p>The <a href="/help/" onclick="window.open(this.href,'links','height=600,width=740,scrollbars=yes,top=100,left=100');return false;">Help basket</a> is for your user manual.  It certainly can't hurt to familiarise yourself with these and adjust where appropriate.</p>
     <p>The default topics were originally written by <a href="http://horowhenua.kete.net.nz/">Kete Horowhenua</a>.  We owe them a great big thank you for them.</p>
-    <h2>The Administrator's Toolbox</h2>
+    <h3>The Administrator's Toolbox</h3>
     <p>Not surprisingly, the Adminstrator's Toolbox at the bottom of each page will appear if you are logged in as a site administrator.  Here you will find links to add a new area of the site (add basket), add or edit fields that may appear in forms of topics or content items (extended fields), manage users of the site (site members), and setting up the various topic types and content types to use the extended fields that you have.</p>
     <p>In addition, if you are also a technical administrator, you gain the ability to run imports or manage which search databases (Z39.50 search databases) are used.</p>
     <p>The Administrator's Toolbox is where to start if you want to manage your Kete later.</p>
     <h3>Extended Fields, Topic Types, and Content Types</h3>
+    <p>Need to summarise setting up fields, topic types and hierarchy, and content types here.
     <h3>The Site Basket</h3>
+    <p>How to change what the settings for the site basket, like whether to have a search box, random image, etc.</p>
     <h3>This Topic (Site Homepage)</h3>
     <p>Lastly you will want to edit this topic using the edit link below.  You can also replace it, either with another topic or by redirecting users to results for all topics, images, audio, video, web links, documents, or discussion via the site basket edit page.</p>
-    <p>A copy of this topic is available for future reference on the index of the Documentation basket, linked to in the Administrator's Toolbox.</a>
     <h5>Credits</h5>
     <p>This topic was originally written by Walter McGinnis at <a href="http://katipo.co.nz/">Katipo Communications</a> and Russel Garlick at <a href="http://liblime.com/">Liblime</a>.</p>
