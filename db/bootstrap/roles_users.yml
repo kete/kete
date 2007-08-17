@@ -19,3 +19,8 @@ tech_admin:
   role_id: 4
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
+documentation:
+  user_id: 1
+  role_id: 5
+  created_at: <%= Time.now.to_s :db %>
+  updated_at: <%= Time.now.to_s :db %>

@@ -156,7 +156,7 @@ system_settings_019:
   name: About Basket
   technically_advanced: true
   required_to_be_configured: true
-  explanation: Choose only be changed for a small number of established sites.  Safely skipped.
+  explanation: Choose only to be changed for a small number of established sites.  Safely skipped.
   id: "19"
   value: "3"
   section: System
@@ -164,7 +164,7 @@ system_settings_020:
   name: Help Basket
   technically_advanced: true
   required_to_be_configured: true
-  explanation: Choose only be changed for a small number of established sites.  Safely skipped.
+  explanation: Choose only to be changed for a small number of established sites.  Safely skipped.
   id: "20"
   value: "2"
   section: System
@@ -292,4 +292,12 @@ system_settings_032:
     What system setting sections should we prompt the user for right after installation?  These should be listed in order. Make sure you understand what you are doing and have the right syntax! Opening [ and closing ] are required.
   id: "32"
   value: "['Server', 'System', 'Accounts', 'Warnings', 'Flagging', 'Results Display', 'Related Items Display', 'Extended Fields']"
+  section: System
+system_settings_033:
+  name: Documentation Basket
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Choose only to be changed for a small number of established sites.  Safely skipped.
+  id: "33"
+  value: "4"
   section: System

@@ -27,3 +27,10 @@ tech_admin:
   authorizable_id: 1
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
+documentation_admin:
+  id: 5
+  name: admin
+  authorizable_type: Basket
+  authorizable_id: 4
+  created_at: <%= Time.now.to_s :db %>
+  updated_at: <%= Time.now.to_s :db %>

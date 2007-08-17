@@ -119,11 +119,9 @@
                         <div id="linkToRSS"><%= @rss_tag_link -%>RSS</a></div>
                 <% end -%>
                 <div class="browse-baskets">
-                        <% basket_count = 1
-                           standard_baskets = [1, HELP_BASKET, ABOUT_BASKET]
-                        -%>
+                        <% basket_count = 1 -%>
                         <% # TODO: possibly limit this and provide a "more" link to a complete listing -%>
-                        <% Basket.find(:all, :conditions => ["id not in (?)", standard_baskets]).each do |basket| %>
+                        <% Basket.find(:all, :conditions => ["id not in (?)", @standard_baskets]).each do |basket| %>
                                <% if basket_count == 1 -%>
                                         <h4>Featured baskets:</h4>
                                         <ul>
@@ -163,7 +161,9 @@
                    <!-- admin toolbox, temp -->
                    <div id="adminToolbox">
                         <h4>Administrator's Toolbox (prototype)</h4>
-                        <p>Controls:
+                        <p>
+                        <%= link_to_unless_current("documentation", basket_index_url(:urlified_name => 'documentation') %>
+                        Controls:
                         <%= link_to_unless_current("add basket", :urlified_name => 'site',
                                                                :controller => 'baskets',
                                                                :action => :new) %>

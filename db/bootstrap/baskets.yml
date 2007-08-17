@@ -24,3 +24,12 @@ baskets_003:
   urlified_name: about
   index_page_topic_is_entire_page: "1"
   created_at: <%= Time.now.to_s :db %>
+baskets_004:
+  index_page_redirect_to_all: ""
+  name: Documentation
+  index_page_basket_search: "1"
+  updated_at: <%= Time.now.to_s :db %>
+  id: "4"
+  urlified_name: documentation
+  index_page_topic_is_entire_page: "1"
+  created_at: <%= Time.now.to_s :db %>

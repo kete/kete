@@ -59,9 +59,13 @@ class ApplicationController < ActionController::Base
   # than the default
   # TODO: cache in memcache
   def load_standard_baskets
+    # could DRY this up with one query for all the baskets
     @site_basket ||= Basket.find(1)
     @help_basket ||= Basket.find(HELP_BASKET)
     @about_basket ||= Basket.find(ABOUT_BASKET)
+    @documentation_basket ||= Basket.find(DOCUMENTATION_BASKET)
+
+    @standard_baskets ||= [1, HELP_BASKET, ABOUT_BASKET, DOCUMENTATION_BASKET]
 
     if params[:urlified_name].blank?
       @current_basket = @site_basket
@@ -72,6 +76,8 @@ class ApplicationController < ActionController::Base
       when @about_basket.urlified_name
         @current_basket = @about_basket
       when @help_basket.urlified_name
+        @current_basket = @help_basket
+      when @documentation_basket.urlified_name
         @current_basket = @help_basket
       else
         @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
