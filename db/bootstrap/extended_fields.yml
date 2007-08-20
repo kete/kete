@@ -3,14 +3,14 @@ extended_fields_001:
   xml_element_name: dc:description
   updated_at: <%= Time.now.to_s :db %>
   id: "1"
-  description: Non-sir names.
+  description: Non-sur names.
   label: First Names
   created_at: <%= Time.now.to_s :db %>
 extended_fields_002:
   xml_element_name:
   updated_at: <%= Time.now.to_s :db %>
   id: "2"
-  description: Sir name.
+  description: Sur name.
   label: Last Name
   created_at: <%= Time.now.to_s :db %>
 extended_fields_003:
