@@ -49,12 +49,13 @@ namespace :zebra do
     `cd #{RAILS_ROOT}/zebradb; zebrasrv -f conf/kete-zebra-servers.xml -l ../log/zebra.log -D`
   end
 
-  desc "Choose zebra correct zebra database configuration files for your platform.  I.e. whether the zebra is installed under /usr/local or /opt/local.  Set UNDER=opt or UNDER=usr.  The default configuration files are for /usr/local."
-  task :install_location do
-    # have to run the command from inside #{RAILS_ROOT}/zebradb/conf
-    %w[ public private ].each do |db|
-      `cd #{RAILS_ROOT}/zebradb/conf; cp zebra-#{db}.cfg.#{ENV['UNDER']} zebra-#{db}.cfg`
-    end
-  end
+  # No longer necessary
+  # desc "Choose zebra correct zebra database configuration files for your platform.  I.e. whether the zebra is installed under /usr/local or /opt/local.  Set UNDER=opt or UNDER=usr.  The default configuration files are for /usr/local."
+  # task :install_location do
+  #     # have to run the command from inside #{RAILS_ROOT}/zebradb/conf
+  #     %w[ public private ].each do |db|
+  #       `cd #{RAILS_ROOT}/zebradb/conf; cp zebra-#{db}.cfg.#{ENV['UNDER']} zebra-#{db}.cfg`
+  #     end
+  #   end
 
 end
