@@ -17,7 +17,9 @@ namespace :deploy do
     desc "Run the steps necessary to get Kete going for the first time.  May take awhile."
     task :default do
       deploy.setup
-      deploy.update
+      deploy.update_code
+      deploy.prepare.setup_zebra
+      deploy.symlink
       deploy.prepare.default
       deploy.start
     end
@@ -28,7 +30,6 @@ namespace :deploy do
     desc "Prepare required software, initialize database, etc."
     task :default do
       install_gems
-      setup_zebra
       db_bootstrap
     end
 
@@ -64,7 +65,8 @@ namespace :deploy do
     end
 
     # handle our zebra databases
-    # assumes that the shared/system/zebradb exists, should be handled by deploy:first_time
+    # make system/zebradb if it doesn't exist already
+    run "mkdir -p #{shared_path}/system/zebradb"
     run "rm -rf #{release_path}/zebradb"
     run "ln -nfs #{shared_path}/system/zebradb #{release_path}/"
   end
