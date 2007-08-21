@@ -44,7 +44,7 @@ namespace :deploy do
 
     desc "The directory that holds everything related to zebra needs to live under share/system/zebradb"
     task :setup_zebra, :roles => :app do
-      run "cp -r #{release_path}/zebradb #{shared_path}/system/"
+      run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
     end
 
     desc "Set up the database with migrations and default data."
