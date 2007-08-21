@@ -7,6 +7,7 @@ load "lib/recipes/tools"
 load "lib/recipes/mongrel"
 load "lib/recipes/deploy"
 load "lib/recipes/kete"
+load "lib/recipes/zebra"
 
 load 'config/deploy'
 

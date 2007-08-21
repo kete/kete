@@ -46,7 +46,7 @@ namespace :zebra do
   desc "Start the Zebra server instance for this Kete"
   task :start do
     # have to run the command from inside #{RAILS_ROOT}/zebradb
-    `cd #{RAILS_ROOT}/zebradb; zebrasrv -f conf/kete-zebra-servers.xml -l ../log/zebra.log -p ../../log/zebra.pid -D`
+    `cd #{RAILS_ROOT}/zebradb; zebrasrv -f conf/kete-zebra-servers.xml -l #{RAILS_ROOT}/log/zebra.log -p #{RAILS_ROOT}/log/zebra.pid -D`
   end
 
   desc "Stop the Zebra server instance for this Kete and all its child processes"

@@ -61,13 +61,13 @@ namespace :deploy do
     %w{audio documents image_files video}.each do |share|
       # this WON'T overwrite an existing directory, just create it if it's not there
       run "mkdir -p #{shared_path}/system/#{share}"
-      run "ln -nfs #{shared_path}/system/#{share} #{release_path}/public/#{share}"
+      run "ln -nfs #{shared_path}/system/#{share} #{current_path}/public/#{share}"
     end
 
     # handle our zebra databases
     # make system/zebradb if it doesn't exist already
     run "mkdir -p #{shared_path}/system/zebradb"
-    run "rm -rf #{release_path}/zebradb"
-    run "ln -nfs #{shared_path}/system/zebradb #{release_path}/"
+    run "rm -rf #{current_path}/zebradb"
+    run "ln -nfs #{shared_path}/system/zebradb #{current_path}/"
   end
 end
