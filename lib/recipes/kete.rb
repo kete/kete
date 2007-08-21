@@ -65,6 +65,7 @@ namespace :deploy do
 
     # handle our zebra databases
     # assumes that the shared/system/zebradb exists, should be handled by deploy:first_time
-    run "ln -nfs #{shared_path}/system/zebradb #{release_path}/zebradb"
+    run "rm -rf #{release_path}/zebradb"
+    run "ln -nfs #{shared_path}/system/zebradb #{release_path}/"
   end
 end
