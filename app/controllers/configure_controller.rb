@@ -153,6 +153,9 @@ class ConfigureController < ApplicationController
     end
   end
 
+  # TODO: add option to do "rake zebra:stop"
+  # and then reconfigure zebra and restart zebra
+  # maybe
   def start_zebra
     `rake zebra:start`
     if !request.xhr?
@@ -161,7 +164,8 @@ class ConfigureController < ApplicationController
       render :update do |page|
         page.show('start-zebra-check')
         page.replace_html("start-zebra-message", "Search Engine started.  Stopping must be done by system administrator from command line.")
-        page.show('prime-zebra-message')
+        page.hide('completed-message')
+        page.show('finish')
       end
     end
   end
@@ -182,8 +186,7 @@ class ConfigureController < ApplicationController
       render :update do |page|
         page.show('prime-zebra-check')
         page.replace_html("prime-zebra-message", "Search Engine has been primed.")
-        page.hide('completed-message')
-        page.show('finish')
+        page.show('reload-site-index')
       end
     end
   end

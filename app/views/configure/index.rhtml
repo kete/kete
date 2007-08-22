@@ -6,7 +6,9 @@
   <% if IS_CONFIGURED -%>
   <p>You can change system settings here.  You will need to restart your server for changes to take effect.</p>
   <% else -%>
-  <p>Before your new site is ready, you'll need to fill out some details, change some passwords, prime the search engine, and restart your server.</p>
+  <p>Before your new site is ready, you'll need to fill out some
+  details, change some passwords, restart your server, prime the
+  search engine, and then reload this page.</p>
 
   <% if !@admin_password_changed -%>
   <h3>Security:</h3>
@@ -93,29 +95,6 @@
               </div>
             </td>
           </tr>
-
-          <tr>
-            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed"></div></td>
-            <td>
-              <% if @search_engine_started or @search_engine_primed -%>
-              <div id="prime-zebra-message">
-                <% else -%>
-                <div id="prime-zebra-message" style="display:none">
-                  <% end -%>
-                  <% if @search_engine_primed -%>
-                  <p>Search Engine primed.</p>
-                  <% else -%>
-                  <p>The Search Engine needs to have the initial
-                  contents of Kete added to it.  Please click 'Prime
-                  Search Engine' to continue.</p>
-                  <% form_remote_tag( :url => { :action => 'prime_zebra' },
-                  :href => url_for( :action => 'prime_zebra' ) ) do %>
-                  <%= submit_tag 'Prime Search Engine' -%>
-                  <% end -%>
-                  <% end -%>
-              </div>
-            </td>
-          </tr>
       </table>
 
       </div>
@@ -141,8 +120,8 @@
       <% else -%>
       <div id="finish" style="display:none">
       <% end -%>
-        <h3>Finished?</h3>
-        <p>All required steps have been fulfilled. If you are
+        <h3>Finished with Settings?</h3>
+        <p>All required settings have been fulfilled. If you are
         satisfied, please click the 'finish' button.</p>
         <% form_remote_tag( :url => { :action => 'finish' },
         :href => url_for( :action => 'finish' ) ) do %>
@@ -155,7 +134,47 @@
       <% else -%>
       <div id="ready-to-restart" style="display:none">
         <% end -%>
-        <h2>Kete Configured Successfully</h2>
-        <p>Please restart the server and reload this page to activate your Kete site.</p>
+        <h2>Final Configuration Step</h2>
+        <p><b>Before you continue, you must restart the
+        server!</b></p>
+        <table>
+          <tr>
+            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed"></div></td>
+            <td>
+              <% if @search_engine_started or @search_engine_primed -%>
+              <div id="prime-zebra-message">
+                <% else -%>
+                <div id="prime-zebra-message" style="display:none">
+                  <% end -%>
+                  <% if @search_engine_primed -%>
+                  <p>Search Engine primed.</p>
+                  <% else -%>
+                  <p><i>After you have restarted the sever</i>, the Search Engine needs to have the initial
+                  contents of Kete added to it.  Please click 'Prime
+                  Search Engine' to continue.</p>
+                  <% form_remote_tag( :url => { :action => 'prime_zebra' },
+                  :href => url_for( :action => 'prime_zebra' ) ) do %>
+                  <%= submit_tag 'Prime Search Engine' -%>
+                  <% end -%>
+                  <% end -%>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <% if @search_engine_primed -%>
+              <div id="reload-site-index">
+                <% else -%>
+                <div id="reload-site-index" style="display:none">
+                  <% end -%>
+                  <p>Congratulations!  Your Kete site is configured
+                  and ready to be viewed.
+                  Click 'Reload Site' to move on to customising your
+                  Kete's content to suit.</p>
+                  <%= button_to 'Reload Site', basket_index_url(:urlified_name => 'site') %>
+              </div>
+            </td>
+          </tr>
+
       </div>
 <% end  -%>
