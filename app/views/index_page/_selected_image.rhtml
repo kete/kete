@@ -9,6 +9,7 @@
 
 <p>Slideshow:
 
+<!-- these aren't implemented yet
 <%= link_to_remote ("Previous", :update => 'selected-image-display',
                                 :url => { :action => 'selected_image',
                                           :show_previous => true },
@@ -30,7 +31,8 @@
                                                      :pause => false)) -%>
 <% end -%>
 
-|
+| -->
+
 <%= link_to_remote("Next", :update => 'selected-image-display',
                            :url => { :action => 'selected_image' },
                            :href => url_for(:action => 'index')) -%>
