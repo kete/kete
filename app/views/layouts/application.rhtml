@@ -184,11 +184,11 @@
                                                                         :urlified_name => 'site' -%>
                         <% if @tech_admin -%>
                         |
-                        <%= link_to_unless_current "importers", :controller => '/importers',
+                        <%= link_to_unless_current "reconfigure site", :controller => '/configure',
                                                                         :action => :index,
                                                                         :urlified_name => 'site' -%>
                         |
-                        <%= link_to_unless_current "system settings", :controller => '/system_settings',
+                        <%= link_to_unless_current "importers", :controller => '/importers',
                                                                         :action => :index,
                                                                         :urlified_name => 'site' -%>
                         |
