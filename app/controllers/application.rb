@@ -137,7 +137,8 @@ class ApplicationController < ActionController::Base
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
   def expire_show_caches
-    if params[:controller] != 'account'
+    no_caches_controllers = ['account', 'members']
+    if !no_caches_controllers.include?(params[:controller])
       item = Module.class_eval(zoom_class_from_controller(params[:controller])).find(params[:id])
       expire_show_caches_for(item)
     end
