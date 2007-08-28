@@ -125,3 +125,12 @@ contributions_014:
   user_id: "1"
   contributed_item_id: "13"
   created_at: <%= Time.now.to_s :db %>
+contributions_015:
+  updated_at: <%= Time.now.to_s :db %>
+  contributed_item_type: Topic
+  id: "15"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "14"
+  created_at: <%= Time.now.to_s :db %>
