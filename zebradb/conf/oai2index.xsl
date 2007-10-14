@@ -182,6 +182,18 @@
     <z:index name="dc_all" type="u">
       <xsl:value-of select="."/>
     </z:index>
+    <z:index name="dc_identifier" type="w">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_all" type="w">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_identifier" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_all" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
   </xsl:template>
 
   <xsl:template match="oai:record/oai:metadata/oai_dc:dc/dc:source">
