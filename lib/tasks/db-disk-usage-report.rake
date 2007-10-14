@@ -18,22 +18,7 @@ namespace :db do
       total_size += record["Index_length"].to_i + record["Data_length"].to_i
     end
 
+    include ActionView::Helpers::NumberHelper
     puts number_to_human_size(total_size)
   end
-
-  # TODO: replace this with include for ActionView::Helpers::NumberHelper definition
-  def number_to_human_size(size, precision=1)
-    size = Kernel.Float(size)
-    case
-    when size == 1        : "1 Byte"
-    when size < 1.kilobyte: "%d Bytes" % size
-    when size < 1.megabyte: "%.#{precision}f KB"  % (size / 1.0.kilobyte)
-    when size < 1.gigabyte: "%.#{precision}f MB"  % (size / 1.0.megabyte)
-    when size < 1.terabyte: "%.#{precision}f GB"  % (size / 1.0.gigabyte)
-    else                    "%.#{precision}f TB"  % (size / 1.0.terabyte)
-    end.sub('.0', '')
-  rescue
-    nil
-  end
-
 end
