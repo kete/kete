@@ -119,7 +119,7 @@
                         <div id="linkToRSS"><%= @rss_tag_link -%>RSS</a></div>
                 <% end -%>
                 <div class="browse-baskets">
-                        <% basket_count = 1 -%>
+                        <% basket_count = 0 -%>
                         <% # TODO: possibly limit this and provide a "more" link to a complete listing -%>
                         <% Basket.find(:all, :conditions => ["id not in (?)", @standard_baskets]).each do |basket| %>
                                <% basket_count += 1 %>
