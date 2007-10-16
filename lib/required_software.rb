@@ -31,8 +31,10 @@ module RequiredSoftware
       missing_commands = Array.new
       required_commands = required_software['commands']
 
-      required_commands.each do |pretty_name, command|
-        command_found = `which #{command}`
+      required_commands.each do |pretty_name, command_test|
+        # the passed in command_test should return a value
+        # if the required software is installed
+        command_found = `#{command_test}`
         if command_found.blank?
           missing_commands << pretty_name
         end

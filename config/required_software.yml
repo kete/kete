@@ -18,6 +18,6 @@ libs:
   RMagick: RMagick
 
 commands:
-  Zebra: zebrasrv
-  Memcache Daemon: memcached
+  Zebra: which zebrasrv
+  Memcache Daemon: ps -Ac | grep memcached
 
