@@ -1,7 +1,7 @@
 <% @title = "Login to #{PRETTY_SITE_NAME}"  -%>
 
-<% if !MISSING_SOFTWARE['Gems'].blank? and
-   !MISSING_SOFTWARE['Commands'].blank? and !IS_CONFIGURED-%>
+<% if !IS_CONFIGURED and ( !MISSING_SOFTWARE['Gems'].blank? or
+   !MISSING_SOFTWARE['Commands'].blank? ) -%>
 <div id="required-software">
   <h3>Missing Software!</h3>
   Kete requires you to install the following
