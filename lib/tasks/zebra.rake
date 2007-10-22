@@ -10,7 +10,7 @@ desc "Tasks related to running the Zebra search index server for Kete"
 namespace :zebra do
   desc "Set the kete user password in the zebradb/keteaccess file"
   task :set_keteaccess do
-    `htpasswd -c #{RAILS_ROOT}/zebradb/keteaccess kete #{ENV['ZEBRA_PASSWORD']}`
+    `htpasswd -cb #{RAILS_ROOT}/zebradb/keteaccess kete #{ENV['ZEBRA_PASSWORD']}`
   end
 
   desc "Set default zebra databases' ports in zebradb/config/kete-zebra-servers.xml based on a template"
