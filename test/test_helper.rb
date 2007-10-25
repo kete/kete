@@ -26,3 +26,9 @@ class Test::Unit::TestCase
 
   # Add more helper methods to be used by all tests here...
 end
+
+# Walter McGinnis, 2007-10-25
+# adding preloading of all fixtures when tests are first run
+# see vendor/plugins/preload_fixtures
+PreloadFixtures.preload!
+PreloadFixtures.instantiate!(Test::Unit::TestCase)

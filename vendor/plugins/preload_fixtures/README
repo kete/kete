@@ -1,0 +1,32 @@
+PreloadFixtures
+by David Stevenson, ELC Technologies
+Created for Livenation, Inc.
+stevend@mapleton.net
+===============
+
+PreloadFixtures simply preloads ALL your fixtures at the beginning of your test cycle.  It forces the system into using transactional fixtures, which you'll need because you're only loading the fixtures once!  Make sure to use this plugin only when 
+
+Usage
+=====
+
+1.  Install the plugin
+2.  Add the following to test/test_helper.rb
+
+        PreloadFixtures.preload!
+        PreloadFixtures.instantiate!(Test::Unit::TestCase)
+
+3.  The "fixtures" function in a test is now overloaded to do nothing.  All fixtures in the directory will be loaded once and then the tests will be run.
+
+Troubleshooting
+===============
+
+Q.  Why does it load the fixtures 3 times instead of one?
+    -- When rails launches test processes for [units, functionals, integrations], it actually runs separate ruby processes.  This makes passing of data between them very difficult, so I decided it was better to load then three times.  I wish I could use a rake task to load the fixtures into the test db once, but then instantiation would still be a problem.
+
+Q.  I'm noticing side effects between tests...
+    -- You might be using a database system that doesn't support transactions (mysql without InnoDB, for exmaple).
+    -- You are using multiple database connections in your testing (acts_as_readonlyable or use_db).  ActiveRecord only initiates transactions across ActiveRecord::Base.connection by default (for an example of how to override this, look at my use_db plugin).
+    -- I messed up the plugin!
+
+Q.  But I use instantiated fixtures like users(:one) or @users_one?
+    -- Good for you!  This plugin shouldn't break that.  All instantiated fixtures should be available inside all tests.
