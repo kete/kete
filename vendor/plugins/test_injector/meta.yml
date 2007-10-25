@@ -1,0 +1,6 @@
+author: Keith Morrison
+summary: Automatic Test Injection
+plugin: http://www.infused.org/svn/plugins/test_injector
+license: MIT
+version: 1.0
+rails_version: 1.1.2+
