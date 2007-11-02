@@ -80,7 +80,7 @@ class ImagesController < ApplicationController
 
     if @still_image.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
 
-      if !params[:image_file][:uploaded_file].blank?
+      if !params[:image_file][:uploaded_data].blank?
         # if they have uploaded something new, insert it
         @image_file = ImageFile.update_attributes(params[:image_file])
       end
