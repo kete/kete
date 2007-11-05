@@ -150,7 +150,7 @@ class BasketsController < ApplicationController
     if @successful
       # this action saves a new version of the topic
       # add this as a contribution
-      add_contributor_to(@topic,current_user)
+      @topic.add_as_contributor(current_user)
       flash[:notice] = 'Basket homepage was successfully created.'
       redirect_to :action => 'edit', :controller => 'baskets', :id => params[:index_for_basket]
     end
@@ -162,7 +162,7 @@ class BasketsController < ApplicationController
     if @successful
       # this action saves a new version of the topic
       # add this as a contribution
-      add_contributor_to(@topic,current_user)
+      @topic.add_as_contributor(current_user)
       render :text => 'Basket homepage was successfully chosen.  Please close this window. Clicking on another topic will replace this topic with the new topic clicked.'
     end
   end

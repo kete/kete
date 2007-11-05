@@ -1,6 +1,7 @@
 module HasContributors
   # this is where we handle contributed and created items by users
   unless included_modules.include? HasContributors
+    # declarations
     def self.included(klass)
       klass.send :has_many, :contributions, :as => :contributed_item, :dependent => :destroy
       # :select => "distinct contributions.role, users.*",
@@ -33,6 +34,11 @@ module HasContributors
           end
         end
       end
+    end
+    # method definitions
+    def add_as_contributor(user)
+      user.version = self.version
+      self.contributors << user
     end
   end
 end

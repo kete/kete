@@ -17,6 +17,7 @@ class TopicsController < ApplicationController
   uses_tiny_mce(:options => { :theme => 'advanced',
                   :browsers => %w{ msie gecko safaris},
                   :mode => "textareas",
+                  :cleanup => false,
                   :convert_urls => false,
                   :content_css => "/stylesheets/kete.css",
                   :remove_script_host => true,

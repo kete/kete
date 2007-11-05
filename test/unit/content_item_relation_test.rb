@@ -1,7 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContentRelationTest < Test::Unit::TestCase
-  fixtures :content_relations
+  # fixtures preloaded
+
+  # TODO: new_relation_to_topic
 
   # Replace this with your real tests.
   def test_truth

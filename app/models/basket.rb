@@ -26,9 +26,7 @@ class Basket < ActiveRecord::Base
   validates_uniqueness_of :name
 
   # don't allow special characters in label that will break our xml
-  validates_format_of :name, :with => /^[^\'\"<>\&,\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
-
-  # TODO: handle non-ascii characters with entities? i.e. url_encode
+  validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
 
   # we have an urlified_name attribute that hold the urlified version of the basket name
   before_save :urlify_name

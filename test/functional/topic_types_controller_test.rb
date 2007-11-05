@@ -5,110 +5,62 @@ require 'topic_types_controller'
 class TopicTypesController; def rescue_action(e) raise e end; end
 
 class TopicTypesControllerTest < Test::Unit::TestCase
-  fixtures :topic_types
-  fixtures :extended_fields
-  fixtures :topic_type_to_field_mappings
+  # fixtures are preloaded
 
-  NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy'} # e.g. {:name => 'Test TopicType', :description => 'Dummy'}
-  REDIRECT_TO_MAIN = {:action => 'list'} # put hash or string redirection that you normally expect
+  include AuthenticatedTestHelper
+
+  # e.g. {:name => 'Test TopicType', :description => 'Dummy'}
+  NEW_TOPIC_TYPE = {:name => 'Test TopicType',
+    :description => 'Dummy'}
+
+  # put hash or string redirection that you normally expect
+  REDIRECT_TO_MAIN = {:action => 'list'}
+  REDIRECT_TO_EDIT = {:action => 'edit'}
 
   def setup
     @controller = TopicTypesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     # Retrieve fixtures via their name
-    # @first = topic_types(:first)
     @first = TopicType.find(:first)
-    @person_type = topic_types(:person)
-    @place_type = topic_types(:place)
-    @name_field = extended_fields(:name)
-    @capacity_field = extended_fields(:capacity)
-  end
+    @person_type = TopicType.find_by_name('Person')
+    @place_type = TopicType.find_by_name('Place')
+    @name_field = ExtendedField.find_by_label('Name')
+    @site_basket = Basket.find(:first)
 
-  def test_component
-    get :component
-    assert_response :success
-    assert_template 'topic_types/component'
-    topic_types = check_attrs(%w(topic_types))
-    assert_equal TopicType.find(:all).length, topic_types.length, "Incorrect number of topic_types shown"
-  end
-
-  def test_component_update
-    get :component_update
-    assert_response :redirect
-    assert_redirected_to REDIRECT_TO_MAIN
-  end
-
-  def test_component_update_xhr
-    xhr :get, :component_update
-    assert_response :success
-    assert_template 'topic_types/component'
-    topic_types = check_attrs(%w(topic_types))
-    assert_equal TopicType.find(:all).length, topic_types.length, "Incorrect number of topic_types shown"
+    # login for the time being, may change this on a test by test basis
+    login_as :admin
   end
 
   def test_create
     topic_type_count = TopicType.find(:all).length
-    post :create, {:topic_type => NEW_TOPIC_TYPE}
-    topic_type, successful = check_attrs(%w(topic_type successful))
-    assert successful, "Should be successful"
+    post :create, {:topic_type => NEW_TOPIC_TYPE, :urlified_name => @site_basket.urlified_name}
+    topic_type = check_attrs(%w(topic_type))
     assert_response :redirect
-    assert_redirected_to REDIRECT_TO_MAIN
-    assert_equal topic_type_count + 1, TopicType.find(:all).length, "Expected an additional TopicType"
-  end
-
-  def test_create_xhr
-    topic_type_count = TopicType.find(:all).length
-    xhr :post, :create, {:topic_type => NEW_TOPIC_TYPE}
-    topic_type, successful = check_attrs(%w(topic_type successful))
-    assert successful, "Should be successful"
-    assert_response :success
-    assert_template 'create.rjs'
+    assert_redirected_to REDIRECT_TO_EDIT
     assert_equal topic_type_count + 1, TopicType.find(:all).length, "Expected an additional TopicType"
   end
 
   def test_update
     topic_type_count = TopicType.find(:all).length
-    post :update, {:id => @first.id, :topic_type => @first.attributes.merge(NEW_TOPIC_TYPE)}
-    topic_type, successful = check_attrs(%w(topic_type successful))
-    assert successful, "Should be successful"
+    post :update, {:id => @first.id, :topic_type => @first.attributes.merge(NEW_TOPIC_TYPE),
+      :urlified_name => @site_basket.urlified_name}
+    topic_type = check_attrs(%w(topic_type))
     topic_type.reload
     NEW_TOPIC_TYPE.each do |attr_name|
       assert_equal NEW_TOPIC_TYPE[attr_name], topic_type.attributes[attr_name], "@topic_type.#{attr_name.to_s} incorrect"
     end
     assert_equal topic_type_count, TopicType.find(:all).length, "Number of TopicTypes should be the same"
     assert_response :redirect
-    assert_redirected_to REDIRECT_TO_MAIN
-  end
-
-  def test_update_xhr
-    topic_type_count = TopicType.find(:all).length
-    xhr :post, :update, {:id => @first.id, :topic_type => @first.attributes.merge(NEW_TOPIC_TYPE)}
-    topic_type, successful = check_attrs(%w(topic_type successful))
-    assert successful, "Should be successful"
-    topic_type.reload
-    NEW_TOPIC_TYPE.each do |attr_name|
-      assert_equal NEW_TOPIC_TYPE[attr_name], topic_type.attributes[attr_name], "@topic_type.#{attr_name.to_s} incorrect"
-    end
-    assert_equal topic_type_count, TopicType.find(:all).length, "Number of TopicTypes should be the same"
-    assert_response :success
-    assert_template 'update.rjs'
+    assert_redirected_to REDIRECT_TO_EDIT
   end
 
   def test_destroy
     topic_type_count = TopicType.find(:all).length
-    post :destroy, {:id => @first.id}
+    post :destroy, {:id => @person_type.id, :urlified_name => @site_basket.urlified_name}
     assert_response :redirect
     assert_equal topic_type_count - 1, TopicType.find(:all).length, "Number of TopicTypes should be one less"
     assert_redirected_to REDIRECT_TO_MAIN
-  end
-
-  def test_destroy_xhr
-    topic_type_count = TopicType.find(:all).length
-    xhr :post, :destroy, {:id => @first.id}
-    assert_response :success
-    assert_equal topic_type_count - 1, TopicType.find(:all).length, "Number of TopicTypes should be one less"
-    assert_template 'destroy.rjs'
   end
 
   def test_add_to_topic_type
@@ -125,12 +77,12 @@ class TopicTypesControllerTest < Test::Unit::TestCase
       extended_fields_hash.merge!(temp_hash)
     end
 
-    post :add_to_topic_type, :id => @place_type.id, :extended_field => extended_fields_hash
+    post :add_to_topic_type, :id => @place_type.id, :extended_field => extended_fields_hash, :urlified_name => @site_basket.urlified_name
 
     # a simple test to make sure this worked... there should no longer be any available fields
     assert_equal @place_type.available_fields.size, 0
     # this will need to change to edit, possibly
-    assert_redirected_to :controller => 'topic_types' , :action => 'index'
+    assert_redirected_to :action => 'edit', :id => @place_type
   end
 
   # this test reordering without using acts_as_tree functionality
@@ -156,7 +108,7 @@ class TopicTypesControllerTest < Test::Unit::TestCase
       mappings_hash.merge!(temp_hash)
     end
 
-    post :reorder_fields_for_topic_type, :id => @person_type.id, :mapping => mappings_hash
+    post :reorder_fields_for_topic_type, :id => @person_type.id, :mapping => mappings_hash, :urlified_name => @site_basket.urlified_name
 
     # i found this a bit confusing, you have to refresh the object
     # after manipulating it's list (sometimes)
@@ -165,7 +117,7 @@ class TopicTypesControllerTest < Test::Unit::TestCase
     assert_equal @person_type.topic_type_to_field_mappings.first.id, org_last_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     assert_equal @person_type.topic_type_to_field_mappings.last.id, org_first_mapping_id, "The reorder_fields_for_topic_type action didn't swap first and last positions as expected."
     # this will need to change to edit, possibly
-    assert_redirected_to :controller => 'topic_types', :action => 'index'
+    assert_redirected_to :action => 'edit', :id => @person_type
   end
 protected
   # Could be put in a Helper library and included at top of test class

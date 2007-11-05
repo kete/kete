@@ -1,21 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ExtendedFieldTest < Test::Unit::TestCase
-  fixtures :extended_fields
-
-  # The ExtendedField model contains many things that
-  # need to be tested using the join model TopicTypeToFieldMapping
-  # and TopicType, so we load their fixtures here
-  # also ContentType
-  fixtures :topic_types
-  fixtures :content_types
-  fixtures :topic_type_to_field_mappings
-  fixtures :content_type_to_field_mappings
-
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
+  # fixtures preloaded
 
   def test_invalid_with_empty_label
     extended_field = ExtendedField.new
@@ -24,7 +10,7 @@ class ExtendedFieldTest < Test::Unit::TestCase
   end
 
   def test_unique_label
-    extended_field = ExtendedField.new(:label => extended_fields(:extended_fields_001).label,
+    extended_field = ExtendedField.new(:label => ExtendedField.find(1).label,
                                        :description => "yyy")
     assert !extended_field.save
     assert_equal ActiveRecord::Errors.default_error_messages[:taken], extended_field.errors.on(:label)
@@ -64,12 +50,11 @@ class ExtendedFieldTest < Test::Unit::TestCase
   end
 
   def setup
-    @person_type = topic_types(:person)
-    @place_type = topic_types(:place)
-    @user_type = content_types(:content_types_001)
-    @name_field = extended_fields(:extended_fields_006)
-    @city_field = extended_fields(:extended_fields_004)
-    @capacity_field = extended_fields(:extended_fields_007)
+    @person_type = TopicType.find_by_name('Person')
+    @place_type = TopicType.find_by_name('Place')
+    @city_field = ExtendedField.find_by_label('City')
+    @name_field = ExtendedField.find_by_label('Name')
+    @user_type = ContentType.find_by_class_name('User')
   end
 
   ### now for our joins

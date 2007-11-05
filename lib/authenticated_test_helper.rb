@@ -2,7 +2,7 @@
 module AuthenticatedTestHelper
   # Sets the current user in the session from the user fixtures.
   def login_as(user)
-    @request.session[:user] = user ? users(user).id : nil
+    @request.session[:user] = user ? User.find_by_login(user.to_s).id : nil
   end
 
   def content_type(type)

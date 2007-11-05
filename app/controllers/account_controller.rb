@@ -2,7 +2,9 @@ require 'RMagick'
 class AccountController < ApplicationController
   # see user model for info about activation code
   # for email password reminders and activation
-  observer :user_observer
+  # depreciated in rails 2.0
+  # now in config/environment.rb (later to go into config/initializers/)
+  # observer :user_observer
 
   include ExtendedContent
   include ExtendedContentController
@@ -203,7 +205,9 @@ class AccountController < ApplicationController
       flash[:notice] = "Your account has been activated.  Please login."
       redirect_back_or_default(:controller => '/account', :action => 'login')
     else
-      flash[:notice] = "Unable to activate the account.  Please check or enter manually."
+      msg = "Unable to activate the account.  Please check or enter manually."
+      flash[:error] = msg
+      # flash[:notice] = msg
     end
   end
 

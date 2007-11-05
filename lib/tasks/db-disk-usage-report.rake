@@ -1,8 +1,6 @@
 # lib/tasks/db_disk_usage_report.rake
 #
 # Walter McGinnis, 2007-10-11
-#
-# $ID: $
 namespace :db do
   desc 'Get the size of the db disk storage. Currently assumes MySQL.'
   task :disk_usage_report => :environment do

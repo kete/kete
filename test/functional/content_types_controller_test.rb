@@ -5,6 +5,7 @@ require 'content_types_controller'
 class ContentTypesController; def rescue_action(e) raise e end; end
 
 class ContentTypesControllerTest < Test::Unit::TestCase
+  # fixtures are preloaded
   def setup
     @controller = ContentTypesController.new
     @request    = ActionController::TestRequest.new

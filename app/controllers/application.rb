@@ -720,11 +720,6 @@ class ApplicationController < ActionController::Base
     short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
   end
 
-  def add_contributor_to(item, user)
-    user.version = item.version
-    item.contributors << user
-  end
-
   # this happens after the basket on the item has been changed already
   def update_comments_basket_for(item, original_basket)
     if item.class.name != 'Comment'
@@ -736,7 +731,7 @@ class ApplicationController < ActionController::Base
           comment.basket = new_basket
           if comment.save
             # moving the comment adds a version
-            add_contributor_to(comment, current_user)
+            comment.add_as_contributor(current_user)
           end
           # generate the new zoom record
           # with the new basket
@@ -751,7 +746,7 @@ class ApplicationController < ActionController::Base
     # TODO: allow current_user whom is at least moderator to pick another user
     # as contributor
     # uses virtual attr as hack to pass version to << method
-    add_contributor_to(item, current_user)
+    item.add_as_contributor(current_user)
 
     # if the basket has been changed, make sure comments are moved, too
     update_comments_basket_for(item, @current_basket)

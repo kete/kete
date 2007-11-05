@@ -1,15 +1,37 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-### Walter McGinnis, 2007-07-10
-# TODO: works, but lacks tests for:
-# include ExtendedContent
-# contribution associations
-
 class UserTest < Test::Unit::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead.
   # Then, you can remove it from this and the functional test.
   include AuthenticatedTestHelper
-  fixtures :users
+  # fixtures preloaded
+
+  def setup
+    @users = User.find(:all)
+
+    @base_class = "User"
+
+    # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
+    @new_model = { :login => 'quire',
+      :email => 'quire@example.com',
+      :password => 'quire',
+      :password_confirmation => 'quire',
+      :agree_to_terms => true,
+      :security_code => 'test',
+      :security_code_confirmation => 'test' }
+
+    # name of fields that must be present, e.g. %(name description)
+    @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation)
+    # name of fields that cannot be a duplicate, e.g. %(name description)
+    @duplicate_attr_names = %w(login email)
+
+  end
+
+  # load in sets of tests and helper methods
+  include KeteTestUnitHelper
+  include ExtendedContentTestUnitHelper
+
+  # TODO: a number of Kete custom methods not tested
 
   def test_should_create_user
     assert_difference User, :count do
@@ -47,32 +69,33 @@ class UserTest < Test::Unit::TestCase
   end
 
   def test_should_reset_password
-    users(:quentin).update_attributes(:password => 'new password', :password_confirmation => 'new password')
-    assert_equal users(:quentin), User.authenticate('quentin', 'new password')
+    @users[0].update_attributes(:password => 'new password', :password_confirmation => 'new password')
+    assert_equal @users[0], User.authenticate('admin', 'new password')
   end
 
   def test_should_not_rehash_password
-    users(:quentin).update_attributes(:login => 'quentin2')
-    assert_equal users(:quentin), User.authenticate('quentin2', 'test')
+    @users[0].update_attributes(:login => 'default2')
+    assert_equal @users[0], User.authenticate('default2', 'test')
   end
 
   def test_should_authenticate_user
-    assert_equal users(:quentin), User.authenticate('quentin', 'test')
+    assert_equal @users[0], User.authenticate('admin', 'test')
   end
 
   def test_should_set_remember_token
-    users(:quentin).remember_me
-    assert_not_nil users(:quentin).remember_token
-    assert_not_nil users(:quentin).remember_token_expires_at
+    @users[0].remember_me
+    assert_not_nil @users[0].remember_token
+    assert_not_nil @users[0].remember_token_expires_at
   end
 
   def test_should_unset_remember_token
-    users(:quentin).remember_me
-    assert_not_nil users(:quentin).remember_token
-    users(:quentin).forget_me
-    assert_nil users(:quentin).remember_token
+    @users[0].remember_me
+    assert_not_nil @users[0].remember_token
+    @users[0].forget_me
+    assert_nil @users[0].remember_token
   end
 
+  # currently returns nil, not sure why
   def test_should_make_activation_code
     user = create_user
     assert_not_nil user.activation_code
@@ -82,6 +105,6 @@ class UserTest < Test::Unit::TestCase
     def create_user(options = {})
       # Walter McGinnis, 2007-07-10
       # adding terms agreement and capcha vars
-      User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire', :agree_to_terms => true, :security_code => 'test', :security_code_confirmation => 'test' }.merge(options))
+      User.create(@new_model.merge(options))
     end
 end

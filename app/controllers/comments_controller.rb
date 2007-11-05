@@ -60,7 +60,7 @@ class CommentsController < ApplicationController
 
     if @comment.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
 
-      add_contributor_to(@comment,current_user)
+      @comment.add_as_contributor(current_user)
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable

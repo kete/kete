@@ -149,5 +149,29 @@ module OaiDcHelpers
         xml.tag!("dc:format", format)
       end
     end
+
+    def oai_dc_xml_dc_description_for_file(xml, item)
+      file_classes = %w{ AudioRecording Document Video StillImage }
+
+      if file_classes.include?(item.class.name)
+        xml.tag!("dc:description") do
+          xml.files do
+            # images we describe all image versions via image_files
+            # where as everything else only has one file
+            if item.class.name == 'StillImage'
+              item.image_files.each do |image|
+                xml.tag!(image.thumbnail) do
+                  xml_enclosure_for_item_with_file(xml, item)
+                end
+              end
+            else
+              xml.tag!(item.class.name.tableize.singularize) do
+                xml_enclosure_for_item_with_file(xml, item)
+              end
+            end
+          end
+        end
+      end
+    end
   end
 end

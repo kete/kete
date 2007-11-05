@@ -21,6 +21,12 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
 
                                         oai_dc_xml_dc_description(xml,item.description)
 
+                                        # gives use dc:description/files/version_of_item/enclosure
+                                        # for any associated binary files
+                                        # that can be used to derive the url for things like thumbnails
+                                        # or populate rss enclosure
+                                        oai_dc_xml_dc_description_for_file(xml, item)
+
                                         oai_dc_xml_dc_creators_and_date(xml,item)
                                         oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
 

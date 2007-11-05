@@ -1,7 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class RoleTest < Test::Unit::TestCase
-  fixtures :roles
+  # fixtures preloaded
+
+  # skipping, testing handled by ActiveRecord and authorization plugin
+  # all declaritive in model
 
   # Replace this with your real tests.
   def test_truth

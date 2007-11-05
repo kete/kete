@@ -5,6 +5,7 @@ require 'system_settings_controller'
 class SystemSettingsController; def rescue_action(e) raise e end; end
 
 class SystemSettingsControllerTest < Test::Unit::TestCase
+  # fixtures are preloaded
   def setup
     @controller = SystemSettingsController.new
     @request    = ActionController::TestRequest.new

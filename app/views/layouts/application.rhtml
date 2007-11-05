@@ -102,8 +102,10 @@
                 </div>
                 -->
                 <% if flash[:notice] %>
-                        <!-- TODO: look up if there is a style sheet class for flash, add here -->
                         <div id="notice"><%= flash[:notice] %></div>
+                <% end %>
+                <% if flash[:error] %>
+                        <div id="error"><%= flash[:error] %></div>
                 <% end %>
 
         </div><!-- /header -->
