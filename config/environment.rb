@@ -4,14 +4,19 @@
 # you don't control web/app server and can't set it the proper way
 # ENV['RAILS_ENV'] ||= 'production'
 
-# Walter McGinnis (walter@katipo.co.nz), 2007-01-07
+# Specifies gem version of Rails to use when vendor/rails is not present
+RAILS_GEM_VERSION = '1.2.5'
+
+# Walter McGinnis, 2007-10-18
+# moving this up before other things that need it
+# acts_as_zoom declarations in models
+ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document', 'Comment']
+
+# Walter McGinnis, 2007-01-07
 # You can override default authorization system constants here.
 AUTHORIZATION_MIXIN = "object roles"
 #DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
 #STORE_LOCATION_METHOD = :store_return_location
-
-# Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '1.1.6'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -51,6 +56,11 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
 
   # See Rails::Configuration for more options
+
+  # Walter McGinnis, 2007-10-18
+  # incremental step towards the proper way of doing this in 2.0
+  # should go in a file under config/initializers/
+  config.active_record.observers = :user_observer
 end
 
 # date styles:
@@ -77,9 +87,6 @@ ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
 include RequiredSoftware
 required_software = load_required_software
 MISSING_SOFTWARE = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
-
-# acts_as_zoom declarations in models
-ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document', 'Comment']
 
 # has to do with use of attachment_fu
 BASE_PRIVATE_PATH = 'private'
@@ -119,6 +126,7 @@ else
   IMAGE_SIZES = {:small_sq => [50, 50], :small => '50', :medium => '200>', :large => '400>'}
   AUDIO_CONTENT_TYPES = ['audio/mpeg']
   DOCUMENT_CONTENT_TYPES = ['text/html']
+  ENABLE_CONVERTING_DOCUMENTS = false
   IMAGE_CONTENT_TYPES = [:image]
   VIDEO_CONTENT_TYPES = ['video/mpeg']
   SITE_URL = "kete.net.nz"
@@ -147,3 +155,4 @@ require 'error_handler_basic' # defines AC::Base#rescue_action_in_public
 
 # making the attachment_fu upload file error more helpful
 ActiveRecord::Errors.default_error_messages[:inclusion] += '.  Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.'
+

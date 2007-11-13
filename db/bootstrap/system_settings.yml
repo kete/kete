@@ -301,3 +301,11 @@ system_settings_033:
   id: "33"
   value: "4"
   section: System
+system_settings_034:
+  name: Enable Converting Documents
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Turns on converting uploaded documents to the new document description.  Requires the convert_attachment_to plugin supporting software be installed (see the README). CAREFUL.  ENABLING THIS WITHOUT MAKING PROPER PREPERATIONS MAY BREAK YOUR SITE AFTER RESTART!
+  id: "34"
+  value: "false"
+  section: Documents

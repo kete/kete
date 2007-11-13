@@ -32,6 +32,15 @@ class Document < ActiveRecord::Base
 
   include HandleLegacyAttachmentFuPaths
 
+  # this supports auto populated description
+  # attribute with converted pdfs, msword docs,
+  # html, and plain text
+  # requires that a number of things be installed
+  # to support it, so wrapping it in a system setting
+  if ENABLE_CONVERTING_DOCUMENTS
+    convert_attachment_to :html, :description
+  end
+
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|
       enum = attachment_options[attr_name]
