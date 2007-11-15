@@ -66,13 +66,37 @@ Usage:
 
 In your model that uses "has_attachments", i.e. attachment_fu, specify the output mime type and the attribute of the model that should be populated with it.
 
-convert_attachment_to :html, :description
+convert_attachment_to :output_type =>  :html, :target_attribute => :description
 
 At this stage, you may only choose to convert to HTML or plain text,
 i.e.
-convert_attachment_to :html, :some_attribute
+convert_attachment_to :output_type =>  :html, :target_attribute => :some_attribute
 or
-convert_attachment_to :text, :some_attribute
+convert_attachment_to :output_type =>  :text, :target_attribute => :some_attribute
+
+There are some other defaults that you may want to change:
+
+max_pdf_pages which is set to 10
+run_save_after which is set to true
+wvText_path is for configuring where the wvWave utility gets its configuration when converting MS Word docs to plain text, the default is /usr/share/wv/wvText.xml, which is the Debian/Ubuntu standard location.  Override if you have it installed somewhere else.
+distrubution.
+
+You can override these like so:
+
+convert_attachment_to :output_type =>  :html, :target_attribute => :some_attribute, :run_after_save => false, :max_pdf_pages => 2, :wvText_path => '/usr/local/share/wv/wvText.xml'
+
+More about run_after_save:
+
+Because of potential conflicts with other plugins that use the after_save callback and unexpected versions being created when using acts_as_versioned, we provide the option to turn off automatic after save conversion and therefore allow for managing when the conversions happen directly.
+
+So, for example, you could provide a convert action in your controller
+that looks like this:
+
+     def convert
+         @thing = Thing.find(params[:id])
+         @thing.do_conversion
+     end
+
 
 Cheers,
 Walter McGinnis

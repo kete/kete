@@ -87,4 +87,7 @@ class ConvertAttachmentToTest < Test::Unit::TestCase
 
     assert_equal File.read(File.join(File.dirname(__FILE__), 'fixtures/files/to_text.txt')), to_text_doc.description, "convert_attachment_to plugin: text to text results in unexpected value."
   end
+
+  # TODO: maybe overkill, but set up model where run_after_save is false
+  # would need to set up a controller action to use do_conversion directly
 end

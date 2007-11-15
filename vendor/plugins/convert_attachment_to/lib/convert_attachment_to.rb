@@ -23,18 +23,27 @@ module Katipo #:nodoc:
       # will load the relevant instance methods
       # defined below when invoked
       module ClassMethods
-        def convert_attachment_to(output_type, target_attribute)
+        def convert_attachment_to(options = { })
+          options[:run_after_save] ||= true
+          options[:max_pdf_pages] ||= 10
+          # default path is debian/ubuntu for this
+          options[:wvText_path] ||= '/usr/share/wv/wvText.xml'
+
           class_eval do
             include Katipo::Acts::ConvertAttachmentTo::InstanceMethods
 
             class_inheritable_accessor :configuration
-            self.configuration = { :output_type => output_type,
-              :target_attribute => target_attribute,
-              :max_pdf_pages => 10 }
+            self.configuration = { :output_type => options[:output_type],
+              :target_attribute => options[:target_attribute],
+              :run_after_save => options[:run_after_save],
+              :max_pdf_pages => options[:max_pdf_pages],
+              :wvText_path => options[:wvText_path]}
 
-            # this needs to come after attachment_fu
-            # in the order of things
-            after_validation :do_conversion
+            # attachment_fu callback
+            # because of potential conflicts with other plugins that use after_save
+            # we provide the option to turn off automatic after save conversion
+            # and therefore allow for managing when the conversions happen directly
+            after_attachment_saved { |record| record.do_conversion } if options[:run_after_save]
           end
         end
       end
@@ -58,6 +67,7 @@ module Katipo #:nodoc:
             end
 
             write_attribute configuration[:target_attribute], output
+            self.save!
           end
         end
 
@@ -74,7 +84,6 @@ module Katipo #:nodoc:
             raw_body_parts[0].strip
           when :text
             # convert and discard the extra stuff we don't need
-            # TODO: this has hardcoded debian/ubuntu config file path
             `lynx -dump file://#{self.full_filename}`.strip
           end
         end
@@ -102,7 +111,7 @@ module Katipo #:nodoc:
           when :text
             # convert and discard the extra stuff we don't need
             # TODO: this has hardcoded debian/ubuntu config file path
-            `wvWare -c utf-8 --nographics -x /usr/share/wv/wvText.xml #{self.full_filename}`.strip
+            `wvWare -c utf-8 --nographics -x #{configuration[:wvText_path]} #{self.full_filename}`.strip
           end
         end
 

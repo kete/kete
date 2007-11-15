@@ -12,11 +12,9 @@ class Document < ActiveRecord::Base
 end
 
 class DocumentToHtml < Document
-  # now our setup
-  convert_attachment_to :html, :description
+  convert_attachment_to :output_type => :html, :target_attribute => :description
 end
 
 class DocumentToText < Document
-  # now our setup
-  convert_attachment_to :text, :description
+  convert_attachment_to :output_type => :text, :target_attribute => :description
 end
