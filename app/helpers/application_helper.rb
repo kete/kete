@@ -441,7 +441,7 @@ module ApplicationHelper
     end
   end
 
-  def xml_enclosure_for_item_with_file(xml, item)
+  def xml_enclosure_for_item_with_file(xml, item, host)
     args = { :type => item.content_type,
       :length => item.size.to_s,
       :url => "http://#{host}#{item.public_filename}" }

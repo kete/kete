@@ -37,8 +37,10 @@ class Document < ActiveRecord::Base
   # html, and plain text
   # requires that a number of things be installed
   # to support it, so wrapping it in a system setting
+  # also, we manage when the conversion happens
+  # rather than having it use a callback
   if ENABLE_CONVERTING_DOCUMENTS
-    convert_attachment_to :html, :description
+    convert_attachment_to :output_type => :html, :target_attribute => :description, :run_after_save => false
   end
 
   def attachment_attributes_valid?
@@ -48,4 +50,5 @@ class Document < ActiveRecord::Base
     end
   end
 
+  # convert_attachment_to :html, :description
 end

@@ -65,6 +65,18 @@ class DocumentsController < ApplicationController
     end
   end
 
+  # converts uploaded document to document description in html form
+  def convert
+    @document = Document.find(params[:id])
+    if @document.do_conversion
+      after_successful_zoom_item_update(@document)
+      flash[:notice] = 'Document description was successfully updated with text of uploaded document.'
+    else
+      flash[:notice] = 'There were problems converting the text of the uploaded document to the document\'s description.  Please edit the description manually.'
+    end
+    redirect_to_show_for(@document)
+  end
+
   def destroy
     zoom_destroy_and_redirect('Document')
   end

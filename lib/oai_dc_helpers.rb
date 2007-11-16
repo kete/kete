@@ -150,7 +150,13 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_description_for_file(xml, item)
+    def oai_dc_xml_dc_description_for_file(xml, item, passed_request = nil)
+      if !passed_request.nil?
+        host = passed_request[:host]
+      else
+        host = request.host
+      end
+
       file_classes = %w{ AudioRecording Document Video StillImage }
 
       if file_classes.include?(item.class.name)
@@ -161,12 +167,12 @@ module OaiDcHelpers
             if item.class.name == 'StillImage'
               item.image_files.each do |image|
                 xml.tag!(image.thumbnail) do
-                  xml_enclosure_for_item_with_file(xml, item)
+                  xml_enclosure_for_item_with_file(xml, item, host)
                 end
               end
             else
               xml.tag!(item.class.name.tableize.singularize) do
-                xml_enclosure_for_item_with_file(xml, item)
+                xml_enclosure_for_item_with_file(xml, item, host)
               end
             end
           end

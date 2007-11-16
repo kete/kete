@@ -15,12 +15,24 @@
                                 <p><b><%= @document.short_summary %></b></p>
                                 <%= tags_for(@document) -%>
 
-                                <p><%= @document.description %></p>
                                 <p>Filename: <%= @document.filename %>
-                                   (<%= link_to_original_of @document, 'view' -%>)
+                                  ( <%= link_to_original_of @document,
+                                        'view' -%>
+                                  <% if
+                                     ok_to_convert_to_description?(@document)
+                                     -%>
+                                  |
+                                  <%= link_to "replace description
+                                  with document text",
+                                      :action => :convert,
+                                  :id => @document %>
+                                  <% end %>
+                                  )
                                 </p>
                                 <p>Size: <%= number_to_human_size(@document.size) %></p>
                                 <p>Document type: <%= @document.content_type %></p>
+
+                                <p><%= @document.description %></p>
 
                                 <%= pending_review(@document) %>
 <% end -%>
