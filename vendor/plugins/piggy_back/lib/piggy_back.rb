@@ -173,25 +173,29 @@ class ActiveRecord::Base
   end
 end
 
-module ActionController::Pagination
+# Walter McGinnis, 2007-11-18
+# we don't use this anyway
+# since we use will_paginate or roll our own pagination
+# it was preventing compatibility with Rails 2.0
+# module ActionController::Pagination
 
-  # make paginator swallow piggy option
-  DEFAULT_OPTIONS[:piggy] = nil
+#   # make paginator swallow piggy option
+#   DEFAULT_OPTIONS[:piggy] = nil
 
-  # pass piggy option to model find
-  def find_collection_for_pagination(model, options, paginator)
-    model.find(:all,
-               :conditions => options[:conditions],
-               :order => options[:order_by] || options[:order],
-               :joins => options[:join] || options[:joins],
-               :include => options[:include],
-               :select => options[:select],
-               :limit => options[:per_page],
-               :offset => paginator.current.offset,
-               :piggy => options[:piggy])
-  end
+#   # pass piggy option to model find
+#   def find_collection_for_pagination(model, options, paginator)
+#     model.find(:all,
+#                :conditions => options[:conditions],
+#                :order => options[:order_by] || options[:order],
+#                :joins => options[:join] || options[:joins],
+#                :include => options[:include],
+#                :select => options[:select],
+#                :limit => options[:per_page],
+#                :offset => paginator.current.offset,
+#                :piggy => options[:piggy])
+#   end
 
-end
+# end
 
 __END__
 
