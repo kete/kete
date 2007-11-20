@@ -32,8 +32,8 @@ module Katipo #:nodoc:
           class_eval do
             include Katipo::Acts::ConvertAttachmentTo::InstanceMethods
 
-            class_inheritable_accessor :configuration
-            self.configuration = { :output_type => options[:output_type],
+            class_inheritable_accessor :cat_conf
+            self.cat_conf = { :output_type => options[:output_type],
               :target_attribute => options[:target_attribute],
               :run_after_save => options[:run_after_save],
               :max_pdf_pages => options[:max_pdf_pages],
@@ -66,13 +66,13 @@ module Katipo #:nodoc:
               output = self.send('convert_from_' + type_to_convert.split('/')[1])
             end
 
-            write_attribute configuration[:target_attribute], output
+            write_attribute cat_conf[:target_attribute], output
             self.save!
           end
         end
 
         def convert_from_html
-          case configuration[:output_type]
+          case cat_conf[:output_type]
           when :html
             # read and discard the extra stuff we don't need
             # TODO: make this split case insensitive
@@ -90,7 +90,7 @@ module Katipo #:nodoc:
 
         def convert_from_text
           text = File.read(self.full_filename)
-          case configuration[:output_type]
+          case cat_conf[:output_type]
           when :html
             # read and discard the extra stuff we don't need
             raw = RedCloth.new text
@@ -101,7 +101,7 @@ module Katipo #:nodoc:
         end
 
         def convert_from_msword
-          case configuration[:output_type]
+          case cat_conf[:output_type]
           when :html
             # convert and discard the extra stuff we don't need
             raw_parts = `wvWare -c utf-8 --nographics -X #{self.full_filename}`.split('<doc>')
@@ -111,15 +111,15 @@ module Katipo #:nodoc:
           when :text
             # convert and discard the extra stuff we don't need
             # TODO: this has hardcoded debian/ubuntu config file path
-            `wvWare -c utf-8 --nographics -x #{configuration[:wvText_path]} #{self.full_filename}`.strip
+            `wvWare -c utf-8 --nographics -x #{cat_conf[:wvText_path]} #{self.full_filename}`.strip
           end
         end
 
         def convert_from_pdf
-          case configuration[:output_type]
+          case cat_conf[:output_type]
           when :html
             # convert and discard the extra stuff we don't need
-            raw_parts = `pdftohtml -l #{configuration[:max_pdf_pages]} -i -noframes -stdout #{self.full_filename}`.split('<BODY')
+            raw_parts = `pdftohtml -l #{cat_conf[:max_pdf_pages]} -i -noframes -stdout #{self.full_filename}`.split('<BODY')
             # pop off first line (remains of body tag)
             raw_body_parts = raw_parts[1].split(/\n/)
             raw_body_parts.delete_at(0)
@@ -132,7 +132,7 @@ module Katipo #:nodoc:
             existing_filename = self.thumbnail_name_for(nil)
             new_filename = File.basename(existing_filename, File.extname(existing_filename)) + ".txt"
             full_new_filename = File.join(Katipo::Acts::ConvertAttachmentTo.tempfile_path, new_filename)
-            `pdftotext -l #{configuration[:max_pdf_pages]} -nopgbrk #{self.full_filename} #{full_new_filename}`
+            `pdftotext -l #{cat_conf[:max_pdf_pages]} -nopgbrk #{self.full_filename} #{full_new_filename}`
             File.read(full_new_filename).strip
           end
         end
