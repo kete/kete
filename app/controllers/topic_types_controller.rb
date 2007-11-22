@@ -13,7 +13,6 @@ class TopicTypesController < ApplicationController
   end
 
   def list
-    # TODO: Rails 2.0 test
     @topic_types = TopicType.find(1).full_set.paginate(:page => params[:page], :per_page => 10)
   end
 

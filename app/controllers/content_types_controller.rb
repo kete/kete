@@ -13,7 +13,7 @@ class ContentTypesController < ApplicationController
   end
 
   def list
-    @content_type_pages, @content_types = paginate(:content_types, :order => 'controller')
+    @content_types = ContentType.paginate(:page => params[:page], :per_page => 10, :order => 'controller')
   end
 
   def new
