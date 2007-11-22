@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: ActionView::Helpers::TagHelper</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">ActionView::Helpers::TagHelper</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/vendor/rails/actionpack/lib/action_view/helpers/tag_helper_rb.html">
+                vendor/rails/actionpack/lib/action_view/helpers/tag_helper.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Use these methods to generate HTML tags programmatically when you
+can&#8216;t use a Builder. By default, they output XHTML compliant tags.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000605">cdata_section</a>&nbsp;&nbsp;
+      <a href="#M000604">content_tag</a>&nbsp;&nbsp;
+      <a href="#M000606">escape_once</a>&nbsp;&nbsp;
+      <a href="#M000603">tag</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+    <div id="includes">
+      <h3 class="section-bar">Included Modules</h3>
+
+      <div id="includes-list">
+        <span class="include-name">ERB::Util</span>
+      </div>
+    </div>
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000605" class="method-detail">
+        <a name="M000605"></a>
+
+        <div class="method-heading">
+          <a href="#M000605" class="method-signature">
+          <span class="method-name">cdata_section</span><span class="method-args">(content)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns a CDATA section with the given <tt>content</tt>. CDATA sections are
+used to escape blocks of text containing characters which would otherwise
+be recognized as markup. CDATA sections begin with the string
+<tt>&lt;![CDATA[</tt> and end with (and may not contain) the string
+<tt>]]&gt;</tt>.
+</p>
+<pre>
+  cdata_section(&quot;&lt;hello world&gt;&quot;)
+   # =&gt; &lt;![CDATA[&lt;hello world&gt;]]&gt;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000605-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000605-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/tag_helper.rb, line 65</span>
+65:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">cdata_section</span>(<span class="ruby-identifier">content</span>)
+66:         <span class="ruby-node">&quot;&lt;![CDATA[#{content}]]&gt;&quot;</span>
+67:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000604" class="method-detail">
+        <a name="M000604"></a>
+
+        <div class="method-heading">
+          <a href="#M000604" class="method-signature">
+          <span class="method-name">content_tag</span><span class="method-args">(name, content_or_options_with_block = nil, options = nil, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns an HTML block <a href="TagHelper.html#M000603">tag</a> of type
+<tt>name</tt> surrounding the <tt>content</tt>. Add HTML attributes by
+passing an attributes hash to <tt>options</tt>. For attributes with no
+value like (disabled and readonly), give it a value of true in the
+<tt>options</tt> hash. You can use symbols or strings for the attribute
+names.
+</p>
+<pre>
+  content_tag(:p, &quot;Hello world!&quot;)
+   # =&gt; &lt;p&gt;Hello world!&lt;/p&gt;
+  content_tag(:div, content_tag(:p, &quot;Hello world!&quot;), :class =&gt; &quot;strong&quot;)
+   # =&gt; &lt;div class=&quot;strong&quot;&gt;&lt;p&gt;Hello world!&lt;/p&gt;&lt;/div&gt;
+  content_tag(&quot;select&quot;, options, :multiple =&gt; true)
+   # =&gt; &lt;select multiple=&quot;multiple&quot;&gt;...options...&lt;/select&gt;
+</pre>
+<p>
+Instead of passing the content as an argument, you can also use a block in
+which case, you pass your <tt>options</tt> as the second parameter.
+</p>
+<pre>
+  &lt;% content_tag :div, :class =&gt; &quot;strong&quot; do -%&gt;
+    Hello world!
+  &lt;% end -%&gt;
+   # =&gt; &lt;div class=&quot;strong&quot;&gt;&lt;p&gt;Hello world!&lt;/p&gt;&lt;/div&gt;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000604-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000604-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/tag_helper.rb, line 47</span>
+47:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content_tag</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">content_or_options_with_block</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">options</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+48:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+49:           <span class="ruby-identifier">options</span> = <span class="ruby-identifier">content_or_options_with_block</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">content_or_options_with_block</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+50:           <span class="ruby-identifier">content</span> = <span class="ruby-identifier">capture</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+51:           <span class="ruby-identifier">concat</span>(<span class="ruby-identifier">content_tag_string</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">content</span>, <span class="ruby-identifier">options</span>), <span class="ruby-identifier">block</span>.<span class="ruby-identifier">binding</span>)
+52:         <span class="ruby-keyword kw">else</span>
+53:           <span class="ruby-identifier">content</span> = <span class="ruby-identifier">content_or_options_with_block</span>
+54:           <span class="ruby-identifier">content_tag_string</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">content</span>, <span class="ruby-identifier">options</span>)
+55:         <span class="ruby-keyword kw">end</span>
+56:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000606" class="method-detail">
+        <a name="M000606"></a>
+
+        <div class="method-heading">
+          <a href="#M000606" class="method-signature">
+          <span class="method-name">escape_once</span><span class="method-args">(html)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the escaped <tt>html</tt> without affecting existing escaped
+entities.
+</p>
+<pre>
+  escape_once(&quot;1 &gt; 2 &amp;amp; 3&quot;)
+   # =&gt; &quot;1 &amp;lt; 2 &amp;amp; 3&quot;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000606-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000606-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/tag_helper.rb, line 73</span>
+73:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">escape_once</span>(<span class="ruby-identifier">html</span>)
+74:         <span class="ruby-identifier">fix_double_escape</span>(<span class="ruby-identifier">html_escape</span>(<span class="ruby-identifier">html</span>.<span class="ruby-identifier">to_s</span>))
+75:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000603" class="method-detail">
+        <a name="M000603"></a>
+
+        <div class="method-heading">
+          <a href="#M000603" class="method-signature">
+          <span class="method-name">tag</span><span class="method-args">(name, options = nil, open = false)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns an empty HTML <a href="TagHelper.html#M000603">tag</a> of type
+<tt>name</tt> which by default is XHTML compliant. Setting <tt>open</tt> to
+true will create an open <a href="TagHelper.html#M000603">tag</a>
+compatible with HTML 4.0 and below. Add HTML attributes by passing an
+attributes hash to <tt>options</tt>. For attributes with no value like
+(disabled and readonly), give it a value of true in the <tt>options</tt>
+hash. You can use symbols or strings for the attribute names.
+</p>
+<pre>
+  tag(&quot;br&quot;)
+   # =&gt; &lt;br /&gt;
+  tag(&quot;br&quot;, nil, true)
+   # =&gt; &lt;br&gt;
+  tag(&quot;input&quot;, { :type =&gt; 'text', :disabled =&gt; true })
+   # =&gt; &lt;input type=&quot;text&quot; disabled=&quot;disabled&quot; /&gt;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000603-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000603-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/tag_helper.rb, line 24</span>
+24:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">tag</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">open</span> = <span class="ruby-keyword kw">false</span>)
+25:         <span class="ruby-node">&quot;&lt;#{name}#{tag_options(options) if options}&quot;</span> <span class="ruby-operator">+</span> (<span class="ruby-identifier">open</span> <span class="ruby-value">? </span><span class="ruby-value str">&quot;&gt;&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-value str">&quot; /&gt;&quot;</span>)
+26:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

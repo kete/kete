@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: ActiveRecord::ConnectionAdapters::OracleAdapter</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">ActiveRecord::ConnectionAdapters::OracleAdapter</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter_rb.html">
+                vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                <a href="AbstractAdapter.html">
+                AbstractAdapter
+               </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+This is an Oracle/OCI adapter for the ActiveRecord persistence framework.
+It relies upon the OCI8 driver, which works with Oracle 8i and above. Most
+recent development has been on Debian Linux against a 10g database,
+ActiveRecord 1.12.1 and OCI8 0.1.13. See: <a
+href="http://rubyforge.org/projects/ruby-oci8">rubyforge.org/projects/ruby-oci8</a>/
+</p>
+<p>
+Usage notes:
+</p>
+<ul>
+<li>Key generation assumes a &quot;${table_name}_seq&quot; sequence is
+available for all tables; the sequence name can be changed using <a
+href="../Base.html#M001028">ActiveRecord::Base.set_sequence_name</a>. When
+using Migrations, these sequences are created automatically.
+
+</li>
+<li>Oracle uses DATE or TIMESTAMP datatypes for both dates and times.
+Consequently some hacks are employed to map data back to Date or Time in
+Ruby. If the column_name ends in _time it&#8216;s created as a Ruby Time.
+Else if the hours/minutes/seconds are 0, I make it a Ruby Date. Else
+it&#8216;s a Ruby Time. This is a bit nasty - but if you use Duck Typing
+you&#8216;ll probably not care very much. In 9i and up it&#8216;s tempting
+to map DATE to Date and TIMESTAMP to Time, but too many databases use DATE
+for both. Timezones and sub-second precision on timestamps are not
+supported.
+
+</li>
+<li>Default values that are functions (such as &quot;SYSDATE&quot;) are not
+supported. This is a restriction of the way ActiveRecord supports default
+values.
+
+</li>
+<li>Support for Oracle8 is limited by Rails&#8217; use of ANSI join syntax,
+which is supported in Oracle9i and later. You will need to use finder_sql
+for has_and_belongs_to_many associations to run against Oracle8.
+
+</li>
+</ul>
+<p>
+Required parameters:
+</p>
+<ul>
+<li><tt>:username</tt>
+
+</li>
+<li><tt>:password</tt>
+
+</li>
+<li><tt>:database</tt>
+
+</li>
+</ul>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000860">active?</a>&nbsp;&nbsp;
+      <a href="#M000867">add_order_by_for_association_limiting!</a>&nbsp;&nbsp;
+      <a href="#M000862">disconnect!</a>&nbsp;&nbsp;
+      <a href="#M000866">distinct</a>&nbsp;&nbsp;
+      <a href="#M000863">next_sequence_value</a>&nbsp;&nbsp;
+      <a href="#M000865">pk_and_sequence_for</a>&nbsp;&nbsp;
+      <a href="#M000864">prefetch_primary_key?</a>&nbsp;&nbsp;
+      <a href="#M000859">quoted_false</a>&nbsp;&nbsp;
+      <a href="#M000858">quoted_true</a>&nbsp;&nbsp;
+      <a href="#M000861">reconnect!</a>&nbsp;&nbsp;
+      <a href="#M000857">table_alias_length</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000860" class="method-detail">
+        <a name="M000860"></a>
+
+        <div class="method-heading">
+          <a href="#M000860" class="method-signature">
+          <span class="method-name">active?</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns true if the connection is active.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000860-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000860-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 193</span>
+193:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">active?</span>
+194:           <span class="ruby-comment cmt"># Pings the connection to check if it's still good. Note that an</span>
+195:           <span class="ruby-comment cmt"># #active? method is also available, but that simply returns the</span>
+196:           <span class="ruby-comment cmt"># last known state, which isn't good enough if the connection has</span>
+197:           <span class="ruby-comment cmt"># gone stale since the last use.</span>
+198:           <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">ping</span>
+199:         <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">OCIException</span>
+200:           <span class="ruby-keyword kw">false</span>
+201:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000867" class="method-detail">
+        <a name="M000867"></a>
+
+        <div class="method-heading">
+          <a href="#M000867" class="method-signature">
+          <span class="method-name">add_order_by_for_association_limiting!</span><span class="method-args">(sql, options)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+ORDER BY clause for the passed order option.
+</p>
+<p>
+Uses column aliases as defined by <a
+href="OracleAdapter.html#M000866">distinct</a>.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000867-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000867-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 480</span>
+480:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_order_by_for_association_limiting!</span>(<span class="ruby-identifier">sql</span>, <span class="ruby-identifier">options</span>)
+481:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">sql</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:order</span>].<span class="ruby-identifier">blank?</span>
+482: 
+483:           <span class="ruby-identifier">order</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:order</span>].<span class="ruby-identifier">split</span>(<span class="ruby-value str">','</span>).<span class="ruby-identifier">collect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">strip</span> }.<span class="ruby-identifier">reject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">:blank?</span>)
+484:           <span class="ruby-identifier">order</span>.<span class="ruby-identifier">map!</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-identifier">$1</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">s</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/ (.*)/</span>}
+485:           <span class="ruby-identifier">order</span> = <span class="ruby-identifier">order</span>.<span class="ruby-identifier">zip</span>((<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">order</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">to_a</span>).<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;alias_#{i}__ #{s}&quot;</span> }.<span class="ruby-identifier">join</span>(<span class="ruby-value str">', '</span>)
+486: 
+487:           <span class="ruby-identifier">sql</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;ORDER BY #{order}&quot;</span>
+488:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000862" class="method-detail">
+        <a name="M000862"></a>
+
+        <div class="method-heading">
+          <a href="#M000862" class="method-signature">
+          <span class="method-name">disconnect!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Disconnects from the database.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000862-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000862-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 211</span>
+211:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">disconnect!</span>
+212:           <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">logoff</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>
+213:           <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">active</span> = <span class="ruby-keyword kw">false</span>
+214:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000866" class="method-detail">
+        <a name="M000866"></a>
+
+        <div class="method-heading">
+          <a href="#M000866" class="method-signature">
+          <span class="method-name">distinct</span><span class="method-args">(columns, order_by)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+SELECT DISTINCT clause for a given set of columns and a given ORDER BY
+clause.
+</p>
+<p>
+Oracle requires the ORDER BY columns to be in the SELECT list for DISTINCT
+queries. However, with those columns included in the SELECT DISTINCT list,
+you won&#8216;t actually get a <a
+href="OracleAdapter.html#M000866">distinct</a> list of the column you want
+(presuming the column has duplicates with multiple values for the
+ordered-by columns. So we use the FIRST_VALUE function to get a single
+(first) value for each column, effectively making every row the same.
+</p>
+<pre>
+  distinct(&quot;posts.id&quot;, &quot;posts.created_at desc&quot;)
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000866-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000866-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 464</span>
+464:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">distinct</span>(<span class="ruby-identifier">columns</span>, <span class="ruby-identifier">order_by</span>)
+465:           <span class="ruby-keyword kw">return</span> <span class="ruby-node">&quot;DISTINCT #{columns}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">order_by</span>.<span class="ruby-identifier">blank?</span>
+466: 
+467:           <span class="ruby-comment cmt"># construct a valid DISTINCT clause, ie. one that includes the ORDER BY columns, using</span>
+468:           <span class="ruby-comment cmt"># FIRST_VALUE such that the inclusion of these columns doesn't invalidate the DISTINCT</span>
+469:           <span class="ruby-identifier">order_columns</span> = <span class="ruby-identifier">order_by</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">','</span>).<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">strip</span> }.<span class="ruby-identifier">reject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">:blank?</span>)
+470:           <span class="ruby-identifier">order_columns</span> = <span class="ruby-identifier">order_columns</span>.<span class="ruby-identifier">zip</span>((<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">order_columns</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">to_a</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+471:             <span class="ruby-node">&quot;FIRST_VALUE(#{c.split.first}) OVER (PARTITION BY #{columns} ORDER BY #{c}) AS alias_#{i}__&quot;</span>
+472:           <span class="ruby-keyword kw">end</span>
+473:           <span class="ruby-identifier">sql</span> = <span class="ruby-node">&quot;DISTINCT #{columns}, &quot;</span>
+474:           <span class="ruby-identifier">sql</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">order_columns</span> <span class="ruby-operator">*</span> <span class="ruby-value str">&quot;, &quot;</span>
+475:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000863" class="method-detail">
+        <a name="M000863"></a>
+
+        <div class="method-heading">
+          <a href="#M000863" class="method-signature">
+          <span class="method-name">next_sequence_value</span><span class="method-args">(sequence_name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the next sequence value from a sequence generator. Not generally
+called directly; used by ActiveRecord to get the next primary key value
+when inserting a new database record (see prefetch_primary_key?).
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000863-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000863-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 228</span>
+228:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">next_sequence_value</span>(<span class="ruby-identifier">sequence_name</span>)
+229:           <span class="ruby-identifier">id</span> = <span class="ruby-value">0</span>
+230:           <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;select #{sequence_name}.nextval id from dual&quot;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span> <span class="ruby-identifier">id</span> = <span class="ruby-identifier">r</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">to_i</span> }
+231:           <span class="ruby-identifier">id</span>
+232:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000865" class="method-detail">
+        <a name="M000865"></a>
+
+        <div class="method-heading">
+          <a href="#M000865" class="method-signature">
+          <span class="method-name">pk_and_sequence_for</span><span class="method-args">(table_name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Find a table&#8216;s primary key and sequence. <b>Note</b>: Only primary
+key is implemented - sequence will be nil.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000865-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000865-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 395</span>
+395:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pk_and_sequence_for</span>(<span class="ruby-identifier">table_name</span>)
+396:           (<span class="ruby-identifier">owner</span>, <span class="ruby-identifier">table_name</span>) = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">describe</span>(<span class="ruby-identifier">table_name</span>)
+397: 
+398:           <span class="ruby-identifier">pks</span> = <span class="ruby-identifier">select_values</span>(<span class="ruby-value str">&quot;select cc.column_name\nfrom all_constraints c, all_cons_columns cc\nwhere c.owner = '\#{owner}'\nand c.table_name = '\#{table_name}'\nand c.constraint_type = 'P'\nand cc.owner = c.owner\nand cc.constraint_name = c.constraint_name\n&quot;</span>, <span class="ruby-value str">'Primary Key'</span>)
+399: 
+400:           <span class="ruby-comment cmt"># only support single column keys</span>
+401:           <span class="ruby-identifier">pks</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span> <span class="ruby-operator">?</span> [<span class="ruby-identifier">oracle_downcase</span>(<span class="ruby-identifier">pks</span>.<span class="ruby-identifier">first</span>), <span class="ruby-keyword kw">nil</span>] <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>
+402:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000864" class="method-detail">
+        <a name="M000864"></a>
+
+        <div class="method-heading">
+          <a href="#M000864" class="method-signature">
+          <span class="method-name">prefetch_primary_key?</span><span class="method-args">(table_name = nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns true for Oracle adapter (since Oracle requires primary key values
+to be pre-fetched before insert). See also <a
+href="OracleAdapter.html#M000863">next_sequence_value</a>.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000864-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000864-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 267</span>
+267:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">prefetch_primary_key?</span>(<span class="ruby-identifier">table_name</span> = <span class="ruby-keyword kw">nil</span>)
+268:           <span class="ruby-keyword kw">true</span>
+269:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000859" class="method-detail">
+        <a name="M000859"></a>
+
+        <div class="method-heading">
+          <a href="#M000859" class="method-signature">
+          <span class="method-name">quoted_false</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000859-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000859-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 184</span>
+184:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">quoted_false</span>
+185:           <span class="ruby-value str">&quot;0&quot;</span>
+186:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000858" class="method-detail">
+        <a name="M000858"></a>
+
+        <div class="method-heading">
+          <a href="#M000858" class="method-signature">
+          <span class="method-name">quoted_true</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000858-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000858-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 180</span>
+180:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">quoted_true</span>
+181:           <span class="ruby-value str">&quot;1&quot;</span>
+182:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000861" class="method-detail">
+        <a name="M000861"></a>
+
+        <div class="method-heading">
+          <a href="#M000861" class="method-signature">
+          <span class="method-name">reconnect!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Reconnects to the database.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000861-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000861-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 204</span>
+204:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reconnect!</span>
+205:           <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">reset!</span>
+206:         <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">OCIException</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+207:           <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;#{adapter_name} automatic reconnection failed: #{e.message}&quot;</span>
+208:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000857" class="method-detail">
+        <a name="M000857"></a>
+
+        <div class="method-heading">
+          <a href="#M000857" class="method-signature">
+          <span class="method-name">table_alias_length</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000857-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000857-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/oracle_adapter.rb, line 154</span>
+154:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">table_alias_length</span>
+155:           <span class="ruby-value">30</span>
+156:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1046 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: ActionController::Filters::ClassMethods</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">ActionController::Filters::ClassMethods</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/vendor/rails/actionpack/lib/action_controller/filters_rb.html">
+                vendor/rails/actionpack/lib/action_controller/filters.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Filters enable controllers to run shared pre and post processing code for
+its actions. These filters can be used to do authentication, caching, or
+auditing before the intended action is performed. Or to do localization or
+output compression after the action has been performed. Filters have access
+to the request, response, and all the instance variables set by other
+filters in the chain or by the action (in the case of after filters).
+</p>
+<h2>Filter inheritance</h2>
+<p>
+Controller inheritance hierarchies share filters downwards, but subclasses
+can also add or skip filters without affecting the superclass. For example:
+</p>
+<pre>
+  class BankController &lt; ActionController::Base
+    before_filter :audit
+
+    private
+      def audit
+        # record the action and parameters in an audit log
+      end
+  end
+
+  class VaultController &lt; BankController
+    before_filter :verify_credentials
+
+    private
+      def verify_credentials
+        # make sure the user is allowed into the vault
+      end
+  end
+</pre>
+<p>
+Now any actions performed on the BankController will have the audit method
+called before. On the VaultController, first the audit method is called,
+then the verify_credentials method. If the audit method returns false, then
+verify_credentials and the intended action are never called.
+</p>
+<h2>Filter types</h2>
+<p>
+A filter can take one of three forms: method reference (symbol), external
+class, or inline method (proc). The first is the most common and works by
+referencing a protected or private method somewhere in the inheritance
+hierarchy of the controller by use of a symbol. In the bank example above,
+both BankController and VaultController use this form.
+</p>
+<p>
+Using an external class makes for more easily reused generic filters, such
+as output compression. External filter classes are implemented by having a
+static <tt>filter</tt> method on any class and then passing this class to
+the filter method. Example:
+</p>
+<pre>
+  class OutputCompressionFilter
+    def self.filter(controller)
+      controller.response.body = compress(controller.response.body)
+    end
+  end
+
+  class NewspaperController &lt; ActionController::Base
+    after_filter OutputCompressionFilter
+  end
+</pre>
+<p>
+The filter method is passed the controller instance and is hence granted
+access to all aspects of the controller and can manipulate them as it sees
+fit.
+</p>
+<p>
+The inline method (using a proc) can be used to quickly do something small
+that doesn&#8216;t require a lot of explanation. Or just as a quick test.
+It works like this:
+</p>
+<pre>
+  class WeblogController &lt; ActionController::Base
+    before_filter { |controller| false if controller.params[&quot;stop_action&quot;] }
+  end
+</pre>
+<p>
+As you can see, the block expects to be passed the controller after it has
+assigned the request to the internal variables. This means that the block
+has access to both the request and response objects complete with
+convenience methods for params, session, template, and assigns. Note: The
+inline method doesn&#8216;t strictly have to be a block; any object that
+responds to call and returns 1 or -1 on arity will do (such as a Proc or an
+Method object).
+</p>
+<p>
+Please note that around_filters function a little differently than the
+normal before and after filters with regard to filter types. Please see the
+section dedicated to around_filters below.
+</p>
+<h2>Filter chain ordering</h2>
+<p>
+Using <tt><a href="ClassMethods.html#M000182">before_filter</a></tt> and
+<tt><a href="ClassMethods.html#M000185">after_filter</a></tt> appends the
+specified filters to the existing chain. That&#8216;s usually just fine,
+but some times you care more about the order in which the filters are
+executed. When that&#8216;s the case, you can use <tt><a
+href="ClassMethods.html#M000181">prepend_before_filter</a></tt> and <tt><a
+href="ClassMethods.html#M000184">prepend_after_filter</a></tt>. Filters
+added by these methods will be put at the beginning of their respective
+chain and executed before the rest. For example:
+</p>
+<pre>
+  class ShoppingController &lt; ActionController::Base
+    before_filter :verify_open_shop
+
+  class CheckoutController &lt; ShoppingController
+    prepend_before_filter :ensure_items_in_cart, :ensure_items_in_stock
+</pre>
+<p>
+The filter chain for the CheckoutController is now
+<tt>:ensure_items_in_cart, :ensure_items_in_stock,</tt>
+<tt>:verify_open_shop</tt>. So if either of the ensure filters return
+false, we&#8216;ll never get around to see if the shop is open or not.
+</p>
+<p>
+You may pass multiple filter arguments of each type as well as a filter
+block. If a block is given, it is treated as the last argument.
+</p>
+<h2>Around filters</h2>
+<p>
+Around filters wrap an action, executing code both before and after. They
+may be declared as method references, blocks, or objects responding to
+filter or to both before and after.
+</p>
+<p>
+To use a method as an <a
+href="ClassMethods.html#M000188">around_filter</a>, pass a symbol naming
+the Ruby method. Yield (or block.call) within the method to run the action.
+</p>
+<pre>
+  around_filter :catch_exceptions
+
+  private
+    def catch_exceptions
+      yield
+    rescue =&gt; exception
+      logger.debug &quot;Caught exception! #{exception}&quot;
+      raise
+    end
+</pre>
+<p>
+To use a block as an <a href="ClassMethods.html#M000188">around_filter</a>,
+pass a block taking as args both the controller and the action block. You
+can&#8216;t call yield directly from an <a
+href="ClassMethods.html#M000188">around_filter</a> block; explicitly call
+the action block instead:
+</p>
+<pre>
+  around_filter do |controller, action|
+    logger.debug &quot;before #{controller.action_name}&quot;
+    action.call
+    logger.debug &quot;after #{controller.action_name}&quot;
+  end
+</pre>
+<p>
+To use a filter object with <a
+href="ClassMethods.html#M000188">around_filter</a>, pass an object
+responding to :filter or both :before and :after. With a filter method,
+yield to the block as above:
+</p>
+<pre>
+  around_filter BenchmarkingFilter
+
+  class BenchmarkingFilter
+    def self.filter(controller, &amp;block)
+      Benchmark.measure(&amp;block)
+    end
+  end
+</pre>
+<p>
+With before and after methods:
+</p>
+<pre>
+  around_filter Authorizer.new
+
+  class Authorizer
+    # This will run before the action. Returning false aborts the action.
+    def before(controller)
+      if user.authorized?
+        return true
+      else
+        redirect_to login_url
+        return false
+      end
+    end
+
+    # This will run after the action if and only if before returned true.
+    def after(controller)
+    end
+  end
+</pre>
+<p>
+If the filter has before and after methods, the before method will be
+called before the action. If before returns false, the filter chain is
+halted and after will not be run. See Filter Chain Halting below for an
+example.
+</p>
+<h2>Filter chain skipping</h2>
+<p>
+Declaring a filter on a base class conveniently applies to its subclasses,
+but sometimes a subclass should skip some of its superclass&#8217; filters:
+</p>
+<pre>
+  class ApplicationController &lt; ActionController::Base
+    before_filter :authenticate
+    around_filter :catch_exceptions
+  end
+
+  class WeblogController &lt; ApplicationController
+    # Will run the :authenticate and :catch_exceptions filters.
+  end
+
+  class SignupController &lt; ApplicationController
+    # Skip :authenticate, run :catch_exceptions.
+    skip_before_filter :authenticate
+  end
+
+  class ProjectsController &lt; ApplicationController
+    # Skip :catch_exceptions, run :authenticate.
+    skip_filter :catch_exceptions
+  end
+
+  class ClientsController &lt; ApplicationController
+    # Skip :catch_exceptions and :authenticate unless action is index.
+    skip_filter :catch_exceptions, :authenticate, :except =&gt; :index
+  end
+</pre>
+<h2>Filter conditions</h2>
+<p>
+Filters may be limited to specific actions by declaring the actions to
+include or exclude. Both options accept single actions (:only =&gt; :index)
+or arrays of actions (:except =&gt; [:foo, :bar]).
+</p>
+<pre>
+  class Journal &lt; ActionController::Base
+    # Require authentication for edit and delete.
+    before_filter :authorize, :only =&gt; [:edit, :delete]
+
+    # Passing options to a filter with a block.
+    around_filter(:except =&gt; :index) do |controller, action_block|
+      results = Profiler.run(&amp;action_block)
+      controller.response.sub! &quot;&lt;/body&gt;&quot;, &quot;#{results}&lt;/body&gt;&quot;
+    end
+
+    private
+      def authorize
+        # Redirect to login unless authenticated.
+      end
+  end
+</pre>
+<h2>Filter Chain Halting</h2>
+<p>
+<tt><a href="ClassMethods.html#M000182">before_filter</a></tt> and <tt><a
+href="ClassMethods.html#M000188">around_filter</a></tt> may halt the
+request before a controller action is run. This is useful, for example, to
+deny access to unauthenticated users or to redirect from http to https.
+Simply return false from the filter or call render or redirect. After
+filters will not be executed if the filter chain is halted.
+</p>
+<p>
+Around filters halt the request unless the action block is called. Given
+these filters
+</p>
+<pre>
+  after_filter :after
+  around_filter :around
+  before_filter :before
+</pre>
+<p>
+The filter chain will look like:
+</p>
+<pre>
+  ...
+  .      #   .  #around (code before yield)
+  .  .       #   .  .  #before (actual filter code is run)
+  .  .  .       #   .  .  .  execute controller action
+  .  .  .  /
+  .  .  ...
+  .  .  /
+  .  #around (code after yield)
+  . /
+  #after (actual filter code is run, unless the around filter does not yield)
+</pre>
+<p>
+If around returns before yielding, after will still not be run. The before
+filter and controller action will not be run. If before returns false, the
+second half of around and will still run but after and the action will not.
+If around does not yield, after will not be run.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000185">after_filter</a>&nbsp;&nbsp;
+      <a href="#M000183">append_after_filter</a>&nbsp;&nbsp;
+      <a href="#M000186">append_around_filter</a>&nbsp;&nbsp;
+      <a href="#M000180">append_before_filter</a>&nbsp;&nbsp;
+      <a href="#M000193">append_filter_to_chain</a>&nbsp;&nbsp;
+      <a href="#M000188">around_filter</a>&nbsp;&nbsp;
+      <a href="#M000182">before_filter</a>&nbsp;&nbsp;
+      <a href="#M000200">condition_hash</a>&nbsp;&nbsp;
+      <a href="#M000192">filter_chain</a>&nbsp;&nbsp;
+      <a href="#M000196">find_filter_append_position</a>&nbsp;&nbsp;
+      <a href="#M000197">find_filter_prepend_position</a>&nbsp;&nbsp;
+      <a href="#M000198">find_or_create_filter</a>&nbsp;&nbsp;
+      <a href="#M000184">prepend_after_filter</a>&nbsp;&nbsp;
+      <a href="#M000187">prepend_around_filter</a>&nbsp;&nbsp;
+      <a href="#M000181">prepend_before_filter</a>&nbsp;&nbsp;
+      <a href="#M000194">prepend_filter_to_chain</a>&nbsp;&nbsp;
+      <a href="#M000201">remove_actions_from_included_actions!</a>&nbsp;&nbsp;
+      <a href="#M000190">skip_after_filter</a>&nbsp;&nbsp;
+      <a href="#M000189">skip_before_filter</a>&nbsp;&nbsp;
+      <a href="#M000191">skip_filter</a>&nbsp;&nbsp;
+      <a href="#M000199">update_conditions</a>&nbsp;&nbsp;
+      <a href="#M000195">update_filter_chain</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000185" class="method-detail">
+        <a name="M000185"></a>
+
+        <div class="method-heading">
+          <span class="method-name">after_filter</span><span class="method-args">(*filters, &amp;block)</span>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Alias for <a href="ClassMethods.html#M000183">append_after_filter</a>
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000183" class="method-detail">
+        <a name="M000183"></a>
+
+        <div class="method-heading">
+          <a href="#M000183" class="method-signature">
+          <span class="method-name">append_after_filter</span><span class="method-args">(*filters, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+The passed <tt>filters</tt> will be appended to the array of filters that
+run <em>after</em> actions on this controller are performed.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000183-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000183-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 266</span>
+266:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">append_after_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+267:         <span class="ruby-identifier">append_filter_to_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">:after</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+268:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000186" class="method-detail">
+        <a name="M000186"></a>
+
+        <div class="method-heading">
+          <a href="#M000186" class="method-signature">
+          <span class="method-name">append_around_filter</span><span class="method-args">(*filters, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+If you <a href="ClassMethods.html#M000186">append_around_filter</a> A.new,
+B.new, the filter chain looks like
+</p>
+<pre>
+  B#before
+    A#before
+      # run the action
+    A#after
+  B#after
+</pre>
+<p>
+With around filters which yield to the action block, before and after are
+the code before and after the yield.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000186-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000186-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 290</span>
+290:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">append_around_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+291:         <span class="ruby-identifier">filters</span>, <span class="ruby-identifier">conditions</span> = <span class="ruby-identifier">extract_conditions</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+292:         <span class="ruby-identifier">filters</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">proxy_before_and_after_filter</span>(<span class="ruby-identifier">f</span>) }.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">filter</span><span class="ruby-operator">|</span>
+293:           <span class="ruby-identifier">append_filter_to_chain</span>([<span class="ruby-identifier">filter</span>, <span class="ruby-identifier">conditions</span>])
+294:         <span class="ruby-keyword kw">end</span>
+295:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000180" class="method-detail">
+        <a name="M000180"></a>
+
+        <div class="method-heading">
+          <a href="#M000180" class="method-signature">
+          <span class="method-name">append_before_filter</span><span class="method-args">(*filters, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+The passed <tt>filters</tt> will be appended to the <a
+href="ClassMethods.html#M000192">filter_chain</a> and will execute before
+the action on this controller is performed.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000180-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000180-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 251</span>
+251:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">append_before_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+252:         <span class="ruby-identifier">append_filter_to_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">:before</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+253:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000188" class="method-detail">
+        <a name="M000188"></a>
+
+        <div class="method-heading">
+          <span class="method-name">around_filter</span><span class="method-args">(*filters, &amp;block)</span>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Alias for <a href="ClassMethods.html#M000186">append_around_filter</a>
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000182" class="method-detail">
+        <a name="M000182"></a>
+
+        <div class="method-heading">
+          <span class="method-name">before_filter</span><span class="method-args">(*filters, &amp;block)</span>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Alias for <a href="ClassMethods.html#M000180">append_before_filter</a>
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000192" class="method-detail">
+        <a name="M000192"></a>
+
+        <div class="method-heading">
+          <a href="#M000192" class="method-signature">
+          <span class="method-name">filter_chain</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns an array of Filter objects for this controller.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000192-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000192-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 348</span>
+348:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">filter_chain</span>
+349:         <span class="ruby-identifier">read_inheritable_attribute</span>(<span class="ruby-value str">&quot;filter_chain&quot;</span>) <span class="ruby-operator">||</span> []
+350:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000184" class="method-detail">
+        <a name="M000184"></a>
+
+        <div class="method-heading">
+          <a href="#M000184" class="method-signature">
+          <span class="method-name">prepend_after_filter</span><span class="method-args">(*filters, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+The passed <tt>filters</tt> will be prepended to the array of filters that
+run <em>after</em> actions on this controller are performed.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000184-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000184-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 272</span>
+272:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">prepend_after_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+273:         <span class="ruby-identifier">prepend_filter_to_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">:after</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+274:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000187" class="method-detail">
+        <a name="M000187"></a>
+
+        <div class="method-heading">
+          <a href="#M000187" class="method-signature">
+          <span class="method-name">prepend_around_filter</span><span class="method-args">(*filters, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+If you <a href="ClassMethods.html#M000187">prepend_around_filter</a> A.new,
+B.new, the filter chain looks like:
+</p>
+<pre>
+  A#before
+    B#before
+      # run the action
+    B#after
+  A#after
+</pre>
+<p>
+With around filters which yield to the action block, before and after are
+the code before and after the yield.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000187-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000187-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 307</span>
+307:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">prepend_around_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+308:         <span class="ruby-identifier">filters</span>, <span class="ruby-identifier">conditions</span> = <span class="ruby-identifier">extract_conditions</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+309:         <span class="ruby-identifier">filters</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">proxy_before_and_after_filter</span>(<span class="ruby-identifier">f</span>) }.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">filter</span><span class="ruby-operator">|</span>
+310:           <span class="ruby-identifier">prepend_filter_to_chain</span>([<span class="ruby-identifier">filter</span>, <span class="ruby-identifier">conditions</span>])
+311:         <span class="ruby-keyword kw">end</span>
+312:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000181" class="method-detail">
+        <a name="M000181"></a>
+
+        <div class="method-heading">
+          <a href="#M000181" class="method-signature">
+          <span class="method-name">prepend_before_filter</span><span class="method-args">(*filters, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+The passed <tt>filters</tt> will be prepended to the <a
+href="ClassMethods.html#M000192">filter_chain</a> and will execute before
+the action on this controller is performed.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000181-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000181-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 257</span>
+257:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">prepend_before_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+258:         <span class="ruby-identifier">prepend_filter_to_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">:before</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+259:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000190" class="method-detail">
+        <a name="M000190"></a>
+
+        <div class="method-heading">
+          <a href="#M000190" class="method-signature">
+          <span class="method-name">skip_after_filter</span><span class="method-args">(*filters)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Removes the specified filters from the <tt>after</tt> filter chain. Note
+that this only works for skipping method-reference filters, not procs. This
+is especially useful for managing the chain in inheritance hierarchies
+where only one out of many sub-controllers need a different hierarchy.
+</p>
+<p>
+You can control the actions to skip the filter for with the <tt>:only</tt>
+and <tt>:except</tt> options, just like when you apply the filters.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000190-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000190-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 333</span>
+333:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">skip_after_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>)
+334:         <span class="ruby-identifier">skip_filter_in_chain</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">:after?</span>)
+335:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000189" class="method-detail">
+        <a name="M000189"></a>
+
+        <div class="method-heading">
+          <a href="#M000189" class="method-signature">
+          <span class="method-name">skip_before_filter</span><span class="method-args">(*filters)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Removes the specified filters from the <tt>before</tt> filter chain. Note
+that this only works for skipping method-reference filters, not procs. This
+is especially useful for managing the chain in inheritance hierarchies
+where only one out of many sub-controllers need a different hierarchy.
+</p>
+<p>
+You can control the actions to skip the filter for with the <tt>:only</tt>
+and <tt>:except</tt> options, just like when you apply the filters.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000189-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000189-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 323</span>
+323:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">skip_before_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>)
+324:         <span class="ruby-identifier">skip_filter_in_chain</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">:before?</span>)
+325:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000191" class="method-detail">
+        <a name="M000191"></a>
+
+        <div class="method-heading">
+          <a href="#M000191" class="method-signature">
+          <span class="method-name">skip_filter</span><span class="method-args">(*filters)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Removes the specified filters from the filter chain. This only works for
+method reference (symbol) filters, not procs. This method is different from
+<a href="ClassMethods.html#M000190">skip_after_filter</a> and <a
+href="ClassMethods.html#M000189">skip_before_filter</a> in that it will
+match any before, after or yielding around filter.
+</p>
+<p>
+You can control the actions to skip the filter for with the <tt>:only</tt>
+and <tt>:except</tt> options, just like when you apply the filters.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000191-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000191-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 343</span>
+343:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">skip_filter</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>)
+344:         <span class="ruby-identifier">skip_filter_in_chain</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">filters</span>)
+345:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Protected Instance methods</h3>
+
+      <div id="method-M000193" class="method-detail">
+        <a name="M000193"></a>
+
+        <div class="method-heading">
+          <a href="#M000193" class="method-signature">
+          <span class="method-name">append_filter_to_chain</span><span class="method-args">(filters, filter_type = :around, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000193-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000193-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 514</span>
+514:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">append_filter_to_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span> = <span class="ruby-identifier">:around</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+515:           <span class="ruby-identifier">pos</span> = <span class="ruby-identifier">find_filter_append_position</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>)
+516:           <span class="ruby-identifier">update_filter_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>, <span class="ruby-identifier">pos</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+517:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000200" class="method-detail">
+        <a name="M000200"></a>
+
+        <div class="method-heading">
+          <a href="#M000200" class="method-signature">
+          <span class="method-name">condition_hash</span><span class="method-args">(filters, *actions)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000200-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000200-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 618</span>
+618:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">condition_hash</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">actions</span>)
+619:           <span class="ruby-identifier">actions</span> = <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">:to_s</span>)
+620:           <span class="ruby-identifier">filters</span>.<span class="ruby-identifier">inject</span>({}) { <span class="ruby-operator">|</span><span class="ruby-identifier">h</span>,<span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">h</span>.<span class="ruby-identifier">update</span>( <span class="ruby-identifier">f</span> =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">actions</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-value">? </span><span class="ruby-keyword kw">nil</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">actions</span>)) }
+621:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000196" class="method-detail">
+        <a name="M000196"></a>
+
+        <div class="method-heading">
+          <a href="#M000196" class="method-signature">
+          <span class="method-name">find_filter_append_position</span><span class="method-args">(filters, filter_type)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000196-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000196-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 530</span>
+530:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_filter_append_position</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>)
+531:           <span class="ruby-comment cmt"># appending an after filter puts it at the end of the call chain</span>
+532:           <span class="ruby-comment cmt"># before and around filters go before the first after filter in the chain</span>
+533:           <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">filter_type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:after</span>
+534:             <span class="ruby-identifier">filter_chain</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+535:               <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">after?</span>
+536:             <span class="ruby-keyword kw">end</span>
+537:           <span class="ruby-keyword kw">end</span>
+538:           <span class="ruby-keyword kw">return</span> <span class="ruby-value">-1</span>
+539:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000197" class="method-detail">
+        <a name="M000197"></a>
+
+        <div class="method-heading">
+          <a href="#M000197" class="method-signature">
+          <span class="method-name">find_filter_prepend_position</span><span class="method-args">(filters, filter_type)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000197-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000197-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 541</span>
+541:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_filter_prepend_position</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>)
+542:           <span class="ruby-comment cmt"># prepending a before or around filter puts it at the front of the call chain</span>
+543:           <span class="ruby-comment cmt"># after filters go before the first after filter in the chain</span>
+544:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">filter_type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:after</span>
+545:             <span class="ruby-identifier">filter_chain</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+546:               <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">after?</span>
+547:             <span class="ruby-keyword kw">end</span>
+548:             <span class="ruby-keyword kw">return</span> <span class="ruby-value">-1</span>
+549:           <span class="ruby-keyword kw">end</span>
+550:           <span class="ruby-keyword kw">return</span> <span class="ruby-value">0</span>
+551:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000198" class="method-detail">
+        <a name="M000198"></a>
+
+        <div class="method-heading">
+          <a href="#M000198" class="method-signature">
+          <span class="method-name">find_or_create_filter</span><span class="method-args">(filter, filter_type)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000198-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000198-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 560</span>
+560:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_or_create_filter</span>(<span class="ruby-identifier">filter</span>, <span class="ruby-identifier">filter_type</span>)
+561:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">found_filter</span> = <span class="ruby-identifier">find_filter</span>(<span class="ruby-identifier">filter</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">filter_type</span> }
+562:             <span class="ruby-identifier">found_filter</span>
+563:           <span class="ruby-keyword kw">else</span>
+564:             <span class="ruby-identifier">f</span> = <span class="ruby-identifier">class_for_filter</span>(<span class="ruby-identifier">filter</span>, <span class="ruby-identifier">filter_type</span>).<span class="ruby-identifier">new</span>(<span class="ruby-identifier">filter</span>)
+565:             <span class="ruby-comment cmt"># apply proxy to filter if necessary</span>
+566:             <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">filter_type</span>
+567:             <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:before</span>
+568:               <span class="ruby-constant">BeforeFilterProxy</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">f</span>)
+569:             <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:after</span>
+570:               <span class="ruby-constant">AfterFilterProxy</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">f</span>)
+571:             <span class="ruby-keyword kw">else</span>
+572:               <span class="ruby-identifier">f</span>
+573:             <span class="ruby-keyword kw">end</span>
+574:           <span class="ruby-keyword kw">end</span>
+575:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000194" class="method-detail">
+        <a name="M000194"></a>
+
+        <div class="method-heading">
+          <a href="#M000194" class="method-signature">
+          <span class="method-name">prepend_filter_to_chain</span><span class="method-args">(filters, filter_type = :around, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000194-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000194-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 519</span>
+519:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">prepend_filter_to_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span> = <span class="ruby-identifier">:around</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+520:           <span class="ruby-identifier">pos</span> = <span class="ruby-identifier">find_filter_prepend_position</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>)
+521:           <span class="ruby-identifier">update_filter_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>, <span class="ruby-identifier">pos</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+522:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000201" class="method-detail">
+        <a name="M000201"></a>
+
+        <div class="method-heading">
+          <a href="#M000201" class="method-signature">
+          <span class="method-name">remove_actions_from_included_actions!</span><span class="method-args">(filters,*actions)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000201-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000201-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 637</span>
+637:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remove_actions_from_included_actions!</span>(<span class="ruby-identifier">filters</span>,<span class="ruby-operator">*</span><span class="ruby-identifier">actions</span>)
+638:           <span class="ruby-identifier">actions</span> = <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">:to_s</span>)
+639:           <span class="ruby-identifier">updated_hash</span> = <span class="ruby-identifier">filters</span>.<span class="ruby-identifier">inject</span>(<span class="ruby-identifier">read_inheritable_attribute</span>(<span class="ruby-value str">'included_actions'</span>)<span class="ruby-operator">||</span>{}) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>,<span class="ruby-identifier">filter</span><span class="ruby-operator">|</span>
+640:             <span class="ruby-identifier">ia</span> = (<span class="ruby-identifier">hash</span>[<span class="ruby-identifier">filter</span>] <span class="ruby-operator">||</span> []) <span class="ruby-operator">-</span> <span class="ruby-identifier">actions</span>
+641:             <span class="ruby-identifier">ia</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-value">? </span><span class="ruby-identifier">hash</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">filter</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">hash</span>[<span class="ruby-identifier">filter</span>] = <span class="ruby-identifier">ia</span>
+642:             <span class="ruby-identifier">hash</span>
+643:           <span class="ruby-keyword kw">end</span>
+644:           <span class="ruby-identifier">write_inheritable_attribute</span>(<span class="ruby-value str">'included_actions'</span>, <span class="ruby-identifier">updated_hash</span>)
+645:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000199" class="method-detail">
+        <a name="M000199"></a>
+
+        <div class="method-heading">
+          <a href="#M000199" class="method-signature">
+          <span class="method-name">update_conditions</span><span class="method-args">(filters, conditions)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000199-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000199-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 609</span>
+609:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">update_conditions</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">conditions</span>)
+610:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">conditions</span>.<span class="ruby-identifier">empty?</span>
+611:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">conditions</span>[<span class="ruby-identifier">:only</span>]
+612:             <span class="ruby-identifier">write_inheritable_hash</span>(<span class="ruby-value str">'included_actions'</span>, <span class="ruby-identifier">condition_hash</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">conditions</span>[<span class="ruby-identifier">:only</span>]))
+613:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">conditions</span>[<span class="ruby-identifier">:except</span>]
+614:             <span class="ruby-identifier">write_inheritable_hash</span>(<span class="ruby-value str">'excluded_actions'</span>, <span class="ruby-identifier">condition_hash</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">conditions</span>[<span class="ruby-identifier">:except</span>]))
+615:           <span class="ruby-keyword kw">end</span>
+616:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000195" class="method-detail">
+        <a name="M000195"></a>
+
+        <div class="method-heading">
+          <a href="#M000195" class="method-signature">
+          <span class="method-name">update_filter_chain</span><span class="method-args">(filters, filter_type, pos, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000195-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000195-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/filters.rb, line 524</span>
+524:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">update_filter_chain</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>, <span class="ruby-identifier">pos</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+525:           <span class="ruby-identifier">new_filters</span> = <span class="ruby-identifier">create_filters</span>(<span class="ruby-identifier">filters</span>, <span class="ruby-identifier">filter_type</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+526:           <span class="ruby-identifier">new_chain</span> = <span class="ruby-identifier">filter_chain</span>.<span class="ruby-identifier">insert</span>(<span class="ruby-identifier">pos</span>, <span class="ruby-identifier">new_filters</span>).<span class="ruby-identifier">flatten</span>
+527:           <span class="ruby-identifier">write_inheritable_attribute</span>(<span class="ruby-value str">'filter_chain'</span>, <span class="ruby-identifier">new_chain</span>)
+528:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

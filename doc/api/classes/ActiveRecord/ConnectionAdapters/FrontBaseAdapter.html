@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: ActiveRecord::ConnectionAdapters::FrontBaseAdapter</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">ActiveRecord::ConnectionAdapters::FrontBaseAdapter</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter_rb.html">
+                vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                <a href="AbstractAdapter.html">
+                AbstractAdapter
+               </a>
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000906">active?</a>&nbsp;&nbsp;
+      <a href="#M000921">add_column</a>&nbsp;&nbsp;
+      <a href="#M000915">classes_for_table_name</a>&nbsp;&nbsp;
+      <a href="#M000900">compare_versions</a>&nbsp;&nbsp;
+      <a href="#M000918">create_table</a>&nbsp;&nbsp;
+      <a href="#M000917">current_database</a>&nbsp;&nbsp;
+      <a href="#M000913">default_sequence_name</a>&nbsp;&nbsp;
+      <a href="#M000908">disconnect!</a>&nbsp;&nbsp;
+      <a href="#M000920">drop_table</a>&nbsp;&nbsp;
+      <a href="#M000901">new</a>&nbsp;&nbsp;
+      <a href="#M000912">next_sequence_value</a>&nbsp;&nbsp;
+      <a href="#M000911">prefetch_primary_key?</a>&nbsp;&nbsp;
+      <a href="#M000902">quote</a>&nbsp;&nbsp;
+      <a href="#M000903">quote_string</a>&nbsp;&nbsp;
+      <a href="#M000905">quoted_false</a>&nbsp;&nbsp;
+      <a href="#M000904">quoted_true</a>&nbsp;&nbsp;
+      <a href="#M000907">reconnect!</a>&nbsp;&nbsp;
+      <a href="#M000922">remove_column</a>&nbsp;&nbsp;
+      <a href="#M000919">rename_table</a>&nbsp;&nbsp;
+      <a href="#M000916">reset_pk_sequence!</a>&nbsp;&nbsp;
+      <a href="#M000914">reset_sequence!</a>&nbsp;&nbsp;
+      <a href="#M000910">set_optimistic_transactions</a>&nbsp;&nbsp;
+      <a href="#M000909">set_pessimistic_transactions</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+    <div id="aliases-list">
+      <h3 class="section-bar">External Aliases</h3>
+
+      <div class="name-list">
+                        <table summary="aliases">
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">update</td>
+          <td>-&gt;</td>
+          <td class="context-item-value">delete</td>
+        </tr>
+                        </table>
+      </div>
+    </div>
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000900" class="method-detail">
+        <a name="M000900"></a>
+
+        <div class="method-heading">
+          <a href="#M000900" class="method-signature">
+          <span class="method-name">compare_versions</span><span class="method-args">(v1, v2)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000900-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000900-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 237</span>
+237:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">compare_versions</span>(<span class="ruby-identifier">v1</span>, <span class="ruby-identifier">v2</span>)
+238:           <span class="ruby-identifier">v1_seg</span>  = <span class="ruby-identifier">v1</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;.&quot;</span>)
+239:           <span class="ruby-identifier">v2_seg</span>  = <span class="ruby-identifier">v2</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;.&quot;</span>)
+240:           <span class="ruby-value">0</span>.<span class="ruby-identifier">upto</span>([<span class="ruby-identifier">v1_seg</span>.<span class="ruby-identifier">length</span>,<span class="ruby-identifier">v2_seg</span>.<span class="ruby-identifier">length</span>].<span class="ruby-identifier">min</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+241:             <span class="ruby-identifier">step</span>  = (<span class="ruby-identifier">v1_seg</span>[<span class="ruby-identifier">i</span>].<span class="ruby-identifier">to_i</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">v2_seg</span>[<span class="ruby-identifier">i</span>].<span class="ruby-identifier">to_i</span>)
+242:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">step</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">step</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+243:           <span class="ruby-keyword kw">end</span>
+244:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">v1_seg</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">v2_seg</span>.<span class="ruby-identifier">length</span>
+245:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000901" class="method-detail">
+        <a name="M000901"></a>
+
+        <div class="method-heading">
+          <a href="#M000901" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">(connection, logger, connection_options, config)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000901-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000901-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 248</span>
+248:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">connection</span>, <span class="ruby-identifier">logger</span>, <span class="ruby-identifier">connection_options</span>, <span class="ruby-identifier">config</span>)
+249:         <span class="ruby-keyword kw">super</span>(<span class="ruby-identifier">connection</span>, <span class="ruby-identifier">logger</span>)
+250:         <span class="ruby-ivar">@connection_options</span>, <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">connection_options</span>, <span class="ruby-identifier">config</span>
+251:         <span class="ruby-ivar">@transaction_mode</span> = <span class="ruby-identifier">:pessimistic</span>
+252:         
+253:         <span class="ruby-comment cmt"># Start out in auto-commit mode</span>
+254:         <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">rollback_db_transaction</span>
+255:         
+256:         <span class="ruby-comment cmt"># threaded_connections_test.rb will fail unless we set the session</span>
+257:         <span class="ruby-comment cmt"># to optimistic locking mode</span>
+258: <span class="ruby-comment cmt">#         set_pessimistic_transactions</span>
+259: <span class="ruby-comment cmt">#         execute &quot;SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ WRITE, LOCKING OPTIMISTIC&quot;</span>
+260:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000906" class="method-detail">
+        <a name="M000906"></a>
+
+        <div class="method-heading">
+          <a href="#M000906" class="method-signature">
+          <span class="method-name">active?</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+CONNECTION MANAGEMENT ====================================
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000906-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000906-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 432</span>
+432:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">active?</span>
+433:         <span class="ruby-keyword kw">true</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">status</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span>
+434:       <span class="ruby-keyword kw">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+435:         <span class="ruby-keyword kw">false</span>
+436:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000921" class="method-detail">
+        <a name="M000921"></a>
+
+        <div class="method-heading">
+          <a href="#M000921" class="method-signature">
+          <span class="method-name">add_column</span><span class="method-args">(table_name, column_name, type, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Adds a <a href="FrontBaseAdapter.html#M000901">new</a> column to the named
+table. See <a
+href="TableDefinition.html#M000806">TableDefinition#column</a> for details
+of the options you can use.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000921-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000921-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 792</span>
+792:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_column</span>(<span class="ruby-identifier">table_name</span>, <span class="ruby-identifier">column_name</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">options</span> = {})
+793:         <span class="ruby-identifier">add_column_sql</span> = <span class="ruby-node">&quot;ALTER TABLE #{table_name} ADD #{column_name} #{type_to_sql(type, options[:limit])}&quot;</span>
+794:         <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:type</span>] = <span class="ruby-identifier">type</span>
+795:         <span class="ruby-identifier">add_column_options!</span>(<span class="ruby-identifier">add_column_sql</span>, <span class="ruby-identifier">options</span>)
+796:         <span class="ruby-identifier">execute</span>(<span class="ruby-identifier">add_column_sql</span>)
+797:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000915" class="method-detail">
+        <a name="M000915"></a>
+
+        <div class="method-heading">
+          <a href="#M000915" class="method-signature">
+          <span class="method-name">classes_for_table_name</span><span class="method-args">(table)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000915-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000915-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 625</span>
+625:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">classes_for_table_name</span>(<span class="ruby-identifier">table</span>)
+626:         <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">:subclasses</span>).<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">klass</span><span class="ruby-operator">|</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">table_name</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">table</span>}
+627:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000918" class="method-detail">
+        <a name="M000918"></a>
+
+        <div class="method-heading">
+          <a href="#M000918" class="method-signature">
+          <span class="method-name">create_table</span><span class="method-args">(name, options = {}) {|table_definition| ...}</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000918-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000918-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 748</span>
+748:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_table</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span> = {})
+749:         <span class="ruby-identifier">table_definition</span> = <span class="ruby-constant">TableDefinition</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>)
+750:         <span class="ruby-identifier">table_definition</span>.<span class="ruby-identifier">primary_key</span>(<span class="ruby-identifier">options</span>[<span class="ruby-identifier">:primary_key</span>] <span class="ruby-operator">||</span> <span class="ruby-value str">&quot;id&quot;</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:id</span>] <span class="ruby-operator">==</span> <span class="ruby-keyword kw">false</span>
+751: 
+752:         <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">table_definition</span>
+753: 
+754:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:force</span>]
+755:           <span class="ruby-identifier">drop_table</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>
+756:         <span class="ruby-keyword kw">end</span>
+757: 
+758:         <span class="ruby-identifier">create_sql</span> = <span class="ruby-node">&quot;CREATE#{' TEMPORARY' if options[:temporary]} TABLE &quot;</span>
+759:         <span class="ruby-identifier">create_sql</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{name} (&quot;</span>
+760:         <span class="ruby-identifier">create_sql</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">table_definition</span>.<span class="ruby-identifier">to_sql</span>
+761:         <span class="ruby-identifier">create_sql</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;) #{options[:options]}&quot;</span>
+762:         <span class="ruby-identifier">begin_db_transaction</span>
+763:         <span class="ruby-identifier">execute</span> <span class="ruby-identifier">create_sql</span>
+764:         <span class="ruby-identifier">commit_db_transaction</span>
+765:         <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">StatementInvalid</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+766:           <span class="ruby-identifier">raise</span> <span class="ruby-identifier">e</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/Table name - \w* - exists/</span>)
+767:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000917" class="method-detail">
+        <a name="M000917"></a>
+
+        <div class="method-heading">
+          <a href="#M000917" class="method-signature">
+          <span class="method-name">current_database</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000917-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000917-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 660</span>
+660:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">current_database</span>
+661:         <span class="ruby-identifier">select_value</span>(<span class="ruby-value str">'SELECT &quot;CATALOG_NAME&quot; FROM INFORMATION_SCHEMA.CATALOGS'</span>).<span class="ruby-identifier">downcase</span>
+662:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000913" class="method-detail">
+        <a name="M000913"></a>
+
+        <div class="method-heading">
+          <a href="#M000913" class="method-signature">
+          <span class="method-name">default_sequence_name</span><span class="method-args">(table, column)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000913-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000913-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 611</span>
+611:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">default_sequence_name</span>(<span class="ruby-identifier">table</span>, <span class="ruby-identifier">column</span>)
+612:         <span class="ruby-identifier">table</span>
+613:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000908" class="method-detail">
+        <a name="M000908"></a>
+
+        <div class="method-heading">
+          <a href="#M000908" class="method-signature">
+          <span class="method-name">disconnect!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Close this connection
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000908-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000908-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 444</span>
+444:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">disconnect!</span>
+445:         <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">close</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>
+446:         <span class="ruby-ivar">@active</span> = <span class="ruby-keyword kw">false</span>
+447:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000920" class="method-detail">
+        <a name="M000920"></a>
+
+        <div class="method-heading">
+          <a href="#M000920" class="method-signature">
+          <span class="method-name">drop_table</span><span class="method-args">(name, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Drops a table from the database.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000920-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000920-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 784</span>
+784:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">drop_table</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span> = {})
+785:         <span class="ruby-identifier">execute</span> <span class="ruby-node">&quot;DROP TABLE #{name} RESTRICT&quot;</span>
+786:       <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">StatementInvalid</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+787:         <span class="ruby-identifier">raise</span> <span class="ruby-identifier">e</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp re">/Referenced TABLE - \w* - does not exist/</span>)
+788:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000912" class="method-detail">
+        <a name="M000912"></a>
+
+        <div class="method-heading">
+          <a href="#M000912" class="method-signature">
+          <span class="method-name">next_sequence_value</span><span class="method-args">(sequence_name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the next sequence value from a sequence generator. Not generally
+called directly; used by ActiveRecord to get the next primary key value
+when inserting a <a href="FrontBaseAdapter.html#M000901">new</a> database
+record (see prefetch_primary_key?).
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000912-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000912-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 605</span>
+605:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">next_sequence_value</span>(<span class="ruby-identifier">sequence_name</span>)
+606:         <span class="ruby-identifier">unique</span> = <span class="ruby-identifier">select_value</span>(<span class="ruby-node">&quot;SELECT UNIQUE FROM #{sequence_name}&quot;</span>,<span class="ruby-value str">&quot;Next Sequence Value&quot;</span>)
+607:         <span class="ruby-comment cmt"># The test cases cannot handle a zero primary key</span>
+608:         <span class="ruby-identifier">unique</span>.<span class="ruby-identifier">zero?</span> <span class="ruby-value">? </span><span class="ruby-identifier">select_value</span>(<span class="ruby-node">&quot;SELECT UNIQUE FROM #{sequence_name}&quot;</span>,<span class="ruby-value str">&quot;Next Sequence Value&quot;</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">unique</span>
+609:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000911" class="method-detail">
+        <a name="M000911"></a>
+
+        <div class="method-heading">
+          <a href="#M000911" class="method-signature">
+          <span class="method-name">prefetch_primary_key?</span><span class="method-args">(table_name = nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000911-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000911-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 598</span>
+598:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">prefetch_primary_key?</span>(<span class="ruby-identifier">table_name</span> = <span class="ruby-keyword kw">nil</span>)
+599:         <span class="ruby-keyword kw">true</span>
+600:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000902" class="method-detail">
+        <a name="M000902"></a>
+
+        <div class="method-heading">
+          <a href="#M000902" class="method-signature">
+          <span class="method-name">quote</span><span class="method-args">(value, column = nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Quotes the column value to help prevent <a
+href="http://en.wikipedia.org/wiki/SQL_injection">SQL injection
+attacks</a>.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000902-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000902-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 297</span>
+297:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">quote</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">column</span> = <span class="ruby-keyword kw">nil</span>)
+298:         <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">quoted_id</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:quoted_id</span>)
+299: 
+300:         <span class="ruby-identifier">retvalue</span> = <span class="ruby-value str">&quot;&lt;INVALID&gt;&quot;</span>
+301: 
+302:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;quote(#{value.inspect}(#{value.class}),#{column.type.inspect})&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">FB_TRACE</span>
+303:         <span class="ruby-comment cmt"># If a column was passed in, use column type information</span>
+304:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">nil?</span>
+305:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">column</span>
+306:             <span class="ruby-identifier">retvalue</span> = <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">column</span>.<span class="ruby-identifier">type</span>
+307:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:string</span>
+308:                 <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">String</span>)
+309:                   <span class="ruby-node">&quot;'#{quote_string(value.to_s)}'&quot;</span> <span class="ruby-comment cmt"># ' (for ruby-mode)</span>
+310:                 <span class="ruby-keyword kw">else</span>
+311:                   <span class="ruby-node">&quot;'#{quote_string(value.to_yaml)}'&quot;</span>
+312:                 <span class="ruby-keyword kw">end</span>
+313:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:integer</span>
+314:                 <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">TrueClass</span>)
+315:                   <span class="ruby-value str">'1'</span>
+316:                 <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">FalseClass</span>)
+317:                   <span class="ruby-value str">'0'</span>
+318:                 <span class="ruby-keyword kw">else</span>
+319:                    <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_i</span>.<span class="ruby-identifier">to_s</span>
+320:                 <span class="ruby-keyword kw">end</span>
+321:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:float</span>
+322:                 <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_f</span>.<span class="ruby-identifier">to_s</span>
+323:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:decimal</span>
+324:                 <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_d</span>.<span class="ruby-identifier">to_s</span>(<span class="ruby-value str">&quot;F&quot;</span>)
+325:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:datetime</span>, <span class="ruby-identifier">:timestamp</span>
+326:                 <span class="ruby-node">&quot;TIMESTAMP '#{value.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)}'&quot;</span>
+327:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:time</span>
+328:                 <span class="ruby-node">&quot;TIME '#{value.strftime(&quot;%H:%M:%S&quot;)}'&quot;</span>
+329:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:date</span>
+330:                 <span class="ruby-node">&quot;DATE '#{value.strftime(&quot;%Y-%m-%d&quot;)}'&quot;</span>
+331:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:twelvebytekey</span>
+332:                 <span class="ruby-identifier">value</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">&quot;H*&quot;</span>).<span class="ruby-identifier">first</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">TwelveByteKey</span>)
+333:                 <span class="ruby-node">&quot;X'#{value.to_s}'&quot;</span>
+334:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:boolean</span>
+335:                 <span class="ruby-identifier">value</span> = <span class="ruby-identifier">quoted_true</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">TrueClass</span>)
+336:                 <span class="ruby-identifier">value</span> = <span class="ruby-identifier">quoted_false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">FalseClass</span>)
+337:                 <span class="ruby-identifier">value</span>
+338:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:binary</span>
+339:                 <span class="ruby-identifier">blob_handle</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">create_blob</span>(<span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span>)
+340:                 <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;SQL -&gt; Insert #{value.to_s.length} byte blob as #{retvalue}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">FB_TRACE</span>
+341:                 <span class="ruby-identifier">blob_handle</span>.<span class="ruby-identifier">handle</span>
+342:               <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:text</span>
+343:                 <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">String</span>)
+344:                   <span class="ruby-identifier">clobdata</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-comment cmt"># ' (for ruby-mode)</span>
+345:                 <span class="ruby-keyword kw">else</span>
+346:                   <span class="ruby-identifier">clobdata</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_yaml</span>
+347:                 <span class="ruby-keyword kw">end</span>
+348:                 <span class="ruby-identifier">clob_handle</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">create_clob</span>(<span class="ruby-identifier">clobdata</span>)
+349:                 <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;SQL -&gt; Insert #{value.to_s.length} byte clob as #{retvalue}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">FB_TRACE</span>
+350:                 <span class="ruby-identifier">clob_handle</span>.<span class="ruby-identifier">handle</span>
+351:               <span class="ruby-keyword kw">else</span>
+352:                 <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;*** UNKNOWN TYPE: #{column.type.inspect}&quot;</span>
+353:             <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># case</span>
+354:           <span class="ruby-comment cmt"># Since we don't have column type info, make a best guess based</span>
+355:           <span class="ruby-comment cmt"># on the Ruby class of the value</span>
+356:           <span class="ruby-keyword kw">else</span>
+357:             <span class="ruby-identifier">retvalue</span> = <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">value</span>
+358:               <span class="ruby-keyword kw">when</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">ConnectionAdapters</span><span class="ruby-operator">::</span><span class="ruby-constant">TwelveByteKey</span>
+359:                 <span class="ruby-identifier">s</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">&quot;H*&quot;</span>).<span class="ruby-identifier">first</span>
+360:                 <span class="ruby-node">&quot;X'#{s}'&quot;</span>
+361:               <span class="ruby-keyword kw">when</span> <span class="ruby-constant">String</span>
+362:                 <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">column</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">column</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:binary</span>
+363:                   <span class="ruby-identifier">s</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">&quot;H*&quot;</span>).<span class="ruby-identifier">first</span>
+364:                   <span class="ruby-node">&quot;X'#{s}'&quot;</span>
+365:                 <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">column</span> <span class="ruby-operator">&amp;&amp;</span> [<span class="ruby-identifier">:integer</span>, <span class="ruby-identifier">:float</span>, <span class="ruby-identifier">:decimal</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">column</span>.<span class="ruby-identifier">type</span>) 
+366:                   <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span>
+367:                 <span class="ruby-keyword kw">else</span>
+368:                   <span class="ruby-node">&quot;'#{quote_string(value)}'&quot;</span> <span class="ruby-comment cmt"># ' (for ruby-mode)</span>
+369:                 <span class="ruby-keyword kw">end</span>
+370:               <span class="ruby-keyword kw">when</span> <span class="ruby-constant">NilClass</span>
+371:                 <span class="ruby-value str">&quot;NULL&quot;</span>
+372:               <span class="ruby-keyword kw">when</span> <span class="ruby-constant">TrueClass</span>
+373:                 (<span class="ruby-identifier">column</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">column</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:integer</span> <span class="ruby-operator">?</span> <span class="ruby-value str">'1'</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">quoted_true</span>)
+374:               <span class="ruby-keyword kw">when</span> <span class="ruby-constant">FalseClass</span>
+375:                 (<span class="ruby-identifier">column</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">column</span>.<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:integer</span> <span class="ruby-operator">?</span> <span class="ruby-value str">'0'</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">quoted_false</span>)
+376:               <span class="ruby-keyword kw">when</span> <span class="ruby-constant">Float</span>, <span class="ruby-constant">Fixnum</span>, <span class="ruby-constant">Bignum</span>, <span class="ruby-constant">BigDecimal</span>
+377:                 <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span>
+378:               <span class="ruby-keyword kw">when</span> <span class="ruby-constant">Time</span>, <span class="ruby-constant">Date</span>, <span class="ruby-constant">DateTime</span>
+379:                 <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">column</span>
+380:                   <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">column</span>.<span class="ruby-identifier">type</span>
+381:                     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:date</span>
+382:                       <span class="ruby-node">&quot;DATE '#{value.strftime(&quot;%Y-%m-%d&quot;)}'&quot;</span>
+383:                     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:time</span>
+384:                       <span class="ruby-node">&quot;TIME '#{value.strftime(&quot;%H:%M:%S&quot;)}'&quot;</span>
+385:                     <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:timestamp</span>
+386:                       <span class="ruby-node">&quot;TIMESTAMP '#{value.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)}'&quot;</span>
+387:                   <span class="ruby-keyword kw">else</span>
+388:                     <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotImplementedError</span>, <span class="ruby-value str">&quot;Unknown column type!&quot;</span>
+389:                   <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># case</span>
+390:                 <span class="ruby-keyword kw">else</span> <span class="ruby-comment cmt"># Column wasn't passed in, so try to guess the right type</span>
+391:                   <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Date</span>
+392:                     <span class="ruby-node">&quot;DATE '#{value.strftime(&quot;%Y-%m-%d&quot;)}'&quot;</span>
+393:                   <span class="ruby-keyword kw">else</span>
+394:                     <span class="ruby-keyword kw">if</span> [<span class="ruby-identifier">:hour</span>, <span class="ruby-identifier">:min</span>, <span class="ruby-identifier">:sec</span>].<span class="ruby-identifier">all?</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">part</span><span class="ruby-operator">|</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">:part</span>).<span class="ruby-identifier">zero?</span> }
+395:                       <span class="ruby-node">&quot;TIME '#{value.strftime(&quot;%H:%M:%S&quot;)}'&quot;</span>
+396:                     <span class="ruby-keyword kw">else</span>
+397:                       <span class="ruby-node">&quot;TIMESTAMP '#{quoted_date(value)}'&quot;</span>
+398:                     <span class="ruby-keyword kw">end</span>
+399:                   <span class="ruby-keyword kw">end</span> 
+400:                 <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt">#if column</span>
+401:               <span class="ruby-keyword kw">else</span> 
+402:                 <span class="ruby-node">&quot;'#{quote_string(value.to_yaml)}'&quot;</span>
+403:             <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt">#case</span>
+404:           <span class="ruby-keyword kw">end</span>
+405:         <span class="ruby-keyword kw">else</span>
+406:           <span class="ruby-identifier">retvalue</span> = <span class="ruby-value str">&quot;NULL&quot;</span>
+407:         <span class="ruby-keyword kw">end</span>
+408:          
+409:         <span class="ruby-identifier">retvalue</span>
+410:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000903" class="method-detail">
+        <a name="M000903"></a>
+
+        <div class="method-heading">
+          <a href="#M000903" class="method-signature">
+          <span class="method-name">quote_string</span><span class="method-args">(s)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Quotes a string, escaping any &#8217; (single <a
+href="FrontBaseAdapter.html#M000902">quote</a>) characters.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000903-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000903-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 413</span>
+413:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">quote_string</span>(<span class="ruby-identifier">s</span>)
+414:         <span class="ruby-identifier">s</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/'/</span>, <span class="ruby-value str">&quot;''&quot;</span>) <span class="ruby-comment cmt"># ' (for ruby-mode)</span>
+415:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000905" class="method-detail">
+        <a name="M000905"></a>
+
+        <div class="method-heading">
+          <a href="#M000905" class="method-signature">
+          <span class="method-name">quoted_false</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000905-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000905-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 425</span>
+425:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">quoted_false</span>
+426:         <span class="ruby-value str">&quot;false&quot;</span>
+427:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000904" class="method-detail">
+        <a name="M000904"></a>
+
+        <div class="method-heading">
+          <a href="#M000904" class="method-signature">
+          <span class="method-name">quoted_true</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000904-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000904-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 421</span>
+421:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">quoted_true</span>
+422:         <span class="ruby-value str">&quot;true&quot;</span>
+423:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000907" class="method-detail">
+        <a name="M000907"></a>
+
+        <div class="method-heading">
+          <a href="#M000907" class="method-signature">
+          <span class="method-name">reconnect!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000907-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000907-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 438</span>
+438:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reconnect!</span>
+439:         <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">close</span> <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>
+440:         <span class="ruby-ivar">@connection</span> = <span class="ruby-constant">FBSQL_Connect</span>.<span class="ruby-identifier">connect</span>(<span class="ruby-operator">*</span><span class="ruby-ivar">@connection_options</span>.<span class="ruby-identifier">first</span>(<span class="ruby-value">7</span>))
+441:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000922" class="method-detail">
+        <a name="M000922"></a>
+
+        <div class="method-heading">
+          <a href="#M000922" class="method-signature">
+          <span class="method-name">remove_column</span><span class="method-args">(table_name, column_name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Removes the column from the table definition.
+</p>
+<h5>Examples</h5>
+<pre>
+ remove_column(:suppliers, :qualification)
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000922-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000922-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 813</span>
+813:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remove_column</span>(<span class="ruby-identifier">table_name</span>, <span class="ruby-identifier">column_name</span>)
+814:         <span class="ruby-identifier">execute</span> <span class="ruby-node">&quot;ALTER TABLE #{table_name} DROP #{column_name} RESTRICT&quot;</span>
+815:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000919" class="method-detail">
+        <a name="M000919"></a>
+
+        <div class="method-heading">
+          <a href="#M000919" class="method-signature">
+          <span class="method-name">rename_table</span><span class="method-args">(name, new_name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000919-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000919-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 769</span>
+769:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rename_table</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">new_name</span>)
+770:         <span class="ruby-identifier">columns</span> = <span class="ruby-identifier">columns</span>(<span class="ruby-identifier">name</span>)
+771:         <span class="ruby-identifier">pkcol</span> = <span class="ruby-identifier">columns</span>.<span class="ruby-identifier">find</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">fb_autogen</span>}
+772:         <span class="ruby-identifier">execute</span> <span class="ruby-node">&quot;ALTER TABLE NAME #{name} TO #{new_name}&quot;</span>
+773:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">pkcol</span>
+774:           <span class="ruby-identifier">change_column_default</span>(<span class="ruby-identifier">new_name</span>,<span class="ruby-identifier">pkcol</span>.<span class="ruby-identifier">name</span>,<span class="ruby-value str">&quot;UNIQUE&quot;</span>)
+775:           <span class="ruby-identifier">begin_db_transaction</span>
+776:           <span class="ruby-identifier">mpk</span> = <span class="ruby-identifier">select_value</span>(<span class="ruby-node">&quot;SELECT MAX(#{pkcol.name}) FROM #{new_name}&quot;</span>)
+777:           <span class="ruby-identifier">mpk</span> = <span class="ruby-value">0</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">mpk</span>.<span class="ruby-identifier">nil?</span>
+778:           <span class="ruby-identifier">execute</span> <span class="ruby-node">&quot;SET UNIQUE=#{mpk} FOR #{new_name}&quot;</span>
+779:           <span class="ruby-identifier">commit_db_transaction</span>
+780:         <span class="ruby-keyword kw">end</span>
+781:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000916" class="method-detail">
+        <a name="M000916"></a>
+
+        <div class="method-heading">
+          <a href="#M000916" class="method-signature">
+          <span class="method-name">reset_pk_sequence!</span><span class="method-args">(table, pk = nil, sequence = nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000916-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000916-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 629</span>
+629:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset_pk_sequence!</span>(<span class="ruby-identifier">table</span>, <span class="ruby-identifier">pk</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">sequence</span> = <span class="ruby-keyword kw">nil</span>)
+630:         <span class="ruby-identifier">klasses</span> = <span class="ruby-identifier">classes_for_table_name</span>(<span class="ruby-identifier">table</span>)
+631:         <span class="ruby-identifier">klass</span>   = <span class="ruby-identifier">klasses</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-value">? </span><span class="ruby-keyword kw">nil</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">klasses</span>.<span class="ruby-identifier">first</span>
+632:         <span class="ruby-identifier">pk</span>      = <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">primary_key</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">nil?</span>
+633:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">pk</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">columns_hash</span>[<span class="ruby-identifier">pk</span>].<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:integer</span>
+634:           <span class="ruby-identifier">mpk</span> = <span class="ruby-identifier">select_value</span>(<span class="ruby-node">&quot;SELECT MAX(#{pk}) FROM #{table}&quot;</span>)
+635:           <span class="ruby-identifier">execute</span>(<span class="ruby-node">&quot;SET UNIQUE FOR #{klass.table_name}(#{pk})&quot;</span>)
+636:         <span class="ruby-keyword kw">end</span>
+637:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000914" class="method-detail">
+        <a name="M000914"></a>
+
+        <div class="method-heading">
+          <a href="#M000914" class="method-signature">
+          <span class="method-name">reset_sequence!</span><span class="method-args">(table, column, sequence = nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Set the sequence to the max value of the table&#8216;s column.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000914-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000914-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 616</span>
+616:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset_sequence!</span>(<span class="ruby-identifier">table</span>, <span class="ruby-identifier">column</span>, <span class="ruby-identifier">sequence</span> = <span class="ruby-keyword kw">nil</span>)
+617:         <span class="ruby-identifier">klasses</span> = <span class="ruby-identifier">classes_for_table_name</span>(<span class="ruby-identifier">table</span>)
+618:         <span class="ruby-identifier">klass</span>   = <span class="ruby-identifier">klasses</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-value">? </span><span class="ruby-keyword kw">nil</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">klasses</span>.<span class="ruby-identifier">first</span>
+619:         <span class="ruby-identifier">pk</span>      = <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">primary_key</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">nil?</span>
+620:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">pk</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">columns_hash</span>[<span class="ruby-identifier">pk</span>].<span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:integer</span>
+621:           <span class="ruby-identifier">execute</span>(<span class="ruby-node">&quot;SET UNIQUE FOR #{klass.table_name}(#{pk})&quot;</span>)
+622:         <span class="ruby-keyword kw">end</span>
+623:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000910" class="method-detail">
+        <a name="M000910"></a>
+
+        <div class="method-heading">
+          <a href="#M000910" class="method-signature">
+          <span class="method-name">set_optimistic_transactions</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000910-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000910-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 544</span>
+544:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set_optimistic_transactions</span>
+545:         <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@transaction_mode</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:pessimistic</span>
+546:           <span class="ruby-identifier">execute</span> <span class="ruby-value str">&quot;SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ WRITE, LOCKING OPTIMISTIC&quot;</span>
+547:           <span class="ruby-ivar">@transaction_mode</span> = <span class="ruby-identifier">:optimistic</span>
+548:         <span class="ruby-keyword kw">end</span>
+549:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000909" class="method-detail">
+        <a name="M000909"></a>
+
+        <div class="method-heading">
+          <a href="#M000909" class="method-signature">
+          <span class="method-name">set_pessimistic_transactions</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000909-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000909-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/connection_adapters/frontbase_adapter.rb, line 537</span>
+537:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set_pessimistic_transactions</span>
+538:         <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@transaction_mode</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:optimistic</span>
+539:           <span class="ruby-identifier">execute</span> <span class="ruby-value str">&quot;SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, LOCKING PESSIMISTIC, READ WRITE&quot;</span>
+540:           <span class="ruby-ivar">@transaction_mode</span> = <span class="ruby-identifier">:pessimistic</span>
+541:         <span class="ruby-keyword kw">end</span>
+542:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

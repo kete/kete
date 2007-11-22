@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: ActiveRecord::Acts::List::InstanceMethods</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">ActiveRecord::Acts::List::InstanceMethods</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../../files/vendor/rails/activerecord/lib/active_record/acts/list_rb.html">
+                vendor/rails/activerecord/lib/active_record/acts/list.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+All the methods available to a record that has had <tt>acts_as_list</tt>
+specified. Each method works by assuming the object to be the item in the
+list, so <tt>chapter.move_lower</tt> would move that chapter lower in the
+list of all chapters. Likewise, <tt>chapter.first?</tt> would return true
+if that chapter is the first in the list of all chapters.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000688">decrement_position</a>&nbsp;&nbsp;
+      <a href="#M000689">first?</a>&nbsp;&nbsp;
+      <a href="#M000691">higher_item</a>&nbsp;&nbsp;
+      <a href="#M000693">in_list?</a>&nbsp;&nbsp;
+      <a href="#M000687">increment_position</a>&nbsp;&nbsp;
+      <a href="#M000681">insert_at</a>&nbsp;&nbsp;
+      <a href="#M000690">last?</a>&nbsp;&nbsp;
+      <a href="#M000692">lower_item</a>&nbsp;&nbsp;
+      <a href="#M000683">move_higher</a>&nbsp;&nbsp;
+      <a href="#M000682">move_lower</a>&nbsp;&nbsp;
+      <a href="#M000684">move_to_bottom</a>&nbsp;&nbsp;
+      <a href="#M000685">move_to_top</a>&nbsp;&nbsp;
+      <a href="#M000686">remove_from_list</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000688" class="method-detail">
+        <a name="M000688"></a>
+
+        <div class="method-heading">
+          <a href="#M000688" class="method-signature">
+          <span class="method-name">decrement_position</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Decrease the position of this item without adjusting the rest of the list.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000688-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000688-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 138</span>
+138:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">decrement_position</span>
+139:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+140:           <span class="ruby-identifier">update_attribute</span> <span class="ruby-identifier">position_column</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">position_column</span>).<span class="ruby-identifier">to_i</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+141:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000689" class="method-detail">
+        <a name="M000689"></a>
+
+        <div class="method-heading">
+          <a href="#M000689" class="method-signature">
+          <span class="method-name">first?</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Return true if this object is the first in the list.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000689-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000689-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 144</span>
+144:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">first?</span>
+145:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+146:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">position_column</span>) <span class="ruby-operator">==</span> <span class="ruby-value">1</span>
+147:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000691" class="method-detail">
+        <a name="M000691"></a>
+
+        <div class="method-heading">
+          <a href="#M000691" class="method-signature">
+          <span class="method-name">higher_item</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Return the next higher item in the list.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000691-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000691-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 156</span>
+156:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">higher_item</span>
+157:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+158:           <span class="ruby-identifier">acts_as_list_class</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">:first</span>, <span class="ruby-identifier">:conditions</span> =<span class="ruby-operator">&gt;</span>
+159:             <span class="ruby-node">&quot;#{scope_condition} AND #{position_column} = #{(send(position_column).to_i - 1).to_s}&quot;</span>
+160:           )
+161:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000693" class="method-detail">
+        <a name="M000693"></a>
+
+        <div class="method-heading">
+          <a href="#M000693" class="method-signature">
+          <span class="method-name">in_list?</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Test if this record is in a list
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000693-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000693-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 172</span>
+172:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">in_list?</span>
+173:           <span class="ruby-operator">!</span><span class="ruby-identifier">send</span>(<span class="ruby-identifier">position_column</span>).<span class="ruby-identifier">nil?</span>
+174:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000687" class="method-detail">
+        <a name="M000687"></a>
+
+        <div class="method-heading">
+          <a href="#M000687" class="method-signature">
+          <span class="method-name">increment_position</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Increase the position of this item without adjusting the rest of the list.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000687-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000687-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 132</span>
+132:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">increment_position</span>
+133:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+134:           <span class="ruby-identifier">update_attribute</span> <span class="ruby-identifier">position_column</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">position_column</span>).<span class="ruby-identifier">to_i</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+135:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000681" class="method-detail">
+        <a name="M000681"></a>
+
+        <div class="method-heading">
+          <a href="#M000681" class="method-signature">
+          <span class="method-name">insert_at</span><span class="method-args">(position = 1)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Insert the item at the given position (defaults to the top position of 1).
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000681-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000681-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 79</span>
+79:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">insert_at</span>(<span class="ruby-identifier">position</span> = <span class="ruby-value">1</span>)
+80:           <span class="ruby-identifier">insert_at_position</span>(<span class="ruby-identifier">position</span>)
+81:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000690" class="method-detail">
+        <a name="M000690"></a>
+
+        <div class="method-heading">
+          <a href="#M000690" class="method-signature">
+          <span class="method-name">last?</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Return true if this object is the last in the list.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000690-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000690-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 150</span>
+150:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">last?</span>
+151:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+152:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">position_column</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">bottom_position_in_list</span>
+153:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000692" class="method-detail">
+        <a name="M000692"></a>
+
+        <div class="method-heading">
+          <a href="#M000692" class="method-signature">
+          <span class="method-name">lower_item</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Return the next lower item in the list.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000692-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000692-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 164</span>
+164:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">lower_item</span>
+165:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+166:           <span class="ruby-identifier">acts_as_list_class</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">:first</span>, <span class="ruby-identifier">:conditions</span> =<span class="ruby-operator">&gt;</span>
+167:             <span class="ruby-node">&quot;#{scope_condition} AND #{position_column} = #{(send(position_column).to_i + 1).to_s}&quot;</span>
+168:           )
+169:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000683" class="method-detail">
+        <a name="M000683"></a>
+
+        <div class="method-heading">
+          <a href="#M000683" class="method-signature">
+          <span class="method-name">move_higher</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Swap positions with the next higher item, if one exists.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000683-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000683-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 94</span>
+ 94:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">move_higher</span>
+ 95:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">higher_item</span>
+ 96: 
+ 97:           <span class="ruby-identifier">acts_as_list_class</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword kw">do</span>
+ 98:             <span class="ruby-identifier">higher_item</span>.<span class="ruby-identifier">increment_position</span>
+ 99:             <span class="ruby-identifier">decrement_position</span>
+100:           <span class="ruby-keyword kw">end</span>
+101:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000682" class="method-detail">
+        <a name="M000682"></a>
+
+        <div class="method-heading">
+          <a href="#M000682" class="method-signature">
+          <span class="method-name">move_lower</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Swap positions with the next lower item, if one exists.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000682-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000682-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 84</span>
+84:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">move_lower</span>
+85:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">lower_item</span>
+86: 
+87:           <span class="ruby-identifier">acts_as_list_class</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword kw">do</span>
+88:             <span class="ruby-identifier">lower_item</span>.<span class="ruby-identifier">decrement_position</span>
+89:             <span class="ruby-identifier">increment_position</span>
+90:           <span class="ruby-keyword kw">end</span>
+91:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000684" class="method-detail">
+        <a name="M000684"></a>
+
+        <div class="method-heading">
+          <a href="#M000684" class="method-signature">
+          <span class="method-name">move_to_bottom</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Move to the bottom of the list. If the item is already in the list, the
+items below it have their position adjusted accordingly.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000684-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000684-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 105</span>
+105:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">move_to_bottom</span>
+106:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+107:           <span class="ruby-identifier">acts_as_list_class</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword kw">do</span>
+108:             <span class="ruby-identifier">decrement_positions_on_lower_items</span>
+109:             <span class="ruby-identifier">assume_bottom_position</span>
+110:           <span class="ruby-keyword kw">end</span>
+111:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000685" class="method-detail">
+        <a name="M000685"></a>
+
+        <div class="method-heading">
+          <a href="#M000685" class="method-signature">
+          <span class="method-name">move_to_top</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Move to the top of the list. If the item is already in the list, the items
+above it have their position adjusted accordingly.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000685-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000685-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 115</span>
+115:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">move_to_top</span>
+116:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">in_list?</span>
+117:           <span class="ruby-identifier">acts_as_list_class</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword kw">do</span>
+118:             <span class="ruby-identifier">increment_positions_on_higher_items</span>
+119:             <span class="ruby-identifier">assume_top_position</span>
+120:           <span class="ruby-keyword kw">end</span>
+121:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000686" class="method-detail">
+        <a name="M000686"></a>
+
+        <div class="method-heading">
+          <a href="#M000686" class="method-signature">
+          <span class="method-name">remove_from_list</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Removes the item from the list.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000686-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000686-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/activerecord/lib/active_record/acts/list.rb, line 124</span>
+124:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remove_from_list</span>
+125:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">in_list?</span>
+126:             <span class="ruby-identifier">decrement_positions_on_lower_items</span>
+127:             <span class="ruby-identifier">update_attribute</span> <span class="ruby-identifier">position_column</span>, <span class="ruby-keyword kw">nil</span>
+128:           <span class="ruby-keyword kw">end</span>
+129:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: ActionView::Helpers::CaptureHelper</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">ActionView::Helpers::CaptureHelper</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/vendor/rails/actionpack/lib/action_view/helpers/capture_helper_rb.html">
+                vendor/rails/actionpack/lib/action_view/helpers/capture_helper.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Capture lets you extract parts of code which can be used in other points of
+the template or even layout file.
+</p>
+<h2>Capturing a block into an instance variable</h2>
+<pre>
+  &lt;% @script = capture do %&gt;
+    [some html...]
+  &lt;% end %&gt;
+</pre>
+<h2>Add javascript to header using <a href="CaptureHelper.html#M000644">content_for</a></h2>
+<p>
+<a href="CaptureHelper.html#M000644">content_for</a>(&quot;name&quot;) is a
+wrapper for <a href="CaptureHelper.html#M000643">capture</a> which will
+make the fragment available by name to a yielding layout or template.
+</p>
+<p>
+layout.rhtml:
+</p>
+<pre>
+  &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+      &lt;title&gt;layout with js&lt;/title&gt;
+      &lt;script type=&quot;text/javascript&quot;&gt;
+        &lt;%= yield :script %&gt;
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;%= yield %&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+</pre>
+<p>
+view.rhtml
+</p>
+<pre>
+  This page shows an alert box!
+
+  &lt;% content_for(&quot;script&quot;) do %&gt;
+    alert('hello world')
+  &lt;% end %&gt;
+
+  Normal view text
+</pre>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000643">capture</a>&nbsp;&nbsp;
+      <a href="#M000644">content_for</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000643" class="method-detail">
+        <a name="M000643"></a>
+
+        <div class="method-heading">
+          <a href="#M000643" class="method-signature">
+          <span class="method-name">capture</span><span class="method-args">(*args, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Capture allows you to extract a part of the template into an instance
+variable. You can use this instance variable anywhere in your templates and
+even in your layout.
+</p>
+<p>
+Example of <a href="CaptureHelper.html#M000643">capture</a> being used in a
+.rhtml page:
+</p>
+<pre>
+  &lt;% @greeting = capture do %&gt;
+    Welcome To my shiny new web page!
+  &lt;% end %&gt;
+</pre>
+<p>
+Example of <a href="CaptureHelper.html#M000643">capture</a> being used in a
+.rxml page:
+</p>
+<pre>
+  @greeting = capture do
+    'Welcome To my shiny new web page!'
+  end
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000643-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000643-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/capture_helper.rb, line 56</span>
+56:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">capture</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+57:         <span class="ruby-comment cmt"># execute the block</span>
+58:         <span class="ruby-keyword kw">begin</span>
+59:           <span class="ruby-identifier">buffer</span> = <span class="ruby-identifier">eval</span>(<span class="ruby-value str">&quot;_erbout&quot;</span>, <span class="ruby-identifier">block</span>.<span class="ruby-identifier">binding</span>)
+60:         <span class="ruby-keyword kw">rescue</span>
+61:           <span class="ruby-identifier">buffer</span> = <span class="ruby-keyword kw">nil</span>
+62:         <span class="ruby-keyword kw">end</span>
+63:         
+64:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">buffer</span>.<span class="ruby-identifier">nil?</span>
+65:           <span class="ruby-identifier">capture_block</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+66:         <span class="ruby-keyword kw">else</span>
+67:           <span class="ruby-identifier">capture_erb_with_buffer</span>(<span class="ruby-identifier">buffer</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+68:         <span class="ruby-keyword kw">end</span>
+69:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000644" class="method-detail">
+        <a name="M000644"></a>
+
+        <div class="method-heading">
+          <a href="#M000644" class="method-signature">
+          <span class="method-name">content_for</span><span class="method-args">(name, content = nil, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Calling <a href="CaptureHelper.html#M000644">content_for</a> stores the
+block of markup for later use. Subsequently, you can make calls to it by
+name with <tt>yield</tt> in another template or in the layout.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  &lt;% content_for(&quot;header&quot;) do %&gt;
+    alert('hello world')
+  &lt;% end %&gt;
+</pre>
+<p>
+You can use yield :header anywhere in your templates.
+</p>
+<pre>
+  &lt;%= yield :header %&gt;
+</pre>
+<p>
+NOTE: Beware that <a href="CaptureHelper.html#M000644">content_for</a> is
+ignored in caches. So you shouldn&#8216;t use it for elements that are
+going to be fragment cached.
+</p>
+<p>
+The deprecated way of accessing a <a
+href="CaptureHelper.html#M000644">content_for</a> block was to use a
+instance variable named @@content_for_#{name_of_the_content_block}@. So
+<tt>&lt;%= <a
+href="CaptureHelper.html#M000644">content_for</a>(&#8216;footer&#8217;)
+%&gt;</tt> would be avaiable as <tt>&lt;%= @content_for_footer %&gt;</tt>.
+The preferred notation now is <tt>&lt;%= yield :footer %&gt;</tt>.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000644-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000644-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/capture_helper.rb, line 92</span>
+92:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content_for</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">content</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+93:         <span class="ruby-identifier">eval</span> <span class="ruby-node">&quot;@content_for_#{name} = (@content_for_#{name} || '') + capture(&amp;block)&quot;</span>
+94:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

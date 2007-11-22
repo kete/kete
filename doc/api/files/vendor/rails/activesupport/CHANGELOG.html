@@ -1,0 +1,1460 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: CHANGELOG</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>CHANGELOG</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>vendor/rails/activesupport/CHANGELOG
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Thu Oct 18 13:15:46 +1300 2007</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+*1.4.4* (October 12th, 2007)
+</p>
+<ul>
+<li>Backport: allow array and hash query parameters. Array route parameters are
+converted/to/a/path as before. 6765, 7047, 7462 [bgipsy, Jeremy McAnally,
+Dan Kubb, brendan, Diego Algorta Casamayou]
+
+</li>
+</ul>
+<p>
+*1.4.3* (October 4th, 2007)
+</p>
+<ul>
+<li>Demote Hash#to_xml to use <a
+href="../../../../classes/XmlSimple.html#M000035">XmlSimple#xml_in_string</a>
+so it can&#8216;t read files or stdin. 8453 [candlerb, Jeremy Kemper]
+
+</li>
+<li>Document Object#blank?. 6491 [Chris Mear]
+
+</li>
+<li>Update Dependencies to ignore constants inherited from ancestors. Closes
+6951. [Nicholas Seckar]
+
+</li>
+<li>Improved multibyte performance by relying less on exception raising 8159
+[Blaine]
+
+</li>
+</ul>
+<p>
+*1.4.2* (March 12th, 2007)
+</p>
+<ul>
+<li>Ruby 1.8.6 and 1.9 define private Time#to_date and to_datetime; make them
+
+</li>
+</ul>
+<p>
+public for compatibility. [Jeremy Kemper]
+</p>
+<ul>
+<li>Deprecation: warn on stderr if RAILS_DEFAULT_LOGGER isn&#8216;t set yet.
+[Jeremy Kemper]
+
+</li>
+</ul>
+<p>
+*1.4.1* (February 5th, 2007)
+</p>
+<ul>
+<li>Optimize Class Inheritable Attributes so that unnecessary hashes are not
+created. Closes 7472 [Bruce Perens]
+
+</li>
+<li>Added :instance_writer option to mattr_writer/accessor,
+cattr_writer/accessor, and class_inheritable_writer to skip the creation of
+the instance writer. [Rick]
+
+</li>
+<li>Full test coverage for <a
+href="../../../../classes/Inflector.html">Inflector</a>. 7228 [Dan Kubb]
+
+</li>
+</ul>
+<p>
+*1.4.0* (January 16th, 2007)
+</p>
+<ul>
+<li>Document <a
+href="../../../../classes/Inflector.html#M001104">Inflector.ordinalize</a>
+and merge docs from String inflections. 7023 [smeade]
+
+</li>
+<li>Unbundle flexmock. [Jeremy Kemper]
+
+</li>
+<li>Fix Dependencies.autoloaded? to ignore anonymous modules. Closes 6561.
+[Nicholas Seckar]
+
+</li>
+<li>Update load once paths to prevent nested once constants from being detected
+and claimed by an external non-once load. [Nicholas Seckar]
+
+</li>
+<li>Deprecation: silence warnings when reporting test errors. [Jeremy Kemper]
+
+</li>
+<li>Fix remove_constant to correctly handle constant names of the form
+&quot;::A::&#8230;&quot;. References 6720. [Nicholas Seckar]
+
+</li>
+<li>Fixed Array#to_xml when it contains a series of hashes (each piece would
+get its own XML declaration) 6610 [thkarcher/cyu]
+
+</li>
+<li>Hash#to_xml handles keys with the same name as Kernel methods. 6613
+[Catfish]
+
+</li>
+<li>Don&#8216;t quote hash keys in Hash#to_json if they&#8216;re valid
+JavaScript identifiers. Disable this with
+ActiveSupport::JSON.unquote_hash_key_identifiers = false if you need strict
+JSON compliance. [Sam Stephenson]
+
+</li>
+<li>Lazily load the Unicode Database in the UTF-8 Handler [Rick Olson]
+
+</li>
+<li>Update dependencies to delete partially loaded constants. [Nicholas Seckar]
+
+</li>
+<li>Fix unicode JSON regexp for Onigurama compatibility. 6494 [whitley]
+
+</li>
+<li>Update <a href="../../../../classes/XmlSimple.html">XmlSimple</a> to
+1.0.10. Closes 6532. [nicksieger]
+
+</li>
+<li>Update dependencies to allow constants to be defined alongside their
+siblings. A common case for this is AR model classes with STI; user.rb
+might define User, Administrator and Guest for example. [Nicholas Seckar]
+
+</li>
+<li>next_week respects DST changes. 6483, 5617, 2353, 2509, 4551 [marclove,
+rabiedenharn, rails@roetzel.de, jsolson@damogran.org, drbrain@segment7.net]
+
+</li>
+<li>Expose methods added to <a
+href="../../../../classes/Enumerable.html">Enumerable</a> in the
+documentation, such as group_by. Closes 6170. [sergeykojin@gmail.com,
+Marcel Molina Jr.]
+
+</li>
+<li>Ensure Chars#tidy_bytes only tidies broken bytes. Closes 6397 [Manfred
+Stienstra]
+
+</li>
+<li>Add &#8216;unloadable&#8217;, a method used to mark any constant as
+requiring an unload after each request. [Nicholas Seckar]
+
+</li>
+<li>Make core_ext/string/access.rb multibyte safe. Closes 6388 [Manfred
+Stienstra]
+
+</li>
+<li>Make String#chars slicing behaviour consistent with String. Closes 6387
+[Manfred Stienstra]
+
+</li>
+<li>Pull in latest multibye patch. Closes 6346 [Manfred Stienstra]
+
+</li>
+<li>Add ActiveSupport::Multibyte. Provides String#chars which lets you deal
+with strings as a sequence of chars, not of bytes. Closes 6242 [Julian
+Tarkhanov, Manfred Stienstra, Thijs van der Vossen &amp; Jan Behrens]
+
+</li>
+<li>Fix issue with class_inheritable_accessor saving updates to the parent
+class when initialized with an Array or Hash [mojombo]
+
+</li>
+<li>Hash#to_xml supports Bignum and BigDecimal. 6313 [edibiase]
+
+</li>
+<li>Don&#8216;t undefine class in OptionMerger [Rick]
+
+</li>
+<li>Hash.create_from_xml has been renamed to Hash.from_xml, alias will exist
+until Rails 2.0 [DHH]
+
+</li>
+<li>alias_method_chain works with accessor= methods also. 6153 [Caio Chassot]
+
+</li>
+<li>Fix loadable_constants_for_path to handle load paths that do not end with a
+slash. [Nicholas Seckar]
+
+</li>
+<li>Fix logic error in determining what was loaded by a given file. Closes
+6039. [Nicholas Seckar]
+
+</li>
+<li>Equate Kernel.const_missing with Object.const_missing. Fixes 5988.
+[Nicholas Seckar]
+
+</li>
+<li>Don&#8216;t pad remaining places with in_groups_of if specified padding
+value is false. [Marcel Molina Jr.]
+
+</li>
+<li>Fix cases where empty xml nodes weren&#8216;t being translated to nil in
+Hash.create_from_xml [Rick Olso n]
+
+<p>
+&lt;written-on type=&quot;date&quot;&gt;&lt;/written-on&gt; # =&gt; { :type
+=&gt; &#8216;date&#8217; } # WRONG &lt;written-on
+type=&quot;date&quot;&gt;&lt;/written-on&gt; # =&gt; nil # RIGHT
+</p>
+</li>
+<li>Tighten rescue clauses. 5985 [james@grayproductions.net]
+
+</li>
+<li>Inflections: don&#8216;t singularize -ies plurals. [foamdino@gmail.com,
+Mark Van Holstyn]
+
+</li>
+<li>Update Initializer to use load_once_paths to avoid plugin reloading.
+References 5852. [Nicholas Seckar]
+
+</li>
+<li>Use Array#assoc in ActiveSupport::OrderedHash. [Mauricio Fernandez]
+
+</li>
+<li>Greatly increased performance of String.to_json, which speeds up RJS
+considerably on large pages, fixes 3473 [Shugo Maeda]
+
+</li>
+<li>Detect missing_constants calls from removed modules and fail accordingly.
+[Nicholas Seckar]
+
+</li>
+<li>Stop using defined? in Dependencies.qualified_const_defined? since defined?
+may invoke const_missing. [Nicholas Seckar]
+
+</li>
+<li>Dependencies can autoload directories of nested classes. [Jeremy Kemper]
+
+<pre>
+  Example:
+    invoice.rb            class Invoice
+    invoice/lineitem.rb   class Invoice::Lineitem
+</pre>
+</li>
+<li>Add Deprecation.silence so that Reloadable does not scold itself. [Nicholas
+Seckar]
+
+</li>
+<li>Add debugging logging to Dependencies. Currently can be enabled with
+Dependencies.log_activity = true; adding to Initializer and documenting is
+forthcoming. [Nicholas Seckar]
+
+</li>
+<li>Replace Reloadable with improvements to the Dependencies mechanism.
+[Nicholas Seckar]
+
+</li>
+<li>DateTime#to_time gives hour/minute/second resolution. 5747
+[jon.evans@pobox.com]
+
+</li>
+<li>attr_internal to support namespacing and deprecation. Like attr_* except
+backed by internally-named instance variable. Set
+attr_internal_naming_format to change the format from the default
+&#8217;@_%s&#8217;. [Jeremy Kemper]
+
+<pre>
+  # def foo()   @foo__rofl      end
+  # def foo=(v) @foo__rofl = v  end
+  self.attr_internal_naming_format = '@%s__rofl'
+  attr_internal :foo
+</pre>
+</li>
+<li>Raise fully qualified names upon name errors. 5533 [lars@pinds.com,
+Nicholas Seckar]
+
+</li>
+<li>Add extention to obtain the missing constant from NameError instances.
+[Nicholas Seckar]
+
+</li>
+<li>Added Module#alias_attribute [Jamis/DHH]. Example:
+
+<pre>
+  class Content &lt; ActiveRecord::Base
+    # has a title attribute
+  end
+
+  class Email &lt; ActiveRecord::Base
+    alias_attribute :subject, :title
+  end
+
+  e = Email.find(1)
+  e.title    # =&gt; &quot;Superstars&quot;
+  e.subject  # =&gt; &quot;Superstars&quot;
+  e.subject? # =&gt; true
+  e.subject = &quot;Megastars&quot;
+  e.title    # =&gt; &quot;Megastars&quot;
+</pre>
+</li>
+<li>Deprecation: easier to work with warning behavior as procs; default
+behaviors for each environment so users needn&#8216;t update env.rb; and
+testing pleasure with assert_deprecated, assert_not_deprecated. [Jeremy
+Kemper] By default, test prints to $stderr, dev logs, production ignores.
+Provide your own per-environment in e.g.
+config/environments/development.rb:
+
+<pre>
+  ActiveSupport::Deprecation.behavior = Proc.new { |message| raise message }
+</pre>
+</li>
+<li>First cut of the Rails Deprecation system. [Koz]
+
+</li>
+<li>Strip boolean XML content before checking for &#8216;true&#8217; [Rick
+Olson]
+
+</li>
+<li>Customize default BigDecimal formatting. References 5672
+[dave@pragprog.com]
+
+</li>
+<li>Correctly convert &lt;foo nil=&quot;true&quot;&gt; to nil when using
+Hash.create_from_xml. [Rick]
+
+</li>
+<li>Optional identity for <a
+href="../../../../classes/Enumerable.html#M001112">Enumerable#sum</a>
+defaults to zero. 5657 [gensym@mac.com]
+
+</li>
+<li><a
+href="../../../../classes/HashWithIndifferentAccess.html">HashWithIndifferentAccess</a>
+shouldn&#8216;t confuse false and nil. 5601 [shugo@ruby-lang.org]
+
+</li>
+<li>Fixed <a
+href="../../../../classes/HashWithIndifferentAccess.html#M000022">HashWithIndifferentAccess#default</a>
+5586 [chris@seagul.co.uk]
+
+</li>
+<li>More compatible Hash.create_from_xml. 5523 [nunemaker@gmail.com]
+
+</li>
+<li>Added <a
+href="../../../../classes/Enumerable.html#M001112">Enumerable#sum</a> for
+calculating a sum from the elements [DHH, jonathan@daikini.com]. Examples:
+
+<pre>
+  [1, 2, 3].sum
+  payments.sum { |p| p.price * p.tax_rate }
+  payments.sum(&amp;:price)
+</pre>
+<p>
+This is instead of payments.inject(0) { |sum, p| sum + p.price }
+</p>
+</li>
+<li>Correct and clarify Array#to_sentence docs. 5458 [brad@madriska.com]
+
+</li>
+<li>alias_method_chain preserves method punctuation so foo, foo?, and foo! may
+be chained with the same feature. [Jeremy Kemper]
+
+<pre>
+  Example:
+    alias_method_chain :save!, :validation
+  is equivalent to
+    alias_method :save_without_validation!, :save!
+    alias_method :save!, :save_with_validation!
+</pre>
+</li>
+<li>Enhance <a
+href="../../../../classes/Symbol.html#M000007">Symbol#to_proc</a> so it
+works with list objects, such as multi-dimensional arrays. Closes 5295
+[nov@yo.rim.or.jp]. Example:
+
+<pre>
+  {1 =&gt; &quot;one&quot;, 2 =&gt; &quot;two&quot;, 3 =&gt; &quot;three&quot;}.sort_by(&amp;:first).map(&amp;:last)
+  #=&gt; [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;]
+</pre>
+</li>
+<li>Added Hash.create_from_xml(string) which will create a hash from a XML
+string and even typecast if possible [DHH]. Example:
+
+<pre>
+  Hash.create_from_xml &lt;&lt;-EOT
+    &lt;note&gt;
+      &lt;title&gt;This is a note&lt;/title&gt;
+      &lt;created-at type=&quot;date&quot;&gt;2004-10-10&lt;/created-at&gt;
+    &lt;/note&gt;
+  EOT
+</pre>
+<p>
+&#8230;would return:
+</p>
+<pre>
+  { :note =&gt; { :title =&gt; &quot;This is a note&quot;, :created_at =&gt; Date.new(2004, 10, 10) } }
+</pre>
+</li>
+<li>Added Jim Weirich&#8216;s excellent FlexMock class to vendor (Copyright
+2003, 2004 by Jim Weirich (jim@weriichhouse.org)) &#8212; it&#8216;s not
+automatically required, though, so require &#8216;flexmock&#8217; is still
+necessary [DHH]
+
+</li>
+<li>Fixed that Module#alias_method_chain should work with both foo? foo! and
+foo at the same time 4954 [anna@wota.jp]
+
+</li>
+<li>to_xml fixes, features, and speedup: introduce :dasherize option that
+converts updated_at to updated-at if true (the existing default); binary
+columns get encoding=&quot;base64&quot; attribute; nil values get
+nil=&quot;true&quot; attribute to distinguish empty values; add type
+information for float columns; allow arbitrarily deep :include; include SQL
+type information as the type attribute. 4989 [Blair Zajac
+&lt;blair@orcaware.com&gt;]
+
+</li>
+<li>Add OrderedHash#values. [Sam Stephenson]
+
+</li>
+<li>Added Array#to_s(:db) that&#8216;ll produce a comma-separated list of ids
+[DHH]. Example:
+
+<pre>
+  Purchase.find(:all, :conditions =&gt; &quot;product_id IN (#{shops.products.to_s(:db)})&quot;
+</pre>
+</li>
+<li>Normalize classify&#8216;s argument to a String so that it plays nice with
+Symbols. [Marcel Molina Jr.]
+
+</li>
+<li>Strip out leading schema name in classify. References 5139.
+[schoenm@earthlink.net]
+
+</li>
+<li>Remove Enumerable#first_match since break(value) handles the use case well
+enough. [Nicholas Seckar]
+
+<p>
+Enumerable#first_match was like detect, but instead of returning the
+matching element, the yielded value returned. For example:
+</p>
+<pre>
+  user_xml = adapters(:from =&gt; User, :to =&gt; Xml).first_match do |adapter|
+    adapter.adapt @user
+  end
+</pre>
+<p>
+But this is just as easily done with:
+</p>
+<pre>
+  user_xml = adapters(:from =&gt; User, :to =&gt; Xml).each do
+    break adapter.adapt(@user)
+  end
+</pre>
+</li>
+<li>Make Array#in_groups_of just return the grouped collection if a block
+isn&#8216;t given. [Marcel Molina Jr.]
+
+</li>
+<li>Don&#8216;t destroy a <a
+href="../../../../classes/HashWithIndifferentAccess.html">HashWithIndifferentAccess</a>
+if symbolize_keys! or stringify_keys! is called on it. Closes 5076. [Marcel
+Molina Jr., guy.naor@famundo.com]
+
+</li>
+<li>Document Module::delegate. 5002 [pergesu@gmail.com]
+
+</li>
+<li>Replace alias method chaining with Module#alias_method_chain. [Marcel
+Molina Jr.]
+
+</li>
+<li>Strip out punctuation on predicates or bang methods being aliased with
+alias_method_chain since target?_without_feature is not a valid method
+name. Add tests for Module#alias_method_chain. [Marcel Molina Jr.]
+
+</li>
+<li>Replace Ruby&#8216;s deprecated append_features in favor of included.
+[Marcel Molina Jr.]
+
+</li>
+<li>Allow default options in with_options to be overridden. Closes 4480.
+[murphy@cYcnus.de]
+
+</li>
+<li>Added Module#alias_method_chain [Jamis Buck]
+
+</li>
+<li>Updated to Builder 2.0 [DHH]
+
+</li>
+<li>Add Array#split for dividing arrays into one or more subarrays by value or
+block. [Sam Stephenson]
+
+</li>
+</ul>
+<p>
+*1.3.1* (April 6th, 2006)
+</p>
+<ul>
+<li>Clean paths inside of exception messages and traces. [Nicholas Seckar]
+
+</li>
+<li>Add Pathname.clean_within for cleaning all the paths inside of a string.
+[Nicholas Seckar]
+
+</li>
+<li>provide an empty Dependencies::LoadingModule.load which prints deprecation
+warnings. Lets 1.0 applications function with .13-style environment.rb.
+
+</li>
+</ul>
+<p>
+*1.3.0* (March 27th, 2006)
+</p>
+<ul>
+<li>When possible, avoid incorrectly obtaining constants from parent modules.
+Fixes 4221. [Nicholas Seckar]
+
+</li>
+<li>Add more tests for dependencies; refactor existing cases. [Nicholas Seckar]
+
+</li>
+<li>Move Module#parent and Module#as_load_path into core_ext. Add
+Module#parent. [Nicholas Seckar]
+
+</li>
+<li>Add CachingTools::HashCaching to simplify the creation of nested,
+autofilling hashes. [Nicholas Seckar]
+
+</li>
+<li>Remove a hack intended to avoid unloading the same class twice, but which
+would not work anyways. [Nicholas Seckar]
+
+</li>
+<li>Update Object.subclasses_of to locate nested classes. This affects
+Object.remove_subclasses_of in that nested classes will now be unloaded.
+[Nicholas Seckar]
+
+</li>
+<li>Update Object.remove_subclasses_of to use Class.remove_class, reducing
+duplication. [Nicholas Seckar]
+
+</li>
+<li>Added Fixnum#seconds for consistency, so you can say 5.minutes + 30.seconds
+instead of 5.minutes + 30 4389 [François Beausoleil]
+
+</li>
+<li>Added option to String#camelize to generate lower-cased camel case by
+passing in :lower, like &quot;super_man&quot;.camelize(:lower) # =&gt;
+&quot;superMan&quot; [DHH]
+
+</li>
+<li>Added Hash#diff to show the difference between two hashes [Chris McGrath]
+
+</li>
+<li>Added Time#advance to do precise time time calculations for cases where a
+month being approximated to 30 days won&#8216;t do 1860 [Rick Olson]
+
+</li>
+<li>Enhance <a
+href="../../../../classes/Inflector.html#M001096">Inflector.underscore</a>
+to convert &#8217;-&#8217; into &#8216;_&#8217; (as the inverse of <a
+href="../../../../classes/Inflector.html#M001097">Inflector.dasherize</a>)
+[Jamis Buck]
+
+</li>
+<li>Switched to_xml to use the xml schema format for datetimes. This allows the
+encoding of time zones and should improve operability. [Koz]
+
+</li>
+<li>Added a note to the documentation for the Date related Numeric extensions
+to indicate that they&#8216;re
+
+</li>
+</ul>
+<p>
+approximations and shouldn&#8216;t be used for critical calculations. [Koz]
+</p>
+<ul>
+<li>Added Hash#to_xml and Array#to_xml that makes it much easier to produce XML
+from basic structures [DHH]. Examples:
+
+<pre>
+  { :name =&gt; &quot;David&quot;, :street_name =&gt; &quot;Paulina&quot;, :age =&gt; 26, :moved_on =&gt; Date.new(2005, 11, 15) }.to_xml
+</pre>
+<p>
+&#8230;returns:
+</p>
+<pre>
+    &lt;person&gt;
+      &lt;street-name&gt;Paulina&lt;/street-name&gt;
+      &lt;name&gt;David&lt;/name&gt;
+      &lt;age type=&quot;integer&quot;&gt;26&lt;/age&gt;
+      &lt;moved-on type=&quot;date&quot;&gt;2005-11-15&lt;/moved-on&gt;
+    &lt;/person&gt;
+</pre>
+</li>
+<li>Moved Jim Weirich&#8216;s wonderful Builder from Action Pack to Active
+Support (it&#8216;s simply too useful to be stuck in AP) [DHH]
+
+</li>
+<li>Fixed that Array#to_sentence will return &quot;&quot; on an empty array
+instead of &quot;, and&quot; 3842, 4031 [rubyonrails@beautifulpixel.com]
+
+</li>
+<li>Add <a
+href="../../../../classes/Enumerable.html#M001111">Enumerable#group_by</a>
+for grouping collections based on the result of some block. Useful, for
+example, for grouping records by date.
+
+<p>
+ex.
+</p>
+<pre>
+   latest_transcripts.group_by(&amp;:day).each do |day, transcripts|
+     p &quot;#{day} -&gt; #{transcripts.map(&amp;:class) * ', '}&quot;
+   end
+   &quot;2006-03-01 -&gt; Transcript&quot;
+   &quot;2006-02-28 -&gt; Transcript&quot;
+   &quot;2006-02-27 -&gt; Transcript, Transcript&quot;
+   &quot;2006-02-26 -&gt; Transcript, Transcript&quot;
+</pre>
+<p>
+Add Array#in_groups_of, for iterating over an array in groups of a certain
+size.
+</p>
+<p>
+ex.
+</p>
+<pre>
+   %w(1 2 3 4 5 6 7).in_groups_of(3) {|g| p g}
+   [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]
+   [&quot;4&quot;, &quot;5&quot;, &quot;6&quot;]
+   [&quot;7&quot;, nil, nil]
+</pre>
+<p>
+[Marcel Molina Jr., Sam Stephenson]
+</p>
+</li>
+<li>Added Kernel#daemonize to turn the current process into a daemon that can
+be killed with a TERM signal [DHH]
+
+</li>
+<li>Add &#8216;around&#8217; methods to Logger, to make it easy to log before
+and after messages for a given block as requested in 3809. [Michael
+Koziarski] Example:
+
+<p>
+logger.around_info(&quot;Start rendering component (#{options.inspect}):
+&quot;,
+</p>
+<pre>
+                   &quot;\n\nEnd of component rendering&quot;) { yield }
+</pre>
+</li>
+<li>Added Time#beginning_of_quarter 3607 [cohen.jeff@gmail.com]
+
+</li>
+<li>Fix Object.subclasses_of to only return currently defined objects [Jonathan
+Viney &lt;jonathan@bluewire.net.nz&gt;]
+
+</li>
+<li>Fix constantize to properly handle names beginning with &#8217;::&#8217;.
+[Nicholas Seckar]
+
+</li>
+<li>Make String#last return the string instead of nil when it is shorter than
+the limit [Scott Barron].
+
+</li>
+<li>Added delegation support to Module that allows multiple delegations at once
+(unlike Forwardable in the stdlib) [DHH]. Example:
+
+<pre>
+  class Account &lt; ActiveRecord::Base
+    has_one :subscription
+    delegate :free?, :paying?, :to =&gt; :subscription
+    delegate :overdue?, :to =&gt; &quot;subscription.last_payment&quot;
+  end
+
+  account.free?    # =&gt; account.subscription.free?
+  account.overdue? # =&gt; account.subscription.last_payment.overdue?
+</pre>
+</li>
+<li>Fix Reloadable to handle the case where a class that has been
+&#8216;removed&#8217; has not yet been garbage collected. [Nicholas Seckar]
+
+</li>
+<li>Don&#8216;t allow Reloadable to be included into Modules.
+
+</li>
+<li>Remove LoadingModule. [Nicholas Seckar]
+
+</li>
+<li>Add documentation for Reloadable::Subclasses. [Nicholas Seckar]
+
+</li>
+<li>Add Reloadable::Subclasses which handles the common case where a base class
+should not be reloaded, but its subclasses should be. [Nicholas Seckar]
+
+</li>
+<li>Further improvements to reloading code [Nicholas Seckar, Trevor Squires]
+
+<ul>
+<li>All classes/modules which include Reloadable can define reloadable? for
+fine grained control of reloading
+
+</li>
+<li>Class.remove_class uses Module#parent to access the parent module
+
+</li>
+<li>Class.remove_class expanded to handle multiple classes in a single call
+
+</li>
+<li>LoadingModule.clear! has been removed as it is no longer required
+
+</li>
+<li>Module#remove_classes_including has been removed in favor of
+Reloadable.reloadable_classes
+
+</li>
+</ul>
+</li>
+<li>Added reusable reloading support through the inclusion of the Relodable
+module that all subclasses of <a
+href="../../../../classes/ActiveRecord/Base.html">ActiveRecord::Base</a>,
+<a
+href="../../../../classes/ActiveRecord/Observer.html">ActiveRecord::Observer</a>,
+ActiveController::Base, and <a
+href="../../../../classes/ActionMailer/Base.html">ActionMailer::Base</a>
+automatically gets. This means that these classes will be reloaded by the
+dispatcher when Dependencies.mechanism = :load. You can make your own
+models reloadable easily:
+
+<pre>
+  class Setting
+    include Reloadable
+  end
+</pre>
+<p>
+Reloading a class is done by removing its constant which will cause it to
+be loaded again on the next reference. [DHH]
+</p>
+</li>
+<li>Added auto-loading support for classes in modules, so Conductor::Migration
+will look for conductor/migration.rb and Conductor::Database::Settings will
+look for conductor/database/settings.rb [Nicholas Seckar]
+
+</li>
+<li>Add Object#instance_exec, like instance_eval but passes its arguments to
+the block. (Active Support will not override the Ruby 1.9 implementation of
+this method.) [Sam Stephenson]
+
+</li>
+<li>Add Proc#bind(object) for changing a proc or block&#8216;s self by
+returning a Method bound to the given object. Based on why the lucky
+stiff&#8216;s &quot;cloaker&quot; method. [Sam Stephenson]
+
+</li>
+<li>Fix merge and dup for hashes with indifferent access 3404
+[kenneth.miller@bitfield.net]
+
+</li>
+<li>Fix the requires in option_merger_test to unbreak AS tests. [Sam
+Stephenson]
+
+</li>
+<li>Make <a
+href="../../../../classes/HashWithIndifferentAccess.html#M000024">HashWithIndifferentAccess#update</a>
+behave like Hash#update by returning the hash. 3419, 3425
+[asnem@student.ethz.ch, JanPrill@blauton.de, Marcel Molina Jr.]
+
+</li>
+<li>Add ActiveSupport::JSON and Object#to_json for converting Ruby objects to
+JSON strings. [Sam Stephenson]
+
+</li>
+<li>Add Object#with_options for DRYing up multiple calls to methods having
+shared options. [Sam Stephenson] Example:
+
+<p>
+ActionController::Routing::Routes.draw do |map|
+</p>
+<pre>
+  # Account routes
+  map.with_options(:controller =&gt; 'account') do |account|
+    account.home   '',       :action =&gt; 'dashboard'
+    account.signup 'signup', :action =&gt; 'new'
+    account.logout 'logout', :action =&gt; 'logout'
+  end
+</pre>
+<p>
+end
+</p>
+</li>
+<li>Introduce Dependencies.warnings_on_first_load setting. If true, enables
+warnings on first load of a require_dependency. Otherwise, loads without
+warnings. Disabled (set to false) by default. [Jeremy Kemper]
+
+</li>
+<li>Active Support is warnings-safe. 1792 [Eric Hodel]
+
+</li>
+<li>Introduce enable_warnings counterpart to silence_warnings. Turn warnings on
+when loading a file for the first time if Dependencies.mechanism == :load.
+Common mistakes such as redefined methods will print warnings to stderr.
+[Jeremy Kemper]
+
+</li>
+<li>Add <a href="../../../../classes/Symbol.html#M000007">Symbol#to_proc</a>,
+which allows for, e.g. [:foo, :bar].map(&amp;:to_s). [Marcel Molina Jr.]
+
+</li>
+<li>Added the following methods [Marcel Molina Jr., Sam Stephenson]:
+
+<ul>
+<li>Object#copy_instance_variables_from(object) to copy instance variables from
+one object to another
+
+</li>
+<li>Object#extended_by to get an instance&#8216;s included/extended modules
+
+</li>
+<li>Object#extend_with_included_modules_from(object) to extend an instance with
+the modules from another instance
+
+</li>
+</ul>
+</li>
+</ul>
+<p>
+*1.2.5* (December 13th, 2005)
+</p>
+<ul>
+<li>Become part of Rails 1.0
+
+</li>
+<li>Rename Version constant to VERSION. 2802 [Marcel Molina Jr.]
+
+</li>
+</ul>
+<p>
+*1.2.3* (November 7th, 2005)
+</p>
+<ul>
+<li>Change <a
+href="../../../../classes/Inflector.html#M001103">Inflector#constantize</a>
+to use eval instead of const_get. [Nicholas Seckar]
+
+</li>
+<li>Fix const_missing handler to ignore the trailing &#8217;.rb&#8217; on files
+when comparing paths. [Nicholas Seckar]
+
+</li>
+<li>Define kernel.rb methods in &quot;class Object&quot; instead of
+&quot;module Kernel&quot; to work around a Windows peculiarity [Sam
+Stephenson]
+
+</li>
+<li>Fix broken tests caused by incomplete loading of active support. [Nicholas
+Seckar]
+
+</li>
+<li>Fix status pluralization bug so status_codes doesn&#8216;t get pluralized
+as statuses_code. 2758 [keithm@infused.org]
+
+</li>
+<li>Added Kernel#silence_stderr to silence stderr for the duration of the given
+block [Sam Stephenson]
+
+</li>
+<li>Changed Kernel#` to print a message to stderr (like Unix) instead of
+raising Errno::ENOENT on Win32 [Sam Stephenson]
+
+</li>
+<li>Changed 0.blank? to false rather than true since it violates
+everyone&#8216;s expectation of blankness. 2518, 2705 [rails@jeffcole.net]
+
+</li>
+<li>When loading classes using const_missing, raise a NameError if and only if
+the file we tried to load was not present. [Nicholas Seckar]
+
+</li>
+<li>Added petabytes and exebytes to numeric extensions 2397 [timct@mac.com]
+
+</li>
+<li>Added Time#end_of_month to accompany Time#beginning_of_month 2514
+[Jens-Christian Fischer]
+
+</li>
+</ul>
+<p>
+*1.2.2* (October 26th, 2005)
+</p>
+<ul>
+<li>Set Logger.silencer = false to disable Logger#silence. Useful for debugging
+fixtures.
+
+</li>
+<li>Add title case method to String to do, e.g.,
+&#8216;action_web_service&#8217;.titlecase # =&gt; &#8216;Action Web
+Service&#8217;. [Marcel Molina Jr.]
+
+</li>
+</ul>
+<p>
+*1.2.1* (October 19th, 2005)
+</p>
+<ul>
+<li>Classify generated routing code as framework code to avoid appearing in
+application traces. [Nicholas Seckar]
+
+</li>
+<li>Show all framework frames in the framework trace. [Nicholas Seckar]
+
+</li>
+</ul>
+<p>
+*1.2.0* (October 16th, 2005)
+</p>
+<ul>
+<li>Update Exception extension to show the first few framework frames in an
+application trace. [Nicholas Seckar]
+
+</li>
+<li>Added Exception extension to provide support for clean backtraces.
+[Nicholas Seckar]
+
+</li>
+<li>Updated whiny nil to be more concise and useful. [Nicholas Seckar]
+
+</li>
+<li>Added Enumerable#first_match [Nicholas Seckar]
+
+</li>
+<li>Fixed that Time#change should also reset usec when also resetting minutes
+2459 [ikeda@dream.big.or.jp]
+
+</li>
+<li>Fix Logger compatibility for distributions that don&#8216;t keep Ruby and
+its standard library in sync.
+
+</li>
+<li>Replace &#8217;%e&#8217; from long and short time formats as Windows does
+not support it. 2344. [Tom Ward &lt;tom@popdog.net&gt;]
+
+</li>
+<li>Added to_s(:db) to Range, so you can get &quot;BETWEEN
+&#8216;2005-12-10&#8217; AND &#8216;2005-12-12&#8217;&quot; from
+Date.new(2005, 12, 10)..Date.new(2005, 12, 12) (and likewise with Times)
+
+</li>
+<li>Moved require_library_or_gem into Kernel. 1992 [Michael Schuerig
+&lt;michael@schuerig.de&gt;]
+
+</li>
+<li>Add :rfc822 as an option for Time#to_s (to get rfc822-formatted times)
+
+</li>
+<li>Chain the const_missing hook to any previously existing hook so rails can
+play nicely with rake
+
+</li>
+<li>Clean logger is compatible with both 1.8.2 and 1.8.3 Logger. 2263 [Michael
+Schuerig &lt;michael@schuerig.de&gt;]
+
+</li>
+<li>Added native, faster implementations of .blank? for the core types 2286
+[skae]
+
+</li>
+<li>Fixed clean logger to work with Ruby 1.8.3 Logger class 2245
+
+</li>
+<li>Fixed memory leak with Active Record classes when Dependencies.mechanism =
+:load 1704 [c.r.mcgrath@gmail.com]
+
+</li>
+<li>Fixed <a
+href="../../../../classes/Inflector.html#M001096">Inflector.underscore</a>
+for use with acronyms, so HTML becomes html instead of htm_l 2173
+[k@v2studio.com]
+
+</li>
+<li>Fixed dependencies related infinite recursion bug when a controller file
+does not contain a controller class. Closes 1760. [rcolli2@tampabay.rr.com]
+
+</li>
+<li>Fixed inflections for status, quiz, move 2056 [deirdre@deirdre.net]
+
+</li>
+<li>Added Hash#reverse_merge, Hash#reverse_merge!, and Hash#reverse_update to
+ease the use of default options
+
+</li>
+<li>Added Array#to_sentence that&#8216;ll turn [&#8216;one&#8217;,
+&#8216;two&#8217;, &#8216;three&#8217;] into &quot;one, two, and
+three&quot; 2157 [m.stienstra@fngtps.com]
+
+</li>
+<li>Added Kernel#silence_warnings to turn off warnings temporarily for the
+passed block
+
+</li>
+<li>Added String#starts_with? and String#ends_with? 2118
+[thijs@vandervossen.net]
+
+</li>
+<li>Added easy extendability to the inflector through <a
+href="../../../../classes/Inflector.html#M001091">Inflector.inflections</a>
+(using the <a
+href="../../../../classes/Inflector/Inflections.html">Inflector::Inflections</a>
+singleton class). Examples:
+
+<pre>
+  Inflector.inflections do |inflect|
+    inflect.plural /^(ox)$/i, '\1\2en'
+    inflect.singular /^(ox)en/i, '\1'
+
+    inflect.irregular 'octopus', 'octopi'
+
+    inflect.uncountable &quot;equipment&quot;
+  end
+</pre>
+</li>
+<li>Added String#at, String#from, String#to, String#first, String#last in <a
+href="../../../../classes/ActiveSupport/CoreExtensions/String/Access.html">ActiveSupport::CoreExtensions::String::Access</a>
+to ease access to individual characters and substrings in a string serving
+basically as human names for range access.
+
+</li>
+<li>Make Time#last_month work when invoked on the 31st of a month.
+
+</li>
+<li>Add Time.days_in_month, and make Time#next_month work when invoked on the
+31st of a month
+
+</li>
+<li>Fixed that Time#midnight would have a non-zero usec on some platforms 1836
+
+</li>
+<li>Fixed inflections of &quot;index/indices&quot; 1766 [damn_pepe@gmail.com]
+
+</li>
+<li>Added stripping of _id to String#humanize, so &quot;employee_id&quot;
+becomes &quot;Employee&quot; 1574 [Justin French]
+
+</li>
+<li>Factor Fixnum and Bignum extensions into Integer extensions [Nicholas
+Seckar]
+
+</li>
+<li>Hooked ordinalize into Fixnum and Bignum classes. [Nicholas Seckar, danp]
+
+</li>
+<li>Added Fixnum#ordinalize to turn 1.ordinalize to &quot;1st&quot;,
+3.ordinalize to &quot;3rd&quot;, and 10.ordinalize to &quot;10th&quot; and
+so on 1724 [paul@cnt.org]
+
+</li>
+</ul>
+<p>
+*1.1.1* (11 July, 2005)
+</p>
+<ul>
+<li>Added more efficient implementation of the development mode reset of
+classes 1638 [Chris McGrath]
+
+</li>
+</ul>
+<p>
+*1.1.0* (6 July, 2005)
+</p>
+<ul>
+<li>Fixed conflict with Glue gem 1606 [Rick Olson]
+
+</li>
+<li>Added new rules to the <a
+href="../../../../classes/Inflector.html">Inflector</a> to deal with more
+unusual plurals mouse/louse =&gt; mice/lice, information =&gt; information,
+ox =&gt; oxen, virus =&gt; viri, archive =&gt; archives 1571, 1583, 1490,
+1599, 1608 [foamdino@gmail.com/others]
+
+</li>
+<li>Fixed memory leak with Object#remove_subclasses_of, which inflicted a Rails
+application running in development mode with a ~20KB leak per request 1289
+[c.r.mcgrath@gmail.com]
+
+</li>
+<li>Made 1.year == 365.25.days to account for leap years. This allows you to do
+User.find(:all, :conditions =&gt; [&#8216;birthday &gt; ?&#8217;,
+50.years.ago]) without losing a lot of days. 1488 [tuxie@dekadance.se]
+
+</li>
+<li>Added an exception if calling id on nil to WhinyNil 584
+[kevin-temp@writesoon.com]
+
+</li>
+<li>Added Fix/Bignum#multiple_of? which returns true on 14.multiple_of?(7) and
+false on 16.multiple_of?(7) 1464 [Thomas Fuchs]
+
+</li>
+<li>Added even? and odd? to work with Bignums in addition to Fixnums 1464
+[Thomas Fuchs]
+
+</li>
+<li>Fixed Time#at_beginning_of_week returned the next Monday instead of the
+previous one when called on a Sunday 1403 [jean.helou@gmail.com]
+
+</li>
+<li>Increased the speed of indifferent hash access by using Hash#default. 1436
+[Nicholas Seckar]
+
+</li>
+<li>Added that &quot; &quot; is now also blank? (using strip if available)
+
+</li>
+<li>Fixed Dependencies so all modules are able to load missing constants 1173
+[Nicholas Seckar]
+
+</li>
+<li>Fixed the <a href="../../../../classes/Inflector.html">Inflector</a> to
+underscore strings containing numbers, so Area51Controller becomes
+area51_controller 1176 [Nicholas Seckar]
+
+</li>
+<li>Fixed that <a
+href="../../../../classes/HashWithIndifferentAccess.html">HashWithIndifferentAccess</a>
+stringified all keys including symbols, ints, objects, and arrays 1162
+[Nicholas Seckar]
+
+</li>
+<li>Fixed Time#last_year to go back in time, not forward 1278
+[fabien@odilat.com]
+
+</li>
+<li>Fixed the pluralization of analysis to analyses 1295
+[seattle@rootimage.msu.edu]
+
+</li>
+<li>Fixed that Time.local(2005,12).months_since(1) would raise
+&quot;ArgumentError: argument out of range&quot; 1311 [jhahn@niveon.com]
+
+</li>
+<li>Added silencing to the default Logger class
+
+</li>
+</ul>
+<p>
+*1.0.4* (19th April, 2005)
+</p>
+<ul>
+<li>Fixed that in some circumstances controllers outside of modules may have
+hidden ones inside modules. For example, admin/content might have been
+hidden by /content. 1075 [Nicholas Seckar]
+
+</li>
+<li>Fixed inflection of perspectives and similar words 1045
+[thijs@vandervossen.net]
+
+</li>
+<li>Added Fixnum#even? and Fixnum#odd?
+
+</li>
+<li>Fixed problem with classes being required twice. Object#const_missing now
+uses require_dependency to load files. It used to use require_or_load which
+would cause models to be loaded twice, which was not good for validations
+and other class methods 971 [Nicholas Seckar]
+
+</li>
+</ul>
+<p>
+*1.0.3* (27th March, 2005)
+</p>
+<ul>
+<li>Fixed <a
+href="../../../../classes/Inflector.html#M001092">Inflector.pluralize</a>
+to handle capitalized words 932 [Jeremy Kemper]
+
+</li>
+<li>Added Object#suppress which allows you to make a saner choice around with
+exceptions to swallow 980. Example:
+
+<pre>
+  suppress(ZeroDivisionError) { 1/0 }
+</pre>
+<p>
+&#8230;instead of:
+</p>
+<pre>
+  1/0 rescue nil # BAD, EVIL, DIRTY.
+</pre>
+</li>
+</ul>
+<p>
+*1.0.2* (22th March, 2005)
+</p>
+<ul>
+<li>Added Kernel#returning &#8212; a Ruby-ized realization of the K combinator,
+courtesy of Mikael Brockman.
+
+<pre>
+  def foo
+    returning values = [] do
+      values &lt;&lt; 'bar'
+      values &lt;&lt; 'baz'
+    end
+  end
+
+  foo # =&gt; ['bar', 'baz']
+</pre>
+</li>
+</ul>
+<p>
+*1.0.1* (7th March, 2005)
+</p>
+<ul>
+<li>Fixed Hash#indifferent_access to also deal with include? and fetch and
+nested hashes 726 [Nicholas Seckar]
+
+</li>
+<li>Added Object#blank? &#8212; see <a
+href="http://redhanded.hobix.com/inspect/objectBlank.html">redhanded.hobix.com/inspect/objectBlank.html</a>
+783 [_why the lucky stiff]
+
+</li>
+<li>Added inflection rules for &quot;sh&quot; words, like &quot;wish&quot; and
+&quot;fish&quot; 755 [phillip@pjbsoftware.com]
+
+</li>
+<li>Fixed an exception when using Ajax based requests from Safari because
+Safari appends a \000 to the post body. Symbols can&#8216;t have \000 in
+them so indifferent access would throw an exception in the constructor.
+Indifferent hashes now use strings internally instead. 746 [Tobias Luetke]
+
+</li>
+<li>Added String#to_time and String#to_date for wrapping ParseDate
+
+</li>
+</ul>
+<p>
+*1.0.0* (24th February, 2005)
+</p>
+<ul>
+<li>Added <a href="../../../../classes/TimeZone.html">TimeZone</a> as the first
+of a number of value objects that among others Active Record can use rich
+value objects using composed_of 688 [Jamis Buck]
+
+</li>
+<li>Added Date::Conversions for getting dates in different convenient string
+representations and other objects
+
+</li>
+<li>Added Time::Conversions for getting times in different convenient string
+representations and other objects
+
+</li>
+<li>Added Time::Calculations to ask for things like Time.now.tomorrow,
+Time.now.yesterday, Time.now.months_ago(4) 580 [DP|Flurin]. Examples:
+
+<pre>
+  &quot;Later today&quot;         =&gt; now.in(3.hours),
+  &quot;Tomorrow morning&quot;    =&gt; now.tomorrow.change(:hour =&gt; 9),
+  &quot;Tomorrow afternoon&quot;  =&gt; now.tomorrow.change(:hour =&gt; 14),
+  &quot;In a couple of days&quot; =&gt; now.tomorrow.tomorrow.change(:hour =&gt; 9),
+  &quot;Next monday&quot;         =&gt; now.next_week.change(:hour =&gt; 9),
+  &quot;In a month&quot;          =&gt; now.next_month.change(:hour =&gt; 9),
+  &quot;In 6 months&quot;         =&gt; now.months_since(6).change(:hour =&gt; 9),
+  &quot;In a year&quot;           =&gt; now.in(1.year).change(:hour =&gt; 9)
+</pre>
+</li>
+<li>Upgraded to breakpoint 92 which fixes:
+
+<pre>
+  * overload IRB.parse_opts(), fixes #443
+    =&gt; breakpoints in tests work even when running them via rake
+  * untaint handlers, might fix an issue discussed on the Rails ML
+  * added verbose mode to breakpoint_client
+  * less noise caused by breakpoint_client by default
+  * ignored TerminateLineInput exception in signal handler
+    =&gt; quiet exit on Ctrl-C
+</pre>
+</li>
+<li>Fixed <a href="../../../../classes/Inflector.html">Inflector</a> for words
+like &quot;news&quot; and &quot;series&quot; that are the same in plural
+and singular 603 [echion], 615 [marcenuc]
+
+</li>
+<li>Added Hash#stringify_keys and Hash#stringify_keys!
+
+</li>
+<li>Added IndifferentAccess as a way to wrap a hash by a symbol-based store
+that also can be accessed by string keys
+
+</li>
+<li>Added <a
+href="../../../../classes/Inflector.html#M001103">Inflector.constantize</a>
+to turn &quot;Admin::User&quot; into a reference for the constant
+Admin::User
+
+</li>
+<li>Added that <a
+href="../../../../classes/Inflector.html#M001094">Inflector.camelize</a>
+and <a
+href="../../../../classes/Inflector.html#M001096">Inflector.underscore</a>
+can deal with modules like turning &quot;Admin::User&quot; into
+&quot;admin/user&quot; and back
+
+</li>
+<li>Added <a
+href="../../../../classes/Inflector.html#M001098">Inflector.humanize</a> to
+turn attribute names like employee_salary into &quot;Employee salary&quot;.
+Used by automated error reporting in AR.
+
+</li>
+<li>Added availability of class inheritable attributes to the masses 477
+[Jeremy Kemper]
+
+<pre>
+  class Foo
+    class_inheritable_reader :read_me
+    class_inheritable_writer :write_me
+    class_inheritable_accessor :read_and_write_me
+    class_inheritable_array :read_and_concat_me
+    class_inheritable_hash :read_and_update_me
+  end
+
+  # Bar gets a clone of (not a reference to) Foo's attributes.
+  class Bar &lt; Foo
+  end
+
+  Bar.read_and_write_me == Foo.read_and_write_me
+  Bar.read_and_write_me = 'bar'
+  Bar.read_and_write_me != Foo.read_and_write_me
+</pre>
+</li>
+<li>Added Inflections as an extension on String, so <a
+href="../../../../classes/Inflector.html#M001092">Inflector.pluralize</a>(<a
+href="../../../../classes/Inflector.html#M001101">Inflector.classify(name)</a>)
+becomes name.classify.pluralize 476 [Jeremy Kemper]
+
+</li>
+<li>Added Byte operations to Numeric, so 5.5.megabytes + 200.kilobytes 461
+[Marcel Molina]
+
+</li>
+<li>Fixed that Dependencies.reload can&#8216;t load the same file twice 420
+[Kent Sibilev]
+
+</li>
+<li>Added Fixnum#ago/until, Fixnum#since/from_now 450 [Jeremy Kemper]
+
+</li>
+<li>Added that <a href="../../../../classes/Inflector.html">Inflector</a> now
+accepts Symbols and Classes by calling .to_s on the word supplied
+
+</li>
+<li>Added time unit extensions to Fixnum that&#8216;ll return the period in
+seconds, like 2.days + 4.hours.
+
+</li>
+</ul>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

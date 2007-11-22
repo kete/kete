@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: ActionController::Pagination</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">ActionController::Pagination</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/vendor/rails/actionpack/lib/action_controller/pagination_rb.html">
+                vendor/rails/actionpack/lib/action_controller/pagination.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h3>Action Pack pagination for Active Record collections</h3>
+<p>
+DEPRECATION WARNING: <a href="Pagination.html">Pagination</a> will be moved
+to a plugin in Rails 2.0. Install the classic_pagination plugin for forward
+compatibility:
+</p>
+<pre>
+  script/plugin install svn://errtheblog.com/svn/plugins/classic_pagination
+</pre>
+<p>
+The <a href="Pagination.html">Pagination</a> module aids in the process of
+paging large collections of Active Record objects. It offers macro-style
+automatic fetching of your model for multiple views, or explicit fetching
+for single actions. And if the magic isn&#8216;t flexible enough for your
+needs, you can create your own paginators with a minimal amount of code.
+</p>
+<p>
+The <a href="Pagination.html">Pagination</a> module can handle as much or
+as little as you wish. In the controller, have it automatically query your
+model for pagination; or, if you prefer, create <a
+href="Pagination/Paginator.html">Paginator</a> objects yourself.
+</p>
+<p>
+<a href="Pagination.html">Pagination</a> is included automatically for all
+controllers.
+</p>
+<p>
+For help rendering pagination links, see <a
+href="../ActionView/Helpers/PaginationHelper.html">ActionView::Helpers::PaginationHelper</a>.
+</p>
+<h4>Automatic pagination for every action in a controller</h4>
+<pre>
+  class PersonController &lt; ApplicationController
+    model :person
+
+    paginate :people, :order =&gt; 'last_name, first_name',
+             :per_page =&gt; 20
+
+    # ...
+  end
+</pre>
+<p>
+Each action in this controller now has access to a <tt>@people</tt>
+instance variable, which is an ordered collection of model objects for the
+current page (at most 20, sorted by last name and first name), and a
+<tt>@person_pages</tt> <a href="Pagination/Paginator.html">Paginator</a>
+instance. The current page is determined by the <tt>params[:page]</tt>
+variable.
+</p>
+<h4><a href="Pagination.html">Pagination</a> for a single action</h4>
+<pre>
+  def list
+    @person_pages, @people =
+      paginate :people, :order =&gt; 'last_name, first_name'
+  end
+</pre>
+<p>
+Like the previous example, but explicitly creates <tt>@person_pages</tt>
+and <tt>@people</tt> for a single action, and uses the default of 10 items
+per page.
+</p>
+<h4>Custom/&quot;classic&quot; pagination</h4>
+<pre>
+  def list
+    @person_pages = Paginator.new self, Person.count, 10, params[:page]
+    @people = Person.find :all, :order =&gt; 'last_name, first_name',
+                          :limit  =&gt;  @person_pages.items_per_page,
+                          :offset =&gt;  @person_pages.current.offset
+  end
+</pre>
+<p>
+Explicitly creates the paginator from the previous example and uses
+Paginator#to_sql to retrieve <tt>@people</tt> from the model.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000133">count_collection_for_pagination</a>&nbsp;&nbsp;
+      <a href="#M000134">find_collection_for_pagination</a>&nbsp;&nbsp;
+      <a href="#M000132">paginate</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+    <div id="class-list">
+      <h3 class="section-bar">Classes and Modules</h3>
+
+      Module <a href="Pagination/ClassMethods.html" class="link">ActionController::Pagination::ClassMethods</a><br />
+Class <a href="Pagination/Paginator.html" class="link">ActionController::Pagination::Paginator</a><br />
+
+    </div>
+
+    <div id="constants-list">
+      <h3 class="section-bar">Constants</h3>
+
+      <div class="name-list">
+        <table summary="Constants">
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">OPTIONS</td>
+          <td>=</td>
+          <td class="context-item-value">Hash.new</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+A hash holding options for controllers using macro-style pagination
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DEFAULT_OPTIONS</td>
+          <td>=</td>
+          <td class="context-item-value">{         :class_name =&gt; nil,         :singular_name =&gt; nil,         :per_page   =&gt; 10,         :conditions =&gt; nil,         :order_by   =&gt; nil,         :order      =&gt; nil,         :join       =&gt; nil,         :joins      =&gt; nil,         :count      =&gt; nil,         :include    =&gt; nil,         :select     =&gt; nil,         :parameter  =&gt; 'page'</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+The default options for pagination
+
+</td>
+        </tr>
+        </table>
+      </div>
+    </div>
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000132" class="method-detail">
+        <a name="M000132"></a>
+
+        <div class="method-heading">
+          <a href="#M000132" class="method-signature">
+          <span class="method-name">paginate</span><span class="method-args">(collection_id, options={})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns a paginator and a collection of Active Record model instances for
+the paginator&#8216;s current page. This is designed to be used in a single
+action; to automatically <a href="Pagination.html#M000132">paginate</a>
+multiple actions, consider <a
+href="Pagination/ClassMethods.html#M000135">ClassMethods#paginate</a>.
+</p>
+<p>
+<tt>options</tt> are:
+</p>
+<table>
+<tr><td valign="top"><tt>:singular_name</tt>:</td><td>the singular name to use, if it can&#8216;t be inferred by singularizing
+the collection name
+
+</td></tr>
+<tr><td valign="top"><tt>:class_name</tt>:</td><td>the class name to use, if it can&#8216;t be inferred by camelizing the
+singular name
+
+</td></tr>
+<tr><td valign="top"><tt>:per_page</tt>:</td><td>the maximum number of items to include in a single page. Defaults to 10
+
+</td></tr>
+<tr><td valign="top"><tt>:conditions</tt>:</td><td>optional conditions passed to Model.find(:all, *params) and Model.count
+
+</td></tr>
+<tr><td valign="top"><tt>:order</tt>:</td><td>optional order parameter passed to Model.find(:all, *params)
+
+</td></tr>
+<tr><td valign="top"><tt>:order_by</tt>:</td><td>(deprecated, used :order) optional order parameter passed to
+Model.find(:all, *params)
+
+</td></tr>
+<tr><td valign="top"><tt>:joins</tt>:</td><td>optional joins parameter passed to Model.find(:all, *params) and
+Model.count
+
+</td></tr>
+<tr><td valign="top"><tt>:join</tt>:</td><td>(deprecated, used :joins or :include) optional join parameter passed to
+Model.find(:all, *params) and Model.count
+
+</td></tr>
+<tr><td valign="top"><tt>:include</tt>:</td><td>optional eager loading parameter passed to Model.find(:all, *params) and
+Model.count
+
+</td></tr>
+<tr><td valign="top"><tt>:select</tt>:</td><td>:select parameter passed to Model.find(:all, *params)
+
+</td></tr>
+<tr><td valign="top"><tt>:count</tt>:</td><td>parameter passed as :select option to Model.count(*params)
+
+</td></tr>
+</table>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000132-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000132-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/pagination.rb, line 130</span>
+130:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">paginate</span>(<span class="ruby-identifier">collection_id</span>, <span class="ruby-identifier">options</span>={})
+131:       <span class="ruby-constant">Pagination</span>.<span class="ruby-identifier">validate_options!</span>(<span class="ruby-identifier">collection_id</span>, <span class="ruby-identifier">options</span>, <span class="ruby-keyword kw">true</span>)
+132:       <span class="ruby-identifier">paginator_and_collection_for</span>(<span class="ruby-identifier">collection_id</span>, <span class="ruby-identifier">options</span>)
+133:     <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Protected Instance methods</h3>
+
+      <div id="method-M000133" class="method-detail">
+        <a name="M000133"></a>
+
+        <div class="method-heading">
+          <a href="#M000133" class="method-signature">
+          <span class="method-name">count_collection_for_pagination</span><span class="method-args">(model, options)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the total number of items in the collection to be paginated for the
+<tt>model</tt> and given <tt>conditions</tt>. Override this method to
+implement a custom counter.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000133-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000133-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/pagination.rb, line 178</span>
+178:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">count_collection_for_pagination</span>(<span class="ruby-identifier">model</span>, <span class="ruby-identifier">options</span>)
+179:       <span class="ruby-identifier">model</span>.<span class="ruby-identifier">count</span>(<span class="ruby-identifier">:conditions</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:conditions</span>],
+180:                   <span class="ruby-identifier">:joins</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:join</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:joins</span>],
+181:                   <span class="ruby-identifier">:include</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:include</span>],
+182:                   <span class="ruby-identifier">:select</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:count</span>])
+183:     <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000134" class="method-detail">
+        <a name="M000134"></a>
+
+        <div class="method-heading">
+          <a href="#M000134" class="method-signature">
+          <span class="method-name">find_collection_for_pagination</span><span class="method-args">(model, options, paginator)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns a collection of items for the given <tt>model</tt> and
++options[conditions]+, ordered by +options[order]+, for the current page in
+the given <tt>paginator</tt>. Override this method to implement a custom
+finder.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000134-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000134-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_controller/pagination.rb, line 188</span>
+188:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find_collection_for_pagination</span>(<span class="ruby-identifier">model</span>, <span class="ruby-identifier">options</span>, <span class="ruby-identifier">paginator</span>)
+189:       <span class="ruby-identifier">model</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">:all</span>, <span class="ruby-identifier">:conditions</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:conditions</span>],
+190:                  <span class="ruby-identifier">:order</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:order_by</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:order</span>],
+191:                  <span class="ruby-identifier">:joins</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:join</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:joins</span>], <span class="ruby-identifier">:include</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:include</span>],
+192:                  <span class="ruby-identifier">:select</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:select</span>], <span class="ruby-identifier">:limit</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:per_page</span>],
+193:                  <span class="ruby-identifier">:offset</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">paginator</span>.<span class="ruby-identifier">current</span>.<span class="ruby-identifier">offset</span>)
+194:     <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

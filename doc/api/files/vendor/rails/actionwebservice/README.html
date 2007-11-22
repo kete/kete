@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>vendor/rails/actionwebservice/README
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Thu Aug 16 20:03:14 +1200 2007</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>Action Web Service &#8212; Serving APIs on rails</h1>
+<p>
+Action Web Service provides a way to publish interoperable web service APIs
+with Rails without spending a lot of time delving into protocol details.
+</p>
+<h2>Features</h2>
+<ul>
+<li>SOAP RPC protocol support
+
+</li>
+<li>Dynamic WSDL generation for APIs
+
+</li>
+<li>XML-RPC protocol support
+
+</li>
+<li>Clients that use the same API definitions as the server for easy
+interoperability with other Action Web Service based applications
+
+</li>
+<li>Type signature hints to improve interoperability with static languages
+
+</li>
+<li>Active Record model class support in signatures
+
+</li>
+</ul>
+<h2>Defining your APIs</h2>
+<p>
+You specify the methods you want to make available as API methods in an
+ActionWebService::API::Base derivative, and then specify this API
+definition class wherever you want to use that API.
+</p>
+<p>
+The implementation of the methods is done separately from the API
+specification.
+</p>
+<h4>Method name inflection</h4>
+<p>
+Action Web Service will camelcase the method names according to Rails <a
+href="../../../../classes/Inflector.html">Inflector</a> rules for the API
+visible to public callers. What this means, for example, is that the method
+names in generated WSDL will be camelcased, and callers will have to supply
+the camelcased name in their requests for the request to succeed.
+</p>
+<p>
+If you do not desire this behaviour, you can turn it off with the
+ActionWebService::API::Base <tt>inflect_names</tt> option.
+</p>
+<h4>Inflection examples</h4>
+<pre>
+  :add       =&gt; Add
+  :find_all  =&gt; FindAll
+</pre>
+<h4>Disabling inflection</h4>
+<pre>
+  class PersonAPI &lt; ActionWebService::API::Base
+    inflect_names false
+  end
+</pre>
+<h4>API definition example</h4>
+<pre>
+  class PersonAPI &lt; ActionWebService::API::Base
+    api_method :add, :expects =&gt; [:string, :string, :bool], :returns =&gt; [:int]
+    api_method :remove, :expects =&gt; [:int], :returns =&gt; [:bool]
+  end
+</pre>
+<h4>API usage example</h4>
+<pre>
+  class PersonController &lt; ActionController::Base
+    web_service_api PersonAPI
+
+    def add
+    end
+
+    def remove
+    end
+  end
+</pre>
+<h2>Publishing your APIs</h2>
+<p>
+Action Web Service uses Action Pack to process protocol requests. There are
+two modes of dispatching protocol requests, <em>Direct</em>, and
+<em>Delegated</em>.
+</p>
+<h3>Direct dispatching</h3>
+<p>
+This is the default mode. In this mode, public controller instance methods
+implement the API methods, and parameters are passed through to the methods
+in accordance with the API specification.
+</p>
+<p>
+The return value of the method is sent back as the return value to the
+caller.
+</p>
+<p>
+In this mode, a special <tt>api</tt> action is generated in the target
+controller to unwrap the protocol request, forward it on to the relevant
+method and send back the wrapped return value. <em>This action must not be
+overridden.</em>
+</p>
+<h4>Direct dispatching example</h4>
+<pre>
+  class PersonController &lt; ApplicationController
+    web_service_api PersonAPI
+
+    def add
+    end
+
+    def remove
+    end
+  end
+
+  class PersonAPI &lt; ActionWebService::API::Base
+    ...
+  end
+</pre>
+<p>
+For this example, protocol requests for <tt>Add</tt> and <tt>Remove</tt>
+methods sent to <tt>/person/api</tt> will be routed to the controller
+methods <tt>add</tt> and <tt>remove</tt>.
+</p>
+<h3>Delegated dispatching</h3>
+<p>
+This mode can be turned on by setting the
+<tt>web_service_dispatching_mode</tt> option in a controller to
+<tt>:delegated</tt>.
+</p>
+<p>
+In this mode, the controller contains one or more web service objects
+(objects that implement an ActionWebService::API::Base definition). These
+web service objects are each mapped onto one controller action only.
+</p>
+<h4>Delegated dispatching example</h4>
+<pre>
+  class ApiController &lt; ApplicationController
+    web_service_dispatching_mode :delegated
+
+    web_service :person, PersonService.new
+  end
+
+  class PersonService &lt; ActionWebService::Base
+    web_service_api PersonAPI
+
+    def add
+    end
+
+    def remove
+    end
+  end
+
+  class PersonAPI &lt; ActionWebService::API::Base
+    ...
+  end
+</pre>
+<p>
+For this example, all protocol requests for <tt>PersonService</tt> are sent
+to the <tt>/api/person</tt> action.
+</p>
+<p>
+The <tt>/api/person</tt> action is generated when the <tt>web_service</tt>
+method is called. <em>This action must not be overridden.</em>
+</p>
+<p>
+Other controller actions (actions that aren&#8216;t the target of a
+<tt>web_service</tt> call) are ignored for ActionWebService purposes, and
+can do normal action tasks.
+</p>
+<h3>Layered dispatching</h3>
+<p>
+This mode can be turned on by setting the
+<tt>web_service_dispatching_mode</tt> option in a controller to
+<tt>:layered</tt>.
+</p>
+<p>
+This mode is similar to <em>delegated</em> mode, in that multiple web
+service objects can be attached to one controller, however, all protocol
+requests are sent to a single endpoint.
+</p>
+<p>
+Use this mode when you want to share code between XML-RPC and SOAP clients,
+for APIs where the XML-RPC method names have prefixes. An example of such a
+method name would be <tt>blogger.newPost</tt>.
+</p>
+<h4>Layered dispatching example</h4>
+<pre>
+  class ApiController &lt; ApplicationController
+    web_service_dispatching_mode :layered
+
+    web_service :mt, MovableTypeService.new
+    web_service :blogger, BloggerService.new
+    web_service :metaWeblog, MetaWeblogService.new
+  end
+
+  class MovableTypeService &lt; ActionWebService::Base
+    ...
+  end
+
+  class BloggerService &lt; ActionWebService::Base
+    ...
+  end
+
+  class MetaWeblogService &lt; ActionWebService::API::Base
+    ...
+  end
+</pre>
+<p>
+For this example, an XML-RPC call for a method with a name like
+<tt>mt.getCategories</tt> will be sent to the <tt>getCategories</tt> method
+on the <tt>:mt</tt> service.
+</p>
+<h2>Customizing WSDL generation</h2>
+<p>
+You can customize the names used for the SOAP bindings in the generated
+WSDL by using the wsdl_service_name option in a controller:
+</p>
+<pre>
+  class WsController &lt; ApplicationController
+    wsdl_service_name 'MyApp'
+  end
+</pre>
+<p>
+You can also customize the namespace used in the generated WSDL for custom
+types and message definition types:
+</p>
+<pre>
+  class WsController &lt; ApplicationController
+    wsdl_namespace 'http://my.company.com/app/wsapi'
+  end
+</pre>
+<p>
+The default namespace used is &#8216;urn:ActionWebService&#8217;, if you
+don&#8216;t supply one.
+</p>
+<h2>ActionWebService and UTF-8</h2>
+<p>
+If you&#8216;re going to be sending back strings containing non-ASCII UTF-8
+characters using the <tt>:string</tt> data type, you need to make sure that
+Ruby is using UTF-8 as the default encoding for its strings.
+</p>
+<p>
+The default in Ruby is to use US-ASCII encoding for strings, which causes a
+string validation check in the Ruby SOAP library to fail and your string to
+be sent back as a Base-64 value, which may confuse clients that expected
+strings because of the WSDL.
+</p>
+<p>
+Two ways of setting the default string encoding are:
+</p>
+<ul>
+<li>Start Ruby using the <tt>-Ku</tt> command-line option to the Ruby
+executable
+
+</li>
+<li>Set the <tt>$KCODE</tt> flag in <tt>config/environment.rb</tt> to the
+string <tt>&#8216;UTF8&#8216;</tt>
+
+</li>
+</ul>
+<h2>Testing your APIs</h2>
+<h3>Functional testing</h3>
+<p>
+You can perform testing of your APIs by creating a functional test for the
+controller dispatching the API, and calling invoke in the test case to
+perform the invocation.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  class PersonApiControllerTest &lt; Test::Unit::TestCase
+    def setup
+      @controller = PersonController.new
+      @request    = ActionController::TestRequest.new
+      @response   = ActionController::TestResponse.new
+    end
+
+    def test_add
+      result = invoke :remove, 1
+      assert_equal true, result
+    end
+  end
+</pre>
+<p>
+This example invokes the API method <tt>test</tt>, defined on the
+PersonController, and returns the result.
+</p>
+<h3>Scaffolding</h3>
+<p>
+You can also test your APIs with a web browser by attaching scaffolding to
+the controller.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  class PersonController
+    web_service_scaffold :invocation
+  end
+</pre>
+<p>
+This creates an action named <tt>invocation</tt> on the PersonController.
+</p>
+<p>
+Navigating to this action lets you select the method to invoke, supply the
+parameters, and view the result of the invocation.
+</p>
+<h2>Using the client support</h2>
+<p>
+Action Web Service includes client classes that can use the same API
+definition as the server. The advantage of this approach is that your
+client will have the same support for Active Record and structured types as
+the server, and can just use them directly, and rely on the marshaling to
+Do The Right Thing.
+</p>
+<p>
+<b>Note</b>: The client support is intended for communication between Ruby
+on Rails applications that both use Action Web Service. It may work with
+other servers, but that is not its intended use, and interoperability
+can&#8216;t be guaranteed, especially not for .NET web services.
+</p>
+<p>
+Web services protocol specifications are complex, and Action Web Service
+client support can only be guaranteed to work with a subset.
+</p>
+<h4>Factory created client example</h4>
+<pre>
+  class BlogManagerController &lt; ApplicationController
+    web_client_api :blogger, :xmlrpc, 'http://url/to/blog/api/RPC2', :handler_name =&gt; 'blogger'
+  end
+
+  class SearchingController &lt; ApplicationController
+    web_client_api :google, :soap, 'http://url/to/blog/api/beta', :service_name =&gt; 'GoogleSearch'
+  end
+</pre>
+<p>
+See ActionWebService::API::ActionController::ClassMethods for more details.
+</p>
+<h4>Manually created client example</h4>
+<pre>
+  class PersonAPI &lt; ActionWebService::API::Base
+    api_method :find_all, :returns =&gt; [[Person]]
+  end
+
+  soap_client = ActionWebService::Client::Soap.new(PersonAPI, &quot;http://...&quot;)
+  persons = soap_client.find_all
+
+  class BloggerAPI &lt; ActionWebService::API::Base
+    inflect_names false
+    api_method :getRecentPosts, :returns =&gt; [[Blog::Post]]
+  end
+
+  blog = ActionWebService::Client::XmlRpc.new(BloggerAPI, &quot;http://.../xmlrpc&quot;, :handler_name =&gt; &quot;blogger&quot;)
+  posts = blog.getRecentPosts
+</pre>
+<p>
+See <a
+href="../../../../classes/ActionWebService/Client/Soap.html">ActionWebService::Client::Soap</a>
+and <a
+href="../../../../classes/ActionWebService/Client/XmlRpc.html">ActionWebService::Client::XmlRpc</a>
+for more details.
+</p>
+<h2>Dependencies</h2>
+<p>
+Action Web Service requires that the Action Pack and Active Record are
+either available to be required immediately or are accessible as GEMs.
+</p>
+<p>
+It also requires a version of Ruby that includes SOAP support in the
+standard library. At least version 1.8.2 final (2004-12-25) of Ruby is
+recommended; this is the version tested against.
+</p>
+<h2>Download</h2>
+<p>
+The latest Action Web Service version can be downloaded from <a
+href="http://rubyforge.org/projects/actionservice">rubyforge.org/projects/actionservice</a>
+</p>
+<h2>Installation</h2>
+<p>
+You can install Action Web Service with the following command.
+</p>
+<pre>
+  % [sudo] ruby setup.rb
+</pre>
+<h2>License</h2>
+<p>
+Action Web Service is released under the MIT license.
+</p>
+<h2>Support</h2>
+<p>
+The Ruby on Rails mailing list
+</p>
+<p>
+Or, to contact the author, send mail to bitserf@gmail.com
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

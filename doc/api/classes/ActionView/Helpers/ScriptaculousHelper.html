@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: ActionView::Helpers::ScriptaculousHelper</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">ActionView::Helpers::ScriptaculousHelper</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/vendor/rails/actionpack/lib/action_view/helpers/scriptaculous_helper_rb.html">
+                vendor/rails/actionpack/lib/action_view/helpers/scriptaculous_helper.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Provides a set of helpers for calling Scriptaculous JavaScript functions,
+including those which create Ajax controls and visual effects.
+</p>
+<p>
+To be able to use these helpers, you must include the Prototype JavaScript
+framework and the Scriptaculous JavaScript library in your pages. See the
+documentation for <a
+href="JavaScriptHelper.html">ActionView::Helpers::JavaScriptHelper</a> for
+more information on including the necessary JavaScript.
+</p>
+<p>
+The Scriptaculous helpers&#8217; behavior can be tweaked with various
+options. See the documentation at <a
+href="http://script.aculo.us">script.aculo.us</a> for more information on
+using these helpers in your application.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000523">draggable_element</a>&nbsp;&nbsp;
+      <a href="#M000524">drop_receiving_element</a>&nbsp;&nbsp;
+      <a href="#M000522">sortable_element</a>&nbsp;&nbsp;
+      <a href="#M000521">visual_effect</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+    <div id="constants-list">
+      <h3 class="section-bar">Constants</h3>
+
+      <div class="name-list">
+        <table summary="Constants">
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">TOGGLE_EFFECTS</td>
+          <td>=</td>
+          <td class="context-item-value">[:toggle_appear, :toggle_slide, :toggle_blind]</td>
+        </tr>
+        </table>
+      </div>
+    </div>
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000523" class="method-detail">
+        <a name="M000523"></a>
+
+        <div class="method-heading">
+          <a href="#M000523" class="method-signature">
+          <span class="method-name">draggable_element</span><span class="method-args">(element_id, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Makes the element with the DOM ID specified by <tt>element_id</tt>
+draggable.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  &lt;%= draggable_element(&quot;my_image&quot;, :revert =&gt; true)
+</pre>
+<p>
+You can change the behaviour with various options, see <a
+href="http://script.aculo.us">script.aculo.us</a> for more documentation.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000523-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000523-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/scriptaculous_helper.rb, line 105</span>
+105:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">draggable_element</span>(<span class="ruby-identifier">element_id</span>, <span class="ruby-identifier">options</span> = {})
+106:         <span class="ruby-identifier">javascript_tag</span>(<span class="ruby-identifier">draggable_element_js</span>(<span class="ruby-identifier">element_id</span>, <span class="ruby-identifier">options</span>).<span class="ruby-identifier">chop!</span>)
+107:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000524" class="method-detail">
+        <a name="M000524"></a>
+
+        <div class="method-heading">
+          <a href="#M000524" class="method-signature">
+          <span class="method-name">drop_receiving_element</span><span class="method-args">(element_id, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Makes the element with the DOM ID specified by <tt>element_id</tt> receive
+dropped draggable elements (created by <a
+href="ScriptaculousHelper.html#M000523">draggable_element</a>). and make an
+AJAX call By default, the action called gets the DOM ID of the element as
+parameter.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  &lt;%= drop_receiving_element(&quot;my_cart&quot;, :url =&gt;
+    { :controller =&gt; &quot;cart&quot;, :action =&gt; &quot;add&quot; }) %&gt;
+</pre>
+<p>
+You can change the behaviour with various options, see <a
+href="http://script.aculo.us">script.aculo.us</a> for more documentation.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000524-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000524-source">
+<pre>
+     <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/scriptaculous_helper.rb, line 124</span>
+124:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">drop_receiving_element</span>(<span class="ruby-identifier">element_id</span>, <span class="ruby-identifier">options</span> = {})
+125:         <span class="ruby-identifier">javascript_tag</span>(<span class="ruby-identifier">drop_receiving_element_js</span>(<span class="ruby-identifier">element_id</span>, <span class="ruby-identifier">options</span>).<span class="ruby-identifier">chop!</span>)
+126:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000522" class="method-detail">
+        <a name="M000522"></a>
+
+        <div class="method-heading">
+          <a href="#M000522" class="method-signature">
+          <span class="method-name">sortable_element</span><span class="method-args">(element_id, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Makes the element with the DOM ID specified by <tt>element_id</tt> sortable
+by drag-and-drop and make an Ajax call whenever the sort order has changed.
+By default, the action called gets the serialized sortable element as
+parameters.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  &lt;%= sortable_element(&quot;my_list&quot;, :url =&gt; { :action =&gt; &quot;order&quot; }) %&gt;
+</pre>
+<p>
+In the example, the action gets a &quot;my_list&quot; array parameter
+containing the values of the ids of elements the sortable consists of, in
+the current order.
+</p>
+<p>
+Important: For this to work, the sortable elements must have id attributes
+in the form &quot;string_identifier&quot;. For example, &quot;item_1&quot;.
+Only the identifier part of the id attribute will be serialized.
+</p>
+<p>
+You can change the behaviour with various options, see <a
+href="http://script.aculo.us">script.aculo.us</a> for more documentation.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000522-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000522-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/scriptaculous_helper.rb, line 79</span>
+79:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sortable_element</span>(<span class="ruby-identifier">element_id</span>, <span class="ruby-identifier">options</span> = {})
+80:         <span class="ruby-identifier">javascript_tag</span>(<span class="ruby-identifier">sortable_element_js</span>(<span class="ruby-identifier">element_id</span>, <span class="ruby-identifier">options</span>).<span class="ruby-identifier">chop!</span>)
+81:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000521" class="method-detail">
+        <a name="M000521"></a>
+
+        <div class="method-heading">
+          <a href="#M000521" class="method-signature">
+          <span class="method-name">visual_effect</span><span class="method-args">(name, element_id = false, js_options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns a JavaScript snippet to be used on the Ajax callbacks for starting
+visual effects.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  &lt;%= link_to_remote &quot;Reload&quot;, :update =&gt; &quot;posts&quot;,
+        :url =&gt; { :action =&gt; &quot;reload&quot; },
+        :complete =&gt; visual_effect(:highlight, &quot;posts&quot;, :duration =&gt; 0.5)
+</pre>
+<p>
+If no element_id is given, it assumes &quot;element&quot; which should be a
+local variable in the generated JavaScript execution context. This can be
+used for example with <a
+href="ScriptaculousHelper.html#M000524">drop_receiving_element</a>:
+</p>
+<pre>
+  &lt;%= drop_receving_element (...), :loading =&gt; visual_effect(:fade) %&gt;
+</pre>
+<p>
+This would fade the element that was dropped on the drop receiving element.
+</p>
+<p>
+For toggling visual effects, you can use :toggle_appear, :toggle_slide, and
+:toggle_blind which will alternate between appear/fade, slidedown/slideup,
+and blinddown/blindup respectively.
+</p>
+<p>
+You can change the behaviour with various options, see <a
+href="http://script.aculo.us">script.aculo.us</a> for more documentation.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000521-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000521-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/actionpack/lib/action_view/helpers/scriptaculous_helper.rb, line 44</span>
+44:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">visual_effect</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">element_id</span> = <span class="ruby-keyword kw">false</span>, <span class="ruby-identifier">js_options</span> = {})
+45:         <span class="ruby-identifier">element</span> = <span class="ruby-identifier">element_id</span> <span class="ruby-value">? </span><span class="ruby-identifier">element_id</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-operator">:</span> <span class="ruby-value str">&quot;element&quot;</span>
+46:         
+47:         <span class="ruby-identifier">js_options</span>[<span class="ruby-identifier">:queue</span>] = <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">js_options</span>[<span class="ruby-identifier">:queue</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+48:           <span class="ruby-value str">'{'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">js_options</span>[<span class="ruby-identifier">:queue</span>].<span class="ruby-identifier">map</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:limit</span> <span class="ruby-operator">?</span> <span class="ruby-node">&quot;#{k}:#{v}&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-node">&quot;#{k}:'#{v}'&quot;</span> }.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">'}'</span>
+49:         <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">js_options</span>[<span class="ruby-identifier">:queue</span>]
+50:           <span class="ruby-node">&quot;'#{js_options[:queue]}'&quot;</span>
+51:         <span class="ruby-keyword kw">end</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">js_options</span>[<span class="ruby-identifier">:queue</span>]
+52:         
+53:         <span class="ruby-keyword kw">if</span> <span class="ruby-constant">TOGGLE_EFFECTS</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>
+54:           <span class="ruby-node">&quot;Effect.toggle(#{element},'#{name.to_s.gsub(/^toggle_/,'')}',#{options_for_javascript(js_options)});&quot;</span>
+55:         <span class="ruby-keyword kw">else</span>
+56:           <span class="ruby-node">&quot;new Effect.#{name.to_s.camelize}(#{element},#{options_for_javascript(js_options)});&quot;</span>
+57:         <span class="ruby-keyword kw">end</span>
+58:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

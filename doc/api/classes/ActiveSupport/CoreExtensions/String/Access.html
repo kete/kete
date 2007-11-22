@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: ActiveSupport::CoreExtensions::String::Access</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">ActiveSupport::CoreExtensions::String::Access</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../../files/vendor/rails/activesupport/lib/active_support/core_ext/string/access_rb.html">
+                vendor/rails/activesupport/lib/active_support/core_ext/string/access.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Makes it easier <a href="Access.html#M000443">to</a> access parts of a
+string, such as specific characters and substrings.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000441">at</a>&nbsp;&nbsp;
+      <a href="#M000444">first</a>&nbsp;&nbsp;
+      <a href="#M000442">from</a>&nbsp;&nbsp;
+      <a href="#M000445">last</a>&nbsp;&nbsp;
+      <a href="#M000443">to</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000441" class="method-detail">
+        <a name="M000441"></a>
+
+        <div class="method-heading">
+          <a href="#M000441" class="method-signature">
+          <span class="method-name">at</span><span class="method-args">(position)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the character <a href="Access.html#M000441">at</a> the
+<tt>position</tt> treating the string as an array (where 0 is the <a
+href="Access.html#M000444">first</a> character).
+</p>
+<p>
+Examples:
+</p>
+<pre>
+  &quot;hello&quot;.at(0)  # =&gt; &quot;h&quot;
+  &quot;hello&quot;.at(4)  # =&gt; &quot;o&quot;
+  &quot;hello&quot;.at(10) # =&gt; nil
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000441-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000441-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/activesupport/lib/active_support/core_ext/string/access.rb, line 12</span>
+12:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">at</span>(<span class="ruby-identifier">position</span>)
+13:           <span class="ruby-identifier">chars</span>[<span class="ruby-identifier">position</span>, <span class="ruby-value">1</span>].<span class="ruby-identifier">to_s</span>
+14:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000444" class="method-detail">
+        <a name="M000444"></a>
+
+        <div class="method-heading">
+          <a href="#M000444" class="method-signature">
+          <span class="method-name">first</span><span class="method-args">(limit = 1)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the <a href="Access.html#M000444">first</a> character of the string
+or the <a href="Access.html#M000444">first</a> <tt>limit</tt> characters.
+</p>
+<p>
+Examples:
+</p>
+<pre>
+  &quot;hello&quot;.first     # =&gt; &quot;h&quot;
+  &quot;hello&quot;.first(2)  # =&gt; &quot;he&quot;
+  &quot;hello&quot;.first(10) # =&gt; &quot;hello&quot;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000444-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000444-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/activesupport/lib/active_support/core_ext/string/access.rb, line 42</span>
+42:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">first</span>(<span class="ruby-identifier">limit</span> = <span class="ruby-value">1</span>)
+43:           <span class="ruby-identifier">chars</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-identifier">limit</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>)].<span class="ruby-identifier">to_s</span>
+44:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000442" class="method-detail">
+        <a name="M000442"></a>
+
+        <div class="method-heading">
+          <a href="#M000442" class="method-signature">
+          <span class="method-name">from</span><span class="method-args">(position)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the remaining of the string <a href="Access.html#M000442">from</a>
+the <tt>position</tt> treating the string as an array (where 0 is the <a
+href="Access.html#M000444">first</a> character).
+</p>
+<p>
+Examples:
+</p>
+<pre>
+  &quot;hello&quot;.from(0)  # =&gt; &quot;hello&quot;
+  &quot;hello&quot;.from(2)  # =&gt; &quot;llo&quot;
+  &quot;hello&quot;.from(10) # =&gt; nil
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000442-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000442-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/activesupport/lib/active_support/core_ext/string/access.rb, line 22</span>
+22:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">from</span>(<span class="ruby-identifier">position</span>)
+23:           <span class="ruby-identifier">chars</span>[<span class="ruby-identifier">position</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">to_s</span>
+24:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000445" class="method-detail">
+        <a name="M000445"></a>
+
+        <div class="method-heading">
+          <a href="#M000445" class="method-signature">
+          <span class="method-name">last</span><span class="method-args">(limit = 1)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the <a href="Access.html#M000445">last</a> character of the string
+or the <a href="Access.html#M000445">last</a> <tt>limit</tt> characters.
+</p>
+<p>
+Examples:
+</p>
+<pre>
+  &quot;hello&quot;.last     # =&gt; &quot;o&quot;
+  &quot;hello&quot;.last(2)  # =&gt; &quot;lo&quot;
+  &quot;hello&quot;.last(10) # =&gt; &quot;hello&quot;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000445-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000445-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/activesupport/lib/active_support/core_ext/string/access.rb, line 52</span>
+52:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">last</span>(<span class="ruby-identifier">limit</span> = <span class="ruby-value">1</span>)
+53:           (<span class="ruby-identifier">chars</span>[(<span class="ruby-operator">-</span><span class="ruby-identifier">limit</span>)<span class="ruby-operator">..</span><span class="ruby-value">-1</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword kw">self</span>).<span class="ruby-identifier">to_s</span>
+54:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000443" class="method-detail">
+        <a name="M000443"></a>
+
+        <div class="method-heading">
+          <a href="#M000443" class="method-signature">
+          <span class="method-name">to</span><span class="method-args">(position)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the beginning of the string up <a href="Access.html#M000443">to</a>
+the <tt>position</tt> treating the string as an array (where 0 is the <a
+href="Access.html#M000444">first</a> character).
+</p>
+<p>
+Examples:
+</p>
+<pre>
+  &quot;hello&quot;.to(0)  # =&gt; &quot;h&quot;
+  &quot;hello&quot;.to(2)  # =&gt; &quot;hel&quot;
+  &quot;hello&quot;.to(10) # =&gt; &quot;hello&quot;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000443-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000443-source">
+<pre>
+    <span class="ruby-comment cmt"># File vendor/rails/activesupport/lib/active_support/core_ext/string/access.rb, line 32</span>
+32:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to</span>(<span class="ruby-identifier">position</span>)
+33:           <span class="ruby-identifier">chars</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">position</span>].<span class="ruby-identifier">to_s</span>
+34:         <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
