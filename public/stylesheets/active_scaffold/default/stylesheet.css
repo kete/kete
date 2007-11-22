@@ -43,6 +43,15 @@ background-color: #ff8;
 clear: both;
 }
 
+noscript.active-scaffold {
+border-left: solid 5px #f66;
+background-color: #fbb;
+font-size: 11px;
+font-weight: bold;
+padding: 5px 20px 5px 5px;
+color: #333;
+}
+
 /* Header
    ======================== */
 
@@ -483,10 +492,7 @@ width: 16px;
 margin: 0;
 }
 
-.active-scaffold .active-scaffold-header .loading-indicator,
-.active-scaffold .update .loading-indicator,
-.active-scaffold .create .loading-indicator {
-vertical-align: bottom;
+.active-scaffold .active-scaffold-header .loading-indicator {
 margin-bottom: 3px;
 }
 
@@ -758,4 +764,8 @@ padding: 0;
 
 .active-scaffold a.visibility-toggle {
 font-size: 100%;
+}
+
+.active-scaffold-found {
+  float:left;
 }
