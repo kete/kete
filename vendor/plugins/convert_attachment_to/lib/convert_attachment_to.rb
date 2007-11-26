@@ -24,7 +24,7 @@ module Katipo #:nodoc:
       # defined below when invoked
       module ClassMethods
         def convert_attachment_to(options = { })
-          options[:run_after_save] ||= true
+          options[:run_after_save] = options[:run_after_save].nil? and options[:run_after_save] == true ? true : false
           options[:max_pdf_pages] ||= 10
           # default path is debian/ubuntu for this
           options[:wvText_path] ||= '/usr/share/wv/wvText.xml'
@@ -37,13 +37,13 @@ module Katipo #:nodoc:
               :target_attribute => options[:target_attribute],
               :run_after_save => options[:run_after_save],
               :max_pdf_pages => options[:max_pdf_pages],
-              :wvText_path => options[:wvText_path]}
+              :wvText_path => options[:wvText_path] }
 
             # attachment_fu callback
             # because of potential conflicts with other plugins that use after_save
             # we provide the option to turn off automatic after save conversion
             # and therefore allow for managing when the conversions happen directly
-            after_attachment_saved { |record| record.do_conversion } if options[:run_after_save]
+            after_attachment_saved { |record| record.do_conversion if cat_conf[:run_after_save] }
           end
         end
       end

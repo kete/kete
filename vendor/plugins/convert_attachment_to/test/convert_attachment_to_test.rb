@@ -88,6 +88,17 @@ class ConvertAttachmentToTest < Test::Unit::TestCase
     assert_equal File.read(File.join(File.dirname(__FILE__), 'fixtures/files/to_text.txt')), to_text_doc.description, "convert_attachment_to plugin: text to text results in unexpected value."
   end
 
-  # TODO: maybe overkill, but set up model where run_after_save is false
-  # would need to set up a controller action to use do_conversion directly
+  def test_do_conversion_as_separate_step
+    to_text_doc = DocumentToTextManualConvert.new(:title => 'test document',
+                                     :uploaded_data => fixture_file_upload('/files/test.txt', 'text/plain'))
+    to_text_doc.save
+    to_text_doc.reload
+
+    assert_nil to_text_doc.description, "convert_attachment_to plugin: expected that target attribute should be empty, conversion shouldn't have happened yet."
+
+    to_text_doc.do_conversion
+    to_text_doc.reload
+
+    assert_equal File.read(File.join(File.dirname(__FILE__), 'fixtures/files/to_text.txt')), to_text_doc.description, "convert_attachment_to plugin: text to text results in unexpected value after do_conversion."
+  end
 end

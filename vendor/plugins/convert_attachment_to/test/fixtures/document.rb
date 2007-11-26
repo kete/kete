@@ -18,3 +18,7 @@ end
 class DocumentToText < Document
   convert_attachment_to :output_type => :text, :target_attribute => :description
 end
+
+class DocumentToTextManualConvert < Document
+  convert_attachment_to :output_type => :text, :target_attribute => :description, :run_after_save => false, :max_pdf_pages => 5
+end
