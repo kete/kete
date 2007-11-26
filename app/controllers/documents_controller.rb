@@ -1,6 +1,9 @@
 class DocumentsController < ApplicationController
   include ExtendedContentController
 
+  # other actions that need caches expired are handled in application.rb
+  before_filter :expire_show_caches, :only => [ :convert ]
+
   def index
     redirect_to_search_for('Document')
   end
