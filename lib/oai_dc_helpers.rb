@@ -151,11 +151,7 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_description_for_file(xml, item, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
-      else
-        host = request.host
-      end
+      host = !passed_request.nil? ? passed_request[:host] : request.host
 
       file_classes = %w{ AudioRecording Document Video StillImage }
 
