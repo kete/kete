@@ -70,7 +70,7 @@ module ApplicationHelper
   def link_to_add_related_item(options={})
     phrase = options[:phrase]
     item_class = options[:item_class]
-    return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", :controller => zoom_class_controller(item_class), :action => :new, :relate_to_topic_id => options[:relate_to_topic_id])
+    return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", :controller => zoom_class_controller(item_class), :action => :new, :relate_to_topic => options[:relate_to_topic])
   end
 
   def link_to_link_related_item(options={})
@@ -80,7 +80,7 @@ module ApplicationHelper
                      :controller => 'search',
                      :action => :find_related,
                      :related_class => options[:related_class],
-                     :relate_to_topic => options[:relate_to_topic_id] },
+                     :relate_to_topic => options[:relate_to_topic] },
                    :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100,resizable=yes'])
   end
 
@@ -98,8 +98,8 @@ module ApplicationHelper
                         <div id="related_topics">)
 
     middle_html = String.new
-    if !options[:topics].nil?
-      middle_html = related_items_links(:source_item => options[:source_item], :source_item_class => options[:source_item_class], :items => options[:topics], :related_class => 'Topic', :pipe_list => :true )
+    if !options[:topics].blank?
+      middle_html = related_items_links(:source_item => options[:source_item], :related_class => 'Topic', :items => options[:topics], :pipe_list => :true )
     end
 
     end_html = %q(
@@ -111,16 +111,20 @@ module ApplicationHelper
 
   def related_items_links(options={})
     source_item = options[:source_item]
-    source_item_class = options[:source_item_class]
     related_class = options[:related_class]
 
-    items = options[:items]
-    # cover the case where items is nil
-    if items.nil?
-      items = Array.new
+    items = Array.new
+    if options[:items].nil?
+      if related_class != 'Topic'
+        items = source_item.send(related_class.tableize)
+      else
+        items = source_item.send('related_topics')
+      end
+    else
+      items = options[:items]
     end
 
-    relate_to_topic_id = options[:relate_to_topic_id]
+    relate_to_topic = source_item.class.name == 'Topic' ? source_item : nil
 
     last_item_n = 0
     if related_class == 'StillImage'
@@ -144,17 +148,15 @@ module ApplicationHelper
       template_name = 'related_items_links'
     end
 
-    return render(:partial => "topics/#{template_name}",
-                  :layout => :false,
-                  :locals => { :related_class => related_class,
-                    :items => items,
-                    :end_range => end_range,
-                    :more_message => more_message,
-                    :source_item => source_item,
-                    :source_item_class => source_item_class,
-                    :last_item_n => last_item_n,
-                    :pipe_list => options[:pipe_list],
-                    :relate_to_topic_id => relate_to_topic_id})
+    render :partial => "topics/#{template_name}",
+    :locals => { :related_class => related_class,
+      :items => items,
+      :end_range => end_range,
+      :more_message => more_message,
+      :source_item => source_item,
+      :last_item_n => last_item_n,
+      :pipe_list => options[:pipe_list],
+      :relate_to_topic => relate_to_topic }
   end
 
   # tag related helpers

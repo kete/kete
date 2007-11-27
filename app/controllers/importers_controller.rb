@@ -80,6 +80,30 @@ class ImportersController < ApplicationController
                               },
                               :job_key => :importer )
       end
+    when 'taranaki_wordlist'
+      @contributing_user = User.find_by_login('admin')
+      @zoom_class = 'Topic'
+
+      # prevents more than one instance of this worker from getting run
+      logger.debug("what are params :" + params.to_s)
+      logger.debug("what is contributing_user :" + @contributing_user.login)
+      import_request = { :host => request.host,
+        :protocol => request.protocol,
+        :request_uri => request.request_uri }
+
+      unless MiddleMan[:importer]
+        MiddleMan.new_worker( :class => :taranaki_wordlist_importer_worker,
+                              :args => {  :zoom_class => @zoom_class,
+                                :import_topic_type_for_related_topic => @import_topic_type_for_related_topic,
+                                :import_type => @import_type,
+                                :import_dir_path => @import_dir_path,
+                                :import_parent_dir_for_image_dirs => @import_parent_dir_for_image_dirs,
+                                :params => params,
+                                :import_request => import_request,
+                                :contributing_user => @contributing_user.id
+                              },
+                              :job_key => :importer )
+      end
     else
       flash[:notice] = 'Creation failed. No matching import type.'
       redirect_to :action => 'index'

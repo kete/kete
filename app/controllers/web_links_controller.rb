@@ -41,7 +41,7 @@ class WebLinksController < ApplicationController
     @web_link = WebLink.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
     @successful = @web_link.save
 
-    @web_link.creators << current_user if @successful
+    @web_link.add_as_creator(current_user) if @successful
 
     setup_related_topic_and_zoom_and_redirect(@web_link)
   end

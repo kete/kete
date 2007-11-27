@@ -76,34 +76,22 @@
                         <div id="detail-linked-toprow">
 <% cache ({:related => 'images'}) do -%>
                           <%= related_items_links(:source_item => @topic,
-                                                  :source_item_class => 'Topic',
-                                                  :related_class => 'StillImage',
-                                                  :items => @topic.still_images,
-                                                  :relate_to_topic_id => @topic.id) %>
+                                                  :related_class => 'StillImage') %>
 <% end -%>
                                         <div class="cleaner-left">&nbsp;</div>
                         </div>
                         <div id="detail-linked-midrow">
 <% cache ({:related => 'topics'}) do -%>
                           <%= related_items_links(:source_item => @topic,
-                                                  :source_item_class => 'Topic',
-                                                  :related_class => 'Topic',
-                                                  :items => @topic.related_topics,
-                                                  :relate_to_topic_id => @topic.id) %>
+                                                  :related_class => 'Topic') %>
 <% end -%>
 <% cache ({:related => 'audio'}) do -%>
                           <%= related_items_links(:source_item => @topic,
-                                                  :source_item_class => 'Topic',
-                                                  :related_class => 'AudioRecording',
-                                                  :items => @topic.audio_recordings,
-                                                  :relate_to_topic_id => @topic.id) %>
+                                                  :related_class => 'AudioRecording') %>
 <% end -%>
 <% cache ({:related => 'video'}) do -%>
                           <%= related_items_links(:source_item => @topic,
-                                                  :source_item_class => 'Topic',
-                                                  :related_class => 'Video',
-                                                  :items => @topic.videos,
-                                                  :relate_to_topic_id => @topic.id) %>
+                                                  :related_class => 'Video') %>
 
 <% end -%>
                                 <div class="cleaner-left">&nbsp;</div>
@@ -112,17 +100,11 @@
                         <div id="detail-linked-bottomrow">
 <% cache ({:related => 'documents'}) do -%>
                           <%= related_items_links(:source_item => @topic,
-                                                  :source_item_class => 'Topic',
-                                                  :related_class => 'Documents',
-                                                  :items => @topic.documents,
-                                                  :relate_to_topic_id => @topic.id) %>
+                                                  :related_class => 'Documents') %>
 <% end -%>
 <% cache ({:related => 'web_links'}) do -%>
                         <%= related_items_links(:source_item => @topic,
-                                                  :source_item_class => 'Topic',
-                                                  :related_class => 'WebLink',
-                                                  :items => @topic.web_links,
-                                                  :relate_to_topic_id => @topic.id) %>
+                                                :related_class => 'WebLink') %>
 <% end -%>
                                 <div class="cleaner">&nbsp;</div>
                         </div>

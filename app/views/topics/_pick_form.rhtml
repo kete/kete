@@ -1,7 +1,7 @@
 <fieldset>
     <!--[form:topic]-->
-    <% if !params[:relate_to_topic_id].nil? %>
-        <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+    <% if !params[:relate_to_topic].nil? %>
+        <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
     <% end %>
     <% if !params[:index_for_basket].nil? %>
         <%= hidden_field_tag "index_for_basket", params[:index_for_basket] %>

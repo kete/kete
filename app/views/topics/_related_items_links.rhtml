@@ -15,16 +15,16 @@
                                               <% sizes_count += 1 -%>
                                       <% end -%>
                                       <% if items.size > last_item_n -%>
-                                        <li><%= link_to_related_to_source(:phrase => more_message, :source_item => source_item, :source_item_class => source_item_class, :related_class => related_class) -%></li>
+                                        <li><%= link_to_related_to_source(:phrase => more_message, :source_item => source_item, :source_item_class => source_item.class.name, :related_class => related_class) -%></li>
                                       <% end -%>
                                   <% end -%>
-                                  <% if !relate_to_topic_id.blank? -%>
-                                      <li class="command"><%= link_to_add_related_item(:relate_to_topic_id => relate_to_topic_id, :phrase => 'Add related ', :item_class => related_class) -%></li>
+                                  <% if !relate_to_topic.blank? -%>
+                                      <li class="command"><%= link_to_add_related_item(:relate_to_topic => relate_to_topic, :phrase => 'Add related ', :item_class => related_class) -%></li>
                                   <% end -%>
-                                  <% if !relate_to_topic_id.blank? && related_class =='Topic' -%>
-                                      <li class="command"><%= link_to_link_related_item(:relate_to_topic_id => relate_to_topic_id, :related_class => related_class, :phrase => 'Link to related ', :item_class => related_class) -%></li>
-                                  <% elsif !relate_to_topic_id.blank? -%>
-                                      <li class="command"><%= link_to_link_related_item(:relate_to_topic_id => relate_to_topic_id, :related_class => related_class, :phrase => 'Link ', :item_class => related_class) -%></li>
+                                  <% if !relate_to_topic.blank? && related_class =='Topic' -%>
+                                      <li class="command"><%= link_to_link_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class, :phrase => 'Link to related ', :item_class => related_class) -%></li>
+                                  <% elsif !relate_to_topic.blank? -%>
+                                      <li class="command"><%= link_to_link_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class, :phrase => 'Link ', :item_class => related_class) -%></li>
                                   <% end -%>
                                   </ul>
                                 </div>

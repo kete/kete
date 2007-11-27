@@ -42,7 +42,7 @@ class VideoController < ApplicationController
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @video.creators << current_user if @successful
+    @video.add_as_creator(current_user) if @successful
 
     setup_related_topic_and_zoom_and_redirect(@video)
   end

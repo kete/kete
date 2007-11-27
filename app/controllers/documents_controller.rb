@@ -44,7 +44,7 @@ class DocumentsController < ApplicationController
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @document.creators << current_user if @successful
+    @document.add_as_creator(current_user) if @successful
 
     setup_related_topic_and_zoom_and_redirect(@document)
   end

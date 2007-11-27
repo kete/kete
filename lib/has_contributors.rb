@@ -12,8 +12,8 @@ module HasContributors
       :order => 'contributions.created_at' do
         def <<(user)
           begin
-            Contribution.with_scope(:create => { :contributor_role => "creator",
-                                      :version => 1}) { self.concat user }
+            user.version = 1
+            Contribution.add_as_to(user, 'creator', self)
           rescue
             logger.debug("what is contrib error: " + $!.to_s)
           end
@@ -27,8 +27,7 @@ module HasContributors
         def <<(user)
           # TODO: assumes user has a version method (virtual attribute on user set before this is called)
           begin
-            Contribution.with_scope(:create => { :contributor_role => "contributor",
-                                      :version => user.version}) { self.concat user }
+            Contribution.add_as_to(user, 'contributor', self)
           rescue
             logger.debug("what is contrib error: " + $!.to_s)
           end
@@ -39,6 +38,9 @@ module HasContributors
     def add_as_contributor(user)
       user.version = self.version
       self.contributors << user
+    end
+    def add_as_creator(user)
+      self.creators << user
     end
   end
 end

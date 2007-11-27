@@ -335,8 +335,8 @@ class ApplicationController < ActionController::Base
     where_to_redirect = 'show_self'
     if !commented_item.nil? and @successful
       where_to_redirect = 'commentable'
-    elsif params[:relate_to_topic_id] and @successful
-      @new_related_topic = Topic.find(params[:relate_to_topic_id])
+    elsif params[:relate_to_topic] and @successful
+      @new_related_topic = Topic.find(params[:relate_to_topic])
 
       add_relation_and_update_zoom_and_related_caches_for(item, @new_related_topic)
 
@@ -369,13 +369,12 @@ class ApplicationController < ActionController::Base
     item = Module.class_eval(params[:related_class]).find(params[:topic])
 
     if params[:related_class] =='Topic'
-      @existing_relation = @related_to_topic.child_related_topics.count(["topics.id = ?", item])
+      @existing_relation = @related_to_topic.related_topics.include?(item)
     else
-      related_items = @related_to_topic.send(params[:related_class].tableize.to_sym)
-      @existing_relation = related_items.count(["content_item_relations.related_item_id = ?", item])
+      @existing_relation = @related_to_topic.send(params[:related_class].tableize).include?(item)
     end
 
-    if @existing_relation.to_i == 0
+    if !@existing_relation
       @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
 
       if @successful

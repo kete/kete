@@ -120,14 +120,14 @@ class TopicsController < ApplicationController
       # add this to the user's empire of creations
       # TODO: allow current_user whom is at least moderator to pick another user
       # as creator
-      @topic.creators << current_user if @successful
+      @topic.add_as_creator(current_user) if @successful
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
 
     where_to_redirect = 'show_self'
-    if params[:relate_to_topic_id] and @successful
-      @new_related_topic = Topic.find(params[:relate_to_topic_id])
+    if params[:relate_to_topic] and @successful
+      @new_related_topic = Topic.find(params[:relate_to_topic])
       ContentItemRelation.new_relation_to_topic(@new_related_topic, @topic)
 
       # update the related topic

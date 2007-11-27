@@ -24,4 +24,9 @@ class Contribution < ActiveRecord::Base
     :class_name => zoom_class,
     :foreign_key => "contributed_item_id"
   end
+
+  def self.add_as_to(user, role, item)
+    with_scope(:create => { :contributor_role => role,
+                 :version => user.version}) { item.concat user }
+  end
 end

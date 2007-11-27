@@ -7,8 +7,8 @@
                 <%= error_messages_for 'video' %>
 
                 <!--[form:video]-->
-                <% if !params[:relate_to_topic_id].nil? %>
-                        <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
+                <% if !params[:relate_to_topic].nil? %>
+                        <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
 
                 <% if edit and @site_admin %>

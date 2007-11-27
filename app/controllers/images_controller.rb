@@ -52,7 +52,7 @@ class ImagesController < ApplicationController
         # add this to the user's empire of creations
         # TODO: allow current_user whom is at least moderator to pick another user
         # as creator
-        @still_image.creators << current_user
+        @still_image.add_as_creator(current_user)
 
         @image_file.still_image_id = @still_image.id
         @image_file.save

@@ -38,7 +38,7 @@ class CommentsController < ApplicationController
       # add this to the user's empire of creations
       # TODO: allow current_user whom is at least moderator to pick another user
       # as creator
-      @comment.creators << current_user
+      @comment.add_as_creator(current_user)
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = Module.class_eval(params[:comment][:commentable_type]).find(params[:comment][:commentable_id])
