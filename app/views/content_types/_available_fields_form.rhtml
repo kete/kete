@@ -3,7 +3,8 @@
         <h4>Available Form Fields</h4>
                         <% @available_fields = ContentType.find(local_id).available_fields %>
                         <% if @available_fields.size > 0 %>
-                                <%= form_tag :action => :add_to_content_type, :id => local_id %>
+                                <% form_tag :action =>
+                        :add_to_content_type, :id => local_id do %>
 
                                         <% for @extended_field in @available_fields %>
                                                 <p>
@@ -22,7 +23,7 @@
                                                 </p>
                                         <% end %>
                                         <%= submit_tag "Add to Content Type" %>
-                                <%= end_form_tag %>
+                                <% end %>
                         <% else %>
                                 <p>No form fields are available.</p>
                         <% end %>

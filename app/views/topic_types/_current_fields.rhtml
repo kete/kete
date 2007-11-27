@@ -12,7 +12,8 @@
                         %>
                         <% @form_field_mappings = TopicType.find(local_id).topic_type_to_field_mappings %>
                         <% if @form_field_mappings.size > 0 %>
-                                <%= form_tag :action => :reorder_fields_for_topic_type, :id => local_id %>
+                                <% form_tag :action =>
+                :reorder_fields_for_topic_type, :id => local_id do %>
                                         <% for @mapping in @form_field_mappings %>
                                                 <p>
                                                         <%= text_field("mapping[]", 'position', :size => "3") %>
@@ -33,7 +34,7 @@
                                                 </p>
                                         <% end %>
                                         <%= submit_tag "Reorder Topic Type Form" %>
-                                <%= end_form_tag %>
+                                <% end %>
                         <% else %>
                                 <p>No form fields currently mapped to this topic type.</p>
                         <% end %>
