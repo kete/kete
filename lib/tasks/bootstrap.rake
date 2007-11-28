@@ -72,6 +72,11 @@ namespace :db do
           # ActiveRecord::Base.connection.create_database(config['database'], {:charset => @charset, :collation => @collation})
           # ActiveRecord::Base.establish_connection(config)
         when 'postgresql'
+          # thanks to Sam Vilain at Catalyst
+          # for the pg patch
+          ENV['PGHOST'] ||= config['host']
+          ENV['PGUSER'] ||= config['user']
+          ENV['PGPORT'] ||= config['port']
           `createdb "#{config['database']}" -E utf8`
         end
       end
@@ -88,6 +93,11 @@ namespace :db do
     when 'sqlite3'
       FileUtils.rm_f File.join(RAILS_ROOT, config['database'])
     when 'postgresql'
+      # thanks to Sam Vilain at Catalyst
+      # for the pg patch
+      ENV['PGHOST'] ||= config['host']
+      ENV['PGUSER'] ||= config['user']
+      ENV['PGPORT'] ||= config['port']
       `dropdb "#{config['database']}"`
     end
   end
