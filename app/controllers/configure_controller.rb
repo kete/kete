@@ -13,8 +13,9 @@ class ConfigureController < ApplicationController
     if @advanced
       SystemSetting.find(:all,
                          :select => 'distinct section',
-                         :conditions => ["technically_advanced = 1 and section not in (?)",
-                                         @sections]).each { |advanced_section| @sections << advanced_section.section }
+                         :conditions => ["technically_advanced = :technically_advanced and section not in (:sections)",
+                                         { :technically_advanced => true,
+                                           :sections => @sections }]).each { |advanced_section| @sections << advanced_section.section }
     end
     @admin_password_changed = User.find(1).crypted_password != '00742970dc9e6319f8019fd54864d3ea740f04b1' ? true : false
 
@@ -27,7 +28,7 @@ class ConfigureController < ApplicationController
       instance_variable_set("@#{var_name}", params[var_name.to_sym] || false)
     end
 
-    @not_completed = SystemSetting.count(:conditions => "required_to_be_configured = 1 and value is null") > 0 ? true : false
+    @not_completed = SystemSetting.count(:conditions => ["required_to_be_configured = ? and value is null", true]) > 0 ? true : false
   end
 
   def section
