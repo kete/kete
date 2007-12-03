@@ -9,12 +9,12 @@ class TopicType < ActiveRecord::Base
   # otherwise, rails will reorder by topic_type_to_field_mapping.id after the sql has bee run
   has_many :form_fields, :through => :topic_type_to_field_mappings, :source => :extended_field, :select => "distinct topic_type_to_field_mappings.position, extended_fields.*", :order => 'position' do
     def <<(extended_field)
-      TopicTypeToFieldMapping.with_scope(:create => { :required => "false"}) { self.concat extended_field }
+      TopicTypeToFieldMapping.add_as_to("false", self, extended_field)
     end
   end
   has_many :required_form_fields, :through => :topic_type_to_field_mappings, :source => :required_form_field, :select => "distinct topic_type_to_field_mappings.position, extended_fields.*", :conditions => "topic_type_to_field_mappings.required = 'true'", :order => 'position' do
     def <<(required_form_field)
-      TopicTypeToFieldMapping.with_scope(:create => { :required => "true"}) { self.concat required_form_field }
+      TopicTypeToFieldMapping.add_as_to("true", self, required_form_field)
     end
   end
   validates_presence_of :name, :description

@@ -11,4 +11,7 @@ class TopicTypeToFieldMapping < ActiveRecord::Base
 
   # TODO: add validation that prevents adding any fields to the generic topic_type of id 1
 
+  def self.add_as_to(is_required, topic_type, field)
+      with_scope(:create => { :required => is_required}) { topic_type.concat field }
+  end
 end
