@@ -1,4 +1,9 @@
 class UserNotifier < ActionMailer::Base
+  # kludge for A_S and rails 2.0
+  def generic_view_paths
+    []
+  end
+
   def forgot_password(user)
     setup_email(user)
     @subject    += 'Request to change your password'
