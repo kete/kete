@@ -17,3 +17,8 @@ config.action_controller.perform_caching             = false
 # The :test delivery method accumulates sent emails in the
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
+
+# Walter McGinnis, 2007-12-03
+# if you don't have this, because we use protect_from_forgery
+# tests will break, because of lack of tokens
+config.action_controller.allow_forgery_protection  = false
