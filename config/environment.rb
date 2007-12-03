@@ -45,10 +45,6 @@ Rails::Initializer.run do |config|
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
 
-  # Walter McGinnis, 2007-07-10
-  # TODO: what the deal with depreciated observer in edge and 2.0?
-  # ActiveRecord::Base.observers = [:user_observer]
-
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
 
@@ -63,96 +59,9 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :user_observer
 end
 
-# date styles:
-ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
-    :date => "%Y-%m-%d",
-    :presentable_datetime => "%a %b %d, %Y %H:%M",
-    :filename_datetime => "%Y-%m-%d-%H-%M",
-    :euro_date => "%d/%m/%Y",
-    :euro_date_time => "%d/%m/%Y %H:%M"
-)
-
-# Add new inflection rules using the following format
-# (all these examples are active by default):
-# Inflector.inflections do |inflect|
-#   inflect.plural /^(ox)$/i, '\1en'
-#   inflect.singular /^(ox)en/i, '\1'
-#   inflect.irregular 'person', 'people'
-#   inflect.uncountable %w( fish sheep )
-# end
-
 # Include your application configuration below
 
-# check for missing software
-include RequiredSoftware
-required_software = load_required_software
-MISSING_SOFTWARE = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
-
-# has to do with use of attachment_fu
-BASE_PRIVATE_PATH = 'private'
-
-# if SystemSetting model doesn't exist, set IS_CONFIGURED to falee
-begin
-  current_migration = (ActiveRecord::Base.connection.select_one("SELECT version FROM schema_info") || {"version" => 0})["version"].to_i
-rescue
-  current_migration = 0
-end
-
-if Object.const_defined?('SystemSetting') and  current_migration > 40
-  # make each setting a global constant
-  # see reference for Module for more details about constant setting, etc.
-  SystemSetting.find(:all).each do |setting|
-    value = setting.value
-    if !value.blank? and value.match(/^([0-9\{\[]|true|false)/)
-      # Serious potential security issue, we eval user inputed value at startup
-      # for things that are recognized as boolean, integer, hash, or array
-      # by regexp above
-      # Make sure only knowledgable and AUTHORIZED people can edit System Settings
-      value = eval(setting.value)
-    end
-    Object.const_set(setting.name.upcase.gsub(/[^A-Z0-9\s_-]+/,'').gsub(/[\s-]+/,'_'), value)
-  end
-
-  if !Object.const_defined?('IS_CONFIGURED')
-    IS_CONFIGURED = false
-  end
-else
-  IS_CONFIGURED = false
-
-  # we have to load meaningless default values for any constant used in our models
-  # since otherwise things like migrations will fail, before we bootstrap the db
-  # these will be set up with system settings after rake db:bootstrap
-  MAXIMUM_UPLOADED_FILE_SIZE = 50.megabyte
-  IMAGE_SIZES = {:small_sq => [50, 50], :small => '50', :medium => '200>', :large => '400>'}
-  AUDIO_CONTENT_TYPES = ['audio/mpeg']
-  DOCUMENT_CONTENT_TYPES = ['text/html']
-  ENABLE_CONVERTING_DOCUMENTS = false
-  IMAGE_CONTENT_TYPES = [:image]
-  VIDEO_CONTENT_TYPES = ['video/mpeg']
-  SITE_URL = "kete.net.nz"
-  NOTIFIER_EMAIL = "kete@library.org.nz"
-
-end
-
-# Walter McGinnis (walter@katipo.co.nz), 2006-09-26
-# include Globalize # put that thing here
-# Locale.set_base_language('en-NZ') # and here :)'')
-
-if IS_CONFIGURED
-  # Walter McGinnis (walter@katipo.co.nz), 2006-12-06
-  # used by the acts_as_zoom plugin
-  ZoomDb.zoom_id_stub = "oai:" + SITE_NAME + ":"
-  ZoomDb.zoom_id_element_name = "identifier"
-  # in case your zoom_id is in a nested element
-  # separated by /'s
-  # no preceding / necessary
-  ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
-end
-
-# For handling pre controller errors
-# see http://wiki.rubyonrails.org/rails/pages/HandlingPreControllerErrors
-require 'error_handler_basic' # defines AC::Base#rescue_action_in_public
-
-# making the attachment_fu upload file error more helpful
-ActiveRecord::Errors.default_error_messages[:inclusion] += '.  Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.'
+# Walter McGinnis, 2007-12-03
+# most application specific configuration has moved to files
+# under config/initializers/
 
