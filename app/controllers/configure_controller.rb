@@ -198,7 +198,7 @@ class ConfigureController < ApplicationController
     @not_completed = SystemSetting.count(:conditions => "required_to_be_configured = 1 and value is null") > 0 ? true : false
     raise "Not all settings have been filled out." if @not_completed
     @is_configured_setting = SystemSetting.find(1)
-    @is_configured_setting.value = true
+    @is_configured_setting.value = 'true'
     @success = @is_configured_setting.save
     if @success and !request.xhr?
         redirect_to :action => 'index', :ready_to_restart => :true

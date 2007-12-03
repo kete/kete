@@ -66,11 +66,9 @@ namespace :db do
           @charset   = ENV['CHARSET']   || 'utf8'
           @collation = ENV['COLLATION'] || 'utf8_general_ci'
 
-          # workaround until Kete catches up with edge functionality
-          `mysqladmin -u #{config['username']} -p#{config['password']} create #{config['database']};`
-          # ActiveRecord::Base.establish_connection(config.merge({'database' => nil}))
-          # ActiveRecord::Base.connection.create_database(config['database'], {:charset => @charset, :collation => @collation})
-          # ActiveRecord::Base.establish_connection(config)
+          ActiveRecord::Base.establish_connection(config.merge({'database' => nil}))
+          ActiveRecord::Base.connection.create_database(config['database'], {:charset => @charset, :collation => @collation})
+          ActiveRecord::Base.establish_connection(config)
         when 'postgresql'
           # thanks to Sam Vilain at Catalyst
           # for the pg patch
@@ -95,6 +93,7 @@ namespace :db do
     when 'postgresql'
       # thanks to Sam Vilain at Catalyst
       # for the pg patch
+      ActiveRecord::Base.disconnect!
       ENV['PGHOST'] ||= config['host']
       ENV['PGUSER'] ||= config['user']
       ENV['PGPORT'] ||= config['port']
