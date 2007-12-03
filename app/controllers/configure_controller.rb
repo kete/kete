@@ -27,8 +27,7 @@ class ConfigureController < ApplicationController
       var_name = stub + step
       instance_variable_set("@#{var_name}", params[var_name.to_sym] || false)
     end
-
-    @not_completed = SystemSetting.count(:conditions => ["required_to_be_configured = ? and value is null", true]) > 0 ? true : false
+    set_not_completed
   end
 
   def section
@@ -54,7 +53,7 @@ class ConfigureController < ApplicationController
     # is only really necessary in this controller
     @settings.each { |s| s.add_error_if_required }
 
-    @not_completed = SystemSetting.count(:conditions => "required_to_be_configured = 1 and value is null") > 0 ? true : false
+    set_not_completed
 
     @has_errors = false
     if @settings.all? { |s| s.errors.empty? }
@@ -195,7 +194,7 @@ class ConfigureController < ApplicationController
   # update the "Is Configured" system setting
   # if all required settings are supplied
   def finish
-    @not_completed = SystemSetting.count(:conditions => "required_to_be_configured = 1 and value is null") > 0 ? true : false
+    set_not_completed
     raise "Not all settings have been filled out." if @not_completed
     @is_configured_setting = SystemSetting.find(1)
     @is_configured_setting.value = 'true'
@@ -203,5 +202,9 @@ class ConfigureController < ApplicationController
     if @success and !request.xhr?
         redirect_to :action => 'index', :ready_to_restart => :true
     end
+  end
+
+  def set_not_completed
+    @not_completed = SystemSetting.not_completed
   end
 end

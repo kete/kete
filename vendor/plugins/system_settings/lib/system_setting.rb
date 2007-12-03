@@ -32,4 +32,12 @@ class SystemSetting < ActiveRecord::Base
     errors.add_to_base("This setting is required") if value.blank? and required_to_be_configured
     return true
   end
+
+  def self.count_nil_required
+    count(:conditions => ["required_to_be_configured = ? and value is null", true])
+  end
+
+  def self.not_completed
+    count_nil_required > 0 ? true : false
+  end
 end
