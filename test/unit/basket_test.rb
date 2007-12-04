@@ -40,17 +40,17 @@ class BasketTest < Test::Unit::TestCase
   end
 
   def test_update_index_topic
-    index_topic = Topic.find(:first)
     basket = Basket.create( :name => "something wicked this way comes" )
     assert_nil basket.index_topic, "#{@base_class}.index_topic shouldn't have a value yet."
+    index_topic = Topic.create!(:title => 'test topic', :basket => basket, :topic_type => TopicType.find(:first))
     basket.update_index_topic(index_topic)
     basket.reload
     assert_equal index_topic, basket.index_topic, "#{@base_class}.index_topic should match this."
   end
 
   def test_update_index_topic_destroy
-    index_topic = Topic.find(:first)
     basket = Basket.create( :name => "something wicked this way comes" )
+    index_topic = Topic.create!(:title => 'test topic', :basket => basket, :topic_type => TopicType.find(:first))
     basket.update_index_topic(index_topic)
     basket.reload
     basket.update_index_topic('destroy')
