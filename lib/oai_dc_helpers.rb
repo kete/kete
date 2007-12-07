@@ -162,7 +162,7 @@ module OaiDcHelpers
             # where as everything else only has one file
             if item.class.name == 'StillImage'
               item.image_files.each do |image_file|
-                xml.tag!(image_file.filename) do
+                xml.tag!('file') do
                   xml_enclosure_for_item_with_file(xml, image_file, host)
                 end
               end
