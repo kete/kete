@@ -88,9 +88,9 @@ class IndexPageController < ApplicationController
     case @current_basket.index_page_image_as
     when 'random'
       if @current_basket != @site_basket
-        @selected_still_image = @current_basket.still_images.find(:first, :order => 'Rand()')
+        @selected_still_image = @current_basket.still_images.find(:first, :order => :random)
       else
-        @selected_still_image = StillImage.find(:first, :order => 'Rand()')
+        @selected_still_image = StillImage.find(:first, :order => :random)
       end
     when 'latest'
       if @current_basket != @site_basket

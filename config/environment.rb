@@ -57,6 +57,9 @@ Rails::Initializer.run do |config|
   # incremental step towards the proper way of doing this in 2.0
   # should go in a file under config/initializers/
   config.active_record.observers = :user_observer
+
+  # we need to set up randmom_finders first
+  config.plugins = [ :random_finders, :all ]
 end
 
 # Include your application configuration below
