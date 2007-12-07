@@ -20,13 +20,13 @@
                                         <% if !params[:index_for_basket].nil? -%>
                                                 <%= check_box_tag("topic_#{result}",'yes',false,{ :style => 'float:left',
                                                                                                   :onclick => "new Ajax.Updater('item_#{result}_wrapper',
-'/#{@current_basket.urlified_name}/baskets/link_index_topic?index_for_basket=#{params[:index_for_basket]}&topic=#{result}',
+'/#{@current_basket.urlified_name}/baskets/link_index_topic?index_for_basket=#{params[:index_for_basket]}&topic=#{result}&authenticity_token=#{params[:authenticity_token]}',
 {asynchronous:true, evalScripts:true}); return false;"})
                                         %>
                                         <% else -%>
                                                 <%= check_box_tag("topic_#{result}",'yes',false,{ :style => 'float:left',
                                                                                                   :onclick => "new Ajax.Updater('item_#{result}_wrapper',
-'/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}',
+'/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}&authenticity_token=#{params[:authenticity_token]}',
 {asynchronous:true, evalScripts:true}); return false;"})
                                         %>
                                         <% end -%>
