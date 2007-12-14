@@ -1,121 +1,72 @@
-                <div id="detail-wrapper">
-                        <div id="detail-header">
-                                <h4><%= link_to_last_stored_location -%></h4>
-<% cache({:part => 'details'}) do -%>
-                                <h2><%= h(@still_image.title) %></h2>
+<%= render(:partial => "topics/actions_menu" , :locals => { :item => @still_image }) %>
+<!-- begining of main content block -->
+<div id="content-wrapper">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+      <!-- TODO: this will be replace by new history system <h4><%= link_to_last_stored_location -%></h4> -->
 
-                                <% extended_fields_html = display_xml_attributes(@still_image) -%>
-                                <% if !extended_fields_html.blank? %>
-                                        <div id="detail-extended">
-                                                <h4 id="detail-extended-heading"><%= h(@still_image.title) %></h4>
-                                                <%= extended_fields_html %>
-                                        </div>
-                                <% end %>
+      <% cache({:part => 'details'}) do -%>
+      <h2><%= h(@still_image.title) %></h2>
 
-                                <%= tags_for(@still_image) -%>
+      <% extended_fields_html = display_xml_attributes(@still_image) -%>
+      <% if !extended_fields_html.blank? %>
+      <div id="detail-extended">
+        <h4 id="detail-extended-heading"><%= h(@still_image.title) %></h4>
+        <%= extended_fields_html %>
+      </div>
+      <% end %>
 
-                                <% if !@still_image.original_file.nil? -%>
-                                        <p>Original Filename: <%= @still_image.original_file.filename %>
-                                           (<%= link_to 'view', @still_image.original_file.public_filename -%>)
-                                        </p>
-                                        <p>Original Size: <%= number_to_human_size(@still_image.original_file.size) %></p>
-                                        <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
-                                <% end -%>
-<% end -%>
-                                <% # default to medium view %>
-                                <% if !@image_file.nil? %>
-                                        <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
-                                        <div class="pipe-list">
-                                        <ul>
-                                        <% sizes_count = 1 -%>
-                                        <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
-                                                <% # not sure why, but link_to_unless_current wasn't working -%>
-                                                <% class_statement = String.new -%>
-                                                <% class_statement = " class=\"first\"" if sizes_count ==1 -%>
-                                                <% if key.to_s == @view_size %>
-                                                        <li<%= class_statement -%>><%= key.to_s.humanize -%></li>
-                                                <% else %>
-                                                        <li<%= class_statement -%>><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
-                                                <% end -%>
-                                                <% sizes_count += 1 -%>
-                                        <% end -%>
-                                        </ul>
-                                        </div>
-                                <% else -%>
-                                        <p>Only available as original.</p>
-                                <% end -%>
-<% cache({:part => 'caption'}) do -%>
-                               <h4>Caption</h4>
-                               <p><%= @still_image.description %></p>
+      <%= tags_for(@still_image) -%>
 
-                                <%= pending_review(@still_image) %>
-<% end -%>
-                        </div>
+      <% if !@still_image.original_file.nil? -%>
+      <p>Original Filename: <%= @still_image.original_file.filename %>
+        (<%= link_to 'view', @still_image.original_file.public_filename -%>)
+      </p>
+      <p>Original Size: <%= number_to_human_size(@still_image.original_file.size) %></p>
+      <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
+      <% end -%>
+      <% end -%>
+      <% # default to medium view %>
+      <% if !@image_file.nil? %>
+      <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
+      <div class="pipe-list">
+        <ul>
+          <% sizes_count = 1 -%>
+          <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
+          <% # not sure why, but link_to_unless_current wasn't working -%>
+                                                             <% class_statement = String.new -%>
+                                                             <% class_statement = " class=\"first\"" if sizes_count ==1 -%>
+                                                             <% if key.to_s == @view_size %>
+          <li<%= class_statement -%>><%= key.to_s.humanize -%></li>
+          <% else %>
+          <li<%= class_statement -%>><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
+          <% end -%>
+          <% sizes_count += 1 -%>
+          <% end -%>
+        </ul>
+      </div>
+      <% else -%>
+      <p>Only available as original.</p>
+      <% end -%>
+      <% cache({:part => 'caption'}) do -%>
+      <h4>Caption</h4>
+      <p><%= @still_image.description %></p>
 
-                        <div class="detail-tools">
-                                <h3>Get Involved</h3>
-                                <ul>
-<% cache({:part => 'edit'}) do -%>
-                                        <li class="first"><%= link_to "Edit",
-                                                                :action => :edit,
-                                                                :controller => '/images',
-                                                                :id => @still_image %></li>
-                                        <li><%= link_to "History",
-                                                         :action => :history,
-                                                         :id => @still_image %></li>
-<% end -%>
-                                        <li><a href="#comments">Discuss</a></li>
-                                        <% if logged_in? and @at_least_a_moderator -%>
-<% cache({:part => 'delete'}) do -%>
-                                                <li><%= link_to "Delete",
-                                                                {:action => :destroy,
-                                                                :controller => '/images',
-                                                                :id => @still_image},
-                                                                :method => :post,
-                                                                :confirm => 'Are you sure?'%></li>
-<% end -%>
-                                        <% end -%>
-                                        <% if logged_in? and @site_admin -%>
-<% cache({:part => 'zoom_reindex'}) do -%>
-                                                <li><%= link_to "Zoom Update this item and it's related items",
-                                                                {:action => :rebuild_zoom_for_items,
-                                                                :controller => 'search',
-                                                                :items_to_rebuild => items_to_rebuild(@still_image)},
-                                                                :method => :post,
-                                                                :confirm => 'Are you sure you want to update?'%></li>
-<% end -%>
-                                        <% end -%>
-<% cache({:part => 'flagging_links'}) do -%>
-                                        <%= flagging_links_for(@still_image) %>
-<% end -%>
+      <%= pending_review(@still_image) %>
+      <% end -%>
 
-                                </ul>
-                        </div>
-<% cache({:part => 'contributions'}) do -%>
-                        <div class="detail-tools">
-                                <ul>
-                                        <li class="first">Created by: <%= link_to_contributions_of(@creator,'StillImage') %></li>
-                                        <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'StillImage') %></li>
-                                        <li>Last Edited: <%= @still_image.updated_at.to_s(:euro_date_time) -%></li>
 
-                                </ul>
-                        </div>
-                        <div class="cleaner">&nbsp;</div>
-                </div>
-<% end -%>
-<% cache({:related => 'topics'}) do -%>
-                <%= item_related_topics_wrapper(:class_phrase => 'image', :source_item => @still_image, :source_item_class => 'StilImage', :topics => @still_image.topics) %>
-<% end -%>
-                <div id="detail-discuss">
-                        <h3><a name="comments">Discuss This Image</a></h3>
-                        <% if logged_in? and @at_least_a_moderator -%>
-<% cache({:part => 'comments-moderators'}) do -%>
-                                <%= show_comments_for(@still_image) %>
-<% end -%>
-                        <% else -%>
-<% cache({:part => 'comments'}) do -%>
-                                <%= show_comments_for(@still_image) %>
-<% end -%>
-                        <% end -%>
-                </div>
-                <div class="cleaner">&nbsp;</div>
+      <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) %>
+      <% cache ({:related => 'topics'}) do -%>
+      <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @still_image, :source_item_class => 'WebLink', :topics => @still_image.topics) %>
+      <% end -%>
+
+      <%= render(:partial => "topics/discussion" , :locals => { :item => @still_image }) %>
+    </div><!-- /main-content-container -->
+  </div><!-- /main-content-wrapper -->
+  <div id="secondary-content-wrapper">
+    <%= render(:partial => "topics/tags_div" , :locals => { :item => @still_image }) %>
+    <%= render(:partial => "topics/extended_fields" , :locals => { :item => @still_image }) %>
+  </div> <!-- /secondary-content-warpper -->
+</div><!-- /content-wrapper -->

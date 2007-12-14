@@ -1,3 +1,9 @@
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+
+
 <% @title = "Login to #{PRETTY_SITE_NAME}"  -%>
 
 <% if !IS_CONFIGURED and ( !MISSING_SOFTWARE['Gems'].blank? or
@@ -39,12 +45,12 @@
   <% end -%>
 
   <div class="form-element">
-    <label for="login"><strong>Login</strong></label>
+    <label for="login">Login:</label>
     <%= text_field_tag 'login' %>
   </div>
 
   <div class="form-element">
-    <label for="password"><strong>Password</strong></label>
+    <label for="password">Password:</label>
     <%= password_field_tag 'password' %>
   </div>
 
@@ -58,6 +64,9 @@
   <% end -%>
 </fieldset>
 
-<%= submit_tag 'Log in' %></p>
+<%= submit_tag 'Log in',:class => "login-button" %></p>
 <% end -%>
 <% end -%>
+</div>
+</div>
+</div>

@@ -1,9 +1,17 @@
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+
 <% @title = 'New basket' -%>
 
 <h2><%= h(@title) -%></h2>
 
 <% form_for :basket, :url => {:action => 'create'} do |form| %>
   <%= render :partial => 'form', :object => form %>
-  <%= submit_tag "Create" %>
+  <%= submit_tag "Create", :class="save-button" %>
 <% end %>
 
+</div>
+</div>
+</div>

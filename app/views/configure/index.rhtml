@@ -49,9 +49,9 @@
       <p>Click on section to fill out its settings.
 
         <% if !@advanced -%>
-        Include <%= link_to "Advanced Options", :advanced => true -%>
+        Show <%= link_to "Advanced Options", :advanced => true -%>
         <% else -%>
-        Only <%= link_to "Regular Options", :advanced => false -%>
+        Show only <%= link_to "Regular Options", :advanced => false -%>
         <% end -%>
       </p>
 
@@ -135,7 +135,7 @@
       <div id="ready-to-restart" style="display:none">
         <% end -%>
         <h2>Final Configuration Step</h2>
-        <p><b>Before you continue, you must restart the
+        <p><b>Before you continue, you must restart the kete application
         server!</b></p>
         <table>
           <tr>

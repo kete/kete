@@ -1,10 +1,18 @@
-<% @title = 'Editing web link' -%>
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-<h2><%= h(@title) -%></h2>
+      <% @title = 'Editing web link' -%>
 
-<% form_tag :action => 'update', :id => @web_link do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Save' %>
-<% end %>
+      <h2><%= h(@title) -%></h2>
 
-<%= link_to_cancel %>
+      <% form_tag :action => 'update', :id => @web_link do %>
+      <%= render :partial => 'form' %>
+      <%= submit_tag 'Save',:class => "save-button" %>
+      <% end %>
+
+      <%= link_to_cancel %>
+    </div>
+  </div>
+</div>

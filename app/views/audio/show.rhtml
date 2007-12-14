@@ -1,94 +1,35 @@
-                <div id="detail-wrapper">
-                        <div id="detail-header">
-                                <h4><%= link_to_last_stored_location -%></h4>
-<% cache ({:part => 'details'}) do -%>
-                                <h2><%= h(@audio_recording.title) %></h2>
+<%= render(:partial => "topics/actions_menu" , :locals => { :item => @audio_recording }) %>
+<!-- begining of main content block -->
+<div id="content-wrapper">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+      <!-- TODO: this will be replace by new history system <h4><%= link_to_last_stored_location -%></h4> -->
 
-                                <% extended_fields_html = display_xml_attributes(@audio_recording) -%>
-                                <% if !extended_fields_html.blank? %>
-                                        <div id="detail-extended">
-                                                <h4 id="detail-extended-heading"><%= h(@audio_recording.title) %></h4>
-                                                <%= extended_fields_html %>
-                                        </div>
-                                <% end %>
+      <% cache ({:part => 'details'}) do -%>
+      <h2><%= h(@audio_recording.title) %></h2>
 
-                                <%= tags_for(@audio_recording) -%>
 
-                                <p><%= @audio_recording.description %></p>
-                                <p>Filename: <%= @audio_recording.filename %>
-                                   (<%= link_to_original_of @audio_recording, 'listen' -%>)
-                                </p>
-                                <p>Size: <%= number_to_human_size(@audio_recording.size) %></p>
-                                <p>Recording type: <%= @audio_recording.content_type %></p>
+      <p><%= @audio_recording.description %></p>
+      <p>Filename: <%= @audio_recording.filename %>
+        (<%= link_to_original_of @audio_recording, 'listen' -%>)
+      </p>
+      <p>Size: <%= number_to_human_size(@audio_recording.size) %></p>
+      <p>Recording type: <%= @audio_recording.content_type %></p>
 
-                                <%= pending_review(@audio_recording) %>
-<% end -%>
-                        </div>
+      <%= pending_review(@audio_recording) %>
+      <% end -%>
 
-                        <div class="detail-tools">
-                                <h3>Get Involved</h3>
-                                <ul>
-<% cache ({:part => 'edit'}) do -%>
-                                        <li class="first"><%= link_to "Edit",
-                                                                :action => :edit,
-                                                                :controller => '/audio',
-                                                                :id => @audio_recording %></li>
-                                        <li><%= link_to "History",
-                                                         :action => :history,
-                                                         :id => @audio_recording %></li>
-<% end -%>
-                                        <li><a href="#comments">Discuss</a></li>
-                                        <% if logged_in? and @at_least_a_moderator -%>
-<% cache ({:part => 'delete'}) do -%>
-                                                <li><%= link_to "Delete",
-                                                                {:action => :destroy,
-                                                                :controller => '/audio',
-                                                                :id => @audio_recording},
-                                                                :method => :post,
-                                                                :confirm => 'Are you sure?'%></li>
-<% end -%>
-                                        <% end -%>
+      <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @audio_recording }) %>
+      <% cache ({:related => 'topics'}) do -%>
+      <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @audio_recording, :source_item_class => 'WebLink', :topics => @audio_recording.topics) %>
+      <% end -%>
 
-                                        <% if logged_in? and @site_admin -%>
-<% cache ({:part => 'zoom_reindex'}) do -%>
-                                                <li><%= link_to "Zoom Update this item and it's related items",
-                                                                {:action => :rebuild_zoom_for_items,
-                                                                :controller => 'search',
-                                                                :items_to_rebuild => items_to_rebuild(@audio_recording)},
-                                                                :method => :post,
-                                                                :confirm => 'Are you sure you want to update?'%></li>
-<% end -%>
-                                        <% end -%>
-<% cache ({:part => 'flagging_links'}) do -%>
-                                        <%= flagging_links_for(@audio_recording) %>
-<% end -%>
-                                </ul>
-                        </div>
-<% cache ({:part => 'contributions'}) do -%>
-                        <div class="detail-tools">
-                                <ul>
-                                        <li class="first">Created by: <%= link_to_contributions_of(@creator,'AudioRecording') %></li>
-                                        <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'AudioRecording') %></li>
-                                        <li>Last Edited: <%= @audio_recording.updated_at.to_s(:euro_date_time) -%></li>
-
-                                </ul>
-                        </div>
-                        <div class="cleaner">&nbsp;</div>
-                </div>
-<% end -%>
-<% cache ({:related => 'topics'}) do -%>
-                <%= item_related_topics_wrapper(:class_phrase => 'audio recording', :source_item => @audio_recording, :source_item_class => 'AudioRecording', :topics => @audio_recording.topics) %>
-<% end -%>
-                <div id="detail-discuss">
-                        <h3><a name="comments">Discuss This Audio Recording</a></h3>
-                        <% if logged_in? and @at_least_a_moderator -%>
-<% cache ({:part => 'comments-moderators'}) do -%>
-                                <%= show_comments_for(@audio_recording) %>
-<% end -%>
-                        <% else -%>
-<% cache ({:part => 'comments'}) do -%>
-                                <%= show_comments_for(@audio_recording) %>
-<% end -%>
-                        <% end -%>
-                </div>
-                <div class="cleaner">&nbsp;</div>
+      <%= render(:partial => "topics/discussion" , :locals => { :item => @audio_recording }) %>
+    </div><!-- /main-content-container -->
+  </div><!-- /main-content-wrapper -->
+  <div id="secondary-content-wrapper">
+    <%= render(:partial => "topics/tags_div" , :locals => { :item => @audio_recording }) %>
+    <%= render(:partial => "topics/extended_fields" , :locals => { :item => @audio_recording }) %>
+  </div> <!-- /secondary-content-warpper -->
+</div><!-- /content-wrapper -->

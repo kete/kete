@@ -1,5 +1,10 @@
 <% @title = "Revision History: #{h(@item.title)}" -%>
 
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+
                 <div id="detail-wrapper">
                         <div id="detail-header">
                                 <h4><%= link_to_last_stored_location -%></h4>
@@ -10,8 +15,8 @@
                         </div>
                 </div>
                 <div class="detail-tools">
-                        <table>
-                                <tr><td>Number</td><td></td><td>Flags</td><td>Contributor</td><td>Updated</td><td>Comments</td></tr>
+                        <table class="history-table">
+                                <tr><th>Number</th><th></th><th>Flags</th><th>Contributor</th><th>Updated</th><th>Comments</th></tr>
                                 <% item_contributors = @item.contributors
                                    contributor_index = 0
                                 -%>
@@ -56,3 +61,6 @@
 
                         <h3>Back to live <%= link_to_item(@item) -%></h3>
                 </div>
+</div>
+</div>
+</div>

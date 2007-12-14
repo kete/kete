@@ -1,13 +1,21 @@
-<% @title = 'Editing audio recording' -%>
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-<h2><%= h(@title) -%></h2>
+      <% @title = 'Editing audio recording' -%>
 
-<% form_for :audio_recording,
-             :url => { :action => 'update',
-                       :id => @audio_recording },
-             :html => { :multipart => true } do |form| %>
-  <%= render :partial => 'form', :object => form %>
-  <%= submit_tag 'Save' %>
-<% end %>
+      <h2><%= h(@title) -%></h2>
 
-<%= link_to_cancel %>
+      <% form_for :audio_recording,
+         :url => { :action => 'update',
+      :id => @audio_recording },
+      :html => { :multipart => true } do |form| %>
+      <%= render :partial => 'form', :object => form %>
+      <%= submit_tag 'Save' , :class => "save-button" %>
+      <% end %>
+
+      <%= link_to_cancel %>
+    </div>
+  </div>
+</div>

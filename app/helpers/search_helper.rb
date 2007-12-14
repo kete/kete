@@ -47,18 +47,18 @@ module SearchHelper
 
     if placement != 'bottom' or (number_per_page > 5 and last_page > 1)
         html_string += "
-                        <div id=\"prev-next\">"
+                        <div class=\"prev-next\">"
 
       if current_page > 1
-        html_string += link_to_previous_page('&lt;&lt; previous',previous_page)
+        html_string += link_to_previous_page('<span class="prev-active">previous</span>',previous_page)
       else
-        html_string += "&lt;&lt; previous"
+        html_string += "<span class=\"prev-inactive\">previous</span>"
       end
       html_string += "&nbsp;"
       if current_page < last_page
-        html_string += link_to_next_page('next &gt;&gt;',next_page)
+        html_string += link_to_next_page('<span class="next-active">next</span>',next_page)
       else
-        html_string += "next &gt;&gt;"
+        html_string += "<span class=\"next-inactive\">next</span>"
       end
       html_string += "
                        </div>"

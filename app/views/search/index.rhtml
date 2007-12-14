@@ -1,3 +1,11 @@
-<% @title = "Search " + @current_basket.name -%>
+<div id="content-wrapper">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-<%= render :partial => 'form', :locals => {:headline => @title, :search_terms => ''} %>
+      <% @title = "Search " + @current_basket.name -%>
+
+      <%= render :partial => 'form', :locals => {:headline => @title, :search_terms => ''} %>
+    </div>
+  </div>
+</div>

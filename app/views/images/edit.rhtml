@@ -1,14 +1,23 @@
-<% @title = 'Editing image' -%>
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-<h2><%= h(@title) -%></h2>
 
-<% form_for :still_image,
-             :url => { :action => 'update',
-                       :id => @still_image },
-             :html => { :multipart => true } do |form| %>
-  <%= render :partial => 'form', :object => form %>
-  <%= submit_tag 'Save' %>
-<% end %>
+      <% @title = 'Editing image' -%>
 
-<%= link_to_cancel %>
+      <h2><%= h(@title) -%></h2>
 
+      <% form_for :still_image,
+         :url => { :action => 'update',
+      :id => @still_image },
+      :html => { :multipart => true } do |form| %>
+      <%= render :partial => 'form', :object => form %>
+      <%= submit_tag 'Save', :class => "save-button" %>
+      <% end %>
+
+      <%= link_to_cancel %>
+
+    </div>
+  </div>
+</div>

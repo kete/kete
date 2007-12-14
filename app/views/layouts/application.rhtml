@@ -2,7 +2,6 @@
      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
      "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-
 <head>
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -31,9 +30,10 @@
         }
         </script>
   <% end -%>
-  <%= stylesheet_link_tag 'kete', :media => 'screen' %>
+  <% #= stylesheet_link_tag 'kete', :media => 'screen' %>
   <!--[if IE 5]><%= stylesheet_link_tag 'kete-ie5', :media => 'screen' %><![endif]-->
   <!--[if IE 6]><%= stylesheet_link_tag 'kete-ie6', :media => 'screen' %><![endif]-->
+  <%= stylesheet_link_tag '/themes/default/css/kete_default', :media => 'screen' %>
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
   <%= stylesheet_link_tag 'redbox' %>
   <%= javascript_include_tag :defaults %>
@@ -46,69 +46,89 @@
         <%= @rss_tag_auto %>
   <% end -%>
 </head>
-<body>
+<body id="<%= @current_basket.urlified_name -%>">
 <% if IS_CONFIGURED -%>
-<div id="wrapper">
-        <div id="banner">
-                <!-- space for more universal top navigation elements -->
-        </div>
-        <div id="header">
-                <div id="topnav">
-                        <a href="/">Home</a> |
-                        <%= link_to_unless_current "Browse", :controller => 'search',
-                                                             :action => 'all',
-                                                             :urlified_name => 'site',
-                                                             :controller_name_for_zoom_class => 'topics',
-                                                             :trailing_slash => true -%>
-                        |
-                        <%= link_to_unless_current "Search", :controller => 'search',
-                                                             :action => :index -%>
-                        |
-
-                        <%= link_to_unless_current "Register", :controller => 'account',
-                                                               :action => :signup,
-                                                               :urlified_name => 'site' -%>
-                        |
-                        <% if !logged_in? %>
-                           <%= link_to_unless_current "Login", :controller => 'account',
-                                                               :action => :login,
-                                                               :urlified_name => 'site' -%>
-                         <!--  |
-                           Logout -->
-                        <% else %>
-                           <% # TODO: currently a security risk -%>
-                           Welcome <%= link_to_unless_current current_user.user_name, :controller => 'account',
-                                                                                      :action => 'show',
-                                                                                      :urlified_name => 'site' -%> |
-                           <%= link_to_unless_current "Logout", :controller => 'account',
-                                                                :action => :logout,
-                                                                :urlified_name => 'site' -%>
-                        <% end %>
-                        |
-                           <%= link_to_unless_current(h(@about_basket.name),
-                                   basket_index_url(:urlified_name => @about_basket.urlified_name)) %>
-
-                        |
-                           <%= link_to_unless_current(h(@help_basket.name),
-                                   basket_index_url(:urlified_name => @help_basket.urlified_name)) %>
-                        |
-                           <%= mail_to(CONTACT_EMAIL,'Contact', :encode => "javascript") %>
+<div id="body-outer-wrapper">
+  <div id="body-inner-wrapper">
+    <div id="header-wrapper">
+      <div id="header">
+            <!-- this would be a good place for your logo -->
+            <h1><a href="/"><%= PRETTY_SITE_NAME -%></a>
+              <%# TODO dont show the basket if it is the default basket? %>
+<% if @current_basket.name != "Site" -%>: <a href="/<%= @current_basket.urlified_name -%>"
+                                                             class="basket"><%= @current_basket.name -%></a></h1>
+<% end -%>
+<!--  todo
+              <div id="head-search-wrapper">
+                        <label>Search:</label>
+                        <input type="text" id="search-term" name="search-term" />
+                        <input type="submit" value="GO" />
                 </div>
-                <!-- this would be a good place for your logo -->
-                <h1><%= PRETTY_SITE_NAME -%></h1>
-                <!--
-                <div id="description">
-                        Subtitle or description for every page
-                </div>
-                -->
-                <% if flash[:notice] %>
-                        <div id="notice"><%= flash[:notice] %></div>
-                <% end %>
-                <% if flash[:error] %>
-                        <div id="error"><%= flash[:error] %></div>
-                <% end %>
 
-        </div><!-- /header -->
+       <ul id="basket-list" class="nav-list">
+                <li class="first"><a href="#">Basket 2</a></li>
+                <li><a href="#">Basket 3</a></li>
+                <li><a href="#">Basket 4</a></li>
+                <li><a href="#">more...</a></li>
+        </ul>
+-->
+      </div>
+    </div>
+
+    <div id="top-menu">
+      <ul class="user-nav nav-list">
+        <% if !logged_in? %>
+        <li class="first"><%= link_to_unless_current "Register", :controller => 'account',
+          :action => :signup,
+          :urlified_name => 'site' -%></li>
+        <li><%= link_to_unless_current "Login", :controller => 'account',
+          :action => :login,
+          :urlified_name => 'site' -%></li>
+        <!-- Logout -->
+        <% else %>
+        <% # TODO: currently a security risk -%>
+        <li class="first"><%= link_to_unless_current current_user.user_name, :controller => 'account',
+          :action => 'show',
+          :urlified_name => 'site' -%></li>
+        <li><%= link_to_unless_current "Logout", :controller => 'account',
+          :action => :logout,
+          :urlified_name => 'site' -%></li>
+        <% end %>
+
+<!--
+        <li class="first"><a href="#">Register</a></li>
+        <li><a href="#">Login</a></li>
+-->
+      </ul>
+      <ul id="main-nav" class="nav-list">
+        <li class="first"><a href="/">Home</a></li>
+        <li><%= link_to_unless_current "Browse", :controller => 'search',
+          :action => 'all',
+          :urlified_name => 'site',
+          :controller_name_for_zoom_class => 'topics',
+          :trailing_slash => true -%></li>
+        <li><%= link_to_unless_current "Search", :controller => 'search',
+          :action => :index -%></li>
+        <li><%= link_to_unless_current(h(@about_basket.name),
+                basket_index_url(:urlified_name => @about_basket.urlified_name)) %></li>
+        <li><%= link_to_unless_current(h(@help_basket.name),
+                basket_index_url(:urlified_name => @help_basket.urlified_name)) %></li>
+        <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "javascript") %></li>
+      </ul>
+    </div> <!-- /header -->
+
+    <% if flash[:notice] %>
+    <div id="notice"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:error] %>
+    <div id="error"><%= flash[:error] %></div>
+    <% end %>
+
+
+
+
+
+
         <div id="container">
 
                         <%= @content_for_layout %>
@@ -118,7 +138,8 @@
         <div id="footer">
                 <!--Footer-->
                 <% if !@rss_tag_link.nil? -%>
-                        <div id="linkToRSS"><%= @rss_tag_link -%>RSS</a></div>
+                        <div id="linkToRSS"><%= @rss_tag_link -%>RSS feed for
+                these items</a></div>
                 <% end -%>
                 <div class="browse-baskets">
                         <% basket_count = 0 -%>
@@ -139,22 +160,22 @@
                        <% end -%>
                 </div>
                 <% if logged_in? and @basket_admin -%>
-                        <div class="basket-toolbox">
-                                <h4><%= h(@current_basket.name) -%>:</h4>
+                        <div id="basket-toolbox">
+                                <h4>Tools for basket: <%= h(@current_basket.name) -%></h4>
                                 <ul>
-                                <li class="first"><%= link_to_unless_current "edit",
+                                <li class="first"><%= link_to_unless_current "basket preferences",
                                                                               :id => @current_basket,
                                                                               :controller => '/baskets',
                                                                               :action => :edit -%></li>
-                                <li><%= link_to_unless_current "members",
+                                <li><%= link_to_unless_current "basket members",
                                                                 :controller => '/members',
                                                                 :action => :list -%></li>
                                 <% if @current_basket.urlified_name != 'site' -%>
-                                        <li><%= link_to_unless_current "delete",
-                                                                       { :id => @current_basket,
-                                                                         :controller => '/baskets',
-                                                                         :action => :destroy },
-                                                                         :confirm => 'Are you sure? All items in this basket will be deleted forever!', :method => :post -%></li>
+                                        <li><%= link_to_unless_current "delete this basket",
+                                                        { :id => @current_basket,
+                                                               :controller => '/baskets',
+                                                               :action => :destroy },
+                                                                :confirm => 'Are you sure? All items in this basket will be deleted forever!', :method => :post -%></li>
                                 <% end %>
                                 </ul>
                         </div>
@@ -206,8 +227,17 @@
                    </div>
                 <% end %>
         </div>
-</div><!-- /wrapper -->
+
+ </div> <!-- /body-outer-wrapper -->
+</div> <!-- /body-inner-wrapper -->
+
+
 <% else -%>
+<div id="body-outer-wrapper">
+  <div id="body-inner-wrapper">
+
+
+
 <div id="wrapper">
         <div id="header">
                 <h1><%= PRETTY_SITE_NAME -%></h1>
@@ -215,8 +245,13 @@
                         <!-- TODO: look up if there is a style sheet class for flash, add here -->
                         <div id="notice"><%= flash[:notice] %></div>
                 <% end %>
-
         </div><!-- /header -->
+
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+
         <div id="container">
 
                         <%= @content_for_layout %>
@@ -227,6 +262,14 @@
                 <!--Footer-->
         </div>
 </div><!-- /wrapper -->
+
+</div>
+<div>
+</div>
+ </div> <!-- /body-outer-wrapper -->
+</div> <!-- /body-inner-wrapper -->
+
+
 <% end -%>
 </body>
 </html>

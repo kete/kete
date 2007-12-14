@@ -11,11 +11,15 @@
                         <%= hidden_field_tag "relate_to_topic_id", params[:relate_to_topic_id] %>
                 <% end %>
 
-                <p><label for="comment_title">Title</label><br/>
-                <%= form.text_field :title  %></p>
+                <div class="form-element">
+                  <label for="comment_title">Title:</label>
+                <%= form.text_field :title  %>
+                </div>
 
-                <p><label for="comment_description">Description</label><br/>
-                <%= form.text_area :description, :class => "mceEditor", :cols => 120 %></p>
+                <div class="form-element">
+                  <label for="comment_description" class="cleared-right">Description:</label>
+                <%= form.text_area :description, :class => "mceEditor", :cols => 120 %>
+                </div>
 
                 <%= tags_input_field(form,"comment_tag_list") %>
 

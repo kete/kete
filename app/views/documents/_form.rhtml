@@ -1,6 +1,6 @@
 <% edit = false
    if !@document.id.blank?
-        edit = true
+   edit = true
    end -%>
         <fieldset>
 
@@ -12,20 +12,20 @@
                 <% end %>
 
                 <% if edit and @site_admin %>
-                        <p>
+                        <div class="form-element">
                                 <label for="basket_for_url">Move to another basket?</label>
                                 <%= form.select 'basket_id', @baskets %>
-                        </p>
+                        </div>
                 <% end -%>
 
-                <p><label for="document_title">Title</label><br/>
-                <%= form.text_field :title  %></p>
+                <div class="form-element"><label for="document_title">Title:</label>
+                <%= form.text_field :title  %></div>
 
-                <p><label for="document_short_summary">Short Summary</label><br/>
-                <%= form.text_area :short_summary  %></p>
+                <div class="form-element"><label for="document_short_summary">Short Summary:</label>
+                <%= form.text_area :short_summary  %></div>
 
-                <p><label for="document_description">Description</label><br/>
-                <%= form.text_area :description, :class => "mceEditor", :cols => 120  %></p>
+                <div class="form-element"><label for="document_description" class="cleared-right">Description:</label>
+                <%= form.text_area :description, :class => "mceEditor", :cols => 120  %></div>
 
                 <%= tags_input_field(form,"document_tag_list") %>
 
@@ -33,8 +33,8 @@
                    # when we support versioning of document and image files,
                    # we'll likely re-enable this -%>
                 <% if !edit -%>
-                        <p><label for="document_uploaded_data">Upload document</label><br/>
-                        <%= form.file_field :uploaded_data %></p>
+                        <div class="form-element"><label for="document_uploaded_data">Upload document</label><br/>
+                        <%= form.file_field :uploaded_data %></div>
                 <% end -%>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>

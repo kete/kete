@@ -1,0 +1,48 @@
+body {
+
+}
+#top-menu ul {
+	padding: 1em 0 1em 20px;
+}
+#body-outer-wrapper {
+	width: 900px;
+	margin: auto;
+}
+#secondary-content-wrapper{
+	width: 28%;	
+}
+#content-tabs ul li{
+	margin-right: 0.7em;
+	padding: 0em 0em 0.5em 1em;
+}
+#content-tabs ul li a{
+	padding: 0.75em 1em .5em 0;	
+	margin-right: -.5em;
+}
+#content-tabs ul li.selected{
+	padding: 0em 0 0.5em 1em;
+}
+#content-tabs ul li.selected a{
+	padding: .75em 1em .5em 0;	
+	margin-right: -.5em;
+	background-color: white;
+}
+#extened dl{
+	float: left;
+}
+#extended dt,
+#extended dd{
+	margin: 0;
+	padding: 0;
+	display: block;
+	float: none;
+	clear: none;
+}
+#extended dd{
+	margin-bottom: .5em;	
+}
+#extended dt{
+	display: block;
+	float: left;
+	clear: left;
+}

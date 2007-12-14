@@ -1,127 +1,73 @@
-                <div id="detail-wrapper">
-                        <div id="detail-header">
-                                <h4><%= link_to_last_stored_location -%></h4>
-<% cache ({:part => 'details'}) do -%>
-                                <h2>Topic: <%= h(@topic.title) %></h2>
-                                        <% extended_fields_html = display_xml_attributes(@topic) -%>
-                                        <% if !extended_fields_html.blank? %>
-                                                <div id="detail-extended">
-                                                        <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-                                                        <%= extended_fields_html %>
-                                                </div>
-                                        <% end %>
+<%= render(:partial => "actions_menu" , :locals => { :item => @topic }) %>
+<!-- begining of main content block -->
+<div id="content-wrapper">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-                                <h4>Topic Type: <%= h(@topic.topic_type.name) %></h4>
+      <!-- TODO: this will be replace by new history system <h4><%= link_to_last_stored_location -%></h4> -->
+      <% cache ({:part => 'details'}) do -%>
+      <h2>Topic: <%= h(@topic.title) %></h2>
+      <h4>Topic Type: <%= h(@topic.topic_type.name) %></h4>
+      <p><b><%= @topic.short_summary %></b></p>
+      <p><%= @topic.description %></p>
+      <%= pending_review(@topic) %>
+      <% end -%>
 
-                                <p><b><%= @topic.short_summary %></b></p>
-                                <%= tags_for(@topic) -%>
-                                <p><%= @topic.description %></p>
+      <%= render(:partial => "flagging_contributor" , :locals => { :item => @topic }) %>
+      <div class="secondary-content-section-wrapper-blue">
+        <div id="related-content" class="secondary-content-section">
 
-                                <%= pending_review(@topic) %>
-<% end -%>
-                        </div>
+          <h2 class="related-link">Related Items</h2>
+          <div id="detail-linked-toprow">
+            <% cache ({:related => 'images'}) do -%>
+            <%= related_items_links(:source_item => @topic,
+            :related_class => 'StillImage') %>
+            <% end -%>
+          </div>
+          <div class="two-col">
+          <!-- <div id="detail-linked-midrow"> -->
+            <% cache ({:related => 'topics'}) do -%>
+            <%= related_items_links(:source_item => @topic,
+            :related_class => 'Topic') %>
+            <% end -%>
+            <% cache ({:related => 'audio'}) do -%>
+            <%= related_items_links(:source_item => @topic,
+            :related_class => 'AudioRecording') %>
+            <% end -%>
+            <% cache ({:related => 'video'}) do -%>
+            <%= related_items_links(:source_item => @topic,
+            :related_class => 'Video') %>
 
-                        <div class="detail-tools">
-                                <h3>Get Involved</h3>
-                                <ul>
-<% cache ({:part => 'edit'}) do -%>
-                                        <li class="first"><%= link_to "Edit",
-                                                                :action => :edit,
-                                                                :id => @topic %></li>
-                                        <li><%= link_to "History",
-                                                         :action => :history,
-                                                         :id => @topic %></li>
+            <% end -%>
+            <div class="cleaner-left">&nbsp;</div>
 
-<% end -%>
-                                        <li><a href="#comments">Discuss</a></li>
-                                        <% if logged_in? and @at_least_a_moderator -%>
-<% cache ({:part => 'delete'}) do -%>
-                                                <li><%= link_to "Delete",
-                                                                {:action => :destroy,
-                                                                :id => @topic},
-                                                                :method => :post,
-                                                                :confirm => 'Are you sure?'%></li>
-<% end -%>
-                                        <% end -%>
-                                        <% if logged_in? and @site_admin -%>
-<% cache ({:part => 'zoom_reindex'}) do -%>
-                                                <li><%= link_to "Zoom Update this item and it's related items",
-                                                                {:action => :rebuild_zoom_for_items,
-                                                                :controller => 'search',
-                                                                :items_to_rebuild => items_to_rebuild(@topic)},
-                                                                :method => :post,
-                                                                :confirm => 'Are you sure you want to update?'%></li>
-<% end -%>
-                                        <% end -%>
-<% cache ({:part => 'flagging_links'}) do -%>
-                                        <%= flagging_links_for(@topic) %>
-<% end -%>
-                                </ul>
-                        </div>
-<% cache ({:part => 'contributions'}) do -%>
-                        <div class="detail-tools">
-                                <ul>
-                                        <li class="first">Created by: <%= link_to_contributions_of(@creator,'Topic') %></li>
-                                        <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'Topic') %></li>
-                                        <li>Last Edited: <%= @topic.updated_at.to_s(:euro_date_time) -%></li>
+          </div>
+          <div class="two-col">
 
-                                </ul>
-                        </div>
+          <!-- <div id="detail-linked-bottomrow"> -->
+            <% cache ({:related => 'documents'}) do -%>
+            <%= related_items_links(:source_item => @topic,
+            :related_class => 'Documents') %>
+            <% end -%>
+            <% cache ({:related => 'web_links'}) do -%>
+            <%= related_items_links(:source_item => @topic,
+            :related_class => 'WebLink') %>
+            <% end -%>
+            <div class="cleaner">&nbsp;</div>
+          </div>
+          <div class="cleaner">&nbsp;</div>
 
-                        <div class="cleaner-left">&nbsp;</div>
-                </div>
-<% end -%>
-                <div id="detail-linked">
-                        <h3>Other Kete Users have linked this topic to:</h3>
-                        <div id="detail-linked-toprow">
-<% cache ({:related => 'images'}) do -%>
-                          <%= related_items_links(:source_item => @topic,
-                                                  :related_class => 'StillImage') %>
-<% end -%>
-                                        <div class="cleaner-left">&nbsp;</div>
-                        </div>
-                        <div id="detail-linked-midrow">
-<% cache ({:related => 'topics'}) do -%>
-                          <%= related_items_links(:source_item => @topic,
-                                                  :related_class => 'Topic') %>
-<% end -%>
-<% cache ({:related => 'audio'}) do -%>
-                          <%= related_items_links(:source_item => @topic,
-                                                  :related_class => 'AudioRecording') %>
-<% end -%>
-<% cache ({:related => 'video'}) do -%>
-                          <%= related_items_links(:source_item => @topic,
-                                                  :related_class => 'Video') %>
+          <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+        </div>
+      </div>
 
-<% end -%>
-                                <div class="cleaner-left">&nbsp;</div>
 
-                        </div>
-                        <div id="detail-linked-bottomrow">
-<% cache ({:related => 'documents'}) do -%>
-                          <%= related_items_links(:source_item => @topic,
-                                                  :related_class => 'Documents') %>
-<% end -%>
-<% cache ({:related => 'web_links'}) do -%>
-                        <%= related_items_links(:source_item => @topic,
-                                                :related_class => 'WebLink') %>
-<% end -%>
-                                <div class="cleaner">&nbsp;</div>
-                        </div>
-                        <div class="cleaner">&nbsp;</div>
-                </div>
-
-                <div id="detail-discuss">
-                        <h3><a name="comments">Discuss This Topic</a></h3>
-                        <% if logged_in? and @at_least_a_moderator -%>
-<% cache ({:part => 'comments-moderators'}) do -%>
-                                <%= show_comments_for(@topic) %>
-<% end -%>
-                        <% else -%>
-<% cache ({:part => 'comments'}) do -%>
-                                <%= show_comments_for(@topic) %>
-<% end -%>
-                        <% end -%>
-                </div>
-
-                <div class="cleaner">&nbsp;</div>
+      <%= render(:partial => "discussion" , :locals => { :item => @topic }) %>
+    </div><!-- /main-content-container -->
+  </div><!-- /main-content-wrapper -->
+  <div id="secondary-content-wrapper">
+    <%= render(:partial => "tags_div" , :locals => { :item => @topic }) %>
+    <%= render(:partial => "extended_fields" , :locals => { :item => @topic }) %>
+  </div> <!-- /secondary-content-warpper -->
+</div><!-- /content-wrapper -->

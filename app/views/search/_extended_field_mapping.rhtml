@@ -3,9 +3,9 @@
                                  <% # xml_element_name do not have to be %>
                                  <% f_id = extended_field_mapping.extended_field_label.downcase.gsub(/ /, '_') %>
                                  <% if extended_field_mapping.required -%>
-                                         <label class="required" for="<%= f_id  -%>"><%= extended_field_mapping.extended_field_label -%></label>
+                                         <label class="required" for="<%= f_id  -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
                                  <% else -%>
-                                         <label for="<%= "#{item_key}[#{f_id}]" -%>"><%= extended_field_mapping.extended_field_label -%></label>
+                                         <label for="<%= "#{item_key}[#{f_id}]" -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
                                  <% end -%>
                                  <% if !extended_item.nil?
                                         item_extended_xml = extended_item.xml_attributes_without_position

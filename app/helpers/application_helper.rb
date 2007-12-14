@@ -92,6 +92,8 @@ module ApplicationHelper
                         <h3>This #{options[:class_phrase]} is not related to any topics at this time.</h3>"
     else
       beginning_html += "
+                        <div class=\"secondary-content-section-wrapper-blue\">
+                        <div id=\"related-link\" class=\"secondary-content-section\">
                         <h3>Related Topics:</h3>"
     end
     beginning_html +=%q(
@@ -105,6 +107,9 @@ module ApplicationHelper
     end_html = %q(
                         </div>
                         <div class="cleaner">&nbsp;</div>
+                        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+                        </div>
+                        </div>
                 </div>)
     return beginning_html + middle_html + end_html
   end
@@ -186,8 +191,8 @@ module ApplicationHelper
   end
 
   def tags_input_field(form,label_for)
-    "<p><label for=\"#{label_for}\">Tags (separated by commas):</label>
-                #{form.text_field :tag_list}</p>"
+    "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
+                #{form.text_field :tag_list}</div>"
   end
 
   #---- related to extended_fields for either topic_types or content_types
@@ -311,11 +316,23 @@ module ApplicationHelper
 
     if @comments.size > 0
       @comments.each do |comment|
-        html_string += "<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
-        html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5>\n"
+        html_string += "<div class=\"comment-wrapper\"><h5>"
+        html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}"
+        html_string += " said "
+        html_string += "<a name=\"comment-#{comment.id}\">#{h(comment.title)}</a>"
+        html_string += "</h5>"
+
+        #changed Steven Upritchard katipo.co.nz todo: clean this up
+        #html_string += "<div class=\"comment-wrapper\">""<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
+        #html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5><div class=\"comment-content\">\n"
+
+
+        html_string += "<div class=\"comment-content\">"
+
         if !comment.description.blank?
           html_string += "#{comment.description}\n"
         end
+
         tags_for_comment = tags_for(comment)
         if !tags_for_comment.blank?
           html_string += "#{tags_for_comment}\n"
@@ -341,7 +358,7 @@ module ApplicationHelper
                                           :method => :post,
                                           :confirm => 'Are you sure?') + "</li>\n"
         end
-        html_string += "<\ul>\n</div>"
+        html_string += "<\ul>\n</div></div></div>"
       end
       html_string += "<p>" + link_to("join this discussion",
                                      {:action => :new,
@@ -358,9 +375,9 @@ module ApplicationHelper
     html_string = String.new
     if FLAGGING_TAGS.size > 0
       if first
-        html_string = "                                         <li class=\"first\">Flag as:\n"
+        html_string = "                                        <ul><li class=\"first flag\">Flag as:\n"
       else
-        html_string = "                                         <li>Flag as:\n"
+        html_string = "                                         <ul><li class=\"flag\">Flag as:\n"
       end
       html_string += "<ul>\n"
       flag_count = 1
@@ -388,7 +405,7 @@ module ApplicationHelper
         flag_count += 1
       end
       html_string += "                                            </ul>
-                                        </li>\n"
+                                        </li></ul>\n"
     end
   end
 

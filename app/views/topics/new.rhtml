@@ -1,12 +1,21 @@
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+
+
 <% @title = 'Choose a topic type' -%>
 
 <h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'pick_topic_type' do %>
   <%= render :partial => 'pick_form' %>
-  <%= submit_tag "Choose" %>
+  <%= submit_tag "Choose" , :class => "save-button" %>
 <% end %>
 
 
-<%= link_to_cancel %> | 
+<%= link_to_cancel %> |
 <%= link_to("help", { :controller => 'index_page', :action => :help_file }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %>
+</div>
+</div>
+</div>

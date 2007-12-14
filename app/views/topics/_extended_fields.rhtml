@@ -1,0 +1,14 @@
+
+<% extended_fields_html = display_xml_attributes(item) -%>
+<% if !extended_fields_html.blank? %>
+<div class="secondary-content-section-wrapper">
+  <div id="tags" class="secondary-content-section">
+
+    <div id="detail-extended">
+      <h4 id="detail-extended-heading"><%= h(item.title) %></h4><br />
+      <%= extended_fields_html %>
+    </div>
+    <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+  </div>
+</div>
+<% end %>

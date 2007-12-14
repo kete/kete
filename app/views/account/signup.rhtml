@@ -1,3 +1,9 @@
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+
+
 <% @title = 'Registration'  -%>
 
 <h2><%= h(@title) -%></h2>
@@ -8,17 +14,17 @@
 <%= error_messages_for :user %>
 
 <div class="form-element">
-<label for="login">Login</label> <%= f.text_field :login %>
+<label for="login">Login:</label> <%= f.text_field :login %>
 <div class="form_example">Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.</div>
 </div>
 <div class="form-element">
-<label for="email">Email</label> <%= f.text_field :email %>
+<label for="email">Email:</label> <%= f.text_field :email %>
 </div>
 <div class="form-element">
-<label for="password">Password</label> <%= f.password_field :password %>
+<label for="password">Password:</label> <%= f.password_field :password %>
 </div>
 <div class="form-element">
-<label for="password_confirmation">Confirm Password</label> <%= f.password_field :password_confirmation %>
+<label for="password_confirmation">Confirm Password:</label> <%= f.password_field :password_confirmation %>
 </div>
 
 
@@ -51,6 +57,9 @@
 
 </fieldset>
 
-<%= submit_tag 'Sign up' %>
+<%= submit_tag 'Sign up', :class => "save-button" %>
 
 <% end -%>
+</div>
+</div>
+</div>

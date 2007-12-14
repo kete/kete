@@ -1,13 +1,19 @@
-<% @title = 'Editing document' -%>
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-<h2><%= h(@title) -%></h2>
+      <% @title = 'Editing document' -%>
+      <h2><%= h(@title) -%></h2>
 
-<% form_for :document,
-             :url => { :action => 'update',
-                       :id => @document },
-             :html => { :multipart => true } do |form| %>
-  <%= render :partial => 'form', :object => form %>
-  <%= submit_tag 'Save' %>
-<% end %>
-
-<%= link_to_cancel %>
+      <% form_for :document,
+         :url => { :action => 'update',
+      :id => @document },
+      :html => { :multipart => true } do |form| %>
+      <%= render :partial => 'form', :object => form %>
+      <%= submit_tag 'Save', :class => "save-button" %>
+      <% end %>
+      <%= link_to_cancel %>
+    </div>
+  </div>
+</div>

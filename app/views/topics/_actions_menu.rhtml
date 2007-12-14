@@ -1,0 +1,34 @@
+<div id="content-tabs">
+  <ul class="nav-list">
+    <li class="first selected"><a href="#"><span class="view-link">View
+          this Item</span></a></li>
+    <% cache ({:part => 'edit'}) do -%>
+    <li><%= link_to "<span class=\"edit-link\">Edit</span>",
+            :action => :edit,
+      :id => item %></li>
+    <li><%= link_to "<span class=\"history-link\">History</span>",
+            :action => :history,
+      :id => item %></li>
+    <% end -%>
+    <li><a href="#comments"><span class="discuss-link">Discuss</span></a></li>
+    <% if logged_in? and @site_admin -%>
+    <% cache ({:part => 'zoom_reindex'}) do -%>
+    <li><%= link_to "Zoom Update item (+related)",
+            {:action => :rebuild_zoom_for_items,
+      :controller => 'search',
+      :items_to_rebuild => items_to_rebuild(item)},
+      :method => :post,
+      :confirm => 'Are you sure you want to update?'%></li>
+    <% end -%>
+    <% end -%>
+    <% if logged_in? and @at_least_a_moderator -%>
+    <% cache ({:part => 'delete'}) do -%>
+    <li><%= link_to "Delete",
+            {:action => :destroy,
+      :id => item},
+      :method => :post,
+      :confirm => 'Are you sure?'%></li>
+    <% end -%>
+    <% end -%>
+  </ul>
+</div><!-- /content-tabs -->

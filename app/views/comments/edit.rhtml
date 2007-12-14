@@ -1,13 +1,23 @@
-<% @title = 'Editing comment' -%>
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-<h2><%= h(@title) -%></h2>
 
-<% form_for :comment,
-             :url => { :action => 'update',
-                       :id => @comment },
-             :html => { :multipart => true } do |form| %>
-  <%= render :partial => 'form', :object => form %>
-  <%= submit_tag 'Save' %>
-<% end %>
+      <% @title = 'Editing comment' -%>
 
-<%= link_to_cancel %>
+      <h2><%= h(@title) -%></h2>
+
+      <% form_for :comment,
+         :url => { :action => 'update',
+         :id => @comment },
+         :html => { :multipart => true } do |form| %>
+      <%= render :partial => 'form', :object => form %>
+      <%= submit_tag 'Save', :class => "save-button" %>
+      <% end %>
+
+      <%= link_to_cancel %>
+
+    </div>
+  </div>
+</div>

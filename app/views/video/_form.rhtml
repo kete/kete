@@ -1,39 +1,41 @@
+
 <% edit = false
    if !@video.id.blank?
         edit = true
    end -%>
-        <fieldset>
 
-                <%= error_messages_for 'video' %>
+<fieldset>
 
-                <!--[form:video]-->
-                <% if !params[:relate_to_topic].nil? %>
-                        <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-                <% end %>
+  <%= error_messages_for 'video' %>
 
-                <% if edit and @site_admin %>
-                        <p>
-                                <label for="basket_for_url">Move to another basket?</label>
-                                <%= form.select 'basket_id', @baskets %>
-                        </p>
-                <% end -%>
+  <!--[form:video]-->
+  <% if !params[:relate_to_topic].nil? %>
+  <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+  <% end %>
 
-                <p><label for="video_title">Title</label><br/>
-                <%= form.text_field :title  %></p>
+  <% if edit and @site_admin %>
+  <div class="form-element">
+    <label for="basket_for_url">Move to another basket?</label>
+    <%= form.select 'basket_id', @baskets %>
+  </div>
+  <% end -%>
 
-                <p><label for="video_description">Description</label><br/>
-                <%= form.text_area :description, :class => "mceEditor", :cols => 120 %></p>
+  <div class="form-element"><label for="video_title">Title:</label>
+    <%= form.text_field :title  %></div>
 
-                <%= hidden_field_tag 'video[basket_id]', @current_basket.id, :id => 'video_basket_id' %>
+  <div class="form-element"><label for="video_description" class="cleared-right">Description:</label>
+    <%= form.text_area :description, :class => "mceEditor", :cols => 120 %></div>
 
-                <%= tags_input_field(form,"video_tag_list") %>
+  <%= hidden_field_tag 'video[basket_id]', @current_basket.id, :id => 'video_basket_id' %>
 
-                <% # disabling overwriting of original document for the timebeing
-                   # when we support versioning of document and image files,
-                   # we'll likely re-enable this -%>
-                <% if !edit -%>
-                        <p><label for="video_uploaded_data">Upload Video</label><br/>
-                        <%= form.file_field :uploaded_data %></p>
+  <%= tags_input_field(form,"video_tag_list") %>
+
+  <% # disabling overwriting of original document for the timebeing
+     # when we support versioning of document and image files,
+     # we'll likely re-enable this -%>
+          <% if !edit -%>
+                        <div class="form-element"><label for="video_uploaded_data">Upload Video:</label>
+                        <%= form.file_field :uploaded_data %></div>
                 <% end -%>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
