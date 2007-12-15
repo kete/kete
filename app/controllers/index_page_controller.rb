@@ -61,15 +61,13 @@ class IndexPageController < ApplicationController
           end
           # exclude index_topic
           if @recent_topics_limit > 0
+            recent_query_hash = { :limit => @recent_topics_limit, :order => 'created_at desc'}
+            recent_query_hash[:conditions] = ['id != ?', @topic] unless @topic.nil?
+
             if @current_basket == @site_basket
-              @recent_topics_items = Topic.find(:all,
-                                                :limit => @recent_topics_limit,
-                                                :conditions => ['id != ?', @topic],
-                                                :order => 'created_at desc')
+              @recent_topics_items = Topic.find(:all, recent_query_hash)
             else
-              recent_query_hash = { :limit => @recent_topics_limit, :order => 'created_at desc'}
-              recent_query_hash[:conditions] = ['id != ?', @topic] unless @topic.nil?
-              @recent_topics_items = @current_basket.topics.find(:all,recent_query_hash)
+              @recent_topics_items = @current_basket.topics.find(:all, recent_query_hash)
             end
           end
 
