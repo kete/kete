@@ -4,8 +4,6 @@ management_gems:
 
 gems:
   unicode: unicode
-  slave: slave
-  daemons: daemons
   RedCloth: redcloth
   mime-types: mime/types
   memcache-client: memcache

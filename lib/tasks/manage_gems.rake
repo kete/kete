@@ -54,7 +54,6 @@ namespace :manage_gems do
         p "None.  Feel free to proceed."
       end
     end
-
   end
 
   namespace :management do

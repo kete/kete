@@ -38,8 +38,6 @@ namespace :deploy do
       rake = fetch(:rake, 'rake')
       rails_env = fetch(:rails_env, 'production')
       run "cd #{current_path}; #{rake} RAILS_ENV=production manage_gems:required:install"
-      # TODO: take this out after 0.4.0 of zoom is released
-      run "wget http://waltermcginnis.com/zoom-0.4.0.gem && sudo gem uninstall zoom && sudo gem install -y zoom-0.4.0.gem"
     end
 
     desc "The directory that holds everything related to zebra needs to live under share/system/zebradb"
