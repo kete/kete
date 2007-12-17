@@ -40,7 +40,8 @@ class BasketsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @basket_pages, @baskets = paginate :baskets, :per_page => 10
+    @baskets = Basket.paginate(:page => params[:page],
+                               :per_page => 10)
   end
 
   def show
@@ -54,6 +55,8 @@ class BasketsController < ApplicationController
   def create
     @basket = Basket.new(params[:basket])
     if @basket.save
+      set_settings
+
       @basket.accepts_role('admin', current_user)
 
       flash[:notice] = 'Basket was successfully created.'
@@ -89,6 +92,8 @@ class BasketsController < ApplicationController
       end
     end
     if @basket.update_attributes(params[:basket])
+      set_settings
+
       # @basket.name has changed
       if original_name != @basket.name
         # update zoom records for basket items
@@ -167,4 +172,9 @@ class BasketsController < ApplicationController
     end
   end
 
+  def set_settings
+    params[:settings].each do |name, value|
+      @basket.settings[name] = value
+    end
+  end
 end

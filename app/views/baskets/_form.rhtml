@@ -5,6 +5,15 @@
                 <p><label for="basket_name">Name</label><br/>
                 <%= form.text_field :name  %></p>
 
+                <h3>Basket Moderation</h3>
+
+                <div class="form-element">
+                  <label class="required" for="topic_title">Moderation
+                  Policy:</label>
+                  <%= select_tag 'settings[fully_moderated]', @basket.moderation_select_options %>
+
+                </div>
+
                 <h3>Basket Homepage Preferences</h3>
 
                 <p><label for="basket_index_page_redirect_to_all">Redirect to results of?</label>

@@ -1,6 +1,15 @@
 <% @title = 'Import' -%>
-<h2><%= @title -%></h2>
 
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
+
+                <div id="detail-wrapper">
+                        <div id="detail-header">
+                                <h2><%= h(@title) -%></h2>
+                        </div>
+                </div>
 <fieldset>
         <p>This is the import facility. It allows you to pick the XML file you want to import.</p>
 
@@ -17,9 +26,14 @@
                         <%= text_field_tag 'import_topic_type_for_related_topic' %>
                 </div>
                 <% # when we have multiple types of importers, make this a dropdown -%>
-                <%= select_tag("import_type", options_for_select(%w{ pp4_xml adopt_an_anzac }, 'pp4_xml')) %>
+                <%= select_tag("import_type", options_for_select(%w{
+                taranaki_wordlist pp4_xml adopt_an_anzac }, 'pp4_xml')) %>
                 <div class="form-element">
                         <%= submit_tag 'Import' %>
                 </div>
         <% end %>
 </fieldset>
+
+    </div>
+  </div>
+</div>

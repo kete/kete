@@ -1,7 +1,8 @@
 <% @title = 'Import from ' + @import_type %>
 <h2><%= @title -%></h2>
 
-<%= periodically_call_remote(:url => {:action => 'get_progress'}, :frequency => 180) %>
+<%= periodically_call_remote(:url => {:action => 'get_progress',
+:worker_type => @worker_type}, :frequency => 180) %>
 
 <div id="report_records_processed">Starting import...</div>
 <p>&nbsp;</p>

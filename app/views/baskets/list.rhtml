@@ -1,27 +1,24 @@
-<h1>Listing baskets</h1>
+<% @title = "Listing Baskets" -%>
 
-<table>
-  <tr>
-  <% for column in Basket.content_columns %>
-    <th><%= column.human_name %></th>
-  <% end %>
-  </tr>
-  
-<% for basket in @baskets %>
-  <tr>
-  <% for column in Basket.content_columns %>
-    <td><%=h basket.send(column.name) %></td>
-  <% end %>
-    <td><%= link_to 'Show', :action => 'show', :id => basket %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => basket %></td>
-    <td><%= link_to 'Destroy', { :action => 'destroy', :id => basket }, :confirm => 'Are you sure?', :method => :post %></td>
-  </tr>
-<% end %>
-</table>
+<div id="content-wrapper" class="full-width notabs">
+  <div id="main-content-wrapper">
+    <div id="main-content-container">
+      <a name="main-contenet"></a>
 
-<%= link_to 'Previous page', { :page => @basket_pages.current.previous } if @basket_pages.current.previous %>
-<%= link_to 'Next page', { :page => @basket_pages.current.next } if @basket_pages.current.next %> 
+                <div id="detail-wrapper">
+                        <div id="detail-header">
+                                <h2><%= h(@title) -%></h2>
+                        </div>
+                </div>
 
-<br />
+                <ul>
+                  <% @baskets.each do |basket| -%>
+                  <li><%= link_to_index_for(basket) -%></li>
+                  <% end -%>
+                </ul>
 
-<%= link_to 'New basket', :action => 'new' %>
+                <div id="prev-next"><%= will_paginate @baskets %></div>
+
+    </div>
+  </div>
+</div>
