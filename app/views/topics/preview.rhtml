@@ -1,40 +1,40 @@
 <% @title = "Preview revision \# #{@item.version}" -%>
 <% @title = "#{@title} - Flagged #{h(@flags.to_sentence)}" if @flags.size > 0 -%>
 <% @title = "#{@title}: #{h(@item.title)}" -%>
-                <div id="detail-wrapper">
-                        <div id="detail-header">
-                                <h4><%= link_to_last_stored_location -%></h4>
-                                <h2>Preview revision #<%= @item.version -%><% if @flags.size > 0 -%> - Flagged <%= h(@flags.to_sentence) -%><% end -%>: view live <%= link_to_item(@item) -%></h2>
-                                <h2><%= "#{zoom_class_humanize(@item.class.name)}: #{h(@item.title)}" %></h2>
-                                        <% extended_fields_html = display_xml_attributes(@item) -%>
-                                        <% if !extended_fields_html.blank? %>
-                                                <div id="detail-extended">
-                                                        <h4 id="detail-extended-heading"><%= h(@item.title) %></h4><br />
-                                                        <%= extended_fields_html %>
-                                                </div>
-                                        <% end %>
+<div id="detail-wrapper">
+  <div id="detail-header">
+    <h4><%= link_to_last_stored_location -%></h4>
+    <h2>Preview revision #<%= @item.version -%><% if @flags.size > 0 -%> - Flagged <%= h(@flags.to_sentence) -%><% end -%>: view live <%= link_to_item(@item) -%></h2>
 
-                                <h4>Topic Type: <%= h(@item.topic_type.name) %></h4>
+    <% if @flag_messages.size > 0 -%>
+    <p>Reasons flagged:</p>
+    <% @flag_messages.each do |msg| -%>
+    <p><%= h(msg) -%></p>
+    <% end -%>
+    <% end -%>
 
-                                <p><b><%= @item.short_summary %></b></p>
-                                Tags: <%= h(@item.raw_tag_list) -%>
-                                <p><%= @item.description %></p>
+    <h2><%= "#{zoom_class_humanize(@item.class.name)}: #{h(@item.title)}" %></h2>
+    <% extended_fields_html = display_xml_attributes(@item) -%>
+    <% if !extended_fields_html.blank? %>
+    <div id="detail-extended">
+      <h4 id="detail-extended-heading"><%= h(@item.title) %></h4><br />
+      <%= extended_fields_html %>
+    </div>
+    <% end %>
 
-                        </div>
+    <% # TODO: move class specific display into partials
+       # (shared by show template?)
+       # and call the appropriate one based on class -%>
+    <% if @item.class.name == 'Topic' -%>
+    <h4>Topic Type: <%= h(@item.topic_type.name) %></h4>
+    <% end -%>
 
-                        <div class="detail-tools">
-                                <h3>Get Involved</h3>
-                                <ul>
-                                        <li class="first"><%= link_to "History",
-                                                         :action => :history,
-                                                         :id => @item %></li>
-                                        <% if logged_in? and @at_least_a_moderator -%>
-                                                <li><%= link_to "Make this revision live",
-                                                                {:action => :restore,
-                                                                :id => @item,
-                                                                :version => @item.version},
-                                                                :method => :post,
-                                                                :confirm => 'Are you sure?'%></li>
-                                        <% end -%>
-                                </ul>
-                        </div>
+    <p><b><%= @item.short_summary if @item.can_have_short_summary? %></b></p>
+    Tags: <%= h(@item.raw_tag_list) -%>
+    <p><%= @item.description %></p>
+
+  </div>
+
+  <% can_moderate = true if logged_in? and @at_least_a_moderator -%>
+  <%= render(:partial => "topics/preview_actions" , :locals => { :item => @item, :can_moderate => can_moderate }) %>
+

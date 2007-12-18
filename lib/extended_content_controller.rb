@@ -10,7 +10,7 @@ module ExtendedContentController
       :only => [ :new, :create, :edit, :update]
 
       klass.send :permit, "site_admin or moderator of :current_basket or admin of :current_basket",
-      :only =>  [ :destroy, :restore ]
+      :only =>  [ :destroy, :restore, :reject ]
 
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
       klass.send :verify, :method => :post, :only => [ :destroy, :create, :update ],

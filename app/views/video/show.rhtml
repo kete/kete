@@ -9,12 +9,14 @@
       <h2><%= h(@video.title) %></h2>
 
       <p><%= @video.description %></p>
+      <% if !@video.already_at_blank_version? -%>
       <p>Filename: <%= @video.filename %>
         (<%= link_to_original_of @video, 'view' -%>)
       </p>
       <p>Size: <%= number_to_human_size(@video.size) %></p>
       <p>Recording type: <%= @video.content_type %></p>
       <%= pending_review(@video) %>
+      <% end -%>
       <% end -%>
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @video }) %>
       <% cache ({:related => 'topics'}) do -%>

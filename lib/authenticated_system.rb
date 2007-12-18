@@ -48,8 +48,29 @@ module AuthenticatedSystem
     #   skip_before_filter :login_required
     #
     def login_required
-      username, passwd = get_auth_data
-      self.current_user ||= User.authenticate(username, passwd) || :false if username && passwd
+      # Walter McGinnis, 2007-12-12
+      # adding support for rss authentication
+      # via rails 2.0 http_basic_authentication
+      user = nil
+      have_auth_data = false
+      case request.format
+      when Mime::XML, Mime::ATOM
+        if user = authenticate_with_http_basic { |u, p| User.authenticate(u, p) }
+          have_auth_data = true
+          self.current_user = user
+        end
+      else
+        username, passwd = get_auth_data
+        user = User.authenticate(username, passwd)
+        have_auth_data = true if username && passwd
+      end
+      if have_auth_data
+        if user.nil?
+          self.current_user ||= :false
+        else
+          self.current_user ||= user
+        end
+      end
       logged_in? && authorized? ? true : access_denied
     end
 
@@ -68,9 +89,7 @@ module AuthenticatedSystem
           redirect_to :controller => '/account', :action => 'login'
         end
         accepts.xml do
-          headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
-          render :text => "Could't authenticate you", :status => '401 Unauthorized'
+          request_http_basic_authentication
         end
       end
       false

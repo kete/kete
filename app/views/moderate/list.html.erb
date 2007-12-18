@@ -1,0 +1,29 @@
+<h1>Moderate</h1>
+
+<% if @items.blank? %>
+<p>Currently no items needing moderation.</p>
+<% else %>
+
+<table class="history-table">
+  <tr><th>Revision</th><th>flagged with</th><th>flagged at</th></tr>
+  <% for item in @items %>
+  <tr>
+    <td>
+      <%= link_to_preview_of(item, item.latest_version) %>
+      <%= h(item.version_title) %>
+    </td>
+    <td>
+      <%= h(item.flag) %>
+    </td>
+    <td>
+      <%= item.flagged_at %>
+    </td>
+    <td>
+      <%= link_to( "item's full history", history_url(item)) %>
+    </td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+
+<div id="prev-next"><%#  will_paginate @items %></div>

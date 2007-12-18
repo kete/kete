@@ -9,14 +9,16 @@
       <% cache ({:part => 'details'}) do -%>
       <h2><%= h(@audio_recording.title) %></h2>
 
-
       <p><%= @audio_recording.description %></p>
+      <% if !@audio_recording.already_at_blank_version? -%>
+
       <p>Filename: <%= @audio_recording.filename %>
         (<%= link_to_original_of @audio_recording, 'listen' -%>)
       </p>
+      <% end -%>
+
       <p>Size: <%= number_to_human_size(@audio_recording.size) %></p>
       <p>Recording type: <%= @audio_recording.content_type %></p>
-
       <%= pending_review(@audio_recording) %>
       <% end -%>
 

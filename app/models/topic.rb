@@ -82,6 +82,9 @@ class Topic < ActiveRecord::Base
   # methods related to handling the xml kept in extended_content column
   include ExtendedContent
 
+  # methods and declarations related to moderation and flagging
+  include Flagging
+
   def related_topics
     # parents unfortunately get confused and return the content_item_relatations.id as id
     # spell it out in select

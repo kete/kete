@@ -2,6 +2,8 @@ require "rexml/document"
 
 # not much here for now, but could expand later
 module ExtendedContent
+  CLASSES_WITH_SUMMARIES = ['Topic', 'Document']
+
   unless included_modules.include? ExtendedContent
     # simply pulls xml attributes in extended_content column out into a hash
     def xml_attributes
@@ -45,6 +47,10 @@ module ExtendedContent
       # we use rexml for better handling of the order of the hash
       extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
       return extended_content_hash["dummy_root"]
+    end
+
+    def can_have_short_summary?
+      CLASSES_WITH_SUMMARIES.include?(self.class.name)
     end
   end
 end

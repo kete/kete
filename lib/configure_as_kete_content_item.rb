@@ -40,6 +40,9 @@ module ConfigureAsKeteContentItem
       # where 'inappropriate' is actually a tag on that particular version
       Module.class_eval("#{klass.name}::Version").send(:acts_as_taggable)
 
+      # methods and declarations related to moderation and flagging
+      klass.send :include, Flagging
+
       klass.send :validates_presence_of, :title
 
       # this probably should change, particularly in still_image case

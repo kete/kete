@@ -20,15 +20,21 @@
       <%= tags_for(@still_image) -%>
 
       <% if !@still_image.original_file.nil? -%>
+
+      <% if !@still_image.already_at_blank_version? -%>
+
       <p>Original Filename: <%= @still_image.original_file.filename %>
         (<%= link_to 'view', @still_image.original_file.public_filename -%>)
       </p>
+
       <p>Original Size: <%= number_to_human_size(@still_image.original_file.size) %></p>
       <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
       <% end -%>
       <% end -%>
+      <% end -%>
       <% # default to medium view %>
       <% if !@image_file.nil? %>
+      <% if !@still_image.already_at_blank_version? -%>
       <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
       <div class="pipe-list">
         <ul>
@@ -46,14 +52,19 @@
           <% end -%>
         </ul>
       </div>
+      <% end -%>
       <% else -%>
       <p>Only available as original.</p>
       <% end -%>
+
       <% cache({:part => 'caption'}) do -%>
+      <% if !@still_image.already_at_blank_version? -%>
       <h4>Caption</h4>
       <p><%= @still_image.description %></p>
+      <% end -%>
 
       <%= pending_review(@still_image) %>
+
       <% end -%>
 
 

@@ -5,6 +5,10 @@ class Basket < ActiveRecord::Base
   # set up authorization plugin
   acts_as_authorizable
 
+  # this gives us a settings hash per basket
+  # that we can use for preferences
+  acts_as_configurable
+
   # everything falls under one basket or another
   # we have a default basket for the site
   # can't use delete_all, throws off versioning
@@ -143,6 +147,46 @@ class Basket < ActiveRecord::Base
   def self.tags_as_options
     [['Categories', 'categories'],
      ['Tag Cloud', 'tag cloud']]
+  end
+
+  def moderation_select_options
+    select_options = String.new
+    [['moderator views before item approved', true],
+     ['moderation upon being flagged', false]].each do |option|
+      label = option[0]
+      value = option[1]
+      select_options += "<option value=\"#{value}\""
+      if fully_moderated? == value
+        select_options += " selected=\"selected\""
+      end
+      select_options += ">" + label + "</option>"
+    end
+    select_options
+  end
+
+  def fully_moderated?
+    settings[:fully_moderated].blank? ? DEFAULT_POLICY_IS_FULL_MODERATION : settings[:fully_moderated]
+  end
+
+  # if we don't have any moderators specified
+  # find admins for basket
+  # if no admins for basket, go with basket 1 (site) admins
+  # if no admins for site, go with any site_admins
+  def moderators_or_next_in_line
+    moderators = self.has_moderators
+
+    if moderators.size == 0
+      moderators = self.has_admins
+
+      if moderators.size == 0
+        moderators = Basket.find(:first).has_admins
+
+        if moderators.size == 0
+          moderators = Basket.find(:first).has_site_admins
+        end
+      end
+    end
+    moderators
   end
 
   protected

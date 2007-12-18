@@ -8,6 +8,71 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  def header_links_to_baskets
+    html = '<ul id="basket-list" class="nav-list">'
+
+    except_certain_baskets = @standard_baskets
+    except_certain_baskets += [@current_basket] if @current_basket != @site_basket
+
+    except_certain_baskets_args = { :conditions => ["id not in (?)", except_certain_baskets] }
+
+    baskets_limit = 2
+
+    total_baskets_count = Basket.count(except_certain_baskets_args)
+
+    except_certain_baskets_args[:limit] = baskets_limit
+
+    basket_count = 0
+    Basket.find(:all, except_certain_baskets_args).each do |basket|
+      basket_count += 1
+      html += li_with_correct_class(basket_count) + link_to_index_for(basket) + '</li>'
+    end
+
+    if baskets_limit < total_baskets_count
+      html += '<li>' + link_to_unless_current('more...',
+                                              url_for(:urlified_name => @site_basket.urlified_name,
+                                                      :controller => 'baskets' )) + '</li>'
+    end
+
+    html += '</ul>'
+  end
+
+  def header_link_to_current_basket
+    html = String.new
+    html += ': ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
+  end
+
+  def link_to_index_for(basket, options = { })
+    link_to basket.name, basket_index_url(basket.urlified_name), options
+  end
+
+  def header_browse_links
+    html = '<li>'
+
+    pre_text = String.new
+    site_link_text = String.new
+    current_basket_html = String.new
+    if @current_basket != @site_basket
+      pre_text = 'Browse: '
+      site_link_text = @site_basket.name
+      current_basket_html = " or " + link_to_unless_current( @current_basket.name,
+                                                            :controller => 'search',
+                                                            :action => 'all',
+                                                            :urlified_name => @current_basket.urlified_name,
+                                                            :controller_name_for_zoom_class => 'topics',
+                                                            :trailing_slash => true )
+    else
+      site_link_text = 'Browse'
+    end
+
+    html += pre_text + link_to_unless_current( site_link_text,
+                                               :controller => 'search',
+                                               :action => 'all',
+                                               :urlified_name => @site_basket.urlified_name,
+                                               :controller_name_for_zoom_class => 'topics',
+                                               :trailing_slash => true ) + current_basket_html + '</li>'
+  end
+
   # TODO: may want to replace this with better history plugin
   def link_to_last_stored_location
     if session[:return_to_title].blank?
@@ -373,7 +438,7 @@ module ApplicationHelper
 
   def flagging_links_for(item, first = false, controller = nil)
     html_string = String.new
-    if FLAGGING_TAGS.size > 0
+    if FLAGGING_TAGS.size > 0 and !item.already_at_blank_version?
       if first
         html_string = "                                        <ul><li class=\"first flag\">Flag as:\n"
       else
@@ -409,39 +474,39 @@ module ApplicationHelper
     end
   end
 
-  def reverted?(item)
-    item.version != item.versions.last.version
-  end
-
-  def disputed?(item)
-    item.versions.last.tags.size > 0
-  end
-
   def pending_review(item)
     html_string = String.new
-    if disputed?(item)
+    if item.disputed?
       html_string = "<h4>Review Pending: "
-      if reverted?(item)
+      if !item.already_at_blank_version?
         html_string += "currently reverted to non-disputed version \# #{item.version}"
-      else
-        html_string += "displaying version flagged as "
-        tag_names = Array.new
-        item.versions.last.tags.each do |tag|
-          tag_names << tag.name
-        end
-        html_string += tag_names.to_sentence
+      elsif
+        html_string += "currently no non-disputed versions of this item. Details of this item are not being displayed at this time."
       end
     end
     return html_string
   end
 
   def link_to_preview_of(item, version)
-    link_to "preview",
-    :controller => zoom_class_controller(item.class.name),
-    :urlified_name => item.basket.urlified_name,
-    :action => :preview,
-    :id => item,
-    :version => version.version
+    version_number = 0
+    link_text = 'preview'
+    begin
+      version_number = version.version
+    rescue
+      link_text = '#' + version
+      version_number = version.to_i
+    end
+
+    if @at_least_a_moderator or !@current_basket.fully_moderated?
+      link_to link_text,
+      :controller => zoom_class_controller(item.class.name),
+      :urlified_name => item.basket.urlified_name,
+      :action => :preview,
+      :id => item.id,
+      :version => version_number
+    else
+      'not available'
+    end
   end
 
   def li_with_correct_class(count)

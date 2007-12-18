@@ -43,8 +43,7 @@ class TopicTypesControllerTest < Test::Unit::TestCase
 
   def test_update
     topic_type_count = TopicType.find(:all).length
-    post :update, {:id => @first.id, :topic_type => @first.attributes.merge(NEW_TOPIC_TYPE),
-      :urlified_name => @site_basket.urlified_name}
+    post :update, {:id => @first.id, :topic_type => @first.attributes.merge(NEW_TOPIC_TYPE), :urlified_name => @site_basket.urlified_name}
     topic_type = check_attrs(%w(topic_type))
     topic_type.reload
     NEW_TOPIC_TYPE.each do |attr_name|

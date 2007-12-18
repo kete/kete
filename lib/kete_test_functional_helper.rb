@@ -1,0 +1,3 @@
+module KeteTestFunctionalHelper
+
+end

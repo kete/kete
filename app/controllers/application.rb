@@ -18,7 +18,8 @@ class ApplicationController < ActionController::Base
                                             :link_related,
                                             :link_index_topic,
                                             :flag_version,
-                                            :restore ]
+                                            :restore,
+                                            :reject]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -36,7 +37,7 @@ class ApplicationController < ActionController::Base
 
   # see method definition for details
 
-  before_filter :delete_zoom_record, :only => [ :update ]
+  before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore ]
 
   # we often need baskets for edits
   before_filter :load_array_of_baskets, :only => [ :edit, :update ]
@@ -85,6 +86,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def item_from_controller_and_id
+    Module.class_eval(zoom_class_from_controller(params[:controller])).find(params[:id])
+  end
+
   # some updates will change the item so that the updating of zoom record
   # will no longer match the existing record
   # and create a new one instead
@@ -93,8 +98,7 @@ class ApplicationController < ActionController::Base
   def delete_zoom_record
     zoom_class = zoom_class_from_controller(params[:controller])
     if ZOOM_CLASSES.include?(zoom_class)
-      item = Module.class_eval(zoom_class).find(params[:id])
-      zoom_destroy_for(item)
+      zoom_destroy_for(Module.class_eval(zoom_class).find(params[:id]))
     end
   end
 
@@ -129,7 +133,9 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_fragment_for_all_versions(item, name = {})
-    item.versions.find(:all, :select => 'distinct title').each do |version|
+    # slight change for postgresql
+    # this works with mysql and postgresql, not sure about sqlite or oracle
+    item.versions.find(:all, :select => 'distinct title, version').each do |version|
       expire_fragment(name.merge(:id => item.id.to_s + format_friendly_for(version.title)))
     end
   end
@@ -139,8 +145,7 @@ class ApplicationController < ActionController::Base
   def expire_show_caches
     no_caches_controllers = ['account', 'members']
     if !no_caches_controllers.include?(params[:controller])
-      item = Module.class_eval(zoom_class_from_controller(params[:controller])).find(params[:id])
-      expire_show_caches_for(item)
+      expire_show_caches_for(item_from_controller_and_id)
     end
   end
 
@@ -272,7 +277,7 @@ class ApplicationController < ActionController::Base
         end
       end
     else
-        return false unless has_fragment?({:related => 'topics'})
+      return false unless has_fragment?({:related => 'topics'})
     end
     return true
   end
@@ -349,18 +354,18 @@ class ApplicationController < ActionController::Base
       case where_to_redirect
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
-        flash[:notice] = "Related #{item.class.name.humanize} was successfully created."
+        flash[:notice] = "Related #{zoom_class_humanize(item.class.name)} was successfully created."
         redirect_to_related_topic(@new_related_topic)
       when 'commentable'
         redirect_to_show_for(commented_item)
       else
         # TODO: replace with translation stuff when we get globalize going
-        flash[:notice] = "#{item.class.name.humanize} was successfully created."
+        flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created."
 
         redirect_to_show_for(item)
       end
     else
-        render :action => 'new'
+      render :action => 'new'
     end
   end
 
@@ -395,8 +400,8 @@ class ApplicationController < ActionController::Base
   def store_location
     # this should prevent the same page from being added to return_to
     # but does not prevent case of differnt size images...
-      session[:return_to] = request.request_uri
-      session[:return_to_title] = @title
+    session[:return_to] = request.request_uri
+    session[:return_to_title] = @title
   end
 
   def redirect_to_search_for(zoom_class)
@@ -461,12 +466,6 @@ class ApplicationController < ActionController::Base
 
   # flagging related
 
-  def find_version_from_item_and_version(item, version)
-    class_name = item.class.name
-    return Module.class_eval("#{class_name}::Version").find(:first,
-                                                            :conditions => ["#{class_name.underscore}_id = ? and version = ?", item.id, version])
-  end
-
   # added so users can add a helpful message with details for moderator
   # reviewing the flagging
   def flag_form
@@ -475,124 +474,118 @@ class ApplicationController < ActionController::Base
   end
 
   def flag_version
-    # get the item in question based on controller and id passed
-    zoom_class = zoom_class_from_controller(params[:controller])
-    item = Module.class_eval(zoom_class).find(params[:id])
+    item = item_from_controller_and_id
     flag = params[:flag]
 
     # we tag the current version with the flag passed
-    current_version = find_version_from_item_and_version(item, item.version)
-    current_version.tag_list = flag
-    current_version.save_tags
+    # and revert to an unflagged version
+    # or create a blank unflagged version if necessary
+    flagged_version = item.flag_live_version_with(flag)
 
     # if the user entered a message to do with the flag
     # update the tagging with it
-    if !params[:message].blank?
-      flag_tag = Tag.find_by_name(flag)
-      tagging = current_version.taggings.find(:first, :conditions => ["tag_id = :tag_id", { :tag_id => flag_tag } ])
-      tagging.message = params[:message]
+    if !params[:message][0].blank?
+      tagging = flagged_version.taggings.find_by_tag_id(Tag.find_by_name(flag))
+      tagging.message = params[:message][0]
       tagging.save
     end
 
-    # we revert to most recent version without a flag
-    # if one is available, except for duplicates
-    reverted = false
-    if current_version.version > 1 and flag != 'duplicate'
-      last_version_version = current_version.version - 1
+    flagging_clear_caches_and_update_zoom(item)
 
-      last_version = find_version_from_item_and_version(item, last_version_version)
+    clear_caches_and_update_zoom_for_commented_item(item)
 
-      last_version_tags_count = last_version.tags.size
-      if last_version_version > 1
-        while last_version_tags_count > 0
-          last_version_version = last_version_version - 1
-          last_version = find_version_from_item_and_version(item, last_version_version)
-          last_version_tags_count = last_version.tags.size
-        end
-      end
+    item_url = correct_url_for(item)
 
-      if last_version_tags_count == 0
-        item.revert_to!(last_version_version)
-        item.tag_list = item.raw_tag_list
-        item.save_tags
-        reverted = true
-      end
+    @current_basket.moderators_or_next_in_line.each do |moderator|
+      UserNotifier.deliver_item_flagged(moderator, flag, item_url, @current_user, params[:message])
     end
 
+    flash[:notice] = "Thank you for your input.  A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being."
+    redirect_to item_url
+  end
+
+  def flagging_clear_caches_and_update_zoom(item)
     # clear caches for the item and rss
     expire_show_caches
     expire_rss_caches
 
-    # update zoom for item
-    # TODO: should we update related in case title has changed
-    if reverted
+    # a before filter has already dropped the item
+    # from the search
+    # only reinstate it
+    # if not blank
+    if !item.already_at_blank_version?
+      # update zoom for item
       prepare_and_save_to_zoom(item)
     end
+  end
 
-    # notify moderators for the basket
+  def clear_caches_and_update_zoom_for_commented_item(item)
     if item.class.name == 'Comment'
       commented_item = item.commentable
 
       expire_comments_caches_for(commented_item)
       prepare_and_save_to_zoom(commented_item)
+    end
+  end
 
+  def correct_url_for(item)
+    item_url = nil
+    if item.class.name == 'Comment'
       item_url = url_for(:controller => zoom_class_controller(commented_item.class.name),
                          :action => 'show',
                          :id => commented_item,
-                         :anchor => @item.id,
+                         :anchor => item.id,
                          :urlified_name => commented_item.basket.urlified_name)
     else
-      item_url = url_for(:action => 'show', :id => params[:id])
+      item_url = url_for(:action => 'show', :id => item)
     end
-    moderators = find_moderators_for_basket_or_next_in_line(@current_basket)
-    moderators.each do |moderator|
-      UserNotifier.deliver_item_flagged(moderator, flag, item_url, @current_user, params[:message])
-    end
-
-    flash[:notice] = "Thank you for your input.  A moderator has been notified and will review the item in question."
-    flash[:notice] += " The item has been reverted to an earlier version for the time being." if reverted
-
-    redirect_to item_url
+    item_url
   end
 
   # permission check in controller
+  # reverts to version
+  # and removes flags on that version
   def restore
-    zoom_class = zoom_class_from_controller(params[:controller])
-    @item = Module.class_eval(zoom_class).find(params[:id])
+    @item = item_from_controller_and_id
+
+    # if version we are about to supersede
+    # is blank, flag it as blank for clarity in the history
+    # this doesn't do the reversion in itself
+    @item.flag_at_with(@item.version, BLANK_FLAG) if @item.already_at_blank_version?
 
     # unlike flag_version, we create a new version
     # so we track the restore in our version history
     @item.revert_to(params[:version])
     @item.tag_list = @item.raw_tag_list
-    @item.version_comment = "Restored content from revision \# #{params[:version]}."
+    @item.version_comment = "Content from revision \# #{params[:version]}."
+    @item.do_not_moderate = true
     @item.save
 
     # keep track of the moderator's contribution
-    @current_user = current_user
-    @current_user.version = @item.version
-    @item.contributors << @current_user
+    @item.add_as_contributor(current_user)
 
-    # clear caches for the item and rss
-    expire_show_caches
-    expire_rss_caches
+    # now that this item is approved by moderator
+    # we get rid of pending flag
+    # then flag it as reviewed
+    @item.change_pending_to_reviewed_flag(params[:version])
 
-    # update zoom for item
-    # TODO: should we update related in case title has changed
-    prepare_and_save_to_zoom(@item)
+    flagging_clear_caches_and_update_zoom(@item)
 
-    flash[:notice] = "The content of this #{@item.class.name.humanize} has been restored from the selected revision."
+    clear_caches_and_update_zoom_for_commented_item(@item)
 
-    if @item.class.name == 'Comment'
-      commented_item = @item.commentable
-      prepare_and_save_to_zoom(commented_item)
-      redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
-                          :action => 'show',
-                          :id => commented_item,
-                          :anchor => @item.id,
-                          :urlified_name => commented_item.basket.urlified_name)
-    else
-      redirect_to url_for(:action => 'show', :id => params[:id])
-    end
+    flash[:notice] = "The content of this #{zoom_class_humanize(@item.class.name)} has been approved from the selected revision."
+
+    redirect_to correct_url_for(@item)
+  end
+
+  def reject
+    @item = item_from_controller_and_id
+
+    @item.reject_this(params[:version])
+
+    flash[:notice] = "This version of this #{zoom_class_humanize(@item.class.name)} has been rejected."
+
+    redirect_to correct_url_for(@item)
   end
 
   # view history of edits to an item
@@ -600,69 +593,32 @@ class ApplicationController < ActionController::Base
   # this expects a rhtml template within each controller's view directory
   # so that different types of items can have their history display customized
   def history
-    # get the item in question based on controller and id passed
-    zoom_class = zoom_class_from_controller(params[:controller])
-    @item = Module.class_eval(zoom_class).find(params[:id])
-
+    @item = item_from_controller_and_id
     @versions = @item.versions
+    # one template (with logic) for all controllers
+    render :template => 'topics/history'
   end
 
   # preview a version of an item
   # assumes a preview templates under the controller
   def preview
-    # get the item in question based on controller and id passed
-    zoom_class = zoom_class_from_controller(params[:controller])
-    @item = Module.class_eval(zoom_class).find(params[:id])
+    @item = item_from_controller_and_id
+
     # no need to preview live version
     if @item.version.to_s == params[:version]
       redirect_to url_for(:action => 'show', :id => params[:id])
     else
       @preview_version = @item.versions.find_by_version(params[:version])
       @flags = Array.new
-      @preview_version.tags.each do |tag|
-        @flags << tag.name
+      @flag_messages = Array.new
+      @preview_version.taggings.each do |tagging|
+        @flags << tagging.tag.name
+        @flag_messages << tagging.message
       end
       @item.revert_to(@preview_version)
     end
-  end
-
-  # if we don't have any moderators specified
-  # find admins for basket
-  # if no admins for basket, go with basket 1 (site) admins
-  # if no admins for site, go with any site_admins
-  def find_moderators_for_basket_or_next_in_line(basket)
-    moderator_role = Role.find(:first,
-                               :conditions => ["name = \'moderator\' and authorizable_type = \'Basket\' and authorizable_id = ?", basket.id])
-    moderators = Array.new
-    if !moderator_role.nil?
-      moderators = moderator_role.users
-    end
-
-    if moderators.size == 0
-      moderator_role = Role.find(:first,
-                                 :conditions => ["name = \'admin\' and authorizable_type = \'Basket\' and authorizable_id = ?", basket.id])
-
-      if !moderator_role.nil?
-        moderators = moderator_role.users
-      end
-
-      if moderators.size == 0
-        moderator_role = Role.find(:first,
-                                   :conditions => "name = \'admin\' and authorizable_type = \'Basket\' and authorizable_id = 1")
-        if !moderator_role.nil?
-          moderators = moderator_role.users
-        end
-
-        if moderators.size == 0
-          moderator_role = Role.find(:first,
-                                     :conditions => "name = \'site_admin\'")
-          if !moderator_role.nil?
-            moderators = moderator_role.users
-          end
-        end
-      end
-    end
-    return moderators
+    # one template (with logic) for all controllers
+    render :template => 'topics/preview'
   end
 
   def prepare_topic_for_show
@@ -713,10 +669,14 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_short_summary(source_string, length = 30, end_string = '')
+    require 'hpricot'
     source_string = source_string.to_s
     # length is how many words, rather than characters
     words = source_string.split()
     short_summary = words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+
+    # make sure that tags are closed
+    Hpricot(short_summary).to_html
   end
 
   # this happens after the basket on the item has been changed already
@@ -754,6 +714,48 @@ class ApplicationController < ActionController::Base
     prepare_and_save_to_zoom(item)
   end
 
+  def history_url(item)
+    url_for :controller => zoom_class_controller(item.class.name), :action => :history, :id => item
+  end
+
+  def rss_tag(options = { })
+    auto_detect = !options[:auto_detect].nil? ? options[:auto_detect] : true
+    replace_page_with_rss = !options[:replace_page_with_rss].nil? ? options[:replace_page_with_rss] : false
+
+    tag = String.new
+
+    if auto_detect
+      tag = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" "
+    else
+      logger.debug("wtf?")
+      tag = "<a "
+    end
+
+    tag += "href=\""+ request.protocol + request.host
+    # split everything before the query string and the query string
+    url = request.request_uri.split('?')
+
+    # now split the path up and add rss to it
+    path_elements = url[0].split('/')
+
+    path_elements.pop if replace_page_with_rss
+
+    path_elements << 'rss.xml'
+    new_path = path_elements.join('/')
+    tag +=  new_path
+    # if there is a query string, tack it on the end
+    if !url[1].nil?
+      logger.debug("what is query string: #{url[1].to_s}")
+      tag += "?#{url[1].to_s}"
+    end
+    if auto_detect
+      tag +=  "\" />"
+    else
+      tag += "\">" # A tag has a closing </a>
+    end
+  end
+
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller
+  helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :history_url
+
 end

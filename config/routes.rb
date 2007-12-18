@@ -17,6 +17,11 @@ ActionController::Routing::Routes.draw do |map|
   # TODO: DRY this up
   map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
   map.basket ':urlified_name/:controller/:action/:id'
+
+  # Walter McGinnis, 2007-12-12
+  # adding support for moderator feed
+  map.basket_moderate_rss ':urlified_name/moderate/rss.:format', :controller => "moderate", :action => 'rss'
+
   map.basket_index ':urlified_name', :controller => "index_page", :action => 'index'
 
   map.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss.xml', :controller => "search", :action => 'rss'

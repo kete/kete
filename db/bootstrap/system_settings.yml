@@ -309,3 +309,51 @@ system_settings_034:
   id: "34"
   value: "false"
   section: Documents
+system_settings_035:
+  name: Default Policy Is Full Moderation
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Should the default policy for all new baskets created on the site be full moderation?  Full moderation means that all changes or additions must be reviewed by a moderator before going public.
+  id: "35"
+  value: "false"
+  section: Flagging
+system_settings_036:
+  name: Blank Title
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If an item is completely pending (has no unflagged versions), what should the title be while it waits to be moderated?
+  id: "36"
+  value: Pending Moderation
+  section: Flagging
+system_settings_037:
+  name: Pending Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version as needing moderator attention?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "37"
+  value: pending
+  section: Flagging
+system_settings_038:
+  name: Rejected Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version having been rejected by a moderator?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "38"
+  value: rejected
+  section: Flagging
+system_settings_039:
+  name: Blank Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version has been previously used as placeholder (pending moderation) by a moderator?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "39"
+  value:  used for moderation
+  section: Flagging
+system_settings_040:
+  name: Reviewed Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version has been previously used as placeholder (pending moderation) by a moderator?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "40"
+  value:  reviewed by moderator
+  section: Flagging

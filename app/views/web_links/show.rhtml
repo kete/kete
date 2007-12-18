@@ -6,7 +6,15 @@
       <a name="main-contenet"></a>
       <!-- TODO: this will be replace by new history system <h4><%= link_to_last_stored_location -%></h4> -->
       <% cache ({:part => 'details'}) do -%>
+      <% if !@web_link.already_at_blank_version? -%>
+
       <h2><%= link_to h(@web_link.title), @web_link.url %></h2>
+
+      <% else -%>
+
+      <h2><%= h(@web_link.title) %></h2>
+
+      <% end -%>
 
       <p><%= @web_link.description %></p>
       <%= pending_review(@web_link) %>

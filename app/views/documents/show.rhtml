@@ -10,6 +10,7 @@
       <h2><%= h(@document.title) %></h2>
       <p><b><%= @document.short_summary %></b></p>
       <%= tags_for(@document) -%>
+      <% if !@document.already_at_blank_version? -%>
       <p>Filename: <%= @document.filename %>
         ( <%= link_to_original_of @document,
               'view' -%>
@@ -24,6 +25,7 @@
         <% end %>
         )
       </p>
+      <% end %>
       <p>Size: <%= number_to_human_size(@document.size) %></p>
       <p>Document type: <%= @document.content_type %></p>
       <p><%= @document.description %></p>
