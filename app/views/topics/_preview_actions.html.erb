@@ -1,0 +1,22 @@
+<div class="detail-tools">
+  <h3>Actions:</h3>
+  <ul>
+    <li class="first"><%= link_to "History",
+                          :action => :history,
+      :id => @item %></li>
+    <% if can_moderate -%>
+    <li><%= link_to "Make this revision live",
+            {:action => :restore,
+      :id => @item,
+      :version => @item.version},
+      :method => :post,
+      :confirm => 'Are you sure?' %></li>
+    <li><%= link_to "reject",
+            {:action => :reject,
+      :id => @item,
+      :version => @item.version},
+      :method => :post,
+      :confirm => 'Are you sure?'%></li>
+    <% end -%>
+  </ul>
+</div>
