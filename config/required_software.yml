@@ -3,6 +3,7 @@ management_gems:
   piston: piston
 
 gems:
+  hpricot: hpricot
   unicode: unicode
   RedCloth: redcloth
   mime-types: mime/types
