@@ -53,13 +53,16 @@
       <div id="header">
             <!-- this would be a good place for your logo -->
             <h1><%= link_to PRETTY_SITE_NAME, '/' -%><%= header_link_to_current_basket -%></h1>
-<!--  todo
-              <div id="head-search-wrapper">
-                        <label>Search:</label>
-                        <input type="text" id="search-term" name="search-term" />
-                        <input type="submit" value="GO" />
+            <div id="head-search-wrapper">
+                    <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
+                                                       :controller => 'search',
+                                                       :page => nil,
+                                                       :urlified_name => @site_basket.urlified_name,
+                                                       :search_terms => nil } do %>                                                                        <label>Search:</label>
+                              <%= text_field_tag 'search_terms'  %>
+                              <%= submit_tag 'Go' %>
+                      <% end -%>
                 </div>
--->
         <%= header_links_to_baskets %>
       </div>
     </div>
@@ -87,8 +90,6 @@
       <ul id="main-nav" class="nav-list">
         <li class="first"><a href="/">Home</a></li>
         <%= header_browse_links %>
-        <li><%= link_to_unless_current "Search", :controller => 'search',
-          :action => :index -%></li>
         <li><%= link_to_unless_current(h(@about_basket.name),
                 basket_index_url(:urlified_name => @about_basket.urlified_name)) %></li>
         <li><%= link_to_unless_current(h(@help_basket.name),
