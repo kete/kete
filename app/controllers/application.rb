@@ -755,7 +755,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def render_full_width_content_wrapper?
+    if params[:controller] == 'index_page' and params[:action] == 'index'
+      return false
+    elsif params[:action] != 'show'
+      return true
+    else
+      return false
+    end
+  end
+
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :history_url
+  helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :history_url, :render_full_width_content_wrapper?
 
 end

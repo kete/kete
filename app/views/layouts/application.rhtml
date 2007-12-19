@@ -105,8 +105,9 @@
     <% end %>
 
         <div id="container">
+        <%= debug(params) %>
+          <% if render_full_width_content_wrapper? %>
 
-          <% if params[:action] != "show" %>
              <%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>"full-width notabs" }) %>
           <% end %>
           <%= @content_for_layout %>
