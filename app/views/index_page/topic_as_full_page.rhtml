@@ -1,4 +1,4 @@
-
+<%= render(:partial => 'topics/content_wrapper_start', :locals => {:classes => 'notabs' }) %>
       <% cache({:part => 'details'}) do -%>
       <%= @topic.description %>
       <%= pending_review(@topic) %>

@@ -1,7 +1,7 @@
 <% tool_count = 1 -%>
 
 <% cache({:part => 'details'}) do -%>
-<%= render :partial => "topics/content_wrapper_start" %>
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>"notabs" }) %>
    <% if !@topic.nil? -%>
       <% extended_fields_html = display_xml_attributes(@topic) -%>
       <% if !extended_fields_html.blank? %>
