@@ -7,18 +7,19 @@
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title><%= h(@title) -%></title>
-  <%= stylesheet_link_tag 'kete', :media => 'screen' %>
-  <!--[if IE 5]><%= stylesheet_link_tag 'kete-ie5', :media => 'screen' %><![endif]-->
-  <!--[if IE 6]><%= stylesheet_link_tag 'kete-ie6', :media => 'screen' %><![endif]-->
+  <%= stylesheet_link_tag '/themes/default/css/kete_default', :media => 'screen' %>
+  <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
   <% # TODO: turn this on if we need js fx for kete -%>
   <%= javascript_include_tag 'prototype' %>
   <% if !@rss_tag_auto.nil?  -%>
         <%= @rss_tag_auto %>
   <% end -%>
+  <!--[if IE]><%= stylesheet_link_tag 'kete-ie', :media => 'screen' %><![endif]-->
+
 </head>
 <body>
-<div id="wrapper">
+<div id="wrapper" class="simple" style="margin-top: 1em">
                 <% if flash[:notice] %>
                         <!-- TODO: look up if there is a style sheet class for flash, add here -->
                         <div id="notice"><%= flash[:notice] %></div>

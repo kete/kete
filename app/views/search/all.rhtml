@@ -1,15 +1,12 @@
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
+
+
       <% @title = title_setup_first_part('Results in ') + last_part_of_title_if_refinement_of -%>
       <%= render :partial => 'form', :locals => {:headline => 'Refine your results', :search_terms => nil} %>
       <div class="main-content-footer-wrapper">
         <div class="main-content-footer">&nbsp;</div>
       </div>
-    </div>
-  </div>
-</div>
+<%= render(:partial => "topics/content_wrapper_end" ) %>
+
 
       <%= render :partial => 'results',
       :locals => {:title => @title,

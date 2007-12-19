@@ -1,9 +1,6 @@
 <%= render(:partial => "actions_menu" , :locals => { :item => @topic }) %>
-<!-- begining of main content block -->
-<div id="content-wrapper">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
+<%= render(:partial => "content_wrapper_start" , :locals => { :classes => "testing
+testing" }) %>
 
       <!-- TODO: this will be replace by new history system <h4><%= link_to_last_stored_location -%></h4> -->
       <% cache ({:part => 'details'}) do -%>
@@ -15,9 +12,8 @@
       <% end -%>
 
       <%= render(:partial => "flagging_contributor" , :locals => { :item => @topic }) %>
-      <div class="secondary-content-section-wrapper-blue">
-        <div id="related-content" class="secondary-content-section">
-
+      <%= render(:partial => "secondary_wrapper_start", :locals => {:div_id =>
+      "related", :class_suffix => "-blue"})%>
           <h2 class="related-link">Related Items</h2>
           <div id="detail-linked-toprow">
             <% cache ({:related => 'images'}) do -%>
@@ -54,14 +50,8 @@
             <%= related_items_links(:source_item => @topic,
             :related_class => 'WebLink') %>
             <% end -%>
-            <div class="cleaner">&nbsp;</div>
           </div>
-          <div class="cleaner">&nbsp;</div>
-
-          <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-        </div>
-      </div>
-
+          <%= render(:partial => "secondary_wrapper_end") %>
 
       <%= render(:partial => "discussion" , :locals => { :item => @topic }) %>
     </div><!-- /main-content-container -->

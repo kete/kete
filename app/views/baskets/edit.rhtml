@@ -1,8 +1,3 @@
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
-
 <% @title = 'Edit basket' -%>
 
 <h2><%= h(@title) -%></h2>
@@ -24,7 +19,7 @@
   <%= render :partial => 'form', :object => form %>
   <%= submit_tag 'Save' , :class => "save-button" %>
 <% end %>
+<%= link_to_cancel %>
 
-</div>
-</div>
-<div>
+<%= render(:partial => "topics/content_wrapper_end" ) %>
+

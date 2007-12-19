@@ -92,7 +92,18 @@
                                              :placement => 'bottom',
                                              :number_per_page => number_per_page) %>
       <p>&nbsp;</p>
+
+
                         <div id="bottomlinks">
+                                <div id="addnew">
+                                <% if !results_as_form and current_class != 'Comment' %>
+                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => current_class) -%>
+                                        to these search results
+                                <% else -%>
+                                        &nbsp;
+                                <% end -%><br />&nbsp;
+                                </div>
+
                                 <div id="showlinks">
                                         Show
                                         <% # TODO: a helper? %>
@@ -104,14 +115,6 @@
                                                 <% end %>
                                         <% end %>
                                         results on this page
-                                </div>
-                                <div id="addnew">
-                                <% if !results_as_form and current_class != 'Comment' %>
-                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => current_class) -%>
-                                        to these search results
-                                <% else -%>
-                                        &nbsp;
-                                <% end -%>
                                 </div>
                         </div>
 

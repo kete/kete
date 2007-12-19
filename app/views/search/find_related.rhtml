@@ -1,3 +1,8 @@
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
+"full-width notabs" }) %>
+
+
+
 <% @title = "Search for related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}"
    existing_array_string = String.new
    @existing_relations.each do |item|

@@ -1,7 +1,4 @@
-<div id="content-wrapper" class="notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
+
       <% cache({:part => 'details'}) do -%>
       <%= @topic.description %>
       <%= pending_review(@topic) %>
@@ -44,6 +41,4 @@
 
     <% cache({:part => 'tags'}) do -%>
     <% end -%>
-    </div>
-  </div>
-</div>
+<%= render(:partial => "topics/content_wrapper_end" ) %>

@@ -1,9 +1,6 @@
 <%= render(:partial => "topics/actions_menu" , :locals => { :item => @still_image }) %>
-<!-- begining of main content block -->
-<div id="content-wrapper">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
+<%= render(:partial => "topics/content_wrapper_start") %>
+
       <!-- TODO: this will be replace by new history system <h4><%= link_to_last_stored_location -%></h4> -->
 
       <% cache({:part => 'details'}) do -%>

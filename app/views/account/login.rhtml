@@ -1,8 +1,5 @@
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
-
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
+"full-width notabs" }) %>
 
 <% @title = "Login to #{PRETTY_SITE_NAME}"  -%>
 
@@ -67,6 +64,8 @@
 <%= submit_tag 'Log in',:class => "login-button" %></p>
 <% end -%>
 <% end -%>
+
+
 </div>
 </div>
 </div>

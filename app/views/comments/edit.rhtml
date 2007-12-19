@@ -1,8 +1,5 @@
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
-
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
+"full-width notabs" }) %>
 
       <% @title = 'Editing comment' -%>
 
@@ -17,7 +14,5 @@
       <% end %>
 
       <%= link_to_cancel %>
+<%= render(:partial => "topics/content_wrapper_end" ) %>
 
-    </div>
-  </div>
-</div>

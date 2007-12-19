@@ -1,9 +1,9 @@
 <% @title = 'Import' -%>
 
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
+"full-width notabs" }) %>
+
+
 
                 <div id="detail-wrapper">
                         <div id="detail-header">
@@ -33,7 +33,5 @@
                 </div>
         <% end %>
 </fieldset>
+<%= render(:partial => "topics/content_wrapper_end" ) %>
 
-    </div>
-  </div>
-</div>

@@ -30,9 +30,6 @@
         }
         </script>
   <% end -%>
-  <% #= stylesheet_link_tag 'kete', :media => 'screen' %>
-  <!--[if IE 5]><%= stylesheet_link_tag 'kete-ie5', :media => 'screen' %><![endif]-->
-  <!--[if IE 6]><%= stylesheet_link_tag 'kete-ie6', :media => 'screen' %><![endif]-->
   <%= stylesheet_link_tag '/themes/default/css/kete_default', :media => 'screen' %>
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
   <%= stylesheet_link_tag 'redbox' %>
@@ -45,6 +42,8 @@
   <% if !@rss_tag_auto.nil?  -%>
         <%= @rss_tag_auto %>
   <% end -%>
+  <!--[if IE]><%= stylesheet_link_tag 'kete-ie', :media => 'screen' %><![endif]-->
+
 </head>
 <body id="<%= @current_basket.urlified_name -%>">
 <% if IS_CONFIGURED -%>
@@ -105,15 +104,12 @@
     <div id="error"><%= flash[:error] %></div>
     <% end %>
 
-
-
-
-
-
         <div id="container">
 
-                        <%= @content_for_layout %>
-
+          <% if params[:action] != "show" %>
+             <%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>"full-width notabs" }) %>
+          <% end %>
+          <%= @content_for_layout %>
         </div><!--  /container -->
         <div class="cleaner">&nbsp;</div>
         <div id="footer">
@@ -213,10 +209,10 @@
                 <% end %>
         </div><!-- /header -->
 
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
+"full-width notabs" }) %>
+
+
 
         <div id="container">
 
@@ -231,10 +227,7 @@
 
 </div>
 <div>
-</div>
- </div> <!-- /body-outer-wrapper -->
-</div> <!-- /body-inner-wrapper -->
-
+<%= render(:partial => "topics/content_wrapper_end" ) %>
 
 <% end -%>
 </body>

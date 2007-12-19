@@ -1,10 +1,5 @@
 <% @title = "Revision History: #{h(@item.title)}" -%>
 
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
-
       <div id="detail-wrapper">
         <div id="detail-header">
           <h4><%= link_to_last_stored_location -%></h4>
@@ -61,6 +56,5 @@
 
         <h3>Back to live <%= link_to_item(@item) -%></h3>
       </div>
-    </div>
-  </div>
-</div>
+<%= render(:partial => "topics/content_wrapper_end" ) %>
+

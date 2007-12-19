@@ -1,9 +1,8 @@
 <% @title = 'Listing topic types' -%>
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
+"full-width notabs" }) %>
 
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
+
 
                 <div id="detail-wrapper">
                         <div id="detail-header">
@@ -42,7 +41,5 @@
 <div id="prev-next"><%= will_paginate @topic_types %></div>
 
 <br />
+<%= render(:partial => "topics/content_wrapper_end" ) %>
 
-    </div>
-  </div>
-</div>

@@ -1,9 +1,3 @@
-<div id="content-wrapper" class="full-width notabs">
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-contenet"></a>
-
-
 <% @title = 'Choose a topic type' -%>
 
 <h2><%= h(@title) -%></h2>
@@ -16,6 +10,4 @@
 
 <%= link_to_cancel %> |
 <%= link_to("help", { :controller => 'index_page', :action => :help_file }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100']) %>
-</div>
-</div>
-</div>
+<%= render(:partial => "content_wrapper_end" ) %>
