@@ -78,13 +78,13 @@ ul.navlist {
 }
 ul.nav-list li{
         display: inline;
+        padding: 2px;
+        padding-left: .5em;
 }
 ul.nav-list a{
         color: #333;
         font-weight: bold;
         text-decoration: none;
-        padding: 2px;
-        padding-left: .5em;
 }
 ul.nav-list a:hover{
         text-decoration: underline;;
@@ -177,6 +177,7 @@ ul.nav-list a:hover{
 }
 #content-tabs li a span,
 #related-content h2,
+#related h2,
 #tags h2,
 #extended-fields h2{
         background-repeat: no-repeat;
@@ -282,6 +283,7 @@ label{
 .form-element textarea{
         border: 1px solid #666;
         font-size: 1.2em;
+        width: 100%;
 }
 fieldset {
         border: 1px solid #CCC;
@@ -570,4 +572,12 @@ span.next-active {
 }
 .tag_cloud6 {
             font-size:2em;
+}
+
+div#notice {
+           background-color: #f9f3cd;
+           border: 1px solid #baae8b;
+           padding: .5em;
+           margin-bottom: 1em;
+           color: #333;
 }
