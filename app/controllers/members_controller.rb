@@ -92,8 +92,8 @@ class MembersController < ApplicationController
       # no members
       @members = User.paginate_by_id(0, :page => 1)
     else
-      @members = User.paginate(:joins => "as u inner join roles_users as ru on u.id = ru.user_id",
-                               :conditions => ["ru.role_id = ?", @member_role.id],
+      @members = User.paginate(:joins => "join roles_users on users.id = roles_users.user_id",
+                               :conditions => ["roles_users.role_id = ?", @member_role.id],
                                :page => params[:page],
                                :per_page => 10)
     end
