@@ -39,12 +39,13 @@
               <% end -%>
             </td>
             <td>
-              <% if version.version == 1 -%>
+              <% if version.version == 1 or version.version.nil? -%>
               <% @item.creators.each do |creator| -%>
               <%= link_to_contributions_of(creator, @item.class.name) %>
               <% end -%>
               <% else -%>
-              <%= link_to_contributions_of(item_contributors[contributor_index], @item.class.name) %>
+              <%= link_to_contributions_of(item_contributors[contributor_index],
+              @item.class.name) if item_contributors.size > 0 %>
               <% contributor_index += 1 -%>
               <% end -%>
             </td>

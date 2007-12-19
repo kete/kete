@@ -2,6 +2,7 @@
 one:
   id: 1
   web_link_id: 1
+  version: 1
   title: Kete.net.nz
   description: The site for the Kete project.
   url: http://kete.net.nz/
