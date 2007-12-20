@@ -3,7 +3,8 @@
 <p>System Settings modified. Please restart the server for
   them to take effect.</p>
 <% else -%>
-<p>If you are satisfied with your settings, please the 'Next' button.</p>
+<p>If you are satisfied with your settings, please the 'Next'
+  button.</p>
 <% form_remote_tag( :url => { :action => 'done_with_settings' },
                               :href => url_for( :action => 'done_with_settings' ) ) do %>
 <%= submit_tag 'Next' -%>

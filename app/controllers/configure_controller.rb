@@ -35,6 +35,7 @@ class ConfigureController < ApplicationController
     @advanced = params[:advanced]
     @settings = SystemSetting.find_all_by_section(@section)
     if request.xhr?
+      flash[:notice] = nil
       render :layout => false
     else
       render
@@ -187,6 +188,7 @@ class ConfigureController < ApplicationController
         page.show('prime-zebra-check')
         page.replace_html("prime-zebra-message", "Search Engine has been primed.")
         page.show('reload-site-index')
+        page.hide('restart-before-continue-message')
       end
     end
   end

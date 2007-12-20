@@ -16,8 +16,8 @@
     Leaving it as the default is a security risk.</p>
    <%= button_to "Change password",
        :controller => 'account',
-   :action => 'change_password',
-   :id => 1 -%>
+       :action => 'change_password',
+       :id => 1 -%>
    <% end -%>
    <% end -%>
 
@@ -135,8 +135,10 @@
       <div id="ready-to-restart" style="display:none">
         <% end -%>
         <h2>Final Configuration Step</h2>
-        <p><b>Before you continue, you must restart the kete application
-        server!</b></p>
+        <div id="restart-before-continue-message">
+          <p><b>Before you continue, you must restart the kete application
+              server!</b></p>
+        </div>
         <table>
           <tr>
             <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed"></div></td>
@@ -153,8 +155,14 @@
                   contents of Kete added to it.  Please click 'Prime
                   Search Engine' to continue.</p>
                   <% form_remote_tag( :url => { :action => 'prime_zebra' },
+                                      :before => "Element.hide('prime-button');Element.show('prime-spinner')",
+                                      :complete => "Element.hide('prime-spinner')",
                   :href => url_for( :action => 'prime_zebra' ) ) do %>
-                  <%= submit_tag 'Prime Search Engine' -%>
+                  <div id="prime-spinner"
+                  style="display:none"><img src="/images/indicator.gif"
+                  width="16" height="16" alt="completed" align="center"></div>
+
+                  <%= submit_tag 'Prime Search Engine', :id => 'prime-button' -%>
                   <% end -%>
                   <% end -%>
               </div>

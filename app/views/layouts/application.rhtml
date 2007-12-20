@@ -203,11 +203,14 @@
 <div id="wrapper">
         <div id="header">
                 <h1><%= PRETTY_SITE_NAME -%></h1>
-                <% if flash[:notice] %>
-                        <!-- TODO: look up if there is a style sheet class for flash, add here -->
-                        <div id="notice"><%= flash[:notice] %></div>
-                <% end %>
         </div><!-- /header -->
+
+        <div class="cleaner">&nbsp;</div>
+
+        <% if flash[:notice] %>
+           <!-- TODO: look up if there is a style sheet class for flash, add here -->
+           <div id="notice"><%= flash[:notice] %></div>
+        <% end %>
 
 <%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
 "full-width notabs" }) %>
