@@ -38,7 +38,7 @@ namespace :zebra do
   desc "Initialize a specific Zebra server database.  This will erase any existing data.  Be careful."
   task :init do
     # have to run the command from inside #{RAILS_ROOT}/zebradb/database_directory
-    db = ENV['ZEBRA_DB']
+    db = ENV['ZEBRA_DB'] || 'public'
     `cd #{RAILS_ROOT}/zebradb/#{db}; zebraidx -c ../conf/zebra-#{db}.cfg -d #{db} init`
     `cd #{RAILS_ROOT}/zebradb/#{db}; zebraidx -c ../conf/zebra-#{db}.cfg -d #{db} commit`
   end
