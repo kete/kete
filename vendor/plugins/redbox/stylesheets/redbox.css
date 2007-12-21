@@ -19,24 +19,23 @@
   top: 0px;
 }
 
-#RB_loading {
-  position: relative;
-  top: 200px;
-  z-index: 101;
-  width: 70px;
-  height: 70px;
-  margin: 0 auto;
-  text-align: center;
-  background: #666 url(../images/redbox_spinner.gif) no-repeat center center;
-  border: 2px solid black;
+#RB_window {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	z-index: 102;
+	line-height: 0;
 }
 
-#RB_window {
-  z-index: 102;
-  background-color: #FFFFFF;
-  display: block;
+#RB_loading {
+  margin: 0 auto 0 auto;
+	width: 250px;
+	height: 250px;
+  text-align: center;
+  background: #FFF url(../images/redbox_spinner.gif) no-repeat center center;
+}
+
+.redbox_contents {
+  margin: 0 auto;
   text-align: left;
-  overflow: hidden;
-  margin: 20px auto 0 auto;
-  position: absolute;  
 }

@@ -64,9 +64,13 @@ private
   end
   
   def redbox_remote_options(remote_options, hidden_content_id)
-    remote_options[:update] = hidden_content_id
-    remote_options[:loading] = "RedBox.loading(); " + remote_options[:loading].to_s
-    remote_options[:complete] = "RedBox.addHiddenContent('#{hidden_content_id}'); " + remote_options[:complete].to_s
+    remote_options[:update] = hidden_content_id unless remote_options.key?(:update)
+    remote_options[:loading] = "RedBox.loading();" + remote_options[:loading].to_s
+    if remote_options[:update]
+      remote_options[:complete] = "RedBox.addHiddenContent('#{hidden_content_id}'); " + remote_options[:complete].to_s
+    else
+      remote_options[:complete] = "RedBox.activateRBWindow(); " + remote_options[:complete].to_s
+    end
     remote_options
   end
   
