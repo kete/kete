@@ -506,18 +506,18 @@ class SearchController < ApplicationController
   # takes search_terms from form
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
-    if params[:controller_name_for_zoom_class].nil?
-      redirect_to url_for( :overwrite_params => { :controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS),
-                             :action => 'for',
-                             :search_terms_slug => to_search_terms_slug(params[:search_terms]),
-                             :commit => nil,
-                             :existing_relations => params[:existing_array_string]})
-    else
-      redirect_to url_for( :overwrite_params => { :action => 'for',
-                             :search_terms_slug => to_search_terms_slug(params[:search_terms]),
-                             :commit => nil})
-    end
+    controller_name = params[:controller_name_for_zoom_class].nil? ? zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
+    if params[:search_terms].blank?
+      redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name)
+    else
+      existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
+      redirect_to url_for( :overwrite_params => { :action => 'for',
+                             :controller_name_for_zoom_class => controller_name,
+                             :search_terms_slug => to_search_terms_slug(params[:search_terms]),
+                             :existing_array_string => existing_array_string,
+                             :commit => nil} )
+    end
   end
 
   def to_search_terms_slug(search_terms)
