@@ -35,6 +35,7 @@ module ApplicationHelper
     end
 
     html += '</ul>'
+    html if basket_count > 0 else ''
   end
 
   def header_link_to_current_basket
