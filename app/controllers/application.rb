@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   # only permit site members to add/delete things
   before_filter :login_required, :only => [ :new, :pick_topic_type, :create,
                                             :edit, :update, :destroy,
+                                            :find_related,
                                             :link_related,
                                             :link_index_topic,
                                             :flag_version,
