@@ -147,10 +147,12 @@ module ApplicationHelper
   def link_to_link_related_item(options={})
     phrase = options[:phrase]
     item_class = options[:item_class]
+    existing_relations = !options[:existing_relations].nil? ? options[:existing_relations].collect { |relation| relation.id } : nil
     return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", {
                      :controller => 'search',
                      :action => :find_related,
                      :related_class => options[:related_class],
+                     :existing_relations => existing_relations,
                      :relate_to_topic => options[:relate_to_topic] },
                    :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100,resizable=yes'])
   end

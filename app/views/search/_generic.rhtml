@@ -11,32 +11,23 @@
                                 <div class="generic-result-header">
                                 <% if results_as_form %>
                                   <% if !(params[:relate_to_topic] == result and params[:related_class] =='Topic') %>
-                                          <% if !params[:existing_array_string].nil?
-                                                @existing_relations = params[:existing_array_string].split(',')
-                                             else
-                                                @existing_relations = Array.new
-                                             end -%>
-                                    <% if (@existing_relations.detect { |x| x == result} == nil) %>
-                                        <% if !params[:index_for_basket].nil? -%>
-                                                <%= check_box_tag("topic_#{result}",'yes',false,{ :style => 'float:left',
-                                                                                                  :onclick => "new Ajax.Updater('item_#{result}_wrapper',
-'/#{@current_basket.urlified_name}/baskets/link_index_topic?index_for_basket=#{params[:index_for_basket]}&topic=#{result}&authenticity_token=#{params[:authenticity_token]}',
-{asynchronous:true, evalScripts:true}); return false;"})
-                                        %>
-                                        <% else -%>
-                                                <%= check_box_tag("topic_#{result}",'yes',false,{ :style => 'float:left',
-                                                                                                  :onclick => "new Ajax.Updater('item_#{result}_wrapper',
-'/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}&authenticity_token=#{params[:authenticity_token]}',
-{asynchronous:true, evalScripts:true}); return false;"})
-                                        %>
-                                        <% end -%>
-
-                                        <% if results_as_form %>
-                                                <h4><%= link_to h(title), "#{source_url}", { :popup => true }  %></h4>
-                                        <% else -%>
-                                                <h4><%= link_to h(title), "#{source_url}"  %></h4>
-                                        <% end -%>
-                                        </div>
+                                   <% if !params[:index_for_basket].nil? -%>
+                                    <%= check_box_tag("topic_#{result}",'yes',false,{ :style => 'float:left',
+                                                                                      :onclick => "new Ajax.Updater('item_#{result}_wrapper', '/#{@current_basket.urlified_name}/baskets/link_index_topic?index_for_basket=#{params[:index_for_basket]}&topic=#{result}&authenticity_token=#{params[:authenticity_token]}', {asynchronous:true, evalScripts:true}); return false;"}) %>
+                                   <% else -%>
+                                   <% if existing_relations.include?(result) -%>
+                                   <% title = 'Existng link: ' + title -%>
+                                   <% else -%>
+                                   <%= check_box_tag("topic_#{result}",'yes',false,{ :style => 'float:left',
+                                    :onclick => "new Ajax.Updater('item_#{result}_wrapper', '/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}&authenticity_token=#{params[:authenticity_token]}', {asynchronous:true, evalScripts:true}); return false;"}) %>
+                                    <% end -%>
+                                    <% end -%>
+                                    <% if results_as_form %>
+                                    <h4><%= link_to h(title), "#{source_url}", { :popup => true }  %></h4>
+                                    <% else -%>
+                                    <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                    <% end -%>
+                                </div>
 
                                 <div class="generic-result-description"><%= strip_tags(short_summary) %>
                                         <div class="generic-result-more">
@@ -47,7 +38,6 @@
                                         <% end -%>
                                         </div>
                                     <% end %>
-                                  <% end %>
                                 </div>
                                 <% else %>
                                         <h4><%= link_to h(title), "#{source_url}"  %></h4>

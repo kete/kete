@@ -27,10 +27,12 @@
                                         <% end -%>
                                         <%= hidden_field_tag "controller_name_for_zoom_class", zoom_class_controller(params[:related_class]) %>
                                         <% # not sure why this extra check is necessary, but fixes bug -%>
-                                        <% if !existing_array_string.nil? -%>
-                                                <%= hidden_field_tag "existing_array_string", existing_array_string %>
+                                        <% if !existing_relations.blank? -%>
+                                        <% existing_relations.each do |relation| -%>
+                                                <%= hidden_field_tag 'existing_relations[]', relation %>
+                                        <% end -%>
                                         <% else -%>
-                                                <%= hidden_field_tag "existing_array_string", '' %>
+                                                <%= hidden_field_tag 'existing_relations', '' %>
                                         <% end -%>
                                 <% elsif !params[:index_for_basket].nil? -%>
                                         <%= hidden_field_tag 'index_for_basket', params[:index_for_basket] %>

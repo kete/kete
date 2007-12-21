@@ -3,15 +3,10 @@
 
 
 
-<% @title = "Search for related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}"
-   existing_array_string = String.new
-   @existing_relations.each do |item|
-           existing_array_string += "#{item.related_item_id},"
-   end
--%>
+<% @title = "Search for related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}" -%>
 
 <%= render :partial => 'form', :locals => { :headline => @title,
-                                            :existing_array_string => existing_array_string.chop,
+                                            :existing_relations => params[:existing_relations],
                                             :simple_layout => :true,
                                             :search_terms => nil } %>
 
