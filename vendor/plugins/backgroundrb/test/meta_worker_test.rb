@@ -19,6 +19,7 @@ context "A Meta Worker should" do
   specify "load appropriate db environment from config file" do
     ActiveRecord::Base.connection.current_database.should == "rails_sandbox_production"
   end
+
   xspecify "load appropriate schedule from config file" do
 
   end

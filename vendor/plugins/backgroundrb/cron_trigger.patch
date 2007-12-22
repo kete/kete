@@ -1,0 +1,118 @@
+Index: cron_trigger.rb
+===================================================================
+--- cron_trigger.rb	(revision 513)
++++ cron_trigger.rb	(working copy)
+@@ -48,20 +48,87 @@
+           month = next_month
+         end
+ 
+-        # day
+-        month_days = (1 .. month_days(year, month))
+-        days = @day.select do |d| month_days === d end
+-        unless days.include?(day)
+-          next_day = days.detect(lambda { days.min }) do |d| d > day end
+-          hour, min, sec = @hour.min, @min.min, @sec.min
+-          if next_day.nil? or next_day < day
+-            day = next_day.nil? ? @day.min : next_day
+-            month += 1
+-            retry
++        # according to crontab(5):
++        # Note: The day of a command’s execution can be specified by two fields — day of month, and day of week.
++        # If both fields are restricted (i.e., aren’t *), the command  will  be  run  when  either
++        # field matches the current time.  For example, ‘‘30 4 1,15 * 5’’ would cause a command to be
++        # run at 4:30 am on the 1st and 15th of each month, plus every Friday.
++        if !day_restricted? and wday_restricted?
++          # unrestricted day, restricted wday. go by wday
++          unless @wday.include?(wday)
++            next_wday = @wday.detect(lambda { @wday.min }) do |w| w > wday end
++            hour, min, sec = @hour.min, @min.min, @sec.min
++            if next_wday < wday
++              # next week.
++              day += + 7 - (wday - next_wday)
++              if day > month_days(year, month)
++                day -= month_days(year, month)
++                month += 1
++              end
++              wday = next_wday              
++              retry
++            end
++            
++            day += (next_wday - wday)
++            wday = next_wday
+           end
+-          day = next_day
++        elsif !wday_restricted? and day_restricted?
++          # unrestricted wday, restricted day. go by day
++          month_days = (1 .. month_days(year, month))
++          days = @day.select do |d| month_days === d end
++          unless days.include?(day)
++            next_day = days.detect(lambda { days.min }) do |d| d > day end
++            hour, min, sec = @hour.min, @min.min, @sec.min
++            if next_day.nil? or next_day < day
++              day = next_day.nil? ? @day.min : next_day
++              month += 1
++              retry
++            end
++            day = next_day
++          end
++        else        
++          # both @day and @wday are restricted, or unrestricted
++          month_days = (1 .. month_days(year, month))
++          days = @day.select do |d| month_days === d end
++          unless days.include?(day) || @wday.include?(wday)
++            next_day = days.detect(lambda { days.min }) do |d| d > day end
++            next_wday = @wday.detect(lambda { @wday.min }) do |w| w > wday end
++            hour, min, sec = @hour.min, @min.min, @sec.min
++            
++            # which is less? next_day or next_wday?
++            # just calculate how many days from 'day' they both are.
++
++            if next_day.nil? or next_day < day
++              next_by_mday = month_days(year, month) - day + (next_day.nil? ? @day.min : next_day)
++            else
++              next_by_mday = next_day - day              
++            end
++            
++            if next_wday.nil? or next_wday < wday
++              next_by_wday = 7 - wday + (next_wday.nil? ? @day.min : next_wday)
++            else
++              next_by_wday = next_wday - wday
++            end
++            
++            next_day = [next_by_wday, next_by_mday].min
++            if next_day + day > month_days(year, month)
++              # next fire lands on next month
++              day += next_day - month_days(year, month)
++              wday += next_day % 7
++              wday -= 7 if wday > 6
++              month += 1
++              if month > 12
++                year += 1
++                month = 1
++              end
++              retry
++            end
++            day += next_day
++          end
+         end
+ 
++        
++        
+         # hour
+         unless @hour.include?(hour)
+           next_hour = @hour.detect(lambda { @hour.min }) do |h| h > hour end
+@@ -103,6 +170,14 @@
+       Time.local sec, min, hour, day, month, year, wday, yday, isdst, zone
+     end
+ 
++    def day_restricted?
++      return !@day.eql?(1..31)
++    end
++
++    def wday_restricted?
++      return !@wday.eql?(0..6)
++    end
++
+     # TODO: mimic attr_reader to define all of these
+     def sec=(sec)
+       @sec = parse_part(sec, 0 .. 59)

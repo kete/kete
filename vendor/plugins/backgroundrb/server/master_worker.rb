@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+
 module BackgrounDRb
   # Class wraps a logger object for debugging internal errors within server
   class DebugMaster
@@ -43,7 +44,7 @@ module BackgrounDRb
 
     def query_all_worker_status(p_data)
       dumpable_status = { }
-      workers.each { |key,value| dumpable_status[key] = value.worker_status }
+      reactor.live_workers.each { |key,value| dumpable_status[key] = value.worker_status }
       send_object(dumpable_status)
     end
 
@@ -54,7 +55,8 @@ module BackgrounDRb
       begin
         ask_worker(worker_name,:job_key => t_data[:job_key],:type => :request, :data => { :worker_method => :exit})
       rescue Packet::DisconnectError => sock_error
-        workers.delete(worker_name_key)
+        # reactor.live_workers.delete(worker_name_key)
+        reactor.remove_worker(sock_error)
       rescue
         debug_logger.info($!.to_s)
         debug_logger.info($!.backtrace.join("\n"))
@@ -72,9 +74,9 @@ module BackgrounDRb
       t_data.delete(:worker)
       t_data.delete(:type)
       begin
-        ask_worker(worker_name,:data => t_data, :type => :request)
+        ask_worker(worker_name_key,:data => t_data, :type => :request)
       rescue Packet::DisconnectError => sock_error
-        workers.delete(worker_name_key)
+        reactor.live_workers.delete(worker_name_key)
       rescue
         debug_logger.info($!.to_s)
         debug_logger.info($!.backtrace.join("\n"))
@@ -97,9 +99,9 @@ module BackgrounDRb
       t_data.delete(:worker)
       t_data.delete(:type)
       begin
-        ask_worker(worker_name,:data => t_data, :type => :request)
+        ask_worker(worker_name_key,:data => t_data, :type => :request)
       rescue Packet::DisconnectError => sock_error
-        workers.delete(worker_name_key)
+        reactor.live_workers.delete(worker_name_key)
       rescue
         debug_logger.info($!.to_s)
         debug_logger.info($!.backtrace.join("\n"))
@@ -142,7 +144,19 @@ module BackgrounDRb
       ENV["RAILS_ENV"] = run_env
       RAILS_ENV.replace(run_env) if defined?(RAILS_ENV)
       require RAILS_HOME + '/config/environment.rb'
+      load_rails_models
       ActiveRecord::Base.allow_concurrency = true
+    end
+
+    def load_rails_models
+      model_root = RAILS_HOME + "/app/models"
+      models = Dir["#{model_root}/**/*.rb"]
+      models.each { |x|
+        begin
+          require x
+        rescue
+        end
+      }
     end
 
     def enable_memcache_result_hash(t_reactor)

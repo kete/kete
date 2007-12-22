@@ -64,7 +64,6 @@ module Packet
 
       def accept_connection(sock_opts)
         sock_io = sock_opts[:socket]
-        puts "Someone is attempting a connection"
         begin
           client_socket,client_sockaddr = sock_io.accept_nonblock
           client_socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
@@ -97,8 +96,11 @@ module Packet
       def remove_connection(t_sock)
         @read_ios.delete(t_sock)
         @write_ios.delete(t_sock)
-        connections.delete(t_sock.fileno)
-        t_sock.close
+        begin
+          connections.delete(t_sock.fileno)
+          t_sock.close
+        rescue
+        end
       end
 
       def socket_really_connected?(t_sock)
@@ -195,6 +197,7 @@ module Packet
           t_data = read_data(t_sock)
           handler_instance.receive_data(t_data) if handler_instance.respond_to?(:receive_data)
         rescue DisconnectError => sock_error
+          handler_instance.receive_data(sock_error.data) if handler_instance.respond_to?(:receive_data)
           handler_instance.unbind if handler_instance.respond_to?(:unbind)
           connections.delete(t_sock.fileno)
           read_ios.delete(t_sock)

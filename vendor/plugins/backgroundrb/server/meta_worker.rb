@@ -16,7 +16,7 @@ module BackgrounDRb
 
   class WorkData
     attr_accessor :data,:block
-    def initialize(*args,&block)
+    def initialize(args,&block)
       @data = args
       @block = block
     end
@@ -63,10 +63,12 @@ module BackgrounDRb
         while true
           task = @work_queue.pop
           @running_tasks << task
-          if task.data && !task.data.empty?
-            task.block.call(*(task.data))
-          else
-            task.block.call
+          block_arity = task.block.arity
+          begin
+            block_arity == 0 ? task.block.call : task.block.call(*(task.data))
+          rescue
+            logger.info($!.to_s)
+            logger.info($!.backtrace.join("\n"))
           end
           @running_tasks.pop
         end
@@ -78,8 +80,8 @@ module BackgrounDRb
       if @running_tasks.empty? && @work_queue.empty?
         return
       else
-        puts "going to sleep for a while"
-        sleep(2)
+        # puts "going to sleep for a while"
+        sleep(0.05)
         return
       end
     end
@@ -196,7 +198,7 @@ module BackgrounDRb
     def process_request(p_data)
       user_input = p_data[:data]
       logger.info "#{user_input[:worker_method]} #{user_input[:data]}"
-      unless respond_to?(user_input[:worker_method])
+      if (user_input[:worker_method]).nil? or !respond_to?(user_input[:worker_method])
         logger.info "Undefined method #{user_input[:worker_method]} called on worker #{worker_name}"
         return
       end

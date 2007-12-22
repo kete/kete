@@ -57,14 +57,6 @@ class BackgrounDRb::WorkerProxy
     # @connection.close
   end
 
-  def send_data p_data
-    begin
-      @connection.write_nonblock(p_data)
-    rescue Errno::EAGAIN
-      return
-    end
-  end
-
   def read_object
     sock_data = ""
     begin

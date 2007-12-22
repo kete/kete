@@ -40,7 +40,7 @@ module Packet
           data_options = *args
           worker_name_key = gen_worker_key(worker_name,data_options[:job_key])
           data_options[:client_signature] = connection.fileno
-          workers[worker_name_key].send_request(data_options)
+          reactor.live_workers[worker_name_key].send_request(data_options)
         end
 
         def_delegators(:@reactor, :start_server, :connect, :add_periodic_timer, \
@@ -62,8 +62,13 @@ module Packet
         # t_data = Marshal.load(raw_data)
         worker_instance.receive_data(raw_data) if worker_instance.respond_to?(:receive_data)
       rescue DisconnectError => sock_error
-        read_ios.delete(t_sock)
+        remove_worker(t_sock)
       end
+    end
+
+    def remove_worker(t_sock)
+      @live_workers.delete(t_sock.fileno)
+      read_ios.delete(t_sock)
     end
 
     def delete_worker(worker_options = {})

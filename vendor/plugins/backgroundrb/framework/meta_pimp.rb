@@ -55,7 +55,11 @@ class Packet::MetaPimp < Packet::Pimp
       callback = callback_hash[callback_signature]
       callback.invoke(data_options)
     elsif client_signature = data_options[:client_signature]
-      reactor.connections[client_signature].instance.worker_receive(data_options)
+      # method writes to the tcp master connection loop
+      begin
+        reactor.connections[client_signature].instance.worker_receive(data_options)
+      rescue
+      end
     end
   end
 

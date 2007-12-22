@@ -10,7 +10,8 @@ This new release of BackgrounDRb is also modular and can be used without Rails s
 
 Copyright (c) 2006 Ezra Zygmuntowicz,skaar[at]waste[dot]org,
 
-Copyright (c) 2007 Hemant Kumar (mail[at]gnufied[dot]org)
+Copyright (c) 2007 Hemant Kumar (gethemant [at] gmail.com )
+
 
 == Usage
 
@@ -349,6 +350,18 @@ The above snippet would register the proc for periodic execution at every 5 seco
   are going to store as a status ) in a mutex and then use +register_status+ . It would make sure that, only one thread
   resisters status at a time.
 
+* Stopping/deleting a worker :
+
+  For a dynamically started worker, probably you would like to delete it after its done with processing your request.
+  You can delete a worker from rails or from worker itself. To exit a worker from worker itself, simple call +exit+
+  on it. Worker would be deleted.
+
+  To delete the worker from rails, you can use:
+
+     MiddleMan.delete_worker(:worker => :foor_worker, :job_key => :hello_world)
+
+
+
 
 * Internal Server and Unhandled Exception Logging on console :
 
@@ -414,7 +427,7 @@ The above snippet would register the proc for periodic execution at every 5 seco
     This can be used for worker to worker communication between backgroundrb servers running on two machines.
 
     You are encouraged to look into framework directory and see the code that implements all this stuff.  The guts of
-    this new version of bdrb is based on this library which will be released soon as a separate entity.
+    this new version of bdrb is based on packet library(http://packet.googlecode.com )
 
 
 == Online Resources

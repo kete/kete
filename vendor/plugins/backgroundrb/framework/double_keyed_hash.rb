@@ -1,4 +1,5 @@
 class DoubleKeyedHash
+  attr_accessor :internal_hash
   def initialize
     @keys1 = {}
     @internal_hash = {}
@@ -14,8 +15,13 @@ class DoubleKeyedHash
   end
 
   def delete(key)
+    worker_key = @keys1[key]
     @keys1.delete(key)
-    @internal_hash.delete(key)
+    if worker_key
+      @internal_hash.delete(worker_key)
+    else
+      @internal_hash.delete(key)
+    end
   end
 
   def each
