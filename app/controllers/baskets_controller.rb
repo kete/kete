@@ -174,6 +174,15 @@ class BasketsController < ApplicationController
 
   def set_settings
     params[:settings].each do |name, value|
+      # HACK
+      # is there a better way to typecast?
+      # rails does so in AR, but not sure it's appropriate here
+      case value
+      when "true"
+        value = true
+      when "false"
+        value = false
+      end
       @basket.settings[name] = value
     end
   end

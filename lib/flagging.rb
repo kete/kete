@@ -135,7 +135,7 @@ module Flagging
       # flag the first revision
       # which will have the side effect
       # of adding a blank revision
-      if !self.do_not_moderate? and !self.already_at_blank_version? and self.fully_moderated?
+      if self.fully_moderated? and !self.do_not_moderate? and !self.already_at_blank_version?
         # have to do this before the flagging happens
         # user_to_notify = flagged_version_user(self.version)
 

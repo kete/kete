@@ -28,12 +28,19 @@
      <% end -%>
 
   <% end -%>
-  <% if !relate_to_topic.blank? -%>
-     <li class="related-action">
-     <%= link_to_add_related_item(:relate_to_topic => relate_to_topic, :phrase => "Add related ", :item_class => related_class) -%><br />
+  <% if !relate_to_topic.blank?
+        existing_relations = items -%>
+  <li class="related-action">
+    <%= link_to_add_related_item(:relate_to_topic => relate_to_topic,
+                                 :phrase => "Add related ",
+                                 :item_class => related_class) -%><br />
      </li>
      <li class="related-action">
-     <%= link_to_link_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class, :phrase => 'Link ', :item_class => related_class) -%>
+       <%= link_to_link_related_item(:relate_to_topic => relate_to_topic,
+                                     :related_class => related_class,
+                                     :existing_relations => existing_relations,
+                                     :phrase => 'Link',
+                                     :item_class => related_class) -%>
      </li>
   <% end -%>
   </ul>
