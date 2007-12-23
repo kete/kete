@@ -1,12 +1,13 @@
-<%= @user.login %>,
+<%= @user.user_name %>,
 
-<%= @flagging_user.user_name %> (<%= @flagging_user.email %>) has flagged the following item as <%= @flag %>.
+<%= @flagging_user.user_name %> (<%= @flagging_user.email %>) has flagged Revision # <%= @revision -%> of this item as <%= @flag %>.  This revision was originally submitted by <%= @submitter.user_name -%>.
 
-Please review the item and take appropriate action:
+
+Please review the item's history and take appropriate action:
 
   <%= @url %>
 
-To review the various versions of the item, click "History".  This will tell what items have been flagged and with what.  You can then preview each version.  There is a "Make this revision" option on the preview page for the version.
+This will tell what versions have been flagged and with what.  You can then preview each version.  There is a "Make this revision" option on the preview page for the version, as well as a "Reject" link, too.
 
 <% if !@message.blank? -%>
 The user has also provided these details about the flagging:
