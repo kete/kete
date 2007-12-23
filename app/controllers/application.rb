@@ -471,7 +471,7 @@ class ApplicationController < ActionController::Base
   # reviewing the flagging
   def flag_form
     # use one form template for all controllers
-    render :template => '/search/flag_form'
+    render :template => '/topics/flag_form'
   end
 
   def flag_version
