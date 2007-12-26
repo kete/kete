@@ -1,6 +1,7 @@
 module Packet
   class Pimp
     include NbioHelper
+    extend ClassHelpers
     extend Forwardable
     iattr_accessor :pimp_name
     attr_accessor :lifeline, :pid, :signature

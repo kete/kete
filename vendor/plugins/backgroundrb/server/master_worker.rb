@@ -38,8 +38,18 @@ module BackgrounDRb
         when :start_worker: start_worker_request(t_data)
         when :delete_worker: delete_drb_worker(t_data)
         when :all_worker_status: query_all_worker_status(t_data)
+        when :worker_info: pass_worker_info(t_data)
         end
       end
+    end
+    
+    # 
+    def pass_worker_info(t_data)
+      worker_name_key = gen_worker_key(t_data[:worker],t_data[:job_key])
+      worker_instance = reactor.live_workers[worker_name_key]
+      info_response = { :worker => t_data[:worker],:job_key => t_data[:job_key]}
+      worker_instance ? (info_response[:status] = :running) : (info_response[:status] = :stopped)
+      send_object(info_response)
     end
 
     def query_all_worker_status(p_data)
@@ -144,6 +154,7 @@ module BackgrounDRb
       ENV["RAILS_ENV"] = run_env
       RAILS_ENV.replace(run_env) if defined?(RAILS_ENV)
       require RAILS_HOME + '/config/environment.rb'
+      p RAILS_ENV
       load_rails_models
       ActiveRecord::Base.allow_concurrency = true
     end
@@ -155,6 +166,7 @@ module BackgrounDRb
         begin
           require x
         rescue
+          p $!
         end
       }
     end

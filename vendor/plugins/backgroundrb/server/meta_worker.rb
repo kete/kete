@@ -152,11 +152,21 @@ module BackgrounDRb
   class MetaWorker < Packet::Worker
     attr_accessor :config_file, :my_schedule, :run_time, :trigger_type, :trigger
     attr_accessor :logger, :thread_pool
+    iattr_accessor :pool_size
+    @pool_size = nil
+    
+    def self.pool_size(size = nil)
+      if size
+        @pool_size = size
+      else
+        @pool_size
+      end
+    end
 
     # does initialization of worker stuff and invokes create method in
     # user defined worker class
     def worker_init
-      @thread_pool = ThreadPool.new(20)
+      @thread_pool = ThreadPool.new(pool_size || 20)
 
       @config_file = YAML.load(ERB.new(IO.read("#{RAILS_HOME}/config/backgroundrb.yml")).result)
       # load_rails_env

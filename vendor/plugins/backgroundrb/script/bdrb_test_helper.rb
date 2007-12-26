@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/test_helper'
 WORKER_ROOT = RAILS_ROOT + "/lib/workers"
 $LOAD_PATH.unshift(WORKER_ROOT)
 require "mocha"
@@ -38,11 +38,23 @@ module BackgrounDRb
   end
   class MetaWorker
     attr_accessor :logger
+    attr_accessor :thread_pool
     iattr_accessor :worker_name
     iattr_accessor :no_auto_load
 
-    def initializes
+    def initialize
       @logger = WorkerDummyLogger.new
+      @thread_pool = ThreadPool.new
+    end
+    
+    def register_status(arg)
+      @status = arg
+    end
+  end
+  
+  class ThreadPool
+    def defer(args,&block)
+      yield args
     end
   end
 end

@@ -1,12 +1,11 @@
 require "socket"
 require "yaml"
 require "forwardable"
-require "attribute_accessors"
 require "bin_parser"
 
 require "ostruct"
 require "packet_guid"
-require "ruby_hacks"
+require "class_helpers"
 require "double_keyed_hash"
 require "event"
 

@@ -46,7 +46,16 @@ class BackgrounDRb::WorkerProxy
     establish_connection
     raise BackgrounDRb::BdrbConnError.new("Not able to connect") unless @connection_status
     dump_object(p_data,@connection)
+    return p_data[:job_key]
     # @connection.close
+  end
+  
+  def worker_info(p_data)
+    p_data[:type] = :worker_info
+    establish_connection
+    raise BackgrounDRb::BdrbConnError.new("Not able to connect") unless @connection_status
+    dump_object(p_data,@connection)
+    return read_from_bdrb()
   end
 
   def delete_worker p_data
@@ -74,22 +83,7 @@ class BackgrounDRb::WorkerProxy
     establish_connection
     raise BackgrounDRb::BdrbConnError.new("Not able to connect") unless @connection_status
     dump_object(p_data,@connection)
-    begin
-      ret_val = select([@connection],nil,nil,3)
-      unless ret_val
-        # @connection.close
-        return nil
-      end
-      raw_response = read_object()
-      master_response = Marshal.load(raw_response)
-      # @connection.close
-      return master_response
-    rescue
-      puts $!
-      puts $!.backtrace
-      # @connection.close
-      return nil
-    end
+    return read_from_bdrb
   end
 
   def ask_status(p_data)
@@ -98,20 +92,17 @@ class BackgrounDRb::WorkerProxy
 
     raise BackgrounDRb::BdrbConnError.new("Not able to connect") unless @connection_status
     dump_object(p_data,@connection)
+    return read_from_bdrb
+  end
+  
+  def read_from_bdrb(timeout = 3)
     begin
-      ret_val = select([@connection],nil,nil,3)
-      unless ret_val
-        # @connection.close
-        return nil
-      end
+      ret_val = select([@connection],nil,nil,timeout)
+      return nil unless ret_val
       raw_response = read_object()
       master_response = Marshal.load(raw_response)
-      # @connection.close
       return master_response
     rescue
-      puts $!
-      puts $!.backtrace
-      # @connection.close
       return nil
     end
   end
@@ -122,20 +113,7 @@ class BackgrounDRb::WorkerProxy
 
     raise BackgrounDRb::BdrbConnError.new("Not able to connect") unless @connection_status
     dump_object(p_data,@connection)
-    begin
-      ret_val = select([@connection],nil,nil,nil)
-      unless ret_val
-        # @connection.close
-        return nil
-      end
-      raw_response = read_object()
-      master_response = Marshal.load(raw_response)
-      # @connection.close
-      return master_response[:data]
-    rescue
-      # @connection.close
-      return nil
-    end
+    return read_from_bdrb(nil)
   end
 end
 

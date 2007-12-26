@@ -15,6 +15,7 @@ module Packet
     end
 
     module ClassMethods
+      include Packet::ClassHelpers
       def after_connection p_method
         connection_callbacks[:after_connection] ||= []
         connection_callbacks[:after_connection] << p_method

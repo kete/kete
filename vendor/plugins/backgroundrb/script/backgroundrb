@@ -9,6 +9,9 @@ SERVER_LOGGER = rails_root + "/log/backgroundrb_server.log"
 ["server","framework","lib"].each { |x| $LOAD_PATH.unshift(PACKET_APP + "/#{x}")}
 $LOAD_PATH.unshift(WORKER_ROOT)
 
+require RAILS_HOME + '/config/boot.rb'
+require "active_record"
+require "active_support"
 require "rubygems"
 require "packet"
 require "meta_worker"
@@ -19,7 +22,6 @@ require "yaml"
 require "erb"
 require "logger"
 require "master_worker"
-require "active_support"
 
 case ARGV[0]
 when 'start'
