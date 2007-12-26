@@ -39,8 +39,23 @@ module HasContributors
       user.version = self.version
       self.contributors << user
     end
-    def add_as_creator(user)
+
+    def creator=(user)
       self.creators << user
+    end
+
+    def creator
+      creators.first
+    end
+
+    def submitter_of(version)
+      submitter = nil
+      if version == 1
+        submitter = self.creator
+      else
+        submitter = self.contributions.find_by_version(version).user
+      end
+      submitter
     end
   end
 end

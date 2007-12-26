@@ -19,7 +19,7 @@ class ImagesController < ApplicationController
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @still_image.creators.first
+      @creator = @still_image.creator
       @last_contributor = @still_image.contributors.last || @creator
     end
 
@@ -52,7 +52,9 @@ class ImagesController < ApplicationController
         # add this to the user's empire of creations
         # TODO: allow current_user whom is at least moderator to pick another user
         # as creator
-        @still_image.add_as_creator(current_user)
+        @still_image.creator = current_user
+
+        @still_image.do_notifications_if_pending(1, current_user)
 
         @image_file.still_image_id = @still_image.id
         @image_file.save
@@ -78,6 +80,8 @@ class ImagesController < ApplicationController
   def update
     @still_image = StillImage.find(params[:id])
 
+    version_after_update = @still_image.max_version + 1
+
     if @still_image.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
 
       if !params[:image_file][:uploaded_data].blank?
@@ -86,6 +90,8 @@ class ImagesController < ApplicationController
       end
 
       after_successful_zoom_item_update(@still_image)
+
+      @still_image.do_notifications_if_pending(version_after_update, current_user)
 
       flash[:notice] = 'Image was successfully updated.'
 

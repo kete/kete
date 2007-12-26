@@ -1,24 +1,34 @@
 module Flagging
   unless included_modules.include? Flagging
     attr_accessor :do_not_moderate
+    attr_accessor :pending_version
 
     def self.included(klass)
       klass.send :after_save, :do_moderation
       klass.extend(ClassMethods)
     end
 
-    def flag_live_version_with(flag)
-      just_flagged_version = flag_at_with(self.version, flag)
+    def flag_live_version_with(flag, message = nil)
+      just_flagged_version = flag_at_with(self.version, flag, message)
       revert_to_latest_unflagged_version_or_create_blank_version
       just_flagged_version
     end
 
-    def flag_at_with(version_number, flag)
+    def flag_at_with(version_number, flag, message = nil)
       # we tag the version with the flag passed
       version = self.versions.find_by_version(version_number)
       version.tag_list.add(flag)
       version.save_tags
-      return version
+
+      # if the user entered a message to do with the flag
+      # update the tagging with it
+      if !message.blank?
+        tagging = version.taggings.find_by_tag_id(Tag.find_by_name(flag))
+        tagging.message = message
+        tagging.save
+      end
+
+      version
     end
 
     def clear_flags_for(version)
@@ -44,9 +54,9 @@ module Flagging
       flag_at_with(version_number, REVIEWED_FLAG)
     end
 
-    def reject_this(version_number)
+    def reject_this(version_number, message = nil)
       remove_pending_flag(version_number)
-      flag_at_with(version_number, REJECTED_FLAG)
+      flag_at_with(version_number, REJECTED_FLAG, message)
     end
 
     def max_version
@@ -127,21 +137,56 @@ module Flagging
       do_not_moderate.nil? ? false : do_not_moderate
     end
 
+    def notify_moderators_immediatelly_if_necessary(options = { })
+      if FREQUENCY_OF_MODERATION_EMAIL.is_a?(String) and FREQUENCY_OF_MODERATION_EMAIL == 'instant'
+        # if histor_url is blank it will be figured out in view
+        history_url = !options[:history_url].blank? ? options[:history_url] : nil
+
+        message = !options[:message].blank? ? options[:message] : nil
+
+        # specified user or default admin user
+        flagging_user = !options[:flagging_user].blank? ? options[:flagging_user] : User.find(1)
+
+        self.basket.moderators_or_next_in_line.each do |moderator|
+          # url is handled in the view if blank
+          UserNotifier.deliver_item_flagged_for(moderator,
+                                                history_url,
+                                                options[:flag],
+                                                flagging_user,
+                                                options[:submitter],
+                                                options[:version],
+                                                message)
+        end
+      end
+    end
+
+    def do_notifications_if_pending(version, submitter)
+      # make sure the version is flagged as pending
+      version = self.versions.find_by_version(version)
+
+      if version.tags.include?(Tag.find_by_name(PENDING_FLAG))
+        # notify user and moderators that a revision is pending review
+        UserNotifier.deliver_pending_review_for(version.version, submitter)
+
+        # if instant moderator notifcation
+        notify_moderators_immediatelly_if_necessary(:flag => PENDING_FLAG,
+                                                    :version => version.version,
+                                                    :submitter => submitter)
+      end
+    end
+
     protected
     def do_moderation
       # if are we are using full moderation
       # where everything has to approved by an admin
       # before being seen in the basket
-      # flag the first revision
+      # flag the submitted revision
       # which will have the side effect
-      # of adding a blank revision
+      # of either staying at the last unflagged version
+      # or
+      # adding a blank revision, if no unflagged version is available
       if self.fully_moderated? and !self.do_not_moderate? and !self.already_at_blank_version?
-        # have to do this before the flagging happens
-        # user_to_notify = flagged_version_user(self.version)
-
         flag_live_version_with(PENDING_FLAG)
-
-        # TODO: put in notification
       end
     end
   end

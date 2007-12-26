@@ -1,8 +1,10 @@
-<% @title = "Preview revision \# #{@item.version}" -%>
-<% @title = "#{@title} - Flagged #{h(@flags.to_sentence)}" if @flags.size > 0 -%>
-<% @title = "#{@title}: #{h(@item.title)}" -%>
-<div id="detail-wrapper">
-  <div id="detail-header">
+<% @title = "Preview revision \# #{@item.version}"
+   @title = "#{@title} - Flagged #{h(@flags.to_sentence)}" if @flags.size > 0 -%>
+
+<% if can_preview?(:item => @item, :version_number => @item.version, :submitter => @submitter) -%>
+   <% @title = "#{@title}: #{h(@item.title)}" -%>
+   <%= render(:partial => "topics/content_wrapper_start") %>
+
     <h4><%= link_to_last_stored_location -%></h4>
     <h2>Preview revision #<%= @item.version -%><% if @flags.size > 0 -%> - Flagged <%= h(@flags.to_sentence) -%><% end -%>: view live <%= link_to_item(@item) -%></h2>
 
@@ -14,13 +16,6 @@
     <% end -%>
 
     <h2><%= "#{zoom_class_humanize(@item.class.name)}: #{h(@item.title)}" %></h2>
-    <% extended_fields_html = display_xml_attributes(@item) -%>
-    <% if !extended_fields_html.blank? %>
-    <div id="detail-extended">
-      <h4 id="detail-extended-heading"><%= h(@item.title) %></h4><br />
-      <%= extended_fields_html %>
-    </div>
-    <% end %>
 
     <% # TODO: move class specific display into partials
        # (shared by show template?)
@@ -30,11 +25,33 @@
     <% end -%>
 
     <p><b><%= @item.short_summary if @item.can_have_short_summary? %></b></p>
-    Tags: <%= h(@item.raw_tag_list) -%>
+
     <p><%= @item.description %></p>
 
-  </div>
+    <% if ['AudioRecording', 'StillImage',
+       'Video', 'Document', 'WebLink'].include?(@item.class.name) -%>
+    <%= render(:partial => "#{zoom_class_controller(@item.class.name)}/details", :locals => { :item => @item }) %>
+    <% end -%>
+
+
+    <% if @item.class.name == 'StillImage'
+       image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @item.id) -%>
+    <%= render(:partial => "images/image_file", :object => image_file) if !image_file.nil?%>
+    <% end -%>
 
   <% can_moderate = true if logged_in? and @at_least_a_moderator -%>
   <%= render(:partial => "topics/preview_actions" , :locals => { :item => @item, :can_moderate => can_moderate }) %>
 
+<% else -%>
+  <% @title = "#{@title}: Permission Denied" -%>
+  <p>You aren't allowed to view this revision of this item at the
+    current time.</p>
+<% end -%>
+
+    </div><!-- /main-content-container -->
+  </div><!-- /main-content-wrapper -->
+  <div id="secondary-content-wrapper">
+    <%= render(:partial => "topics/tags_div" , :locals => { :item => @item }) %>
+    <%= render(:partial => "topics/extended_fields" , :locals => { :item => @item }) %>
+  </div> <!-- /secondary-content-warpper -->
+</div><!-- /content-wrapper -->

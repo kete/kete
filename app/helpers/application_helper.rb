@@ -499,7 +499,7 @@ module ApplicationHelper
     return html_string
   end
 
-  def link_to_preview_of(item, version)
+  def link_to_preview_of(item, version, check_permission = true)
     version_number = 0
     link_text = 'preview'
     begin
@@ -509,16 +509,19 @@ module ApplicationHelper
       version_number = version.to_i
     end
 
-    if @at_least_a_moderator or !@current_basket.fully_moderated?
-      link_to link_text,
-      :controller => zoom_class_controller(item.class.name),
-      :urlified_name => item.basket.urlified_name,
-      :action => :preview,
-      :id => item.id,
-      :version => version_number
+    if check_permission == false or can_preview?(:item => item, :version_number => version_number)
+      link_to link_text, url_for_preview_of(item, version_number)
     else
       'not available'
     end
+  end
+
+  def url_for_preview_of(item, version_number)
+    url_for(:controller => zoom_class_controller(item.class.name),
+            :urlified_name => item.basket.urlified_name,
+            :action => 'preview',
+            :id => item.id,
+            :version => version_number)
   end
 
   def li_with_correct_class(count)

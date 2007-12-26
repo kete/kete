@@ -357,3 +357,11 @@ system_settings_040:
   id: "40"
   value:  reviewed by moderator
   section: Flagging
+system_settings_041:
+  name: Frequency of Moderation Email
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: How often should the site email moderators when revisions need review?  Accepted values are "instant" or a number specifying the number of hours between digest (lists all revisions needing moderation) emails. A value of "instant" will send an email to moderators right after the revision is submitted only.  A value of 0 will never send moderators email.  This is desiable if you use alternative method for tracking revisions needing moderation by subscribing to the RSS feed from the moderate area of a basket.
+  id: 41
+  value: "4"
+  section: Flagging

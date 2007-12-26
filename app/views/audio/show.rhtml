@@ -9,17 +9,13 @@
       <p><%= @audio_recording.description %></p>
       <% if !@audio_recording.already_at_blank_version? -%>
 
-      <p>Filename: <%= @audio_recording.filename %>
-        (<%= link_to_original_of @audio_recording, 'listen' -%>)
-      </p>
-      <% end -%>
+      <%= render(:partial => "details", :locals => { :item => @audio_recording }) %>
 
-      <p>Size: <%= number_to_human_size(@audio_recording.size) %></p>
-      <p>Recording type: <%= @audio_recording.content_type %></p>
       <%= pending_review(@audio_recording) %>
       <% end -%>
+      <% end -%>
 
-      <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @audio_recording }) %>
+      <%= render(:partial => "topics/flagging_contributor", :locals => { :item => @audio_recording }) %>
       <% cache ({:related => 'topics'}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @audio_recording, :source_item_class => 'WebLink', :topics => @audio_recording.topics) %>
       <% end -%>

@@ -9,7 +9,7 @@
   <% for item in @items %>
   <tr>
     <td>
-      <%= link_to_preview_of(item, item.latest_version) %>
+      <%= link_to_preview_of(item, item.latest_version, false) %>
       <%= h(item.version_title) %>
     </td>
     <td>

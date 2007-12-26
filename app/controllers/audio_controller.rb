@@ -16,7 +16,7 @@ class AudioController < ApplicationController
     end
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @audio_recording.creators.first
+      @creator = @audio_recording.creator
       @last_contributor = @audio_recording.contributors.last || @creator
     end
 
@@ -42,7 +42,11 @@ class AudioController < ApplicationController
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @audio_recording.add_as_creator(current_user) if @successful
+    if @successful
+      @audio_recording.creator = current_user
+
+      @audio_recording.do_notifications_if_pending(1, current_user)
+    end
 
     setup_related_topic_and_zoom_and_redirect(@audio_recording)
   end
@@ -54,9 +58,13 @@ class AudioController < ApplicationController
   def update
     @audio_recording = AudioRecording.find(params[:id])
 
+    version_after_update = @audio_recording.max_version + 1
+
     if @audio_recording.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
 
       after_successful_zoom_item_update(@audio_recording)
+
+      @audio_recording.do_notifications_if_pending(version_after_update, current_user)
 
       flash[:notice] = 'AudioRecording was successfully updated.'
 

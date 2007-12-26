@@ -465,61 +465,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # flagging related
-
-  # added so users can add a helpful message with details for moderator
-  # reviewing the flagging
-  def flag_form
-    # use one form template for all controllers
-    render :template => '/topics/flag_form'
-  end
-
-  def flag_version
-    item = item_from_controller_and_id
-    flag = params[:flag]
-
-    # we tag the current version with the flag passed
-    # and revert to an unflagged version
-    # or create a blank unflagged version if necessary
-    flagged_version = item.flag_live_version_with(flag)
-
-    # if the user entered a message to do with the flag
-    # update the tagging with it
-    if !params[:message][0].blank?
-      tagging = flagged_version.taggings.find_by_tag_id(Tag.find_by_name(flag))
-      tagging.message = params[:message][0]
-      tagging.save
-    end
-
-    flagging_clear_caches_and_update_zoom(item)
-
-    clear_caches_and_update_zoom_for_commented_item(item)
-
-    item_url = correct_url_for(item)
-
-    @current_basket.moderators_or_next_in_line.each do |moderator|
-      UserNotifier.deliver_item_flagged(moderator, flag, item_url, @current_user, params[:message])
-    end
-
-    flash[:notice] = "Thank you for your input.  A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being."
-    redirect_to item_url
-  end
-
-  def flagging_clear_caches_and_update_zoom(item)
-    # clear caches for the item and rss
-    expire_show_caches
-    expire_rss_caches
-
-    # a before filter has already dropped the item
-    # from the search
-    # only reinstate it
-    # if not blank
-    if !item.already_at_blank_version?
-      # update zoom for item
-      prepare_and_save_to_zoom(item)
-    end
-  end
-
   def clear_caches_and_update_zoom_for_commented_item(item)
     if item.class.name == 'Comment'
       commented_item = item.commentable
@@ -529,97 +474,23 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def correct_url_for(item)
+  def correct_url_for(item, version = nil)
+    correct_action = version.nil? ? 'show' : 'preview'
+
+    options = { :action => correct_action, :id => item }
+    options[:version] = version if correct_action == 'preview'
+
     item_url = nil
-    if item.class.name == 'Comment'
+    if item.class.name == 'Comment' and correct_action != 'preview'
       item_url = url_for(:controller => zoom_class_controller(commented_item.class.name),
-                         :action => 'show',
+                         :action => correct_action,
                          :id => commented_item,
                          :anchor => item.id,
                          :urlified_name => commented_item.basket.urlified_name)
     else
-      item_url = url_for(:action => 'show', :id => item)
+      item_url = url_for(options)
     end
     item_url
-  end
-
-  # permission check in controller
-  # reverts to version
-  # and removes flags on that version
-  def restore
-    @item = item_from_controller_and_id
-
-    # if version we are about to supersede
-    # is blank, flag it as blank for clarity in the history
-    # this doesn't do the reversion in itself
-    @item.flag_at_with(@item.version, BLANK_FLAG) if @item.already_at_blank_version?
-
-    # unlike flag_version, we create a new version
-    # so we track the restore in our version history
-    @item.revert_to(params[:version])
-    @item.tag_list = @item.raw_tag_list
-    @item.version_comment = "Content from revision \# #{params[:version]}."
-    @item.do_not_moderate = true
-    @item.save
-
-    # keep track of the moderator's contribution
-    @item.add_as_contributor(current_user)
-
-    # now that this item is approved by moderator
-    # we get rid of pending flag
-    # then flag it as reviewed
-    @item.change_pending_to_reviewed_flag(params[:version])
-
-    flagging_clear_caches_and_update_zoom(@item)
-
-    clear_caches_and_update_zoom_for_commented_item(@item)
-
-    flash[:notice] = "The content of this #{zoom_class_humanize(@item.class.name)} has been approved from the selected revision."
-
-    redirect_to correct_url_for(@item)
-  end
-
-  def reject
-    @item = item_from_controller_and_id
-
-    @item.reject_this(params[:version])
-
-    flash[:notice] = "This version of this #{zoom_class_humanize(@item.class.name)} has been rejected."
-
-    redirect_to correct_url_for(@item)
-  end
-
-  # view history of edits to an item
-  # including each version's flags
-  # this expects a rhtml template within each controller's view directory
-  # so that different types of items can have their history display customized
-  def history
-    @item = item_from_controller_and_id
-    @versions = @item.versions
-    # one template (with logic) for all controllers
-    render :template => 'topics/history'
-  end
-
-  # preview a version of an item
-  # assumes a preview templates under the controller
-  def preview
-    @item = item_from_controller_and_id
-
-    # no need to preview live version
-    if @item.version.to_s == params[:version]
-      redirect_to url_for(:action => 'show', :id => params[:id])
-    else
-      @preview_version = @item.versions.find_by_version(params[:version])
-      @flags = Array.new
-      @flag_messages = Array.new
-      @preview_version.taggings.each do |tagging|
-        @flags << tagging.tag.name
-        @flag_messages << tagging.message
-      end
-      @item.revert_to(@preview_version)
-    end
-    # one template (with logic) for all controllers
-    render :template => 'topics/preview'
   end
 
   def prepare_topic_for_show
@@ -641,7 +512,7 @@ class ApplicationController < ActionController::Base
     else
       if !@is_fully_cached
         if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-          @creator = @topic.creators.first
+          @creator = @topic.creator
           @last_contributor = @topic.contributors.last || @creator
         end
 
@@ -759,7 +630,7 @@ class ApplicationController < ActionController::Base
   def render_full_width_content_wrapper?
     if params[:controller] == 'index_page' and params[:action] == 'index'
       return false
-    elsif params[:action] != 'show'
+    elsif params[:action] != 'show' and params[:action] != 'preview'
       return true
     else
       return false
@@ -767,6 +638,5 @@ class ApplicationController < ActionController::Base
   end
 
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :history_url, :render_full_width_content_wrapper?
-
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?
 end

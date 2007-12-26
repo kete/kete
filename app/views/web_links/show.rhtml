@@ -9,6 +9,8 @@
 
       <h2><%= link_to h(@web_link.title), @web_link.url %></h2>
 
+      <%= render(:partial => "details", :locals => { :item => @web_link }) %>
+
       <% else -%>
 
       <h2><%= h(@web_link.title) %></h2>

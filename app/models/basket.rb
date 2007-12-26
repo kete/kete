@@ -189,6 +189,19 @@ class Basket < ActiveRecord::Base
     moderators
   end
 
+  def all_disputed_revisions
+    @all_disputed_revisions = Array.new
+
+    ZOOM_CLASSES.each do |zoom_class|
+      class_plural = zoom_class.tableize
+      these_class_items = self.send("#{class_plural}").find_disputed
+      @all_disputed_revisions += these_class_items
+    end
+
+    # sort by flagged_at
+    @all_disputed_revisions.sort_by { |item| item.flagged_at }
+  end
+
   protected
   # before save filter
   def urlify_name

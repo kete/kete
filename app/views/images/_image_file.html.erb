@@ -1,0 +1,17 @@
+<p><%= image_tag image_file.public_filename, :size => image_file.image_size %></p>
+<div class="pipe-list">
+  <ul>
+    <% sizes_count = 1 -%>
+    <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
+    <% # not sure why, but link_to_unless_current wasn't working
+       class_statement = String.new
+       class_statement = " class=\"first\"" if sizes_count ==1 -%>
+    <% if key.to_s == @view_size -%>
+    <li<%= class_statement -%>><%= key.to_s.humanize -%></li>
+    <% else -%>
+    <li<%= class_statement -%>><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
+    <% end -%>
+    <% sizes_count += 1 -%>
+    <% end -%>
+  </ul>
+</div>

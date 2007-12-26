@@ -1,18 +1,31 @@
-<% @title = 'Flag this item' -%>
+<% @user_type = 'moderator'
+   @title = ' this '
+   @submit_text = 'Flag'
+   @instructions = 'Please give details that might be helpful for the moderator reviewing this item.  For example, if flagging as a duplicate, the URL for the item this content duplicates.'
+   if @flag != REJECTED_FLAG
+     @title = 'Flag' + @title + 'item'
+   else
+     @title = 'Reject' + @title + 'revision'
+     @user_type = 'user'
+     @submit_text = 'Reject'
+     @instructions = 'Please add a message to the user telling the why you have passed over their submitted revision.'
+   end
+-%>
 
 <h2><%= h(@title) -%></h2>
 
-<% form_tag :action => 'flag_version' do %>
+<% form_tag :action => @form_target do %>
         <fieldset>
-                <%= hidden_field_tag "flag", params[:flag] %>
+                <%= hidden_field_tag "flag", @flag %>
                 <%= hidden_field_tag "id", params[:id] %>
                 <div class="form-element">
-                        <label for="message">Message for moderator:</label>
+                        <label for="message">Message for
+                        <%= @user_type -%>:</label>
                         <%= text_area 'message', '' %>
-                        <p>Please give details that might be helpful for the moderator reviewing this item.  For example, if flagging as a duplicate, the URL for the item this content duplicates.</p>
+                        <p><%= @instructions -%></p>
                 </div>
         </fieldset>
-        <%= submit_tag "Flag" %>
+        <%= submit_tag @submit_text %>
 <% end %>
 
 <%= link_to_cancel %>

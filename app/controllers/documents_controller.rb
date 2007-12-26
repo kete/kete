@@ -19,7 +19,7 @@ class DocumentsController < ApplicationController
     end
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @document.creators.first
+      @creator = @document.creator
       @last_contributor = @document.contributors.last || @creator
     end
 
@@ -44,7 +44,11 @@ class DocumentsController < ApplicationController
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @document.add_as_creator(current_user) if @successful
+    if @successful
+      @document.creator = current_user
+
+      @document.do_notifications_if_pending(1, current_user)
+    end
 
     setup_related_topic_and_zoom_and_redirect(@document)
   end
@@ -56,9 +60,13 @@ class DocumentsController < ApplicationController
   def update
     @document = Document.find(params[:id])
 
+    version_after_update = @document.max_version + 1
+
     if @document.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
 
       after_successful_zoom_item_update(@document)
+
+      @document.do_notifications_if_pending(version_after_update, current_user)
 
       flash[:notice] = 'Document was successfully updated.'
 

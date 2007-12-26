@@ -16,7 +16,7 @@ class VideoController < ApplicationController
     end
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @video.creators.first
+      @creator = @video.creator
       @last_contributor = @video.contributors.last || @creator
     end
 
@@ -42,8 +42,11 @@ class VideoController < ApplicationController
     # add this to the user's empire of creations
     # TODO: allow current_user whom is at least moderator to pick another user
     # as creator
-    @video.add_as_creator(current_user) if @successful
+    if @successful
+      @video.creator = current_user
 
+      @video.do_notifications_if_pending(1, current_user)
+    end
     setup_related_topic_and_zoom_and_redirect(@video)
   end
 
@@ -54,10 +57,13 @@ class VideoController < ApplicationController
   def update
     @video = Video.find(params[:id])
 
+    version_after_update = @video.max_version + 1
+
     if @video.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
 
       after_successful_zoom_item_update(@video)
 
+      @video.do_notifications_if_pending(version_after_update, current_user)
       flash[:notice] = 'Video was successfully updated.'
 
       redirect_to_show_for(@video)

@@ -1,6 +1,9 @@
 module ExtendedContentController
   unless included_modules.include? ExtendedContentController
     def self.included(klass)
+      # stuff related to flagging and moderation
+      klass.send :include, FlaggingController
+
       # used to determined appropriate extended fields for the model
       # you are operating on
       klass.send :before_filter, :load_content_type,

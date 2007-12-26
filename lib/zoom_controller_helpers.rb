@@ -1,5 +1,10 @@
 module ZoomControllerHelpers
   unless included_modules.include? ZoomControllerHelpers
+    # set up our helper methods
+    def self.included(klass)
+      klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize
+    end
+
     # this keeps the RoR item around, just destroys zoom record
     # doesn't delete zoom records for any relations
     # mainly for cleaning out old zoom record

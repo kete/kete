@@ -19,7 +19,7 @@ class WebLinksController < ApplicationController
     end
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @web_link.creators.first
+      @creator = @web_link.creator
       @last_contributor = @web_link.contributors.last || @creator
     end
 
@@ -41,7 +41,10 @@ class WebLinksController < ApplicationController
     @web_link = WebLink.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
     @successful = @web_link.save
 
-    @web_link.add_as_creator(current_user) if @successful
+    if @successful
+      @web_link.creator = current_user
+      @web_link.do_notifications_if_pending(1, current_user)
+    end
 
     setup_related_topic_and_zoom_and_redirect(@web_link)
   end
@@ -53,9 +56,13 @@ class WebLinksController < ApplicationController
   def update
     @web_link = WebLink.find(params[:id])
 
+    version_after_update = @web_link.max_version + 1
+
     if @web_link.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
 
       after_successful_zoom_item_update(@web_link)
+
+      @web_link.do_notifications_if_pending(version_after_update, current_user)
 
       flash[:notice] = 'WebLink was successfully updated.'
 

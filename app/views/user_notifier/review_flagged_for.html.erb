@@ -1,0 +1,51 @@
+<%= @user.user_name %>,
+
+Please review the submitted content in <%= @basket.name -%> and take the appropriate action.
+
+
+<% for item in @disputed_revisions %>
+----
+# <%= item.latest_version %>: <%= h(item.version_title) %>
+
+Marked as <%= h(item.flag) %> at <%= item.flagged_at %>
+
+Review this version:
+
+<% zoom_class_controller = item.class.name.tableize
+   case item.class.name
+   when "StillImage"
+   zoom_class_controller = 'images'
+   when "Video"
+   zoom_class_controller = 'video'
+   when "Comment"
+   zoom_class_controller = 'comments'
+   when "AudioRecording"
+   zoom_class_controller = 'audio'
+   end
+
+   preview_url = url_for(:controller => zoom_class_controller,
+                         :urlified_name => item.basket.urlified_name,
+                         :action => 'preview',
+                         :id => item.id,
+                         :version => item.latest_version)
+
+   url_for_history = url_for(:controller => zoom_class_controller,
+                             :urlified_name => item.basket.urlified_name,
+                             :action => :history, :id => item.id)
+%>
+
+<%= preview_url %>
+
+or
+
+the full item's history:
+
+<%= url_for_history %>
+
+----
+
+<% end %>
+
+Thank you,
+<% PRETTY_SITE_NAME -%>
+<% SITE_URL -%>

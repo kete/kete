@@ -1,0 +1,16 @@
+<p>Filename: <%= item.filename %>
+  ( <%= link_to_original_of item,
+        'view' -%>
+  <% if
+     ok_to_convert_to_description?(item)
+     -%>
+  |
+  <%= link_to "replace description
+               with document text",
+      :action => :convert,
+  :id => item %>
+  <% end %>
+  )
+</p>
+<p>Size: <%= number_to_human_size(item.size) %></p>
+<p>Document type: <%= item.content_type %></p>

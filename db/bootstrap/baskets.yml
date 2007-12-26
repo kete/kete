@@ -4,6 +4,7 @@ baskets_001:
   name: Site
   urlified_name: site
   index_page_basket_search: "0"
+  index_page_archives_as: by type
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
 baskets_002:

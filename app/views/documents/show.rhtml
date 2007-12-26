@@ -7,26 +7,12 @@
       <% cache ({:part => 'details'}) do -%>
       <h2><%= h(@document.title) %></h2>
       <p><b><%= @document.short_summary %></b></p>
-      <%= tags_for(@document) -%>
       <% if !@document.already_at_blank_version? -%>
-      <p>Filename: <%= @document.filename %>
-        ( <%= link_to_original_of @document,
-              'view' -%>
-        <% if
-           ok_to_convert_to_description?(@document)
-           -%>
-        |
-        <%= link_to "replace description
-                     with document text",
-            :action => :convert,
-        :id => @document %>
-        <% end %>
-        )
-      </p>
-      <% end %>
-      <p>Size: <%= number_to_human_size(@document.size) %></p>
-      <p>Document type: <%= @document.content_type %></p>
+
+      <%= render(:partial => "details", :locals => { :item => @document }) %>
+
       <p><%= @document.description %></p>
+      <% end %>
       <%= pending_review(@document) %>
       <% end -%>
 

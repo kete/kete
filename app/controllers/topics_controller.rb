@@ -42,6 +42,9 @@ class TopicsController < ApplicationController
                 :only => [:new, :pick, :create, :edit, :update, :pick_topic_type])
   ### end TinyMCE WYSIWYG editor stuff
 
+  # stuff related to flagging and moderation
+  include FlaggingController
+
   def index
     redirect_to_search_for('Topic')
   end
@@ -121,7 +124,7 @@ class TopicsController < ApplicationController
       # add this to the user's empire of creations
       # TODO: allow current_user whom is at least moderator to pick another user
       # as creator
-      @topic.add_as_creator(current_user) if @successful
+      @topic.creator = current_user if @successful
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -147,6 +150,8 @@ class TopicsController < ApplicationController
 
     if @successful
       prepare_and_save_to_zoom(@topic)
+
+      @topic.do_notifications_if_pending(1, current_user)
 
       case where_to_redirect
       when 'show_related'
@@ -200,6 +205,8 @@ class TopicsController < ApplicationController
 
         replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
 
+        version_after_update = @topic.max_version + 1
+
         @successful = @topic.update_attributes(replacement_topic_hash)
       else
         # they don't have permission
@@ -216,6 +223,8 @@ class TopicsController < ApplicationController
 
     if @successful
       after_successful_zoom_item_update(@topic)
+
+      @topic.do_notifications_if_pending(version_after_update, current_user)
 
       # TODO: replace with translation stuff when we get globalize going
       flash[:notice] = 'Topic was successfully edited.'

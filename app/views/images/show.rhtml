@@ -6,49 +6,17 @@
       <% cache({:part => 'details'}) do -%>
       <h2><%= h(@still_image.title) %></h2>
 
-      <% extended_fields_html = display_xml_attributes(@still_image) -%>
-      <% if !extended_fields_html.blank? %>
-      <div id="detail-extended">
-        <h4 id="detail-extended-heading"><%= h(@still_image.title) %></h4>
-        <%= extended_fields_html %>
-      </div>
-      <% end %>
-
-      <%= tags_for(@still_image) -%>
-
       <% if !@still_image.original_file.nil? -%>
 
       <% if !@still_image.already_at_blank_version? -%>
-
-      <p>Original Filename: <%= @still_image.original_file.filename %>
-        (<%= link_to 'view', @still_image.original_file.public_filename -%>)
-      </p>
-
-      <p>Original Size: <%= number_to_human_size(@still_image.original_file.size) %></p>
-      <p>Original Image Type: <%= @still_image.original_file.content_type %></p>
+      <%= render(:partial => "details", :locals => { :item => @still_image }) %>
       <% end -%>
       <% end -%>
       <% end -%>
       <% # default to medium view %>
       <% if !@image_file.nil? %>
       <% if !@still_image.already_at_blank_version? -%>
-      <p><%= image_tag @image_file.public_filename, :size => @image_file.image_size %></p>
-      <div class="pipe-list">
-        <ul>
-          <% sizes_count = 1 -%>
-          <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
-          <% # not sure why, but link_to_unless_current wasn't working -%>
-                                                             <% class_statement = String.new -%>
-                                                             <% class_statement = " class=\"first\"" if sizes_count ==1 -%>
-                                                             <% if key.to_s == @view_size %>
-          <li<%= class_statement -%>><%= key.to_s.humanize -%></li>
-          <% else %>
-          <li<%= class_statement -%>><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
-          <% end -%>
-          <% sizes_count += 1 -%>
-          <% end -%>
-        </ul>
-      </div>
+      <%= render(:partial => "image_file", :object => @image_file) %>
       <% end -%>
       <% else -%>
       <p>Only available as original.</p>

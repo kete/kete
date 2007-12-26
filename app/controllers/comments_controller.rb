@@ -16,7 +16,7 @@ class CommentsController < ApplicationController
     end
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @comment.creators.first
+      @creator = @comment.creator
       @last_contributor = @comment.contributors.last || @creator
     end
 
@@ -38,7 +38,9 @@ class CommentsController < ApplicationController
       # add this to the user's empire of creations
       # TODO: allow current_user whom is at least moderator to pick another user
       # as creator
-      @comment.add_as_creator(current_user)
+      @comment.creator = current_user
+
+      @comment.do_notifications_if_pending(1, current_user)
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = Module.class_eval(params[:comment][:commentable_type]).find(params[:comment][:commentable_id])
@@ -58,9 +60,13 @@ class CommentsController < ApplicationController
   def update
     @comment = Comment.find(params[:id])
 
+    version_after_update = @comment.max_version + 1
+
     if @comment.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
 
       @comment.add_as_contributor(current_user)
+
+      @comment.do_notifications_if_pending(version_after_update, current_user)
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable

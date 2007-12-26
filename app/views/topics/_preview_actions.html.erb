@@ -3,18 +3,19 @@
   <ul>
     <li class="first"><%= link_to "History",
                           :action => :history,
-      :id => @item %></li>
+      :id => item %></li>
     <% if can_moderate -%>
     <li><%= link_to "Make this revision live",
-            {:action => :restore,
-      :id => @item,
-      :version => @item.version},
-      :method => :post,
-      :confirm => 'Are you sure?' %></li>
+         {:action => :restore,
+      :id => item,
+      :version => item.version},
+         :method => :post,
+         :confirm => 'Are you sure?' %></li>
     <li><%= link_to "reject",
-            {:action => :reject,
-      :id => @item,
-      :version => @item.version},
+            {:action => :flag_form,
+      :id => item,
+      :flag => REJECTED_FLAG,
+      :version => item.version},
       :method => :post,
       :confirm => 'Are you sure?'%></li>
     <% end -%>
