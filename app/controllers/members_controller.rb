@@ -112,8 +112,8 @@ class MembersController < ApplicationController
 
   def potential_new_members
     @existing_users = User.find(:all,
-                                :joins => 'as u inner join roles_users as ru on u.id = ru.user_id',
-                                :conditions => ["ru.role_id in (?)", @current_basket.accepted_roles])
+                                :joins => "join roles_users on users.id = roles_users.user_id",
+                                :conditions => ["roles_users.role_id in (?)", @current_basket.accepted_roles])
 
     @potential_new_members = User.find(:all,
                                        :conditions => ["id not in (:existing_users) and login like :searchtext or extended_content like :searchtext",
