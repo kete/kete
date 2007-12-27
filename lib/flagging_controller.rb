@@ -141,7 +141,7 @@ module FlaggingController
         @flag_messages = Array.new
         @preview_version.taggings.each do |tagging|
           @flags << tagging.tag.name
-          @flag_messages << tagging.message
+          @flag_messages << tagging.message if !tagging.message.blank?
         end
         @item.revert_to(@preview_version)
       end
