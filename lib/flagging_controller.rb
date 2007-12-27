@@ -144,9 +144,9 @@ module FlaggingController
           @flag_messages << tagging.message if !tagging.message.blank?
         end
         @item.revert_to(@preview_version)
+        # one template (with logic) for all controllers
+        render :template => 'topics/preview'
       end
-      # one template (with logic) for all controllers
-      render :template => 'topics/preview'
     end
 
     def can_preview?(options = { })
