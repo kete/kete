@@ -44,7 +44,7 @@ class UserNotifier < ActionMailer::Base
 
   def pending_review_for(revision, submitter)
     setup_email(submitter)
-    @subject += "Your submission is pending moderation."
+    @subject += "Your submission is #{PENDING_FLAG} moderation."
     @body[:revision] = revision
   end
 
