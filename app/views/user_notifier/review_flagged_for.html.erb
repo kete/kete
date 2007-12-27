@@ -23,15 +23,17 @@ Review this version:
    zoom_class_controller = 'audio'
    end
 
-   preview_url = SITE_URL + url_for(:controller => zoom_class_controller,
-                                     :urlified_name => item.basket.urlified_name,
-                                     :action => 'preview',
-                                     :id => item.id,
-                                     :version => item.latest_version)
+   site_url = 'http://' + SITE_NAME
 
-   url_for_history = SITE_URL + url_for(:controller => zoom_class_controller,
-                                         :urlified_name => item.basket.urlified_name,
-                                         :action => :history, :id => item.id)
+   preview_url = site_url + url_for(:controller => zoom_class_controller,
+     :urlified_name => item.basket.urlified_name,
+     :action => 'preview',
+     :id => item.id,
+     :version => item.latest_version)
+
+   url_for_history = site_url + url_for(:controller => zoom_class_controller,
+                                        :urlified_name => item.basket.urlified_name,
+                                        :action => :history, :id => item.id)
 %>
 
 <%= preview_url %>
