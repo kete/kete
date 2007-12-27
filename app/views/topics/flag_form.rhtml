@@ -18,6 +18,7 @@
         <fieldset>
                 <%= hidden_field_tag "flag", @flag %>
                 <%= hidden_field_tag "id", params[:id] %>
+                <%= hidden_field_tag "version", params[:version] if !params[:version].blank? %>
                 <div class="form-element">
                         <label for="message">Message for
                         <%= @user_type -%>:</label>
