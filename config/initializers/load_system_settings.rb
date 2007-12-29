@@ -5,9 +5,10 @@ rescue
   current_migration = 0
 end
 
-if Object.const_defined?('SystemSetting') and  current_migration > 40
+if Object.const_defined?('SystemSetting') and current_migration > 40
   # make each setting a global constant
   # see reference for Module for more details about constant setting, etc.
+  site_name_setting = SystemSetting.find(3)
   SystemSetting.find(:all).each do |setting|
     value = setting.value
     if !value.blank? and value.match(/^([0-9\{\[]|true|false)/)
@@ -17,7 +18,11 @@ if Object.const_defined?('SystemSetting') and  current_migration > 40
       # Make sure only knowledgable and AUTHORIZED people can edit System Settings
       value = eval(setting.value)
     end
-    Object.const_set(setting.name.upcase.gsub(/[^A-Z0-9\s_-]+/,'').gsub(/[\s-]+/,'_'), value)
+    if setting.id == 4 and setting.value.blank? and !site_name_setting.value.blank?
+      SITE_URL = 'http://' + site_name_setting.value + '/'
+    else
+      Object.const_set(setting.name.upcase.gsub(/[^A-Z0-9\s_-]+/,'').gsub(/[\s-]+/,'_'), value)
+    end
   end
 
   if !Object.const_defined?('IS_CONFIGURED')

@@ -4,144 +4,158 @@ class ImportersController < ApplicationController
 
   permit "site_admin or admin of :current_basket or tech_admin of :site"
 
-  # fields to add
-  # type of import which equates to an action
-  # import_file_path
-  # attachment_files_directory?
-  # zoom_class to import
+  ### TinyMCE WYSIWYG editor stuff
+  uses_tiny_mce(:options => { :theme => 'advanced',
+                  :browsers => %w{ msie gecko safaris},
+                  :mode => "textareas",
+                  :cleanup => false,
+                  :convert_urls => false,
+                  :content_css => "/stylesheets/kete.css",
+                  :remove_script_host => true,
+                  :theme_advanced_toolbar_location => "top",
+                  :theme_advanced_toolbar_align => "left",
+                  :theme_advanced_resizing => true,
+                  :theme_advanced_resize_horizontal => false,
+                  :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo code},
+                  :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect pastetext pasteword selectall },
+                  :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
+                  :editor_selector => 'mceEditor',
+                  :paste_create_paragraphs => true,
+                  :paste_create_linebreaks => true,
+                  :paste_use_dialog => true,
+                  :paste_auto_cleanup_on_paste => true,
+                  :paste_convert_middot_lists => false,
+                  :paste_unindented_list_class => "unindentedList",
+                  :paste_convert_headers_to_strong => true,
+                  :paste_insert_word_content_callback => "convertWord",
+                  :plugins => %w{ contextmenu paste table fullscreen} },
+                :only => [:new])
+  ### end TinyMCE WYSIWYG editor stuff
+
   def  index
+    list
   end
 
-  # pp4 xml import for archives
-  # steps:
-  # grab fields xml
-  # grab records
-  # foreach record create content_item_hash
-  # populate params item_key subhash with values from content_item_hash
-  # if there is an attachment, copy file to tmp/attachment_for_imported_record
-  # and add uploaded_data with that path to params
-  # check if matching record exists
-  # run create or update method for zoom_class
-  # update creators/contributors
-  # add to queue to add/update zoom
-  def import
-    # TODO: switch contributing user to choice
-    @import_topic_type_for_related_topic = params[:import_topic_type_for_related_topic]
-    @import_type = params[:import_type]
-    @import_dir_path = params[:import_dir_path]
-    @import_parent_dir_for_image_dirs = @import_dir_path + '/images'
-    @contributing_user = User.find(1)
+  def list
+    @imports = @current_basket.imports.paginate(:page => params[:page],
+                                                :per_page => 10,
+                                                :order => 'updated_at desc')
+  end
 
-    case @import_type
-    when 'pp4_xml'
-      @zoom_class = 'StillImage'
+  def choose_contributing_user
+    @potential_contributing_users = User.find(:all,
+                                              :joins => "join roles_users on users.id = roles_users.user_id",
+                                              :conditions => ["roles_users.role_id in (?) and users.id <> #{@current_user.id}",
+                                                              @current_basket.accepted_roles])
 
-      # prevents more than one instance of this worker from getting run
-      logger.debug("what are params :" + params.to_s)
-      logger.debug("what is contributing_user :" + @contributing_user.login)
+    @user_options = @potential_contributing_users.map { |u| [u.user_name, u.id] }
+  end
+
+  def new
+    @import = Import.new
+  end
+
+  def create
+    @import = Import.new(params[:import])
+    if @import.save
       import_request = { :host => request.host,
         :protocol => request.protocol,
         :request_uri => request.request_uri }
 
-      unless MiddleMan[:importer]
-        MiddleMan.new_worker( :class => :past_perfect4_importer_worker,
-                              :args => {  :zoom_class => @zoom_class,
-                                :import_topic_type_for_related_topic => @import_topic_type_for_related_topic,
-                                :import_type => @import_type,
-                                :import_dir_path => @import_dir_path,
-                                :import_parent_dir_for_image_dirs => @import_parent_dir_for_image_dirs,
-                                :params => params,
-                                :import_request => import_request,
-                                :contributing_user => @contributing_user.id
-                              },
-                              :job_key => :importer )
+      case @import.xml_type
+      when 'past_perfect4'
+        @worker_type = :past_perfect4_importer_worker
+        @zoom_class = 'StillImage'
+      when 'fmpdsoresult_no_images'
+        @worker_type = :fmpdsoresult_no_images_importer_worker
+        @zoom_class = 'Topic'
+      when 'simple_topic'
+        @worker_type = :simple_topic_importer_worker
+        @zoom_class = 'Topic'
+      else
+        flash[:notice] = 'Creation failed. No matching import type.'
+        redirect_to :action => 'index'
       end
-    when 'adopt_an_anzac'
-      @contributing_user = User.find_by_login('anzac')
-      @zoom_class = 'Topic'
 
-      # prevents more than one instance of this worker from getting run
-      logger.debug("what are params :" + params.to_s)
-      logger.debug("what is contributing_user :" + @contributing_user.login)
-      import_request = { :host => request.host,
-        :protocol => request.protocol,
-        :request_uri => request.request_uri }
+      worker_name_with_job_key = @worker_type.to_s + '_importer'
+      worker_name_with_job_key = worker_name_with_job_key.to_sym
 
-      unless MiddleMan[:importer]
-        MiddleMan.new_worker( :class => :adopt_an_anzac_importer_worker,
-                              :args => {  :zoom_class => @zoom_class,
-                                :import_topic_type_for_related_topic => @import_topic_type_for_related_topic,
-                                :import_type => @import_type,
-                                :import_dir_path => @import_dir_path,
-                                :import_parent_dir_for_image_dirs => @import_parent_dir_for_image_dirs,
-                                :params => params,
-                                :import_request => import_request,
-                                :contributing_user => @contributing_user.id
-                              },
-                              :job_key => :importer )
-      end
-    when 'taranaki_wordlist'
-      @contributing_user = User.find_by_login('admin')
-      @zoom_class = 'Topic'
+      if !MiddleMan.query_all_workers.keys.include?(worker_name_with_job_key)
+        MiddleMan.new_worker(:worker => @worker_type, :job_key => :importer)
+        MiddleMan.ask_work( :worker => @worker_type,
+                            :job_key => :importer,
+                            :worker_method => :do_work,
+                            :data => {
+                              :zoom_class => @zoom_class,
+                              :import => @import.id,
+                              :params => params,
+                              :import_request => import_request } )
 
-      # prevents more than one instance of this worker from getting run
-      logger.debug("what are params :" + params.to_s)
-      logger.debug("what is contributing_user :" + @contributing_user.login)
-      import_request = { :host => request.host,
-        :protocol => request.protocol,
-        :request_uri => request.request_uri }
-
-      unless MiddleMan[:importer]
-        MiddleMan.new_worker( :class => :taranaki_wordlist_importer_worker,
-                              :args => {  :zoom_class => @zoom_class,
-                                :import_topic_type_for_related_topic => @import_topic_type_for_related_topic,
-                                :import_type => @import_type,
-                                :import_dir_path => @import_dir_path,
-                                :import_parent_dir_for_image_dirs => @import_parent_dir_for_image_dirs,
-                                :params => params,
-                                :import_request => import_request,
-                                :contributing_user => @contributing_user.id
-                              },
-                              :job_key => :importer )
+      else
+        flash[:notice] = 'There is another import running at this time.  Please try back later.'
+        redirect_to :action => 'list'
       end
     else
-      flash[:notice] = 'Creation failed. No matching import type.'
-      redirect_to :action => 'index'
+      render :action => 'new', :contributing_user => params[:import][:user_id]
     end
   end
 
   def get_progress
     begin
-      if request.xhr?
-        logger.debug("inside js")
-        import_worker = MiddleMan.worker(:importer)
-        if !import_worker.nil?
-          records_processed = import_worker.results[:records_processed]
+      status = MiddleMan.ask_status(:worker => params[:worker_type].to_sym, :job_key => :importer)
+      if !status.nil?
+        logger.debug("status: " + status.inspect)
+        if request.xhr?
+          logger.debug("inside js")
+          records_processed = status[:records_processed]
           render :update do |page|
 
             if records_processed > 0
               page.replace_html 'report_records_processed', "#{records_processed} records processed"
             end
 
-            if import_worker.results[:done_with_do_work]
-              page.replace_html 'done', "All records processed"
+            if status[:done_with_do_work] == true or !status[:error].blank?
+              done_message = "All records processed."
+
+              # delete worker and redirect to results in basket
+              MiddleMan.delete_worker(:worker => params[:worker_type].to_sym, :job_key => :importer)
+
+              if !status[:error].blank?
+                done_message = "There was a problem with the import: #{status[:error]}<p><b>The import has been stopped</b></p>"
+              end
+              page.hide("spinner")
+              page.replace_html 'done', done_message
+              page.replace_html 'exit', '<p>' + link_to('Back to Imports', :action => 'list') + '</p>'
             end
           end
         else
-          flash[:notice] = 'Import failed.'
-          redirect_to :action => 'index'
+          flash[:notice] = 'Import failed. You need javascript enabled for this feature.'
+          redirect_to :action => 'list'
         end
       else
-        flash[:notice] = 'Import failed. You need javascript enabled for this feature.'
-        redirect_to :action => 'index'
+        flash[:notice] = 'Import failed.'
+        redirect_to :action => 'list'
       end
     rescue
       # TODO: get redirect to work
       # we aren't getting to this point, might be nested begin/rescue
       # check background logs for error
-      logger.info(MiddleMan.worker(:importer).results[:error])
-      flash[:notice] = "Import failed. #{MiddleMan.worker(:importer).results[:error]}"
+      import_error = !status.nil? ? status[:error] : "import worker not running anymore?"
+      logger.info(import_error)
+      flash[:notice] = "Import failed. #{import_error}"
       redirect_to :action => 'index'
     end
+  end
+
+  def stop
+    # TODO: this doesn't quite do the job, not sure why
+    @worker_type = params[:worker_type]
+    @worker_type = @worker_type.to_sym
+    MiddleMan.delete_worker(:worker => @worker_type , :job_key => :importer)
+
+    Import.find(params[:id]).update_attributes(:status => 'stopped')
+
+    flash[:notice] = 'Import stopped.'
+    redirect_to :action => 'list'
   end
 end

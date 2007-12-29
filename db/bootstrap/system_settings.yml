@@ -25,12 +25,13 @@ system_settings_003:
   section: Server
 system_settings_004:
   name: Site URL
-  technically_advanced: false
-  required_to_be_configured: true
+  technically_advanced: true
+  required_to_be_configured: false
   explanation: |-
     The URL to provide to links to the site.  Should include the protocol at the beginning and a trailing slash.
 
     For example: http://kete.net.net.nz/
+    If you leave this blank, we will use "http://" and Site Name, followed by a trailing "/".
   id: "4"
   value:
   section: Server
@@ -197,8 +198,6 @@ system_settings_023:
     A comma separated list of column names of imported data that we will use as tags for the imported item.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.
 
     For example: ['subjects', 'people', 'places']
-
-
   id: "23"
   value:
   section: Imports
@@ -217,7 +216,7 @@ system_settings_025:
   name: Description Template
   technically_advanced: true
   required_to_be_configured: false
-  explanation: A default piece of HTML that will be added at the beginning of imported item's description.
+  explanation: A default piece of HTML, unless one is specified at the time of import, that will be added at the beginning of imported item's description.
   id: "25"
   value:
   section: Imports
@@ -365,3 +364,36 @@ system_settings_041:
   id: 41
   value: "4"
   section: Flagging
+system_settings_042:
+  name: Title Synonyms
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    A comma separated list of column names of imported data that can be used as an imported item's title.  Usually, you'll only have one column name that is a synonym for title per import type.  We provide a list here so that we can support multiple import types.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.
+
+    For example: ['name', 'TERM']
+  id: "42"
+  value:
+  section: Imports
+system_settings_043:
+  name: Short Summary Synonyms
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    A comma separated list of column names of imported data that will be added together to make the item's short summary.  Only applicable to topics and documents.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.
+
+    For example: ['desc', 'notes', 'other_info']
+  id: "43"
+  value:
+  section: Imports
+system_settings_044:
+  name: Import Fields to Ignore
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    A comma separated list of column names of imported data that are problematic and should simply be ignored.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.  You are probably best to add to this list rather than replace it.
+
+    For example: ['BAD_DATA']
+  id: "44"
+  value: "['HiliteLibrary']"
+  section: Imports

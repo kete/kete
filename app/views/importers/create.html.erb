@@ -1,0 +1,18 @@
+<% @title = 'Import from ' + @import.directory %>
+<h2><%= @title -%></h2>
+
+<%= periodically_call_remote(:url => {:action => 'get_progress',
+:worker_type => @worker_type}, :frequency => 20) %>
+
+<div id="report_records_processed">Starting import...</div>
+
+<div id="spinner">
+<img src="/images/indicator.gif" width="16" height="16" alt="completed">
+</div>
+
+<div id="done">...in progress.</div>
+
+<div id="exit">
+<% # stop action broken because of bug in backgroundrb? %>
+<% # button_to 'Stop Import Early', :action => 'stop', :id => @import, :worker_type => @worker_type %>
+</div>

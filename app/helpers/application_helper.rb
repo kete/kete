@@ -540,15 +540,23 @@ module ApplicationHelper
     end
   end
 
-  def xml_enclosure_for_item_with_file(xml, item, host)
-    args = { :type => item.content_type,
-      :length => item.size.to_s,
-      :url => "http://#{host}#{item.public_filename}" }
-
-    if item.class.name == 'ImageFile'
-      args[:width] = item.width
-      args[:height] = item.height
+  # we use this in imports, too
+  def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options={ })
+    result = "<select name='#{ object}[#{method}]'"
+    html_options.each do |key, value|
+        result << ' ' + key.to_s + '="' + value.to_s + '"'
     end
-    xml.enclosure args
+    result << ">\n"
+    for element in collection
+      indent_string = String.new
+        element.level.times { indent_string += "&nbsp;" }
+        if current_value == element.send(value_method)
+          result << "<option value='#{ element.send(value_method)}' selected='selected'>#{indent_string}#{element.send(text_method)}</option>\n"
+        else
+          result << "<option value='#{element.send(value_method)}'>#{indent_string}#{element.send(text_method)}</option>\n"
+        end
+    end
+    result << "</select>\n"
+    return result
   end
 end

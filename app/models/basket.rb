@@ -26,6 +26,9 @@ class Basket < ActiveRecord::Base
   # a topic may be the designated index page for it's basket
   has_one :index_topic, :class_name => 'Topic', :foreign_key => 'index_for_basket_id'
 
+  # imports are processes to bring in content to a basket
+  has_many :imports, :dependent => :destroy
+
   validates_presence_of :name
   validates_uniqueness_of :name
 

@@ -17,6 +17,13 @@ class TopicType < ActiveRecord::Base
       TopicTypeToFieldMapping.add_as_to("true", self, required_form_field)
     end
   end
+
+  # imports are processes to bring in content to a basket
+  # they specify a topic type of thing they are importing
+  # or a topic type for the item that relates groups of things
+  # that they are importing
+  has_many :imports, :dependent => :destroy
+
   validates_presence_of :name, :description
   validates_uniqueness_of :name
 

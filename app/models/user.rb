@@ -1,5 +1,11 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
+  # imports are processes to bring in content to a basket
+  # they specify a topic type of thing they are importing
+  # or a topic type for the item that relates groups of things
+  # that they are importing
+  has_many :imports, :dependent => :destroy
+
   # Walter McGinnis, 2007-03-23
   # added activation supporting code
   # it's use it set by REQUIRE_ACTIVATION in config/environment.rb

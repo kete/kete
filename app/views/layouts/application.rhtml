@@ -126,12 +126,18 @@
                                                                               :id => @current_basket,
                                                                               :controller => '/baskets',
                                                                               :action => :edit -%></li>
-                                <li><%= link_to_unless_current "moderate",
+                                <li><%= link_to_unless_current "moderate basket contents",
                                                                 :controller => '/moderate',
                                                                 :action => :list -%></li>
                                 <li><%= link_to_unless_current "basket members",
                                                                 :controller => '/members',
                                                                 :action => :list -%></li>
+                                <% # when this is more refined, may open this up to non-tech-admins -%>
+                                <% if @tech_admin -%>
+                                                                <li><%= link_to_unless_current "import content into basket",
+                                                                                                :controller => '/importers',
+                                                                                                :action => :list -%></li>
+                                <% end %>
                                 <% if @current_basket.urlified_name != 'site' -%>
                                         <li><%= link_to_unless_current "delete this basket",
                                                         { :id => @current_basket,
@@ -170,10 +176,6 @@
                         <% if @tech_admin -%>
                         |
                         <%= link_to_unless_current "reconfigure site", :controller => '/configure',
-                                                                        :action => :index,
-                                                                        :urlified_name => @site_basket.urlified_name -%>
-                        |
-                        <%= link_to_unless_current "importers", :controller => '/importers',
                                                                         :action => :index,
                                                                         :urlified_name => @site_basket.urlified_name -%>
                         |

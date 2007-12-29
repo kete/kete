@@ -1,0 +1,14 @@
+<% @title = 'Choose Contributing User' -%>
+
+<h4><%= @title -%></h4>
+
+<% if @potential_contributing_users.size > 0 %>
+<% form_tag :action => :new do -%>
+<%= select_tag('contributing_user', options_for_select(@user_options)) %>
+<%= submit_tag "Choose" %>
+<% end -%>
+<% else %>
+<p>No potential contributing user found.</p>
+<% end %>
+
+<%= link_to_cancel %>

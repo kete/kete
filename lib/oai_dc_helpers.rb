@@ -1,6 +1,10 @@
 # oai dublin core xml helpers
 module OaiDcHelpers
   unless included_modules.include? OaiDcHelpers
+    def self.included(klass)
+      klass.send :include, XmlHelpers
+    end
+
     # TODO: this is duplicated in application.rb, fix
     def user_to_dc_creator_or_contributor(user)
       user.user_name
@@ -151,7 +155,11 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_description_for_file(xml, item, passed_request = nil)
-      host = !passed_request.nil? ? passed_request[:host] : request.host
+      if !passed_request.nil?
+        host = passed_request[:host]
+      else
+        host = request.host
+      end
 
       file_classes = %w{ AudioRecording Document Video StillImage }
 

@@ -1,0 +1,39 @@
+<% @title = 'Imports' -%>
+
+<h2><%= h(@title) -%></h2>
+<p>This is the import facility. Using it you can import content into
+  this basket that has been exported from supported systems such as Past Perfect.</p>
+
+<% if @imports.blank? %>
+<p>No previous imports have been run in this basket.</p>
+<% else %>
+<table class="history-table">
+  <tr><th>Folder</th><th>Started</th><th>Type</th><th>User</th><th>Status</th><th>Records
+  Processed</th></tr>
+  <% for import in @imports %>
+  <tr>
+    <td>
+      <%= h(import.directory) %>
+    </td>
+    <td>
+      <%= import.created_at.to_s(:euro_date_time) %>
+    </td>
+    <td>
+      <%= h(import.xml_type) %>
+    </td>
+    <td><%= link_to_contributions_of(import.user,'Topic') -%></td>
+    <td>
+      <%= import.status %> as of
+      <%= import.updated_at.to_s(:euro_date_time) %>
+    </td>
+    <td>
+      <%= import.records_processed %>
+    </td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+
+<p><%= link_to 'Start new import', :action => 'new' -%></p>
+
+<div id="prev-next"><%=  will_paginate @imports %></div>

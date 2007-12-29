@@ -1,0 +1,169 @@
+<% @title = 'New Import' -%>
+
+<h2><%= h(@title) -%></h2>
+
+<h3>To start an import, you must follow several conventions:</h3>
+
+<ul>
+  <li><p>You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in
+    a supported format.</p></li>
+
+  <li><p>Optional: you have created a Topic Type ("topic types" link under
+  Administrator Toolbox) to group related items together, such as
+  "Collection" or be the topic type for new topics in the case of
+  text only imports.</p></li>
+
+  <li><p>You have mapped the applicable fields in the records.xml file to
+    appropriate Extended Fields' import synonyms. Import Synonyms must
+    be an exact match for the field in the records.xml file.  See "extended
+    fields" link in Administrator's Toolbox.  You'll also want to add
+    these extended fields to the appropriate Topic Type or Content Type.</p></li>
+
+  <li><p>You have mapped the appropriate fields in the records.xml
+    file to tags or the title, short summary, or description fields.  Click "reconfigure site" in Administrator's Toolbox, then
+    "Advanced Options", then "Imports", and fill out form
+    appropriately.  You will need to restart the site before your
+    import for these settings to take effect.</p></li>
+
+  <li><p>You may also add a Description Template in the above
+    mentioned "Imports" form which contains HTML to be added the top
+    of each imported item's description.</p></li>
+
+  <li><p>Make a folder, referred to as your_folder from here on in the instructions, that has the following files and
+    subfolders involved in your import:</p></li>
+
+  <ul>
+    <li>your_folder</li>
+    <ul>
+      <li>records.xml - the previously mentioned XML file that contains a record for
+        each item of content to be imported.  Note that it has to be
+        in a format that your selected "Import Type" understands or
+        the import will fail. Seen notes on "Import Type" for tools
+        to create this file.</li>
+      <li>Optional: a subfolder named 'images' - For your folders containing
+        images or image files themselves. For example if you had a
+        folder of images called 001, you would put it inside
+        your_folder/images/ and then images would found be at location
+        like your_folder/images/001/an_image.jpg.</li>
+      <li>Optional: accessions.xml - only applicable if this is a Past
+        Perfect import.</li>
+    </ul>
+  </ul>
+
+  <li><p>your_folder should be placed on your server wherever your Kete
+    souce code lives, <b>under the imports folder</b>.  So if you have
+    installed Kete using the conventions of the installation guide,
+    that would be something like '/home/kete/apps/my_kete_project/current/imports/your_folder'.</p></li>
+
+  <li><p><b>You will have to transfer the files involved to the server
+    which houses your kete installation via a separate process.</b>  We do
+    this separately since imports may involve a large amount of big
+    files and the method necessary may vary depending on your
+    installation.</p></li>
+
+</ul>
+
+<h3>If you have done the above, fill out the form below to start the
+  import.</h3>
+
+<fieldset>
+
+  <h4>Choose someone to be contributor of imported items</h4>
+  <div class="form-element">
+    <% # placing this in here for form reloading if validation fails
+       @contributing_user = !params[:contributing_user].blank? ? User.find(params[:contributing_user]) : current_user -%>
+
+    <p>Current choice:
+      <% if @current_user == @contributing_user -%>
+      Self
+      <% else -%>
+      <%= h(@contributing_user.user_name) -%>
+      <% end -%>
+    <% form_tag :action => 'choose_contributing_user' do %>
+    <div id="searchheader">
+      <label for="contributing_user">or a contributing member:</label>
+      <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' %>
+      <%= submit_tag "Search", :class => 'searchbutton' %>
+    </div>
+    <% end %>
+  </div>
+
+  <hr>
+
+<% form_for :import,
+            :url => { :action => 'create'},
+            :html => { :multipart => true } do |form| %>
+
+  <%= error_messages_for 'import' %>
+
+  <%= hidden_field_tag 'import[basket_id]', @current_basket.id %>
+  <%= hidden_field_tag 'import[user_id]', @contributing_user.id %>
+
+  <div class="form-element">
+    <label class="required" for="import[directory]">What is the name of
+      your folder under the imports directory?</label>
+    <%= form.text_field :directory %>
+  </div>
+
+  <% @type_options = [['Past Perfect 4', 'past_perfect4'],
+  ['Filemaker Pro\'s FMPDSORESULT XML format (text records only, no
+  associated images)', 'fmpdsoresult_no_images'],
+['Simple XML Topics', 'simple_topic']] -%>
+
+  <div class="form-element">
+    <label class="required" for="import[xml_type]">Import Type?</label>
+    <%= form.select :xml_type, @type_options %>
+  </div>
+
+  <div class="form-element">
+    <label class="required" for="import[xml_path_to_record]">XML Path
+    to Record (only
+    applicable to Simple XML Topics type):</label>
+    <%= form.text_field :xml_path_to_record %>
+  </div>
+  <div class="form_example">What is the XML element path that specifies
+  each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'.
+  </div>
+
+  <div class="form-element">
+    <label class="required" for="import[topic_type_id]">Applicable Topic
+      Type?</label>
+    <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, {:class=>"select"}) %>
+    <div class="form_example">If this is an image import, such as
+      Past Perfect, than what's the name of the Topic Type of the
+      new topic for groups of
+      related items (e.g. 'Archive', 'Collection', 'Album')?
+      If this is a text only import such as FMPDSORESULT, than
+      this is the Topic Type of new topic that is created.
+    </div>
+  </div>
+
+  <div class="form-element">
+    <label for="import[description_template]">Description Template</label>
+
+    <%= form.text_area :description_template, :class => "mceEditor", :cols => 120 %>
+
+    <div class="form_example">A piece of HTML that will go at the
+    start of every description during this import.
+    </div>
+  </div>
+
+  <div class="form-element">
+    <label for="import[default_attribution]">Attribution Template</label>
+
+    <%= form.text_area :default_attribution, :class => "mceEditor", :cols => 120 %>
+
+    <div class="form_example">Should we append an piece of text
+      formatted in HTML as
+      attribution to the description of each piece of content that is
+      created during this import?  An example would be "&lt;p&gt;Any use of this image must be
+      accompanied by the credit 'Horowhenua Historical Society Inc.'&lt;\p&gt;"
+    </div>
+  </div>
+
+  <div class="form-element">
+    <%= submit_tag 'Import' %>
+  </div>
+
+</fieldset>
+<% end %>
