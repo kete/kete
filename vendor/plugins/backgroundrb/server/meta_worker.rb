@@ -154,7 +154,7 @@ module BackgrounDRb
     attr_accessor :logger, :thread_pool
     iattr_accessor :pool_size
     @pool_size = nil
-    
+
     def self.pool_size(size = nil)
       if size
         @pool_size = size
@@ -207,7 +207,7 @@ module BackgrounDRb
     # method is responsible for invoking appropriate method in user
     def process_request(p_data)
       user_input = p_data[:data]
-      logger.info "#{user_input[:worker_method]} #{user_input[:data]}"
+      logger.info "#{user_input[:worker_method]} #{user_input[:data].inspect}"
       if (user_input[:worker_method]).nil? or !respond_to?(user_input[:worker_method])
         logger.info "Undefined method #{user_input[:worker_method]} called on worker #{worker_name}"
         return
