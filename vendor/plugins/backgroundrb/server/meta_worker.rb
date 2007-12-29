@@ -9,7 +9,7 @@ module BackgrounDRb
       @worker.send_request(:worker => :log_worker, :data => p_data)
     end
 
-    def debug
+    def debug(p_data)
       @worker.send_request(:worker => :log_worker, :data => p_data)
     end
   end
@@ -23,10 +23,9 @@ module BackgrounDRb
   end
 
   class ThreadPool
-    attr_accessor :size
-    attr_accessor :threads
-    attr_accessor :work_queue
-    def initialize(size)
+    attr_accessor :size,:threads,:work_queue,:logger
+    def initialize(size,logger)
+      @logger = logger
       @size = size
       @threads = []
       @work_queue = Queue.new
@@ -166,11 +165,11 @@ module BackgrounDRb
     # does initialization of worker stuff and invokes create method in
     # user defined worker class
     def worker_init
-      @thread_pool = ThreadPool.new(pool_size || 20)
-
       @config_file = YAML.load(ERB.new(IO.read("#{RAILS_HOME}/config/backgroundrb.yml")).result)
       # load_rails_env
       @logger = PacketLogger.new(self)
+      @thread_pool = ThreadPool.new(pool_size || 20,@logger)
+
       if(@worker_options && @worker_options[:schedule] && no_auto_load)
         load_schedule_from_args
       elsif(@config_file[:schedules] && @config_file[:schedules][worker_name.to_sym])
