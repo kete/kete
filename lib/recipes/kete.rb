@@ -51,6 +51,11 @@ namespace :deploy do
       run "cp -r #{latest_release}/imports #{shared_path}/system/"
     end
 
+    desc "The directory that holds everything related to themes needs to live under share/system/themes"
+    task :setup_themes, :roles => :app do
+      run "cp -r #{latest_release}/public/themes #{shared_path}/system/"
+    end
+
     desc "Set up the database with migrations and default data."
     task :db_bootstrap , :roles => :db do
       rake = fetch(:rake, 'rake')
@@ -79,5 +84,11 @@ namespace :deploy do
     run "mkdir -p #{shared_path}/system/imports"
     run "rm -rf #{current_path}/imports"
     run "ln -nfs #{shared_path}/system/imports #{current_path}/"
+
+    # handle our themes directory and all the stuff that lives in it
+    # make system/themes if it doesn't exist already
+    run "mkdir -p #{shared_path}/system/themes"
+    run "rm -rf #{current_path}/public/themes"
+    run "ln -nfs #{shared_path}/system/themes #{current_path}/public/themes"
   end
 end
