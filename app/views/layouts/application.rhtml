@@ -107,7 +107,7 @@
 
         <div id="container">
           <% if render_full_width_content_wrapper? %>
-             <%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>"full-width notabs" }) %>
+             <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
           <% end %>
           <%= @content_for_layout %>
         </div><!--  /container -->
@@ -214,7 +214,7 @@
            <div id="notice"><%= flash[:notice] %></div>
         <% end %>
 
-<%= render(:partial => "topics/content_wrapper_start" , :locals => { :classes =>
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
 "full-width notabs" }) %>
 
 
