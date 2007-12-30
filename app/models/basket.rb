@@ -205,6 +205,22 @@ class Basket < ActiveRecord::Base
     @all_disputed_revisions.sort_by { |item| item.flagged_at }
   end
 
+  def possible_themes
+    themes_full_path = RAILS_ROOT + '/public/themes'
+    @possible_themes = Array.new
+
+    themes_dir = Dir.new(themes_full_path)
+    themes_dir.each do |listing|
+      path_to_theme_dir = themes_dir + listing
+      if File.directory?(path_to_theme_dir) and !['.', '..', '.svn'].include?(listing)
+        # needs to have at least a css directory under it
+        # TODO: should also have a preview image
+        @possible_themes << listing if File.exists?(path_to_theme_dir + '/css')
+      end
+    end
+    @possible_themes
+  end
+
   protected
   # before save filter
   def urlify_name

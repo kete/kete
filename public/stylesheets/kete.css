@@ -788,3 +788,10 @@ fieldset {
         float: left;
         padding: 4px;
 }
+
+/* code styles */
+
+pre {
+    overflow: auto;
+}
+

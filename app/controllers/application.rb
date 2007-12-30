@@ -26,6 +26,8 @@ class ApplicationController < ActionController::Base
   # and will always be specified in our routes
   before_filter :load_standard_baskets
 
+  before_filter :load_theme_related
+
   # sets up instance variables for authentication
   include KeteAuthorization
 
@@ -83,6 +85,28 @@ class ApplicationController < ActionController::Base
         @current_basket = @documentation_basket
       else
         @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
+      end
+    end
+  end
+
+  # figure out which theme we need
+  # and load up an array of the web paths
+  # to the css files
+  def load_theme_related
+    @theme = @current_basket.settings[:theme] || @site_basket.settings[:theme] || 'default'
+    @theme_font_family = @current_basket.settings[:theme_font_family] || @site_basket.settings[:theme_font_family] || 'sans-serif'
+    @header_image = @current_basket.settings[:header_image] || @site_basket.settings[:header_image] || nil
+    @theme_styles = Array.new
+
+    # TODO: worth looking into caching this
+    theme_css_web_path = '/themes/' + @theme + '/css/'
+    theme_css_full_path = RAILS_ROOT + '/public' + theme_css_web_path
+    theme_css_dir = Dir.new(theme_css_full_path)
+    theme_css_dir.each do |file|
+      file_full_path = theme_css_full_path + file.to_s
+      if !File.directory?(file_full_path) and File.extname(file_full_path) == '.css'
+        web_root_to_file = theme_css_web_path + file
+        @theme_styles << web_root_to_file
       end
     end
   end

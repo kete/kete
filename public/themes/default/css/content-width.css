@@ -1,0 +1,6 @@
+#body-outer-wrapper {
+        min-width: 40em;
+        max-width: 75em;
+        margin: auto;
+        position: relative;
+}
