@@ -5,9 +5,10 @@ class Import < ActiveRecord::Base
   # user is the person that added as the creator of items imported
   belongs_to :user
 
-  validates_presence_of :directory, :xml_type
+  validates_presence_of :directory, :xml_type, :interval_between_records
   # don't allow special characters in directory name that will break our import
   validates_format_of :directory, :with => /^[^ \'\"<>\&,\/\\\?]*$/, :message => ": spaces and  \', \\, /, &, \", ?, <, and > characters aren't allowed"
+  validates_numericality_of :interval_between_records, :only_integer => true, :message => "the interval must be in seconds"
 
   private
   def validate

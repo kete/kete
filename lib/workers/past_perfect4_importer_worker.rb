@@ -36,19 +36,20 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       @contributing_user = @import.user
       @import_request = args[:import_request]
       @current_basket = @import.basket
-      @attributions['default'] = @import.default_attribution
+      @end_description_templates['default'] = @import.default_end_description_template
+      @record_interval = @import.interval_between_records
 
-      logger.info("after attribution and var assigns")
+      logger.info("after end_description_template and var assigns")
       # legacy support for kete horowhenua
       if !@import_request[:host].scan("horowhenua").blank?
-        @attributions['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
-        @attributions['/f\d/'] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
-        @attributions["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
+        @end_description_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
+        @end_description_templates['/f\d/'] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
+        @end_description_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
 
         @collections_to_skip << "HHS Photograph Collection"
       end
 
-      logger.info("after attribution reassign")
+      logger.info("after end_description_template reassign")
 
       @zoom_class_for_params = @zoom_class.tableize.singularize
 
@@ -240,15 +241,15 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
       new_record = nil
       if existing_item.nil?
-        # figure out the attribution based on the objectid
-        attribution = @attributions['default']
-        @attributions.each do |pattern, text|
+        # figure out the end_description_template based on the objectid
+        end_description_template = @end_description_templates['default']
+        @end_description_templates.each do |pattern, text|
           if pattern != 'default'
-            attribution = text if !image_objectid.scan(pattern).blank?
+            end_description_template = text if !image_objectid.scan(pattern).blank?
           end
         end
 
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :attribution => attribution })
+        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :end_description_template => end_description_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -262,12 +263,11 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           if @last_related_topic.nil? or related_topic.id != @last_related_topic.id
             # update the last topic, since we are done adding things to it for now
             importer_prepare_and_save_to_zoom(related_topic)
-            sleep(2)
           end
         end
 
         importer_prepare_and_save_to_zoom(new_record)
-        sleep(2)
+        sleep(@record_interval) if @record_interval > 0
 
         # now that we know that we have a valid related_topic
         # update @last_related_topic and @last_related_topic_pp4_objectid
@@ -283,6 +283,8 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     end
     # will this help memory leaks
     record = nil
+    # give zebra and our server a small break
+    sleep(@record_interval) if @record_interval > 0
   end
 
   # customized in this worker to override importer module version
@@ -384,12 +386,12 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     logger.info("after fields")
 
-    if !@import.description_template.blank?
+    if !@import.description_beginning_template.blank?
       # append the citation to the description field
       if !params[zoom_class_for_params][:description].nil?
-          params[zoom_class_for_params][:description] = @import.description_template + "\n\n" + params[zoom_class_for_params][:description]
+          params[zoom_class_for_params][:description] = @import.description_beginning_template + "\n\n" + params[zoom_class_for_params][:description]
       else
-        params[zoom_class_for_params][:description] = @import.description_template
+        params[zoom_class_for_params][:description] = @import.description_beginning_template
       end
     elsif !DESCRIPTION_TEMPLATE.blank?
       if !params[zoom_class_for_params][:description].nil?
@@ -399,16 +401,16 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       end
     end
 
-    if !options[:attribution].nil?
-      # append the attribution to the description field
+    if !options[:end_description_template].nil?
+      # append the end_description_template to the description field
       if !params[zoom_class_for_params][:description].nil?
-        params[zoom_class_for_params][:description] += "\n\n" + options[:attribution]
+        params[zoom_class_for_params][:description] += "\n\n" + options[:end_description_template]
       else
-        params[zoom_class_for_params][:description] = options[:attribution]
+        params[zoom_class_for_params][:description] = options[:end_description_template]
       end
     end
 
-    logger.info("after attribution")
+    logger.info("after end_description_template")
 
     description = String.new
     # used to give use better html output for descriptions

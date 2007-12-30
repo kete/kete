@@ -38,7 +38,7 @@ module Importer
     def importer_simple_setup
       @successful = false
       @import_field_to_extended_field_map = Hash.new
-      @attributions = Hash.new
+      @end_description_templates = Hash.new
       @collections_to_skip = Array.new
       @results = { :do_work_time => Time.now.to_s,
         :done_with_do_work => false,
@@ -67,12 +67,13 @@ module Importer
         @import_dir_path = Import::IMPORTS_DIR + @import.directory
         @contributing_user = @import.user
         @import_request = args[:import_request]
-        @attributions['default'] = @import.default_attribution
+        @end_description_templates['default'] = @import.default_end_description_template
         @current_basket = @import.basket
         logger.info("what is current basket: " + @current_basket.inspect)
         @import_topic_type = @import.topic_type
         @zoom_class_for_params = @zoom_class.tableize.singularize
         @xml_path_to_record ||= @import.xml_path_to_record
+        @record_interval = @import.interval_between_records
 
         params = args[:params]
 
@@ -431,8 +432,8 @@ module Importer
 
       new_record = nil
       if existing_item.nil?
-        attribution = @attributions['default']
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :attribution => attribution })
+        end_description_template = @end_description_templates['default']
+        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :end_description_template => end_description_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -443,8 +444,6 @@ module Importer
         logger.info("new record succeeded for insert")
         importer_prepare_and_save_to_zoom(new_record)
         importer_update_records_processed_vars
-        # give zebra and our server a small break
-        sleep(2)
       end
 
       # if this record was skipped, add to skipped_records
@@ -453,6 +452,8 @@ module Importer
       end
       # will this help memory leaks
       record = nil
+      # give zebra and our server a small break
+      sleep(@record_interval) if @record_interval > 0
     end
 
     # XPATH was proving too unreliable
@@ -607,12 +608,12 @@ module Importer
       logger.info("after fields")
 
 
-      if !@import.description_template.blank?
+      if !@import.description_beginning_template.blank?
         # append the citation to the description field
         if !params[zoom_class_for_params][:description].nil?
-          params[zoom_class_for_params][:description] = @import.description_template + "\n\n" + params[zoom_class_for_params][:description]
+          params[zoom_class_for_params][:description] = @import.description_beginning_template + "\n\n" + params[zoom_class_for_params][:description]
         else
-          params[zoom_class_for_params][:description] = @import.description_template
+          params[zoom_class_for_params][:description] = @import.description_beginning_template
         end
       elsif !DESCRIPTION_TEMPLATE.blank?
         if !params[zoom_class_for_params][:description].nil?
@@ -622,12 +623,12 @@ module Importer
         end
       end
 
-      if !options[:attribution].nil?
-        # append the attribution to the description field
+      if !options[:end_description_template].nil?
+        # append the end_description_template to the description field
         if !params[zoom_class_for_params][:description].nil?
-          params[zoom_class_for_params][:description] += "\n\n" + options[:attribution]
+          params[zoom_class_for_params][:description] += "\n\n" + options[:end_description_template]
         else
-          params[zoom_class_for_params][:description] = options[:attribution]
+          params[zoom_class_for_params][:description] = options[:end_description_template]
         end
       end
 

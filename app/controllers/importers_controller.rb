@@ -53,6 +53,7 @@ class ImportersController < ApplicationController
 
   def new
     @import = Import.new
+    @import.interval_between_records = 15
   end
 
   def create

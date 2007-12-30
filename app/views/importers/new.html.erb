@@ -105,6 +105,19 @@
     <%= form.text_field :directory %>
   </div>
 
+  <div class="form-element">
+    <label class="required" for="import[interval_between_records]">How
+    long should we wait in seconds between processing records?</label>
+    <%= form.text_field :interval_between_records, :size => 3 %>
+    <div class="form_example">To protect against an import
+    overwhelming your server's resources and affecting the response
+    time of your website, we recommend an interval
+    between processing each record.  If your server has a lot of
+    computing power, feel free to lower this number or even put in '0'.
+    </div>
+  </div>
+
+
   <% @type_options = [['Past Perfect 4', 'past_perfect4'],
   ['Filemaker Pro\'s FMPDSORESULT XML format (text records only, no
   associated images)', 'fmpdsoresult_no_images'],
@@ -120,9 +133,9 @@
     to Record (only
     applicable to Simple XML Topics type):</label>
     <%= form.text_field :xml_path_to_record %>
-  </div>
-  <div class="form_example">What is the XML element path that specifies
-  each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'.
+    <div class="form_example">What is the XML element path that specifies
+      each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'.
+    </div>
   </div>
 
   <div class="form-element">
@@ -139,9 +152,9 @@
   </div>
 
   <div class="form-element">
-    <label for="import[description_template]">Description Template</label>
+    <label for="import[description_beginning_template]">Beginning Description Template</label>
 
-    <%= form.text_area :description_template, :class => "mceEditor", :cols => 120 %>
+    <%= form.text_area :description_beginning_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
 
     <div class="form_example">A piece of HTML that will go at the
     start of every description during this import.
@@ -149,15 +162,17 @@
   </div>
 
   <div class="form-element">
-    <label for="import[default_attribution]">Attribution Template</label>
+    <label for="import[default_description_end_template]">End
+    Description Template (good for including an attribution)</label>
 
-    <%= form.text_area :default_attribution, :class => "mceEditor", :cols => 120 %>
+    <%= form.text_area :default_description_end_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
 
     <div class="form_example">Should we append an piece of text
-      formatted in HTML as
-      attribution to the description of each piece of content that is
+      formatted in HTML to the end of the description of each piece of content that is
       created during this import?  An example would be "&lt;p&gt;Any use of this image must be
-      accompanied by the credit 'Horowhenua Historical Society Inc.'&lt;\p&gt;"
+      accompanied by the credit 'Horowhenua Historical Society
+      Inc.'&lt;\p&gt;".  Useful for including an attribution for the
+      source of the imported item.
     </div>
   </div>
 
