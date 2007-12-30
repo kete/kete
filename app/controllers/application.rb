@@ -99,13 +99,13 @@ class ApplicationController < ActionController::Base
     @theme_styles = Array.new
 
     # TODO: worth looking into caching this
-    theme_css_web_path = '/themes/' + @theme + '/css/'
-    theme_css_full_path = RAILS_ROOT + '/public' + theme_css_web_path
-    theme_css_dir = Dir.new(theme_css_full_path)
-    theme_css_dir.each do |file|
-      file_full_path = theme_css_full_path + file.to_s
+    theme_styles_path = @theme + '/stylesheets/'
+    theme_styles_full_path = THEMES_ROOT + '/' + theme_styles_path
+    theme_styles_dir = Dir.new(theme_styles_full_path)
+    theme_styles_dir.each do |file|
+      file_full_path = theme_styles_full_path + file.to_s
       if !File.directory?(file_full_path) and File.extname(file_full_path) == '.css'
-        web_root_to_file = theme_css_web_path + file
+        web_root_to_file = '/' + THEMES_DIR_NAME + '/' + theme_styles_path + file
         @theme_styles << web_root_to_file
       end
     end

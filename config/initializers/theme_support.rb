@@ -1,0 +1,2 @@
+THEMES_DIR_NAME = 'themes'
+THEMES_ROOT = RAILS_ROOT + '/public/' + THEMES_DIR_NAME

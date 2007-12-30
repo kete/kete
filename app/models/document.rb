@@ -50,5 +50,21 @@ class Document < ActiveRecord::Base
     end
   end
 
-  # convert_attachment_to :html, :description
+  # probably won't work on Windoze
+  # good thing we don't officially support it!
+  def decompress_as_theme
+    target_dir = THEME_ROOT + '/'
+    case content_type
+    when 'application/zip'
+      `unzip #{self.full_filename} -d #{target_dir}`
+    when 'application/x-gtar'
+      `tar xf #{self.full_filename} #{target_dir}`
+    when 'application/x-gzip'
+      if !self.filename.scan("tgz").blank? or !self.filename.scan("tar\.gz").blank?
+        `tar xfz #{self.full_filename} -C #{target_dir}`
+      else
+        `cp #{self.full_filename} #{target_dir}; cd #{target_dir}; gunzip #{self.filename}`
+      end
+    end
+  end
 end
