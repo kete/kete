@@ -391,7 +391,7 @@ system_settings_044:
   technically_advanced: true
   required_to_be_configured: false
   explanation: |-
-    A comma separated list of column names of imported data that are problematic and should simply be ignored.  You must use single quotes, too. Opening [ and closing ] are required. Just put [] for none.  You are probably best to add to this list rather than replace it.
+    A comma separated list of column names of imported data that are problematic and should simply be ignored.  You must use single quotes, too. Opening [ and closing ] are required. You are probably best to add to this list rather than replace it.
 
     For example: ['BAD_DATA']
   id: "44"
