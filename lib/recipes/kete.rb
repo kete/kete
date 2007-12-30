@@ -19,6 +19,7 @@ namespace :deploy do
       deploy.setup
       deploy.update_code
       deploy.prepare.setup_zebra
+      deploy.prepare.setup_imports
       deploy.symlink
       deploy.prepare.default
       deploy.start
@@ -45,6 +46,11 @@ namespace :deploy do
       run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
     end
 
+    desc "The directory that holds everything related to imports needs to live under share/system/imports"
+    task :setup_imports, :roles => :app do
+      run "cp -r #{latest_release}/imports #{shared_path}/system/"
+    end
+
     desc "Set up the database with migrations and default data."
     task :db_bootstrap , :roles => :db do
       rake = fetch(:rake, 'rake')
@@ -67,5 +73,11 @@ namespace :deploy do
     run "mkdir -p #{shared_path}/system/zebradb"
     run "rm -rf #{current_path}/zebradb"
     run "ln -nfs #{shared_path}/system/zebradb #{current_path}/"
+
+    # handle our imports directory and all the stuff that lives in it
+    # make system/imports if it doesn't exist already
+    run "mkdir -p #{shared_path}/system/imports"
+    run "rm -rf #{current_path}/imports"
+    run "ln -nfs #{shared_path}/system/imports #{current_path}/"
   end
 end
