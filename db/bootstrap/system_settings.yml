@@ -259,7 +259,7 @@ system_settings_029:
 
     Note, this only takes effect from this point forward.  No existing document files will be changed.
   id: "29"
-  value: "['application/mac-binhex40', 'application/msword', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain', 'text/rtf']"
+  value: "['application/mac-binhex40', 'application/msword', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain', 'text/rtf', 'text/css']"
   section: Documents
 system_settings_030:
   name: Audio Content Types
