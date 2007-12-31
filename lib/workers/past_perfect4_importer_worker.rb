@@ -36,20 +36,20 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       @contributing_user = @import.user
       @import_request = args[:import_request]
       @current_basket = @import.basket
-      @end_description_templates['default'] = @import.default_end_description_template
+      @description_end_templates['default'] = @import.default_description_end_template
       @record_interval = @import.interval_between_records
 
-      logger.info("after end_description_template and var assigns")
+      logger.info("after description_end_template and var assigns")
       # legacy support for kete horowhenua
       if !@import_request[:host].scan("horowhenua").blank?
-        @end_description_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
-        @end_description_templates['/f\d/'] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
-        @end_description_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
+        @description_end_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
+        @description_end_templates['/f\d/'] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
+        @description_end_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
 
         @collections_to_skip << "HHS Photograph Collection"
       end
 
-      logger.info("after end_description_template reassign")
+      logger.info("after description_end_template reassign")
 
       @zoom_class_for_params = @zoom_class.tableize.singularize
 
@@ -241,15 +241,15 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
       new_record = nil
       if existing_item.nil?
-        # figure out the end_description_template based on the objectid
-        end_description_template = @end_description_templates['default']
-        @end_description_templates.each do |pattern, text|
+        # figure out the description_end_template based on the objectid
+        description_end_template = @description_end_templates['default']
+        @description_end_templates.each do |pattern, text|
           if pattern != 'default'
-            end_description_template = text if !image_objectid.scan(pattern).blank?
+            description_end_template = text if !image_objectid.scan(pattern).blank?
           end
         end
 
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :end_description_template => end_description_template })
+        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :description_end_template => description_end_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -401,16 +401,16 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       end
     end
 
-    if !options[:end_description_template].nil?
-      # append the end_description_template to the description field
+    if !options[:description_end_template].nil?
+      # append the description_end_template to the description field
       if !params[zoom_class_for_params][:description].nil?
-        params[zoom_class_for_params][:description] += "\n\n" + options[:end_description_template]
+        params[zoom_class_for_params][:description] += "\n\n" + options[:description_end_template]
       else
-        params[zoom_class_for_params][:description] = options[:end_description_template]
+        params[zoom_class_for_params][:description] = options[:description_end_template]
       end
     end
 
-    logger.info("after end_description_template")
+    logger.info("after description_end_template")
 
     description = String.new
     # used to give use better html output for descriptions

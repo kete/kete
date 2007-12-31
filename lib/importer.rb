@@ -38,7 +38,7 @@ module Importer
     def importer_simple_setup
       @successful = false
       @import_field_to_extended_field_map = Hash.new
-      @end_description_templates = Hash.new
+      @description_end_templates = Hash.new
       @collections_to_skip = Array.new
       @results = { :do_work_time => Time.now.to_s,
         :done_with_do_work => false,
@@ -67,7 +67,7 @@ module Importer
         @import_dir_path = Import::IMPORTS_DIR + @import.directory
         @contributing_user = @import.user
         @import_request = args[:import_request]
-        @end_description_templates['default'] = @import.default_end_description_template
+        @description_end_templates['default'] = @import.default_description_end_template
         @current_basket = @import.basket
         logger.info("what is current basket: " + @current_basket.inspect)
         @import_topic_type = @import.topic_type
@@ -432,8 +432,8 @@ module Importer
 
       new_record = nil
       if existing_item.nil?
-        end_description_template = @end_description_templates['default']
-        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :end_description_template => end_description_template })
+        description_end_template = @description_end_templates['default']
+        new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :description_end_template => description_end_template })
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
@@ -623,12 +623,12 @@ module Importer
         end
       end
 
-      if !options[:end_description_template].nil?
-        # append the end_description_template to the description field
+      if !options[:description_end_template].nil?
+        # append the description_end_template to the description field
         if !params[zoom_class_for_params][:description].nil?
-          params[zoom_class_for_params][:description] += "\n\n" + options[:end_description_template]
+          params[zoom_class_for_params][:description] += "\n\n" + options[:description_end_template]
         else
-          params[zoom_class_for_params][:description] = options[:end_description_template]
+          params[zoom_class_for_params][:description] = options[:description_end_template]
         end
       end
 
