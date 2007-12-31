@@ -43,6 +43,7 @@ else
   VIDEO_CONTENT_TYPES = ['video/mpeg']
   SITE_URL = "kete.net.nz"
   NOTIFIER_EMAIL = "kete@library.org.nz"
+  DEFAULT_BASKETS_IDS = [1]
 
 end
 
