@@ -371,6 +371,9 @@ class ApplicationController < ActionController::Base
       add_relation_and_update_zoom_and_related_caches_for(item, @new_related_topic)
 
       where_to_redirect = 'show_related'
+    elsif params[:is_theme] and item.class.name == 'Document' and @successful
+      item.decompress_as_theme
+      where_to_redirect = 'appearance'
     end
 
     if @successful
@@ -383,6 +386,8 @@ class ApplicationController < ActionController::Base
         redirect_to_related_topic(@new_related_topic)
       when 'commentable'
         redirect_to_show_for(commented_item)
+      when 'appearance'
+        redirect_to :action => :appearance, :controller => 'baskets'
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created."
@@ -652,9 +657,13 @@ class ApplicationController < ActionController::Base
   end
 
   def render_full_width_content_wrapper?
-    if params[:controller] == 'index_page' and params[:action] == 'index'
+    if params[:controller] == 'baskets' and ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
       return false
-    elsif params[:action] != 'show' and params[:action] != 'preview'
+    elsif ['moderate', 'members', 'importers'].include?(params[:controller]) and ['list', 'create', 'new', 'potential_new_members'].include?(params[:action])
+      return false
+    elsif params[:controller] == 'index_page' and params[:action] == 'index'
+      return false
+    elsif !['show', 'preview'].include?(params[:action])
       return true
     else
       return false

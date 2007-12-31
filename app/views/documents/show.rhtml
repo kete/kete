@@ -16,6 +16,10 @@
       <%= pending_review(@document) %>
       <% end -%>
 
+      <% if logged_in? and @site_admin and @document.could_be_new_theme? -%>
+      <ul><li><%= link_to 'Make theme', :action => 'make_theme', :id => @document -%></li></ul>
+      <% end -%>
+
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @document }) %>
       <% cache ({:related => 'topics'}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @document, :source_item_class => 'WebLink', :topics => @document.topics) %>

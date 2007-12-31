@@ -64,7 +64,7 @@ class AccountController < ApplicationController
 
     @user.save!
 
-    @user.add_as_member_to_site_basket
+    @user.add_as_member_to_default_baskets
 
     if !REQUIRE_ACTIVATION
       self.current_user = @user

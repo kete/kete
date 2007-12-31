@@ -1,0 +1,30 @@
+<% @title = @current_basket.name + ' Homepage Options' -%>
+
+<%= render(:partial => "actions_menu",
+           :locals => { :item => @basket }) %>
+
+<%= render :partial => "topics/content_wrapper_start" %>
+
+<h2><%= h(@title) -%></h2>
+
+<ul>
+        <% if @index_topic.blank? -%>
+                <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add basket homepage') -%></li>
+                <% if @topics.size > 0 -%>
+                        <li class="command"><%= link_to_link_index_topic(:index_for_basket => @basket, :phrase => 'Link basket homepage') -%></li>
+                <% end -%>
+        <% else -%>
+                <li>Current homepage topic: <%= link_to h(@index_topic.title), :controller => 'topics', :action => 'show', :id => @index_topic -%></li>
+                <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add new basket homepage') -%></li>
+                <li class="command"><%= link_to_link_index_topic(:index_for_basket => @basket, :phrase => 'Link to new basket homepage') -%></li>
+        <% end -%>
+</ul>
+
+<% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
+  <%= render :partial => 'homepage_form', :object => form %>
+  <%= submit_tag 'Save' , :class => "save-button" %>
+<% end %>
+<%= link_to_cancel %>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>
+

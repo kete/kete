@@ -1,8 +1,16 @@
-<% for column in Basket.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @basket.send(column.name) %>
-</p>
-<% end %>
+<%= render(:partial => "actions_menu",
+           :locals => { :item => @basket }) %>
+
+<%= render :partial => "topics/content_wrapper_start" %>
+
+
 
 <%= link_to 'Edit', :action => 'edit', :id => @basket %> |
 <%= link_to 'Back', :action => 'list' %>
+
+    </div><!-- /main-content-container -->
+  </div><!-- /main-content-wrapper -->
+  <div id="secondary-content-wrapper">
+    <%# render(:partial => "extended_fields" , :locals => { :item => @basket }) %>
+  </div> <!-- /secondary-content-warpper -->
+</div><!-- /content-wrapper -->

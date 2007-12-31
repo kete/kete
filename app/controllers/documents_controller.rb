@@ -88,6 +88,13 @@ class DocumentsController < ApplicationController
     redirect_to_show_for(@document)
   end
 
+  def make_theme
+    @document = Document.find(params[:id])
+    @document.decompress_as_theme
+    flash[:notice] = 'Document expanded to be new theme.'
+    redirect_to :action => :appearance, :controller => 'baskets'
+  end
+
   def destroy
     zoom_destroy_and_redirect('Document')
   end

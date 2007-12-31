@@ -1,41 +1,46 @@
 <% @title = 'Listing users' -%>
-<h3><%= @title %></h3>
 
-<div class="detail-tools">
-        <table width="100%">
-                <tr valign="top">
-                        <th width="25%">User name or Login</th>
-                        <th width="25%">Email</th>
-                        <th width="25%">Change to</th>
-                        <% if !@admin_actions.blank? -%>
-                                <th width="25%">Administrative Actions</th>
-                        <% end -%>
-                </tr>
+<%= render(:partial => "baskets/actions_menu",
+           :locals => { :item => @current_basket }) %>
 
-                <% @non_member_roles_plural.each do |role_key, role_plural| %>
-                        <tr><td>&nbsp;<h4><%= role_plural.humanize -%></h4></td></tr>
-                        <% for user in eval("@" << role_plural) %>
-                                <tr>
-                                <td><%= link_to_contributions_of(user,'Topic') -%></td>
-                                <td><%= mail_to h(user.email) -%></td>
-                                <%= render :partial =>'possible_roles',
-                                           :locals => { :user => user,
-                                                        :role_key => role_key,
-                                                        :possible_roles => @possible_roles } %>
-                                <%= render :partial =>'admin_actions',
-                                           :locals => { :user => user,
-                                                        :admin_actions => @admin_actions } %>
-                        </tr>
-                        <% end %>
-                <% end %>
-        </table>
-        <div id="list-members">
-                <%= render :partial =>'list_members',
-                           :locals => { :members => @members,
-                                        :possible_roles => @possible_roles,
-                                        :admin_actions => @admin_actions } %>
-        </div>
+<%= render :partial => "topics/content_wrapper_start" %>
+
+<h2><%= @title %></h2>
+
+<table width="100%">
+  <tr valign="top">
+    <th width="25%">User name or Login</th>
+    <th width="25%">Email</th>
+    <th width="25%">Change to</th>
+    <% if !@admin_actions.blank? -%>
+    <th width="25%">Administrative Actions</th>
+    <% end -%>
+  </tr>
+
+  <% @non_member_roles_plural.each do |role_key, role_plural| %>
+  <tr><td>&nbsp;<h4><%= role_plural.humanize -%></h4></td></tr>
+  <% for user in eval("@" << role_plural) %>
+                             <tr>
+                               <td><%= link_to_contributions_of(user,'Topic') -%></td>
+                               <td><%= mail_to h(user.email) -%></td>
+                               <%= render :partial =>'possible_roles',
+                               :locals => { :user => user,
+  :role_key => role_key,
+  :possible_roles => @possible_roles } %>
+  <%= render :partial =>'admin_actions',
+  :locals => { :user => user,
+  :admin_actions => @admin_actions } %>
+</tr>
+<% end %>
+<% end %>
+</table>
+<div id="list-members">
+  <%= render :partial =>'list_members',
+  :locals => { :members => @members,
+  :possible_roles => @possible_roles,
+  :admin_actions => @admin_actions } %>
 </div>
+
 <br />
 
-
+<%= render(:partial => "topics/content_wrapper_end" ) %>

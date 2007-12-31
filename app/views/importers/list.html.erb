@@ -1,5 +1,10 @@
 <% @title = 'Imports' -%>
 
+<%= render(:partial => "baskets/actions_menu",
+           :locals => { :item => @current_basket }) %>
+
+<%= render :partial => "topics/content_wrapper_start" %>
+
 <h2><%= h(@title) -%></h2>
 <p>This is the import facility. Using it you can import content into
   this basket that has been exported from supported systems such as Past Perfect.</p>
@@ -37,3 +42,5 @@
 <p><%= link_to 'Start new import', :action => 'new' -%></p>
 
 <div id="prev-next"><%=  will_paginate @imports %></div>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>

@@ -206,19 +206,33 @@ class Basket < ActiveRecord::Base
   end
 
   def possible_themes
-    themes_full_path = RAILS_ROOT + '/public/themes'
     @possible_themes = Array.new
-
-    themes_dir = Dir.new(themes_full_path)
+    themes_dir = Dir.new(THEMES_ROOT)
     themes_dir.each do |listing|
-      path_to_theme_dir = themes_dir + listing
+      path_to_theme_dir = THEMES_ROOT + '/' + listing
       if File.directory?(path_to_theme_dir) and !['.', '..', '.svn'].include?(listing)
-        # needs to have at least a css directory under it
-        # TODO: should also have a preview image
-        @possible_themes << listing if File.exists?(path_to_theme_dir + '/css')
+        # needs to have at least a stylesheets directory
+        # and an images directory with a sample in it under it
+        @possible_themes << listing if File.exists?(path_to_theme_dir + '/stylesheets') and File.exists?(path_to_theme_dir + '/images/sample.jpg')
       end
     end
     @possible_themes
+  end
+
+  def font_family_select_options
+    select_options = String.new
+    [['Use site default', ''],
+     ['Sans Serif (Arial, Helvetica, and the like)', 'sans-serif'],
+     ['Serif (Times New Roman, etc.)', 'serif']].each do |option|
+      label = option[0]
+      value = option[1]
+      select_options += "<option value=\"#{value}\""
+      if !self.settings[:theme_font_family].blank? and self.settings[:theme_font_family] == value
+        select_options += " selected=\"selected\""
+      end
+      select_options += ">" + label + "</option>"
+    end
+    select_options
   end
 
   protected

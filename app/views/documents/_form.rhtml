@@ -11,6 +11,10 @@
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
 
+                <% if !params[:is_theme].nil? %>
+                        <%= hidden_field_tag "is_theme", params[:is_theme] %>
+                <% end %>
+
                 <% if edit and @site_admin %>
                         <div class="form-element">
                                 <label for="basket_for_url">Move to another basket?</label>

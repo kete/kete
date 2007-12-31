@@ -53,7 +53,7 @@ class Document < ActiveRecord::Base
   # probably won't work on Windoze
   # good thing we don't officially support it!
   def decompress_as_theme
-    target_dir = THEME_ROOT + '/'
+    target_dir = THEMES_ROOT + '/'
     case content_type
     when 'application/zip'
       `unzip #{self.full_filename} -d #{target_dir}`
@@ -66,5 +66,14 @@ class Document < ActiveRecord::Base
         `cp #{self.full_filename} #{target_dir}; cd #{target_dir}; gunzip #{self.filename}`
       end
     end
+  end
+
+  def could_be_new_theme?
+    return false unless ['application/zip', 'application/x-gtar', 'application/x-gzip'].include?(self.content_type)
+    likely_theme_name = File.basename(self.filename, File.extname(self.filename))
+    Dir.new(THEMES_ROOT).each do |listing|
+      return false if listing == likely_theme_name
+    end
+    true
   end
 end

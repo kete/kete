@@ -397,3 +397,12 @@ system_settings_044:
   id: "44"
   value: "['HiliteLibrary']"
   section: Imports
+system_settings_045:
+  name: DEFAULT_BASKETS_IDS
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: |-
+    A comma separated list of ids for the baskets that users will be added to as members when they are registered.  Opening [ and closing ] are required. You are probably best to add to this list rather than replace it.
+  id: "45"
+  value: "[1]"
+  section: System

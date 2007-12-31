@@ -27,7 +27,7 @@ class BasketsController < ApplicationController
                   :paste_convert_headers_to_strong => true,
                   :paste_insert_word_content_callback => "convertWord",
                   :plugins => %w{ contextmenu paste table fullscreen} },
-                :only => [:new, :pick, :create, :edit, :update, :pick_topic_type])
+                :only => [:new, :pick, :create, :edit, :update, :homepage_options])
   ### end TinyMCE WYSIWYG editor stuff
 
   def index
@@ -67,12 +67,17 @@ class BasketsController < ApplicationController
   end
 
   def edit
-    @basket = Basket.find(params[:id])
+    appropriate_basket
     @topics = @basket.topics
     @index_topic = @basket.index_topic
   end
 
+  def homepage_options
+    edit
+  end
+
   def update
+    params[:source_form] ||= 'edit'
     @basket = Basket.find(params[:id])
     original_name = @basket.name
 
@@ -82,7 +87,7 @@ class BasketsController < ApplicationController
     # as well as caches
     # because item.zoom_destroy needs original record to match
     # then after update, create new zoom records with new urlified_name
-    if original_name != params[:basket][:name]
+    if !params[:basket][:name].blank? and original_name != params[:basket][:name]
       ZOOM_CLASSES.each do |zoom_class|
         basket_items = @basket.send(zoom_class.tableize)
         basket_items.each do |item|
@@ -108,7 +113,7 @@ class BasketsController < ApplicationController
       flash[:notice] = 'Basket was successfully updated.'
       redirect_to "/#{@basket.urlified_name}/"
     else
-      render :action => 'edit'
+      render :action => params[:source_form]
     end
   end
 
@@ -157,7 +162,7 @@ class BasketsController < ApplicationController
       # add this as a contribution
       @topic.add_as_contributor(current_user)
       flash[:notice] = 'Basket homepage was successfully created.'
-      redirect_to :action => 'edit', :controller => 'baskets', :id => params[:index_for_basket]
+      redirect_to :action => 'homepage_options', :controller => 'baskets', :id => params[:index_for_basket]
     end
   end
 
@@ -172,18 +177,40 @@ class BasketsController < ApplicationController
     end
   end
 
+  def appearance
+    appropriate_basket
+  end
+
+  def update_appearance
+    @basket = Basket.find(params[:id])
+    set_settings
+    flash[:notice] = 'Basket appearance was updated.'
+    redirect_to :action => :appearance
+  end
+
   def set_settings
-    params[:settings].each do |name, value|
-      # HACK
-      # is there a better way to typecast?
-      # rails does so in AR, but not sure it's appropriate here
-      case value
-      when "true"
-        value = true
-      when "false"
-        value = false
+    if !params[:settings].nil?
+      params[:settings].each do |name, value|
+        # HACK
+        # is there a better way to typecast?
+        # rails does so in AR, but not sure it's appropriate here
+        case value
+        when "true"
+          value = true
+        when "false"
+          value = false
+        end
+        @basket.settings[name] = value
       end
-      @basket.settings[name] = value
     end
   end
+
+  def appropriate_basket
+    @basket = current_basket_is_selected? ? @current_basket : Basket.find(params[:id])
+  end
+
+  def current_basket_is_selected?
+    params[:id].blank? or @current_basket.id == params[:id]
+  end
+
 end

@@ -1,0 +1,41 @@
+<% tabs = [['edit','Edit', 'baskets'],
+   ['appearance', 'Appearance', 'baskets'],
+   ['homepage_options','Homepage Options', 'baskets'],
+   ['list','Members', 'members'],
+   ['list','Moderate', 'moderate'],
+   ]
+   tab_count = 1 -%>
+<div id="content-tabs">
+  <ul class="nav-list">
+    <% tabs.each do |tab| -%>
+    <% tab_action = tab[0]
+       tab_label = tab[1]
+       tab_controller = tab[2]
+       tab_classes = Array.new
+       tab_classes << 'first' if tab_count == 1
+       tab_classes << 'selected' if params[:action] == tab_action and params[:controller] == tab_controller -%>
+       <% if tab_classes.size > 0 -%>
+          <li class="<%= tab_classes.join(" ") -%>">
+       <% else -%>
+          <li>
+       <% end -%>
+       <%= link_to "<span class=\"#{tab_action}-link\">#{tab_label}</span>",
+            :action => tab_action,
+            :controller => tab_controller,
+            :id => item %></li>
+       <% tab_count += 1 -%>
+    <% end -%>
+    <% if @tech_admin -%>
+    <li><%= link_to "Importers",
+            :action => :list,
+      :controller => 'importers' %></li>
+    <% end -%>
+    <% if @current_basket != @site_basket -%>
+    <li><%= link_to "Delete",
+            {:action => :destroy,
+      :id => item},
+      :method => :post,
+      :confirm => 'Are you sure? All items in this basket will be deleted forever!'%></li>
+    <% end -%>
+  </ul>
+</div><!-- /content-tabs -->

@@ -1,19 +1,11 @@
 <% @title = "Listing Baskets" -%>
-<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
-"full-width notabs" }) %>
+<h2><%= h(@title) -%></h2>
 
-                <div id="detail-wrapper">
-                        <div id="detail-header">
-                                <h2><%= h(@title) -%></h2>
-                        </div>
-                </div>
+<ul>
+  <% @baskets.each do |basket| -%>
+  <li><%= link_to_index_for(basket) -%></li>
+  <% end -%>
+</ul>
 
-                <ul>
-                  <% @baskets.each do |basket| -%>
-                  <li><%= link_to_index_for(basket) -%></li>
-                  <% end -%>
-                </ul>
-
-                <div id="prev-next"><%= will_paginate @baskets %></div>
-<%= render(:partial => "topics/content_wrapper_end" ) %>
+<div id="prev-next"><%= will_paginate @baskets %></div>
 

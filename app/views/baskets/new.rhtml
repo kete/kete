@@ -1,6 +1,3 @@
-<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
-"full-width notabs" }) %>
-
 <% @title = 'New basket' -%>
 
 <h2><%= h(@title) -%></h2>
@@ -9,6 +6,4 @@
   <%= render :partial => 'form', :object => form %>
   <%= submit_tag "Create", :class => "save-button" %>
 <% end %>
-
-<%= render(:partial => "topics/content_wrapper_end" ) %>
 

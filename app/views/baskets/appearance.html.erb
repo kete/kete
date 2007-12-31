@@ -1,0 +1,59 @@
+<% @title = @current_basket.name + ' Appearance' -%>
+
+<%= render(:partial => "actions_menu",
+           :locals => { :item => @basket }) %>
+
+<%= render :partial => "topics/content_wrapper_start" %>
+
+<h2><%= h(@title) -%></h2>
+
+<% form_tag :action => 'update_appearance', :id => @basket do %>
+
+<fieldset>
+
+  <div class="form-element">
+    <label for="settings[theme_font_family]">Font Family:</label>
+    <%= select_tag 'settings[theme_font_family]', @basket.font_family_select_options %>
+  </div>
+
+  <div class="form-element">
+    <%= image_tag @basket.settings[:header_image] if !@basket.settings[:header_image].blank? -%>
+    <label for="settings[header_image]">URL for background image for the top
+    of each page:</label>
+    <%= text_field 'settings', 'header_image' %>
+  </div>
+
+  <div class="form-element">
+    <label for="settings[theme]">Theme:</label>
+    <% if @basket.possible_themes.size > 0 -%>
+    <% @basket.possible_themes.each  do |theme| -%>
+    <div class="theme-choice-wrapper">
+      <%= image_tag "/themes/#{theme}/images/sample.jpg" -%>
+      <div class="theme-choice-text">
+        <%= radio_button_tag 'settings[theme]', theme %>
+        <%= theme.humanize %>
+      </div>
+    </div>
+    &nbsp;
+    <% end -%>
+    <% else -%>
+    <p>No themes beyond the default are available right now.</p>
+    <% end -%>
+
+    <% if @site_admin -%>
+    <ul><li><%= link_to "Add new theme", :action => 'new', :controller => 'documents', :is_theme => true -%></li></ul>
+    <% end -%>
+  </div>
+
+
+</fieldset>
+
+  <%= submit_tag 'Save' , :class => "save-button" %>
+<% end %>
+
+
+
+<%= link_to_cancel %>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>
+
