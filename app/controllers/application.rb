@@ -96,9 +96,11 @@ class ApplicationController < ActionController::Base
     @theme = @current_basket.settings[:theme] || @site_basket.settings[:theme] || 'default'
     @theme_font_family = @current_basket.settings[:theme_font_family] || @site_basket.settings[:theme_font_family] || 'sans-serif'
     @header_image = @current_basket.settings[:header_image] || @site_basket.settings[:header_image] || nil
-    @theme_styles = Array.new
+    load_theme_styles
+  end
 
-    # TODO: worth looking into caching this
+  def load_theme_styles
+    @theme_styles = Array.new
     theme_styles_path = @theme + '/stylesheets/'
     theme_styles_full_path = THEMES_ROOT + '/' + theme_styles_path
     theme_styles_dir = Dir.new(theme_styles_full_path)
