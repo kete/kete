@@ -509,3 +509,8 @@ div#notice {
            margin-bottom: 1em;
            color: #333;
 }
+
+/* #################################### Misc #################################### */
+.theme-choice-wrapper {
+            float:right;
+}
