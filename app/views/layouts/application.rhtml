@@ -31,17 +31,16 @@
         </script>
   <% end -%>
 
-<%# TODO: my logic isn't quite right for bundle_fu for this yet -%>
-<%#  bundle :name => "bundle_#{@theme}" do -%>
+<%  bundle :name => "bundle_#{@theme}" do -%>
   <%= stylesheet_link_tag 'base', :media => 'screen' %>
   <%= stylesheet_link_tag 'comment', :media => 'screen' %>
   <%= stylesheet_link_tag 'redbox' %>
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
 
-  <% @theme_styles.each do |stylesheet| -%>
+  <% load_styles(@theme).each do |stylesheet| -%>
   <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
   <% end -%>
-<%# end -%>
+<% end -%>
 
   <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
 
@@ -60,7 +59,9 @@
 <% end -%>
 
   <% if as_controllers.include?(params[:controller]) -%>
+   <%  bundle :name => "active_scaffold" do -%>
         <%= active_scaffold_includes %>
+   <% end -%>
   <% end -%>
 
   <% if !@rss_tag_auto.nil?  -%>
