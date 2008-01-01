@@ -19,4 +19,4 @@ libs:
 commands:
   Zebra: which zebrasrv
   Memcache Daemon: ps -Ac | grep memcached
-
+  Unzip: which unzip
