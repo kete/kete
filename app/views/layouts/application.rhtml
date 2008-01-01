@@ -12,8 +12,9 @@
   <% none_tinymce_controllers = as_controllers + ['members', 'topic_types', 'content_types'] -%>
   <% tinymce_actions = ['new', 'edit', 'pick_topic_type', 'homepage_options'] -%>
   <% if !none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action]) -%>
-        <% # Include TinyMCE before other JS to avoid problems -%>
-          <%= javascript_include_tiny_mce_if_used %>
+        <% # Include TinyMCE before other JS to avoid problems,
+                        # tinymce not compatible with bundle_fu -%>
+        <%= javascript_include_tiny_mce_if_used %>
         <%= tiny_mce if using_tiny_mce? %>
         <script type="text/javascript">
         function convertWord(type, content) {
@@ -31,16 +32,17 @@
         </script>
   <% end -%>
 
-<%  bundle :name => "bundle_#{@theme}" do -%>
+<%#  bundle_fu hoses certain styles, not sure why -%>
+<%#  bundle :name => "kete_defaults" do -%>
   <%= stylesheet_link_tag 'base', :media => 'screen' %>
   <%= stylesheet_link_tag 'comment', :media => 'screen' %>
   <%= stylesheet_link_tag 'redbox' %>
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
+<%# end -%>
 
   <% load_styles(@theme).each do |stylesheet| -%>
   <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
   <% end -%>
-<% end -%>
 
   <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
 
