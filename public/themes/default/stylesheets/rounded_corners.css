@@ -4,16 +4,7 @@
         background-repeat: no-repeat;
 }
 .main-content-footer-wrapper{
-        background-image: url(/images/main-content-btrt.gif);
-        background-position: bottom right;
-        background-repeat: no-repeat;
-        background-color: white;
         margin: 0 0 -1em -1em;
-}
-.main-content-footer{
-        background-image: url(/images/main-content-btlf.gif);
-        background-position: bottom left;
-        background-repeat: no-repeat;
 }
 #top-menu {
         background-image: url(/images/top-menu-btrt-bg.gif);
