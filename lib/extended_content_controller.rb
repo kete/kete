@@ -25,7 +25,7 @@ module ExtendedContentController
         :mode => "textareas",
         :cleanup => false,
         :convert_urls => false,
-        :content_css => "/stylesheets/kete.css",
+        :content_css => "/stylesheets/base.css",
         :remove_script_host => true,
         :theme_advanced_toolbar_location => "top",
         :theme_advanced_toolbar_align => "left",
