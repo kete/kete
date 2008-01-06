@@ -51,8 +51,11 @@ when 'stop'
     Process.kill('KILL', pid)
   rescue Errno::ESRCH => e
     puts "Deleting pid file"
+  rescue
+    puts $!
+  ensure
+    File.delete(path) if File.exists?(path)    
   end
-  File.delete(path)
 else
   BackgrounDRb::MasterProxy.new()
 end

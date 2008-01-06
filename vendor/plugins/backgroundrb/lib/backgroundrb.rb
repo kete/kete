@@ -57,6 +57,16 @@ class BackgrounDRb::WorkerProxy
     dump_object(p_data,@connection)
     return read_from_bdrb()
   end
+  
+  
+  def all_worker_info
+    p_data = { }
+    p_data[:type] = :all_worker_info
+    establish_connection
+    raise BackgrounDRb::BdrbConnError.new("Not able to connect") unless @connection_status
+    dump_object(p_data,@connection)
+    return read_from_bdrb
+  end
 
   def delete_worker p_data
     p_data[:type] = :delete_worker

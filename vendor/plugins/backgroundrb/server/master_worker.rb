@@ -4,10 +4,10 @@
 module BackgrounDRb
   # Class wraps a logger object for debugging internal errors within server
   class DebugMaster
-    attr_accessor :log_mode
-    attr_accessor :logger
-    def initialize(log_mode)
+    attr_accessor :log_mode,:logger,:log_flag
+    def initialize(log_mode,log_flag = true)
       @log_mode = log_mode
+      @log_flag = log_flag
       if @log_mode == :foreground
         @logger = ::Logger.new(STDOUT)
       else
@@ -16,10 +16,12 @@ module BackgrounDRb
     end
 
     def info(data)
+      return unless @log_flag
       @logger.info(data)
     end
 
     def debug(data)
+      return unless @log_flag
       @logger.debug(data)
     end
   end
@@ -39,6 +41,7 @@ module BackgrounDRb
         when :delete_worker: delete_drb_worker(t_data)
         when :all_worker_status: query_all_worker_status(t_data)
         when :worker_info: pass_worker_info(t_data)
+        when :all_worker_info: all_worker_info(t_data)
         end
       end
     end
@@ -51,6 +54,15 @@ module BackgrounDRb
       worker_instance ? (info_response[:status] = :running) : (info_response[:status] = :stopped)
       send_object(info_response)
     end
+    
+    def all_worker_info(t_data)
+      info_response = []
+      reactor.live_workers.each do |key,value|
+        job_key = (value.worker_key.to_s).gsub(/#{value.worker_name}_?/,"")
+        info_response << { :worker => value.worker_name,:job_key => job_key,:status => :running }
+      end
+      send_object(info_response)
+    end
 
     def query_all_worker_status(p_data)
       dumpable_status = { }
@@ -58,19 +70,25 @@ module BackgrounDRb
       send_object(dumpable_status)
     end
 
+    # FIXME: although worker key is removed nonetheless from live_workers hash
+    # it could be a good idea to remove it here itself.
     def delete_drb_worker(t_data)
       worker_name = t_data[:worker]
       job_key = t_data[:job_key]
       worker_name_key = gen_worker_key(worker_name,job_key)
       begin
-        ask_worker(worker_name,:job_key => t_data[:job_key],:type => :request, :data => { :worker_method => :exit})
+        # ask_worker(worker_name,:job_key => t_data[:job_key],:type => :request, :data => { :worker_method => :exit})
+        worker_instance = reactor.live_workers[worker_name_key]
+        # pgid = Process.getpgid(worker_instance.pid)
+        Process.kill('TERM',worker_instance.pid)
+        # Process.kill('-TERM',pgid)
+        Process.kill('KILL',worker_instance.pid)
       rescue Packet::DisconnectError => sock_error
         # reactor.live_workers.delete(worker_name_key)
         reactor.remove_worker(sock_error)
       rescue
         debug_logger.info($!.to_s)
         debug_logger.info($!.backtrace.join("\n"))
-        return
       end
     end
 
@@ -138,7 +156,8 @@ module BackgrounDRb
     def initialize
       raise "Running old Ruby version, upgrade to Ruby >= 1.8.5" unless check_for_ruby_version
       @config_file = YAML.load(ERB.new(IO.read("#{RAILS_HOME}/config/backgroundrb.yml")).result)
-      debug_logger = DebugMaster.new(@config_file[:backgroundrb][:log])
+      log_flag = @config_file[:backgroundrb][:debug_log].nil? ? true : @config_file[:backgroundrb][:debug_log]
+      debug_logger = DebugMaster.new(@config_file[:backgroundrb][:log],log_flag)
 
       load_rails_env
       Packet::Reactor.run do |t_reactor|
@@ -154,8 +173,7 @@ module BackgrounDRb
       ENV["RAILS_ENV"] = run_env
       RAILS_ENV.replace(run_env) if defined?(RAILS_ENV)
       require RAILS_HOME + '/config/environment.rb'
-      p RAILS_ENV
-      load_rails_models
+      load_rails_models unless @config_file[:backgroundrb][:lazy_load]
       ActiveRecord::Base.allow_concurrency = true
     end
 

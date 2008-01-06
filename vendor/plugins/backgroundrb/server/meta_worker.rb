@@ -12,6 +12,10 @@ module BackgrounDRb
     def debug(p_data)
       @worker.send_request(:worker => :log_worker, :data => p_data)
     end
+    
+    def error(p_data)
+      @worker.send_request(:worker => :log_worker, :data => p_data)
+    end
   end
 
   class WorkData
@@ -59,11 +63,15 @@ module BackgrounDRb
 
     def add_thread
       @threads << Thread.new do
+        puts "calling add thread" 
         while true
+          
           task = @work_queue.pop
           @running_tasks << task
           block_arity = task.block.arity
+
           begin
+            ActiveRecord::Base.verify_active_connections!
             block_arity == 0 ? task.block.call : task.block.call(*(task.data))
           rescue
             logger.info($!.to_s)
@@ -166,7 +174,7 @@ module BackgrounDRb
     # user defined worker class
     def worker_init
       @config_file = YAML.load(ERB.new(IO.read("#{RAILS_HOME}/config/backgroundrb.yml")).result)
-      # load_rails_env
+      load_rails_env
       @logger = PacketLogger.new(self)
       @thread_pool = ThreadPool.new(pool_size || 20,@logger)
 
@@ -206,13 +214,12 @@ module BackgrounDRb
     # method is responsible for invoking appropriate method in user
     def process_request(p_data)
       user_input = p_data[:data]
-      logger.info "#{user_input[:worker_method]} #{user_input[:data].inspect}"
+      logger.info "#{user_input[:worker_method]} #{user_input[:data]}"
       if (user_input[:worker_method]).nil? or !respond_to?(user_input[:worker_method])
         logger.info "Undefined method #{user_input[:worker_method]} called on worker #{worker_name}"
         return
       end
       called_method_arity = self.method(user_input[:worker_method]).arity
-      logger.info "Arity of method is #{called_method_arity}"
       result = nil
       if called_method_arity != 0
         result = self.send(user_input[:worker_method],user_input[:data])
@@ -220,9 +227,20 @@ module BackgrounDRb
         result = self.send(user_input[:worker_method])
       end
       result = "dummy_result" unless result
-      send_response(p_data,result)
+      send_response(p_data,result) if can_dump?(result)
     end
 
+    def can_dump?(p_object)
+      begin
+        Marshal.dump(p_object)
+        return true
+      rescue TypeError
+        return false
+      rescue
+        return false
+      end
+    end
+    
     def load_schedule
       case @my_schedule[:trigger_args]
       when String
@@ -306,11 +324,23 @@ module BackgrounDRb
     def connection_completed; end
 
     def check_for_timer_events
-      super
+      begin
+        ActiveRecord::Base.verify_active_connections! if defined?(ActiveRecord)
+        super
+      rescue
+        $logger.info($!.to_s)
+        $logger.info($!.backtrace.join("\n"))
+      end
+      
       return if @worker_method_triggers.nil? or @worker_method_triggers.empty?
       @worker_method_triggers.each do |key,value|
         if value[:runtime] < Time.now.to_i
-          (t_data = value[:data]) ? send(key,t_data) : send(key)
+          begin
+            (t_data = value[:data]) ? send(key,t_data) : send(key)
+          rescue
+            logger.info($!.to_s)
+            logger.info($!.backtrace.join("\n"))
+          end
           value[:runtime] = value[:trigger].fire_time_after(Time.now).to_i
         end
       end
@@ -340,16 +370,16 @@ module BackgrounDRb
       end
     end
 
-#     private
-#     def load_rails_env
-#       ActiveRecord::Base.allow_concurrency = true
-#       db_config_file = YAML.load(ERB.new(IO.read("#{RAILS_HOME}/config/database.yml")).result)
-#       run_env = @config_file[:backgroundrb][:environment] || 'development'
-#       ENV["RAILS_ENV"] = run_env
-#       RAILS_ENV.replace(run_env) if defined?(RAILS_ENV)
-#       require RAILS_HOME + '/config/environment.rb'
-#       ActiveRecord::Base.establish_connection(db_config_file[run_env])
-#     end
+    private
+    def load_rails_env
+      db_config_file = YAML.load(ERB.new(IO.read("#{RAILS_HOME}/config/database.yml")).result)
+      run_env = @config_file[:backgroundrb][:environment] || 'development'
+      ENV["RAILS_ENV"] = run_env
+      RAILS_ENV.replace(run_env) if defined?(RAILS_ENV)
+      ActiveRecord::Base.establish_connection(db_config_file[run_env])
+      ActiveRecord::Base.allow_concurrency = true
+    end
+    
   end # end of class MetaWorker
 end # end of module BackgrounDRb
 
