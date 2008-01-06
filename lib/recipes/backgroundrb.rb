@@ -10,7 +10,7 @@ namespace :deploy do
   namespace :backgroundrb do
     desc "Start backgroundrb server on the app server."
     task :start , :roles => :app do
-      `script/backgroundrb start`
+      `cd #{current_path}; script/backgroundrb start`
     end
 
     desc "Restart backgroundrb server on the app server."
@@ -21,7 +21,7 @@ namespace :deploy do
 
     desc "Stop the backgroundrb server on the app server.  Handy if you have backgroundrb workers that have run amuck."
     task :stop , :roles => :app do
-      `script/backgroundrb stop`
+      `cd #{current_path}; script/backgroundrb stop`
     end
   end
 end
