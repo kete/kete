@@ -48,7 +48,7 @@
 <% if !@header_image.blank? -%>
  <% # TODO: fix the styles to allow for banner style background image -%>
  <style type="text/css">
-  #header { background: url('<%= @header_image -%>') no-repeat bottom center; }
+  #header !important { background: url('<%= @header_image -%>') no-repeat top left; }
  </style>
 
 <% end -%>
