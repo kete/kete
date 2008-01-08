@@ -8,20 +8,10 @@
 # TODO: add tasks to rebuild zebra indexes based on data from fixtures
 # TODO: add tasks to copy directories for item types to public
 namespace :db do
-  task :make_demo => ['db:make_demo:rewind', 'db:make_demo:load']
+  task :make_demo => ['db:bootstrap:rewind', 'db:make_demo:load']
   namespace :make_demo do
     desc "Load initial datamodel, then fixtures (in demo-data/fixtures/*.yml) into the current environment's database.  Load specific fixtures using FIXTURES=x,y
           Defaults to development database.  Set RAILS_ENV to override."
-
-    task :rewind => :environment do
-      # migrate back to the stone age
-      ENV['VERSION'] = '0'
-      Rake::Task["db:migrate"].execute
-
-      # forward, comrades, to the future!
-      ENV.delete('VERSION')
-      Rake::Task["db:migrate"].execute
-    end
 
     task :load => :environment do
       require 'active_record/fixtures'

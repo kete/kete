@@ -16,6 +16,6 @@ task :prep_app do
   the_tasks = [ 'manage_gems:management:install', 'manage_gems:required:install']
 
   the_tasks.each do |t|
-    Rake::Task[t].execute
+    Rake::Task[t].invoke
   end
 end
