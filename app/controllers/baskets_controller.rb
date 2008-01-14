@@ -79,6 +79,7 @@ class BasketsController < ApplicationController
   def update
     params[:source_form] ||= 'edit'
     @basket = Basket.find(params[:id])
+    @topics = @basket.topics
     original_name = @basket.name
 
     # have to update zoom records for things in the basket
@@ -212,5 +213,4 @@ class BasketsController < ApplicationController
   def current_basket_is_selected?
     params[:id].blank? or @current_basket.id == params[:id]
   end
-
 end

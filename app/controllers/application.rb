@@ -45,6 +45,9 @@ class ApplicationController < ActionController::Base
   # we often need baskets for edits
   before_filter :load_array_of_baskets, :only => [ :edit, :update ]
 
+  # only site_admin can set item.do_not_sanitize to true
+  before_filter :security_check_of_do_not_sanitize, :only => [ :create, :update ]
+
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
@@ -96,6 +99,13 @@ class ApplicationController < ActionController::Base
     @theme = @current_basket.settings[:theme] || @site_basket.settings[:theme] || 'default'
     @theme_font_family = @current_basket.settings[:theme_font_family] || @site_basket.settings[:theme_font_family] || 'sans-serif'
     @header_image = @current_basket.settings[:header_image] || @site_basket.settings[:header_image] || nil
+  end
+
+  def security_check_of_do_not_sanitize
+    item_class_for_param_key = zoom_class_from_controller(params[:controller]).singularize.to_s
+    if !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_sanitize].nil?
+      params[item_class_for_param_key][:do_not_sanitize] = false if !@site_admin
+    end
   end
 
   def item_from_controller_and_id
