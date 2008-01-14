@@ -2,6 +2,13 @@
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
+  # this allows for turning off sanitizing before save
+  # and validates_as_sanitized_html
+  # such as the case that a sysadmin wants to include a form
+  attr_accessor :do_not_sanitize
+  # sanitize our descriptions and extended_content for security
+  acts_as_sanitized :fields => [:index_page_extra_side_bar_html, :extended_content]
+
   # set up authorization plugin
   acts_as_authorizable
 
@@ -34,6 +41,9 @@ class Basket < ActiveRecord::Base
 
   # don't allow special characters in label that will break our xml
   validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
+
+  # check the quality of submitted html
+  validates_as_sanitized_html :index_page_extra_side_bar_html
 
   # we have an urlified_name attribute that hold the urlified version of the basket name
   before_save :urlify_name

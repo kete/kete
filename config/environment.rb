@@ -58,6 +58,9 @@ Rails::Initializer.run do |config|
   # should go in a file under config/initializers/
   config.active_record.observers = :user_observer
 
+  # white list html elements here, besides defaults
+  config.action_view.sanitized_allowed_tags = 'table', 'tr', 'td', 'tbody', 'th'
+
   # we need to set up randmom_finders first
   config.plugins = [ :random_finders, :all ]
 end

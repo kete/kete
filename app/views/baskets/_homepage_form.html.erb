@@ -38,8 +38,21 @@
 
   <div class="form-element"><label for="basket_index_extra_side_bar_html"
                                    class="cleared-right" style="width: 100%">Do you have anything else to put in side bar?</label>
-    <%= homepage_form.text_area :index_page_extra_side_bar_html, :class => "mceEditor", :cols => 120, :rows => 10 %></div>
-  <div class="form-element">Note: forms and javascript are not allowed for security reasons.</div>
+    <%= homepage_form.text_area :index_page_extra_side_bar_html, :class => "mceEditor", :cols => 120, :rows => 10 %>
+    <div class="form-element">
+      Note: forms and javascript are not allowed
+      for security reasons.
+      <% if @site_admin -%>
+      Unless you check the box below.
+      <% end -%>
+    </div>
+  </div>
+
+  <% if @site_admin -%>
+  <div class="form-element"><label for="basket[do_not_sanitize]">Allow
+    forms and other possible insecure elements and attributes in the HTML?</label>
+    <%= homepage_form.check_box :do_not_sanitize %></div>
+  <% end -%>
 
   <h5>Selected Image:</h5>
 

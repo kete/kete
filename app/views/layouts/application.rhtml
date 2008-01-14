@@ -10,11 +10,13 @@
   <% # logic for which javascript to load -%>
   <% as_controllers = ['system_settings', 'zoom_dbs', 'extended_fields'] -%>
   <% none_tinymce_controllers = as_controllers + ['members', 'topic_types', 'content_types'] -%>
-  <% tinymce_actions = ['new', 'edit', 'pick_topic_type', 'homepage_options'] -%>
+  <% tinymce_actions = ['new', 'create', 'edit', 'update', 'pick_topic_type', 'homepage_options'] -%>
   <% if !none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action]) -%>
         <% # Include TinyMCE before other JS to avoid problems,
                         # tinymce not compatible with bundle_fu -%>
         <%= javascript_include_tiny_mce_if_used %>
+        <%# point tinymce at the correct css file %>
+        <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" %>
         <%= tiny_mce if using_tiny_mce? %>
         <script type="text/javascript">
         function convertWord(type, content) {

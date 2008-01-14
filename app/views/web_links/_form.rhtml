@@ -26,7 +26,20 @@
 <div class="form-element">
   <label for="web_link_description" class="cleared-right">Description:</label>
   <%= text_area 'web_link', 'description', :class => "mceEditor", :cols => 120 %>
+  <div class="form-example">
+    Note: forms and javascript are not allowed
+    for security reasons.
+    <% if @site_admin -%>
+    Unless you check the box below.
+    <% end -%>
+  </div>
 </div>
+
+<% if @site_admin -%>
+<div class="form-element"><label for="web_link[do_not_sanitize]">Allow
+    forms and other possible insecure elements and attributes in the HTML?</label>
+  <%= check_box 'web_link', 'do_not_sanitize' %></div>
+<% end -%>
 
 <div class="form-element">
   <label for="web_link_tag_list">Tags (separated by commas):</label>

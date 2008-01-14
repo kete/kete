@@ -131,6 +131,15 @@ ul.nav-list a:hover{
         float: left;
         width: 100%;
 }
+
+/* TinyMCE specific rules */
+/* it's important for the background color of tinymce's editor to match content-wrapper */
+/* override this in your theme, too, if you change content-wrapper background-color */
+/* see http://wiki.moxiecode.com/index.php/TinyMCE:Configuration/content_css for more info */
+body.mceContentBody {
+   background: white;
+}
+
 #content-tabs li a span,
 #related-content h2,
 #related h2,

@@ -51,6 +51,13 @@ class Topic < ActiveRecord::Base
     end
   end
 
+  # this allows for turning off sanitizing before save
+  # and validates_as_sanitized_html
+  # such as the case that a sysadmin wants to include a form
+  attr_accessor :do_not_sanitize
+  # sanitize our descriptions and extended_content for security
+  acts_as_sanitized :fields => [:description, :extended_content]
+
   # note, since acts_as_taggable doesn't support versioning
   # out of the box
   # we also track each versions raw_tag_list input
@@ -71,7 +78,7 @@ class Topic < ActiveRecord::Base
 
   validates_xml :extended_content
   validates_presence_of :title
-
+  validates_as_sanitized_html :description, :extended_content
   # this may change
   # validates_uniqueness_of :title
 

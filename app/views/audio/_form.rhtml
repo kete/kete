@@ -22,8 +22,22 @@
                 <%= form.text_field :title  %></div>
 
                 <div class="form-element"><label for="audio_recording_description"
-                class="cleared-right">Description:</label>
-                <%= form.text_area :description, :class => "mceEditor", :cols => 120 %></div>
+                                                 class="cleared-right">Description:</label>
+                  <%= form.text_area :description, :class => "mceEditor", :cols => 120 %>
+                  <div class="form-example">
+                           Note: forms and javascript are not allowed
+                           for security reasons.
+                           <% if @site_admin -%>
+                           Unless you check the box below.
+                           <% end -%>
+                  </div>
+                </div>
+
+                <% if @site_admin -%>
+                <div class="form-element"><label for="audio_recording_do_not_sanitize">Allow
+                    forms and other possible insecure elements and attributes in the HTML?</label>
+                  <%= form.check_box :do_not_sanitize %></div>
+                <% end -%>
 
                 <%= tags_input_field(form,"audio_recording_tag_list") %>
 

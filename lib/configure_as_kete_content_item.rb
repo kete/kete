@@ -22,6 +22,12 @@ module ConfigureAsKeteContentItem
         klass.send :include, KeteCommentable
       end
 
+      # sanitize our descriptions and extended_content for security
+      # see validate_as_sanitized_html below, too
+      # but allow site admin to override
+      klass.send :attr_accessor, :do_not_sanitize
+      klass.send :acts_as_sanitized, :fields => [:description, :extended_content]
+
       # note, since acts_as_taggable doesn't support versioning
       # out of the box
       # we also track each versions raw_tag_list input
@@ -45,8 +51,7 @@ module ConfigureAsKeteContentItem
 
       klass.send :validates_presence_of, :title
 
-      # this probably should change, particularly in still_image case
-      # klass.send :validates_uniqueness_of, :title
+      klass.send :validates_as_sanitized_html, [:description, :extended_content]
 
       # TODO: globalize stuff, uncomment later
       # translates :title, :description
