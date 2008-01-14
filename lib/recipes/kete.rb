@@ -64,6 +64,20 @@ namespace :deploy do
     end
   end
 
+  desc "Any tasks that need to run to need to happen after we have updated our code, but before our site runs."
+  namespace :upgrade do
+    task :default do
+      deploy.upgrade.run_upgrade
+    end
+
+    desc "Use upgrade rake task for Kete"
+    task :run_upgrade, :roles => :app do
+      rake = fetch(:rake, 'rake')
+      rails_env = fetch(:rails_env, 'production')
+      run "cd #{current_path}; #{rake} RAILS_ENV=production kete:upgrad"
+    end
+  end
+
   desc "Put in Kete's specific symlinks, not worrying about page caches (not using memcache for them yet) that get orphaned in the last release's public directory.  Just letting them expire."
   task :after_symlink do
     # handle file upload directories
