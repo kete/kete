@@ -1,0 +1,44 @@
+= Acts As Sanitized
+
+Cleans up text data before it hits your database and, eventually, your users.
+The goal is to reduce Cross-Site Scripting (XSS) attacks. Install and forget.
+
+The plugin can figure out which fields it needs to sanitize, or you can 
+specify fields manually.  The former is highly recommended.  Schemas change.
+
+== Usage
+
+If you'd like the plugin to figure out which fields to sanitize:
+
+ class Comment < ActiveRecord::Base
+   acts_as_sanitized
+ end
+ 
+If you'd like to specify the fields to sanitize:
+
+ class Entry < ActiveRecord::Base
+   acts_as_sanitized :fields => [ :title, :body ]
+ end
+ 
+If you'd like to strip all HTML tags, not just script and form:
+
+ class Review < ActiveRecord::Base
+   acts_as_sanitized :strip_tags => true
+ end
+ 
+If you'd like to use all the fancy options at once:
+
+ class Message < ActiveRecord::Base
+   acts_as_sanitized :fields => [ :content ], :strip_tags => true
+ end
+ 
+== Known Issues
+
+- 12 Jan 2007: test schema is generated twice when running tests.  Not harmful.
+
+== Credits
+
+Written by Alex Payne of http://www.al3x.net.
+
+Much was learned from reading Chris Wanstrath's acts_as_textiled and the Rails
+core team's acts_as_taggable.
