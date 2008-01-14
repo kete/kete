@@ -37,7 +37,7 @@ class Basket < ActiveRecord::Base
   has_many :imports, :dependent => :destroy
 
   validates_presence_of :name
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, :case_sensitive => false
 
   # don't allow special characters in label that will break our xml
   validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"

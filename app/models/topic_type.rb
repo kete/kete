@@ -25,7 +25,7 @@ class TopicType < ActiveRecord::Base
   has_many :imports, :dependent => :destroy
 
   validates_presence_of :name, :description
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, :case_sensitive => false
 
   # to support inheritance of fields from ancestor topic types
   acts_as_nested_set

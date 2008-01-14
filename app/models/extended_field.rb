@@ -10,7 +10,7 @@ class ExtendedField < ActiveRecord::Base
   has_many :content_type_forms, :through => :content_type_to_field_mappings, :source => :content_type, :order => 'position'
 
   validates_presence_of :label
-  validates_uniqueness_of :label
+  validates_uniqueness_of :label, :case_sensitive => false
 
   # don't allow special characters in label that will break our xml
   validates_format_of :label, :with => /^[^\'\"<>\&,\/\\\?]*$/, :message => ": \', \\, /, &, \", ?, <, and > characters aren't allowed"

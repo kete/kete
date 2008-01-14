@@ -13,7 +13,7 @@ class ContentType < ActiveRecord::Base
     end
   end
   validates_presence_of :controller, :class_name, :humanized, :humanized_plural
-  validates_uniqueness_of :controller, :class_name, :humanized, :humanized_plural
+  validates_uniqueness_of :controller, :class_name, :humanized, :humanized_plural, :case_sensitive => false
 
   # TODO: humanized and humanized_plural should be capitalized, do as validation or programmatically
 
