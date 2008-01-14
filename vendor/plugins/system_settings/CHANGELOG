@@ -1,3 +1,7 @@
+[REVISION 20071001]
+
+[FIXED] (#14286) Calls to SystemSetting[:environment] return nil.
+
 [REVISION 20061013]
 
 [NEW] install.rb informs user of missing dependencies.

@@ -3,11 +3,11 @@ class SystemSetting < ActiveRecord::Base
   # don't allow special characters in name
   # since will eventually make them into a constant name
   validates_format_of :name, :with => /^[^\'\"<>\&,\/\\\?]*$/, :message => ": \', \\, /, &, \", ?, <, and > characters aren't allowed"
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, :case_sensitive => false
   validates_presence_of :name, :section
 
   def self.find_by_name(name)
-    super(name.to_s)
+    find(:first, :conditions => ["name = ?", name.to_s]) unless name.nil?
   end
 
   def self.[](name)
