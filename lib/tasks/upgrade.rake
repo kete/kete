@@ -10,7 +10,8 @@ namespace :kete do
   task :upgrade => ['kete:upgrade:add_new_baskets',
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings',
-                    'kete:upgrade:change_zebra_password']
+                    'kete:upgrade:change_zebra_password',
+                    'kete:upgrade:check_required_software']
   namespace :upgrade do
     desc 'Add the new system settings that are missing from our system.'
     task :add_new_system_settings => :environment do
@@ -75,6 +76,15 @@ namespace :kete do
       Rake::Task['zebra:set_keteaccess'].invoke
       Rake::Task['zebra:start'].invoke
       p "changed zebra password file"
+    end
+
+    desc 'This checks for missing required software and installs it if possible.'
+    task :check_required_software => :environment do
+      include RequiredSoftware
+      required_software = load_required_software
+      missing_software = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
+      p "you have the following missing gems (you might want to do rake prep_app first): #{missing_software['Gems'].inspect}" if !missing_software['Gems'].blank?
+      p "you have the following missing external software (take steps to install them before starting your kete server): #{missing_software['Commands'].inspect}" if !missing_software['Commands'].blank?
     end
   end
 end
