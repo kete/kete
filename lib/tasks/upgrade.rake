@@ -9,7 +9,8 @@ namespace :kete do
   desc "Do everything that we need done, like adding data to the db, for an upgrade."
   task :upgrade => ['kete:upgrade:add_new_baskets',
                     'kete:upgrade:add_tech_admin',
-                    'kete:upgrade:add_new_system_settings']
+                    'kete:upgrade:add_new_system_settings',
+                    'kete:upgrade:change_zebra_password']
   namespace :upgrade do
     desc 'Add the new system settings that are missing from our system.'
     task :add_new_system_settings => :environment do
@@ -65,6 +66,15 @@ namespace :kete do
         admin_user.has_role('tech_admin', Basket.find(1))
         p "added " + tech_admin_hash['name']
       end
+    end
+
+    desc 'Change zebra password file to use clear text since encrypted is broken.'
+    task :change_zebra_password => :environment do
+      ENV['ZEBRA_PASSWORD'] = ZoomDb.find(1).zoom_password
+      Rake::Task['zebra:stop'].invoke
+      Rake::Task['zebra:set_keteaccess'].invoke
+      Rake::Task['zebra:start'].invoke
+      p "changed zebra password file"
     end
   end
 end
