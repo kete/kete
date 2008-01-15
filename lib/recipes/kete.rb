@@ -74,7 +74,7 @@ namespace :deploy do
     task :run_upgrade, :roles => :app do
       rake = fetch(:rake, 'rake')
       rails_env = fetch(:rails_env, 'production')
-      run "cd #{current_path}; #{rake} RAILS_ENV=production kete:upgrad"
+      run "cd #{current_path}; #{rake} RAILS_ENV=production kete:upgrade"
     end
   end
 
