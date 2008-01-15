@@ -11,8 +11,6 @@ namespace :kete do
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings']
   namespace :upgrade do
-    admin_user = User.find(1)
-
     desc 'Add the new system settings that are missing from our system.'
     task :add_new_system_settings => :environment do
       system_settings_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/system_settings.yml")
@@ -41,6 +39,7 @@ namespace :kete do
       # check if it's in the db
       # if not, add it
       # system settings have unique names
+      admin_user = User.find(1)
       baskets_from_yml.each do |basket_array|
         basket_hash = basket_array[1]
 
@@ -59,11 +58,12 @@ namespace :kete do
     task :add_tech_admin => :environment do
       roles_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/roles.yml")
 
+      admin_user = User.find(1)
       tech_admin_hash = roles_from_yml['tech_admin']
-      if !Role.find_by_name(role_hash['tech_admin'])
-        Role.create!(role_hash)
+      if !Role.find_by_name('tech_admin')
+        Role.create!(tech_admin_hash)
         admin_user.has_role('tech_admin', Basket.find(1))
-        p "added " + role_hash['name']
+        p "added " + tech_admin_hash['name']
       end
     end
   end
