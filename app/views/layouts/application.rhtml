@@ -17,6 +17,7 @@
         <%= javascript_include_tiny_mce_if_used %>
         <%# point tinymce at the correct css file %>
         <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" %>
+        <% @tiny_mce_options[:extended_valid_elements] = EXTENDED_VALID_ELEMENTS if @site_admin %>
         <%= tiny_mce if using_tiny_mce? %>
         <script type="text/javascript">
         function convertWord(type, content) {
