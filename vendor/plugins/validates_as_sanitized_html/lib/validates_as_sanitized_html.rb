@@ -12,7 +12,7 @@ module ActiveRecord
         validates_each(attr_names, configuration) do |record, attr_name, value|
           # allow for turning off sanitization on a record by record basis
           # via virtual attribute on record
-          do_not_sanitize = !record.do_not_sanitize.nil? && (record.do_not_sanitize.to_i == 1 || record.do_not_sanitize == true) ?  true : false
+          do_not_sanitize = !record.do_not_sanitize.nil? && (record.do_not_sanitize == true || record.do_not_sanitize == 1) ?  true : false
           unless do_not_sanitize
             # TODO: see if we can reuse sanitization
             # from rail's html/sanitize or helpers/sanitize_helper

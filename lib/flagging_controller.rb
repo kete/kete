@@ -67,7 +67,11 @@ module FlaggingController
       @item.tag_list = @item.raw_tag_list
       @item.version_comment = "Content from revision \# #{@version}."
       @item.do_not_moderate = true
-      @item.save
+      # turn off sanitizing in restores
+      # for the rare case when invalid code made it in
+      # otherwise validation may cause save action to fail
+      @item.do_not_sanitize = true
+      @item.save!
 
       # keep track of the moderator's contribution
       @item.add_as_contributor(@current_user)
