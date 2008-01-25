@@ -259,7 +259,7 @@ system_settings_029:
 
     Note, this only takes effect from this point forward.  No existing document files will be changed.
   id: "29"
-  value: "['application/mac-binhex40', 'application/msword', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain', 'text/rtf', 'text/css']"
+  value: "['application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain', 'text/rtf', 'text/css', 'application/octet-stream']"
   section: Documents
 system_settings_030:
   name: Audio Content Types
@@ -270,7 +270,7 @@ system_settings_030:
 
     Note, this only takes effect from this point forward.  No existing audio files will be changed.
   id: "30"
-  value: "['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'application/ogg']"
+  value: "['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'application/ogg', 'application/octet-stream']"
   section: Audio
 system_settings_031:
   name: Video Content Types
@@ -281,7 +281,7 @@ system_settings_031:
 
     Note, this only takes effect from this point forward.  No existing video files will be changed.
   id: "31"
-  value: "['application/x-shockwave-flash', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/avi', 'video/x-quicktime', 'application/x-director', 'image/mov', 'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx', 'application/x-dvi']"
+  value: "['application/x-shockwave-flash', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/avi', 'video/x-quicktime', 'application/x-director', 'image/mov', 'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx', 'application/x-dvi', 'application/octet-stream']"
   section: Video
 system_settings_032:
   name: Setup Sections

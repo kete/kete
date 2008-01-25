@@ -11,7 +11,8 @@ namespace :kete do
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings',
                     'kete:upgrade:change_zebra_password',
-                    'kete:upgrade:check_required_software']
+                    'kete:upgrade:check_required_software',
+		    'kete:upgrade:add_missing_mime_types']
   namespace :upgrade do
     desc 'Add the new system settings that are missing from our system.'
     task :add_new_system_settings => :environment do
@@ -26,7 +27,7 @@ namespace :kete do
 
         # drop id from hash, as we want to determine it dynamically
         setting_hash.delete('id')
-
+ 
         if !SystemSetting.find_by_name(setting_hash['name'])
           SystemSetting.create!(setting_hash)
           p "added " + setting_hash['name']
@@ -85,6 +86,26 @@ namespace :kete do
       missing_software = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
       p "you have the following missing gems (you might want to do rake prep_app first): #{missing_software['Gems'].inspect}" if !missing_software['Gems'].blank?
       p "you have the following missing external software (take steps to install them before starting your kete server): #{missing_software['Commands'].inspect}" if !missing_software['Commands'].blank?
+    end
+
+    desc 'Checks the for mimetype of application/octet-stream' 
+    task :add_missing_mime_types => :environment do
+	octet_file_types = ['Document Content Types', 'Video Content Types', 'Audio Content Types']
+        octet_file_types.each do |octet_type|
+	   setting = SystemSetting.find_by_name(octet_type)
+	   if !setting.value.include? 'application/octet-stream'
+	      setting.value = setting.value.gsub(']', ", 'application/octet-stream']")        
+              p "added octet stream mime type to " + octet_type
+	   end
+	   if octet_type == 'Document Content Types' 
+	      if !setting.value.include? 'application/word'
+	         setting.value = setting.value.gsub(']', ", 'application/word']")        
+                 p "added application/word mime type to " + octet_type
+	      end
+	   end
+	   setting.save
+	end
+	
     end
   end
 end
