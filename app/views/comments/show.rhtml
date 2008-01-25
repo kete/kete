@@ -1,7 +1,6 @@
 <% # not in use at this time, since comments should only show up on the thing that they are commented on's page -%>
                 <div id="detail-wrapper">
                         <div id="detail-header">
-                                <h4><%= link_to_last_stored_location -%></h4>
 <% cache ({:part => 'details'}) do -%>
                                 <h2><%= h(@comment.title) %></h2>
 

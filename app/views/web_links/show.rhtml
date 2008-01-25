@@ -1,8 +1,6 @@
 <%= render(:partial => "topics/actions_menu" , :locals => { :item => @web_link }) %>
 
 <%= render :partial => "topics/content_wrapper_start" %>
-
-      <!-- TODO: this will be replace by new history system <h4><%= link_to_last_stored_location -%></h4> -->
       <% cache ({:part => 'details'}) do -%>
       <% if !@web_link.already_at_blank_version? -%>
 
