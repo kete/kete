@@ -1,12 +1,13 @@
 <%= render(:partial => "actions_menu" , :locals => { :item => @topic }) %>
+
+<% cache ({:part => 'details'}) do -%>
 <%= render :partial => "content_wrapper_start" %>
-      <% cache ({:part => 'details'}) do -%>
       <h2>Topic: <%= h(@topic.title) %></h2>
       <h4>Topic Type: <%= h(@topic.topic_type.name) %></h4>
       <p><b><%= @topic.short_summary %></b></p>
       <p><%= @topic.description %></p>
       <%= pending_review(@topic) %>
-      <% end -%>
+<% end -%>
 
       <%= render(:partial => "flagging_contributor" , :locals => { :item => @topic }) %>
       <%= render(:partial => "secondary_wrapper_start", :locals => {:div_id =>
@@ -53,8 +54,11 @@
       <%= render(:partial => "discussion" , :locals => { :item => @topic }) %>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
+  <% cache ({:part => 'secondary_content'}) do -%>
   <div id="secondary-content-wrapper">
-    <%= render(:partial => "tags_div" , :locals => { :item => @topic }) %>
-    <%= render(:partial => "extended_fields" , :locals => { :item => @topic }) %>
+       <%= render(:partial => "tags_div" , :locals => { :item => @topic }) %>
+       <%= render(:partial => "extended_fields" , :locals => { :item => @topic }) %>
   </div> <!-- /secondary-content-warpper -->
+  <% end -%>
+
 </div><!-- /content-wrapper -->

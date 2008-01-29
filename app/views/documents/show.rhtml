@@ -25,10 +25,12 @@
       <%= render(:partial => "topics/discussion" , :locals => { :item => @document }) %>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
+  <% cache ({:part => 'secondary_content'}) do -%>
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @document }) %>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @document }) %>
   </div> <!-- /secondary-content-warpper -->
+  <% end -%>
 </div><!-- /content-wrapper -->
 
 

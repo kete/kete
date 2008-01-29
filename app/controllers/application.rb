@@ -133,7 +133,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments-moderators', 'comments']
+  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments-moderators', 'comments', 'secondary_content']
 
   INDEX_PARTS = [ 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
 

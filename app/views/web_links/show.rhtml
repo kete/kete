@@ -26,8 +26,10 @@
       <%= render(:partial => "topics/discussion" , :locals => { :item => @web_link }) %>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
+  <% cache ({:part => 'secondary_content'}) do -%>
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @web_link }) %>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @web_link }) %>
   </div> <!-- /secondary-content-warpper -->
+  <% end -%>
 </div><!-- /content-wrapper -->
