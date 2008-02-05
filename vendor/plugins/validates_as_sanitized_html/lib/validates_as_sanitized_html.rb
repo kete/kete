@@ -22,8 +22,10 @@ module ActiveRecord
                 record.errors.add(attr_name,
                                   ": we aren't currently allowing forms or javascript in submitted HTML for security reasons.")
               else
-                new_value = Hpricot(value).to_html
-                record.errors.add(attr_name, ": is not valid html.  It looks like you didn't close all your tags.") if new_value != value
+                # Walter McGinnis, 2008-02-04
+                # this is not accurate enough, get false positives
+                # new_value = Hpricot(value).to_html
+                # record.errors.add(attr_name, ": is not valid html.  It looks like you didn't close all your tags.") if new_value != value
               end
             end
           end

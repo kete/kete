@@ -603,7 +603,7 @@ class ApplicationController < ActionController::Base
     # TODO: allow current_user whom is at least moderator to pick another user
     # as contributor
     # uses virtual attr as hack to pass version to << method
-    item.add_as_contributor(current_user)
+    item.add_as_contributor(current_user, item.max_version)
 
     # if the basket has been changed, make sure comments are moved, too
     update_comments_basket_for(item, @current_basket)

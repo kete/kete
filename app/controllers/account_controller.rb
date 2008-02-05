@@ -190,8 +190,12 @@ class AccountController < ApplicationController
   end
 
   def disclaimer
-    version = params[:version]
-    render(:file => "#{RAILS_ROOT}/public/about/#{version}.inc", :layout => false)
+    @topic = Topic.find(params[:id])
+    if request.xhr?
+      render :layout => false
+    else
+      render
+    end
   end
 
   # activation code, note, not always used

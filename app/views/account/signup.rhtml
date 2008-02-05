@@ -1,5 +1,3 @@
-<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
-"full-width notabs" }) %>
 <% @title = 'Registration'  -%>
 
 <h2><%= h(@title) -%></h2>
@@ -45,9 +43,9 @@
 
 <div class="form-element">
 <%= f.check_box :agree_to_terms %> I agree that I have read and accept the
-<%= link_to_remote("Terms and conditions", :update => 'disclaimer', :url => { :action => :disclaimer, :version => 'terms' }) %>
-<%= link_to_remote("Privacy policy", :update => 'disclaimer', :url => { :action => :disclaimer, :version => 'privacy' }) %>
-<%= link_to_remote("House Rules", :update => 'disclaimer', :url => { :action => :disclaimer, :version => 'rules' }) %>.
+<%= link_to_remote("Terms and conditions", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 4 }) %>
+<%= link_to_remote("Privacy policy", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 5 }) %>
+<%= link_to_remote("House Rules", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 2 }) %>.
 </div>
 <div id="disclaimer"></div>
 
@@ -56,6 +54,4 @@
 <%= submit_tag 'Sign up', :class => "save-button" %>
 
 <% end -%>
-</div>
-</div>
-</div>
+

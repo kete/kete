@@ -35,8 +35,8 @@ module HasContributors
       end
     end
     # method definitions
-    def add_as_contributor(user)
-      user.version = self.version
+    def add_as_contributor(user, version = nil)
+      user.version = version.nil? ? self.version : version
       self.contributors << user
     end
 

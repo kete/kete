@@ -3,6 +3,7 @@ class DocumentsController < ApplicationController
 
   # other actions that need caches expired are handled in application.rb
   before_filter :expire_show_caches, :only => [ :convert ]
+  before_filter :login_required, :only => [:convert]
 
   def index
     redirect_to_search_for('Document')

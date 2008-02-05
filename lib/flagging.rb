@@ -75,6 +75,8 @@ module Flagging
       if last_version_number > 1
         while last_version_tags_count > 0
           last_version_number = last_version_number - 1
+          break if last_version_number == 0
+
           last_version = self.versions.find_by_version(last_version_number)
           last_version_tags_count = last_version.tags.size
         end

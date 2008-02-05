@@ -11,16 +11,23 @@
       :id => item %></li>
     <% end -%>
     <li><a href="#comments"><span class="discuss-link">Discuss</span></a></li>
+
     <% if logged_in? and @site_admin -%>
-    <% cache ({:part => 'zoom_reindex'}) do -%>
-    <li><%= link_to "Zoom Update item (+related)",
+       <% cache ({:part => 'zoom_reindex'}) do -%>
+          <li><%= link_to "Zoom Update item (+related)",
             {:action => :rebuild_zoom_for_items,
-      :controller => 'search',
-      :items_to_rebuild => items_to_rebuild(item)},
-      :method => :post,
-      :confirm => 'Are you sure you want to update?'%></li>
+             :controller => 'search',
+             :items_to_rebuild => items_to_rebuild(item)},
+             :method => :post,
+             :confirm => 'Are you sure you want to update?'%></li>
+	   <% if !@document.nil? -%>
+	      <% if @document.could_be_new_theme? -%>
+                 <li><%= link_to 'Make theme', :action => 'make_theme', :id => @document -%></li>
+              <% end -%>
+           <% end -%>
+       <% end -%>
     <% end -%>
-    <% end -%>
+
     <% if logged_in? and @at_least_a_moderator -%>
     <% cache ({:part => 'delete'}) do -%>
     <li><%= link_to "Delete",

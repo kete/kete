@@ -2,20 +2,17 @@
 <%= render(:partial => "topics/content_wrapper_start") %>
 
       <% cache ({:part => 'details'}) do -%>
-      <h2><%= h(@document.title) %></h2>
-      <p><b><%= @document.short_summary %></b></p>
-      <% if !@document.already_at_blank_version? -%>
+         <h2><%= h(@document.title) %></h2>
+         <p><b><%= @document.short_summary %></b></p>
+         <% if !@document.already_at_blank_version? -%>
 
-      <%= render(:partial => "details", :locals => { :item => @document }) %>
+         <%= render(:partial => "details", :locals => { :item => @document }) %>
 
-      <p><%= @document.description %></p>
-      <% end %>
-      <%= pending_review(@document) %>
+         <p><%= @document.description %></p>
+         <% end %>
+         <%= pending_review(@document) %>
       <% end -%>
 
-      <% if logged_in? and @site_admin and @document.could_be_new_theme? -%>
-      <ul><li><%= link_to 'Make theme', :action => 'make_theme', :id => @document -%></li></ul>
-      <% end -%>
 
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @document }) %>
       <% cache ({:related => 'topics'}) do -%>
