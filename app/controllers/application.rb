@@ -15,6 +15,8 @@ class ApplicationController < ActionController::Base
   # only permit site members to add/delete things
   before_filter :login_required, :only => [ :new, :pick_topic_type, :create,
                                             :edit, :update, :destroy,
+                                            :convert,
+                                            :make_theme,
                                             :find_related,
                                             :link_related,
                                             :link_index_topic,
@@ -33,7 +35,7 @@ class ApplicationController < ActionController::Base
 
   # if anything is updated or deleted
   # we need toss our show action fragments
-  before_filter :expire_show_caches, :only => [ :edit, :destroy ]
+  before_filter :expire_show_caches, :only => [ :edit, :destroy, :convert ]
 
   # keep track of tag_list input by version
   before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]

@@ -3,6 +3,12 @@ require 'zoom'
 require "rexml/document"
 
 class SearchController < ApplicationController
+  # Walter McGinnis, 2008-02-07
+  # search forms never add anything to db
+  # so don't need csrf protection, which is problematic with search forms
+  # in kete
+  skip_before_filter :verify_authenticity_token
+
   ZOOM_BOOLEAN_OPERATORS = ['and', 'or', 'not']
 
   layout "application" , :except => [:rss]

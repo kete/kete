@@ -24,7 +24,14 @@ class AccountController < ApplicationController
   end
 
   def login
-    return unless request.post?
+    unless request.post?
+      logger.debug("what is return_to: " + session[:return_to].inspect)
+      if session[:return_to].include? 'find_related'
+        render :layout => "layouts/simple"
+      else
+        render
+      end
+    end
     self.current_user = User.authenticate(params[:login], params[:password])
     if logged_in?
       if params[:remember_me] == "1"

@@ -1,8 +1,4 @@
 class BasketsController < ApplicationController
-  # only permit site members to do anything with baskets
-  # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index]
-
   ### TinyMCE WYSIWYG editor stuff
   uses_tiny_mce(:options => { :theme => 'advanced',
                   :browsers => %w{ msie gecko safaris},

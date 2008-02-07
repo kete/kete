@@ -55,8 +55,8 @@ class Topic < ActiveRecord::Base
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
   attr_accessor :do_not_sanitize
-  # sanitize our descriptions and extended_content for security
-  acts_as_sanitized :fields => [:description, :extended_content]
+  # sanitize our descriptions for security
+  acts_as_sanitized :fields => [:description]
 
   # note, since acts_as_taggable doesn't support versioning
   # out of the box

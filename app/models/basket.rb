@@ -7,7 +7,7 @@ class Basket < ActiveRecord::Base
   # such as the case that a sysadmin wants to include a form
   attr_accessor :do_not_sanitize
   # sanitize our descriptions and extended_content for security
-  acts_as_sanitized :fields => [:index_page_extra_side_bar_html, :extended_content]
+  acts_as_sanitized :fields => [:index_page_extra_side_bar_html]
 
   # set up authorization plugin
   acts_as_authorizable

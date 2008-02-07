@@ -26,7 +26,7 @@ module ConfigureAsKeteContentItem
       # see validate_as_sanitized_html below, too
       # but allow site admin to override
       klass.send :attr_accessor, :do_not_sanitize
-      klass.send :acts_as_sanitized, :fields => [:description, :extended_content]
+      klass.send :acts_as_sanitized, :fields => [:description]
 
       # note, since acts_as_taggable doesn't support versioning
       # out of the box

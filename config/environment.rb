@@ -60,6 +60,7 @@ Rails::Initializer.run do |config|
 
   # white list html elements here, besides defaults
   config.action_view.sanitized_allowed_tags = 'table', 'tr', 'td', 'tbody', 'th', 'thead', 'tfoot'
+  config.action_view.sanitized_allowed_attributes = 'id', 'style', 'hspace', 'vspace', 'align'
 
   # we need to set up randmom_finders first
   config.plugins = [ :random_finders, :all ]
