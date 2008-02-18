@@ -185,6 +185,11 @@ class BasketsController < ApplicationController
     redirect_to :action => :appearance
   end
 
+  def choose_type
+    return unless request.post?
+    redirect_to :controller => params[:new_controller], :action => 'new'
+  end
+
   def set_settings
     if !params[:settings].nil?
       params[:settings].each do |name, value|
@@ -209,4 +214,5 @@ class BasketsController < ApplicationController
   def current_basket_is_selected?
     params[:id].blank? or @current_basket.id == params[:id]
   end
+
 end

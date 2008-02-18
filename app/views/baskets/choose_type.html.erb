@@ -1,0 +1,21 @@
+<% form_tag :action => 'choose_type' do %>
+
+<% @type_options = String.new
+   [['Topic', 'topics'],
+   ['Image', 'images'],
+   ['Audio', 'audio'],
+   ['Video', 'video'],
+   ['Web Link', 'web_links'],
+   ['Document', 'documents']].each do |option|
+   @type_options += "<option value=\"#{option[1]}\">#{option[0]}</option>"
+   end -%>
+<div class="form-element">
+  <label for="type_for_url">Add what type of item?</label>
+    <%= select_tag 'new_controller', @type_options %>
+</div>
+<%= submit_tag "Choose" , :class => "save-button" %>
+<% end %>
+
+
+<%= link_to_cancel %>
+<%= render(:partial => "topics/content_wrapper_end" ) %>

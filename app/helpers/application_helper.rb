@@ -83,6 +83,29 @@ module ApplicationHelper
                                                :trailing_slash => true ) + current_basket_html + '</li>'
   end
 
+  def header_add_links
+    html = '<li>'
+
+    pre_text = String.new
+    site_link_text = String.new
+    current_basket_html = String.new
+    if @current_basket != @site_basket
+      pre_text = 'Add item to '
+      site_link_text = @site_basket.name
+      current_basket_html = " or " + link_to_unless_current( @current_basket.name,
+                                                            :controller => 'baskets',
+                                                            :action => 'choose_type',
+                                                            :urlified_name => @current_basket.urlified_name)
+    else
+      site_link_text = 'Add item'
+    end
+
+    html += pre_text + link_to_unless_current( site_link_text,
+                                               :controller => 'baskets',
+                                               :action => 'choose_type',
+                                               :urlified_name => @site_basket.urlified_name) + current_basket_html + '</li>'
+  end
+
   # TODO: may want to replace this with better history plugin
   def link_to_last_stored_location
     if session[:return_to_title].blank?
