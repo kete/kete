@@ -116,16 +116,17 @@ class IndexPageController < ApplicationController
   end
 
   def help_file
-    @is_fully_cached = has_all_fragments?
-    prepare_topic_for_show
+    # Walter McGinnis, 2008-02-18
+    # bug fix only
+    # this needs to take a parameter for which help page
+    # in the future
+    # fairly brittle now
+    @topic = @help_basket.topics.find_by_title("Adding things")
+    @title = @topic.title
+    @creator = @topic.creator
+    @last_contributor = @topic.contributors.last || @creator
+    @comments = @topic.comments
 
-    if @topic.nil? and @is_fully_cached == false
-      @title = @current_basket.name
-    else
-      if @is_fully_cached == false
-        @title = @topic.title
-      end
-    end
     render :action => :topic_as_full_page, :layout => "layouts/simple"
   end
 

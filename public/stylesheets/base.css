@@ -308,6 +308,30 @@ h3.search-description {
 h3 b{
         color: black;
 }
+
+/* --- Images search results --- */
+.image-result-wrapper {
+    clear: both;
+    margin-top: 2em;
+}
+.image-result-thumb {
+    float: left;
+    padding: 0 10px 0 0;
+    width: 65px; /* width of thumbnail image */
+}
+.image-result-header h4 {
+    margin: 0;
+}
+.image-result-thumb a img {
+        border: solid 1px;
+}
+.image-result-thumb a img:visited {
+        border: solid 1px;
+}
+.image-result-thumb a img:hover {
+        border: solid 1px;
+}
+
 /* #################################### General Content Elements #################################### */
 .results-list{
         list-style-type: square;

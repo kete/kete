@@ -11,9 +11,9 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
   <% end %>
   <div class="image-result-thumb">
     <% if locally_hosted && !image_file.nil? %>
-    <p><%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}", { :popup => true })  %></p>
+    <%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}", { :popup => true })  %>
     <% else %>
-    <p><%= link_to "View Image", "#{source_url}", { :popup => true }  %></p>
+    <%= link_to "View Image", "#{source_url}", { :popup => true }  %>
     <% end %>
   </div>
   <div class="image-result-header">
@@ -27,9 +27,9 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
   <% else %>
   <div class="image-result-thumb">
     <% if locally_hosted && !image_file.nil? %>
-    <p><%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}")  %></p>
+    <%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size), "#{source_url}")  %>
     <% else %>
-    <p><%= link_to "View Image", "#{source_url}"  %></p>
+    <%= link_to "View Image", "#{source_url}"  %>
     <% end %>
   </div>
   <div class="image-result-header">
