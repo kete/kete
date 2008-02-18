@@ -1,30 +1,28 @@
 <%= render(:partial => "topics/actions_menu" , :locals => { :item => @still_image }) %>
 <%= render(:partial => "topics/content_wrapper_start") %>
-	<% cache({:part => 'details'}) do -%>
-		<h2><%= h(@still_image.title) %></h2>
-		<% if !@still_image.original_file.nil? -%>
-		      <% if !@still_image.already_at_blank_version? -%>
-			      <%= render(:partial => "details", :locals => { :item => @still_image }) %>
-		      <% end -%>
-		<% end -%>
-		<% # default to medium view %>
-		<% if !@image_file.nil? %>
-			<% if !@still_image.already_at_blank_version? -%>
-			      <%= render(:partial => "image_file", :object => @image_file) %>
-		      <% end -%>
-	      <% else -%>
-		      <p>Only available as original.</p>
-	      <% end -%>
-	<% end -%>
-	<% cache({:part => 'caption'}) do -%>
-		<% if !@still_image.already_at_blank_version? -%>
-			<h4>Caption</h4>
-			<p><%= @still_image.description %></p>
-		<% end -%>
-		<%= pending_review(@still_image) %>
-	<% end -%>
-
-
+        <% cache({:part => 'details'}) do -%>
+                <h2><%= h(@still_image.title) %></h2>
+                <% if !@still_image.original_file.nil? -%>
+                      <% if !@still_image.already_at_blank_version? -%>
+                              <%= render(:partial => "details", :locals => { :item => @still_image }) %>
+                      <% end -%>
+                <% end -%>
+        <% end -%>
+        <% # default to medium view %>
+        <% if !@image_file.nil? %>
+                <% if !@still_image.already_at_blank_version? -%>
+                      <%= render(:partial => "image_file", :object => @image_file) %>
+                <% end -%>
+        <% else -%>
+                <p>Only available as original.</p>
+        <% end -%>
+        <% cache({:part => 'caption'}) do -%>
+                <% if !@still_image.already_at_blank_version? -%>
+                        <h4>Caption</h4>
+                        <p><%= @still_image.description %></p>
+                <% end -%>
+                <%= pending_review(@still_image) %>
+        <% end -%>
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) %>
       <% cache ({:related => 'topics'}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @still_image, :source_item_class => 'WebLink', :topics => @still_image.topics) %>

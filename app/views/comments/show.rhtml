@@ -36,7 +36,7 @@
                                                 <li><%= link_to "Delete",
                                                                 {:action => :destroy,
                                                                 :controller => '/comments',
-                                                                :id => @comment},
+                                                                :id => @comment, :authenticity_token => form_authenticity_token},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure?'%></li>
                                         <% end -%>
@@ -46,7 +46,7 @@
                                                 <li><%= link_to "Zoom Update this item and it's related items",
                                                                 {:action => :rebuild_zoom_for_items,
                                                                 :controller => 'search',
-                                                                :items_to_rebuild => "Comment-#{@comment.id}"},
+                                                                :items_to_rebuild => "Comment-#{@comment.id}", :authenticity_token => form_authenticity_token},
                                                                 :method => :post,
                                                                 :confirm => 'Are you sure you want to update?'%></li>
 <% end -%>

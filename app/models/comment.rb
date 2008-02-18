@@ -12,13 +12,13 @@ class Comment < ActiveRecord::Base
     end
   end
 
+  # we order by position in relation to item commented on
+  acts_as_list :scope => :commentable_id
+
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
 
   validates_presence_of :description
-
-  # we order by position in relation to item commented on
-  acts_as_list :scope => :commentable_id
 
   # most likely we won't use versioning for comments
   # but we provide it for consistency sake with the rest of kete

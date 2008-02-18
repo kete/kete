@@ -26,7 +26,7 @@ class AccountController < ApplicationController
   def login
     unless request.post?
       logger.debug("what is return_to: " + session[:return_to].inspect)
-      if session[:return_to].include? 'find_related'
+      if !session[:return_to].blank? && session[:return_to].include?('find_related')
         render :layout => "layouts/simple"
       else
         render

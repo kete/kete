@@ -8,14 +8,16 @@
     <li><%= link_to "Make this revision live",
          {:action => :restore,
       :id => item,
-      :version => item.version},
+      :version => item.version,
+      :authenticity_token => form_authenticity_token},
          :method => :post,
          :confirm => 'Are you sure?' %></li>
     <li><%= link_to "reject",
             {:action => :flag_form,
       :id => item,
       :flag => REJECTED_FLAG,
-      :version => item.version},
+      :version => item.version,
+      :authenticity_token => form_authenticity_token},
       :method => :post,
       :confirm => 'Are you sure?'%></li>
     <% end -%>

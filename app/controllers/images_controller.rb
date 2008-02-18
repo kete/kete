@@ -10,10 +10,13 @@ class ImagesController < ApplicationController
   end
 
   def show
-    if !has_all_fragments? or params[:format] == 'xml'
-      @still_image = @current_basket.still_images.find(params[:id])
-      @title = @still_image.title
-    end
+    # if !has_all_fragments? or params[:format] == 'xml'
+    # Walter McGinnis, 2008-02-14
+    # always loading still_image for the timebeing, since we check for blank version
+    # to determine whether to show image file
+    @still_image = @current_basket.still_images.find(params[:id])
+    @title = @still_image.title
+    # end
 
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])

@@ -385,7 +385,8 @@ module ApplicationHelper
                            {:action => :new,
                              :controller => 'comments',
                              :commentable_id => item,
-                             :commentable_type => item.class.name
+                             :commentable_type => item.class.name,
+                             :authenticity_token => form_authenticity_token
                            },
                            :method => :post)
 
@@ -431,7 +432,8 @@ module ApplicationHelper
           html_string += "<li>" + link_to("Delete",
                                           {:action => :destroy,
                                             :controller => 'comments',
-                                            :id => comment},
+                                            :id => comment,
+                                            :authenticity_token => form_authenticity_token},
                                           :method => :post,
                                           :confirm => 'Are you sure?') + "</li>\n"
         end
@@ -441,7 +443,8 @@ module ApplicationHelper
                                      {:action => :new,
                                        :controller => 'comments',
                                        :commentable_id => item,
-                                       :commentable_type => item.class.name
+                                       :commentable_type => item.class.name,
+                                       :authenticity_token => form_authenticity_token
                                      },
                                      :method => :post) + "</p>"
     end

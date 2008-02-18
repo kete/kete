@@ -34,35 +34,37 @@ module ExtendedContentHelpers
       # work through extended_content, see what should be it's own dc element
       # and what should go in a group dc:description
       temp_extended_content = item.extended_content
-      extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
+      if !temp_extended_content.blank? and temp_extended_content.starts_with?('<')
+        extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
 
-      non_dc_extended_content_hash = Hash.new
-      re = Regexp.new("^dc")
-      multi_re = Regexp.new("_multiple$")
-      extended_content_hash.keys.each do |field|
-        # condition that checks if this is a multiple field
-        # if so move into it and does the following for each
-        if multi_re.match(field)
-          logger.debug("in multi")
-          # value is going to be a hash like this:
-          # "1" => {field_name => value}, "2" => ...
-          # we want the first field name followed by a :
-          # and all values, separated by spaces (for now)
-          hash_of_values = extended_content_hash[field]
-          hash_of_values.keys.each do |key|
-            hash_of_values[key].keys.each do |subfield|
-              extended_content_hash_field_xml(xml,hash_of_values[key],non_dc_extended_content_hash,subfield,re)
+        non_dc_extended_content_hash = Hash.new
+        re = Regexp.new("^dc")
+        multi_re = Regexp.new("_multiple$")
+        extended_content_hash.keys.each do |field|
+          # condition that checks if this is a multiple field
+          # if so move into it and does the following for each
+          if multi_re.match(field)
+            logger.debug("in multi")
+            # value is going to be a hash like this:
+            # "1" => {field_name => value}, "2" => ...
+            # we want the first field name followed by a :
+            # and all values, separated by spaces (for now)
+            hash_of_values = extended_content_hash[field]
+            hash_of_values.keys.each do |key|
+              hash_of_values[key].keys.each do |subfield|
+                extended_content_hash_field_xml(xml,hash_of_values[key],non_dc_extended_content_hash,subfield,re)
+              end
             end
+          else
+            extended_content_hash_field_xml(xml,extended_content_hash,non_dc_extended_content_hash,field,re)
           end
-        else
-          extended_content_hash_field_xml(xml,extended_content_hash,non_dc_extended_content_hash,field,re)
         end
-      end
 
-      if !non_dc_extended_content_hash.blank?
-        xml.tag!("dc:description") do
-          non_dc_extended_content_hash.each do |key, value|
-            xml.tag!(key, value)
+        if !non_dc_extended_content_hash.blank?
+          xml.tag!("dc:description") do
+            non_dc_extended_content_hash.each do |key, value|
+              xml.tag!(key, value)
+            end
           end
         end
       end

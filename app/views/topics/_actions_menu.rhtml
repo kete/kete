@@ -17,11 +17,11 @@
           <li><%= link_to "Zoom Update item (+related)",
             {:action => :rebuild_zoom_for_items,
              :controller => 'search',
-             :items_to_rebuild => items_to_rebuild(item)},
+             :items_to_rebuild => items_to_rebuild(item), :authenticity_token => form_authenticity_token},
              :method => :post,
              :confirm => 'Are you sure you want to update?'%></li>
-	   <% if !@document.nil? -%>
-	      <% if @document.could_be_new_theme? -%>
+           <% if !@document.nil? -%>
+              <% if @document.could_be_new_theme? -%>
                  <li><%= link_to 'Make theme', :action => 'make_theme', :id => @document -%></li>
               <% end -%>
            <% end -%>
@@ -32,7 +32,8 @@
     <% cache ({:part => 'delete'}) do -%>
     <li><%= link_to "Delete",
             {:action => :destroy,
-      :id => item},
+             :id => item,
+             :authenticity_token => form_authenticity_token},
       :method => :post,
       :confirm => 'Are you sure?'%></li>
     <% end -%>
