@@ -20,6 +20,7 @@ class ApplicationController < ActionController::Base
                                             :find_related,
                                             :link_related,
                                             :link_index_topic,
+                                            :flag_form,
                                             :flag_version,
                                             :restore,
                                             :reject]

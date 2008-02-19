@@ -25,16 +25,19 @@ module SearchHelper
 
   # look in parameters for what this is a refinement of
   def last_part_of_title_if_refinement_of
-    if !@tag.nil?
-      return " tagged as \"#{@tag.name}\""
-    elsif !@contributor.nil?
-      return " contributed by \"#{link_to_profile_for(@contributor)}\""
-    elsif !@source_item.nil?
-      return " related to \"#{@source_item.title}\""
-    else
-      return ''
-    end
+    end_of_title_parts = Array.new
+
+    end_of_title_parts << " tagged as \"#{@tag.name}\"" if !@tag.nil?
+
+    end_of_title_parts << " contributed by \"#{link_to_profile_for(@contributor)}\"" if !@contributor.nil?
+
+    end_of_title_parts << " related to \"#{@source_item.title}\"" if !@source_item.nil?
+
+    end_of_title_parts << " for your search \"#{h(@search_terms.to_s)}\"" if !@search_terms.nil?
+
+    end_of_title = end_of_title_parts.join(" and")
   end
+
   def pagination_links(options = { })
     current_page = options[:current_page]
     previous_page = options[:previous_page]

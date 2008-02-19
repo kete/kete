@@ -172,6 +172,8 @@ class SearchController < ApplicationController
       @source_item = nil
     end
 
+    @search_terms = params[:search_terms] ? params[:search_terms] : nil
+
     @tag = params[:tag] ? Tag.find(params[:tag]) : nil
 
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
