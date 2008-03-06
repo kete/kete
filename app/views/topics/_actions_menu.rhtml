@@ -32,8 +32,7 @@
     <% cache ({:part => 'delete'}) do -%>
     <li><%= link_to "Delete",
             {:action => :destroy,
-             :id => item,
-             :authenticity_token => form_authenticity_token},
+             :id => item},
       :method => :post,
       :confirm => 'Are you sure?'%></li>
     <% end -%>

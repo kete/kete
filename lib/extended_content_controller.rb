@@ -19,6 +19,10 @@ module ExtendedContentController
       klass.send :verify, :method => :post, :only => [ :destroy, :create, :update ],
       :redirect_to => { :action => :list }
 
+      # override the site wide protect_from_forgery to exclude
+      # things that you must be logged in to do anyway or at least a moderator
+      klass.send :protect_from_forgery, :secret => KETE_SECRET, :except => ['new', 'destroy']
+
       ### TinyMCE WYSIWYG editor stuff
       klass.send :uses_tiny_mce, :options => { :theme => 'advanced',
         :browsers => %w{ msie gecko safaris},

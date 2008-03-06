@@ -49,7 +49,7 @@ module AlexPayne
             # allow for turning off sanitization on a record by record basis
             # for cases like a site admin adding a form
             # via virtual attribute on record
-            do_not_sanitize = !self.do_not_sanitize.nil? && (self.do_not_sanitize == true || self.do_not_sanitize == 1) ?  true : false
+            do_not_sanitize = !self.do_not_sanitize.nil? && self.do_not_sanitize.to_s != 'false' && (self.do_not_sanitize.to_s == 'true' || self.do_not_sanitize.to_i == 1) ?  true : false
             unless do_not_sanitize
               acts_as_sanitized_options[:fields].each do |field|
                 sanitize_field(field)

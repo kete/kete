@@ -4,6 +4,10 @@ class TopicsController < ApplicationController
   # moderators only
   permit "site_admin or moderator of :current_basket or admin of :current_basket", :only =>  [ :destroy, :restore, :reject ]
 
+  # override the site wide protect_from_forgery to exclude
+  # things that you must be logged in to do anyway or at least a moderator
+  protect_from_forgery :secret => KETE_SECRET, :except => ['new', 'destroy']
+
   # since we use dynamic forms based on topic_types and extended_fields
   # and topics have their main attributes stored in an xml doc
   # within their content field

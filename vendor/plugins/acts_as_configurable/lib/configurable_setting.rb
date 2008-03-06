@@ -7,7 +7,9 @@ class ConfigurableSetting < ActiveRecord::Base
   # in your migration self.up method:
   #   <tt>ConfigurableSetting.create_table</tt>
   def self.create_table
-    self.connection.create_table :configurable_settings, :options => 'ENGINE=InnoDB' do |t|
+    table_options = String.new
+    table_options = 'ENGINE=InnoDB' if 'MySQL' == ActiveRecord::Base.connection.adapter_name
+    self.connection.create_table :configurable_settings, :options => table_options do |t|
       t.column :configurable_id,      :integer, :references => nil
       t.column :configurable_type,    :string
       t.column :targetable_id,        :integer, :references => nil

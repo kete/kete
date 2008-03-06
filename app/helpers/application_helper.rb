@@ -408,8 +408,7 @@ module ApplicationHelper
                            {:action => :new,
                              :controller => 'comments',
                              :commentable_id => item,
-                             :commentable_type => item.class.name,
-                             :authenticity_token => form_authenticity_token
+                             :commentable_type => item.class.name
                            },
                            :method => :post)
 
