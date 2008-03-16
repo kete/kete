@@ -1,4 +1,3 @@
-require 'RMagick'
 class AccountController < ApplicationController
   # see user model for info about activation code
   # for email password reminders and activation
@@ -43,26 +42,52 @@ class AccountController < ApplicationController
     end
   end
 
+  # override brain_buster method to suit our UI
+  # and working in conjunction with simple_captcha
+  def captcha_failure
+    @user.security_code = 'failed'
+    @user.security_code_confirmation = false
+  end
+
+
   def signup
     # this loads @content_type
     load_content_type
 
     @user = User.new
+
+    # Walter McGinnis, 2008-03-16
+    # making it so that system setting
+    # determines which type of captcha method we use
+    @captcha_type = params[:captcha_type] || CAPTCHA_TYPE
+    @captcha_type = 'image' if @captcha_type == 'all'
+
+    create_brain_buster if @captcha_type == 'question'
+
+    # after this is processing submitted form only
     return unless request.post?
     @user = User.new(extended_fields_and_params_hash_prepare(:content_type => @content_type,
                                                              :item_key => 'user',
                                                              :item_class => 'User',
                                                              :extra_fields => ['password', 'password_confirmation']))
 
-    if simple_captcha_valid?
-      @user.security_code = params[:user][:security_code]
-    end
+    case @captcha_type
+    when 'image'
+      if simple_captcha_valid?
+        @user.security_code = params[:user][:security_code]
+      end
 
-    if simple_captcha_confirm_valid?
-      @res = Captcha.find(session[:captcha_id])
-      @user.security_code_confirmation = @res.text
-    else
-      @user.security_code_confirmation = false
+      if simple_captcha_confirm_valid?
+        @res = Captcha.find(session[:captcha_id])
+        @user.security_code_confirmation = @res.text
+      else
+        @user.security_code_confirmation = false
+      end
+    when 'question'
+      if validate_brain_buster
+        @user.security_code = true
+        @user.security_code_confirmation = true
+      end
     end
 
     if agreed_terms?
@@ -113,6 +138,9 @@ class AccountController < ApplicationController
   def logout
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
+    # Walter McGinnis, 2008-03-16
+    # added to support brain_buster plugin captcha
+    cookies.delete :captcha_status
     reset_session
     flash[:notice] = "You have been logged out."
     redirect_back_or_default(:controller => '/account', :action => 'index')

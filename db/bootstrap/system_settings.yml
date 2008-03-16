@@ -406,3 +406,11 @@ system_settings_045:
   id: "45"
   value: "[1]"
   section: System
+system_settings_046:
+  name: Captcha Type
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: Choose the type of spam protection method (known as 'captcha' see http://en.wikipedia.org/wiki/Captcha) used during user registration. The options are to use 'image' (which is inaccessable to blind users and requires Rmagick supporting software), 'question' (which currently has a bias towards english speakers, but doesn't require other software), or 'all' (which is will provide image first, but link to question captcha for accesability, in the future may include an 'audio' option).  Note that you shouldn't include the single quotes around you choice.
+  id: "46"
+  value: "all"
+  section: Accounts

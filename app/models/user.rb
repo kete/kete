@@ -69,7 +69,9 @@ class User < ActiveRecord::Base
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
-  validates_confirmation_of :security_code,              :if => :new_record?
+  # Walter McGinnis, 2008-03-16
+  # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
+  validates_confirmation_of :security_code,              :if => :new_record?, :message => ': Your security question answer failed - please try again.'
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
