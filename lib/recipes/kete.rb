@@ -20,6 +20,7 @@ namespace :deploy do
       deploy.update_code
       deploy.prepare.setup_zebra
       deploy.prepare.setup_imports
+      deploy.prepare.setup_themes
       deploy.symlink
       deploy.prepare.default
       deploy.start

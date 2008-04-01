@@ -6,25 +6,39 @@ field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
 # because we piggyback multiple, it doesn't have a ? method
 # even though it is boolean
 if field_to_xml.extended_field_multiple
-        # we have multiple values for this field in the form
-        # collect them in an outer tag
-        # do an explicit key, so we end up with a hash
-        xml.tag!("#{field_name}_multiple") do
-                hash_of_values = params[item_key][field_name]
-                hash_of_values.keys.each do |key|
-                        xml.tag!(key) do
-                                extended_content_field_xml_tag(:xml => xml,
-                                                               :field => field_name,
-                                                               :value => params[item_key][field_name][key],
-                                                               :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                                                               :xsi_type => field_to_xml.extended_field_xsi_type)
-                        end
-                end
+  # we have multiple values for this field in the form
+  # collect them in an outer tag
+  # do an explicit key, so we end up with a hash
+  xml.tag!("#{field_name}_multiple") do
+    hash_of_values = params[item_key][field_name]
+    if !hash_of_values.blank?
+      hash_of_values.keys.each do |key|
+        xml.tag!(key) do
+          extended_content_field_xml_tag(:xml => xml,
+                                         :field => field_name,
+                                         :value => params[item_key][field_name][key],
+                                         :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                                         :xsi_type => field_to_xml.extended_field_xsi_type)
         end
+      end
+    else
+      # this handles the case where edit has changed the item from one topic type to a sub topic type
+      # and there isn't an existing value for this multiple
+      # generates empty xml elements for the field
+      key = 1.to_s
+      xml.tag!(key) do
+          extended_content_field_xml_tag(:xml => xml,
+                                         :field => field_name,
+                                         :value => '',
+                                         :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                                         :xsi_type => field_to_xml.extended_field_xsi_type)
+      end
+    end
+  end
 else
-        extended_content_field_xml_tag(:xml => xml,
-                                       :field => field_name,
-                                       :value => params[item_key][field_name],
-                                       :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                                       :xsi_type => field_to_xml.extended_field_xsi_type)
+  extended_content_field_xml_tag(:xml => xml,
+                                 :field => field_name,
+                                 :value => params[item_key][field_name],
+                                 :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                                 :xsi_type => field_to_xml.extended_field_xsi_type)
 end
