@@ -229,7 +229,7 @@ system_settings_026:
 
     Note, this only takes effect from this point forward.  No existing image files will be changed.
   id: "26"
-  value: "{:small_sq => [50, 50], :small => '50', :medium => '200>', :large => '400>'}"
+  value: "{:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'}"
   section: Images
 system_settings_027:
   name: Image Content Types

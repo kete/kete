@@ -7,7 +7,7 @@ module Technoweenie # :nodoc:
           base.send :extend, ClassMethods
           base.alias_method_chain :process_attachment, :processing
         end
-        
+
         module ClassMethods
           # Yields a block containing an RMagick Image for the given binary data.
           def with_image(file, &block)
@@ -35,7 +35,8 @@ module Technoweenie # :nodoc:
             callback_with_args :after_resize, img
           end if image?
         end
-      
+
+
         # Performs the actual resizing operation for a thumbnail
         def resize_image(img, size)
           size = size.first if size.is_a?(Array) && size.length == 1 && !size.first.is_a?(Fixnum)
@@ -43,8 +44,17 @@ module Technoweenie # :nodoc:
             size = [size, size] if size.is_a?(Fixnum)
             img.thumbnail!(*size)
           else
-            img.change_geometry(size.to_s) { |cols, rows, image| image.resize!(cols, rows) }
+            # Walter McGinnis, 2008-04-02
+            # updating attachment_fu, plus adding support of cropping
+            # as outlined by http://www.brendanlim.com/2007/7/28/crop-images-using-attachment_fu-and-rmagick
+            # ! on end means we crop
+            if !size.to_s.scan('!').blank?
+                img.change_geometry(size.to_s) { |cols, rows, image| image.crop_resized!(cols, rows) }
+            else
+              img.change_geometry(size.to_s) { |cols, rows, image| image.resize!(cols<1 ? 1 : cols, rows<1 ? 1 : rows) }
+            end
           end
+          img.strip! unless attachment_options[:keep_profile]
           self.temp_path = write_to_temp_file(img.to_blob)
         end
       end
