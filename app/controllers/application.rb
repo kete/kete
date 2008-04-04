@@ -51,6 +51,13 @@ class ApplicationController < ActionController::Base
   # only site_admin can set item.do_not_sanitize to true
   before_filter :security_check_of_do_not_sanitize, :only => [ :create, :update ]
 
+  # don't allow forms to set do_not_moderate
+  before_filter :security_check_of_do_not_moderate, :only => [ :create, :update, :restore ]
+
+  # set do_not_moderate if item is moving baskets, this only happens on edits
+  # currently
+  before_filter :set_do_not_moderate_if_moving_item, :only => [ :update ]
+
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
@@ -105,9 +112,34 @@ class ApplicationController < ActionController::Base
   end
 
   def security_check_of_do_not_sanitize
-    item_class_for_param_key = zoom_class_from_controller(params[:controller]).singularize.to_s
-    if !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_sanitize].nil?
+    item_class = zoom_class_from_controller(params[:controller])
+    item_class_for_param_key = item_class.tableize.singularize
+    if ZOOM_CLASSES.include?(item_class) && !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_sanitize].nil?
       params[item_class_for_param_key][:do_not_sanitize] = false if !@site_admin
+    end
+  end
+
+  def security_check_of_do_not_moderate
+    item_class = zoom_class_from_controller(params[:controller])
+    item_class_for_param_key = item_class.tableize.singularize
+    if ZOOM_CLASSES.include?(item_class) && !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
+      params[item_class_for_param_key][:do_not_sanitize] = false if !@site_admin
+    end
+  end
+
+  # Walter McGinnis, 2006-04-03
+  # bug fix for when site admin moves an item from one basket to another
+  # if params[:topic][basket_id] exists and site admin
+  # set do_not_moderate to true
+  def set_do_not_moderate_if_moving_item
+    item_class = zoom_class_from_controller(params[:controller])
+    item_class_for_param_key = item_class.tableize.singularize
+    if ZOOM_CLASSES.include?(item_class)
+      if !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:basket_id].blank? && @site_admin
+        params[item_class_for_param_key][:do_not_moderate] = true
+      elsif !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
+        params[item_class_for_param_key][:do_not_moderate] = false
+      end
     end
   end
 

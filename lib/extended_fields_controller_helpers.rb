@@ -27,6 +27,7 @@ module ExtendedFieldsControllerHelpers
 
       extra_fields = options[:extra_fields] || Array.new
       extra_fields << 'do_not_sanitize'
+      extra_fields << 'do_not_moderate'
       extra_fields << 'tag_list'
       extra_fields << 'uploaded_data'
 
