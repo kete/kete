@@ -33,8 +33,6 @@ module SearchHelper
 
     end_of_title_parts << " related to \"#{@source_item.title}\"" if !@source_item.nil?
 
-    end_of_title_parts << " for your search \"#{h(@search_terms.to_s)}\"" if !@search_terms.nil?
-
     end_of_title = end_of_title_parts.join(" and")
   end
 

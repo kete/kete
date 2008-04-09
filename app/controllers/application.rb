@@ -589,14 +589,17 @@ class ApplicationController < ActionController::Base
     @basket_stats_hash = Hash.new
     # special case: site basket contains everything
     # all contents of site basket plus all other baskets' contents
+
+    # pending items are counted
+    conditions = "title != \'#{BLANK_TITLE}\'"
+
     if basket == @site_basket
       ZOOM_CLASSES.each do |zoom_class|
-        @basket_stats_hash[zoom_class] = Module.class_eval(zoom_class).count
+        @basket_stats_hash[zoom_class] = Module.class_eval(zoom_class).count(:conditions => conditions)
       end
     else
       ZOOM_CLASSES.each do |zoom_class|
-        items = basket.send(zoom_class.tableize)
-        @basket_stats_hash[zoom_class] = items.size
+        @basket_stats_hash[zoom_class] = basket.send(zoom_class.tableize).count(:conditions => conditions)
       end
     end
   end
@@ -695,6 +698,8 @@ class ApplicationController < ActionController::Base
       return false
     elsif params[:controller] == 'index_page' and params[:action] == 'index'
       return false
+    elsif params[:controller] == 'account' and params[:action] == 'show'
+      return true
     elsif !['show', 'preview'].include?(params[:action])
       return true
     else

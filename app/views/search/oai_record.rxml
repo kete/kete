@@ -1,49 +1,53 @@
 xml.instruct!
 xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
-        xml.responseDate(Time.now.to_s(:db))
-        oai_dc_xml_request(xml,item)
-        xml.GetRecord do
-                xml.record do
-                        xml.header do
-                                oai_dc_xml_oai_identifier(xml,item)
-                                xml.datestamp(item.updated_at.to_s(:db))
-                        end
-                        xml.metadata do
-                                xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xmlns:dcterms".to_sym => "http://purl.org/dc/terms/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
-                                        oai_dc_xml_dc_identifier(xml,item)
-                                        oai_dc_xml_dc_title(xml,item)
-                                        oai_dc_xml_dc_publisher(xml)
+  xml.responseDate(Time.now.to_s(:db))
+  oai_dc_xml_request(xml,item)
+  xml.GetRecord do
+    xml.record do
+      xml.header do
+        oai_dc_xml_oai_identifier(xml,item)
+        xml.datestamp(item.updated_at.to_s(:db))
+      end
+      xml.metadata do
+        xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xmlns:dcterms".to_sym => "http://purl.org/dc/terms/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
+          oai_dc_xml_dc_identifier(xml,item)
+          oai_dc_xml_dc_title(xml,item)
+          oai_dc_xml_dc_publisher(xml)
 
-                                        # topic specific
-                                        if item.class.name == 'Topic' || item.class.name == 'Document'
-                                                oai_dc_xml_dc_description(xml,item.short_summary)
-                                        end
+          # topic specific
+          if ['Topic', 'Document'].include?(item.class.name)
+            oai_dc_xml_dc_description(xml,item.short_summary)
+          end
 
-                                        oai_dc_xml_dc_description(xml,item.description)
+          oai_dc_xml_dc_description(xml,item.description)
 
-                                        # gives use dc:description/files/version_of_item/enclosure
-                                        # for any associated binary files
-                                        # that can be used to derive the url for things like thumbnails
-                                        # or populate rss enclosure
-                                        oai_dc_xml_dc_description_for_file(xml, item)
+          if item.class.name == 'WebLink'
+            xml.tag!("dc:subject", item.url)
+          end
 
-                                        oai_dc_xml_dc_creators_and_date(xml,item)
-                                        oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
+          # gives use dc:description/files/version_of_item/enclosure
+          # for any associated binary files
+          # that can be used to derive the url for things like thumbnails
+          # or populate rss enclosure
+          oai_dc_xml_dc_description_for_file(xml, item)
 
-                                        # all types at this point have an extended_content attribute
-                                        oai_dc_xml_dc_extended_content(xml,item)
+          oai_dc_xml_dc_creators_and_date(xml,item)
+          oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
 
-                                        # related topics and items should have dc:subject elem here with their title
-                                        oai_dc_xml_dc_relations_and_subjects(xml,item)
+          # all types at this point have an extended_content attribute
+          oai_dc_xml_dc_extended_content(xml,item)
 
-                                        oai_dc_xml_dc_type(xml,item)
+          # related topics and items should have dc:subject elem here with their title
+          oai_dc_xml_dc_relations_and_subjects(xml,item)
 
-                                        oai_dc_xml_tags_to_dc_subjects(xml,item)
+          oai_dc_xml_dc_type(xml,item)
 
-                                        # this is mime type
-                                        oai_dc_xml_dc_format(xml,item)
-                                end
-                        end
-                end
+          oai_dc_xml_tags_to_dc_subjects(xml,item)
+
+          # this is mime type
+          oai_dc_xml_dc_format(xml,item)
         end
+      end
+    end
+  end
 end

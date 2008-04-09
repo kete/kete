@@ -321,6 +321,9 @@ class SearchController < ApplicationController
 
       prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
 
+      web_link_operators = String.new
+      final_terms_string = String.new
+
       # quote each term to handle phrases
       if !prepped_terms.blank?
         if prepped_terms.size > 1
@@ -394,6 +397,7 @@ class SearchController < ApplicationController
           if operators_array.size > 0
             title_query += operators_array.join(" ") + " "
             all_content_query += operators_array.join(" ") + " "
+            web_link_operators = operators_array.join(" ") + " "
           end
 
           if query_starts_with_not == true
@@ -402,12 +406,16 @@ class SearchController < ApplicationController
             query_operators += "@and "
           end
 
-          title_query += "\"" + terms_array.join("\" \"") + "\" "
-          all_content_query += "\"" + terms_array.join("\" \"") + "\" "
+          final_terms_string = "\"" + terms_array.join("\" \"") + "\" "
+          title_query += final_terms_string
+          all_content_query += final_terms_string
+
           query += title_query + all_content_query
         else
           # @and will break query if only single term
-          query += "@or @attr 1=4 \"#{prepped_terms.join("\" \"")}\" @attr 1=1016 \"#{prepped_terms.join("\" \"")}\" "
+          final_terms_string = "\"" + prepped_terms.join("\" \"") + "\" "
+          query += "@or @attr 1=4 #{final_terms_string} @attr 1=1016 #{final_terms_string} "
+
           query_operators += "@and "
         end
       end
@@ -415,11 +423,14 @@ class SearchController < ApplicationController
 
     query = query_operators + query
 
+    query = "@or " + query + "@attr 1=21 " + web_link_operators + " " + final_terms_string if zoom_class == 'WebLink' && !@search_terms.blank?
+
     case sort_type
     when 'last_modified'
       query = "@or " + query + "@attr 7=2 @attr 1=1012 0"
     end
 
+    logger.debug("what is query: " + query.inspect)
     this_result_set = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
                                                                   :query => query)
 
@@ -635,6 +646,10 @@ class SearchController < ApplicationController
         clause_values[:end_id] = @end_id
       end
 
+      # don't include items that are flagged pending
+      clause += " and title != :pending_title"
+      clause_values[:pending_title] = BLANK_TITLE
+
       @item = Module.class_eval(@zoom_class).find(:first,
                                                   :conditions => [clause, clause_values],
                                                   :order => 'id')
@@ -757,7 +772,7 @@ class SearchController < ApplicationController
                                                                     :query => query)
 
       if this_result_set.size == 0
-        return "failed to add to search: #{item_class} : #{item.id} not found in search index"
+        return "failed to add to search: #{item_class} : #{item.id} not found in search index or perhaps the item is pending."
       else
         return "successfully updated search: #{item_class} : #{item.id}"
       end

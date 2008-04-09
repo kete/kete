@@ -547,9 +547,14 @@ div#notice {
 .theme-choice-wrapper {
             float:right;
 }
-
 /* code styles */
 
 pre {
     overflow: auto;
 }
+
+/* width of keyword search for basket homepage */
+input.searchheader-search {
+    width: 12em;
+}
+

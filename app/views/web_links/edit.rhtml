@@ -1,16 +1,11 @@
-<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
-"full-width notabs" }) %>
+<% @title = 'Editing web link' -%>
 
+<h2><%= h(@title) -%></h2>
 
+<% form_tag :action => 'update', :id => @web_link do %>
+<%= render :partial => 'form' %>
+<%= submit_tag 'Save',:class => "save-button" %>
+<% end %>
 
-      <% @title = 'Editing web link' -%>
-
-      <h2><%= h(@title) -%></h2>
-
-      <% form_tag :action => 'update', :id => @web_link do %>
-      <%= render :partial => 'form' %>
-      <%= submit_tag 'Save',:class => "save-button" %>
-      <% end %>
-
-      <%= link_to_cancel %>
+<%= link_to_cancel %>
 <%= render(:partial => "topics/content_wrapper_end" ) %>
