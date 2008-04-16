@@ -16,7 +16,9 @@ gems:
 libs:
   RMagick: RMagick
 
+# memcached is truncated to "memcache" for compatibility with
+# some systems' (Solaris10?) ps -c truncation amount
 commands:
   Zebra: which zebrasrv
-  Memcache Daemon: ps -Ac | grep memcached
+  Memcache Daemon: ps -Ac | grep memcache
   Unzip: which unzip
