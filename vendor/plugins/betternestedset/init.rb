@@ -8,4 +8,7 @@ require 'better_nested_set_helper'
 ActiveRecord::Base.class_eval do
   include SymetrieCom::Acts::NestedSet
 end
-ActionView::Base.send :include, SymetrieCom::Acts::BetterNestedSetHelper
+
+if Object.const_defined?('ActionView')
+  ActionView::Base.send :include, SymetrieCom::Acts::BetterNestedSetHelper
+end

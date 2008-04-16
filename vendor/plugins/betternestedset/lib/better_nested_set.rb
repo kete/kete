@@ -39,6 +39,9 @@ module SymetrieCom
           
           class_inheritable_reader :acts_as_nested_set_options
           
+          base_set_class.class_inheritable_accessor :acts_as_nested_set_scope_enabled
+          base_set_class.acts_as_nested_set_scope_enabled = true
+          
           if acts_as_nested_set_options[:scope].is_a?(Symbol)
             scope_condition_method = %(
               def scope_condition
@@ -345,15 +348,15 @@ module SymetrieCom
           end
         
           def use_scope_condition?#:nodoc:
-            @scope_enabled == true || @scope_enabled.nil?
+            base_set_class.acts_as_nested_set_scope_enabled == true
           end
           
           def disable_scope_condition#:nodoc:
-            @scope_enabled = false
+            base_set_class.acts_as_nested_set_scope_enabled = false
           end
           
           def enable_scope_condition#:nodoc:
-            @scope_enabled = true
+            base_set_class.acts_as_nested_set_scope_enabled = true
           end
         
           def left_col_name#:nodoc:
@@ -733,7 +736,7 @@ module SymetrieCom
           n = 1
           transaction do
             for r in roots # because we may have virtual roots
-              n = r.calc_numbers(n, indexes)
+              n = 1 + r.calc_numbers(n, indexes)
             end
             for i in indexes
               base_set_class.update_all("#{left_col_name} = #{i[:lft]}, #{right_col_name} = #{i[:rgt]}", "#{self.class.primary_key} = #{i[:id]}")
@@ -922,9 +925,9 @@ module SymetrieCom
           raise ActiveRecord::ActiveRecordError, "You cannot move a node if left or right is nil" unless self[left_col_name] && self[right_col_name]
           
           with_optional_transaction(transact) do
-            self.reload # the lft/rgt values could be stale (target is reloaded below)
+            self.reload(:select => "#{left_col_name}, #{right_col_name}, #{parent_col_name}") # the lft/rgt values could be stale (target is reloaded below)
             if target.is_a?(base_set_class)
-              target.reload # could be stale
+              target.reload(:select => "#{left_col_name}, #{right_col_name}, #{parent_col_name}") # could be stale
             else
               target = self.class.find_in_nested_set(target) # load object if we were given an ID
             end
@@ -1000,7 +1003,8 @@ module SymetrieCom
                   ELSE #{parent_col_name} END",
                 scope_condition)
             end
-            self.reload; target.reload
+            self.reload(:select => "#{left_col_name}, #{right_col_name}, #{parent_col_name}")
+            target.reload(:select => "#{left_col_name}, #{right_col_name}, #{parent_col_name}")
           end
         end
         
@@ -1089,13 +1093,15 @@ module SymetrieCom
         private
           # override the sql preparation method to exclude the lft/rgt columns
           # under the same conditions that the primary key column is excluded
-          def attributes_with_quotes(include_primary_key = true) #:nodoc:
-            attributes.inject({}) do |quoted, (name, value)|
+          def attributes_with_quotes(include_primary_key = true, include_readonly_attributes = true) #:nodoc:
+            left_and_right_column = [acts_as_nested_set_options[:left_column], acts_as_nested_set_options[:right_column]]
+            quoted = attributes.inject({}) do |quoted, (name, value)|
               if column = column_for_attribute(name)
-                quoted[name] = quote_value(value, column) unless !include_primary_key && (column.primary || [acts_as_nested_set_options[:left_column], acts_as_nested_set_options[:right_column]].include?(column.name))
+                quoted[name] = quote_value(value, column) unless !include_primary_key && (column.primary || left_and_right_column.include?(column.name))
               end
               quoted
             end
+            include_readonly_attributes ? quoted : remove_readonly_attributes(quoted)
           end
 
           # i couldn't figure out how to call attributes_with_quotes without cutting and pasting this private method in.  :(

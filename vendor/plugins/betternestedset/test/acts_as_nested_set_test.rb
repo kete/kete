@@ -1333,6 +1333,15 @@ class MixinNestedSetTest < Test::Unit::TestCase
     assert_nothing_raised {NestedSetWithStringScope.check_all}
   end
   
+  # the next virtual root was not starting with the correct lft value
+  def test_ticket_29
+    first = Category.create
+    second = Category.create
+    Category.renumber_all
+    second.reload
+    assert_equal(3, second.lft)    
+  end
+  
 end
 
 
