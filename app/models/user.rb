@@ -95,7 +95,15 @@ class User < ActiveRecord::Base
 
   # Returns true if the user has just been activated.
   def recently_activated?
-      @activated
+    @activated
+  end
+  
+  # James Stradling <james@katipo.co.nz>, 2008-04-17
+  # Changes the activation flag on the model so duplicate activation emails
+  # are not sent. 
+  # TODO: Clean this up.
+  def notified_of_activation
+    @activated = false
   end
 
   # Encrypts some data with the salt.
@@ -209,7 +217,7 @@ class User < ActiveRecord::Base
   def add_as_member_to_default_baskets
     Basket.find_all_by_id(DEFAULT_BASKETS_IDS).each { |basket| self.has_role('member',basket) }
   end
-
+  
   protected
 
   # supporting activation

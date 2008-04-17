@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'account_controller'
 
+# Require stubs
+require File.dirname(__FILE__) +  '/../stubs/captcha.rb'
+require File.dirname(__FILE__) + '/../stubs/account_helper.rb'
+
 # TODO: fix the use of users (no fixture loaded in to set it up)
 # TODO: look at approx. 6 failing tests
 
@@ -13,6 +17,7 @@ class AccountControllerTest < Test::Unit::TestCase
   include AuthenticatedTestHelper
 
   # fixtures preloaded
+  fixtures :users
 
   def setup
     @controller = AccountController.new
@@ -130,24 +135,28 @@ class AccountControllerTest < Test::Unit::TestCase
 
   ### mailer tests
   def test_should_activate_user_and_send_activation_email
-    get :activate, :id => users(:arthur).activation_code, :urlified_name => @urlified_name
+    get :activate, :id => User.find_by_login('arthur').activation_code, :urlified_name => @urlified_name
     assert_equal 1, @emails.length
     assert(@emails.first.subject =~ /Your account has been activated/)
     assert(@emails.first.body    =~ /#{ assigns(:user).login}, your account has been activated/)
   end
 
   def test_should_send_activation_email_after_signup
+    # Override constant to test for activation email
+    Object.send(:remove_const, :REQUIRE_ACTIVATION)
+    Object.send(:const_set, :REQUIRE_ACTIVATION, true)
+    
     create_user
     assert_equal 1, @emails.length
-    assert(@emails.first.subject =~ /Please activate your new account/)
-    assert(@emails.first.body    =~ /Username: quire/)
-    assert(@emails.first.body    =~ /Password: quire/)
-    assert(@emails.first.body    =~ /account\/activate\/#{ assigns(:user).activation_code}/)
+    assert_match /Please activate your new account/, @emails.first.subject
+    assert_match /Username: quire/, @emails.first.body
+    assert_match /Password: quire/, @emails.first.body 
+    assert_match /account\/activate\/#{assigns(:user).activation_code}/, @emails.first.body
   end
 
   ### password resetting tests
   def test_should_forget_password
-    post :forgot_password, :urlified_name => @urlified_name, :user => { :email => 'admin@changme.com' }
+    post :forgot_password, :urlified_name => @urlified_name, :user => { :email => 'admin@changeme.com' }
     assert_response :redirect
     assert flash.has_key?(:notice), "Flash should contain notice message."
     assert_equal 1, @emails.length
@@ -162,26 +171,28 @@ class AccountControllerTest < Test::Unit::TestCase
   end
 
   def test__reset_password__valid_code_and_password__should_reset
-    @user = users(:aaron)
+    @user = User.find(1)
     @user.forgot_password && @user.save
+    assert_equal 1, @emails.length # make sure that it e-mails the user notifying that their password was reset
 
-    post :reset_password, :id => @user.password_reset_code, :password  => "new_password", :password_confirmation => "new_password", :urlified_name => @urlified_name
+    post :reset_password, :id => @user.password_reset_code, :user => { :password  => "new_password", :password_confirmation => "new_password" }, :urlified_name => @urlified_name
 
     assert_match("Password reset", flash[:notice])
-    assert_equal 1, @emails.length # make sure that it e-mails the user notifying that their password was reset
+    assert_equal 2, @emails.length # make sure that it e-mails the user notifying that their password was reset
     assert_equal(@user.email, @emails.first.to[0], "should have gone to user")
-
-    # Make sure that the user can login with this new password
+    # 
+    # # Make sure that the user can login with this new password
     assert(User.authenticate(@user.login, "new_password"), "password should have been reset")
   end
 
   def test__reset_password__valid_code_but_not_matching_password__shouldnt_reset
-    @user = users(:aaron)
+    @user = User.find(1)
     @user.forgot_password && @user.save
+    assert_equal(1, @emails.length) # Forgot password email dispatched
 
-    post :reset_password, :id => @user.password_reset_code, :password  => "new_password", :password_confirmation => "not matching password", :urlified_name => @urlified_name
+    post :reset_password, :id => @user.password_reset_code, :user => { :password  => "new_password", :password_confirmation => "not matching password" }, :urlified_name => @urlified_name
 
-    assert_equal(0, @emails.length)
+    assert_equal(1, @emails.length) # No further email dispatched due to password mismatch.
     assert_match("Password mismatch", flash[:notice])
 
     assert(!User.authenticate(@user.login, "new_password"), "password should not have been reset")
@@ -195,15 +206,15 @@ class AccountControllerTest < Test::Unit::TestCase
 
   ### changing password tests
   def test_should_allow_password_change
-    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, {  :user =>1 }
-     assert_equal 'newpassword', assigns(:current_user).password
-     assert_equal "Password changed", flash[:notice]
-     post :logout, :urlified_name => @urlified_name
-     assert_nil session[:user]
-     post :login, :login => 'bryan', :password => 'newpassword', :urlified_name => @urlified_name
-     assert session[:user]
-     assert_response :redirect
-     assert_redirected_to :controller => 'contract', :action => 'index'
+    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }, {  :user =>2 }
+    assert_equal 'newpassword', assigns(:current_user).password
+    assert_equal "Password changed", flash[:notice]
+    post :logout, :urlified_name => @urlified_name
+    assert_nil session[:user]
+    post :login, :login => 'bryan', :password => 'newpassword', :urlified_name => @urlified_name
+    assert session[:user]
+    assert_response :redirect
+    assert_redirected_to :controller => 'account', :action => 'index'
   end
 
   def test_non_matching_passwords_should_not_change
@@ -218,15 +229,15 @@ class AccountControllerTest < Test::Unit::TestCase
     post :login, :login => 'bryan', :password => 'test', :urlified_name => @urlified_name
     assert session[:user]
     post :change_password, { :old_password => 'wrongpassword', :password => 'newpassword', :password_confirmation => 'newpassword', :urlified_name => @urlified_name }
-    assert_not_equal 'newpassword', assigns(:current_user).password
+    assert_not_equal 'newpassword', assigns(:current_user).password, "#{assigns(:current_user).password} expected to be 'newpassword'"
     assert_equal "Wrong password", flash[:notice]
   end
 
   ### user activation tests
   def test_should_activate_user
     assert_nil User.authenticate('arthur', 'test')
-    get :activate, :id => users(:arthur).activation_code, :urlified_name => @urlified_name
-    assert_equal users(:arthur), User.authenticate('arthur', 'test')
+    get :activate, :id => User.find_by_login('arthur').activation_code, :urlified_name => @urlified_name
+    assert_equal User.find_by_login('arthur'), User.authenticate('arthur', 'test')
   end
 
   def test_should_not_activate_nil
@@ -246,9 +257,12 @@ class AccountControllerTest < Test::Unit::TestCase
   end
 
   protected
+    # James is working on this..
     def create_user(options = {})
-      post :signup, :user => { :login => 'quire', :email => 'quire@changme.com',
-        :password => 'quire', :password_confirmation => 'quire' }.merge(options), :urlified_name => @urlified_name
+      post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',
+        :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
+        :agree_to_terms => '1', :security_code => 'test' }.merge(options), :urlified_name => @urlified_name },
+        { :captcha_id => 1 }
     end
 
     def auth_token(token)
@@ -256,6 +270,6 @@ class AccountControllerTest < Test::Unit::TestCase
     end
 
     def cookie_for(user)
-      auth_token users(user).remember_token
+      auth_token User.find_by_login(user.to_s).remember_token
     end
 end

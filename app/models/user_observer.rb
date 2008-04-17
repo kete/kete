@@ -4,6 +4,7 @@ class UserObserver < ActiveRecord::Observer
       UserNotifier.deliver_signup_notification(user)
     else
       user.activate
+      user.notified_of_activation
     end
   end
 

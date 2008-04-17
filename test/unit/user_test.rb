@@ -95,8 +95,28 @@ class UserTest < Test::Unit::TestCase
     assert_nil @users[0].remember_token
   end
 
-  # currently returns nil, not sure why
-  def test_should_make_activation_code
+  # James Stradling <james@katipo.co.nz>, 2008-04-16
+  # Previously we thought activation_code returned nil erroneously,
+  # however this is intentional behaviour.
+  # When the user record is saved, UserObserver automatically
+  # activates the user, removing the activation_code
+  def test_should_auto_actiate_user
+    user = create_user
+    assert_nil user.activation_code
+    
+    # The user has been activated and the recently_activated?
+    # flag unset by the observer.
+    assert !user.recently_activated?
+  end
+
+  # James Stradling <james@katipo.co.nz>, 2008-04-16
+  # Override constant setting so we can test
+  # activation code is generated.
+  def test_should_generate_activation_code
+    
+    Object.send(:remove_const, :REQUIRE_ACTIVATION)
+    Object.send(:const_set, :REQUIRE_ACTIVATION, true)
+    
     user = create_user
     assert_not_nil user.activation_code
   end
