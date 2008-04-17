@@ -5,7 +5,8 @@
      <% items[0..end_range].each do |related_item| -%>
         <li>
            <% if !related_item.thumbnail_file.nil? -%>
-              <%= link_to(image_tag(related_item.thumbnail_file.public_filename,
+              <% thumb_src_value = related_item.already_at_blank_version? ? '/images/pending.jpg' :  related_item.thumbnail_file.public_filename -%>
+              <%= link_to(image_tag(thumb_src_value,
                     :size => related_item.thumbnail_file.image_size),
                     :controller => 'images',
                     :urlified_name => related_item.basket.urlified_name,

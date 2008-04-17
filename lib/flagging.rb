@@ -226,5 +226,9 @@ module Flagging
     def find_disputed
       find_flagged.select(&:disputed?)
     end
+
+    def find_all_non_pending
+      find(:all, :conditions => [ "title != :pending_title or description is not null", {:pending_title => BLANK_TITLE}])
+    end
   end
 end

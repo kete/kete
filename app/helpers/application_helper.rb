@@ -225,6 +225,8 @@ module ApplicationHelper
       else
         items = source_item.send('related_topics')
       end
+      items = items.find_all_non_pending if items.size > 0
+      logger.debug("after query")
     else
       items = options[:items]
     end

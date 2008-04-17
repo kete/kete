@@ -57,9 +57,9 @@
                 <%= hidden_field_tag 'comment[basket_id]', @current_basket.id %>
 
                 <% if !edit -%>
-                        <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] %>
+                        <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] || params[:comment][:commentable_id] %>
 
-                        <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] %>
+                        <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] || params[:comment][:commentable_type] %>
                 <% end %>
 
                 <!--[eoform:comment]-->

@@ -50,6 +50,8 @@ class CommentsController < ApplicationController
       # i.e. there is never going to be params[:related_topic_id]
       # this method is smart enough to do the right thing when that is the case
       setup_related_topic_and_zoom_and_redirect(@comment, commented_item)
+    else
+      render :action => 'new'
     end
   end
 
