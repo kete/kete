@@ -93,7 +93,7 @@ module Flagging
       # and return that version
       if last_version_tags_count == 0
         revert_to_version! last_version
-      elsif
+      else
         # we leave required fields alone
         # and let the view handle whether they should be shown
         update_hash = { :title => BLANK_TITLE,
@@ -101,9 +101,11 @@ module Flagging
           :extended_content => nil,
           :tag_list => nil }
 
+        update_hash[:description] = PENDING_FLAG if self.class.name == 'Comment'
+
         update_hash[:short_summary] = nil if self.can_have_short_summary?
 
-        update_attributes(update_hash)
+        update_attributes!(update_hash)
         add_as_contributor(User.find(:first))
       end
       reload
@@ -120,7 +122,7 @@ module Flagging
     end
 
     def already_at_blank_version?
-      title == BLANK_TITLE and description.nil? and extended_content.nil? and (!self.can_have_short_summary? or short_summary.nil?)
+      title == BLANK_TITLE and (description.nil? or (self.class.name == 'Comment' and description == PENDING_FLAG)) and extended_content.nil? and (!self.can_have_short_summary? or short_summary.nil?)
     end
 
     def fully_moderated?
@@ -228,7 +230,11 @@ module Flagging
     end
 
     def find_all_non_pending
-      find(:all, :conditions => [ "title != :pending_title or description is not null", {:pending_title => BLANK_TITLE}])
+      conditions_string = "title != :pending_title"
+
+      conditions_string += " or description is not null" if name != 'Comment'
+
+      find(:all, :conditions => [ conditions_string, {:pending_title => BLANK_TITLE}])
     end
   end
 end

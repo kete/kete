@@ -222,11 +222,10 @@ module ApplicationHelper
     if options[:items].nil?
       if related_class != 'Topic'
         items = source_item.send(related_class.tableize)
+        items = items.find_all_non_pending if items.size > 0
       else
-        items = source_item.send('related_topics')
+        items = source_item.send('related_topics', :only_non_pending => true)
       end
-      items = items.find_all_non_pending if items.size > 0
-      logger.debug("after query")
     else
       items = options[:items]
     end
@@ -402,6 +401,7 @@ module ApplicationHelper
   def show_comments_for(item)
     html_string = "<p>There are #{@comments.size} comments in this discussion.</p>\n<p>"
 
+    logger.debug("what are comments: " + @comments.inspect)
     if @comments.size > 0
       html_string += "Read and "
     end
@@ -445,6 +445,7 @@ module ApplicationHelper
                                 <ul>\n"
         html_string += flagging_links_for(comment,true,'comments')
         if logged_in? and @at_least_a_moderator
+          html_string += "</ul><ul>"
           html_string += "<li>" + link_to("Edit",
                                           :controller => 'comments',
                                           :action => :edit,

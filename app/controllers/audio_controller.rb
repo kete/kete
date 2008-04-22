@@ -21,7 +21,7 @@ class AudioController < ApplicationController
     end
 
     if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @audio_recording.comments
+      @comments = @audio_recording.comments.find_all_non_pending
     end
 
     respond_to do |format|

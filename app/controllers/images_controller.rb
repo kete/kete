@@ -27,7 +27,7 @@ class ImagesController < ApplicationController
     end
 
     if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @still_image.comments
+      @comments = @still_image.comments.find_all_non_pending
     end
 
     respond_to do |format|

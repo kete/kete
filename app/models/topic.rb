@@ -92,22 +92,31 @@ class Topic < ActiveRecord::Base
   # methods and declarations related to moderation and flagging
   include Flagging
 
-  def related_topics
+  def related_topics(only_non_pending = false)
     # parents unfortunately get confused and return the content_item_relatations.id as id
     # spell it out in select
     # a tad brittle
+    conditions_string = "((content_item_relations.related_item_id = :object_id) AND (content_item_relations.related_item_type = :class_name))"
+    conditions_hash = { :object_id => self.id, :class_name => self.class.to_s}
+
+    child_related_topics = self.child_related_topics
+
+    if only_non_pending
+      conditions_string += " AND (topics.title != :pending_title and topics.description is not null)"
+      conditions_hash[:pending_title] = BLANK_TITLE
+      child_related_topics = child_related_topics.find_all_non_pending
+    end
+
+
     parent_topics = self.class.find(:all,
                                     :select => "topics.*, content_item_relations.position,
                                                 content_item_relations.topic_id,
                                                 content_item_relations.related_item_id,
                                                 content_item_relations.related_item_type",
                                     :joins => "INNER JOIN content_item_relations ON topics.id = content_item_relations.topic_id",
-                                    :conditions => ["((content_item_relations.related_item_id = :object_id) AND (content_item_relations.related_item_type = :class_name))", { :object_id => self.id, :class_name => self.class.to_s}])
-    parent_topics.each do |topic|
-      logger.debug("what is id: "+ topic.id.to_s)
-    end
+                                    :conditions => [conditions_string, conditions_hash])
 
-    return parent_topics + self.child_related_topics - [self]
+    return parent_topics + child_related_topics - [self]
   end
 
   # turn pretty urls on or off here

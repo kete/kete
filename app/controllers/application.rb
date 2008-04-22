@@ -543,6 +543,7 @@ class ApplicationController < ActionController::Base
 
     item_url = nil
     if item.class.name == 'Comment' and correct_action != 'preview'
+      commented_item = item.commentable
       item_url = url_for(:controller => zoom_class_controller(commented_item.class.name),
                          :action => correct_action,
                          :id => commented_item,
@@ -578,7 +579,7 @@ class ApplicationController < ActionController::Base
         end
 
         if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-          @comments = @topic.comments
+          @comments = @topic.comments.find_all_non_pending
         end
       end
     end
