@@ -43,7 +43,8 @@ att 26              PA-subject
 att 27              LC-subject-heading
 att 28              RVM-subject-heading
 att 29              Local-subject-index
-att 30              Date
+# att 30              Date
+att 30              dc_date
 # att 31              Date-of-publication
 att 31              oai_datestamp
 att 32              Date-of-acquisition

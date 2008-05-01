@@ -558,3 +558,9 @@ input.searchheader-search {
     width: 12em;
 }
 
+#search-options-wrapper{
+    width: 40%;
+    float: right;
+    margin-left: 2em;
+    margin-bottom: 1em;
+}

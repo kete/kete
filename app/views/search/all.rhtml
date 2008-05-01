@@ -1,23 +1,9 @@
+<% @title = title_setup_first_part('Results in ') + last_part_of_title_if_refinement_of -%>
+<%= render :partial => 'form', :locals => {:headline => 'Refine your results'} %>
+<div class="main-content-footer-wrapper">
+  <div class="main-content-footer">&nbsp;</div>
+</div>
 
-
-      <% @title = title_setup_first_part('Results in ') + last_part_of_title_if_refinement_of -%>
-      <%= render :partial => 'form', :locals => {:headline => 'Refine your results', :search_terms => nil} %>
-      <div class="main-content-footer-wrapper">
-        <div class="main-content-footer">&nbsp;</div>
-      </div>
 <%= render(:partial => "topics/content_wrapper_end" ) %>
 
-
-      <%= render :partial => 'results',
-      :locals => {:title => @title,
-      :current_page => @current_page,
-      :next_page => @next_page,
-      :previous_page => @previous_page,
-      :last_page => @last_page,
-      :start => @start,
-      :end_record => @end_record,
-      :result_sets => @result_sets,
-      :results => @results,
-      :current_class => @current_class,
-      :number_per_page => @number_per_page
-      } %>
+<%= render :partial => 'results' %>

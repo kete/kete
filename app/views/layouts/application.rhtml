@@ -85,6 +85,8 @@
                     <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
                                                        :controller => 'search',
                                                        :page => nil,
+                                                       :sort_type => nil,
+                                                       :sort_direction => nil,
                                                        :urlified_name => @site_basket.urlified_name,
                                                        :search_terms => nil } do %>                                                                        <label>Search:</label>
                               <%= text_field_tag 'search_terms'  %>

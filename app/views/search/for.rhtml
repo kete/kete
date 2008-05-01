@@ -1,35 +1,24 @@
 <% @title = title_setup_first_part('Results in ') -%>
 <% if !@search_terms.blank?
-      @title += " for your search \"#{h(@search_terms.to_s)}\""
-      refinements = last_part_of_title_if_refinement_of
-      if !refinements.blank?
-         @title += " and #{refinements}"
-      end
-end %>
+   @title += " for your search \"#{h(@search_terms.to_s)}\""
+   refinements = last_part_of_title_if_refinement_of
+   if !refinements.blank?
+   @title += " and #{refinements}"
+   end
+   end %>
 <% # switch for contributed_by and related_to appending to headline, extract to helper -%>
 
 <%
    basket_link = search_link_to_searched_basket
    if basket_link.nil?
-      basket_link = " whole site"
+   basket_link = " whole site"
    end
-%>
+   %>
 
-<%= render :partial => 'form', :locals => {:headline=> 'Results for your
-search "'+ @search_terms + '" searching in ' + basket_link, :search_terms => @search_terms} %>
+<%= render :partial => 'form', :locals => {:headline=> 'Refine your search for "'+ @search_terms + '" searching in ' + basket_link} %>
+
 <%= render(:partial => "topics/content_wrapper_end" ) %>
+
 <% if !@search_terms.blank? -%>
-   <%= render :partial => 'results',
-     :locals => {:title => @title,
-     :current_page => @current_page,
-     :next_page => @next_page,
-     :previous_page => @previous_page,
-     :last_page => @last_page,
-     :start => @start,
-     :end_record => @end_record,
-     :result_sets => @result_sets,
-     :results => @results,
-     :current_class => @current_class,
-     :number_per_page => @number_per_page
-   } %>
+<%= render :partial => 'results' %>
 <% end -%>

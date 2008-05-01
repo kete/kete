@@ -3,13 +3,12 @@ require 'zoom'
 require "rexml/document"
 
 class SearchController < ApplicationController
+
   # Walter McGinnis, 2008-02-07
   # search forms never add anything to db
   # so don't need csrf protection, which is problematic with search forms
   # in kete
   skip_before_filter :verify_authenticity_token
-
-  ZOOM_BOOLEAN_OPERATORS = ['and', 'or', 'not']
 
   layout "application" , :except => [:rss]
 
@@ -81,6 +80,8 @@ class SearchController < ApplicationController
   end
 
   def search
+    @search = Search.new
+
     # all returns all results for a class, contributor_id, or source_item (i.e. all related items to source)
     # it is the default if the search_terms parameter is not defined
     # however, if search_terms is defined (but not necessarily populated)
@@ -138,13 +139,6 @@ class SearchController < ApplicationController
       end
     else
       populate_result_sets_for(relate_to_class,zoom_db)
-    end
-
-    @last_page = @result_sets[@current_class].size / @number_per_page
-
-    # we always want to round up if there is a remainder
-    if (@result_sets[@current_class].size % @number_per_page) > 0
-      @last_page += 1
     end
   end
 
@@ -233,12 +227,12 @@ class SearchController < ApplicationController
         end
       end
     end
+    @results = WillPaginate::Collection.new(@current_page, @number_per_page, from_result_set.size).concat(@results)
   end
 
   def populate_result_sets_for(zoom_class,zoom_db)
     query = String.new
     query_operators = String.new
-    sort_type = 'none'
 
     # potential elements of query
     # zoom_class and optionally basket
@@ -297,17 +291,7 @@ class SearchController < ApplicationController
     # we may need to adjust when querying non-kete zoom_dbs (koha for example)
     # see comment above about current_basket
 
-    if @search_terms.nil?
-      # this is an "all" search
-      # sort by date last modified, i.e. oai_datestamp
-      sort_type = 'last_modified'
-    else
-      # if this rss, we want last_modified to be taken into account
-      # otherwise, strictly relevance
-      if params[:action] == 'rss'
-        sort_type = 'last_modified'
-      end
-
+    if !@search_terms.nil?
       # add the dynamic relevance ranking
       # allowing for incomplete search terms
       # and fuzzy (one character misspelled)
@@ -362,11 +346,11 @@ class SearchController < ApplicationController
                 # skip adding a boolean operator
                 if query_starts_with_not == true and term_count == 2
                   # this just treats even terms found in
-                  # ZOOM_BOOLEAN_OPERATORS as regular words
+                  # Search.boolean_operators as regular words
                   # since their placement makes them meaningless as boolean operators
                   terms_array << term
                 else
-                  if ZOOM_BOOLEAN_OPERATORS.include?(term)
+                  if Search.boolean_operators.include?(term)
                     # we got ourselves an operator
                     operators_array << "@#{term}"
                     last_term_an_operator = true
@@ -425,10 +409,12 @@ class SearchController < ApplicationController
 
     query = "@or " + query + "@attr 1=21 " + web_link_operators + " " + final_terms_string if zoom_class == 'WebLink' && !@search_terms.blank?
 
-    case sort_type
-    when 'last_modified'
-      query = "@or " + query + "@attr 7=2 @attr 1=1012 0"
-    end
+    query = @search.add_sort_to_query_if_needed(:query => query,
+                                               :user_specified => params[:sort_type],
+                                               :direction => params[:sort_direction],
+                                               :action => params[:action],
+                                               :search_terms => @search_terms)
+
 
     logger.debug("what is query: " + query.inspect)
     this_result_set = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
@@ -547,7 +533,7 @@ class SearchController < ApplicationController
     controller_name = params[:controller_name_for_zoom_class].nil? ? zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
     if params[:search_terms].blank?
-      redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name)
+      redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name, :sort_direction => params[:sort_direction], :sort_type => params[:sort_type])
     else
       existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
       redirect_to url_for( :overwrite_params => { :action => 'for',

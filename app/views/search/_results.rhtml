@@ -13,12 +13,12 @@
 <div id="content-tabs">
 <ul class="nav-list">
   <% ZOOM_CLASSES.each do |zoom_class| %>
-     <% if zoom_class == current_class %>
+     <% if zoom_class == @current_class %>
         <li class="selected">
-          <a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= number_with_delimiter(result_sets[zoom_class].size) %>)</a></li>
+          <a href="#" id="current"><%= zoom_class_plural_humanize(zoom_class) %> (<%= number_with_delimiter(@result_sets[zoom_class].size) %>)</a></li>
      <% else %>
         <% if !results_as_form %>
-           <li><%= link_to_zoom_class_results(zoom_class,result_sets[zoom_class].size) -%></li>
+           <li><%= link_to_zoom_class_results(zoom_class,@result_sets[zoom_class].size) -%></li>
         <% end %>
      <% end %>
   <% end %>
@@ -33,24 +33,17 @@
   <div id="main-content-wrapper">
     <div id="main-content-container">
       <a name="main-contenet"></a>
-      <h3><%= title %></h3>
-      <%= pagination_links(:current_page => current_page,
-         :previous_page => previous_page,
-         :next_page => next_page,
-         :last_page => last_page) %>
+      <h3><%= @title %></h3>
+      <div class="prev-next"><%= will_paginate @results %></div>
       <div id="result-show">
-         <% if results.size > 0 %>
-            Showing <%= start %>-
-            <% if current_page < last_page  -%>
-               <%= end_record %>
-            <% else -%>
-               <%= end_record %>
-            <% end -%> results of <%= result_sets[current_class].size %>
+         <% if @results.size > 0 %>
+            Showing <%= @start -%>-<%= @end_record -%>
+            results of <%= @result_sets[@current_class].size %>
       </div>
          <%# we will have result sets for each type of record we are returning %>
          <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
-         <%# for now lets just get this up with one set of results %>
-         <% results.each do |result|  %>
+         <%# for now lets just get this up with one set of @results %>
+         <% @results.each do |result|  %>
             <% if result['class'] == 'StillImage' %>
              <%= render(:partial => "image", :locals => {:title => result['title'],
                                                          :source_url => result['url'],
@@ -72,19 +65,14 @@
       </div>
     <% end %>
 
-      <%= pagination_links(:current_page => current_page,
-                                             :previous_page => previous_page,
-                                             :next_page => next_page,
-                                             :last_page => last_page,
-                                             :placement => 'bottom',
-                                             :number_per_page => number_per_page) %>
+      <div class="prev-next"><%= will_paginate @results if @results.per_page > 5 && @results.total_entries > @results.per_page %></div>
       <p>&nbsp;</p>
 
 
                         <div id="bottomlinks">
                                 <div id="addnew">
-                                <% if !results_as_form and current_class != 'Comment' %>
-                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => current_class) -%>
+                                <% if !results_as_form and @current_class != 'Comment' %>
+                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => @current_class) -%>
                                         to these search results
                                 <% else -%>
                                         &nbsp;
