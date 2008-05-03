@@ -36,34 +36,9 @@ module SearchHelper
     end_of_title = end_of_title_parts.join(" and")
   end
 
+  # depreciated, now use will_paginate
   def pagination_links(options = { })
-    current_page = options[:current_page]
-    previous_page = options[:previous_page]
-    next_page = options[:next_page]
-    last_page = options[:last_page]
-    placement = options[:placement] || 'top'
-    number_per_page = options[:number_per_page]
-
-    html_string = String.new
-
-    if placement != 'bottom' or (number_per_page > 5 and last_page > 1)
-        html_string += "
-                        <div class=\"prev-next\">"
-
-      if current_page > 1
-        html_string += link_to_previous_page('<span class="prev-active">previous</span>',previous_page)
-      else
-        html_string += "<span class=\"prev-inactive\">previous</span>"
-      end
-      html_string += "&nbsp;"
-      if current_page < last_page
-        html_string += link_to_next_page('<span class="next-active">next</span>',next_page)
-      else
-        html_string += "<span class=\"next-inactive\">next</span>"
-      end
-      html_string += "
-                       </div>"
-    end
+    html_string = "depreciated, we now use will_paginate plugin"
   end
 
   def title_setup_first_part(title_so_far)
