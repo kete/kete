@@ -100,10 +100,10 @@ class UserTest < Test::Unit::TestCase
   # however this is intentional behaviour.
   # When the user record is saved, UserObserver automatically
   # activates the user, removing the activation_code
-  def test_should_auto_actiate_user
+  def test_should_auto_activate_user
     user = create_user
     assert_nil user.activation_code
-    
+
     # The user has been activated and the recently_activated?
     # flag unset by the observer.
     assert !user.recently_activated?
@@ -113,10 +113,10 @@ class UserTest < Test::Unit::TestCase
   # Override constant setting so we can test
   # activation code is generated.
   def test_should_generate_activation_code
-    
+
     Object.send(:remove_const, :REQUIRE_ACTIVATION)
     Object.send(:const_set, :REQUIRE_ACTIVATION, true)
-    
+
     user = create_user
     assert_not_nil user.activation_code
   end
