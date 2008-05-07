@@ -47,4 +47,24 @@ module SearchHelper
     end
     title_so_far += @controller_name_for_zoom_class.gsub(/_/, " ")
   end
+
+  def toggle_in_reverse_field_js_helper
+    javascript_tag "
+    function toggleDisabledSortDirection(event) {
+      var element = Event.element(event);
+
+      $('sort_direction').checked = ( element.options[element.selectedIndex].value != \"none\" && $('sort_direction').checked );
+
+      $('sort_direction').disabled = ( element.options[element.selectedIndex].value == \"none\" );
+
+      if ( element.options[element.selectedIndex].value == \"none\" ) {
+        $('sort_direction_field').hide()
+      } else {
+        $('sort_direction_field').show()
+      }
+    }
+
+    $('sort_type').observe('change', toggleDisabledSortDirection);"
+  end
+
 end
