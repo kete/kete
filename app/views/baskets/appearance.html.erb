@@ -25,30 +25,34 @@
 
   <div class="form-element">
     <label for="settings[theme]">Theme:</label>
-    <% if @basket.possible_themes.size > 0 -%>
-    <% @basket.possible_themes.each  do |theme| -%>
-    <div class="theme-choice-wrapper">
-      <%= image_tag "/themes/#{theme}/images/sample.jpg" -%>
-      <div class="theme-choice-text">
-        <%= radio_button_tag 'settings[theme]', theme %>
-        <%= theme.humanize %>
-      </div>
-    </div>
-    &nbsp;
-    <% end -%>
-    <% else -%>
-    <p>No themes beyond the default are available right now.</p>
-    <% end -%>
 
-    <% if @site_admin -%>
-    <ul><li><%= link_to "Add new theme", :action => 'new', :controller => 'documents', :is_theme => true -%></li></ul>
-    <% end -%>
+    <fieldset>
+      <% if @basket.possible_themes.size > 0 -%>
+      <% @basket.possible_themes.each  do |theme| -%>
+      <div class="theme-choice-wrapper">
+        <%= image_tag "/themes/#{theme}/images/sample.jpg" -%>
+        <div class="theme-choice-text">
+          <%= radio_button_tag 'settings[theme]', theme %>
+          <%= theme.humanize %>
+        </div>
+      </div>
+      &nbsp;
+      <% end -%>
+      <% else -%>
+      <p>No themes beyond the default are available right now.</p>
+      <% end -%>
+
+      <% if @site_admin -%>
+      <ul><li><%= link_to "Add new theme", :action => 'new', :controller => 'documents', :is_theme => true -%></li></ul>
+      <% end -%>
+
+    </fieldset>
   </div>
 
 
 </fieldset>
 
-  <%= submit_tag 'Save' , :class => "save-button" %>
+<%= submit_tag 'Save' , :class => "save-button" %>
 <% end %>
 
 
