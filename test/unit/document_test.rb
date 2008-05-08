@@ -25,6 +25,7 @@ class DocumentTest < Test::Unit::TestCase
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
+  include FlaggingTestUnitHelper
 
   # TODO: attachment_attributes_valid?
 end

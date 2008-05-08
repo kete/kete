@@ -21,6 +21,7 @@ class AudioRecordingTest < Test::Unit::TestCase
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
+  include FlaggingTestUnitHelper
 
   # only inlude on one model
   include FriendlyUrlsTestUnitHelper

@@ -22,6 +22,7 @@ class WebLinkTest < Test::Unit::TestCase
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
+  include FlaggingTestUnitHelper
 
 end
 

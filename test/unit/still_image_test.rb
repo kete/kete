@@ -20,6 +20,7 @@ class StillImageTest < Test::Unit::TestCase
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
+  include FlaggingTestUnitHelper
 
   # TODO: more testing of image_file population?
   # TODO: find_with

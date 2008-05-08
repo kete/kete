@@ -21,6 +21,7 @@ class TopicTest < Test::Unit::TestCase
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
+  include FlaggingTestUnitHelper
 
 end
 

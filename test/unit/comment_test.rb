@@ -18,6 +18,7 @@ class CommentTest < Test::Unit::TestCase
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
+  include FlaggingTestUnitHelper
 
   # Replace this with your real tests.
   def test_truth
