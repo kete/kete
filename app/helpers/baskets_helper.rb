@@ -11,4 +11,30 @@ module BasketsHelper
     link_to options[:phrase], :controller => 'topics', :action => :new, :index_for_basket => options[:index_for_basket]
   end
 
+  def full_moderation_exceptions_js_helper
+    javascript_tag "function toggleHiddenModeratedExcept(event) {
+    var element = Event.element(event);
+
+    if ( element.options[element.selectedIndex].value == \"false\" ) {
+
+    // uncheck all moderated_except boxes and hide them
+    $$('#settings_moderated_except input[type=checkbox]').each( function(box) {
+    box.checked = false;
+    box.disabled = true;
+    });
+
+    $('empty_settings_moderated_except').disabled = false;
+
+    new Effect.BlindUp('settings_moderated_except', {duration: .75})
+
+    } else {
+    new Effect.BlindDown('settings_moderated_except', {duration: .75})
+
+    $$('#settings_moderated_except input[type=checkbox]').each( function(box) { box.disabled = false; });
+    }
+
+    }
+
+    $('settings[fully_moderated]').observe('change', toggleHiddenModeratedExcept);"
+  end
 end

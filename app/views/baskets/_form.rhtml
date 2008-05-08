@@ -12,6 +12,24 @@
     <%= select_tag 'settings[fully_moderated]', @basket.moderation_select_options %>
   </div>
 
+  <% # make hidden and disabled to start
+     # reveal if moderation policy is changed to full moderation -%>
+  <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' if !@basket.fully_moderated? -%>>
+      <label for="settings[moderated_except]">Moderator views items
+        before approved EXCEPT:</label>
+      <fieldset>
+
+      <% ZOOM_CLASSES.each do |zoom_class| -%>
+      <input type="checkbox" name="settings[moderated_except][]" value=<%= zoom_class -%>
+             <%= 'checked' if !@basket.settings[:moderated_except].blank? && @basket.settings[:moderated_except].include?(zoom_class) -%>>
+      <%= zoom_class_plural_humanize(zoom_class) %><br />
+      <% end -%>
+    </fieldset>
+    <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled>
+  </div>
+
+  <%= full_moderation_exceptions_js_helper -%>
+
   <!--[eoform:basket]-->
 
 </fieldset>

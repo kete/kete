@@ -31,4 +31,23 @@ module FlaggingTestUnitHelper
     # first version should be flagged as pending
     assert model.versions.find_by_version(1).tags.include?(Tag.find_by_name(PENDING_FLAG))
   end
+
+  def test_fully_moderated_basket_but_excepted_class_add_succeeds
+    # make the basket require moderation
+    @basket = Basket.find(:first)
+    @basket.settings[:fully_moderated] = true
+
+    # but make this class be listed as free of moderation
+    @basket.settings[:moderated_except] = [@base_class]
+
+    model = Module.class_eval(@base_class).new @new_model
+    model.save
+    model.reload
+
+    # version should be 1
+    assert_equal 1, model.version
+    # no flags on version
+    assert_equal 0, model.versions.find_by_version(1).tags.size
+  end
+
 end
