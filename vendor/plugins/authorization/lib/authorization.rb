@@ -3,14 +3,14 @@ require File.dirname(__FILE__) + '/publishare/parser'
 
 module Authorization
   module Base
-  
+
     # Modify these constants in your environment.rb to tailor the plugin to your authentication system
     if not Object.constants.include? "DEFAULT_REDIRECTION_HASH"
-      DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
-    end    
+      DEFAULT_REDIRECTION_HASH = { :controller => 'baskets', :action => 'permission_denied' }
+    end
     if not Object.constants.include? "STORE_LOCATION_METHOD"
       STORE_LOCATION_METHOD = :store_return_location
-    end    
+    end
 
     def self.included( recipient )
       recipient.extend( ControllerClassMethods )
@@ -18,32 +18,32 @@ module Authorization
         include ControllerInstanceMethods
       end
     end
-    
+
     module ControllerClassMethods
-      
+
       # Allow class-level authorization check.
-      # permit is used in a before_filter fashion and passes arguments to the before_filter. 
+      # permit is used in a before_filter fashion and passes arguments to the before_filter.
       def permit( authorization_expression, *args )
         filter_keys = [ :only, :except ]
         filter_args, eval_args = {}, {}
         if args.last.is_a? Hash
-          filter_args.merge!( args.last.reject {|k,v| not filter_keys.include? k } ) 
-          eval_args.merge!( args.last.reject {|k,v| filter_keys.include? k } ) 
+          filter_args.merge!( args.last.reject {|k,v| not filter_keys.include? k } )
+          eval_args.merge!( args.last.reject {|k,v| filter_keys.include? k } )
         end
         before_filter( filter_args ) do |controller|
           controller.permit( authorization_expression, eval_args )
-        end      
+        end
       end
     end
-    
+
     module ControllerInstanceMethods
       include Authorization::Base::EvalParser  # RecursiveDescentParser is another option
-      
+
       # Permit? turns off redirection by default and takes no blocks
       def permit?( authorization_expression, *args )
         @options = { :allow_guests => false, :redirect => false }
         @options.merge!( args.last.is_a?( Hash ) ? args.last : {} )
-        
+
         has_permission?( authorization_expression )
       end
 
@@ -53,16 +53,16 @@ module Authorization
       def permit( authorization_expression, *args )
         @options = { :allow_guests => false, :redirect => true }
         @options.merge!( args.last.is_a?( Hash ) ? args.last : {} )
-        
+
         if has_permission?( authorization_expression )
           yield if block_given?
         elsif @options[:redirect]
           handle_redirection
         end
       end
-            
+
       private
-      
+
       def has_permission?( authorization_expression )
         @current_user = get_user
         if not @options[:allow_guests]
@@ -76,18 +76,18 @@ module Authorization
         end
         parse_authorization_expression( authorization_expression )
       end
-      
+
       # Handle redirection within permit if authorization is denied.
       def handle_redirection
         return if not self.respond_to?( :redirect_to )
         redirection = DEFAULT_REDIRECTION_HASH
         redirection[:controller] = @options[:redirect_controller] if @options[:redirect_controller]
         redirection[:action] = @options[:redirect_action] if @options[:redirect_action]
-    
+
         # Store url in session for return if this is available from authentication
         send( STORE_LOCATION_METHOD ) if respond_to? STORE_LOCATION_METHOD
         if @current_user
-          flash[:notice] = "Permission denied. Your account cannot access the requested page."
+          flash[:notice] = PERMISSION_DENIED_MESSAGE
         else
           flash[:notice] = @options[:redirect_message] ? @options[:redirect_message] : "Login is required"
         end
@@ -107,7 +107,7 @@ module Authorization
           raise( CannotObtainUserObject, "Couldn't find #current_user or @user, and nothing appropriate found in hash" )
         end
       end
-      
+
       # Try to find a model to query for permissions
       def get_model( str )
         if str =~ /\s*([A-Z]+\w*)\s*/
@@ -135,6 +135,6 @@ module Authorization
         end
       end
     end
-      
+
   end
 end

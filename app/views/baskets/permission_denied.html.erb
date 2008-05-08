@@ -1,0 +1,26 @@
+<% @title = 'Permission Denied' -%>
+
+<h3><%= @title -%></h3>
+
+<p>We're sorry, but access to this page is restricted to members of
+  <%= @current_basket.name -%>.  Here are some possible ways you may proceed:</p>
+
+<ul>
+  <li>Use <%= mail_to(CONTACT_EMAIL,'this Contact link', :encode => "javascript") %> to email a site administrator to request
+    membership in the "<%= @current_basket.name -%>" area of the
+    site.<br />Please specify that
+    you would like access to "<%= @current_basket.name -%>" in the email.</li>
+  <li>If you are using a shared computer, perhaps you aren't logged in
+    as yourself and therefore got this permission denied page in
+    error.<br />Try <%= link_to "logging in", :controller => 'account',
+    :action => :login,
+    :urlified_name => @site_basket.urlified_name -%> again before
+    revisiting the page in question.</li>
+  <li>Or simply proceed on to another page via the Browse or Search
+  functions at the top of this page.</li>
+</ul>
+
+<p>Thank you,<br/>
+<%= h(PRETTY_SITE_NAME) -%></p>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>

@@ -190,6 +190,14 @@ class BasketsController < ApplicationController
     redirect_to :controller => params[:new_controller], :action => 'new'
   end
 
+  # the start of a page
+  # where the user is told they don't have access to requested action
+  # and they are presented with options to continue
+  # in the future this will present the join policy of the basket, etc
+  # now it only says "login as different user or contact an administrator"
+  def permissioned_denied
+  end
+
   def set_settings
     if !params[:settings].nil?
       params[:settings].each do |name, value|
