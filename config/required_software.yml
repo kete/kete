@@ -3,6 +3,8 @@ management_gems:
   piston: piston
 
 gems:
+  packet: packet
+  chronic: chronic
   hpricot: hpricot
   unicode: unicode
   RedCloth: redcloth
