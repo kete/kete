@@ -1,7 +1,4 @@
 class StillImage < ActiveRecord::Base
-  # all the common configuration is handled by this module
-  include ConfigureAsKeteContentItem
-
   # image files, including different sized versions of the original
   # are handled by ImageFile model
   has_many :image_files, :dependent => :destroy
@@ -14,6 +11,12 @@ class StillImage < ActiveRecord::Base
   end
 
   has_many :resized_image_files, :conditions => 'parent_id is not null', :class_name => 'ImageFile'
+
+  # all the common configuration is handled by this module
+  # Walter McGinnis, 2008-05-10
+  # this has to go after image files for successful basket destroys
+  # otherwise still_image_versions rows fail to delete because of order of foreign key constraints
+  include ConfigureAsKeteContentItem
 
   def self.find_with(size, still_image)
     find(still_image, :include => "#{size}_file".to_sym)
