@@ -48,6 +48,10 @@ class Basket < ActiveRecord::Base
   # we have an urlified_name attribute that hold the urlified version of the basket name
   before_save :urlify_name
 
+  # Walter McGinnis, 2008-05-10
+  # old versions of items have to updated to not point at non-existing basket
+  before_destroy :clear_item_version_foreign_keys
+
   def update_index_topic(index_topic)
     if !index_topic.nil? and index_topic.is_a?(Topic)
       self.index_topic = index_topic
@@ -253,5 +257,23 @@ class Basket < ActiveRecord::Base
       gsub(/-/,'_').
       downcase
     self.urlified_name = formatted_name
+  end
+
+  private
+  # when a basket is to be deleted
+  # we have to update all versions for items that used to point
+  # at the basket in question (but were previously moved out of basket)
+  # we point them at the site basket and add to the item's version comment
+  def clear_item_version_foreign_keys
+    # work through the versions for each zoom_class
+    ZOOM_CLASSES.each do |zoom_class|
+      versions = Module.class_eval(zoom_class + '::Version').find_all_by_basket_id(self)
+      versions.each do |version|
+        new_version_comment = version.version_comment.nil? ? String.new : version.version_comment + '. '
+        new_version_comment += "This version was in #{self.name} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket."
+
+        version.update_attributes(:basket_id => 1, :version_comment => new_version_comment )
+      end
+    end
   end
 end
