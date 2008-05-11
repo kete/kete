@@ -270,7 +270,7 @@ system_settings_030:
 
     Note, this only takes effect from this point forward.  No existing audio files will be changed.
   id: "30"
-  value: "['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'application/ogg', 'application/octet-stream']"
+  value: "['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'application/ogg', 'application/octet-stream', 'audio/x-aiff']"
   section: Audio
 system_settings_031:
   name: Video Content Types
