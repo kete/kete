@@ -134,4 +134,22 @@ class IndexPageController < ApplicationController
     render(:text => "success")
   end
 
+  # run a query to make sure the db is available
+  # comments are usually the smallest set of items
+  def db_uptime
+    comment_count = Comment.count
+    render(:text => "success")
+  end
+
+  # let's check to make sure zebra is responding
+  # this will only return success if you can connect
+  # to both the public and private databases
+  # private commented out until privacy control functionality is merged in
+  def zebra_uptime
+    zoom_dbs = [ZoomDb.find_by_database_name('public')]
+    # zoom_dbs <<  ZoomDb.find_by_database_name('private')
+    zoom_dbs.each { |db| Module.class_eval('Topic').process_query(:zoom_db => db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")}
+    render(:text => "success")
+  end
+
 end

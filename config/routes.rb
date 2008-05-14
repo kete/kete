@@ -109,8 +109,13 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default route as the lowest priority.
   # map.connect ':controller/:action/:id'
 
+  ### monitoring tools
   # to make sure the rails process is answering
   map.connect 'uptime.txt', :controller => "index_page", :action => 'uptime'
+  # to make sure that the db is answering
+  map.connect 'db_uptime.txt', :controller => "index_page", :action => 'db_uptime'
+  # to make sure that the db is answering
+  map.connect 'zebra_uptime.txt', :controller => "index_page", :action => 'zebra_uptime'
 end
 
 # route scratch
