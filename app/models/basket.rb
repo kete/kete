@@ -129,6 +129,48 @@ class Basket < ActiveRecord::Base
     return @tag_counts_array
   end
 
+
+  # attribute options methods
+  def show_flagging_as_options(site_basket)
+    current_show_flagging_value = self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
+    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
+    select_options = self.array_to_options_list_with_defaults(options_array,current_show_flagging_value)
+  end
+
+  def show_add_links_as_options(site_basket)
+    current_show_add_links_value = self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
+    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
+    select_options = self.array_to_options_list_with_defaults(options_array,current_show_add_links_value)
+  end
+
+  def show_action_menu_as_options(site_basket)
+    current_show_actions_value = self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
+    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
+    select_options = self.array_to_options_list_with_defaults(options_array,current_show_actions_value)
+  end
+
+  def show_discussion_as_options(site_basket)
+    current_show_discussion_value = self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
+    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
+    select_options = self.array_to_options_list_with_defaults(options_array,current_show_discussion_value)
+  end
+
+  def array_to_options_list_with_defaults(options_array, default_value)
+    select_options = String.new
+    options_array.each do |option|
+      label = option[0]
+      value = option[1]
+      select_options += "<option value=\"#{value}\""
+      if default_value == value
+        select_options += " selected=\"selected\""
+      end
+      select_options += ">" + label + "</option>"
+    end
+    select_options
+  end
+
+
+
   # attribute options methods
   def self.link_to_index_topic_as_options
     [['Full details and comments', 'full topic and comments'],
