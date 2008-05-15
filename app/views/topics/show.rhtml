@@ -8,6 +8,7 @@
       <p><b><%= @topic.short_summary %></b></p>
       <p><%= @topic.description %></p>
       <%= pending_review(@topic) %>
+      <div class="clear"></div>
 <% end -%>
 
 <% if current_user_can_see_flagging? -%>

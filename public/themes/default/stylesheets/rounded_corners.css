@@ -43,6 +43,7 @@
 /* #################################### Secondary Content #################################### */
 .secondary-content-section-wrapper{
         background: #dfdfdf url(/images/insetbox-1-tplf.gif) no-repeat top left;
+       margin-left: 15px;
 }
 .secondary-content-section{
         background: transparent url(/images/insetbox-1-tprt.gif) no-repeat top right;
