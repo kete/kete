@@ -143,6 +143,7 @@ class SearchController < ApplicationController
   end
 
   def rss
+    @search = Search.new
     # changed from @headers for Rails 2.0 compliance
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
 
@@ -227,7 +228,7 @@ class SearchController < ApplicationController
         end
       end
     end
-    @results = WillPaginate::Collection.new(@current_page, @number_per_page, from_result_set.size).concat(@results)
+    @results = WillPaginate::Collection.new(@current_page, @number_per_page, from_result_set.size).concat(@results) unless params[:action] == 'rss'
   end
 
   def populate_result_sets_for(zoom_class,zoom_db)
@@ -294,7 +295,7 @@ class SearchController < ApplicationController
     if !@search_terms.nil?
       # add the dynamic relevance ranking
       # allowing for incomplete search terms
-      # and fuzzy (one character misspelled)
+      # and fuzzy (one misspelled character)
       query += "@attr 2=102 @attr 5=3 @attr 5=103 "
 
       # possibly move this to acts_as_zoom
@@ -410,10 +411,10 @@ class SearchController < ApplicationController
     query = "@or " + query + "@attr 1=21 " + web_link_operators + " " + final_terms_string if zoom_class == 'WebLink' && !@search_terms.blank?
 
     query = @search.add_sort_to_query_if_needed(:query => query,
-                                               :user_specified => params[:sort_type],
-                                               :direction => params[:sort_direction],
-                                               :action => params[:action],
-                                               :search_terms => @search_terms)
+                                                :user_specified => params[:sort_type],
+                                                :direction => params[:sort_direction],
+                                                :action => params[:action],
+                                                :search_terms => @search_terms)
 
 
     logger.debug("what is query: " + query.inspect)
