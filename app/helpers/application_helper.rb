@@ -106,6 +106,46 @@ module ApplicationHelper
                                                :urlified_name => @site_basket.urlified_name) + current_basket_html + '</li>'
   end
 
+
+
+
+  def current_user_can_see_flagging?
+    if @current_basket.settings[:show_flagging] == "at least moderator"
+        can_see_flagging = logged_in? && @at_least_a_moderator
+    else
+        can_see_flagging = true
+    end
+    can_see_flagging
+  end
+
+  def current_user_can_see_add_links?
+    if @current_basket.settings[:show_add_links] == "at least moderator"
+        can_see_add_links = logged_in? && @at_least_a_moderator
+    else
+        can_see_add_links = true
+    end
+    can_see_add_links
+  end
+
+  def current_user_can_see_action_menu?
+    if @current_basket.settings[:show_action_menu] == "at least moderator"
+        can_see_action_menu = logged_in? && @at_least_a_moderator
+    else
+        can_see_action_menu = true
+    end
+    can_see_action_menu
+  end
+
+  def current_user_can_see_discussion?
+    if @current_basket.settings[:show_discussion] == "at least moderator"
+        can_see_discussion = logged_in? && @at_least_a_moderator
+    else
+        can_see_discussion = true
+    end
+    return_value = can_see_discussion
+  end
+
+
   # TODO: may want to replace this with better history plugin
   def link_to_last_stored_location
     if session[:return_to_title].blank?

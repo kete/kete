@@ -58,6 +58,10 @@ class ApplicationController < ActionController::Base
   # currently
   before_filter :set_do_not_moderate_if_moving_item, :only => [ :update ]
 
+  # ensure that users who are in a basket where the action menu has been hidden can edit
+  # by posting a dummy form
+  before_filter :current_user_can_see_action_menu?, :only => [:new, :create, :edit, :update]
+
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
@@ -71,6 +75,8 @@ class ApplicationController < ActionController::Base
                                                        :update,
                                                        :destroy,
                                                        :add_index_topic, :link_index_topic]
+
+
   # set the current basket to the default
   # unless we have urlified_name that is different
   # than the default
@@ -126,6 +132,43 @@ class ApplicationController < ActionController::Base
       params[item_class_for_param_key][:do_not_sanitize] = false if !@site_admin
     end
   end
+
+  def current_user_can_see_flagging?
+    if @current_basket.settings[:show_flagging] == "at least moderator"
+        can_see_flagging = logged_in? && @at_least_a_moderator
+    else
+        can_see_flagging = true
+    end
+    can_see_flagging
+  end
+
+  def current_user_can_see_add_links?
+    if @current_basket.settings[:show_add_links] == "at least moderator"
+        can_see_add_links = logged_in? && @at_least_a_moderator
+    else
+        can_see_add_links = true
+    end
+    can_see_add_links
+  end
+
+  def current_user_can_see_action_menu?
+    if @current_basket.settings[:show_action_menu] == "at least moderator"
+        can_see_action_menu = logged_in? && @at_least_a_moderator
+    else
+        can_see_action_menu = true
+    end
+    can_see_action_menu
+  end
+
+  def current_user_can_see_discussion?
+    if @current_basket.settings[:show_discussion] == "at least moderator"
+        can_see_discussion = logged_in? && @at_least_a_moderator
+    else
+        can_see_discussion = true
+    end
+    return_value = can_see_discussion
+  end
+
 
   # Walter McGinnis, 2006-04-03
   # bug fix for when site admin moves an item from one basket to another
@@ -709,5 +752,16 @@ class ApplicationController < ActionController::Base
   end
 
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?
 end
+
+
+
+
+
+
+
+
+
+
+

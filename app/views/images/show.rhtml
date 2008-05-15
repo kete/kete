@@ -1,4 +1,7 @@
-<%= render(:partial => "topics/actions_menu" , :locals => { :item => @still_image }) %>
+<% if current_user_can_see_action_menu? -%>
+	<%= render(:partial => "topics/actions_menu" , :locals => { :item => @still_image }) %>
+<% end -%>
+
 <%= render(:partial => "topics/content_wrapper_start") %>
         <% cache({:part => 'details'}) do -%>
                 <h2><%= h(@still_image.title) %></h2>
@@ -23,12 +26,17 @@
                 <% end -%>
                 <%= pending_review(@still_image) %>
         <% end -%>
+<% if current_user_can_see_flagging? -%>
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) %>
+<% end -%>
+<% if current_user_can_see_add_links? %>
       <% cache ({:related => 'topics'}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @still_image, :source_item_class => 'WebLink', :topics => @still_image.topics) %>
       <% end -%>
-
+<% end -%>
+<% if current_user_can_see_discussion? %>
       <%= render(:partial => "topics/discussion" , :locals => { :item => @still_image }) %>
+<% end -%>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <% cache ({:part => 'secondary_content'}) do -%>

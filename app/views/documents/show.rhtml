@@ -1,4 +1,7 @@
-<%= render(:partial => "topics/actions_menu" , :locals => { :item => @document }) %>
+<% if current_user_can_see_action_menu? -%>
+   <%= render(:partial => "topics/actions_menu" , :locals => { :item => @document }) %>
+<% end -%>
+
 <%= render(:partial => "topics/content_wrapper_start") %>
 
       <% cache ({:part => 'details'}) do -%>
@@ -13,13 +16,17 @@
          <%= pending_review(@document) %>
       <% end -%>
 
-
+<% if current_user_can_see_flagging? -%>
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @document }) %>
+<% end -%>
+<% if current_user_can_see_add_links? %>
       <% cache ({:related => 'topics'}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @document, :source_item_class => 'WebLink', :topics => @document.topics) %>
       <% end -%>
-
+<% end -%>
+<% if current_user_can_see_discussion? %>
       <%= render(:partial => "topics/discussion" , :locals => { :item => @document }) %>
+<% end -%>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <% cache ({:part => 'secondary_content'}) do -%>

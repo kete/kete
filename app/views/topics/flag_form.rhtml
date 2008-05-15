@@ -1,3 +1,4 @@
+<% if current_user_can_see_flagging? -%>
 <% @user_type = 'moderator'
    @title = ' this '
    @submit_text = 'Flag'
@@ -30,4 +31,6 @@
 <% end %>
 
 <%= link_to_cancel %>
-
+<% else %>
+  <h2>Sorry flagging has been disabled on this section of the site</h2>
+<% end -%>

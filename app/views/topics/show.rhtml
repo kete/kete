@@ -1,5 +1,6 @@
+<% if current_user_can_see_action_menu? -%>
 <%= render(:partial => "actions_menu" , :locals => { :item => @topic }) %>
-
+<% end %>
 <% cache ({:part => 'details'}) do -%>
 <%= render :partial => "content_wrapper_start" %>
       <h2>Topic: <%= h(@topic.title) %></h2>
@@ -9,7 +10,11 @@
       <%= pending_review(@topic) %>
 <% end -%>
 
+<% if current_user_can_see_flagging? -%>
       <%= render(:partial => "flagging_contributor" , :locals => { :item => @topic }) %>
+<% end %>
+
+<% if current_user_can_see_add_links? %>
       <%= render(:partial => "secondary_wrapper_start", :locals => {:div_id =>
       "related", :class_suffix => "-blue"})%>
           <h2 class="related-link">Related Items</h2>
@@ -50,8 +55,11 @@
             <% end -%>
           </div>
           <%= render(:partial => "secondary_wrapper_end") %>
+<% end -%>
 
+<% if current_user_can_see_discussion? %>
       <%= render(:partial => "discussion" , :locals => { :item => @topic }) %>
+<% end %>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <% cache ({:part => 'secondary_content'}) do -%>

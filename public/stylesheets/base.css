@@ -231,6 +231,9 @@ label{
 }
 .form-element{
         padding: .5em;
+	width: 100%;
+	margin-bottom: 0.2em;
+	float: left;
 }
 .form-element textarea{
         border: 1px solid #666;

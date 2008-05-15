@@ -1,3 +1,4 @@
+<% if current_user_can_see_action_menu? -%>
       <% @title = 'Editing topic' -%>
 
       <h2><%= h(@title) -%></h2>
@@ -8,4 +9,7 @@
       <% end %>
 
       <%= link_to_cancel %>
+<% else %>
+<h2>Sorry - editing on this section of the site has been disallowed</h2>
+<% end -%>
 <%= render(:partial => "content_wrapper_end") %>

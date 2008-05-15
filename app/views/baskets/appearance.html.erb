@@ -24,8 +24,37 @@
   </div>
 
   <div class="form-element">
-    <label for="settings[theme]">Theme:</label>
+    <label>Show/Hide Controls:</label>
 
+    <fieldset>
+
+  <div class="form-element">
+    <label for="settings[show_action_menu]">Show Action Menu to:</label>
+    <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket) %> <br />(who can see the view, edit, history and other links)
+  </div>
+
+
+  <div class="form-element">
+    <label for="settings[show_action_menu]">Show Comments to:</label>
+    <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket) %> <br />(who can see and add comments)
+  </div>
+
+  <div class="form-element">
+    <label for="settings[show_flagging]">Show Flagging to:</label>
+    <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket) %> <br />(who can see and add comments)
+  </div>
+
+  <div class="form-element">
+    <label for="settings[show_add_links]">Show Add Links to:</label>
+    <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket) %> <br />(who can see and add comments)
+  </div>
+
+
+   </fieldset>
+ </div>
+
+  <div class="form-element">
+    <label for="settings[theme]">Theme:</label>
     <fieldset>
       <% if @basket.possible_themes.size > 0 -%>
       <% @basket.possible_themes.each  do |theme| -%>
