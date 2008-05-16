@@ -1,0 +1,27 @@
+Originally contributed by James Stradling <james@katipo.co.nz> - 2008-05-16
+
+The following instructions are for use when updating from a trunk version of Kete earlier
+than r1148 with a version r1148 or later.
+
+Revisions later than r1148 have additional privacy control code.
+
+Assuming you have a functional and unmodified trunk version of Kete, the following upgrade
+instructions should work:
+
+NB: All commands must be from the main Kete application directory.
+
+1. 	Stop your Kete server.
+2. 	Upgrade your source code to the latest version (svn update).
+3. 	Run the database migration 'rake db:upgrade'
+		NB: This adds new columns to tables in the kete database. If you have customized Kete or 
+		need to reverse the upgrade, this may cause issues. See migrations 046 through 055 in 
+		/db/migrate/ for an insight into the database schema changes made.
+4. 	Run the upgrade script: 'rake kete:upgrade'
+5. 	Start your Kete server again.
+6. 	Rebuild the zoom indexes for the two private items added by the upgrade script by following 
+		these steps (remember to replace your_site for your Kete site's domain):
+		a. Visit the following address: http://your_site/site/web_links/show/2
+		b. Click "Zoom Update item (+related)" from the actions menu.
+		c. Visit the following address: http://your_site/help/topics/show/15
+		d. Click "Zoom Update item (+related)" from the actions menu.
+		
