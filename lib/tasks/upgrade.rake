@@ -86,7 +86,7 @@ namespace :kete do
           # Store the private version and create a blank public version
           topic.send(:store_correct_versions_after_save)
 
-          p "added " + topic_hash['title']
+          p "added topic " + topic_hash['title'] + ' with an id of ' + topic.id.to_s
         end
       end
     end
@@ -103,7 +103,7 @@ namespace :kete do
 
         # drop id from hash, as we want to determine it dynamically
         web_link_hash.delete('id')
-        
+
         # raise web_link_hash.inspect
 
         if web_link_hash['private'] == true && !WebLink.find(:all, :conditions => 'private_version_serialized != "" AND private_version_serialized IS NOT NULL').any? do |web_link|
@@ -115,16 +115,16 @@ namespace :kete do
           web_link.do_not_moderate = true
           web_link.save_without_saving_private!
           web_link.creator = User.find(:first)
-          
+
           # Need two versions.
           web_link.do_not_moderate = true
           web_link.save_without_saving_private!
           web_link.add_as_contributor(User.find(:first), web_link.version)
-          
+
           # Store the private version and create a blank public version
           web_link.send(:store_correct_versions_after_save)
-          
-          p "added " + web_link_hash['title']
+
+          p "added web_link " + web_link_hash['title'] + ' with an id of ' + web_link.id.to_s
         end
       end
     end
