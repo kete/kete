@@ -450,7 +450,8 @@ module ApplicationHelper
                            {:action => :new,
                              :controller => 'comments',
                              :commentable_id => item,
-                             :commentable_type => item.class.name
+                             :commentable_type => item.class.name,
+                             :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0
                            },
                            :method => :post)
 
@@ -509,6 +510,7 @@ module ApplicationHelper
                                        :controller => 'comments',
                                        :commentable_id => item,
                                        :commentable_type => item.class.name,
+                                       :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0,
                                        :authenticity_token => form_authenticity_token
                                      },
                                      :method => :post) + "</p>"
@@ -537,13 +539,15 @@ module ApplicationHelper
                                  { :controller => controller,
                                    :action => 'flag_form',
                                    :flag => flag,
-                                   :id => item },
+                                   :id => item,
+                                   :version => item.version },
                                  :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
         else
           html_string += link_to(flag,
                                  { :action => 'flag_form',
                                    :flag => flag,
-                                   :id => item },
+                                   :id => item,
+                                   :version => item.version },
                                  :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
         end
 
@@ -558,10 +562,11 @@ module ApplicationHelper
     html_string = String.new
     if item.disputed?
       html_string = "<h4>Review Pending: "
+      privacy_type = item.respond_to?(:private) && item.private? ? "private" : "public"
       if !item.already_at_blank_version?
-        html_string += "currently reverted to non-disputed version \# #{item.version}"
+        html_string += "currently reverted to non-disputed #{privacy_type} version \# #{item.version}"
       elsif
-        html_string += "currently no non-disputed versions of this item. Details of this item are not being displayed at this time."
+        html_string += "currently no non-disputed #{privacy_type} versions of this item. Details of the #{privacy_type} version of this item are not being displayed at this time."
       end
     end
     return html_string
@@ -576,7 +581,7 @@ module ApplicationHelper
       link_text = '#' + version
       version_number = version.to_i
     end
-
+    
     if check_permission == false or can_preview?(:item => item, :version_number => version_number)
       link_to link_text, url_for_preview_of(item, version_number)
     else
@@ -642,4 +647,16 @@ module ApplicationHelper
     end
     theme_styles
   end
+  
+  # Only cache if the item is public.
+  def cache_if_public(item, parts, &block)
+    if item.respond_to?(:private) and item.private?
+      block.call
+    else
+      cache(parts) do
+        block.call
+      end
+    end
+  end
+    
 end

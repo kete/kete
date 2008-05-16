@@ -10,7 +10,7 @@
       </div>
       <div class="detail-tools">
         <table class="history-table">
-          <tr><th>Number</th><th></th><th>Flags</th><th>Contributor</th><th>Updated</th><th>Comments</th></tr>
+          <tr><th>Number</th><th></th><th>Flags</th><th>Privacy</th><th>Contributor</th><th>Updated</th><th>Comments</th></tr>
           <% item_contributors = @item.contributors
              contributor_index = 0 -%>
           <% @versions.each do |version| -%>
@@ -18,7 +18,7 @@
             <td><%= "\# #{version.version}" %></td>
             <td>
               [
-              <% if version.version != @item.version -%>
+              <% if version.version != @current_public_version && version.version != @current_private_version -%>
               <%= link_to_preview_of(@item, version) %>
               <% else -%>
               <b>current</b>
@@ -31,6 +31,15 @@
               <%= h(tag.name) %>
               <% end -%>
               <% end -%>
+            </td>
+            <td>
+							<% private_condition = case params[:controller]
+								when "comments"
+									@item.private?
+								else
+									(version.respond_to?(:private?) && version.private?)
+								end -%>
+              <%= private_condition ? "<strong>Private</strong>" : "Public" -%>
             </td>
             <td>
               <% if version.version == 1 or version.version.nil? -%>
@@ -52,6 +61,10 @@
           </tr>
           <% end -%>
         </table>
+
+				<% if @show_private_versions_notice -%>
+					<p><strong>This item has private versions. <%= link_to "Login", :controller => "account", :action => "login" -%> as a basket member to view these.</strong></p>
+				<% end -%>
 
         <h3>Back to live <%= link_to_item(@item) -%></h3>
       </div>

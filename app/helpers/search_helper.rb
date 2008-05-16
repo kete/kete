@@ -33,6 +33,8 @@ module SearchHelper
 
     end_of_title_parts << " related to \"#{@source_item.title}\"" if !@source_item.nil?
 
+    end_of_title_parts << " that are #{@privacy}" if !@privacy.nil?
+
     end_of_title = end_of_title_parts.join(" and")
   end
 

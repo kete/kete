@@ -27,7 +27,9 @@ class ImageFile < ActiveRecord::Base
   :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
   validates_as_attachment
-
+  
+  include ItemPrivacy::AttachmentFuOverload
+  
   # overriding full_filename to handle our customizations
   # TODO: is this thumbnail arg necessary for classes without thumbnails?
   # def full_filename(thumbnail = nil)
@@ -48,6 +50,31 @@ class ImageFile < ActiveRecord::Base
       enum = attachment_options[attr_name]
       errors.add attr_name, 'is not acceptable. It should be a .jpg, .gif, or other image file.' unless enum.nil? || enum.include?(send(attr_name))
     end
+  end
+  
+  # Overload attachment_fu method to ensure file_private is propagated to peers
+  def create_or_update_thumbnail(temp_file, file_name_suffix, *size)
+    thumbnailable? || raise(ThumbnailError.new("Can't create a thumbnail if the content type is not an image or there is no parent_id column"))
+    returning find_or_initialize_thumbnail(file_name_suffix) do |thumb|
+      thumb.attributes = {
+        :content_type             => content_type,
+        :filename                 => thumbnail_name_for(file_name_suffix),
+        :temp_path                => temp_file,
+        :thumbnail_resize_options => size,
+        
+        # Also propagate file_private attribute (always false)
+        :file_private             => false
+        
+      }
+      callback_with_args :before_thumbnail_saved, thumb
+      thumb.save!
+    end
+  end
+  
+  def basket
+    still_image.basket
+  rescue
+    nil
   end
 
 end

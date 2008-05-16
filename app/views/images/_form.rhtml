@@ -22,10 +22,22 @@
                         </div>
                 <% end -%>
 
-                <div class="form-element"><label for="image_title">Title:</label>
+								<div class="form-element">
+									<label for="still_image_private_false">Public</label>
+									<%= form.radio_button :private, false, :id => "still_image_private_false" %><br />
+									Can be viewed by everyone
+								</div>
+
+								<div class="form-element">
+									<label for="still_image_private_true">Private</label>
+									<%= form.radio_button :private, true, :id => "still_image_private_true" %><br />
+									Can be viewed only by basket members
+								</div>
+
+                <div class="form-element"><label for="still_image_title">Title:</label>
                 <%= form.text_field :title  %></div>
 
-                <div class="form-element"><label for="image_description">Description</label><br/>
+                <div class="form-element"><label for="still_image_description">Description</label><br/>
                   <%= form.text_area :description, :class => "mceEditor", :cols => 120 %>
                   <div class="form-example">
                            Note: forms and javascript are not allowed
@@ -38,12 +50,15 @@
 
 
                 <% if @site_admin -%>
-                <div class="form-element"><label for="image_do_not_sanitize">Allow
+                <div class="form-element"><label for="still_image_do_not_sanitize">Allow
                     forms and other possible insecure elements and attributes in the HTML?</label>
                   <%= form.check_box :do_not_sanitize %></div>
                 <% end -%>
 
-                <%= tags_input_field(form,"image_tag_list") %>
+								<div class="form-element"><label for="still_image_file_private">Image original privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@still_image) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@still_image) %> Can be downloaded only by basket members<br />
+									<strong>Image originals can be private, however once public, an image original cannot be made private. Image thumbnails are always public.</strong></div>
+
+                <%= tags_input_field(form,"still_image_tag_list") %>
 
                 <% # disabling overwriting of original document for the timebeing
                    # when we support versioning of document and image files,

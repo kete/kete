@@ -1,0 +1,553 @@
+# James Stradling <james@katipo.co.nz>
+# 2008-04-15
+
+module ItemPrivacyTestHelper
+  
+  module Model
+    
+    # Normally, testing attachment_fu methods will cause real files to be written into your
+    # development and production environment file folders, as defined in the models.
+    # To work around this, this override forces the files to be saved into the 
+    # tmp/attachment_fu_test/.. folder instead of RAILS_ROOT/..
+
+    # Based on work-around described here http://www.fngtps.com/2007/04/testing-with-attachment_fu
+    def full_filename(thumbnail = nil)
+      file_system_path = "#{attachment_path_prefix}/#{self.class.table_name}"
+      File.join(RAILS_ROOT, "tmp", "attachment_fu_test", file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
+    end
+    
+  end
+  
+  module TestHelper
+    
+    # Generate a regex for us to test against to ensure the files are saved in the correct place.
+    # Use this in your tests.
+    def attachment_fu_test_path(base_folder)
+      sub_folder = eval("#{@base_class}.table_name")
+      /^[a-zA-Z0-9\/\-_\s\.]+\/#{base_folder}\/#{sub_folder}\/[a-zA-Z0-9\/\-_\s\.]+$/
+    end
+    
+    private
+    
+      # Generate a new record for a test
+      # Returns the ID of the new record.
+      def create_record(attributes = {}, user = :admin)
+      
+        login_as(user)
+        eval("post :create, :#{@base_class.singularize.downcase} => @new_model.merge(attributes), :urlified_name => 'site'")
+
+        # Reload the test environment.
+        load_test_environment
+      
+        eval("#{@base_class.classify}.find(:first, :order => 'id DESC').id")
+      end
+    
+      def load_test_environment
+        @controller = eval("#{@base_class.classify.pluralize}Controller.new")
+        @request    = ActionController::TestRequest.new
+        @response   = ActionController::TestResponse.new
+      end
+    
+  end
+  
+  module Tests
+    
+    module FilePrivate
+      
+      def test_attachment_fu_uses_correct_path_prefix
+        item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert File.exists?(item.full_filename)
+        assert_valid item
+      end
+
+      def test_attachment_fu_uses_correct_path_prefix2
+        item2 = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        assert_match(attachment_fu_test_path("private"), item2.full_filename)
+        assert File.exists?(item2.full_filename)
+        assert_valid item2
+      end
+
+      def test_attachment_fu_does_not_move_files_when_going_from_public_to_private
+        item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert File.exists?(item.full_filename)
+        assert_valid item
+        old_filename = item.full_filename
+        id = item.id
+
+        item = eval(@base_class).find(id)
+        item.update_attributes({ :file_private => true })
+        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
+        assert_equal old_filename, item.full_filename
+        assert_valid item
+      end
+
+      def test_attachment_fu_moves_files_to_correct_path_when_going_from_private_to_public
+        item = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        assert_match(attachment_fu_test_path("private"), item.full_filename)
+        assert File.exists?(item.full_filename)
+        assert_valid item
+        old_filename = item.full_filename
+        id = item.id
+
+        item = eval(@base_class).find(id)
+        item.update_attributes({ :file_private => false })
+        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
+        assert !File.exists?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
+        assert_valid item
+      end
+
+      def test_attachment_path_prefix
+        d = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        assert_equal d.send(:attachment_path_prefix), "private"
+
+        d = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        assert_equal d.send(:attachment_path_prefix), "public"
+      end
+
+      def test_attachment_full_filename
+        d = eval(@base_class).create(@new_model.merge({ :file_private => true }))
+        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "private", eval(@base_class).table_name, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
+
+        d = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "public", eval(@base_class).table_name, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
+      end
+
+      def test_file_private_setter_false_to_true_does_not_work
+        d = eval(@base_class).create(@new_model.merge({ :file_private => false }))
+        d.file_private = true
+        assert d.save
+
+        assert !d.file_private?
+      end
+      
+    end
+    
+    module VersioningAndModeration
+      
+      def test_responds_to_private_and_is_set_properly_with_private_false
+        doc = eval(@base_class).create(@new_model.merge({ :private => false }))
+        assert_equal false, doc.private?
+      end
+      
+      def test_responds_to_private_and_is_set_properly_with_private_true
+        doc = eval(@base_class).create(@new_model.merge({ :private => true }))
+        assert_equal false, doc.private?
+        assert_equal 2, doc.versions.size
+        assert_equal true, doc.find_version(1).private?
+        assert_equal false, doc.find_version(2).private?
+      end
+
+      def test_latest_version
+
+        # Set up some versions
+        d = eval(@base_class).create(@new_model.merge({ :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.update_attributes(:description => "Version 3")
+        d.update_attributes(:description => "Version 4", :private => true)
+        d.update_attributes(:description => "Version 5", :private => true)
+
+        d.reload
+
+        assert_equal 3, d.send(:latest_public_version).version
+        assert_equal d.version, d.send(:latest_public_version).version
+        assert_equal "Version 3", d.send(:latest_public_version).description
+        assert !d.send(:latest_public_version).private?
+        assert !d.private?
+      end
+
+      def test_revert_to
+
+        # Set up some versions
+        d = eval(@base_class).create(@new_model.merge({ :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.update_attributes(:description => "Version 3")
+        d.update_attributes(:description => "Version 4", :private => true)
+        d.update_attributes(:description => "Version 5")
+
+        d.reload
+
+        d.revert_to(d.find_version(3))
+
+        assert_equal d.version, 3
+        assert_equal d.description, "Version 3"
+        assert !d.private?
+      end
+
+      def test_private_version_newest_public
+
+        # Set up some versions
+        d = eval(@base_class).create(@new_model.merge({ :private => false }))
+        d.update_attributes!(:description => "Version 2")
+        d.update_attributes!(:description => "Version 3")
+        d.update_attributes!(:description => "Version 4", :private => true)
+        d.update_attributes!(:description => "Version 5", :private => false)
+        d.reload
+
+        assert_not_nil d.private_version_serialized
+        assert_kind_of Array, Marshal.load(d.private_version_serialized)
+        assert_equal 5, d.versions.size
+        assert_equal "Version 5", d.description
+        assert_equal false, d.private?
+
+        d.private_version!
+        assert_equal "Version 4", d.description
+        assert_equal true, d.private?
+
+      end
+
+      def test_private_version_newest_private
+
+        # Set up some versions
+        d = eval(@base_class).create(@new_model.merge({ :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.update_attributes(:description => "Version 3")
+        d.update_attributes(:description => "Version 4")
+        d.update_attributes(:description => "Version 5", :private => true)
+        d.reload
+
+        assert_equal "Version 4", d.description
+        assert_equal false, d.private?
+        d.send(:private_version!)
+        assert_equal "Version 5", d.description
+        assert_equal true, d.private?
+
+      end
+
+      def test_private_version_returns_nil_when_no_private_version!
+
+        d = eval(@base_class).create(@new_model.merge({ :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.reload
+
+        assert_equal "Version 2", d.description
+        assert_equal nil, d.private_version!
+      end
+
+      def test_store_correct_version_after_save
+
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2", :private => true)
+        d.reload
+
+        assert_equal "Version 1", d.description
+        assert_not_nil d.private_version_serialized
+
+      end
+
+      def test_has_private_version!
+
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2")
+
+        assert_equal false, d.has_private_version?
+        assert_nil d.private_version!
+      end
+
+      def test_has_private_version2
+
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2", :private => true)
+        d.update_attributes(:description => "Version 3")
+
+        assert_not_nil d.private_version_serialized
+        assert_kind_of Array, Marshal.load(d.private_version_serialized)
+        assert_equal true, d.has_private_version?
+        assert_nothing_raised do
+          d = d.send :load_private!
+        end
+        assert_not_nil d
+      end
+
+      def test_latest_public_version_and_has_public_version
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2", :private => true)
+        d.update_attributes(:description => "Version 3")
+
+        assert_equal 3, d.send(:latest_public_version).version
+        assert_equal true, d.has_private_version?
+      end
+
+      def test_latest_public_version_and_has_public_version_again
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.update_attributes(:description => "Version 3", :private => true)
+
+        assert_equal 2, d.send(:latest_public_version).version
+        assert_equal true, d.has_private_version?
+      end
+
+      def test_latest_public_version_and_has_public_version_with_none
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true }))
+        d.update_attributes(:description => "Version 2", :private => true)
+        d.update_attributes(:description => "Version 3", :private => true)
+        d.reload
+
+        assert_equal 4, d.versions.size
+        assert_not_nil d
+        assert_kind_of eval(@base_class), d
+        assert_equal "No Public Version Available", d.title
+        assert_equal "There is currently no public version of this item.", d.description
+        assert_equal true, d.has_private_version?
+      end
+
+      def test_revert_to_latest_unflagged_version_or_create_new_version_public
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.update_attributes(:description => "Version 3", :private => true)
+
+        # Check flagging a public version works as expected
+        assert_equal 2, d.version
+        assert_equal 0, d.tags.size
+        d.flag_live_version_with("PENDING", "Pending")
+        assert_equal 1, d.find_version(2).tags.size
+        assert_equal 1, d.version
+        assert_equal false, d.private?
+        assert d.versions.reject { |v| v.version == 2 }.all? { |v| v.tags.size == 0 }
+      end
+
+      def test_revert_to_latest_unflagged_version_or_create_new_version_private
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.update_attributes(:description => "Version 3", :private => true)
+        d.reload
+        assert_equal 2, d.version
+
+        # Check pre-conditions
+        d.private_version!
+        assert_equal 3, d.version
+
+        # Check tagging tags the correct item
+        assert_equal 0, d.tags.size
+
+        # Flat the version and run the callback that we expect to be run..
+        d.flag_live_version_with("PENDING", "Pending")
+        d.send :store_correct_versions_after_save
+
+        assert_equal 1, d.find_version(3).tags.size
+        assert d.versions.reject { |v| v.version == 3 }.all? { |v| v.tags.size == 0 }
+
+        d.private_version do
+          assert_equal 4, d.version
+          assert_equal true, d.private?
+        end
+
+        d = eval(@base_class).find(d.id)
+        assert_equal 2, d.version
+        assert_equal false, d.private?
+      end
+
+      def test_reload_returns_model_to_public_version
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2", :private => true)
+        d.reload
+
+        assert_equal false, d.private?
+        assert_equal 1, d.version
+        assert_equal "Version 1", d.description
+
+        d.private_version!
+
+        assert_equal true, d.private?
+        assert_equal 2, d.version
+        assert_equal "Version 2", d.description
+
+        d.reload
+
+        assert_equal false, d.private?
+        assert_equal 1, d.version
+        assert_equal "Version 1", d.description
+      end
+
+      def test_new_private_item_with_moderated_basket
+
+        # Set up
+        d = eval(@base_class).new(@new_model.merge({ :description => "Version 1", :private => true }))
+        d.instance_eval do
+          def fully_moderated?
+            true
+          end
+        end
+        d.save!
+        d.reload
+
+        assert_equal true, d.fully_moderated?
+
+        # Should be three, 1 for private, 1 for public and 1 for pending blank private..
+        assert_equal 3, d.versions.size
+
+        assert_equal 1, d.find_version(1).tags.size
+        assert_equal "test item", d.find_version(1).title
+        assert_equal "Version 1", d.find_version(1).description
+        assert_equal true, d.find_version(1).private?
+
+        assert_equal 0, d.find_version(2).tags.size
+        assert_equal BLANK_TITLE, d.find_version(2).title
+        assert_equal nil, d.find_version(2).description
+        assert_equal true, d.find_version(2).private?
+
+        assert_equal 0, d.find_version(3).tags.size
+        assert_equal "No Public Version Available", d.find_version(3).title
+        assert_equal "There is currently no public version of this item.", d.find_version(3).description
+        assert_equal false, d.find_version(3).private?
+
+        assert_equal 3, d.version
+        assert_equal "No Public Version Available", d.title
+        assert_equal "There is currently no public version of this item.", d.description
+
+        d.private_version!
+
+        assert_equal 2, d.version
+        assert_equal BLANK_TITLE, d.title
+        assert_equal nil, d.description
+      end
+
+      def test_new_public_item_with_moderated_basket
+
+        # Set up
+        d = eval(@base_class).new(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.instance_eval do
+          def fully_moderated?
+            true
+          end
+        end
+        d.save!
+        d.reload
+
+        assert_equal true, d.fully_moderated?
+
+        # Should be three, 1 for private, 1 for public and 1 for pending blank private..
+        assert_equal 2, d.versions.size
+
+        assert_equal 1, d.find_version(1).tags.size
+        assert_equal "test item", d.find_version(1).title
+        assert_equal "Version 1", d.find_version(1).description
+        assert_equal false, d.find_version(1).private?
+
+        assert_equal 0, d.find_version(2).tags.size
+        assert_equal BLANK_TITLE, d.find_version(2).title
+        assert_equal nil, d.find_version(2).description
+        assert_equal false, d.find_version(2).private?
+
+        assert_equal 2, d.version
+        assert_equal BLANK_TITLE, d.title
+        assert_equal nil, d.description
+
+        assert_nil d.private_version!
+
+        assert_equal 2, d.version
+        assert_equal BLANK_TITLE, d.title
+        assert_equal nil, d.description
+
+      end
+
+      def test_moderated_public_item
+
+        # Set up
+        d = new_moderated_public_item
+
+        assert_equal true, d.fully_moderated?
+
+        # Should be three, 1 for private, 1 for public and 1 for pending blank private..
+        assert_equal 3, d.versions.size
+
+        assert_equal 1, d.find_version(1).tags.size
+        assert_equal "test item", d.find_version(1).title
+        assert_equal "Version 1", d.find_version(1).description
+        assert_equal false, d.find_version(1).private?
+
+        assert_equal 0, d.find_version(2).tags.size
+        assert_equal BLANK_TITLE, d.find_version(2).title
+        assert_equal nil, d.find_version(2).description
+        assert_equal false, d.find_version(2).private?
+
+        assert_equal 3, d.version
+        assert_equal "test item", d.title
+        assert_equal "Version 1", d.description
+        assert_equal false, d.private?
+
+        assert_nil d.private_version!
+
+      end
+
+      def test_new_version_of_moderated_public_item
+
+        d = new_moderated_public_item
+        d.update_attributes!(:description => "Version 2")
+
+        assert_equal 4, d.versions.size
+
+        assert_equal 3, d.version
+        assert_equal "Version 1", d.description
+
+        assert_equal 1, d.find_version(4).tags.size
+        assert_equal "Version 2", d.find_version(4).description
+      end
+
+      def test_new_private_version_of_moderated_public_item
+
+        d = new_moderated_public_item
+        d.update_attributes!(:description => "Version 2", :private => true)
+
+        assert_equal 5, d.versions.size
+
+        assert_equal 3, d.version
+        assert_equal "Version 1", d.description
+
+        assert_equal 1, d.find_version(4).tags.size
+        assert_equal "Version 2", d.find_version(4).description
+
+        assert_equal BLANK_TITLE, d.find_version(5).title
+        assert_equal nil, d.find_version(5).description
+      end
+
+      def test_private_version_with_block
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false }))
+        d.update_attributes(:description => "Version 2")
+        d.update_attributes(:description => "Version 3", :private => true)
+        d.reload
+        assert_equal 2, d.version
+
+        d.private_version do
+          assert_equal true, d.private?
+          assert_equal 3, d.version
+        end
+
+        assert_equal false, d.private?
+        assert_equal 2, d.version
+
+      end
+
+      protected
+
+        def new_moderated_public_item
+          d = eval(@base_class).new(@new_model.merge({ :description => "Version 1", :private => false }))
+          d.instance_eval do
+            def fully_moderated?
+              true
+            end
+          end
+          d.save!
+          d.reload
+
+          d.change_pending_to_reviewed_flag(1)
+          d.revert_to(1)
+          d.version_comment = "Content from revision # 1."
+          d.do_not_moderate = true
+          d.do_not_sanitize = true
+          d.save!
+          d.reload
+          d.do_not_moderate = false
+          d.do_not_sanitize = false
+          d
+        end
+        
+    end
+    
+  end
+  
+end
+

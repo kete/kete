@@ -1,5 +1,7 @@
 class AudioController < ApplicationController
   include ExtendedContentController
+  
+  helper :privacy_controls
 
   def index
     redirect_to_search_for('AudioRecording')
@@ -10,18 +12,27 @@ class AudioController < ApplicationController
   end
 
   def show
-    if !has_all_fragments? or params[:format] == 'xml'
+    if permitted_to_view_private_items?
+      
       @audio_recording = @current_basket.audio_recordings.find(params[:id])
-      @title = @audio_recording.title
+      @audio_recording = @audio_recording.private_version! if @audio_recording.has_private_version? && params[:private] == "true"
+      
+      # Show the privacy chooser
+      @show_privacy_chooser = true
+      
+    elsif !has_all_fragments? or params[:format] == 'xml'
+      @audio_recording = @current_basket.audio_recordings.find(params[:id])
     end
+
+    @title = @audio_recording.title
 
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
       @creator = @audio_recording.creator
       @last_contributor = @audio_recording.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @audio_recording.comments.find_all_non_pending
+    if @audio_recording.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
+      @comments = @audio_recording.non_pending_comments
     end
 
     respond_to do |format|
@@ -31,7 +42,8 @@ class AudioController < ApplicationController
   end
 
   def new
-    @audio_recording = AudioRecording.new
+    @audio_recording = AudioRecording.new({ :private => @current_basket.private_default || false, 
+                                            :file_private => @current_basket.file_private_default || false })
   end
 
   def create
@@ -48,11 +60,12 @@ class AudioController < ApplicationController
       @audio_recording.do_notifications_if_pending(1, current_user)
     end
 
-    setup_related_topic_and_zoom_and_redirect(@audio_recording)
+    setup_related_topic_and_zoom_and_redirect(@audio_recording, nil, :private => (params[:audio_recording][:private] == "true"))
   end
 
   def edit
     @audio_recording = AudioRecording.find(params[:id])
+    public_or_private_version_of(@audio_recording)
   end
 
   def update
@@ -68,7 +81,7 @@ class AudioController < ApplicationController
 
       flash[:notice] = 'AudioRecording was successfully updated.'
 
-      redirect_to_show_for(@audio_recording)
+      redirect_to_show_for(@audio_recording, :private => (params[:audio_recording][:private] == "true"))
     else
       render :action => 'edit'
     end

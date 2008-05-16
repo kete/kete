@@ -1,5 +1,7 @@
 class ImagesController < ApplicationController
   include ExtendedContentController
+  
+  helper :privacy_controls
 
   def index
     redirect_to_search_for('StillImage')
@@ -15,6 +17,16 @@ class ImagesController < ApplicationController
     # always loading still_image for the timebeing, since we check for blank version
     # to determine whether to show image file
     @still_image = @current_basket.still_images.find(params[:id])
+    
+    # The document has a private version and the correct permissions are set, show that version.
+    if permitted_to_view_private_items?
+
+      @still_image = @still_image.private_version! if @still_image.has_private_version? && params[:private] == "true"
+      
+      # Show the privacy chooser
+      @show_privacy_chooser = true
+    end
+    
     @title = @still_image.title
     # end
 
@@ -26,8 +38,8 @@ class ImagesController < ApplicationController
       @last_contributor = @still_image.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @still_image.comments.find_all_non_pending
+    if @still_image.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
+      @comments = @still_image.non_pending_comments
     end
 
     respond_to do |format|
@@ -37,13 +49,14 @@ class ImagesController < ApplicationController
   end
 
   def new
-    @still_image = StillImage.new
+    @still_image = StillImage.new({ :private => @current_basket.private_default || false, 
+                                    :file_private =>  @current_basket.file_private_default || false })
   end
 
   def create
     @still_image = StillImage.new
     # handle problems with image file first
-    @image_file = ImageFile.new(params[:image_file])
+    @image_file = ImageFile.new(params[:image_file].merge({ :file_private => params[:still_image][:file_private] }))
     @successful = @image_file.save
 
     if @successful
@@ -61,8 +74,8 @@ class ImagesController < ApplicationController
 
         @image_file.still_image_id = @still_image.id
         @image_file.save
-
-        # attachment_fu doesn't insert our still_image_id into the thumbnails
+        
+        # Set the file privacy ahead of time so AttachmentFuOverload can find the value..# attachment_fu doesn't insert our still_image_id into the thumbnails
         # automagically
         @image_file.thumbnails.each do |thumb|
           thumb.still_image_id = @still_image.id
@@ -70,7 +83,7 @@ class ImagesController < ApplicationController
         end
       end
 
-      setup_related_topic_and_zoom_and_redirect(@still_image)
+      setup_related_topic_and_zoom_and_redirect(@still_image, nil, :private => (params[:still_image][:private] == "true"))
     else
       render :action => 'new'
     end
@@ -78,6 +91,7 @@ class ImagesController < ApplicationController
 
   def edit
     @still_image = StillImage.find(params[:id])
+    public_or_private_version_of(@still_image)
   end
 
   def update
@@ -98,7 +112,7 @@ class ImagesController < ApplicationController
 
       flash[:notice] = 'Image was successfully updated.'
 
-      redirect_to_show_for(@still_image)
+      redirect_to_show_for(@still_image, :private => (params[:still_image][:private] == "true"))
     else
       render :action => 'edit'
     end

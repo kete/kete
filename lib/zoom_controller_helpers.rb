@@ -24,7 +24,7 @@ module ZoomControllerHelpers
         prepare_zoom(comment)
         @successful = comment.destroy
         if !@successful
-          return @succesful
+          return @successful
         end
       end
 
@@ -131,9 +131,25 @@ module ZoomControllerHelpers
     end
 
     def prepare_and_save_to_zoom(item)
-      unless item.already_at_blank_version?
+      
+      # This is always the public version..
+      unless item.already_at_blank_version? || item.at_placeholder_public_version?
         prepare_zoom(item)
         item.zoom_save
+      end
+      
+      # Redo the save for the private version
+      if item.respond_to?(:private) and item.has_private_version? and !item.private?
+        
+        item.private_version do
+          unless item.already_at_blank_version?
+            prepare_zoom(item)
+            item.zoom_save
+          end
+        end
+        
+        raise "Could not return to public version" if item.private?
+        
       end
     end
   end

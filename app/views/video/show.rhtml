@@ -5,7 +5,7 @@
 
 <%= render(:partial => "topics/content_wrapper_start") %>
 
-<% cache ({:part => 'details'}) do -%>
+<% cache_if_public(@video, {:part => 'details'}) do -%>
    <h2><%= h(@video.title) %></h2>
 
    <p><%= @video.description %></p>

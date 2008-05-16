@@ -11,7 +11,8 @@
   :sort_type => nil,
   :sort_direction => nil,
   :urlified_name => urlified_name,
-  :search_terms => nil} do %>
+  :search_terms => nil,
+	:privacy_type => nil} do %>
 
 <% if !simple_layout -%>
 <% if !@search.nil? -%>
@@ -28,7 +29,12 @@
   <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"
   <%= 'disabled=\"true\"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>
   <%= 'checked' if !params[:sort_direction].blank? && params[:sort_direction] == 'reverse' -%>>
-  </div>
+  </div><br />
+	<% # Only show private search control if allowed. %>
+	<% if permitted_to_view_private_items? -%>
+		<label for="privacy_type">That are:</label>
+		<%= select_tag 'privacy_type', options_for_select({ 'Private' => 'private', 'Public' => 'public' }, params[:privacy_type] || 'public') %>
+	<% end -%>
 </div>
 
 <%= toggle_in_reverse_field_js_helper if params[:action] == 'for' -%>

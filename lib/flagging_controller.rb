@@ -17,10 +17,18 @@ module FlaggingController
     def flag_version
       setup_flagging_vars
 
+      # Revert to the passed in version if applicable
+      @item.revert_to(params[:version]) if !params[:version].blank?
+      
       # we tag the current version with the flag passed
       # and revert to an unflagged version
       # or create a blank unflagged version if necessary
       flagged_version = @item.flag_live_version_with(@flag, @message)
+
+      # Reload to public version so zoom code works as expected
+      @item.reload
+      
+      raise "We are not on public version" if @item.respond_to?(:private) && @item.private?
 
       flagging_clear_caches_and_update_zoom(@item)
 
@@ -55,7 +63,7 @@ module FlaggingController
     # and removes flags on that version
     def restore
       setup_flagging_vars
-
+      
       # if version we are about to supersede
       # is blank, flag it as blank for clarity in the history
       # this doesn't do the reversion in itself
@@ -71,15 +79,28 @@ module FlaggingController
       # for the rare case when invalid code made it in
       # otherwise validation may cause save action to fail
       @item.do_not_sanitize = true
-      @item.save!
+      
+      versions_before_save = @item.versions.size
+      
+      if @item.respond_to?(:save_without_saving_private!)
+        @item.save_without_saving_private!
+      else
+        @item.save!
+      end
+      
+      # If the version is not what we expect, there may have been a race condition.
+      logger.debug "Race condition during restore. Version expected to be #{versions_before_save + 1} but was #{@item.version}." unless @item.version == versions_before_save + 1
 
       # keep track of the moderator's contribution
       @item.add_as_contributor(@current_user)
-
+      
       # now that this item is approved by moderator
       # we get rid of pending flag
       # then flag it as reviewed
       @item.change_pending_to_reviewed_flag(@version)
+
+      # Return to latest public version before changing flags..
+      @item.send :store_correct_versions_after_save if @item.respond_to?(:store_correct_versions_after_save)
 
       flagging_clear_caches_and_update_zoom(@item)
 
@@ -124,7 +145,21 @@ module FlaggingController
     # so that different types of items can have their history display customized
     def history
       @item = item_from_controller_and_id
-      @versions = @item.versions
+      
+      # Only show private versions to authorized people.
+      if permitted_to_view_private_items?
+        @versions = @item.versions
+      else
+        @versions = @item.versions.reject { |v| v.respond_to?(:private) and v.private? }
+        @show_private_versions_notice = (@versions.size != @item.versions.size)
+      end
+      
+      @current_public_version = @item.version
+
+      @item.private_version do 
+        @current_private_version = @item.version
+      end if @item.respond_to?(:private_version)
+
       # one template (with logic) for all controllers
       render :template => 'topics/history'
     end
@@ -133,7 +168,7 @@ module FlaggingController
     # assumes a preview templates under the controller
     def preview
       setup_flagging_vars
-
+      
       # no need to preview live version
       if @item.version.to_s == @version
         redirect_to correct_url_for(@item)
@@ -148,9 +183,18 @@ module FlaggingController
           @flag_messages << tagging.message if !tagging.message.blank?
         end
         @item.revert_to(@preview_version)
+
+        # Do not allow access to private item versions..
+        if @item.respond_to?(:private?) && @item.private? && !permitted_to_view_private_items?
+          raise ActiveRecord::RecordNotFound
+        end
+
         # one template (with logic) for all controllers
         render :template => 'topics/preview'
       end
+    rescue ActiveRecord::RecordNotFound
+      flash[:notice] = "There is currently no public version of this #{params[:controller].singularize} available."
+      redirect_to :controller => 'account', :action => 'login'
     end
 
     def can_preview?(options = { })

@@ -17,6 +17,16 @@ class AudioRecording < ActiveRecord::Base
   :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
   validates_as_attachment
+  
+  # Private Item mixin
+  include ItemPrivacy::All
+  
+  
+  # Do not version self.file_private
+  non_versioned_fields << "file_private"
+  non_versioned_fields << "private_version_serialized"
+  
+  after_save :store_correct_versions_after_save
 
   # overriding full_filename to handle our customizations
   # TODO: is this thumbnail arg necessary for classes without thumbnails?

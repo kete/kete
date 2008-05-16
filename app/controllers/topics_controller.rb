@@ -66,6 +66,7 @@ class TopicsController < ApplicationController
 
   def edit
     @topic = Topic.find(params[:id])
+    public_or_private_version_of(@topic)
 
     # logic to prevent plain old members from editing
     # site basket homepage
@@ -168,7 +169,7 @@ class TopicsController < ApplicationController
       else
         flash[:notice] = 'Topic was successfully created.'
         params[:topic] = replacement_topic_hash
-        redirect_to :action => 'show', :id => @topic
+        redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
         render :action => 'pick_topic_type'
@@ -231,8 +232,8 @@ class TopicsController < ApplicationController
 
       # TODO: replace with translation stuff when we get globalize going
       flash[:notice] = 'Topic was successfully edited.'
-
-      redirect_to_show_for(@topic)
+      
+      redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
     else
       if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
         @topic_types = @topic.topic_type.full_set

@@ -1,5 +1,7 @@
 class VideoController < ApplicationController
   include ExtendedContentController
+  
+  helper :privacy_controls
 
   def index
     redirect_to_search_for('Video')
@@ -10,7 +12,15 @@ class VideoController < ApplicationController
   end
 
   def show
-    if !has_all_fragments? or params[:format] == 'xml'
+    if logged_in? && permitted_to_view_private_items?
+
+      @video = @current_basket.videos.find(params[:id])
+      @video = @video.private_version! if @video.has_private_version? && params[:private] == "true"
+      
+      # Show the privacy chooser
+      @show_privacy_chooser = true
+    
+    elsif !has_all_fragments? or params[:format] == 'xml'
       @video = @current_basket.videos.find(params[:id])
       @title = @video.title
     end
@@ -20,8 +30,8 @@ class VideoController < ApplicationController
       @last_contributor = @video.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @video.comments.find_all_non_pending
+    if @video.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
+      @comments = @video.non_pending_comments
     end
 
     respond_to do |format|
@@ -31,7 +41,8 @@ class VideoController < ApplicationController
   end
 
   def new
-    @video = Video.new
+    @video = Video.new({ :private => @current_basket.private_default || false, 
+                         :file_private =>  @current_basket.file_private_default || false })
   end
 
   def create
@@ -47,11 +58,12 @@ class VideoController < ApplicationController
 
       @video.do_notifications_if_pending(1, current_user)
     end
-    setup_related_topic_and_zoom_and_redirect(@video)
+    setup_related_topic_and_zoom_and_redirect(@video, nil, :private => (params[:video][:private] == "true"))
   end
 
   def edit
     @video = Video.find(params[:id])
+    public_or_private_version_of(@video)
   end
 
   def update
@@ -66,7 +78,7 @@ class VideoController < ApplicationController
       @video.do_notifications_if_pending(version_after_update, current_user)
       flash[:notice] = 'Video was successfully updated.'
 
-      redirect_to_show_for(@video)
+      redirect_to_show_for(@video, :private => (params[:video][:private] == "true"))
     else
       render :action => 'edit'
     end

@@ -45,7 +45,11 @@ class BasketsController < ApplicationController
   end
 
   def new
-    @basket = Basket.new
+    @basket = Basket.new({
+      :private_default =>           false, 
+      :file_private_default =>      false, 
+      :allow_non_member_comments => true
+    })
   end
 
   def create

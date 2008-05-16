@@ -4,7 +4,7 @@
 
 <%= render(:partial => "topics/content_wrapper_start") %>
 
-      <% cache ({:part => 'details'}) do -%>
+      <% cache_if_public(@document, { :part => 'details' }) do -%>
          <h2><%= h(@document.title) %></h2>
          <p><b><%= @document.short_summary %></b></p>
          <% if !@document.already_at_blank_version? -%>

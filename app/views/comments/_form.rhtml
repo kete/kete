@@ -60,6 +60,8 @@
                         <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] || params[:comment][:commentable_id] %>
 
                         <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] || params[:comment][:commentable_type] %>
+                        
+												<%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || params[:comment][:commentable_private] %>
                 <% end %>
 
                 <!--[eoform:comment]-->

@@ -128,7 +128,18 @@ class SearchController < ApplicationController
     @start = @start_record + 1
     @end_record = @number_per_page * @current_page
     # TODO: skipping multiple source (federated) search for now
-    zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
+
+    # James Stradling <james@katipo.co.nz> - 2008-05-02
+    # Only allow private search if permitted and not in site basket.
+    if params[:privacy_type] == "private" and permitted_to_view_private_items?
+      @privacy = "private"
+      zoom_db_instance = "private"
+    else
+      zoom_db_instance = "public"
+    end
+    
+    # Load the correct zoom_db instance.
+    zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
 
     @result_sets = Hash.new
 
@@ -242,9 +253,24 @@ class SearchController < ApplicationController
     # tag for things tagged with the tag/subject
     # contributor for things contributed to or created by a user
     # sort_type for last_modified
-
+    
     if @current_basket == @site_basket
-      query += "@attr 1=12 #{zoom_class} "
+      if params[:privacy_type] == "private"
+        # To be implemented:
+        # When in the site basket and performing a private search, only search those baskets for which
+        # the current user has rights.
+
+        # authorized_basket_roles = @current_user.roles.select { |r| r.authorizable_type == "Basket" }
+        # authorized_baskets = authorized_basket_roles.collect { |r| Basket.find(r.authorizable_id) }
+        # authorized_baskets.collect { |b| b.urlified_name }.each do |basket|
+        #   query += "@attr 1=12 @and #{zoom_class} #{basket} "
+        # end
+        
+        # Temporarily, limit site-wide private searches to the site basket only.
+        query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
+      else
+        query += "@attr 1=12 #{zoom_class} "
+      end
     else
       query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
     end
@@ -416,7 +442,6 @@ class SearchController < ApplicationController
                                                 :action => params[:action],
                                                 :search_terms => @search_terms)
 
-
     logger.debug("what is query: " + query.inspect)
     this_result_set = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
                                                                   :query => query)
@@ -534,7 +559,7 @@ class SearchController < ApplicationController
     controller_name = params[:controller_name_for_zoom_class].nil? ? zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
     if params[:search_terms].blank?
-      redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name, :sort_direction => params[:sort_direction], :sort_type => params[:sort_type])
+      redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name, :sort_direction => params[:sort_direction], :sort_type => params[:sort_type], :privacy_type => params[:privacy_type])
     else
       existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
       redirect_to url_for( :overwrite_params => { :action => 'for',
@@ -579,6 +604,15 @@ class SearchController < ApplicationController
         item_array = item_class_and_id.split("-")
         item = Module.class_eval(item_array[0]).find(item_array[1])
         prepare_and_save_to_zoom(item)
+        
+        # Rebuild 
+        # Should be unnecessary.
+        # if item.has_private_version?
+        #   item.private_version do
+        #     prepare_and_save_to_zoom(item)
+        #   end
+        # end
+        
         if items_count == 1
           first_item = item
         end
@@ -608,7 +642,7 @@ class SearchController < ApplicationController
       rebuild_zoom_item
     end
   end
-
+  
   # this rebuilds the next item in queue
   # and updates page
   def rebuild_zoom_item
@@ -734,35 +768,27 @@ class SearchController < ApplicationController
       cache_page(response.body,params)
     end
   end
-
+  
+  # James Stradling <james@katipo.co.nz> - 2008-05-02
+  # Refactored to use acts_as_zoom#has_appropriate_records?
   def zoom_update_and_test(item,zoom_db)
-    record_count = 0
     item_class = item.class.name
-    query = "@attr 1=12 @and #{item_class} #{item.id} "
 
     if !session[:skip_existing].nil? and session[:skip_existing] == true
       # test if it's in there first
-      this_result_set = Module.class_eval(item_class).process_query(:zoom_db => zoom_db,
-                                                                    :query => query)
-
-      record_count = this_result_set.size
-      if record_count > 0
+      if item.has_appropriate_zoom_records?
         return "skipping existing: search record exists: #{item_class} : #{item.id}"
       end
     end
 
     # if not, add it
-    if record_count == 0
-      prepare_and_save_to_zoom(item)
-      # confirm that it's now available
-      this_result_set = Module.class_eval(item_class).process_query(:zoom_db => zoom_db,
-                                                                    :query => query)
+    prepare_and_save_to_zoom(item)
 
-      if this_result_set.size == 0
-        return "failed to add to search: #{item_class} : #{item.id} not found in search index or perhaps the item is pending."
-      else
-        return "successfully updated search: #{item_class} : #{item.id}"
-      end
+    # confirm that it's now available
+    if item.has_appropriate_zoom_records?
+      return "successfully updated search: #{item_class} : #{item.id}"
+    else
+      return "failed to add to search: #{item_class} : #{item.id} not found in search index or perhaps the item is pending."
     end
   end
 end

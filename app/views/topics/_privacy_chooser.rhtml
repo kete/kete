@@ -1,0 +1,7 @@
+<% if item.respond_to?(:private?) -%>
+	<% if item.private? -%>
+		<li><%= link_to "Public version (live)", :controller => params[:controller], :action => 'show', :id => params[:id], :private => false %></li>
+	<% elsif !item.private? && item.has_private_version? -%>
+		<li><%= link_to "Private version", :controller => params[:controller], :action => 'show', :id => params[:id], :private => true %></li>
+	<% end -%>
+<% end -%>

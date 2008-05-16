@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   include ExtendedContentController
-
+  
   def index
     redirect_to_search_for('Comment')
   end
@@ -49,7 +49,9 @@ class CommentsController < ApplicationController
       # although we shouldn't be using the related_topic aspect here
       # i.e. there is never going to be params[:related_topic_id]
       # this method is smart enough to do the right thing when that is the case
-      setup_related_topic_and_zoom_and_redirect(@comment, commented_item)
+      setup_related_topic_and_zoom_and_redirect(@comment, commented_item, :private => @comment.commentable_private)
+    else
+      render :action => 'new'
     else
       render :action => 'new'
     end
@@ -77,13 +79,14 @@ class CommentsController < ApplicationController
       prepare_and_save_to_zoom(@comment)
 
       prepare_and_save_to_zoom(commented_item)
-
+      
       flash[:notice] = 'Comment was successfully updated.'
       redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
                           :action => 'show',
                           :id => commented_item,
                           :anchor => @comment.id,
-                          :urlified_name => commented_item.basket.urlified_name)
+                          :urlified_name => commented_item.basket.urlified_name,
+                          :private => @comment.commentable_private.to_s)
     else
       render :action => 'edit'
     end
@@ -107,7 +110,25 @@ class CommentsController < ApplicationController
       redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
                           :action => 'show',
                           :id => commented_item,
-                          :urlified_name => commented_item.basket.urlified_name)
+                          :urlified_name => commented_item.basket.urlified_name, 
+                          :private => @comment.commentable_private.to_s)
     end
   end
+  
+  private
+  
+    def is_authorized?
+      if @current_basket.allow_non_member_comments?
+        permitted = logged_in?
+      else
+        permitted = permit? "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket"
+      end
+      
+      unless permitted
+        flash[:notice] = "Sorry, you need to be a member to leave a comment in this basket."
+        redirect_to DEFAULT_REDIRECTION_HASH
+        false
+      end
+    end
+     
 end

@@ -459,3 +459,25 @@ topics_014:
     <h5>Credits</h5>
     <p>This topic was originally written by Walter McGinnis at <a href="http://katipo.co.nz/">Katipo Communications</a> and Russel Garlick at <a href="http://liblime.com/">Liblime</a>.</p>
 
+topics_015:
+  private: true
+  updated_at: <%= Time.now.to_s :db %>
+  title: Troubleshooting
+  short_summary: Troubleshooting Links
+  raw_tag_list: "troubleshooting"
+  id: "15"
+  topic_id: "15"
+  version: "1"
+  basket_id: "4"
+  topic_type_id: "1"
+  created_at: <%= Time.now.to_s :db %>
+  description: |+
+    <h2>Troubleshooting</h2>
+    <p>If you are having trouble with your Kete instance, you can find more information at one of the resources below:</p>
+    <ul>
+      <li><a href="http://kete.net.nz/documentation/topics/show/140-troubleshooting">The Troubleshooting topic at kete.net.nz</a>
+      <li><a href="http://development.kete.net.nz/kete/tickets">The Kete issue tracker at kete.net.nz</a>
+    </ul>
+    <p>The best way to get support for an issue you are having is to comment on one of the topic pages at <a href="http://www.kete.net.nz">kete.net.nz</a>.</p>
+    <h5>Credits</h5>
+    <p>This topic was originally written by James Stradling at <a href="http://katipo.co.nz/">Katipo Communications</a>.</p>

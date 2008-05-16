@@ -1,5 +1,9 @@
+<% if !item.file_private? || permitted_to_view_private_items? -%>
 <p>Filename: <%= item.filename %>
   (<%= link_to_original_of item, 'view' -%>)
 </p>
 <p>Size: <%= number_to_human_size(item.size) %></p>
 <p>Recording type: <%= item.content_type %></p>
+<% else -%>
+<p>Filename: ( no public version of this video available )
+<% end -%>

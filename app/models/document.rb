@@ -1,7 +1,7 @@
 class Document < ActiveRecord::Base
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
-
+  
   # handles file uploads
   # we'll want to adjust the filename to include "...-1..." for each
   # version where "-1" is dash-version number
@@ -10,15 +10,23 @@ class Document < ActiveRecord::Base
   # TODO: add more content_types
   # processor none means we don't have to load expensive image manipulation
   # dependencies that we don't need
-  # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
-  # will rework with when we get to public/private split
   # TODO: needs some of the new filetypes like openoffice, pages, plenty of old ones, too
-  has_attachment :storage => :file_system,
-  :content_type => DOCUMENT_CONTENT_TYPES, :processor => :none,
-  :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+  has_attachment    :storage => :file_system,
+                    :content_type => DOCUMENT_CONTENT_TYPES, 
+                    :processor => :none,
+                    :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
+  # Private Item mixin
+  include ItemPrivacy::All
+  
+  # Do not version self.file_private
+  non_versioned_fields << "file_private"
+  non_versioned_fields << "private_version_serialized"
+  
+  after_save :store_correct_versions_after_save
+  
   validates_as_attachment
-
+  
   # overriding full_filename to handle our customizations
   # TODO: is this thumbnail arg necessary for classes without thumbnails?
   # def full_filename(thumbnail = nil)
@@ -76,4 +84,5 @@ class Document < ActiveRecord::Base
     end
     true
   end
+  
 end

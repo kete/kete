@@ -8,9 +8,11 @@
 namespace :kete do
   desc "Do everything that we need done, like adding data to the db, for an upgrade."
   task :upgrade => ['kete:upgrade:add_new_baskets',
+                    'kete:upgrade:add_new_topics',
+                    'kete:upgrade:add_new_web_links',
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings',
-                    'kete:upgrade:change_zebra_password',
+                    # 'kete:upgrade:change_zebra_password',
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types']
   namespace :upgrade do
@@ -59,6 +61,74 @@ namespace :kete do
       end
     end
 
+    desc 'Add any new default topics that are missing from our system.'
+    task :add_new_topics => :environment do
+      topics_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/topics.yml")
+      # For each topic from yml
+      # check if it's in the db
+      # if not, add it
+      # system settings have unique names
+      topics_from_yml.each do |topic_array|
+        topic_hash = topic_array[1]
+
+        # drop id from hash, as we want to determine it dynamically
+        topic_hash.delete('id')
+
+        if topic_hash['private'] && !Topic.find(:all, :conditions => 'private_version_serialized != "" OR private_version_serialized IS NOT NULL').any? do |topic|
+            topic.private_version do
+              topic.title == topic_hash['title']
+            end
+          end
+          topic = Topic.new(topic_hash)
+          topic.save_without_saving_private!
+          topic.creator = User.find(:first)
+
+          # Store the private version and create a blank public version
+          topic.send(:store_correct_versions_after_save)
+
+          p "added " + topic_hash['title']
+        end
+      end
+    end
+
+    desc 'Add any new default weblinks that are missing from our system.'
+    task :add_new_web_links => :environment do
+      web_link_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/web_links.yml")
+      # For each topic from yml
+      # check if it's in the db
+      # if not, add it
+      # system settings have unique names
+      web_link_from_yml.each do |web_link_array|
+        web_link_hash = web_link_array[1]
+
+        # drop id from hash, as we want to determine it dynamically
+        web_link_hash.delete('id')
+        
+        # raise web_link_hash.inspect
+
+        if web_link_hash['private'] == true && !WebLink.find(:all, :conditions => 'private_version_serialized != "" AND private_version_serialized IS NOT NULL').any? do |web_link|
+            web_link.private_version do
+              web_link.title == web_link_hash['title']
+            end
+          end
+          web_link = WebLink.new(web_link_hash)
+          web_link.do_not_moderate = true
+          web_link.save_without_saving_private!
+          web_link.creator = User.find(:first)
+          
+          # Need two versions.
+          web_link.do_not_moderate = true
+          web_link.save_without_saving_private!
+          web_link.add_as_contributor(User.find(:first), web_link.version)
+          
+          # Store the private version and create a blank public version
+          web_link.send(:store_correct_versions_after_save)
+          
+          p "added " + web_link_hash['title']
+        end
+      end
+    end
+
     desc 'Add tech_admin role if it is missing from our system.'
     task :add_tech_admin => :environment do
       roles_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/roles.yml")
@@ -72,14 +142,15 @@ namespace :kete do
       end
     end
 
-    desc 'Change zebra password file to use clear text since encrypted is broken.'
-    task :change_zebra_password => :environment do
-      ENV['ZEBRA_PASSWORD'] = ZoomDb.find(1).zoom_password
-      Rake::Task['zebra:stop'].invoke
-      Rake::Task['zebra:set_keteaccess'].invoke
-      Rake::Task['zebra:start'].invoke
-      p "changed zebra password file"
-    end
+    # Don't run this.
+    # desc 'Change zebra password file to use clear text since encrypted is broken.'
+    # task :change_zebra_password => :environment do
+    #   ENV['ZEBRA_PASSWORD'] = ZoomDb.find(1).zoom_password
+    #   Rake::Task['zebra:stop'].invoke
+    #   Rake::Task['zebra:set_keteaccess'].invoke
+    #   Rake::Task['zebra:start'].invoke
+    #   p "changed zebra password file"
+    # end
 
     desc 'This checks for missing required software and installs it if possible.'
     task :check_required_software => :environment do

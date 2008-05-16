@@ -7,6 +7,8 @@ baskets_001:
   index_page_archives_as: by type
   created_at: <%= Time.now.to_s :db %>
   updated_at: <%= Time.now.to_s :db %>
+  private_default: false
+  file_private_default: false
 baskets_002:
   index_page_redirect_to_all: ""
   name: Help
@@ -16,6 +18,8 @@ baskets_002:
   urlified_name: help
   index_page_topic_is_entire_page: "1"
   created_at: <%= Time.now.to_s :db %>
+  private_default: false
+  file_private_default: false
 baskets_003:
   index_page_redirect_to_all: ""
   name: About
@@ -25,6 +29,8 @@ baskets_003:
   urlified_name: about
   index_page_topic_is_entire_page: "1"
   created_at: <%= Time.now.to_s :db %>
+  private_default: false
+  file_private_default: false
 baskets_004:
   index_page_redirect_to_all: ""
   name: Documentation
@@ -34,3 +40,5 @@ baskets_004:
   urlified_name: documentation
   index_page_topic_is_entire_page: "1"
   created_at: <%= Time.now.to_s :db %>
+  private_default: false
+  file_private_default: false

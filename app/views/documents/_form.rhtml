@@ -22,6 +22,18 @@
                         </div>
                 <% end -%>
 
+								<div class="form-element">
+									<label for="document_private_false">Public</label>
+									<%= form.radio_button :private, false, :id => "document_private_false" %><br />
+									Can be viewed by everyone
+								</div>
+									
+								<div class="form-element">
+									<label for="document_private_true">Private</label>
+									<%= form.radio_button :private, true, :id => "document_private_true" %><br />
+									Can be viewed only by basket members
+								</div>
+
                 <div class="form-element"><label for="document_title">Title:</label>
                 <%= form.text_field :title  %></div>
 
@@ -44,6 +56,9 @@
                     forms and other possible insecure elements and attributes in the HTML?</label>
                   <%= form.check_box :do_not_sanitize %></div>
                 <% end -%>
+
+								<div class="form-element"><label for="document_file_private">Attached document privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@document) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@document) %> Can be downloaded only by basket members<br />
+									<strong>Please note that once public, an attached document cannot be made private.</strong></div>
 
                 <%= tags_input_field(form,"document_tag_list") %>
 
@@ -74,7 +89,6 @@
                 <% end -%>
 
                 <%= hidden_field_tag 'document[basket_id]', @current_basket.id %>
-
                 <!--[eoform:document]-->
 
         </fieldset>

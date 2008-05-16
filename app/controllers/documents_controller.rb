@@ -1,6 +1,8 @@
 class DocumentsController < ApplicationController
   include ExtendedContentController
-
+  
+  helper :privacy_controls
+  
   def index
     redirect_to_search_for('Document')
   end
@@ -8,20 +10,34 @@ class DocumentsController < ApplicationController
   def list
     index
   end
-
+  
+  # James Stradling <james@katipo.co.nz>
+  # Show either the public or private version depending on permissions
   def show
-    if !has_all_fragments? or params[:format] == 'xml'
+    
+    # The document has a private version and the correct permissions are set, show that version.
+    if logged_in? && permitted_to_view_private_items?
+
       @document = @current_basket.documents.find(params[:id])
-      @title = @document.title
+      @document = @document.private_version! if @document.has_private_version? && params[:private] == "true"
+      
+      # Show the privacy chooser
+      @show_privacy_chooser = true
+      
+    # Otherwise find the document unless it's cached already
+    elsif !has_all_fragments? or params[:format] == 'xml'
+      @document = @current_basket.documents.find(params[:id])
     end
 
+    @title = @document.title
+    
     if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
       @creator = @document.creator
       @last_contributor = @document.contributors.last || @creator
     end
 
-    if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @document.comments.find_all_non_pending
+    if @document.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
+      @comments = @document.non_pending_comments
     end
 
     respond_to do |format|
@@ -29,9 +45,10 @@ class DocumentsController < ApplicationController
       format.xml { render_oai_record_xml(:item => @document) }
     end
   end
-
+  
   def new
-    @document = Document.new
+    @document = Document.new({ :private => @current_basket.private_default || false, 
+                               :file_private => @current_basket.file_private_default || false })
   end
 
   def create
@@ -46,12 +63,13 @@ class DocumentsController < ApplicationController
 
       @document.do_notifications_if_pending(1, current_user)
     end
-
-    setup_related_topic_and_zoom_and_redirect(@document)
+    
+    setup_related_topic_and_zoom_and_redirect(@document, nil, :private => (params[:document][:private] == "true"))
   end
 
   def edit
     @document = Document.find(params[:id])
+    public_or_private_version_of(@document)
   end
 
   def update
@@ -67,7 +85,7 @@ class DocumentsController < ApplicationController
 
       flash[:notice] = 'Document was successfully updated.'
 
-      redirect_to_show_for(@document)
+      redirect_to_show_for(@document, :private => (params[:document][:private] == "true"))
     else
       render :action => 'edit'
     end
@@ -95,4 +113,5 @@ class DocumentsController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('Document')
   end
+  
 end

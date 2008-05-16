@@ -41,6 +41,10 @@ class Basket < ActiveRecord::Base
 
   # don't allow special characters in label that will break our xml
   validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
+  
+  # Ensure privacy defaults are set
+  validates_inclusion_of :private_default,      :in => [ true, false ]
+  validates_inclusion_of :file_private_default, :in => [ true, false ]
 
   # check the quality of submitted html
   validates_as_sanitized_html :index_page_extra_side_bar_html
@@ -253,7 +257,7 @@ class Basket < ActiveRecord::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       class_plural = zoom_class.tableize
-      these_class_items = self.send("#{class_plural}").find_disputed
+      these_class_items = self.send("#{class_plural}").find_disputed(self.id)
       @all_disputed_revisions += these_class_items
     end
 
@@ -289,6 +293,11 @@ class Basket < ActiveRecord::Base
       select_options += ">" + label + "</option>"
     end
     select_options
+  end
+  
+  # If setting is nil, be conservative.
+  def allow_non_member_comments?
+    allow_non_member_comments === true
   end
 
   protected

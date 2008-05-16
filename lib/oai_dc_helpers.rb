@@ -36,10 +36,29 @@ module OaiDcHelpers
       if item.class.name == 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:identifier", "http://#{host}#{url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item, :format => nil, :urlified_name => commented_on_item.basket.urlified_name, :anchor => "comment-#{item.id}")}")
+        uri_attrs = {
+          :controller => zoom_class_controller(commented_on_item.class.name), 
+          :action => 'show', 
+          :id => commented_on_item, 
+          :format => nil, 
+          :urlified_name => commented_on_item.basket.urlified_name, 
+          :anchor => "comment-#{item.id}", 
+          :private => item.commentable_private?.to_s
+        }
       else
-        xml.tag!("dc:identifier", "http://#{host}#{url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => item.basket.urlified_name)}")
+        
+        uri_attrs = { 
+          :controller => zoom_class_controller(item.class.name), 
+          :action => 'show', 
+          :id => item, 
+          :format => nil, 
+          :urlified_name => item.basket.urlified_name
+        }
+        
+        # Link to private version if generating OAI record for it..
+        uri_attrs.merge!({ :private => "true" }) if item.respond_to?(:private) && item.private?
       end
+      xml.tag!("dc:identifier", "http://#{host}#{url_for(uri_attrs)}")
     end
 
     def oai_dc_xml_dc_title(xml, item)

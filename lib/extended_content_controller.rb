@@ -9,7 +9,7 @@ module ExtendedContentController
       klass.send :before_filter, :load_content_type,
       :only => [:new, :show, :edit, :create, :update]
 
-      klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket",
+      klass.send :before_filter, :is_authorized?, 
       :only => [ :new, :create, :edit, :update, :convert]
 
       klass.send :permit, "site_admin or moderator of :current_basket or admin of :current_basket",
@@ -53,6 +53,12 @@ module ExtendedContentController
       def load_content_type
         @content_type = ContentType.find_by_class_name(zoom_class_from_controller(params[:controller]))
       end
+
+      def is_authorized?
+        permit? "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket"
+      end
+      
     end
+        
   end
 end

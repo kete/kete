@@ -436,7 +436,7 @@ class ApplicationController < ActionController::Base
     return successful
   end
 
-  def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil)
+  def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil, options = {})
     where_to_redirect = 'show_self'
     if !commented_item.nil? and @successful
       where_to_redirect = 'commentable'
@@ -460,14 +460,14 @@ class ApplicationController < ActionController::Base
         flash[:notice] = "Related #{zoom_class_humanize(item.class.name)} was successfully created."
         redirect_to_related_topic(@new_related_topic)
       when 'commentable'
-        redirect_to_show_for(commented_item)
+        redirect_to_show_for(commented_item, options)
       when 'appearance'
         redirect_to :action => :appearance, :controller => 'baskets'
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created."
 
-        redirect_to_show_for(item)
+        redirect_to_show_for(item, options)
       end
     else
       render :action => 'new'
@@ -524,11 +524,26 @@ class ApplicationController < ActionController::Base
     redirect_to(basket_all_url(:controller_name_for_zoom_class => controller))
   end
 
-  def redirect_to_show_for(item)
-    redirect_to(url_for(:urlified_name => item.basket.urlified_name,
-                        :controller => zoom_class_controller(item.class.name),
-                        :action => 'show',
-                        :id => item))
+  def redirect_to_show_for(item, options = {})
+    
+    # By default, assume redirect to public version.
+    options = { 
+      :private => false
+    }.merge(options)
+    
+    path_hash = { 
+      :urlified_name  => item.basket.urlified_name,
+      :controller     => zoom_class_controller(item.class.name),
+      :action         => 'show',
+      :id             => item
+    }
+    
+    # Redirect to private version if item is private.
+    if options[:private]
+      path_hash.merge!({ :private => "true" })
+    end
+    
+    redirect_to url_for(path_hash)
   end
 
   def url_for_dc_identifier(item)
@@ -606,6 +621,9 @@ class ApplicationController < ActionController::Base
       else
         # plain old topic show
         @topic = @current_basket.topics.find(params[:id])
+        @topic.private_version! if @topic.has_private_version? && 
+          permitted_to_view_private_items? and params[:private] == "true"
+        @show_privacy_chooser = true if permitted_to_view_private_items?
       end
       if !@topic.nil?
         @title = @topic.title
@@ -621,8 +639,8 @@ class ApplicationController < ActionController::Base
           @last_contributor = @topic.contributors.last || @creator
         end
 
-        if !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-          @comments = @topic.comments.find_all_non_pending
+        if @topic.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
+          @comments = @topic.non_pending_comments
         end
       end
     end
@@ -744,15 +762,32 @@ class ApplicationController < ActionController::Base
       return false
     elsif params[:controller] == 'account' and params[:action] == 'show'
       return true
-    elsif !['show', 'preview'].include?(params[:action])
+    elsif !['show', 'preview', 'show_private'].include?(params[:action])
       return true
     else
       return false
     end
   end
+  
+  def public_or_private_version_of(item)
+    if item.has_private_version? && permitted_to_view_private_items? and params[:private] == "true"
+      item.private_version!
+    else
+      item
+    end
+  end
+  
+  def permitted_to_view_private_items?
+    logged_in? && 
+      permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
+  end
+  
+  def private_redirect_attribute_for(item)
+    item.respond_to?(:private) && item.private? ? "true" : "false"
+  end
 
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?
 end
 
 

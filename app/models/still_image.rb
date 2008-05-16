@@ -1,4 +1,5 @@
 class StillImage < ActiveRecord::Base
+
   # image files, including different sized versions of the original
   # are handled by ImageFile model
   has_many :image_files, :dependent => :destroy
@@ -18,7 +19,25 @@ class StillImage < ActiveRecord::Base
   # otherwise still_image_versions rows fail to delete because of order of foreign key constraints
   include ConfigureAsKeteContentItem
 
+  # Private Item mixin
+  include ItemPrivacy::All
+  
+  # Do not version self.file_private
+  non_versioned_fields << "file_private"
+  non_versioned_fields << "private_version_serialized"
+  
+  after_save :store_correct_versions_after_save
+  
   def self.find_with(size, still_image)
     find(still_image, :include => "#{size}_file".to_sym)
   end
+  
+  after_update :update_image_file_locations
+  
+  private
+  
+    def update_image_file_locations
+      self.original_file.update_attributes({ :file_private => self.file_private }) unless self.original_file.nil?
+    end
+  
 end

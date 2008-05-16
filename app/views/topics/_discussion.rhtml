@@ -7,11 +7,15 @@
           <%= show_comments_for(item) %>
        <% end -%>
     <% end -%>
-    <% cache ({:part => 'comments'}) do -%>
-       <% if !(logged_in? and @at_least_a_moderator) -%>
-          <%= show_comments_for(item) %>
-       <% end -%>
-    <% end -%>
+		<% if !(logged_in? and @at_least_a_moderator) -%>
+			<% if params[:private] == "true" -%>
+		    <%= show_comments_for(item) %>
+			<% else -%>
+		    <% cache ({:part => 'comments'}) do -%>
+		          <%= show_comments_for(item) %>
+	       <% end -%>
+	    <% end -%>
+		<% end -%>
     <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
   </div>
 </div>

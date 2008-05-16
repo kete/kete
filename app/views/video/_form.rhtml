@@ -20,6 +20,18 @@
   </div>
   <% end -%>
 
+	<div class="form-element">
+		<label for="video_private_false">Public</label>
+		<%= form.radio_button :private, false, :id => "video_private_false" %><br />
+		Can be viewed by everyone
+	</div>
+
+	<div class="form-element">
+		<label for="video_private_true">Private</label>
+		<%= form.radio_button :private, true, :id => "video_private_true" %><br />
+		Can be viewed only by basket members
+	</div>
+
   <div class="form-element"><label for="video_title">Title:</label>
     <%= form.text_field :title  %></div>
 
@@ -39,6 +51,9 @@
       forms and other possible insecure elements and attributes in the HTML?</label>
     <%= form.check_box :do_not_sanitize %></div>
   <% end -%>
+
+	<div class="form-element"><label for="video_file_private">Attached video privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@video) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@video) %> Can be downloaded only by basket members<br />
+		<strong>Please note that once public, an attached video cannot be made private.</strong></div>
 
   <%= hidden_field_tag 'video[basket_id]', @current_basket.id, :id => 'video_basket_id' %>
 

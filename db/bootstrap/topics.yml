@@ -1,5 +1,6 @@
 ---
 topics_001:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: About Kete
   short_summary: A description of the overall Kete Project.
@@ -12,6 +13,7 @@ topics_001:
   index_for_basket_id: "3"
   created_at: <%= Time.now.to_s :db %>
 topics_002:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: House Rules
   short_summary: The etiquette for Kete users.
@@ -24,6 +26,7 @@ topics_002:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_003:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Registration
   short_summary: Details about how to register.
@@ -36,6 +39,7 @@ topics_003:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_004:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Terms and Conditions
   short_summary: "An agreement between the site and all registered users. "
@@ -48,6 +52,7 @@ topics_004:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_005:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Privacy Policy
   short_summary: This Privacy Policy is incorporated in this site's Terms and Conditions, and explains to you how Horowhenua Library Trust and Kete may use your personal data.
@@ -60,6 +65,7 @@ topics_005:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_006:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: User Manual
   short_summary: A guide to how to use different parts of Kete.
@@ -72,6 +78,7 @@ topics_006:
   index_for_basket_id: "2"
   created_at: <%= Time.now.to_s :db %>
 topics_007:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Finding Things
   short_summary: "A look at the different ways of finding things in Kete. "
@@ -84,6 +91,7 @@ topics_007:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_008:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Adding things
   short_summary: A guide to how to add items and topics to Kete.
@@ -96,6 +104,7 @@ topics_008:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_009:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Linking Things
   short_summary: How to link items and topics together in Kete, to create webs of related material.
@@ -108,6 +117,7 @@ topics_009:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_010:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: "Fixing Things "
   short_summary: "A guide to editing records in Kete and how to report inaccurate or offensive material. "
@@ -120,6 +130,7 @@ topics_010:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_011:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Locked baskets
   short_summary: Locked Baskets are special baskets within Kete.
@@ -132,6 +143,7 @@ topics_011:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_012:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Donations to Kete
   short_summary: "The Kete Project needs to cash donations to thrive. Find out why ... "
@@ -144,6 +156,7 @@ topics_012:
   index_for_basket_id:
   created_at: <%= Time.now.to_s :db %>
 topics_013:
+  private: false
   updated_at: <%= Time.now.to_s :db %>
   title: Welcome
   short_summary: Homepage for site
@@ -294,153 +307,24 @@ topics_013:
     <h5>Credits</h5>
     <p>This topic was originally written by Walter McGinnis at <a href="http://katipo.co.nz/">Katipo Communications</a> and Russel Garlick at <a href="http://liblime.com/">Liblime</a>.</p>
 
-topics_014:
+topics_015:
+  private: true
   updated_at: <%= Time.now.to_s :db %>
-  title: Documentation
-  short_summary: Documentation for site
-  raw_tag_list: ""
-  id: "14"
+  title: Troubleshooting
+  short_summary: Troubleshooting Links
+  raw_tag_list: "troubleshooting"
+  id: "15"
   version: "1"
-  basket_id: "4"
+  basket_id: "2"
   topic_type_id: "1"
-  index_for_basket_id: "4"
   created_at: <%= Time.now.to_s :db %>
   description: |+
-    <h2>Introduction</h2>
-    <p>This site is based on the Kete software.  Kete is a knowledge basket of topics, images, audio, video, web links, documents, and discussion which are collected and catalogued by the community.</p>
-    <p>You have successfully installed and configured Kete. This is a good time to further customise it to suit your needs.</p>
-    <p>Kete has lots of options which may seem daunting when you get started.  Don't worry, you can customise a little or a lot.  You can also easily change things later.  Feel free to change your Kete incrementally.</p>
-    <h3>Edit Included "About" and "Help" to Suit Your New Site</h3>
-    <p>You will want to immediately review and edit the <a href="/about/topics/edit/4" onclick="window.open(this.href,'links','height=600,width=740,scrollbars=yes,top=100,left=100,resizable=yes');return false;">Terms and Conditions</a> to fit your site.  The included topic is just a starting point, please edit it to suit your needs.  This is what users will have to agree to when registering.</p>
-    <p>The <a href="/about/" onclick="window.open(this.href,'links','height=600,width=740,scrollbars=yes,top=100,left=100,resizable=yes');return false;">About basket</a>, in Kete terms a section of the site is called a basket, is meant to contain a description of your site and its policies.  It comes with starter topics for both.  We recommend that you give these a quick edit to reflect your needs.</p>
-    <p>The <a href="/help/" onclick="window.open(this.href,'links','height=600,width=740,scrollbars=yes,top=100,left=100,resizable=yes');return false;">Help basket</a> is for your user manual.  It certainly can't hurt to familiarise yourself with these and adjust where appropriate.</p>
-    <p>The default topics were originally written by <a href="http://horowhenua.kete.net.nz/">Kete Horowhenua</a>.  We owe them a great big thank you for them.</p>
-    <h3>The Administrator's Toolbox</h3>
-    <p>Not surprisingly, the Adminstrator's Toolbox at the bottom of each page will appear if you are logged in as a site administrator.  Here you will find links to add a new area of the site (add basket), add or edit fields that may appear in forms of topics or content items (extended fields), manage users of the site (site members), and setting up the various topic types and content types to use the extended fields that you have.</p>
-    <p>In addition, if you are also a technical administrator, you gain the ability to run imports or manage which search databases (Z39.50 search databases) are used.</p>
-    <p>The Administrator's Toolbox is where to start if you want to manage your Kete later.</p>
-    <h3>Extended Fields, Topic Types, and Content Types</h3>
-    <p>Your Kete will contain Items and Topics. All items and topics can have extended fields attached. For topics, it is possible to build a Topic Type template for shaping content by nominating various fields to be used for that topic.</p>
-    <h4>Extended Fields</h4>
-    <p>Fields are used in Kete by Topics and Item types. In the current version of Kete they are used primarily for displaying metadata for a topic or field. As the system evolves and grows, the intent is to make fields more powerful through automatic linking, spawning searches and field ranking for searches. At the moment though, they are used primarily to make the topic and item pages easier to scan for information.</p>
-    <p><br />Kete has a very flexible approach to fields. Where as in a library context, the use of certain fields is governed by MARC standards, Kete fields can be whatever is deemed to be appropriate to the content of the Kete. All fields can be mapped to a simple Dublin Core Metadata Element. Kete supports the Open Archive Initiative Protocol for Metadata Harvesting. Once the fields are mapped to DCM Elements, Kete is a compliant OAI PMH repository. This means that OAI PMH harvesters (such as google) will be able to make better use of the data in your repository.</p>
-    <p>Nominating Kete fields is not something that needs to be done completely at set up. As the repository grows, it is expected that the administrator will add more fields as required to meet the needs of the data set. The catch is that if new fields are added to the repository once a significant amount of data is added, then older records will need to be updated.</p>
-    <h4>Field parameters in Kete</h4>
-    <p><strong>Label</strong><br />This is the field name. It is what will display to all users. <br />For items this will display under the item on the item page. For topics the fields are displayed (by default) to the right in the highlight box. <br />Examples: Creator, Place of Birth</p>
-    <p><br /><strong>Description</strong><br />The description displays to the administrator only on the field edit screens. These need to be meaningful to administrators only as they are not seen by the public. As such it can be left blank but is useful for keeping notes about the field if the name or use is ambiguous.</p>
-    <p><br /><strong>XML Element</strong><br />This is where references to Dublin Core Metadata Terms are stored. At present Kete will recognize and utilize only the simple set of DC terms. The fields are currently free text but the terms should be prefixed with dc:. Acceptable terms are:</p>
+    <h2>Troubleshooting</h2>
+    <p>If you are having trouble with your Kete instance, you can find more information at one of the resources below:</p>
     <ul>
-    <li>Title (this is automatically mapped to the title or name given for each item or topic)</li>
-    <li>Creator - dc:creator</li>
-    <li>Date - dc:date</li>
-    <li>Subject - dc:subject</li>
-    <li>Description - dc:description (this automatically mapped to the description text area for each item or topic)</li>
-    <li>Publisher (mapped to your Kete name)</li>
-    <li>Contributer dc:contributor (mapped to the Kete user)</li>
-    <li>Type dc:type</li>
-    <li>Format dc:format</li>
-    <li>Identifier dc:identifier</li>
-    <li>Source dc:source</li>
-    <li>Language dc:language</li>
-    <li>Relation dc:relation</li>
-    <li>Coverage dc:coverage</li>
-    <li>Rights dc:rights </li>
+      <li><a href="http://kete.net.nz/documentation/topics/show/140-troubleshooting">The Troubleshooting topic at kete.net.nz</a>
+      <li><a href="http://development.kete.net.nz/kete/tickets">The Kete issue tracker at kete.net.nz</a>
     </ul>
-    <p>The most commonly mapped elements in the HLT Kete are dc:date, dc:subject and dc:coverage.</p>
-    <p><br /><strong>Ftype (Field Type)</strong><br />Usually text or check box. E.g text. Field types is one area that Kete does require additional development. Currently most fields are setup as field type text. This means free data entry. It is hoped that once the community of users grow there will be resources made available so that developers can extend this functionality to include such things as nominating a date field (user input via a calendar interface) and configuring drop down list or radio button options.</p>
-    <p><br /><strong>Import Synonym (Ignore)</strong><br />This is used for importing data sets into Kete from Past Perfect or CSV files. The import synonym is the column name in the file that matches with the Kete field.</p>
-    <p><br /><strong>Example</strong><br />This is used to help shape the data in free text fields. The administrator can suggest the format the data can be saved in. This is suggestion is displayed in italics below the field label.</p>
-    <p><br /><strong>Multiple</strong><br />Currently when 'multiple' is selected, instead of one text field being available for data entry, the user is presented with multiple input fields. The administrator can define how many multiple fields are displayed as part of the site settings.</p>
-    <h4>Level of Detail Required</h4>
-    <p>At this stage a full and definitive set of fields is not required. Fields can be added at any time. However it does make it easier later on if the fields are thought through at this stage. Particularly fields that will be used by multiple topics and items.</p>
-    <p><br />Working on fields can not be done in isolation from determining initial Topic Templates and Item Types. The initial Topic Templates you decide to build will influence the fields you require. Our advice is to think carefully about the fields you will nominate. To few, and the data will not be useful, too many and it will be onerous and clumsy to add new information to your Kete.</p>
-    <h4>Topics</h4>
-    <p><strong>Summary </strong><br />Topics are used to link items together. They provide the user browsing a Kete with the background information as to why various and seemingly, unrelated items, are in fact related. Topics can also be linked to other topics.</p>
-    <p><br />The minimum set of data that can be stored against a topic is a Title, a Short Summary (used in search results) and the Description. To enable further content shaping, topic templates can be created where fields can be associated to a topic. These templates can be built into a hierarchy, where each child template, inherits the fields form it&rsquo;s parent template, and extends with it&rsquo;s own fields.</p>
-    <p>Topics are not essential for a Kete to work. A Kete can have just items. The purpose of topics is to make it easier for other users to find content within Kete. <br /></p>
-    <p></p>
-    <p></p>
-    <h3>The Site Basket</h3> <p>Homepage options apply to both the homepage of the Kete (ie the root) and basket homepages. All can be configured to a have different layouts.</p>
-    <h4>Name</h4>
-    <p>This will be used in all links and to create the link to the basket homepage <br />e.g Title Adopt An Anzac, URL http://horowhenua.kete.net.nz/adopt_an_anzac</p>
-    <h4>Home page Redirect</h4>
-    <p>Instead of a homepage, the basket URL can be redirected to other content in Kete. <br />The options are:</p>
-    <ul>
-    <li>No Redirect (default - this will create a homepage using the homepage options)</li>
-    <li>Search results for this basket of </li>
-    <ul>
-    <li>All topics</li>
-    </ul>
-    <ul>
-    <li>All images</li>
-    </ul>
-    <ul>
-    <li>All audio</li>
-    </ul>
-    <ul>
-    <li>All video</li>
-    </ul>
-    <li>All documents</li>
-    </ul>
-    <ul>
-    <li>All web links</li>
-    </ul>
-    <ul>
-    <li>All discussion</li>
-    </ul>
-    <li>No Redirect Options</li>
-    </ul>
-    <p>If No Redirect is chosen there are two more options for what is displayed on the homepage</p>
-    <p><br />Either</p>
-    <ul>
-    <li>The homepage topic only or;</li>
-    <li>The homepage topic, full details (extended fields) and comments</li>
-    <li>The homepage topic, and full details (extended fields)</li>
-    <li>The homepage topic, and comments</li>
-    </ul>
-    <h4>Recent Topics Options</h4>
-    <p>The basket home page can be configured to included different types of displays for topics recently added to the basket.</p>
-    <p><br /><strong>Number of Recent Topics to display</strong><br />This is a free text integer. Recommended values are 3, 5 and 7.</p>
-    <p><br /><strong>Display options</strong><br />There are 3 display options:</p>
-    <ul>
-    <li>Don't display recent topics (default)</li>
-    <li>Summaries (blog style). Displays Title and Short Summary for topic. </li>
-    <li>Headlines (news style). Displays Title and Description (main body content) for topic.</li>
-    </ul>
-    <h4>Side bar Options</h4>
-    <p>The next set of options are all for configuring the sidebar. The sidebar position, size and style are controlled by CSS. This interface does not allow the editing of these parameters, only what displays in the side bar. The order of these elements can not be changed and the order they are displayed is as per the order here.</p>
-    <p><br /><strong>Search</strong><br />Checking this box will include a search box for this basket in the side bar. This search is restricted to the contents of the basket only. Items within a basket will show up on a standard Kete search, but from this interface, only topics and items within this basket will be returned.</p>
-    <p><br /><strong>Content in Sidebar </strong><br />Any content entered into the HTML editor will be displayed in the side bar for the home page. This can include images, tables and links. However javascript or forms can note be embedded.To enter no content, leave the editor blank. </p>
-    <p><strong>Selected Image</strong><br />Displays a thumbnail image from the basket. Clicking on the thumbnail links to the image details. <br />There are 3 options:</p>
-    <ul>
-    <li>No image (default)</li>
-    <li>Latest </li>
-    <li>Random. If random is selected, this will generate a slide show of images from the basket. </li>
-    </ul>
-    <p><strong>Archives</strong><br />Two options</p>
-    <ul>
-    <li>Don't display (default)</li>
-    <li>By type. This provides a link to the search results for each Item type and gives a count of the number of items in the search results</li>
-    </ul>
-    <p>For example:</p>
-    <ul>
-    <li> Topics (1,200)</li>
-    <li> Images (10,839)</li>
-    <li> Audio (66)</li>
-    <li> Videos (8)</li>
-    <li> Web Links (88)</li>
-    <li> Documents (652)</li>
-    <li> Discussion (10)</li>
-    </ul>
-    <p><strong>Tags</strong><br />This displays tags used within the basket. The tags are links to search results of items that use those tags. There are several sub options.</p>
-    <p><br /><strong>Number of Tags</strong><br />This sets the number of tags to be displayed and is a free text integer.</p>
-    <p><br /><strong>Tag Display</strong><br />Two options:</p>
-    <ul>
-    <li>As categories - in a list form </li>
-    <li>As a tag cloud - where size and boldness of text indicates size of collection<br /></li>
-    </ul>
-    <h3>This Topic (Site Homepage)</h3>
-    <p>Lastly you will want to edit this topic using the edit link below.  You can also replace it, either with another topic or by redirecting users to results for all topics, images, audio, video, web links, documents, or discussion via the site basket edit page.</p>
+    <p>The best way to get support for an issue you are having is to comment on one of the topic pages at <a href="http://www.kete.net.nz">kete.net.nz</a>.</p>
     <h5>Credits</h5>
-    <p>This topic was originally written by Walter McGinnis at <a href="http://katipo.co.nz/">Katipo Communications</a> and Russel Garlick at <a href="http://liblime.com/">Liblime</a>.</p>
-
+    <p>This topic was originally written by James Stradling at <a href="http://katipo.co.nz/">Katipo Communications</a>.</p>

@@ -5,7 +5,7 @@
     <% cache ({:part => 'edit'}) do -%>
     <li><%= link_to "<span class=\"edit-link\">Edit</span>",
             :action => :edit,
-      :id => item %></li>
+      :id => item, :private => params[:private] || false %></li>
     <li><%= link_to "<span class=\"history-link\">History</span>",
             :action => :history,
       :id => item %></li>
@@ -37,5 +37,6 @@
       :confirm => 'Are you sure?'%></li>
     <% end -%>
     <% end -%>
+		<%= render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser -%>
   </ul>
 </div><!-- /content-tabs -->

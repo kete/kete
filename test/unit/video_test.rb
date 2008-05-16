@@ -4,12 +4,16 @@ class VideoTest < Test::Unit::TestCase
   # fixtures preloaded
   def setup
     @base_class = "Video"
+    
+    # Extend the base class so test files from attachment_fu get put in the 
+    # tmp directory, and not in the development/production directories.
+    eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
     # fake out file upload
     videodata = fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { :title => 'test video',
+    @new_model = { :title => 'test item',
       :basket => Basket.find(:first),
       :uploaded_data => videodata }
 
@@ -25,7 +29,9 @@ class VideoTest < Test::Unit::TestCase
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
   include FlaggingTestUnitHelper
-
-  # TODO: attachment_attributes_valid?
+  include FlaggingTestUnitHelper
+  include ItemPrivacyTestHelper::TestHelper
+  include ItemPrivacyTestHelper::Tests::FilePrivate
+  include ItemPrivacyTestHelper::Tests::VersioningAndModeration  
 
 end

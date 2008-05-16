@@ -59,11 +59,11 @@ module ZoomMixin
               include ZoomMixin::Acts::ARZoom::InstanceMethods
 
               after_save    :zoom_save
-              after_destroy :zoom_destroy
+              before_destroy :zoom_destroy
 
               cattr_accessor :fields_for_zoom
               cattr_accessor :configuration
-
+              
               @@fields_for_zoom = Array.new
               @@configuration = configuration
 
@@ -83,7 +83,7 @@ module ZoomMixin
             class_eval <<-CLE
               include ZoomMixin::Acts::ARZoom::InstanceMethods
 
-              after_destroy :zoom_destroy
+              before_destroy :zoom_destroy
 
               cattr_accessor :fields_for_zoom
               cattr_accessor :configuration
@@ -277,43 +277,45 @@ module ZoomMixin
           zoom_id += "#{self.class.name}:#{self.id}"
         end
 
-        def zoom_choose_zoom_db
-          begin
-            public_zoom = configuration[:save_to_public_zoom]
-            private_zoom = configuration[:save_to_private_zoom]
-
-            # what is the correct server?
-            zoom_db_data = Hash.new
-
-            # public by default
-            if public_zoom
-              zoom_db_data = { :db_host => public_zoom[0], :db_name => public_zoom[1] }
-            end
-
-            # even if we have a private zoom db, the object might be public
-            if private_zoom
-              # check whether this is a private object
-              if self.private?
-                zoom_db_data = { :db_host => private_zoom[0], :db_name => private_zoom[1] }
-              end
-            end
-
-            zoom_db = ZoomDb.find_by_host_and_database_name(zoom_db_data[:db_host],zoom_db_data[:db_name])
-
-            return zoom_db
-
-          rescue
-            logger.error "Couldn't get any zoom_db configuration parameters."
-            false
-          end
-        end
+        # James Stradling <james@katipo.co.nz> - 2008-04-30
+        # No longer needed given zoom_save, zoom_real_save modifications
+        # def zoom_choose_zoom_db
+        #   begin
+        #     public_zoom = configuration[:save_to_public_zoom]
+        #     private_zoom = configuration[:save_to_private_zoom]
+        # 
+        #     # what is the correct server?
+        #     zoom_db_data = Hash.new
+        # 
+        #     # public by default
+        #     if public_zoom
+        #       zoom_db_data = { :db_host => public_zoom[0], :db_name => public_zoom[1] }
+        #     end
+        # 
+        #     # even if we have a private zoom db, the object might be public
+        #     if private_zoom
+        #       # check whether this is a private object
+        #       if self.private?
+        #         zoom_db_data = { :db_host => private_zoom[0], :db_name => private_zoom[1] }
+        #       end
+        #     end
+        # 
+        #     zoom_db = ZoomDb.find_by_host_and_database_name(zoom_db_data[:db_host],zoom_db_data[:db_name])
+        # 
+        #     return zoom_db
+        # 
+        #   rescue
+        #     logger.error "Couldn't get any zoom_db configuration parameters."
+        #     false
+        #   end
+        # end
 
         def zoom_prepare_record
           zoom_record = ''
           # raw?
           if configuration[:raw]
             # assumes only a single field, as noted in the README
-            fields_for_zoom.each do |field|
+            self.fields_for_zoom.each do |field|
               value = self.send("#{field}_for_zoom")
               zoom_record = value.to_s
             end
@@ -325,21 +327,18 @@ module ZoomMixin
 
         # saves to the appropriate ZoomDb based on configuration
         def zoom_save
-          logger.debug "zoom_save: #{zoom_id}"
+          logger.debug "zoom_save: #{zoom_id}; private: #{(respond_to?(:private) && private?).to_s}"
 
           zoom_record = self.zoom_prepare_record
+          zoom_db = appropriate_zoom_database
+          zoom_real_save(zoom_record, zoom_db)
 
-          # get the correct zoom database connection parameters
-          zoom_db = self.zoom_choose_zoom_db
-
-          # here's where we actually add/replace the record on the zoom server
-          # specialUpdate will insert if no record exists, or replace if one does
-
-          # ruby-zoom extended services
-          zoom_options = { 'user' => zoom_db.zoom_user, 'password' => zoom_db.zoom_password }
-
-          c = ZOOM::Connection.new(zoom_options).connect(zoom_db.host, zoom_db.port.to_i)
-          c.database_name = zoom_db.database_name
+          true
+        end
+        
+        # Actually do the save
+        def zoom_real_save(zoom_record, zoom_db)
+          c = zoom_connection(zoom_db)
           p = c.package
           p.function = 'create'
           p.wait_action = 'waitIfPossible'
@@ -351,24 +350,32 @@ module ZoomMixin
 
           p.send('update')
           p.send('commit')
+        end
+        
+        def zoom_destroy
+          logger.debug "zoom_destroy: #{self.class.name} : #{self.id}"
+          
+          # need to pass in whole record as well as zoom_id, even though it's a delete
+          
+          if has_public_zoom_record?
+            zoom_record = self.zoom_prepare_record
+            zoom_db = public_zoom_database
+            zoom_real_destroy(zoom_record, zoom_db)
+          end
+          
+          if has_private_zoom_record?
+            private_version do
+              zoom_record = self.zoom_prepare_record
+              zoom_db = private_zoom_database
+              zoom_real_destroy(zoom_record, zoom_db)
+            end
+          end
 
           true
         end
-
-        def zoom_destroy
-          logger.debug "zoom_destroy: #{self.class.name} : #{self.id}"
-
-          # need to pass in whole record as well as zoom_id, even though it's a delete
-          zoom_record = self.zoom_prepare_record
-
-          # get the correct zoom database connection parameters
-          zoom_db = self.zoom_choose_zoom_db
-
-          # testing ruby-zoom extended services
-          zoom_options = { 'user' => zoom_db.zoom_user, 'password' => zoom_db.zoom_password }
-
-          c = ZOOM::Connection.new(zoom_options).connect(zoom_db.host, zoom_db.port.to_i)
-          c.database_name = zoom_db.database_name
+        
+        def zoom_real_destroy(zoom_record, zoom_db)
+          c = zoom_connection(zoom_db)
           p = c.package
           p.function = 'create'
           p.wait_action = 'waitIfPossible'
@@ -380,9 +387,8 @@ module ZoomMixin
 
           p.send('update')
           p.send('commit')
-
-          true
         end
+
 
         # TODO: check this properly converts records to zoom record
         def to_zoom_record
@@ -420,6 +426,91 @@ module ZoomMixin
           field.add_text(value)
           field
         end
+        
+        # Find whether a public zoom record exists for this record
+        def has_public_zoom_record?
+          database = public_zoom_database
+          has_zoom_record?(database)
+        rescue
+          false
+        end
+        
+        # Find whether a private zoom record exists for this record
+        def has_private_zoom_record?
+          database = private_zoom_database
+          if respond_to?(:private?) and has_private_version?
+            private_version do
+              has_zoom_record?(database)
+            end
+          else
+            has_zoom_record?(database)
+          end
+        rescue
+          false
+        end
+        
+        def has_appropriate_zoom_records?
+          should_save_to_public_zoom? == has_public_zoom_record? and #,
+          should_save_to_private_zoom? == has_private_zoom_record?
+        end
+        
+        # Should we save to the public zebra instance?
+        def should_save_to_public_zoom?
+          self.class.configuration[:save_to_public_zoom] && 
+            ( !self.respond_to?(:private?) || !self.private? ) &&
+            self.title != "No Public Version Available" &&
+            self.title != BLANK_TITLE
+        end
+        
+        # Should we save to the private zebra instance?
+        def should_save_to_private_zoom?
+          if respond_to?(:private) && has_private_version?
+            private_version do
+              self.class.configuration[:save_to_private_zoom] && 
+              self.private? &&
+              self.title != BLANK_TITLE
+            end
+          else
+            false
+          end
+        end
+        
+        private
+        
+          def appropriate_zoom_database
+            database_prefix = respond_to?(:private) && private? ? "private" : "public"
+            eval("#{database_prefix}_zoom_database")
+          end
+        
+          # Create and return a zoom connection
+          def zoom_connection(zoom_db)
+            zoom_options = { 'user' => zoom_db.zoom_user, 'password' => zoom_db.zoom_password }
+            c = ZOOM::Connection.new(zoom_options).connect(zoom_db.host, zoom_db.port.to_i)
+            c.database_name = zoom_db.database_name
+            
+            c
+          end
+          
+          # Find whether a zoom record exists for this record in the given ZOOM database
+          def has_zoom_record?(zoom_db)
+            query = "@attr 1=12 @and #{self.class.name} #{self.id} "
+            self.class.process_query(:zoom_db => zoom_db, :query => query).size > 0
+          end
+          
+          
+          def public_zoom_database
+            conf = self.class.configuration[:save_to_public_zoom]
+            ZoomDb.find_by_host_and_database_name(conf[0], conf[1])
+          rescue
+            raise "Cannot find public ZOOM database: #{$!}"
+          end
+
+          def private_zoom_database
+            conf = self.class.configuration[:save_to_private_zoom]
+            ZoomDb.find_by_host_and_database_name(conf[0], conf[1])
+          rescue
+            raise "Cannot find private ZOOM database: #{$!}"
+          end
 
       end
     end

@@ -1,6 +1,10 @@
-<p>Original Filename: <%= item.original_file.filename %>
-  (<%= link_to 'view', item.original_file.public_filename -%>)
-</p>
+<% if !item.file_private? or permitted_to_view_private_items? -%>
+	<p>Original Filename: <%= item.original_file.filename %>
+	  (<%= link_to 'view', item.original_file.public_filename -%>)
+	</p>
 
-<p>Original Size: <%= number_to_human_size(item.original_file.size) %></p>
-<p>Original Image Type: <%= item.original_file.content_type %></p>
+	<p>Original Size: <%= number_to_human_size(item.original_file.size) %></p>
+	<p>Original Image Type: <%= item.original_file.content_type %></p>
+<% else -%>
+	<p>Original Filename: <%= item.original_file.filename %> ( not available for download )</p>
+<% end -%>

@@ -6,15 +6,117 @@ class CommentsController; def rescue_action(e) raise e end; end
 
 class CommentsControllerTest < Test::Unit::TestCase
   # fixtures are preloaded if necessary
+  
+  include AuthenticatedTestHelper
+  
   def setup
     @controller = CommentsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    
+    @new_basket_model = { 
+      :name                 => 'test basket', 
+      :private_default      => false, 
+      :file_private_default => false 
+    }
+    
+    @new_comment_model = {
+      :title            => 'test comment',
+      :description      => 'test',
+      :basket_id        => nil, # Replaced during test
+      :commentable_id   => 1,
+      :commentable_type => 'Topic',
+      :commentable_private => "false"
+    }
+    
+    @new_user_model = {
+      :login => 'quire',
+      :email => 'quire@example.com',
+      :password => 'quire',
+      :password_confirmation => 'quire',
+      :agree_to_terms => true,
+      :security_code => 'test',
+      :security_code_confirmation => 'test' 
+    }
+      
+    
+    @closed_basket  = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => false, :name => "closed basket" }))
+    @open_basket    = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => true, :name => "open basket" }))
+    @non_member_user = User.create!(@new_user_model)
+    @member_user = User.create!(@new_user_model.merge({ :login => 'doug', :email => 'doug@example.com' }))
+    @member_user.has_role('member', @closed_basket)
   end
-
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+  
+  def test_baskets_set_up
+    [@closed_basket, @open_basket].each do |basket|
+      assert_valid basket
+      assert basket.respond_to?(:allow_non_member_comments)
+      assert_not_nil basket.allow_non_member_comments
+    end
   end
-
+  
+  def test_users_set_up
+    [@non_member_user, @member_user].each do |user|
+      assert_valid user
+    end
+    assert_equal true, @member_user.has_role?('member', @closed_basket)
+  end
+  
+  def test_protected_from_non_member_comments_not_logged_in
+    get :new, :urlified_name => "closed_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
+    assert_response :redirect
+    assert_redirected_to :controller => "account", :action => "login"
+  end
+  
+  def test_protected_from_non_member_comments_non_member
+    login_as(:quire)
+    get :new, :urlified_name => "closed_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
+    assert_response :redirect
+    assert_redirected_to :controller => "baskets", :action => "permission_denied"
+  end
+  
+  def test_protected_allows_member_comments_from_member
+    login_as(:doug)
+    get :new, :urlified_name => "closed_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
+    assert_response :success
+    assert_template 'comments/new'
+    assert_not_nil assigns(:comment)
+  end
+  
+  def test_protected_from_non_member_comments_not_logged_in2
+    get :new, :urlified_name => "open_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
+    assert_response :redirect
+    assert_redirected_to :controller => "account", :action => "login"
+  end
+  
+  def test_allow_non_member_comments_non_member
+    login_as(:quire)
+    get :new, :urlified_name => "open_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
+    assert_response :success
+    assert_template 'comments/new'
+    assert_not_nil assigns(:comment)
+  end
+  
+  def test_allow_non_member_comments_member
+    login_as(:doug)
+    get :new, :urlified_name => "open_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
+    assert_response :success
+    assert_template 'comments/new'
+    assert_not_nil assigns(:comment)
+  end
+  
+  def test_cannot_create_if_non_member_on_protected
+    login_as(:quire)
+    post :create, :urlified_name => "closed_basket", :comment => @new_comment_model
+    assert_response :redirect
+    assert_redirected_to :controller => "baskets", :action => "permission_denied"
+  end
+  
+  def test_can_create_if_non_member_on_unprotected
+    login_as(:quire)
+    post :create, :urlified_name => "open_basket", :comment => @new_comment_model.merge(:basket_id => @open_basket.id)
+    assert_response :redirect
+    assert_redirected_to :controller => "topics", :action => "show"
+  end
+  
 end

@@ -178,7 +178,20 @@ class ConfigureController < ApplicationController
     end
 
     ZOOM_CLASSES.each do |zoom_class|
-      Module.class_eval(zoom_class).find(:all).each { |item| prepare_and_save_to_zoom(item) }
+      Module.class_eval(zoom_class).find(:all).each do |item|
+        
+        # Make sure that if the item is private, we store the private version and load the latest
+        # public version into the master record so that OAI records are generated appropriately.
+        if item.respond_to?(:private?) && item.private?
+          logger.debug("Storing private version of #{item.id}.")
+          item.send :store_correct_versions_after_save 
+          item.reload
+        end
+        
+        # Generate OAI record and save to Zebra instances as appropriate.
+        prepare_and_save_to_zoom(item)
+        
+      end
     end
 
     if !request.xhr?

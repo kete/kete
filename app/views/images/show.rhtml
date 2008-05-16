@@ -3,21 +3,21 @@
 <% end -%>
 
 <%= render(:partial => "topics/content_wrapper_start") %>
-        <% cache({:part => 'details'}) do -%>
-                <h2><%= h(@still_image.title) %></h2>
-                <% if !@still_image.original_file.nil? -%>
-                      <% if !@still_image.already_at_blank_version? -%>
-                              <%= render(:partial => "details", :locals => { :item => @still_image }) %>
-                      <% end -%>
-                <% end -%>
+        <h2><%= h(@still_image.title) %></h2>
+				<% cache_if_public (@still_image, {:part => 'details'}) do -%>
+               <% if !@still_image.original_file.nil? -%>
+                     <% if !@still_image.already_at_blank_version? -%>
+                             <%= render(:partial => "details", :locals => { :item => @still_image }) %>
+                     <% end -%>
+               <% end -%>
         <% end -%>
         <% # default to medium view %>
         <% if !@image_file.nil? %>
-                <% if !@still_image.already_at_blank_version? -%>
-                      <%= render(:partial => "image_file", :object => @image_file) %>
-                <% end -%>
+	        <% if !@still_image.already_at_blank_version? -%>
+						<%= render(:partial => "image_file", :object => @image_file) %>
+	        <% end -%>
         <% else -%>
-                <p>Only available as original.</p>
+					<p>Only available as original.</p>
         <% end -%>
         <% cache({:part => 'caption'}) do -%>
                 <% if !@still_image.already_at_blank_version? -%>

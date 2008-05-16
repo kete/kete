@@ -3,7 +3,7 @@
 <% end -%>
 
 <%= render :partial => "topics/content_wrapper_start" %>
-      <% cache ({:part => 'details'}) do -%>
+      <% cache_if_public (@web_link, {:part => 'details'}) do -%>
       <% if !@web_link.already_at_blank_version? -%>
 
       <h2><%= link_to h(@web_link.title), @web_link.url %></h2>

@@ -22,7 +22,8 @@ class Topic < ActiveRecord::Base
   include ConfigureActsAsZoomForKete
 
   # we can't use object.comments, because that is used by related content stuff
-  has_many :comments, :as => :commentable, :dependent => :destroy, :order => 'position'
+  # has_many :comments, :as => :commentable, :dependent => :destroy, :order => 'position'
+  include KeteCommentable
 
   # this is where we handled "related to"
   has_many :content_item_relations,
@@ -68,7 +69,7 @@ class Topic < ActiveRecord::Base
   # because of the complexity our relationships of our models
   # delete_all won't do the right thing (at least not in migrations)
   acts_as_versioned :association_options => { :dependent => :destroy }
-
+  
   # this is a little tricky
   # the acts_as_taggable declaration for the original
   # is different than how we use tags on the versioned model
@@ -92,6 +93,12 @@ class Topic < ActiveRecord::Base
   # methods and declarations related to moderation and flagging
   include Flagging
 
+  # Private Item mixin
+  include ItemPrivacy::ActsAsVersionedOverload
+  non_versioned_fields << "private_version_serialized"
+  
+  after_save :store_correct_versions_after_save
+  
   def related_topics(only_non_pending = false)
     # parents unfortunately get confused and return the content_item_relatations.id as id
     # spell it out in select

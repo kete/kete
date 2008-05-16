@@ -24,6 +24,19 @@
         <% else -%>
             <%= hidden_field_tag 'topic[topic_type_id]', params[:topic][:topic_type_id] %>
         <% end -%>
+
+				<div class="form-element">
+					<label for="topic_private_false">Public</label>
+					<%= radio_button 'topic', :private, false, { :id => "topic_private_false" }.merge((@current_basket.private_default? && @topic.private.nil?) ? Hash.new : { "checked" => "checked" }) %><br />
+					Can be viewed by everyone
+				</div>
+
+				<div class="form-element">
+					<label for="topic_private_true">Private</label>
+					<%= radio_button 'topic', :private, true, { :id => "topic_private_true" }.merge((@current_basket.private_default? && @topic.private.nil?) ? { "checked" => "checked" } : Hash.new) %><br />
+					Can be viewed only by basket members
+				</div>
+
         <div class="form-element">
                 <label class="required" for="topic_title">Title:</label>
                 <%= text_field 'topic', 'title', {:class => "text-input"} %>
