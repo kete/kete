@@ -12,7 +12,7 @@ namespace :kete do
                     'kete:upgrade:add_new_web_links',
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings',
-                    # 'kete:upgrade:change_zebra_password',
+                    'kete:upgrade:change_zebra_password',
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types']
   namespace :upgrade do
@@ -142,15 +142,14 @@ namespace :kete do
       end
     end
 
-    # Don't run this.
-    # desc 'Change zebra password file to use clear text since encrypted is broken.'
-    # task :change_zebra_password => :environment do
-    #   ENV['ZEBRA_PASSWORD'] = ZoomDb.find(1).zoom_password
-    #   Rake::Task['zebra:stop'].invoke
-    #   Rake::Task['zebra:set_keteaccess'].invoke
-    #   Rake::Task['zebra:start'].invoke
-    #   p "changed zebra password file"
-    # end
+    desc 'Change zebra password file to use clear text since encrypted is broken.'
+    task :change_zebra_password => :environment do
+      ENV['ZEBRA_PASSWORD'] = ZoomDb.find(1).zoom_password
+      Rake::Task['zebra:stop'].invoke
+      Rake::Task['zebra:set_keteaccess'].invoke
+      Rake::Task['zebra:start'].invoke
+      p "changed zebra password file"
+    end
 
     desc 'This checks for missing required software and installs it if possible.'
     task :check_required_software => :environment do
