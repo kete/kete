@@ -52,8 +52,6 @@ class CommentsController < ApplicationController
       setup_related_topic_and_zoom_and_redirect(@comment, commented_item, :private => @comment.commentable_private)
     else
       render :action => 'new'
-    else
-      render :action => 'new'
     end
   end
 

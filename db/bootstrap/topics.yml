@@ -307,13 +307,13 @@ topics_013:
     <h5>Credits</h5>
     <p>This topic was originally written by Walter McGinnis at <a href="http://katipo.co.nz/">Katipo Communications</a> and Russel Garlick at <a href="http://liblime.com/">Liblime</a>.</p>
 
-topics_015:
+topics_014:
   private: true
   updated_at: <%= Time.now.to_s :db %>
   title: Troubleshooting
   short_summary: Troubleshooting Links
   raw_tag_list: "troubleshooting"
-  id: "15"
+  id: "14"
   version: "1"
   basket_id: "2"
   topic_type_id: "1"
