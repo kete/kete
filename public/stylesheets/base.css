@@ -231,9 +231,9 @@ label{
 }
 .form-element{
         padding: .5em;
-	width: 100%;
-	margin-bottom: 0.2em;
-	float: left;
+        width: 100%;
+        margin-bottom: 0.2em;
+        float: left;
 }
 .form-element textarea{
         border: 1px solid #666;
@@ -562,8 +562,12 @@ input.searchheader-search {
 }
 
 #search-options-wrapper{
-    width: 40%;
     float: right;
     margin-left: 2em;
     margin-bottom: 1em;
+    margin-right: 1em;
+}
+
+#sort_direction_field{
+    display: inline;
 }
