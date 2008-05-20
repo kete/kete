@@ -12,4 +12,33 @@ class ZoomDb < ActiveRecord::Base
   validates_uniqueness_of :database_name, :scope => [:host, :port], :message => "The combination of database name, host, and port must be unique."
   validates_numericality_of :port
 
+  # Create and return a zoom connection
+  def connection
+    zoom_options = { 'user' => zoom_user, 'password' => zoom_password }
+    c = ZOOM::Connection.new(zoom_options).connect(host, port.to_i)
+    c.database_name = database_name
+
+    c
+  end
+
+  # hits up a zoom_db for results for a pqf_query
+  # note that we we leave it up to the application to formulate
+  # the query and they should match the syntax
+  # of what the zoom_db expects
+  # returns a zoom result set
+  def process_query(args = {})
+    query = args[:query]
+
+    conn = self.connection
+    # we are always using xml at this point
+    conn.preferred_record_syntax = 'XML'
+
+    logger.info("query is #{query.to_s}, syntax XML")
+    conn.search(query.to_s)
+  end
+
+  # Find whether a zoom record exists for this record in the given ZOOM database
+  def has_zoom_record?(record_id)
+    process_query(:query => "@attr 1=12 @attr 4=3 \"#{record_id}\"").size > 0
+  end
 end

@@ -137,7 +137,7 @@ class SearchController < ApplicationController
     else
       zoom_db_instance = "public"
     end
-    
+
     # Load the correct zoom_db instance.
     zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
 
@@ -253,7 +253,7 @@ class SearchController < ApplicationController
     # tag for things tagged with the tag/subject
     # contributor for things contributed to or created by a user
     # sort_type for last_modified
-    
+
     if @current_basket == @site_basket
       if params[:privacy_type] == "private"
         # To be implemented:
@@ -265,7 +265,7 @@ class SearchController < ApplicationController
         # authorized_baskets.collect { |b| b.urlified_name }.each do |basket|
         #   query += "@attr 1=12 @and #{zoom_class} #{basket} "
         # end
-        
+
         # Temporarily, limit site-wide private searches to the site basket only.
         query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
       else
@@ -443,8 +443,7 @@ class SearchController < ApplicationController
                                                 :search_terms => @search_terms)
 
     logger.debug("what is query: " + query.inspect)
-    this_result_set = Module.class_eval(zoom_class).process_query(:zoom_db => zoom_db,
-                                                                  :query => query)
+    this_result_set = zoom_db.process_query(:query => query)
 
     @result_sets[zoom_class] = this_result_set
 
@@ -604,15 +603,15 @@ class SearchController < ApplicationController
         item_array = item_class_and_id.split("-")
         item = Module.class_eval(item_array[0]).find(item_array[1])
         prepare_and_save_to_zoom(item)
-        
-        # Rebuild 
+
+        # Rebuild
         # Should be unnecessary.
         # if item.has_private_version?
         #   item.private_version do
         #     prepare_and_save_to_zoom(item)
         #   end
         # end
-        
+
         if items_count == 1
           first_item = item
         end
@@ -642,7 +641,7 @@ class SearchController < ApplicationController
       rebuild_zoom_item
     end
   end
-  
+
   # this rebuilds the next item in queue
   # and updates page
   def rebuild_zoom_item
@@ -768,7 +767,7 @@ class SearchController < ApplicationController
       cache_page(response.body,params)
     end
   end
-  
+
   # James Stradling <james@katipo.co.nz> - 2008-05-02
   # Refactored to use acts_as_zoom#has_appropriate_records?
   def zoom_update_and_test(item,zoom_db)
