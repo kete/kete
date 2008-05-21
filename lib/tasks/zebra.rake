@@ -55,6 +55,38 @@ namespace :zebra do
     pid_file = RAILS_ROOT + '/log/zebra.pid'
     `cd #{RAILS_ROOT}/zebradb; ./zebrasrv-kill.sh #{pid_file}`
   end
+  
+  # Added by James Stradling - 2008-05-21
+  desc "Insert initial blank records into the public and private zebra instances"
+  task :load_initial_records => :environment do
+    # Load and render the OAI-PHM record to load
+    template = File.open(File.join(RAILS_ROOT, 'zebradb/bootstrap.xml.erb'))
+    zoom_record = ERB.new(template.read).result
+    
+    # Save the record into both public and private zoom indexes
+    # Assumes that both databases will be local and accessible by public and 
+    # private respectively
+    ["public", "private"].each do |prefix|
+      begin
+        zoom_db = ZoomDb.find_by_host_and_database_name('localhost', prefix)
+        c = zoom_db.open_connection
+        p = c.package
+        p.function = 'create'
+        p.wait_action = 'waitIfPossible'
+        p.syntax = 'no syntax'
+
+        p.action = 'specialUpdate'
+        p.record = zoom_record
+        p.record_id_opaque = "oai:#{ZoomDb.zoom_id_stub}:bootstrap:Bootstrap:1"
+
+        p.send('update')
+        p.send('commit')
+        puts " Initial record added to #{prefix} zebra instance (OAI identifier: oai:#{ZoomDb.zoom_id_stub}:bootstrap:Bootstrap:1)."
+      rescue
+        puts " Error while adding record to #{prefix} zebra instance (#{$!})."
+      end
+    end
+  end
 
   # No longer necessary
   # desc "Choose zebra correct zebra database configuration files for your platform.  I.e. whether the zebra is installed under /usr/local or /opt/local.  Set UNDER=opt or UNDER=usr.  The default configuration files are for /usr/local."

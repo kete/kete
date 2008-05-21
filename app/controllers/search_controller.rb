@@ -294,16 +294,13 @@ class SearchController < ApplicationController
       # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
       # must be exact string
 
-      contributor_query = "@attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
+      # James Stradling - 2008-05-20
+      # Always look in the contribution index as zebra instances are now pre-populated 
+      # with applicable attributes to prevent errors.
+      contributor_query = "@or @attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" @attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
 
-      # if there hasn't been a single contribution (rather than a creation, which bootstrap handles)
-      # this query will break unless we turn off looking in contribution index
-      contributor_role_count = Contribution.count :conditions => "contributor_role = 'contributor'"
-
-      if contributor_role_count > 0
-        contributor_query = "@or #{contributor_query}@attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
-      end
-
+      logger.info "CONTRIBUTION COUNT"
+      
       query += contributor_query
       query_operators += "@and "
     end

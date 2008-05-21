@@ -176,6 +176,9 @@ class ConfigureController < ApplicationController
     ['public', 'private'].each do |db|
       `rake zebra:init ZEBRA_DB=#{db}`
     end
+    
+    # load initial records (initializes attributes)
+    `rake zebra:load_initial_records`
 
     ZOOM_CLASSES.each do |zoom_class|
       Module.class_eval(zoom_class).find(:all).each do |item|

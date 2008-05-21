@@ -134,39 +134,3 @@ contributions_015:
   user_id: "1"
   contributed_item_id: "14"
   created_at: <%= Time.now.to_s :db %>
-contributions_016:
-  updated_at: <%= Time.now.to_s :db %>
-  contributed_item_type: Topic
-  id: "16"
-  version: "1"
-  contributor_role: creator
-  user_id: "1"
-  contributed_item_id: "15"
-  created_at: <%= Time.now.to_s :db %>
-contributions_017:
-  updated_at: <%= Time.now.to_s :db %>
-  contributed_item_type: Topic
-  id: "17"
-  version: "1"
-  contributor_role: contributor
-  user_id: "1"
-  contributed_item_id: "15"
-  created_at: <%= Time.now.to_s :db %>
-contributions_018:
-  updated_at: <%= Time.now.to_s :db %>
-  contributed_item_type: WebLink
-  id: "18"
-  version: "1"
-  contributor_role: creator
-  user_id: "1"
-  contributed_item_id: "2"
-  created_at: <%= Time.now.to_s :db %>
-contributions_019:
-  updated_at: <%= Time.now.to_s :db %>
-  contributed_item_type: WebLink
-  id: "19"
-  version: "2"
-  contributor_role: contributor
-  user_id: "1"
-  contributed_item_id: "2"
-  created_at: <%= Time.now.to_s :db %>
