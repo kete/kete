@@ -69,7 +69,10 @@ class Topic < ActiveRecord::Base
   # because of the complexity our relationships of our models
   # delete_all won't do the right thing (at least not in migrations)
   acts_as_versioned :association_options => { :dependent => :destroy }
-  
+
+  # acts as licensed but this is not versionable (cant change a license once it is applied)
+  acts_as_licensed
+
   # this is a little tricky
   # the acts_as_taggable declaration for the original
   # is different than how we use tags on the versioned model
@@ -95,7 +98,8 @@ class Topic < ActiveRecord::Base
 
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
-  non_versioned_fields << "private_version_serialized"
+  non_versioned_fields << "private_version_serialized" 
+
   
   after_save :store_correct_versions_after_save
   
@@ -125,6 +129,19 @@ class Topic < ActiveRecord::Base
 
     return parent_topics + child_related_topics - [self]
   end
+
+  def title_for_license
+    title
+  end
+
+  def author_for_license
+    creator.login
+  end
+
+  def author_url_for_license
+    "/account/" + creator.id.to_s + "_" + creator.login
+  end
+
 
   # turn pretty urls on or off here
   include FriendlyUrls

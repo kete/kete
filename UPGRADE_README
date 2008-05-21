@@ -1,0 +1,25 @@
+= Incremental Upgrade Instructions
+Originally contributed by James Stradling <james@katipo.co.nz> - 2008-05-16
+
+This file details upgrade instructions for Kete trunk versions.
+Revisions that require migrations and/or extra upgrade steps are detailed below.
+
+It is assumed you are upgrading from an earlier functional and unmodified trunk version.
+
+
+== Trunk r1169 - Content Licensing Controls Added
+
+This version includes content licensing controls in addition to the privacy control functionality added in r1148.
+The following instructions are for use when updating from a trunk version of Kete to a version r1169 or later.
+
+NB: All commands must be made from the main Kete application directory.
+
+1.      Stop your Kete server.
+2.      Run the database migration 'rake db:migrate'
+                NB: This adds new columns and tables in the kete database. If you have customized Kete or
+                need to reverse the upgrade, this may cause issues. See migrations 046 through 060 in
+                /db/migrate/ for an insight into the database schema changes made.
+3.      Run the upgrade script: 'rake kete:upgrade'
+4.      Start your Kete server again.
+
+Optionally, you can run rake acts_as_licensed:import_nz_cc_licenses to add Creative Commons New Zealand licenses options to your Kete instance.

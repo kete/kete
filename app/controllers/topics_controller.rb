@@ -82,6 +82,7 @@ class TopicsController < ApplicationController
   # the first step in creating a new topic
   # we need a topic_type to determine the proper form
   def pick_topic_type
+    @topic = Topic.new
   end
 
   def create

@@ -8,6 +8,9 @@
       <p><b><%= @topic.short_summary %></b></p>
       <p><%= @topic.description %></p>
       <%= pending_review(@topic) %>
+
+
+      <div class="license"><%= @topic.license_metadata %></div>
       <div class="clear"></div>
 <% end -%>
 

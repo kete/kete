@@ -19,15 +19,17 @@
 <% end -%>
 
 <div class="form-element">
-	<label for="web_link_private_false">Public</label>
-	<%= radio_button 'web_link', :private, false, { :id => "web_link_private_false" }.merge((@current_basket.private_default? && @web_link.private.nil?) ? Hash.new : { "checked" => "checked" }) %><br />
-	Can be viewed by everyone
-</div>
-	
-<div class="form-element">
-	<label for="web_link_private_true">Private</label>
-	<%= radio_button 'web_link', :private, true, { :id => "web_link_private_true" }.merge((@current_basket.private_default? && @web_link.private.nil?) ? { "checked" => "checked" } : Hash.new) %><br />
-	Can be viewed only by basket members
+	<label>Privacy</label>
+	<ul class="option-list">
+		<li>
+			<%= radio_button 'web_link', :private, false, { :id => "web_link_private_false" }.merge((@current_basket.private_default? && @web_link.private.nil?) ? Hash.new : { "checked" => "checked" }) %>
+			<label for="web_link_private_false">Public</label> (Can be viewed by everyone)
+		</li>
+		<li>	
+			<%= radio_button 'web_link', :private, true, { :id => "web_link_private_true" }.merge((@current_basket.private_default? && @web_link.private.nil?) ? { "checked" => "checked" } : Hash.new) %>
+			<label for="web_link_private_true">Private</label> (Can be viewed only by basket members)
+		</li>
+	</ul>
 </div>
 
 <div class="form-element">
@@ -85,7 +87,7 @@
 <% end -%>
 
 <%= hidden_field_tag "web_link[basket_id]", @current_basket.id %>
-
+<%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @web_link} %>	
 <!--[eoform:web_link]-->
 
 </fieldset>

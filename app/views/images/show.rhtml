@@ -25,6 +25,7 @@
                         <p><%= @still_image.description %></p>
                 <% end -%>
                 <%= pending_review(@still_image) %>
+		<div class="license"><%= @still_image.license_metadata %></div>
         <% end -%>
 <% if current_user_can_see_flagging? -%>
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) %>

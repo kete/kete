@@ -580,3 +580,17 @@ input.searchheader-search {
 #zoom_dbs-content{
     margin-right: 1em;
 }
+
+ul.option-list{ 
+  list-style-type: none;
+  clear: left;
+}
+
+.option-list label { 
+  display: inline;
+  width: auto;
+  float: none;
+  font-weight: normal;
+}
+
+

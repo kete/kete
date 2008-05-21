@@ -1,0 +1,23 @@
+<h1>Listing licenses</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Url</th>
+    <th>Is available</th>
+  </tr>
+
+<% for license in @licenses %>
+  <tr>
+    <td><%=h license.name %></td>
+    <td><%=h license.url %></td>
+    <td><%=h license.is_available %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => license %></td>
+    <td><%= link_to 'Remove', { :action => 'destroy', :id => license }, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New license', :action => 'new' %>

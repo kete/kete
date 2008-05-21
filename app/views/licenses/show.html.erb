@@ -1,0 +1,42 @@
+<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
+
+<p>
+  <b>Name:</b>
+  <%=h @license.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%=h @license.description %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%=h @license.url %>
+</p>
+
+<p>
+  <b>Is available:</b>
+  <%=h @license.is_available %>
+</p>
+
+<p>
+  <b>Image url:</b>
+  <%=h @license.image_url %>
+</p>
+
+<p>
+  <b>Is creative commons:</b>
+  <%=h @license.is_creative_commons %>
+</p>
+
+<p>
+  <b>Metadata:</b>
+  <%=h @license.metadata %>
+</p>
+
+
+<%= link_to 'Edit', :action => 'edit', :id => @license %> |
+<%= link_to 'Back', :action => 'index' %>
+
+</div></div>

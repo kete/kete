@@ -18,6 +18,7 @@
 
       <p><%= @web_link.description %></p>
       <%= pending_review(@web_link) %>
+	<div class="license"><%= @web_link.license_metadata %></div>
       <% end -%>
 <% if current_user_can_see_flagging? -%>
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @web_link }) %>

@@ -42,7 +42,7 @@ class ImageFile < ActiveRecord::Base
   # end
 
   include HandleLegacyAttachmentFuPaths
-
+  
   # custom error message, probably overkill
   # validates the size and content_type attributes according to the current model's options
   def attachment_attributes_valid?

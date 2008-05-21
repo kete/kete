@@ -18,17 +18,19 @@
                         </div>
                 <% end -%>
 
-								<div class="form-element">
-									<label for="audio_recording_private_false">Public</label>
-									<%= form.radio_button :private, false, :id => "audio_recording_private_false" %><br />
-									Can be viewed by everyone
-								</div>
-
-								<div class="form-element">
-									<label for="audio_recording_private_true">Private</label>
-									<%= form.radio_button :private, true, :id => "audio_recording_private_true" %><br />
-									Can be viewed only by basket members
-								</div>
+<div class="form-element">
+	<label>Privacy</label>
+	<ul class="option-list">
+		<li>
+			<%= form.radio_button :private, false, :id => "audio_recording_private_false" %>
+			<label for="audio_recording_private_false">Public</label> (Can be viewed by everyone)
+		</li>
+		<li>
+			<%= form.radio_button :private, true, :id => "audio_recording_private_true" %>
+			<label for="audio_recording_private_true">Private</label> (Can be viewed only by basket members)
+		</li>
+	</ul>
+</div>
 
                 <div class="form-element"><label for="audio_recording_title">Title:</label>
                 <%= form.text_field :title  %></div>
@@ -81,7 +83,7 @@
                                   <%= form.text_field :version_comment %>
                         </div>
                 <% end -%>
-
+		<%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @audio_recording} %>				
                 <%= hidden_field_tag 'audio_recording[basket_id]', @current_basket.id %>
                 <!--[eoform:audio_recording]-->
 

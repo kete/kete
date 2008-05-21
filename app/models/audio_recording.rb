@@ -21,6 +21,8 @@ class AudioRecording < ActiveRecord::Base
   # Private Item mixin
   include ItemPrivacy::All
   
+  # acts as licensed but this is not versionable (cant change a license once it is applied)
+  acts_as_licensed
   
   # Do not version self.file_private
   non_versioned_fields << "file_private"

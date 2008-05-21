@@ -414,3 +414,12 @@ system_settings_046:
   id: "46"
   value: "all"
   section: Accounts
+system_settings_047:
+  name: Default Content License
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: Choose the license selected by default when members add new content to the Kete instance. Enter the id of the license (refer to the id primary key in your database). Note that the license id selected must correlate to a license in the 'licenses' database table in order to be used. A set of Creative Commons New Zealand Licenses (excluding the 'No Derivative Works' variant) are included and can be installed using the 'rake acts_as_licensed:import_nz_cc_licenses' command.
+  id: 47
+  value: 
+  section: Server
+  

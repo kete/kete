@@ -24,6 +24,9 @@ class User < ActiveRecord::Base
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
+  
+  # Default license from acts_as_licensed
+  belongs_to :license
 
   # we want to have plain contributor vs creator for our contributor_roles
   # we also want to insert versions, but only list by distinct contributor_role
@@ -52,6 +55,9 @@ class User < ActiveRecord::Base
   # set up authorization plugin
   acts_as_authorized_user
   acts_as_authorizable
+  
+  # Add association to license
+  License.has_many :users, :dependent => :nullify
 
   # Virtual attribute for the unencrypted password
   attr_accessor :password

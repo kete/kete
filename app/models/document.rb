@@ -50,6 +50,9 @@ class Document < ActiveRecord::Base
   if ENABLE_CONVERTING_DOCUMENTS
     convert_attachment_to :output_type => :html, :target_attribute => :description, :run_after_save => false
   end
+  
+  # acts as licensed but this is not versionable (cant change a license once it is applied)
+  acts_as_licensed
 
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|

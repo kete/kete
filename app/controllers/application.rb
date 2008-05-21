@@ -788,6 +788,7 @@ class ApplicationController < ActionController::Base
 
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?
+#, :available_licenses
 end
 
 

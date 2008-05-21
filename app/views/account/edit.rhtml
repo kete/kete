@@ -16,6 +16,12 @@
 <label for="email">Email</label> <%= f.text_field :email %>
 </div>
 
+<div class="form-element">
+<label>Prefered License:</label>
+  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user} %>				
+</div>
+
+
 <% form_fields = @content_type.content_type_to_field_mappings -%>
 <% if form_fields.size > 0 -%>
                 <%= render(:partial => 'search/extended_field_mapping',

@@ -1,0 +1,27 @@
+<div class="form-element">
+   <label>License</label>
+
+<% if item.has_license? %>
+ <div id="license-agreement">
+   This <%= item.class.name.humanize.singularize.downcase%> is licensed under the <%=item.license.title%>.
+   By editing it you agree that your changes will fall under this license (<a href="<%=item.license.url%>" target="_new">view license</a>).
+</div>
+
+<% else 
+   item.license_id = @current_user.license_id || configured_default_license
+-%>
+
+<% if licenses_are_available? %>
+<ul class="option-list"> 
+   <% available_licenses do |license| %>
+   <li><%=  radio_button_for_license_selection(item.class.table_name.singularize, license) %></li>
+   <% end -%>
+</ul>
+<p>You can change or set your default licence by editing your profile</p>
+<% else %>
+<p><strong>Please see the <%= link_to "site terms and conditions", :urlified_name => "about", :controller => "topics", :action => "show", :id => Topic.find_by_title("Terms and Conditions").id -%> for information on how contributions are licensed.</strong></p>
+<% end %>
+
+<% end -%>
+
+</div>

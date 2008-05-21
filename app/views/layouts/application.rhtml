@@ -16,8 +16,8 @@
                         # tinymce not compatible with bundle_fu -%>
         <%= javascript_include_tiny_mce_if_used %>
         <%# point tinymce at the correct css file %>
-        <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" %>
-        <% @tiny_mce_options[:extended_valid_elements] = EXTENDED_VALID_ELEMENTS if @site_admin %>
+        <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" if using_tiny_mce? %>
+        <% @tiny_mce_options[:extended_valid_elements] = EXTENDED_VALID_ELEMENTS if @site_admin and using_tiny_mce? %>
         <%= tiny_mce if using_tiny_mce? %>
         <script type="text/javascript">
         function convertWord(type, content) {
@@ -213,6 +213,10 @@
                         <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
                                                                               :action => :list,
                                                                               :urlified_name => @site_basket.urlified_name -%>
+                        |
+                        <%= link_to_unless_current "administer licenses", :controller => '/licenses',
+																																						:action => :index,
+                                                                            :urlified_name => @site_basket.urlified_name -%>
                         <% end -%>
                         </p>
                         <p>
