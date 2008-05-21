@@ -571,3 +571,12 @@ input.searchheader-search {
 #sort_direction_field{
     display: inline;
 }
+
+/* adjustments of default active scaffold styles */
+#extended_fields-content{
+    margin-right: 1em;
+}
+
+#zoom_dbs-content{
+    margin-right: 1em;
+}
