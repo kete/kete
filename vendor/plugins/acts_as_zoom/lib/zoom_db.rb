@@ -41,4 +41,37 @@ class ZoomDb < ActiveRecord::Base
   def has_zoom_record?(record_id)
     process_query(:query => "@attr 1=12 @attr 4=3 \"#{record_id}\"").size > 0
   end
+
+  # this takes a passed in record and deletes it from the zoom db
+  def destroy_this(record, zoom_id)
+    c = open_connection
+    p = c.package
+    p.function = 'create'
+    p.wait_action = 'waitIfPossible'
+    p.syntax = 'no syntax'
+
+    p.action = 'recordDelete'
+    p.record = record
+    p.record_id_opaque = zoom_id
+
+    p.send('update')
+    p.send('commit')
+  end
+
+  # this takes a passed in record and saves it to the zoom db
+  def save_this(record, zoom_id)
+    c = open_connection
+    p = c.package
+    p.function = 'create'
+    p.wait_action = 'waitIfPossible'
+    p.syntax = 'no syntax'
+
+    p.action = 'specialUpdate'
+    p.record = record
+    p.record_id_opaque = zoom_id
+
+    p.send('update')
+    p.send('commit')
+  end
+
 end

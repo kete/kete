@@ -285,26 +285,9 @@ module ZoomMixin
           logger.debug "zoom_save: #{zoom_id}; private: #{(respond_to?(:private) && private?).to_s}"
 
           zoom_record = self.zoom_prepare_record
-          zoom_db = appropriate_zoom_database
-          zoom_real_save(zoom_record, zoom_db)
+          appropriate_zoom_database.save_this(zoom_record, zoom_id)
 
           true
-        end
-
-        # Actually do the save
-        def zoom_real_save(zoom_record, zoom_db)
-          c = zoom_db.open_connection
-          p = c.package
-          p.function = 'create'
-          p.wait_action = 'waitIfPossible'
-          p.syntax = 'no syntax'
-
-          p.action = 'specialUpdate'
-          p.record = zoom_record
-          p.record_id_opaque = zoom_id
-
-          p.send('update')
-          p.send('commit')
         end
 
         def zoom_destroy
@@ -314,36 +297,18 @@ module ZoomMixin
 
           if has_public_zoom_record?
             zoom_record = self.zoom_prepare_record
-            zoom_db = public_zoom_database
-            zoom_real_destroy(zoom_record, zoom_db)
+            public_zoom_database.destroy_this(zoom_record, zoom_id)
           end
 
           if has_private_zoom_record?
             private_version do
               zoom_record = self.zoom_prepare_record
-              zoom_db = private_zoom_database
-              zoom_real_destroy(zoom_record, zoom_db)
+              private_zoom_database.destroy_this(zoom_record, zoom_id)
             end
           end
 
           true
         end
-
-        def zoom_real_destroy(zoom_record, zoom_db)
-          c = zoom_db.open_connection
-          p = c.package
-          p.function = 'create'
-          p.wait_action = 'waitIfPossible'
-          p.syntax = 'no syntax'
-
-          p.action = 'recordDelete'
-          p.record = zoom_record
-          p.record_id_opaque = zoom_id
-
-          p.send('update')
-          p.send('commit')
-        end
-
 
         # TODO: check this properly converts records to zoom record
         def to_zoom_record
