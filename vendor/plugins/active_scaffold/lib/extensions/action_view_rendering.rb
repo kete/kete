@@ -24,12 +24,24 @@ module ActionView #:nodoc:
     #
     def render_with_active_scaffold(*args, &block)
       if args.first == :super
-        template_path = caller.first.split(':').first
-        template = File.basename(template_path).split('.').first
+        options = args[1] || {}
+        options[:locals] ||= {}
 
+        known_extensions = [:erb, :rhtml, :rjs, :haml]
+        # search through call stack for a template file (normally matches on first caller)
+        # note that we can't use split(':').first because windoze boxen may have an extra colon to specify the drive letter. the
+        # solution is to count colons from the *right* of the string, not the left. see issue #299.
+        template_path = caller.find{|c| known_extensions.include?(c.split(':')[-3].split('.').last.to_sym) }
+        template = File.basename(template_path).split('.').first
         active_scaffold_config.template_search_path.each do |active_scaffold_template_path|
-          active_scaffold_template = File.join(active_scaffold_template_path, template)
-          return render(:file => active_scaffold_template) if file_exists? active_scaffold_template
+          active_scaffold_template_path = File.expand_path(active_scaffold_template_path, "app/views")
+          next if template_path.include? active_scaffold_template_path
+
+          path = File.join(active_scaffold_template_path, template)
+          extension = find_template_extension_from_handler(path) rescue 'rhtml' # the rescue is a hack for rails 1.2.x compat
+          template_file = "#{path}.#{extension}"
+
+          return render(:file => template_file, :locals => options[:locals], :use_full_path => false) if File.file? template_file
         end
       elsif args.first.is_a?(Hash) and args.first[:active_scaffold]
         require 'digest/md5'
