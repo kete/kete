@@ -194,7 +194,7 @@ ActiveScaffold.ActionLink.Abstract.prototype = {
     this.loading_indicator = loading_indicator;
     this.hide_target = false;
     this.position = this.tag.getAttribute('position');
-		this.page_link = this.tag.getAttribute('page_link');
+                this.page_link = this.tag.getAttribute('page_link');
 
     this.onclick = this.tag.onclick;
     this.tag.onclick = null;
@@ -218,37 +218,37 @@ ActiveScaffold.ActionLink.Abstract.prototype = {
     }
   },
 
-	open_action: function() {
-		if (this.position) this.disable();
+        open_action: function() {
+                if (this.position) this.disable();
 
-		if (this.page_link) {
-			window.location = this.url;
-		} else {
-			if (this.loading_indicator) this.loading_indicator.style.visibility = 'visible';
-	    new Ajax.Request(this.url, {
-	      asynchronous: true,
-	      evalScripts: true,
+                if (this.page_link) {
+                        window.location = this.url;
+                } else {
+                        if (this.loading_indicator) this.loading_indicator.style.visibility = 'visible';
+            new Ajax.Request(this.url, {
+              asynchronous: true,
+              evalScripts: true,
 
-	      onSuccess: function(request) {
-	        if (this.position) {
-	          this.insert(request.responseText);
-	          if (this.hide_target) this.target.hide();
-	        } else {
-	          request.evalResponse();
-	        }
-	      }.bind(this),
+              onSuccess: function(request) {
+                if (this.position) {
+                  this.insert(request.responseText);
+                  if (this.hide_target) this.target.hide();
+                } else {
+                  request.evalResponse();
+                }
+              }.bind(this),
 
-	      onFailure: function(request) {
-	        ActiveScaffold.report_500_response(this.scaffold_id());
-	        if (this.position) this.enable()
-	      }.bind(this),
+              onFailure: function(request) {
+                ActiveScaffold.report_500_response(this.scaffold_id());
+                if (this.position) this.enable()
+              }.bind(this),
 
-	      onComplete: function(request) {
-	        if (this.loading_indicator) this.loading_indicator.style.visibility = 'hidden';
-	      }.bind(this)
-			});
-		}
-	},
+              onComplete: function(request) {
+                if (this.loading_indicator) this.loading_indicator.style.visibility = 'hidden';
+              }.bind(this)
+                        });
+                }
+        },
 
   insert: function(content) {
     throw 'unimplemented'
@@ -263,7 +263,7 @@ ActiveScaffold.ActionLink.Abstract.prototype = {
   register_cancel_hooks: function() {
     // anything in the insert with a class of cancel gets the closer method, and a reference to this object for good measure
     var self = this;
-    this.adapter.getElementsByClassName('cancel').each(function(elem) {
+    this.adapter.select('.cancel').each(function(elem) {
       elem.observe('click', this.close_handler.bind(this));
       elem.link = self;
     }.bind(this))
