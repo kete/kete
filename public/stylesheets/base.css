@@ -238,11 +238,11 @@ label{
 .form-element textarea{
         border: 1px solid #666;
         font-size: 1.2em;
-        width: 100%;
+        width: 95%;
 }
 fieldset {
         border: 1px solid #CCC;
-        margin-right: 10px;
+        margin-right: 20px;
 }
 .login-button,
 .save-button{
@@ -584,6 +584,20 @@ input.searchheader-search {
 ul.option-list{ 
   list-style-type: none;
   clear: left;
+  margin-left: 0;
+  padding-left: 1em;
+  width: 80%;
+}
+ul.option-list li{ 
+  margin-bottom: 0.5em;
+  position: relative;
+
+}
+ul.option-list li img{ 
+  position: relative;
+  top: .25em;
+  margin-left: .5em;
+  margin-right: .5em;
 }
 
 .option-list label { 
@@ -594,3 +608,8 @@ ul.option-list{
 }
 
 
+.license img {
+ float: left;
+ margin-right: .5em;
+
+}
