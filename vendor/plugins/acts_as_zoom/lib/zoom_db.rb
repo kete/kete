@@ -13,7 +13,7 @@ class ZoomDb < ActiveRecord::Base
   validates_numericality_of :port
 
   # Create and return a zoom connection
-  def connection
+  def open_connection
     zoom_options = { 'user' => zoom_user, 'password' => zoom_password }
     c = ZOOM::Connection.new(zoom_options).connect(host, port.to_i)
     c.database_name = database_name
@@ -29,7 +29,7 @@ class ZoomDb < ActiveRecord::Base
   def process_query(args = {})
     query = args[:query]
 
-    conn = self.connection
+    conn = self.open_connection
     # we are always using xml at this point
     conn.preferred_record_syntax = 'XML'
 

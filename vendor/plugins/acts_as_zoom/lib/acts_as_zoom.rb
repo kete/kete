@@ -293,7 +293,7 @@ module ZoomMixin
 
         # Actually do the save
         def zoom_real_save(zoom_record, zoom_db)
-          c = zoom_db.connection
+          c = zoom_db.open_connection
           p = c.package
           p.function = 'create'
           p.wait_action = 'waitIfPossible'
@@ -330,7 +330,7 @@ module ZoomMixin
         end
 
         def zoom_real_destroy(zoom_record, zoom_db)
-          c = zoom_db.connection
+          c = zoom_db.open_connection
           p = c.package
           p.function = 'create'
           p.wait_action = 'waitIfPossible'
