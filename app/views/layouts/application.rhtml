@@ -8,7 +8,8 @@
   <title><%= h(@title) -%></title>
 
   <% # logic for which javascript to load -%>
-  <% as_controllers = ['system_settings', 'zoom_dbs', 'extended_fields'] -%>
+  <% as_controllers = ['system_settings', 'zoom_dbs',
+  'extended_fields', 'licenses'] -%>
   <% none_tinymce_controllers = as_controllers + ['members', 'topic_types', 'content_types'] -%>
   <% tinymce_actions = ['new', 'create', 'edit', 'update', 'pick_topic_type', 'homepage_options'] -%>
   <% if !none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action]) -%>
@@ -215,7 +216,7 @@
                                                                               :urlified_name => @site_basket.urlified_name -%>
                         |
                         <%= link_to_unless_current "administer licenses", :controller => '/licenses',
-																																						:action => :index,
+                                                                                                                                                                                                                                                                                                                :action => :index,
                                                                             :urlified_name => @site_basket.urlified_name -%>
                         <% end -%>
                         </p>

@@ -12,7 +12,7 @@ ActionController::Routing::Routes.draw do |map|
   # You can have the root of your site routed by hooking up ''
   # -- just remember to delete public/index.html.
   # map.connect '', :controller => "welcome"
-  
+
   # James Stradling <james@katipo.co.nz>, 2008-04-15
   # Map private files to the PrivateFilesController
   # E.g. /documents/0000/0000/0011/Bio.txt
@@ -103,6 +103,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :extended_fields, :active_scaffold => true
   map.resources :zoom_dbs, :active_scaffold => true
   map.resources :system_settings, :active_scaffold => true
+  # 2008-05-22
+  map.resources :licenses, :active_scaffold => true
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
