@@ -28,7 +28,7 @@
              <%= 'checked' if !params[:sort_direction].blank? && params[:sort_direction] == 'reverse' -%>>
     </div>
     <% # Only show private search control if allowed and we aren't relating something to a topic. %>
-    <% if permitted_to_view_private_items? && params[:relate_to_topic].blank? -%>
+    <% if permitted_to_view_private_items? && params[:relate_to_topic].blank? && show_privacy_controls? -%>
     <label for="privacy_type">That are:</label>
     <%= select_tag 'privacy_type', options_for_select({ 'Private' => 'private', 'Public' => 'public' }, params[:privacy_type] || 'public') %>
     <% end -%>

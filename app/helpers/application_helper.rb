@@ -658,5 +658,14 @@ module ApplicationHelper
       end
     end
   end
+
+  # Check if privacy controls should be displayed?
+  def show_privacy_controls?
+    if @current_basket.show_privacy_controls.nil?
+      @site_basket.show_privacy_controls?
+    else
+      @current_basket.show_privacy_controls
+    end
+  end
   
 end
