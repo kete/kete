@@ -22,4 +22,7 @@ NB: All commands must be made from the main Kete application directory.
 3.      Run the upgrade script: 'rake kete:upgrade'
 4.      Start your Kete server again.
 
-Optionally, you can run rake acts_as_licensed:import_nz_cc_licenses to add Creative Commons New Zealand licenses options to your Kete instance.
+Optionally, you can run rake acts_as_licensed:import_nz_cc_licenses to
+add Creative Commons New Zealand licenses options to your Kete
+instance.  After that, you probably want to reconfigure your site in
+Advanced Options > Server > Default Content License.

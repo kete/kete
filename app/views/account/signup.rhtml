@@ -20,11 +20,6 @@
 <div class="form-element">
 <label for="password_confirmation">Confirm Password:</label> <%= f.password_field :password_confirmation %>
 </div>
-<div class="form-element">
-  <label>Prefered License:</label> 
-  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user} %>				
-</div>
-
 
 <% form_fields = @content_type.content_type_to_field_mappings -%>
 <% if form_fields.size > 0 -%>
@@ -35,6 +30,11 @@
                                         :item_key => 'user'}) %>
 <% end -%>
 
+
+<div class="form-element">
+  <label>Prefered License:</label>
+  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user} %>
+</div>
 
 <%= hidden_field_tag "captcha_type", @captcha_type %>
 
