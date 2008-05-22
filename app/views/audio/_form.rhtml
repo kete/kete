@@ -18,19 +18,27 @@
                         </div>
                 <% end -%>
 
-<div class="form-element">
-	<label>Privacy</label>
-	<ul class="option-list">
-		<li>
-			<%= form.radio_button :private, false, :id => "audio_recording_private_false" %>
-			<label for="audio_recording_private_false">Public</label> (Can be viewed by everyone)
-		</li>
-		<li>
-			<%= form.radio_button :private, true, :id => "audio_recording_private_true" %>
-			<label for="audio_recording_private_true">Private</label> (Can be viewed only by basket members)
-		</li>
-	</ul>
-</div>
+               <% if show_privacy_controls? %>
+               <div class="form-element">
+               	<label>Privacy</label>
+               	<ul class="option-list">
+               		<li>
+               			<%= form.radio_button :private, false, :id => "audio_recording_private_false" %>
+               			<label for="audio_recording_private_false">Public</label> (Can be viewed by everyone)
+               		</li>
+               		<li>
+               			<%= form.radio_button :private, true, :id => "audio_recording_private_true" %>
+               			<label for="audio_recording_private_true">Private</label> (Can be viewed only by basket members)
+               		</li>
+               	</ul>
+               </div>
+               <div class="form-element">
+                  <%= privacy_controls_description -%>
+               </div>
+               <% else %>
+               <%# Use the default %>
+               <%= form.hidden_field :private -%>
+               <% end %>
 
                 <div class="form-element"><label for="audio_recording_title">Title:</label>
                 <%= form.text_field :title  %></div>
@@ -53,8 +61,13 @@
                   <%= form.check_box :do_not_sanitize %></div>
                 <% end -%>
 
-				<div class="form-element"><label for="audio_recording_file_private">Attached recording privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@audio_recording) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@audio_recording) %> Can be downloaded only by basket members<br />
+				    <% if show_privacy_controls? %>
+				    <div class="form-element"><label for="audio_recording_file_private">Attached recording privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@audio_recording) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@audio_recording) %> Can be downloaded only by basket members<br />
 					<strong>Please note that once public, an attached audio recording cannot be made private.</strong></div>
+					<% else %>
+					<%# Use the default %>
+               <%= form.hidden_field :file_private -%>
+               <% end %>
 
                 <%= tags_input_field(form,"audio_recording_tag_list") %>
 

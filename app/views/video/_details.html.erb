@@ -1,4 +1,4 @@
-<% if !item.file_private? || permitted_to_view_private_items? -%>
+<% if !item.file_private? || ( permitted_to_view_private_items? && params[:private] == "true" ) -%>
 <p>Filename: <%= item.filename %>
   (<%= link_to_original_of item, 'view' -%>)
 </p>

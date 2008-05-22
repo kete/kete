@@ -27,6 +27,21 @@
 	  </fieldset>
 	  <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled>
 	</div>
+	
+	<div class="form-element">
+	   <strong>Privacy Controls:</strong>
+	</div>
+
+   <div class="form-element">
+      <label for="show_privacy_controls_true">Enabled</label>
+      <%= form.radio_button :show_privacy_controls, true, :id => 'show_privacy_controls_true' %>
+   </div>
+	
+   <div class="form-element">
+      <label for="show_privacy_controls_false">Disabled</label>
+      <%= form.radio_button :show_privacy_controls, false, :id => 'show_privacy_controls_false' %><br />
+      Privacy settings from the item's basket will be used on new items if privacy controls are disabled.
+   </div>
 
 	<div class="form-element">
 		<strong>Default Item Privacy:</strong>

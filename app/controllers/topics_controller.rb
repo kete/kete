@@ -47,6 +47,9 @@ class TopicsController < ApplicationController
 
   # stuff related to flagging and moderation
   include FlaggingController
+  
+  # Get the Privacy Controls helper
+  helper :privacy_controls
 
   def index
     redirect_to_search_for('Topic')

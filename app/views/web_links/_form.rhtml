@@ -18,6 +18,7 @@
         </div>
 <% end -%>
 
+<% if show_privacy_controls? %>
 <div class="form-element">
 	<label>Privacy</label>
 	<ul class="option-list">
@@ -31,6 +32,14 @@
 		</li>
 	</ul>
 </div>
+<div class="form-element">
+   <%= privacy_controls_description -%>
+</div>
+<% else %>
+<%# Use the default %>
+<%= hidden_field 'web_link', :private -%>
+<% end %>
+
 
 <div class="form-element">
   <label class="required" for="web_link_title">Title:</label>
@@ -55,8 +64,13 @@
   <%= check_box 'web_link', 'do_not_sanitize' %></div>
 <% end -%>
 
+<% if show_privacy_controls? %>
 <div class="form-element"><label for="web_link_file_private">Attached web link privacy:</label> <%= radio_button 'web_link', 'file_private', false, file_private_radio_options(@web_link) %> Can be accessed by everyone <%= radio_button 'web_link', 'file_private', true, file_private_radio_options(@web_link) %> Can be accessed only by basket members<br />
 	<strong>Please note that once public, a web link cannot be made private.</strong></div>
+<% else %>
+<%# Use the default %>
+<%= hidden_field 'web_link', 'file_private' -%>
+<% end %>
 
 <div class="form-element">
   <label for="web_link_tag_list">Tags (separated by commas):</label>

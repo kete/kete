@@ -663,7 +663,7 @@ class SearchController < ApplicationController
         clause_values[:end_id] = @end_id
       end
 
-      # don't include items that are flagged pending
+      # don't include items that are flagged pending or placeholder public versions
       clause += " and title != :pending_title"
       clause_values[:pending_title] = BLANK_TITLE
 
