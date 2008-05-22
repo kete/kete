@@ -40,7 +40,7 @@ class ActionView::Base
   # We don't want to use generic_view_paths in ActionMailer, and we don't want
   # to use them unless the controller action was explicitly defined.
   def search_generic_view_paths?
-    controller.respond_to?(:generic_view_paths) and controller.class.action_methods.include?(controller.action_name)
+    controller.respond_to?(:generic_view_paths) and controller.class.action_methods.include?(controller.action_name) rescue false
   end
 end
 
