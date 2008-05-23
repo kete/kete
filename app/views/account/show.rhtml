@@ -29,4 +29,20 @@
                 </ul>
         </div>
 <% end -%>
+
+<% if licenses_are_available? %>
+<div>
+   <% if @current_user.license.nil? %>
+   Click the edit link above to set your default license.
+   <% else -%>
+     <h3>Your current default license is:</h3> 
+     <div class="license">
+       <%= image_tag(@current_user.license.image_url, :alt => "licence  thumbnail") %>
+       <%= @current_user.license.title %> 
+       <%= link_to("(View license)", url_for(@current_user.license.url), "target" =>
+       "_new") %>
+     </div>
+   <% end -%>
+</div>
+<% end -%>
 <%= render(:partial => "topics/content_wrapper_end" ) %>
