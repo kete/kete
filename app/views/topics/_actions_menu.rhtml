@@ -5,7 +5,7 @@
     <% cache ({:part => 'edit'}) do -%>
     <li><%= link_to "<span class=\"edit-link\">Edit</span>",
             :action => :edit,
-      :id => item, :private => params[:private] || false %></li>
+      :id => item, :private => params[:private] %></li>
     <li><%= link_to "<span class=\"history-link\">History</span>",
             :action => :history,
       :id => item %></li>
