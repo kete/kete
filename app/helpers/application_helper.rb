@@ -653,9 +653,8 @@ module ApplicationHelper
     if item.respond_to?(:private) and item.private?
       block.call
     else
-      cache(parts) do
-        block.call
-      end
+      # Call erb caching framework directly
+      @controller.cache_erb_fragment(block, parts)
     end
   end
 
