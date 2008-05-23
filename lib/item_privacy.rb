@@ -106,8 +106,8 @@ module ItemPrivacy
           # Save the prepared array into the attribute column..
           without_revision do
             without_saving_private do
-              self.private_version_serialized = Marshal.dump(prepared_array)
-              save
+              self.private_version_serialized = YAML.dump(prepared_array)
+              save!
             end
           end
           
@@ -116,7 +116,7 @@ module ItemPrivacy
         # Load the saved private attributes into the current instance.
         def load_private!
           reload
-          private_attrs = Marshal.load(private_version_serialized)
+          private_attrs = YAML.load(private_version_serialized)
           raise "No private attributes" if private_attrs.nil? || !private_attrs.kind_of?(Array)
         
           private_attrs.each do |key, value|
