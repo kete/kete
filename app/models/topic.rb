@@ -98,11 +98,11 @@ class Topic < ActiveRecord::Base
 
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
-  non_versioned_fields << "private_version_serialized" 
+  non_versioned_fields << "private_version_serialized"
 
-  
+
   after_save :store_correct_versions_after_save
-  
+
   def related_topics(only_non_pending = false)
     # parents unfortunately get confused and return the content_item_relatations.id as id
     # spell it out in select
@@ -135,7 +135,7 @@ class Topic < ActiveRecord::Base
   end
 
   def author_for_license
-    creator.login
+    creator.user_name
   end
 
   def author_url_for_license
