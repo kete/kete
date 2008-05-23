@@ -106,7 +106,6 @@ module ItemPrivacy
           # Save the prepared array into the attribute column..
           without_revision do
             without_saving_private do
-              debugger
               self.private_version_serialized = Marshal.dump(prepared_array)
               save
             end
