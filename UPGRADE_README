@@ -9,9 +9,10 @@ It is assumed you are upgrading from an earlier functional and unmodified trunk 
 == Trunk r1174 - Added per basket privacy control enable/disable preferences
 
 To update from r1169 through r1173, all you need to do is the following:
-1.      Stop your Kete server.
-2.      Run the database migration 'rake db:migrate'
-3.      Start your Kete server again.
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Upgrade your code base
+3.      Run the database migration 'rake db:migrate'
+4.      Start your Kete server again (mongrels, backgroundrb)
 
 If you are updating from an earlier version, please following the instructions for trunk r1169 below.
 
@@ -22,13 +23,14 @@ The following instructions are for use when updating from a trunk version of Ket
 
 NB: All commands must be made from the main Kete application directory.
 
-1.      Stop your Kete server.
-2.      Run the database migration 'rake db:migrate'
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Upgrade your code base
+3.      Run the database migration 'rake db:migrate'
                 NB: This adds new columns and tables in the kete database. If you have customized Kete or
                 need to reverse the upgrade, this may cause issues. See migrations 046 through 060 in
                 /db/migrate/ for an insight into the database schema changes made.
-3.      Run the upgrade script: 'rake kete:upgrade'
-4.      Start your Kete server again.
+4.      Run the upgrade script: 'rake kete:upgrade'
+5.      Start your Kete server again (mongrels, backgroundrb)
 
 Optionally, you can run rake acts_as_licensed:import_nz_cc_licenses to
 add Creative Commons New Zealand licenses options to your Kete
