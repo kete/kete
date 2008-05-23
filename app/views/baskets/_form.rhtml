@@ -12,62 +12,67 @@
     <%= select_tag 'settings[fully_moderated]', @basket.moderation_select_options %>
   </div>
 
-	<% # make hidden and disabled to start
-	   # reveal if moderation policy is changed to full moderation -%>
-	<div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' if !@basket.fully_moderated? -%>>
-	    <label for="settings[moderated_except]">Moderator views items
-	      before approved EXCEPT:</label>
-	    <fieldset>
+        <% # make hidden and disabled to start
+           # reveal if moderation policy is changed to full moderation -%>
+        <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' if !@basket.fully_moderated? -%>>
+            <label for="settings[moderated_except]">Moderator views items
+              before approved EXCEPT:</label>
+            <fieldset>
 
-	    <% ZOOM_CLASSES.each do |zoom_class| -%>
-	    <input type="checkbox" name="settings[moderated_except][]" value=<%= zoom_class -%>
-	           <%= 'checked' if !@basket.settings[:moderated_except].blank? && @basket.settings[:moderated_except].include?(zoom_class) -%>>
-	    <%= zoom_class_plural_humanize(zoom_class) %><br />
-	    <% end -%>
-	  </fieldset>
-	  <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled>
-	</div>
-	
-	<div class="form-element">
-	   <strong>Privacy Controls:</strong>
-	</div>
+            <% ZOOM_CLASSES.each do |zoom_class| -%>
+            <input type="checkbox" name="settings[moderated_except][]" value=<%= zoom_class -%>
+                   <%= 'checked' if !@basket.settings[:moderated_except].blank? && @basket.settings[:moderated_except].include?(zoom_class) -%>>
+            <%= zoom_class_plural_humanize(zoom_class) %><br />
+            <% end -%>
+          </fieldset>
+          <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled>
+        </div>
+
+        <div class="form-element">
+           <strong>Privacy Controls:</strong>
+        </div>
 
    <div class="form-element">
       <label for="show_privacy_controls_true">Enabled</label>
       <%= form.radio_button :show_privacy_controls, true, :id => 'show_privacy_controls_true' %>
    </div>
-	
+
    <div class="form-element">
       <label for="show_privacy_controls_false">Disabled</label>
-      <%= form.radio_button :show_privacy_controls, false, :id => 'show_privacy_controls_false' %><br />
-      Privacy settings from the item's basket will be used on new items if privacy controls are disabled.
+      <%= form.radio_button :show_privacy_controls, false, :id =>
+      'show_privacy_controls_false' %><br />
+      <div class="form_example">
+      Privacy settings from the item's basket will be used on new
+      items if privacy controls are disabled.  Leave unspecified to
+      inherit privacy controls policy from the Site.
+      </div>
    </div>
 
-	<div class="form-element">
-		<strong>Default Item Privacy:</strong>
-	</div>
+        <div class="form-element">
+                <strong>Default Item Privacy:</strong>
+        </div>
 
-	<div class="form-element">
-		<label for="private_default_false">Public</label>
-		<%= form.radio_button :private_default, false, :id => 'private_default_false' %><br />
-		Can be viewed by everyone
-	</div>
+        <div class="form-element">
+                <label for="private_default_false">Public</label>
+                <%= form.radio_button :private_default, false, :id => 'private_default_false' %><br />
+                Can be viewed by everyone
+        </div>
 
-	<div class="form-element">
-		<label for="private_default_true">Private</label>
-		<%= form.radio_button :private_default, true, :id => 'private_default_true' %><br />
-		Can be viewed only by basket members
-	</div>
+        <div class="form-element">
+                <label for="private_default_true">Private</label>
+                <%= form.radio_button :private_default, true, :id => 'private_default_true' %><br />
+                Can be viewed only by basket members
+        </div>
 
-	<div class="form-element">
-		<label class="required" for="basket[file_private_default]">Attached File Privacy:</label>
-		<%= form.radio_button :file_private_default, false %> Can be downloaded by everyone <%= form.radio_button :file_private_default, true %> Can be downloaded by basket members only
-	</div>
+        <div class="form-element">
+                <label class="required" for="basket[file_private_default]">Attached File Privacy:</label>
+                <%= form.radio_button :file_private_default, false %> Can be downloaded by everyone <%= form.radio_button :file_private_default, true %> Can be downloaded by basket members only
+        </div>
 
-	<div class="form-element">
-		<label class="required" for="basket[allow_non_member_comments]">Who can add, edit and update comments on items?:</label>
-		<%= form.radio_button :allow_non_member_comments, true %> Anyone logged in <%= form.radio_button :allow_non_member_comments, false %> Only basket members
-	</div>
+        <div class="form-element">
+                <label class="required" for="basket[allow_non_member_comments]">Who can add, edit and update comments on items?:</label>
+                <%= form.radio_button :allow_non_member_comments, true %> Anyone logged in <%= form.radio_button :allow_non_member_comments, false %> Only basket members
+        </div>
 
   <%= full_moderation_exceptions_js_helper -%>
 
