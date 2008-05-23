@@ -56,16 +56,16 @@ module ConfigureAsKeteContentItem
       # TODO: globalize stuff, uncomment later
       # translates :title, :description
     end
-      
+
     # Implement attribute accessors for acts_as_licensed
     def title_for_license
       title
     end
-    
+
     def author_for_license
-      creator.login
+      creator.user_name
     end
-    
+
     def author_url_for_license
       "/accounts/show/#{creator.id}"
     end
