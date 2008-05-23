@@ -106,7 +106,9 @@ module ItemPrivacy
           # Save the prepared array into the attribute column..
           without_revision do
             without_saving_private do
-              update_attribute(:private_version_serialized, Marshal.dump(prepared_array))
+              debugger
+              self.private_version_serialized = Marshal.dump(prepared_array)
+              save
             end
           end
           
