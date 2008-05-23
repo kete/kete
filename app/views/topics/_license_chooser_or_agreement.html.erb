@@ -17,7 +17,7 @@
    <li><%=  radio_button_for_license_selection(item.class.table_name.singularize, license) %></li>
    <% end -%>
 </ul>
-<% if params[:action] != 'signup' -%>
+<% if params[:controller] != 'account' -%>
 <p>You can change or set your default licence by editing your
   profile</p>
 <% end %>
