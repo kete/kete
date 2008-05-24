@@ -44,6 +44,9 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
 
           oai_dc_xml_tags_to_dc_subjects(xml,item)
 
+          # if there is a license, put it under dc:rights
+          oai_dc_xml_dc_rights(xml,item)
+
           # this is mime type
           oai_dc_xml_dc_format(xml,item)
         end
