@@ -1,6 +1,6 @@
 class MembersController < ApplicationController
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index]
+  before_filter :login_required, :only => [:list, :index, :rss]
 
   permit "site_admin or admin of :current_basket"
 
@@ -16,6 +16,10 @@ class MembersController < ApplicationController
     # this sets up all instance variables
     # as well as preparing @members
     list_members
+
+    # turn on rss
+    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
+    @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
 
     # list people who have all other roles
     @current_basket.accepted_roles.each do |role|
@@ -95,7 +99,7 @@ class MembersController < ApplicationController
       @members = User.paginate(:joins => "join roles_users on users.id = roles_users.user_id",
                                :conditions => ["roles_users.role_id = ?", @member_role.id],
                                :page => params[:page],
-                               :per_page => 10)
+                               :per_page => 20)
     end
 
     if request.xhr?
@@ -238,6 +242,17 @@ class MembersController < ApplicationController
     end
     flash[:notice] = "Successfully removed user."
     redirect_to :action => 'list'
+  end
+
+  def rss
+    # changed from @headers for Rails 2.0 compliance
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+
+    list
+
+    respond_to do |format|
+      format.xml
+    end
   end
 
 end

@@ -1,0 +1,20 @@
+@title = SITE_NAME + ' - ' + @current_basket.name + ' - Members'
+xml.instruct! :xml, :version=>"1.0"
+xml.rss(:version=>"2.0"){
+  xml.channel{
+    xml.title(@title)
+    xml.link(request.protocol + request.host + request.request_uri)
+    xml.description("Members of #{@current_basket.name}")
+    xml.language('en-nz')
+    for member in @members
+      xml.member do
+        xml.title(member.user_name)
+        xml.description(member.flag)
+        # rfc822
+        xml.pubDate(member.created_at)
+      xml.link(link_to_contributions_of(member, 'Topic'))
+      xml.guid(link_to_profile_for(member))
+      end
+    end
+  }
+}

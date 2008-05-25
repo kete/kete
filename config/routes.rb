@@ -27,6 +27,10 @@ ActionController::Routing::Routes.draw do |map|
   # adding support for moderator feed
   map.basket_moderate_rss ':urlified_name/moderate/rss.:format', :controller => "moderate", :action => 'rss'
 
+  # Walter McGinnis, 2008-05-25
+  # adding support for basket members feed
+  map.basket_moderate_rss ':urlified_name/members/rss.:format', :controller => "members", :action => 'rss'
+
   map.basket_index ':urlified_name', :controller => "index_page", :action => 'index'
 
   map.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss.xml', :controller => "search", :action => 'rss'
