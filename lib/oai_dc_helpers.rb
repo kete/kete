@@ -178,9 +178,18 @@ module OaiDcHelpers
     # if there is a license for item, put in its url
     # otherwise site's terms and conditions url
     def oai_dc_xml_dc_rights(xml, item)
-      rights = !item.license.blank? ? item.license.url : SITE_URL.chop + url_for(:id => 4,
-                                                                            :urlified_name => Basket.find(ABOUT_BASKET).urlified_name,
-                                                                            :action => 'show' )
+      
+      if !item.license.blank?
+        rights = item.license.url
+      else
+        rights = SITE_URL.chop + url_for(
+          :id => 4,
+          :urlified_name => Basket.find(ABOUT_BASKET).urlified_name,
+          :action => 'show',
+          :controller => 'topics'
+        )
+      end
+      
       xml.tag!("dc:rights", rights)
     end
 
