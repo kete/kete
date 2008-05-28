@@ -67,7 +67,7 @@ module ConfigureAsKeteContentItem
     end
 
     def author_url_for_license
-      "/accounts/show/#{creator.id}"
+      "/#{Basket.find(1).urlified_name}/account/show/#{creator.to_param}"
     end
 
     # turn pretty urls on or off here

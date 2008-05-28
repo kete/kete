@@ -139,9 +139,8 @@ class Topic < ActiveRecord::Base
   end
 
   def author_url_for_license
-    "/account/" + creator.id.to_s + "_" + creator.login
+    "/#{Basket.find(1).urlified_name}/account/show/#{creator.to_param}"
   end
-
 
   # turn pretty urls on or off here
   include FriendlyUrls
