@@ -1,6 +1,18 @@
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
+
+  # For SSL support
+  
+  # # We need to ensure certain actions are run with SSL requirement if applicable
+  # include SslRequirement
+  # 
+  # # See lib/ssl_helpers.rb
+  # include SslHelpers
+  # 
+  # # Overload so SSL is always allowed
+  # def ssl_allowed?; true; end
+  
   include AuthenticatedSystem
 
   include ZoomControllerHelpers
@@ -168,8 +180,30 @@ class ApplicationController < ActionController::Base
     end
     return_value = can_see_discussion
   end
-
-
+  
+  # Specific test for private file visibility.
+  def current_user_can_see_private_files_for?(item)
+    current_user_can_see_private_files_in_basket?(item.basket)
+  end
+  
+  # Test for private file visibility in a given basket
+  def current_user_can_see_private_files_in_basket?(basket)
+    
+    # User must be logged in and have sufficient privileges.
+    logged_in? && case basket.private_file_visibility
+      when "at least site admin"
+        site_admin?
+      when "at least admin"
+        basket_admin?
+      when "at least moderator"
+        at_least_a_moderator?
+      when "at least member"
+        @current_user.has_role?("member", basket) || at_least_a_moderator?
+      else 
+        raise "Unknown authentication type: #{item.basket.private_file_visibility}"
+      end
+  end
+  
   # Walter McGinnis, 2006-04-03
   # bug fix for when site admin moves an item from one basket to another
   # if params[:topic][basket_id] exists and site admin
@@ -785,10 +819,9 @@ class ApplicationController < ActionController::Base
   def private_redirect_attribute_for(item)
     item.respond_to?(:private) && item.private? ? "true" : "false"
   end
-
+  
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?
-#, :available_licenses
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?
 end
 
 

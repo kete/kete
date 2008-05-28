@@ -124,6 +124,28 @@ module ItemPrivacyTestHelper
         assert !d.file_private?
       end
       
+      def create_user_with_permission(role, basket_instance)
+        raise "Unknown role" unless 
+          ['member', 'moderator', 'administrator', 'site_admin', 'tech_admin'].member?(role)
+          
+        user = User.create(
+          :login => 'quire',
+          :email => 'quire@example.com',
+          :password => 'quire',
+          :password_confirmation => 'quire',
+          :agree_to_terms => true,
+          :security_code => 'test',
+          :security_code_confirmation => 'test'
+        )
+        basket_instance.accepts_role(role, user)
+        
+        assert user.has_role?(role, basket_instance)
+      end
+      
+      def test_create_user_with_permission
+        create_user_with_permission('member', Basket.find(:first))
+      end
+      
     end
     
     module VersioningAndModeration
@@ -188,7 +210,7 @@ module ItemPrivacyTestHelper
         d.reload
 
         assert_not_nil d.private_version_serialized
-        assert_kind_of Array, Marshal.load(d.private_version_serialized)
+        assert_kind_of Array, YAML.load(d.private_version_serialized)
         assert_equal 5, d.versions.size
         assert_equal "Version 5", d.description
         assert_equal false, d.private?
@@ -254,7 +276,7 @@ module ItemPrivacyTestHelper
         d.update_attributes(:description => "Version 3")
 
         assert_not_nil d.private_version_serialized
-        assert_kind_of Array, Marshal.load(d.private_version_serialized)
+        assert_kind_of Array, YAML.load(d.private_version_serialized)
         assert_equal true, d.has_private_version?
         assert_nothing_raised do
           d = d.send :load_private!

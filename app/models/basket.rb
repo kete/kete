@@ -158,6 +158,17 @@ class Basket < ActiveRecord::Base
     options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
     select_options = self.array_to_options_list_with_defaults(options_array,current_show_discussion_value)
   end
+  
+  def private_file_visibility_as_options(site_basket)
+    current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
+    options_array = [['Basket member', 'at least member'], ['Basket moderator', 'at least moderator'], ['Basket admin', 'at least admin'], ['Site admin', 'at least site admin']]
+    select_options = self.array_to_options_list_with_defaults(options_array,current_value)
+  end
+  
+  def private_file_visibilty_selected_or_default(value, site_basket)
+    current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
+    value == current_value
+  end
 
   def array_to_options_list_with_defaults(options_array, default_value)
     select_options = String.new
@@ -230,6 +241,13 @@ class Basket < ActiveRecord::Base
   def fully_moderated?
     settings[:fully_moderated].blank? ? DEFAULT_POLICY_IS_FULL_MODERATION : settings[:fully_moderated]
   end
+  
+  # Private file visibility, taking into account inheritance from
+  # site basket if not set locally
+  def private_file_visibility
+    self.settings[:private_file_visibility] || Basket.find(1).settings[:private_file_visibility] || "at least member"
+  end
+    
 
   # if we don't have any moderators specified
   # find admins for basket

@@ -63,8 +63,8 @@
     <%= form.check_box :do_not_sanitize %></div>
   <% end -%>
 
-	<% if show_privacy_controls? %>
-	<div class="form-element"><label for="video_file_private">Attached video privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@video) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@video) %> Can be downloaded only by basket members<br />
+	<% if show_privacy_controls_for?(@video) %>
+	<div class="form-element"><label for="video_file_private">Attached video privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@video) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@video) %> Can only be downloaded by people who have <%= @current_basket.private_file_visibility -%> access.<br />
 		<strong>Please note that once public, an attached video cannot be made private.</strong></div>
 	<% else %>
 	<%# Use the default %>

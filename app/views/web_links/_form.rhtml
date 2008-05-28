@@ -64,8 +64,8 @@
   <%= check_box 'web_link', 'do_not_sanitize' %></div>
 <% end -%>
 
-<% if show_privacy_controls? %>
-<div class="form-element"><label for="web_link_file_private">Attached web link privacy:</label> <%= radio_button 'web_link', 'file_private', false, file_private_radio_options(@web_link) %> Can be accessed by everyone <%= radio_button 'web_link', 'file_private', true, file_private_radio_options(@web_link) %> Can be accessed only by basket members<br />
+<% if show_privacy_controls_for?(@web_link) %>
+<div class="form-element"><label for="web_link_file_private">Attached web link privacy:</label> <%= radio_button 'web_link', 'file_private', false, file_private_radio_options(@web_link) %> Can be accessed by everyone <%= radio_button 'web_link', 'file_private', true, file_private_radio_options(@web_link) %> Can only be accessed by people who have <%= @current_basket.private_file_visibility -%> access.<br />
 	<strong>Please note that once public, a web link cannot be made private.</strong></div>
 <% else %>
 <%# Use the default %>
@@ -77,10 +77,12 @@
   <%= text_field 'web_link', 'tag_list', {:class => "text-input"} %>
 </div>
 
+<% if show_privacy_controls_for?(@web_link) %>
 <div class="form-element">
   <label class="required" for="web_link_url">URL:</label>
   <%= text_field 'web_link', 'url', {:class=>"text-input"} %>
 </div>
+<% end %>
 
 <% form_fields = @content_type.content_type_to_field_mappings -%>
 <% if form_fields.size > 0 %>

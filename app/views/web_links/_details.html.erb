@@ -1,4 +1,4 @@
-<% if !item.file_private? || ( permitted_to_view_private_items? && params[:private] == "true" ) -%>
+<% if !item.file_private? || current_user_can_see_private_files_for?(item) -%>
 	<p>url: <%= link_to h(item.url), item.url %></p>
 <% else -%>
 	<p>url: ( no public version of this link available )</p>

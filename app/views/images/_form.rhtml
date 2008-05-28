@@ -65,8 +65,8 @@
                   <%= form.check_box :do_not_sanitize %></div>
                 <% end -%>
 
-					<% if show_privacy_controls? %>
-					<div class="form-element"><label for="still_image_file_private">Image original privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@still_image) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@still_image) %> Can be downloaded only by basket members<br />
+					<% if show_privacy_controls_for?(@still_image) %>
+					<div class="form-element"><label for="still_image_file_private">Image original privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@still_image) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@still_image) %> Can only be downloaded by people who have <%= @current_basket.private_file_visibility -%> access.<br />
 						<strong>Image originals can be private, however once public, an image original cannot be made private. Image thumbnails are always public.</strong></div>
 					<% else %>
 					<%# Use the default %>

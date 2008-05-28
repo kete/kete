@@ -67,13 +67,13 @@
                   <%= form.check_box :do_not_sanitize %></div>
                 <% end -%>
 
-   				<% if show_privacy_controls? %>
-   				<div class="form-element"><label for="document_file_private">Attached document privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@document) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@document) %> Can be downloaded only by basket members<br />
-   					<strong>Please note that once public, an attached document cannot be made private.</strong></div>
-   				<% else %>
-   				<%# Use the default %>
-               <%= form.hidden_field :file_private -%>
-               <% end %>
+                <% if show_privacy_controls_for?(@document) %>
+                <div class="form-element"><label for="document_file_private">Attached document privacy:</label> <%= form.radio_button :file_private, false, file_private_radio_options(@document) %> Can be downloaded by everyone <%= form.radio_button :file_private, true, file_private_radio_options(@document) %> Can only be downloaded by people who have <%= @current_basket.private_file_visibility -%> access.<br />
+                <strong>Please note that once public, an attached document cannot be made private.</strong></div>
+                <% else %>
+                <%# Use the default %>
+                <%= form.hidden_field :file_private -%>
+                <% end %>
 
                 <%= tags_input_field(form,"document_tag_list") %>
 

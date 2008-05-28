@@ -11,22 +11,14 @@ module KeteAuthorization
     # on the site basket?
     def site_admin?
       @site = @site_basket
-      if logged_in?
-        permit? "site_admin or admin on :site" do
-          return true
-        end
-      end
+      logged_in? && permit?("site_admin or admin on :site")
     end
 
     # does the current user have the tech_admin role
     # on the site basket?
     def tech_admin?
       @site = @site_basket
-      if logged_in?
-        permit? "tech_admin on :site" do
-          return true
-        end
-      end
+      logged_in? && permit?("tech_admin on :site")
     end
 
     def basket_admin?
