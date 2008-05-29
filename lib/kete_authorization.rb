@@ -11,7 +11,7 @@ module KeteAuthorization
     # on the site basket?
     def site_admin?
       @site = @site_basket
-      logged_in? && permit?("site_admin or admin on :site")
+      logged_in? && permit?("site_admin or admin on :site") || nil
     end
 
     # does the current user have the tech_admin role
@@ -22,27 +22,11 @@ module KeteAuthorization
     end
 
     def basket_admin?
-      if @site_admin == false
-        if logged_in?
-          permit? "admin on :current_basket" do
-            return true
-          end
-        end
-      else
-        return true
-      end
+      @site_admin || ( logged_in? && permit?("admin on :current_basket") )
     end
 
     def at_least_a_moderator?
-      if @site_admin == false
-        if logged_in?
-          permit? "admin on :current_basket or moderator on :current_basket" do
-            return true
-          end
-        end
-      else
-        return true
-      end
+      @site_admin || ( logged_in? && permit?("admin on :current_basket or moderator on :current_basket") )
     end
 
     def load_site_admin
