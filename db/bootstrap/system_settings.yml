@@ -422,4 +422,11 @@ system_settings_047:
   id: 47
   value: 
   section: Server
-  
+system_settings_048:
+  name: Force HTTPS On Restricted Pages
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Forces private items and administrative controls to be accessed via HTTPS. YOU MUST HAVE SSL/HTTPS ENABLED AND WORKING ON YOUR WEB SERVER. CAREFUL.  ENABLING THIS WITHOUT MAKING PROPER PREPERATIONS MAY BREAK YOUR SITE AFTER RESTART! 
+  id: "48"
+  value: "false"
+  section: Server

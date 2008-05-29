@@ -2,16 +2,8 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
 
-  # For SSL support
-  
-  # # We need to ensure certain actions are run with SSL requirement if applicable
-  # include SslRequirement
-  # 
-  # # See lib/ssl_helpers.rb
-  # include SslHelpers
-  # 
-  # # Overload so SSL is always allowed
-  # def ssl_allowed?; true; end
+  # See lib/ssl_helpers.rb
+  include SslHelpers
   
   include AuthenticatedSystem
 

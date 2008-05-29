@@ -60,7 +60,19 @@ module OaiDcHelpers
         # Link to private version if generating OAI record for it..
         uri_attrs.merge!({ :private => "true" }) if item.respond_to?(:private) && item.private?
       end
-      xml.tag!("dc:identifier", "http://#{host}#{url_for(uri_attrs)}")
+      
+      # If the item is private and SSL is configured, use https instead of http for full URL for the
+      # record.
+      if FORCE_HTTPS_ON_RESTRICTED_PAGES && 
+        ( ( item.respond_to?(:private) && item.private? ) || 
+          ( item.respond_to?(:commentable_private?) && item.commentable_private? ) )
+          
+        protocol = "https"
+      else
+        protocol = "http"
+      end
+      
+      xml.tag!("dc:identifier", "#{protocol}://#{host}#{url_for(uri_attrs.merge(:only_path => true))}")
     end
 
     def oai_dc_xml_dc_title(xml, item)
@@ -179,7 +191,7 @@ module OaiDcHelpers
     # otherwise site's terms and conditions url
     def oai_dc_xml_dc_rights(xml, item)
       
-      if !item.license.blank?
+      if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
         rights = SITE_URL.chop + url_for(

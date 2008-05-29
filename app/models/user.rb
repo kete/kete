@@ -224,6 +224,14 @@ class User < ActiveRecord::Base
     Basket.find_all_by_id(DEFAULT_BASKETS_IDS).each { |basket| self.has_role('member',basket) }
   end
   
+  def baskets_with_membership
+    # WORK IN PROGRESS
+    # Remove default scoping to avoid nasty multi-table selects
+    # with_exclusive_scope(:find => { :conditions => nil  }) do
+      Basket.find_by_sql("SELECT baskets.* FROM users JOIN roles_users ON roles_users.user_id = users.id JOIN roles ON roles.id = roles_users.role_id AND roles.authorizable_type = \"Basket\" JOIN baskets ON baskets.id = roles.authorizable_id WHERE users.id = #{self.id};").uniq
+    # end
+  end
+  
   protected
 
   # supporting activation

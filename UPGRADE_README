@@ -6,6 +6,21 @@ Revisions that require migrations and/or extra upgrade steps are detailed below.
 
 It is assumed you are upgrading from an earlier functional and unmodified trunk version.
 
+== Trunk r1196 - Added HTTPS/SSL support
+
+To update from r1174 or later, follow these instructions:
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Upgrade your code base
+3.      Run the kete upgrade rake task 'rake kete:upgrade'
+4.      Start your Kete server again (mongrels, backgroundrb)
+
+Note: You must have a web server and SSL certificate correctly configured 
+in order to take advantage of SSL features in this version. The SSL features are 
+disabled by default and can be enabled in the Server advanced settings in the 
+configuration assistant/reconfigure site controls.
+
+If updating from an earlier version, please see further instructions below.
+
 == Trunk r1174 - Added per basket privacy control enable/disable preferences
 
 To update from r1169 through r1173, all you need to do is the following:
