@@ -98,8 +98,12 @@ class BasketsController < ApplicationController
       end
     end
     if @basket.update_attributes(params[:basket])
+      # Reload to ensure basket.name is updated and not the previous
+      # basket name.
+      @basket.reload
+      
       set_settings
-
+    
       # @basket.name has changed
       if original_name != @basket.name
         # update zoom records for basket items

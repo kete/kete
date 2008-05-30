@@ -110,6 +110,9 @@ class ApplicationController < ActionController::Base
         @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
       end
     end
+    if @current_basket.nil?
+      raise ActiveRecord::RecordNotFound, "Couldn't find Basket with NAME=#{params[:urlified_name]}."
+    end
   end
 
   # figure out which theme we need
