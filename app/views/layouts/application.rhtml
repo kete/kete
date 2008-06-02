@@ -12,7 +12,8 @@
   'extended_fields', 'licenses'] -%>
   <% none_tinymce_controllers = as_controllers + ['members', 'topic_types', 'content_types'] -%>
   <% tinymce_actions = ['new', 'create', 'edit', 'update', 'pick_topic_type', 'homepage_options'] -%>
-  <% if !none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action]) -%>
+  <% @do_not_use_tiny_mce ||= !(!none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action])) -%>
+  <% unless @do_not_use_tiny_mce -%>
         <% # Include TinyMCE before other JS to avoid problems,
                         # tinymce not compatible with bundle_fu -%>
         <%= javascript_include_tiny_mce_if_used %>

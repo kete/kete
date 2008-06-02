@@ -709,15 +709,13 @@ module Importer
         end
       end
 
-      if @fields.size > 0
-        # we use our version of this method
-        # that calls xml builder directly, rather than using partial template
-        # HACK, conflict with symbol vs string for hash key
-        # duplicate
-        temp_params = Hash.new
-        temp_params[:topic] = topic_params["topic"]
-        topic_params = importer_extended_fields_update_hash_for_item(:item_key => 'topic', :params => temp_params)
-      end
+      # we use our version of this method
+      # that calls xml builder directly, rather than using partial template
+      # HACK, conflict with symbol vs string for hash key
+      # duplicate
+      temp_params = Hash.new
+      temp_params[:topic] = topic_params["topic"]
+      topic_params = importer_extended_fields_update_hash_for_item(:item_key => 'topic', :params => temp_params)
 
       topic_params[:topic][:basket_id] = @current_basket.id
 

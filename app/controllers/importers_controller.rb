@@ -90,7 +90,8 @@ class ImportersController < ApplicationController
                               :import => @import.id,
                               :params => params,
                               :import_request => import_request } )
-
+        # fixing failure due to unnecessary loading of tiny_mce
+        @do_not_use_tiny_mce = true
       else
         flash[:notice] = 'There is another import running at this time.  Please try back later.'
         redirect_to :action => 'list'
