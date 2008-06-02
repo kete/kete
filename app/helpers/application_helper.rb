@@ -107,6 +107,35 @@ module ApplicationHelper
   end
 
 
+  def render_baskets_as_menu
+    html = '<ul id="sub-menu" class="menu left-hand-menu">'
+    except_certain_baskets_args = { :conditions => ["id not in (?)", @standard_baskets] }
+
+    basket_count = 0
+    Basket.find(:all, except_certain_baskets_args).each do |basket|
+      basket_count += 1
+      if basket == @current_basket
+
+        html += li_with_correct_class(basket_count) + link_to_index_for(basket)
+        
+          html += '<ul>'
+          topic_count = 0
+          #basket.topics.each do |basket|
+          for topic in basket.topics
+	    if topic != basket.index_topic
+	            html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
+            end
+          end
+          html += '</ul>'
+        
+      else
+        html += li_with_correct_class(basket_count) + link_to_index_for(basket)
+      end
+      html += '</li>'
+    end
+    html += '</ul>'
+  end
+
 
 
   def current_user_can_see_flagging?
