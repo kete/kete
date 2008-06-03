@@ -65,9 +65,9 @@ class IndexPageController < ApplicationController
             recent_query_hash[:conditions] = ['id != ?', @topic] unless @topic.nil?
 
             if @current_basket == @site_basket
-              @recent_topics_items = Topic.find(:all, recent_query_hash)
+              @recent_topics_items = Topic.find(:all, recent_query_hash).reject { |t| t.disputed_or_not_available? }
             else
-              @recent_topics_items = @current_basket.topics.find(:all, recent_query_hash)
+              @recent_topics_items = @current_basket.topics.find(:all, recent_query_hash).reject { |t| t.disputed_or_not_available? }
             end
           end
 

@@ -7,7 +7,7 @@
 <p><b>Login:</b> <%= h(@user.login) -%></p>
 
 <%if @user.show_email? or @viewer_is_user -%>
-        <p><b>Email:</b> <%= mail_to(@user.email, @user.email, :encode => "javascript") -%></p>
+        <p><b>Email:</b> <%= mail_to(@user.email, @user.email, :encode => "hex") -%></p>
 <% end -%>
 
 <p><b>Created:</b> <%= h(@user.created_at.to_s(:euro_date_time)) -%></p>

@@ -193,6 +193,12 @@ module Flagging
       already_at_blank_version? or latest_version_of_this_privacy.tags.size > 0
     end
     
+    def disputed_or_not_available?
+      already_at_blank_version? or 
+        latest_version_of_this_privacy.tags.size > 0 or 
+        at_placeholder_public_version?
+    end
+    
     def latest_version_of_this_privacy
       versions.sort { |a, b| b.id <=> a.id }.find { |v| !v.respond_to?(:private?) || v.private? == private? }
     end

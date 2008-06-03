@@ -126,7 +126,7 @@
                 basket_index_url(:urlified_name => @about_basket.urlified_name)) %></li>
         <li><%= link_to_unless_current(h(@help_basket.name),
                 basket_index_url(:urlified_name => @help_basket.urlified_name)) %></li>
-        <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "javascript") %></li>
+        <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex") %></li>
         <%= header_add_links %>
       </ul>
     </div> <!-- /header -->
