@@ -9,10 +9,16 @@
   <% # submit_tag 'Edit' %>
 <% # end %>
 
+<table>
+  
 <%= render(:partial => 'generic_fields', :locals => { :local_id => @content_type.id }) %>
 
 <%= render(:partial => 'current_fields', :locals => { :local_id => @content_type.id }) %>
 
 <%= render(:partial => 'available_fields_form', :locals => { :local_id => @content_type }) %>
 
+</table>
+
 <%= link_to 'Return to content types', :action => 'list' %>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>

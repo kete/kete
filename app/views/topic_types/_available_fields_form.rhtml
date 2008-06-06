@@ -20,12 +20,12 @@
                                                                 <% end -%>
                                                         <% end -%>
                                                         <%= "(multiple)" if @extended_field.multiple? -%>
-                                                        :<br>
+                                                        :<br />
                                                         (optional) <%= check_box("extended_field[]", 'add_checkbox') %>
                                                         (required) <%= check_box("extended_field[]", 'required_checkbox') %>
                                                 </p>
                                         <% end %>
-                                        <%= submit_tag "Add to Topic Type" %>
+                                        <div class="wrap"><%= submit_tag "Add to Topic Type" %></div>
                                 <% end %>
                         <% else %>
                                 <p>No form fields are available.</p>

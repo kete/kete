@@ -1,6 +1,6 @@
 if !@has_errors
   page << "RedBox.close();"
-  page.show(@section + "-check")
+  page.show(@section.split.join("-") + "-check")
   page.replace_html('completed-message', :partial => 'settings_complete') unless @not_completed
 else
   page.replace_html(@section, @section_html)

@@ -17,7 +17,7 @@
 
                 <% if edit and @site_admin %>
                         <div class="form-element">
-                                <label for="basket_for_url">Move to another basket?</label>
+                                <label for="still_image_basket_id">Move to another basket?</label>
                                 <%= form.select 'basket_id', @baskets %>
                         </div>
                 <% end -%>
@@ -103,10 +103,10 @@
                 <% end -%>
 
 
-                <%= hidden_field_tag 'still_image[basket_id]', @current_basket.id %>
+                <%= hidden_field_tag 'still_image[basket_id]', @current_basket.id, "id" => "still_image_basket_id" if @still_image.new_record? %>
 
                 <% if !params[:id].nil? %>
-                        <%= hidden_field_tag 'image_file[still_image_id]', params[:id] %>
+                        <%= hidden_field_tag 'image_file[still_image_id]', params[:id], "id" => "image_file_still_image_id" %>
                 <% end %>
 		<%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @still_image} %>
                 <!--[eoform:still_image]-->

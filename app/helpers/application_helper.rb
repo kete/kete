@@ -188,7 +188,7 @@ module ApplicationHelper
     if session[:return_to].blank?
       return link_to("Cancel", :action => 'list')
     else
-      return link_to("Cancel", session[:return_to])
+      return link_to("Cancel", u(session[:return_to]))
     end
   end
 
@@ -511,12 +511,10 @@ module ApplicationHelper
         end
         html_string += pending_review(comment) + "\n"
 
-        html_string += "<div class=\"comment-tools\">
-                                <ul>\n"
+        html_string += "<div class=\"comment-tools\">\n"
         html_string += flagging_links_for(comment,true,'comments')
         if logged_in? and @at_least_a_moderator
-          html_string += "</ul><ul>"
-          html_string += "<li>" + link_to("Edit",
+          html_string += "<ul><li>" + link_to("Edit",
                                           :controller => 'comments',
                                           :action => :edit,
                                           :id => comment) + "</li>\n"
@@ -532,7 +530,7 @@ module ApplicationHelper
                                           :method => :post,
                                           :confirm => 'Are you sure?') + "</li>\n"
         end
-        html_string += "<\ul>\n</div></div></div>"
+        html_string += "</ul>\n</div></div></div>"
       end
       html_string += "<p>" + link_to("join this discussion",
                                      {:action => :new,
@@ -551,11 +549,11 @@ module ApplicationHelper
     html_string = String.new
     if FLAGGING_TAGS.size > 0 and !item.already_at_blank_version?
       if first
-        html_string = "                                        <ul><li class=\"first flag\">Flag as:\n"
+        html_string = "                                        <ul><li class=\"first flag\">Flag as:</li>\n"
       else
-        html_string = "                                         <ul><li class=\"flag\">Flag as:\n"
+        html_string = "                                         <ul><li class=\"flag\">Flag as:</li>\n"
       end
-      html_string += "<ul>\n"
+      html_string += "<li><ul>\n"
       flag_count = 1
       FLAGGING_TAGS.each do |flag|
         if flag_count == 1
@@ -597,6 +595,7 @@ module ApplicationHelper
       elsif
         html_string += "currently no non-disputed #{privacy_type} versions of this item. Details of the #{privacy_type} version of this item are not being displayed at this time."
       end
+      html_string += "</h4>"
     end
     return html_string
   end
@@ -644,7 +643,7 @@ module ApplicationHelper
 
   # we use this in imports, too
   def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options={ })
-    result = "<select name='#{ object}[#{method}]'"
+    result = "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
     html_options.each do |key, value|
         result << ' ' + key.to_s + '="' + value.to_s + '"'
     end

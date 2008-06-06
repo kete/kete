@@ -7,13 +7,13 @@
 
 <h2><%= @title %></h2>
 
-<table width="100%">
+<table class="members-list-table">
   <tr valign="top">
-    <th width="25%">User name or Login</th>
-    <th width="25%">Email</th>
-    <th width="25%">Change to</th>
+    <th>User name or Login</th>
+    <th>Email</th>
+    <th>Change to</th>
     <% if !@admin_actions.blank? -%>
-    <th width="25%">Administrative Actions</th>
+    <th>Administrative Actions</th>
     <% end -%>
   </tr>
 

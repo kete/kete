@@ -14,18 +14,16 @@
       <%= pending_review(@topic) %>
 
       <div class="detail-tools">
-      <ul>
       <% if !@url_to_full_topic.nil? -%>
-         <%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li>
+         <ul><%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li></ul>
          <% tool_count += 1 -%>
       <% end -%>
       <% if !@url_to_comments.nil? -%>
          <% if @comments.size > 0 -%>
-            <%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li>
+            <ul><%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li></ul>
             <% tool_count += 1 -%>
          <% end -%>
       <% end -%>
-      </ul>
       </div>
       <div class="license"><%= @topic.license_metadata %></div>
    <% end -%>

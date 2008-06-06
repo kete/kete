@@ -90,11 +90,12 @@
                                                        :sort_type => nil,
                                                        :sort_direction => nil,
                                                        :urlified_name => @site_basket.urlified_name,
-                                                       :search_terms => nil } do %>                                                                        <label>Search:</label>
+                                                       :search_terms => nil } do %>                                                                        
+                              <div class="wrap"><label for="search_terms">Search:</label>
                               <%= text_field_tag 'search_terms'  %>
-                              <%= submit_tag 'Go' %>
+                              <%= submit_tag 'Go' %></div>
                       <% end -%>
-                </div>
+            </div>
         <%= header_links_to_baskets %>
       </div>
     </div>
@@ -239,7 +240,7 @@
 
 
 
-<div id="wrapper">
+    <div id="wrapper">
         <div id="header">
                 <h1><%= PRETTY_SITE_NAME -%></h1>
         </div><!-- /header -->
@@ -251,7 +252,7 @@
            <div id="notice"><%= flash[:notice] %></div>
         <% end %>
 
-<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
+        <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
 "full-width notabs" }) %>
 
 
@@ -268,9 +269,7 @@
 </div><!-- /wrapper -->
 
 </div>
-<div>
-<%= render(:partial => "topics/content_wrapper_end" ) %>
-
+</div>
 <% end -%>
 </body>
 </html>

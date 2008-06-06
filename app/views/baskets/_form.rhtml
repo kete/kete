@@ -2,14 +2,14 @@
   <%= error_messages_for 'basket' %>
 
   <!--[form:basket]-->
-  <div class="form-element"><label for="basket[name]">Name:</label>
+  <div class="form-element"><label for="basket_name">Name:</label>
     <%= form.text_field :name  %>
   </div>
 
   <div class="form-element">
-    <label class="required" for="settings[fully_moderated]">Moderation
+    <label class="required" for="settings_fully_moderated">Moderation
       Policy:</label>
-    <%= select_tag 'settings[fully_moderated]', @basket.moderation_select_options %>
+    <%= select_tag 'settings[fully_moderated]', @basket.moderation_select_options, "id" => "settings_fully_moderated" %>
   </div>
 
         <% # make hidden and disabled to start

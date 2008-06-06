@@ -17,7 +17,7 @@
 
                 <% if edit and @site_admin %>
                         <div class="form-element">
-                                <label for="basket_for_url">Move to another basket?</label>
+                                <label for="document_basket_id">Move to another basket?</label>
                                 <%= form.select 'basket_id', @baskets %>
                         </div>
                 <% end -%>
@@ -103,7 +103,7 @@
                         </div>
                 <% end -%>
 		<%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @document} %>				
-                <%= hidden_field_tag 'document[basket_id]', @current_basket.id %>
+                <%= hidden_field_tag 'document[basket_id]', @current_basket.id, "id" => "document_basket_id" if @document.new_record? %>
                 <!--[eoform:document]-->
 
         </fieldset>

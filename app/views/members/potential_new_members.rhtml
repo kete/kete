@@ -14,7 +14,7 @@
                                 <%= check_box('user[]', 'add_checkbox') %> <%= h(@user.user_name) %>
                         </p>
                 <% end %>
-                <%= submit_tag "Add members" %>
+                <div class="wrap"><%= submit_tag "Add members" %></div>
         <% end -%>
 <% else %>
         <p>No potential members are available.</p>

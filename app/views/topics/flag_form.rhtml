@@ -21,16 +21,18 @@
                 <%= hidden_field_tag "id", params[:id] %>
                 <%= hidden_field_tag "version", params[:version] if !params[:version].blank? %>
                 <div class="form-element">
-                        <label for="message">Message for
+                        <label for="message_">Message for
                         <%= @user_type -%>:</label>
                         <%= text_area 'message', '' %>
                         <p><%= @instructions -%></p>
                 </div>
         </fieldset>
-        <%= submit_tag @submit_text %>
+        <div class="wrap"><%= submit_tag @submit_text %></div>
 <% end %>
 
 <%= link_to_cancel %>
 <% else %>
   <h2>Sorry flagging has been disabled on this section of the site</h2>
 <% end -%>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>

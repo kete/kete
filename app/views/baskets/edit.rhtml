@@ -9,7 +9,7 @@
 
 <% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
   <%= render :partial => 'form', :object => form %>
-  <%= submit_tag 'Save' , :class => "save-button" %>
+  <div class="wrap"><%= submit_tag 'Save' , :class => "save-button" %></div>
 <% end %>
 <%= link_to_cancel %>
 

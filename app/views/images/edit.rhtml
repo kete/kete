@@ -8,13 +8,12 @@
       :id => @still_image },
       :html => { :multipart => true } do |form| %>
       <%= render :partial => 'form', :object => form %>
-      <%= submit_tag 'Save', :class => "save-button" %>
+      <div class="wrap"><%= submit_tag 'Save', :class => "save-button" %></div>
       <% end %>
 
       <%= link_to_cancel %>
 <% else %>
-<h2>Sorry - editing on this section of the site has been disallowed</h2>
+      <h2>Sorry - editing on this section of the site has been disallowed</h2>
 <% end -%>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>
-

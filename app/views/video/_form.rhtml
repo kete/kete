@@ -15,7 +15,7 @@
 
   <% if edit and @site_admin %>
   <div class="form-element">
-    <label for="basket_for_url">Move to another basket?</label>
+    <label for="video_basket_id">Move to another basket?</label>
     <%= form.select 'basket_id', @baskets %>
   </div>
   <% end -%>
@@ -71,7 +71,7 @@
    <%= form.hidden_field :file_private -%>
 	<% end %>
 
-  <%= hidden_field_tag 'video[basket_id]', @current_basket.id, :id => 'video_basket_id' %>
+  <%= hidden_field_tag 'video[basket_id]', @current_basket.id, :id => 'video_basket_id' if @video.new_record? %>
 
   <%= tags_input_field(form,"video_tag_list") %>
 

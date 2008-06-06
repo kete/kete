@@ -1,12 +1,12 @@
-                <table width="100%">
-                        <tr><td>&nbsp;<h4>Members</h4></td></tr>
+                <table class="members-list-table">
+                        <tr><th>&nbsp;<h4>Members</h4></th></tr>
                         <% if members.blank? %>
                                 <tr><td><p>Currently no members</p></td></tr>
                         <% else %>
                                 <% for user in members %>
                                         <tr>
-                                                <td width="25%"><%= link_to_contributions_of(user,'Topic') -%></td>
-                                                <td width="25%"><%= mail_to h(user.email) -%></td>
+                                                <td><%= link_to_contributions_of(user,'Topic') -%></td>
+                                                <td><%= mail_to h(user.email) -%></td>
                                                 <%= render :partial =>'possible_roles',
                                                            :locals => { :user => user,
                                                                         :role_key => 'member',

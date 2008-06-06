@@ -12,15 +12,15 @@
 <fieldset>
 
   <div class="form-element">
-    <label for="settings[theme_font_family]">Font Family:</label>
-    <%= select_tag 'settings[theme_font_family]', @basket.font_family_select_options %>
+    <label for="settings_theme_font_family">Font Family:</label>
+    <%= select_tag 'settings[theme_font_family]', @basket.font_family_select_options, "id" => "settings_theme_font_family" %>
   </div>
 
   <div class="form-element">
     <%= image_tag @basket.settings[:header_image] if !@basket.settings[:header_image].blank? -%>
-    <label for="settings[header_image]">URL for background image for the top
+    <label for="settings_header_image">URL for background image for the top
     of each page:</label>
-    <%= text_field 'settings', 'header_image' %>
+    <%= text_field 'settings', 'header_image', "id" => "settings_header_image" %>
   </div>
 
   <div class="form-element">
@@ -29,24 +29,24 @@
     <fieldset>
 
   <div class="form-element">
-    <label for="settings[show_action_menu]">Show Action Menu to:</label>
-    <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket) %> <br />(who can see the view, edit, history and other links)
+    <label for="settings_show_action_menu">Show Action Menu to:</label>
+    <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket), "id" => "settings_show_action_menu" %> <br />(who can see the view, edit, history and other links)
   </div>
 
 
   <div class="form-element">
-    <label for="settings[show_action_menu]">Show Comments to:</label>
-    <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket) %> <br />(who can see and add comments)
+    <label for="settings_show_discussion">Show Comments to:</label>
+    <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket), "id" => "settings_show_discussion" %> <br />(who can see and add comments)
   </div>
 
   <div class="form-element">
-    <label for="settings[show_flagging]">Show Flagging to:</label>
-    <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket) %> <br />(who can see and add comments)
+    <label for="settings_show_flagging">Show Flagging to:</label>
+    <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket), "id" => "settings_show_flagging" %> <br />(who can see and add comments)
   </div>
 
   <div class="form-element">
-    <label for="settings[show_add_links]">Show Add Links to:</label>
-    <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket) %> <br />(who can see and add comments)
+    <label for="settings_show_add_links">Show Add Links to:</label>
+    <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket), "id" => "settings_show_add_links" %> <br />(who can see and add comments)
   </div>
 
 
@@ -61,8 +61,8 @@
     <fieldset>
 
       <div class="form-element">
-        <label for="settings[private_file_visibility]" style="width: 100%">To view private attached files you must be at least a:</label>
-        <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket) %></div>
+        <label for="settings_private_file_visibility" style="width: 100%">To view private attached files you must be at least a:</label>
+        <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket), "id" => "settings_private_file_visibility" %></div>
       </div>
      
 
@@ -71,14 +71,14 @@
   <% end %>
 
   <div class="form-element">
-    <label for="settings[theme]">Theme:</label>
+    <label for="settings_theme">Theme:</label>
     <fieldset>
       <% if @basket.possible_themes.size > 0 -%>
       <% @basket.possible_themes.each  do |theme| -%>
       <div class="theme-choice-wrapper">
         <%= image_tag "/themes/#{theme}/images/sample.jpg" -%>
         <div class="theme-choice-text">
-          <%= radio_button_tag 'settings[theme]', theme %>
+          <%= radio_button_tag 'settings[theme]', theme, "id" => "settings_theme" %>
           <%= theme.humanize %>
         </div>
       </div>
@@ -98,7 +98,7 @@
 
 </fieldset>
 
-<%= submit_tag 'Save' , :class => "save-button" %>
+  <div style="margin:0;padding:0"><%= submit_tag 'Save' , :class => "save-button" %></div>
 <% end %>
 
 

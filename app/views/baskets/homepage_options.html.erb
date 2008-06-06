@@ -22,7 +22,7 @@
 
 <% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
   <%= render :partial => 'homepage_form', :object => form %>
-  <%= submit_tag 'Save' , :class => "save-button" %>
+  <div style="margin:0;padding:0"><%= submit_tag 'Save' , :class => "save-button" %></div>
 <% end %>
 <%= link_to_cancel %>
 

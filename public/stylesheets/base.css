@@ -611,5 +611,20 @@ ul.option-list li img{
 .license img {
  float: left;
  margin-right: .5em;
+}
 
+/* width of members list table for basket administration of members */
+table.members-list-table {
+	width: 100%;
+}
+
+/* column widths for the above. */
+.members-list-table td {
+	width: 25%;
+}
+
+/* for wrapping form elements in a block element - needed for XHTML validation */
+div.wrap {
+	margin: 0;
+	padding: 0;
 }

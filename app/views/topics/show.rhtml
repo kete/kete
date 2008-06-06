@@ -6,7 +6,7 @@
       <h2>Topic: <%= h(@topic.title) %></h2>
       <h4>Topic Type: <%= h(@topic.topic_type.name) %></h4>
       <p><b><%= @topic.short_summary %></b></p>
-      <p><%= @topic.description %></p>
+      <%= @topic.description %>
       <%= pending_review(@topic) %>
 
 

@@ -12,7 +12,7 @@
 
 <% if edit and @site_admin%>
         <div class="form-element">
-                <label for="basket_for_url">Move to another basket?</label>
+                <label for="web_link_basket_id">Move to another basket?</label>
                 <% # TODO: ugly hack till we move this to form.select -%>
                 <%= collection_select('web_link', 'basket_id', Basket.find(:all), :id, :name) %>
         </div>
@@ -59,7 +59,7 @@
 </div>
 
 <% if @site_admin -%>
-<div class="form-element"><label for="web_link[do_not_sanitize]">Allow
+<div class="form-element"><label for="web_link_do_not_sanitize">Allow
     forms and other possible insecure elements and attributes in the HTML?</label>
   <%= check_box 'web_link', 'do_not_sanitize' %></div>
 <% end -%>
@@ -77,7 +77,7 @@
   <%= text_field 'web_link', 'tag_list', {:class => "text-input"} %>
 </div>
 
-<% if show_privacy_controls_for?(@web_link) %>
+<% if show_privacy_controls_for?(@web_link) || !edit %>
 <div class="form-element">
   <label class="required" for="web_link_url">URL:</label>
   <%= text_field 'web_link', 'url', {:class=>"text-input"} %>
@@ -102,7 +102,7 @@
 </div>
 <% end -%>
 
-<%= hidden_field_tag "web_link[basket_id]", @current_basket.id %>
+<%= hidden_field_tag "web_link[basket_id]", @current_basket.id, "id" => "web_link_basket_id" if @web_link.new_record? %>
 <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @web_link} %>	
 <!--[eoform:web_link]-->
 

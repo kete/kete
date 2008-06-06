@@ -8,17 +8,17 @@
 <%= error_messages_for :user %>
 
 <div class="form-element">
-<label for="login">Login:</label> <%= f.text_field :login %>
+<label for="user_login">Login:</label> <%= f.text_field :login %>
 <div class="form_example">Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.</div>
 </div>
 <div class="form-element">
-<label for="email">Email:</label> <%= f.text_field :email %>
+<label for="user_email">Email:</label> <%= f.text_field :email %>
 </div>
 <div class="form-element">
-<label for="password">Password:</label> <%= f.password_field :password %>
+<label for="user_password">Password:</label> <%= f.password_field :password %>
 </div>
 <div class="form-element">
-<label for="password_confirmation">Confirm Password:</label> <%= f.password_field :password_confirmation %>
+<label for="user_password_confirmation">Confirm Password:</label> <%= f.password_field :password_confirmation %>
 </div>
 
 <% form_fields = @content_type.content_type_to_field_mappings -%>
@@ -41,7 +41,7 @@
 <div class="form-element">
 <% if @captcha_type == 'image' -%>
 
-<label for="human_check">Security Code: Please enter the text from the image to the right</label>
+<label for="user_security_code">Security Code: Please enter the text from the image to the right</label>
 <%= f.text_field :security_code, :size => '8' %>
 <% id = generate_captcha() -%>
 <% session[:captcha_id] = id -%>
@@ -66,7 +66,7 @@
 
 </fieldset>
 
-<%= submit_tag 'Sign up', :class => "save-button" %>
+<div style="margin:0;style:0"><%= submit_tag 'Sign up', :class => "save-button" %></div>
 
 <% end -%>
 

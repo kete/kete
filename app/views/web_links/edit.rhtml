@@ -4,8 +4,8 @@
 <h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'update', :id => @web_link do %>
-<%= render :partial => 'form' %>
-<%= submit_tag 'Save',:class => "save-button" %>
+  <%= render :partial => 'form' %>
+  <div class="wrap"><%= submit_tag 'Save',:class => "save-button" %></div>
 <% end %>
 
 <%= link_to_cancel %>

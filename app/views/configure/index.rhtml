@@ -41,9 +41,9 @@
   <% else -%>
   <% if !@search_engine_show -%>
   <div id="settings">
-    <% else -%>
-    <div id="settings" style="display:none">
-      <% end -%>
+  <% else -%>
+  <div id="settings" style="display:none">
+  <% end -%>
       <h3>Settings</h3>
 
       <p>Click on section to fill out its settings.
@@ -59,14 +59,20 @@
         <% section_count = 1 -%>
         <% @sections.each do |section| -%>
         <tr>
-          <td><div id="<%= h(section) -%>-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed"></div></td>
+          <td><div id="<%= section.split.join("-") -%>-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
           <td><%= link_to_remote_redbox(h(section),
-                  :url => { :action => 'section',
-            :section => section,
-            :advanced => @advanced },
-            :href => url_for( :action => 'section',
-            :section => section,
-            :advanced => @advanced ) ) -%></td></tr>
+            {
+              :url => {
+              :action => 'section',
+              :section => section,
+              :advanced => @advanced
+              }
+            },
+            :href => url_for(
+              :action => 'section',
+              :section => section,
+              :advanced => @advanced
+            )) -%></td></tr>
         <% section_count += 1 -%>
         <% end -%>
       </table>
@@ -80,13 +86,13 @@
         <h3>Search Engine</h3>
         <table>
           <tr>
-            <td><div id="zoom-dbs-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed"></div></td>
+            <td><div id="zoom-dbs-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
             <td>Click to <%= link_to_remote_redbox('set up Search Engine',
                     :url => { :action => 'zoom_dbs_edit' },
               :href => url_for( :action => 'zoom_dbs_edit' ) ) -%></td>
           </tr>
           <tr>
-            <td><div id="start-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed"></div></td>
+            <td><div id="start-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
             <td>
               <div id="start-zebra-message">
                 <% if @search_engine_setup -%>
@@ -125,7 +131,7 @@
         satisfied, please click the 'finish' button.</p>
         <% form_remote_tag( :url => { :action => 'finish' },
         :href => url_for( :action => 'finish' ) ) do %>
-        <%= submit_tag 'Finish' -%>
+        <div class="wrap"><%= submit_tag 'Finish' -%></div>
         <% end -%>
       </div>
     </div>
@@ -141,7 +147,7 @@
         </div>
         <table>
           <tr>
-            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed"></div></td>
+            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
             <td>
               <% if @search_engine_started or @search_engine_primed -%>
               <div id="prime-zebra-message">
@@ -159,10 +165,10 @@
                                       :complete => "Element.hide('prime-spinner')",
                   :href => url_for( :action => 'prime_zebra' ) ) do %>
                   <div id="prime-spinner"
-                  style="display:none"><img src="/images/indicator.gif"
-                  width="16" height="16" alt="completed" align="center"></div>
+                  style="display:none; text-align:center"><img src="/images/indicator.gif"
+                  width="16" height="16" alt="completed" /></div>
 
-                  <%= submit_tag 'Prime Search Engine', :id => 'prime-button' -%>
+                  <div class="wrap"><%= submit_tag 'Prime Search Engine', :id => 'prime-button' -%></div>
                   <% end -%>
                   <% end -%>
               </div>
@@ -179,10 +185,12 @@
                   and ready to be viewed.
                   Click 'Reload Site' to move on to customising your
                   Kete's content to suit.</p>
-                  <%= button_to 'Reload Site', basket_index_url(:urlified_name => 'site') %>
+                  <div class="wrap"><%= button_to 'Reload Site', basket_index_url(:urlified_name => 'site') %></div>
               </div>
             </td>
           </tr>
-
+        </table>
       </div>
 <% end  -%>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>

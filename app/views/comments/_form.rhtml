@@ -54,12 +54,12 @@
                         </div>
                 <% end -%>
 
-                <%= hidden_field_tag 'comment[basket_id]', @current_basket.id %>
+                <%= hidden_field_tag 'comment[basket_id]', @current_basket.id, "id" => "comment_basket_id" %>
 
                 <% if !edit -%>
-                        <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] || params[:comment][:commentable_id] %>
+                        <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] || params[:comment][:commentable_id], "id" => "comment_commentable_id" %>
 
-                        <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] || params[:comment][:commentable_type] %>
+                        <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] || params[:comment][:commentable_type], "id" => "comment_commentable_type" %>
                         
 												<%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || params[:comment][:commentable_private] %>
                 <% end %>

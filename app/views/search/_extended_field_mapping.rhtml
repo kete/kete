@@ -3,9 +3,9 @@
                                  <% # xml_element_name do not have to be %>
                                  <% f_id = extended_field_mapping.extended_field_label.downcase.gsub(/ /, '_') %>
                                  <% if extended_field_mapping.required -%>
-                                         <label class="required" for="<%= f_id  -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
+                                         <label class="required" for="<%= "#{item_key}_#{f_id}" -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
                                  <% else -%>
-                                         <label for="<%= "#{item_key}[#{f_id}]" -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
+                                         <label for="<%= "#{item_key}_#{f_id}" -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
                                  <% end -%>
                                  <% if !extended_item.nil?
                                         item_extended_xml = extended_item.xml_attributes_without_position
@@ -33,19 +33,19 @@
                                                     <% if @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag'  %>
                                                       <% z = @field_types[the_field_type] + '("' %>
                                                       <% z = z + "#{item_key}[#{f_id}][#{input_count}]" %>
-                                                      <% z = z + '", temp_hash[input_count.to_s][f_id], {:class => "text-input"})' %>
+                                                      <% z = z + '", temp_hash[input_count.to_s][f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"})' %>
                                                       <%= eval(z) %>
                                                     <% else %>
-                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", temp_hash[input_count.to_s][f_id], {:class => "text-input"}) %>
+                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", temp_hash[input_count.to_s][f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"}) %>
                                                     <% end %>
                                                  <% else %>
                                                     <% if @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag' %>
                                                       <% z = @field_types[the_field_type] + '("' %>
                                                       <% z = z + "#{item_key}[#{f_id}][#{input_count}]" %>
-                                                      <% z = z + '", nil, {:class => "text-input"})' %>
+                                                      <% z = z + '", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"})' %>
                                                       <%= eval(z) %>
                                                     <% else %>
-                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", nil, {:class => "text-input"}) %>
+                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"}) %>
                                                     <% end %>
                                                  <% end %>
                                                  <% input_count += 1 -%>
@@ -60,10 +60,10 @@
                                                 <% else %>
                                                   <% z = z + '", item_extended_xml[f_id],' %>
                                                 <% end %>
-                                                <% z = z + '{:class => "text-input"})' %>
+                                                <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}"})' %>
                                                 <%= eval(z) %>
                                            <% else %>
-                                                <%= text_field_tag("#{item_key}[#{f_id}]", item_extended_xml[f_id], {:class => "text-input"}) %>
+                                                <%= text_field_tag("#{item_key}[#{f_id}]", item_extended_xml[f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}"}) %>
                                            <% end %>
                                          <% else %>
                                            <% if  @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag' %>
@@ -74,10 +74,10 @@
                                                 <% else %>
                                                     <% z = z + '", nil,' %>
                                                 <% end %>
-                                                <% z = z + '{:class => "text-input"})' %>
+                                                <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}"})' %>
                                                 <%= eval(z) %>
                                            <% else %>
-                                                <%= text_field_tag("#{item_key}[#{f_id}]", nil, {:class => "text-input"}) %>
+                                                <%= text_field_tag("#{item_key}[#{f_id}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}"}) %>
                                            <% end %>
                                          <% end %>
                                  <% end %>

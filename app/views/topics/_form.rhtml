@@ -14,7 +14,7 @@
         <% end %>
         <% if edit and @site_admin%>
                 <div class="form-element">
-                        <label for="basket_for_url">Move to another basket?</label>
+                        <label for="topic_basket_id">Move to another basket?</label>
                         <% # TODO: ugly hack till we move this to form.select -%>
                         <%= collection_select('topic', 'basket_id', Basket.find(:all), :id, :name, {:class=>"select"}) %>
                 </div>
@@ -22,7 +22,7 @@
         <% if edit %>
             <%= render :partial => 'topic_types', :locals => {:topic_types => @topic_types} %>
         <% else -%>
-            <%= hidden_field_tag 'topic[topic_type_id]', params[:topic][:topic_type_id] %>
+            <%= hidden_field_tag 'topic[topic_type_id]', params[:topic][:topic_type_id], "id" => "topic_topic_type_id" %>
         <% end -%>
 
          <% if show_privacy_controls? %>
@@ -63,9 +63,9 @@
         </div>
 
         <% if @site_admin -%>
-        <div class="form-element"><label for="topic[do_not_sanitize]">Allow
+        <div class="form-element"><label for="topic_do_not_sanitize">Allow
             forms and other possible insecure elements and attributes in the HTML?</label>
-          <%= check_box 'topic', 'do_not_sanitize' %></div>
+          <%= check_box 'topic', 'do_not_sanitize', "id" => "topic_do_not_sanitize" %></div>
         <% end -%>
 
         <div class="form-element">
@@ -108,7 +108,7 @@
                 <% #= javascript_tag "tinyMCE.execCommand('mceAddControl', true, 'topic[description]')" %>
         <% # end %>
 
-        <%= hidden_field_tag "topic[basket_id]", @current_basket.id %>
+        <%= hidden_field_tag "topic[basket_id]", @current_basket.id, "id" => "topic_basket_id" if params[:id].nil? %>
 
 <!--[eoform:topic]-->
 
