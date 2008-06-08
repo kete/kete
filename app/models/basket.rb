@@ -322,9 +322,18 @@ class Basket < ActiveRecord::Base
   # before save filter
   def urlify_name
     return if name.blank?
-    formatted_name = name.to_s.gsub(/ /, '_').
-      gsub(/-/,'_').
-      downcase
+
+    formatted_name = name.to_s
+
+    # we may want to make this based on a constant
+    # in the future
+    chars_to_be_replaced = [' ', '-', '.']
+    chars_to_be_replaced.each do |char|
+      formatted_name = formatted_name.gsub(char, '_')
+    end
+
+    formatted_name = formatted_name.downcase
+
     self.urlified_name = formatted_name
   end
 
