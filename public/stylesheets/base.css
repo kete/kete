@@ -229,6 +229,10 @@ label{
 .form-element label.cleared-right{
         float: none;
 }
+.form-element label.inline{
+        display: inline;
+				float:none;
+}
 .form-element{
         padding: .5em;
         width: 100%;
@@ -243,6 +247,9 @@ label{
 fieldset {
         border: 1px solid #CCC;
         margin-right: 20px;
+}
+.form_example {
+	margin: 5px 0;
 }
 .login-button,
 .save-button{
@@ -548,7 +555,7 @@ div#notice {
 
 /* #################################### Misc #################################### */
 .theme-choice-wrapper {
-            float:right;
+/*            float:right;*/
 }
 /* code styles */
 

@@ -24,53 +24,6 @@
   </div>
 
   <div class="form-element">
-    <label>Show/Hide Controls:</label>
-
-    <fieldset>
-
-  <div class="form-element">
-    <label for="settings_show_action_menu">Show Action Menu to:</label>
-    <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket), "id" => "settings_show_action_menu" %> <br />(who can see the view, edit, history and other links)
-  </div>
-
-
-  <div class="form-element">
-    <label for="settings_show_discussion">Show Comments to:</label>
-    <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket), "id" => "settings_show_discussion" %> <br />(who can see and add comments)
-  </div>
-
-  <div class="form-element">
-    <label for="settings_show_flagging">Show Flagging to:</label>
-    <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket), "id" => "settings_show_flagging" %> <br />(who can see and add comments)
-  </div>
-
-  <div class="form-element">
-    <label for="settings_show_add_links">Show Add Links to:</label>
-    <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket), "id" => "settings_show_add_links" %> <br />(who can see and add comments)
-  </div>
-
-
-   </fieldset>
- </div>
-
-  <%# Only show to users who can see items in the current basket %>
-  <% if current_user_can_see_private_files_in_basket?(@basket) %>
-  <div class="form-element">
-    <label>Private File Visibility:</label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <label for="settings_private_file_visibility" style="width: 100%">To view private attached files you must be at least a:</label>
-        <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket), "id" => "settings_private_file_visibility" %></div>
-      </div>
-     
-
-   </fieldset>
-  </div>
-  <% end %>
-
-  <div class="form-element">
     <label for="settings_theme">Theme:</label>
     <fieldset>
       <% if @basket.possible_themes.size > 0 -%>
@@ -89,16 +42,69 @@
       <% end -%>
 
       <% if @site_admin -%>
-      <ul><li><%= link_to "Add new theme", :action => 'new', :controller => 'documents', :is_theme => true -%></li></ul>
+      <div>
+        <ul>
+          <li><%= link_to "Add new theme", :action => 'new', :controller => 'documents', :is_theme => true -%></li>
+        </ul>
+      </div>
       <% end -%>
 
     </fieldset>
   </div>
 
+  <div class="form-element">
+    <label>Show/Hide Controls:</label>
+
+    <fieldset>
+
+      <div class="form-element">
+        <label for="settings_show_action_menu">Show Action Menu to:</label>
+        <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket), "id" => "settings_show_action_menu" %><br />
+        (who can see the view, edit, history and other links)
+      </div>
+
+
+      <div class="form-element">
+        <label for="settings_show_discussion">Show Comments to:</label>
+        <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket), "id" => "settings_show_discussion" %><br />
+        (who can see and add comments)
+      </div>
+
+      <div class="form-element">
+        <label for="settings_show_flagging">Show Flagging to:</label>
+        <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket), "id" => "settings_show_flagging" %><br />
+        (who can flag items)
+      </div>
+
+      <div class="form-element">
+        <label for="settings_show_add_links">Show Add Links to:</label>
+        <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket), "id" => "settings_show_add_links" %><br />
+        (who can relate or link items together)
+      </div>
+    </fieldset>
+  </div>
+
+  <%# Only show to users who can see items in the current basket %>
+  <% if current_user_can_see_private_files_in_basket?(@basket) %>
+  <div class="form-element">
+    <label>Private File Visibility:</label>
+
+    <fieldset>
+
+      <div class="form-element">
+        <label for="settings_private_file_visibility" style="width: 100%">To view private attached files you must be at least a:</label>
+        <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket), "id" => "settings_private_file_visibility" %></div>
+      </div>
+     
+
+   </fieldset>
+  </div>
+  <% end %>
+
 
 </fieldset>
 
-  <div style="margin:0;padding:0"><%= submit_tag 'Save' , :class => "save-button" %></div>
+<div style="margin:0;padding:0"><%= submit_tag 'Save' , :class => "save-button" %></div>
 <% end %>
 
 
