@@ -1,5 +1,5 @@
 <div class="form-element">
-   <label>License</label>
+   <% if params[:controller] != "account" %><label>License</label><% end %>
 
 <% if item.has_license? %>
  <div id="license-agreement">
@@ -22,7 +22,7 @@
   profile</p>
 <% end %>
 <% else %>
-<p><strong>Please see the <%= link_to "site terms and conditions", :urlified_name => "about", :controller => "topics", :action => "show", :id => 4 -%> for information on how contributions are licensed.</strong></p>
+<p>Please see the <%= link_to "site terms and conditions", :urlified_name => "about", :controller => "topics", :action => "show", :id => 4 -%> for information on how contributions are licensed.</p>
 <% end %>
 
 <% end -%>

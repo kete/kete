@@ -42,10 +42,6 @@ class Basket < ActiveRecord::Base
   # don't allow special characters in label that will break our xml
   validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
   
-  # Ensure privacy defaults are set
-  validates_inclusion_of :private_default,      :in => [ true, false ]
-  validates_inclusion_of :file_private_default, :in => [ true, false ]
-
   # check the quality of submitted html
   validates_as_sanitized_html :index_page_extra_side_bar_html
 
@@ -151,6 +147,12 @@ class Basket < ActiveRecord::Base
     current_show_actions_value = self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
     options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
     select_options = self.array_to_options_list_with_defaults(options_array,current_show_actions_value)
+  end
+  
+  def side_menu_ordering_of_topics_as_options(site_basket)
+    current_value = self.settings[:side_menu_ordering_of_topics] || site_basket.settings[:side_menu_ordering_of_topics] || 'updated_at'
+    options_array = [['Latest', 'latest'],['Alphabetical', 'alphabetical']]
+    select_options = self.array_to_options_list_with_defaults(options_array,current_value)
   end
 
   def show_discussion_as_options(site_basket)

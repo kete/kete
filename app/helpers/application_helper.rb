@@ -120,12 +120,27 @@ module ApplicationHelper
         
           html += '<ul>'
           topic_count = 0
-          #basket.topics.each do |basket|
-          for topic in basket.topics
-	    if topic != basket.index_topic
+
+          order_with_inheritence = basket.settings[:side_menu_ordering_of_topics] || @site_basket.settings[:side_menu_ordering_of_topics]
+          
+          order = case order_with_inheritence
+          when "alphabetical"
+            "title ASC"
+          else
+            "updated_at DESC"
+          end
+          
+          for topic in basket.topics.find(:all, :limit => basket.settings[:side_menu_number_of_topics] || @site_basket.settings[:side_menu_number_of_topics] || 10, :order => order).reject { |t| t.disputed_or_not_available? }
+      	    if topic != basket.index_topic
 	            html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
             end
           end
+          
+          basket_topic_count = basket.topics.count_by_sql("SELECT COUNT(*) FROM topics, baskets where topics.basket_id = baskets.id AND baskets.id = #{basket.id}")
+          if basket_topic_count > basket.index_page_number_of_recent_topics && basket_topic_count > 0
+            html += content_tag("li", link_to("More..", :controller => 'search', :action => 'all', :urlified_name => basket.urlified_name, :controller_name_for_zoom_class => 'topics'))
+          end
+
           html += '</ul>'
         
       else
