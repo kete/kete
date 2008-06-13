@@ -130,7 +130,15 @@ module ApplicationHelper
             "updated_at DESC"
           end
           
-          for topic in basket.topics.find(:all, :limit => basket.settings[:side_menu_number_of_topics] || @site_basket.settings[:side_menu_number_of_topics] || 10, :order => order).reject { |t| t.disputed_or_not_available? }
+          if !basket.settings[:side_menu_number_of_topics].blank?
+            limit = basket.settings[:side_menu_number_of_topics].to_i
+          elsif !@site_basket.settings[:side_menu_number_of_topics].blank?
+            limit = @site_basket.settings[:side_menu_number_of_topics].to_i
+          else
+            limit = 10
+          end
+          
+          for topic in basket.topics.find(:all, :limit => limit).reject { |t| t.disputed_or_not_available? }
       	    if topic != basket.index_topic
 	            html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
             end
@@ -265,7 +273,7 @@ module ApplicationHelper
                      :related_class => options[:related_class],
                      :existing_relations => existing_relations,
                      :relate_to_topic => options[:relate_to_topic] },
-                   :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100,resizable=yes'])
+                     :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100,resizable=yes'])
   end
 
   def item_related_topics_wrapper(options={})
