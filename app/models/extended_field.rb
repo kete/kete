@@ -13,7 +13,7 @@ class ExtendedField < ActiveRecord::Base
   validates_uniqueness_of :label, :case_sensitive => false
 
   # don't allow special characters in label that will break our xml
-  validates_format_of :label, :with => /^[^\'\"<>\&,\/\\\?]*$/, :message => ": \', \\, /, &, \", ?, <, and > characters aren't allowed"
+  validates_format_of :label, :with => /^[^\'\":<>\&,\/\\\?]*$/, :message => ": \', \\, /, &, \", ?, <, and > characters aren't allowed"
 
   # don't allow spaces
   validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => ": spaces aren't allowed"
