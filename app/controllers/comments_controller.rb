@@ -41,9 +41,12 @@ class CommentsController < ApplicationController
       @comment.creator = current_user
 
       @comment.do_notifications_if_pending(1, current_user)
+      
+      # Ensure we only use valid ZOOM CLASSes
+      zoom_class = only_valid_zoom_class(params[:comment][:commentable_type])
 
       # make sure that we wipe comments cache for thing we are commenting on
-      commented_item = Module.class_eval(params[:comment][:commentable_type]).find(params[:comment][:commentable_id])
+      commented_item = Module.class_eval(zoom_class).find(params[:comment][:commentable_id])
       expire_comments_caches_for(commented_item)
 
       # although we shouldn't be using the related_topic aspect here

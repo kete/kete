@@ -864,7 +864,7 @@ class ApplicationController < ActionController::Base
       if ZOOM_CLASSES.member?(param)
         Module.class_eval(param)
       else
-        raise "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES."
+        raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
       end
     end
   

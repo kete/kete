@@ -600,7 +600,7 @@ class SearchController < ApplicationController
       first_item = nil
       items_to_rebuild.each do |item_class_and_id|
         item_array = item_class_and_id.split("-")
-        item = Module.class_eval(item_array[0]).find(item_array[1])
+        item = only_valid_zoom_class(item_array[0]).find(item_array[1])
         prepare_and_save_to_zoom(item)
 
         # Rebuild
@@ -669,9 +669,7 @@ class SearchController < ApplicationController
       clause += " and title != :pending_title"
       clause_values[:pending_title] = BLANK_TITLE
 
-      @item = Module.class_eval(@zoom_class).find(:first,
-                                                  :conditions => [clause, clause_values],
-                                                  :order => 'id')
+      @item = only_valid_zoom_class(@zoom_class).find(:first, :conditions => [clause, clause_values], :order => 'id')
 
       if @item.nil?
         @done = true
@@ -757,7 +755,7 @@ class SearchController < ApplicationController
     when "restore"
       
     # Find deleted relationships
-      @results = ContentItemRelation::Deleted.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).select { |r| only_valid_zoom_class(params[:related_class]).exists?(r.related_item_id) }.collect { |r| eval(r.related_item_type).find(r.related_item_id) }
+      @results = ContentItemRelation::Deleted.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| eval(r.related_item_type).find(r.related_item_id) rescue nil }.compact
       @results += ContentItemRelation::Deleted.find(:all, :conditions => ["related_item_id = ? AND related_item_type = ?", @current_topic.id, "Topic"]).collect { |r| Topic.find(r.topic_id) } if params[:related_class] == "Topic"
       @verb = "Restore"
       @next_action = "link"
