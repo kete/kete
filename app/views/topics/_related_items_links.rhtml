@@ -18,21 +18,11 @@
       <% end -%>
       <% end -%>
       <% if !relate_to_topic.blank? -%>
-      <li class="command"><%= link_to_add_related_item(:relate_to_topic => relate_to_topic, :phrase => 'Add related ', :item_class => related_class) -%></li>
-      <% end -%>
-      <% if !relate_to_topic.blank?
-         link_phrase = 'Link'
-         existing_relations = items
-         if related_class == 'Topic'
-            link_phrase += ' to related'
-            existing_relations += [relate_to_topic]
-         end -%>
-
-      <li class="command"><%= link_to_link_related_item(:relate_to_topic => relate_to_topic,
-                                                        :existing_relations => existing_relations,
-                                                        :related_class => related_class,
-                                                        :phrase => link_phrase,
-                                                        :item_class => related_class) -%></li>
+      <li class="command"><%= link_to_add_related_item(:relate_to_topic => relate_to_topic, :phrase => 'Create', :item_class => related_class) -%> or <%= link_to_link_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%></li>
+      <li class="command"><%= link_to_unlink_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%></li>
+      <% if @at_least_a_moderator %>
+      <li class="command"><%= link_to_restore_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%></li>
+      <% end %>
       <% end -%>
     </ul>
   </div>

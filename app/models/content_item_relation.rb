@@ -17,22 +17,51 @@ class ContentItemRelation < ActiveRecord::Base
   end
 
   acts_as_list :scope => :topic_id
+  
+  # Keep deleted instances in ContentItemRelation::Deleted instead of removing them
+  # from table.
+  acts_as_soft_deletable
 
   # wish we could update the topic and new relation
   # in zoom here
   # so that this relationship is reflected in searches
   # but it has to be done in controller space because it requires a render
   def self.new_relation_to_topic(topic_id, related_item)
-    content_item_relation = self.new
+    
+    # Undestroy a previous version if present, rather than creating a new relationship.
+    if content_item_relation = self.find_relation_to_topic(topic_id, related_item, :deleted => true)
+      content_item_relation.undestroy!
 
-    if topic_id.is_a?(Topic)
-      topic = topic_id
-      content_item_relation.topic_id = topic.id
     else
-      content_item_relation.topic_id = topic_id
+      content_item_relation = self.create!(
+        # Handle topic_id being passed in as Topic instead of Integer or String.
+        :topic_id => topic_id.is_a?(Topic) ? topic_id.id : topic_id,
+        :related_item => related_item
+      )
     end
-
-    content_item_relation.related_item = related_item
-    content_item_relation.save!
   end
+
+  def self.destroy_relation_to_topic(topic_id, related_item)
+    relation = self.find_relation_to_topic(topic_id, related_item)
+    relation.destroy
+  end
+  
+  protected
+  
+    def self.find_relation_to_topic(topic_id, related_item, options = {})
+      topic_id = topic_id.is_a?(Topic) ? topic_id.id : topic_id
+      options = { :deleted => false }.merge(options)
+      
+      # Set the class to run the find on.
+      find_class = options[:deleted] ? ContentItemRelation::Deleted : ContentItemRelation
+      
+      if related_item.instance_of?(Topic)
+        relation = find_class.find(:first, :conditions => ["topic_id = ? AND related_item_id = ? AND related_item_type = \"Topic\"", related_item.id, topic_id])
+      end
+
+      # If no relationship has been found above, check the correct way around.
+      relation ||= find_class.find(:first, :conditions => ["topic_id = ? AND related_item_id = ? AND related_item_type = \"#{related_item.class.name}\"", topic_id, related_item.id])
+      
+    end
+    
 end

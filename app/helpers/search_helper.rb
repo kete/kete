@@ -68,5 +68,11 @@ module SearchHelper
 
     $('sort_type').observe('change', toggleDisabledSortDirection);"
   end
-
+  
+  def instantiate_from_results(result_hash)
+    raise "A hash must be passed in. Arrays are not acceptable." unless result_hash.instance_of?(Hash)
+    
+    eval("#{result_hash['class'].classify}").find(result_hash['id'])
+  end
+  
 end

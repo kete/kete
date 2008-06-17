@@ -1,0 +1,61 @@
+<% @title = "#{@verb || params[:function].capitalize} related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}" -%>
+<% item_class = params[:related_class].tableize.humanize.downcase.pluralize %>
+<!-- Params: <%= params.inspect %> -->
+
+<fieldset>
+  
+  <legend><%= @verb || params[:function].capitalize %> related <%= item_class -%></legend>
+  
+  <% if params[:function] == "add" %>
+  
+  <!-- Start search form -->
+  <%= form_tag(
+    :controller => 'search', 
+    :action => 'find_related', 
+    :relate_to_topic => params[:relate_to_topic], 
+    :urlified_name => params[:urlified_name], 
+    :related_class => params[:related_class],
+    :sort_type => 'title',
+    :function => 'add'
+  ) %>
+  
+    <%= content_tag "label", "Search for #{item_class}:", "for" => "search_terms" -%>
+    <%= text_field_tag "search_terms", params[:search_terms] %> <%= submit_tag "Search" %>
+  
+  </form>
+  <!-- End search form -->
+  
+  <% end %>
+  
+  <% if @results.blank? %>
+  <p class="alone"><strong>No <%= item_class %> found</strong></p>
+  <% else %>
+  <p class="alone">Select which <%= item_class %> to <%= params[:function] %>, then click "<%= params[:function] %>".</p>
+  
+  <%= form_tag(
+    :controller => 'search', 
+    :action => "#{@next_action}_related", 
+    :relate_to_topic => params[:relate_to_topic], 
+    :urlified_name => params[:urlified_name], 
+    :related_class => params[:related_class]
+  ) %>
+  
+  <ul>
+    <% for item in @results %>
+    <li>
+      <%= check_box_tag "item[#{item.id}]", "true", false, "id" => "item_#{item.id}" -%> 
+      <%= image_tag(item.original_file.public_filename, :size => item.original_file.image_size) if item.instance_of?(StillImage) %>
+      <%= content_tag "label", h(item.title), "for" => "item_#{item.id}" %></li>
+    <% end %>
+  </ul>
+  
+  <%= submit_tag params[:function].capitalize %>
+
+  </form>
+  
+  <% end %>
+    
+</fieldset>
+
+<!-- <a href="#" onclick="javascript:window.close()">Cancel</a> -->
+<%= link_to_function "Close", "opener.location.reload();window.close()" -%>

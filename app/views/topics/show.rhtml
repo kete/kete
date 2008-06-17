@@ -51,7 +51,7 @@
           <!-- <div id="detail-linked-bottomrow"> -->
             <% cache ({:related => 'documents'}) do -%>
             <%= related_items_links(:source_item => @topic,
-            :related_class => 'Documents') %>
+            :related_class => 'Document') %>
             <% end -%>
             <% cache ({:related => 'web_links'}) do -%>
             <%= related_items_links(:source_item => @topic,

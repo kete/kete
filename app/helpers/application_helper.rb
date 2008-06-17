@@ -260,20 +260,37 @@ module ApplicationHelper
   def link_to_add_related_item(options={})
     phrase = options[:phrase]
     item_class = options[:item_class]
-    return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", :controller => zoom_class_controller(item_class), :action => :new, :relate_to_topic => options[:relate_to_topic])
+    return link_to("#{phrase}", :controller => zoom_class_controller(item_class), :action => :new, :relate_to_topic => options[:relate_to_topic])
   end
 
   def link_to_link_related_item(options={})
-    phrase = options[:phrase]
-    item_class = options[:item_class]
-    existing_relations = !options[:existing_relations].nil? ? options[:existing_relations].collect { |relation| relation.id } : nil
-    return link_to("#{phrase} #{zoom_class_humanize(item_class).downcase}", {
+    link_to("link to existing #{zoom_class_humanize(options[:related_class]).downcase}", {
                      :controller => 'search',
                      :action => :find_related,
                      :related_class => options[:related_class],
-                     :existing_relations => existing_relations,
-                     :relate_to_topic => options[:relate_to_topic] },
-                     :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100,resizable=yes'])
+                     :relate_to_topic => options[:relate_to_topic],
+                     :function => "add" },
+                     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
+  end
+
+  def link_to_unlink_related_item(options={})
+    link_to("Unlink #{zoom_class_humanize(options[:related_class]).downcase}", {
+                     :controller => 'search',
+                     :action => :find_related,
+                     :related_class => options[:related_class],
+                     :relate_to_topic => options[:relate_to_topic],
+                     :function => "remove" },
+                     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
+  end
+
+  def link_to_restore_related_item(options={})
+    link_to("Restore previously linked #{zoom_class_humanize(options[:related_class]).downcase}", {
+                     :controller => 'search',
+                     :action => :find_related,
+                     :related_class => options[:related_class],
+                     :relate_to_topic => options[:relate_to_topic],
+                     :function => "restore" },
+                     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
   end
 
   def item_related_topics_wrapper(options={})
@@ -321,7 +338,7 @@ module ApplicationHelper
     else
       items = options[:items]
     end
-
+    
     relate_to_topic = source_item.class.name == 'Topic' ? source_item : nil
 
     last_item_n = 0
@@ -345,7 +362,7 @@ module ApplicationHelper
     else
       template_name = 'related_items_links'
     end
-
+    
     render :partial => "topics/#{template_name}",
     :locals => { :related_class => related_class,
       :items => items,

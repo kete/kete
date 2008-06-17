@@ -3,7 +3,7 @@ require 'zoom'
 require "rexml/document"
 
 class SearchController < ApplicationController
-
+  
   # Walter McGinnis, 2008-02-07
   # search forms never add anything to db
   # so don't need csrf protection, which is problematic with search forms
@@ -144,12 +144,12 @@ class SearchController < ApplicationController
     @result_sets = Hash.new
 
     # iterate through all record types and build up a result set for each
-    if params[:relate_to_class].nil?
+    if params[:related_class].nil?
       ZOOM_CLASSES.each do |zoom_class|
         populate_result_sets_for(zoom_class,zoom_db)
       end
     else
-      populate_result_sets_for(relate_to_class,zoom_db)
+      populate_result_sets_for(params[:related_class],zoom_db)
     end
   end
 
@@ -226,7 +226,7 @@ class SearchController < ApplicationController
           still_image_results << result_from_xml_hash['id']
         end
       end
-      if @current_class == 'StillImage'
+      if @current_class == 'StillImage' || params[:related_class] == "StillImage"
         ImageFile.find_all_by_thumbnail('small_sq',
                                         :conditions => ["still_image_id in (?)", still_image_results]).each do |thumb|
           # now work through results array and add image_file
@@ -444,8 +444,10 @@ class SearchController < ApplicationController
 
     @result_sets[zoom_class] = this_result_set
 
-    if zoom_class == @current_class
-      # results are limited to this page's display of search results
+    # results are limited to this page's display of search results, or to the related 
+    # class, if passed in.
+    if zoom_class == @current_class || !params[:related_class].blank?
+
       # grab them from zoom
       load_results(this_result_set)
     end
@@ -738,12 +740,50 @@ class SearchController < ApplicationController
     render(:layout => "layouts/simple")
   end
 
+  # James - 2008-06-13
+  # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_related
-    @existing_relations = ContentItemRelation.find(:all,
-                                                   :conditions => ["topic_id = :relate_to_topic and related_item_type = :related_class",
-                                                                   { :relate_to_topic => params[:relate_to_topic],
-                                                                     :related_class =>params[:related_class].singularize}])
-    render(:layout => "layouts/simple")
+    @current_topic = Topic.find(params[:relate_to_topic])
+    
+    # Look up existing relationships
+    case params[:function]
+      
+    when "remove"
+      @results = ContentItemRelation.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| r.related_item }
+      @results += ContentItemRelation.find(:all, :conditions => ["related_item_type = ? AND related_item_id = ?", "Topic", @current_topic.id]).collect { |r| r.topic } if params[:related_class] == "Topic"
+      @verb = "Existing"
+      @next_action = "unlink"
+      
+    when "restore"
+      
+    # Find deleted relationships
+      @results = ContentItemRelation::Deleted.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).select { |r| only_valid_zoom_class(params[:related_class]).exists?(r.related_item_id) }.collect { |r| eval(r.related_item_type).find(r.related_item_id) }
+      @results += ContentItemRelation::Deleted.find(:all, :conditions => ["related_item_id = ? AND related_item_type = ?", @current_topic.id, "Topic"]).collect { |r| Topic.find(r.topic_id) } if params[:related_class] == "Topic"
+      @verb = "Restore"
+      @next_action = "link"
+      
+    when "add"
+      @results = Array.new
+      
+      # Run a search if necessary
+      @search_terms = params[:search_terms]
+      search unless @search_terms.blank?
+      
+      # Find existing items
+      existing = ContentItemRelation.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| r.related_item }
+      existing += ContentItemRelation.find(:all, :conditions => ["related_item_type = ? AND related_item_id = ?", "Topic", @current_topic.id]).collect { |r| r.topic } if params[:related_class] == "Topic"
+    
+      # Ensure results do not include already linked items or the current item.
+      unless @results.empty?
+        @results.reject! { |r| existing.collect { |r| r.id }.member?(r["id"].to_i) } 
+        @results.reject! { |r| r["id"].to_i == @current_topic.id }
+        @results.collect! { |r| eval(r["class"]).find(r["id"]) }
+      end
+      
+      @next_action = "link"
+    end
+    
+    render :action => 'related_form', :layout => "popup_dialog"
   end
 
   # keep the user's preference for number of results per page

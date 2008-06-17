@@ -465,6 +465,20 @@ class ApplicationController < ActionController::Base
     return successful
   end
 
+  def remove_relation_and_update_zoom_and_related_caches_for(item, new_related_topic)
+    # clear out old zoom records before we change the items
+    # sometimes zoom updates are confused and create a duplicate new record
+    # instead of updating existing one
+    zoom_destroy_for(item)
+    zoom_destroy_for(new_related_topic)
+
+    successful = ContentItemRelation.destroy_relation_to_topic(new_related_topic.id, item)
+
+    update_zoom_and_related_caches_for(new_related_topic, zoom_class_controller(item.class.name))
+
+    return successful
+  end
+
   def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil, options = {})
     where_to_redirect = 'show_self'
     if !commented_item.nil? and @successful
@@ -504,27 +518,50 @@ class ApplicationController < ActionController::Base
   end
 
   def link_related
-    @related_to_topic = Topic.find(params[:related_to_topic])
-    item = Module.class_eval(params[:related_class]).find(params[:topic])
+    @related_to_topic = Topic.find(params[:relate_to_topic])
 
-    if params[:related_class] =='Topic'
-      @existing_relation = @related_to_topic.related_topics.include?(item)
-    else
-      @existing_relation = @related_to_topic.send(params[:related_class].tableize).include?(item)
-    end
+    unless params[:item].blank?
+      for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
+        item = only_valid_zoom_class(params[:related_class]).find(id)
 
-    if !@existing_relation
-      @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
+        if params[:related_class] == 'Topic'
+          @existing_relation = @related_to_topic.related_topics.include?(item)
+        else
+          @existing_relation = @related_to_topic.send(params[:related_class].tableize).include?(item)
+        end
 
-      if @successful
-        # in this context, the item being related needs updating, too
-        update_zoom_and_related_caches_for(item)
+        if !@existing_relation
+          @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
 
-        render(:layout => false, :exists => false, :success => true)
+          if @successful
+            # in this context, the item being related needs updating, too
+            update_zoom_and_related_caches_for(item)
+
+            flash[:notice] = "Successfully added item relationships"
+          end
+        end
       end
-    else
-      render(:layout => false, :exists => '1')
     end
+    
+    redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
+  end
+
+  def unlink_related
+    @related_to_topic = Topic.find(params[:relate_to_topic])
+
+    unless params[:item].blank?
+      for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
+        item = only_valid_zoom_class(params[:related_class]).find(id)
+
+        remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
+
+        update_zoom_and_related_caches_for(item)
+        flash[:notice] = "Successfully removed item relationships."
+      
+      end
+    end
+        
+    redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
   end
 
   # overriding here, to grab title of page, too
@@ -817,6 +854,20 @@ class ApplicationController < ActionController::Base
   
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?
+  
+  # Things are aren't actions below here..
+  protected 
+  
+    # Evaluate a possibly unsafe string into a zoom class.
+    # I.e.  "StillImage" => StillImage
+    def only_valid_zoom_class(param)
+      if ZOOM_CLASSES.member?(param)
+        Module.class_eval(param)
+      else
+        raise "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES."
+      end
+    end
+  
 end
 
 
