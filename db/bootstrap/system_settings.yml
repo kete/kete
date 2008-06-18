@@ -259,7 +259,7 @@ system_settings_029:
 
     Note, this only takes effect from this point forward.  No existing document files will be changed.
   id: "29"
-  value: "['application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain', 'text/rtf', 'text/css', 'application/octet-stream']"
+  value: "['application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain', 'text/rtf', 'text/css', 'application/octet-stream', 'application/x-tar']"
   section: Documents
 system_settings_030:
   name: Audio Content Types
@@ -420,13 +420,13 @@ system_settings_047:
   required_to_be_configured: false
   explanation: Choose the license selected by default when members add new content to the Kete instance. Enter the id of the license (refer to the id primary key in your database). Note that the license id selected must correlate to a license in the 'licenses' database table in order to be used. A set of Creative Commons New Zealand Licenses (excluding the 'No Derivative Works' variant) are included and can be installed using the 'rake acts_as_licensed:import_nz_cc_licenses' command.
   id: 47
-  value: 
+  value:
   section: Server
 system_settings_048:
   name: Force HTTPS On Restricted Pages
   technically_advanced: true
   required_to_be_configured: true
-  explanation: Forces private items and administrative controls to be accessed via HTTPS. YOU MUST HAVE SSL/HTTPS ENABLED AND WORKING ON YOUR WEB SERVER. CAREFUL.  ENABLING THIS WITHOUT MAKING PROPER PREPERATIONS MAY BREAK YOUR SITE AFTER RESTART! 
+  explanation: Forces private items and administrative controls to be accessed via HTTPS. YOU MUST HAVE SSL/HTTPS ENABLED AND WORKING ON YOUR WEB SERVER. CAREFUL.  ENABLING THIS WITHOUT MAKING PROPER PREPERATIONS MAY BREAK YOUR SITE AFTER RESTART!
   id: "48"
   value: "false"
   section: Server
