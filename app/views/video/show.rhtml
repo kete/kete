@@ -9,10 +9,10 @@
    <h2><%= h(@video.title) %></h2>
 
    <p><%= @video.description %></p>
-   <% if !@video.already_at_blank_version? -%>
+   <% if show_attached_files_for?(@video) -%>
        <%= render(:partial => "details", :locals => { :item => @video }) %>
-       <%= pending_review(@video) %>
    <% end -%>
+   <%= pending_review(@video) %>
    <div class="license"><%= @video.license_metadata %></div>
 <% end -%>
 

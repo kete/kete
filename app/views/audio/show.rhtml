@@ -8,11 +8,11 @@
         <h2><%= h(@audio_recording.title) %></h2>
 
         <p><%= @audio_recording.description %></p>
-        <% if !@audio_recording.already_at_blank_version? -%>
+        <% if show_attached_files_for?(@audio_recording)  -%>
           <%= render(:partial => "details", :locals => { :item => @audio_recording }) %>
-	<% end -%>
-	<%= pending_review(@audio_recording) %>
-	<div class="license"><%= @audio_recording.license_metadata %></div>
+      	<% end -%>
+      	<%= pending_review(@audio_recording) %>
+      	<div class="license"><%= @audio_recording.license_metadata %></div>
     <% end -%>
 <% if current_user_can_see_flagging? -%>
       <%= render(:partial => "topics/flagging_contributor", :locals => { :item => @audio_recording }) %>

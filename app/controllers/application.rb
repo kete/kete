@@ -848,12 +848,28 @@ class ApplicationController < ActionController::Base
       permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
   end
   
+  # Check whether the attached files for a given item should be displayed
+  # Note this is independent of file privacy.
+  def show_attached_files_for?(item)
+    if item.respond_to?(:private) and item.private?
+      
+      # If viewing the private version of an item, then the user already has permission to 
+      # see any attached files.
+      true
+    else
+      
+      # Otherwise, show the files if viewing a public, non-disputed and non-placeholder 
+      # version
+      !item.disputed_or_not_available?
+    end
+  end
+  
   def private_redirect_attribute_for(item)
     item.respond_to?(:private) && item.private? ? "true" : "false"
   end
   
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?
   
   # Things are aren't actions below here..
   protected 

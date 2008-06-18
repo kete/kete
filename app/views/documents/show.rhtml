@@ -7,12 +7,12 @@
       <% cache_if_public(@document, { :part => 'details' }) do -%>
          <h2><%= h(@document.title) %></h2>
          <p><b><%= @document.short_summary %></b></p>
-         <% if !@document.already_at_blank_version? -%>
+         <% if show_attached_files_for?(@document) -%>
 
          <%= render(:partial => "details", :locals => { :item => @document }) %>
 
-         <p><%= @document.description %></p>
          <% end %>
+         <p><%= @document.description %></p>
          <%= pending_review(@document) %>
 	<div class="license"><%= @document.license_metadata %></div>
       <% end -%>
