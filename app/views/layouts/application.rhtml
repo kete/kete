@@ -53,7 +53,7 @@
 <% if !@header_image.blank? -%>
  <% # TODO: fix the styles to allow for banner style background image -%>
  <style type="text/css">
-  #header !important { background: url('<%= @header_image -%>') no-repeat top left; }
+  #header { background: url('<%= @header_image -%>') no-repeat top left !important; }
  </style>
 
 <% end -%>
@@ -90,7 +90,7 @@
                                                        :sort_type => nil,
                                                        :sort_direction => nil,
                                                        :urlified_name => @site_basket.urlified_name,
-                                                       :search_terms => nil } do %>                                                                        
+                                                       :search_terms => nil } do %>
                               <div class="wrap"><label for="search_terms">Search:</label>
                               <%= text_field_tag 'search_terms'  %>
                               <%= submit_tag 'Go' %></div>
