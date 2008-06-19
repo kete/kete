@@ -6,17 +6,28 @@ Revisions that require migrations and/or extra upgrade steps are detailed below.
 
 It is assumed you are upgrading from an earlier functional and unmodified trunk version.
 
+Work your way back up from the bottom most revision (lowest revision number) that you are upgrading FROM to the top.  Quite often you'll only have to do steps once to get the changes from multiple revisions.  In other words, if a step is listed from multiple revisions, you only have to do it once.
+
+IMPORTANT NOTE: For any steps where you run, "rake db:migrate", it is a good idea to back up your database before you run that step.
+
+GENERAL NOTE: if you are upgrading your production Kete instance rather than development, you'll add "RAILS_ENV=production" to all rake tasks.
+
+== Trunk r1225 - MySQL only, change column definitions to allow for larger amount of text
+
+1.      Upgrade your code base
+2.      Run the migrate rake task 'rake db:migrate'
+
 == Trunk r1196 - Added HTTPS/SSL support
 
-To update from r1174 or later, follow these instructions:
+To update from r1196 or later, follow these instructions:
 1.      Stop your Kete server (mongrels, backgroundrb).
 2.      Upgrade your code base
 3.      Run the kete upgrade rake task 'rake kete:upgrade'
 4.      Start your Kete server again (mongrels, backgroundrb)
 
-Note: You must have a web server and SSL certificate correctly configured 
-in order to take advantage of SSL features in this version. The SSL features are 
-disabled by default and can be enabled in the Server advanced settings in the 
+Note: You must have a web server and SSL certificate correctly configured
+in order to take advantage of SSL features in this version. The SSL features are
+disabled by default and can be enabled in the Server advanced settings in the
 configuration assistant/reconfigure site controls.
 
 If updating from an earlier version, please see further instructions below.
@@ -51,3 +62,30 @@ Optionally, you can run rake acts_as_licensed:import_nz_cc_licenses to
 add Creative Commons New Zealand licenses options to your Kete
 instance.  After that, you probably want to reconfigure your site in
 Advanced Options > Server > Default Content License.
+
+== Trunk r1107 - Search and Browse results sorting
+
+You'll need to rebuild your Zebra indexes to have dates sort without error.  Here's how:
+
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Upgrade your code base
+3.      Run this script to clear your public Zebra database: 'rake kete:init'
+4.      Run this script to clear your private Zebra database: 'rake kete:init ZEBRA_DB=private'
+5.      Run this script to stop your Zebra server: 'rake zebra:stop'
+6.      Run this script to start your Zebra server: 'rake zebra:start'
+7.      Start your Kete server again (mongrels, backgroundrb)
+8.      Use the web interface to repopulate your Zebra databases with these steps:
+        * make sure you are logged into the site as as the default administrator or an account that has been designated as a "tech admin" and have javascript enabled in your browser.
+
+        * visit the following URLs (adjust for your site's URL) and let them click over (ajax update of page) until you get a "done"
+
+        your_site_domain/site/search/rebuild_zoom_index?skip_existing=false
+        your_site_domain/site/search/rebuild_zoom_index?skip_existing=false&zoom_class=StillImage
+        your_site_domain/site/search/rebuild_zoom_index?skip_existing=false&zoom_class=AudioRecording
+        your_site_domain/site/search/rebuild_zoom_index?skip_existing=false&zoom_class=Video
+        your_site_domain/site/search/rebuild_zoom_index?skip_existing=false&zoom_class=WebLink
+        your_site_domain/site/search/rebuild_zoom_index?skip_existing=false&zoom_class=Document
+        your_site_domain/site/search/rebuild_zoom_index?skip_existing=false&zoom_class=Comment
+
+        * then double check that search results are good to go by clicking on "Browse" from any page or doing a search
+
