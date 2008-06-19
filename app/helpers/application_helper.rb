@@ -117,19 +117,19 @@ module ApplicationHelper
       if basket == @current_basket
 
         html += li_with_correct_class(basket_count) + link_to_index_for(basket)
-        
+
           html += '<ul>'
           topic_count = 0
 
           order_with_inheritence = basket.settings[:side_menu_ordering_of_topics] || @site_basket.settings[:side_menu_ordering_of_topics]
-          
+
           order = case order_with_inheritence
           when "alphabetical"
             "title ASC"
           else
             "updated_at DESC"
           end
-          
+
           if !basket.settings[:side_menu_number_of_topics].blank?
             limit = basket.settings[:side_menu_number_of_topics].to_i
           elsif !@site_basket.settings[:side_menu_number_of_topics].blank?
@@ -137,20 +137,20 @@ module ApplicationHelper
           else
             limit = 10
           end
-          
+
           for topic in basket.topics.find(:all, :limit => limit).reject { |t| t.disputed_or_not_available? }
-      	    if topic != basket.index_topic
-	            html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
+            if topic != basket.index_topic
+                    html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
             end
           end
-          
+
           basket_topic_count = basket.topics.count_by_sql("SELECT COUNT(*) FROM topics, baskets where topics.basket_id = baskets.id AND baskets.id = #{basket.id}")
           if basket_topic_count > basket.index_page_number_of_recent_topics && basket_topic_count > 0
             html += content_tag("li", link_to("More..", :controller => 'search', :action => 'all', :urlified_name => basket.urlified_name, :controller_name_for_zoom_class => 'topics'))
           end
 
           html += '</ul>'
-        
+
       else
         html += li_with_correct_class(basket_count) + link_to_index_for(basket)
       end
@@ -211,7 +211,7 @@ module ApplicationHelper
     if session[:return_to].blank?
       return link_to("Cancel", :action => 'list')
     else
-      return link_to("Cancel", u(session[:return_to]))
+      return link_to("Cancel", url_for(session[:return_to]))
     end
   end
 
@@ -338,7 +338,7 @@ module ApplicationHelper
     else
       items = options[:items]
     end
-    
+
     relate_to_topic = source_item.class.name == 'Topic' ? source_item : nil
 
     last_item_n = 0
@@ -362,7 +362,7 @@ module ApplicationHelper
     else
       template_name = 'related_items_links'
     end
-    
+
     render :partial => "topics/#{template_name}",
     :locals => { :related_class => related_class,
       :items => items,
@@ -649,7 +649,7 @@ module ApplicationHelper
       link_text = '#' + version
       version_number = version.to_i
     end
-    
+
     if check_permission == false or can_preview?(:item => item, :version_number => version_number)
       link_to link_text, url_for_preview_of(item, version_number)
     else
@@ -715,7 +715,7 @@ module ApplicationHelper
     end
     theme_styles
   end
-  
+
   # Only cache if the item is public.
   def cache_if_public(item, parts, &block)
     if item.respond_to?(:private) and item.private?
@@ -734,13 +734,13 @@ module ApplicationHelper
       @current_basket.show_privacy_controls
     end
   end
-  
+
   # Check whether to show privacy controls for an item
   def show_privacy_controls_for?(item)
-    show_privacy_controls? && 
-      ( item.new_record? || 
-        current_user_can_see_private_files_in_basket?(item.basket) || 
+    show_privacy_controls? &&
+      ( item.new_record? ||
+        current_user_can_see_private_files_in_basket?(item.basket) ||
         @current_user == item.creator )
   end
-  
+
 end
