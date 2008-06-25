@@ -311,8 +311,8 @@ module ItemPrivacyTestHelper
         assert_equal 4, d.versions.size
         assert_not_nil d
         assert_kind_of eval(@base_class), d
-        assert_equal "No Public Version Available", d.title
-        assert_equal "There is currently no public version of this item.", d.description
+        assert_equal NO_PUBLIC_VERSION_TITLE, d.title
+        assert_equal NO_PUBLIC_VERSION_DESCRIPTION, d.description
         assert_equal true, d.has_private_version?
       end
 
@@ -412,13 +412,13 @@ module ItemPrivacyTestHelper
         assert_equal true, d.find_version(2).private?
 
         assert_equal 0, d.find_version(3).tags.size
-        assert_equal "No Public Version Available", d.find_version(3).title
-        assert_equal "There is currently no public version of this item.", d.find_version(3).description
+        assert_equal NO_PUBLIC_VERSION_TITLE, d.find_version(3).title
+        assert_equal NO_PUBLIC_VERSION_DESCRIPTION, d.find_version(3).description
         assert_equal false, d.find_version(3).private?
 
         assert_equal 3, d.version
-        assert_equal "No Public Version Available", d.title
-        assert_equal "There is currently no public version of this item.", d.description
+        assert_equal NO_PUBLIC_VERSION_TITLE, d.title
+        assert_equal NO_PUBLIC_VERSION_DESCRIPTION, d.description
 
         d.private_version!
 
@@ -542,7 +542,131 @@ module ItemPrivacyTestHelper
         assert_equal 2, d.version
 
       end
-
+      
+      # def test_tags_are_preserved_on_public_items
+      #   d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three" }))
+      #   d.reload
+      #   
+      #   assert_equal 1, d.versions.size
+      #   assert_equal "Version 1", d.description
+      #   assert_equal 3, d.tags.size
+      #   assert %w{one two three}.all? { |t| d.tags.map { |g| g.name }.member?(t) }, "Tags are #{d.tags.inspect}"
+      #   assert d.taggings.all? { |t| t.private === false }
+      #   assert d.tags.all? { |t| d.public_tags.collect { |t| t.id }.member?(t.id) }
+      #   assert d.private_tags.empty?
+      # end
+      # 
+      # def test_tags_are_preserved_on_private_items
+      #   d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+      #   
+      #   assert_equal 0, d.tags.size
+      #   
+      #   d.private_version do
+      #     assert_equal true, d.private?
+      #     assert_equal 3, d.tags.size
+      #     assert_equal "Version 1", d.description
+      #     assert %w{one two three}.all? { |t| d.tags.map { |v| v.name }.member?(t) }
+      #   end
+      # end
+      
+      # def test_tags_on_private_items_are_kept_private
+      #   d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+      #   d.reload
+      #   
+      #   # Check there are no tags on public version
+      #   assert_equal false, d.private?
+      #   assert_equal 2, d.versions.size
+      #   assert_equal NO_PUBLIC_VERSION_TITLE, d.title
+      #   assert_equal 0, d.tags.size
+      #   assert_equal nil, d.raw_tag_list
+      #   
+      #   # Check the original tags are present on the private version
+      #   d.private_version do
+      #     assert_equal true, d.private?
+      #     assert_equal "one, two, three", d.raw_tag_list
+      #     assert_equal 3, d.tags.size
+      #     assert_equal "Version 1", d.description
+      #   end
+      #   
+      #   # Check there are no tags on public version upon restoration
+      #   assert_equal false, d.private?
+      #   assert_equal NO_PUBLIC_VERSION_TITLE, d.title
+      #   assert_equal 0, d.tags.size
+      #   assert_equal nil, d.raw_tag_list
+      # end
+      # 
+      # def test_tags_on_private_items_are_kept_private_on_re_find
+      #   d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+      #   
+      #   d = eval(@base_class).find(d.id)
+      #   
+      #   # Check there are no tags on public version
+      #   assert_equal false, d.private?
+      #   assert_equal 2, d.versions.size
+      #   assert_equal NO_PUBLIC_VERSION_TITLE, d.title
+      #   assert_equal 0, d.tags.size
+      #   assert_equal nil, d.raw_tag_list
+      #   
+      #   # Check the original tags are present on the private version
+      #   d.private_version do
+      #     assert_equal true, d.private?
+      #     assert_equal "one, two, three", d.raw_tag_list
+      #     assert_equal 3, d.tags.size
+      #     assert_equal "Version 1", d.description
+      #   end
+      #   
+      #   # Check there are no tags on public version upon restoration
+      #   assert_equal false, d.private?
+      #   assert_equal NO_PUBLIC_VERSION_TITLE, d.title
+      #   assert_equal 0, d.tags.size
+      #   assert_equal nil, d.raw_tag_list
+      # end
+      # 
+      # def test_tags_are_preserved_separately_by_privacy_setting
+      #   
+      #   # Create a private version
+      #   d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+      #   d.reload
+      #   
+      #   # Create a public version with different tags
+      #   d.update_attributes!(:private => false, :title => "A public version", :description => "Version 3", :raw_tag_list => "four, five, six")
+      #   
+      #   # Create a second private version without tags
+      #   d.private_version!
+      #   d.update_attributes!(:private => true, :title => "Another private version", :description => "Version 4")
+      #   
+      #   # Check the public version has tags from public version
+      #   assert_equal false, d.private?
+      #   assert_equal 3, d.tags.size
+      #   assert_equal "four, five, six", d.raw_tag_list
+      #   assert_equal "four, five, six", d.tags.collect { |t| t.name }.join(", ")
+      #   
+      #   # Check the private version has tags from the private version
+      #   d.private_version!
+      #   assert_equal true, d.private?
+      #   assert_equal 3, d.tags.size
+      #   assert_equal "one, two, three", d.raw_tag_list
+      #   assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
+      #   
+      #   # Check the public tags present on natural version
+      #   id = d.id
+      #   d = nil
+      #   
+      #   e = eval(@base_class).find(id)
+      #   assert_equal false, e.private?
+      #   assert_equal 3, e.tags.size
+      #   assert_equal "four, five, six", e.raw_tag_list
+      #   # assert_equal "four, five, six", e.tags.collect { |t| t.name }.join(", ")
+      # end
+      # 
+      # def test_all_taggings_have_privacy_on_private
+      #   d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+      #   
+      # end
+      # 
+      # def test_all_taggings_have_privacy_on_public
+      # end
+      
       protected
 
         def new_moderated_public_item

@@ -71,7 +71,7 @@ namespace :zebra do
         zoom_db = ZoomDb.find_by_host_and_database_name('localhost', prefix)
         the_record_id = "#{ZoomDb.zoom_id_stub}bootstrap:Bootstrap:1"
         should_add_record = true
-        should_add_record = false if zoom_db.respond_to?(:has_zoom_record?) && zoom_db.has_zoom_record?(the_record_id)
+        should_add_record = false if (zoom_db.respond_to?(:has_zoom_record?) && zoom_db.has_zoom_record?(the_record_id)) rescue false
 
         if should_add_record
           c = zoom_db.open_connection

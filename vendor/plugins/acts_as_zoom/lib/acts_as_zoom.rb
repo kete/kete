@@ -378,7 +378,7 @@ module ZoomMixin
         def should_save_to_public_zoom?
           self.class.configuration[:save_to_public_zoom] &&
             ( !self.respond_to?(:private?) || !self.private? ) &&
-            self.title != "No Public Version Available" &&
+            self.title != NO_PUBLIC_VERSION_TITLE &&
             self.title != BLANK_TITLE
         end
 

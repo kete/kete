@@ -430,3 +430,20 @@ system_settings_048:
   id: "48"
   value: "false"
   section: Server
+system_settings_049:
+  name: No Public Version Title
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If an item is not available publicly (has no public versions), what should the title be?
+  id: "49"
+  value: No Public Version Available
+  section: Privacy Settings
+system_settings_050:
+  name: No Public Version Description
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If an item is not available publicly (has no public versions), what should the description be?
+  id: "50"
+  value: There is currently no public version of this item.
+  section: Privacy Settings
+  

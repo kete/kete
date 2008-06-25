@@ -85,7 +85,7 @@ module ItemPrivacy
         end
 
         def store_correct_versions_after_save
-          if self.private?
+          if private?
             store_private!
             load_public!
           end
@@ -122,6 +122,7 @@ module ItemPrivacy
           private_attrs.each do |key, value|
             send("#{key}=".to_sym, value)
           end
+          
           self
         end
       
@@ -133,16 +134,18 @@ module ItemPrivacy
             without_saving_private do
               revert_to!(public_version)
             end
+
             # At this point, I know from testing that the reverted version
             # and current model are public and appropriate.
           else
-            # we leave required fields alone
-            # and let the view handle whether they should be shown
-            update_hash = { :title => "No Public Version Available",
-              :description => "There is currently no public version of this item.",
+            
+            update_hash = { 
+              :title => NO_PUBLIC_VERSION_TITLE,
+              :description => NO_PUBLIC_VERSION_DESCRIPTION,
               :extended_content => nil,
               :tag_list => nil,
-              :private => false }
+              :private => false
+            }
 
             update_hash[:short_summary] = nil if can_have_short_summary?
 
@@ -160,7 +163,7 @@ module ItemPrivacy
         def without_saving_private(&block)
           self.class.without_saving_private(&block)
         end
-      
+        
     end
       
     module ClassMethods

@@ -219,7 +219,7 @@ module Flagging
     end
     
     def at_placeholder_public_version?
-      title == "No Public Version Available"
+      title == NO_PUBLIC_VERSION_TITLE
     end
 
     def notify_moderators_immediatelly_if_necessary(options = { })

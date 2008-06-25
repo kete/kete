@@ -12,6 +12,12 @@ IMPORTANT NOTE: For any steps where you run, "rake db:migrate", it is a good ide
 
 GENERAL NOTE: if you are upgrading your production Kete instance rather than development, you'll add "RAILS_ENV=production" to all rake tasks.
 
+== Trunk r1235 - Added system setting for the placeholder details used on public versions of items when no public version is available.
+
+1.      Upgrade your code base
+2.      Run the upgrade rake task 'rake kete:upgrade'
+3.      Restart your Kete instance (mongrels)
+
 == Trunk r1225 - MySQL only, change column definitions to allow for larger amount of text
 
 1.      Upgrade your code base

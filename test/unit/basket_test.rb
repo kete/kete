@@ -8,7 +8,7 @@ class BasketTest < Test::Unit::TestCase
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_model = { :name => 'test basket', :private_default => false, :file_private_default => false }
-    @req_attr_names = %w(name private_default file_private_default) 
+    @req_attr_names = %w(name) 
     # name of fields that must be present, e.g. %(name description)
     @duplicate_attr_names = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
   end
