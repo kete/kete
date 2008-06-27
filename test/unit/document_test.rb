@@ -33,6 +33,7 @@ class DocumentTest < Test::Unit::TestCase
   include ItemPrivacyTestHelper::TestHelper
   include ItemPrivacyTestHelper::Tests::FilePrivate
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
+  include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
 
   # TODO: attachment_attributes_valid?
   

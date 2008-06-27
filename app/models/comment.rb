@@ -17,7 +17,9 @@ class Comment < ActiveRecord::Base
 
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
-
+  
+  include ItemPrivacy::TaggingOverload
+  
   validates_presence_of :description
 
   # most likely we won't use versioning for comments
@@ -60,7 +62,7 @@ class Comment < ActiveRecord::Base
   end
   
   def private=(*args)
-    comment_private = *args
+    self.commentable_private = *args
   end
   
   def has_private_version?

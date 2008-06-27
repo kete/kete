@@ -33,5 +33,6 @@ class AudioRecordingTest < Test::Unit::TestCase
   include ItemPrivacyTestHelper::TestHelper
   include ItemPrivacyTestHelper::Tests::FilePrivate
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
+  include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
 
 end

@@ -32,7 +32,10 @@ module ConfigureAsKeteContentItem
       # out of the box
       # we also track each versions raw_tag_list input
       # so we can revert later if necessary
-      klass.send :acts_as_taggable
+      
+      # Tags are tracked on a per-privacy basis.
+      klass.send :acts_as_taggable_on, :public_tags
+      klass.send :acts_as_taggable_on, :private_tags
 
       # we override acts_as_versioned dependent => delete_all
       # because of the complexity our relationships of our models
@@ -44,7 +47,15 @@ module ConfigureAsKeteContentItem
       # is different than how we use tags on the versioned model
       # where we use it for flagging moderator options, like 'flag as inappropriate'
       # where 'inappropriate' is actually a tag on that particular version
-      Module.class_eval("#{klass.name}::Version").send(:acts_as_taggable)
+      
+      # Moderation flags are tracked in a separate context.
+      Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
+        acts_as_taggable_on :flags
+        alias_method :tags, :flags
+        alias_method :tag_list, :flag_list
+        alias_method :tag_list=, :flag_list=
+        alias_method :tag_counts, :flag_counts
+      RUBY
 
       # methods and declarations related to moderation and flagging
       klass.send :include, Flagging

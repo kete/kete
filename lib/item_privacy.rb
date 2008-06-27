@@ -14,6 +14,7 @@ module ItemPrivacy
         include ActsAsVersionedOverload::InstanceMethods
         extend  ActsAsVersionedOverload::ClassMethods
         include AttachmentFuOverload
+        include TaggingOverload
       end
     end
     
@@ -165,7 +166,7 @@ module ItemPrivacy
         end
         
     end
-      
+    
     module ClassMethods
       
       def without_saving_private(&block)
@@ -182,6 +183,32 @@ module ItemPrivacy
       
     end
       
+  end
+  
+  module TaggingOverload
+    
+    # Transparently map tags for the current item to the tags of the correct
+    # privacy.
+    def tags
+      private? ? private_tags : public_tags
+    end
+
+    def tag_list
+      private? ? private_tag_list : public_tag_list
+    end
+
+    def tag_list=(new_tags)
+      if private?
+        self.private_tag_list = new_tags
+      else
+        self.public_tag_list = new_tags
+      end
+    end
+
+    def tag_counts
+      private? ? private_tag_counts : public_tag_counts
+    end
+    
   end
   
   module AttachmentFuOverload

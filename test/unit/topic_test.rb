@@ -28,6 +28,7 @@ class TopicTest < Test::Unit::TestCase
 	include FlaggingTestUnitHelper
   include ItemPrivacyTestHelper::TestHelper
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
+  include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   
   def test_does_not_respond_to_file_private
     topic = Topic.create

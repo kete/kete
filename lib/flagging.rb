@@ -32,6 +32,7 @@ module Flagging
       if !message.blank?
         tagging = version.taggings.find_by_tag_id(Tag.find_by_name(flag))
         tagging.message = message
+        tagging.context = "flags"
         tagging.save
       end
 
@@ -301,7 +302,7 @@ module Flagging
       select += ", #{versions_table_name}.private as private" if self.columns.collect { |c| c.name }.include?("private")
       
       joins = "JOIN #{table_name} ON #{table_name}.id = #{versions_table_name}.#{class_fk} AND #{table_name}.basket_id = #{versions_table_name}.basket_id "
-      joins += "JOIN taggings ON taggings.taggable_id = #{versions_table_name}.id AND taggings.taggable_type = '#{full_version_class_name}' "
+      joins += "JOIN taggings ON taggings.taggable_id = #{versions_table_name}.id AND taggings.taggable_type = '#{full_version_class_name}' AND taggings.context = \"flags\""
       joins += "JOIN tags ON tags.id = taggings.tag_id"
 
       find_options = {

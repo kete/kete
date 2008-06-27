@@ -6,7 +6,7 @@
       <% cache_if_public (@web_link, {:part => 'details'}) do -%>
 
       <% if show_attached_files_for?(@web_link) -%>
-      <h2><%= link_to h(@web_link.title), u(@web_link.url) %></h2>
+      <h2><%= link_to h(@web_link.title), url_for(@web_link.url) %></h2>
       <%= render(:partial => "details", :locals => { :item => @web_link }) %>
       <% else -%>
 

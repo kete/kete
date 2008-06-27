@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 9f6e93ae0bc4d3313bc6f30588ef95eff38c196b
+  branch: HEAD
+lock: 
+repository_url: git://github.com/mbleigh/acts-as-taggable-on.git
+repository_class: Piston::Git::Repository

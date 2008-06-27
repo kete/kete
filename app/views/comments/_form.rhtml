@@ -10,6 +10,8 @@
                 <% if !params[:relate_to_topic].nil? %>
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
+                
+                <%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || params[:comment][:commentable_private] if !edit %>
 
                 <div class="form-element">
                   <label for="comment_title">Title:</label>
@@ -60,8 +62,6 @@
                         <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] || params[:comment][:commentable_id], "id" => "comment_commentable_id" %>
 
                         <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] || params[:comment][:commentable_type], "id" => "comment_commentable_type" %>
-                        
-												<%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || params[:comment][:commentable_private] %>
                 <% end %>
 
                 <!--[eoform:comment]-->

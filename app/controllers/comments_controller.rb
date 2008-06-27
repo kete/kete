@@ -32,6 +32,13 @@ class CommentsController < ApplicationController
 
   def create
     @comment = Comment.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
+    
+    # Reset the tag lists again to ensure they are saved to the correct privacies
+    # This is required because tag_list= sets the contexted of the tags based on the private?
+    # value of the @comment object.
+    @comment.public_tag_list, @comment.private_tag_list = nil, nil
+    @comment.tag_list = params[:comment][:tag_list]
+    
     @successful = @comment.save
 
     if @successful
@@ -46,7 +53,7 @@ class CommentsController < ApplicationController
       zoom_class = only_valid_zoom_class(params[:comment][:commentable_type])
 
       # make sure that we wipe comments cache for thing we are commenting on
-      commented_item = Module.class_eval(zoom_class).find(params[:comment][:commentable_id])
+      commented_item = zoom_class.find(params[:comment][:commentable_id])
       expire_comments_caches_for(commented_item)
 
       # although we shouldn't be using the related_topic aspect here
