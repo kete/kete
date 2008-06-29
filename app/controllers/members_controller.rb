@@ -96,10 +96,17 @@ class MembersController < ApplicationController
       # no members
       @members = User.paginate_by_id(0, :page => 1)
     else
-      @members = User.paginate(:joins => "join roles_users on users.id = roles_users.user_id",
-                               :conditions => ["roles_users.role_id = ?", @member_role.id],
-                               :page => params[:page],
-                               :per_page => 20)
+      if params[:action] == 'rss'
+        @members = User.find(:all,
+                             :joins => "join roles_users on users.id = roles_users.user_id",
+                             :conditions => ["roles_users.role_id = ?", @member_role.id])
+      else
+        @members = User.paginate(:joins => "join roles_users on users.id = roles_users.user_id",
+                                 :conditions => ["roles_users.role_id = ?", @member_role.id],
+                                 :page => params[:page],
+                                 :per_page => 20)
+
+      end
     end
 
     if request.xhr?

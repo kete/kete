@@ -7,14 +7,14 @@ xml.rss(:version=>"2.0"){
     xml.description("Members of #{@current_basket.name}")
     xml.language('en-nz')
     for member in @members
-      xml.member do
+      xml.item do
         xml.title(member.user_name)
         # no description at this time
         # xml.description(member.flag)
         # rfc822
         xml.pubDate(member.created_at)
-      xml.link(link_to_contributions_of(member, 'Topic'))
-      xml.guid(link_to_profile_for(member))
+      xml.link(url_for_contributions_of(member, 'Topic'))
+      xml.guid(url_for_profile_of(member))
       end
     end
   }

@@ -221,17 +221,25 @@ module ApplicationHelper
     :action => :show, :id => item
   end
 
+  def url_for_contributions_of(user, zoom_class)
+    url_for(:controller => 'search',
+            :urlified_name => @site_basket.urlified_name,
+            :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+            :action => :all, :contributor => user, :trailing_slash => true, :only_path => false)
+  end
+
   def link_to_contributions_of(user,zoom_class)
-    link_to h(user.user_name), :controller => 'search',
-    :urlified_name => @site_basket.urlified_name,
-    :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-    :action => :all, :contributor => user, :trailing_slash => true
+    link_to h(user.user_name), url_for_contributions_of(user, zoom_class)
+  end
+
+  def url_for_profile_of(user)
+    url_for(:controller => 'account',
+            :urlified_name => @site_basket.urlified_name,
+            :action => :show, :id => user, :only_path => false)
   end
 
   def link_to_profile_for(user)
-    link_to h(user.user_name), :controller => 'account',
-    :urlified_name => @site_basket.urlified_name,
-    :action => :show, :id => user
+    link_to h(user.user_name), url_for_profile_of(user)
   end
 
   def link_to_related_to_source(options={})
