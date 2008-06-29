@@ -8,7 +8,7 @@ xml.rss(:version=>"2.0"){
     xml.language('en-nz')
     for item in @items
       xml.item do
-        xml.title(item.version_title)
+        xml.title(item.title)
         xml.description(item.flag)
         # rfc822
         xml.pubDate(item.flagged_at)
