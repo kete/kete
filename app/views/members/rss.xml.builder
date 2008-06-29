@@ -9,7 +9,8 @@ xml.rss(:version=>"2.0"){
     for member in @members
       xml.member do
         xml.title(member.user_name)
-        xml.description(member.flag)
+        # no description at this time
+        # xml.description(member.flag)
         # rfc822
         xml.pubDate(member.created_at)
       xml.link(link_to_contributions_of(member, 'Topic'))
