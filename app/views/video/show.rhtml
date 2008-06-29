@@ -32,10 +32,12 @@
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   
-  <% cache ({:part => 'secondary_content'}) do -%>
   <div id="secondary-content-wrapper">
+    <% cache ({:part => "secondary_content_tags_#{@video.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @video }) %>
+    <% end -%>
+    <% cache ({:part => "secondary_content_extended_fields_#{@video.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @video }) %>
+    <% end -%>
   </div> <!-- /secondary-content-warpper -->
-  <% end -%>
 </div><!-- /content-wrapper -->

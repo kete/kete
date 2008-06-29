@@ -4,7 +4,7 @@
 <!-- begining of main content block -->
 
 <%= render(:partial => "topics/content_wrapper_start") %>
-    <% cache_if_public (@audio_recording, {:part => 'details'}) do -%>
+    <% cache_if_public(@audio_recording, {:part => 'details'}) do -%>
         <h2><%= h(@audio_recording.title) %></h2>
 
         <p><%= @audio_recording.description %></p>
@@ -29,7 +29,11 @@
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
+    <% cache ({:part => "secondary_content_tags_#{@audio_recording.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @audio_recording }) %>
+    <% end -%>
+    <% cache ({:part => "secondary_content_extended_fields_#{@audio_recording.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @audio_recording }) %>
+    <% end -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

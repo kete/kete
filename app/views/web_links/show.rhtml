@@ -3,7 +3,7 @@
 <% end -%>
 
 <%= render :partial => "topics/content_wrapper_start" %>
-      <% cache_if_public (@web_link, {:part => 'details'}) do -%>
+      <% cache_if_public(@web_link, {:part => 'details'}) do -%>
 
       <% if show_attached_files_for?(@web_link) -%>
       <h2><%= link_to h(@web_link.title), url_for(@web_link.url) %></h2>
@@ -31,10 +31,12 @@
 <% end -%>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
-  <% cache ({:part => 'secondary_content'}) do -%>
   <div id="secondary-content-wrapper">
+    <% cache ({:part => "secondary_content_tags_#{@web_link.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @web_link }) %>
+    <% end -%>
+    <% cache ({:part => "secondary_content_extended_fields_#{@web_link.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @web_link }) %>
+    <% end -%>
   </div> <!-- /secondary-content-warpper -->
-  <% end -%>
 </div><!-- /content-wrapper -->

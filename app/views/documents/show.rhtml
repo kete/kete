@@ -30,12 +30,14 @@
 <% end -%>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
-  <% cache ({:part => 'secondary_content'}) do -%>
   <div id="secondary-content-wrapper">
+    <% cache ({:part => "secondary_content_tags_#{@document.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @document }) %>
+    <% end -%>
+    <% cache ({:part => "secondary_content_extended_fields_#{@document.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @document }) %>
+    <% end -%>
   </div> <!-- /secondary-content-warpper -->
-  <% end -%>
 </div><!-- /content-wrapper -->
 
 
