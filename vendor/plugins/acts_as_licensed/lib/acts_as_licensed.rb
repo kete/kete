@@ -26,8 +26,7 @@ module Katipo
           License.has_many self.table_name.to_sym, :dependent => :nullify
           
           # Tell ActsAsVersioned to ignore the license_id column (not versioned)
-          # TODO: Check for ActsAsVersioned inclusion.
-          non_versioned_fields << "license_id" if respond_to?(:non_versioned_fields)
+          self.non_versioned_columns << "license_id" if self.respond_to?(:non_versioned_columns)
         end
       end
 
