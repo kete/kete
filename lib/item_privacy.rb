@@ -33,8 +33,8 @@ module ItemPrivacy
 
     
       # TODO: Work out how to invoke an instance method from an included module..
-      # Might need to overload non_versioned_fields the method
-      # non_versioned_fields << "file_private"
+      # Might need to overload self.non_versioned_columns the method
+      # self.non_versioned_columns << "file_private"
     
       # Find the latest public version of the current item
       # Find the latest version of the current item
@@ -100,9 +100,12 @@ module ItemPrivacy
         # http://significantbits.wordpress.com/2008/01/29/yaml-vs-marshal-performance/
         def store_private!(save_after_serialization = false)
 
-          prepared_array = versioned_attributes.push("version").inject(Array.new) do |memo, k|
-            memo << [k, send(k.to_sym)]
+          prepared_array = self.class.versioned_columns.inject(Array.new) do |memo, k|
+            memo << [k.name, send(k.name.to_sym)]
           end
+          
+          # Also save the current version into the private version column
+          prepared_array << ["version", version]
           
           # Save the prepared array into the attribute column..
           without_revision do

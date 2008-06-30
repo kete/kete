@@ -1,11 +1,5 @@
 # if SystemSetting model doesn't exist, set IS_CONFIGURED to false
-begin
-  current_migration = (ActiveRecord::Base.connection.select_one("SELECT version FROM schema_info") || {"version" => 0})["version"].to_i
-rescue
-  current_migration = 0
-end
-
-if Object.const_defined?('SystemSetting') and current_migration > 40
+if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.table_exists?('system_settings')
   # make each setting a global constant
   # see reference for Module for more details about constant setting, etc.
   site_name_setting = SystemSetting.find_by_name('Site Name')

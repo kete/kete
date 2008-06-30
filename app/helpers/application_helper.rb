@@ -725,12 +725,11 @@ module ApplicationHelper
   end
 
   # Only cache if the item is public.
-  def cache_if_public(item, parts, &block)
+  def cache_if_public(item, name = {}, options = nil, &block)
     if item.respond_to?(:private) and item.private?
       block.call
     else
-      # Call erb caching framework directly
-      @controller.cache_erb_fragment(block, parts)
+      cache(name, options, &block)
     end
   end
 

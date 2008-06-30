@@ -82,4 +82,14 @@ class UserNotifier < ActionMailer::Base
     @body[:submitter] = submitter
     @body[:message] = message
   end
+  
+  
+  # James - 2008-06-29
+  # Work around to fix active_scaffold exceptions
+  class << self
+    def uses_active_scaffold?
+      false
+    end
+  end
+  
 end

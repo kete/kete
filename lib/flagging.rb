@@ -78,7 +78,7 @@ module Flagging
     def latest_unflagged_version_with_condition(&block)
       last_version_number = self.max_version
           
-      last_version = self.find_version(last_version_number)
+      last_version = self.versions.find_by_version(last_version_number)
       last_version_tags_count = last_version.tags.size
       
       if last_version_number > 1
@@ -86,7 +86,7 @@ module Flagging
           last_version_number = last_version_number - 1
           break if last_version_number == 0
           
-          last_version = self.find_version(last_version_number)
+          last_version = self.versions.find_by_version(last_version_number)
           last_version_tags_count = last_version.tags.size
         end
       end
@@ -207,7 +207,7 @@ module Flagging
     def disputed_version?
       # Disputed is now used on a version by version basis.
       # An item is disputed if it has one or more tags (flags).
-      this_version = find_version(version)
+      this_version = self.versions.find_by_version(version)
       this_version.tags.size > 0 && !this_version.tags.collect { |t| t.name }.member?("reviewed by moderator")
     end
 

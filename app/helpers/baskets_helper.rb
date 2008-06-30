@@ -35,6 +35,6 @@ module BasketsHelper
 
     }
 
-    $('settings[fully_moderated]').observe('change', toggleHiddenModeratedExcept);"
+    $('settings_fully_moderated').observe('change', toggleHiddenModeratedExcept);"
   end
 end

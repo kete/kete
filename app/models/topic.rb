@@ -110,7 +110,7 @@ class Topic < ActiveRecord::Base
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload
-  non_versioned_fields << "private_version_serialized"
+  self.non_versioned_columns << "private_version_serialized"
 
 
   after_save :store_correct_versions_after_save

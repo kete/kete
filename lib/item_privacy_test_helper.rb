@@ -159,8 +159,8 @@ module ItemPrivacyTestHelper
         doc = eval(@base_class).create(@new_model.merge({ :private => true }))
         assert_equal false, doc.private?
         assert_equal 2, doc.versions.size
-        assert_equal true, doc.find_version(1).private?
-        assert_equal false, doc.find_version(2).private?
+        assert_equal true, doc.versions.find_by_version(1).private?
+        assert_equal false, doc.versions.find_by_version(2).private?
       end
 
       def test_latest_version
@@ -192,7 +192,7 @@ module ItemPrivacyTestHelper
 
         d.reload
 
-        d.revert_to(d.find_version(3))
+        d.revert_to(d.versions.find_by_version(3))
 
         assert_equal d.version, 3
         assert_equal d.description, "Version 3"
@@ -325,7 +325,7 @@ module ItemPrivacyTestHelper
         assert_equal 2, d.version
         assert_equal 0, d.tags.size
         d.flag_live_version_with("PENDING", "Pending")
-        assert_equal 1, d.find_version(2).tags.size
+        assert_equal 1, d.versions.find_by_version(2).tags.size
         assert_equal 1, d.version
         assert_equal false, d.private?
         assert d.versions.reject { |v| v.version == 2 }.all? { |v| v.tags.size == 0 }
@@ -349,7 +349,7 @@ module ItemPrivacyTestHelper
         d.flag_live_version_with("PENDING", "Pending")
         d.send :store_correct_versions_after_save
 
-        assert_equal 1, d.find_version(3).tags.size
+        assert_equal 1, d.versions.find_by_version(3).tags.size
         assert d.versions.reject { |v| v.version == 3 }.all? { |v| v.tags.size == 0 }
 
         d.private_version do
@@ -401,20 +401,20 @@ module ItemPrivacyTestHelper
         # Should be three, 1 for private, 1 for public and 1 for pending blank private..
         assert_equal 3, d.versions.size
 
-        assert_equal 1, d.find_version(1).tags.size
-        assert_equal "test item", d.find_version(1).title
-        assert_equal "Version 1", d.find_version(1).description
-        assert_equal true, d.find_version(1).private?
+        assert_equal 1, d.versions.find_by_version(1).tags.size
+        assert_equal "test item", d.versions.find_by_version(1).title
+        assert_equal "Version 1", d.versions.find_by_version(1).description
+        assert_equal true, d.versions.find_by_version(1).private?
 
-        assert_equal 0, d.find_version(2).tags.size
-        assert_equal BLANK_TITLE, d.find_version(2).title
-        assert_equal nil, d.find_version(2).description
-        assert_equal true, d.find_version(2).private?
+        assert_equal 0, d.versions.find_by_version(2).tags.size
+        assert_equal BLANK_TITLE, d.versions.find_by_version(2).title
+        assert_equal nil, d.versions.find_by_version(2).description
+        assert_equal true, d.versions.find_by_version(2).private?
 
-        assert_equal 0, d.find_version(3).tags.size
-        assert_equal NO_PUBLIC_VERSION_TITLE, d.find_version(3).title
-        assert_equal NO_PUBLIC_VERSION_DESCRIPTION, d.find_version(3).description
-        assert_equal false, d.find_version(3).private?
+        assert_equal 0, d.versions.find_by_version(3).tags.size
+        assert_equal NO_PUBLIC_VERSION_TITLE, d.versions.find_by_version(3).title
+        assert_equal NO_PUBLIC_VERSION_DESCRIPTION, d.versions.find_by_version(3).description
+        assert_equal false, d.versions.find_by_version(3).private?
 
         assert_equal 3, d.version
         assert_equal NO_PUBLIC_VERSION_TITLE, d.title
@@ -444,15 +444,15 @@ module ItemPrivacyTestHelper
         # Should be three, 1 for private, 1 for public and 1 for pending blank private..
         assert_equal 2, d.versions.size
 
-        assert_equal 1, d.find_version(1).tags.size
-        assert_equal "test item", d.find_version(1).title
-        assert_equal "Version 1", d.find_version(1).description
-        assert_equal false, d.find_version(1).private?
+        assert_equal 1, d.versions.find_by_version(1).tags.size
+        assert_equal "test item", d.versions.find_by_version(1).title
+        assert_equal "Version 1", d.versions.find_by_version(1).description
+        assert_equal false, d.versions.find_by_version(1).private?
 
-        assert_equal 0, d.find_version(2).tags.size
-        assert_equal BLANK_TITLE, d.find_version(2).title
-        assert_equal nil, d.find_version(2).description
-        assert_equal false, d.find_version(2).private?
+        assert_equal 0, d.versions.find_by_version(2).tags.size
+        assert_equal BLANK_TITLE, d.versions.find_by_version(2).title
+        assert_equal nil, d.versions.find_by_version(2).description
+        assert_equal false, d.versions.find_by_version(2).private?
 
         assert_equal 2, d.version
         assert_equal BLANK_TITLE, d.title
@@ -476,15 +476,15 @@ module ItemPrivacyTestHelper
         # Should be three, 1 for private, 1 for public and 1 for pending blank private..
         assert_equal 3, d.versions.size
 
-        assert_equal 1, d.find_version(1).tags.size
-        assert_equal "test item", d.find_version(1).title
-        assert_equal "Version 1", d.find_version(1).description
-        assert_equal false, d.find_version(1).private?
+        assert_equal 1, d.versions.find_by_version(1).tags.size
+        assert_equal "test item", d.versions.find_by_version(1).title
+        assert_equal "Version 1", d.versions.find_by_version(1).description
+        assert_equal false, d.versions.find_by_version(1).private?
 
-        assert_equal 0, d.find_version(2).tags.size
-        assert_equal BLANK_TITLE, d.find_version(2).title
-        assert_equal nil, d.find_version(2).description
-        assert_equal false, d.find_version(2).private?
+        assert_equal 0, d.versions.find_by_version(2).tags.size
+        assert_equal BLANK_TITLE, d.versions.find_by_version(2).title
+        assert_equal nil, d.versions.find_by_version(2).description
+        assert_equal false, d.versions.find_by_version(2).private?
 
         assert_equal 3, d.version
         assert_equal "test item", d.title
@@ -505,8 +505,8 @@ module ItemPrivacyTestHelper
         assert_equal 3, d.version
         assert_equal "Version 1", d.description
 
-        assert_equal 1, d.find_version(4).tags.size
-        assert_equal "Version 2", d.find_version(4).description
+        assert_equal 1, d.versions.find_by_version(4).tags.size
+        assert_equal "Version 2", d.versions.find_by_version(4).description
       end
 
       def test_new_private_version_of_moderated_public_item
@@ -519,11 +519,11 @@ module ItemPrivacyTestHelper
         assert_equal 3, d.version
         assert_equal "Version 1", d.description
 
-        assert_equal 1, d.find_version(4).tags.size
-        assert_equal "Version 2", d.find_version(4).description
+        assert_equal 1, d.versions.find_by_version(4).tags.size
+        assert_equal "Version 2", d.versions.find_by_version(4).description
 
-        assert_equal BLANK_TITLE, d.find_version(5).title
-        assert_equal nil, d.find_version(5).description
+        assert_equal BLANK_TITLE, d.versions.find_by_version(5).title
+        assert_equal nil, d.versions.find_by_version(5).description
       end
 
       def test_private_version_with_block

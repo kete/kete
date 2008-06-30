@@ -41,7 +41,7 @@ class StillImageTest < Test::Unit::TestCase
     still_image = StillImage.create(@new_model)
     assert_not_nil still_image.versions
     assert_equal still_image.versions.size, 1
-    assert_equal still_image.find_version(1).title, still_image.title
+    assert_equal still_image.versions.find_by_version(1).title, still_image.title
   end
   
   def test_associations_work

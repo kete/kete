@@ -23,8 +23,8 @@ class StillImage < ActiveRecord::Base
   include ItemPrivacy::All
   
   # Do not version self.file_private
-  non_versioned_fields << "file_private"
-  non_versioned_fields << "private_version_serialized"
+  self.non_versioned_columns << "file_private"
+  self.non_versioned_columns << "private_version_serialized"
   
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed

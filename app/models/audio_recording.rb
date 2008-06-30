@@ -25,8 +25,8 @@ class AudioRecording < ActiveRecord::Base
   acts_as_licensed
   
   # Do not version self.file_private
-  non_versioned_fields << "file_private"
-  non_versioned_fields << "private_version_serialized"
+  self.non_versioned_columns << "file_private"
+  self.non_versioned_columns << "private_version_serialized"
   
   after_save :store_correct_versions_after_save
 

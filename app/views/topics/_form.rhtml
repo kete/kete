@@ -95,11 +95,11 @@
                 <div class="form-element">
                         <label for="topic_version_comment">Comment on this edit:</label>
                         <%  # delete the last version_comment's value
-                            @topic.version_comment = nil -%>
+                            @topic.version_comment = nil if @topic.version_comment -%>
                         <%= text_field 'topic', 'version_comment', {:class => "text-input"} %>
                 </div>
         <% end %>
-	<%= render :partial => 'license_chooser_or_agreement',:locals => {:item => @topic || Topic.new} %>
+        <%= render :partial => 'license_chooser_or_agreement',:locals => {:item => @topic || Topic.new} %>
         <% # Walter McGinnis (walter@katipo.co.nz), 2006-12-20 %>
         <% # even though we have removed ajaxscaffold, we may need this back if we have other conflicts  %>
         <% # therefore keeping for refence  %>

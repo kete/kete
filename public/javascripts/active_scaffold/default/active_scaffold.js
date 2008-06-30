@@ -3,9 +3,9 @@ if (typeof Prototype == 'undefined')
   warning = "ActiveScaffold Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes active_scaffold.js (e.g. <%= active_scaffold_includes %>).";
   alert(warning);
 }
-if (Prototype.Version.substring(0, 8) == '1.5.0_rc')
+if (Prototype.Version.substring(0, 3) != '1.6')
 {
-  warning = "ActiveScaffold Error: Prototype 1.5.0_rc is not supported. Please update prototype.js (rake rails:update:javascripts).";
+  warning = "ActiveScaffold Error: Prototype version 1.6.x is required. Please update prototype.js (rake rails:update:javascripts).";
   alert(warning);
 }
 
@@ -194,7 +194,7 @@ ActiveScaffold.ActionLink.Abstract.prototype = {
     this.loading_indicator = loading_indicator;
     this.hide_target = false;
     this.position = this.tag.getAttribute('position');
-                this.page_link = this.tag.getAttribute('page_link');
+		this.page_link = this.tag.getAttribute('page_link');
 
     this.onclick = this.tag.onclick;
     this.tag.onclick = null;
@@ -218,37 +218,37 @@ ActiveScaffold.ActionLink.Abstract.prototype = {
     }
   },
 
-        open_action: function() {
-                if (this.position) this.disable();
+	open_action: function() {
+		if (this.position) this.disable();
 
-                if (this.page_link) {
-                        window.location = this.url;
-                } else {
-                        if (this.loading_indicator) this.loading_indicator.style.visibility = 'visible';
-            new Ajax.Request(this.url, {
-              asynchronous: true,
-              evalScripts: true,
+		if (this.page_link) {
+			window.location = this.url;
+		} else {
+			if (this.loading_indicator) this.loading_indicator.style.visibility = 'visible';
+	    new Ajax.Request(this.url, {
+	      asynchronous: true,
+	      evalScripts: true,
 
-              onSuccess: function(request) {
-                if (this.position) {
-                  this.insert(request.responseText);
-                  if (this.hide_target) this.target.hide();
-                } else {
-                  request.evalResponse();
-                }
-              }.bind(this),
+	      onSuccess: function(request) {
+	        if (this.position) {
+	          this.insert(request.responseText);
+	          if (this.hide_target) this.target.hide();
+	        } else {
+	          request.evalResponse();
+	        }
+	      }.bind(this),
 
-              onFailure: function(request) {
-                ActiveScaffold.report_500_response(this.scaffold_id());
-                if (this.position) this.enable()
-              }.bind(this),
+	      onFailure: function(request) {
+	        ActiveScaffold.report_500_response(this.scaffold_id());
+	        if (this.position) this.enable()
+	      }.bind(this),
 
-              onComplete: function(request) {
-                if (this.loading_indicator) this.loading_indicator.style.visibility = 'hidden';
-              }.bind(this)
-                        });
-                }
-        },
+	      onComplete: function(request) {
+	        if (this.loading_indicator) this.loading_indicator.style.visibility = 'hidden';
+	      }.bind(this)
+			});
+		}
+	},
 
   insert: function(content) {
     throw 'unimplemented'

@@ -13,12 +13,10 @@ config.whiny_nils = true
 config.action_controller.consider_all_requests_local = true
 config.action_controller.perform_caching             = false
 
-# Tell ActionMailer not to deliver emails to the real world.
+# Disable request forgery protection in test environment
+config.action_controller.allow_forgery_protection    = false
+
+# Tell Action Mailer not to deliver emails to the real world.
 # The :test delivery method accumulates sent emails in the
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
-
-# Walter McGinnis, 2007-12-03
-# if you don't have this, because we use protect_from_forgery
-# tests will break, because of lack of tokens
-config.action_controller.allow_forgery_protection  = false

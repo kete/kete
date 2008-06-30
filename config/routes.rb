@@ -81,13 +81,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Walter McGinnis, 2007-07-13
   # if the site isn't configured, we don't setup our full routes
-  begin
-    current_migration = (ActiveRecord::Base.connection.select_one("SELECT version FROM schema_info") || {"version" => 0})["version"].to_i
-  rescue
-    current_migration = 0
-  end
-
-  if Object.const_defined?('SystemSetting') and  current_migration > 40 and SystemSetting.find(:all).size > 0
+  if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.table_exists?('system_settings') and SystemSetting.find(:all).size > 0
     is_configured = eval(SystemSetting.find(1).value)
   else
     is_configured = false
