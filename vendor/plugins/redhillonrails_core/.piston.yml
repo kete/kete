@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  piston:remote-revision: 354
+  piston:uuid: 67570413-2614-0410-8c7a-c7689aa8d500
+lock: 
+repository_url: http://redhillonrails.rubyforge.org/svn/trunk/vendor/plugins/redhillonrails_core
+repository_class: Piston::Svn::Repository
