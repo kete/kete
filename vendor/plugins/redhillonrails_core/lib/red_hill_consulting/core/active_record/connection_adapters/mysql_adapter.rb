@@ -9,7 +9,7 @@ module RedHillConsulting::Core::ActiveRecord::ConnectionAdapters
     def set_table_comment(table_name, comment)
       execute "ALTER TABLE #{table_name} COMMENT='#{quote_string(comment)}'"
     end
-    
+
     def clear_table_comment(table_name)
       execute "ALTER TABLE #{table_name} COMMENT=''"
     end
@@ -56,7 +56,8 @@ module RedHillConsulting::Core::ActiveRecord::ConnectionAdapters
     def reverse_foreign_keys(table_name, name = nil)
       @@schema ||= nil
       @@schema_version ||= 0
-      temp = execute("select version from schema_info limit 1", name);
+      migration_info_table = ActiveRecord::Migrator.respond_to?(:schema_migrations_table_name) ? ActiveRecord::Migrator.schema_migrations_table_name : 'schema_info'
+      temp = execute("select version from #{migration_info_table} limit 1", name);
       current_version = 0
       temp.each { | row | current_version = row[0] }
       if @@schema.nil? || @@schema_version != current_version
