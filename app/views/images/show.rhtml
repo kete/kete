@@ -21,7 +21,7 @@
 					<p>Only available as original.</p>
         <% end -%>
         <% end -%>
-        <% cache({:part => 'caption'}) do -%>
+        <% cache_if_public(@still_image, {:part => 'caption'}) do -%>
                 <% if !@still_image.already_at_blank_version? -%>
                         <h4>Caption</h4>
                         <p><%= @still_image.description %></p>

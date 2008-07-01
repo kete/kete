@@ -2,10 +2,10 @@
   <ul class="nav-list">
     <li class="first selected"><a href="#"><span class="view-link">View
           this Item</span></a></li>
-    <% cache ({:part => 'edit'}) do -%>
     <li><%= link_to "<span class=\"edit-link\">Edit</span>",
             :action => :edit,
       :id => item, :private => params[:private] %></li>
+    <% cache ({:part => 'edit'}) do -%>
     <li><%= link_to "<span class=\"history-link\">History</span>",
             :action => :history,
       :id => item %></li>

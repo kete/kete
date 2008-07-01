@@ -38,10 +38,6 @@ class ApplicationController < ActionController::Base
   # sets up instance variables for authentication
   include KeteAuthorization
 
-  # if anything is updated or deleted
-  # we need toss our show action fragments
-  before_filter :expire_show_caches, :only => [ :edit, :destroy, :convert ]
-
   # keep track of tag_list input by version
   before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]
 
@@ -65,6 +61,10 @@ class ApplicationController < ActionController::Base
   # ensure that users who are in a basket where the action menu has been hidden can edit
   # by posting a dummy form
   before_filter :current_user_can_see_action_menu?, :only => [:new, :create, :edit, :update]
+
+  # if anything is updated or deleted
+  # we need toss our show action fragments
+  after_filter :expire_show_caches, :only => [ :update, :destroy, :convert ]
 
   # setup return_to for the session
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
@@ -240,7 +240,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments-moderators', 'comments', 'secondary_content']
+  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments-moderators', 'comments', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
 
   INDEX_PARTS = [ 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
 
@@ -274,7 +274,13 @@ class ApplicationController < ActionController::Base
   def expire_show_caches
     no_caches_controllers = ['account', 'members']
     if !no_caches_controllers.include?(params[:controller])
-      expire_show_caches_for(item_from_controller_and_id)
+      
+      # James - 2008-07-01
+      # Ensure caches are expired in the context of privacy.
+      item = item_from_controller_and_id
+      item.private_version! if item.latest_version_is_private?
+      
+      expire_show_caches_for(item)
     end
   end
 
@@ -285,9 +291,23 @@ class ApplicationController < ActionController::Base
     return unless ZOOM_CLASSES.include?(item_class)
 
     SHOW_PARTS.each do |part|
+      
+      # James - 2008-07-01
+      # Some cache keys have a privacy scope, indicated by [privacy] in the key name.
+      # In these cases, replace this with the actual item's current privacy.
+      # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where 
+      # the current item is private.
+      
+      if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
+        resulting_part = part.sub(/\[privacy\]/, (item.private? ? "private" : "public"))
+        logger.debug("Resulting part: #{resulting_part}")
+      else
+        resulting_part = part
+      end
+      
       # we have to do this for each distinct title the item previously had
       # because old titles' friendly urls won't be matched in our expiry otherwise
-      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => part })
+      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
     end
 
     # images have an additional cache

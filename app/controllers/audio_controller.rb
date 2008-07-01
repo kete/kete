@@ -71,13 +71,11 @@ class AudioController < ApplicationController
   def update
     @audio_recording = AudioRecording.find(params[:id])
 
-    version_after_update = @audio_recording.max_version + 1
-
     if @audio_recording.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
 
       after_successful_zoom_item_update(@audio_recording)
 
-      @audio_recording.do_notifications_if_pending(version_after_update, current_user)
+      @audio_recording.do_notifications_if_pending(@audio_recording.max_version, current_user)
 
       flash[:notice] = 'AudioRecording was successfully updated.'
 

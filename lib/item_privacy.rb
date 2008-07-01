@@ -54,7 +54,7 @@ module ItemPrivacy
       end
       
       def latest_version_is_private?
-        last_version = version.last
+        last_version = versions.find(:first, :order => 'id DESC')
         last_version.respond_to?(:private?) && last_version.private?
       end
       

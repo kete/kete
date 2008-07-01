@@ -68,13 +68,11 @@ class WebLinksController < ApplicationController
   def update
     @web_link = WebLink.find(params[:id])
 
-    version_after_update = @web_link.max_version + 1
-
     if @web_link.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
 
       after_successful_zoom_item_update(@web_link)
 
-      @web_link.do_notifications_if_pending(version_after_update, current_user)
+      @web_link.do_notifications_if_pending(@web_link.max_version, current_user)
 
       flash[:notice] = 'WebLink was successfully updated.'
 

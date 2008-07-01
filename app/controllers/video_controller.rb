@@ -69,13 +69,11 @@ class VideoController < ApplicationController
   def update
     @video = Video.find(params[:id])
 
-    version_after_update = @video.max_version + 1
-
     if @video.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
 
       after_successful_zoom_item_update(@video)
 
-      @video.do_notifications_if_pending(version_after_update, current_user)
+      @video.do_notifications_if_pending(@video.max_version, current_user)
       flash[:notice] = 'Video was successfully updated.'
 
       redirect_to_show_for(@video, :private => (params[:video][:private] == "true"))
