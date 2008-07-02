@@ -24,7 +24,7 @@ ZOOM::Record.class_eval do
     # make sure we are in utc as per oai standard for datestamp
     # doing this for backwards compatibility
     # may pull out, may also need an "Z" at end, not sure
-    complete_datestamp = DateTime.parse(header.at("datestamp").inner_xml).to_s
+    complete_datestamp = header.at("datestamp").inner_xml
   end
 
   def sets
