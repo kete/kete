@@ -272,13 +272,13 @@ class ApplicationController < ActionController::Base
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
   def expire_show_caches
-    no_caches_controllers = ['account', 'members']
-    if !no_caches_controllers.include?(params[:controller])
+    caches_controllers = ['audio', 'baskets', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
+    if caches_controllers.include?(params[:controller])
       
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
       item = item_from_controller_and_id
-      item.private_version! if item.latest_version_is_private?
+      item.private_version! if item.respond_to?(:private) && item.latest_version_is_private?
       
       expire_show_caches_for(item)
     end
@@ -300,7 +300,6 @@ class ApplicationController < ActionController::Base
       
       if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
         resulting_part = part.sub(/\[privacy\]/, (item.private? ? "private" : "public"))
-        logger.debug("Resulting part: #{resulting_part}")
       else
         resulting_part = part
       end
