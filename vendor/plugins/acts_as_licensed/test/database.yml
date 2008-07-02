@@ -1,0 +1,3 @@
+sqlite:
+  :adapter: sqlite
+  :dbfile: acts_as_licensed_plugin.sqlite.db
