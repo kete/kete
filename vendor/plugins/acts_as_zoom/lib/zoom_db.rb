@@ -1,5 +1,5 @@
 class ZoomDb < ActiveRecord::Base
-  include ConfigureZoomDbForSets # if Object.const_defined?('OaiPmhRepositorySet')
+  include ConfigureZoomDbForSets if defined?(OaiPmhRepositorySet)
 
   # we use this virtual attribute to store what should proceed ClassName:Id in zoom_id
   cattr_accessor :zoom_id_stub
