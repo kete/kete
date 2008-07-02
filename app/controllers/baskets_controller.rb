@@ -1,7 +1,6 @@
 class BasketsController < ApplicationController
   ### TinyMCE WYSIWYG editor stuff
   uses_tiny_mce(:options => { :theme => 'advanced',
-                  :browsers => %w{ msie gecko safaris},
                   :mode => "textareas",
                   :convert_urls => false,
                   :content_css => "/stylesheets/base.css",

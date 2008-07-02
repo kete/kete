@@ -25,7 +25,6 @@ module ExtendedContentController
 
       ### TinyMCE WYSIWYG editor stuff
       klass.send :uses_tiny_mce, :options => { :theme => 'advanced',
-        :browsers => %w{ msie gecko safaris},
         :mode => "textareas",
         :convert_urls => false,
         :content_css => "/stylesheets/base.css",
