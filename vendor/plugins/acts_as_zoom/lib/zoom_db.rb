@@ -1,4 +1,6 @@
 class ZoomDb < ActiveRecord::Base
+  include ConfigureZoomDbForSets # if Object.const_defined?('OaiPmhRepositorySet')
+
   # we use this virtual attribute to store what should proceed ClassName:Id in zoom_id
   cattr_accessor :zoom_id_stub
   # what is the name of the xml element for our records
@@ -74,4 +76,8 @@ class ZoomDb < ActiveRecord::Base
     p.send('commit')
   end
 
+  # used by active_scaffold, but may be handy somewhere else, too
+  def to_label
+    database_name
+  end
 end

@@ -1,9 +1,5 @@
-# load-zoom Z39.50 interface lib
-require 'zoom'
-require "rexml/document"
-
 class SearchController < ApplicationController
-  
+
   # Walter McGinnis, 2008-02-07
   # search forms never add anything to db
   # so don't need csrf protection, which is problematic with search forms
@@ -130,7 +126,7 @@ class SearchController < ApplicationController
     # TODO: skipping multiple source (federated) search for now
 
     # James Stradling <james@katipo.co.nz> - 2008-05-02
-    # Only allow private search if permitted and not in site basket.
+    # Only allow private search if permitted
     if params[:privacy_type] == "private" and permitted_to_view_private_items?
       @privacy = "private"
       zoom_db_instance = "private"
@@ -139,17 +135,18 @@ class SearchController < ApplicationController
     end
 
     # Load the correct zoom_db instance.
-    zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
 
     @result_sets = Hash.new
 
     # iterate through all record types and build up a result set for each
     if params[:related_class].nil?
       ZOOM_CLASSES.each do |zoom_class|
-        populate_result_sets_for(zoom_class,zoom_db)
+        populate_result_sets_for(zoom_class)
       end
     else
-      populate_result_sets_for(params[:related_class],zoom_db)
+      # populate_result_sets_for(relate_to_class)
+      populate_result_sets_for(only_valid_zoom_class(params[:related_class]))
     end
   end
 
@@ -189,11 +186,11 @@ class SearchController < ApplicationController
     @start = 1
 
     # TODO: skipping multiple source (federated) search for now
-    zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
 
     @result_sets = Hash.new
 
-    populate_result_sets_for(@current_class,zoom_db)
+    populate_result_sets_for(@current_class)
   end
 
   def load_results(from_result_set)
@@ -242,10 +239,7 @@ class SearchController < ApplicationController
     @results = WillPaginate::Collection.new(@current_page, @number_per_page, from_result_set.size).concat(@results) unless params[:action] == 'rss'
   end
 
-  def populate_result_sets_for(zoom_class,zoom_db)
-    query = String.new
-    query_operators = String.new
-
+  def populate_result_sets_for(zoom_class)
     # potential elements of query
     # zoom_class and optionally basket
     # search_terms which search both title attribute and all content attribute
@@ -254,197 +248,48 @@ class SearchController < ApplicationController
     # contributor for things contributed to or created by a user
     # sort_type for last_modified
 
-    if @current_basket == @site_basket
-      if params[:privacy_type] == "private"
-        # To be implemented:
-        # When in the site basket and performing a private search, only search those baskets for which
-        # the current user has rights.
+    # limit query to within our zoom_class
+    @search.pqf_query.kind_is(zoom_class, :operator => 'none')
 
-        # authorized_basket_roles = @current_user.roles.select { |r| r.authorizable_type == "Basket" }
-        # authorized_baskets = authorized_basket_roles.collect { |r| Basket.find(r.authorizable_id) }
-        # authorized_baskets.collect { |b| b.urlified_name }.each do |basket|
-        #   query += "@attr 1=12 @and #{zoom_class} #{basket} "
-        # end
-
-        # Temporarily, limit site-wide private searches to the site basket only.
-        query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
-      else
-        query += "@attr 1=12 #{zoom_class} "
-      end
-    else
-      query += "@attr 1=12 @and #{@current_basket.urlified_name} #{zoom_class} "
+    # TODO: change when privacy_type is private
+    # to limit to all user's baskets
+    if @current_basket != @site_basket || params[:privacy_type] == 'private'
+      @search.pqf_query.within(@current_basket.urlified_name)
     end
 
-    if !@source_item.nil?
-      # this looks in the dc_relation index in the z30.50 server
-      # must be exact string
-      # get the item
-      query += "@attr 1=1026 @attr 4=3 \"#{url_for_dc_identifier(@source_item)}\" "
-      query_operators += "@and "
-    end
+    # this looks in the dc_relation index in the z30.50 server
+    # must be exact string
+    # get the item
+    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item), :should_be_exact => true) if !@source_item.nil?
 
-    if !@tag.nil?
-      # this looks in the dc_subject index in the z30.50 server
-      query += "@attr 1=21 \"#{@tag.name}\" "
-      query_operators += "@and "
-    end
+    # this looks in the dc_subject index in the z30.50 server
+    @search.pqf_query.subjects_include(@tag.name) if !@tag.nil?
+
 
     # this should go last because of "or contributor"
-    if !@contributor.nil?
-      # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
-      # must be exact string
+    # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
+    # must be exact string
+    @search.pqf_query.creators_or_contributors_include(@contributor.user_name) if !@contributor.nil?
 
-      # James Stradling - 2008-05-20
-      # Always look in the contribution index as zebra instances are now pre-populated 
-      # with applicable attributes to prevent errors.
-      contributor_query = "@or @attr 1=1003 \"#{user_to_dc_creator_or_contributor(@contributor)}\" @attr 1=1020 \"#{user_to_dc_creator_or_contributor(@contributor)}\" "
+    if !@search_terms.blank?
+      # add the actual text search if there are search terms
+      @search.pqf_query.title_or_any_text_includes(@search_terms)
 
-      logger.info "CONTRIBUTION COUNT"
-      
-      query += contributor_query
-      query_operators += "@and "
+      # this make searching for urls work
+      @search.pqf_query.add_web_link_specific_query if zoom_class == 'WebLink'
     end
 
-    # process query and get a ZOOM::RecordSet back
+    @search.add_sort_to_query_if_needed(:user_specified => params[:sort_type] || 'none',
+                                        :direction => params[:sort_direction],
+                                        :action => params[:action],
+                                        :search_terms => @search_terms)
 
-    # this says, in essence, limit to objects in our class
-    # and sort by dynamic relevance ranking (based on query)
-    # and match partial words (truncated on either the left or right, i.e. both)
-    # relevancee relies on our zoom dbs having it configured
-    # kete zebra servers should be configured properly to use it
-    # we may need to adjust when querying non-kete zoom_dbs (koha for example)
-    # see comment above about current_basket
-
-    if !@search_terms.nil?
-      # add the dynamic relevance ranking
-      # allowing for incomplete search terms
-      # and fuzzy (one misspelled character)
-      query += "@attr 2=102 @attr 5=3 @attr 5=103 "
-
-      # possibly move this to acts_as_zoom
-      # handles case were someone is searching for a url
-      # there may be other special characters to handle
-      # but this seems to do the trick
-      @search_terms = @search_terms.gsub("/", "\/")
-
-      prepped_terms = Module.class_eval(zoom_class).split_to_search_terms(@search_terms)
-
-      web_link_operators = String.new
-      final_terms_string = String.new
-
-      # quote each term to handle phrases
-      if !prepped_terms.blank?
-        if prepped_terms.size > 1
-          # give precedence in relevance
-          # to items that have the terms in their title
-          # by adding title to attribute and "or" all attribute
-          # rather than just searching all attribute
-          title_query = "@or @attr 1=4 "
-          all_content_query = "@attr 1=1016 "
-
-          # work through terms
-          # if there is a boolean operator specified
-          # add it to the correct spot
-          # if not specified add another "@and"
-
-          term_count = 1
-          terms_array = Array.new
-          operators_array = Array.new
-          query_starts_with_not = false
-          last_term_an_operator = false
-          prepped_terms.each do |term|
-            # if first term is boolean operator "not"
-            # then replace the @and for this element of the query with @not
-            # all other boolean operators are treated as normal words if first term
-            if term_count == 1
-              if term.downcase == 'not'
-                query_starts_with_not = true
-              else
-                terms_array << term
-              end
-            else
-              if term_count > 1
-                # in the rare case that @not has replaced
-                # @and at the front of the whole query
-                # and this is the second term
-                # skip adding a boolean operator
-                if query_starts_with_not == true and term_count == 2
-                  # this just treats even terms found in
-                  # Search.boolean_operators as regular words
-                  # since their placement makes them meaningless as boolean operators
-                  terms_array << term
-                else
-                  if Search.boolean_operators.include?(term)
-                    # we got ourselves an operator
-                    operators_array << "@#{term}"
-                    last_term_an_operator = true
-                  else
-                    # just a plain term
-                    if last_term_an_operator == false
-                      # need to add an operator
-                      # assume "and" since none-specified
-                      operators_array << "@and "
-                    end
-
-                    terms_array << term
-                    last_term_an_operator = false
-                  end
-                end
-              end
-            end
-
-            term_count += 1
-          end
-
-          # handle case where the user has enterd two or more operators in a row
-          # we just subtract one from the beginning of operators_array
-          while operators_array.size >= terms_array.size
-            operators_array.delete_at(0)
-          end
-
-          if operators_array.size > 0
-            title_query += operators_array.join(" ") + " "
-            all_content_query += operators_array.join(" ") + " "
-            web_link_operators = operators_array.join(" ") + " "
-          end
-
-          if query_starts_with_not == true
-            query_operators += "@not "
-          else
-            query_operators += "@and "
-          end
-
-          final_terms_string = "\"" + terms_array.join("\" \"") + "\" "
-          title_query += final_terms_string
-          all_content_query += final_terms_string
-
-          query += title_query + all_content_query
-        else
-          # @and will break query if only single term
-          final_terms_string = "\"" + prepped_terms.join("\" \"") + "\" "
-          query += "@or @attr 1=4 #{final_terms_string} @attr 1=1016 #{final_terms_string} "
-
-          query_operators += "@and "
-        end
-      end
-    end
-
-    query = query_operators + query
-
-    query = "@or " + query + "@attr 1=21 " + web_link_operators + " " + final_terms_string if zoom_class == 'WebLink' && !@search_terms.blank?
-
-    query = @search.add_sort_to_query_if_needed(:query => query,
-                                                :user_specified => params[:sort_type],
-                                                :direction => params[:sort_direction],
-                                                :action => params[:action],
-                                                :search_terms => @search_terms)
-
-    logger.debug("what is query: " + query.inspect)
-    this_result_set = zoom_db.process_query(:query => query)
+    logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
+    this_result_set = @search.zoom_db.process_query(:query => @search.pqf_query.to_s)
 
     @result_sets[zoom_class] = this_result_set
 
-    # results are limited to this page's display of search results, or to the related 
+    # results are limited to this page's display of search results, or to the related
     # class, if passed in.
     if zoom_class == @current_class || !params[:related_class].blank?
 
@@ -452,6 +297,8 @@ class SearchController < ApplicationController
       load_results(this_result_set)
     end
 
+    # now that we have results, reset pqf_query
+    @search.pqf_query = PqfQuery.new
   end
 
   # grab the values we want from the zoom_record
@@ -742,45 +589,45 @@ class SearchController < ApplicationController
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_related
     @current_topic = Topic.find(params[:relate_to_topic])
-    
+
     # Look up existing relationships
     case params[:function]
-      
+
     when "remove"
       @results = ContentItemRelation.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| r.related_item }
       @results += ContentItemRelation.find(:all, :conditions => ["related_item_type = ? AND related_item_id = ?", "Topic", @current_topic.id]).collect { |r| r.topic } if params[:related_class] == "Topic"
       @verb = "Existing"
       @next_action = "unlink"
-      
+
     when "restore"
-      
+
     # Find deleted relationships
       @results = ContentItemRelation::Deleted.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| eval(r.related_item_type).find(r.related_item_id) rescue nil }.compact
       @results += ContentItemRelation::Deleted.find(:all, :conditions => ["related_item_id = ? AND related_item_type = ?", @current_topic.id, "Topic"]).collect { |r| Topic.find(r.topic_id) } if params[:related_class] == "Topic"
       @verb = "Restore"
       @next_action = "link"
-      
+
     when "add"
       @results = Array.new
-      
+
       # Run a search if necessary
       @search_terms = params[:search_terms]
       search unless @search_terms.blank?
-      
+
       # Find existing items
       existing = ContentItemRelation.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| r.related_item }
       existing += ContentItemRelation.find(:all, :conditions => ["related_item_type = ? AND related_item_id = ?", "Topic", @current_topic.id]).collect { |r| r.topic } if params[:related_class] == "Topic"
-    
+
       # Ensure results do not include already linked items or the current item.
       unless @results.empty?
-        @results.reject! { |r| existing.collect { |r| r.id }.member?(r["id"].to_i) } 
+        @results.reject! { |r| existing.collect { |r| r.id }.member?(r["id"].to_i) }
         @results.reject! { |r| r["id"].to_i == @current_topic.id }
         @results.collect! { |r| eval(r["class"]).find(r["id"]) }
       end
-      
+
       @next_action = "link"
     end
-    
+
     render :action => 'related_form', :layout => "popup_dialog"
   end
 

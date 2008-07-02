@@ -6,7 +6,8 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
     xml.record do
       xml.header do
         oai_dc_xml_oai_identifier(xml,item)
-        xml.datestamp(item.updated_at.to_s(:db))
+        xml.datestamp(item.updated_at.utc.xmlschema)
+        oai_dc_xml_oai_set_specs(xml,item)
       end
       xml.metadata do
         xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xmlns:dcterms".to_sym => "http://purl.org/dc/terms/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do

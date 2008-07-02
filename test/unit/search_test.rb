@@ -15,12 +15,6 @@ class SearchTest < Test::Unit::TestCase
       :search_terms => nil}
 
     @sort_stub = '@attr 7='
-    @title_query = "@or #{@sort_stub}1 @attr 1=4 0 "
-    @title_reverse_query = "@or #{@sort_stub}2 @attr 1=4 0 "
-    @last_modified_query = "@or #{@sort_stub}2 @attr 1=1012 0 "
-    @last_modified_reverse_query = "@or #{@sort_stub}1 @attr 1=1012 0 "
-    @date_query = "@or #{@sort_stub}2 @attr 1=30 0 "
-    @date_reverse_query = "@or #{@sort_stub}1 @attr 1=30 0 "
   end
 
   # add_sort_to_query_if_needed
@@ -84,80 +78,71 @@ class SearchTest < Test::Unit::TestCase
     assert_equal 'last_modified', Search.new.sort_type(options)
   end
 
-  def test_sort_direction_pqf_with_nil_requested_and_title_sort_type
-    assert_equal '@attr 7=1', Search.new.sort_direction_pqf(nil, 'title')
-  end
+  def self.define_tests_of_sort_direction_value
+    Search.sort_types.each do |sort_type|
+      method_name = "test_sort_direction_value_for_" + sort_type
+      direction_value = Search.date_types.include?(sort_type) ? 2 : 1
+      requested = nil
 
-  def test_sort_direction_pqf_with_nil_requested_and_date_type
-    Search.date_types.each do |type|
-      assert_equal '@attr 7=2',Search.new.sort_direction_pqf(nil, type)
+      code = Proc.new {
+        @search = Search.new
+        @search.update_sort_direction_value_for_pqf_query(requested, sort_type)
+        assert_equal direction_value, @search.pqf_query.direction_value
+      }
+
+      define_method(method_name, &code)
+
+      method_name += '_reverse'
+      direction_value = Search.date_types.include?(sort_type) ? 1 : 2
+      requested = 'reverse'
+
+      define_method(method_name, &code)
     end
   end
 
-  def test_sort_direction_pqf_with_reverse_requested_and_title_sort_type
-    assert_equal '@attr 7=2',Search.new.sort_direction_pqf('reverse', 'title')
-  end
-
-  def test_sort_direction_pqf_with_rerverse_requested_and_date_type
-    Search.date_types.each do |type|
-      assert_equal '@attr 7=1',Search.new.sort_direction_pqf('reverse', type)
-    end
-  end
-
-  # add_sort_to_query_if_needed tests
-  # possible results
-
-  # query (blank is expected from @options)
-  def test_add_sort_to_query_if_needed_should_be_only_blank_query
-    options = @options.merge({ :search_terms => 'bob dobbs', :action => 'for' })
-    assert Search.new.add_sort_to_query_if_needed(options).blank?
-  end
-
-  # title and title reverse added to query
-  def test_add_sort_to_query_if_needed_should_be_title_query
-    options = @options.merge({ :user_specified => 'title', :action => 'all' })
-    assert_equal @title_query, Search.new.add_sort_to_query_if_needed(options)
-  end
-
-  def test_add_sort_to_query_if_needed_should_be_title_reverse_query
-    options = @options.merge({ :user_specified => 'title', :action => 'all', :direction => 'reverse' })
-    assert_equal @title_reverse_query, Search.new.add_sort_to_query_if_needed(options)
-  end
-
-  # last_modified and last_modified reverse added to query
-  def test_add_sort_to_query_if_needed_should_be_last_modified_query
-    options = @options.merge({ :user_specified => 'last_modified', :action => 'all' })
-    assert_equal @last_modified_query, Search.new.add_sort_to_query_if_needed(options)
-  end
-
-  def test_add_sort_to_query_if_needed_should_be_last_modified_reverse_query
-    options = @options.merge({ :user_specified => 'last_modified', :action => 'all', :direction => 'reverse' })
-    assert_equal @last_modified_reverse_query, Search.new.add_sort_to_query_if_needed(options)
-  end
-
-  # date and date reverse added to query
-  def test_add_sort_to_query_if_needed_should_be_date_query
-    options = @options.merge({ :user_specified => 'date', :action => 'all' })
-    assert_equal @date_query, Search.new.add_sort_to_query_if_needed(options)
-  end
-
-  def test_add_sort_to_query_if_needed_should_be_date_reverse_query
-    options = @options.merge({ :user_specified => 'date', :action => 'all', :direction => 'reverse' })
-    assert_equal @date_reverse_query, Search.new.add_sort_to_query_if_needed(options)
-  end
+  self.define_tests_of_sort_direction_value
 
   # rss action should always be last_modified
   def test_add_sort_to_query_if_needed_should_always_be_last_modified_for_rss
     Search.sort_types.each do |type|
       options = @options.merge({ :user_specified => type, :action => 'rss' })
-      assert_equal @last_modified_query, Search.new.add_sort_to_query_if_needed(options)
+      assert_equal "last_modified", Search.new.add_sort_to_query_if_needed(options)
     end
   end
 
   def test_add_sort_to_query_if_needed_should_always_be_last_modified_for_rss_reverse
     Search.sort_types.each do |type|
       options = @options.merge({ :user_specified => type, :action => 'rss', :direction => 'reverse' })
-      assert_equal @last_modified_reverse_query, Search.new.add_sort_to_query_if_needed(options)
+      assert_equal "last_modified", Search.new.add_sort_to_query_if_needed(options)
     end
   end
+
+  def self.define_tests_of_add_sort_to_query_if_needed_should_be
+    Search.sort_types.each do |sort_type|
+      method_name = "test_add_sort_to_query_if_needed_should_be_" + sort_type
+
+      local_options = { :user_specified => sort_type, :action => 'all'}
+
+      define_method(method_name) do
+        options = @options.merge(local_options)
+        @search = Search.new
+        @search.add_sort_to_query_if_needed(options)
+        assert_equal sort_type, @search.pqf_query.sort_spec
+      end
+
+      method_name += '_reverse'
+      local_options = local_options.merge({ :direction => 'reverse'})
+      correct_reverse_sort_direction_value = Search.date_types.include?(sort_type) ? 1 : 2
+
+      define_method(method_name) do
+        options = @options.merge(local_options)
+        @search = Search.new
+        @search.add_sort_to_query_if_needed(options)
+        assert_equal sort_type, @search.pqf_query.sort_spec
+        assert_equal correct_reverse_sort_direction_value, @search.pqf_query.direction_value
+      end
+    end
+  end
+
+  define_tests_of_add_sort_to_query_if_needed_should_be
 end

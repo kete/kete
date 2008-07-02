@@ -67,6 +67,8 @@ class ApplicationController < ActionController::Base
   after_filter :expire_show_caches, :only => [ :update, :destroy, :convert ]
 
   # setup return_to for the session
+  # TODO: this needs to be updated to store location for newer actions
+  # might be better to do an except?
   after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
 
   # if anything is added, edited, or deleted

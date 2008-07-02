@@ -446,4 +446,11 @@ system_settings_050:
   id: "50"
   value: There is currently no public version of this item.
   section: Privacy Settings
-  
+system_settings_051:
+  name: Provide OAI PMH Repository
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Turns on OAI PMH Repository for your Kete site.
+  id: "51"
+  value: "false"
+  section: Server

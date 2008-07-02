@@ -11,6 +11,11 @@ gems:
   mime-types: mime/types
   memcache-client: memcache
   zoom: zoom
+  libxml-ruby: libxml
+
+# we use a hacked version of oai gem for the timebeing
+# included under vendor/gems
+#  oai: oai
 
 # these are problematic as gems depending on platform
 # for example, rmagick on debian is best installed with

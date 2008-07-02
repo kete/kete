@@ -29,6 +29,21 @@ module OaiDcHelpers
       xml.identifier("#{ZoomDb.zoom_id_stub}#{item.basket.urlified_name}:#{item.class.name}:#{item.id}")
     end
 
+    # Walter McGinnis, 2008-06-16
+    # adding oai pmh set support
+    # assumes public zoom_db
+    def oai_dc_xml_oai_set_specs(xml, item)
+      # get the sets that match the item
+      set_specs = Array.new
+      ZoomDb.find(1).active_sets.each do |base_set|
+        set_specs += base_set.matching_specs(item)
+      end
+
+      set_specs.each do |set_spec_value|
+        xml.setSpec(set_spec_value)
+      end
+    end
+
     def oai_dc_xml_dc_identifier(xml, item, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]
@@ -60,18 +75,18 @@ module OaiDcHelpers
         # Link to private version if generating OAI record for it..
         uri_attrs.merge!({ :private => "true" }) if item.respond_to?(:private) && item.private?
       end
-      
+
       # If the item is private and SSL is configured, use https instead of http for full URL for the
       # record.
-      if FORCE_HTTPS_ON_RESTRICTED_PAGES && 
-        ( ( item.respond_to?(:private) && item.private? ) || 
+      if FORCE_HTTPS_ON_RESTRICTED_PAGES &&
+        ( ( item.respond_to?(:private) && item.private? ) ||
           ( item.respond_to?(:commentable_private?) && item.commentable_private? ) )
-          
+
         protocol = "https"
       else
         protocol = "http"
       end
-      
+
       xml.tag!("dc:identifier", "#{protocol}://#{host}#{url_for(uri_attrs.merge(:only_path => true))}")
     end
 
@@ -93,7 +108,7 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_creators_and_date(xml, item)
-      item_created = item.created_at.to_s(:db)
+      item_created = item.created_at.xmlschema
       xml.tag!("dc:date", item_created)
       item.creators.each do |creator|
         xml.tag!("dc:creator", user_to_dc_creator_or_contributor(creator))
@@ -190,7 +205,6 @@ module OaiDcHelpers
     # if there is a license for item, put in its url
     # otherwise site's terms and conditions url
     def oai_dc_xml_dc_rights(xml, item)
-      
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
@@ -201,7 +215,7 @@ module OaiDcHelpers
           :controller => 'topics'
         )
       end
-      
+
       xml.tag!("dc:rights", rights)
     end
 

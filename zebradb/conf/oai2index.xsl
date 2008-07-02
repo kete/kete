@@ -51,6 +51,12 @@
     <z:index name="oai_setspec" type="0">
       <xsl:value-of select="."/>
     </z:index>
+    <z:index name="oai_setspec" type="w">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="oai_setspec" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
   </xsl:template>
 
   <!-- DC specific indexing templates -->

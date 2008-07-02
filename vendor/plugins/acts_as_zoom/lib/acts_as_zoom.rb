@@ -21,6 +21,8 @@ require 'rexml/document'
 require 'zoom'
 # our model for storing Z39.50 server connection information
 require 'zoom_db'
+# we extend the ZOOM::Record class
+require File.dirname(__FILE__) + "/record"
 
 module ZoomMixin
   module Acts #:nodoc:
@@ -404,8 +406,8 @@ module ZoomMixin
 
           def public_zoom_database
             conf = self.class.configuration[:save_to_public_zoom]
-            
-            # Store the returned ZoomDb instance to avoid doing an additional SQL SELECT on each 
+
+            # Store the returned ZoomDb instance to avoid doing an additional SQL SELECT on each
             # save or for each record during zoom_rebuild_item, etc.
             # Note that this does not persist between Mongrel processes.
             @@public_zoom_database ||= ZoomDb.find_by_host_and_database_name(conf[0], conf[1])
@@ -416,7 +418,7 @@ module ZoomMixin
           def private_zoom_database
             conf = self.class.configuration[:save_to_private_zoom]
 
-            # Store the returned ZoomDb instance to avoid doing an additional SQL SELECT on each 
+            # Store the returned ZoomDb instance to avoid doing an additional SQL SELECT on each
             # save or for each record during zoom_rebuild_item, etc.
             # Note that this does not persist between Mongrel processes.
             @@private_zoom_databse ||= ZoomDb.find_by_host_and_database_name(conf[0], conf[1])

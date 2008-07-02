@@ -15,10 +15,12 @@ module SearchHelper
 
   end
 
+  # TODO: depreciated, remove 1.2
   def link_to_previous_page(phrase,previous_page)
     link_to(phrase, :overwrite_params => { :page => previous_page })
   end
 
+  # TODO: depreciated, remove 1.2
   def link_to_next_page(phrase,next_page)
      link_to(phrase, :overwrite_params => { :page => next_page })
   end

@@ -14,6 +14,12 @@ class Search
     ['title'] + date_types
   end
 
+  attr_accessor :zoom_db, :pqf_query
+
+  def initialize
+    @pqf_query = PqfQuery.new
+  end
+
   def sort_type_options_for(sort_type, action)
     with_relevance = action == 'for' ? true : false
 
@@ -45,37 +51,24 @@ class Search
     sort_type
   end
 
-  def sort_direction_pqf(requested, sort_type)
-    pqf_stub = '@attr 7='
-    direction_value = 1
+  def update_sort_direction_value_for_pqf_query(requested, sort_type = nil)
+    sort_type = @pqf_query.sort_spec if sort_type.blank?
 
     date_types = Search.date_types
 
-    direction_value = 2 if (date_types.include?(sort_type) && (requested.nil? || requested != 'reverse')) || (!date_types.include?(sort_type) && !requested.nil? && requested == 'reverse')
-
-    pqf_stub + direction_value.to_s
+    @pqf_query.direction_value = 2 if (date_types.include?(sort_type) && (requested.nil? || requested != 'reverse')) || (!date_types.include?(sort_type) && !requested.nil? && requested == 'reverse')
   end
 
   def add_sort_to_query_if_needed(options = { })
-    query = options[:query]
     sort_type = sort_type(:default => 'none',
                           :user_specified => options[:user_specified],
                           :action => options[:action],
                           :search_terms => options[:search_terms])
 
-    return query if sort_type == 'none'
+    return @pqf_query if sort_type == 'none'
 
-    query += sort_direction_pqf(options[:direction], sort_type) + " "
+    update_sort_direction_value_for_pqf_query(options[:direction], sort_type)
 
-    case sort_type
-    when 'last_modified'
-      query += "@attr 1=1012 0 "
-    when 'title'
-      query += "@attr 1=4 0 "
-    when 'date'
-      query += "@attr 1=30 0 "
-    end
-
-    query = "@or " + query
+    @pqf_query.sort_spec = sort_type
   end
 end

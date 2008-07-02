@@ -13,6 +13,8 @@ ActionController::Routing::Routes.draw do |map|
   # -- just remember to delete public/index.html.
   # map.connect '', :controller => "welcome"
 
+  map.oai '/oai_pmh_repository', :controller => 'oai_pmh_repository', :action => 'index'
+
   # James Stradling <james@katipo.co.nz>, 2008-04-15
   # Map private files to the PrivateFilesController
   # E.g. /documents/0000/0000/0011/Bio.txt
@@ -96,13 +98,10 @@ ActionController::Routing::Routes.draw do |map|
     map.connect '', :controller => "configure", :urlified_name => 'site'
   end
 
-  # Walter McGinnis, 2007-04-03
   # active_scaffold routes
-  map.resources :extended_fields, :active_scaffold => true
-  map.resources :zoom_dbs, :active_scaffold => true
-  map.resources :system_settings, :active_scaffold => true
-  # 2008-05-22
-  map.resources :licenses, :active_scaffold => true
+  ACTIVE_SCAFFOLD_CONTROLLERS.each do |as_controller|
+    map.resources as_controller.to_sym, :active_scaffold => true
+  end
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'

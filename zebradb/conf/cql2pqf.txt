@@ -42,9 +42,13 @@ index.dc.relation = 1=dc_relation 4=3
 index.dc.rights = 1=dc_rights
 
 # Relation info
-relation.<  = 2=1
-relation.eq  = 2=3
-relation.>  = 2=5
+relation.< = 2=1
+relation.le = 2=2
+relation.eq = 2=3
+relation.exact = 2=3
+relation.ge = 2=4
+relation.> = 2=5
+relation.<> = 2=6
 
 
 # Default Relation

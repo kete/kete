@@ -32,7 +32,8 @@ att 16              LC-call-number
 att 17              NLM-call-number
 att 18              NAL-call-number
 att 19              MOS-call-number
-att 20              Local-classification
+# att 20              Local-classification
+att 20              oai_setspec
 # att 21              Subject-heading
 att 21              dc_subject
 att 22              Subject-Rameau
