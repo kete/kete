@@ -11,30 +11,51 @@ module BasketsHelper
     link_to options[:phrase], :controller => 'topics', :action => :new, :index_for_basket => options[:index_for_basket]
   end
 
-  def full_moderation_exceptions_js_helper
-    javascript_tag "function toggleHiddenModeratedExcept(event) {
-    var element = Event.element(event);
+  def toggle_elements_applicable(listenToThisElementID, whenElementValueCondition, whenElementValueThis, toggleThisElementID, listenToElementIsCheckbox=false)
+    if listenToElementIsCheckbox
+      javascript_tag "function toggle_#{toggleThisElementID}() {
+        var element = $('#{listenToThisElementID}');
+        if ( #{whenElementValueCondition}element.checked ) {
+          new Effect.BlindDown('#{toggleThisElementID}', {duration: .75})
+          enableAllFields('#{toggleThisElementID}')
+        } else {
+          new Effect.BlindUp('#{toggleThisElementID}', {duration: .75})
+          disableAllFields('#{toggleThisElementID}')
+        }
+      }
+      $('#{listenToThisElementID}').observe('change', toggle_#{toggleThisElementID});"
+    else
+      javascript_tag "function toggle_#{toggleThisElementID}() {
+        var element = $('#{listenToThisElementID}');
+        if ( element.value #{whenElementValueCondition} '#{whenElementValueThis}' ) {
+          if (!element.blindStatus || element.blindStatus == 'up') {
+            new Effect.BlindDown('#{toggleThisElementID}', {duration: .75})
+            element.blindStatus = 'down';
+            enableAllFields('#{toggleThisElementID}')
+          }
+        } else {
+          if (!element.blindStatus || element.blindStatus == 'down') {
+            new Effect.BlindUp('#{toggleThisElementID}', {duration: .75})
+            element.blindStatus = 'up';
+            disableAllFields('#{toggleThisElementID}')
+          }
+        }
+      }
+      $('#{listenToThisElementID}').observe('change', toggle_#{toggleThisElementID});"
+    end
+  end
 
-    if ( element.options[element.selectedIndex].value == \"false\" ) {
-
-    // uncheck all moderated_except boxes and hide them
-    $$('#settings_moderated_except input[type=checkbox]').each( function(box) {
-    box.checked = false;
-    box.disabled = true;
-    });
-
-    $('empty_settings_moderated_except').disabled = false;
-
-    new Effect.BlindUp('settings_moderated_except', {duration: .75})
-
-    } else {
-    new Effect.BlindDown('settings_moderated_except', {duration: .75})
-
-    $$('#settings_moderated_except input[type=checkbox]').each( function(box) { box.disabled = false; });
+  def setupEnableDisableFunctions
+    javascript_tag "function disableAllFields(element) {
+      $$('#'+element+' input').each( function (input) { input.disabled = true; });
+      $$('#'+element+' textarea').each( function (input) { input.disabled = true; })
+      $$('#'+element+' select').each( function (input) { input.disabled = true; })
+      $$('#'+element+' input[type=checkbox]').each( function (input) { input.checked = false; });
     }
-
-    }
-
-    $('settings_fully_moderated').observe('change', toggleHiddenModeratedExcept);"
+    function enableAllFields(element) {
+      $$('#'+element+' input').each( function (input) { input.disabled = false; });
+      $$('#'+element+' textarea').each( function (input) { input.disabled = false; })
+      $$('#'+element+' select').each( function (input) { input.disabled = false; })
+    }"
   end
 end

@@ -15,9 +15,9 @@
   <% # make hidden and disabled to start
      # reveal if moderation policy is changed to full moderation -%>
   <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' if !@basket.fully_moderated? -%>>
-      <label for="settings[moderated_except]">Moderator views items
-        before approved EXCEPT:</label>
-      <fieldset>
+    <label for="settings[moderated_except]">Moderator views items
+      before approved EXCEPT:</label>
+    <fieldset>
 
       <% ZOOM_CLASSES.each do |zoom_class| -%>
       <input type="checkbox" name="settings[moderated_except][]" value=<%= zoom_class -%>
@@ -27,12 +27,12 @@
     </fieldset>
     <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled>
   </div>
-  
+
   <div class="form-element">
 
     <label>Privacy Controls:</label>
     <fieldset>
-    
+
       <div class="form-element">
         <%= form.radio_button :show_privacy_controls, true %>
         <label for="basket_show_privacy_controls_true" class="inline">Enabled</label>
@@ -48,15 +48,15 @@
           inherit privacy controls policy from the Site.
         </div>
       </div>
-    
+
     </fieldset>
   </div>
-  
+
   <div class="form-element">
     <label>Default Item Privacy:</label>
-  
+
     <fieldset>
-    
+
       <div class="form-element">
         <%= form.radio_button :private_default, false %>
         <label for="basket_private_default_false" class="inline">Public</label><br />
@@ -68,17 +68,17 @@
         <label for="basket_private_default_true" class="inline">Private</label><br />
         <div class="form_example">Can be viewed only by basket members</div>
       </div>
-    
+
     </fieldset>
-  
+
   </div>
 
-  
+
   <div class="form-element">
     <label>Default Original File Privacy:</label>
-    
+
     <fieldset>
-    
+
       <div class="form-element">
         <%= form.radio_button :file_private_default, false %>
         <label for="basket_file_private_default_false" class="inline">Can be downloaded by everyone</label>
@@ -88,31 +88,33 @@
         <%= form.radio_button :file_private_default, true %>
         <label for="basket_file_private_default_true" class="inline">Can be downloaded by authorized users only</label>
       </div>
-  
+
     </fieldset>
-  
+
   </div>
 
   <div class="form-element">
     <label>Who can add, edit and update comments on items?:</label>
-    
+
     <fieldset>
 
       <div class="form-element">
         <%= form.radio_button :allow_non_member_comments, true %>
         <label for="basket_allow_non_member_comments_true" class="inline">Anyone logged in</label>
       </div>
-    
+
       <div class="form-element">
         <%= form.radio_button :allow_non_member_comments, false %>
         <label for="basket_allow_non_member_comments_false" class="inline">Only basket members</label>
       </div>
-    
+
     </fieldset>
-    
+
   </div>
 
-  <%= full_moderation_exceptions_js_helper -%>
+  <%= setupEnableDisableFunctions %>
+  <%= toggle_elements_applicable('settings_fully_moderated',
+      '==', 'true', 'settings_moderated_except') %>
 
   <!--[eoform:basket]-->
 
