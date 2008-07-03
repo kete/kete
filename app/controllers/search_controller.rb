@@ -146,7 +146,7 @@ class SearchController < ApplicationController
       end
     else
       # populate_result_sets_for(relate_to_class)
-      populate_result_sets_for(only_valid_zoom_class(params[:related_class]))
+      populate_result_sets_for(only_valid_zoom_class(params[:related_class]).name)
     end
   end
 
@@ -253,7 +253,7 @@ class SearchController < ApplicationController
 
     # TODO: change when privacy_type is private
     # to limit to all user's baskets
-    if @current_basket != @site_basket || params[:privacy_type] == 'private'
+    if (@current_basket != @site_basket || params[:privacy_type] == 'private') && !searching_for_related_items?
       @search.pqf_query.within(@current_basket.urlified_name)
     end
 
@@ -672,4 +672,10 @@ class SearchController < ApplicationController
       return "failed to add to search: #{item_class} : #{item.id} not found in search index or perhaps the item is pending."
     end
   end
+  
+  # Check whether we are searching for candidate related items or not
+  def searching_for_related_items?
+    params[:controller] == "search" and params[:action] == "find_related"
+  end
+  
 end
