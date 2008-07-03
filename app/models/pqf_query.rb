@@ -148,7 +148,7 @@ class PqfQuery
   def exact_match_for_part_of_oai_identifier(term_or_terms, *options)
     options = options.first || Hash.new
 
-    terms = terms_as_array(term_or_terms).collect { |term| ':' + term + ":" }
+    terms = terms_as_array(term_or_terms).collect { |term| ':' + term.to_s + ":" }
 
     oai_identifier_include(terms, options)
   end
