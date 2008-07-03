@@ -40,7 +40,12 @@ Next, You'll need to rebuild your Zebra indexes to have dates sort without error
 
         * then double check that search results are good to go by clicking on "Browse" from any page or doing a search
 
+== Trunk r1251 - Workaround for 'svn up' issue regarding public/javascripts and vendor/plugins/acts_as_licensed
 
+1.      Remove the folder public/javascripts
+2.      Remove the folder vendor/plugins/acts_as_licensed
+3.      Upgrade your code base
+4.      Restart your Kete instance (mongrels)
 
 == Trunk r1237 - Bug fixes for tagging on private item versions.
 
