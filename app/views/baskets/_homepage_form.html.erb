@@ -3,10 +3,10 @@
 
   <%= hidden_field_tag "source_form", 'homepage_options' %>
 
-  <div class="form-element"><label>Homepage Preferences</label>
+  <div class="form-element"><label>Go directly to browse options</label>
     <fieldset>
       <div class="form-element">
-        <label for="basket_index_page_redirect_to_all" class="inline">Redirect to results of?</label><br />
+        <label for="basket_index_page_redirect_to_all" class="inline">Redirect to results of?</label>
         <%= homepage_form.select :index_page_redirect_to_all, zoom_controllers_as_options([["Don't redirect", '']]) %>
       </div>
     </fieldset>
@@ -19,13 +19,14 @@
         <div class="form-element">
           <% options = @index_topic.blank? ? { :disabled => true } : {} %>
           <%= homepage_form.check_box :index_page_topic_is_entire_page, options %>
-          <label for="basket_index_page_topic_is_entire_page" class="inline">Show only homepage topic?</label><br />
+          <label for="basket_index_page_topic_is_entire_page" class="inline">Show only homepage topic?</label>
           <div class="form_example">
             <%= "(you must have a homepage topic to be able to enabled
-                 this)" if @index_topic.blank? %>
+            this)" if @index_topic.blank? %>
           </div>
           <div class="form-element" id="depth2">
-            <label for="basket_index_page_link_to_index_topic_as" class="inline">A link to the homepage topic's?</label><br />
+            <br />
+            <label for="basket_index_page_link_to_index_topic_as" class="inline">A link to the homepage topic's?</label>
             <%= homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options %>
           </div>
         </div>
@@ -39,11 +40,11 @@
             Including a rolling list of recent topics is an excellent way to present this basket as a blog or a news site.
           </div>
           <div class="form-element">
-            <label for="basket_index_page_number_of_recent_topics">List how many recent topics?</label><br />
+            <label for="basket_index_page_number_of_recent_topics">List how many recent topics?</label>
             <%= homepage_form.text_field :index_page_number_of_recent_topics, :size => '3' %>
           </div>
           <div class="form-element" id="depth4" <%= 'style="display:none;"' unless @basket.index_page_number_of_recent_topics > 0 %>>
-            <label for="basket_index_page_recent_topics_as">List basket's topics as?</label><br />
+            <label for="basket_index_page_recent_topics_as">List basket's topics as?</label>
             <%= homepage_form.select :index_page_recent_topics_as, Basket.recent_topics_as_options %>
           </div>
         </fieldset>
@@ -81,7 +82,7 @@
       <div class="form-element"><label>Selected Image</label>
         <fieldset>
           <div class="form-element">
-            <label for="basket_index_page_image_as" class="inline">Show image from basket?</label><br />
+            <label for="basket_index_page_image_as" class="inline">Show image from basket?</label>
             <%= homepage_form.select :index_page_image_as, Basket.image_as_options %>
           </div>
         </fieldset>
@@ -90,7 +91,7 @@
       <div class="form-element"><label>Archives</label>
         <fieldset>
           <div class="form-element">
-            <label for="basket_index_page_archives_as" class="inline">List basket's archive contents as?</label> <br />
+            <label for="basket_index_page_archives_as" class="inline">List basket's archive contents as?</label>
             <%= homepage_form.select :index_page_archives_as, Basket.archives_as_options %>
           </div>
         </fieldset>
@@ -99,16 +100,16 @@
       <div class="form-element"><label>Tags</label>
         <fieldset>
           <div class="form-element">
-            <label for="basket_index_page_number_of_tags" class="inline">List how many tags?</label><br />
+            <label for="basket_index_page_number_of_tags" class="inline">List how many tags?</label>
             <%= homepage_form.text_field :index_page_number_of_tags, :size => '3' %>
           </div>
           <div id="depth5" <%= 'style="display:none;"' unless @basket.index_page_number_of_tags > 0 %>>
             <div class="form-element">
-              <label for="basket_index_page_tags_as" class="inline">List basket's tags as?</label><br />
+              <label for="basket_index_page_tags_as" class="inline">List basket's tags as?</label>
               <%= homepage_form.select :index_page_tags_as, Basket.tags_as_options %>
             </div>
             <div class="form-element">
-              <label for="basket_index_page_order_tags_by" class="inline">Order tags by?</label><br />
+              <label for="basket_index_page_order_tags_by" class="inline">Order tags by?</label>
               <%= homepage_form.select :index_page_order_tags_by, Basket.order_tags_by_options %>
             </div>
           </div>
