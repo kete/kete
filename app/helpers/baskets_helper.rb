@@ -45,12 +45,13 @@ module BasketsHelper
     end
   end
 
-  def setupEnableDisableFunctions
+  def setupEnableDisableFunctions(clearValues=false)
+    clearFields = clearValues ? "$$('#'+element+' input[type=checkbox]').each( function (input) { input.checked = false; });" : ""
     javascript_tag "function disableAllFields(element) {
       $$('#'+element+' input').each( function (input) { input.disabled = true; });
       $$('#'+element+' textarea').each( function (input) { input.disabled = true; })
       $$('#'+element+' select').each( function (input) { input.disabled = true; })
-      $$('#'+element+' input[type=checkbox]').each( function (input) { input.checked = false; });
+      #{clearFields}
     }
     function enableAllFields(element) {
       $$('#'+element+' input').each( function (input) { input.disabled = false; });

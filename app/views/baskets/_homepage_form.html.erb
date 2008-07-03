@@ -14,7 +14,7 @@
 
   <div id="depth1" <%= 'style="display:none;"' unless @basket.index_page_redirect_to_all.nil? or @basket.index_page_redirect_to_all.empty? %>>
 
-    <div class="form-element"><label>Additional Settings</label>
+    <div class="form-element"><label>Homepage Topic</label>
       <fieldset>
         <div class="form-element">
           <% options = @index_topic.blank? ? { :disabled => true } : {} %>
@@ -24,20 +24,15 @@
             <%= "(you must have a homepage topic to be able to enabled
                  this)" if @index_topic.blank? %>
           </div>
+          <div class="form-element" id="depth2">
+            <label for="basket_index_page_link_to_index_topic_as" class="inline">A link to the homepage topic's?</label><br />
+            <%= homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options %>
+          </div>
         </div>
       </fieldset>
     </div>
 
-    <div id="depth2" <%= 'style="display:none;"' if @basket.index_page_topic_is_entire_page %>>
-      <div class="form-element"><label>Additional Information</label>
-        <fieldset>
-          <div class="form-element">
-            <label for="basket_index_page_link_to_index_topic_as">A link to the homepage topic's?</label><br />
-            <%= homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options %>
-          </div>
-        </fieldset>
-      </div>
-
+    <div id="depth3" <%= 'style="display:none;"' if @basket.index_page_topic_is_entire_page %>>
       <div class="form-element"><label>Recent Topics</label>
         <fieldset>
           <div class="form_example">
@@ -47,7 +42,7 @@
             <label for="basket_index_page_number_of_recent_topics">List how many recent topics?</label><br />
             <%= homepage_form.text_field :index_page_number_of_recent_topics, :size => '3' %>
           </div>
-          <div class="form-element" id="depth3" <%= 'style="display:none;"' unless @basket.index_page_number_of_recent_topics > 0 %>>
+          <div class="form-element" id="depth4" <%= 'style="display:none;"' unless @basket.index_page_number_of_recent_topics > 0 %>>
             <label for="basket_index_page_recent_topics_as">List basket's topics as?</label><br />
             <%= homepage_form.select :index_page_recent_topics_as, Basket.recent_topics_as_options %>
           </div>
@@ -107,7 +102,7 @@
             <label for="basket_index_page_number_of_tags" class="inline">List how many tags?</label><br />
             <%= homepage_form.text_field :index_page_number_of_tags, :size => '3' %>
           </div>
-          <div id="depth4" <%= 'style="display:none;"' unless @basket.index_page_number_of_tags > 0 %>>
+          <div id="depth5" <%= 'style="display:none;"' unless @basket.index_page_number_of_tags > 0 %>>
             <div class="form-element">
               <label for="basket_index_page_tags_as" class="inline">List basket's tags as?</label><br />
               <%= homepage_form.select :index_page_tags_as, Basket.tags_as_options %>
@@ -128,13 +123,15 @@
   <%= toggle_elements_applicable('basket_index_page_redirect_to_all',
       '==', '', 'depth1') %>
   <%= toggle_elements_applicable('basket_index_page_topic_is_entire_page',
-      '!', '', 'depth2', true) %> <% # checkboxes are different in that they
+      '!', '', 'depth2', true) %>
+  <%= toggle_elements_applicable('basket_index_page_topic_is_entire_page',
+      '!', '', 'depth3', true) %> <% # checkboxes are different in that they
                                      # dont have a changing value, they are either checked or not so
                                      # the true param tells it this element
                                      # is a checkbox, and the ! says we want to show the depth2 if its not checked %>
   <%= toggle_elements_applicable('basket_index_page_number_of_recent_topics',
-      '>', '0', 'depth3') %>
-  <%= toggle_elements_applicable('basket_index_page_number_of_tags',
       '>', '0', 'depth4') %>
+  <%= toggle_elements_applicable('basket_index_page_number_of_tags',
+      '>', '0', 'depth5') %>
 
 </fieldset>
