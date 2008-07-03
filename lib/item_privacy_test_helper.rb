@@ -547,6 +547,46 @@ module ItemPrivacyTestHelper
     
     module TaggingWithPrivacyContext
       
+      def test_class_responds_to_class_methods_as_expected
+        klass = eval(@base_class)
+        
+        should_respond_to = [
+          :tag_counts,
+          :private_tag_counts,
+          :public_tag_counts
+        ]
+        
+        should_respond_to.each do |method|
+          assert_respond_to klass, method
+        end
+      end
+      
+      def test_class_tag_counts_accepts_an_argument
+        assert_equal 1, eval(@base_class).method(:tag_counts).arity
+      end
+      
+      def test_instances_respond_to_instance_methods_as_expected
+        instance = eval(@base_class).create(@new_model)
+
+        should_respond_to = [
+          :tags,
+          :tag_list,
+          :tag_list=,
+          :public_tags,
+          :public_tags=,
+          :public_tag_list,
+          :public_tag_list=,
+          :private_tags,
+          :private_tags=,
+          :private_tag_list,
+          :private_tag_list=
+        ]
+        
+        should_respond_to.each do |method|
+          assert_respond_to instance, method
+        end
+      end
+      
       def test_tags_are_preserved_on_public_items
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three" }))
         d.reload
