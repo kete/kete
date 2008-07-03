@@ -97,6 +97,8 @@ class ImagesController < ApplicationController
   def update
     @still_image = StillImage.find(params[:id])
 
+    version_after_update = @still_image.max_version + 1
+
     if @still_image.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
 
       if !params[:image_file][:uploaded_data].blank?
@@ -106,7 +108,8 @@ class ImagesController < ApplicationController
 
       after_successful_zoom_item_update(@still_image)
 
-      @still_image.do_notifications_if_pending(@still_image.max_version, current_user)
+      @still_image.do_notifications_if_pending(version_after_update, current_user) if 
+        @still_image.versions.exists?(:version => version_after_update)
 
       flash[:notice] = 'Image was successfully updated.'
 

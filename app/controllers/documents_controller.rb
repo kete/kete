@@ -75,11 +75,14 @@ class DocumentsController < ApplicationController
   def update
     @document = Document.find(params[:id])
 
+    version_after_update = @document.max_version + 1
+
     if @document.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
 
       after_successful_zoom_item_update(@document)
 
-      @document.do_notifications_if_pending(@document.max_version, current_user)
+      @document.do_notifications_if_pending(version_after_update, current_user) if 
+        @document.versions.exists?(:version => version_after_update)
 
       flash[:notice] = 'Document was successfully updated.'
 

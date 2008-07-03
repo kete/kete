@@ -212,6 +212,8 @@ class TopicsController < ApplicationController
 
         replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
 
+        version_after_update = @topic.max_version + 1
+
         @successful = @topic.update_attributes(replacement_topic_hash)
       else
         # they don't have permission
@@ -229,7 +231,8 @@ class TopicsController < ApplicationController
     if @successful
       after_successful_zoom_item_update(@topic)
 
-      @topic.do_notifications_if_pending(@topic.max_version, current_user)
+      @topic.do_notifications_if_pending(version_after_update, current_user) if 
+        @topic.versions.exists?(:version => version_after_update)
 
       # TODO: replace with translation stuff when we get globalize going
       flash[:notice] = 'Topic was successfully edited.'

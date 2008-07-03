@@ -285,7 +285,15 @@ module ActiveRecord
             old_tags = tags_on(tag_type).reject { |tag| instance_variable_get("@#{tag_type.singularize}_list").include?(tag.name) }
           
             self.class.transaction do
-              base_tags.delete(*old_tags) if old_tags.any?
+              # Older routine..
+              # base_tags.delete(*old_tags) if old_tags.any?
+              
+              # James - 2008-07-02
+              # Ensure the tag of the correct context is removed, not just all matching tags.
+              old_tags.each do |old_tag|
+                send("#{tag_type.singularize}_taggings").find(:first, :conditions => ["tag_id = ?", old_tag.id]).destroy
+              end
+
               new_tag_names.each do |new_tag_name|
                 new_tag = Tag.find_or_create_with_like_by_name(new_tag_name)
                 Tagging.create(:tag_id => new_tag.id, :context => tag_type, 

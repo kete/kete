@@ -86,6 +86,43 @@ class DocumentTest < Test::Unit::TestCase
     assert_equal 0, model.versions.find_by_version(1).tags.size
   end
   
-
+  def test_acts_as_taggable_abides_by_separate_contexts_when_deleting
+    
+    # This test case fails due to a bug in acts_as_taggable_on
+    
+    # Create a new document to test with
+    document = Module.class_eval(@base_class).new @new_model
+    document.save!
+    
+    # Add some tags on different contexts
+    ["a", "b", "c"].each do |tag|
+      document.private_tag_list << tag
+    end
+    
+    ["x", "y", "z", "c"].each do |tag|
+      document.public_tag_list << tag
+    end
+     
+    # Save anc check tags exist as we expect
+    document.save
+    document.reload
+    
+    assert_equal ["a", "b", "c"], document.private_tag_list.sort
+    assert_equal ["c", "x", "y", "z"], document.public_tag_list.sort
+    
+    # Delete a common tag and check the deletion was only in the specified context.
+    document.save
+    document.reload
+    
+    document.public_tag_list.delete("c")
+    document.save
+    
+    # Reload correctly
+    document = nil
+    document = Document.last
+        
+    assert_equal ["a", "b", "c"], document.tags_on(:private_tags).map(&:name).sort
+    assert_equal ["x", "y", "z"], document.tags_on(:public_tags).map(&:name).sort
+  end
 
 end
