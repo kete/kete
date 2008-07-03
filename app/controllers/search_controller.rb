@@ -582,7 +582,7 @@ class SearchController < ApplicationController
 
   # used to choose a topic as homepage for a basket
   def find_index
-    render(:layout => "layouts/simple")
+    render(:layout => "simple")
   end
 
   # James - 2008-06-13
