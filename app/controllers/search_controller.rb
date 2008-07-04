@@ -582,7 +582,32 @@ class SearchController < ApplicationController
 
   # used to choose a topic as homepage for a basket
   def find_index
-    render(:layout => "simple")
+    @current_homepage = nil
+    if !params[:current_homepage_id].nil?
+      @current_homepage = Topic.find(params[:current_homepage_id])
+    end
+    
+    case params[:function]
+      when "find"
+        @results = Array.new
+        @search_terms = params[:search_terms]
+        search unless @search_terms.blank?
+        unless @results.empty?
+          @results.reject! { |r| r["id"].to_i == @current_homepage.id }
+          @results.collect! { |r| eval(r["class"]).find(r["id"]) }
+        end
+      when "change"
+        @new_homepage_topic = Topic.find(params[:homepage_topic_id])
+        @success = Basket.find(params[:current_basket_id]).update_index_topic(@new_homepage_topic)
+        if @success
+          flash[:notice] = "Homepage topic changed successfully"
+          params[:current_homepage_id] = @new_homepage_topic.id
+          @current_homepage = @new_homepage_topic
+        else
+          flash[:error] = "Problem changing Homepage topic"
+        end
+    end
+    render :action => 'homepage_topic_form', :layout => "popup_dialog"
   end
 
   # James - 2008-06-13
@@ -672,10 +697,10 @@ class SearchController < ApplicationController
       return "failed to add to search: #{item_class} : #{item.id} not found in search index or perhaps the item is pending."
     end
   end
-  
+
   # Check whether we are searching for candidate related items or not
   def searching_for_related_items?
     params[:controller] == "search" and params[:action] == "find_related"
   end
-  
+
 end

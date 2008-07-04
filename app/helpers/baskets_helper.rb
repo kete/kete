@@ -3,8 +3,9 @@ module BasketsHelper
     link_to options[:phrase], {
       :controller => 'search',
       :action => :find_index,
-      :index_for_basket => options[:index_for_basket] },
-    :popup => ['links', 'height=300,width=740,scrollbars=yes,top=100,left=100']
+      :current_basket_id => options[:current_basket_id],
+      :current_homepage_id => options[:current_homepage_id] },
+    :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100']
   end
 
   def link_to_add_index_topic(options={})

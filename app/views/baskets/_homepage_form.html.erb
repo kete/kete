@@ -24,7 +24,7 @@
             <%= "(you must have a homepage topic to be able to enabled
             this)" if @index_topic.blank? %>
           </div>
-          <div class="form-element" id="depth2">
+          <div class="form-element" id="depth2" <%= 'style="display:none;"' if @basket.index_page_topic_is_entire_page %>>
             <br />
             <label for="basket_index_page_link_to_index_topic_as" class="inline">A link to the homepage topic's?</label>
             <%= homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options %>
