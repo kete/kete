@@ -598,13 +598,18 @@ class SearchController < ApplicationController
         end
       when "change"
         @new_homepage_topic = Topic.find(params[:homepage_topic_id])
-        @success = Basket.find(params[:current_basket_id]).update_index_topic(@new_homepage_topic)
-        if @success
-          flash[:notice] = "Homepage topic changed successfully"
-          params[:current_homepage_id] = @new_homepage_topic.id
-          @current_homepage = @new_homepage_topic
+        if !@new_homepage_topic.index_for_basket_id.nil?
+          used_on_basket_name = Basket.find(@new_homepage_topic.index_for_basket_id).name
+          flash[:error] = "This Topic is already used as the homepage for the basket '#{used_on_basket_name}'.<br />Please unassign it from '#{used_on_basket_name}' before making it another baskets homepage."
         else
-          flash[:error] = "Problem changing Homepage topic"
+          @success = Basket.find(params[:current_basket_id]).update_index_topic(@new_homepage_topic)
+          if @success
+            flash[:notice] = "Homepage topic changed successfully"
+            params[:current_homepage_id] = @new_homepage_topic.id
+            @current_homepage = @new_homepage_topic
+          else
+            flash[:error] = "Problem changing Homepage topic"
+          end
         end
     end
     render :action => 'homepage_topic_form', :layout => "popup_dialog"

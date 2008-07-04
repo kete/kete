@@ -46,18 +46,26 @@
         <li>
           <%= radio_button_tag "homepage_topic_id", item.id, false -%>
           <%= h(item.title) %>
+          <%= "*" if !item.index_for_basket_id.nil? %>
         </li>
         <% end %>
       </ul>
 
       <%= submit_tag 'Change Homepage Topic' %>
-
+      
+      <br />
+      <br />
+      
+      <p>
+        * this basket is already in use and must be unassigned before it can be used
+      </p>
+      
     </form>
   <% end %>
 
 </fieldset>
 
-<% new_link = (@current_homepage.nil?) ? '' : link_to(h(@current_homepage.title), :controller => 'topics', :action => 'show', :id => @current_homepage.id) -%>
+<% new_link = (@current_homepage.nil?) ? '' : link_to(h(@current_homepage.title), :controller => 'topics', :action => 'show', :id => @current_homepage.id, :urlified_name => @current_homepage.basket.urlified_name) -%>
 <%= javascript_tag "function updateOpener() {
   if (opener.document.getElementsByClassName('current_homepage_link')[0]) {
     opener.document.getElementsByClassName('current_homepage_link')[0].innerHTML = '#{new_link}';

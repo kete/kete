@@ -14,7 +14,7 @@
                         <li class="command"><%= link_to_link_index_topic(:current_basket_id => @basket.id, :current_homepage_id => 0,  :phrase => 'Link basket homepage') -%></li>
                 <% end -%>
         <% else -%>
-                <li>Current homepage topic: <span class="current_homepage_link"><%= link_to h(@index_topic.title), :controller => 'topics', :action => 'show', :id => @index_topic -%></span></li>
+                <li>Current homepage topic: <span class="current_homepage_link"><%= link_to h(@index_topic.title), :controller => 'topics', :action => 'show', :id => @index_topic, :urlified_name => @index_topic.basket.urlified_name -%></span></li>
                 <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add new basket homepage') -%></li>
                 <li class="command"><%= link_to_link_index_topic(:current_basket_id => @basket.id, :current_homepage_id => @index_topic.id, :phrase => 'Link to new basket homepage') -%></li>
         <% end -%>
