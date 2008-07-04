@@ -45,8 +45,8 @@ class BasketsController < ApplicationController
 
   def new
     @basket = Basket.new({
-      :private_default =>           false, 
-      :file_private_default =>      false, 
+      :private_default =>           false,
+      :file_private_default =>      false,
       :allow_non_member_comments => true
     })
   end
@@ -69,6 +69,10 @@ class BasketsController < ApplicationController
     appropriate_basket
     @topics = @basket.topics
     @index_topic = @basket.index_topic
+
+    # put in some defaults for site basket
+    # since all other baskets inherit from them if unspecified
+    @basket.show_privacy_controls = false if @basket == @site_basket && @basket.show_privacy_controls.blank?
   end
 
   def homepage_options
@@ -100,9 +104,9 @@ class BasketsController < ApplicationController
       # Reload to ensure basket.name is updated and not the previous
       # basket name.
       @basket.reload
-      
+
       set_settings
-    
+
       # @basket.name has changed
       if original_name != @basket.name
         # update zoom records for basket items

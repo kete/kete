@@ -1,3 +1,4 @@
+
 <fieldset>
   <%= error_messages_for 'basket' %>
 
@@ -36,6 +37,11 @@
       <div class="form-element">
         <%= form.radio_button :show_privacy_controls, true %>
         <label for="basket_show_privacy_controls_true" class="inline">Enabled</label>
+        <div class="form_example">
+          Enable Privacy Controls if members of this basket can have
+          both items that are readable by the public at large AND
+          items that are only readable by themselves.
+        </div>
       </div>
 
       <div class="form-element">
@@ -43,11 +49,21 @@
         <label for="basket_show_privacy_controls_false" class="inline">Disabled</label>
         <br />
         <div class="form_example">
-          Privacy settings from the item's basket will be used on new
-          items if privacy controls are disabled.  Leave unspecified to
-          inherit privacy controls policy from the Site.
+          Disable Privacy Controls if members can only create publicly
+          readable items.
         </div>
       </div>
+
+
+      <% if @basket != @site_basket && @basket.show_privacy_controls.blank? -%>
+      <p>The Site has
+      <% if !@site_basket.show_privacy_controls.blank? && !@site_basket.show_privacy_controls -%>
+      <strong>Enabled</strong>
+      <% else -%>
+      <strong>Disabled</strong>
+      <% end -%>
+      Privacy Controls</p>
+      <% end -%>
 
     </fieldset>
   </div>
@@ -117,5 +133,7 @@
       '==', 'true', 'settings_moderated_except') %>
 
   <!--[eoform:basket]-->
+
+  <strong><%= basket_preferences_inheritance_message %></strong>
 
 </fieldset>

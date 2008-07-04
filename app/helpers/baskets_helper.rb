@@ -60,4 +60,17 @@ module BasketsHelper
       $$('#'+element+' select').each( function (input) { input.disabled = false; })
     }"
   end
+
+  def basket_preferences_inheritance_message
+    @inheritance_message = "<p>"
+    if @basket != @site_basket
+      @inheritance_message += "Unspecified settings will be inherited
+                            from the settings of the Site."
+    else
+      @inheritance_message += "These settings will be inherited by all other
+baskets unless they individually specify their own policy."
+    end
+
+    @inheritance_message += "</p>"
+  end
 end
