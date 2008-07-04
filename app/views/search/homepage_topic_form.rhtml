@@ -1,0 +1,67 @@
+<% @title = "Change Homepage Topic" -%>
+
+<fieldset>
+
+  <legend>Search for Topic</legend>
+
+  <%= form_tag(
+      :controller => 'search',
+      :action => 'find_index',
+      :related_class => 'Topic',
+      :current_basket_id => params[:current_basket_id],
+      :current_homepage_id => params[:current_homepage_id],
+      :function => 'find'
+      ) %>
+
+    <%= content_tag "label", "Search for Topics:", "for" => "search_terms" -%>
+    <%= text_field_tag "search_terms", params[:search_terms] %>
+    <%= submit_tag "Search for Topics" %>
+
+  </form>
+  <!-- End search form -->
+
+  <% if @results.blank? %>
+    <p class="alone"><strong>No Topics found</strong></p>
+  <% else %>
+    <p class="alone">Select which Topic to mark as Homepage, then click 'Change'.</p>
+
+    <%= form_tag(
+        :controller => 'search',
+        :action => 'find_index',
+        :related_class => 'Topic',
+        :current_basket_id => params[:current_basket_id],
+        :current_homepage_id => params[:current_homepage_id],
+        :function => 'change'
+        ) %>
+
+      <ul>
+        <% unless @current_homepage.nil? %>
+        <li>
+          <%= radio_button_tag "homepage_topic_id", @current_homepage.id, true -%>
+          <strong><%= h(@current_homepage.title) %></strong>
+          (current homepage topic)
+        </li>
+        <% end %>
+        <% for item in @results %>
+        <li>
+          <%= radio_button_tag "homepage_topic_id", item.id, false -%>
+          <%= h(item.title) %>
+        </li>
+        <% end %>
+      </ul>
+
+      <%= submit_tag 'Change Homepage Topic' %>
+
+    </form>
+  <% end %>
+
+</fieldset>
+
+<% new_link = (@current_homepage.nil?) ? '' : link_to(h(@current_homepage.title), :controller => 'topics', :action => 'show', :id => @current_homepage.id) -%>
+<%= javascript_tag "function updateOpener() {
+  if (opener.document.getElementsByClassName('current_homepage_link')[0]) {
+    opener.document.getElementsByClassName('current_homepage_link')[0].innerHTML = '#{new_link}';
+  }
+}" %>
+
+<%= link_to_function "Close", "updateOpener();window.close()" -%>
