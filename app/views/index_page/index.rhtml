@@ -30,9 +30,11 @@
 <% end # cache detals -%>
 
 <% cache({:part => 'recent_topics'}) do -%>
-<% if @recent_topics_limit > 0 and @recent_topics_items.size > 0 -%>
+<% if @recent_topics_limit > 0 &&
+            @recent_topics_items.size > 0 &&
+            !@current_basket.index_page_recent_topics_as.blank? -%>
 <div class="home-feature-wrapper">
-  <h3>Latest <%= @recent_topics_limit -%> topics</h3>
+  <h3>Latest <%= @recent_topics_items.size.to_s if @recent_topics_items.size > 1 -%> topic<%= 's' if @recent_topics_items.size > 1 -%></h3>
   <% case @current_basket.index_page_recent_topics_as
      when 'summaries' -%>
   <%= render :partial => 'post_summary', :collection => @recent_topics_items %>
