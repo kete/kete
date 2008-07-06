@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
 
   # See lib/ssl_helpers.rb
   include SslHelpers
-  
+
   include AuthenticatedSystem
 
   include ZoomControllerHelpers
@@ -138,7 +138,7 @@ class ApplicationController < ActionController::Base
     item_class = zoom_class_from_controller(params[:controller])
     item_class_for_param_key = item_class.tableize.singularize
     if ZOOM_CLASSES.include?(item_class) && !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
-      params[item_class_for_param_key][:do_not_sanitize] = false if !@site_admin
+      params[item_class_for_param_key][:do_not_moderate] = false if !@site_admin
     end
   end
 
@@ -177,15 +177,15 @@ class ApplicationController < ActionController::Base
     end
     return_value = can_see_discussion
   end
-  
+
   # Specific test for private file visibility.
   def current_user_can_see_private_files_for?(item)
     current_user_can_see_private_files_in_basket?(item.basket)
   end
-  
+
   # Test for private file visibility in a given basket
   def current_user_can_see_private_files_in_basket?(basket)
-    
+
     # User must be logged in and have sufficient privileges.
     logged_in? && case basket.private_file_visibility
       when "at least site admin"
@@ -196,11 +196,11 @@ class ApplicationController < ActionController::Base
         at_least_a_moderator?
       when "at least member"
         @current_user.has_role?("member", basket) || at_least_a_moderator?
-      else 
+      else
         raise "Unknown authentication type: #{item.basket.private_file_visibility}"
       end
   end
-  
+
   # Walter McGinnis, 2006-04-03
   # bug fix for when site admin moves an item from one basket to another
   # if params[:topic][basket_id] exists and site admin
@@ -276,12 +276,12 @@ class ApplicationController < ActionController::Base
   def expire_show_caches
     caches_controllers = ['audio', 'baskets', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
     if caches_controllers.include?(params[:controller])
-      
+
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
       item = item_from_controller_and_id
       item.private_version! if item.respond_to?(:private) && item.latest_version_is_private?
-      
+
       expire_show_caches_for(item)
     end
   end
@@ -293,19 +293,19 @@ class ApplicationController < ActionController::Base
     return unless ZOOM_CLASSES.include?(item_class)
 
     SHOW_PARTS.each do |part|
-      
+
       # James - 2008-07-01
       # Some cache keys have a privacy scope, indicated by [privacy] in the key name.
       # In these cases, replace this with the actual item's current privacy.
-      # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where 
+      # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where
       # the current item is private.
-      
+
       if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
         resulting_part = part.sub(/\[privacy\]/, (item.private? ? "private" : "public"))
       else
         resulting_part = part
       end
-      
+
       # we have to do this for each distinct title the item previously had
       # because old titles' friendly urls won't be matched in our expiry otherwise
       expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
@@ -563,7 +563,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
-    
+
     redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
   end
 
@@ -578,10 +578,10 @@ class ApplicationController < ActionController::Base
 
         update_zoom_and_related_caches_for(item)
         flash[:notice] = "Successfully removed item relationships."
-      
+
       end
     end
-        
+
     redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
   end
 
@@ -612,24 +612,24 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_show_for(item, options = {})
-    
+
     # By default, assume redirect to public version.
-    options = { 
+    options = {
       :private => false
     }.merge(options)
-    
-    path_hash = { 
+
+    path_hash = {
       :urlified_name  => item.basket.urlified_name,
       :controller     => zoom_class_controller(item.class.name),
       :action         => 'show',
       :id             => item
     }
-    
+
     # Redirect to private version if item is private.
     if options[:private]
       path_hash.merge!({ :private => "true" })
     end
-    
+
     redirect_to url_for(path_hash)
   end
 
@@ -708,7 +708,7 @@ class ApplicationController < ActionController::Base
       else
         # plain old topic show
         @topic = @current_basket.topics.find(params[:id])
-        @topic.private_version! if @topic.has_private_version? && 
+        @topic.private_version! if @topic.has_private_version? &&
           permitted_to_view_private_items? and params[:private] == "true"
         @show_privacy_chooser = true if permitted_to_view_private_items?
       end
@@ -855,7 +855,7 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
-  
+
   def public_or_private_version_of(item)
     if item.has_private_version? && permitted_to_view_private_items? and params[:private] == "true"
       item.private_version!
@@ -863,38 +863,38 @@ class ApplicationController < ActionController::Base
       item
     end
   end
-  
+
   def permitted_to_view_private_items?
-    logged_in? && 
+    logged_in? &&
       permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
   end
-  
+
   # Check whether the attached files for a given item should be displayed
   # Note this is independent of file privacy.
   def show_attached_files_for?(item)
     if item.respond_to?(:private) and item.private?
-      
-      # If viewing the private version of an item, then the user already has permission to 
+
+      # If viewing the private version of an item, then the user already has permission to
       # see any attached files.
       true
     else
-      
-      # Otherwise, show the files if viewing a public, non-disputed and non-placeholder 
+
+      # Otherwise, show the files if viewing a public, non-disputed and non-placeholder
       # version
       !item.disputed_or_not_available?
     end
   end
-  
+
   def private_redirect_attribute_for(item)
     item.respond_to?(:private) && item.private? ? "true" : "false"
   end
-  
+
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?
-  
+
   # Things are aren't actions below here..
-  protected 
-  
+  protected
+
     # Evaluate a possibly unsafe string into a zoom class.
     # I.e.  "StillImage" => StillImage
     def only_valid_zoom_class(param)
@@ -904,7 +904,7 @@ class ApplicationController < ActionController::Base
         raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
       end
     end
-  
+
 end
 
 
