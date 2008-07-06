@@ -11,14 +11,14 @@
         <% if !@index_topic.blank? -%>
         <li>Current homepage topic: <span class="current_homepage_link"><%= link_to h(@index_topic.title), :controller => 'topics', :action => 'show', :id => @index_topic, :urlified_name => @index_topic.basket.urlified_name -%></span></li>
         <% end -%>
-        <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add new basket homepage') -%></li>
+        <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add new basket homepage topic') -%></li>
 
         <% if @topics.size > 0 && !(@topics.size == 1 && @index_topic == @topics.first) -%>
         <li class="command"><%= link_to_link_index_topic(:current_basket_id => @basket.id,
                                                          :current_homepage_id => @index_topic || 0,
                                                          :phrase => 'Link to
                                                          new basket
-                                                         homepage')
+                                                         homepage topic')
                                                          -%></li>
         <% end -%>
 
