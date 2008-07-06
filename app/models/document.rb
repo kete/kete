@@ -1,7 +1,7 @@
 class Document < ActiveRecord::Base
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
-  
+
   # handles file uploads
   # we'll want to adjust the filename to include "...-1..." for each
   # version where "-1" is dash-version number
@@ -12,21 +12,21 @@ class Document < ActiveRecord::Base
   # dependencies that we don't need
   # TODO: needs some of the new filetypes like openoffice, pages, plenty of old ones, too
   has_attachment    :storage => :file_system,
-                    :content_type => DOCUMENT_CONTENT_TYPES, 
+                    :content_type => DOCUMENT_CONTENT_TYPES,
                     :processor => :none,
                     :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
   # Private Item mixin
   include ItemPrivacy::All
-  
+
   # Do not version self.file_private
   self.non_versioned_columns << "file_private"
   self.non_versioned_columns << "private_version_serialized"
-  
+
   after_save :store_correct_versions_after_save
-  
+
   validates_as_attachment
-  
+
   # overriding full_filename to handle our customizations
   # TODO: is this thumbnail arg necessary for classes without thumbnails?
   # def full_filename(thumbnail = nil)
@@ -50,7 +50,7 @@ class Document < ActiveRecord::Base
   if ENABLE_CONVERTING_DOCUMENTS
     convert_attachment_to :output_type => :html, :target_attribute => :description, :run_after_save => false
   end
-  
+
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
 
@@ -61,31 +61,20 @@ class Document < ActiveRecord::Base
     end
   end
 
-  # probably won't work on Windoze
-  # good thing we don't officially support it!
+  include ArchiveUtilities
+
+  # take gzip, zip, or tar file and decompress it to public/themes
   def decompress_as_theme
-    target_dir = THEMES_ROOT + '/'
-    case content_type
-    when 'application/zip'
-      `unzip #{self.full_filename} -d #{target_dir}`
-    when 'application/x-gtar'
-      `tar xf #{self.full_filename} #{target_dir}`
-    when 'application/x-gzip'
-      if !self.filename.scan("tgz").blank? or !self.filename.scan("tar\.gz").blank?
-        `tar xfz #{self.full_filename} -C #{target_dir}`
-      else
-        `cp #{self.full_filename} #{target_dir}; cd #{target_dir}; gunzip #{self.filename}`
-      end
-    end
+    decompress_under(THEMES_ROOT + '/')
   end
 
   def could_be_new_theme?
-    return false unless ['application/zip', 'application/x-gtar', 'application/x-gzip'].include?(self.content_type)
+    return false unless ACCEPTABLE_THEME_CONTENT_TYPES.include?(self.content_type)
     likely_theme_name = File.basename(self.filename, File.extname(self.filename))
     Dir.new(THEMES_ROOT).each do |listing|
       return false if listing == likely_theme_name
     end
     true
   end
-  
+
 end
