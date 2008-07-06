@@ -54,9 +54,9 @@ class ApplicationController < ActionController::Base
   # don't allow forms to set do_not_moderate
   before_filter :security_check_of_do_not_moderate, :only => [ :create, :update, :restore ]
 
-  # set do_not_moderate if item is moving baskets, this only happens on edits
-  # currently
-  before_filter :set_do_not_moderate_if_moving_item, :only => [ :update ]
+  # set do_not_moderate if site_admin, otherwise things like moving from one basket to another
+  # may get tripped up
+  before_filter :set_do_not_moderate_if_site_admin, :only => [ :create, :update ]
 
   # ensure that users who are in a basket where the action menu has been hidden can edit
   # by posting a dummy form
@@ -205,7 +205,7 @@ class ApplicationController < ActionController::Base
   # bug fix for when site admin moves an item from one basket to another
   # if params[:topic][basket_id] exists and site admin
   # set do_not_moderate to true
-  def set_do_not_moderate_if_moving_item
+  def set_do_not_moderate_if_site_admin
     item_class = zoom_class_from_controller(params[:controller])
     item_class_for_param_key = item_class.tableize.singularize
     if ZOOM_CLASSES.include?(item_class)
