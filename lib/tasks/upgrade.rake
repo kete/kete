@@ -91,24 +91,40 @@ namespace :kete do
       p "you have the following missing external software (take steps to install them before starting your kete server): #{missing_software['Commands'].inspect}" if !missing_software['Commands'].blank?
     end
 
-    desc 'Checks the for mimetype of application/octet-stream'
-    task :add_missing_mime_types => :environment do
-        octet_file_types = ['Document Content Types', 'Video Content Types', 'Audio Content Types']
-        octet_file_types.each do |octet_type|
-           setting = SystemSetting.find_by_name(octet_type)
-           if !setting.value.include? 'application/octet-stream'
-              setting.value = setting.value.gsub(']', ", 'application/octet-stream']")
-              p "added octet stream mime type to " + octet_type
-           end
-           if octet_type == 'Document Content Types'
-              if !setting.value.include? 'application/word'
-                 setting.value = setting.value.gsub(']', ", 'application/word']")
-                 p "added application/word mime type to " + octet_type
-              end
-           end
-           setting.save
-        end
+    desc 'Checks for mimetypes an adds them if needed.'
+    task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
+                                     'kete:upgrade:add_aiff_to_audio_recordings',
+                                     'kete:upgrade:add_tar_to_documents']
 
+    desc 'Adds application/octet-stream and application/word if needed'
+    task :add_octet_stream_and_word_types => :environment do
+      ['Document Content Types', 'Video Content Types', 'Audio Content Types'].each do |setting_name|
+        setting = SystemSetting.find_by_name(setting_name)
+        if setting.push('application/octet-stream')
+          p "added octet stream mime type to " + setting_name
+        end
+        if setting_name == 'Document Content Types'
+          if setting.push('application/word')
+            p "added application/word mime type to " + setting_name
+          end
+        end
+      end
+    end
+
+    desc 'Adds application/x-tar if needed'
+    task :add_tar_to_documents => :environment do
+      setting = SystemSetting.find_by_name('Document Content Types')
+      if setting.push('application/x-tar')
+        p "added application/x-tar mime type to " + setting.name
+      end
+    end
+
+    desc 'Adds audio/x-aiff if needed'
+    task :add_aiff_to_audio_recordings => :environment do
+      setting = SystemSetting.find_by_name('Audio Content Types')
+      if setting.push('audio/x-aiff')
+        p "added audio/x-aiff mime type to " + setting.name
+      end
     end
   end
 end

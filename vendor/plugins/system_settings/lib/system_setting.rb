@@ -26,6 +26,13 @@ class SystemSetting < ActiveRecord::Base
     value
   end
 
+  def push(additional_value)
+    return false if self.value.include?(additional_value)
+    self.value = self.value.gsub(']', ", \'#{additional_value}\']")
+    save!
+    true
+  end
+
   # we use a non-validate method, since required_to_be_configured
   # is only really necessary in a specific context in a controller
   def add_error_if_required
