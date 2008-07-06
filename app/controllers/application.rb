@@ -64,7 +64,10 @@ class ApplicationController < ActionController::Base
 
   # if anything is updated or deleted
   # we need toss our show action fragments
-  after_filter :expire_show_caches, :only => [ :update, :destroy, :convert ]
+  # destroy has to happen before the item is deleted
+  before_filter :expire_show_caches, :only => [ :destroy ]
+  # everything else we do after the action is completed
+  after_filter :expire_show_caches, :only => [ :update, :convert ]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
