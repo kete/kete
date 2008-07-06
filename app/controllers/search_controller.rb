@@ -70,9 +70,6 @@ class SearchController < ApplicationController
       @rss_tag_link = rss_tag(:auto_detect => false)
       search
     end
-    if params[:relate_to_topic] or params[:index_for_basket]
-      render(:layout => "layouts/simple") # get it so the popup version has no layout
-    end
   end
 
   def search
@@ -581,11 +578,13 @@ class SearchController < ApplicationController
   end
 
   # used to choose a topic as homepage for a basket
+  # Kieran - 2008-07-07
+  # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_index
-    @current_homepage = nil
-    if !params[:current_homepage_id].nil?
-      @current_homepage = Topic.find(params[:current_homepage_id])
-    end
+    @current_basket = Basket.find(params[:current_basket_id])
+    @site_basket = 0 # leaving this default (unset) makes all baskets topics show up when in site basket
+                     # comment out that assignment if you wish to allow topics from other baskets to show up in the site basket homepage selection
+    @current_homepage = @current_basket.index_topic
     
     case params[:function]
       when "find"
@@ -593,23 +592,17 @@ class SearchController < ApplicationController
         @search_terms = params[:search_terms]
         search unless @search_terms.blank?
         unless @results.empty?
-          @results.reject! { |r| r["id"].to_i == @current_homepage.id }
+          @results.reject! { |r| (!@current_homepage.nil? && r["id"].to_i == @current_homepage.id) }
           @results.collect! { |r| eval(r["class"]).find(r["id"]) }
         end
       when "change"
         @new_homepage_topic = Topic.find(params[:homepage_topic_id])
-        if !@new_homepage_topic.index_for_basket_id.nil?
-          used_on_basket_name = Basket.find(@new_homepage_topic.index_for_basket_id).name
-          flash[:error] = "This Topic is already used as the homepage for the basket '#{used_on_basket_name}'.<br />Please unassign it from '#{used_on_basket_name}' before making it another baskets homepage."
+        @success = (@current_homepage != @new_homepage_topic) ? @current_basket.update_index_topic(@new_homepage_topic) : true
+        if @success
+          flash[:notice] = "Homepage topic changed successfully"
+          @current_homepage = @current_basket.index_topic
         else
-          @success = Basket.find(params[:current_basket_id]).update_index_topic(@new_homepage_topic)
-          if @success
-            flash[:notice] = "Homepage topic changed successfully"
-            params[:current_homepage_id] = @new_homepage_topic.id
-            @current_homepage = @new_homepage_topic
-          else
-            flash[:error] = "Problem changing Homepage topic"
-          end
+          flash[:error] = "Problem changing Homepage topic"
         end
     end
     render :action => 'homepage_topic_form', :layout => "popup_dialog"

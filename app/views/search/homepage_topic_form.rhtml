@@ -9,7 +9,6 @@
       :action => 'find_index',
       :related_class => 'Topic',
       :current_basket_id => params[:current_basket_id],
-      :current_homepage_id => params[:current_homepage_id],
       :function => 'find'
       ) %>
 
@@ -30,12 +29,11 @@
         :action => 'find_index',
         :related_class => 'Topic',
         :current_basket_id => params[:current_basket_id],
-        :current_homepage_id => params[:current_homepage_id],
         :function => 'change'
         ) %>
 
       <ul>
-        <% unless @current_homepage.nil? %>
+        <% if !@current_homepage.nil? %>
         <li>
           <%= radio_button_tag "homepage_topic_id", @current_homepage.id, true -%>
           <strong><%= h(@current_homepage.title) %></strong>
@@ -46,20 +44,11 @@
         <li>
           <%= radio_button_tag "homepage_topic_id", item.id, false -%>
           <%= h(item.title) %>
-          <%= "*" if !item.index_for_basket_id.nil? %>
         </li>
         <% end %>
       </ul>
 
       <%= submit_tag 'Change Homepage Topic' %>
-      
-      <br />
-      <br />
-      
-      <p>
-        * this basket is already in use and must be unassigned before it can be used
-      </p>
-      
     </form>
   <% end %>
 
@@ -69,6 +58,8 @@
 <%= javascript_tag "function updateOpener() {
   if (opener.document.getElementsByClassName('current_homepage_link')[0]) {
     opener.document.getElementsByClassName('current_homepage_link')[0].innerHTML = '#{new_link}';
+  } else {
+    opener.location.reload();
   }
 }" %>
 
