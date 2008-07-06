@@ -231,7 +231,7 @@ label{
 }
 .form-element label.inline{
         display: inline;
-				float:none;
+                                float:none;
 }
 .form-element{
         padding: .5em;
@@ -249,7 +249,7 @@ fieldset {
         margin-right: 20px;
 }
 .form_example {
-	margin: 5px 0;
+        margin: 5px 0;
 }
 .login-button,
 .save-button{
@@ -580,34 +580,34 @@ input.searchheader-search {
 }
 
 /* adjustments of default active scaffold styles */
-#extended_fields-content{
+#extended_fields-content,
+#zoom_dbs-content,
+#system_settings-content,
+#oai_pmh_repository_sets-content,
+#licenses-content{
     margin-right: 1em;
 }
 
-#zoom_dbs-content{
-    margin-right: 1em;
-}
-
-ul.option-list{ 
+ul.option-list{
   list-style-type: none;
   clear: left;
   margin-left: 0;
   padding-left: 1em;
   width: 80%;
 }
-ul.option-list li{ 
+ul.option-list li{
   margin-bottom: 0.5em;
   position: relative;
 
 }
-ul.option-list li img{ 
+ul.option-list li img{
   position: relative;
   top: .25em;
   margin-left: .5em;
   margin-right: .5em;
 }
 
-.option-list label { 
+.option-list label {
   display: inline;
   width: auto;
   float: none;
@@ -622,16 +622,16 @@ ul.option-list li img{
 
 /* width of members list table for basket administration of members */
 table.members-list-table {
-	width: 100%;
+        width: 100%;
 }
 
 /* column widths for the above. */
 .members-list-table td {
-	width: 25%;
+        width: 25%;
 }
 
 /* for wrapping form elements in a block element - needed for XHTML validation */
 div.wrap {
-	margin: 0;
-	padding: 0;
+        margin: 0;
+        padding: 0;
 }
