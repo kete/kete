@@ -14,16 +14,12 @@
 
   <div id="depth1" <%= 'style="display:none;"' unless @basket.index_page_redirect_to_all.nil? or @basket.index_page_redirect_to_all.empty? %>>
 
-    <div class="form-element"><label>Homepage Topic</label>
+    <div class="form-element" <%= 'style="display:none;"' if @index_topic.blank? %> ><label>Homepage Topic</label>
       <fieldset>
         <div class="form-element">
           <% options = @index_topic.blank? ? { :disabled => true } : {} %>
           <%= homepage_form.check_box :index_page_topic_is_entire_page, options %>
           <label for="basket_index_page_topic_is_entire_page" class="inline">Show only homepage topic?</label>
-          <div class="form_example">
-            <%= "(you must have a homepage topic to be able to enabled
-            this)" if @index_topic.blank? %>
-          </div>
           <div class="form-element" id="depth2" <%= 'style="display:none;"' if @basket.index_page_topic_is_entire_page %>>
             <br />
             <label for="basket_index_page_link_to_index_topic_as" class="inline">A link to the homepage topic's?</label>
