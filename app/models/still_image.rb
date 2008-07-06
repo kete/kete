@@ -21,26 +21,25 @@ class StillImage < ActiveRecord::Base
 
   # Private Item mixin
   include ItemPrivacy::All
-  
+
   # Do not version self.file_private
   self.non_versioned_columns << "file_private"
   self.non_versioned_columns << "private_version_serialized"
-  
+
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
-  
+
   after_save :store_correct_versions_after_save
-  
+
   def self.find_with(size, still_image)
     find(still_image, :include => "#{size}_file".to_sym)
   end
-  
+
   after_update :update_image_file_locations
-  
+
   private
-  
-    def update_image_file_locations
-      self.original_file.update_attributes({ :file_private => self.file_private }) unless self.original_file.nil?
-    end
-  
+
+  def update_image_file_locations
+    self.original_file.update_attributes({ :file_private => self.file_private }) unless self.original_file.nil?
+  end
 end
