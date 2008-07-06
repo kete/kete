@@ -209,7 +209,7 @@ class ApplicationController < ActionController::Base
     item_class = zoom_class_from_controller(params[:controller])
     item_class_for_param_key = item_class.tableize.singularize
     if ZOOM_CLASSES.include?(item_class)
-      if !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:basket_id].blank? && @site_admin
+      if !params[item_class_for_param_key].nil? && @site_admin
         params[item_class_for_param_key][:do_not_moderate] = true
       elsif !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
         params[item_class_for_param_key][:do_not_moderate] = false
