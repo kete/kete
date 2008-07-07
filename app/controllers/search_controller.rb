@@ -613,12 +613,15 @@ class SearchController < ApplicationController
   def find_related
     @current_topic = Topic.find(params[:relate_to_topic])
     related_class_is_topic = params[:related_class] == "Topic" ? true : false
+    # this will throw exception if passed in related_class isn't valid
+    related_class = only_valid_zoom_class(params[:related_class])
+    related_class_name = related_class.name
 
     # there is an instance variable for each zoom_class
     # that can be related to a topic through content_item_relations
     # topics related to topics are a special case
     # the method name is called 'related_topics'
-    method_name_for_related_items = related_class_is_topic ? 'related_topics' : params[:related_class].tableize
+    method_name_for_related_items = related_class_is_topic ? 'related_topics' : related_class_name.tableize
 
     # Look up existing relationships, we use these in 2 out of three functions
     existing = @current_topic.send(method_name_for_related_items) unless params[:function] == 'restore'
@@ -633,11 +636,8 @@ class SearchController < ApplicationController
       @next_action = "link"
 
       # Find resulting items through deleted relationships
-      # TODO: DRY up Module.class_eval... all over the place
-      # we should just define a globably available utility that reads like so:
-      # the_object = find_from('TheClass', id)
       @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@current_topic,
-                                                                                         params[:related_class]).collect { |r| Module.class_eval(params[:related_class]).find(r.related_item_id) }
+                                                                                         related_class_name).collect { |r| related_class.find(r.related_item_id) }
       if related_class_is_topic
         @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@current_topic,
                                                                                                    'Topic').collect { |r| Topic.find(r.topic_id) }
@@ -662,7 +662,7 @@ class SearchController < ApplicationController
 
         # grab result ids to optimize look up of local objects
         valid_result_ids = @results.collect { |result| result["id"].to_i }
-        @results = Module.class_eval(params[:related_class]).find(valid_result_ids)
+        @results = related_class.find(valid_result_ids)
       end
 
     end
