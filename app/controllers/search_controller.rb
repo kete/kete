@@ -621,6 +621,9 @@ class SearchController < ApplicationController
       @results += ContentItemRelation.find(:all, :conditions => ["related_item_type = ? AND related_item_id = ?", "Topic", @current_topic.id]).collect { |r| r.topic } if params[:related_class] == "Topic"
       @verb = "Existing"
       @next_action = "unlink"
+      
+      # Ensure there are no nil entry in the results Array.
+      @results.compact! unless @results.empty
 
     when "restore"
 
@@ -643,14 +646,14 @@ class SearchController < ApplicationController
 
       # Ensure results do not include already linked items or the current item.
       unless @results.empty?
-        @results.reject! { |r| existing.collect { |r| r.id }.member?(r["id"].to_i) }
+        @results.reject! { |r| existing.compact.collect { |r| r.id }.member?(r["id"].to_i) }
         @results.reject! { |r| r["id"].to_i == @current_topic.id }
         @results.collect! { |r| eval(r["class"]).find(r["id"]) }
       end
 
       @next_action = "link"
     end
-
+    
     render :action => 'related_form', :layout => "popup_dialog"
   end
 
