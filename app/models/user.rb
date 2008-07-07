@@ -232,6 +232,16 @@ class User < ActiveRecord::Base
     # end
   end
   
+  def get_basket_permissions
+    roles = Role.find_by_sql("SELECT roles.* FROM roles_users JOIN roles ON roles.id = roles_users.role_id AND roles.authorizable_type = \"Basket\" WHERE roles_users.user_id = #{self.id};")
+    permissions = {}
+    roles.each do |role|
+      basket = Basket.find(role.authorizable_id)
+      permissions[basket.urlified_name] = { :id => basket.id, :role_id => role.id, :role_name => role.name }
+    end
+    permissions
+  end
+  
   protected
 
   # supporting activation
