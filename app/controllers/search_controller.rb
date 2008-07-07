@@ -658,12 +658,10 @@ class SearchController < ApplicationController
         existing_ids = existing.collect { |existing_item| existing_item.id }
         existings_ids << @current_topic.id if related_class_is_topic
 
-        logger.debug("what are existing_ids:" + existing_ids.inspect)
         @results.reject! { |result| existing_ids.member?(result["id"].to_i) }
 
         # grab result ids to optimize look up of local objects
         valid_result_ids = @results.collect { |result| result["id"].to_i }
-        logger.debug("what are valid_result_ids:" + valid_result_ids.inspect)
         @results = Module.class_eval(params[:related_class]).find(valid_result_ids)
       end
 
