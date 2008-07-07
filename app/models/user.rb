@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
   # see http://blog.hasmanythrough.com/articles/2006/04/03/polymorphic-through
-  
+
   # Default license from acts_as_licensed
   belongs_to :license
 
@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
   # set up authorization plugin
   acts_as_authorized_user
   acts_as_authorizable
-  
+
   # Add association to license
   License.has_many :users, :dependent => :nullify
 
@@ -103,10 +103,10 @@ class User < ActiveRecord::Base
   def recently_activated?
     @activated
   end
-  
+
   # James Stradling <james@katipo.co.nz>, 2008-04-17
   # Changes the activation flag on the model so duplicate activation emails
-  # are not sent. 
+  # are not sent.
   # TODO: Clean this up.
   def notified_of_activation
     @activated = false
@@ -223,25 +223,18 @@ class User < ActiveRecord::Base
   def add_as_member_to_default_baskets
     Basket.find_all_by_id(DEFAULT_BASKETS_IDS).each { |basket| self.has_role('member',basket) }
   end
-  
-  def baskets_with_membership
-    # WORK IN PROGRESS
-    # Remove default scoping to avoid nasty multi-table selects
-    # with_exclusive_scope(:find => { :conditions => nil  }) do
-      Basket.find_by_sql("SELECT baskets.* FROM users JOIN roles_users ON roles_users.user_id = users.id JOIN roles ON roles.id = roles_users.role_id AND roles.authorizable_type = \"Basket\" JOIN baskets ON baskets.id = roles.authorizable_id WHERE users.id = #{self.id};").uniq
-    # end
-  end
-  
+
   def get_basket_permissions
-    roles = Role.find_by_sql("SELECT roles.* FROM roles_users JOIN roles ON roles.id = roles_users.role_id AND roles.authorizable_type = \"Basket\" WHERE roles_users.user_id = #{self.id};")
-    permissions = {}
-    roles.each do |role|
-      basket = Basket.find(role.authorizable_id)
-      permissions[basket.urlified_name] = { :id => basket.id, :role_id => role.id, :role_name => role.name }
+    permissions = Hash.new
+    user.roles.find_all_by_authorizable_type('Basket').each do |role|
+      basket = role.authorizable
+      permissions[basket.urlified_name.to_sym] = { :id => basket.id,
+        :role_id => role.id,
+        :role_name => role.name }
     end
     permissions
   end
-  
+
   protected
 
   # supporting activation
