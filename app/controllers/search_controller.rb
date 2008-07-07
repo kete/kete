@@ -623,7 +623,7 @@ class SearchController < ApplicationController
       @next_action = "unlink"
       
       # Ensure there are no nil entry in the results Array.
-      @results.compact! unless @results.empty
+      @results.compact! unless @results.empty?
 
     when "restore"
 
