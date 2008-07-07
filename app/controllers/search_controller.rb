@@ -656,7 +656,7 @@ class SearchController < ApplicationController
         # existing is all one class
         # compare against results ids
         existing_ids = existing.collect { |existing_item| existing_item.id }
-        existings_ids << @current_topic.id if related_class_is_topic
+        existing_ids << @current_topic.id if related_class_is_topic
 
         @results.reject! { |result| existing_ids.member?(result["id"].to_i) }
 
