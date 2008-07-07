@@ -592,8 +592,8 @@ class SearchController < ApplicationController
         @search_terms = params[:search_terms]
         search unless @search_terms.blank?
         unless @results.empty?
-          @results.reject! { |r| (!@current_homepage.nil? && r["id"].to_i == @current_homepage.id) }
-          @results.collect! { |r| eval(r["class"]).find(r["id"]) }
+          @results.reject! { |result| (!@current_homepage.nil? && result["id"].to_i == @current_homepage.id) }
+          @results.collect! { |result| Module.class_eval(result["class"]).find(result["id"]) }
         end
       when "change"
         @new_homepage_topic = Topic.find(params[:homepage_topic_id])
@@ -646,9 +646,9 @@ class SearchController < ApplicationController
 
       # Ensure results do not include already linked items or the current item.
       unless @results.empty?
-        @results.reject! { |r| existing.compact.collect { |r| r.id }.member?(r["id"].to_i) }
-        @results.reject! { |r| r["id"].to_i == @current_topic.id }
-        @results.collect! { |r| eval(r["class"]).find(r["id"]) }
+        @results.reject! { |result| existing.compact.collect { |result| result.id }.member?(result["id"].to_i) }
+        @results.reject! { |result| result["id"].to_i == @current_topic.id }
+        @results.collect! { |result| Module.class_eval(result["class"]).find(result["id"]) }
       end
 
       @next_action = "link"
