@@ -585,7 +585,7 @@ class SearchController < ApplicationController
     @site_basket = 0 # leaving this default (unset) makes all baskets topics show up when in site basket
                      # comment out that assignment if you wish to allow topics from other baskets to show up in the site basket homepage selection
     @current_homepage = @current_basket.index_topic
-    
+
     case params[:function]
       when "find"
         @results = Array.new
@@ -612,48 +612,63 @@ class SearchController < ApplicationController
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_related
     @current_topic = Topic.find(params[:relate_to_topic])
+    related_class_is_topic = params[:related_class] == "Topic" ? true : false
 
-    # Look up existing relationships
+    # there is an instance variable for each zoom_class
+    # that can be related to a topic through content_item_relations
+    # topics related to topics are a special case
+    # the method name is called 'related_topics'
+    method_name_for_related_items = related_class_is_topic ? 'related_topics' : params[:related_class].tableize
+
+    # Look up existing relationships, we use these in 2 out of three functions
+    existing = @current_topic.send(method_name_for_related_items) unless params[:function] == 'restore'
+
     case params[:function]
-
     when "remove"
-      @results = ContentItemRelation.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| r.related_item }
-      @results += ContentItemRelation.find(:all, :conditions => ["related_item_type = ? AND related_item_id = ?", "Topic", @current_topic.id]).collect { |r| r.topic } if params[:related_class] == "Topic"
       @verb = "Existing"
       @next_action = "unlink"
-      
-      # Ensure there are no nil entry in the results Array.
-      @results.compact! unless @results.empty?
-
+      @results = existing
     when "restore"
-
-    # Find deleted relationships
-      @results = ContentItemRelation::Deleted.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| eval(r.related_item_type).find(r.related_item_id) rescue nil }.compact
-      @results += ContentItemRelation::Deleted.find(:all, :conditions => ["related_item_id = ? AND related_item_type = ?", @current_topic.id, "Topic"]).collect { |r| Topic.find(r.topic_id) } if params[:related_class] == "Topic"
       @verb = "Restore"
       @next_action = "link"
 
+      # Find resulting items through deleted relationships
+      # TODO: DRY up Module.class_eval... all over the place
+      # we should just define a globably available utility that reads like so:
+      # the_object = find_from('TheClass', id)
+      @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@current_topic,
+                                                                                         params[:related_class]).collect { |r| Module.class_eval(params[:related_class]).find(r.related_item_id) }
+      if related_class_is_topic
+        @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@current_topic,
+                                                                                                   'Topic').collect { |r| Topic.find(r.topic_id) }
+      end
     when "add"
+      @next_action = "link"
       @results = Array.new
 
       # Run a search if necessary
+      # this will update @results
       @search_terms = params[:search_terms]
       search unless @search_terms.blank?
 
-      # Find existing items
-      existing = ContentItemRelation.find(:all, :conditions => ["topic_id = ? AND related_item_type = ?", @current_topic.id, params[:related_class].singularize]).collect { |r| r.related_item }
-      existing += ContentItemRelation.find(:all, :conditions => ["related_item_type = ? AND related_item_id = ?", "Topic", @current_topic.id]).collect { |r| r.topic } if params[:related_class] == "Topic"
-
       # Ensure results do not include already linked items or the current item.
       unless @results.empty?
-        @results.reject! { |result| existing.compact.collect { |result| result.id }.member?(result["id"].to_i) }
-        @results.reject! { |result| result["id"].to_i == @current_topic.id }
-        @results.collect! { |result| Module.class_eval(result["class"]).find(result["id"]) }
+        # existing is all one class
+        # compare against results ids
+        existing_ids = existing.collect { |existing_item| existing_item.id }
+        existings_ids << @current_topic.id if related_class_is_topic
+
+        logger.debug("what are existing_ids:" + existing_ids.inspect)
+        @results.reject! { |result| existing_ids.member?(result["id"].to_i) }
+
+        # grab result ids to optimize look up of local objects
+        valid_result_ids = @results.collect { |result| result["id"].to_i }
+        logger.debug("what are valid_result_ids:" + valid_result_ids.inspect)
+        @results = Module.class_eval(params[:related_class]).find(valid_result_ids)
       end
 
-      @next_action = "link"
     end
-    
+
     render :action => 'related_form', :layout => "popup_dialog"
   end
 
