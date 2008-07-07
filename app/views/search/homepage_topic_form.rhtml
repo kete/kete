@@ -19,9 +19,9 @@
   </form>
   <!-- End search form -->
 
-  <% if @results.blank? %>
+  <% if @results.blank? && !params[:search_terms].blank? %>
     <p class="alone"><strong>No Topics found</strong></p>
-  <% else %>
+  <% elsif !@results.blank? %>
     <p class="alone">Select which Topic to mark as Homepage, then click 'Change'.</p>
 
     <%= form_tag(

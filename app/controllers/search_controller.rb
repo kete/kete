@@ -592,7 +592,9 @@ class SearchController < ApplicationController
         @search_terms = params[:search_terms]
         search unless @search_terms.blank?
         unless @results.empty?
-          @results.reject! { |result| (!@current_homepage.nil? && result["id"].to_i == @current_homepage.id) }
+          if !@current_homepage.nil?
+            @results.reject! { |result| (result["id"].to_i == @current_homepage.id) }
+          end
           @results.collect! { |result| Module.class_eval(result["class"]).find(result["id"]) }
         end
       when "change"

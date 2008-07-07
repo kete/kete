@@ -28,7 +28,7 @@
 
   <% end %>
 
-  <% if @results.blank? && !params[:search_terms].blank?%>
+  <% if @results.blank? && !params[:search_terms].blank? %>
   <p class="alone"><strong>No <%= item_class %> found</strong></p>
   <% elsif !@results.blank? %>
   <p class="alone">Select which <%= item_class %> to <%= params[:function] %>, then click "<%= params[:function] %>".</p>
