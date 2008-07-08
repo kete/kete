@@ -645,6 +645,7 @@ class SearchController < ApplicationController
                                                                                                    'Topic').collect { |r| Topic.find(r.topic_id) }
       end
     when "add"
+      @verb = "Add"
       @next_action = "link"
       @results = Array.new
 

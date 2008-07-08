@@ -27,7 +27,13 @@ class Topic < ActiveRecord::Base
 
   # this is where we handled "related to"
   has_many :content_item_relations,
-  :order => 'position', :dependent => :destroy
+  :order => 'position', :dependent => :delete_all
+  
+  # Content Item Relationships when the topic is on the related_item end
+  # of the relationship, and another topic occupies topic_id.
+  has_many :child_content_item_relations, :class_name => "ContentItemRelation", :as => :related_item, :dependent => :delete_all
+  has_many :parent_related_topics, :through => :child_content_item_relations, :source => :topic
+  
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
@@ -116,30 +122,12 @@ class Topic < ActiveRecord::Base
   after_save :store_correct_versions_after_save
 
   def related_topics(only_non_pending = false)
-    # parents unfortunately get confused and return the content_item_relatations.id as id
-    # spell it out in select
-    # a tad brittle
-    conditions_string = "((content_item_relations.related_item_id = :object_id) AND (content_item_relations.related_item_type = :class_name))"
-    conditions_hash = { :object_id => self.id, :class_name => self.class.to_s}
-
-    child_related_topics = self.child_related_topics
-
     if only_non_pending
-      conditions_string += " AND (topics.title != :pending_title and topics.description is not null)"
-      conditions_hash[:pending_title] = BLANK_TITLE
-      child_related_topics = child_related_topics.find_all_non_pending
+      parent_related_topics.find_all_non_pending + 
+        child_related_topics.find_all_non_pending
+    else
+      parent_related_topics + child_related_topics
     end
-
-
-    parent_topics = self.class.find(:all,
-                                    :select => "topics.*, content_item_relations.position,
-                                                content_item_relations.topic_id,
-                                                content_item_relations.related_item_id,
-                                                content_item_relations.related_item_type",
-                                    :joins => "INNER JOIN content_item_relations ON topics.id = content_item_relations.topic_id",
-                                    :conditions => [conditions_string, conditions_hash])
-
-    return parent_topics + child_related_topics - [self]
   end
 
   def title_for_license

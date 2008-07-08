@@ -5,7 +5,7 @@ module RelatedContent
   # see app/model/topic.rb for the other side of the relationship
   unless included_modules.include? RelatedContent
     def self.included(klass)
-      klass.send :has_many, :content_item_relations, :as => :related_item, :dependent => :destroy
+      klass.send :has_many, :content_item_relations, :as => :related_item, :dependent => :delete_all
       klass.send :has_many, :topics, :through => :content_item_relations
     end
   end

@@ -12,6 +12,12 @@ IMPORTANT NOTE: For any steps where you run, "rake db:migrate", it is a good ide
 
 GENERAL NOTE: if you are upgrading your production Kete instance rather than development, you'll add "RAILS_ENV=production" to all rake tasks.
 
+== Trunk r1304 - Removal of foreign key constraint causing topic + related item deletion failure.
+
+1.      Upgrade your code base
+2.      Run the database migration 'rake db:migrate'
+3.      Restart your Kete instance (mongrels)
+
 == Trunk r1254 - Adding OAI-PMH Repository functionality and significant refactoring of search.  This is a big one if you have lots of items in Kete.
 
 1.      Upgrade your code base
