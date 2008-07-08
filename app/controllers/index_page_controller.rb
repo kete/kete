@@ -127,7 +127,7 @@ class IndexPageController < ApplicationController
     @last_contributor = @topic.contributors.last || @creator
     @comments = @topic.comments
 
-    render :action => :topic_as_full_page, :layout => "layouts/simple"
+    render :action => :topic_as_full_page, :layout => "simple"
   end
 
   def uptime
