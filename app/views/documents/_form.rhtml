@@ -48,7 +48,7 @@
                 <%= form.text_field :title  %></div>
 
                 <div class="form-element"><label for="document_short_summary">Short Summary:</label>
-                <%= form.text_area :short_summary  %></div>
+                <%= form.text_area :short_summary, {:class => "text-area", :cols => 120, :rows => 2 } %></div>
 
                 <div class="form-element"><label for="document_description" class="cleared-right">Description:</label>
                   <%= form.text_area :description, :class => "mceEditor", :cols => 120  %>
