@@ -14,6 +14,10 @@ class User < ActiveRecord::Base
   # we if false, we simple auto activate the user in user_observer
   # rather than sending the sign up email
   before_create :make_activation_code
+  
+  # Kieran Pilkington, 2008-07-09
+  # remove the roles from a user before destroying it to prevent problems later on
+  before_destroy :remove_roles_from_user
 
   # methods related to handling the xml kept in extended_content column
   include ExtendedContent
@@ -233,6 +237,18 @@ class User < ActiveRecord::Base
         :role_name => role.name }
     end
     permissions
+  end
+  
+  private
+  
+  # when a user is to be deleted
+  # we have to remove the roles assigned to it
+  # otherwise authorizable tries to get the basket which no longer exists
+  # when called in current_user.get_basket_permissions
+  def remove_roles_from_user
+    roles.each do |role|
+      has_no_role(role.name, role.authorizable)
+    end
   end
 
   protected

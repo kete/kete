@@ -51,6 +51,10 @@ class Basket < ActiveRecord::Base
   # Walter McGinnis, 2008-05-10
   # old versions of items have to updated to not point at non-existing basket
   before_destroy :clear_item_version_foreign_keys
+  
+  # Kieran Pilkington, 2008-07-09
+  # remove the roles from a basket before destroying it to prevent problems later on
+  before_destroy :remove_roles_from_basket
 
   def update_index_topic(index_topic)
     if !index_topic.nil? and index_topic.is_a?(Topic)
@@ -319,6 +323,11 @@ class Basket < ActiveRecord::Base
   def allow_non_member_comments?
     allow_non_member_comments === true
   end
+  
+  # Get the roles this Basket has
+  def roles
+    Role.find_all_by_authorizable_type_and_authorizable_id('Basket', self)
+  end
 
   protected
   # before save filter
@@ -354,6 +363,16 @@ class Basket < ActiveRecord::Base
 
         version.update_attributes(:basket_id => 1, :version_comment => new_version_comment )
       end
+    end
+  end
+  
+  # when a basket is to be deleted
+  # we have to remove the roles assigned to it
+  # otherwise authorizable tries to get the basket which no longer exists
+  # when called in current_user.get_basket_permissions
+  def remove_roles_from_basket
+    roles.each do |role|
+      role.users.each { |user| user.has_no_role(role.name, self) }
     end
   end
 end
