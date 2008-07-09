@@ -248,10 +248,16 @@ class SearchController < ApplicationController
     # limit query to within our zoom_class
     @search.pqf_query.kind_is(zoom_class, :operator => 'none')
 
-    # TODO: change when privacy_type is private
-    # to limit to all user's baskets
-    if (@current_basket != @site_basket || params[:privacy_type] == 'private') && !searching_for_related_items?
-      @search.pqf_query.within(@current_basket.urlified_name)
+    # limit baskets searched within, if appropriate
+    unless searching_for_related_items?
+      if @current_basket == @site_basket && params[:privacy_type] == 'private'
+        # get the urlified_name for each basket the user has a role in
+        # from their session
+        basket_urlified_names = session[:has_access_on_baskets].keys.collect { |key| key.to_s }
+        @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
+      elsif (@current_basket != @site_basket)
+        @search.pqf_query.within(@current_basket.urlified_name)
+      end
     end
 
     # this looks in the dc_relation index in the z30.50 server

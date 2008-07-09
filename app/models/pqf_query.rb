@@ -135,9 +135,15 @@ class PqfQuery
     end
   end
 
+  # TODO: make this more concise via singleton method?
   # even if we only have a single term
   # make sure we always pass an array down to create_query_part
-  def terms_as_array(*terms)
+  def terms_as_array(terms)
+    return terms if terms.is_a?(Array)
+    terms = terms_to_a(terms)
+  end
+
+  def terms_to_a(*terms)
     terms
   end
 
@@ -148,7 +154,7 @@ class PqfQuery
   def exact_match_for_part_of_oai_identifier(term_or_terms, *options)
     options = options.first || Hash.new
 
-    terms = terms_as_array(term_or_terms).collect { |term| ':' + term.to_s + ":" }
+    terms = terms_as_array(term_or_terms).collect { |term| ":#{term.to_s}:" }
 
     oai_identifier_include(terms, options)
   end
@@ -357,8 +363,16 @@ class PqfQuery
     if term_or_terms.size == 1
       query_part += "\"#{term_or_terms}\""
     else
+      # get the correct number of inner_operators
+      # essentially the number of terms - 1
+      # but we already have the first instance...
+      operators_string = inner_operator
+      number_of = term_or_terms.size - 2
+      number_of.times do
+        operators_string += " #{inner_operator}"
+      end
       # we always quote since it won't hurt when they aren't needed
-      query_part += "#{inner_operator} \"" + term_or_terms.join('\" ') + "\""
+      query_part += "#{operators_string} \"" + term_or_terms.join("\" \"") + "\""
     end
 
     push_to_appropriate_variables(options.merge(:query_part => query_part))
