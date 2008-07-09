@@ -57,7 +57,7 @@
 
       <% if @basket != @site_basket && @basket.show_privacy_controls.blank? -%>
       <p>The Site has
-      <% if !@site_basket.show_privacy_controls.blank? && !@site_basket.show_privacy_controls -%>
+      <% if !@site_basket.show_privacy_controls.blank? && @site_basket.show_privacy_controls -%>
       <strong>Enabled</strong>
       <% else -%>
       <strong>Disabled</strong>
