@@ -41,7 +41,7 @@ class Basket < ActiveRecord::Base
 
   # don't allow special characters in label that will break our xml
   validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
-  
+
   # check the quality of submitted html
   validates_as_sanitized_html :index_page_extra_side_bar_html
 
@@ -51,10 +51,10 @@ class Basket < ActiveRecord::Base
   # Walter McGinnis, 2008-05-10
   # old versions of items have to updated to not point at non-existing basket
   before_destroy :clear_item_version_foreign_keys
-  
+
   # Kieran Pilkington, 2008-07-09
   # remove the roles from a basket before destroying it to prevent problems later on
-  before_destroy :remove_roles_from_basket
+  before_destroy :remove_users_and_roles
 
   def update_index_topic(index_topic)
     if !index_topic.nil? and index_topic.is_a?(Topic)
@@ -152,7 +152,7 @@ class Basket < ActiveRecord::Base
     options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
     select_options = self.array_to_options_list_with_defaults(options_array,current_show_actions_value)
   end
-  
+
   def side_menu_ordering_of_topics_as_options(site_basket)
     current_value = self.settings[:side_menu_ordering_of_topics] || site_basket.settings[:side_menu_ordering_of_topics] || 'updated_at'
     options_array = [['Latest', 'latest'],['Alphabetical', 'alphabetical']]
@@ -164,13 +164,13 @@ class Basket < ActiveRecord::Base
     options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
     select_options = self.array_to_options_list_with_defaults(options_array,current_show_discussion_value)
   end
-  
+
   def private_file_visibility_as_options(site_basket)
     current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
     options_array = [['Basket member', 'at least member'], ['Basket moderator', 'at least moderator'], ['Basket admin', 'at least admin'], ['Site admin', 'at least site admin']]
     select_options = self.array_to_options_list_with_defaults(options_array,current_value)
   end
-  
+
   def private_file_visibilty_selected_or_default(value, site_basket)
     current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
     value == current_value
@@ -247,13 +247,13 @@ class Basket < ActiveRecord::Base
   def fully_moderated?
     settings[:fully_moderated].blank? ? DEFAULT_POLICY_IS_FULL_MODERATION : settings[:fully_moderated]
   end
-  
+
   # Private file visibility, taking into account inheritance from
   # site basket if not set locally
   def private_file_visibility
     self.settings[:private_file_visibility] || Basket.find(1).settings[:private_file_visibility] || "at least member"
   end
-    
+
 
   # if we don't have any moderators specified
   # find admins for basket
@@ -318,12 +318,12 @@ class Basket < ActiveRecord::Base
     end
     select_options
   end
-  
+
   # If setting is nil, be conservative.
   def allow_non_member_comments?
     allow_non_member_comments === true
   end
-  
+
   # Get the roles this Basket has
   def roles
     Role.find_all_by_authorizable_type_and_authorizable_id('Basket', self)
@@ -365,14 +365,18 @@ class Basket < ActiveRecord::Base
       end
     end
   end
-  
+
   # when a basket is to be deleted
   # we have to remove the roles assigned to it
   # otherwise authorizable tries to get the basket which no longer exists
-  # when called in current_user.get_basket_permissions
-  def remove_roles_from_basket
+  # when called in user.get_basket_permissions
+  def remove_users_and_roles
     roles.each do |role|
-      role.users.each { |user| user.has_no_role(role.name, self) }
+      # authentication plugin's accepts_no_role was problematic
+      # rolling our own
+      role.users.each { |user| user.drop(role) }
+      role.reload
+      role.destroy if role.users.size == 0
     end
   end
 end
