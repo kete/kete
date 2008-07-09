@@ -58,3 +58,7 @@ img {
 	margin: 5px 5px -5px 5px;
 	border: 1px solid #000;
 }
+
+div.prev-next {
+	padding-bottom: 5px;
+}

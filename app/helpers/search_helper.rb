@@ -77,4 +77,9 @@ module SearchHelper
     eval("#{result_hash['class'].classify}").find(result_hash['id'])
   end
   
+  # Used to check if an item is part of an existing relationship in related items search
+  def related?(item)
+    !@existing_ids.nil? && @existing_ids.member?(item.id)
+  end
+  
 end

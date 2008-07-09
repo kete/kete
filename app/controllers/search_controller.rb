@@ -652,24 +652,47 @@ class SearchController < ApplicationController
       # Run a search if necessary
       # this will update @results
       @search_terms = params[:search_terms]
-      search unless @search_terms.blank?
+      unless @search_terms.blank?
+        search
+      
+        # Store pagination information, we'll need this later
+        pagination_methods = ['total_entries', 'total_pages', 'current_page', 
+                              'previous_page', 'next_page']
+                            
+        pagination_methods = pagination_methods.inject(Hash.new) do |hash, method_name| 
+          hash[method_name] = @results.send(method_name)
+          hash
+        end
+      end
+                            
+      # existing is all one class
+      # compare against results ids
+      @existing_ids = existing.collect { |existing_item| existing_item.id }
 
       # Ensure results do not include already linked items or the current item.
       unless @results.empty?
-        # existing is all one class
-        # compare against results ids
-        existing_ids = existing.collect { |existing_item| existing_item.id }
-        existing_ids << @current_topic.id if related_class_is_topic
-
-        @results.reject! { |result| existing_ids.member?(result["id"].to_i) }
-
         # grab result ids to optimize look up of local objects
         valid_result_ids = @results.collect { |result| result["id"].to_i }
         @results = related_class.find(valid_result_ids)
+        
+        # Don't include the current topic in the results
+        @results.reject! { |obj| obj == @current_topic } if related_class_is_topic
+
+        # Define pagination methods in the array again.
+        pagination_methods.each_key do |method_name|
+            
+          eval \
+          "class << @results
+            define_method('#{method_name}') do 
+              #{pagination_methods[method_name]}
+            end
+          end"
+        end
+          
       end
 
     end
-
+    
     render :action => 'related_form', :layout => "popup_dialog"
   end
 
@@ -719,5 +742,10 @@ class SearchController < ApplicationController
   def searching_for_related_items?
     params[:controller] == "search" and params[:action] == "find_related"
   end
+  
+  def searching_for_index_topics?
+    params[:controller] == "search" and params[:action] == "find_index"
+  end
+  
 
 end

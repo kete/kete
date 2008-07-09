@@ -44,11 +44,16 @@
   <ul>
     <% for item in @results %>
     <li>
-      <%= check_box_tag "item[#{item.id}]", "true", false, "id" => "item_#{item.id}" -%>
-      <%= image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size) if item.instance_of?(StillImage) %>
+      <%= check_box_tag "item[#{item.id}]", "true", related?(item), "id" => "item_#{item.id}", :disabled => related?(item) -%>
+      <%= image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size) if item.instance_of?(StillImage) && !item.thumbnail_file.nil? %>
       <%= content_tag "label", h(item.title), "for" => "item_#{item.id}" %></li>
     <% end %>
   </ul>
+  
+  <div class="prev-next">
+    <%# Pagination for search results %>
+    <%= will_paginate @results, :params => params.reject { |k, v| k == :page } if @results.respond_to?(:total_entries) %>
+  </div>
 
   <%= submit_tag pretty_function %>
 
