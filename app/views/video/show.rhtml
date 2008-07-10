@@ -1,3 +1,4 @@
+<%= render :partial => "topics/slideshow_controls" if show_slideshow_controls? %>
 <% if current_user_can_see_action_menu? -%>
   <%= render(:partial => "topics/actions_menu" , :locals => { :item =>
   @video }) %>

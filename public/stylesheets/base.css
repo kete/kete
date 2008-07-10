@@ -462,6 +462,40 @@ th {
         padding: 0em 1em 1em 40px;
         margin-top: 1em;
         -moz-border-radius: 1em;
+        -webkit-border-radius: 1em;
+}
+
+div#slideshow-controls {
+        background-repeat: no-repeat;
+        border: 2px solid #7A0203;
+        background-color: #efefef;
+        padding: 0.5em; /*0em 1em 1em 40px;*/
+        margin-bottom: 30px;
+        -moz-border-radius: 1em;
+        -webkit-border-radius: 1em;
+				text-align:center;
+}
+
+div#slideshow-controls p {
+				margin: 4px 0;
+}
+
+div#slideshow-controls div#slideshow-previous-button {
+				float: left; 
+				margin: 4px 0 0 150px; 
+				width: 150px;
+				font-size: 14pt;
+}
+
+div#slideshow-controls div#slideshow-next-button {
+				float: right; 
+				margin: 4px 150px 0 0; 
+				width: 150px;
+				font-size: 14pt;
+}
+
+div#slideshow-controls div#slideshow-middle {
+				margin: 0 auto;
 }
 
 

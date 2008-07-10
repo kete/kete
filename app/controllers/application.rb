@@ -84,6 +84,8 @@ class ApplicationController < ActionController::Base
                                                        :update,
                                                        :destroy,
                                                        :add_index_topic, :link_index_topic]
+                                                       
+  helper :slideshows                                                       
 
 
   # set the current basket to the default
@@ -891,9 +893,24 @@ class ApplicationController < ActionController::Base
   def private_redirect_attribute_for(item)
     item.respond_to?(:private) && item.private? ? "true" : "false"
   end
+  
+  def slideshow
+    # Instantiate a new slideshow object on the slideshow session key
+    session[:slideshow] ||= HashWithIndifferentAccess.new 
+    Slideshow.new(session[:slideshow])
+  end
+  
+  # Append a query string to a URL.
+  def append_options_to_url(url, options)
+    options = options.join("&") if options.is_a?(Array)
+    
+    append_operator = url.include?("?") ? "&" : "?"
+    url + append_operator + options
+  end
+  
 
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
 
   # Things are aren't actions below here..
   protected

@@ -16,8 +16,17 @@ class SearchController < ApplicationController
   # i.e. no search_terms
   after_filter :write_rss_cache, :only => [:rss]
   # caches_page :rss
+  
+  # Reset slideshow object on new searches
+  before_filter :reset_slideshow, :only => [:for, :all]
+  
+  # After running a search, store the results in a session
+  # for slideshow functionality.
+  after_filter :store_results_for_slideshow, :only => [:for, :all]
 
   def index
+    # TODO: Remove this.
+    raise "error"
   end
 
   # REFACTOR SCRATCH:
@@ -708,7 +717,34 @@ class SearchController < ApplicationController
   def store_number_of_results_per_page
       session[:number_of_results_per_page] = @number_per_page
   end
+  
+  # James - 2008-07-04
+  # Specialist method for slideshow paging functionality..
+  def slideshow_page_load
+    @search_terms = params[:search_terms]
+    
+    # Make sure the search method knows which search action we're mimicking.
+    params[:action] = slideshow.search_params[:search_action]
 
+    # Run the search
+    search
+    
+    # Update the slideshow object in session
+    store_results_for_slideshow
+    
+    # Redirect to the first or last object on the page, depending on the direction we're going..
+    url = (params[:direction] == "up") ? session[:slideshow][:results].first : session[:slideshow][:results].last
+    
+    # Preserve the image view size when redirecting to the next page.
+    url = append_options_to_url(url, "view_size=#{slideshow.image_view_size}") if slideshow.image_view_size
+    redirect_to(url)
+  end
+  
+  def clear_slideshow
+    session[:slideshow] = nil
+    redirect_to url_for(params[:return_to])
+  end
+    
   private
 
   def write_rss_cache
@@ -753,5 +789,36 @@ class SearchController < ApplicationController
     params[:controller] == "search" and params[:action] == "find_index"
   end
   
+  # James - 2008-07-04
+  # Store the elements need to reproduce the search in a session
+  def store_results_for_slideshow
 
+    results = @results.map{ |r| r['url'] }
+    
+    total_results = @result_sets[@current_class].size
+
+    # We want to retain the original search action name for future use
+    altered_params = params
+    altered_params.merge!(:search_action => params[:action]) unless params[:action] == "slideshow_page_load"
+    
+    if slideshow.results.nil?
+      slideshow.search_params = { "page" => "1" }
+    end
+    
+    slideshow.results         = results
+    slideshow.total           = total_results
+    slideshow.total_pages     = @results.total_pages
+    slideshow.current_page    = @results.current_page
+    slideshow.number_per_page = @number_per_page
+    slideshow.search_params   = altered_params
+    
+    logger.debug("Stored results for page #{slideshow.current_page}: #{slideshow.results.join(", ")}")
+    logger.debug("Original parameters where: #{params.inspect}")
+    logger.debug("Storing parameters for search: #{slideshow.search_params.inspect}")
+  end
+  
+  def reset_slideshow
+    session[:slideshow] = nil
+  end
+  
 end
