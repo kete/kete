@@ -25,8 +25,6 @@ class SearchController < ApplicationController
   after_filter :store_results_for_slideshow, :only => [:for, :all]
 
   def index
-    # TODO: Remove this.
-    raise "error"
   end
 
   # REFACTOR SCRATCH:
