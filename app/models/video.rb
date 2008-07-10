@@ -17,17 +17,17 @@ class Video < ActiveRecord::Base
   :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
   validates_as_attachment
-  
+
   # Private Item mixin
   include ItemPrivacy::All
-  
+
   # Do not version self.file_private
   self.non_versioned_columns << "file_private"
   self.non_versioned_columns << "private_version_serialized"
-  
+
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
-  
+
   after_save :store_correct_versions_after_save
 
   # overriding full_filename to handle our customizations
@@ -46,7 +46,7 @@ class Video < ActiveRecord::Base
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|
       enum = attachment_options[attr_name]
-      errors.add attr_name, 'is not acceptable. It should be a .mov, .wmv, or other sound file.' unless enum.nil? || enum.include?(send(attr_name))
+      errors.add attr_name, 'is not acceptable. It should be a .mov, .wmv, or other video file.' unless enum.nil? || enum.include?(send(attr_name))
     end
   end
 end
