@@ -33,6 +33,7 @@ class PrivateFilesController < ApplicationController
     render :text => "Error 400: Bad Request", :status => 400
   rescue PermissionDeniedError
     logger.warn("#{Time.now} - Permission Denied While Requesting Private Item: #{params.inspect}")
+    session[:has_access_on_baskets] = current_user.get_basket_permissions if logged_in? || Hash.new
     render :text => "Error 401: Unauthorized", :status => 401
   end
   

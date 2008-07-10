@@ -25,6 +25,8 @@ class BasketsController < ApplicationController
                 :only => [:new, :pick, :create, :edit, :update, :homepage_options])
   ### end TinyMCE WYSIWYG editor stuff
 
+  after_filter :repopulate_basket_permissions, :only => [:create, :destroy] 
+
   def index
     list
     render :action => 'list'
@@ -207,6 +209,7 @@ class BasketsController < ApplicationController
   # in the future this will present the join policy of the basket, etc
   # now it only says "login as different user or contact an administrator"
   def permissioned_denied
+    session[:has_access_on_baskets] = current_user.get_basket_permissions if logged_in? || Hash.new
   end
 
   def set_settings
@@ -232,6 +235,12 @@ class BasketsController < ApplicationController
 
   def current_basket_is_selected?
     params[:id].blank? or @current_basket.id == params[:id]
+  end
+  
+  private
+  
+  def repopulate_basket_permissions
+    session[:has_access_on_baskets] = current_user.get_basket_permissions
   end
 
 end

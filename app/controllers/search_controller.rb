@@ -260,7 +260,9 @@ class SearchController < ApplicationController
       if @current_basket == @site_basket && params[:privacy_type] == 'private'
         # get the urlified_name for each basket the user has a role in
         # from their session
-        basket_urlified_names = session[:has_access_on_baskets].keys.collect { |key| key.to_s }
+        basket_access_hash = current_user.get_basket_permissions if logged_in? || Hash.new
+        session[:has_access_on_baskets] = basket_access_hash
+        basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
         @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
       elsif (@current_basket != @site_basket)
         @search.pqf_query.within(@current_basket.urlified_name)
