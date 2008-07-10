@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: ca44713d43f5a5cad07419aa58f42fed1525bc0b
+  branch: HEAD
+repository_url: git://github.com/kete/convert_attachment_to.git
+lock: 
+repository_class: Piston::Git::Repository

@@ -1,0 +1,40 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: Creative Commons Attribution-Noncommercial 3.0 New Zealand License
+  description: Creative Commons Attribution-Noncommercial 3.0 New Zealand License
+  url: http://creativecommons.org/licenses/by-nc/3.0/nz/
+  is_available: true
+  image_url: http://i.creativecommons.org/l/by-nc/3.0/nz/88x31.png
+  is_creative_commons: true
+  metadata: <a rel="license" href="$$license_url$$"><img alt="$$license_title$$" style="border-width:0" src="$$license_image_url$$"/></a><br/><span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/Text" property="dc:title" rel="dc:type">$$title$$</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="$$attribute_work_to_url$$" property="cc:attributionName" rel="cc:attributionURL">$$attribute_work_to_name$$</a> is licensed under a <a rel="license" href="$$license_url$$">$$license_title$$</a>
+
+#.<br/>Based on a work at <a xmlns:dc="http://purl.org/dc/elements/1.1/" href="$$source_work_url$$" rel="dc:source">$$source_work_url$$</a>.<br/>Permissions beyond the scope of this license may be available at <a xmlns:cc="http://creativecommons.org/ns#" href="$$more_permissions_url$$" rel="cc:morePermissions">$$more_permissions_url$$</a>
+
+
+two:
+  name: Creative Commons Attribution 3.0 New Zealand License
+  description: Creative Commons Attribution 3.0 New Zealand License
+  url: http://creativecommons.org/licenses/by/3.0/nz/
+  is_available: true
+  image_url: http://i.creativecommons.org/l/by/3.0/nz/88x31.png
+  is_creative_commons: true
+  metadata: <a rel="license" href="$$license_url$$"><img alt="$$license_title$$" style="border-width:0" src="$$license_image_url$$"/></a><br/><span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/Text" property="dc:title" rel="dc:type">$$title$$</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="$$attribute_work_to_url$$" property="cc:attributionName" rel="cc:attributionURL">$$attribute_work_to_name$$</a> is licensed under a <a rel="license" href="$$license_url$$">$$license_title$$</a>
+
+three:
+  name: Creative Commons Attribution-Noncommercial-Share Alike 3.0 New Zealand License
+  description: Creative Commons Attribution-Noncommercial-Share Alike 3.0 New Zealand License
+  url: http://creativecommons.org/licenses/by-nc-sa/3.0/nz/
+  is_available: true
+  image_url: http://i.creativecommons.org/l/by-nc-sa/3.0/nz/88x31.png
+  is_creative_commons: true
+  metadata: <a rel="license" href="$$license_url$$"><img alt="$$license_title$$" style="border-width:0" src="$$license_image_url$$"/></a><br/><span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/Text" property="dc:title" rel="dc:type">$$title$$</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="$$attribute_work_to_url$$" property="cc:attributionName" rel="cc:attributionURL">$$attribute_work_to_name$$</a> is licensed under a <a rel="license" href="$$license_url$$">$$license_title$$</a>
+
+four:
+  name: Creative Commons Attribution-Share Alike 3.0 New Zealand License
+  description: Creative Commons Attribution-Share Alike 3.0 New Zealand License
+  url: http://creativecommons.org/licenses/by-sa/3.0/nz/
+  is_available: true
+  image_url: http://i.creativecommons.org/l/by-sa/3.0/nz/88x31.png
+  is_creative_commons: true
+  metadata: <a rel="license" href="$$license_url$$"><img alt="$$license_title$$" style="border-width:0" src="$$license_image_url$$"/></a><br/><span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/Text" property="dc:title" rel="dc:type">$$title$$</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="$$attribute_work_to_url$$" property="cc:attributionName" rel="cc:attributionURL">$$attribute_work_to_name$$</a> is licensed under a <a rel="license" href="$$license_url$$">$$license_title$$</a>

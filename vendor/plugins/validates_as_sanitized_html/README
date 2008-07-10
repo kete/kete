@@ -1,0 +1,34 @@
+ValidatesAsSanitizedHtml
+============
+
+Written for  the Kete software (an open source Rails application for collaborative digital archives) by Walter McGinnis for Katipo Communications, Ltd. (http://katipo.co.nz/).
+
+The general idea is to check the quality of user inputed HTML.
+
+You may also be interested in the acts_as_sanitized plugin.
+
+====
+Requirements:
+
+* Rails 2.0.2 or greater
+* Hpricot gem
+
+====
+Usage:
+
+In your model:
+
+  validates_as_sanitized_html :the_user_submitted_html_attribute
+
+You can also turn off  whether the  the attribute will
+fail validation if there are  form, script, or input tags included in
+the attribute on a record by record basis by adding a do_not_sanitize
+virtual attribute in your model...
+
+    attr_accessor :do_not_sanitize
+
+Then in your controlle you may set do_not_sanitize to true if, for
+example, a site admin is allowed to add forms.
+
+Cheers,
+Walter McGinnis

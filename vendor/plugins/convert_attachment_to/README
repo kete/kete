@@ -1,0 +1,102 @@
+ConvertAttachmentTo
+===================
+
+Written for New Zealand Registry Services as an extention of the Kete software (an open source Rails application for collaborative digital archives) by Walter McGinnis for Katipo Communications, Ltd. (http://katipo.co.nz/).
+
+The general idea is to take uploaded documents, PDF, MS Word, HTML, or
+Plain Text  to start, and convert them to either plain text or HTML (sans html, head, title, body tags), depending on settings, and stick the value in the specified attribute of the model.
+
+Note that the MS Word support hasn't been tested with newer versionsof MS Word format.  It may not work.
+
+=========
+Requirements:
+
+Currently this plugin handles, MS Word documents, PDFs, HTML, and plain text uploads.  It may have other content types added in the future. Look for acceptable_content_types in the code for an indication.
+
+This plugin requires that these external command line programs be installed as it is mainly a wrapper for these programs.  These are:
+
+* pdftohtml
+
+* pdftotext
+
+* wv (not wv2)
+  Debian (or Ubuntu)
+  sudo apt-get install wv
+
+  Mac OS X:
+  http://wvware.sourceforge.net/wvWare.html if you installed
+  ImageMagick from source (probably wise) rather than MacPorts, install from source
+  otherwise "sudo port install wv"
+
+* lynx for html to plain text
+
+* RedCloth ruby gem
+
+Important: This means that ConvertAttachmentTo isn't compatible with Windows systems.
+
+It also assumes that you are using the attachment_fu plugin to manage your model's file uploads.
+
+Optional, for testing:
+
+sqlite
+
+=======
+Installation:
+
+After installing the required software.  Install convert_attachment_to as you would any other plugin.  This can take many forms, depending on your version control system and stategy for managing external dependencies.  If you are simply "playing" the plugin to see if you
+want to use it, this will do the trick:
+
+script/plugin install http://svn.kete.net.nz/projects/convert_attachment_to/trunk
+mv vendor/plugins/trunk vendor/plugins/convert_attachment_to
+
+For a discussion of managing plugins using the Piston gem, see this
+blog post:
+
+http://blog.katipo.co.nz/?p=35
+
+Recommended:
+
+Before starting to use convert_attachment_to, I suggest that you should run its tests to make sure all the required software is installed and being found by your application, etc. You will need sqlite installed for testing to work.  Here's how:
+
+rake test:plugins PLUGIN=convert_attachment_to # from your apps rails root
+rm convert_attachment_to_plugin.sqlite.db # toss the db, after each test run
+
+====
+Usage:
+
+In your model that uses "has_attachments", i.e. attachment_fu, specify the output mime type and the attribute of the model that should be populated with it.
+
+convert_attachment_to :output_type =>  :html, :target_attribute => :description
+
+At this stage, you may only choose to convert to HTML or plain text,
+i.e.
+convert_attachment_to :output_type =>  :html, :target_attribute => :some_attribute
+or
+convert_attachment_to :output_type =>  :text, :target_attribute => :some_attribute
+
+There are some other defaults that you may want to change:
+
+max_pdf_pages which is set to 10
+run_save_after which is set to true
+wvText_path is for configuring where the wvWave utility gets its configuration when converting MS Word docs to plain text, the default is /usr/share/wv/wvText.xml, which is the Debian/Ubuntu standard location.  Override if you have it installed somewhere else.
+distrubution.
+
+You can override these like so:
+
+convert_attachment_to :output_type =>  :html, :target_attribute => :some_attribute, :run_after_save => false, :max_pdf_pages => 2, :wvText_path => '/usr/local/share/wv/wvText.xml'
+
+More about run_after_save:
+
+Because of potential conflicts with other plugins that use the after_save callback and unexpected versions being created when using acts_as_versioned, we provide the option to turn off automatic after save conversion and therefore allow for managing when the conversions happen directly.
+
+So, for example, you could provide a convert action in your controller
+that looks like this:
+
+     def convert
+         @thing = Thing.find(params[:id])
+         @thing.do_conversion
+     end
+
+
+Cheers,
+Walter McGinnis

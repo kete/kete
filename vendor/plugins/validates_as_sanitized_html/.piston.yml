@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: cbe590a9007eaa43bd2a8763a19bcc742fe458d4
+  branch: HEAD
+repository_url: git://github.com/kete/validates_as_sanitized_html.git
+lock: 
+repository_class: Piston::Git::Repository

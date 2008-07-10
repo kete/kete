@@ -1,0 +1,3 @@
+sqlite:
+  :adapter: sqlite
+  :dbfile: convert_attachment_to_plugin.sqlite.db
