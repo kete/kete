@@ -58,7 +58,9 @@ class Document < ActiveRecord::Base
   end
 
   def could_be_new_theme?
+    logger.debug("before acceptable")
     return false unless ACCEPTABLE_THEME_CONTENT_TYPES.include?(self.content_type)
+    logger.debug("after acceptable")
     likely_theme_name = File.basename(self.filename, File.extname(self.filename))
     Dir.new(THEMES_ROOT).each do |listing|
       return false if listing == likely_theme_name
