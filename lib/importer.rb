@@ -4,6 +4,7 @@ require 'fileutils'
 require 'mime/types'
 require 'builder'
 require "oai_dc_helpers"
+require "xml_helpers"
 require "zoom_helpers"
 require "zoom_controller_helpers"
 require "extended_content_helpers"
@@ -15,6 +16,7 @@ module Importer
       klass.send :include, ZoomHelpers
       klass.send :include, ZoomControllerHelpers
       klass.send :include, ExtendedContentHelpers
+      klass.send :include, ActionController::UrlWriter
     end
 
     # nicked from attachment_fu and modified
@@ -32,6 +34,23 @@ module Importer
           define_method(:original_filename) {  filename }
           define_method(:content_type) {  content_type }
         end
+      end
+    end
+
+    def importer_add_image_to(new_record, params, zoom_class)
+      # add the image file and then close it
+      if zoom_class == 'StillImage'
+        logger.info("what is params[:image_file]: " + params[:image_file].to_s)
+        new_image_file = ImageFile.new(params[:image_file])
+        new_image_file.still_image_id = new_record.id
+        new_image_file.save
+        # attachment_fu doesn't insert our still_image_id into the thumbnails
+        # automagically
+        new_image_file.thumbnails.each do |thumb|
+          thumb.still_image_id = new_record.id
+          thumb.save!
+        end
+        logger.info("images done")
       end
     end
 
@@ -64,7 +83,7 @@ module Importer
         @zoom_class = args[:zoom_class]
         @import = Import.find(args[:import])
         @import_type = @import.xml_type
-        @import_dir_path = Import::IMPORTS_DIR + @import.directory
+        @import_dir_path = ::Import::IMPORTS_DIR + @import.directory
         @contributing_user = @import.user
         @import_request = args[:import_request]
         @description_end_templates['default'] = @import.default_description_end_template
@@ -208,21 +227,22 @@ module Importer
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
-        xml.responseDate(Time.now.to_s(:db))
+        xml.responseDate(Time.now.utc.xmlschema)
         oai_dc_xml_request(xml,item,@import_request)
         xml.GetRecord do
           xml.record do
             xml.header do
               oai_dc_xml_oai_identifier(xml,item)
-              xml.datestamp(Time.now.to_s(:db))
+              xml.datestamp(Time.now.utc.xmlschema)
+              oai_dc_xml_oai_set_specs(xml,item)
             end
             xml.metadata do
               xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xmlns:dcterms".to_sym => "http://purl.org/dc/terms/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
                 importer_oai_dc_xml_dc_identifier(xml,item,@import_request)
                 oai_dc_xml_dc_title(xml,item)
                 oai_dc_xml_dc_publisher(xml,@import_request[:host])
-                # topic specific
-                if item.class.name == 'Topic' || item.class.name == 'Document'
+
+                if ['Topic', 'Document'].include?(item.class.name)
                   oai_dc_xml_dc_description(xml,item.short_summary)
                 end
 
@@ -234,6 +254,9 @@ module Importer
                 # or populate rss enclosure
                 oai_dc_xml_dc_description_for_file(xml,item,@import_request)
 
+                # we do a dc:source element for the original binary file
+                oai_dc_xml_dc_source_for_file(xml, item, @import_request)
+
                 oai_dc_xml_dc_creators_and_date(xml,item)
 
                 oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
@@ -242,13 +265,16 @@ module Importer
                 oai_dc_xml_dc_extended_content(xml,item)
 
                 # related topics and items should have dc:subject elem here with their title
-                importer_oai_dc_xml_dc_relations_and_subjects(xml,item,@import_request)
+                importer_oai_dc_xml_dc_relations_and_subjects(xml, item, @import_request)
 
                 logger.info("after dc xml relations and subjects")
 
                 oai_dc_xml_dc_type(xml,item)
 
                 oai_dc_xml_tags_to_dc_subjects(xml,item)
+
+                # if there is a license, put it under dc:rights
+                oai_dc_xml_dc_rights(xml, item)
 
                 # this is mime type
                 oai_dc_xml_dc_format(xml,item)
@@ -284,7 +310,8 @@ module Importer
       item = options[:item]
       controller = options[:controller]
       urlified_name = options[:urlified_name]
-      "http://#{host}/#{urlified_name}/#{controller}/show/#{item.to_param}"
+      protocol = options[:protocol] || appropriate_protocol_for(item)
+      "#{protocol}://#{host}/#{urlified_name}/#{controller}/show/#{item.to_param}"
     end
 
     def importer_oai_dc_xml_dc_identifier(xml,item, passed_request = nil)
@@ -527,10 +554,11 @@ module Importer
     end
 
     # override in your importer worker to customize
-    # expects an xml element of our record
+    # expects an xml element of our record or a file with a simple record_hash
+    # TODO: add support for zoom_classes that may have attachments
+    # steal from past perfect importer
+    # record_hash has to have file key
     def create_new_item_from_record(record, zoom_class, options = {})
-      logger.info("in create new item from record")
-
       zoom_class_for_params = zoom_class.tableize.singularize
 
       params = options[:params]
@@ -557,9 +585,13 @@ module Importer
 
       field_count = 1
       tag_list_array = Array.new
+      # add support for all items during this import getting a set of tags
+      # added to every item in addition to the specific ones for the item
+      tag_list_array = @import.base_tags.split(",") if !@import.base_tags.blank?
 
       record_hash.keys.each do |record_field|
-        if !IMPORT_FIELDS_TO_IGNORE.include?(record_field)
+        logger.debug("record_field " + record_field.inspect)
+        unless IMPORT_FIELDS_TO_IGNORE.include?(record_field)
           value = record_hash[record_field]
           if !value.nil?
             value = value.strip
@@ -577,11 +609,11 @@ module Importer
             # the field may also be mapped to non-extended fields
             # such as tags, description, title
             # the value maybe used multiple times, so case isn't appropriate
-            if TITLE_SYNONYMS.include?(record_field) or record_field.upcase == 'TITLE'
+            if record_field.upcase == 'TITLE' || (!TITLE_SYNONYMS.blank? && TITLE_SYNONYMS.include?(record_field))
               params[zoom_class_for_params][:title] = value
             end
 
-            if DESCRIPTION_SYNONYMS.include?(record_field)
+            if !DESCRIPTION_SYNONYMS.blank? && DESCRIPTION_SYNONYMS.include?(record_field)
               if params[zoom_class_for_params][:description].nil?
                 params[zoom_class_for_params][:description] = value
               else
@@ -589,7 +621,7 @@ module Importer
               end
             end
 
-            if SHORT_SUMMARY_SYNONYMS.include?(record_field)
+            if !SHORT_SUMMARY_SYNONYMS.blank? && SHORT_SUMMARY_SYNONYMS.include?(record_field)
               if params[zoom_class_for_params][:short_summary].nil?
                 params[zoom_class_for_params][:short_summary] = value
               else
@@ -597,8 +629,25 @@ module Importer
               end
             end
 
-            if TAGS_SYNONYMS.include?(record_field)
+            if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
               tag_list_array << value.gsub("\n", " ")
+            end
+
+            # path_to_file is special case, we know we have an associated file that goes in uploaded_data
+            if record_field == 'path_to_file'
+              logger.debug("in path_to_file")
+              if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class)
+                # we do a check earlier in the script for imagefile
+                # so we should have something to work with here
+                upload_hash = { :uploaded_data => copy_and_load_to_temp_file(value) }
+                if zoom_class == 'StillImage'
+                  logger.debug("in image")
+                  params[:image_file] = upload_hash
+                else
+                  logger.debug("in not image")
+                  params[zoom_class_for_params] = params[zoom_class_for_params].merge(upload_hash)
+                end
+              end
             end
           end
           field_count += 1
@@ -641,6 +690,9 @@ module Importer
 
       params[zoom_class_for_params][:tag_list] = tag_list_array.join(",")
 
+      # add the uniform license chosen at import to this item
+      params[zoom_class_for_params][:license_id] = @import.license.id if !@import.license.blank?
+
       # clear any lingering values for @fields
       # and instantiate it, in case we need it
       @fields = nil
@@ -680,6 +732,7 @@ module Importer
       new_record_added = new_record.save
 
       if new_record_added
+        importer_add_image_to(new_record, params, zoom_class) unless params[:image_file].blank?
         new_record.creator = @contributing_user
         logger.info("in topic creation made it past creator")
       else
@@ -719,6 +772,13 @@ module Importer
 
       topic_params[:topic][:basket_id] = @current_basket.id
 
+      # add the uniform license chosen at import to this item
+      if !@import.license.blank?
+        topic_params[:topic][:license_id] = @import.license.id
+      else
+        topic_params[:topic][:license_id] = nil
+      end
+
       # replace with something that isn't reliant on params
       # replacement_topic_hash = pp4_importer_extended_fields_replacement_params_hash(:item_key => "topic", :item_class => 'Topic', :params => topic_params)
 
@@ -730,6 +790,7 @@ module Importer
                                     :short_summary => topic_params[:topic][:short_summary],
                                     :extended_content => topic_params[:topic][:extended_content],
                                     :basket_id => topic_params[:topic][:basket_id],
+                                    :license_id => topic_params[:topic][:license_id],
                                     :topic_type_id => topic_params[:topic][:topic_type_id],
                                     :do_not_moderate => true
                                     )

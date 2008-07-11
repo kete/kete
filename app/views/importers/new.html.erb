@@ -72,28 +72,11 @@
   import.</h3>
 
 <fieldset>
-
-  <h4>Choose someone to be contributor of imported items</h4>
-  <div class="form-element">
-    <% # placing this in here for form reloading if validation fails
-       @contributing_user = !params[:contributing_user].blank? ? User.find(params[:contributing_user]) : current_user -%>
-
-    <p>Current choice:
-      <% if @current_user == @contributing_user -%>
-      Self
-      <% else -%>
-      <%= h(@contributing_user.user_name) -%>
-      <% end -%>
-    <% form_tag :action => 'choose_contributing_user' do %>
-    <div id="searchheader">
-      <label for="contributing_user">or a contributing member:</label>
-      <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' %>
-      <%= submit_tag "Search", :class => 'searchbutton' %>
-    </div>
-    <% end %>
-  </div>
-
-  <hr>
+  <% if @site_admin -%>
+  <%= render :partial => "contributing_user_form" %>
+  <% else -%>
+  <% @contributing_user = @current_user -%>
+  <% end -%>
 
 <% form_for :import,
             :url => { :action => 'create'},
@@ -105,13 +88,13 @@
   <%= hidden_field_tag 'import[user_id]', @contributing_user.id %>
 
   <div class="form-element">
-    <label class="required" for="import[directory]">What is the name of
+    <label for="import_directory">What is the name of
       your folder under the imports directory?</label>
     <%= form.text_field :directory %>
   </div>
 
   <div class="form-element">
-    <label class="required" for="import[interval_between_records]">How
+    <label class="required" for="import_interval_between_records">How
     long should we wait in seconds between processing records?</label>
     <%= form.text_field :interval_between_records, :size => 3 %>
     <div class="form_example">To protect against an import
@@ -129,12 +112,12 @@
 ['Simple XML Topics', 'simple_topic']] -%>
 
   <div class="form-element">
-    <label class="required" for="import[xml_type]">Import Type?</label>
+    <label class="required" for="import_xml_type">Import Type?</label>
     <%= form.select :xml_type, @type_options %>
   </div>
 
   <div class="form-element">
-    <label class="required" for="import[xml_path_to_record]">XML Path
+    <label for="import_xml_path_to_record">XML Path
     to Record (only
     applicable to Simple XML Topics type):</label>
     <%= form.text_field :xml_path_to_record %>
@@ -144,7 +127,7 @@
   </div>
 
   <div class="form-element">
-    <label class="required" for="import[topic_type_id]">Applicable Topic
+    <label for="import_topic_type_id">Applicable Topic
       Type?</label>
     <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, {:class=>"select"}) %>
     <div class="form_example">If this is an image import, such as
@@ -157,7 +140,19 @@
   </div>
 
   <div class="form-element">
-    <label for="import[description_beginning_template]">Beginning Description Template</label>
+    <label for="import_base_tags">What tags should
+    we add to each imported item (separated by commas)?</label>
+
+    <%= form.text_field :base_tags %>
+
+    <div class="form_example">These tags will be added to every item
+    in the import in addition to whatever is specified as a tag per record.
+    </div>
+
+  </div>
+
+  <div class="form-element">
+    <label for="import_description_beginning_template">Beginning Description Template</label>
 
     <%= form.text_area :description_beginning_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
 
@@ -167,7 +162,7 @@
   </div>
 
   <div class="form-element">
-    <label for="import[default_description_end_template]">End
+    <label for="import_default_description_end_template">End
     Description Template (good for including an attribution)</label>
 
     <%= form.text_area :default_description_end_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
@@ -180,6 +175,11 @@
       source of the imported item.
     </div>
   </div>
+
+  <% if licenses_are_available? -%>
+  <h3>You may also choose to have all imported items be under one of these licenses.</h3>
+  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => Import.new} %>
+  <% end -%>
 
   <div class="form-element">
     <%= submit_tag 'Import' %>

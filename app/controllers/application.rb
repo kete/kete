@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
   # might be better to do an except?
-  after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit]
+  after_filter :store_location, :only => [ :for, :all, :search, :index, :new, :show, :edit, :new_related_set_from_archive_file]
 
   # if anything is added, edited, or deleted
   # we need to rebuild our rss caches
@@ -915,25 +915,13 @@ class ApplicationController < ActionController::Base
   # Things are aren't actions below here..
   protected
 
-    # Evaluate a possibly unsafe string into a zoom class.
-    # I.e.  "StillImage" => StillImage
-    def only_valid_zoom_class(param)
-      if ZOOM_CLASSES.member?(param)
-        Module.class_eval(param)
-      else
-        raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
-      end
+  # Evaluate a possibly unsafe string into a zoom class.
+  # I.e.  "StillImage" => StillImage
+  def only_valid_zoom_class(param)
+    if ZOOM_CLASSES.member?(param)
+      Module.class_eval(param)
+    else
+      raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
     end
-
+  end
 end
-
-
-
-
-
-
-
-
-
-
-

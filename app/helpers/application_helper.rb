@@ -271,6 +271,14 @@ module ApplicationHelper
     return link_to("#{phrase}", :controller => zoom_class_controller(item_class), :action => :new, :relate_to_topic => options[:relate_to_topic])
   end
 
+  def link_to_add_set_of_related_items(options={})
+    return link_to(options[:phrase],
+                   :controller => 'importers',
+                   :action => 'new_related_set_from_archive_file',
+                   :zoom_class => options[:zoom_class],
+                   :relate_to_topic => options[:relate_to_topic])
+  end
+
   def link_to_link_related_item(options={})
     link_to("link to existing #{zoom_class_humanize(options[:related_class]).downcase}", {
                      :controller => 'search',

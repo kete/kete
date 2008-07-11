@@ -50,42 +50,33 @@ module OaiDcHelpers
       else
         host = request.host
       end
+
+      uri_attrs = {
+        :controller => zoom_class_controller(item.class.name),
+        :action => 'show',
+        :id => item,
+        :format => nil,
+        :urlified_name => item.basket.urlified_name
+      }
+
       if item.class.name == 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
         uri_attrs = {
           :controller => zoom_class_controller(commented_on_item.class.name),
-          :action => 'show',
           :id => commented_on_item,
-          :format => nil,
           :urlified_name => commented_on_item.basket.urlified_name,
           :anchor => "comment-#{item.id}",
           :private => item.commentable_private?.to_s
         }
       else
-
-        uri_attrs = {
-          :controller => zoom_class_controller(item.class.name),
-          :action => 'show',
-          :id => item,
-          :format => nil,
-          :urlified_name => item.basket.urlified_name
-        }
-
         # Link to private version if generating OAI record for it..
         uri_attrs.merge!({ :private => "true" }) if item.respond_to?(:private) && item.private?
       end
 
       # If the item is private and SSL is configured, use https instead of http for full URL for the
       # record.
-      if FORCE_HTTPS_ON_RESTRICTED_PAGES &&
-        ( ( item.respond_to?(:private) && item.private? ) ||
-          ( item.respond_to?(:commentable_private?) && item.commentable_private? ) )
-
-        protocol = "https"
-      else
-        protocol = "http"
-      end
+      protocol = appropriate_protocol_for(item)
 
       xml.tag!("dc:identifier", "#{protocol}://#{host}#{url_for(uri_attrs.merge(:only_path => true))}")
     end
@@ -108,7 +99,7 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_creators_and_date(xml, item)
-      item_created = item.created_at.xmlschema
+      item_created = item.created_at.utc.xmlschema
       xml.tag!("dc:date", item_created)
       item.creators.each do |creator|
         xml.tag!("dc:creator", user_to_dc_creator_or_contributor(creator))
@@ -226,9 +217,7 @@ module OaiDcHelpers
         host = request.host
       end
 
-      file_classes = %w{ AudioRecording Document Video StillImage }
-
-      if file_classes.include?(item.class.name)
+      if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
         xml.tag!("dc:description") do
           xml.files do
             # images we describe all image versions via image_files
@@ -246,6 +235,17 @@ module OaiDcHelpers
             end
           end
         end
+      end
+    end
+    def oai_dc_xml_dc_source_for_file(xml, item, passed_request = nil)
+      if !passed_request.nil?
+        host = passed_request[:host]
+      else
+        host = request.host
+      end
+
+      if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
+        xml.tag!("dc:source", file_url_from_bits_for(item, host))
       end
     end
   end

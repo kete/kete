@@ -1,4 +1,10 @@
-<% @title = 'Import from ' + @import.directory %>
+<% @title = 'Import from '
+   if params[:related_topic].blank?
+     @title += @import.directory
+   else
+     @title += @import.import_archive_file.filename
+   end
+%>
 
 <%= render(:partial => "baskets/actions_menu",
            :locals => { :item => @current_basket }) %>
@@ -8,7 +14,7 @@
 <h2><%= @title -%></h2>
 
 <%= periodically_call_remote(:url => {:action => 'get_progress',
-:worker_type => @worker_type}, :frequency => 30) %>
+:worker_type => @worker_type, :related_topic => params[:related_topic]}, :frequency => 30) %>
 
 <div id="report_records_processed">Starting import...</div>
 

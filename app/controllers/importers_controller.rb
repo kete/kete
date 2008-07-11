@@ -1,8 +1,14 @@
+# feature: import related set of items from uploaded archive file (zip, tar, gzip, tar/gzip)
+# title is derived from file name with _ to spaces
+# we use end description template to optionally add uniform description across imported items
+# base_tags are tags to be added to every item imported
 class ImportersController < ApplicationController
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index]
+  before_filter :login_required, :only => [:list, :index, :new_related_set_from_archive_file]
 
-  permit "site_admin or admin of :current_basket or tech_admin of :site"
+  permit "site_admin or admin of :current_basket or tech_admin of :site", :except => [:new_related_set_from_archive_file, :create]
+
+  permit "site_admin or admin of :current_basket or tech_admin of :site or member of :current_basket or moderater of :current_basket", :only => [:new_related_set_from_archive_file, :create]
 
   ### TinyMCE WYSIWYG editor stuff
   uses_tiny_mce(:options => { :theme => 'advanced',
@@ -27,7 +33,7 @@ class ImportersController < ApplicationController
                   :paste_convert_headers_to_strong => true,
                   :paste_insert_word_content_callback => "convertWord",
                   :plugins => %w{ contextmenu paste table fullscreen} },
-                :only => [:new])
+                :only => [:new, :new_related_set_from_archive_file])
   ### end TinyMCE WYSIWYG editor stuff
 
   def  index
@@ -54,26 +60,58 @@ class ImportersController < ApplicationController
     @import.interval_between_records = 15
   end
 
+  def new_related_set_from_archive_file
+    new
+    @import.interval_between_records = 5
+    @import.import_archive_file = ImportArchiveFile.new
+    @related_topic = Topic.find(params[:relate_to_topic])
+    @zoom_class = only_valid_zoom_class(params[:zoom_class]).name || 'StillImage'
+  end
+
   def create
     @import = Import.new(params[:import])
+
+    if !params[:import_archive_file][:uploaded_data].blank? && !params[:related_topic].blank?
+      # this a related set of items from archive file import
+      # we decompress the files into a directory named after the timestamp
+      # for example imports/20080509160835
+      # prep the directory, but we'll decompress into it further down the track
+      @related_topic = Topic.find(params[:related_topic])
+
+      # we'll update this with actual directory after we unpack import_archive_file
+      @import.xml_type = 'related_set_from_archive_file'
+      @import.topic_type = @related_topic.topic_type
+      @zoom_class = only_valid_zoom_class(params[:zoom_class]).name
+    else
+      params[:related_topic] = nil
+    end
+
     if @import.save
       import_request = { :host => request.host,
         :protocol => request.protocol,
         :request_uri => request.request_uri }
 
+      unless params[:import_archive_file][:uploaded_data].blank?
+        @import.reload
+        @import_archive_file = ImportArchiveFile.new(params[:import_archive_file].merge(:import_id => @import.id))
+        # mkdir the target directory
+        import_directory_path = ::Import::IMPORTS_DIR + @import.directory
+        Dir.mkdir(import_directory_path) unless File.exist?(import_directory_path)
+        @import_archive_file.save!
+        # now that we have creatd the import_archive_file object, delete marshalled data from params
+        # otherwise we can pass it to the import worker
+        params.delete(:import_archive_file)
+      end
+
+      @worker_type = "#{@import.xml_type}_importer_worker".to_sym
+
       case @import.xml_type
       when 'past_perfect4'
-        @worker_type = :past_perfect4_importer_worker
         @zoom_class = 'StillImage'
       when 'fmpdsoresult_no_images'
-        @worker_type = :fmpdsoresult_no_images_importer_worker
         @zoom_class = 'Topic'
       when 'simple_topic'
-        @worker_type = :simple_topic_importer_worker
         @zoom_class = 'Topic'
-      else
-        flash[:notice] = 'Creation failed. No matching import type.'
-        redirect_to :action => 'index'
       end
 
       worker_name_with_job_key = @worker_type.to_s + '_importer'
@@ -93,21 +131,33 @@ class ImportersController < ApplicationController
         @do_not_use_tiny_mce = true
       else
         flash[:notice] = 'There is another import running at this time.  Please try back later.'
-        redirect_to :action => 'list'
+        if !params[:related_topic].blank?
+          redirect_to_show_for(@related_topic)
+        else
+          redirect_to :action => 'list'
+        end
       end
     else
-      render :action => 'new', :contributing_user => params[:import][:user_id]
+      if !params[:related_topic].blank?
+        render(:action => 'new_related_set_from_archive_file',
+               :contributing_user => params[:import][:user_id],
+               :related_topic => params[:related_topic],
+               :zoom_class => params[:zoom_class]
+               )
+      else
+        render :action => 'new', :contributing_user => params[:import][:user_id]
+      end
     end
   end
 
   def get_progress
     begin
       status = MiddleMan.ask_status(:worker => params[:worker_type].to_sym, :job_key => :importer)
-      if !status.nil?
-        logger.debug("status: " + status.inspect)
+      if !status.blank?
         if request.xhr?
-          logger.debug("inside js")
           records_processed = status[:records_processed]
+          related_topic = Topic.find(params[:related_topic]) unless params[:related_topic].blank?
+
           render :update do |page|
 
             if records_processed > 0
@@ -118,6 +168,7 @@ class ImportersController < ApplicationController
               done_message = "All records processed."
 
               # delete worker and redirect to results in basket
+              # this will fail if the work has already been deleted once
               MiddleMan.delete_worker(:worker => params[:worker_type].to_sym, :job_key => :importer)
 
               if !status[:error].blank?
@@ -125,25 +176,55 @@ class ImportersController < ApplicationController
               end
               page.hide("spinner")
               page.replace_html 'done', done_message
-              page.replace_html 'exit', '<p>' + link_to('Back to Imports', :action => 'list') + '</p>'
+              unless params[:related_topic].blank?
+                page.replace_html('exit', '<p>' + link_to("Back to #{related_topic.title}",
+                                                          :action => 'show',
+                                                          :controller => 'topics',
+                                                          :id => related_topic) + '</p>')
+              else
+                page.replace_html 'exit', '<p>' + link_to('Back to Imports', :action => 'list') + '</p>'
+              end
             end
           end
+          expire_related_caches_for(related_topic) if !params[:related_topic].blank? && (status[:done_with_do_work] == true or !status[:error].blank?)
         else
           flash[:notice] = 'Import failed. You need javascript enabled for this feature.'
           redirect_to :action => 'list'
         end
       else
-        flash[:notice] = 'Import failed.'
-        redirect_to :action => 'list'
+        message = "Import failed."
+        flash[:notice] = message
+        render :update do |page|
+          page.hide("spinner")
+          unless params[:related_topic].blank?
+            page.replace_html 'done', '<p>' + message + ' ' + link_to("Return to related topic.",
+                                                      :action => 'show',
+                                                      :controller => 'topics',
+                                                      :id => params[:related_topic]) + '</p>'
+          else
+            page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Imports', :action => 'list') + '</p>'
+          end
+        end
       end
     rescue
-      # TODO: get redirect to work
       # we aren't getting to this point, might be nested begin/rescue
       # check background logs for error
-      import_error = !status.nil? ? status[:error] : "import worker not running anymore?"
+      import_error = !status.blank? ? status[:error] : "import worker not running anymore?"
       logger.info(import_error)
-      flash[:notice] = "Import failed. #{import_error}"
-      redirect_to :action => 'index'
+      message = "Import failed. #{import_error}"
+      message += " - #{$!}" unless $!.blank?
+      flash[:notice] = message
+      render :update do |page|
+        page.hide("spinner")
+        unless params[:related_topic].blank?
+          page.replace_html 'done', '<p>' + message + ' ' + link_to("Return to related topic.",
+                                                                    :action => 'show',
+                                                                    :controller => 'topics',
+                                                                    :id => params[:related_topic])  + '</p>'
+        else
+          page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Imports', :action => 'list') + '</p>'
+        end
+      end
     end
   end
 

@@ -10,7 +10,8 @@
   <% # logic for which javascript to load -%>
   <% as_controllers = ACTIVE_SCAFFOLD_CONTROLLERS -%>
   <% none_tinymce_controllers = as_controllers + ['members', 'topic_types', 'content_types'] -%>
-  <% tinymce_actions = ['new', 'create', 'edit', 'update', 'pick_topic_type', 'homepage_options'] -%>
+  <% tinymce_actions = ['new', 'create', 'edit', 'update',
+  'pick_topic_type', 'homepage_options', 'new_related_set_from_archive_file'] -%>
   <% @do_not_use_tiny_mce ||= !(!none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action])) -%>
   <% unless @do_not_use_tiny_mce -%>
         <% # Include TinyMCE before other JS to avoid problems,

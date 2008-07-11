@@ -1,0 +1,24 @@
+<h4>Choose someone to be contributor of imported items</h4>
+<fieldset>
+<div class="form-element" style="display:inline">
+  <% # placing this in here for form reloading if validation fails
+     @contributing_user = !params[:contributing_user].blank? ? User.find(params[:contributing_user]) : current_user -%>
+
+  Current choice:
+    <% if @current_user == @contributing_user -%>
+    Self
+    <% else -%>
+    <%= h(@contributing_user.user_name) -%>
+    <% end -%>
+    <% form_tag({ :action => 'choose_contributing_user', :target => params[:action]}, {:style => "display:inline"}) do %>
+    <label for="contributing_user">or new contributing member:</label>
+    <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' %>
+
+    <%= hidden_field_tag('relate_to_topic', params[:relate_to_topic]) unless params[:relate_to_topic].blank?%>
+    <%= hidden_field_tag('zoom_class', params[:zoom_class]) unless params[:zoom_class].blank?%>
+
+    <%= submit_tag "Search", :class => 'searchbutton' %>
+    <% end %>
+</div>
+</fieldset>
+

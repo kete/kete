@@ -54,4 +54,9 @@ if IS_CONFIGURED
   # separated by /'s
   # no preceding / necessary
   ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
+
+  # set default host to SITE_NAME
+  ::ActionController::UrlWriter.module_eval do
+    default_url_options[:host] = SITE_NAME
+  end
 end

@@ -31,7 +31,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       @import = Import.find(args[:import])
       @related_topic_type = @import.topic_type
       @import_type = @import.xml_type
-      @import_dir_path = Import::IMPORTS_DIR + @import.directory
+      @import_dir_path = ::Import::IMPORTS_DIR + @import.directory
       @import_parent_dir_for_image_dirs = @import_dir_path + '/images'
       @contributing_user = @import.user
       @import_request = args[:import_request]
@@ -317,6 +317,9 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     field_count = 1
     tag_list_array = Array.new
+    # add support for all items during this import getting a set of tags
+    # added to every item in addition to the specific ones for the item
+    tag_list_array = @import.base_tags.split(",") if !@import.base_tags.blank?
 
     record_hash.keys.each do |record_field|
       value = record_hash[record_field]
@@ -433,6 +436,11 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     logger.info("after tag list")
 
+    # add the uniform license chosen at import to this item
+    params[zoom_class_for_params][:license_id] = @import.license.id if !@import.license.blank?
+
+    logger.info("after license")
+
     # clear any lingering values for @fields
     # and instantiate it, in case we need it
     @fields = nil
@@ -469,20 +477,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
     new_record_added = new_record.save
 
-    # add the image file and then close it
-    if !params[:image_file].nil? and zoom_class == 'StillImage'
-      logger.info("what is params[:image_file]: " + params[:image_file].to_s)
-      new_image_file = ImageFile.new(params[:image_file])
-      new_image_file.still_image_id = new_record.id
-      new_image_file.save
-      # attachment_fu doesn't insert our still_image_id into the thumbnails
-      # automagically
-      new_image_file.thumbnails.each do |thumb|
-        thumb.still_image_id = new_record.id
-        thumb.save!
-      end
-      logger.info("images done")
-    end
+    importer_add_image_to(new_record, params, zoom_class)
 
     new_record.creator = @contributing_user
 

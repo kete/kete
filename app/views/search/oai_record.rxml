@@ -1,6 +1,6 @@
 xml.instruct!
 xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
-  xml.responseDate(Time.now.to_s(:db))
+  xml.responseDate(Time.now.utc.xmlschema)
   oai_dc_xml_request(xml,item)
   xml.GetRecord do
     xml.record do
@@ -31,6 +31,9 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
           # that can be used to derive the url for things like thumbnails
           # or populate rss enclosure
           oai_dc_xml_dc_description_for_file(xml, item)
+
+          # we do a dc:source element for the original binary file
+          oai_dc_xml_dc_source_for_file(xml, item)
 
           oai_dc_xml_dc_creators_and_date(xml,item)
           oai_dc_xml_dc_contributors_and_modified_dates(xml,item)

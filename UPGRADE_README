@@ -85,6 +85,16 @@ configuration assistant/reconfigure site controls.
 
 If updating from an earlier version, please see further instructions below.
 
+== Trunk r1321 - ticket #206 simple bulk import of related items
+
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Upgrade your code base
+3.      Run the database migration 'rake db:migrate'
+4.      Run the upgrade script: 'rake kete:upgrade'
+5.      Start your Kete server again (mongrels, backgroundrb)
+
+If you are updating from an earlier version, please following the instructions for trunk r1169 below.
+
 == Trunk r1174 - Added per basket privacy control enable/disable preferences
 
 To update from r1169 through r1173, all you need to do is the following:
