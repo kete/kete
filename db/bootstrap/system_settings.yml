@@ -454,3 +454,11 @@ system_settings_051:
   id: "51"
   value: "false"
   section: Server
+system_settings_052:
+  name: Uses Basket List Navigation Menu On Every Page
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Does your site theme support a list of baskets on every page? Please note that the default Kete theme currently does not.
+  id: "52"
+  value: "false"
+  section: Server

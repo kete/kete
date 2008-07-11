@@ -108,7 +108,7 @@ module ApplicationHelper
 
 
   def render_baskets_as_menu
-    html = '<ul id="sub-menu" class="menu left-hand-menu">'
+    html = '<ul id="sub-menu" class="menu basket-list-menu">'
     except_certain_baskets_args = { :conditions => ["id not in (?)", @standard_baskets] }
 
     basket_count = 0
@@ -118,38 +118,44 @@ module ApplicationHelper
 
         html += li_with_correct_class(basket_count) + link_to_index_for(basket)
 
-          html += '<ul>'
-          topic_count = 0
+        html += '<ul>'
+        topic_count = 0
 
-          order_with_inheritence = basket.settings[:side_menu_ordering_of_topics] || @site_basket.settings[:side_menu_ordering_of_topics]
+        order_with_inheritence = basket.settings[:side_menu_ordering_of_topics] || @site_basket.settings[:side_menu_ordering_of_topics]
 
-          order = case order_with_inheritence
-          when "alphabetical"
-            "title ASC"
-          else
-            "updated_at DESC"
+        order = case order_with_inheritence
+                when "alphabetical"
+                  "title ASC"
+                else
+                  "updated_at DESC"
+                end
+
+        if !basket.settings[:side_menu_number_of_topics].blank?
+          limit = basket.settings[:side_menu_number_of_topics].to_i
+        elsif !@site_basket.settings[:side_menu_number_of_topics].blank?
+          limit = @site_basket.settings[:side_menu_number_of_topics].to_i
+        else
+          limit = 10
+        end
+
+        basket_topic_count = 0
+
+        for topic in basket.topics.find(:all, :limit => limit).reject { |t| t.disputed_or_not_available? }
+          if topic != basket.index_topic
+            html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
+            basket_topic_count += 1
           end
+        end
 
-          if !basket.settings[:side_menu_number_of_topics].blank?
-            limit = basket.settings[:side_menu_number_of_topics].to_i
-          elsif !@site_basket.settings[:side_menu_number_of_topics].blank?
-            limit = @site_basket.settings[:side_menu_number_of_topics].to_i
-          else
-            limit = 10
-          end
+        if basket.topics.count > basket_topic_count && basket_topic_count > 0
+          html += content_tag("li", link_to("More..",
+                                            :controller => 'search',
+                                            :action => 'all',
+                                            :urlified_name => basket.urlified_name,
+                                            :controller_name_for_zoom_class => 'topics'))
+        end
 
-          for topic in basket.topics.find(:all, :limit => limit).reject { |t| t.disputed_or_not_available? }
-            if topic != basket.index_topic
-                    html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
-            end
-          end
-
-          basket_topic_count = basket.topics.count_by_sql("SELECT COUNT(*) FROM topics, baskets where topics.basket_id = baskets.id AND baskets.id = #{basket.id}")
-          if basket_topic_count > basket.index_page_number_of_recent_topics && basket_topic_count > 0
-            html += content_tag("li", link_to("More..", :controller => 'search', :action => 'all', :urlified_name => basket.urlified_name, :controller_name_for_zoom_class => 'topics'))
-          end
-
-          html += '</ul>'
+        html += '</ul>'
 
       else
         html += li_with_correct_class(basket_count) + link_to_index_for(basket)
@@ -158,8 +164,6 @@ module ApplicationHelper
     end
     html += '</ul>'
   end
-
-
 
   def current_user_can_see_flagging?
     if @current_basket.settings[:show_flagging] == "at least moderator"

@@ -84,15 +84,17 @@
     </fieldset>
   </div>
 
+  <% if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE -%>
   <div class="form-element">
-    <label>Left-hand Menu Options:</label>
+    <label>Basket List Menu Options:</label>
 
     <fieldset>
 
-      <p>These settings only take effect if the left-hand side menu is on in your template.</p>
+      <p>These settings only take effect if the basket list navigation menu is on in your template.</p>
 
       <div class="form-element">
-        <label for="settings_side_menu_number_of_topics">Number of topics to show:</label>
+        <label for="settings_side_menu_number_of_topics">Number of
+        topics to show when in this basket?:</label>
         <%= text_field_tag 'settings[side_menu_number_of_topics]', @basket.settings[:side_menu_number_of_topics], :size => 3, "id" => "settings_side_menu_number_of_topics" %>
       </div>
 
@@ -103,7 +105,7 @@
 
     </fieldset>
   </div>
-
+  <% end -%>
 
   <%# Only show to users who can see items in the current basket %>
   <% if current_user_can_see_private_files_in_basket?(@basket) %>

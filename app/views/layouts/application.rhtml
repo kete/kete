@@ -140,6 +140,12 @@
     <% end %>
 
         <div id="container">
+          <% if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>
+          <div id="basket-list-column">
+          <%= render_baskets_as_menu %>
+          </div>
+          <% end %>
+
           <% if render_full_width_content_wrapper? %>
              <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
           <% end %>

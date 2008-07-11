@@ -85,7 +85,16 @@ configuration assistant/reconfigure site controls.
 
 If updating from an earlier version, please see further instructions below.
 
-== Trunk r1321 - ticket #206 simple bulk import of related items
+== Trunk r1324 - support for basket list navigation in a left column, experimental
+
+1.      Stop your Kete server (mongrels).
+2.      Upgrade your code base
+4.      Run the upgrade script: 'rake kete:upgrade'
+5.      Start your Kete server again (mongrels)
+
+If you are updating from an earlier version, please following the instructions for trunk r1169 below.
+
+== Trunk r1322 - ticket #206 simple bulk import of related items
 
 1.      Stop your Kete server (mongrels, backgroundrb).
 2.      Upgrade your code base

@@ -1,135 +1,135 @@
 body {
-        margin:0;
-        padding:0;
-        font: 76%/1.3 arial, helvetica, sans-serif;
-        background-color: #dcdcdc;
+    margin:0;
+    padding:0;
+    font: 76%/1.3 arial, helvetica, sans-serif;
+    background-color: #dcdcdc;
 }
 /* #################################### Content Structural Items #################################### */
 #main-content-wrapper {
-        width: 70%;
-        float:left;
+    width: 70%;
+    float:left;
 }
 .full-width #main-content-wrapper {
-        width: 100%;
+    width: 100%;
 }
 #main-content-container {
-        padding: 1em 0 1em 1em;
+    padding: 1em 0 1em 1em;
 }
 #secondary-content-wrapper{
-        width: 30%;
-        float: right;
+    width: 30%;
+    float: right;
 }
 /* #################################### Header #################################### */
 #header {
-        background: #7a0203 url(../images/header-bg.gif) bottom repeat-x;
-        color: white;
-        padding-top: 2em;
-        float: left;
-        width: 100%;
+    background: #7a0203 url(../images/header-bg.gif) bottom repeat-x;
+    color: white;
+    padding-top: 2em;
+    float: left;
+    width: 100%;
 }
 #header h1 ,
 #header p{
-        display: inline;
-        padding-left: 25px;
-        color: white;
+    display: inline;
+    padding-left: 25px;
+    color: white;
 }
 #header h1 a{
-        color: white;
+    color: white;
 }
 #header h1 a.basket{
-        color: white;
-        font-weight: normal;
-        font-style: italic;
-        font-size: 1em;
+    color: white;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 1em;
 }
 #header p {
-        text-align: right;
-        padding-left: 0.25em;
+    text-align: right;
+    padding-left: 0.25em;
 }
 /* #################################### Top Navigation #################################### */
 
 ul.navlist {
-        list-style-type: none;
+    list-style-type: none;
 }
 ul.nav-list li{
-        display: inline;
-        padding: 2px;
-        padding-left: .5em;
+    display: inline;
+    padding: 2px;
+    padding-left: .5em;
 }
 ul.nav-list a{
-        color: #333;
-        font-weight: bold;
-        text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
 }
 ul.nav-list a:hover{
-        text-decoration: underline;;
-        color: #333;
+    text-decoration: underline;;
+    color: #333;
 }
 
 #top-menu {
-        background-color: #838383;
-        margin-bottom: 2em;
+    background-color: #838383;
+    margin-bottom: 2em;
 }
 #top-menu ul {
-        margin: 0;
-        padding: 6.5em 0 1em 2em;
+    margin: 0;
+    padding: 6.5em 0 1em 2em;
 }
 #top-menu ul.user-nav {
-        background-image: none;
-        float: right;
-        margin: 0;
-        padding: 0;
-        padding-top: 6px;
-        margin-right: 20px;
+    background-image: none;
+    float: right;
+    margin: 0;
+    padding: 0;
+    padding-top: 6px;
+    margin-right: 20px;
 }
 #main-nav {
-        border-top: 1px solid white;
+    border-top: 1px solid white;
 }
 #basket-list{
-        margin: 0;
-        padding: 0;
-        margin-left: 2em;
-        margin-bottom: 0.7em;
+    margin: 0;
+    padding: 0;
+    margin-left: 2em;
+    margin-bottom: 0.7em;
 }
 #top-menu li,
 #basket-list li {
-        border-left: 1px solid white;
+    border-left: 1px solid white;
 }
 #top-menu .nav-list li.first,
 #basket-list li.first{
-        border-left: none;
-        padding-left: 0em;
+    border-left: none;
+    padding-left: 0em;
 }
 #top-menu li a,
 #basket-list li a{
-        color: white;
+    color: white;
 }
 /* #################################### Content Navigation Tabs #################################### */
 #content-tabs ul{
-        margin: 1em 0 5px 0;
-        padding: 0;
-        clear:left;
+    margin: 1em 0 5px 0;
+    padding: 0;
+    clear:left;
 }
 #content-tabs ul li{
-        display: inline;
-        padding: .75em 0 0.5em 1em;
-        background-color: #989898;
+    display: inline;
+    padding: .75em 0 0.5em 1em;
+    background-color: #989898;
 }
 #content-tabs ul li a{
-        padding: .75em 1em .5em 0;
+    padding: .75em 1em .5em 0;
 }
 #content-tabs ul li.selected{
-        display: inline;
-        padding: .75em 0 0.5em 1em;
-        background-color: white;
+    display: inline;
+    padding: .75em 0 0.5em 1em;
+    background-color: white;
 }
 #content-tabs ul li.selected a{
-        padding: .75em 1em .5em 0;
+    padding: .75em 1em .5em 0;
 }
 #content-wrapper {
-        background-color: white;
-        float: left;
-        width: 100%;
+    background-color: white;
+    float: left;
+    width: 100%;
 }
 
 /* TinyMCE specific rules */
@@ -137,7 +137,7 @@ ul.nav-list a:hover{
 /* override this in your theme, too, if you change content-wrapper background-color */
 /* see http://wiki.moxiecode.com/index.php/TinyMCE:Configuration/content_css for more info */
 body.mceContentBody {
-   background: white;
+    background: white;
 }
 
 #content-tabs li a span,
@@ -145,178 +145,178 @@ body.mceContentBody {
 #related h2,
 #tags h2,
 #extended-fields h2{
-        background-repeat: no-repeat;
-        background-position: center left;
-        padding: 2px;
-        padding-left: 20px;
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding: 2px;
+    padding-left: 20px;
 }
 #extended-fields h2{
-        background-image: url(../images/icon-extended.gif);
+    background-image: url(../images/icon-extended.gif);
 }
 #tags h2 {
-        background-image: url(../images/icon-tag.gif);
+    background-image: url(../images/icon-tag.gif);
 }
 .view-link{
-        background-image: url(../images/icon-view.gif);
+    background-image: url(../images/icon-view.gif);
 }
 .edit-link{
-        background-image: url(../images/icon-edit.gif);
+    background-image: url(../images/icon-edit.gif);
 }
 .history-link{
-        background-image: url(../images/icon-history.gif);
+    background-image: url(../images/icon-history.gif);
 }
 .related-link{
-        background-image: url(../images/icon-related.gif);
+    background-image: url(../images/icon-related.gif);
 }
 .discuss-link{
-        background-image: url(../images/icon-discuss.gif);
+    background-image: url(../images/icon-discuss.gif);
 }
 /* #################################### Secondary Content #################################### */
 .secondary-content-section-wrapper{
-        margin: 1em 1em 1em 0em;
+    margin: 1em 1em 1em 0em;
 }
 .secondary-content-section{
-        background-color: #ddd;
-        padding: 0.7em;
+    background-color: #ddd;
+    padding: 0.7em;
 }
 .secondary-content-section h2{
-        margin: 0;
-        color: #333;
-        font-size: 1.2em;
+    margin: 0;
+    color: #333;
+    font-size: 1.2em;
 }
 .secondary-content-section-footer-wrapper{
-        margin: -0.7em;
-        clear: both;
+    margin: -0.7em;
+    clear: both;
 }
 .secondary-content-section-wrapper-blue{
-        margin: 1em 1em 1em 0;
+    margin: 1em 1em 1em 0;
 }
 .secondary-content-section-wrapper-blue .secondary-content-section h2,
 .secondary-content-section-wrapper-blue .secondary-content-section{
-        color: black;
+    color: black;
 }
 .secondary-content-section-wrapper-blue .secondary-content-section a{
-        color: #333;
+    color: #333;
 }
 .secondary-content-section-wrapper-blue .secondary-content-section-footer-wrapper{
-        margin: -0.7em;
+    margin: -0.7em;
 }
 div.two-col {
-        width: 40%;
-        padding-right: 10%;
-        float: left;
+    width: 40%;
+    padding-right: 10%;
+    float: left;
 }
 /* #################################### General Content Elements #################################### */
 h1,h2{
-        color: #670001;
-        margin: .2em;
+    color: #670001;
+    margin: .2em;
 }
 h4 {
-        margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 label{
-        width: 15em;
-        padding-right: 0.5em;
+    width: 15em;
+    padding-right: 0.5em;
 }
 .form-element label{
-        width: 15em;
-        padding-right: 0.5em;
-        display: block;
-        float: left;
-        font-weight: bold;
+    width: 15em;
+    padding-right: 0.5em;
+    display: block;
+    float: left;
+    font-weight: bold;
 }
 .form-element label.cleared-right{
-        float: none;
+    float: none;
 }
 .form-element label.inline{
-        display: inline;
-                                float:none;
+    display: inline;
+    float:none;
 }
 .form-element{
-        padding: .5em;
-        width: 100%;
-        margin-bottom: 0.2em;
-        float: left;
+    padding: .5em;
+    width: 100%;
+    margin-bottom: 0.2em;
+    float: left;
 }
 .form-element textarea{
-        border: 1px solid #666;
-        font-size: 1.2em;
-        width: 95%;
+    border: 1px solid #666;
+    font-size: 1.2em;
+    width: 95%;
 }
 fieldset {
-        border: 1px solid #CCC;
-        margin-right: 20px;
+    border: 1px solid #CCC;
+    margin-right: 20px;
 }
 .form_example {
-        margin: 5px 0;
+    margin: 5px 0;
 }
 .login-button,
 .save-button{
-        margin: 1em;
+    margin: 1em;
 }
 input {
-        border: 1px solid #666;
-        padding-left: .5em;
+    border: 1px solid #666;
+    padding-left: .5em;
 }
 a {
-        color: #3168ab;
-        text-decoration: none;
+    color: #3168ab;
+    text-decoration: none;
 }
 a:hover {
-        text-decoration: underline;
+    text-decoration: underline;
 }
 .img-wrapper{
-        float: right;
-        text-align: right;
-        background-color: #dfdfdf;
-        padding: 0.7em;
-        margin-left: 1em;
+    float: right;
+    text-align: right;
+    background-color: #dfdfdf;
+    padding: 0.7em;
+    margin-left: 1em;
 }
 .img-wrapper img{
-        margin: -0.7em;
+    margin: -0.7em;
 }
 
 /* #################################### Search Results #################################### */
 #head-search-wrapper{
-        float: right;
-        position: absolute;
-        top: 1em;
-        right: 1em;
+    float: right;
+    position: absolute;
+    top: 1em;
+    right: 1em;
 }
 
 #search-results{
-        margin-left: 2em;
-        padding: 0;
+    margin-left: 2em;
+    padding: 0;
 }
 #search-results p{
-        margin-top: 0.2em;
+    margin-top: 0.2em;
 }
 #search-results li{
-        clear: both;
-        float: left;
-        list-style-type: none;
-        margin-top: 1em;
+    clear: both;
+    float: left;
+    list-style-type: none;
+    margin-top: 1em;
 }
 #search-results li h4{
-        margin-top: 0;
+    margin-top: 0;
 }
 #search-results .thumb {
-        float: left;
-        width: 65px;
-        border: 1px solid blue;
+    float: left;
+    width: 65px;
+    border: 1px solid blue;
 }
 #search-results .image-result .description{
-        margin-left: 70px;
+    margin-left: 70px;
 }
 h3.results-count,
 h3.search-description {
-        font-size: 1.2em;
-        color: #333;
-        font-weight: normal;
+    font-size: 1.2em;
+    color: #333;
+    font-weight: normal;
 }
 h3 b{
-        color: black;
+    color: black;
 }
 
 /* --- Images search results --- */
@@ -333,135 +333,135 @@ h3 b{
     margin: 0;
 }
 .image-result-thumb a img {
-        border: solid 1px;
+    border: solid 1px;
 }
 .image-result-thumb a img:visited {
-        border: solid 1px;
+    border: solid 1px;
 }
 .image-result-thumb a img:hover {
-        border: solid 1px;
+    border: solid 1px;
 }
 
 /* #################################### General Content Elements #################################### */
 .results-list{
-        list-style-type: square;
-        color: #666;
-        margin: 0em 0 1em 1em;
-        padding: 0 0 0 1em;
+    list-style-type: square;
+    color: #666;
+    margin: 0em 0 1em 1em;
+    padding: 0 0 0 1em;
 }
 .results-list li{
-        margin: 0;
-        padding: 0;
+    margin: 0;
+    padding: 0;
 }
 .results-list a{
-        color: blue;
-        text-decoration: underline;
+    color: blue;
+    text-decoration: underline;
 }
 
 .content-tools{
-        margin: 2em 0 1em 0;
+    margin: 2em 0 1em 0;
 }
 .content-tools ul li,
 .content-tools ul ul,
 .comment-tools ul li,
 .comment-tools ul ul{
-        display: inline;
-        margin: 0;
-        padding: 0;
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
 .content-tools ul li li,
 .comment-tools ul li li{
-        border-left: 1px solid black;
-        padding-left: .3em;
+    border-left: 1px solid black;
+    padding-left: .3em;
 }
 
 .content-tools ul li li.first,
 .comment-tools ul li li.first{
-        border-left: 0px solid black;
+    border-left: 0px solid black;
 }
 .content-tools ul,
 .comment-tools ul {
-        margin: 1em 0;
-        padding: 0;
+    margin: 1em 0;
+    padding: 0;
 }
 .flag{
-        background-repeat: no-repeat;
-        background-position: center left;
-        padding: 2px;
-        padding-left: 20px !important;
-        background-image: url(../images/icon-flag.gif);
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding: 2px;
+    padding-left: 20px !important;
+    background-image: url(../images/icon-flag.gif);
 }
 .secondary-content-section .related-action a{
-        color: #000033;
+    color: #000033;
 }
 
 .results-list .related-action{
-        display: block;
+    display: block;
 }
 .images-list li{
-        list-style-type: none;
-        display: inline;
+    list-style-type: none;
+    display: inline;
 }
 .images-list li a img{
-        border: 2px solid white;
-        background-color: white;
+    border: 2px solid white;
+    background-color: white;
 }
 p.help,
 p.feed {
-        clear: left;
-        background-repeat: no-repeat;
-        background-position: center left;
-        padding: 2px;
-        padding-left: 20px;
-        background-image: url(../images/icon-help.gif);
+    clear: left;
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding: 2px;
+    padding-left: 20px;
+    background-image: url(../images/icon-help.gif);
 }
 p.feed {
-        background-image: url(../images/icon-feed.gif);
+    background-image: url(../images/icon-feed.gif);
 }
 p.feed a{
-        font-weight: bold;
-        color: #af6529;
-        clear: both;
+    font-weight: bold;
+    color: #af6529;
+    clear: both;
 }
 #extended dt{
-        font-weight: bold;
-        float: left;
-        clear: left;
-        margin: 0;
-        margin-right: .5em;
-        padding: 0;
+    font-weight: bold;
+    float: left;
+    clear: left;
+    margin: 0;
+    margin-right: .5em;
+    padding: 0;
 }
 #extended dd{
-        float: left;
-        margin: 0;
-        padding: 0;
-        margin-bottom: .4em;
+    float: left;
+    margin: 0;
+    padding: 0;
+    margin-bottom: .4em;
 }
 .search-prev-next {
-        text-align: right;
-        margin-right: 1em;
-        clear: both;
+    text-align: right;
+    margin-right: 1em;
+    clear: both;
 }
 .clear {
-        clear:both;
+    clear:both;
 }
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> working <<<<<<<<<<<<<<<<<<<<<< */
 th {
-        text-align:left;
-        vertical-align: top;
-        font-weight: bold;
+    text-align:left;
+    vertical-align: top;
+    font-weight: bold;
 }
 
 #basket-toolbox,
 #adminToolbox{
-        background-image: url(../images/toolbox.gif);
-        background-repeat: no-repeat;
-        background-position: 10px 10px;
-        border: 2px solid #7A0203;
-        background-color: #efefef;
-        padding: 0em 1em 1em 40px;
-        margin-top: 1em;
-        -moz-border-radius: 1em;
+    background-image: url(../images/toolbox.gif);
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+    border: 2px solid #7A0203;
+    background-color: #efefef;
+    padding: 0em 1em 1em 40px;
+    margin-top: 1em;
+    -moz-border-radius: 1em;
         -webkit-border-radius: 1em;
 }
 
@@ -473,123 +473,123 @@ div#slideshow-controls {
         margin-bottom: 30px;
         -moz-border-radius: 1em;
         -webkit-border-radius: 1em;
-				text-align:center;
+                                text-align:center;
 }
 
 div#slideshow-controls p {
-				margin: 4px 0;
+                                margin: 4px 0;
 }
 
 div#slideshow-controls div#slideshow-previous-button {
-				float: left; 
-				margin: 4px 0 0 150px; 
-				width: 150px;
-				font-size: 14pt;
+                                float: left;
+                                margin: 4px 0 0 150px;
+                                width: 150px;
+                                font-size: 14pt;
 }
 
 div#slideshow-controls div#slideshow-next-button {
-				float: right; 
-				margin: 4px 150px 0 0; 
-				width: 150px;
-				font-size: 14pt;
+                                float: right;
+                                margin: 4px 150px 0 0;
+                                width: 150px;
+                                font-size: 14pt;
 }
 
 div#slideshow-controls div#slideshow-middle {
-				margin: 0 auto;
+                                margin: 0 auto;
 }
 
 
 .comment-wrapper {
-        margin: 1.5em 0 1em 0;
-        padding: .2em 1em 1em .5em;
-        border-left: 2px solid #666;
-        background-color: white;
+    margin: 1.5em 0 1em 0;
+    padding: .2em 1em 1em .5em;
+    border-left: 2px solid #666;
+    background-color: white;
 }
 .history-table td {
-        padding: 0.5em;
-        border: 1px solid #ccc;
+    padding: 0.5em;
+    border: 1px solid #ccc;
 }
 .prev-next{
-        float: right;
-        padding-right: 1em;
+    float: right;
+    padding-right: 1em;
 }
 span.prev-inactive,
 span.prev-active {
-        padding: 3px;
-        background-repeat: no-repeat;
-        background-position: 0% 50%;
-        padding-left: 16px;
+    padding: 3px;
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    padding-left: 16px;
 }
 span.next-inactive,
 span.next-active {
-        padding: 3px;
-        background-repeat: no-repeat;
-        background-position: 100% 50%;
-        padding-right: 16px;
+    padding: 3px;
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+    padding-right: 16px;
 }
 
 .prev-inactive {
-        background-image: url(../images/icon_results_previous_off.gif);
+    background-image: url(../images/icon_results_previous_off.gif);
 }
 .prev-active {
-        background-image: url(../images/icon_results_previous.gif);
+    background-image: url(../images/icon_results_previous.gif);
 
 }
 .next-inactive {
-        background-image: url(../images/icon_results_next_off.gif);
+    background-image: url(../images/icon_results_next_off.gif);
 }
 .next-active {
-        background-image: url(../images/icon_results_next.gif);
+    background-image: url(../images/icon_results_next.gif);
 }
 #footer {
-        background-color: white;
-        margin-top: -1.5em;
-        padding: 1em;
-        padding-bottom: 2em;
+    background-color: white;
+    margin-top: -1.5em;
+    padding: 1em;
+    padding-bottom: 2em;
 }
 
 #linkToRSS{
-        background-image: url(../images/icon-feed.gif);
-        padding: 3px;
-        background-repeat: no-repeat;
-        background-position: 0% 50%;
-        padding-left: 20px;
+    background-image: url(../images/icon-feed.gif);
+    padding: 3px;
+    background-repeat: no-repeat;
+    background-position: 0% 50%;
+    padding-left: 20px;
 }
 #thisnumber { /* the currently selected number of items per page */
-        color: #666;
-        font-weight: bold;
-        text-decoration: underline;
+    color: #666;
+    font-weight: bold;
+    text-decoration: underline;
 }
 .tag_cloud1 {
-            font-size:1em;
+    font-size:1em;
 }
 .tag_cloud2 {
-            font-size:1.2em;
+    font-size:1.2em;
 }
 .tag_cloud3 {
-            font-size:1.4em;
+    font-size:1.4em;
 }
 .tag_cloud4 {
-            font-size:1.6em;
+    font-size:1.6em;
 }
 .tag_cloud5 {
-            font-size:1.8em;
+    font-size:1.8em;
 }
 .tag_cloud6 {
-            font-size:2em;
+    font-size:2em;
 }
 
 div#notice {
-           background-color: #f9f3cd;
-           border: 1px solid #baae8b;
-           padding: .5em;
-           margin-bottom: 1em;
-           color: #333;
+    background-color: #f9f3cd;
+    border: 1px solid #baae8b;
+    padding: .5em;
+    margin-bottom: 1em;
+    color: #333;
 }
 
 /* #################################### Misc #################################### */
 .theme-choice-wrapper {
-/*            float:right;*/
+    /*            float:right;*/
 }
 /* code styles */
 
@@ -623,49 +623,64 @@ input.searchheader-search {
 }
 
 ul.option-list{
-  list-style-type: none;
-  clear: left;
-  margin-left: 0;
-  padding-left: 1em;
-  width: 80%;
+    list-style-type: none;
+    clear: left;
+    margin-left: 0;
+    padding-left: 1em;
+    width: 80%;
 }
 ul.option-list li{
-  margin-bottom: 0.5em;
-  position: relative;
+    margin-bottom: 0.5em;
+    position: relative;
 
 }
 ul.option-list li img{
-  position: relative;
-  top: .25em;
-  margin-left: .5em;
-  margin-right: .5em;
+    position: relative;
+    top: .25em;
+    margin-left: .5em;
+    margin-right: .5em;
 }
 
 .option-list label {
-  display: inline;
-  width: auto;
-  float: none;
-  font-weight: normal;
+    display: inline;
+    width: auto;
+    float: none;
+    font-weight: normal;
 }
 
 
 .license img {
- float: left;
- margin-right: .5em;
+    float: left;
+    margin-right: .5em;
 }
 
 /* width of members list table for basket administration of members */
 table.members-list-table {
-        width: 100%;
+    width: 100%;
 }
 
 /* column widths for the above. */
 .members-list-table td {
-        width: 25%;
+    width: 25%;
 }
 
 /* for wrapping form elements in a block element - needed for XHTML validation */
 div.wrap {
-        margin: 0;
-        padding: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* optional basket list in a column
+   has to be turned on in system settings to show up
+   Server > USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
+   you also must have at least one basket besides site defined
+   or your layout will do bad things
+
+   you'll need to do a lot in your theme to make it be more than a floating list above the action menu
+*/
+
+#basket-list-column{
+        width: 160px;
+        float: left;
+        margin-bottom: 200px;
 }
