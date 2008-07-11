@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 2a13ffe0dad3167c073ff726b670f6802e6b7c98
+  branch: HEAD
+repository_url: git://github.com/kete/acts_as_zoom.git
+lock: 
+repository_class: Piston::Git::Repository
