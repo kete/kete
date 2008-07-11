@@ -25,7 +25,7 @@ class BasketsController < ApplicationController
                 :only => [:new, :pick, :create, :edit, :update, :homepage_options])
   ### end TinyMCE WYSIWYG editor stuff
 
-  after_filter :repopulate_basket_permissions, :only => [:create, :destroy] 
+  after_filter :repopulate_basket_permissions, :only => [:create, :destroy]
 
   def index
     list
@@ -75,6 +75,7 @@ class BasketsController < ApplicationController
     # put in some defaults for site basket
     # since all other baskets inherit from them if unspecified
     @basket.show_privacy_controls = false if @basket == @site_basket && @basket.show_privacy_controls.blank?
+    @basket.allow_non_member_comments = true if @basket == @site_basket && @basket.allow_non_member_comments.blank?
   end
 
   def homepage_options
@@ -236,9 +237,9 @@ class BasketsController < ApplicationController
   def current_basket_is_selected?
     params[:id].blank? or @current_basket.id == params[:id]
   end
-  
+
   private
-  
+
   def repopulate_basket_permissions
     session[:has_access_on_baskets] = current_user.get_basket_permissions
   end
