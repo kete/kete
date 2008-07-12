@@ -107,23 +107,6 @@
   </div>
   <% end -%>
 
-  <%# Only show to users who can see items in the current basket %>
-  <% if current_user_can_see_private_files_in_basket?(@basket) %>
-  <div class="form-element">
-    <label>Private File Visibility:</label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <label for="settings_private_file_visibility" style="width: 100%">To view private attached files you must be at least a:</label>
-        <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket), "id" => "settings_private_file_visibility" %></div>
-      </div>
-
-
-   </fieldset>
-  </div>
-  <% end %>
-
   <strong><%= basket_preferences_inheritance_message %></strong>
 
 </fieldset>
