@@ -148,39 +148,19 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_can_see_flagging?
-    if @current_basket.settings[:show_flagging] == "at least moderator"
-        can_see_flagging = logged_in? && @at_least_a_moderator
-    else
-        can_see_flagging = true
-    end
-    can_see_flagging
+    current_user_is?(@current_basket.settings[:show_flagging])
   end
 
   def current_user_can_see_add_links?
-    if @current_basket.settings[:show_add_links] == "at least moderator"
-        can_see_add_links = logged_in? && @at_least_a_moderator
-    else
-        can_see_add_links = true
-    end
-    can_see_add_links
+    current_user_is?(@current_basket.settings[:show_add_links])
   end
 
   def current_user_can_see_action_menu?
-    if @current_basket.settings[:show_action_menu] == "at least moderator"
-        can_see_action_menu = logged_in? && @at_least_a_moderator
-    else
-        can_see_action_menu = true
-    end
-    can_see_action_menu
+    current_user_is?(@current_basket.settings[:show_action_menu])
   end
 
   def current_user_can_see_discussion?
-    if @current_basket.settings[:show_discussion] == "at least moderator"
-        can_see_discussion = logged_in? && @at_least_a_moderator
-    else
-        can_see_discussion = true
-    end
-    return_value = can_see_discussion
+    current_user_is?(@current_basket.settings[:show_discussion])
   end
 
   # Specific test for private file visibility.
@@ -190,20 +170,7 @@ class ApplicationController < ActionController::Base
 
   # Test for private file visibility in a given basket
   def current_user_can_see_private_files_in_basket?(basket)
-
-    # User must be logged in and have sufficient privileges.
-    logged_in? && case basket.private_file_visibility
-      when "at least site admin"
-        site_admin?
-      when "at least admin"
-        basket_admin?
-      when "at least moderator"
-        at_least_a_moderator?
-      when "at least member"
-        @current_user.has_role?("member", basket) || at_least_a_moderator?
-      else
-        raise "Unknown authentication type: #{item.basket.private_file_visibility}"
-      end
+    current_user_is?(basket.private_file_visibility)
   end
 
   # Walter McGinnis, 2006-04-03
@@ -933,4 +900,24 @@ class ApplicationController < ActionController::Base
       raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
     end
   end
+
+  private
+
+  def current_user_is?(at_least_setting)
+    begin
+      # everyone can see, just return true
+      return true if at_least_setting == 'all users'
+
+      # all other settings, you must be at least logged in
+      return false unless logged_in?
+
+      # finally, if they are logged in
+      # we evaluate matching instance variable if they have the role that matches
+      # our basket setting
+      instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
+    rescue
+      raise "Unknown authentication type: #{$!}"
+    end
+  end
+
 end

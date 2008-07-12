@@ -2,6 +2,14 @@
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
+  # we use these for who can see what
+  MEMBER_LEVEL_OPTIONS = [['Basket member', 'at least member'],
+                          ['Basket moderator', 'at least moderator'],
+                          ['Basket admin', 'at least admin'],
+                          ['Site admin', 'at least site admin']]
+
+  USER_LEVEL_OPTIONS = [['All users', 'all users']] + MEMBER_LEVEL_OPTIONS
+
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
@@ -133,24 +141,25 @@ class Basket < ActiveRecord::Base
     return @tag_counts_array
   end
 
-
   # attribute options methods
   def show_flagging_as_options(site_basket)
     current_show_flagging_value = self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
-    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
-    select_options = self.array_to_options_list_with_defaults(options_array,current_show_flagging_value)
+    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_flagging_value)
   end
 
   def show_add_links_as_options(site_basket)
     current_show_add_links_value = self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
-    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
-    select_options = self.array_to_options_list_with_defaults(options_array,current_show_add_links_value)
+    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_add_links_value)
   end
 
   def show_action_menu_as_options(site_basket)
     current_show_actions_value = self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
-    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
-    select_options = self.array_to_options_list_with_defaults(options_array,current_show_actions_value)
+    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_actions_value)
+  end
+
+  def show_discussion_as_options(site_basket)
+    current_show_discussion_value = self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
+    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_discussion_value)
   end
 
   def side_menu_ordering_of_topics_as_options(site_basket)
@@ -159,16 +168,9 @@ class Basket < ActiveRecord::Base
     select_options = self.array_to_options_list_with_defaults(options_array,current_value)
   end
 
-  def show_discussion_as_options(site_basket)
-    current_show_discussion_value = self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
-    options_array = [['All users', 'all users'],['User who are at least Moderators', 'at least moderator']]
-    select_options = self.array_to_options_list_with_defaults(options_array,current_show_discussion_value)
-  end
-
   def private_file_visibility_as_options(site_basket)
     current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
-    options_array = [['Basket member', 'at least member'], ['Basket moderator', 'at least moderator'], ['Basket admin', 'at least admin'], ['Site admin', 'at least site admin']]
-    select_options = self.array_to_options_list_with_defaults(options_array,current_value)
+      select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
   end
 
   def private_file_visibilty_selected_or_default(value, site_basket)
@@ -189,8 +191,6 @@ class Basket < ActiveRecord::Base
     end
     select_options
   end
-
-
 
   # attribute options methods
   def self.link_to_index_topic_as_options
