@@ -58,13 +58,10 @@ class Document < ActiveRecord::Base
   end
 
   def could_be_new_theme?
-    logger.debug("before acceptable")
+    # must be supporting in our decompression utilities
     return false unless ACCEPTABLE_THEME_CONTENT_TYPES.include?(self.content_type)
-    logger.debug("after acceptable")
-    likely_theme_name = File.basename(self.filename, File.extname(self.filename))
-    Dir.new(THEMES_ROOT).each do |listing|
-      return false if listing == likely_theme_name
-    end
+    # skip, if a directory already exists in public/themes
+    return false if Dir.entries(THEMES_ROOT).include?(File.basename(self.filename, File.extname(self.filename)))
     true
   end
 
