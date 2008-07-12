@@ -84,8 +84,8 @@ class ApplicationController < ActionController::Base
                                                        :update,
                                                        :destroy,
                                                        :add_index_topic, :link_index_topic]
-                                                       
-  helper :slideshows                                                       
+
+  helper :slideshows
 
 
   # set the current basket to the default
@@ -382,6 +382,15 @@ class ApplicationController < ActionController::Base
                                          :action => 'show',
                                          :id => item,
                                          :related => related_controller} )
+      # we have two more caches for controls for those that are privileged
+      ['restore', 'upload_archive'].each do |sub_part|
+        expire_fragment_for_all_versions(item,
+                                         { :urlified_name => item.basket.urlified_name,
+                                           :controller => zoom_class_controller(item.class.name),
+                                           :action => 'show',
+                                           :id => item,
+                                           :related => "#{related_controller}_#{sub_part}" })
+      end
     end
   end
 
@@ -893,21 +902,21 @@ class ApplicationController < ActionController::Base
   def private_redirect_attribute_for(item)
     item.respond_to?(:private) && item.private? ? "true" : "false"
   end
-  
+
   def slideshow
     # Instantiate a new slideshow object on the slideshow session key
-    session[:slideshow] ||= HashWithIndifferentAccess.new 
+    session[:slideshow] ||= HashWithIndifferentAccess.new
     Slideshow.new(session[:slideshow])
   end
-  
+
   # Append a query string to a URL.
   def append_options_to_url(url, options)
     options = options.join("&") if options.is_a?(Array)
-    
+
     append_operator = url.include?("?") ? "&" : "?"
     url + append_operator + options
   end
-  
+
 
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
