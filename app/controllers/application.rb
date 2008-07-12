@@ -87,7 +87,6 @@ class ApplicationController < ActionController::Base
 
   helper :slideshows
 
-
   # set the current basket to the default
   # unless we have urlified_name that is different
   # than the default
@@ -884,7 +883,6 @@ class ApplicationController < ActionController::Base
     url + append_operator + options
   end
 
-
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
 
@@ -906,7 +904,7 @@ class ApplicationController < ActionController::Base
   def current_user_is?(at_least_setting)
     begin
       # everyone can see, just return true
-      return true if at_least_setting == 'all users'
+      return true if at_least_setting == 'all users' || at_least_setting.blank?
 
       # all other settings, you must be at least logged in
       return false unless logged_in?
