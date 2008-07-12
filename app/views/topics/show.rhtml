@@ -28,6 +28,10 @@
             <%= related_items_links(:source_item => @topic,
             :related_class => 'StillImage') %>
             <% end -%>
+            <% # this finishs the list and div that is opened in related_item_links -%>
+            <%= render(:partial => "related_items_control_links",
+            :locals => { :relate_to_topic => @topic,
+            :related_class => 'StillImage' }) %>
           </div>
           <div class="two-col">
           <!-- <div id="detail-linked-midrow"> -->
@@ -35,15 +39,29 @@
             <%= related_items_links(:source_item => @topic,
             :related_class => 'Topic') %>
             <% end -%>
+            <% # this finishs the list and div that is opened in related_item_links -%>
+            <%= render(:partial => "related_items_control_links",
+            :locals => { :relate_to_topic => @topic,
+            :related_class => 'Topic' }) %>
+
             <% cache ({:related => 'audio'}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'AudioRecording') %>
             <% end -%>
+            <% # this finishs the list and div that is opened in related_item_links -%>
+            <%= render(:partial => "related_items_control_links",
+            :locals => { :relate_to_topic => @topic,
+            :related_class => 'AudioRecording' }) %>
+
             <% cache ({:related => 'video'}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'Video') %>
-
             <% end -%>
+            <% # this finishs the list and div that is opened in related_item_links -%>
+            <%= render(:partial => "related_items_control_links",
+            :locals => { :relate_to_topic => @topic,
+            :related_class => 'Video' }) %>
+
             <div class="cleaner-left">&nbsp;</div>
 
           </div>
@@ -54,10 +72,20 @@
             <%= related_items_links(:source_item => @topic,
             :related_class => 'Document') %>
             <% end -%>
+            <% # this finishs the list and div that is opened in related_item_links -%>
+            <%= render(:partial => "related_items_control_links",
+            :locals => { :relate_to_topic => @topic,
+            :related_class => 'Document' }) %>
+
             <% cache ({:related => 'web_links'}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'WebLink') %>
             <% end -%>
+            <% # this finishs the list and div that is opened in related_item_links -%>
+            <%= render(:partial => "related_items_control_links",
+            :locals => { :relate_to_topic => @topic,
+            :related_class => 'WebLink' }) %>
+
           </div>
           <%= render(:partial => "secondary_wrapper_end") %>
 <% end -%>

@@ -43,14 +43,5 @@
         <%= link_to_unlink_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%>
       </li>
       <% end %>
-      <% if @at_least_a_moderator %>
-        <li class="related-action"><%= link_to_restore_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%></li>
-      <% end %>
-      <% if @site_admin %>
-        <li class="related-action"><%= link_to_add_set_of_related_items(:phrase => 'Upload a zip file of related images',
-          :relate_to_topic => relate_to_topic,
-          :zoom_class => related_class) -%></li>
-      <% end %>
+      <% # /ul and /div finished in _related_items_control_links -%>
   <% end -%>
-  </ul>
-</div>

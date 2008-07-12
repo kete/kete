@@ -1,16 +1,16 @@
 <% if !pipe_list -%>
-  <% pretty_class_plural = zoom_class_plural_humanize(related_class) -%>
-  <div id="detail-linked-<%= zoom_class_controller(related_class) -%>">
-    <h4><%= "#{pretty_class_plural} (#{items.size})" -%></h4>
-<% else -%>
+<% pretty_class_plural = zoom_class_plural_humanize(related_class) -%>
+<div id="detail-linked-<%= zoom_class_controller(related_class) -%>">
+  <h4><%= "#{pretty_class_plural} (#{items.size})" -%></h4>
+  <% else -%>
   <div class="pipe-list">
-<% end -%>
+    <% end -%>
     <ul>
       <% if items.size > 0 -%>
-          <% sizes_count = 1 -%>
-          <% class_statement = String.new -%>
-          <% items[0..end_range].each do |related_item| -%>
-          <% class_statement = " class=\"first\"" if sizes_count ==1 -%>
+      <% sizes_count = 1 -%>
+      <% class_statement = String.new -%>
+      <% items[0..end_range].each do |related_item| -%>
+      <% class_statement = " class=\"first\"" if sizes_count ==1 -%>
       <li<%= class_statement -%>><%= link_to_item(related_item) -%></li>
       <% sizes_count += 1 -%>
       <% end -%>
@@ -23,15 +23,5 @@
       <% if items.size > 0 %>
       <li class="command"><%= link_to_unlink_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%></li>
       <% end %>
-      <% if @at_least_a_moderator %>
-      <li class="command"><%= link_to_restore_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%></li>
+      <% # /ul and /div finished in _related_items_control_links -%>
       <% end %>
-      <% if @site_admin && ::Import::VALID_ARCHIVE_CLASSES.include?(related_class)%>
-      <li class="related-action"><%= link_to_add_set_of_related_items(:phrase => "Upload a zip file of related #{pretty_class_plural}",
-        :relate_to_topic => relate_to_topic,
-        :zoom_class => related_class) -%></li>
-      <% end %>
-      <% end -%>
-    </ul>
-  </div>
-
