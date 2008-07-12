@@ -14,7 +14,7 @@ class IndexPageController < ApplicationController
         end
       end
 
-      if @current_basket.index_page_topic_is_entire_page
+      if !@current_basket.index_topic.nil? && @current_basket.index_page_topic_is_entire_page
         render :action => :topic_as_full_page
       else
         if @is_fully_cached == false
