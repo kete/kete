@@ -305,7 +305,7 @@ class Basket < ActiveRecord::Base
 
   def font_family_select_options
     select_options = String.new
-    [['Use site default', ''],
+    [['Use theme default', ''],
      ['Sans Serif (Arial, Helvetica, and the like)', 'sans-serif'],
      ['Serif (Times New Roman, etc.)', 'serif']].each do |option|
       label = option[0]
