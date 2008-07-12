@@ -84,6 +84,8 @@ module ApplicationHelper
   end
 
   def header_add_links
+    return unless current_user_can_see_add_links?
+
     html = '<li>'
 
     pre_text = String.new

@@ -111,7 +111,6 @@
           :urlified_name => @site_basket.urlified_name -%></li>
         <!-- Logout -->
         <% else %>
-        <% # TODO: currently a security risk -%>
         <li class="first"><%= link_to_unless_current current_user.user_name, :controller => 'account',
           :action => 'show',
           :urlified_name => @site_basket.urlified_name -%></li>
