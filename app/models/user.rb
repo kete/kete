@@ -232,9 +232,11 @@ class User < ActiveRecord::Base
     permissions = Hash.new
     roles.find_all_by_authorizable_type('Basket').each do |role|
       basket = role.authorizable
-      permissions[basket.urlified_name.to_sym] = { :id => basket.id,
-        :role_id => role.id,
-        :role_name => role.name }
+      if basket.is_a?(Basket)
+        permissions[basket.urlified_name.to_sym] = { :id => basket.id,
+          :role_id => role.id,
+          :role_name => role.name }
+      end
     end
     permissions
   end
