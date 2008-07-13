@@ -38,7 +38,7 @@ module SlideshowsHelper
     link_to text, slideshow.redirect_to_results_hash
   end
 
-  def link_to_stop_slideshow(text = "Stop slideshow")
+  def link_to_stop_slideshow(text = "Stop results slideshow")
     link_to text, :controller => "search", :action => 'clear_slideshow', :return_to => request.url
   end
 
