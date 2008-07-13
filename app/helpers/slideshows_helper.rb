@@ -43,9 +43,14 @@ module SlideshowsHelper
   end
 
   def show_slideshow_controls?(current_url = request.url)
+    # Walter McGinnis, 2008-08-12
+    # putting in check whether there is only one result
+    # navigable? checks if there is more than 0
+    # i think we want more than 1
     !session[:slideshow].nil? &&
       slideshow.navigable? &&
-      slideshow.in_set?(url_without_extras(current_url))
+      slideshow.in_set?(url_without_extras(current_url)) &&
+      !(slideshow.results.size < 2)
   end
 
   private

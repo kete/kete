@@ -110,6 +110,10 @@ class BasketsController < ApplicationController
 
       set_settings
 
+      # clear slideshow in session
+      # in case the user user changes how images should be ordered
+      session[:slideshow] = nil
+
       # @basket.name has changed
       if original_name != @basket.name
         # update zoom records for basket items

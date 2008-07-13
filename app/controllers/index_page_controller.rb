@@ -81,35 +81,98 @@ class IndexPageController < ApplicationController
   end
 
   def selected_image
+    # get next url from slideshow, if slideshow exists,
+    # or this url is the last url in results
+    # otherwise, create a new slide show based on basket settings
+
+    # reformat into a standard_url, for results comparison in slideshow
+    url_hash = { :controller => 'index_page', :action => 'selected_image' }
+    @current_url = url_for(url_hash.merge(:id => params[:id]))
+
+    if !session[:slideshow].blank? && !slideshow.in_set?(@current_url) && !slideshow.last_requested.blank?
+      @current_url = slideshow.after(slideshow.last_requested)
+    end
+
+    id_string = @current_url.split("/").last
+    if id_string =~ /([0-9]+)/
+      @current_id = $1
+    else
+      @current_id = nil
+    end
+
     @selected_still_image = nil
-    case @current_basket.index_page_image_as
-    when 'random'
-      if @current_basket != @site_basket
-        @selected_still_image = @current_basket.still_images.find(:first, :order => :random)
-      else
-        @selected_still_image = StillImage.find(:first, :order => :random)
+
+    if !session[:slideshow].blank? && slideshow.in_set?(@current_url)
+      @selected_still_image = still_image_from_slideshow
+    else
+      # put together results
+      # normally results are paged
+      # and when you hit the last result in a page
+      # the next page of results is built or something like that
+      # and they are derived by hitting search controller
+
+      limit = 20
+      find_args_hash = { :select => 'id, title, created_at',
+        :conditions => ['(private = :private OR private is null) AND (file_private = :file_private OR file_private is null)', {:private => false, :file_private => false}],
+        :limit => limit }
+
+      # we need public still images
+      case @current_basket.index_page_image_as
+      when 'random'
+        find_args_hash[:order] = :random
+      when 'latest'
+        find_args_hash[:order] = 'created_at desc'
       end
-    when 'latest'
+
       if @current_basket != @site_basket
-        @selected_still_image = @current_basket.still_images.find(:first, :order => 'created_at desc')
+        @still_image_ids = @current_basket.still_images.find(:all, find_args_hash)
       else
-        @selected_still_image = StillImage.find(:first, :order => 'created_at desc')
+        @still_image_ids = StillImage.find(:all, find_args_hash)
       end
+
+      session[:session] = nil
+      slideshow.results = @still_image_ids.collect { |id| url_for(url_hash.merge(:id => id)) }
+      slideshow.total = limit
+      slideshow.total_pages = 1
+      slideshow.current_page = 1
+      slideshow.number_per_page = limit
+
+      @current_id = @still_image_ids.first
+      @selected_still_image = StillImage.find(@current_id)
+      @current_url = url_for(url_hash.merge(:id => @current_id))
     end
 
-    if !@selected_still_image.nil?
-      @selected_image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @selected_still_image )
-    end
+    @selected_image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @selected_still_image ) if !@selected_still_image.nil?
 
+    @previous_url = slideshow.before(@current_url)
+    @next_url = slideshow.after(@current_url)
+
+    # keep track of where we are in the results
+    slideshow.last_requested = !slideshow.last?(@current_url) ? @current_url : nil
+
+    # get still image and image_file
     if request.xhr?
       render :partial =>'selected_image',
       :locals => { :selected_image_file => @selected_image_file,
+        :previous_url => @previous_url,
+        :next_url => @next_url,
         :selected_still_image => @selected_still_image }
     else
       if params[:action] == 'selected_image'
         redirect_to params.merge(:action => 'index')
       end
     end
+  end
+
+  def still_image_from_slideshow
+    still_image = nil
+    id = @current_id || params[:id]
+    if @current_basket != @site_basket
+      still_image = @current_basket.still_images.find(id)
+    else
+      still_image = StillImage.find(id)
+    end
+    still_image
   end
 
   def topic_as_full_page

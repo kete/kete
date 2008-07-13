@@ -7,32 +7,20 @@
                 :id => selected_still_image
    -%></p>
 
+<% unless previous_url.blank? && next_url.blank? -%>
 <p>Slideshow:
-
-<!-- these aren't implemented yet
-<%= link_to_remote ("Previous", :update => 'selected-image-display',
-                                :url => { :action => 'selected_image',
-                                          :show_previous => true },
-                                :href => url_for(:action => 'index',
-                                                 :show_previous => true)) -%>
-
-|
-<% if params[:pause].nil? or params[:pause] == false -%>
-        <%= link_to_remote ("Pause", :update => 'selected-image-display',
-                                     :url => { :action => 'selected_image',
-                                               :pause => true },
-                                     :href => url_for(:action => 'index',
-                                                      :pause => true)) -%>
-<% else -%>
-        <%= link_to_remote ("Play", :update => 'selected-image-display',
-                                    :url => { :action => 'selected_image',
-                                              :pause => false },
-                                    :href => url_for(:action => 'index',
-                                                     :pause => false)) -%>
 <% end -%>
 
-| -->
+<% unless previous_url.blank? -%>
+<%= link_to_remote ("&laquo; Previous", :update => 'selected-image-display',
+                                :url => previous_url,
+                                :href => url_for(:action => 'index'))
+-%>
+&nbsp;|
+<% end -%>
 
-<%= link_to_remote("Next", :update => 'selected-image-display',
-                           :url => { :action => 'selected_image' },
+<% unless next_url.blank? -%>
+<%= link_to_remote("Next &raquo;", :update => 'selected-image-display',
+                           :url => next_url,
                            :href => url_for(:action => 'index')) -%>
+<% end -%>

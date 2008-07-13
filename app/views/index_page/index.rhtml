@@ -124,6 +124,8 @@
        <div id="selected-image-display">
          <%= render :partial =>'selected_image',
             :locals => { :selected_image_file => @selected_image_file,
+            :previous_url => @previous_url,
+            :next_url => @next_url,
             :selected_still_image => @selected_still_image } %>
        </div>
        <%= periodically_call_remote :update => 'selected-image-display',
