@@ -89,7 +89,13 @@ class IndexPageController < ApplicationController
     url_hash = { :controller => 'index_page', :action => 'selected_image' }
     @current_url = url_for(url_hash.merge(:id => params[:id]))
 
-    if !session[:slideshow].blank? && !slideshow.in_set?(@current_url) && !slideshow.last_requested.blank?
+    # hash keys have to be strings
+    # so as not to trip up later comparisons
+    slideshow_key = { "basket" => @current_basket.id,
+      "order" => @current_basket.index_page_image_as,
+      "zoom_class" => 'StillImage' }
+
+    if !session[:slideshow].blank? && slideshow.key == slideshow_key && !slideshow.in_set?(@current_url) && !slideshow.last_requested.blank?
       @current_url = slideshow.after(slideshow.last_requested)
     end
 
@@ -102,7 +108,7 @@ class IndexPageController < ApplicationController
 
     @selected_still_image = nil
 
-    if !session[:slideshow].blank? && slideshow.in_set?(@current_url)
+    if !session[:slideshow].blank? && slideshow.in_set?(@current_url) && slideshow.key == slideshow_key
       @selected_still_image = still_image_from_slideshow
     else
       # put together results
@@ -130,25 +136,33 @@ class IndexPageController < ApplicationController
         @still_image_ids = StillImage.find(:all, find_args_hash)
       end
 
-      session[:session] = nil
-      slideshow.results = @still_image_ids.collect { |id| url_for(url_hash.merge(:id => id)) }
-      slideshow.total = limit
-      slideshow.total_pages = 1
-      slideshow.current_page = 1
-      slideshow.number_per_page = limit
-
-      @current_id = @still_image_ids.first
-      @selected_still_image = StillImage.find(@current_id)
-      @current_url = url_for(url_hash.merge(:id => @current_id))
+      session[:slideshow] = nil
+      if !@still_image_ids.blank?
+        total_images = @still_image_ids.size
+        slideshow.key = slideshow_key
+        slideshow.results = @still_image_ids.collect { |id| url_for(url_hash.merge(:id => id)) }
+        slideshow.total = total_images
+        slideshow.total_pages = 1
+        slideshow.current_page = 1
+        slideshow.number_per_page = total_images
+        @current_id = @still_image_ids.first
+        @selected_still_image = StillImage.find(@current_id)
+        @current_url = url_for(url_hash.merge(:id => @current_id))
+      end
     end
 
     @selected_image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @selected_still_image ) if !@selected_still_image.nil?
 
-    @previous_url = slideshow.before(@current_url)
-    @next_url = slideshow.after(@current_url)
+    if !session[:slideshow].blank? && !slideshow.results.nil?
+      @previous_url = slideshow.in_set?(@current_url) ? slideshow.before(@current_url) : nil
+      @next_url = slideshow.in_set?(@current_url) ? slideshow.after(@current_url) : nil
 
-    # keep track of where we are in the results
-    slideshow.last_requested = !slideshow.last?(@current_url) ? @current_url : nil
+      # keep track of where we are in the results
+      slideshow.last_requested = !slideshow.last?(@current_url) ? @current_url : nil
+    else
+      @previous_url = nil
+      @next_url = nil
+    end
 
     # get still image and image_file
     if request.xhr?

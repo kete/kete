@@ -47,7 +47,8 @@ module SlideshowsHelper
     # putting in check whether there is only one result
     # navigable? checks if there is more than 0
     # i think we want more than 1
-    !session[:slideshow].nil? &&
+    !session[:slideshow].blank? &&
+      !slideshow.results.blank? &&
       slideshow.navigable? &&
       slideshow.in_set?(url_without_extras(current_url)) &&
       !(slideshow.results.size < 2)

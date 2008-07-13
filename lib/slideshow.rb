@@ -12,6 +12,7 @@ class Slideshow
   end
 
   methods_to_set_up = [
+                       :key,
                        :results,
                        :last_requested,
                        :search_params,
