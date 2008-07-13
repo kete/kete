@@ -1,9 +1,9 @@
 module OAI::Provider::Response
-  
+
   class ListSets < Base
-    
+
     def to_xml
-      raise OAI::SetException.new unless provider.model.sets
+      raise OAI::SetException.new unless provider.model.sets && provider.model.sets.nil?
 
       response do |r|
         r.ListSets do
@@ -18,6 +18,6 @@ module OAI::Provider::Response
       end
     end
 
-  end  
+  end
 
 end
