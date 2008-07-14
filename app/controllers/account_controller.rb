@@ -40,6 +40,8 @@ class AccountController < ApplicationController
       session[:has_access_on_baskets] = self.current_user.get_basket_permissions
       redirect_back_or_default(:controller => '/account', :action => 'index')
       flash[:notice] = "Logged in successfully"
+    else
+      flash[:notice] = "Your password or login do not match our records. Please try again."
     end
   end
 
