@@ -71,7 +71,7 @@ class ImportersController < ApplicationController
   def create
     @import = Import.new(params[:import])
 
-    if !params[:import_archive_file][:uploaded_data].blank? && !params[:related_topic].blank?
+    if !params[:import_archive_file].nil? && !params[:import_archive_file][:uploaded_data].blank? && !params[:related_topic].blank?
       # this a related set of items from archive file import
       # we decompress the files into a directory named after the timestamp
       # for example imports/20080509160835
@@ -91,7 +91,7 @@ class ImportersController < ApplicationController
         :protocol => request.protocol,
         :request_uri => request.request_uri }
 
-      unless params[:import_archive_file][:uploaded_data].blank?
+      unless params[:import_archive_file].nil? || params[:import_archive_file][:uploaded_data].blank?
         @import.reload
         @import_archive_file = ImportArchiveFile.new(params[:import_archive_file].merge(:import_id => @import.id))
         # mkdir the target directory
