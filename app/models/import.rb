@@ -7,7 +7,7 @@ class Import < ActiveRecord::Base
   # user is the person that added as the creator of items imported
   belongs_to :user
 
-  has_one :import_archive_file
+  has_one :import_archive_file, :dependent => :destroy
 
   acts_as_licensed
 
