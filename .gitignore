@@ -1,2 +1,11 @@
 .DS_Store
 *.sqlite3*
+config/database.yml
+config/backgroundrb.yml
+db/schema.rb
+public/blank.html
+public/images/active_scaffold/DO_NOT_EDIT
+public/javascripts/cache/
+public/stylesheets/active_scaffold/DO_NOT_EDIT
+public/stylesheets/cache/
+zebradb/conf/kete-zebra-servers.xml
