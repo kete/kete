@@ -64,6 +64,7 @@ module OaiDcHelpers
         commented_on_item = item.commentable
         uri_attrs = {
           :controller => zoom_class_controller(commented_on_item.class.name),
+          :action => 'show',
           :id => commented_on_item,
           :urlified_name => commented_on_item.basket.urlified_name,
           :anchor => "comment-#{item.id}",
