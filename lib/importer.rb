@@ -690,6 +690,11 @@ module Importer
 
       params[zoom_class_for_params][:tag_list] = tag_list_array.join(",")
 
+      # set the chosen privacy
+      private_setting = @import.private
+      logger.debug("private = " + private_setting.to_s)
+      params[zoom_class_for_params][:private] = private_setting
+      
       # add the uniform license chosen at import to this item
       params[zoom_class_for_params][:license_id] = @import.license.id if !@import.license.blank?
 

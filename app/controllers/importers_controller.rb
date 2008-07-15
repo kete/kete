@@ -36,6 +36,9 @@ class ImportersController < ApplicationController
                 :only => [:new, :new_related_set_from_archive_file])
   ### end TinyMCE WYSIWYG editor stuff
 
+  # Get the Privacy Controls helper
+  helper :privacy_controls
+  
   def  index
     list
   end

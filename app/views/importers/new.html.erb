@@ -138,6 +138,22 @@
       this is the Topic Type of new topic that is created.
     </div>
   </div>
+  
+  <% if show_privacy_controls? %>
+    <div class="form-element">
+      <label>Default Privacy Setting</label>
+      <ul class="option-list">
+        <li><%= radio_button 'import', :private, false, { :id => "import_private_false" }.merge((@current_basket.private_default?) ? Hash.new : { "checked" => "checked" }) %><label for="import_private_false" class="privacy-label">Public</label> (Can be viewed by everyone)</li>
+        <li><%= radio_button 'import', :private, true, { :id => "import_private_true" }.merge((@current_basket.private_default?) ? { "checked" => "checked" } : Hash.new) %><label for="import_private_true">Private</label> (Can be viewed only by basket members)</li>
+      </ul>
+    </div>
+    <div class="form-element">
+      <%= privacy_controls_description -%>
+    </div>
+  <% else %>
+    <%# Use the default %>
+    <%= hidden_field 'import', :private, :value => false -%>
+  <% end %>
 
   <div class="form-element">
     <label for="import_base_tags">What tags should
