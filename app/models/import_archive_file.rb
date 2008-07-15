@@ -5,9 +5,16 @@ class ImportArchiveFile < ActiveRecord::Base
   # import archive happen to be the same content types as theme archives.
   has_attachment :storage => :file_system,
   :content_type => ACCEPTABLE_THEME_CONTENT_TYPES, :processor => :none,
-  :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+  :max_size => MAXIMUM_UPLOADED_FILE_SIZE,
+  :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}"
 
   validates_as_attachment
+
+  # making directory structure for attachments handle larger number of attachments
+  def partitioned_path(*args)
+    # changed from %08d to %012d to be extra safe
+    ("%012d" % attachment_path_id).scan(/..../) + args
+  end
 
   include ArchiveUtilities
 
