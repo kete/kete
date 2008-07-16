@@ -106,7 +106,8 @@ namespace :kete do
     desc 'Checks for mimetypes an adds them if needed.'
     task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
                                      'kete:upgrade:add_aiff_to_audio_recordings',
-                                     'kete:upgrade:add_tar_to_documents']
+                                     'kete:upgrade:add_tar_to_documents',
+                                     'kete:upgrade:add_open_office_document_types']
 
     desc 'Adds application/octet-stream and application/word if needed'
     task :add_octet_stream_and_word_types => :environment do
@@ -136,6 +137,27 @@ namespace :kete do
       setting = SystemSetting.find_by_name('Audio Content Types')
       if setting.push('audio/x-aiff')
         p "added audio/x-aiff mime type to " + setting.name
+      end
+    end
+
+    desc 'Adds OpenOffice document types if needed'
+    task :add_open_office_document_types => :environment do
+      oo_types = ['application/vnd.oasis.opendocument.chart',
+                  'application/vnd.oasis.opendocument.database',
+                  'application/vnd.oasis.opendocument.formula',
+                  'application/vnd.oasis.opendocument.drawing',
+                  'application/vnd.oasis.opendocument.image',
+                  'application/vnd.oasis.opendocument.text-master',
+                  'application/vnd.oasis.opendocument.presentation',
+                  'application/vnd.oasis.opendocument.spreadsheet',
+                  'application/vnd.oasis.opendocument.text',
+                  'application/vnd.oasis.opendocument.text-web']
+
+      setting = SystemSetting.find_by_name('Document Content Types')
+      oo_types.each do |type|
+        if setting.push(type)
+          p "added #{type} mime type to " + setting.name
+        end
       end
     end
   end
