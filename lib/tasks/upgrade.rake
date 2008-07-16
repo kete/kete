@@ -107,7 +107,9 @@ namespace :kete do
     task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
                                      'kete:upgrade:add_aiff_to_audio_recordings',
                                      'kete:upgrade:add_tar_to_documents',
-                                     'kete:upgrade:add_open_office_document_types']
+                                     'kete:upgrade:add_open_office_document_types',
+                                     'kete:upgrade:add_bmp_to_images',
+                                     'kete:upgrade:add_eps_to_images']
 
     desc 'Adds application/octet-stream and application/word if needed'
     task :add_octet_stream_and_word_types => :environment do
@@ -137,6 +139,22 @@ namespace :kete do
       setting = SystemSetting.find_by_name('Audio Content Types')
       if setting.push('audio/x-aiff')
         p "added audio/x-aiff mime type to " + setting.name
+      end
+    end
+
+    desc 'Adds image/bmp if needed to images'
+    task :add_bmp_to_images => :environment do
+      setting = SystemSetting.find_by_name('Image Content Types')
+      if setting.push('image/bmp')
+        p "added image/bmp mime type to " + setting.name
+      end
+    end
+
+    desc 'Adds eps (application/postscript) if needed to images'
+    task :add_eps_to_images => :environment do
+      setting = SystemSetting.find_by_name('Image Content Types')
+      if setting.push('application/postscript')
+        p "added eps (application/postscript) mime type to " + setting.name
       end
     end
 
