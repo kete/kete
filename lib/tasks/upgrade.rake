@@ -13,8 +13,20 @@ namespace :kete do
                     'kete:upgrade:change_zebra_password',
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types',
-                    'zebra:load_initial_records']
+                    'zebra:load_initial_records',
+                    'kete:upgrade:update_existing_comments_commentable_private']
   namespace :upgrade do
+    desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
+    task :update_existing_comments_commentable_private => :environment do
+      comment_count = 0
+      Comment.find(:all, :conditions => "commentable_private is null").each do |comment|
+        comment.commentable_private = false if comment.commentable_private.blank?
+        comment.save!
+        comment_count += 1
+      end
+      p "updated " + comment_count.to_s + " existing comments that didn't have privacy set."
+    end
+
     desc 'Add the new system settings that are missing from our system.'
     task :add_new_system_settings => :environment do
       system_settings_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/system_settings.yml")

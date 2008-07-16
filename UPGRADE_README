@@ -12,6 +12,8 @@ IMPORTANT NOTE: For any steps where you run, "rake db:migrate", it is a good ide
 
 GENERAL NOTE: if you are upgrading your production Kete instance rather than development, you'll add "RAILS_ENV=production" to all rake tasks.
 
+ANOTHER GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.  However, if you updated your code via a Capistrano deploy, this is probably not necessary.
+
 == Trunk r1304 - Removal of foreign key constraint causing topic + related item deletion failure.
 
 1.      Upgrade your code base
