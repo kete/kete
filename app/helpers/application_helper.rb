@@ -507,7 +507,7 @@ module ApplicationHelper
     items_to_rebuild = [ "#{item.class.name}-#{item.id}" ]
 
     # grab all zoom_classes for topics
-    # everything else is just related topics
+    # everything else is just related topics and comments
     if item.class.name == 'Topic'
       ZOOM_CLASSES.each do |zoom_class|
         if zoom_class == 'Topic'
@@ -523,6 +523,9 @@ module ApplicationHelper
     else
       item.topics.each do |related_item|
         items_to_rebuild << "Topic-#{related_item.id}"
+      end
+      item.comments.each do |related_item|
+        items_to_rebuild << "Comment-#{related_item.id}"
       end
     end
     return items_to_rebuild.join(",")
