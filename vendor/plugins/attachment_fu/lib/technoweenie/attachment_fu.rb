@@ -300,7 +300,7 @@ module Technoweenie # :nodoc:
         end
         logger.debug("Original Mimetype: #{self.content_type}")
         recheckable_content_types = ['application/octet-stream', 'application/x-download']
-        if recheckable_content_types.include?(self.content_type)
+        if self.content_type.blank? || recheckable_content_types.include?(self.content_type)
           logger.debug("Rechecking mime type using #{self.temp_path}")
           self.content_type = File.mime_type?(File.open(self.temp_path)).split(';').first
           logger.debug("New mimetype: #{self.content_type}")
