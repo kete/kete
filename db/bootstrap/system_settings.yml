@@ -240,7 +240,7 @@ system_settings_027:
 
     Note, this only takes effect from this point forward.  No existing image files will be changed.
   id: "27"
-  value: "['image/tiff', 'image/bmp', 'application/postscript', :image]"
+  value: "['image/tiff', 'image/bmp', 'image/x-ms-bmp', 'image/quicktime', 'image/x-quicktime', 'application/postscript', :image]"
   section: Images
 system_settings_028:
   name: Maximum Uploaded File Size
@@ -259,7 +259,7 @@ system_settings_029:
 
     Note, this only takes effect from this point forward.  No existing document files will be changed.
   id: "29"
-  value: "['application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'text/html', 'text/plain', 'text/rtf', 'text/css', 'application/octet-stream', 'application/x-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web']"
+  value: "['text/html', 'text/plain', 'text/rtf', 'text/css', 'application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-tar', 'application/x-compressed-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web']"
   section: Documents
 system_settings_030:
   name: Audio Content Types
@@ -270,7 +270,7 @@ system_settings_030:
 
     Note, this only takes effect from this point forward.  No existing audio files will be changed.
   id: "30"
-  value: "['audio/mpeg', 'audio/x-mpegurl', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'application/ogg', 'application/octet-stream', 'audio/x-aiff']"
+  value: "['audio/mpeg', 'audio/mpg', 'audio/x-mpeg', 'audio/x-mpegurl', 'audio/wav', 'audio/x-wav', 'audio/x-ms-wma', 'audio/x-ms-waxaudio', 'application/ogg', 'audio/x-vorbis+ogg', 'audio/x-aiff']"
   section: Audio
 system_settings_031:
   name: Video Content Types
@@ -281,7 +281,7 @@ system_settings_031:
 
     Note, this only takes effect from this point forward.  No existing video files will be changed.
   id: "31"
-  value: "['application/x-shockwave-flash', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/avi', 'video/x-quicktime', 'application/x-director', 'image/mov', 'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx', 'application/x-dvi', 'application/octet-stream']"
+  value: "['application/x-shockwave-flash', 'application/flash-video', 'application/x-flash-video', 'video/x-flv', 'video/mp4', 'video/x-m4v', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/avi', 'video/x-quicktime', 'application/x-director', 'image/mov', 'application/asx', 'video/x-ms-asf-plugin', 'application/x-mplayer2', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx', 'application/x-dvi']"
   section: Video
 system_settings_032:
   name: Setup Sections
