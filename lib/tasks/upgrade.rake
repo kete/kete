@@ -110,7 +110,6 @@ namespace :kete do
                                      'kete:upgrade:add_open_office_document_types',
                                      'kete:upgrade:add_bmp_to_images',
                                      'kete:upgrade:add_eps_to_images',
-                                     'kete:upgrade:remove_octet_stream',
                                      'kete:upgrade:add_file_mime_type_variants']
 
     desc 'Adds application/octet-stream and application/word if needed'
@@ -177,16 +176,6 @@ namespace :kete do
       oo_types.each do |type|
         if setting.push(type)
           p "added #{type} mime type to " + setting.name
-        end
-      end
-    end
-    
-    desc 'Removed the Octet Stream mime types (can be anything)'
-    task :remove_octet_stream => :environment do
-      ['Document Content Types', 'Video Content Types', 'Audio Content Types'].each do |setting_name|
-        setting = SystemSetting.find_by_name(setting_name)
-        if setting.delete('application/octet-stream')
-          p "deleted octet stream mime type from " + setting_name
         end
       end
     end
