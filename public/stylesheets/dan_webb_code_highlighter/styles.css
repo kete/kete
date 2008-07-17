@@ -35,6 +35,10 @@ code {
     color : navy;
 }
 
+.ruby .constants, .ruby .symbol { color: #0088ff; }
+
+.ruby .instance { color: #BD48B3; }
+
 .css .comment {
     color : gray;
 }
