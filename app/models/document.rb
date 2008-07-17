@@ -46,6 +46,9 @@ class Document < ActiveRecord::Base
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|
       enum = attachment_options[attr_name]
+      if attr_name.to_s == 'content_type' && !enum.blank?
+        logger.debug("what is received #{attr_name}: " + send(attr_name).inspect)
+      end
       errors.add attr_name, 'is not acceptable. It should be a .pdf, .doc, or other document file.' unless enum.nil? || enum.include?(send(attr_name))
     end
   end
