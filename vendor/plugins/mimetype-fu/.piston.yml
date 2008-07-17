@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 520c98a1f73e9dc8c77b45950f2cf71171fc9234
+  branch: HEAD
+repository_url: git://github.com/mattetti/mimetype-fu.git
+lock: 
+repository_class: Piston::Git::Repository
