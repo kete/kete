@@ -298,6 +298,10 @@ module Technoweenie # :nodoc:
         else
           self.temp_path = file_data
         end
+        # Kieran Pilkington, 2008-07-17
+        # MIMI types can somethings be completly different from what they are
+        # (example x-download for a zip file that was download from the web)
+        # so we run a check using the mimetype_fu plugin to get the real mimetype
         logger.debug("Original Mimetype: #{self.content_type}")
         recheckable_content_types = ['application/octet-stream', 'application/x-download']
         if self.content_type.blank? || recheckable_content_types.include?(self.content_type)
