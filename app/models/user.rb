@@ -84,7 +84,7 @@ class User < ActiveRecord::Base
   validates_confirmation_of :security_code,              :if => :new_record?, :message => ': Your security question answer failed - please try again.'
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
-  validates_uniqueness_of   :login, :email, :case_sensitive => false
+  validates_uniqueness_of   :login, :case_sensitive => false
 
   before_save :encrypt_password
 
