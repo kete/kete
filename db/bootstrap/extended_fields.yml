@@ -45,7 +45,7 @@ extended_fields_007:
   xml_element_name: dc:subject
   updated_at: <%= Time.now.to_s :db %>
   id: "7"
-  example: Your screen name can contain spaces. E.g if your login was \"jsmith\" your screen name could be \"John Smith\"
+  example: Your screen name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith"
   description: This is the screen name that other users will know you by. It could be your real name, especially if you want people to be able to find you, but more usually it would be a nickname.
   label: User Name
   created_at: <%= Time.now.to_s :db %>
