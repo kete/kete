@@ -240,7 +240,6 @@ class ImportersController < ApplicationController
   end
 
   def stop
-    # TODO: this doesn't quite do the job, not sure why
     @worker_type = params[:worker_type].to_sym
     MiddleMan.worker(@worker_type, @worker_type.to_s).delete
 

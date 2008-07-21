@@ -26,7 +26,7 @@
 
 <div id="exit">
 <% # stop action broken because of bug in backgroundrb? %>
-<% # button_to 'Stop Import Early', :action => 'stop', :id => @import, :worker_type => @worker_type %>
+<%= button_to 'Stop Import Early', :action => 'stop', :id => @import, :worker_type => @worker_type %>
 </div>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>
