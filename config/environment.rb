@@ -39,11 +39,21 @@ Rails::Initializer.run do |config|
 
   # Specify gems that this application depends on.
   # They can then be installed with "rake gems:install" on new installations.
+  
   # Walter McGinnis, 2008-07-02
   # we currently use a hacked version of oai gem
   # and place it under vendor/gems
   # specifying it here allows this to work
   config.gem "oai"
+  
+  # Kieran, 2008-07-22
+  # specify the specific versions we need to run Kete
+  # (currently causes problems, will investigate)
+  # lib-xml 0.8.0 causes errors in acts_as_zoom
+  #config.gem "libxml-ruby", :version => '< 0.8.0'
+  # packet 0.1.8 causes imports to fail silently
+  #config.gem "packet", :version => '0.1.7'
+  
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3"
 
@@ -69,7 +79,7 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random,
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_kete_new_21_session',
+    :session_key => '_kete_session',
     :secret      => 'a05fb67d1237cf87cf04a30a7a141d3c1377ae6db1985f15fefa745684790c320e672bda6d9201eea2013f3936bdf57f834006ab4df473c4590cb79944e12a52'
   }
 
