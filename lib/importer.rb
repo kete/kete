@@ -66,10 +66,6 @@ module Importer
       cache[:results] = @results
     end
 
-    def stop_work(args = nil)
-      exit
-    end
-
     # override this in your importer worker
     # if you need something more complex
     # this is what we call from the importers controller
@@ -414,6 +410,13 @@ module Importer
       @import.update_attributes(:records_processed => @results[:records_processed])
     end
 
+    def stop_worker
+      # Kieran Pilkington - 2008-07-22
+      # TODO: Not currently working, find out why
+      # @worker_type = "#{@import.xml_type}_importer_worker".to_sym
+      # MiddleMan.worker(@worker_type, @worker_type.to_s).delete
+    end
+
     def importer_update_processing_vars_at_end
       if @successful
         @results[:notice] = 'Import was successful.'
@@ -429,6 +432,7 @@ module Importer
         @import.update_attributes(:status => 'failed')
       end
       cache[:results] = @results
+      stop_worker
     end
 
     def importer_update_processing_vars_if_rescue
@@ -436,6 +440,7 @@ module Importer
       @results[:done_with_do_work] = true
       cache[:results] = @results
       @import.update_attributes(:status => 'failed')
+      stop_worker
     end
 
     # override in your importer worker to customize
