@@ -1,0 +1,8 @@
+--- 
+:backgroundrb: 
+  :port: 11006
+  :ip: 0.0.0.0
+  :environment: production
+  :result_storage: memcache
+  
+:memcache: "0.0.0.0:11211"

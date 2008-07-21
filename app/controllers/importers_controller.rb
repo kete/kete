@@ -119,17 +119,23 @@ class ImportersController < ApplicationController
 
       worker_name_with_job_key = @worker_type.to_s + '_importer'
       worker_name_with_job_key = worker_name_with_job_key.to_sym
-
-      if !MiddleMan.query_all_workers.keys.include?(worker_name_with_job_key)
-        MiddleMan.new_worker(:worker => @worker_type, :job_key => :importer)
-        MiddleMan.ask_work( :worker => @worker_type,
-                            :job_key => :importer,
-                            :worker_method => :do_work,
-                            :data => {
-                              :zoom_class => @zoom_class,
-                              :import => @import.id,
-                              :params => params,
-                              :import_request => import_request } )
+      
+      workers_list = Array.new
+      MiddleMan.all_worker_info.each do |server|
+        if !server[1].nil?
+          server[1].each { |workers| workers_list << workers[:worker] }
+        end
+      end
+      is_already_operating = workers_list.include?(@worker_type) ? true : false
+      
+      if !is_already_operating
+        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s, :job_key => @worker_type.to_s )
+        MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :zoom_class => @zoom_class,
+                                                                                   :import => @import.id,
+                                                                                   :params => params,
+                                                                                   :import_request => import_request },
+                                                                         :job_key => @worker_type.to_s )
+        
         # fixing failure due to unnecessary loading of tiny_mce
         @do_not_use_tiny_mce = true
       else
@@ -154,8 +160,10 @@ class ImportersController < ApplicationController
   end
 
   def get_progress
+    @worker_type = params[:worker_type].to_sym
+    status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+    
     begin
-      status = MiddleMan.ask_status(:worker => params[:worker_type].to_sym, :job_key => :importer)
       if !status.blank?
         if request.xhr?
           records_processed = status[:records_processed]
@@ -172,7 +180,7 @@ class ImportersController < ApplicationController
 
               # delete worker and redirect to results in basket
               # this will fail if the work has already been deleted once
-              MiddleMan.delete_worker(:worker => params[:worker_type].to_sym, :job_key => :importer)
+              MiddleMan.worker(@worker_type, @worker_type.to_s).delete
 
               if !status[:error].blank?
                 done_message = "There was a problem with the import: #{status[:error]}<p><b>The import has been stopped</b></p>"
@@ -233,9 +241,8 @@ class ImportersController < ApplicationController
 
   def stop
     # TODO: this doesn't quite do the job, not sure why
-    @worker_type = params[:worker_type]
-    @worker_type = @worker_type.to_sym
-    MiddleMan.delete_worker(:worker => @worker_type , :job_key => :importer)
+    @worker_type = params[:worker_type].to_sym
+    MiddleMan.worker(@worker_type, @worker_type.to_s).delete
 
     Import.find(params[:id]).update_attributes(:status => 'stopped')
 

@@ -63,7 +63,7 @@ module Importer
         :done_with_do_work => false,
         :records_processed => 0 }
 
-      register_status(@results)
+      cache[:results] = @results
     end
 
     def stop_work(args = nil)
@@ -107,6 +107,7 @@ module Importer
         # work through records and add topics for each
         # if they don't already exist
         @results[:records_processed] = 0
+        cache[:results] = @results
         @import_records_xml.elements.each(@xml_path_to_record) do |record|
           importer_process(record, params)
         end
@@ -409,7 +410,7 @@ module Importer
     def importer_update_records_processed_vars
       @successful = true
       @results[:records_processed] += 1
-      register_status(@results)
+      cache[:results] = @results
       @import.update_attributes(:records_processed => @results[:records_processed])
     end
 
@@ -420,20 +421,20 @@ module Importer
         @import.update_attributes(:status => 'complete')
       else
         @results[:notice] = 'Import failed. '
-        if  !@results[:error].nil?
+        if !@results[:error].nil?
           logger.info("import error: #{@results[:error]}")
           @results[:notice] += @results[:error]
         end
         @results[:done_with_do_work] = true
         @import.update_attributes(:status => 'failed')
       end
-      register_status(@results)
+      cache[:results] = @results
     end
 
     def importer_update_processing_vars_if_rescue
       @results[:error], @successful  = $!.to_s, false
       @results[:done_with_do_work] = true
-      register_status(@results)
+      cache[:results] = @results
       @import.update_attributes(:status => 'failed')
     end
 
