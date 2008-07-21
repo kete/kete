@@ -38,7 +38,8 @@ else
   SITE_URL = "kete.net.nz"
   NOTIFIER_EMAIL = "kete@library.org.nz"
   DEFAULT_BASKETS_IDS = [1]
-
+  NO_PUBLIC_VERSION_TITLE = String.new
+  BLANK_TITLE = String.new
 end
 
 # Walter McGinnis (walter@katipo.co.nz), 2006-09-26

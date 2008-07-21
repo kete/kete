@@ -11,14 +11,19 @@ module FriendlyUrls
     # rails strips the non integers after the id
     # has to be in a model
     def format_for_friendly_urls
+      skip_titles = [NO_PUBLIC_VERSION_TITLE, BLANK_TITLE]
+
       string = String.new
+
       if !self.attributes.include?('title')
         string = self.name
       else
         string = self.title
       end
 
-      "#{id}" + format_friendly_for(string)
+      id_for_url = id.to_s
+      id_for_url += format_friendly_for(string) unless skip_titles.include?(string)
+      id_for_url
     end
   end
 end
