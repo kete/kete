@@ -18,6 +18,7 @@ class Comment < ActiveRecord::Base
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
   
+  include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload
   
   validates_presence_of :description
