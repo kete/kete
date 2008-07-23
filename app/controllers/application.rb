@@ -633,17 +633,30 @@ class ApplicationController < ActionController::Base
 
   def rescue_404
     @title = "404 Not Found"
+    render :template => "errors/error404", :layout => "application", :status => "404"
+  end
+  
+  def rescue_500(template)
+    @title = "500 Internal Server Error"
+    render :template => "errors/#{template}", :layout => "application", :status => "500"
+  end
+
+  def rescue_action_in_public(exception)
     @theme = 'default'
     @theme_font_family =  'sans-serif'
     @header_image = nil
     @current_basket = @site_basket
-    render :template => "shared/error404", :layout => "application", :status => "404"
-  end
-
-  def rescue_action_in_public(exception)
+    
+    #logger.info(exception)
     case exception
       when ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid then
         rescue_404
+      when BackgrounDRb::NoServerAvailable then
+        rescue_500('backgroundrb_connection_failed')
+      else
+        if exception.to_s.match(/Connect\ failed/)
+          rescue_500('zebra_connection_failed')
+        end
     end
   end
 
