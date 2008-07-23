@@ -160,6 +160,3 @@ module ActionController
       end
   end
 end
-
-
-require File.join(RAILS_ROOT, '/lib/error_handling') if defined?(RAILS_ROOT)

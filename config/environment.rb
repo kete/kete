@@ -108,6 +108,8 @@ Rails::Initializer.run do |config|
   config.plugins = [ :random_finders, :all ]
 end
 
+require File.join(File.dirname(__FILE__), '/../lib/error_handling')
+
 # Include your application configuration below
 
 # Walter McGinnis, 2007-12-03
