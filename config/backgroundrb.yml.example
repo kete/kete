@@ -1,8 +1,8 @@
 --- 
 :backgroundrb: 
   :port: 11006
-  :ip: 0.0.0.0
+  :ip: 127.0.0.1
   :environment: production
   :result_storage: memcache
   
-:memcache: "0.0.0.0:11211"
+:memcache: "127.0.0.1:11211"

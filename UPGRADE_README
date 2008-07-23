@@ -17,13 +17,16 @@ ANOTHER GENERAL NOTE: if you are running in production mode, you may also want t
 == 2008/07/18 - Upgrading backgroundrb and packet gem
 
 1.      Upgrade your code base
-2.      Down/Upgrade to packet 0.1.7 (the next version is buggy)
-          $ gem uninstall packet --version 0.1.8
+2.      Down/Upgrade to packet 0.1.7 (the next version is buggy). You can skip this step if you already have packet 0.1.7 installed.
+          $ gem uninstall packet
           $ gem install packet --version 0.1.7
-3.      Edit backgroundrb.yml and point the :memcached: section to the appropriate IP of the memcached server
-          (default should usually suffice)
+3.      Edit config/backgroundrb.yml and update it to match the structure of config/backgroundrb.yml.example. Point the :memcached: section to the appropriate IP of the memcached server (default should usually suffice).
+        
 4.      Run the database migration 'rake db:migrate'
 5.      Restart your Kete instance (mongrels)
+6.      Restart your Backgroundrb instance: 
+          ./script/backgroundrb stop
+          ./script/backgroundrb start
 
 == Trunk r1304 - Removal of foreign key constraint causing topic + related item deletion failure.
 
