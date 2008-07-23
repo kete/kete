@@ -411,10 +411,7 @@ module Importer
     end
 
     def stop_worker
-      # Kieran Pilkington - 2008-07-22
-      # TODO: Not currently working, find out why
-      # @worker_type = "#{@import.xml_type}_importer_worker".to_sym
-      # MiddleMan.worker(@worker_type, @worker_type.to_s).delete
+      exit
     end
 
     def importer_update_processing_vars_at_end

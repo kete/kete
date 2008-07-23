@@ -117,9 +117,6 @@ class ImportersController < ApplicationController
         @zoom_class = 'Topic'
       end
 
-      worker_name_with_job_key = @worker_type.to_s + '_importer'
-      worker_name_with_job_key = worker_name_with_job_key.to_sym
-      
       workers_list = Array.new
       MiddleMan.all_worker_info.each do |server|
         if !server[1].nil?
@@ -127,14 +124,13 @@ class ImportersController < ApplicationController
         end
       end
       is_already_operating = workers_list.include?(@worker_type) ? true : false
-      
+
       if !is_already_operating
-        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s, :job_key => @worker_type.to_s )
+        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
         MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :zoom_class => @zoom_class,
                                                                                    :import => @import.id,
                                                                                    :params => params,
-                                                                                   :import_request => import_request },
-                                                                         :job_key => @worker_type.to_s )
+                                                                                   :import_request => import_request } )
         
         # fixing failure due to unnecessary loading of tiny_mce
         @do_not_use_tiny_mce = true
@@ -179,10 +175,6 @@ class ImportersController < ApplicationController
 
             if status[:done_with_do_work] == true or !status[:error].blank?
               done_message = "All records processed."
-
-              # delete worker and redirect to results in basket
-              # this will fail if the work has already been deleted once
-              MiddleMan.worker(@worker_type, @worker_type.to_s).delete
 
               if !status[:error].blank?
                 done_message = "There was a problem with the import: #{status[:error]}<p><b>The import has been stopped</b></p>"
