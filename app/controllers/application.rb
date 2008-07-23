@@ -631,9 +631,20 @@ class ApplicationController < ActionController::Base
     user.user_name
   end
 
-  # http://wiki.rubyonrails.com/rails/pages/HowtoConfigureTheErrorPageForYourRailsApp
+  def rescue_404
+    @title = "404 Not Found"
+    @theme = 'default'
+    @theme_font_family =  'sans-serif'
+    @header_image = nil
+    @current_basket = @site_basket
+    render :template => "shared/error404", :layout => "application", :status => "404"
+  end
+
   def rescue_action_in_public(exception)
-    render(:file => "#{RAILS_ROOT}/public/404.html", :layout => true)
+    case exception
+      when ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid then
+        rescue_404
+    end
   end
 
   def local_request?
