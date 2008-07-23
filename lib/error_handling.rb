@@ -1,6 +1,7 @@
 module ActionController
   class Dispatcher
     class << self
+
       def failsafe_response(fallback_output, status, originating_exception = nil)
         yield
       rescue Exception => exception
@@ -24,20 +25,35 @@ module ActionController
 
       private
 
-      def failsafe_memcached_offline_body(status)
-        error_path = "#{error_file_path}/memcached_offline.html"
-        if File.exist?(error_path)
-          File.read(error_path)
-        else
-          "<html>
-          <body>
-          <h1>#{status}</h1>
-          <h2>Memcached Error</h2>
-          <h3>MEMCACHED_ERROR</h3>
-          </body>
-          </html>"
+        def failsafe_response_body(status)
+          error_path = "#{error_file_path}/#{status.to_s[0...3]}.html"
+
+          if File.exist?(error_path)
+            File.read(error_path)
+          else
+            "<html>
+            <body>
+            <h1>#{status}</h1>
+            </body>
+            </html>"
+          end
         end
-      end
+
+        def failsafe_memcached_offline_body(status)
+          error_path = "#{error_file_path}/memcached_offline.html"
+          if File.exist?(error_path)
+            File.read(error_path)
+          else
+            "<html>
+            <body>
+            <h1>#{status}</h1>
+            <h2>Memcached Error</h2>
+            <h3>MEMCACHED_ERROR</h3>
+            </body>
+            </html>"
+          end
+        end
+
     end
   end
 end
