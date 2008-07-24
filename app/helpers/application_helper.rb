@@ -142,7 +142,7 @@ module ApplicationHelper
 
         basket_topic_count = 0
 
-        for topic in basket.topics.find(:all, :limit => limit).reject { |t| t.disputed_or_not_available? }
+        for topic in basket.topics.find(:all, :limit => limit, :order => order).reject { |t| t.disputed_or_not_available? }
           if topic != basket.index_topic
             html += li_with_correct_class(topic_count) + link_to_item(topic) + '</li>'
             basket_topic_count += 1
