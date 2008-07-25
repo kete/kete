@@ -54,7 +54,8 @@ class CommentsController < ApplicationController
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = zoom_class.find(params[:comment][:commentable_id])
-      expire_comments_caches_for(commented_item)
+      commented_privacy = @comment.commentable_private
+      expire_caches_after_comments(commented_item, commented_privacy)
 
       # although we shouldn't be using the related_topic aspect here
       # i.e. there is never going to be params[:related_topic_id]
@@ -82,7 +83,8 @@ class CommentsController < ApplicationController
 
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable
-      expire_comments_caches_for(commented_item)
+      commented_privacy = @comment.commentable_private
+      expire_caches_after_comments(commented_item, commented_privacy)
 
       prepare_and_save_to_zoom(@comment)
 
@@ -105,12 +107,13 @@ class CommentsController < ApplicationController
 
     # make sure that we wipe comments cache for thing we are commenting on
     commented_item = @comment.commentable
+    commented_privacy = @comment.commentable_private
 
     prepare_zoom(@comment)
     @successful = @comment.destroy
 
     if @successful
-      expire_comments_caches_for(commented_item)
+      expire_caches_after_comments(commented_item, commented_privacy)
       prepare_and_save_to_zoom(commented_item)
 
       flash[:notice] = 'Comment was successfully deleted.'

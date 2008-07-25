@@ -741,6 +741,7 @@ module ApplicationHelper
     theme_styles
   end
 
+  # DEPRECATED
   # Only cache if the item is public.
   def cache_if_public(item, name = {}, options = nil, &block)
     if item.respond_to?(:private) and item.private?
@@ -748,6 +749,13 @@ module ApplicationHelper
     else
       cache(name, options, &block)
     end
+  end
+
+  # Cache block with the privacy value
+  def cache_with_privacy(item, name = {}, options = nil, &block)
+    privacy_value = (item.respond_to?(:private) && item.private?) ? "private" : "public"
+    name.each { |key,value| name[key] = "#{value}_#{privacy_value}" }
+    cache(name, options, &block)
   end
 
   # Check if privacy controls should be displayed?

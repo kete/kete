@@ -6,13 +6,15 @@
 
 <%= render(:partial => "topics/content_wrapper_start") %>
 
-<% cache_if_public(@video, {:part => 'details'}) do -%>
+<% cache_with_privacy(@video, {:part => 'details_first'}) do -%>
    <h2><%= h(@video.title) %></h2>
 
    <p><%= @video.description %></p>
+<% end %>
    <% if show_attached_files_for?(@video) -%>
        <%= render(:partial => "details", :locals => { :item => @video }) %>
    <% end -%>
+<% cache_with_privacy(@video, {:part => 'details_second'}) do -%>
    <%= pending_review(@video) %>
    <div class="license"><%= @video.license_metadata %></div>
 <% end -%>
@@ -34,11 +36,7 @@
   </div><!-- /main-content-wrapper -->
   
   <div id="secondary-content-wrapper">
-    <% cache ({:part => "secondary_content_tags_#{@video.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @video }) %>
-    <% end -%>
-    <% cache ({:part => "secondary_content_extended_fields_#{@video.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @video }) %>
-    <% end -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

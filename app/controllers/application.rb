@@ -213,7 +213,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['details', 'contributions', 'edit', 'delete', 'zoom_reindex', 'flagging_links', 'comments-moderators', 'comments', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
+  SHOW_PARTS = ['zoom_reindex', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'comments_[privacy]', 'comments-moderators_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
 
   INDEX_PARTS = [ 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
 
@@ -285,7 +285,7 @@ class ApplicationController < ActionController::Base
     # images have an additional cache
     # and topics may also have a basket index page cached
     if controller == 'images'
-      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => 'caption' })
+      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => ('caption_'+(item.private? ? "private" : "public")) })
     elsif controller== 'topics'
       if !item.index_for_basket.nil?
         # slight overkill, but most parts
@@ -361,22 +361,33 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_contributions_caches_for(item)
-    expire_fragment_for_all_versions(item,
-                                     { :urlified_name => item.basket.urlified_name,
-                                       :controller => zoom_class_controller(item.class.name),
-                                       :action => 'show',
-                                       :id => item,
-                                       :part => 'contributions' })
+    # rather than find out if the contribution is for a public/private item
+    # just clear both the caches
+    ['contributions_public', 'contributions_private'].each do |part|
+      expire_fragment_for_all_versions(item,
+                                      { :urlified_name => item.basket.urlified_name,
+                                        :controller => zoom_class_controller(item.class.name),
+                                        :action => 'show',
+                                        :id => item,
+                                        :part => part })
+    end
   end
 
-  def expire_comments_caches_for(item)
-    ['comments-moderators', 'comments'].each do |comment_cache|
+  def expire_caches_after_comments(item, private_comment)
+    ['zoom_reindex', 'comments-moderators_[privacy]', 'comments_[privacy]'].each do |part|
+
+      if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
+        resulting_part = part.sub(/\[privacy\]/, (private_comment ? "private" : "public"))
+      else
+        resulting_part = part
+      end
+
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,
                                          :controller => zoom_class_controller(item.class.name),
                                          :action => 'show',
                                          :id => item,
-                                         :part => comment_cache } )
+                                         :part => resulting_part } )
     end
   end
 
@@ -384,16 +395,25 @@ class ApplicationController < ActionController::Base
   # TODO: put an if mem_cache ... use read_fragment({:part => part})
   # wrapped in this method
   def has_fragment?(name = {})
+    #logger.info("Looking for: '#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}'. Found? " + File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}").to_s)
     File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
   end
 
   # used by show actions to determine whether to load item
   def has_all_fragments?
+    #logger.info('Looking for all fragments')
+    
     if params[:controller] != 'index_page'
       SHOW_PARTS.each do |part|
-        return false unless has_fragment?({:part => part})
+        if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
+          resulting_part = part.sub(/\[privacy\]/, ((params[:private] == "true") ? "private" : "public"))
+        else
+          resulting_part = part
+        end
+        return false unless has_fragment?({:part => resulting_part})
       end
     end
+    #logger.info('Has all show fragments')
 
     case params[:controller]
     when 'index_page'
@@ -409,6 +429,7 @@ class ApplicationController < ActionController::Base
     else
       return false unless has_fragment?({:related => 'topics'})
     end
+    #logger.info('Has all related/index parts')
     return true
   end
 
@@ -705,6 +726,7 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_topic_for_show
+    logger.info(@is_fully_cached)
     if !@is_fully_cached or params[:format] == 'xml'
       if params[:id].nil?
         # this is for a basket homepage
@@ -725,12 +747,14 @@ class ApplicationController < ActionController::Base
       return
     else
       if !@is_fully_cached
-        if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+      
+        if !has_fragment?({:part => ('contributions' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
           @creator = @topic.creator
           @last_contributor = @topic.contributors.last || @creator
         end
 
-        if @topic.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
+        if @topic.private? or !has_fragment?({:part => ('comments' + ((params[:private] == "true") ? "_private" : "_public")) }) or 
+          !has_fragment?({:part => ('comments-moderators' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
           @comments = @topic.non_pending_comments
         end
       end

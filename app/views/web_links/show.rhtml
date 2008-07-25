@@ -4,20 +4,20 @@
 <% end -%>
 
 <%= render :partial => "topics/content_wrapper_start" %>
-      <% cache_if_public(@web_link, {:part => 'details'}) do -%>
+      <% cache_with_privacy(@web_link, {:part => 'details_first'}) do -%>
+      <% end %>
 
       <% if show_attached_files_for?(@web_link) -%>
-      <h2><%= link_to h(@web_link.title), url_for(@web_link.url) %></h2>
-      <%= render(:partial => "details", :locals => { :item => @web_link }) %>
+        <h2><%= link_to h(@web_link.title), url_for(@web_link.url) %></h2>
+        <%= render(:partial => "details", :locals => { :item => @web_link }) %>
       <% else -%>
-
-      <h2><%= h(@web_link.title) %></h2>
-
+        <h2><%= h(@web_link.title) %></h2>
       <% end -%>
 
-      <p><%= @web_link.description %></p>
-      <%= pending_review(@web_link) %>
-	<div class="license"><%= @web_link.license_metadata %></div>
+      <% cache_with_privacy(@web_link, {:part => 'details_second'}) do -%>
+        <p><%= @web_link.description %></p>
+        <%= pending_review(@web_link) %>
+        <div class="license"><%= @web_link.license_metadata %></div>
       <% end -%>
 <% if current_user_can_see_flagging? -%>
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @web_link }) %>
@@ -33,11 +33,7 @@
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
-    <% cache ({:part => "secondary_content_tags_#{@web_link.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @web_link }) %>
-    <% end -%>
-    <% cache ({:part => "secondary_content_extended_fields_#{@web_link.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @web_link }) %>
-    <% end -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

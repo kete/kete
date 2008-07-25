@@ -5,13 +5,15 @@
 <!-- begining of main content block -->
 
 <%= render(:partial => "topics/content_wrapper_start") %>
-    <% cache_if_public(@audio_recording, {:part => 'details'}) do -%>
+    <% cache_with_privacy(@audio_recording, {:part => 'details_first'}) do -%>
         <h2><%= h(@audio_recording.title) %></h2>
 
         <p><%= @audio_recording.description %></p>
+    <% end %>
         <% if show_attached_files_for?(@audio_recording)  -%>
           <%= render(:partial => "details", :locals => { :item => @audio_recording }) %>
       	<% end -%>
+    <% cache_with_privacy(@audio_recording, {:part => 'details_second'}) do -%>
       	<%= pending_review(@audio_recording) %>
       	<div class="license"><%= @audio_recording.license_metadata %></div>
     <% end -%>
@@ -30,11 +32,7 @@
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
-    <% cache ({:part => "secondary_content_tags_#{@audio_recording.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @audio_recording }) %>
-    <% end -%>
-    <% cache ({:part => "secondary_content_extended_fields_#{@audio_recording.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @audio_recording }) %>
-    <% end -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->
