@@ -1,3 +1,6 @@
+# Kieran Pilkington, 2008/07/28
+# To fix an escape build up, we overwrite this method and replace it with
+# an indentical one with the exception of a call to CGI::unescapeHTML()
 module HTML
   class WhiteListSanitizer < Sanitizer
     protected

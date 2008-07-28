@@ -109,6 +109,9 @@ Rails::Initializer.run do |config|
   config.plugins = [ :random_finders, :all ]
 end
 
+# Kieran Pilkington, 2008/07/28
+# We overwrite one of the Dispatch methods to give us the ability to make customized error pages
+# for errors that occur before controllers are called (like when memcache is not online)
 require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 
 # Include your application configuration below
