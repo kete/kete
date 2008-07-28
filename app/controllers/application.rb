@@ -271,7 +271,7 @@ class ApplicationController < ActionController::Base
       # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where
       # the current item is private.
 
-      if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
+      if part.include?('_[privacy]')
         resulting_part = part.sub(/\[privacy\]/, (item.private? ? "private" : "public"))
       else
         resulting_part = part
@@ -376,7 +376,7 @@ class ApplicationController < ActionController::Base
   def expire_caches_after_comments(item, private_comment)
     ['zoom_reindex', 'comments-moderators_[privacy]', 'comments_[privacy]'].each do |part|
 
-      if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
+      if part.include?('_[privacy]')
         resulting_part = part.sub(/\[privacy\]/, (private_comment ? "private" : "public"))
       else
         resulting_part = part
@@ -405,7 +405,7 @@ class ApplicationController < ActionController::Base
     
     if params[:controller] != 'index_page'
       SHOW_PARTS.each do |part|
-        if part =~ /^[a-zA-Z\-_]+_\[privacy\]$/
+        if part.include?('_[privacy]')
           resulting_part = part.sub(/\[privacy\]/, ((params[:private] == "true") ? "private" : "public"))
         else
           resulting_part = part
