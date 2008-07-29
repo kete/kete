@@ -18,7 +18,7 @@ ActionController::Routing::Routes.draw do |map|
   # James Stradling <james@katipo.co.nz>, 2008-04-15
   # Map private files to the PrivateFilesController
   # E.g. /documents/0000/0000/0011/Bio.txt
-  map.private_file '/:type/:a/:b/:c/:filename.:format', :controller => "private_files", :action => 'show'
+  map.private_file '/:type/:a/:b/:c/:filename.*formats', :controller => "private_files", :action => 'show'
 
   # Walter McGinnis, 2007-01-08
   # TODO: DRY this up
