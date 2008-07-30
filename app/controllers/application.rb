@@ -19,6 +19,7 @@ class ApplicationController < ActionController::Base
   # only permit site members to add/delete things
   before_filter :login_required, :only => [ :new, :pick_topic_type, :create,
                                             :edit, :update, :destroy,
+                                            :appearance, :homepage_options,
                                             :convert,
                                             :make_theme,
                                             :find_related,
@@ -402,7 +403,7 @@ class ApplicationController < ActionController::Base
   # used by show actions to determine whether to load item
   def has_all_fragments?
     #logger.info('Looking for all fragments')
-    
+
     if params[:controller] != 'index_page'
       SHOW_PARTS.each do |part|
         if part.include?('_[privacy]')
@@ -656,7 +657,7 @@ class ApplicationController < ActionController::Base
     @title = "404 Not Found"
     render :template => "errors/error404", :layout => "application", :status => "404"
   end
-  
+
   def rescue_500(template)
     @title = "500 Internal Server Error"
     render :template => "errors/#{template}", :layout => "application", :status => "500"
@@ -667,7 +668,7 @@ class ApplicationController < ActionController::Base
     @theme_font_family =  'sans-serif'
     @header_image = nil
     @current_basket = @site_basket
-    
+
     #logger.info(exception)
     case exception
       when ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid then
@@ -747,13 +748,13 @@ class ApplicationController < ActionController::Base
       return
     else
       if !@is_fully_cached
-      
+
         if !has_fragment?({:part => ('contributions' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
           @creator = @topic.creator
           @last_contributor = @topic.contributors.last || @creator
         end
 
-        if @topic.private? or !has_fragment?({:part => ('comments' + ((params[:private] == "true") ? "_private" : "_public")) }) or 
+        if @topic.private? or !has_fragment?({:part => ('comments' + ((params[:private] == "true") ? "_private" : "_public")) }) or
           !has_fragment?({:part => ('comments-moderators' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
           @comments = @topic.non_pending_comments
         end
