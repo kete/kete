@@ -1,7 +1,6 @@
 <div class="secondary-content-section-wrapper">
   <div  class="content-tools secondary-content-section">
-
-    <% cache ({:part => 'contributions'}) do -%>
+    <% cache_with_privacy(item, {:part => 'contributor'}) do -%>
     <div class="detail-tools">
       <ul>
         <li class="first">Created by: <%= link_to_contributions_of(@creator,'Topic') %></li>
@@ -11,7 +10,7 @@
     </div>
     <% end -%>
 
-    <% cache ({:part => 'flagging_links'}) do -%>
+    <% cache_with_privacy(item, {:part => 'flagging'}) do -%>
     <%= flagging_links_for(item) %>
     <% end -%>
     <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>

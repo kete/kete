@@ -741,13 +741,20 @@ module ApplicationHelper
     theme_styles
   end
 
-  # Only cache if the item is public.
+  # Kieran Pilkington, 2008/07/28
+  # DEPRECATED, points to cache_with_privacy
   def cache_if_public(item, name = {}, options = nil, &block)
-    if item.respond_to?(:private) and item.private?
-      block.call
-    else
-      cache(name, options, &block)
-    end
+    cache_with_privacy(item, name, options, &block)
+  end
+
+  # Kieran Pilkinton, 2008/07/28
+  # Cache block with the privacy value
+  # Different blocks have different values for public and private version
+  # If something shares data, just use rails cache method
+  def cache_with_privacy(item, name = {}, options = nil, &block)
+    privacy_value = (item.respond_to?(:private) && item.private?) ? "private" : "public"
+    name.each { |key,value| name[key] = "#{value}_#{privacy_value}" }
+    cache(name, options, &block)
   end
 
   # Check if privacy controls should be displayed?

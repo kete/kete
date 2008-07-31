@@ -5,19 +5,18 @@
     <li><%= link_to "<span class=\"edit-link\">Edit</span>",
             :action => :edit,
       :id => item, :private => params[:private] %></li>
-    <% cache ({:part => 'edit'}) do -%>
     <li><%= link_to "<span class=\"history-link\">History</span>",
             :action => :history,
       :id => item %></li>
-    <% end -%>
     <li><a href="#comments"><span class="discuss-link">Discuss</span></a></li>
 
     <% if logged_in? and @site_admin -%>
-       <% cache ({:part => 'zoom_reindex'}) do -%>
+       <% cache({:part => 'zoom_reindex'}) do -%>
           <li><%= link_to "Zoom Update item (+related)",
             {:action => :rebuild_zoom_for_items,
              :controller => 'search',
-             :items_to_rebuild => items_to_rebuild(item), :authenticity_token => form_authenticity_token},
+             :items_to_rebuild => items_to_rebuild(item),
+             :authenticity_token => form_authenticity_token},
              :method => :post,
              :confirm => 'Are you sure you want to update?'%></li>
            <% if !@document.nil? -%>
@@ -29,13 +28,11 @@
     <% end -%>
 
     <% if logged_in? and @at_least_a_moderator -%>
-    <% cache ({:part => 'delete'}) do -%>
     <li><%= link_to "Delete",
             {:action => :destroy,
              :id => item},
       :method => :post,
       :confirm => 'Are you sure?'%></li>
-    <% end -%>
     <% end -%>
 		<%= render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser -%>
   </ul>

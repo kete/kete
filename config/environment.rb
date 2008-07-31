@@ -88,6 +88,7 @@ Rails::Initializer.run do |config|
   # (create the session table with "rake db:sessions:create")
   # config.action_controller.session_store = :active_record_store
   config.action_controller.session_store = :mem_cache_store
+  config.cache_store = :file_store, 'tmp/cache'
 
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
@@ -108,7 +109,10 @@ Rails::Initializer.run do |config|
   config.plugins = [ :random_finders, :all ]
 end
 
-require File.join(File.dirname(__FILE__), '/../lib/error_handling')
+# Kieran Pilkington, 2008/07/28
+# We overwrite one of the Dispatch methods to give us the ability to make customized error pages
+# for errors that occur before controllers are called (like when memcache is not online)
+require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 
 # Include your application configuration below
 

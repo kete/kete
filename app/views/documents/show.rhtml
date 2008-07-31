@@ -5,17 +5,17 @@
 
 <%= render(:partial => "topics/content_wrapper_start") %>
 
-      <% cache_if_public(@document, { :part => 'details' }) do -%>
+      <% cache_with_privacy(@document, { :part => 'details_first' }) do -%>
          <h2><%= h(@document.title) %></h2>
          <p><b><%= @document.short_summary %></b></p>
          <% if show_attached_files_for?(@document) -%>
-
+      <% end %>
          <%= render(:partial => "details", :locals => { :item => @document }) %>
-
+      <% cache_with_privacy(@document, { :part => 'details_second' }) do -%>
          <% end %>
          <p><%= @document.description %></p>
          <%= pending_review(@document) %>
-	<div class="license"><%= @document.license_metadata %></div>
+       <div class="license"><%= @document.license_metadata %></div>
       <% end -%>
 
 <% if current_user_can_see_flagging? -%>
@@ -32,12 +32,8 @@
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
-    <% cache ({:part => "secondary_content_tags_#{@document.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @document }) %>
-    <% end -%>
-    <% cache ({:part => "secondary_content_extended_fields_#{@document.private? ? "private" : "public"}"}) do -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @document }) %>
-    <% end -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->
 
