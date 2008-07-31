@@ -1,78 +1,107 @@
 /* dan webb's codehighlighter styles (http://www.danwebb.net/)
    care of http://drnicwilliams.com/external/CodeHighlighter/styles.css */
 pre {
-    border: 1px solid black;
-    border-color: #BBB #DDD #DDD #BBB;
-    margin : 2em;
-    padding : 1em;
-    line-height: 1.5;
-    background: white !important;
-    overflow: auto;
-    color: black !important;
+  border: 1px solid black;
+  border-color: #BBB #DDD #DDD #BBB;
+  margin : 2em;
+  padding : 1em;
+  line-height: 1.5;
+  background: white !important;
+  overflow: auto;
+  color: black !important;
 }
 
 code {
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 
-.javascript .comment, .ruby .comment {
-    color : green;
+/* COLOURS */
+
+.javascript .comment,
+.ruby .comment,
+.sql .comment,
+.perl .comment,
+.php .comment,
+.yml .comment,
+.css .urls {
+  color: green;
 }
 
-.javascript .string, .ruby .string {
-    color : teal;
+.javascript .string,
+.ruby .string,
+.sql .string,
+.bash .string,
+.perl .string,
+.php .string,
+.html .doctype,
+.xml .doctype {
+  color: teal;
 }
 
-.javascript .keywords, .ruby .keywords {
-    color : purple;
+.javascript .keywords,
+.ruby .keywords,
+.sql .keywords,
+.bash .keywords,
+.perl .keywords,
+.php .keywords,
+.html .tag,
+.xml .tag,
+.yml .key {
+  color: purple;
 }
 
-.javascript .global {
-    color : blue;
+.javascript .global,
+.php .global,
+.yml .value {
+  color: blue;
 }
 
-.javascript .brackets, .ruby .brackets {
-    color : navy;
+.javascript .brackets,
+.ruby .brackets,
+.html .string,
+.css .properties,
+.bash .dollar {
+  color: navy;
 }
 
-.ruby .constants, .ruby .symbol { color: #0088ff; }
-
-.ruby .instance { color: #BD48B3; }
-
-.css .comment {
-    color : gray;
-}
-
-.css .properties {
-    color : navy;
+.css .comment,
+.html .comment,
+.xml .comment {
+  color: gray;
 }
 
 .css .selectors {
-    color : maroon;
-    font-weight : bold;
+  color: maroon;
 }
 
 .css .units {
-    color :red;
+  color: red;
 }
 
-.css .urls {
-    color :green;
+.bash .pipe,
+.bash .amp {
+  color: maroon;
 }
 
-.html .tag {
-    color : purple;
+.ruby .constants,
+.ruby .symbol {
+  color: #0088ff;
 }
 
-.html .comment {
-    color : gray;
-    font-style: italic;
+.ruby .instance {
+  color: #BD48B3;
 }
 
-.html .string {
-    color : navy;
-}
 
-.html .doctype {
-    color : teal;
+/* PROPERTIES */
+
+.html .comment,
+.xml .comment {
+  font-style: italic;
+}
+.css .selectors {
+  font-weight: bold;
+}
+.bash .dollar {
+  font-weight: bold;
 }
