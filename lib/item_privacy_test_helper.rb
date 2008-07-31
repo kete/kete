@@ -233,9 +233,11 @@ module ItemPrivacyTestHelper
 
         assert_equal "Version 4", d.description
         assert_equal false, d.private?
+        assert_equal 4, d.version
         d.send(:private_version!)
         assert_equal "Version 5", d.description
         assert_equal true, d.private?
+        assert_equal 5, d.version
 
       end
 
