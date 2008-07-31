@@ -462,3 +462,11 @@ system_settings_052:
   id: "52"
   value: "false"
   section: Server
+system_settings_053:
+  name: Available Syntax Highlighters
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "A comma separated list of syntax highlighters you want users to be able to use to style emedded code in topics. Will increase page load with each highlighter you add. Opening [ and closing ] are required. Avialable highlighters: ['html', 'javascript', 'css', 'ruby', 'php', 'perl', 'sql', 'xml', 'yml', 'bash']"
+  id: "53"
+  value: "[]"
+  section: System

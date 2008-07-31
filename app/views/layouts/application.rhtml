@@ -43,7 +43,7 @@
  <%= stylesheet_link_tag 'base', :media => 'screen' %>
  <%= stylesheet_link_tag 'comment', :media => 'screen' %>
  <%= stylesheet_link_tag 'redbox' %>
- <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' %>
+ <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
  <% load_styles(@theme).each do |stylesheet| -%>
   <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
  <% end -%>
@@ -62,17 +62,12 @@
 <%  bundle :name => "rails_defaults" do -%>
   <%= javascript_include_tag :defaults %>
   <%= javascript_include_tag 'redbox' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/code_highlighter' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/css' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/sql' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/php' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/xml' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/yml' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/perl' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/bash' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/ruby' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/javascript' %>
-  <%= javascript_include_tag 'dan_webb_code_highlighter/html' %>
+  <% if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
+    <%= javascript_include_tag 'dan_webb_code_highlighter/code_highlighter' %>
+    <% AVAILABLE_SYNTAX_HIGHLIGHTERS.each do |syntax| %>
+      <%= javascript_include_tag "dan_webb_code_highlighter/#{syntax}" %>
+    <% end %>
+  <% end %>
 <% end -%>
 
   <% if as_controllers.include?(params[:controller]) -%>
