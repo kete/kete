@@ -103,7 +103,12 @@ module OaiDcHelpers
       item_created = item.created_at.utc.xmlschema
       xml.tag!("dc:date", item_created)
       item.creators.each do |creator|
-        xml.tag!("dc:creator", user_to_dc_creator_or_contributor(creator))
+        user_name = user_to_dc_creator_or_contributor(creator)
+        xml.tag!("dc:creator", user_name)
+        # we also add user.login, which is unique per site
+        # whereas user_name is not
+        # this way we can limit exactly to one user
+        xml.tag!("dc:creator", creator.login) unless user_name == creator.login
       end
     end
 
@@ -112,7 +117,12 @@ module OaiDcHelpers
     # xml.tag!("dcterms:modified", contribution_date)
     def oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
       item.contributors.each do |contributor|
-        xml.tag!("dc:contributor", user_to_dc_creator_or_contributor(contributor))
+        user_name = user_to_dc_creator_or_contributor(contributor)
+        xml.tag!("dc:contributor", user_name)
+        # we also add user.login, which is unique per site
+        # whereas user_name is not
+        # this way we can limit exactly to one user
+        xml.tag!("dc:contributor", contributor.login) unless user_name == contributor.login
       end
     end
 

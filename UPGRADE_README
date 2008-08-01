@@ -14,6 +14,13 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 
 ANOTHER GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.  However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2008/08/01 - Making search for contributions by a user be limited to login, rather than non-unique user name
+
+1.      Stop your Kete server (mongrels).
+2.      Upgrade your code base
+3.      Start your Kete server again (mongrels)
+4.      Rebuild your search records (see other tasks below for summary under "Use the web interface to repopulate your Zebra database...")
+
 == 2008/08/01 - Adding system setting for Syntax Highlighting support
 
 1.      Stop your Kete server (mongrels).
@@ -30,7 +37,7 @@ ANOTHER GENERAL NOTE: if you are running in production mode, you may also want t
 3.      Edit config/backgroundrb.yml and update it to match the structure of config/backgroundrb.yml.example. Point the :memcached: section to the appropriate IP of the memcached server (default should usually suffice).
 4.      Run the database migration 'rake db:migrate'
 5.      Restart your Kete instance (mongrels)
-6.      Restart your Backgroundrb instance: 
+6.      Restart your Backgroundrb instance:
           ./script/backgroundrb stop
           ./script/backgroundrb start
 
