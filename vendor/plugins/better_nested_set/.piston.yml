@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 2305b856d1df4c20b6073310010ede813c873dec
+  branch: HEAD
+lock: 
+repository_url: git://github.com/chris/better_nested_set.git
+repository_class: Piston::Git::Repository
