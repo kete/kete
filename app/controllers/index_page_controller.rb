@@ -5,7 +5,7 @@ class IndexPageController < ApplicationController
     else
       # Kieran Pilkington, 2008/08/06
       # Load the index page everytime (for now atleast, until a better title caching system is in place)
-      #@is_fully_cached = has_all_fragments?
+      @is_fully_cached = has_all_fragments?
       #if !@is_fully_cached or params[:format] == 'xml'
         @topic = @current_basket.index_topic
         if !@topic.nil?
