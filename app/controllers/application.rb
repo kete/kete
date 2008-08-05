@@ -118,6 +118,8 @@ class ApplicationController < ActionController::Base
       end
     end
     if @current_basket.nil?
+      @current_basket = @site_basket
+      load_theme_related
       raise ActiveRecord::RecordNotFound, "Couldn't find Basket with NAME=#{params[:urlified_name]}."
     end
   end
@@ -655,6 +657,7 @@ class ApplicationController < ActionController::Base
 
   def rescue_404
     @title = "404 Not Found"
+    @displaying_404 = true
     render :template => "errors/error404", :layout => "application", :status => "404"
   end
 
@@ -664,11 +667,6 @@ class ApplicationController < ActionController::Base
   end
 
   def rescue_action_in_public(exception)
-    @theme = 'default'
-    @theme_font_family =  'sans-serif'
-    @header_image = nil
-    @current_basket = @site_basket
-
     #logger.info(exception)
     case exception
       when ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid then
