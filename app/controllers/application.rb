@@ -216,9 +216,40 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['zoom_reindex', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'comments_[privacy]', 'comments-moderators_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
+  SHOW_PARTS = ['page_title_[privacy]', 'edit_[privacy]', 'history', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
+  PUBLIC_SHOW_PARTS = ['comments_[privacy]']
+  MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
+  ADMIN_SHOW_PARTS = ['zoom_reindex']
+  PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
   INDEX_PARTS = [ 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
+
+  # the following method is used when clearing show caches
+  def all_show_parts
+    show_parts = Array.new
+    [SHOW_PARTS, PUBLIC_SHOW_PARTS, MODERATOR_SHOW_PARTS, ADMIN_SHOW_PARTS, PRIVACY_SHOW_PARTS].each { |show_part| show_part.each { |part| show_parts << part } }
+    show_parts
+  end
+
+  # the following method is used when seeing if all fragments are present
+  # for example, we dont want to stop optimization if an admin fragment is missing for a logged out user
+  def relevant_show_parts
+    # probably a better way to merge two arrays, .merge is only for hashes it seems :(
+    show_parts = Array.new
+    SHOW_PARTS.each { |show_part| show_parts << show_part }
+    if logged_in? and @at_least_a_moderator
+      MODERATOR_SHOW_PARTS.each { |moderator_show_part| show_parts << moderator_show_part }
+    else
+      PUBLIC_SHOW_PARTS.each { |public_show_part| show_parts << public_show_part }
+    end
+    if logged_in? and @site_admin
+      ADMIN_SHOW_PARTS.each { |admin_show_part| show_parts << admin_show_part }
+    end
+    if @show_privacy_chooser
+      PRIVACY_SHOW_PARTS.each { |privacy_show_part| show_parts << privacy_show_part }
+    end
+    show_parts
+  end
 
   # if anything is added, edited, or destroyed in a basket
   # expire the basket index page caches
@@ -238,11 +269,22 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_fragment_for_all_versions(item, name = {})
+    
+    name = name.merge(:id => item.id)    
+    file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}"
+    if File.exists?(file_path)
+      File.delete(file_path)
+    end
+    
+    # Kieran Pilkington, 2008-08-05
+    # we dont need to remove history caches, they dont change, only the live versions do
+    # (from what I can see anyway)
+    
     # slight change for postgresql
     # this works with mysql and postgresql, not sure about sqlite or oracle
-    item.versions.find(:all, :select => 'distinct title, version').each do |version|
-      expire_fragment(name.merge(:id => item.id.to_s + format_friendly_for(version.title)))
-    end
+    #item.versions.find(:all, :select => 'distinct title, version').each do |version|
+    #  expire_fragment(name.merge(:id => item.id.to_s + format_friendly_for(version.title)))
+    #end
   end
 
   # expire the cache fragments for the show action
@@ -250,7 +292,6 @@ class ApplicationController < ActionController::Base
   def expire_show_caches
     caches_controllers = ['audio', 'baskets', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
     if caches_controllers.include?(params[:controller])
-
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
       item = item_from_controller_and_id
@@ -266,7 +307,7 @@ class ApplicationController < ActionController::Base
     controller = zoom_class_controller(item_class)
     return unless ZOOM_CLASSES.include?(item_class)
 
-    SHOW_PARTS.each do |part|
+    all_show_parts.each do |part|
 
       # James - 2008-07-01
       # Some cache keys have a privacy scope, indicated by [privacy] in the key name.
@@ -366,7 +407,7 @@ class ApplicationController < ActionController::Base
   def expire_contributions_caches_for(item)
     # rather than find out if the contribution is for a public/private item
     # just clear both the caches
-    ['contributions_public', 'contributions_private'].each do |part|
+    ['contributor_public', 'contributor_private'].each do |part|
       expire_fragment_for_all_versions(item,
                                       { :urlified_name => item.basket.urlified_name,
                                         :controller => zoom_class_controller(item.class.name),
@@ -398,7 +439,7 @@ class ApplicationController < ActionController::Base
   # TODO: put an if mem_cache ... use read_fragment({:part => part})
   # wrapped in this method
   def has_fragment?(name = {})
-    #logger.info("Looking for: '#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}'. Found? " + File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}").to_s)
+    #logger.info("Looking for: '#{fragment_cache_key(name).gsub("?", ".") + '.cache'}'. Found? " + File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}").to_s)
     File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
   end
 
@@ -407,7 +448,7 @@ class ApplicationController < ActionController::Base
     #logger.info('Looking for all fragments')
 
     if params[:controller] != 'index_page'
-      SHOW_PARTS.each do |part|
+      relevant_show_parts.each do |part|
         if part.include?('_[privacy]')
           resulting_part = part.sub(/\[privacy\]/, ((params[:private] == "true") ? "private" : "public"))
         else
@@ -722,42 +763,6 @@ class ApplicationController < ActionController::Base
       item_url = url_for(options)
     end
     item_url
-  end
-
-  def prepare_topic_for_show
-    logger.info(@is_fully_cached)
-    if !@is_fully_cached or params[:format] == 'xml'
-      if params[:id].nil?
-        # this is for a basket homepage
-        @topic = @current_basket.index_topic
-      else
-        # plain old topic show
-        @topic = @current_basket.topics.find(params[:id])
-        @topic.private_version! if @topic.has_private_version? &&
-          permitted_to_view_private_items? and params[:private] == "true"
-        @show_privacy_chooser = true if permitted_to_view_private_items?
-      end
-      if !@topic.nil?
-        @title = @topic.title
-      end
-    end
-
-    if !@is_fully_cached and @topic.nil?
-      return
-    else
-      if !@is_fully_cached
-
-        if !has_fragment?({:part => ('contributions' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
-          @creator = @topic.creator
-          @last_contributor = @topic.contributors.last || @creator
-        end
-
-        if @topic.private? or !has_fragment?({:part => ('comments' + ((params[:private] == "true") ? "_private" : "_public")) }) or
-          !has_fragment?({:part => ('comments-moderators' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
-          @comments = @topic.non_pending_comments
-        end
-      end
-    end
   end
 
   def stats_by_type_for(basket)

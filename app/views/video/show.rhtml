@@ -24,7 +24,7 @@
 <% end -%>
 
 <% if current_user_can_see_add_links? %>
-   <% cache ({:related => 'topics'}) do -%>
+   <% cache ({:related => 'topics', :id => @video.id}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @video, :source_item_class => 'WebLink', :topics => @video.topics) %>
    <% end -%>
 <% end -%>

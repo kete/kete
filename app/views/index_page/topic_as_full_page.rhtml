@@ -1,5 +1,5 @@
 <%= render(:partial => 'topics/content_wrapper_start', :locals => {:style_classes => 'full-width notabs' }) %>
-      <% cache({:part => 'details'}) do -%>
+      <% cache({:part => 'details', :id => @topic.id}) do -%>
       <%= @topic.description %>
       <%= pending_review(@topic) %>
       <% end -%>
@@ -16,7 +16,7 @@
       </div>
       <% end %>
       <ul>
-        <% cache({:part => 'edit'}) do -%>
+        <% cache({:part => 'edit', :id => @topic.id}) do -%>
         <li class="first"><%= link_to "Edit",
                               :action => :edit,
           :urlified_name => @topic.basket.urlified_name,
@@ -33,12 +33,12 @@
       </ul>
     </div>
 
-    <% cache({:part => 'blog'}) do -%>
+    <% cache({:part => 'blog', :id => @topic.id}) do -%>
     <% end -%>
 
-    <% cache({:part => 'archives'}) do -%>
+    <% cache({:part => 'archives', :id => @topic.id}) do -%>
     <% end -%>
 
-    <% cache({:part => 'tags'}) do -%>
+    <% cache({:part => 'tags', :id => @topic.id}) do -%>
     <% end -%>
 <%= render(:partial => "topics/content_wrapper_end" ) %>

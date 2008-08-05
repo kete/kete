@@ -1,4 +1,40 @@
 class IndexPageController < ApplicationController
+  def prepare_topic_for_show
+    logger.info(@is_fully_cached)
+    if !@is_fully_cached or params[:format] == 'xml'
+      if params[:id].nil?
+        # this is for a basket homepage
+        @topic = @current_basket.index_topic
+      else
+        # plain old topic show
+        @topic = @current_basket.topics.find(params[:id])
+        @topic.private_version! if @topic.has_private_version? &&
+          permitted_to_view_private_items? and params[:private] == "true"
+        @show_privacy_chooser = true if permitted_to_view_private_items?
+      end
+      if !@topic.nil?
+        @title = @topic.title
+      end
+    end
+
+    if !@is_fully_cached and @topic.nil?
+      return
+    else
+      if !@is_fully_cached
+
+        if !has_fragment?({:part => ('contributor' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
+          @creator = @topic.creator
+          @last_contributor = @topic.contributors.last || @creator
+        end
+
+        if @topic.private? or !has_fragment?({:part => ('comments' + ((params[:private] == "true") ? "_private" : "_public")) }) or
+          !has_fragment?({:part => ('comments-moderators' + ((params[:private] == "true") ? "_private" : "_public")) }) or params[:format] == 'xml'
+          @comments = @topic.non_pending_comments
+        end
+      end
+    end
+  end
+  
   def index
     if !@current_basket.index_page_redirect_to_all.blank?
       redirect_to_all_for(@current_basket.index_page_redirect_to_all)

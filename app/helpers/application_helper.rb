@@ -752,9 +752,15 @@ module ApplicationHelper
   # Different blocks have different values for public and private version
   # If something shares data, just use rails cache method
   def cache_with_privacy(item, name = {}, options = nil, &block)
-    privacy_value = (item.respond_to?(:private) && item.private?) ? "private" : "public"
-    name.each { |key,value| name[key] = "#{value}_#{privacy_value}" }
-    cache(name, options, &block)
+    if item.nil? and params[:id].to_i < 1
+      block.call
+    else
+      privacy_value = (item.respond_to?(:private) && item.private?) ? "private" : "public"
+      name.each { |key,value| name[key] = "#{value}_#{privacy_value}" }
+      cache_id = item.id if !item.nil? || params[:id].to_i if params[:id] || 0
+      name = name.merge(:id => cache_id)
+      cache(name, options, &block)
+    end
   end
 
   # Check if privacy controls should be displayed?

@@ -25,7 +25,7 @@
       "related", :class_suffix => "-blue"})%>
           <h2 class="related-link">Related Items</h2>
           <div id="detail-linked-toprow">
-            <% cache ({:related => 'images'}) do -%>
+            <% cache ({:related => 'images', :id => @topic.id}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'StillImage') %>
             <% end -%>
@@ -36,7 +36,7 @@
           </div>
           <div class="two-col">
           <!-- <div id="detail-linked-midrow"> -->
-            <% cache ({:related => 'topics'}) do -%>
+            <% cache ({:related => 'topics', :id => @topic.id}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'Topic') %>
             <% end -%>
@@ -45,7 +45,7 @@
             :locals => { :relate_to_topic => @topic,
             :related_class => 'Topic' }) %>
 
-            <% cache ({:related => 'audio'}) do -%>
+            <% cache ({:related => 'audio', :id => @topic.id}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'AudioRecording') %>
             <% end -%>
@@ -54,7 +54,7 @@
             :locals => { :relate_to_topic => @topic,
             :related_class => 'AudioRecording' }) %>
 
-            <% cache ({:related => 'video'}) do -%>
+            <% cache ({:related => 'video', :id => @topic.id}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'Video') %>
             <% end -%>
@@ -69,7 +69,7 @@
           <div class="two-col">
 
           <!-- <div id="detail-linked-bottomrow"> -->
-            <% cache ({:related => 'documents'}) do -%>
+            <% cache ({:related => 'documents', :id => @topic.id}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'Document') %>
             <% end -%>
@@ -78,7 +78,7 @@
             :locals => { :relate_to_topic => @topic,
             :related_class => 'Document' }) %>
 
-            <% cache ({:related => 'web_links'}) do -%>
+            <% cache ({:related => 'web_links', :id => @topic.id}) do -%>
             <%= related_items_links(:source_item => @topic,
             :related_class => 'WebLink') %>
             <% end -%>

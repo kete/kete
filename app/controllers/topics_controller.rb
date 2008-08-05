@@ -62,6 +62,44 @@ class TopicsController < ApplicationController
     index
   end
 
+  def show
+    if permitted_to_view_private_items?
+      @show_privacy_chooser = true
+    end
+    
+    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
+      @topic = @current_basket.topics.find(params[:id])
+
+      if permitted_to_view_private_items?
+        @topic = @topic.private_version! if @topic.has_private_version? && params[:private] == "true"
+      end
+
+      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @title = @topic.title
+      end
+
+      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @creator = @topic.creator
+        @last_contributor = @topic.contributors.last || @creator
+      end
+
+      if logged_in? and @at_least_a_moderator
+        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @topic.non_pending_comments
+        end
+      else
+        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @topic.non_pending_comments
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.html
+      format.xml { render_oai_record_xml(:item => @topic) }
+    end
+  end
+
   def new
     @topic = Topic.new
   end
@@ -256,17 +294,5 @@ class TopicsController < ApplicationController
     end
 
     zoom_destroy_and_redirect('Topic')
-  end
-
-  # defaults to html if no extension
-  # renders oai_record.rxml if xml request
-  def show
-    @is_fully_cached = has_all_fragments?
-    prepare_topic_for_show
-
-    respond_to do |format|
-      format.html
-      format.xml { render_oai_record_xml(:item => @topic) }
-    end
   end
 end

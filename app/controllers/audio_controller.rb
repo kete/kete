@@ -10,29 +10,37 @@ class AudioController < ApplicationController
   def list
     index
   end
-
+  
   def show
     if permitted_to_view_private_items?
-      
-      @audio_recording = @current_basket.audio_recordings.find(params[:id])
-      @audio_recording = @audio_recording.private_version! if @audio_recording.has_private_version? && params[:private] == "true"
-      
-      # Show the privacy chooser
       @show_privacy_chooser = true
-      
-    elsif !has_all_fragments? or params[:format] == 'xml'
+    end
+    
+    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
       @audio_recording = @current_basket.audio_recordings.find(params[:id])
-    end
 
-    @title = @audio_recording.title
+      if permitted_to_view_private_items?
+        @audio_recording = @audio_recording.private_version! if @audio_recording.has_private_version? && params[:private] == "true"
+      end
 
-    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @audio_recording.creator
-      @last_contributor = @audio_recording.contributors.last || @creator
-    end
+      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @title = @audio_recording.title
+      end
 
-    if @audio_recording.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @audio_recording.non_pending_comments
+      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @creator = @audio_recording.creator
+        @last_contributor = @audio_recording.contributors.last || @creator
+      end
+
+      if logged_in? and @at_least_a_moderator
+        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @audio_recording.non_pending_comments
+        end
+      else
+        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @audio_recording.non_pending_comments
+        end
+      end
     end
 
     respond_to do |format|

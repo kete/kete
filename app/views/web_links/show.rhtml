@@ -23,7 +23,7 @@
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @web_link }) %>
 <% end -%>
 <% if current_user_can_see_add_links? %>
-      <% cache ({:related => 'topics'}) do -%>
+      <% cache ({:related => 'topics', :id => @web_link.id}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @web_link, :source_item_class => 'WebLink', :topics => @web_link.topics) %>
       <% end -%>
 <% end -%>

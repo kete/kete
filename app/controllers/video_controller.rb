@@ -12,26 +12,35 @@ class VideoController < ApplicationController
   end
 
   def show
-    if logged_in? && permitted_to_view_private_items?
-
-      @video = @current_basket.videos.find(params[:id])
-      @video = @video.private_version! if @video.has_private_version? && params[:private] == "true"
-      
-      # Show the privacy chooser
+    if permitted_to_view_private_items?
       @show_privacy_chooser = true
+    end
     
-    elsif !has_all_fragments? or params[:format] == 'xml'
+    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
       @video = @current_basket.videos.find(params[:id])
-      @title = @video.title
-    end
 
-    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @video.creator
-      @last_contributor = @video.contributors.last || @creator
-    end
+      if permitted_to_view_private_items?
+        @video = @video.private_version! if @video.has_private_version? && params[:private] == "true"
+      end
 
-    if @video.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @video.non_pending_comments
+      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @title = @video.title
+      end
+
+      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @creator = @video.creator
+        @last_contributor = @video.contributors.last || @creator
+      end
+
+      if logged_in? and @at_least_a_moderator
+        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @video.non_pending_comments
+        end
+      else
+        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @video.non_pending_comments
+        end
+      end
     end
 
     respond_to do |format|

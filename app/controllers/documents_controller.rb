@@ -11,33 +11,36 @@ class DocumentsController < ApplicationController
     index
   end
   
-  # James Stradling <james@katipo.co.nz>
-  # Show either the public or private version depending on permissions
   def show
-    
-    # The document has a private version and the correct permissions are set, show that version.
-    if logged_in? && permitted_to_view_private_items?
-
-      @document = @current_basket.documents.find(params[:id])
-      @document = @document.private_version! if @document.has_private_version? && params[:private] == "true"
-      
-      # Show the privacy chooser
+    if permitted_to_view_private_items?
       @show_privacy_chooser = true
-      
-    # Otherwise find the document unless it's cached already
-    elsif !has_all_fragments? or params[:format] == 'xml'
-      @document = @current_basket.documents.find(params[:id])
     end
-
-    @title = @document.title
     
-    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
-      @creator = @document.creator
-      @last_contributor = @document.contributors.last || @creator
-    end
+    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
+      @document = @current_basket.documents.find(params[:id])
 
-    if @document.private? or !has_fragment?({:part => 'comments' }) or !has_fragment?({:part => 'comments-moderators' }) or params[:format] == 'xml'
-      @comments = @document.non_pending_comments
+      if permitted_to_view_private_items?
+        @document = @document.private_version! if @document.has_private_version? && params[:private] == "true"
+      end
+
+      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @title = @document.title
+      end
+
+      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
+        @creator = @document.creator
+        @last_contributor = @document.contributors.last || @creator
+      end
+
+      if logged_in? and @at_least_a_moderator
+        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @document.non_pending_comments
+        end
+      else
+        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
+          @comments = @document.non_pending_comments
+        end
+      end
     end
 
     respond_to do |format|
