@@ -8,23 +8,25 @@ class IndexPageController < ApplicationController
       @is_fully_cached = has_all_fragments?
       #if !@is_fully_cached or params[:format] == 'xml'
         @topic = @current_basket.index_topic
-        if !@topic.nil?
-          @title = @topic.title
-        end
       #end
 
-      if @current_basket != @site_basket or ( @topic.nil? and @is_fully_cached == false )
+      if !@topic.nil?
+        @title = @topic.title
+      end
+
+      if @current_basket != @site_basket or ( @topic.nil? and !@is_fully_cached )
         @title = @current_basket.name
-      else
-        if @is_fully_cached == false
-            @title = @topic.title
-        end
       end
 
       if !@current_basket.index_topic.nil? && @current_basket.index_page_topic_is_entire_page
         render :action => :topic_as_full_page
       else
-        if @is_fully_cached == false
+        if !@is_fully_cached
+
+          if !has_fragment?({:part => 'details'}) and !@topic.nil?
+            @comments = @topic.non_pending_comments
+          end
+
           # TODO: DRY up
           @url_to_full_topic = nil
           @url_to_comments = nil
