@@ -84,7 +84,7 @@ ActionController::Routing::Routes.draw do |map|
   # Walter McGinnis, 2007-07-13
   # if the site isn't configured, we don't setup our full routes
   if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.table_exists?('system_settings') and SystemSetting.find(:all).size > 0
-    is_configured = eval(SystemSetting.find(1).value)
+    is_configured = eval(SystemSetting.find_by_name('Is Configured').value)
   else
     is_configured = false
   end
