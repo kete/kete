@@ -7,7 +7,7 @@
             :action => :edit,
       :id => item, :private => params[:private] %></li>
     <% end %>
-    <% cache({:part => 'history', :id => item.id}) do -%>
+    <% cache({:part => 'history', :id => @cache_id}) do -%>
     <li><%= link_to "<span class=\"history-link\">History</span>",
             :action => :history,
       :id => item %></li>
@@ -15,7 +15,7 @@
     <li><a href="#comments"><span class="discuss-link">Discuss</span></a></li>
 
     <% if logged_in? and @site_admin -%>
-       <% cache({:part => 'zoom_reindex', :id => item.id}) do -%>
+       <% cache({:part => 'zoom_reindex', :id => @cache_id}) do -%>
           <li><%= link_to "Zoom Update item (+related)",
             {:action => :rebuild_zoom_for_items,
              :controller => 'search',
@@ -32,7 +32,7 @@
     <% end -%>
 
     <% if logged_in? and @at_least_a_moderator -%>
-    <% cache({:part => 'delete', :id => item.id}) do -%>
+    <% cache({:part => 'delete', :id => @cache_id}) do -%>
     <li><%= link_to "Delete",
             {:action => :destroy,
              :id => item},
@@ -40,6 +40,6 @@
       :confirm => 'Are you sure?'%></li>
     <% end %>
     <% end -%>
-		<%= render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser -%>
+                <%= render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser -%>
   </ul>
 </div><!-- /content-tabs -->

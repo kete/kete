@@ -751,13 +751,18 @@ module ApplicationHelper
   # Cache block with the privacy value
   # Different blocks have different values for public and private version
   # If something shares data, just use rails cache method
+  # item can be nil
+  # but this assumes that item is not nil when item is private
   def cache_with_privacy(item, name = {}, options = nil, &block)
-    privacy_value = (item.respond_to?(:private) && item.private?) ? "private" : "public"
+    privacy_value = (!item.blank? && item.respond_to?(:private) && item.private?) ? "private" : "public"
     name.each { |key,value| name[key] = "#{value}_#{privacy_value}" }
-    # the following line only works when the url has an id param
-    # this method is only run on show pages with id's, so it'll work like this for now
-    cache_id = item.id if !item.nil? || params[:id].to_i
-    name = name.merge(:id => cache_id)
+
+    # item is nil when we are loading from cache,
+    # so always use params[:id]
+    # strip out title from passed id
+    # (.to_i will only return 123 when passed id is "123-some-title")
+    # if we have an id for this page
+    name[:id] = params[:id].to_i unless params[:id].blank?
     cache(name, options, &block)
   end
 

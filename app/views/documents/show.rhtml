@@ -8,11 +8,11 @@
       <% cache_with_privacy(@document, { :part => 'details_first' }) do -%>
          <h2><%= h(@document.title) %></h2>
          <p><b><%= @document.short_summary %></b></p>
-         <% if show_attached_files_for?(@document) -%>
-      <% end %>
-         <%= render(:partial => "details", :locals => { :item => @document }) %>
-      <% cache_with_privacy(@document, { :part => 'details_second' }) do -%>
          <% end %>
+         <% if show_attached_files_for?(@document) -%>
+         <%= render(:partial => "details", :locals => { :item => @document }) %>
+         <% end %>
+      <% cache_with_privacy(@document, { :part => 'details_second' }) do -%>
          <p><%= @document.description %></p>
          <%= pending_review(@document) %>
        <div class="license"><%= @document.license_metadata %></div>
@@ -22,7 +22,7 @@
       <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @document }) %>
 <% end -%>
 <% if current_user_can_see_add_links? %>
-      <% cache ({:related => 'topics', :id => @document.id}) do -%>
+      <% cache ({:related => 'topics', :id => @cache_id}) do -%>
       <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @document, :source_item_class => 'WebLink', :topics => @document.topics) %>
       <% end -%>
 <% end -%>

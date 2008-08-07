@@ -1,6 +1,6 @@
 class VideoController < ApplicationController
   include ExtendedContentController
-  
+
   helper :privacy_controls
 
   def index
@@ -12,12 +12,16 @@ class VideoController < ApplicationController
   end
 
   def show
+    # Walter McGinnis, 2008-02-14
+    # always loading still_image for the timebeing, since we check for blank version
+    # to determine whether to show image file
+    @video = @current_basket.videos.find(params[:id])
+
     if permitted_to_view_private_items?
       @show_privacy_chooser = true
     end
-    
+
     if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-      @video = @current_basket.videos.find(params[:id])
 
       if permitted_to_view_private_items?
         @video = @video.private_version! if @video.has_private_version? && params[:private] == "true"
@@ -50,7 +54,7 @@ class VideoController < ApplicationController
   end
 
   def new
-    @video = Video.new({ :private => @current_basket.private_default || false, 
+    @video = Video.new({ :private => @current_basket.private_default || false,
                          :file_private =>  @current_basket.file_private_default || false })
   end
 
@@ -84,9 +88,9 @@ class VideoController < ApplicationController
 
       after_successful_zoom_item_update(@video)
 
-      @video.do_notifications_if_pending(version_after_update, current_user) if 
+      @video.do_notifications_if_pending(version_after_update, current_user) if
         @video.versions.exists?(:version => version_after_update)
-        
+
       flash[:notice] = 'Video was successfully updated.'
 
       redirect_to_show_for(@video, :private => (params[:video][:private] == "true"))

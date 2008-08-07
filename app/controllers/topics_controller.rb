@@ -46,7 +46,7 @@ class TopicsController < ApplicationController
 
   # stuff related to flagging and moderation
   include FlaggingController
-  
+
   # Get the Privacy Controls helper
   helper :privacy_controls
 
@@ -66,7 +66,7 @@ class TopicsController < ApplicationController
     if permitted_to_view_private_items?
       @show_privacy_chooser = true
     end
-    
+    # logger.info("has_all_fragments: " + has_all_fragments?.inspect)
     if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
       @topic = @current_basket.topics.find(params[:id])
 
@@ -269,12 +269,12 @@ class TopicsController < ApplicationController
     if @successful
       after_successful_zoom_item_update(@topic)
 
-      @topic.do_notifications_if_pending(version_after_update, current_user) if 
+      @topic.do_notifications_if_pending(version_after_update, current_user) if
         @topic.versions.exists?(:version => version_after_update)
 
       # TODO: replace with translation stuff when we get globalize going
       flash[:notice] = 'Topic was successfully edited.'
-      
+
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
     else
       if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"

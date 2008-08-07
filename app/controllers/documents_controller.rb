@@ -1,8 +1,8 @@
 class DocumentsController < ApplicationController
   include ExtendedContentController
-  
+
   helper :privacy_controls
-  
+
   def index
     redirect_to_search_for('Document')
   end
@@ -10,14 +10,18 @@ class DocumentsController < ApplicationController
   def list
     index
   end
-  
+
   def show
+    # Walter McGinnis, 2008-02-14
+    # always loading for the timebeing, since we check for blank version
+    # to determine whether to show file
+    @document = @current_basket.documents.find(params[:id])
+
     if permitted_to_view_private_items?
       @show_privacy_chooser = true
     end
-    
+
     if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-      @document = @current_basket.documents.find(params[:id])
 
       if permitted_to_view_private_items?
         @document = @document.private_version! if @document.has_private_version? && params[:private] == "true"
@@ -48,9 +52,9 @@ class DocumentsController < ApplicationController
       format.xml { render_oai_record_xml(:item => @document) }
     end
   end
-  
+
   def new
-    @document = Document.new({ :private => @current_basket.private_default || false, 
+    @document = Document.new({ :private => @current_basket.private_default || false,
                                :file_private => @current_basket.file_private_default || false })
   end
 
@@ -66,7 +70,7 @@ class DocumentsController < ApplicationController
 
       @document.do_notifications_if_pending(1, current_user)
     end
-    
+
     setup_related_topic_and_zoom_and_redirect(@document, nil, :private => (params[:document][:private] == "true"))
   end
 
@@ -84,7 +88,7 @@ class DocumentsController < ApplicationController
 
       after_successful_zoom_item_update(@document)
 
-      @document.do_notifications_if_pending(version_after_update, current_user) if 
+      @document.do_notifications_if_pending(version_after_update, current_user) if
         @document.versions.exists?(:version => version_after_update)
 
       flash[:notice] = 'Document was successfully updated.'
@@ -117,5 +121,5 @@ class DocumentsController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('Document')
   end
-  
+
 end

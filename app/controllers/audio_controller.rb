@@ -1,6 +1,6 @@
 class AudioController < ApplicationController
   include ExtendedContentController
-  
+
   helper :privacy_controls
 
   def index
@@ -10,14 +10,18 @@ class AudioController < ApplicationController
   def list
     index
   end
-  
+
   def show
+    # Walter McGinnis, 2008-02-14
+    # always loading still_image for the timebeing, since we check for blank version
+    # to determine whether to show image file
+    @audio_recording = @current_basket.audio_recordings.find(params[:id])
+
     if permitted_to_view_private_items?
       @show_privacy_chooser = true
     end
-    
+
     if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-      @audio_recording = @current_basket.audio_recordings.find(params[:id])
 
       if permitted_to_view_private_items?
         @audio_recording = @audio_recording.private_version! if @audio_recording.has_private_version? && params[:private] == "true"
@@ -50,7 +54,7 @@ class AudioController < ApplicationController
   end
 
   def new
-    @audio_recording = AudioRecording.new({ :private => @current_basket.private_default || false, 
+    @audio_recording = AudioRecording.new({ :private => @current_basket.private_default || false,
                                             :file_private => @current_basket.file_private_default || false })
   end
 
@@ -85,7 +89,7 @@ class AudioController < ApplicationController
 
       after_successful_zoom_item_update(@audio_recording)
 
-      @audio_recording.do_notifications_if_pending(version_after_update, current_user) if 
+      @audio_recording.do_notifications_if_pending(version_after_update, current_user) if
         @audio_recording.versions.exists?(:version => version_after_update)
 
       flash[:notice] = 'AudioRecording was successfully updated.'

@@ -63,6 +63,9 @@ class ApplicationController < ActionController::Base
   # by posting a dummy form
   before_filter :current_user_can_see_action_menu?, :only => [:new, :create, :edit, :update]
 
+  # creates a @cache_id variable based on params[:id]
+  before_filter :set_cache_id, :only => [:show]
+
   # if anything is updated or deleted
   # we need toss our show action fragments
   # destroy has to happen before the item is deleted
@@ -87,6 +90,10 @@ class ApplicationController < ActionController::Base
                                                        :add_index_topic, :link_index_topic]
 
   helper :slideshows
+
+  def set_cache_id
+    @cache_id = params[:id] ? params[:id].to_i : nil
+  end
 
   # set the current basket to the default
   # unless we have urlified_name that is different
@@ -435,17 +442,18 @@ class ApplicationController < ActionController::Base
   # TODO: put an if mem_cache ... use read_fragment({:part => part})
   # wrapped in this method
   def has_fragment?(name = {})
-    #logger.info("Looking for: '#{fragment_cache_key(name).gsub("?", ".") + '.cache'}'. Found? " + File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}").to_s)
-    # File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
-    logger.info("what is name " + name.inspect)
-    logger.info("what is read_fragment: " + read_fragment(name).inspect)
-    read_fragment(name)
+    # strip out everything after id (title in friendly url)
+    name[:id] = name[:id].to_i unless name[:id].blank?
+    File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
   end
 
   # used by show actions to determine whether to load item
   def has_all_fragments?
     #logger.info('Looking for all fragments')
 
+    # we are going a bit overboard with the params[:id].to_i bit
+    # but we need to be consistent
+    name = params[:id].blank? ? Hash.new : { :id => params[:id].to_i }
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
         if part.include?('_[privacy]')
@@ -453,7 +461,7 @@ class ApplicationController < ActionController::Base
         else
           resulting_part = part
         end
-        return false unless has_fragment?({:part => resulting_part})
+        return false unless has_fragment?(name.merge(:part => resulting_part))
       end
     end
     #logger.info('Has all show fragments')
@@ -466,11 +474,11 @@ class ApplicationController < ActionController::Base
     when 'topics'
       ZOOM_CLASSES.each do |zoom_class|
         if zoom_class != 'Comment'
-          return false unless has_fragment?({:related => zoom_class_controller(zoom_class)})
+          return false unless has_fragment?(name.merge(:related => zoom_class_controller(zoom_class)))
         end
       end
     else
-      return false unless has_fragment?({:related => 'topics'})
+      return false unless has_fragment?(name.merge(:related => 'topics'))
     end
     #logger.info('Has all related/index parts')
     return true
