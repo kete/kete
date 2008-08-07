@@ -226,9 +226,7 @@ class ApplicationController < ActionController::Base
 
   # the following method is used when clearing show caches
   def all_show_parts
-    show_parts = Array.new
-    [SHOW_PARTS, PUBLIC_SHOW_PARTS, MODERATOR_SHOW_PARTS, ADMIN_SHOW_PARTS, PRIVACY_SHOW_PARTS].each { |show_part| show_part.each { |part| show_parts << part } }
-    show_parts
+    SHOW_PARTS + PUBLIC_SHOW_PARTS + MODERATOR_SHOW_PARTS + ADMIN_SHOW_PARTS + PRIVACY_SHOW_PARTS
   end
 
   # the following method is used when seeing if all fragments are present
@@ -438,7 +436,10 @@ class ApplicationController < ActionController::Base
   # wrapped in this method
   def has_fragment?(name = {})
     #logger.info("Looking for: '#{fragment_cache_key(name).gsub("?", ".") + '.cache'}'. Found? " + File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}").to_s)
-    File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
+    # File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
+    logger.info("what is name " + name.inspect)
+    logger.info("what is read_fragment: " + read_fragment(name).inspect)
+    read_fragment(name)
   end
 
   # used by show actions to determine whether to load item
