@@ -234,19 +234,17 @@ class ApplicationController < ActionController::Base
   # the following method is used when seeing if all fragments are present
   # for example, we dont want to stop optimization if an admin fragment is missing for a logged out user
   def relevant_show_parts
-    # probably a better way to merge two arrays, .merge is only for hashes it seems :(
-    show_parts = Array.new
-    SHOW_PARTS.each { |show_part| show_parts << show_part }
+    show_parts = SHOW_PARTS
     if logged_in? and @at_least_a_moderator
-      MODERATOR_SHOW_PARTS.each { |moderator_show_part| show_parts << moderator_show_part }
+      show_parts += MODERATOR_SHOW_PARTS
     else
-      PUBLIC_SHOW_PARTS.each { |public_show_part| show_parts << public_show_part }
+      show_parts += PUBLIC_SHOW_PARTS
     end
     if logged_in? and @site_admin
-      ADMIN_SHOW_PARTS.each { |admin_show_part| show_parts << admin_show_part }
+      show_parts += ADMIN_SHOW_PARTS
     end
     if @show_privacy_chooser
-      PRIVACY_SHOW_PARTS.each { |privacy_show_part| show_parts << privacy_show_part }
+      show_parts += PRIVACY_SHOW_PARTS
     end
     show_parts
   end
@@ -269,17 +267,17 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_fragment_for_all_versions(item, name = {})
-    
-    name = name.merge(:id => item.id)    
+
+    name = name.merge(:id => item.id)
     file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}"
     if File.exists?(file_path)
       File.delete(file_path)
     end
-    
+
     # Kieran Pilkington, 2008-08-05
     # we dont need to remove history caches, they dont change, only the live versions do
     # (from what I can see anyway)
-    
+
     # slight change for postgresql
     # this works with mysql and postgresql, not sure about sqlite or oracle
     #item.versions.find(:all, :select => 'distinct title, version').each do |version|
@@ -711,13 +709,15 @@ class ApplicationController < ActionController::Base
     #logger.info(exception)
     case exception
       when ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid then
-        rescue_404
-      when BackgrounDRb::NoServerAvailable then
-        rescue_500('backgroundrb_connection_failed')
+      rescue_404
+    when BackgrounDRb::NoServerAvailable then
+      rescue_500('backgroundrb_connection_failed')
+    else
+      if exception.to_s.match(/Connect\ failed/)
+        rescue_500('zebra_connection_failed')
       else
-        if exception.to_s.match(/Connect\ failed/)
-          rescue_500('zebra_connection_failed')
-        end
+        raise
+      end
     end
   end
 
