@@ -219,6 +219,7 @@ class BasketsController < ApplicationController
 
   def set_settings
     if !params[:settings].nil?
+      @basket.settings[:side_menu_direction_of_topics] = '' if params[:action] == 'update_appearance'
       params[:settings].each do |name, value|
         # HACK
         # is there a better way to typecast?
