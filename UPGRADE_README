@@ -14,6 +14,13 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 
 ANOTHER GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.  However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2008/08/07 - Fixing Caching Issues
+
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Upgrade your code base
+3.      rake tmp:cache:clear (not necessary for capistrano deployments)
+4.      Start your Kete server again (mongrels, backgroundrb)
+
 == 2008/08/01 - Making search for contributions by a user be limited to login, rather than non-unique user name
 
 1.      Stop your Kete server (mongrels).
