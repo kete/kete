@@ -291,8 +291,12 @@ class SearchController < ApplicationController
       @search.pqf_query.add_web_link_specific_query if zoom_class == 'WebLink'
     end
 
-    @search.add_sort_to_query_if_needed(:user_specified => params[:sort_type] || 'none',
-                                        :direction => params[:sort_direction],
+    sort_type = @current_basket.settings[:sort_order_default]
+    sort_direction = @current_basket.settings[:sort_direction_reversed_default]
+    search_sort_type = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
+    search_sort_direction = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
+    @search.add_sort_to_query_if_needed(:user_specified => search_sort_type,
+                                        :direction => search_sort_direction,
                                         :action => params[:action],
                                         :search_terms => @search_terms)
 

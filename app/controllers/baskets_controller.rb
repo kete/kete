@@ -229,6 +229,7 @@ class BasketsController < ApplicationController
         when "false"
           value = false
         end
+        @basket.settings[:sort_direction_reversed_default] = '' if params[:action] == 'update'
         @basket.settings[name] = value
       end
     end

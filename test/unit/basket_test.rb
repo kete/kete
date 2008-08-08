@@ -65,6 +65,44 @@ class BasketTest < Test::Unit::TestCase
     assert_equal false, basket.allow_non_member_comments?
   end
 
+  def test_should_set_basket_sort_defaults
+    basket = Basket.create(@new_model)
+    basket.settings[:sort_order_default] = 'date'
+    basket.settings[:sort_direction_reversed_default] = 'reverse'
+    assert_equal 'date', basket.settings[:sort_order_default]
+    assert_equal 'reverse', basket.settings[:sort_direction_reversed_default]
+  end
+
+  def test_should_use_user_defined_sort_settings_over_baskets
+    basket = Basket.create(@new_model)
+    basket.settings[:sort_order_default] = 'date'
+    basket.settings[:sort_direction_reversed_default] = 'reverse'
+
+    # set some nessesary variables
+    params = {}
+    sort_type = basket.settings[:sort_order_default]
+    sort_direction = basket.settings[:sort_direction_reversed_default]
+
+    params[:sort_type] = ''
+    params[:sort_direction] = ''
+    # the following two lines were taken from search_controller.rb
+    search_sort_type_1 = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
+    search_sort_direction_1 = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
+
+    params[:sort_type] = 'last_modified'
+    params[:sort_direction] = ''
+    # the following two lines were taken from search_controller.rb
+    search_sort_type_2 = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
+    search_sort_direction_2 = (params[:sort_type].blank? and !sort_direction.blank?) ? sort_direction : params[:sort_direction]
+
+    assert_equal 'date', search_sort_type_1
+    assert_equal 'reverse', search_sort_direction_1
+
+    assert_equal 'last_modified', search_sort_type_2
+    assert_equal '', search_sort_direction_2
+
+  end
+
   # TODO: tag_counts_array
   # TODO: index_page_order_tags_by
 

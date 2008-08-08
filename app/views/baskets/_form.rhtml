@@ -152,6 +152,32 @@
 
   </div>
 
+  <div class="form-element">
+    <label>Default Browse Results Order:</label>
+
+    <fieldset>
+
+      <div class="form-element">
+        <label for="settings_sort_order_default" style="width: 100%">Sort by:</label>
+        <div style="clear: left;"><%= select_tag 'settings[sort_order_default]', "<option value='none'>use software default</option>#{Search.all_sort_types((@basket.settings[:sort_order_default] || 'default'), 'all')}", "id" => "settings_sort_order_default" %></div>
+      </div>
+
+      <div class="form-element">
+        <input type="checkbox" name="settings[sort_direction_reversed_default]" id="settings_sort_direction_reversed_default" value="reverse"<%= ' checked="checked"' if @basket.settings[:sort_direction_reversed_default] == 'reverse' %> />
+        <label for="settings_sort_direction_reversed_default" class="inline">in reverse?</label>
+      </div>
+
+      <p>
+        <% if @basket != @site_basket %>
+          This setting is not inherited from site basket
+        <% else %>
+          This setting does not inherit to other baskets
+        <% end %>
+      </p>
+
+    </fieldset>
+  </div>
+
   <%= setupEnableDisableFunctions(true) %>
   <%= toggle_elements_applicable('settings_fully_moderated',
       '==', 'true', 'settings_moderated_except') %>

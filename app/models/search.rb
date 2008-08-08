@@ -14,6 +14,11 @@ class Search
     ['title'] + date_types
   end
 
+  def self.all_sort_types(sort_type, action)
+    # not ideal, but the only way to get access that I know of
+    self.new.sort_type_options_for(sort_type, action)
+  end
+
   attr_accessor :zoom_db, :pqf_query
 
   def initialize
