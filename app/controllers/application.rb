@@ -781,7 +781,7 @@ class ApplicationController < ActionController::Base
     # all contents of site basket plus all other baskets' contents
 
     # pending items are counted
-    conditions = "title != \'#{BLANK_TITLE}\'"
+    conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
 
     if basket == @site_basket
       ZOOM_CLASSES.each do |zoom_class|
