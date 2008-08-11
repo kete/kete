@@ -402,7 +402,8 @@ module ApplicationHelper
               :tag => tag,
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-              :urlified_name => @site_basket.urlified_name })
+              :urlified_name => @site_basket.urlified_name,
+              :privacy_type => (params[:private] and permitted_to_view_private_items? ? 'private' : nil) })
   end
 
   def tags_for(item)

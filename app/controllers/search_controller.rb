@@ -416,7 +416,19 @@ class SearchController < ApplicationController
     controller_name = params[:controller_name_for_zoom_class].nil? ? zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
     if params[:search_terms].blank?
-      redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name, :sort_direction => params[:sort_direction], :sort_type => params[:sort_type], :privacy_type => params[:privacy_type])
+      if params[:tag]
+        existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
+        redirect_to url_for( :overwrite_params => { :action => 'all',
+                             :controller_name_for_zoom_class => controller_name,
+                             :existing_array_string => existing_array_string,
+                             :commit => nil,
+                             :search_terms => nil,
+                             :sort_type => nil,
+                             :update => nil,
+                             :authenticity_token => nil } )
+      else
+        redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name, :sort_direction => params[:sort_direction], :sort_type => params[:sort_type], :privacy_type => params[:privacy_type])
+      end
     else
       existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
       redirect_to url_for( :overwrite_params => { :action => 'for',
