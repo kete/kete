@@ -163,9 +163,7 @@
       </div>
 
       <div class="form-element">
-        <%= check_box_tag 'settings[sort_direction_reversed_default]', 'reverse', (@basket.settings[:sort_direction_reversed_default] == 'reverse'), "id" => "settings_sort_direction_reversed_default" %>
-        <!-- because checkboxes dont send if not ticked, we have to clear the field using a hidden text area -->
-        <%= hidden_field_tag 'settings[sort_direction_reversed_default]', '', "id" => "settings_sort_direction_reversed_default_hidden_resetter" %>
+        <%= check_box 'settings', 'sort_direction_reversed_default', {:checked => (@basket.settings[:sort_direction_reversed_default] == 'reverse')}, 'reverse', '' %>
         <label for="settings_sort_direction_reversed_default" class="inline">in reverse?</label>
       </div>
 
