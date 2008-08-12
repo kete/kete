@@ -33,7 +33,7 @@ class ContentItemRelationsTest < Test::Unit::TestCase
   def test_find_related_add_with_terms
     get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "add", :related_class => "Topic", :search_terms => "register"
     
-    assert_equal 3, assigns(:results).size
+    assert_equal 4, assigns(:results).size
     assert_equal "link", assigns(:next_action)
     
     assert_response :success
