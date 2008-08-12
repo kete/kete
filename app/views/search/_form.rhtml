@@ -24,8 +24,9 @@
     <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action])  %>
     <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
       <label for="sort_direction">In reverse?</label>
-      <% currently_reversed = (!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse') %>
-      <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse" <%= 'disabled=\"true\"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%><%= 'checked' if currently_reversed -%> />
+      <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
+      <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
+      <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> />
     </div>
     <% # Only show private search control if allowed and we aren't relating something to a topic. %>
     <% if permitted_to_view_private_items? && params[:relate_to_topic].blank? && show_privacy_controls? -%>
