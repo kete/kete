@@ -71,7 +71,7 @@
 
                         <div id="bottomlinks">
                                 <div id="addnew">
-                                <% if !results_as_form and @current_class != 'Comment' %>
+                                <% if current_user_can_see_add_links? and !results_as_form and @current_class != 'Comment' %>
                                         <%= link_to_add_item(:phrase => "Add a new ", :item_class => @current_class) -%>
                                         to these search results
                                 <% else -%>
