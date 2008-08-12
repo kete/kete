@@ -104,9 +104,7 @@
       </div>
 
       <div class="form-element">
-        <%= check_box_tag 'settings[side_menu_direction_of_topics]', 'reverse', (@basket.settings[:side_menu_direction_of_topics] == 'reverse'), "id" => "settings_side_menu_direction_of_topics" %>
-        <!-- because checkboxes dont send if not ticked, we have to clear the field using a hidden text area -->
-        <%= hidden_field_tag 'settings[side_menu_direction_of_topics]', '', "id" => "settings_side_menu_direction_of_topics_hidden_resetter" %>
+        <%= check_box 'settings', 'side_menu_direction_of_topics', {:checked => (@basket.settings[:side_menu_direction_of_topics] == 'reverse')}, 'reverse', '' %>
         <label for="settings_side_menu_direction_of_topics" class="inline">in reverse?</label>
       </div>
 
