@@ -219,7 +219,6 @@ class BasketsController < ApplicationController
 
   def set_settings
     if !params[:settings].nil?
-      @basket.settings[:sort_direction_reversed_default] = '' if params[:action] == 'update'
       params[:settings].each do |name, value|
         # HACK
         # is there a better way to typecast?
