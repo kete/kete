@@ -4,15 +4,7 @@ class PqfQueryTest < ActiveSupport::TestCase
 
   def setup
     @pqf_query = PqfQuery.new
-  end
-
-  def set_short_consts
-    # Rather than type out constant names each time, we assign shorter class variables
-    @qas = PqfQuery::QUALIFYING_ATTRIBUTE_SPECS
-    @as = PqfQuery::ATTRIBUTE_SPECS
-    @dts = PqfQuery::DATETIME_SPECS
-    @dtcs = PqfQuery::DATETIME_COMPARISON_SPECS
-    @dnadimf = PqfQuery::DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR
+    set_convenience_variables_from_constants # saves us typing long constant names
   end
 
   def test_constants_are_defined
@@ -25,8 +17,6 @@ class PqfQueryTest < ActiveSupport::TestCase
   end
 
   def test_constants_have_right_data
-    set_short_consts # saves us typing long constant names
-
     # The constants in PqfQuery class pull values from other constants defined before them
     # We subsitute those values with what it should be, and check that its working as expected
     
@@ -80,8 +70,6 @@ class PqfQueryTest < ActiveSupport::TestCase
   end
 
   def test_to_string_and_add_web_link_specific_query
-    set_short_consts # saves us typing long constant names
-
     assert_equal "  ", @pqf_query.to_s
     @pqf_query.add_web_link_specific_query # is another test on its own that the method successfully sets a class variable
     assert_equal "@or   #{@as['subjects']} ", @pqf_query.to_s
@@ -113,8 +101,6 @@ class PqfQueryTest < ActiveSupport::TestCase
   end
 
   def test_exact_match_for_part_of_oai_identifier
-    set_short_consts # saves us typing long constant names
-
     assert_equal "#{@as['oai_identifier']}\":Topic:\"", @pqf_query.exact_match_for_part_of_oai_identifier("topics".classify, :operator => 'none')
     assert_equal "#{@as['oai_identifier']}\":site:\"", @pqf_query.exact_match_for_part_of_oai_identifier(Basket.first.urlified_name)
     assert_equal "#{@as['oai_identifier']}@or \":site:\" \":documentation:\"", @pqf_query.exact_match_for_part_of_oai_identifier([Basket.first.urlified_name, Basket.last.urlified_name])
@@ -141,15 +127,11 @@ class PqfQueryTest < ActiveSupport::TestCase
   end
 
   def test_oai_datestamp_between
-    set_short_consts # saves us typing long constant names
-
     # Check we get the right result for searching between two dates
     assert_equal "@and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_between({:beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59', :only_return_as_string => true})
   end
 
   def test_oai_datestamp_comparison
-    set_short_consts # saves us typing long constant names
-
     # Check we get the right result for between two dates, after date, and before date searches
     assert_equal "@and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\"", @pqf_query.oai_datestamp_comparison({:beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59', :only_return_as_string => true})
     assert_equal "#{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\"", @pqf_query.oai_datestamp_comparison({:beginning => '2008-01-01 00:00:00', :only_return_as_string => true})
@@ -157,15 +139,11 @@ class PqfQueryTest < ActiveSupport::TestCase
   end
 
   def test_creators_or_contributors_include
-    set_short_consts # saves us typing long constant names
-
     # Check we get the right result for searching by creator or contributors of name 'admin'
     assert_equal "@or #{@as['creators']}\"admin\" #{@as['contributors']}\"admin\"", @pqf_query.creators_or_contributors_include("admin", {:only_return_as_string => true})
   end
 
   def test_title_or_any_text_includes
-    set_short_consts # saves us typing long constant names
-
     # Check we get the right result for searchin for a string in title or any_text
     assert_equal "#{@qas['relevance']}", @pqf_query.title_or_any_text_includes("")
     assert_equal "#{@qas['relevance']}@or #{@as['title']}  \"One\"  #{@as['any_text']}  \"One\"  ", @pqf_query.title_or_any_text_includes("One")
@@ -173,16 +151,12 @@ class PqfQueryTest < ActiveSupport::TestCase
   end
 
   def test_methods_should_have_aliases
-    set_short_consts # saves us typing long constant names
-
     # Check we get the right result when using method aliases
     assert_equal "#{@as['oai_identifier']}\":Topic:\"", @pqf_query.kind_is("topics".classify, :operator => 'none')
     assert_equal "#{@as['oai_identifier']}\":site:\"", @pqf_query.within(Basket.first.urlified_name)
   end
 
   def test_push_to_appropriate_variables
-    set_short_consts # saves us typing long constant names
-
     # Check that values passed in are concatenated and accessable via to_S
     @pqf_query.title_or_any_text_includes("One Two")
     @pqf_query.oai_datestamp_comparison({:beginning => '2008-01-01 00:00:00', :ending => '2008-12-31 23:59:59'})
@@ -190,4 +164,15 @@ class PqfQueryTest < ActiveSupport::TestCase
     expect = "@and @and #{@qas['relevance']}@or #{@as['title']} @and  \"One\" \"Two\" #{@as['any_text']} @and  \"One\" \"Two\"  @and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\" @or #{@as['creators']}\"admin\" #{@as['contributors']}\"admin\" "
     assert_equal expect, @pqf_query.to_s
   end
+  
+  private
+
+    def set_convenience_variables_from_constants
+      # Rather than type out constant names each time, we assign shorter class variables
+      @qas = PqfQuery::QUALIFYING_ATTRIBUTE_SPECS
+      @as = PqfQuery::ATTRIBUTE_SPECS
+      @dts = PqfQuery::DATETIME_SPECS
+      @dtcs = PqfQuery::DATETIME_COMPARISON_SPECS
+      @dnadimf = PqfQuery::DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR
+    end
 end
