@@ -25,6 +25,9 @@ module AuthenticatedTestHelper
     end
   end
 
+  # Kieran Pilkington, 2008/08/11
+  # the following two methods are now a part of Rails Core and better support
+
   # http://project.ioni.st/post/217#post-217
   #
   #  def test_new_publication
@@ -34,15 +37,15 @@ module AuthenticatedTestHelper
   #    end
   #  end
   #
-  def assert_difference(object, method = nil, difference = 1)
-    initial_value = object.send(method)
-    yield
-    assert_equal initial_value + difference, object.send(method), "#{object}##{method}"
-  end
+  #def assert_difference(object, method = nil, difference = 1)
+  #  initial_value = object.send(method)
+  #  yield
+  #  assert_equal initial_value + difference, object.send(method), "#{object}##{method}"
+  #end
 
-  def assert_no_difference(object, method, &block)
-    assert_difference object, method, 0, &block
-  end
+  #def assert_no_difference(object, method, &block)
+  #  assert_difference object, method, 0, &block
+  #end
 
   # Assert the block redirects to the login
   #
