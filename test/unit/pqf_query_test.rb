@@ -4,7 +4,14 @@ class PqfQueryTest < ActiveSupport::TestCase
 
   def setup
     @pqf_query = PqfQuery.new
-    set_convenience_variables_from_constants # saves us typing long constant names
+
+    # Rather than type out constant names each time
+    # we assign shorter instance variables
+    @qas = PqfQuery::QUALIFYING_ATTRIBUTE_SPECS
+    @as = PqfQuery::ATTRIBUTE_SPECS
+    @dts = PqfQuery::DATETIME_SPECS
+    @dtcs = PqfQuery::DATETIME_COMPARISON_SPECS
+    @dnadimf = PqfQuery::DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR
   end
 
   def test_constants_are_defined
@@ -19,7 +26,7 @@ class PqfQueryTest < ActiveSupport::TestCase
   def test_constants_have_right_data
     # The constants in PqfQuery class pull values from other constants defined before them
     # We subsitute those values with what it should be, and check that its working as expected
-    
+
     qualifying_attribute_specs = {
       'relevance' => "@attr 2=102 @attr 5=3 @attr 5=103 ",
       'exact' => "@attr 4=3 ",
@@ -164,15 +171,4 @@ class PqfQueryTest < ActiveSupport::TestCase
     expect = "@and @and #{@qas['relevance']}@or #{@as['title']} @and  \"One\" \"Two\" #{@as['any_text']} @and  \"One\" \"Two\"  @and #{@dtcs['on_or_after']}#{@dts['oai_datestamp']}\"2008-01-01 00:00:00\" #{@dtcs['on_or_before']}#{@dts['oai_datestamp']}\"2008-12-31 23:59:59\" @or #{@as['creators']}\"admin\" #{@as['contributors']}\"admin\" "
     assert_equal expect, @pqf_query.to_s
   end
-  
-  private
-
-    def set_convenience_variables_from_constants
-      # Rather than type out constant names each time, we assign shorter class variables
-      @qas = PqfQuery::QUALIFYING_ATTRIBUTE_SPECS
-      @as = PqfQuery::ATTRIBUTE_SPECS
-      @dts = PqfQuery::DATETIME_SPECS
-      @dtcs = PqfQuery::DATETIME_COMPARISON_SPECS
-      @dnadimf = PqfQuery::DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR
-    end
 end
