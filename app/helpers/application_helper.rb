@@ -124,12 +124,23 @@ module ApplicationHelper
         topic_count = 0
 
         order_with_inheritence = basket.settings[:side_menu_ordering_of_topics] || @site_basket.settings[:side_menu_ordering_of_topics]
+        direction_with_inheritence = basket.settings[:side_menu_direction_of_topics] || @site_basket.settings[:side_menu_direction_of_topics]
 
         order = case order_with_inheritence
                 when "alphabetical"
-                  "title ASC"
+                  case direction_with_inheritence
+                  when "reverse"
+                    "title DESC"
+                  else
+                    "title ASC"
+                  end
                 else
-                  "updated_at DESC"
+                  case direction_with_inheritence
+                  when "reverse"
+                    "updated_at ASC"
+                  else
+                    "updated_at DESC"
+                  end
                 end
 
         if !basket.settings[:side_menu_number_of_topics].blank?

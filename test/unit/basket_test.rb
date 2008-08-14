@@ -100,7 +100,14 @@ class BasketTest < Test::Unit::TestCase
 
     assert_equal 'last_modified', search_sort_type_2
     assert_equal '', search_sort_direction_2
+  end
 
+  def test_should_set_basket_menu_sort_defaults
+    basket = Basket.create(@new_model)
+    basket.settings[:side_menu_ordering_of_topics] = 'alphabetical'
+    basket.settings[:side_menu_direction_of_topics] = 'reverse'
+    assert_equal 'alphabetical', basket.settings[:side_menu_ordering_of_topics]
+    assert_equal 'reverse', basket.settings[:side_menu_direction_of_topics]
   end
 
   # TODO: tag_counts_array

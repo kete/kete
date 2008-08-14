@@ -99,8 +99,13 @@
       </div>
 
       <div class="form-element">
-        <label for="settings_side_menu_ordering_of_topics">Order topics by:</label>
-        <%= select_tag 'settings[side_menu_ordering_of_topics]', @basket.side_menu_ordering_of_topics_as_options(@site_basket), "id" => "side_menu_ordering_of_topics" %>
+        <label for="settings_side_menu_ordering_of_topics" style="width: 100%;">Sort by:</label>
+        <div style="clear: left;"><%= select_tag 'settings[side_menu_ordering_of_topics]', @basket.side_menu_ordering_of_topics_as_options(@site_basket), "id" => "side_menu_ordering_of_topics" %></div>
+      </div>
+
+      <div class="form-element">
+        <%= check_box 'settings', 'side_menu_direction_of_topics', {:checked => (@basket.settings[:side_menu_direction_of_topics] == 'reverse')}, 'reverse', '' %>
+        <label for="settings_side_menu_direction_of_topics" class="inline">in reverse?</label>
       </div>
 
     </fieldset>
