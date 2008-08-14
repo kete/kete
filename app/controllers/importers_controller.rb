@@ -38,7 +38,7 @@ class ImportersController < ApplicationController
 
   # Get the Privacy Controls helper
   helper :privacy_controls
-  
+
   def  index
     list
   end
@@ -117,13 +117,14 @@ class ImportersController < ApplicationController
         @zoom_class = 'Topic'
       end
 
-      workers_list = Array.new
+      # for the time being we are limiting to only one import to be running at a time
+      is_already_operating = false
       MiddleMan.all_worker_info.each do |server|
         if !server[1].nil?
-          server[1].each { |workers| workers_list << workers[:worker] }
+          server[1].each { |workers| is_already_operating = true if @worker_type == workers[:worker] }
         end
+        break if is_already_operating
       end
-      is_already_operating = workers_list.include?(@worker_type) ? true : false
 
       if !is_already_operating
         MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
@@ -131,7 +132,7 @@ class ImportersController < ApplicationController
                                                                                    :import => @import.id,
                                                                                    :params => params,
                                                                                    :import_request => import_request } )
-        
+
         # fixing failure due to unnecessary loading of tiny_mce
         @do_not_use_tiny_mce = true
       else
