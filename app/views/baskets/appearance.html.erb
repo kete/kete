@@ -27,11 +27,11 @@
     <label for="settings_theme">Theme:</label>
     <fieldset>
       <% if @basket.possible_themes.size > 0 -%>
-      <% @basket.possible_themes.each  do |theme| -%>
+      <% @basket.possible_themes.each do |theme| -%>
       <div class="theme-choice-wrapper">
         <%= image_tag "/themes/#{theme}/images/sample.jpg" -%>
         <div class="theme-choice-text">
-          <%= radio_button_tag 'settings[theme]', theme, "id" => "settings_theme" %>
+          <%= radio_button_tag 'settings[theme]', theme, (@basket.settings[:theme] == theme), "id" => "settings_theme" %>
           <%= theme.humanize %>
         </div>
       </div>
