@@ -28,10 +28,11 @@ class ZoomDb < ActiveRecord::Base
   # the query and they should match the syntax
   # of what the zoom_db expects
   # returns a zoom result set
+  # will reuse already open connection, if optionally passed in
   def process_query(args = {})
     query = args[:query]
 
-    conn = self.open_connection
+    conn = args[:existing_connection] || self.open_connection
     # we are always using xml at this point
     conn.preferred_record_syntax = 'XML'
 
@@ -40,13 +41,13 @@ class ZoomDb < ActiveRecord::Base
   end
 
   # Find whether a zoom record exists for this record in the given ZOOM database
-  def has_zoom_record?(record_id)
-    process_query(:query => "@attr 1=12 @attr 4=3 \"#{record_id}\"").size > 0
+  def has_zoom_record?(record_id, existing_connection = nil)
+    process_query(:query => "@attr 1=12 @attr 4=3 \"#{record_id}\"", :existing_connection => existing_connection).size > 0
   end
 
   # this takes a passed in record and deletes it from the zoom db
-  def destroy_this(record, zoom_id)
-    c = open_connection
+  def destroy_this(record, zoom_id, existing_connection = nil)
+    c = existing_connection || open_connection
     p = c.package
     p.function = 'create'
     p.wait_action = 'waitIfPossible'
@@ -61,8 +62,8 @@ class ZoomDb < ActiveRecord::Base
   end
 
   # this takes a passed in record and saves it to the zoom db
-  def save_this(record, zoom_id)
-    c = open_connection
+  def save_this(record, zoom_id, existing_connection = nil)
+    c = existing_connection || open_connection
     p = c.package
     p.function = 'create'
     p.wait_action = 'waitIfPossible'
