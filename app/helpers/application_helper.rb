@@ -70,7 +70,8 @@ module ApplicationHelper
                                                             :action => 'all',
                                                             :urlified_name => @current_basket.urlified_name,
                                                             :controller_name_for_zoom_class => 'topics',
-                                                            :trailing_slash => true )
+                                                            :trailing_slash => true,
+                                                            :privacy_type => ((@current_basket.private_default || @site_basket.private_default) ? 'private' : nil) )
     else
       site_link_text = 'Browse'
     end
@@ -780,10 +781,15 @@ module ApplicationHelper
 
   # Check if privacy controls should be displayed?
   def show_privacy_controls?
-    if @current_basket.show_privacy_controls.nil?
-      @site_basket.show_privacy_controls?
+    @site_basket.show_privacy_controls || @current_basket.show_privacy_controls
+  end
+
+  def show_privacy_search_controls?
+    if @current_basket == @site_basket
+      total_privacy_enabled_baskets = Basket.count(:conditions => ["show_privacy_controls = ?", true])
+      return (@site_basket.show_privacy_controls == true or total_privacy_enabled_baskets > 0) ? true : false
     else
-      @current_basket.show_privacy_controls
+      @current_basket.show_privacy_controls || @site_basket.show_privacy_controls
     end
   end
 

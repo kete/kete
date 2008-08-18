@@ -51,9 +51,12 @@
         <div class="form_example">
           Disable Privacy Controls if members can only create publicly
           readable items.
+          <% if @basket == @site_basket %>
+            This baskets browsing controls are left enabled if any other baskets have
+            privacy controls turned on (for site-wide private search).
+          <% end %>
         </div>
       </div>
-
 
       <% if @basket != @site_basket && @basket.show_privacy_controls.blank? -%>
       <p>The Site has
