@@ -138,8 +138,9 @@ class SearchController < ApplicationController
       zoom_db_instance = "public"
     end
 
-    # Load the correct zoom_db instance.
+    # Load the correct zoom_db instance and connect to it
     @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
+    @zoom_connection = @search.zoom_db.open_connection
 
     @result_sets = Hash.new
 
@@ -301,7 +302,7 @@ class SearchController < ApplicationController
                                         :search_terms => @search_terms)
 
     logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
-    this_result_set = @search.zoom_db.process_query(:query => @search.pqf_query.to_s)
+    this_result_set = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
 
     @result_sets[zoom_class] = this_result_set
 
@@ -775,6 +776,7 @@ class SearchController < ApplicationController
 
   # James Stradling <james@katipo.co.nz> - 2008-05-02
   # Refactored to use acts_as_zoom#has_appropriate_records?
+  #### DEPRECIATED?
   def zoom_update_and_test(item,zoom_db)
     item_class = item.class.name
 
