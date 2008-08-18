@@ -786,8 +786,7 @@ module ApplicationHelper
 
   def show_privacy_search_controls?
     if @current_basket == @site_basket
-      total_privacy_enabled_baskets = Basket.count(:conditions => ["show_privacy_controls = ?", true])
-      return (@site_basket.show_privacy_controls == true or total_privacy_enabled_baskets > 0) ? true : false
+      return (@site_basket.show_privacy_controls == true or Basket.privacy_exists) ? true : false
     else
       @current_basket.show_privacy_controls || @site_basket.show_privacy_controls
     end

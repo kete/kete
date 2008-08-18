@@ -17,6 +17,14 @@ class Basket < ActiveRecord::Base
   # sanitize our descriptions and extended_content for security
   acts_as_sanitized :fields => [:index_page_extra_side_bar_html]
 
+  # Kieran Pilkington, 2008/08/18
+  # Store how many baskets have privacy controls enabled to determine
+  # whether Site basket should keep its privacy browsing controls on
+  cattr_accessor :privacy_exists
+  @@privacy_exists = (Basket.count(:conditions => ["show_privacy_controls = ?", true]) > 0)
+  after_save :any_privacy_enabled_baskets?
+  after_destroy :any_privacy_enabled_baskets?
+
   # set up authorization plugin
   acts_as_authorizable
 
@@ -378,5 +386,11 @@ class Basket < ActiveRecord::Base
       role.reload
       role.destroy if role.users.size == 0
     end
+  end
+
+  # when we create, update, or destroy, we recalcutate the amount of
+  # baskets with privacy controls enabled
+  def any_privacy_enabled_baskets?
+    @@privacy_exists = (Basket.count(:conditions => ["show_privacy_controls = ?", true]) > 0)
   end
 end
