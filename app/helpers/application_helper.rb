@@ -71,7 +71,7 @@ module ApplicationHelper
                                                             :urlified_name => @current_basket.urlified_name,
                                                             :controller_name_for_zoom_class => 'topics',
                                                             :trailing_slash => true,
-                                                            :privacy_type => ((@current_basket.private_default || @site_basket.private_default) ? 'private' : nil) )
+                                                            :privacy_type => (permitted_to_view_private_items? && (@current_basket.private_default || @site_basket.private_default) ? 'private' : nil) )
     else
       site_link_text = 'Browse'
     end
