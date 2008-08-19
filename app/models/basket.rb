@@ -17,11 +17,23 @@ class Basket < ActiveRecord::Base
   # sanitize our descriptions and extended_content for security
   acts_as_sanitized :fields => [:index_page_extra_side_bar_html]
 
+  # Kieran Pilkington, 2008/08/19
+  # setup our default baskets on application load, rather than each request
+  cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_baskets
+  @@site_basket = find(1)
+  @@help_basket = find(HELP_BASKET)
+  @@about_basket = find(ABOUT_BASKET)
+  @@documentation_basket = find(DOCUMENTATION_BASKET)
+  @@standard_baskets = [1, HELP_BASKET, ABOUT_BASKET, DOCUMENTATION_BASKET]
+  after_save :reset_basket_class_variable
+  before_destroy :reset_basker_class_variable
+
   # Kieran Pilkington, 2008/08/18
   # Store how many baskets have privacy controls enabled to determine
   # whether Site basket should keep its privacy browsing controls on
+  named_scope :should_show_privacy_controls, :conditions => { :show_privacy_controls => true }
   cattr_accessor :privacy_exists
-  @@privacy_exists = (Basket.count(:conditions => ["show_privacy_controls = ?", true]) > 0)
+  @@privacy_exists = (Basket.should_show_privacy_controls.count > 0)
   after_save :any_privacy_enabled_baskets?
   after_destroy :any_privacy_enabled_baskets?
 
@@ -332,6 +344,14 @@ class Basket < ActiveRecord::Base
     allow_non_member_comments === true
   end
 
+  def private_default?
+    (self.private_default == true || (self.private_default.blank? && @@site_basket.private_default == true))
+  end
+
+  def show_privacy_controls?
+    (self.show_privacy_controls == true || (self.show_privacy_controls.blank? && @@site_basket.show_privacy_controls == true))
+  end
+
   # Get the roles this Basket has
   def roles
     Role.find_all_by_authorizable_type_and_authorizable_id('Basket', self)
@@ -388,9 +408,24 @@ class Basket < ActiveRecord::Base
     end
   end
 
+  # reset the baskets class variable if its one of those we cache
+  def reset_basket_class_variable
+    return unless @@standard_baskets.include?(self.id)
+    case self.id
+    when 1
+      @@site_basket = Basket.find(1)
+    when HELP_BASKET
+      @@help_basket = Basket.find(HELP_BASKET)
+    when ABOUT_BASKET
+      @@about_basket = Basket.find(ABOUT_BASKET)
+    when DOCUMENTATION_BASKET
+      @@documentation_basket = Basket.find(DOCUMENTATION_BASKET)
+    end
+  end
+
   # when we create, update, or destroy, we recalcutate the amount of
   # baskets with privacy controls enabled
   def any_privacy_enabled_baskets?
-    @@privacy_exists = (Basket.count(:conditions => ["show_privacy_controls = ?", true]) > 0)
+    @@privacy_exists = (Basket.should_show_privacy_controls.count > 0)
   end
 end

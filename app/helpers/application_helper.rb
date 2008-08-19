@@ -65,13 +65,14 @@ module ApplicationHelper
     if @current_basket != @site_basket
       pre_text = 'Browse: '
       site_link_text = @site_basket.name
+      privacy_type = (@current_basket.private_default? && permitted_to_view_private_items?) ? 'private' : nil
       current_basket_html = " or " + link_to_unless_current( @current_basket.name,
                                                             :controller => 'search',
                                                             :action => 'all',
                                                             :urlified_name => @current_basket.urlified_name,
                                                             :controller_name_for_zoom_class => 'topics',
                                                             :trailing_slash => true,
-                                                            :privacy_type => (permitted_to_view_private_items? && (@current_basket.private_default || @site_basket.private_default) ? 'private' : nil) )
+                                                            :privacy_type => privacy_type )
     else
       site_link_text = 'Browse'
     end
@@ -415,7 +416,7 @@ module ApplicationHelper
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
               :urlified_name => @site_basket.urlified_name,
-              :privacy_type => (params[:private] and permitted_to_view_private_items? ? 'private' : nil) })
+              :privacy_type => get_acceptable_privacy_type(nil, "private") })
   end
 
   def tags_for(item)
@@ -781,14 +782,15 @@ module ApplicationHelper
 
   # Check if privacy controls should be displayed?
   def show_privacy_controls?
-    @site_basket.show_privacy_controls || @current_basket.show_privacy_controls
+    @current_basket.show_privacy_controls?
   end
 
   def show_privacy_search_controls?
     if @current_basket == @site_basket
-      return (@site_basket.show_privacy_controls == true or Basket.privacy_exists) ? true : false
+      # note that it has to be "== true" in combination with ||, or you will get unexpected results when show_privacy_controls is not nil and == false
+      (@site_basket.show_privacy_controls == true or Basket.privacy_exists)
     else
-      @current_basket.show_privacy_controls || @site_basket.show_privacy_controls
+      @current_basket.show_privacy_controls?
     end
   end
 
