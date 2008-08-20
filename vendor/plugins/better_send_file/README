@@ -1,0 +1,35 @@
+better-send-file
+================
+
+better_send_file is a plugin by James Stradling <http://www.katipo.co.nz> which overrides Rail's ActionController::Streaming#send_file method to use a reverse proxy to send files.
+
+This is especially useful when running Mongrels as web-servers as send_file can tie up a mongrel instance for a long period of time in some circumstances.
+
+better-send-file functionality
+==============================
+
+better_send_file currently supports the following reverse proxies:
+	Nginx (X-Accel-Redirect)
+	
+usage
+=====
+
+1.	Configure Nginx to handle the X-Accel-Redirect header, then restart your Nginx server.
+
+	a) Add the following declaration in the server block on the nginx.conf file
+	
+	location ^~ /private {
+		root /home/user/apps/my_app/;
+		internal;
+	}
+	
+	b) Substitute /private for the path inside your application to the files to be served. This is file system relative, not URL relative. For instance, in the example above, /private references the folder at /home/user/apps/my_app/private.
+	c) Substitute /home/user/apps/my_app/ for the full path to your applications's root directory.
+
+	NB: The internal declaration is mandatory, but has the side effect that files inside this folder cannot be fetched from outside of your application directly (i.e. through a GET request to the appropriate URL). The file must be actively served from inside the application by sending the X-Accel-Redirect header to the Nginx server.
+	
+	
+2.	Add the better_send_file plugin to your application's vendor/plugins/ directory.
+3.	Restart your web-server (e.g. mongrel) instances, and you're good to go. better_send_file override's rails' send_file method so you can keep using this as normal.
+
+See the Rails docs at http://api.rubyonrails.org for more info.
