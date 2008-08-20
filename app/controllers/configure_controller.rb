@@ -214,17 +214,28 @@ class ConfigureController < ApplicationController
     if !request.xhr?
       redirect_to "#{register_url}/site/kete_sites/new"
     else
-      site_name = SystemSetting.find(2).value
-      site_url = SystemSetting.find(4).value
-      site_url = "#{request.protocol}#{request.host_with_port}" if site_url.empty?
-      register = RegisterSiteResource.create(:site_name => site_name, :site_url => site_url, :site_description => params[:site_description])
+      @site_name = SystemSetting.find(2).value
+      @site_url = SystemSetting.find(4).value
+      @site_url = "#{request.protocol}#{request.host_with_port}" if @site_url.empty?
+      register = RegisterSiteResource.create(:site_name => @site_name, :site_url => @site_url, :site_description => params[:site_description])
       render :update do |page|
-        if register and register.id > 0
+        if register and register.errors.empty? and register.id > 0
           message = "Your Kete installation has been registered. Thank you."
+          page.replace_html("send_information_div", message)
+        elsif !register.errors.empty?
+          message = "<strong>Some fields were incorrect:</strong><br />"
+          register.errors.each do |field, error|
+            message += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
+          end
+          message += "<br />"
+          page.replace_html("register_errors", message)
+          page.show('form_fields')
+          page.show('site_description')
+          page.show('data-button')
         else
           message = "There was an error registering your site. You can do it manually at <a href='#{register_url}/site/kete_sites/new'>http://kete.net.nz/</a>."
+          page.replace_html("send_information_div", message)
         end
-        page.replace_html("send_information_div", message)
       end
     end
   end
