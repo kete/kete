@@ -209,6 +209,26 @@ class ConfigureController < ApplicationController
     end
   end
 
+  def send_information
+    register_url = "http://k776.homeip.net"
+    if !request.xhr?
+      redirect_to "#{register_url}/site/kete_sites/new"
+    else
+      site_name = SystemSetting.find(2).value
+      site_url = SystemSetting.find(4).value
+      site_url = "#{request.protocol}#{request.host_with_port}" if site_url.empty?
+      register = RegisterSiteResource.create(:site_name => site_name, :site_url => site_url, :site_description => params[:site_description])
+      render :update do |page|
+        if register and register.id > 0
+          message = "Your Kete installation has been registered. Thank you."
+        else
+          message = "There was an error registering your site. You can do it manually at <a href='#{register_url}/site/kete_sites/new'>http://kete.net.nz/</a>."
+        end
+        page.replace_html("send_information_div", message)
+      end
+    end
+  end
+
   # update the "Is Configured" system setting
   # if all required settings are supplied
   def finish
@@ -238,4 +258,10 @@ class ConfigureController < ApplicationController
       nil
     end
   
+end
+
+class RegisterSiteResource < ActiveResource::Base
+  self.site = "http://k776.homeip.net/site/"
+  self.element_name = "kete_site"
+  self.timeout = 5
 end

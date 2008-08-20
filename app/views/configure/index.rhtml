@@ -163,7 +163,7 @@
                   <% form_remote_tag( :url => { :action => 'prime_zebra' },
                                       :before => "Element.hide('prime-button');Element.show('prime-spinner')",
                                       :complete => "Element.hide('prime-spinner')",
-                  :href => url_for( :action => 'prime_zebra' ) ) do %>
+                                      :href => url_for( :action => 'prime_zebra' ) ) do %>
                   <div id="prime-spinner"
                   style="display:none; text-align:center"><img src="/images/indicator.gif"
                   width="16" height="16" alt="completed" /></div>
@@ -185,7 +185,28 @@
                   and ready to be viewed.
                   Click 'Reload Site' to move on to customising your
                   Kete's content to suit.</p>
-                  <div class="wrap"><%= button_to 'Reload Site', basket_index_url(:urlified_name => 'site') %></div>
+                  <h3>Register your site (optional)</h3>
+                  <div id="send_information_div">
+                  <% form_remote_tag ( :url => { :action => 'send_information' },
+                                       :before => "Element.hide('data-button');Element.show('data-spinner')",
+                                       :complete => "Element.hide('data-spinner')",
+                                       :href => url_for( :action => 'send_information' ) ) do %>
+                    <p>Would you like to send your site name, site url and
+                    a short description of what you plan to use the site for
+                    to the developer of kete for statistical purposes?</p>
+                    <script type="text/javascript">function clearText(thefield) { if (thefield.defaultValue == thefield.value) { thefield.value = "" } }</script>
+                    <p><input type="text" id="site_description" name="site_description" size="60" value="(optional - describe what your kete installation will be used for)" onfocus="clearText(this);" /></p>
+                    <p><%= submit_tag 'Send Information', :id => 'data-button' -%>
+                      <span id="data-spinner" style="display:none; text-align:center">
+                        <img src="/images/indicator.gif" width="16" height="16" alt="sending" />
+                      </span>
+                    </p>
+                  <% end -%>
+                  </div>
+                  <div class="wrap">
+                    <br /><br />
+                    <%= button_to 'Reload Site', basket_index_url(:urlified_name => 'site') %>
+                  </div>
               </div>
             </td>
           </tr>
