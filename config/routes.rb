@@ -121,7 +121,7 @@ ActionController::Routing::Routes.draw do |map|
   # to make sure that the db is answering
   map.connect 'zebra_uptime.txt', :controller => "index_page", :action => 'zebra_uptime'
   # to make sure that registration is valid
-  map.connect 'kete.txt', :controller => "index_page", :action => 'kete_information'
+  map.connect 'validate_kete_net_link.txt', :controller => "index_page", :action => 'validate_kete_net_link'
 
   map.connect '*path', :controller => 'application', :action => 'rescue_404' unless ActionController::Base.consider_all_requests_local
 end
