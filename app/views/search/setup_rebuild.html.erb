@@ -16,7 +16,7 @@
   <% form_tag :overwrite_params => { :action => 'rebuild_zoom_index' }  do %>
   <div class="form-element">
     <label for="zoom_class">Type to rebuild:</label>
-    <% zoom_class_options = '<option value=\"all\">all types</option>'
+    <% zoom_class_options = '<option value="all">all types</option>'
        ZOOM_CLASSES.each { |class_name| zoom_class_options += "<option value=\"#{class_name}\">#{zoom_class_humanize(class_name)}</option>" }
        -%>
     <%= select_tag 'zoom_class', zoom_class_options %>
@@ -27,8 +27,7 @@
       <label for="clear_zebra">Clear and restart search engine first?</label>
       <input type="checkbox" name="clear_zebra" id="clear_zebra" value="true" checked="checked" />
       <div class="form-example">This will "erase" your existing search
-        records and start from scratch.  You can only use this if you are
-        rebuilding all types and starting from the first record and
+        records and start from scratch.  Use this if starting from the first record and
         ending with the last.  This involves some steps that don't
         work on all platforms (e.g. Solaris 10), uncheck if will be
         doing these steps by hand from the command line on the server.</div>

@@ -2,12 +2,14 @@ require "oai_dc_helpers"
 require "xml_helpers"
 require "zoom_helpers"
 require "zoom_controller_helpers"
+require "extended_content_helpers"
 module ImporterZoom
   unless included_modules.include? ImporterZoom
     def self.included(klass)
       klass.send :include, OaiDcHelpers
       klass.send :include, ZoomHelpers
       klass.send :include, ZoomControllerHelpers
+      klass.send :include, ExtendedContentHelpers
       klass.send :include, ActionController::UrlWriter
     end
 
@@ -101,7 +103,25 @@ module ImporterZoom
       controller = options[:controller]
       urlified_name = options[:urlified_name]
       protocol = options[:protocol] || appropriate_protocol_for(item)
-      "#{protocol}://#{host}/#{urlified_name}/#{controller}/show/#{item.to_param}"
+
+      url = "#{protocol}://#{host}/#{urlified_name}/"
+      if item.class.name == 'Comment'
+        commented_on_item = item.commentable
+        url += zoom_class_controller(commented_on_item.class.name) + '/show/'
+        if commented_on_item.respond_to?(:private) && commented_on_item.private?
+          url += "#{item.id.to_s}?private=true"
+        else
+          url += "#{item.to_param}?"
+        end
+        url += "#comment-#{item.id}"
+      else
+        if item.respond_to?(:private) && item.private?
+          url += "#{controller}/show/#{item.id.to_s}?private=true"
+        else
+          url += "#{controller}/show/#{item.to_param}"
+        end
+      end
+      url
     end
 
     def importer_oai_dc_xml_dc_identifier(xml,item, passed_request = nil)

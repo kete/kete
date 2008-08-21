@@ -558,31 +558,34 @@ class SearchController < ApplicationController
       status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
       begin
         if !status.blank?
-          current_zoom_class = status[:current_zoom_class]
+          current_zoom_class = status[:current_zoom_class] || 'Topic'
           records_processed = status[:records_processed]
           records_failed = status[:records_failed]
           records_skipped = status[:records_skipped]
 
           render :update do |page|
 
-            page.replace_html 'processing_zoom_class', "<p>Working on #{zoom_class_plural_humananize(current_zoom_class)}</p>"
+            page.replace_html 'processing_zoom_class', "<p>Working on #{zoom_class_plural_humanize(current_zoom_class)}</p>"
 
             if records_processed > 0
               page.replace_html 'report_records_processed', "<p>#{records_processed} records processed</p>"
             end
 
             if records_failed > 0
-              page.replace_html 'report_records_failed', "<p>#{records_processed} records failed</p>"
+              page.replace_html 'report_records_failed', "<p>#{records_failed} records failed</p>"
             end
 
             if records_skipped > 0
-              page.replace_html 'report_records_skipped', "<p>#{records_processed} records skipped</p>"
+              page.replace_html 'report_records_skipped', "<p>#{records_skipped} records skipped</p>"
             end
 
+            logger.info("after record reports")
             if status[:done_with_do_work] == true or !status[:error].blank?
+              logger.info("inside done")
               done_message = "All records processed."
 
               if !status[:error].blank?
+                logger.info("error not blank")
                 done_message = "There was a problem with the rebuild: #{status[:error]}<p><b>The rebuild has been stopped</b></p>"
               end
               page.hide("spinner")
@@ -608,7 +611,7 @@ class SearchController < ApplicationController
         flash[:notice] = message
         render :update do |page|
           page.hide("spinner")
-          page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Imports', :action => 'list') + '</p>'
+          page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
         end
       end
     end
