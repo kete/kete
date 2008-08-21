@@ -238,4 +238,8 @@ class IndexPageController < ApplicationController
     render(:text => "success")
   end
 
+  def kete_information
+    render(:xml => { :url => "#{(request.protocol + request.host)}", :date => "#{Time.new.utc.to_date.to_s(:db)}", :hour => "#{Time.new.utc.hour}" })
+  end
+
 end
