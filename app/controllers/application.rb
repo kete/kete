@@ -28,7 +28,10 @@ class ApplicationController < ActionController::Base
                                             :flag_form,
                                             :flag_version,
                                             :restore,
-                                            :reject]
+                                            :reject,
+                                            :choose_type,
+                                            :setup_rebuild,
+                                            :rebuild_zoom_index]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes

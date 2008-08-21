@@ -24,6 +24,13 @@ class SearchController < ApplicationController
   # for slideshow functionality.
   after_filter :store_results_for_slideshow, :only => [:for, :all]
 
+  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
+  verify :method => :post, :only => [ :rebuild_zoom_index ],
+         :redirect_to => { :action => :index }
+
+  # these search actions should only be done by tech admins at this time
+  permit "tech_admin", :only => [ :setup_rebuild, :rebuild_zoom_index, :check_rebuild_status ]
+
   def index
   end
 
@@ -498,74 +505,51 @@ class SearchController < ApplicationController
     end
   end
 
-  # this probably may not scale
+  # actions for rebuilding search records
+  # see filters and permissions for security towards top of code
+  include WorkerControllerHelpers
+  # this is the form for tech admins
+  # to configure the rebuild_zoom_index action
+  def setup_rebuild
+  end
+
+  # this takes the configuration and uses it to start a backgroundrb worker
+  # to do the actual rebuild work on zebra
   def rebuild_zoom_index
-    permit "tech_admin" do
-      session[:zoom_class] = !params[:zoom_class].nil? ? params[:zoom_class] : 'Topic'
-      session[:start_id] = !params[:start].nil? ? params[:start] : 1
-      session[:end_id] = !params[:end].nil? ? params[:end] : 'end'
-      session[:skip_existing] = !params[:skip_existing].nil? ? params[:skip_existing] : true
+    @zoom_class = !params[:zoom_class].blank? ? params[:zoom_class] : 'all'
+    @start_id = !params[:start].blank? && @zoom_class != 'all' ? params[:start] : 'first'
+    @end_id = !params[:end].blank? && @zoom_class != 'all' ? params[:end] : 'last'
+    @skip_existing = !params[:skip_existing].blank? ? params[:skip_existing] : false
+    @skip_private = !params[:skip_private].blank? ? params[:skip_private] : false
+    @clear_zebra = !params[:clear_zebra].blank? ? params[:clear_zebra] : false
 
-      session[:zoom_db] = ZoomDb.find_by_host_and_database_name('localhost','public')
+    @worker_type = 'zoom_index_rebuild_worker'
 
-      # start from scratch
-      session[:last] = nil
-      session[:done] = false
-      session[:record_count] = 0
+    import_request = { :host => request.host,
+      :protocol => request.protocol,
+      :request_uri => request.request_uri }
 
-      rebuild_zoom_item
+    @worker_running = false
+    # only one rebuild should be running at a time
+    unless backgroundrb_is_running?(@worker_type)
+      MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
+      MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :zoom_class => @zoom_class,
+                                                                         :start_id => @start_id,
+                                                                         :end_id => @end_id,
+                                                                         :skip_existing => @skip_existing,
+                                                                         :skip_private => @skip_private,
+                                                                         :clear_zebra => @clear_zebra,
+                                                                         :import_request => import_request } )
+      @worker_running = true
+    else
+      flash[:notice] = 'There is another search record rebuild running at this time.  Please try again later.'
     end
   end
 
-  # this rebuilds the next item in queue
-  # and updates page
-  def rebuild_zoom_item
-    @zoom_class = session[:zoom_class]
-    @start_id = session[:start_id]
-    @end_id = session[:end_id]
-    @zoom_db = session[:zoom_db]
-
-    @last_id = session[:last] ? session[:last] : @start_id
-
-    @done = session[:done] ? session[:done] : false
-
-    if !@done
-      clause = "id > :start_id"
-      clause_values = { :start_id => @last_id }
-
-      # if it's the first record, just grab it
-      if @last_id == @start_id and session[:record_count] == 0
-        clause = "id = :start_id"
-      elsif @end_id.to_s != 'end'
-        clause += " and id <= :end_id"
-        clause_values[:end_id] = @end_id
-      end
-
-      # don't include items that are flagged pending or placeholder public versions
-      clause += " and title != :pending_title"
-      clause_values[:pending_title] = BLANK_TITLE
-
-      @item = only_valid_zoom_class(@zoom_class).find(:first, :conditions => [clause, clause_values], :order => 'id')
-
-      if @item.nil?
-        @done = true
-        @result_message = 'Done'
-      else
-        session[:last] = @item.id
-        @result_message = zoom_update_and_test(@item,@zoom_db)
-      end
-
-      log_path = File.join(RAILS_ROOT, 'log')
-      dest = File.open(log_path + '/zoom_rebuild.log', 'a')
-      dest << @result_message + "\n"
-      dest.close
-
-      session[:done] = @done
-      session[:record_count] += 1
-
-    else
-      @result_message = 'Done'
-    end
+  # this reports progress back to the tech admin
+  # on how the backgroundrb worker is doing
+  # with the search record rebuild
+  def check_rebuild_status
 
     if request.xhr?
       render :partial =>'rebuild_zoom_item',
