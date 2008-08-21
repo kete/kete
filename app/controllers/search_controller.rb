@@ -550,13 +550,66 @@ class SearchController < ApplicationController
   # on how the backgroundrb worker is doing
   # with the search record rebuild
   def check_rebuild_status
-
-    if request.xhr?
-      render :partial =>'rebuild_zoom_item',
-      :locals => { :result_message => @result_message }
+    if !request.xhr?
+      flash[:notice] = 'You need javascript enabled for this feature.'
+      redirect_to 'setup_rebuild'
     else
-      if params[:action] == 'rebuild_zoom_item'
-        raise "This feature requires javascript"
+      @worker_type = 'zoom_index_rebuild_worker'
+      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      begin
+        if !status.blank?
+          current_zoom_class = status[:current_zoom_class]
+          records_processed = status[:records_processed]
+          records_failed = status[:records_failed]
+          records_skipped = status[:records_skipped]
+
+          render :update do |page|
+
+            page.replace_html 'processing_zoom_class', "<p>Working on #{zoom_class_plural_humananize(current_zoom_class)}</p>"
+
+            if records_processed > 0
+              page.replace_html 'report_records_processed', "<p>#{records_processed} records processed</p>"
+            end
+
+            if records_failed > 0
+              page.replace_html 'report_records_failed', "<p>#{records_processed} records failed</p>"
+            end
+
+            if records_skipped > 0
+              page.replace_html 'report_records_skipped', "<p>#{records_processed} records skipped</p>"
+            end
+
+            if status[:done_with_do_work] == true or !status[:error].blank?
+              done_message = "All records processed."
+
+              if !status[:error].blank?
+                done_message = "There was a problem with the rebuild: #{status[:error]}<p><b>The rebuild has been stopped</b></p>"
+              end
+              page.hide("spinner")
+              page.replace_html 'done', done_message
+              page.replace_html 'exit', '<p>' + link_to('Browse records', :action => 'all') + '</p>'
+            end
+          end
+        else
+          message = "Rebuild failed."
+          flash[:notice] = message
+          render :update do |page|
+            page.hide("spinner")
+            page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
+          end
+        end
+      rescue
+        # we aren't getting to this point, might be nested begin/rescue
+        # check background logs for error
+        rebuild_error = !status.blank? ? status[:error] : "rebuild worker not running anymore?"
+        logger.info(rebuild_error)
+        message = "Rebuild failed. #{rebuild_error}"
+        message += " - #{$!}" unless $!.blank?
+        flash[:notice] = message
+        render :update do |page|
+          page.hide("spinner")
+          page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Imports', :action => 'list') + '</p>'
+        end
       end
     end
   end
