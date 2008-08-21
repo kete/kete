@@ -239,7 +239,7 @@ class IndexPageController < ApplicationController
   end
 
   def validate_kete_net_link
-    render(:xml => { :url => "#{(request.protocol + request.host)}", :date => "#{Time.new.utc.to_date.to_s(:db)}", :hour => "#{Time.new.utc.hour}" })
+    render(:xml => { :url => "#{(request.protocol + request.host)}", :date => "#{Time.new.utc.to_date.to_s(:db)}", :hour => "[#{Time.new.utc.hour - 1}, #{Time.new.utc.hour}, #{Time.new.utc.hour + 1}]" })
   end
 
 end
