@@ -154,9 +154,8 @@ class ConfigureController < ApplicationController
     end
   end
 
-  # TODO: add option to do "rake zebra:stop"
-  # and then reconfigure zebra and restart zebra
-  # maybe
+  # note that you can also rebuild your zebra instance later
+  # from the 'Rebuild search databases' administrator toolbox link
   def start_zebra
     `rake zebra:start`
     if !request.xhr?
@@ -176,24 +175,24 @@ class ConfigureController < ApplicationController
     ['public', 'private'].each do |db|
       `rake zebra:init ZEBRA_DB=#{db}`
     end
-    
+
     # load initial records (initializes attributes)
     `rake zebra:load_initial_records`
 
     ZOOM_CLASSES.each do |zoom_class|
       Module.class_eval(zoom_class).find(:all).each do |item|
-        
+
         # Make sure that if the item is private, we store the private version and load the latest
         # public version into the master record so that OAI records are generated appropriately.
         if item.respond_to?(:private?) && item.private?
           logger.debug("Storing private version of #{item.id}.")
-          item.send :store_correct_versions_after_save 
+          item.send :store_correct_versions_after_save
           item.reload
         end
-        
+
         # Generate OAI record and save to Zebra instances as appropriate.
         prepare_and_save_to_zoom(item)
-        
+
       end
     end
 
@@ -256,19 +255,19 @@ class ConfigureController < ApplicationController
   def set_not_completed
     @not_completed = SystemSetting.not_completed
   end
-  
+
   private
-  
+
     def ssl_required?
       FORCE_HTTPS_ON_RESTRICTED_PAGES || false
     end
-    
+
     # If ssl_allowed? returns true, the SSL requirement is not enforced,
     # so ensure it is not set in this controller.
     def ssl_allowed?
       nil
     end
-  
+
 end
 
 class RegisterSiteResource < ActiveResource::Base
