@@ -337,9 +337,7 @@ class ApplicationController < ActionController::Base
       if item.index_for_basket.is_a?(Basket)
         # slight overkill, but most parts
         # would need to be expired anyway
-        INDEX_PARTS.each do |part|
-          expire_fragment(/#{item.index_for_basket.urlified_name}\/index_page\/index\/(.+)/)
-        end
+        expire_fragment(/#{item.index_for_basket.urlified_name}\/index_page\/index\/(.+)/)
       end
     end
 
