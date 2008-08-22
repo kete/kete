@@ -417,20 +417,20 @@ class SearchController < ApplicationController
   # takes search_terms from form
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
-    controller_name = params[:controller_name_for_zoom_class].nil? ? zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
-    existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
+    controller_name = params[:controller_name_for_zoom_class].nil? ? \
+      zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
     location_hash = { :controller_name_for_zoom_class => controller_name,
-                      :existing_array_string => existing_array_string,
+                      :existing_array_string => params[:existing_array_string],
                       :sort_direction => params[:sort_direction],
                       :sort_type => params[:sort_type],
                       :authenticity_token => nil }
 
-    if !params[:privacy_type].nil? and !params[:privacy_type].empty? and params[:privacy_type] == 'private'
+    if params[:privacy_type] == 'private'
       location_hash.merge!({ :privacy_type => params[:privacy_type] })
     end
 
-    if !params[:search_terms].nil? and !params[:search_terms].empty?
+    if !params[:search_terms].blank?
       location_hash.merge!({ :search_terms_slug => to_search_terms_slug(params[:search_terms]),
                              :search_terms => params[:search_terms],
                              :action => 'for' })
@@ -438,15 +438,15 @@ class SearchController < ApplicationController
       location_hash.merge!({ :action => 'all' })
     end
 
-    if !params[:tag].nil? and !params[:tag].empty?
+    if !params[:tag].blank?
       location_hash.merge!({ :tag => params[:tag] })
     end
 
-    if !params[:contributor].nil? and !params[:contributor].empty?
+    if !params[:contributor].blank?
       location_hash.merge!({ :contributor => params[:contributor] })
     end
 
-    logger.info(location_hash.inspect)
+    logger.info("terms_to_page_url_redirect hash: " + location_hash.inspect)
 
     redirect_to url_for(location_hash)
   end
