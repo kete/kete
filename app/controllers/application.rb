@@ -328,17 +328,17 @@ class ApplicationController < ActionController::Base
       # because old titles' friendly urls won't be matched in our expiry otherwise
       expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
     end
-
+    
     # images have an additional cache
     # and topics may also have a basket index page cached
     if controller == 'images'
       expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => ('caption_'+(item.private? ? "private" : "public")) })
-    elsif controller== 'topics'
-      if !item.index_for_basket.nil?
+    elsif controller == 'topics'
+      if item.index_for_basket.is_a?(Basket)
         # slight overkill, but most parts
         # would need to be expired anyway
         INDEX_PARTS.each do |part|
-          expire_fragment(:urlified_name => item.index_for_basket.urlified_name, :part => part)
+          expire_fragment(/#{item.index_for_basket.urlified_name}\/index_page\/index\/(.+)/)
         end
       end
     end
