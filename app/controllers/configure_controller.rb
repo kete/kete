@@ -213,10 +213,9 @@ class ConfigureController < ApplicationController
     if !request.xhr?
       redirect_to "#{register_url}/site/kete_sites/new"
     else
-      @site_name = SystemSetting.find(2).value
-      @site_url = SystemSetting.find(4).value
-      @site_url = "#{request.protocol}#{request.host_with_port}" if @site_url.empty?
-      register = RegisterSiteResource.create(:site_name => @site_name, :site_url => @site_url, :site_description => params[:site_description])
+      # this will break if reached when these constants aren't set
+      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SITE_URL.blank? || PRETTY_SITE_NAME.blank?
+      register = RegisterSiteResource.create(:site_name => PRETTY_SITE_NAME, :site_url => SITE_URL, :site_description => params[:site_description])
       render :update do |page|
         if register and register.errors.empty? and register.id > 0
           message = "Your Kete installation has been registered. Thank you."
@@ -232,7 +231,7 @@ class ConfigureController < ApplicationController
           page.show('site_description')
           page.show('data-button')
         else
-          message = "There was an error registering your site. You can do it manually at <a href='#{register_url}/site/kete_sites/new'>http://kete.net.nz/</a>."
+          message = "There was an error registering your site. You can do it manually at <a href='#{register_url}/site/kete_sites/new'>http://kete.net.nz/sites/kete_sites/new</a>."
           page.replace_html("send_information_div", message)
         end
       end
