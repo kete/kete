@@ -131,25 +131,37 @@ module ZoomControllerHelpers
     end
 
     def prepare_and_save_to_zoom(item)
-      
+
       # This is always the public version..
       unless item.already_at_blank_version? || item.at_placeholder_public_version?
         prepare_zoom(item)
         item.zoom_save
       end
-      
+
       # Redo the save for the private version
       if item.respond_to?(:private) and item.has_private_version? and !item.private?
-        
+
         item.private_version do
           unless item.already_at_blank_version?
             prepare_zoom(item)
             item.zoom_save
           end
         end
-        
+
         raise "Could not return to public version" if item.private?
-        
+
+      end
+    end
+
+    protected
+
+    # Evaluate a possibly unsafe string into a zoom class.
+    # I.e.  "StillImage" => StillImage
+    def only_valid_zoom_class(param)
+      if ZOOM_CLASSES.member?(param)
+        Module.class_eval(param)
+      else
+        raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
       end
     end
   end

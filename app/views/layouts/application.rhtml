@@ -5,7 +5,7 @@
 <head>
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  
+
   <% cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links'] %>
   <% if cached_controllers.include?(params[:controller]) and params[:action] == "show" %>
     <% item = @audio_recording || @document || @still_image || @topic || @video || @web_link || nil %>
@@ -242,6 +242,11 @@
                         |
                         <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
                                                                               :action => :list,
+                                                                              :urlified_name => @site_basket.urlified_name -%>
+
+                        |
+                        <%= link_to_unless_current "Rebuild search databases", :controller => '/search',
+                                                                              :action => 'setup_rebuild',
                                                                               :urlified_name => @site_basket.urlified_name -%>
                         <% end -%>
                         </p>

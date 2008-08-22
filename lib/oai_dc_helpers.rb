@@ -22,7 +22,8 @@ module OaiDcHelpers
         host= request.host
         request_uri = request.request_uri
       end
-      xml.request(protocol + host + request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{@current_basket.urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
+      basket_urlified_name = @current_basket.nil? ? item.basket.urlified_name : @current_basket.urlified_name
+      xml.request(protocol + host + request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
     end
 
     def oai_dc_xml_oai_identifier(xml, item)
@@ -72,7 +73,10 @@ module OaiDcHelpers
         }
       else
         # Link to private version if generating OAI record for it..
-        uri_attrs.merge!({ :private => "true" }) if item.respond_to?(:private) && item.private?
+        if item.respond_to?(:private) && item.private?
+          # don't put title in url for private items
+          uri_attrs.merge!({ :private => "true", :id => item.id.to_s })
+        end
       end
 
       # If the item is private and SSL is configured, use https instead of http for full URL for the

@@ -28,7 +28,10 @@ class ApplicationController < ActionController::Base
                                             :flag_form,
                                             :flag_version,
                                             :restore,
-                                            :reject]
+                                            :reject,
+                                            :choose_type,
+                                            :setup_rebuild,
+                                            :rebuild_zoom_index]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -944,19 +947,6 @@ class ApplicationController < ActionController::Base
 
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
-
-  # Things are aren't actions below here..
-  protected
-
-  # Evaluate a possibly unsafe string into a zoom class.
-  # I.e.  "StillImage" => StillImage
-  def only_valid_zoom_class(param)
-    if ZOOM_CLASSES.member?(param)
-      Module.class_eval(param)
-    else
-      raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
-    end
-  end
 
   private
 

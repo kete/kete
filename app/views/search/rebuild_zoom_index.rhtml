@@ -1,13 +1,23 @@
-<% @title = 'Zoom Index Rebuild for ' + session[:zoom_class] + ' from ' + session[:start_id].to_s + ' to ' + session[:end_id].to_s %>
+<% @title = 'Zoom Index Rebuild from ' + @start_id + ' to ' + @end_id %>
 
 <h2><%= @title -%></h2>
 
-<div id="rebuild-zoom-item">
-        Starting rebuild...
+<div id="processing_zoom_class"></div>
+
+<div id="report_records_processed">Starting rebuild...</div>
+<div id="report_records_failed"></div>
+<div id="report_records_skipped"></div>
+
+<div id="spinner">
+<img src="/images/indicator.gif" width="16" height="16" alt="completed">
 </div>
 
-<%= periodically_call_remote :update => 'rebuild-zoom-item',
-                             :url => { :action => 'rebuild_zoom_item' },
-                             :frequency => 5 %>
+<div id="done">...in progress.</div>
+
+<%= periodically_call_remote :url => { :action => 'check_rebuild_status' },
+                             :frequency => 30 %>
+
+<div id="exit">
+</div>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

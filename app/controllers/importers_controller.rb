@@ -3,6 +3,8 @@
 # we use end description template to optionally add uniform description across imported items
 # base_tags are tags to be added to every item imported
 class ImportersController < ApplicationController
+  include WorkerControllerHelpers
+
   # everything else is handled by application.rb
   before_filter :login_required, :only => [:list, :index, :new_related_set_from_archive_file]
 
@@ -117,16 +119,8 @@ class ImportersController < ApplicationController
         @zoom_class = 'Topic'
       end
 
-      # for the time being we are limiting to only one import to be running at a time
-      is_already_operating = false
-      MiddleMan.all_worker_info.each do |server|
-        if !server[1].nil?
-          server[1].each { |workers| is_already_operating = true if @worker_type == workers[:worker] }
-        end
-        break if is_already_operating
-      end
-
-      if !is_already_operating
+      # only run one import at a time for the moment
+      unless backgroundrb_is_running?(@worker_type)
         MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
         MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :zoom_class => @zoom_class,
                                                                                    :import => @import.id,
