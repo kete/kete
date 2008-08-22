@@ -47,8 +47,11 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       if @zoom_class == 'all'
         raise "Specifying a start id is not supported when you are rebuilding all types of items." if @start_id != 'first'
         raise "Specifying an end id is not supported when you are rebuilding all types of items." if @end_id != 'last'
-        raise "Erasing all existing search records is only allowed when you are starting from first record and ending with last record." if @clear_zebra && @start_id != 'first' || @end_id != 'last'
       end
+
+      raise "Erasing all existing search records is only allowed when you are starting from first record and ending with last record." if @clear_zebra && @start_id != 'first' || @end_id != 'last'
+      raise "Start must be a valid item id number." if @start_id != 'first' && @start_id.to_i == 0
+      raise "End must be a valid item id number." if @end_id != 'last' && @end_id.to_i ==  0
 
       # reset the zebra dbs to no records
       # the zebra:stop task is problematic on some platforms (known issue with solaris 10)

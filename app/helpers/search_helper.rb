@@ -98,4 +98,20 @@ module SearchHelper
     $('zoom_class').observe('change', toggleDisabledStart);"
   end
 
+  def enable_end_unless_all_types_js_helper
+    javascript_tag "
+    function toggleDisabledStart(event) {
+      var element = Event.element(event);
+
+      if ( element.options[element.selectedIndex].value != \"all\" ) {
+        $('end').disabled = false;
+      } else {
+        $('end').value = 'last';
+        $('end').disabled = true;
+      }
+    }
+
+    $('zoom_class').observe('change', toggleDisabledStart);"
+  end
+
 end
