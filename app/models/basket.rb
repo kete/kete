@@ -25,8 +25,8 @@ class Basket < ActiveRecord::Base
   @@about_basket = find(ABOUT_BASKET)
   @@documentation_basket = find(DOCUMENTATION_BASKET)
   @@standard_baskets = [1, HELP_BASKET, ABOUT_BASKET, DOCUMENTATION_BASKET]
-  after_save :reset_basket_class_variable
-  before_destroy :reset_basker_class_variable
+  after_save :reset_basket_class_variables
+  before_destroy :reset_basket_class_variables
 
   # Kieran Pilkington, 2008/08/18
   # Store how many baskets have privacy controls enabled to determine
@@ -409,7 +409,7 @@ class Basket < ActiveRecord::Base
   end
 
   # reset the baskets class variable if its one of those we cache
-  def reset_basket_class_variable
+  def reset_basket_class_variables
     return unless @@standard_baskets.include?(self.id)
     case self.id
     when 1
