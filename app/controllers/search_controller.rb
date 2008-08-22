@@ -138,7 +138,7 @@ class SearchController < ApplicationController
 
     # James Stradling <james@katipo.co.nz> - 2008-05-02
     # Only allow private search if permitted
-    if params[:privacy_type] == "private" and permitted_to_view_private_items?
+    if accessing_private_search_and_allowed?
       @privacy = "private"
       zoom_db_instance = "private"
     else

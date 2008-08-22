@@ -12,40 +12,8 @@ class VideoController < ApplicationController
   end
 
   def show
-    # Walter McGinnis, 2008-02-14
-    # always loading still_image for the timebeing, since we check for blank version
-    # to determine whether to show image file
-    @video = @current_basket.videos.find(params[:id])
-
-    if permitted_to_view_private_items?
-      @show_privacy_chooser = true
-    end
-
-    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-
-      if permitted_to_view_private_items?
-        @video = @video.private_version! if @video.has_private_version? && params[:private] == "true"
-      end
-
-      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @title = @video.title
-      end
-
-      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @creator = @video.creator
-        @last_contributor = @video.contributors.last || @creator
-      end
-
-      if logged_in? and @at_least_a_moderator
-        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @video.non_pending_comments
-        end
-      else
-        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @video.non_pending_comments
-        end
-      end
-    end
+    prepare_item_variables_for("Video", true)
+    @video = @item
 
     respond_to do |format|
       format.html
