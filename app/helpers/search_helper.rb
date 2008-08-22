@@ -70,16 +70,48 @@ module SearchHelper
 
     $('sort_type').observe('change', toggleDisabledSortDirection);"
   end
-  
+
   def instantiate_from_results(result_hash)
     raise "A hash must be passed in. Arrays are not acceptable." unless result_hash.instance_of?(Hash)
-    
+
     eval("#{result_hash['class'].classify}").find(result_hash['id'])
   end
-  
+
   # Used to check if an item is part of an existing relationship in related items search
   def related?(item)
     !@existing_ids.nil? && @existing_ids.member?(item.id)
   end
-  
+
+  def enable_start_unless_all_types_js_helper
+    javascript_tag "
+    function toggleDisabledStart(event) {
+      var element = Event.element(event);
+
+      if ( element.options[element.selectedIndex].value != \"all\" ) {
+        $('start').disabled = false;
+      } else {
+        $('start').value = 'first';
+        $('start').disabled = true;
+      }
+    }
+
+    $('zoom_class').observe('change', toggleDisabledStart);"
+  end
+
+  def enable_end_unless_all_types_js_helper
+    javascript_tag "
+    function toggleDisabledStart(event) {
+      var element = Event.element(event);
+
+      if ( element.options[element.selectedIndex].value != \"all\" ) {
+        $('end').disabled = false;
+      } else {
+        $('end').value = 'last';
+        $('end').disabled = true;
+      }
+    }
+
+    $('zoom_class').observe('change', toggleDisabledStart);"
+  end
+
 end

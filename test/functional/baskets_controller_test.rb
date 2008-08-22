@@ -56,7 +56,7 @@ class BasketsControllerTest < Test::Unit::TestCase
   end
   
   def test_update
-    post :update, :id => 1, :basket => { :private_default => true, :file_private_default => true }, :urlified_name => 'site'
+    post :update, :id => 1, :basket => { :private_default => 'true', :file_private_default => 'true' }, :urlified_name => 'site'
     assert_not_nil assigns(:basket)
     assert_equal true, assigns(:basket).private_default
     assert_equal true, assigns(:basket).file_private_default

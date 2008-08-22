@@ -62,14 +62,16 @@ module BasketsHelper
   end
 
   def basket_preferences_inheritance_message
+    return if @basket != @site_basket # for now, we dont need to tell them,
+                                      # it's obvious with the inherit option
     @inheritance_message = "<p>"
-    if @basket != @site_basket
-      @inheritance_message += "Unspecified settings will be inherited
-                            from the settings of the Site."
-    else
+    #if @basket != @site_basket
+    #  @inheritance_message += "Unspecified settings will be inherited
+    #                        from the settings of the Site."
+    #else
       @inheritance_message += "These settings will be inherited by all other
 baskets unless they individually specify their own policy."
-    end
+    #end
 
     @inheritance_message += "</p>"
   end

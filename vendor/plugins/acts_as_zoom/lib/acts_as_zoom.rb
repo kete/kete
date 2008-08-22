@@ -283,29 +283,29 @@ module ZoomMixin
         end
 
         # saves to the appropriate ZoomDb based on configuration
-        def zoom_save
+        def zoom_save(existing_connection = nil)
           logger.debug "zoom_save: #{zoom_id}; private: #{(respond_to?(:private) && private?).to_s}"
 
           zoom_record = self.zoom_prepare_record
-          appropriate_zoom_database.save_this(zoom_record, zoom_id)
+          appropriate_zoom_database.save_this(zoom_record, zoom_id, existing_connection)
 
           true
         end
 
-        def zoom_destroy
+        def zoom_destroy(existing_connection = nil)
           logger.debug "zoom_destroy: #{self.class.name} : #{self.id}"
 
           # need to pass in whole record as well as zoom_id, even though it's a delete
 
           if has_public_zoom_record?
             zoom_record = self.zoom_prepare_record
-            public_zoom_database.destroy_this(zoom_record, zoom_id)
+            public_zoom_database.destroy_this(zoom_record, zoom_id, existing_connection)
           end
 
           if has_private_zoom_record?
             private_version do
               zoom_record = self.zoom_prepare_record
-              private_zoom_database.destroy_this(zoom_record, zoom_id)
+              private_zoom_database.destroy_this(zoom_record, zoom_id, existing_connection)
             end
           end
 

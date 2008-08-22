@@ -29,7 +29,7 @@
       <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> />
     </div>
     <% # Only show private search control if allowed and we aren't relating something to a topic. %>
-    <% if permitted_to_view_private_items? && params[:relate_to_topic].blank? && show_privacy_controls? -%>
+    <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
     <label for="privacy_type">That are:</label>
     <%= select_tag 'privacy_type', options_for_select({ 'Private' => 'private', 'Public' => 'public' }, params[:privacy_type] || 'public') %>
     <% end -%>
