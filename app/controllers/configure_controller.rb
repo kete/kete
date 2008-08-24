@@ -154,9 +154,8 @@ class ConfigureController < ApplicationController
     end
   end
 
-  # TODO: add option to do "rake zebra:stop"
-  # and then reconfigure zebra and restart zebra
-  # maybe
+  # note that you can also rebuild your zebra instance later
+  # from the 'Rebuild search databases' administrator toolbox link
   def start_zebra
     `rake zebra:start`
     if !request.xhr?
@@ -176,24 +175,24 @@ class ConfigureController < ApplicationController
     ['public', 'private'].each do |db|
       `rake zebra:init ZEBRA_DB=#{db}`
     end
-    
+
     # load initial records (initializes attributes)
     `rake zebra:load_initial_records`
 
     ZOOM_CLASSES.each do |zoom_class|
       Module.class_eval(zoom_class).find(:all).each do |item|
-        
+
         # Make sure that if the item is private, we store the private version and load the latest
         # public version into the master record so that OAI records are generated appropriately.
         if item.respond_to?(:private?) && item.private?
           logger.debug("Storing private version of #{item.id}.")
-          item.send :store_correct_versions_after_save 
+          item.send :store_correct_versions_after_save
           item.reload
         end
-        
+
         # Generate OAI record and save to Zebra instances as appropriate.
         prepare_and_save_to_zoom(item)
-        
+
       end
     end
 
@@ -205,6 +204,42 @@ class ConfigureController < ApplicationController
         page.replace_html("prime-zebra-message", "Search Engine has been primed.")
         page.show('reload-site-index')
         page.hide('restart-before-continue-message')
+      end
+    end
+  end
+
+  # basically a container action
+  # to reuse the link_to_site partial
+  # that we also at site configure in index
+  def add_link_from_kete_net
+  end
+
+  def send_information
+    register_url = "http://kete.net.nz"
+    if !request.xhr?
+      redirect_to "#{register_url}/site/kete_sites/new"
+    else
+      # this will break if reached when these constants aren't set
+      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SITE_URL.blank? || PRETTY_SITE_NAME.blank?
+      register = RegisterSiteResource.create(:name => PRETTY_SITE_NAME, :url => SITE_URL, :description => params[:site_description])
+      render :update do |page|
+        if register and register.errors.empty? and register.id > 0
+          message = "Your Kete installation has been registered. Thank you."
+          page.replace_html("send_information_div", message)
+        elsif !register.errors.empty?
+          message = "<strong>Some fields were incorrect:</strong><br />"
+          register.errors.each do |field, error|
+            message += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
+          end
+          message += "<br />"
+          page.replace_html("register_errors", message)
+          page.show('form_fields')
+          page.show('site_description')
+          page.show('data-button')
+        else
+          message = "There was an error registering your site. You can do it manually at <a href='#{register_url}/site/kete_sites/new'>http://kete.net.nz/sites/kete_sites/new</a>."
+          page.replace_html("send_information_div", message)
+        end
       end
     end
   end
@@ -225,17 +260,23 @@ class ConfigureController < ApplicationController
   def set_not_completed
     @not_completed = SystemSetting.not_completed
   end
-  
+
   private
-  
+
     def ssl_required?
       FORCE_HTTPS_ON_RESTRICTED_PAGES || false
     end
-    
+
     # If ssl_allowed? returns true, the SSL requirement is not enforced,
     # so ensure it is not set in this controller.
     def ssl_allowed?
       nil
     end
-  
+
+end
+
+class RegisterSiteResource < ActiveResource::Base
+  self.site = "http://kete.net.nz/site/"
+  self.element_name = "kete_site"
+  self.timeout = 5
 end

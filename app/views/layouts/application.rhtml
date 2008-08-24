@@ -229,7 +229,10 @@
                         |
                         <%= link_to_unless_current "administer licenses", :controller => '/licenses',
                             :action => :index, :urlified_name => @site_basket.urlified_name -%>
-
+                        |
+                        <%= link_to_unless_current "List site on Kete.net.nz", :controller => '/configure',
+                                                                               :action => 'add_link_from_kete_net',
+                                                                               :urlified_name => @site_basket.urlified_name -%>
                         <% if @tech_admin -%>
                         |
                         <%= link_to_unless_current "reconfigure site", :controller => '/configure',
