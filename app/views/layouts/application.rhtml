@@ -248,6 +248,10 @@
                         <%= link_to_unless_current "Rebuild search databases", :controller => '/search',
                                                                               :action => 'setup_rebuild',
                                                                               :urlified_name => @site_basket.urlified_name -%>
+                        |
+                        <%= link_to_unless_current "List site on Kete.net.nz", :controller => '/configure',
+                                                                               :action => 'add_link_from_kete_net',
+                                                                               :urlified_name => @site_basket.urlified_name -%>
                         <% end -%>
                         </p>
                         <p>

@@ -208,6 +208,12 @@ class ConfigureController < ApplicationController
     end
   end
 
+  # basically a container action
+  # to reuse the link_to_site partial
+  # that we also at site configure in index
+  def add_link_from_kete_net
+  end
+
   def send_information
     register_url = "http://kete.net.nz"
     if !request.xhr?
@@ -270,7 +276,7 @@ class ConfigureController < ApplicationController
 end
 
 class RegisterSiteResource < ActiveResource::Base
-  self.site = "http://kete_net/site/"
+  self.site = "http://kete.net.nz/site/"
   self.element_name = "kete_site"
   self.timeout = 5
 end
