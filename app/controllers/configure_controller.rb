@@ -199,6 +199,10 @@ class ConfigureController < ApplicationController
     if !request.xhr?
       redirect_to :action => 'index', :search_engine_primed => true, :search_engine_show => true, :finished => true
     else
+      # check to see if the site is already listed
+      # loads variable used in the reload-site-index section
+      site_listing
+
       render :update do |page|
         page.show('prime-zebra-check')
         page.replace_html("prime-zebra-message", "Search Engine has been primed.")
@@ -212,6 +216,8 @@ class ConfigureController < ApplicationController
   # to reuse the link_to_site partial
   # that we also at site configure in index
   def add_link_from_kete_net
+    # check to see if the site is already listed
+    site_listing
   end
 
   def send_information
@@ -247,7 +253,7 @@ class ConfigureController < ApplicationController
         else
           logger.error("Error linking from Kete.net.nz: " + @register_error) if @register_error
           top_message = "There was an error linking to your site. "
-          if site_listing.blank?
+          if @site_listing.blank?
             top_message += "You can do it manually at "+ link_to(register_new_link) + "."
           else
             top_message += "However, it appears that your site is now listed. Please check the listing to make sure it is correct at " + link_to(@site_listing) + '.'
@@ -275,6 +281,8 @@ class ConfigureController < ApplicationController
     @not_completed = SystemSetting.not_completed
   end
 
+  private
+
   def site_listing
     require 'net/http'
     require 'uri'
@@ -284,19 +292,15 @@ class ConfigureController < ApplicationController
     @site_listing = http.request_post(remote_url.path, "url=#{SITE_URL}").body
   end
 
-  helper_method :site_listing
+  def ssl_required?
+    FORCE_HTTPS_ON_RESTRICTED_PAGES || false
+  end
 
-  private
-
-    def ssl_required?
-      FORCE_HTTPS_ON_RESTRICTED_PAGES || false
-    end
-
-    # If ssl_allowed? returns true, the SSL requirement is not enforced,
-    # so ensure it is not set in this controller.
-    def ssl_allowed?
-      nil
-    end
+  # If ssl_allowed? returns true, the SSL requirement is not enforced,
+  # so ensure it is not set in this controller.
+  def ssl_allowed?
+    nil
+  end
 
 end
 
