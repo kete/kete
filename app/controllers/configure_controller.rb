@@ -278,5 +278,5 @@ end
 class RegisterSiteResource < ActiveResource::Base
   self.site = "http://kete.net.nz/site/"
   self.element_name = "kete_site"
-  self.timeout = 5
+  self.timeout = 60
 end
