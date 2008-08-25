@@ -216,30 +216,44 @@ class ConfigureController < ApplicationController
 
   def send_information
     register_url = "http://kete.net.nz"
+    kete_sites_link = register_url + "/site/kete_sites"
+    register_new_link = "#{kete_sites_link}/new"
     if !request.xhr?
-      redirect_to "#{register_url}/site/kete_sites/new"
+      redirect_to register_new_link
     else
       # this will break if reached when these constants aren't set
       raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SITE_URL.blank? || PRETTY_SITE_NAME.blank?
-      register = RegisterSiteResource.create(:name => PRETTY_SITE_NAME, :url => SITE_URL, :description => params[:site_description])
+      begin
+        register = RegisterSiteResource.create(:name => PRETTY_SITE_NAME, :url => SITE_URL, :description => params[:site_description])
+      rescue
+        register = nil
+        @register_error = $!
+      end
       render :update do |page|
-        if register and register.errors.empty? and register.id > 0
-          message = "Your Kete installation has been registered. Thank you."
-          page.replace_html("send_information_div", message)
-        elsif !register.errors.empty?
-          message = "<strong>Some fields were incorrect:</strong><br />"
+        top_message = String.new
+        if !register.nil? && register && register.errors.empty? && register.id > 0
+          top_message = "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at " + link_to(kete_sites_link) + "."
+        elsif !register.nil? && !register.errors.empty?
+          register_message = "<strong>Some fields were incorrect:</strong><br />"
           register.errors.each do |field, error|
-            message += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
+            register_message += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
           end
           message += "<br />"
-          page.replace_html("register_errors", message)
+          page.replace_html("register_errors", register_message)
           page.show('form_fields')
           page.show('site_description')
           page.show('data-button')
+          page.hide('top_message')
         else
-          message = "There was an error registering your site. You can do it manually at <a href='#{register_url}/site/kete_sites/new'>http://kete.net.nz/sites/kete_sites/new</a>."
-          page.replace_html("send_information_div", message)
+          logger.error("Error linking from Kete.net.nz: " + @register_error) if @register_error
+          top_message = "There was an error linking to your site. "
+          if site_listing.blank?
+            top_message += "You can do it manually at "+ link_to(register_new_link) + "."
+          else
+            top_message += "However, it appears that your site is now listed. Please check the listing to make sure it is correct at " + link_to(@site_listing) + '.'
+          end
         end
+        page.replace_html("top_message", top_message)
       end
     end
   end
@@ -260,6 +274,17 @@ class ConfigureController < ApplicationController
   def set_not_completed
     @not_completed = SystemSetting.not_completed
   end
+
+  def site_listing
+    require 'net/http'
+    require 'uri'
+    remote_url = URI.parse("http://kete.net.nz/site/kete_sites/has_link_to")
+    remote_url.path = "/" if remote_url.path.length < 1
+    http = Net::HTTP.new(remote_url.host, 80)
+    @site_listing = http.request_post(remote_url.path, "url=#{SITE_URL}").body
+  end
+
+  helper_method :site_listing
 
   private
 
