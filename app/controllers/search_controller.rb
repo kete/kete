@@ -433,30 +433,38 @@ class SearchController < ApplicationController
   # takes search_terms from form
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
-    controller_name = params[:controller_name_for_zoom_class].nil? ? zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
+    controller_name = params[:controller_name_for_zoom_class].nil? ? \
+      zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
-    if params[:search_terms].blank?
-      if params[:tag]
-        existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
-        redirect_to url_for( :overwrite_params => { :action => 'all',
-                             :controller_name_for_zoom_class => controller_name,
-                             :existing_array_string => existing_array_string,
-                             :commit => nil,
-                             :search_terms => nil,
-                             :sort_type => nil,
-                             :update => nil,
-                             :authenticity_token => nil } )
-      else
-        redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name, :sort_direction => params[:sort_direction], :sort_type => params[:sort_type], :privacy_type => params[:privacy_type])
-      end
-    else
-      existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
-      redirect_to url_for( :overwrite_params => { :action => 'for',
-                             :controller_name_for_zoom_class => controller_name,
-                             :search_terms_slug => to_search_terms_slug(params[:search_terms]),
-                             :existing_array_string => existing_array_string,
-                             :commit => nil} )
+    location_hash = { :controller_name_for_zoom_class => controller_name,
+                      :existing_array_string => params[:existing_array_string],
+                      :sort_direction => params[:sort_direction],
+                      :sort_type => params[:sort_type],
+                      :authenticity_token => nil }
+
+    if params[:privacy_type] == 'private'
+      location_hash.merge!({ :privacy_type => params[:privacy_type] })
     end
+
+    if !params[:search_terms].blank?
+      location_hash.merge!({ :search_terms_slug => to_search_terms_slug(params[:search_terms]),
+                             :search_terms => params[:search_terms],
+                             :action => 'for' })
+    else
+      location_hash.merge!({ :action => 'all' })
+    end
+
+    if !params[:tag].blank?
+      location_hash.merge!({ :tag => params[:tag] })
+    end
+
+    if !params[:contributor].blank?
+      location_hash.merge!({ :contributor => params[:contributor] })
+    end
+
+    logger.info("terms_to_page_url_redirect hash: " + location_hash.inspect)
+
+    redirect_to url_for(location_hash)
   end
 
   def to_search_terms_slug(search_terms)
