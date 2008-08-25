@@ -253,6 +253,7 @@ class ConfigureController < ApplicationController
         else
           logger.error("Error linking from Kete.net.nz: " + @register_error) if @register_error
           top_message = "There was an error linking to your site. "
+          site_listing
           if @site_listing.blank?
             top_message += "You can do it manually at "+ link_to(register_new_link) + "."
           else
