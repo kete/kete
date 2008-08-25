@@ -19,6 +19,9 @@ class SearchController < ApplicationController
 
   # Reset slideshow object on new searches
   before_filter :reset_slideshow, :only => [:for, :all]
+  
+  # Ensure private RSS feeds are authenticated
+  before_filter :authenticated_rss, :only => [:rss]
 
   # After running a search, store the results in a session
   # for slideshow functionality.
@@ -163,6 +166,7 @@ class SearchController < ApplicationController
   end
 
   def rss
+      
     @search = Search.new
     # changed from @headers for Rails 2.0 compliance
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
@@ -198,11 +202,15 @@ class SearchController < ApplicationController
     @start = 1
 
     # TODO: skipping multiple source (federated) search for now
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', params[:privacy_type] || 'public')
 
     @result_sets = Hash.new
 
     populate_result_sets_for(@current_class)
+  end
+  
+  def authenticated_rss
+    params[:privacy_type] == "private" ? login_required : true
   end
 
   def load_results(from_result_set)
