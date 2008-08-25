@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: 1ef24cc8efbde0aa196766ddb2186055903ae6e0
-  branch: HEAD
-lock: 
-repository_url: git://github.com/kete/better_send_file.git
-repository_class: Piston::Git::Repository
