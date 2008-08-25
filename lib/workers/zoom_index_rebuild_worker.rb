@@ -127,7 +127,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             @failed_record_count += 1
             @results[:records_failed] = @failed_record_count
             cache[:results] = @results
-            logger.info("failed")
+            logger.info("failed: " + item.inspect)
           end
 
           @last_id = item.id
