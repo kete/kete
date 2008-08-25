@@ -210,6 +210,7 @@ class SearchController < ApplicationController
   end
   
   def authenticated_rss
+    request.format = :xml
     params[:privacy_type] == "private" ? login_required : true
   end
 
@@ -273,15 +274,20 @@ class SearchController < ApplicationController
 
     # limit baskets searched within, if appropriate
     unless searching_for_related_items?
-      if @current_basket == @site_basket && params[:privacy_type] == 'private'
-        # get the urlified_name for each basket the user has a role in
-        # from their session
-        basket_access_hash = current_user.get_basket_permissions if logged_in? || Hash.new
-        session[:has_access_on_baskets] = basket_access_hash
-        basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
-        @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
-      elsif (@current_basket != @site_basket)
-        @search.pqf_query.within(@current_basket.urlified_name)
+      if params[:privacy_type] == 'private'
+          # get the urlified_name for each basket the user has a role in
+          # from their session
+          basket_access_hash = current_user.get_basket_permissions if logged_in? || Hash.new
+          session[:has_access_on_baskets] = basket_access_hash
+          basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
+        
+        if @current_basket == @site_basket
+          @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
+        elsif (@current_basket != @site_basket) and basket_urlified_names.member?(@current_basket.urlified_name)
+          @search.pqf_query.within(@current_basket.urlified_name)
+        else
+          return access_denied
+        end
       end
     end
 
