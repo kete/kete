@@ -99,7 +99,13 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
 
         the_class = only_valid_zoom_class(class_name)
 
-        clause_values[:start_id] = the_class.find(:first, :select => 'id').id if clause_values[:start_id].blank?
+        # skip to next class if there are no items
+        if the_class.count == 0
+          next
+          logger.info("Done with #{class_name}")
+        end
+
+        clause_values[:start_id] = the_class.find(:first, :select => 'id').id if @start_id.to_s == 'first'
 
         the_class.find(:all, :conditions => [clause, clause_values], :order => 'id').each do |item|
           logger.info(item.id.to_s)

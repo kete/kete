@@ -601,7 +601,7 @@ class SearchController < ApplicationController
 
             if records_failed > 0
               failed_message = "<p>#{records_failed} records failed</p>"
-              failed_message += "<p>These maybe private records, depending on the case.  See log/backgroundrb... for details.</p>"
+              failed_message += "<p>These maybe private or pending moderation records, depending on the case.  See log/backgroundrb... for details.</p>"
               page.replace_html 'report_records_failed', failed_message
             end
 
