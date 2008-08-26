@@ -344,12 +344,12 @@ class Basket < ActiveRecord::Base
     allow_non_member_comments === true
   end
 
-  def private_default?
-    (self.private_default == true || (self.private_default.blank? && @@site_basket.private_default == true))
+  def private_default_with_inheritance?
+    (self.private_default == true || (self.private_default.nil? && @@site_basket.private_default == true))
   end
 
-  def show_privacy_controls?
-    (self.show_privacy_controls == true || (self.show_privacy_controls.blank? && @@site_basket.show_privacy_controls == true))
+  def show_privacy_controls_with_inheritance?
+    (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && @@site_basket.show_privacy_controls == true))
   end
 
   # Get the roles this Basket has

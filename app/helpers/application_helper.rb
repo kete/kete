@@ -65,7 +65,7 @@ module ApplicationHelper
     if @current_basket != @site_basket
       pre_text = 'Browse: '
       site_link_text = @site_basket.name
-      privacy_type = (@current_basket.private_default? && permitted_to_view_private_items?) ? 'private' : nil
+      privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
       current_basket_html = " or " + link_to_unless_current( @current_basket.name,
                                                             :controller => 'search',
                                                             :action => 'all',
@@ -782,7 +782,7 @@ module ApplicationHelper
 
   # Check if privacy controls should be displayed?
   def show_privacy_controls?
-    @current_basket.show_privacy_controls?
+    @current_basket.show_privacy_controls_with_inheritance?
   end
 
   def show_privacy_search_controls?
@@ -790,7 +790,7 @@ module ApplicationHelper
       # note that it has to be "== true" in combination with ||, or you will get unexpected results when show_privacy_controls is not nil and == false
       (@site_basket.show_privacy_controls == true or Basket.privacy_exists)
     else
-      @current_basket.show_privacy_controls?
+      @current_basket.show_privacy_controls_with_inheritance?
     end
   end
 

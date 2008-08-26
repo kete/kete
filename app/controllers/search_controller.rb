@@ -278,7 +278,7 @@ class SearchController < ApplicationController
 
         # get the urlified_name for each basket the user has a role in
         # from their session
-        basket_access_hash = current_user.get_basket_permissions if logged_in? || Hash.new
+        basket_access_hash = logged_in? ? current_user.get_basket_permissions : Hash.new
         session[:has_access_on_baskets] = basket_access_hash
         basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
 
