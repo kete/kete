@@ -228,7 +228,7 @@ class BasketsController < ApplicationController
   # in the future this will present the join policy of the basket, etc
   # now it only says "login as different user or contact an administrator"
   def permissioned_denied
-    session[:has_access_on_baskets] = current_user.get_basket_permissions if logged_in? || Hash.new
+    session[:has_access_on_baskets] = logged_in? ? current_user.get_basket_permissions : Hash.new
   end
 
   def set_settings
