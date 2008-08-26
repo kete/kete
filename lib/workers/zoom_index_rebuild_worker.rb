@@ -7,8 +7,9 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   include ImporterZoom
 
   def create(args = nil)
-    results = { :do_work_time => Time.now.to_s,
+    results = { :do_work_time => Time.now.utc.to_s,
       :done_with_do_work => false,
+      :done_with_do_work_time => nil,
       :records_processed => 0,
       :records_skipped => 0,
       :records_failed => 0 }
@@ -138,6 +139,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         logger.info("Done with #{class_name}")
       end
       @results[:done_with_do_work] = true
+      @results[:done_with_do_work_time] = Time.now.utc.to_s
       cache[:results] = @results
       logger.info("what is cache[:results]: #{cache[:results].inspect}")
       stop_worker
@@ -146,6 +148,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       logger.info("rebuild failed: #{error_message}")
       @results[:error] = error_message
       @results[:done_with_do_work] = true
+      @results[:done_with_do_work_time] = Time.now.utc.to_s
       cache[:results] = @results
       stop_worker
     end
@@ -155,11 +158,13 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
     # This is always the public version..
     unless item.already_at_blank_version? || item.at_placeholder_public_version?
       importer_prepare_zoom(item)
-      item.zoom_save(@public_zoom_connection)
+      item.zoom_save(@public_zoom_connection) unless item.is_a?(Comment) && item.commentable_private
     end
 
     # Redo the save for the private version
-    if @skip_private == false && item.respond_to?(:private) && item.has_private_version? && !item.private?
+    if @skip_private == false &&
+        (item.respond_to?(:private) && item.has_private_version? && !item.private?) ||
+        (item.is_a?(Comment) && item.commentable_private)
 
       item.private_version do
         unless item.already_at_blank_version?
@@ -168,7 +173,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         end
       end
 
-      raise "Could not return to public version" if item.private?
+      raise "Could not return to public version" if item.private? && !item.is_a?(Comment)
 
     end
   end
