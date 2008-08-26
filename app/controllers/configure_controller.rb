@@ -282,9 +282,9 @@ class ConfigureController < ApplicationController
     @not_completed = SystemSetting.not_completed
   end
 
-  private
-
   def site_listing
+    # we empty @site_listing in case it already exists
+    @site_listing = String.new
     require 'net/http'
     require 'uri'
     remote_url = URI.parse("http://kete.net.nz/site/kete_sites/has_link_to")
@@ -292,6 +292,10 @@ class ConfigureController < ApplicationController
     http = Net::HTTP.new(remote_url.host, 80)
     @site_listing = http.request_post(remote_url.path, "url=#{SITE_URL}").body
   end
+
+  helper_method :site_listing
+
+  private
 
   def ssl_required?
     FORCE_HTTPS_ON_RESTRICTED_PAGES || false
