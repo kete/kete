@@ -10,12 +10,12 @@ class CommentsController < ApplicationController
   end
 
   def show
-    if !has_all_fragments? or params[:format] == 'xml'
+    if params[:format] == 'xml' or !has_all_fragments?
       @comment = @current_basket.comments.find(params[:id])
       @title = @comment.title
     end
 
-    if !has_fragment?({:part => 'contributions' }) or params[:format] == 'xml'
+    if params[:format] == 'xml' or !has_fragment?({:part => 'contributions' })
       @creator = @comment.creator
       @last_contributor = @comment.contributors.last || @creator
     end

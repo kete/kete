@@ -21,12 +21,12 @@
     <fieldset>
 
       <% ZOOM_CLASSES.each do |zoom_class| -%>
-      <input type="checkbox" name="settings[moderated_except][]" value=<%= zoom_class -%>
-             <%= 'checked' if !@basket.settings[:moderated_except].blank? && @basket.settings[:moderated_except].include?(zoom_class) -%>>
+      <input type="checkbox" name="settings[moderated_except][]" value="<%= zoom_class -%>"<%=
+           ' checked="checked"' if !@basket.settings[:moderated_except].blank? && @basket.settings[:moderated_except].include?(zoom_class) -%> />
       <%= zoom_class_plural_humanize(zoom_class) %><br />
       <% end -%>
     </fieldset>
-    <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled>
+    <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled="disabled" />
   </div>
 
   <div class="form-element">
@@ -35,7 +35,7 @@
     <fieldset>
 
       <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, true %>
+        <%= form.radio_button :show_privacy_controls, 'true' %>
         <label for="basket_show_privacy_controls_true" class="inline">Enabled</label>
         <div class="form_example">
           Enable Privacy Controls if members of this basket can have
@@ -45,25 +45,33 @@
       </div>
 
       <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, false %>
+        <%= form.radio_button :show_privacy_controls, 'false' %>
         <label for="basket_show_privacy_controls_false" class="inline">Disabled</label>
         <br />
         <div class="form_example">
           Disable Privacy Controls if members can only create publicly
           readable items.
+          <% if @basket == @site_basket %>
+            This baskets browsing controls are left enabled if any other baskets have
+            privacy controls turned on (for site-wide private search).
+          <% end %>
         </div>
       </div>
 
-
-      <% if @basket != @site_basket && @basket.show_privacy_controls.blank? -%>
-      <p>The Site has
-      <% if !@site_basket.show_privacy_controls.blank? && @site_basket.show_privacy_controls -%>
-      <strong>Enabled</strong>
-      <% else -%>
-      <strong>Disabled</strong>
-      <% end -%>
-      Privacy Controls</p>
-      <% end -%>
+      <% if @basket != @site_basket %>
+      <div class="form-element">
+        <%= form.radio_button :show_privacy_controls, '' %>
+        <label for="basket_show_privacy_controls_" class="inline">Inherit</label>
+        <div class="form_example">
+          Inherit this setting from the Site basket.<br />
+          <% if @basket.show_privacy_controls.nil? -%>
+          The Site has <strong>
+          <%= (!@site_basket.show_privacy_controls.blank? && @site_basket.show_privacy_controls) ? "Enabled" : "Disabled" %>
+          </strong> Privacy Controls
+          <% end %>
+        </div>
+      </div>
+      <% end %>
 
     </fieldset>
   </div>
@@ -74,16 +82,31 @@
     <fieldset>
 
       <div class="form-element">
-        <%= form.radio_button :private_default, false %>
+        <%= form.radio_button :private_default, 'false' %>
         <label for="basket_private_default_false" class="inline">Public</label><br />
         <div class="form_example">Can be viewed by everyone</div>
       </div>
 
       <div class="form-element">
-        <%= form.radio_button :private_default, true %>
+        <%= form.radio_button :private_default, 'true' %>
         <label for="basket_private_default_true" class="inline">Private</label><br />
         <div class="form_example">Can be viewed only by basket members</div>
       </div>
+
+      <% if @basket != @site_basket %>
+      <div class="form-element">
+        <%= form.radio_button :private_default, '' %>
+        <label for="basket_private_default_" class="inline">Inherit</label>
+        <div class="form_example">
+          Inherit this setting from the Site basket.<br />
+          <% if @basket.private_default.nil? -%>
+          The Site has items <strong>
+          <%= (!@site_basket.private_default.blank? && @site_basket.private_default) ? "Private" : "Public" %>
+          </strong> by default
+          <% end %>
+        </div>
+      </div>
+      <% end %>
 
     </fieldset>
 
@@ -96,16 +119,31 @@
     <fieldset>
 
       <div class="form-element">
-        <%= form.radio_button :file_private_default, false %>
+        <%= form.radio_button :file_private_default, 'false' %>
         <label for="basket_file_private_default_false" class="inline">Public</label>
         <div class="form_example">Can be downloaded by everyone</div>
       </div>
 
       <div class="form-element">
-        <%= form.radio_button :file_private_default, true %>
+        <%= form.radio_button :file_private_default, 'true' %>
         <label for="basket_file_private_default_true" class="inline">Private</label>
         <div class="form_example">Can be downloaded only by authorized basket members</div>
       </div>
+
+      <% if @basket != @site_basket %>
+      <div class="form-element">
+        <%= form.radio_button :file_private_default, '' %>
+        <label for="basket_file_private_default_" class="inline">Inherit</label>
+        <div class="form_example">
+          Inherit this setting from the Site basket.<br />
+          <% if @basket.file_private_default.nil? -%>
+          The Site has files <strong>
+          <%= (!@site_basket.file_private_default.blank? && @site_basket.file_private_default) ? "Private" : "Public" %>
+          </strong> by default
+          <% end %>
+        </div>
+      </div>
+      <% end %>
 
       <p>You may use this to restrict the download of an item's
       original file.  For example, you may set a document to be "Public" and show the
@@ -139,21 +177,45 @@
     <fieldset>
 
       <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, true %>
+        <%= form.radio_button :allow_non_member_comments, 'true' %>
         <label for="basket_allow_non_member_comments_true" class="inline">Anyone logged in</label>
       </div>
 
       <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, false %>
+        <%= form.radio_button :allow_non_member_comments, 'false' %>
         <label for="basket_allow_non_member_comments_false" class="inline">Only basket members</label>
       </div>
+
+      <% if @basket != @site_basket %>
+      <div class="form-element">
+        <%= form.radio_button :allow_non_member_comments, '' %>
+        <label for="basket_allow_non_member_comments_" class="inline">Inherit</label>
+        <div class="form_example">
+          Inherit this setting from the Site basket.<br />
+          <% if @basket.allow_non_member_comments.nil? -%>
+          The Site <strong>
+          <%= (!@site_basket.allow_non_member_comments.blank? && @site_basket.allow_non_member_comments) ? "allows" : "doesn't allow" %>
+          </strong> non basket members to post comments
+          <% end %>
+        </div>
+      </div>
+      <% end %>
 
     </fieldset>
 
   </div>
 
   <div class="form-element">
-    <label>Default Browse Results Order:</label>
+    <label>
+      Default Browse Results Order:<br />
+      <small>
+        <% if @basket != @site_basket %>
+          (this setting is not inherited from site basket)
+        <% else %>
+          (this setting does not inherit to other baskets)
+        <% end %>
+      </small>
+    </label>
 
     <fieldset>
 
@@ -166,14 +228,6 @@
         <%= check_box 'settings', 'sort_direction_reversed_default', {:checked => (@basket.settings[:sort_direction_reversed_default] == 'reverse')}, 'reverse', '' %>
         <label for="settings_sort_direction_reversed_default" class="inline">in reverse?</label>
       </div>
-
-      <p>
-        <% if @basket != @site_basket %>
-          This setting is not inherited from site basket
-        <% else %>
-          This setting does not inherit to other baskets
-        <% end %>
-      </p>
 
     </fieldset>
   </div>

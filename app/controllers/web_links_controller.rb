@@ -15,36 +15,8 @@ class WebLinksController < ApplicationController
   end
 
   def show
-    if permitted_to_view_private_items?
-      @show_privacy_chooser = true
-    end
-    
-    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-      @web_link = @current_basket.web_links.find(params[:id])
-
-      if permitted_to_view_private_items?
-        @web_link = @web_link.private_version! if @web_link.has_private_version? && params[:private] == "true"
-      end
-
-      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @title = @web_link.title
-      end
-
-      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @creator = @web_link.creator
-        @last_contributor = @web_link.contributors.last || @creator
-      end
-
-      if logged_in? and @at_least_a_moderator
-        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @web_link.non_pending_comments
-        end
-      else
-        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @web_link.non_pending_comments
-        end
-      end
-    end
+    prepare_item_variables_for("WebLink")
+    @web_link = @item
 
     respond_to do |format|
       format.html

@@ -15,11 +15,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.oai '/oai_pmh_repository', :controller => 'oai_pmh_repository', :action => 'index'
 
-  # James Stradling <james@katipo.co.nz>, 2008-04-15
-  # Map private files to the PrivateFilesController
-  # E.g. /documents/0000/0000/0011/Bio.txt
-  map.private_file '/:type/:a/:b/:c/:filename.*formats', :controller => "private_files", :action => 'show'
-
   # Walter McGinnis, 2007-01-08
   # TODO: DRY this up
   map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
@@ -36,26 +31,35 @@ ActionController::Routing::Routes.draw do |map|
   map.basket_index ':urlified_name', :controller => "index_page", :action => 'index'
 
   map.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss.xml', :controller => "search", :action => 'rss'
+  map.basket_all_private_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/rss.xml', :controller => "search", :action => 'rss'
 
   map.basket_all ':urlified_name/all/:controller_name_for_zoom_class/', :controller => "search", :action => 'all'
+  map.basket_all_private ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/', :controller => "search", :action => 'all'
 
   map.basket_all_contributed_by_rss ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml', :controller => "search", :action => 'rss'
+  map.basket_all_private_contributed_by_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml', :controller => "search", :action => 'rss'
 
   map.basket_all_contributed_by ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/', :controller => "search", :action => 'all'
+  map.basket_all_private_contributed_by ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/', :controller => "search", :action => 'all'
 
   map.basket_all_related_to_rss ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml', :controller => "search", :action => 'rss'
 
   map.basket_all_related_to ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/', :controller => "search", :action => 'all'
 
   map.basket_all_tagged_rss ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/rss.xml', :controller => "search", :action => 'rss'
+  map.basket_all_private_tagged_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/rss.xml', :controller => "search", :action => 'rss'
 
   map.basket_all_tagged ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/', :controller => "search", :action => 'all'
+  map.basket_all_private_tagged ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/', :controller => "search", :action => 'all'
 
   map.basket_search_contributed_by_rss ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml', :controller => "search", :action => 'rss'
+  map.basket_search_private_contributed_by_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml', :controller => "search", :action => 'rss'
 
   map.basket_search_contributed_by ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug', :controller => "search", :action => 'for'
+  map.basket_search_private_contributed_by ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug', :controller => "search", :action => 'for'
 
   map.basket_search_contributed_by_empty ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug', :controller => "search", :action => 'for', :search_terms => nil
+  map.basket_search_private_contributed_by_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug', :controller => "search", :action => 'for', :search_terms => nil
 
   map.basket_search_related_to_rss ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml', :controller => "search", :action => 'rss'
 
@@ -64,17 +68,27 @@ ActionController::Routing::Routes.draw do |map|
   map.basket_search_related_to_empty ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for', :controller => "search", :action => 'for', :search_terms => nil
 
   map.basket_search_tagged_rss ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml', :controller => "search", :action => 'rss'
+  map.basket_search_private_tagged_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml', :controller => "search", :action => 'rss'
 
   map.basket_search_tagged ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug', :controller => "search", :action => 'for'
+  map.basket_search_private_tagged ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug', :controller => "search", :action => 'for'
 
   map.basket_search_tagged_empty ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for', :controller => "search", :action => 'for', :search_terms => nil
+  map.basket_search_private_tagged_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for', :controller => "search", :action => 'for', :search_terms => nil
 
   map.basket_search_rss ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml', :controller => "search", :action => 'rss'
+  map.basket_search_private_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml', :controller => "search", :action => 'rss'
 
   map.basket_search ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug', :controller => "search", :action => 'for'
+  map.basket_search_private ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug', :controller => "search", :action => 'for'
 
   map.basket_search_empty ':urlified_name/search/:controller_name_for_zoom_class/for', :controller => "search", :action => 'for', :search_terms => nil
+  map.basket_search_private_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for', :controller => "search", :action => 'for', :search_terms => nil
 
+  # James Stradling <james@katipo.co.nz>, 2008-04-15
+  # Map private files to the PrivateFilesController
+  # E.g. /documents/0000/0000/0011/Bio.txt
+  map.private_file '/:type/:a/:b/:c/:filename.*formats', :controller => "private_files", :action => 'show'
 
   # will default to site basket (special case of basket)
   # route site to search with DEFAULT_SEARCH_CLASS
@@ -120,6 +134,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'db_uptime.txt', :controller => "index_page", :action => 'db_uptime'
   # to make sure that the db is answering
   map.connect 'zebra_uptime.txt', :controller => "index_page", :action => 'zebra_uptime'
+  # to make sure that registration is valid
+  map.connect 'validate_kete_net_link.xml', :controller => "index_page", :action => 'validate_kete_net_link'
 
   map.connect '*path', :controller => 'application', :action => 'rescue_404' unless ActionController::Base.consider_all_requests_local
 end

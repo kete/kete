@@ -19,10 +19,20 @@ class SearchController < ApplicationController
 
   # Reset slideshow object on new searches
   before_filter :reset_slideshow, :only => [:for, :all]
+  
+  # Ensure private RSS feeds are authenticated
+  before_filter :authenticated_rss, :only => [:rss]
 
   # After running a search, store the results in a session
   # for slideshow functionality.
   after_filter :store_results_for_slideshow, :only => [:for, :all]
+
+  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
+  verify :method => :post, :only => [ :rebuild_zoom_index ],
+         :redirect_to => { :action => :index }
+
+  # these search actions should only be done by tech admins at this time
+  permit "tech_admin", :only => [ :setup_rebuild, :rebuild_zoom_index, :check_rebuild_status ]
 
   def index
   end
@@ -131,15 +141,16 @@ class SearchController < ApplicationController
 
     # James Stradling <james@katipo.co.nz> - 2008-05-02
     # Only allow private search if permitted
-    if params[:privacy_type] == "private" and permitted_to_view_private_items?
+    if accessing_private_search_and_allowed?
       @privacy = "private"
       zoom_db_instance = "private"
     else
       zoom_db_instance = "public"
     end
 
-    # Load the correct zoom_db instance.
+    # Load the correct zoom_db instance and connect to it
     @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
+    @zoom_connection = @search.zoom_db.open_connection
 
     @result_sets = Hash.new
 
@@ -155,6 +166,7 @@ class SearchController < ApplicationController
   end
 
   def rss
+      
     @search = Search.new
     # changed from @headers for Rails 2.0 compliance
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
@@ -190,11 +202,16 @@ class SearchController < ApplicationController
     @start = 1
 
     # TODO: skipping multiple source (federated) search for now
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', params[:privacy_type] || 'public')
 
     @result_sets = Hash.new
 
     populate_result_sets_for(@current_class)
+  end
+  
+  def authenticated_rss
+    request.format = :xml
+    params[:privacy_type] == "private" ? login_required : true
   end
 
   def load_results(from_result_set)
@@ -257,14 +274,23 @@ class SearchController < ApplicationController
 
     # limit baskets searched within, if appropriate
     unless searching_for_related_items?
-      if @current_basket == @site_basket && params[:privacy_type] == 'private'
+      if params[:privacy_type] == 'private'
+        
         # get the urlified_name for each basket the user has a role in
         # from their session
         basket_access_hash = current_user.get_basket_permissions if logged_in? || Hash.new
         session[:has_access_on_baskets] = basket_access_hash
         basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
-        @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
-      elsif (@current_basket != @site_basket)
+      
+        if @current_basket == @site_basket
+          @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
+        elsif (@current_basket != @site_basket) and basket_urlified_names.member?(@current_basket.urlified_name)
+          @search.pqf_query.within(@current_basket.urlified_name)
+        else
+          return access_denied
+        end
+        
+      elsif @current_basket != @site_basket
         @search.pqf_query.within(@current_basket.urlified_name)
       end
     end
@@ -301,7 +327,7 @@ class SearchController < ApplicationController
                                         :search_terms => @search_terms)
 
     logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
-    this_result_set = @search.zoom_db.process_query(:query => @search.pqf_query.to_s)
+    this_result_set = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
 
     @result_sets[zoom_class] = this_result_set
 
@@ -417,30 +443,38 @@ class SearchController < ApplicationController
   # takes search_terms from form
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
-    controller_name = params[:controller_name_for_zoom_class].nil? ? zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
+    controller_name = params[:controller_name_for_zoom_class].nil? ? \
+      zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
-    if params[:search_terms].blank?
-      if params[:tag]
-        existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
-        redirect_to url_for( :overwrite_params => { :action => 'all',
-                             :controller_name_for_zoom_class => controller_name,
-                             :existing_array_string => existing_array_string,
-                             :commit => nil,
-                             :search_terms => nil,
-                             :sort_type => nil,
-                             :update => nil,
-                             :authenticity_token => nil } )
-      else
-        redirect_to basket_all_url(:controller_name_for_zoom_class => controller_name, :sort_direction => params[:sort_direction], :sort_type => params[:sort_type], :privacy_type => params[:privacy_type])
-      end
-    else
-      existing_array_string = !params[:existing_array_string].nil? ? params[:existing_array_string] : nil
-      redirect_to url_for( :overwrite_params => { :action => 'for',
-                             :controller_name_for_zoom_class => controller_name,
-                             :search_terms_slug => to_search_terms_slug(params[:search_terms]),
-                             :existing_array_string => existing_array_string,
-                             :commit => nil} )
+    location_hash = { :controller_name_for_zoom_class => controller_name,
+                      :existing_array_string => params[:existing_array_string],
+                      :sort_direction => params[:sort_direction],
+                      :sort_type => params[:sort_type],
+                      :authenticity_token => nil }
+
+    if params[:privacy_type] == 'private'
+      location_hash.merge!({ :privacy_type => params[:privacy_type] })
     end
+
+    if !params[:search_terms].blank?
+      location_hash.merge!({ :search_terms_slug => to_search_terms_slug(params[:search_terms]),
+                             :search_terms => params[:search_terms],
+                             :action => 'for' })
+    else
+      location_hash.merge!({ :action => 'all' })
+    end
+
+    if !params[:tag].blank?
+      location_hash.merge!({ :tag => params[:tag] })
+    end
+
+    if !params[:contributor].blank?
+      location_hash.merge!({ :contributor => params[:contributor] })
+    end
+
+    logger.info("terms_to_page_url_redirect hash: " + location_hash.inspect)
+
+    redirect_to url_for(location_hash)
   end
 
   def to_search_terms_slug(search_terms)
@@ -497,81 +531,116 @@ class SearchController < ApplicationController
     end
   end
 
-  # this probably may not scale
+  # actions for rebuilding search records
+  # see filters and permissions for security towards top of code
+  include WorkerControllerHelpers
+  # this is the form for tech admins
+  # to configure the rebuild_zoom_index action
+  def setup_rebuild
+  end
+
+  # this takes the configuration and uses it to start a backgroundrb worker
+  # to do the actual rebuild work on zebra
   def rebuild_zoom_index
-    permit "tech_admin" do
-      session[:zoom_class] = !params[:zoom_class].nil? ? params[:zoom_class] : 'Topic'
-      session[:start_id] = !params[:start].nil? ? params[:start] : 1
-      session[:end_id] = !params[:end].nil? ? params[:end] : 'end'
-      session[:skip_existing] = !params[:skip_existing].nil? ? params[:skip_existing] : true
+    @zoom_class = !params[:zoom_class].blank? ? params[:zoom_class] : 'all'
+    @start_id = !params[:start].blank? && @zoom_class != 'all' ? params[:start] : 'first'
+    @end_id = !params[:end].blank? && @zoom_class != 'all' ? params[:end] : 'last'
+    @skip_existing = !params[:skip_existing].blank? ? params[:skip_existing] : false
+    @skip_private = !params[:skip_private].blank? ? params[:skip_private] : false
+    @clear_zebra = !params[:clear_zebra].blank? ? params[:clear_zebra] : false
 
-      session[:zoom_db] = ZoomDb.find_by_host_and_database_name('localhost','public')
+    @worker_type = 'zoom_index_rebuild_worker'
 
-      # start from scratch
-      session[:last] = nil
-      session[:done] = false
-      session[:record_count] = 0
+    import_request = { :host => request.host,
+      :protocol => request.protocol,
+      :request_uri => request.request_uri }
 
-      rebuild_zoom_item
+    @worker_running = false
+    # only one rebuild should be running at a time
+    unless backgroundrb_is_running?(@worker_type)
+      MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
+      MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :zoom_class => @zoom_class,
+                                                                         :start_id => @start_id,
+                                                                         :end_id => @end_id,
+                                                                         :skip_existing => @skip_existing,
+                                                                         :skip_private => @skip_private,
+                                                                         :clear_zebra => @clear_zebra,
+                                                                         :import_request => import_request } )
+      @worker_running = true
+    else
+      flash[:notice] = 'There is another search record rebuild running at this time.  Please try again later.'
     end
   end
 
-  # this rebuilds the next item in queue
-  # and updates page
-  def rebuild_zoom_item
-    @zoom_class = session[:zoom_class]
-    @start_id = session[:start_id]
-    @end_id = session[:end_id]
-    @zoom_db = session[:zoom_db]
-
-    @last_id = session[:last] ? session[:last] : @start_id
-
-    @done = session[:done] ? session[:done] : false
-
-    if !@done
-      clause = "id > :start_id"
-      clause_values = { :start_id => @last_id }
-
-      # if it's the first record, just grab it
-      if @last_id == @start_id and session[:record_count] == 0
-        clause = "id = :start_id"
-      elsif @end_id.to_s != 'end'
-        clause += " and id <= :end_id"
-        clause_values[:end_id] = @end_id
-      end
-
-      # don't include items that are flagged pending or placeholder public versions
-      clause += " and title != :pending_title"
-      clause_values[:pending_title] = BLANK_TITLE
-
-      @item = only_valid_zoom_class(@zoom_class).find(:first, :conditions => [clause, clause_values], :order => 'id')
-
-      if @item.nil?
-        @done = true
-        @result_message = 'Done'
-      else
-        session[:last] = @item.id
-        @result_message = zoom_update_and_test(@item,@zoom_db)
-      end
-
-      log_path = File.join(RAILS_ROOT, 'log')
-      dest = File.open(log_path + '/zoom_rebuild.log', 'a')
-      dest << @result_message + "\n"
-      dest.close
-
-      session[:done] = @done
-      session[:record_count] += 1
-
+  # this reports progress back to the tech admin
+  # on how the backgroundrb worker is doing
+  # with the search record rebuild
+  def check_rebuild_status
+    if !request.xhr?
+      flash[:notice] = 'You need javascript enabled for this feature.'
+      redirect_to 'setup_rebuild'
     else
-      @result_message = 'Done'
-    end
+      @worker_type = 'zoom_index_rebuild_worker'
+      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      begin
+        if !status.blank?
+          current_zoom_class = status[:current_zoom_class] || 'Topic'
+          records_processed = status[:records_processed]
+          records_failed = status[:records_failed]
+          records_skipped = status[:records_skipped]
 
-    if request.xhr?
-      render :partial =>'rebuild_zoom_item',
-      :locals => { :result_message => @result_message }
-    else
-      if params[:action] == 'rebuild_zoom_item'
-        raise "This feature requires javascript"
+          render :update do |page|
+
+            page.replace_html 'processing_zoom_class', "<p>Working on #{zoom_class_plural_humanize(current_zoom_class)}</p>"
+
+            if records_processed > 0
+              page.replace_html 'report_records_processed', "<p>#{records_processed} records processed</p>"
+            end
+
+            if records_failed > 0
+              failed_message = "<p>#{records_failed} records failed</p>"
+              failed_message += "<p>These maybe private records, depending on the case.  See log/backgroundrb... for details.</p>"
+              page.replace_html 'report_records_failed', failed_message
+            end
+
+            if records_skipped > 0
+              page.replace_html 'report_records_skipped', "<p>#{records_skipped} records skipped</p>"
+            end
+
+            logger.info("after record reports")
+            if status[:done_with_do_work] == true or !status[:error].blank?
+              logger.info("inside done")
+              done_message = "All records processed."
+
+              if !status[:error].blank?
+                logger.info("error not blank")
+                done_message = "There was a problem with the rebuild: #{status[:error]}<p><b>The rebuild has been stopped</b></p>"
+              end
+              page.hide("spinner")
+              page.replace_html 'done', done_message
+              page.replace_html 'exit', '<p>' + link_to('Browse records', :action => 'all') + '</p>'
+            end
+          end
+        else
+          message = "Rebuild failed."
+          flash[:notice] = message
+          render :update do |page|
+            page.hide("spinner")
+            page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
+          end
+        end
+      rescue
+        # we aren't getting to this point, might be nested begin/rescue
+        # check background logs for error
+        rebuild_error = !status.blank? ? status[:error] : "rebuild worker not running anymore?"
+        logger.info(rebuild_error)
+        message = "Rebuild failed. #{rebuild_error}"
+        message += " - #{$!}" unless $!.blank?
+        flash[:notice] = message
+        render :update do |page|
+          page.hide("spinner")
+          page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
+        end
       end
     end
   end
@@ -775,6 +844,7 @@ class SearchController < ApplicationController
 
   # James Stradling <james@katipo.co.nz> - 2008-05-02
   # Refactored to use acts_as_zoom#has_appropriate_records?
+  #### DEPRECIATED?
   def zoom_update_and_test(item,zoom_db)
     item_class = item.class.name
 

@@ -74,8 +74,10 @@ class BasketsController < ApplicationController
 
     # put in some defaults for site basket
     # since all other baskets inherit from them if unspecified
-    @basket.show_privacy_controls = false if @basket == @site_basket && @basket.show_privacy_controls.blank?
-    @basket.allow_non_member_comments = true if @basket == @site_basket && @basket.allow_non_member_comments.blank?
+    @basket.show_privacy_controls = 'false' if @basket == @site_basket && @basket.show_privacy_controls.blank?
+    @basket.allow_non_member_comments = 'true' if @basket == @site_basket && @basket.allow_non_member_comments.blank?
+    @basket.private_default = 'false' if @basket == @site_basket && @basket.private_default.blank?
+    @basket.file_private_default = 'false' if @basket == @site_basket && @basket.file_private_default.blank?
   end
 
   def homepage_options
@@ -103,6 +105,18 @@ class BasketsController < ApplicationController
         end
       end
     end
+
+    boolean_fields = [:show_privacy_controls, :private_default, :file_private_default, :allow_non_member_comments]
+    boolean_fields.each do |field|
+      if params[:basket][field] == 'true'
+        params[:basket][field] = true
+      elsif params[:basket][field] == 'false'
+        params[:basket][field] = false
+      else
+        params[:basket][field] = nil
+      end
+    end
+
     if @basket.update_attributes(params[:basket])
       # Reload to ensure basket.name is updated and not the previous
       # basket name.
@@ -228,6 +242,8 @@ class BasketsController < ApplicationController
           value = true
         when "false"
           value = false
+        when "nil"
+          value = nil
         end
         @basket.settings[name] = value
       end

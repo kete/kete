@@ -1,0 +1,99 @@
+<% @title = "Set up a rebuild of your search records" -%>
+
+<h2><%= h(@title) -%></h2>
+
+<!--
+<h3>Some things to keep in mind:</h3>
+
+<ul>
+  <li><p></p><p></p></li>
+  <li><p></p><p></p></li>
+</ul>
+
+-->
+
+<fieldset>
+  <% form_tag :overwrite_params => { :action => 'rebuild_zoom_index' }  do %>
+  <div class="form-element">
+    <label for="zoom_class">Type to rebuild:</label>
+    <% zoom_class_options = '<option value="all">all types</option>'
+       ZOOM_CLASSES.each { |class_name| zoom_class_options += "<option value=\"#{class_name}\">#{zoom_class_humanize(class_name)}</option>" }
+       -%>
+    <%= select_tag 'zoom_class', zoom_class_options %>
+  </div>
+
+  <div id="clear_zebra_field">
+    <div class="form-element">
+      <label for="clear_zebra">Clear and restart search engine first?</label>
+      <input type="checkbox" name="clear_zebra" id="clear_zebra" value="true" checked="checked" />
+      <div class="form-example">This will "erase" your existing search
+        records and start from scratch.  Use this if starting from the first record and
+        ending with the last.  This involves some steps that don't
+        work on all platforms (e.g. Solaris 10), uncheck if will be
+        doing these steps by hand from the command line on the server.</div>
+    </div>
+  </div>
+
+  <div id="skip_existing_field">
+    <div class="form-element">
+      <label for="skip_existing">Should we skip records that are
+      already in the search engine?</label>
+      <input type="checkbox" name="skip_existing" id="skip_existing" value="true" />
+      <div class="form-example">In most cases you will want to leave
+      this unchecked for a faster rebuild.  However it is useful when
+      you are rebuilding only missing records that didn't make it
+      into the search engine.</div>
+    </div>
+  </div>
+
+  <div id="skip_private_field">
+    <div class="form-element">
+      <label for="skip_private">Should we skip private records?</label>
+      <input type="checkbox" name="skip_private" id="skip_private" value="true" />
+      <div class="form-example">In most cases you will want to leave
+      this unchecked for a complete rebuild.  However, if you don't
+      have any existing private records (perhaps you are upgrading
+      from Kete 1.0 to 1.1, for example), you can use this to speed up
+      the rebuild process.</div>
+    </div>
+  </div>
+
+
+  <div id="start_field">
+    <div class="form-element">
+      <label for="start">Record id to start rebuilding process at?</label>
+      <%= text_field_tag 'start', 'first', :size => '6', :disabled => true %>
+      <div class="form-example">You must choose a specific type to
+      rebuild rather than "all types" to use anything but 'first'.
+      If you choose a specific type, you may specify the id number in
+      the Kete database to start rebuilding at, i.e. the value you of
+      the id column in the topics table that corresponds to the first
+      topic to be added to the search engine.</div>
+    </div>
+  </div>
+
+  <%= enable_start_unless_all_types_js_helper -%>
+
+  <div id="end_field">
+    <div class="form-element">
+      <label for="end">Record id to finish rebuilding process at?</label>
+      <%= text_field_tag 'end', 'last', :size => '6', :disabled => true %>
+      <div class="form-example">You must choose a specific type to
+      rebuild rather than "all types" to use anything but 'last'.
+      If you choose a specific type, you may specify the id number in
+      the Kete database to finishing rebuilding at, i.e. the value you of
+      the id column in the topics table that corresponds to the last
+      topic to be added to the search engine.</div>
+    </div>
+  </div>
+
+  <%= enable_end_unless_all_types_js_helper -%>
+
+  <div class="form-element">
+    <%= submit_tag 'Rebuild Search Records' %>
+  </div>
+  <% end -%>
+</fieldset>
+
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>

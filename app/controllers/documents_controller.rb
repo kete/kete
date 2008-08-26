@@ -12,40 +12,8 @@ class DocumentsController < ApplicationController
   end
 
   def show
-    # Walter McGinnis, 2008-02-14
-    # always loading for the timebeing, since we check for blank version
-    # to determine whether to show file
-    @document = @current_basket.documents.find(params[:id])
-
-    if permitted_to_view_private_items?
-      @show_privacy_chooser = true
-    end
-
-    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-
-      if permitted_to_view_private_items?
-        @document = @document.private_version! if @document.has_private_version? && params[:private] == "true"
-      end
-
-      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @title = @document.title
-      end
-
-      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @creator = @document.creator
-        @last_contributor = @document.contributors.last || @creator
-      end
-
-      if logged_in? and @at_least_a_moderator
-        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @document.non_pending_comments
-        end
-      else
-        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @document.non_pending_comments
-        end
-      end
-    end
+    prepare_item_variables_for("Document", true)
+    @document = @item
 
     respond_to do |format|
       format.html

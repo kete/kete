@@ -200,7 +200,7 @@ class PqfQuery
       oai_datestamp_on_or_after(beginning, options)
     elsif !ending.nil? && beginning.nil?
       options.delete(:ending)
-      oai_datestamp_on_or_after(ending, options)
+      oai_datestamp_on_or_before(ending, options)
     end
   end
 
