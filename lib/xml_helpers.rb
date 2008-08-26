@@ -23,16 +23,19 @@ module XmlHelpers
     end
 
     def xml_enclosure_for_item_with_file(xml, item, host, protocol = nil)
-      protocol = protocol || "http"
-      args = { :type => item.content_type,
-        :length => item.size.to_s,
-        :url => file_url_from_bits_for(item, host, protocol) }
+      if (item.respond_to?(:public_filename) && !item.public_filename.blank?) ||
+          (item.respond_to?(:original_file) && !item.original_file.blank?)
+        protocol = protocol || "http"
+        args = { :type => item.content_type,
+          :length => item.size.to_s,
+          :url => file_url_from_bits_for(item, host, protocol) }
 
-      if item.class.name == 'ImageFile'
-        args[:width] = item.width
-        args[:height] = item.height
+        if item.class.name == 'ImageFile'
+          args[:width] = item.width
+          args[:height] = item.height
+        end
+        xml.enclosure args
       end
-      xml.enclosure args
     end
   end
 end
