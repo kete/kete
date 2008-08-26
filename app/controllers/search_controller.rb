@@ -19,7 +19,7 @@ class SearchController < ApplicationController
 
   # Reset slideshow object on new searches
   before_filter :reset_slideshow, :only => [:for, :all]
-  
+
   # Ensure private RSS feeds are authenticated
   before_filter :authenticated_rss, :only => [:rss]
 
@@ -166,7 +166,7 @@ class SearchController < ApplicationController
   end
 
   def rss
-      
+
     @search = Search.new
     # changed from @headers for Rails 2.0 compliance
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
@@ -208,7 +208,7 @@ class SearchController < ApplicationController
 
     populate_result_sets_for(@current_class)
   end
-  
+
   def authenticated_rss
     request.format = :xml
     params[:privacy_type] == "private" ? login_required : true
@@ -275,13 +275,13 @@ class SearchController < ApplicationController
     # limit baskets searched within, if appropriate
     unless searching_for_related_items?
       if params[:privacy_type] == 'private'
-        
+
         # get the urlified_name for each basket the user has a role in
         # from their session
         basket_access_hash = current_user.get_basket_permissions if logged_in? || Hash.new
         session[:has_access_on_baskets] = basket_access_hash
         basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
-      
+
         if @current_basket == @site_basket
           @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
         elsif (@current_basket != @site_basket) and basket_urlified_names.member?(@current_basket.urlified_name)
@@ -289,7 +289,7 @@ class SearchController < ApplicationController
         else
           return access_denied
         end
-        
+
       elsif @current_basket != @site_basket
         @search.pqf_query.within(@current_basket.urlified_name)
       end
@@ -591,6 +591,8 @@ class SearchController < ApplicationController
 
           render :update do |page|
 
+            page.replace_html 'time_started', "<p>Started at #{status[:do_work_time]}</p>"
+
             page.replace_html 'processing_zoom_class', "<p>Working on #{zoom_class_plural_humanize(current_zoom_class)}</p>"
 
             if records_processed > 0
@@ -610,19 +612,21 @@ class SearchController < ApplicationController
             logger.info("after record reports")
             if status[:done_with_do_work] == true or !status[:error].blank?
               logger.info("inside done")
-              done_message = "All records processed."
+              done_message = "All records processed "
 
               if !status[:error].blank?
                 logger.info("error not blank")
                 done_message = "There was a problem with the rebuild: #{status[:error]}<p><b>The rebuild has been stopped</b></p>"
               end
+              done_message += " at #{status[:done_with_do_work_time]}."
               page.hide("spinner")
               page.replace_html 'done', done_message
               page.replace_html 'exit', '<p>' + link_to('Browse records', :action => 'all') + '</p>'
             end
           end
         else
-          message = "Rebuild failed."
+          message = "Rebuild failed "
+          message +=  "at #{status[:done_with_do_work_time]}." unless status[:done_with_do_work_time].blank?
           flash[:notice] = message
           render :update do |page|
             page.hide("spinner")
@@ -636,6 +640,7 @@ class SearchController < ApplicationController
         logger.info(rebuild_error)
         message = "Rebuild failed. #{rebuild_error}"
         message += " - #{$!}" unless $!.blank?
+        message +=  " at #{status[:done_with_do_work_time]}." unless status[:done_with_do_work_time].blank?
         flash[:notice] = message
         render :update do |page|
           page.hide("spinner")

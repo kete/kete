@@ -7,8 +7,9 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   include ImporterZoom
 
   def create(args = nil)
-    results = { :do_work_time => Time.now.to_s,
+    results = { :do_work_time => Time.now.utc.to_s,
       :done_with_do_work => false,
+      :done_with_do_work_time => nil,
       :records_processed => 0,
       :records_skipped => 0,
       :records_failed => 0 }
@@ -138,6 +139,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         logger.info("Done with #{class_name}")
       end
       @results[:done_with_do_work] = true
+      @results[:done_with_do_work_time] = Time.now.utc.to_s
       cache[:results] = @results
       logger.info("what is cache[:results]: #{cache[:results].inspect}")
       stop_worker
@@ -146,6 +148,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       logger.info("rebuild failed: #{error_message}")
       @results[:error] = error_message
       @results[:done_with_do_work] = true
+      @results[:done_with_do_work_time] = Time.now.utc.to_s
       cache[:results] = @results
       stop_worker
     end
