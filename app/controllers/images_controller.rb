@@ -12,39 +12,8 @@ class ImagesController < ApplicationController
   end
   
   def show
-    # Walter McGinnis, 2008-02-14
-    # always loading still_image for the timebeing, since we check for blank version
-    # to determine whether to show image file
-    @still_image = @current_basket.still_images.find(params[:id])
-
-    if permitted_to_view_private_items?
-      @show_privacy_chooser = true
-    end
-
-    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-      if permitted_to_view_private_items?
-        @still_image = @still_image.private_version! if @still_image.has_private_version? && params[:private] == "true"
-      end
-
-      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @title = @still_image.title
-      end
-
-      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @creator = @still_image.creator
-        @last_contributor = @still_image.contributors.last || @creator
-      end
-
-      if logged_in? and @at_least_a_moderator
-        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @still_image.non_pending_comments
-        end
-      else
-        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @still_image.non_pending_comments
-        end
-      end
-    end
+    prepare_item_variables_for("StillImage", true)
+    @still_image = @item
 
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])

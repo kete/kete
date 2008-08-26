@@ -5,7 +5,7 @@
 <head>
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  
+
   <% cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links'] %>
   <% if cached_controllers.include?(params[:controller]) and params[:action] == "show" %>
     <% item = @audio_recording || @document || @still_image || @topic || @video || @web_link || nil %>
@@ -204,7 +204,7 @@
                 <% if logged_in? and @site_admin and !@displaying_404 %>
                    <!-- admin toolbox, temp -->
                    <div id="adminToolbox">
-                        <h4>Administrator's Toolbox (prototype)</h4>
+                        <h4>Administrator's Toolbox</h4>
                         <p>
                         Controls:
                         <%= link_to_unless_current("add basket", :urlified_name => @site_basket.urlified_name,
@@ -229,7 +229,10 @@
                         |
                         <%= link_to_unless_current "administer licenses", :controller => '/licenses',
                             :action => :index, :urlified_name => @site_basket.urlified_name -%>
-
+                        |
+                        <%= link_to_unless_current "List site on Kete.net.nz", :controller => '/configure',
+                                                                               :action => 'add_link_from_kete_net',
+                                                                               :urlified_name => @site_basket.urlified_name -%>
                         <% if @tech_admin -%>
                         |
                         <%= link_to_unless_current "reconfigure site", :controller => '/configure',
@@ -242,6 +245,11 @@
                         |
                         <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
                                                                               :action => :list,
+                                                                              :urlified_name => @site_basket.urlified_name -%>
+
+                        |
+                        <%= link_to_unless_current "Rebuild search databases", :controller => '/search',
+                                                                              :action => 'setup_rebuild',
                                                                               :urlified_name => @site_basket.urlified_name -%>
                         <% end -%>
                         </p>

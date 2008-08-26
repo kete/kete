@@ -1,0 +1,29 @@
+<h3>List your site on Kete.net.nz (optional)</h3>
+<% if @site_listing.blank? -%>
+<div id="send_information">
+  <div id="top_message"><p>Would you like to send your site name,
+  site url and a short description of your site for to a public list of Kete installations?</p></div>
+
+  <% form_remote_tag ( :url => { :action => 'send_information' },
+  :before => "Element.hide('form_fields');Element.show('data-spinner')",
+  :complete => "Element.hide('data-spinner')",
+  :href => url_for( :action => 'send_information' ) ) do %>
+  <div id="form_fields">
+    <div id="register_errors"></div>
+    <div>
+      <label for="site_description">Site description: <small>(optional)</small></label><br />
+      <input type="text" id="site_description" name="site_description" size="45" />
+    </div>
+    <div><%= submit_tag 'Send Information', :id => 'data-button' -%></div>
+  </div>
+  <% end -%>
+</div>
+<div id="data-spinner" style="display:none; text-align:center">
+  <img src="/images/indicator.gif" width="16" height="16" alt="sending" />
+</div>
+<% else -%>
+<div id="site_is_listed">
+  Kete.net.nz already lists the site.  You can see details at
+  <%= link_to(@site_listing, @site_listing) -%>.
+</div>
+<% end -%>

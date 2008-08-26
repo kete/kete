@@ -12,40 +12,8 @@ class AudioController < ApplicationController
   end
 
   def show
-    # Walter McGinnis, 2008-02-14
-    # always loading still_image for the timebeing, since we check for blank version
-    # to determine whether to show image file
-    @audio_recording = @current_basket.audio_recordings.find(params[:id])
-
-    if permitted_to_view_private_items?
-      @show_privacy_chooser = true
-    end
-
-    if !has_all_fragments? or (permitted_to_view_private_items? and params[:private] == "true") or params[:format] == 'xml'
-
-      if permitted_to_view_private_items?
-        @audio_recording = @audio_recording.private_version! if @audio_recording.has_private_version? && params[:private] == "true"
-      end
-
-      if !has_fragment?({:part => ("page_title_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @title = @audio_recording.title
-      end
-
-      if !has_fragment?({:part => ("contributor_" + (params[:private] == "true" ? "private" : "public")) }) or params[:format] == 'xml'
-        @creator = @audio_recording.creator
-        @last_contributor = @audio_recording.contributors.last || @creator
-      end
-
-      if logged_in? and @at_least_a_moderator
-        if !has_fragment?({:part => ("comments-moderators_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @audio_recording.non_pending_comments
-        end
-      else
-        if !has_fragment?({:part => ("comments_" + (params[:private] == "true" ? "private" : "public"))}) or params[:format] == 'xml'
-          @comments = @audio_recording.non_pending_comments
-        end
-      end
-    end
+    prepare_item_variables_for("AudioRecording", true)
+    @audio_recording = @item
 
     respond_to do |format|
       format.html

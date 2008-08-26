@@ -163,7 +163,7 @@
                   <% form_remote_tag( :url => { :action => 'prime_zebra' },
                                       :before => "Element.hide('prime-button');Element.show('prime-spinner')",
                                       :complete => "Element.hide('prime-spinner')",
-                  :href => url_for( :action => 'prime_zebra' ) ) do %>
+                                      :href => url_for( :action => 'prime_zebra' ) ) do %>
                   <div id="prime-spinner"
                   style="display:none; text-align:center"><img src="/images/indicator.gif"
                   width="16" height="16" alt="completed" /></div>
@@ -176,16 +176,18 @@
           </tr>
           <tr>
             <td colspan="2">
-              <% if @search_engine_primed -%>
-              <div id="reload-site-index">
-                <% else -%>
-                <div id="reload-site-index" style="display:none">
-                  <% end -%>
-                  <p>Congratulations!  Your Kete site is configured
-                  and ready to be viewed.
-                  Click 'Reload Site' to move on to customising your
-                  Kete's content to suit.</p>
-                  <div class="wrap"><%= button_to 'Reload Site', basket_index_url(:urlified_name => 'site') %></div>
+              <div id="reload-site-index"<%= ' style="display:none"' if !@search_engine_primed %>>
+                <p>Congratulations!  Your Kete site is configured and ready to be viewed.
+                Click 'Reload Site' to move on to customising your Kete's content to suit.</p>
+
+                <%= render :partial => 'link_to_site' %>
+
+                <p>You may do this later by visiting the Administrator's Toolbox and using the "List site on Kete.net.nz" link.</p>
+
+                <h3>Installation complete</h3>
+                <div class="wrap">
+                  <%= button_to 'Reload Site', basket_index_url(:urlified_name => 'site') %>
+                </div>
               </div>
             </td>
           </tr>

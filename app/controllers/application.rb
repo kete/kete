@@ -28,7 +28,10 @@ class ApplicationController < ActionController::Base
                                             :flag_form,
                                             :flag_version,
                                             :restore,
-                                            :reject]
+                                            :reject,
+                                            :choose_type,
+                                            :setup_rebuild,
+                                            :rebuild_zoom_index]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -101,12 +104,11 @@ class ApplicationController < ActionController::Base
   # TODO: cache in memcache
   def load_standard_baskets
     # could DRY this up with one query for all the baskets
-    @site_basket ||= Basket.find(1)
-    @help_basket ||= Basket.find(HELP_BASKET)
-    @about_basket ||= Basket.find(ABOUT_BASKET)
-    @documentation_basket ||= Basket.find(DOCUMENTATION_BASKET)
-
-    @standard_baskets ||= [1, HELP_BASKET, ABOUT_BASKET, DOCUMENTATION_BASKET]
+    @site_basket ||= Basket.site_basket
+    @help_basket ||= Basket.help_basket
+    @about_basket ||= Basket.about_basket
+    @documentation_basket ||= Basket.documentation_basket
+    @standard_baskets ||= Basket.standard_baskets
 
     if params[:urlified_name].blank?
       @current_basket = @site_basket
@@ -328,18 +330,16 @@ class ApplicationController < ActionController::Base
       # because old titles' friendly urls won't be matched in our expiry otherwise
       expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
     end
-
+    
     # images have an additional cache
     # and topics may also have a basket index page cached
     if controller == 'images'
       expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => ('caption_'+(item.private? ? "private" : "public")) })
-    elsif controller== 'topics'
-      if !item.index_for_basket.nil?
+    elsif controller == 'topics'
+      if item.index_for_basket.is_a?(Basket)
         # slight overkill, but most parts
         # would need to be expired anyway
-        INDEX_PARTS.each do |part|
-          expire_fragment(:urlified_name => item.index_for_basket.urlified_name, :part => part)
-        end
+        expire_fragment(/#{item.index_for_basket.urlified_name}\/index_page\/index\/(.+)/)
       end
     end
 
@@ -457,7 +457,7 @@ class ApplicationController < ActionController::Base
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
         if part.include?('_[privacy]')
-          resulting_part = part.sub(/\[privacy\]/, ((params[:private] == "true") ? "private" : "public"))
+          resulting_part = part.sub(/\[privacy\]/, get_acceptable_privacy_type("public", "private"))
         else
           resulting_part = part
         end
@@ -898,16 +898,42 @@ class ApplicationController < ActionController::Base
   end
 
   def public_or_private_version_of(item)
-    if item.has_private_version? && permitted_to_view_private_items? and params[:private] == "true"
+    if params[:private] == "true" && item.has_private_version? && permitted_to_view_private_items?
       item.private_version!
     else
       item
     end
   end
 
+  # checks to see if a user has access to view this private item.
+  # result cached so the function can be used several times on the
+  # same request
   def permitted_to_view_private_items?
-    logged_in? &&
-      permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
+    @permitted_to_view_private_items ||= logged_in? &&
+                                         permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
+  end
+
+  # checks if the user is requesting a private version of an item, and see
+  # if they are allowed to do so
+  def accessing_private_version_and_allowed?
+    (!params[:private].nil? and params[:private] == "true" and permitted_to_view_private_items?)
+  end
+
+  # checks if the user is requesting a private search of a basket, and see
+  # if they are allowed to do so
+  def accessing_private_search_and_allowed?
+    (!params[:privacy_type].nil? and params[:privacy_type] == "private" and permitted_to_view_private_items?)
+  end
+
+  # used to get the acceptable privacy type (that is the current requested
+  # privacy type unless not allowed), and return a value
+  # (used in caching to decide whether to look for public or private fragments)
+  def get_acceptable_privacy_type(value_when_public, value_when_private)
+    if accessing_private_version_and_allowed?
+      value_when_private
+    else
+      value_when_public
+    end
   end
 
   # Check whether the attached files for a given item should be displayed
@@ -944,21 +970,49 @@ class ApplicationController < ActionController::Base
     url + append_operator + options
   end
 
-  # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
+  # setup a few variables that will be used on topic/audio/etc items
+  # pass in the item type in class format (AudioRecording), and whether
+  # you want the item always loaded, or only when everything isn't cached
+  def prepare_item_variables_for(zoom_class, always_load=false)
+    if !ZOOM_CLASSES.member?(zoom_class)
+      raise(ArgumentError, "zoom_class name expected. #{zoom_class} is not registered in #{ZOOM_CLASSES}.")
+    end
 
-  # Things are aren't actions below here..
-  protected
+    # on certain items, always load the item, since we check
+    # for blank version to determine whether to show it
+    @item = @current_basket.send(zoom_class.tableize).find(params[:id]) if always_load
 
-  # Evaluate a possibly unsafe string into a zoom class.
-  # I.e.  "StillImage" => StillImage
-  def only_valid_zoom_class(param)
-    if ZOOM_CLASSES.member?(param)
-      Module.class_eval(param)
-    else
-      raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
+    if permitted_to_view_private_items?
+      @show_privacy_chooser = true
+    end
+
+    if params[:format] == 'xml' or !has_all_fragments? or accessing_private_version_and_allowed?
+      @item = @current_basket.send(zoom_class.tableize).find(params[:id]) unless always_load
+      @item = @item.private_version! if params[:private] == "true" and @item.has_private_version? and permitted_to_view_private_items?
+
+      if params[:format] == 'xml' or !has_fragment?({:part => ("page_title_" + get_acceptable_privacy_type("public", "private")) })
+        @title = @item.title
+      end
+
+      if params[:format] == 'xml' or !has_fragment?({:part => ("contributor_" + get_acceptable_privacy_type("public", "private")) })
+        @creator = @item.creator
+        @last_contributor = @item.contributors.last || @creator
+      end
+
+      if logged_in? and @at_least_a_moderator
+        if params[:format] == 'xml' or !has_fragment?({:part => ("comments-moderators_" + get_acceptable_privacy_type("public", "private"))})
+          @comments = @item.non_pending_comments
+        end
+      else
+        if params[:format] == 'xml' or !has_fragment?({:part => ("comments_" + get_acceptable_privacy_type("public", "private"))})
+          @comments = @item.non_pending_comments
+        end
+      end
     end
   end
+
+  # methods that should be available in views as well
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
 
   private
 

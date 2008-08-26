@@ -238,4 +238,8 @@ class IndexPageController < ApplicationController
     render(:text => "success")
   end
 
+  def validate_kete_net_link
+    render(:xml => { :url => SITE_URL, :datetime => "#{Time.new.utc.xmlschema}" })
+  end
+
 end
