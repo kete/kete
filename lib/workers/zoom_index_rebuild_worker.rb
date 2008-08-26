@@ -155,11 +155,13 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
     # This is always the public version..
     unless item.already_at_blank_version? || item.at_placeholder_public_version?
       importer_prepare_zoom(item)
-      item.zoom_save(@public_zoom_connection)
+      item.zoom_save(@public_zoom_connection) unless item.is_a?(Comment) && item.commentable_private
     end
 
     # Redo the save for the private version
-    if @skip_private == false && item.respond_to?(:private) && item.has_private_version? && !item.private?
+    if @skip_private == false &&
+        (item.respond_to?(:private) && item.has_private_version? && !item.private?) ||
+        (item.is_a?(Comment) && item.commentable_private)
 
       item.private_version do
         unless item.already_at_blank_version?
@@ -168,7 +170,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
         end
       end
 
-      raise "Could not return to public version" if item.private?
+      raise "Could not return to public version" if item.private? && !item.is_a?(Comment)
 
     end
   end
