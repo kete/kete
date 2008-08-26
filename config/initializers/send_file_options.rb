@@ -80,8 +80,6 @@ SENDFILE_METHOD = ""
 
 # (Do not edit below here.)
 
-if ["", "apache", "nginx"].member?(SENDFILE_METHOD)
-  print "** Send_file method selected is \"#{SENDFILE_METHOD}\".\n"
-else
-  print "/!\\ WARNING: Incorrect value for SENDFILE_METHOD in config/initializers/send_file_options.rb on line 74. Should be one of \"\", \"apache\", or \"nginx\"; but was \"#{SENDFILE_METHOD}\". /!\\\n"
+unless ["", "apache", "nginx"].member?(SENDFILE_METHOD)
+  print "/!\\ WARNING: Incorrect value for SENDFILE_METHOD in config/initializers/send_file_options.rb on line 77. Should be one of \"\", \"apache\", or \"nginx\"; but was \"#{SENDFILE_METHOD}\". /!\\\n"
 end
