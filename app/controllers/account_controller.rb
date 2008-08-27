@@ -23,25 +23,24 @@ class AccountController < ApplicationController
   end
 
   def login
-    unless request.post?
+    if request.post?
+      self.current_user = User.authenticate(params[:login], params[:password])
+      if logged_in?
+        if params[:remember_me] == "1"
+          self.current_user.remember_me
+          cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+        end
+        session[:has_access_on_baskets] = self.current_user.get_basket_permissions
+        redirect_back_or_default(:controller => '/account', :action => 'index')
+        flash[:notice] = "Logged in successfully"
+      else
+        flash[:notice] = "Your password or login do not match our records. Please try again."
+      end
+    else
       logger.debug("what is return_to: " + session[:return_to].inspect)
       if !session[:return_to].blank? && session[:return_to].include?('find_related')
         render :layout => "simple"
-      else
-        render
       end
-    end
-    self.current_user = User.authenticate(params[:login], params[:password])
-    if logged_in?
-      if params[:remember_me] == "1"
-        self.current_user.remember_me
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-      end
-      session[:has_access_on_baskets] = self.current_user.get_basket_permissions
-      redirect_back_or_default(:controller => '/account', :action => 'index')
-      flash[:notice] = "Logged in successfully"
-    else
-      flash[:notice] = "Your password or login do not match our records. Please try again."
     end
   end
 
