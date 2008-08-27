@@ -595,12 +595,12 @@ span.next-active {
     font-size:2em;
 }
 
-div#notice {
+div#notice, div#error {
 		float: left;
 		width: 100%;
 }
 
-div#notice div {
+div#notice div, div#error div {
     background-color: #f9f3cd;
     border: 1px solid #baae8b;
     padding: .5em;
