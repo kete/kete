@@ -52,7 +52,8 @@ ul.navlist {
     list-style-type: none;
 }
 ul.nav-list li{
-    display: inline;
+		display: block;
+		float: left;
     padding: 2px;
     padding-left: .5em;
 }
@@ -67,12 +68,17 @@ ul.nav-list a:hover{
 }
 
 #top-menu {
+		clear: both;
+		float: left;
+		width: 100%;
+		margin-bottom: 0;
+		padding: 7px 0;
     background-color: #838383;
-    margin-bottom: 2em;
 }
+
 #top-menu ul {
-    margin: 0;
-    padding: 6.5em 0 1em 2em;
+		margin: 0;
+		padding: 0 7px;
 }
 #top-menu ul.user-nav {
     background-image: none;
@@ -83,6 +89,8 @@ ul.nav-list a:hover{
     margin-right: 20px;
 }
 #main-nav {
+		float: left;
+		width: 70%;
     border-top: 1px solid white;
 }
 #basket-list{
