@@ -10,8 +10,8 @@ topics_001:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id: "3"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_002:
   private: false
   title: House Rules
@@ -23,8 +23,8 @@ topics_002:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_003:
   private: false
   title: Registration
@@ -36,8 +36,8 @@ topics_003:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_004:
   private: false
   title: Terms and Conditions
@@ -49,8 +49,8 @@ topics_004:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_005:
   private: false
   title: Privacy Policy
@@ -62,8 +62,8 @@ topics_005:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_006:
   private: false
   title: User Manual
@@ -75,8 +75,8 @@ topics_006:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id: "2"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_007:
   private: false
   title: Finding Things
@@ -88,8 +88,8 @@ topics_007:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_008:
   private: false
   title: Adding things
@@ -101,8 +101,8 @@ topics_008:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_009:
   private: false
   title: Linking Things
@@ -114,8 +114,8 @@ topics_009:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_010:
   private: false
   title: "Fixing Things "
@@ -127,8 +127,8 @@ topics_010:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_011:
   private: false
   title: Locked baskets
@@ -140,8 +140,8 @@ topics_011:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_012:
   private: false
   title: Donations to Kete
@@ -153,8 +153,8 @@ topics_012:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_013:
   private: false
   title: Welcome
@@ -165,8 +165,8 @@ topics_013:
   basket_id: "1"
   topic_type_id: "1"
   index_for_basket_id: "1"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
     <h2>Introduction</h2>
     <p>This site is based on the Kete software.  Kete is a knowledge basket of topics, images, audio, video, web links, documents, and discussion which are collected and catalogued by the community.</p>
@@ -316,8 +316,8 @@ topics_014:
   basket_id: "4"
   topic_type_id: "1"
   index_for_basket_id: "4"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
     <h2>Introduction</h2>
     <p>This site is based on the Kete software.  Kete is a knowledge basket of topics, images, audio, video, web links, documents, and discussion which are collected and catalogued by the community.</p>

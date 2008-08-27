@@ -10,8 +10,8 @@ topics_001:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id: "3"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_002:
   title: House Rules
   short_summary: The etiquette for Kete users.
@@ -23,8 +23,8 @@ topics_002:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_003:
   title: Registration
   short_summary: Details about how to register.
@@ -36,8 +36,8 @@ topics_003:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_004:
   title: Terms and Conditions
   short_summary: "An agreement between the site and all registered users. "
@@ -49,8 +49,8 @@ topics_004:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_005:
   title: Privacy Policy
   short_summary: This Privacy Policy is incorporated in this site's Terms and Conditions, and explains to you how Horowhenua Library Trust and Kete may use your personal data.
@@ -62,8 +62,8 @@ topics_005:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_006:
   title: User Manual
   short_summary: A guide to how to use different parts of Kete.
@@ -75,8 +75,8 @@ topics_006:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id: "2"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_007:
   title: Finding Things
   short_summary: "A look at the different ways of finding things in Kete. "
@@ -88,8 +88,8 @@ topics_007:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_008:
   title: Adding things
   short_summary: A guide to how to add items and topics to Kete.
@@ -101,8 +101,8 @@ topics_008:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_009:
   title: Linking Things
   short_summary: How to link items and topics together in Kete, to create webs of related material.
@@ -114,8 +114,8 @@ topics_009:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_010:
   title: "Fixing Things "
   short_summary: "A guide to editing records in Kete and how to report inaccurate or offensive material. "
@@ -127,8 +127,8 @@ topics_010:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_011:
   title: Locked baskets
   short_summary: Locked Baskets are special baskets within Kete.
@@ -140,8 +140,8 @@ topics_011:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_012:
   title: Donations to Kete
   short_summary: "The Kete Project needs to cash donations to thrive. Find out why ... "
@@ -153,8 +153,8 @@ topics_012:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id:
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_013:
   title: Welcome
   short_summary: Homepage for site
@@ -305,8 +305,8 @@ topics_013:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id: "1"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topics_014:
   title: Documentation
   short_summary: Documentation for site
@@ -318,8 +318,8 @@ topics_014:
   version: "1"
   topic_type_id: "1"
   index_for_basket_id: "4"
-  created_at: <%= Time.now.utc.xmlschema %>
-  updated_at: <%= Time.now.utc.xmlschema %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
     <h2>Introduction</h2>
     <p>This site is based on the Kete software.  Kete is a knowledge basket of topics, images, audio, video, web links, documents, and discussion which are collected and catalogued by the community.</p>
