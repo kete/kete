@@ -91,10 +91,10 @@ ul.nav-list a:hover{
     float: right;
     margin-right: 15px;
 }
-#main-nav {
+ul#main-nav {
 		float: left;
 		width: 70%;
-		margin-left: 15px;
+		padding-left: 15px;
 }
 #basket-list{
     margin: 0;
