@@ -57,7 +57,7 @@ ul.nav-list li{
 		padding-left: .5em;
 }
 
-#topic-menu ul.nav-list li {
+#top-menu ul.nav-list li {
 		display: block;
 		float: left;	
     padding: 2px 4px;
@@ -477,32 +477,37 @@ th {
 }
 
 div#slideshow-controls {
-        background-repeat: no-repeat;
-        border: 2px solid #7A0203;
-        background-color: #efefef;
-        padding: 0.5em; /*0em 1em 1em 40px;*/
-        margin-bottom: 30px;
-        -moz-border-radius: 1em;
-        -webkit-border-radius: 1em;
-                                text-align:center;
+		float: left;
+		width: 100%;
+}
+			
+div#slideshow-controls div.wrapper {
+    background-repeat: no-repeat;
+    border: 2px solid #7A0203;
+    background-color: #efefef;
+    padding: 0.5em; /*0em 1em 1em 40px;*/
+    margin-bottom: 30px;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+		text-align:center;
 }
 
 div#slideshow-controls p {
-                                margin: 4px 0;
+		margin: 4px 0;
 }
 
 div#slideshow-controls div#slideshow-previous-button {
-                                float: left;
-                                margin: 4px 0 0 150px;
-                                width: 150px;
-                                font-size: 14pt;
+    float: left;
+    margin: 4px 0 0 150px;
+    width: 150px;
+    font-size: 14pt;
 }
 
 div#slideshow-controls div#slideshow-next-button {
-                                float: right;
-                                margin: 4px 150px 0 0;
-                                width: 150px;
-                                font-size: 14pt;
+    float: right;
+    margin: 4px 150px 0 0;
+    width: 150px;
+    font-size: 14pt;
 }
 
 div#slideshow-controls div#slideshow-middle {
@@ -591,6 +596,11 @@ span.next-active {
 }
 
 div#notice {
+		float: left;
+		width: 100%;
+}
+
+div#notice div {
     background-color: #f9f3cd;
     border: 1px solid #baae8b;
     padding: .5em;
