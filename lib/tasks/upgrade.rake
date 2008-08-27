@@ -13,6 +13,7 @@ namespace :kete do
                     'kete:upgrade:change_zebra_password',
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types',
+                    'kete:upgrade:correct_basket_defaults',
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private']
   namespace :upgrade do
@@ -101,6 +102,27 @@ namespace :kete do
       missing_software = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
       p "you have the following missing gems (you might want to do rake prep_app first): #{missing_software['Gems'].inspect}" if !missing_software['Gems'].blank?
       p "you have the following missing external software (take steps to install them before starting your kete server): #{missing_software['Commands'].inspect}" if !missing_software['Commands'].blank?
+    end
+
+    desc 'Fix the default baskets settings for unedited baskets so they inherit (like they were intended to)'
+    task :correct_basket_defaults => :environment do
+      Basket.all.each do |basket|
+        next unless Basket.standard_baskets.include?(basket.id) and basket.created_at == basket.updated_at
+        if basket.id == 1 # site basket
+          basket.private_default = false
+          basket.file_private_default = false
+          basket.allow_non_member_comments = true
+          basket.show_privacy_controls = false
+        else # other default baskets
+          basket.private_default = nil
+          basket.file_private_default = nil
+          basket.allow_non_member_comments = nil
+          basket.show_privacy_controls = nil
+        end
+        basket.updated_at = Time.now.to_s(:db) # we force an update so these only run once
+        basket.save
+        p "Corrected settings of #{basket.name} basket"
+      end
     end
 
     desc 'Checks for mimetypes an adds them if needed.'
