@@ -4,7 +4,7 @@ default:
   email: admin@changeme.com
   salt: 7e3041ebc2fc05a40c60028e2c4901a81035d3cd
   crypted_password: 00742970dc9e6319f8019fd54864d3ea740f04b1 # test
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
   activation_code: admincode
-  activated_at: <%= Time.now.to_s :db %>
+  activated_at: <%= Time.now.utc.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>

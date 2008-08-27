@@ -4,6 +4,6 @@ content_type_to_field_mappings_001:
   required: "0"
   position: "1"
   content_type_id: "1"
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   extended_field_id: "7"

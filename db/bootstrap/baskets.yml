@@ -5,36 +5,36 @@ baskets_001:
   urlified_name: site
   index_page_basket_search: "0"
   index_page_archives_as: by type
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
   private_default: false
   file_private_default: false
   allow_non_member_comments: true
   show_privacy_controls: false
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 baskets_002:
   index_page_redirect_to_all: ""
   name: Help
   index_page_basket_search: "1"
-  updated_at: <%= Time.now.to_s :db %>
   id: "2"
   urlified_name: help
   index_page_topic_is_entire_page: "1"
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 baskets_003:
   index_page_redirect_to_all: ""
   name: About
   index_page_basket_search: "1"
-  updated_at: <%= Time.now.to_s :db %>
   id: "3"
   urlified_name: about
   index_page_topic_is_entire_page: "1"
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 baskets_004:
   index_page_redirect_to_all: ""
   name: Documentation
   index_page_basket_search: "1"
-  updated_at: <%= Time.now.to_s :db %>
   id: "4"
   urlified_name: documentation
   index_page_topic_is_entire_page: "1"
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>

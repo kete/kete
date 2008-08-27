@@ -1,6 +1,5 @@
 ---
 zoom_dbs_001:
-  updated_at: <%= Time.now.to_s :db %>
   zoom_user: kete
   database_name: public
   port: "9901"
@@ -8,9 +7,9 @@ zoom_dbs_001:
   description: Where we store our publicly searchable records (about topics, images, videos, etc.).
   zoom_password: k3t3r0ck5
   host: localhost
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 zoom_dbs_002:
-  updated_at: <%= Time.now.to_s :db %>
   zoom_user: kete
   database_name: private
   port: "9902"
@@ -18,4 +17,5 @@ zoom_dbs_002:
   description: Where we store records that are only searchable to privileged Kete users (about topics, images, video, etc.).
   zoom_password: k3t3r0ck5
   host: localhost
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>

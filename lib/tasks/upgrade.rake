@@ -13,6 +13,7 @@ namespace :kete do
                     'kete:upgrade:change_zebra_password',
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types',
+                    'kete:upgrade:correct_basket_defaults',
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private']
   namespace :upgrade do
@@ -101,6 +102,30 @@ namespace :kete do
       missing_software = { 'Gems' => missing_libs(required_software), 'Commands' => missing_commands(required_software)}
       p "you have the following missing gems (you might want to do rake prep_app first): #{missing_software['Gems'].inspect}" if !missing_software['Gems'].blank?
       p "you have the following missing external software (take steps to install them before starting your kete server): #{missing_software['Commands'].inspect}" if !missing_software['Commands'].blank?
+    end
+
+    desc 'Fix the default baskets settings for unedited baskets so they inherit (like they were intended to)'
+    task :correct_basket_defaults => :environment do
+      Basket.all.each do |basket|
+        next unless Basket.standard_baskets.include?(basket.id)
+        next unless basket.created_at == basket.updated_at
+
+        correctable_fields = ['private_default', 'file_private_default', 'allow_non_member_comments', 'show_privacy_controls']
+        current_basket_defaults = correctable_fields.map { |field| basket.send(field) }
+        if basket.id == 1 # site basket
+          standard_basket_defaults = [false, false, true, false]
+        else # other default baskets
+          standard_basket_defaults = [nil, nil, nil, nil]
+        end
+
+        next if current_basket_defaults == standard_basket_defaults
+
+        correctable_fields.each_with_index do |field, index|
+          basket.send(field+"=", standard_basket_defaults[index])
+        end
+        basket.save
+        p "Corrected settings of #{basket.name} basket"
+      end
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

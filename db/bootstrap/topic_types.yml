@@ -1,47 +1,47 @@
 ---
 topic_types_001:
   name: Topic
-  updated_at: <%= Time.now.to_s :db %>
   id: "1"
   parent_id: null
   lft: 1
   rgt: 10
   description: The top most and most basic Topic Type.
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topic_types_002:
   name: Person
-  updated_at: <%= Time.now.to_s :db %>
   id: "2"
   parent_id: 1
   lft: 2
   rgt: 3
   description: The top most Topic Type for all types of people.
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topic_types_003:
   name: Place
-  updated_at: <%= Time.now.to_s :db %>
   id: "3"
   parent_id: 1
   lft: 4
   rgt: 5
   description: The top most Topic Type for all types of locations.
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topic_types_004:
   name: Event
-  updated_at: <%= Time.now.to_s :db %>
   id: "4"
   parent_id: 1
   lft: 6
   rgt: 7
   description: The top most Topic Type for all types of stuff that takes place over a period of time.
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 topic_types_005:
   name: Organization
-  updated_at: <%= Time.now.to_s :db %>
   id: "5"
   parent_id: 1
   lft: 8
   rgt: 9
   description: The top most Topic Type for groups of people, like companies and clubs, etc.
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 
