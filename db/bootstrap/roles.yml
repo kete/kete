@@ -4,33 +4,33 @@ site_admin:
   name: site_admin
   authorizable_type: Basket
   authorizable_id: 1
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 help_admin:
   id: 2
   name: admin
   authorizable_type: Basket
   authorizable_id: 2
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 about_admin:
   id: 3
   name: admin
   authorizable_type: Basket
   authorizable_id: 3
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 tech_admin:
   id: 4
   name: tech_admin
   authorizable_type: Basket
   authorizable_id: 1
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 documentation_admin:
   id: 5
   name: admin
   authorizable_type: Basket
   authorizable_id: 4
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>

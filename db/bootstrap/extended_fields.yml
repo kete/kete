@@ -1,51 +1,51 @@
 ---
 extended_fields_001:
   xml_element_name: dc:description
-  updated_at: <%= Time.now.to_s :db %>
   id: "1"
   description: Non-sur names.
   label: First Names
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 extended_fields_002:
   xml_element_name:
-  updated_at: <%= Time.now.to_s :db %>
   id: "2"
   description: Sur name.
   label: Last Name
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 extended_fields_003:
   xml_element_name: dc:subject
-  updated_at: <%= Time.now.to_s :db %>
   id: "3"
   description: Where was the person born?
   label: Place of Birth
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 extended_fields_004:
   xml_element_name: dc:coverage
-  updated_at: <%= Time.now.to_s :db %>
   id: "4"
   description: The name of the locale, like city, town, or village?
   label: City
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 extended_fields_005:
   xml_element_name: dc:coverage
-  updated_at: <%= Time.now.to_s :db %>
   id: "5"
   description: When was the person born?
   label: Date of Birth
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 extended_fields_006:
   xml_element_name: dc:subject
-  updated_at: <%= Time.now.to_s :db %>
   id: "6"
   description:
   label: Name
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
 extended_fields_007:
   xml_element_name: dc:subject
-  updated_at: <%= Time.now.to_s :db %>
   id: "7"
   example: Your screen name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith"
   description: This is the screen name that other users will know you by. It could be your real name, especially if you want people to be able to find you, but more usually it would be a nickname.
   label: User Name
-  created_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>

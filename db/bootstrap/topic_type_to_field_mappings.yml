@@ -4,30 +4,30 @@ topic_type_to_field_mappings_001:
   required: "1"
   position: "1"
   topic_type_id: "2"
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   extended_field_id: "1"
 topic_type_to_field_mappings_002:
   id: "2"
   required: "1"
   position: "2"
   topic_type_id: "2"
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   extended_field_id: "2"
 topic_type_to_field_mappings_003:
   id: "3"
   required: "0"
   position: "1"
   topic_type_id: "3"
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   extended_field_id: "4"
 topic_type_to_field_mappings_004:
   id: "4"
   required: "0"
   position: "3"
   topic_type_id: "2"
-  created_at: <%= Time.now.to_s :db %>
-  updated_at: <%= Time.now.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
   extended_field_id: "3"
