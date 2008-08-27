@@ -52,10 +52,17 @@ ul.navlist {
     list-style-type: none;
 }
 ul.nav-list li{
+		display: inline;
+		padding: 2px;
+		padding-left: .5em;
+}
+
+#topic-menu ul.nav-list li {
 		display: block;
-		float: left;
+		float: left;	
     padding: 2px 4px;
 }
+
 ul.nav-list a{
     color: #333;
     font-weight: bold;
@@ -82,11 +89,12 @@ ul.nav-list a:hover{
 #top-menu ul.user-nav {
     background-image: none;
     float: right;
-    margin-right: 20px;
+    margin-right: 15px;
 }
 #main-nav {
 		float: left;
 		width: 70%;
+		margin-left: 15px;
 }
 #basket-list{
     margin: 0;
