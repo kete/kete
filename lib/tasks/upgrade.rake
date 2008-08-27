@@ -107,19 +107,22 @@ namespace :kete do
     desc 'Fix the default baskets settings for unedited baskets so they inherit (like they were intended to)'
     task :correct_basket_defaults => :environment do
       Basket.all.each do |basket|
-        next unless Basket.standard_baskets.include?(basket.id) and basket.created_at == basket.updated_at
+        next unless Basket.standard_baskets.include?(basket.id)
+        next unless basket.created_at == basket.updated_at
+
+        correctable_fields = ['private_default', 'file_private_default', 'allow_non_member_comments', 'show_privacy_controls']
+        current_basket_defaults = correctable_fields.map { |field| basket.send(field) }
         if basket.id == 1 # site basket
-          basket.private_default = false
-          basket.file_private_default = false
-          basket.allow_non_member_comments = true
-          basket.show_privacy_controls = false
+          standard_basket_defaults = [false, false, true, false]
         else # other default baskets
-          basket.private_default = nil
-          basket.file_private_default = nil
-          basket.allow_non_member_comments = nil
-          basket.show_privacy_controls = nil
+          standard_basket_defaults = [nil, nil, nil, nil]
         end
-        basket.updated_at = Time.now.to_s(:db) # we force an update so these only run once
+
+        next if current_basket_defaults == standard_basket_defaults
+
+        correctable_fields.each_with_index do |field, index|
+          basket.send(field+"=", standard_basket_defaults[index])
+        end
         basket.save
         p "Corrected settings of #{basket.name} basket"
       end
