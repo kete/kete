@@ -200,9 +200,17 @@ class SearchController < ApplicationController
     # 0 is the first index, so it's valid for start
     @start_record = 0
     @start = 1
+    
+    # James - 2008-08-28
+    # Only allow private search if permitted
+    if accessing_private_search_and_allowed?
+      zoom_db_instance = "private"
+    else
+      zoom_db_instance = "public"
+    end
 
     # TODO: skipping multiple source (federated) search for now
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', params[:privacy_type] || 'public')
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
 
     @result_sets = Hash.new
 
@@ -282,12 +290,10 @@ class SearchController < ApplicationController
         session[:has_access_on_baskets] = basket_access_hash
         basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
 
-        if @current_basket == @site_basket
-          @search.pqf_query.within(basket_urlified_names) unless basket_urlified_names.blank?
+        if @current_basket == @site_basket and !basket_urlified_names.blank?
+          @search.pqf_query.within(basket_urlified_names)
         elsif (@current_basket != @site_basket) and basket_urlified_names.member?(@current_basket.urlified_name)
           @search.pqf_query.within(@current_basket.urlified_name)
-        else
-          return access_denied
         end
 
       elsif @current_basket != @site_basket
