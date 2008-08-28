@@ -46,11 +46,7 @@ class BasketsController < ApplicationController
   end
 
   def new
-    @basket = Basket.new({
-      :private_default =>           false,
-      :file_private_default =>      false,
-      :allow_non_member_comments => true
-    })
+    @basket = Basket.new
   end
 
   def create
@@ -74,13 +70,6 @@ class BasketsController < ApplicationController
     appropriate_basket
     @topics = @basket.topics
     @index_topic = @basket.index_topic
-
-    # put in some defaults for site basket
-    # since all other baskets inherit from them if unspecified
-    @basket.show_privacy_controls = 'false' if @basket == @site_basket && @basket.show_privacy_controls.blank?
-    @basket.allow_non_member_comments = 'true' if @basket == @site_basket && @basket.allow_non_member_comments.blank?
-    @basket.private_default = 'false' if @basket == @site_basket && @basket.private_default.blank?
-    @basket.file_private_default = 'false' if @basket == @site_basket && @basket.file_private_default.blank?
   end
 
   def homepage_options
