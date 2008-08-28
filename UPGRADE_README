@@ -1,18 +1,36 @@
+==
+= Upgrading From Kete 1.0 to Kete 1.1 =
+==
+For detailed instructions on upgrading from Kete 1.0 to Kete 1.1, please refer to
+the online documentation at
+
+http://kete.net.nz/documentation/topics/show/177-upgrading-to-kete-11-release
+
+
+==
 = Incremental Upgrade Instructions
+==
 Originally contributed by James Stradling <james@katipo.co.nz> - 2008-05-16
 
-This file details upgrade instructions for Kete trunk versions.
-Revisions that require migrations and/or extra upgrade steps are detailed below.
+The following steps are only necessary if you continuously upgrade your code base to the latest Kete trunk.
+Occasionally there are additional minor steps needed to update your Kete installation between revisions.
+You can find these by scrolling down to the time where you last updated Kete, and going up through the additional steps.
 
-It is assumed you are upgrading from an earlier functional and unmodified trunk version.
+GENERAL NOTE: If you have a lot of things to do, you could alternatively follow the upgrade guide mentioned above, which is
+essentially a collection of all the commands used below into one step by step guide.
 
-Work your way back up from the bottom most revision (lowest revision number) that you are upgrading FROM to the top.  Quite often you'll only have to do steps once to get the changes from multiple revisions.  In other words, if a step is listed from multiple revisions, you only have to do it once.
+GENERAL NOTE: It is assumed you are upgrading from an earlier functional and unmodified trunk version. If not, be sure to preserve
+the customizations you want to keep when you upgrade the code base.
+
+GENERAL NOTE: Quite often you'll only have to do steps once to get the changes from multiple revisions.  In other words,
+if a step is listed from multiple revisions, you only have to do it once.
 
 IMPORTANT NOTE: For any steps where you run, "rake db:migrate", it is a good idea to back up your database before you run that step.
 
 GENERAL NOTE: if you are upgrading your production Kete instance rather than development, you'll add "RAILS_ENV=production" to all rake tasks.
 
-ANOTHER GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.  However, if you updated your code via a Capistrano deploy, this is probably not necessary.
+GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
+However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
 == 2008/08/07 - Fixing Caching Issues
 
@@ -47,6 +65,21 @@ ANOTHER GENERAL NOTE: if you are running in production mode, you may also want t
 6.      Restart your Backgroundrb instance:
           ./script/backgroundrb stop
           ./script/backgroundrb start
+
+== Trunk r1324 - support for basket list navigation in a left column, experimental
+
+1.      Stop your Kete server (mongrels).
+2.      Upgrade your code base
+4.      Run the upgrade script: 'rake kete:upgrade'
+5.      Start your Kete server again (mongrels)
+
+== Trunk r1322 - ticket #206 simple bulk import of related items
+
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Upgrade your code base
+3.      Run the database migration 'rake db:migrate'
+4.      Run the upgrade script: 'rake kete:upgrade'
+5.      Start your Kete server again (mongrels, backgroundrb)
 
 == Trunk r1304 - Removal of foreign key constraint causing topic + related item deletion failure.
 
@@ -118,27 +151,6 @@ Note: You must have a web server and SSL certificate correctly configured
 in order to take advantage of SSL features in this version. The SSL features are
 disabled by default and can be enabled in the Server advanced settings in the
 configuration assistant/reconfigure site controls.
-
-If updating from an earlier version, please see further instructions below.
-
-== Trunk r1324 - support for basket list navigation in a left column, experimental
-
-1.      Stop your Kete server (mongrels).
-2.      Upgrade your code base
-4.      Run the upgrade script: 'rake kete:upgrade'
-5.      Start your Kete server again (mongrels)
-
-If you are updating from an earlier version, please following the instructions for trunk r1169 below.
-
-== Trunk r1322 - ticket #206 simple bulk import of related items
-
-1.      Stop your Kete server (mongrels, backgroundrb).
-2.      Upgrade your code base
-3.      Run the database migration 'rake db:migrate'
-4.      Run the upgrade script: 'rake kete:upgrade'
-5.      Start your Kete server again (mongrels, backgroundrb)
-
-If you are updating from an earlier version, please following the instructions for trunk r1169 below.
 
 == Trunk r1174 - Added per basket privacy control enable/disable preferences
 
