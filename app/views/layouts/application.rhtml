@@ -280,7 +280,7 @@
 
         <% if flash[:notice] %>
            <!-- TODO: look up if there is a style sheet class for flash, add here -->
-           <div id="notice"><%= flash[:notice] %></div>
+           <div id="notice"><div><%= flash[:notice] %></div></div>
         <% end %>
 
         <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>
