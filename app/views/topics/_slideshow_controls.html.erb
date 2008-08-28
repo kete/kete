@@ -1,12 +1,14 @@
 <div id="slideshow-controls">
-  <div id="slideshow-previous-button">
-    &nbsp;<strong><%= link_to_previous_in_slideshow %></strong>
-  </div>
-  <div id="slideshow-next-button">
-    <strong><%= link_to_next_in_slideshow %></strong>&nbsp;
-  </div>
-  <div id="slideshow-middle">
-    Viewing: <%= slideshow.number_of_total(url_without_extras(request.url)) %> of <%= slideshow.total %><br />
-    <%= link_to_stop_slideshow %> | <%= link_to_results %>
+  <div class="wrapper">
+    <div id="slideshow-previous-button">
+      &nbsp;<strong><%= link_to_previous_in_slideshow %></strong>
+    </div>
+    <div id="slideshow-next-button">
+      <strong><%= link_to_next_in_slideshow %></strong>&nbsp;
+    </div>
+    <div id="slideshow-middle">
+      Viewing: <%= slideshow.number_of_total(url_without_extras(request.url)) %> of <%= slideshow.total %><br />
+      <%= link_to_stop_slideshow %> | <%= link_to_results %>
+    </div>
   </div>
 </div>

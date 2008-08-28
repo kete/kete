@@ -146,10 +146,10 @@
     </div> <!-- /header -->
 
     <% if flash[:notice] %>
-    <div id="notice"><%= flash[:notice] %></div>
+    <div id="notice"><div><%= flash[:notice] %></div></div>
     <% end %>
     <% if flash[:error] %>
-    <div id="error"><%= flash[:error] %></div>
+    <div id="error"><div><%= flash[:error] %></div></div>
     <% end %>
 
         <div id="container">
