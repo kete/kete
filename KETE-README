@@ -30,7 +30,7 @@ Kete 1.1's major work was funded by Te Reo o Taranaki, Aotearoa Peoples Network 
 
 Kete is a Ruby on Rails application, so huge thanks go to those that have worked on Ruby and Ruby on Rails for providing a great foundation to build an application on top of.  Thanks also go to the team at IndexData (http://www.indexdata.com/) for their work on Zebra which Kete uses as the basis for its search and browsing functionality.
 
-Kete also benefits from numerous plugin and gem developers, see vendor/plugins and config/required_softwarey.yml for details.  Thank you for the great software libraries!
+Kete also benefits from numerous plugin and gem developers, see vendor/plugins and config/required_software.yml for details.  Thank you for the great software libraries!
 
 Kete is Copyright (C) 2006-2008 Horowhenua Library Trust and Others under the GPL version 2 license.  See license.txt for details.
 
