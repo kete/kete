@@ -40,6 +40,7 @@ class PqfQuery
     'creators' => "@attr 1=1003 ",
     'contributors' => "@attr 1=1020 ",
     'title' => "@attr 1=4 ",
+    'coverage' => "@attr 1=29 ",
     'any_text' => "@attr 1=1016 ",
     'last_modified' => "@attr 1=1012 #{QUALIFYING_ATTRIBUTE_SPECS['datetime']}",
     'date' => "@attr 1=30 #{QUALIFYING_ATTRIBUTE_SPECS['datetime']}",

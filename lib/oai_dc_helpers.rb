@@ -208,6 +208,12 @@ module OaiDcHelpers
       end
     end
 
+    # currently only relevant to topics
+    def oai_dc_xml_dc_coverage(xml, item)
+      return unless item.is_a?(Topic)
+      xml.tag!("dc:coverage", item.topic_type.name)
+    end
+
     # if there is a license for item, put in its url
     # otherwise site's terms and conditions url
     def oai_dc_xml_dc_rights(xml, item)
