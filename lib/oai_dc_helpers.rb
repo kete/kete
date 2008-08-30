@@ -211,7 +211,11 @@ module OaiDcHelpers
     # currently only relevant to topics
     def oai_dc_xml_dc_coverage(xml, item)
       return unless item.is_a?(Topic)
-      xml.tag!("dc:coverage", item.topic_type.name)
+      topic_type = item.topic_type
+      topic_type.ancestors.each do |ancestor|
+        xml.tag!("dc:coverage", ancestor.name)
+      end
+      xml.tag!("dc:coverage", topic_type.name)
     end
 
     # if there is a license for item, put in its url
