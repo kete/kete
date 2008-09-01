@@ -1,3 +1,7 @@
+This is the standard Rails README (also outdated, a bit).
+
+You probably want KETE-README, unless you are curious about general Ruby on Rails apps.
+
 == Welcome to Rails
 
 Rails is a web-application and persistence framework that includes everything
@@ -13,7 +17,7 @@ Product, Show Post) by manipulating the model and directing data to the view.
 In Rails, the model is handled by what's called an object-relational mapping
 layer entitled Active Record. This layer allows you to present the data from
 database rows as objects and embellish these data objects with business logic
-methods. You can read more about Active Record in 
+methods. You can read more about Active Record in
 link:files/vendor/rails/activerecord/README.html.
 
 The controller and view are handled by the Action Pack, which handles both
@@ -21,7 +25,7 @@ layers by its two parts: Action View and Action Controller. These two layers
 are bundled in a single package due to their heavy interdependence. This is
 unlike the relationship between the Active Record and Action Pack that is much
 more separate. Each of these packages can be used independently outside of
-Rails.  You can read more about Action Pack in 
+Rails.  You can read more about Action Pack in
 link:files/vendor/rails/actionpack/README.html.
 
 
@@ -35,7 +39,7 @@ link:files/vendor/rails/actionpack/README.html.
 == Web servers
 
 Rails uses the built-in web server in Ruby called WEBrick by default, so you don't
-have to install or configure anything to play around. 
+have to install or configure anything to play around.
 
 If you have lighttpd installed, though, it'll be used instead when running script/server.
 It's considerably faster than WEBrick and suited for production use, but requires additional
@@ -59,7 +63,7 @@ See http://wiki.rubyonrails.com/rails/pages/FastCGI for more information on Fast
     ServerName rails
     DocumentRoot /path/application/public/
     ErrorLog /path/application/log/server.log
-  
+
     <Directory /path/application/public/>
       Options ExecCGI FollowSymLinks
       AllowOverride all
@@ -94,21 +98,21 @@ and change the model, AND then resume execution! Example:
       breakpoint "Breaking out from the list"
     end
   end
-  
+
 So the controller will accept the action, run the first line, then present you
 with a IRB prompt in the breakpointer window. Here you can do things like:
 
 Executing breakpoint "Breaking out from the list" at .../webrick_server.rb:16 in 'breakpoint'
 
   >> @posts.inspect
-  => "[#<Post:0x14a6be8 @attributes={\"title\"=>nil, \"body\"=>nil, \"id\"=>\"1\"}>, 
+  => "[#<Post:0x14a6be8 @attributes={\"title\"=>nil, \"body\"=>nil, \"id\"=>\"1\"}>,
        #<Post:0x14a6620 @attributes={\"title\"=>\"Rails you know!\", \"body\"=>\"Only ten..\", \"id\"=>\"2\"}>]"
   >> @posts.first.title = "hello from a breakpoint"
   => "hello from a breakpoint"
 
 ...and even better is that you can examine how your runtime objects actually work:
 
-  >> f = @posts.first 
+  >> f = @posts.first
   => #<Post:0x13630c4 @attributes={"title"=>nil, "body"=>nil, "id"=>"1"}>
   >> f.
   Display all 152 possibilities? (y or n)
@@ -118,7 +122,7 @@ Finally, when you're ready to resume execution, you press CTRL-D
 
 == Console
 
-You can interact with the domain model by starting the console through script/console. 
+You can interact with the domain model by starting the console through script/console.
 Here you'll have all parts of the application configured, just like it is when the
 application is running. You can inspect domain models, change values, and save to the
 database. Starting the script without arguments will launch it in the development environment.
@@ -141,13 +145,13 @@ app/controllers
 app/models
   Holds models that should be named like post.rb.
   Most models will descend from ActiveRecord::Base.
-  
+
 app/views
   Holds the template files for the view that should be named like
   weblog/index.rhtml for the WeblogController#index action. All views use eRuby
   syntax. This directory can also be used to keep stylesheets, images, and so on
   that can be symlinked to public.
-  
+
 app/helpers
   Holds view helpers that should be named like weblog_helper.rb.
 
@@ -167,7 +171,7 @@ db
 lib
   Application specific libraries. Basically, any kind of custom code that doesn't
   belong under controllers, models, or helpers. This directory is in the load path.
-    
+
 public
   The directory available for the web server. Contains subdirectories for images, stylesheets,
   and javascripts. Also contains the dispatchers and the default HTML files.

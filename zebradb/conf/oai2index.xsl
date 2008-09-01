@@ -262,11 +262,16 @@
     </z:index>
   </xsl:template>
 
+  <!-- Walter McGinnis (walter@katipo.co.nz), 2008-08-30 -->
+  <!-- added coverage to support things like topic type -->
   <xsl:template match="oai:record/oai:metadata/oai_dc:dc/dc:coverage">
-    <z:index name="dc_rights" type="p">
+    <z:index name="dc_coverage" type="0">
       <xsl:value-of select="."/>
     </z:index>
-    <z:index name="dc_rights" type="w">
+    <z:index name="dc_coverage" type="p">
+      <xsl:value-of select="."/>
+    </z:index>
+    <z:index name="dc_coverage" type="w">
       <xsl:value-of select="."/>
     </z:index>
     <z:index name="dc_all" type="w">
@@ -278,6 +283,9 @@
   </xsl:template>
 
   <xsl:template match="oai:record/oai:metadata/oai_dc:dc/dc:rights">
+    <z:index name="dc_rights" type="0">
+      <xsl:value-of select="."/>
+    </z:index>
     <z:index name="dc_rights" type="p">
       <xsl:value-of select="."/>
     </z:index>
