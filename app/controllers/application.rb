@@ -703,37 +703,6 @@ class ApplicationController < ActionController::Base
     user.user_name
   end
 
-  def rescue_404
-    @title = "404 Not Found"
-    @displaying_404 = true
-    render :template => "errors/error404", :layout => "application", :status => "404"
-  end
-
-  def rescue_500(template)
-    @title = "500 Internal Server Error"
-    render :template => "errors/#{template}", :layout => "application", :status => "500"
-  end
-
-  def rescue_action_in_public(exception)
-    #logger.info(exception)
-    case exception
-      when ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid then
-      rescue_404
-    when BackgrounDRb::NoServerAvailable then
-      rescue_500('backgroundrb_connection_failed')
-    else
-      if exception.to_s.match(/Connect\ failed/)
-        rescue_500('zebra_connection_failed')
-      else
-        raise
-      end
-    end
-  end
-
-  def local_request?
-    false
-  end
-
   def update_params_with_raw_tag_list
     # only do this for a zoom_class
     # this will return the model's tableized name
@@ -1011,8 +980,44 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def rescue_404
+    @title = "404 Not Found"
+    @displaying_404 = true
+    render :template => "errors/error404", :layout => "application", :status => "404"
+  end
+
+  def rescue_500(template)
+    @title = "500 Internal Server Error"
+    render :template => "errors/#{template}", :layout => "application", :status => "500"
+  end
+
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
+
+  protected
+
+  def local_request?
+    false
+  end
+
+  def rescue_action_in_public(exception)
+    #logger.info(exception)
+    case exception
+    when ActionController::UnknownAction,
+         ActiveRecord::RecordNotFound,
+         ActiveRecord::RecordInvalid,
+         ActionController::MethodNotAllowed then
+      rescue_404
+    when BackgrounDRb::NoServerAvailable then
+      rescue_500('backgroundrb_connection_failed')
+    else
+      if exception.to_s.match(/Connect\ failed/)
+        rescue_500('zebra_connection_failed')
+      else
+        raise
+      end
+    end
+  end
 
   private
 

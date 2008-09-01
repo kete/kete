@@ -71,6 +71,10 @@ class SearchController < ApplicationController
     else
       # TODO: redirect_to search form of the same url
     end
+
+    # if zoom class isn't valid, @results is nil,
+    # so lets rescue with a 404 in this case
+    rescue_404 if @results.nil?
   end
 
   # this action is the action that relies on search_terms being defined
@@ -889,6 +893,8 @@ class SearchController < ApplicationController
   # James - 2008-07-04
   # Store the elements need to reproduce the search in a session
   def store_results_for_slideshow
+
+    return if @result_sets[@current_class].nil?
 
     results = @results.map{ |r| r['url'] }
 
