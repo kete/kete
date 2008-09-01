@@ -133,6 +133,7 @@ namespace :kete do
                                      'kete:upgrade:add_aiff_to_audio_recordings',
                                      'kete:upgrade:add_tar_to_documents',
                                      'kete:upgrade:add_open_office_document_types',
+                                     'kete:upgrade:add_jpegs_to_documents',
                                      'kete:upgrade:add_bmp_to_images',
                                      'kete:upgrade:add_eps_to_images',
                                      'kete:upgrade:add_file_mime_type_variants']
@@ -157,6 +158,16 @@ namespace :kete do
       setting = SystemSetting.find_by_name('Document Content Types')
       if setting.push('application/x-tar')
         p "added application/x-tar mime type to " + setting.name
+      end
+    end
+
+    desc 'Adds jpeg types to documents if needed.  A lot of archive and repository sites call scans to jpeg of a historical document pages.'
+    task :add_jpegs_to_documents => :environment do
+      setting = SystemSetting.find_by_name('Document Content Types')
+      ['image/jpeg', 'image/jpg'].each do |type|
+        if setting.push(type)
+          p "added #{type} mime type to " + setting.name
+        end
       end
     end
 
@@ -204,7 +215,7 @@ namespace :kete do
         end
       end
     end
-    
+
     desc 'Adds File mime type variants'
     task :add_file_mime_type_variants => :environment do
       new_mime_types =  [
