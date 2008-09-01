@@ -244,7 +244,6 @@ class ConfigureController < ApplicationController
           register.errors.each do |field, error|
             register_message += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
           end
-          message += "<br />"
           page.replace_html("register_errors", register_message)
           page.show('form_fields')
           page.show('site_description')
