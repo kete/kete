@@ -8,9 +8,9 @@ class SearchController < ApplicationController
 
   layout "application" , :except => [:rss]
   
+  # James - 2008-09-03
   # Check for access before running private searches
-  
-  before_filter :private_search_authorisation
+  before_filter :private_search_authorisation, :only => [:rss, :for, :all]
 
   # we mimic caches_page so we have more control
   # note we specify extenstion .xml for rss url
@@ -145,15 +145,10 @@ class SearchController < ApplicationController
 
     # James Stradling <james@katipo.co.nz> - 2008-05-02
     # Only allow private search if permitted
-    if accessing_private_search_and_allowed?
-      @privacy = "private"
-      zoom_db_instance = "private"
-    else
-      zoom_db_instance = "public"
-    end
+    @privacy = "private" if is_a_private_search?
 
     # Load the correct zoom_db instance and connect to it
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_database)
     @zoom_connection = @search.zoom_db.open_connection
 
     @result_sets = Hash.new
@@ -205,16 +200,8 @@ class SearchController < ApplicationController
     @start_record = 0
     @start = 1
     
-    # James - 2008-08-28
-    # Only allow private search if permitted
-    if accessing_private_search_and_allowed?
-      zoom_db_instance = "private"
-    else
-      zoom_db_instance = "public"
-    end
-
     # TODO: skipping multiple source (federated) search for now
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_database)
 
     @result_sets = Hash.new
 
@@ -223,7 +210,7 @@ class SearchController < ApplicationController
 
   def authenticated_rss
     request.format = :xml
-    params[:privacy_type] == "private" ? login_required : true
+    is_a_private_search? ? login_required : true
   end
 
   def load_results(from_result_set)
@@ -286,7 +273,7 @@ class SearchController < ApplicationController
 
     # limit baskets searched within, if appropriate
     unless searching_for_related_items?
-      if params[:privacy_type] == 'private'
+      if is_a_private_search?
 
         # get the urlified_name for each basket the user has a role in
         # from their session
@@ -462,7 +449,7 @@ class SearchController < ApplicationController
                       :sort_type => params[:sort_type],
                       :authenticity_token => nil }
 
-    if params[:privacy_type] == 'private'
+    if is_a_private_search?
       location_hash.merge!({ :privacy_type => params[:privacy_type] })
     end
 
@@ -925,7 +912,7 @@ class SearchController < ApplicationController
   # James - 2008-09-03
   # Check for authorisation when performing private searches
   def private_search_authorisation
-    return true unless params[:privacy_type] == "private"
+    return true unless is_a_private_search?
     
     basket_names = logged_in? ? \
       current_user.get_basket_permissions.keys.collect { |key| key.to_s } : Array.new
@@ -952,6 +939,16 @@ class SearchController < ApplicationController
       access_denied
       false
     end
+  end
+  
+  # Check if we are meant to be running a private search #=> Boolean
+  def is_a_private_search?
+    params[:privacy_type] == "private"
+  end
+  
+  # Which zoom database to use #=> String (public/private)
+  def zoom_database
+    is_a_private_search? ? "private" : "public"
   end
 
 end
