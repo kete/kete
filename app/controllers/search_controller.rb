@@ -7,6 +7,10 @@ class SearchController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   layout "application" , :except => [:rss]
+  
+  # Check for access before running private searches
+  
+  before_filter :private_search_authorisation
 
   # we mimic caches_page so we have more control
   # note we specify extenstion .xml for rss url
@@ -916,6 +920,38 @@ class SearchController < ApplicationController
 
   def reset_slideshow
     session[:slideshow] = nil
+  end
+  
+  # James - 2008-09-03
+  # Check for authorisation when performing private searches
+  def private_search_authorisation
+    return true unless params[:privacy_type] == "private"
+    
+    basket_names = logged_in? ? \
+      current_user.get_basket_permissions.keys.collect { |key| key.to_s } : Array.new
+    
+    if @current_basket == @site_basket
+      
+      # In the case of the site basket, the only baskets that are searched privately are those
+      # which the user is a member of (using the same logic as above).
+      # For this reason, no unauthorised searching will take place, so it is safe to continue.
+      
+      true
+    elsif basket_names.member?(@current_basket.urlified_name)
+      
+      # In the case of a specific, non-site basket, the search is limited to this basket, and 
+      # we're checking if they're a member here. So, it is safe to continue now.
+      
+      true
+    else
+      
+      # Otherwise, they do not have permission and have probably forgotten to log in.
+      logger.info "A user who was #{logged_in? ? "" : "not "}logged was denied access to a private search."
+  
+      flash[:notice] = "Searching for private items in the '#{@current_basket.name}' basket is only allowed by basket members. Please log in as a basket member to continue."
+      access_denied
+      false
+    end
   end
 
 end
