@@ -8,6 +8,10 @@ class SearchController < ApplicationController
 
   layout "application" , :except => [:rss]
   
+  # James - 2008-09-04
+  # Ensure RSS triggers a http_auth_basic response, not redirect
+  before_filter :set_xml_format_before_auth, :only => [:rss]
+  
   # James - 2008-09-03
   # Check for access before running private searches
   before_filter :private_search_authorisation, :only => [:rss, :for, :all]
@@ -25,7 +29,7 @@ class SearchController < ApplicationController
   before_filter :reset_slideshow, :only => [:for, :all]
 
   # Ensure private RSS feeds are authenticated
-  before_filter :authenticated_rss, :only => [:rss]
+  # before_filter :authenticated_rss, :only => [:rss]
 
   # After running a search, store the results in a session
   # for slideshow functionality.
@@ -206,11 +210,6 @@ class SearchController < ApplicationController
     @result_sets = Hash.new
 
     populate_result_sets_for(@current_class)
-  end
-
-  def authenticated_rss
-    request.format = :xml
-    is_a_private_search? ? login_required : true
   end
 
   def load_results(from_result_set)
@@ -917,14 +916,14 @@ class SearchController < ApplicationController
     basket_names = logged_in? ? \
       current_user.get_basket_permissions.keys.collect { |key| key.to_s } : Array.new
     
-    if @current_basket == @site_basket
+    if @current_basket == @site_basket and logged_in?
       
       # In the case of the site basket, the only baskets that are searched privately are those
       # which the user is a member of (using the same logic as above).
       # For this reason, no unauthorised searching will take place, so it is safe to continue.
       
       true
-    elsif basket_names.member?(@current_basket.urlified_name)
+    elsif basket_names.member?(@current_basket.urlified_name) and logged_in?
       
       # In the case of a specific, non-site basket, the search is limited to this basket, and 
       # we're checking if they're a member here. So, it is safe to continue now.
@@ -949,6 +948,13 @@ class SearchController < ApplicationController
   # Which zoom database to use #=> String (public/private)
   def zoom_database
     is_a_private_search? ? "private" : "public"
+  end
+  
+  # Ensure RSS errors are handled with a suitable response
+  # For instance, RSS should trigger a http_auth_basic response, while normal searches
+  # should trigger a redirect to login page
+  def set_xml_format_before_auth
+    request.format = :xml
   end
 
 end
