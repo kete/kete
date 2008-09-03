@@ -1,20 +1,21 @@
 <% # has to be there own caches, to avoid showing unprivileged users -%>
-<% if !relate_to_topic.blank? -%>
 <% pretty_class_plural = zoom_class_plural_humanize(related_class) -%>
 
 <% if @at_least_a_moderator %>
-<% cache ({:related => "#{zoom_class_controller(related_class)}_restore", :id => relate_to_topic.id}) do -%>
+<% cache ({:related => "#{zoom_class_controller(related_class)}_restore", :id => @cache_id}) do -%>
+<% if !relate_to_topic.blank? -%>
+
 <li class="command"><%= link_to_restore_related_item(:relate_to_topic => relate_to_topic, :related_class => related_class) -%></li>
 <% end %>
 <% end %>
 <% if @site_admin && ::Import::VALID_ARCHIVE_CLASSES.include?(related_class)%>
-       <% cache ({:related => "#{zoom_class_controller(related_class)}_upload_archive", :id => relate_to_topic.id}) do -%>
+       <% cache ({:related => "#{zoom_class_controller(related_class)}_upload_archive", :id => @cache_id}) do -%>
 <li class="related-action"><%= link_to_add_set_of_related_items(:phrase => "Upload a zip file of related #{pretty_class_plural}",
   :relate_to_topic => relate_to_topic,
   :zoom_class => related_class) -%></li>
 <% end %>
 <% end %>
-<% end -%>
+<% end %>
 
 <% # finish /ul and /div that were started in _related_items_links or  _related_images_links -%>
 </ul>
