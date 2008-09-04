@@ -47,22 +47,21 @@ class SearchControllerTest < Test::Unit::TestCase
     get :all, :urlified_name => 'site', :controller_name_for_zoom_class => 'topics', :privacy_type => 'private'
     
     assert_response :redirect
-    assert_not_nil flash[:notice]
-    assert_redirected_to :controller => 'account', :action => 'login'
   end
   
   def test_private_search_on_about_basket_is_declined_when_not_logged_in
     get :all, :urlified_name => 'about', :controller_name_for_zoom_class => 'topics', :privacy_type => 'private'
     
     assert_response :redirect
-    assert_not_nil flash[:notice]
-    assert_redirected_to :controller => 'account', :action => 'login'
   end
   
   def test_private_search_on_site_basket_is_allowed_when_logged_in
-    login_as(:bryan)
+    login_as(:admin)
     
     get :all, :urlified_name => 'site', :controller_name_for_zoom_class => 'topics', :privacy_type => 'private'
+    
+    assert_response :success
+    assert_template 'search/all'
     
     assert_equal true, @controller.send(:is_a_private_search?)
     assert_equal "private", @controller.send(:zoom_database)
@@ -70,9 +69,6 @@ class SearchControllerTest < Test::Unit::TestCase
     assert assigns(:privacy)
     assert_equal ZoomDb.find_by_host_and_database_name('localhost', 'private'), assigns(:search).zoom_db
     assert_not_nil assigns(:results)
-    
-    assert_response :success
-    assert_template 'search/all'
   end
 
   def test_private_search_on_about_basket_is_allowed_when_logged_in_and_member
@@ -96,9 +92,7 @@ class SearchControllerTest < Test::Unit::TestCase
     
     get :all, :urlified_name => 'about', :controller_name_for_zoom_class => 'topics', :privacy_type => 'private'
     
-    assert_not_nil flash[:notice]
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'login'
   end
 
 end

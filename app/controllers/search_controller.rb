@@ -270,27 +270,15 @@ class SearchController < ApplicationController
     # limit query to within our zoom_class
     @search.pqf_query.kind_is(zoom_class, :operator => 'none')
 
-    # limit baskets searched within, if appropriate
+    # limit baskets searched within
     unless searching_for_related_items?
-      if is_a_private_search?
-
-        # get the urlified_name for each basket the user has a role in
-        # from their session
-        basket_access_hash = logged_in? ? current_user.get_basket_permissions : Hash.new
-        session[:has_access_on_baskets] = basket_access_hash
-        basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
-
-        if @current_basket == @site_basket and !basket_urlified_names.blank?
-          @search.pqf_query.within(basket_urlified_names)
-        elsif (@current_basket != @site_basket) and basket_urlified_names.member?(@current_basket.urlified_name)
-          @search.pqf_query.within(@current_basket.urlified_name)
-        end
-
-      elsif @current_basket != @site_basket
+      if @current_basket != @site_basket
         @search.pqf_query.within(@current_basket.urlified_name)
+      elsif is_a_private_search?
+        @search.pqf_query.within(@authorised_basket_names)
       end
     end
-
+      
     # this looks in the dc_relation index in the z30.50 server
     # must be exact string
     # get the item
@@ -911,19 +899,34 @@ class SearchController < ApplicationController
   # James - 2008-09-03
   # Check for authorisation when performing private searches
   def private_search_authorisation
+    
+    # Allow all public searches
     return true unless is_a_private_search?
     
-    basket_names = logged_in? ? \
-      current_user.get_basket_permissions.keys.collect { |key| key.to_s } : Array.new
-    
-    if @current_basket == @site_basket and logged_in?
+    # Ensure basic permissions for any private searches
+    if !logged_in?
+      access_denied
+      return false
+    end
+        
+    # Check for a login before continuing
+    basket_access_hash = logged_in? ? \
+      current_user.get_basket_permissions : Hash.new
+  
+    # Store for future reference
+    session[:has_access_on_baskets] = basket_access_hash
+  
+    # We only want the names
+    @authorised_basket_names = basket_access_hash.keys.collect { |key| key.to_s }
+      
+    if @current_basket == @site_basket and !@authorised_basket_names.empty?
       
       # In the case of the site basket, the only baskets that are searched privately are those
       # which the user is a member of (using the same logic as above).
       # For this reason, no unauthorised searching will take place, so it is safe to continue.
       
       true
-    elsif basket_names.member?(@current_basket.urlified_name) and logged_in?
+    elsif @authorised_basket_names.member?(@current_basket.urlified_name)
       
       # In the case of a specific, non-site basket, the search is limited to this basket, and 
       # we're checking if they're a member here. So, it is safe to continue now.
@@ -933,21 +936,27 @@ class SearchController < ApplicationController
       
       # Otherwise, they do not have permission and have probably forgotten to log in.
       logger.info "A user who was #{logged_in? ? "" : "not "}logged was denied access to a private search."
-  
-      flash[:notice] = "Searching for private items in the '#{@current_basket.name}' basket is only allowed by basket members. Please log in as a basket member to continue."
-      access_denied
-      false
+    
+      respond_to do |format|
+        format.html do
+          redirect_to DEFAULT_REDIRECTION_HASH
+        end
+        format.xml do
+          render :text => "Error 403: Forbidden", :status => 403
+        end
+      end
+      
     end
   end
   
   # Check if we are meant to be running a private search #=> Boolean
   def is_a_private_search?
-    params[:privacy_type] == "private"
+    @private_search ||= params[:privacy_type] == "private"
   end
   
   # Which zoom database to use #=> String (public/private)
   def zoom_database
-    is_a_private_search? ? "private" : "public"
+    @zoom_database ||= is_a_private_search? ? "private" : "public"
   end
   
   # Ensure RSS errors are handled with a suitable response
