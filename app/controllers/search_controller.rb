@@ -28,9 +28,6 @@ class SearchController < ApplicationController
   # Reset slideshow object on new searches
   before_filter :reset_slideshow, :only => [:for, :all]
 
-  # Ensure private RSS feeds are authenticated
-  # before_filter :authenticated_rss, :only => [:rss]
-
   # After running a search, store the results in a session
   # for slideshow functionality.
   after_filter :store_results_for_slideshow, :only => [:for, :all]
