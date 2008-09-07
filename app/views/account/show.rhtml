@@ -30,18 +30,12 @@
         </div>
 <% end -%>
 
-<% if licenses_are_available? %>
+<% if @viewer_is_user and licenses_are_available? %>
 <div>
    <% if @user.license.nil? %>
-   <% if @viewer_is_user -%>
      Click the edit link above to set your default license.
-   <% end -%>
    <% else -%>
-     <% if @viewer_is_user -%>
      <h3>Your current default license is:</h3>
-     <% else -%>
-     <h3>This user uses the license:</h3>
-     <% end -%>
      <div class="license">
        <%= image_tag(@user.license.image_url, :alt => "licence  thumbnail") %>
        <%= @user.license.title %>
