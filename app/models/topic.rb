@@ -120,6 +120,16 @@ class Topic < ActiveRecord::Base
 
 
   after_save :store_correct_versions_after_save
+  
+  # James - 2008-09-08
+  # Ensure basket cache is cleared if this is a standard basket home-page topic
+  after_save :clear_basket_homepage_cache
+  
+  def clear_basket_homepage_cache
+    self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self
+  end
+  
+  private :clear_basket_homepage_cache
 
   def related_topics(only_non_pending = false)
     if only_non_pending
