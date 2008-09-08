@@ -982,12 +982,13 @@ class ApplicationController < ActionController::Base
 
   def rescue_404
     @title = "404 Not Found"
-    @displaying_404 = true
+    @displaying_error = true
     render :template => "errors/error404", :layout => "application", :status => "404"
   end
 
   def rescue_500(template)
     @title = "500 Internal Server Error"
+    @displaying_error = true
     render :template => "errors/#{template}", :layout => "application", :status => "500"
   end
 
@@ -1001,7 +1002,7 @@ class ApplicationController < ActionController::Base
   end
 
   def rescue_action_in_public(exception)
-    #logger.info(exception)
+    #logger.info("ERROR: #{exception.to_s}")
     case exception
     when ActionController::UnknownAction,
          ActiveRecord::RecordNotFound,
@@ -1014,7 +1015,7 @@ class ApplicationController < ActionController::Base
       if exception.to_s.match(/Connect\ failed/)
         rescue_500('zebra_connection_failed')
       else
-        raise
+        rescue_500('error500')
       end
     end
   end

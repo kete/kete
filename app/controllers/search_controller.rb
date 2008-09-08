@@ -91,6 +91,10 @@ class SearchController < ApplicationController
       @rss_tag_link = rss_tag(:auto_detect => false)
       search
     end
+
+    # if zoom class isn't valid, @results is nil,
+    # so lets rescue with a 404 in this case
+    rescue_404 if @results.nil?
   end
 
   def search
@@ -894,6 +898,8 @@ class SearchController < ApplicationController
   # Store the elements need to reproduce the search in a session
   def store_results_for_slideshow
 
+    # if @results_sets is emtpy, then @result_sets[@current_class] is nil so we have
+    # to stop here if thats the case, or we get a 500 error calling .size below
     return if @result_sets[@current_class].nil?
 
     results = @results.map{ |r| r['url'] }
