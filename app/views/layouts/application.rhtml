@@ -159,7 +159,7 @@
           </div>
           <% end %>
 
-          <% if render_full_width_content_wrapper? and !@displaying_404 %>
+          <% if render_full_width_content_wrapper? and !@displaying_error %>
              <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
           <% end %>
           <%= @content_for_layout %>
@@ -171,7 +171,7 @@
                         <div id="linkToRSS"><%= @rss_tag_link -%>RSS feed for
                 these items</a></div>
                 <% end -%>
-                <% if logged_in? and @basket_admin and !@displaying_404 -%>
+                <% if logged_in? and @basket_admin and !@displaying_error -%>
                         <div id="basket-toolbox">
                                 <h4>Tools for basket: <%= h(@current_basket.name) -%></h4>
                                 <ul>
@@ -201,7 +201,7 @@
                                 </ul>
                         </div>
                 <% end %>
-                <% if logged_in? and @site_admin and !@displaying_404 %>
+                <% if logged_in? and @site_admin and !@displaying_error %>
                    <!-- admin toolbox, temp -->
                    <div id="adminToolbox">
                         <h4>Administrator's Toolbox</h4>
