@@ -26,18 +26,26 @@ module SearchHelper
   end
 
   # look in parameters for what this is a refinement of
-  def last_part_of_title_if_refinement_of
+  def last_part_of_title_if_refinement_of(add_links = true)
     end_of_title_parts = Array.new
 
     end_of_title_parts << " tagged as \"#{@tag.name}\"" if !@tag.nil?
 
-    end_of_title_parts << " contributed by \"#{link_to_profile_for(@contributor)}\"" if !@contributor.nil?
+    if !@contributor.nil?
+      contributor = add_links ? link_to_profile_for(@contributor) : @contributor.user_name
+      end_of_title_parts << " contributed by \"#{contributor}\""
+    end
 
     end_of_title_parts << " related to \"#{@source_item.title}\"" if !@source_item.nil?
 
     end_of_title_parts << " that are #{@privacy}" if !@privacy.nil?
 
     end_of_title = end_of_title_parts.join(" and")
+  end
+
+  # We have to turn off linking to the contributor
+  def last_part_of_title_for_rss_if_refinement_of
+    last_part_of_title_if_refinement_of false
   end
 
   # depreciated, now use will_paginate
