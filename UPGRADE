@@ -47,7 +47,7 @@ Complete steps are:
         a)  id="tags" should be changed to id="tags-box" in HTML templates
         b)  #tags should be changed to #tags-box in CSS templates
         The default Kete templates have already been updated.
-2.      Re-deploy your Kete instance if necessary
+2.      Run tmp:cache:clear (not necessary for capistrano deployments)
 3.      Restart your Kete server
 
 == 2008/08/07 - Fixing Caching Issues
