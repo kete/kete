@@ -154,7 +154,7 @@ body.mceContentBody {
 #content-tabs li a span,
 #related-content h2,
 #related h2,
-#tags h2,
+#tags-box h2,
 #extended-fields h2{
     background-repeat: no-repeat;
     background-position: center left;
@@ -164,7 +164,7 @@ body.mceContentBody {
 #extended-fields h2{
     background-image: url(../images/icon-extended.gif);
 }
-#tags h2 {
+#tags-box h2 {
     background-image: url(../images/icon-tag.gif);
 }
 .view-link{
