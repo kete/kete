@@ -52,4 +52,10 @@ class ExtendedField < ActiveRecord::Base
     self.label.downcase.gsub(/ /, '_')
   end
 
+  protected
+
+    def validate
+      errors.add('label', "cannot contain Form, Script, or Input because they are reserved starting words") if label =~ /^(form|input|script)(.*)$/i
+    end
+
 end
