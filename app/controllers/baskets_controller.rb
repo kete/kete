@@ -52,9 +52,9 @@ class BasketsController < ApplicationController
   end
 
   def create
-    @basket = Basket.new(params[:basket])
-
     convert_text_fields_to_boolean
+
+    @basket = Basket.new(params[:basket])
 
     if @basket.save
       set_settings
