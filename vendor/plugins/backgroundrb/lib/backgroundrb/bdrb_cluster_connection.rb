@@ -136,6 +136,7 @@ module BackgrounDRb
         rescue BdrbConnError; end
       end
       raise NoServerAvailable.new("No BackgrounDRb server is found running") unless succeeded
+      return options[:worker_key]
     end
 
     # choose a server in round robin manner.

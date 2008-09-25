@@ -1,8 +1,8 @@
 --- 
 format: 1
 handler: 
-  commit: ca7d4cb7ff1b6c283601683adf3fce18f94a75a4
+  commit: db233a856005b632e564e1c63820791d20e62eb2
   branch: HEAD
-lock: 
+lock: false
 repository_url: git://github.com/gnufied/backgroundrb.git
 repository_class: Piston::Git::Repository
