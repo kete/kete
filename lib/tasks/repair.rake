@@ -8,9 +8,10 @@ namespace :kete do
     # Run all tasks
     # task :all => [..]
     
-    desc "Prune invalid topic versions."
-    task :prune_topic_versions => :environment do
+    desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
+    task :fix_topic_versions => :environment do
       pruned = 0
+      fixed = 0
       
       # In some cases the topic_versions table has extra, invalid versions.
       # In this case we are going to find candidates, check their invalidity, and delete them.
@@ -24,32 +25,56 @@ namespace :kete do
         next unless topic.version > 0
         
         # Check that the topic has the right number of versions.
-        next unless topic.version == topic.versions.size
+        if topic.versions.size > topic.version
         
-        # Check that the version has no comment
-        next unless topic_version.version_comment.nil?
+          # The topic will not have any contributions since is has 
+          # no version to be referenced against.
         
-        # The topic will not have any contributions since is has 
-        # no version to be referenced against.
+          # Clean up any flags/tags
+          topic_version.flags.clear
+          topic_version.tags.clear
         
-        # Clean up any flags/tags
-        topic_version.flags.clear
-        topic_version.tags.clear
+          # Check the associations have been cleared
+          topic_version.reload
         
-        # Check the associations have been cleared
-        topic_version.reload
+          raise "Could not clear associations" if \
+            topic_version.flags.size > 0 || topic_version.tags.size > 0
         
-        raise "Could not clear associations" if \
-          topic_version.flags.size > 0 || topic_versions.tags.size > 0
+          # Prune if we're still here..
+          topic_version.destroy
         
-        # Prune if we're still here..
-        topic_version.destroy
+          print "Deleted invalid version for Topic with id = #{topic_version.topic_id}.\n"
+          pruned = pruned + 1
         
-        print "Deleted invalid version for Topic with id = #{topic_version.topic_id}.\n"
-        pruned = pruned + 1
+        else
+          
+          existing_versions = topic.versions.map { |v| v.version }
+          
+          if !existing_versions.member?(topic.version)
+            
+            topic_version.update_attribute(:version, topic.version)
+            
+            print "Fixed missing version for Topic with id = #{topic_version.topic_id} (current version).\n"
+            fixed = fixed + 1
+            
+          else
+            
+            max = [topic.version, existing_versions.max].max
+            
+            missing = (1..max).detect { |v| !existing_versions.member?(v) }
+            
+            topic_version.update_attribute(:version, missing) if missing
+            
+            print "Fixed missing version for Topic with id = #{topic_version.topic_id} (version #{missing}).\n"
+            fixed = fixed + 1
+            
+          end
+        end
+            
       end
       
       print "Finished. Removed #{pruned} invalid topic versions.\n"
+      print "Finished. Fixed #{fixed} topic versions with missing version attributes.\n"
     end
     
     desc "Set missing contributors on topic versions."
@@ -70,7 +95,7 @@ namespace :kete do
             AND version = #{topic_version.version};
         SQL
         
-        next unless Contributions.count_by_sql(sql) == 0
+        next unless Contribution.count_by_sql(sql) == 0
         
         Contribution.create(
           :contributed_item => topic_version.topic,
