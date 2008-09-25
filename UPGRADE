@@ -33,6 +33,12 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2008/09/26 - Backgroundrb configuration yml file updated
+
+1.      Open up background.yml and add the following line to the :backgroundrb: section and save
+           :persistent_disabled: true
+2.      Restart Backgroundrb
+
 == 2008/09/17 - CSS "tags" Identifier Changed
 
 To fix an IE6 specific printing bug, the CSS identifier "tags" has been changed to "tags-box". If you are running Kete with a custom theme, be sure to update your theme templates and CSS files to refer to the new "tags-box" CSS identifier, and not the older "tags".
