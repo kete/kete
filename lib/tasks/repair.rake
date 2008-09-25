@@ -6,7 +6,7 @@ namespace :kete do
   namespace :repair do
     
     # Run all tasks
-    # task :all => [..]
+    task :all => ['kete:repair:fix_topic_versions', 'kete:repair:set_missing_contributors']
     
     desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
     task :fix_topic_versions => :environment do
