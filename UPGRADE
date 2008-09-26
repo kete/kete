@@ -33,6 +33,23 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2008/09/17 - CSS "tags" Identifier Changed
+
+To fix an IE6 specific printing bug, the CSS identifier "tags" has been changed to "tags-box". If you are running Kete with a custom theme, be sure to update your theme templates and CSS files to refer to the new "tags-box" CSS identifier, and not the older "tags".
+
+The default Kete template has already been updated.
+
+Once this has been completed, you may need to update and restart your Kete based website to effect the changes.
+
+Complete steps are:
+
+1.      Update all references to the "tags" CSS identifier in custom template(s) as mentioned below:
+        a)  id="tags" should be changed to id="tags-box" in HTML templates
+        b)  #tags should be changed to #tags-box in CSS templates
+        The default Kete templates have already been updated.
+2.      Run tmp:cache:clear (not necessary for capistrano deployments)
+3.      Restart your Kete server
+
 == 2008/08/07 - Fixing Caching Issues
 
 1.      Stop your Kete server (mongrels, backgroundrb).

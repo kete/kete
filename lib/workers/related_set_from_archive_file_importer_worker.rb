@@ -40,9 +40,18 @@ class RelatedSetFromArchiveFileImporterWorker < BackgrounDRb::MetaWorker
 
       # get files in directory
       # first figure out the name of the directory
-      base_directory = ::Import::IMPORTS_DIR + @import.directory + '/' + File.basename(@import.import_archive_file.filename, File.extname(@import.import_archive_file.filename))
-      # TODO: add exception and message
-      raise unless File.directory?(base_directory)
+      import_directory = ::Import::IMPORTS_DIR + @import.directory
+      archive_filename_without_extension = File.basename(@import.import_archive_file.filename, File.extname(@import.import_archive_file.filename))
+      base_directory = import_directory + '/' + archive_filename_without_extension
+
+      # handle case where included directory name has spaces rather than underscores
+      # won't handle case where mix of spaces and underscores is in directory name
+      base_directory = import_directory + '/' + archive_filename_without_extension.gsub("_", " ") unless File.exist?(base_directory) && File.directory?(base_directory)
+
+      # working instance when a containing directory isn't included in zip file
+      # variations in zip programs seem to result in the directory being lots in uncompressing step
+      # other times people just forget to do that step
+      base_directory = import_directory unless File.exist?(base_directory) && File.directory?(base_directory)
 
       # variables assigned, files good to go, we're started
       @import.update_attributes(:status => 'in progress')
@@ -54,7 +63,8 @@ class RelatedSetFromArchiveFileImporterWorker < BackgrounDRb::MetaWorker
         # only do files, not recursive
         full_path_to_record = base_directory + '/' + record
         # ignore directories and hidden files
-        not_wanted = File.basename(full_path_to_record).first == "." || File.directory?(full_path_to_record)
+        # shouldn't be necessary to handle __MACOSX because it is a directory, but...
+        not_wanted = File.basename(full_path_to_record).first == "." || File.directory?(full_path_to_record) || record == '__MACOSX'
         importer_process(full_path_to_record, params) unless not_wanted
       end
       importer_update_processing_vars_at_end

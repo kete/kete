@@ -25,6 +25,8 @@ class BasketsController < ApplicationController
                 :only => [:new, :pick, :create, :edit, :update, :homepage_options])
   ### end TinyMCE WYSIWYG editor stuff
 
+  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :choose_type, :permission_denied]
+
   after_filter :repopulate_basket_permissions, :only => [:create, :destroy]
 
   def index
@@ -50,9 +52,9 @@ class BasketsController < ApplicationController
   end
 
   def create
-    @basket = Basket.new(params[:basket])
-
     convert_text_fields_to_boolean
+
+    @basket = Basket.new(params[:basket])
 
     if @basket.save
       set_settings
