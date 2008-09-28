@@ -108,7 +108,16 @@ class PqfQuery
 
     # add special handling of searching URLs within dc subject
     if @should_search_web_links_too
-      full_query = '@or ' + full_query +
+      # pull off title or any text bit at end and prepend an @or
+      # then append the subject query to end
+      # we know that the pattener @or @attr 1=4 is what we are after
+      # for where to add the extra @or
+      prepend_at_pattern = "@or #{ATTRIBUTE_SPECS['title']}"
+      full_query_parts = full_query.split(prepend_at_pattern)
+
+      full_query = full_query_parts[0] +
+        "@or " + prepend_at_pattern +
+        full_query_parts[1] +
         ATTRIBUTE_SPECS['subjects'] +
         @title_or_any_text_operators_string +
         @title_or_any_text_query_string + ' '
