@@ -11,7 +11,7 @@
       <div class="detail-tools">
         <table class="history-table">
           <tr><th>Number</th><th></th><th>Flags</th><th>Privacy</th><th>Contributor</th><th>Updated</th><th>Comments</th></tr>
-          <% item_contributors = @item.contributors
+          <% item_contributors = @item.contributors.find(:all, :order => 'version ASC')
              contributor_index = 0 -%>
           <% @versions.each do |version| -%>
           <tr valign="top" class="<%= cycle('table-row-odd', 'table-row-even') -%>">
