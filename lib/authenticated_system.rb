@@ -89,7 +89,12 @@ module AuthenticatedSystem
           redirect_to :controller => '/account', :action => 'login'
         end
         accepts.xml do
-          request_http_basic_authentication
+          if user = authenticate_or_request_with_http_basic { |u, p| User.authenticate(u, p) }
+            self.current_user = user
+            if logged_in? and authorized?
+              return true
+            end
+          end
         end
       end
       false

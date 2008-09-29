@@ -69,6 +69,9 @@ module ImporterZoom
 
                 # this is mime type
                 oai_dc_xml_dc_format(xml,item)
+
+                # this is currently only used for topic type
+                oai_dc_xml_dc_coverage(xml,item)
               end
             end
           end

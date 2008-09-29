@@ -43,7 +43,8 @@ att 25              MESH-subject
 att 26              PA-subject
 att 27              LC-subject-heading
 att 28              RVM-subject-heading
-att 29              Local-subject-index
+# att 29              Local-subject-index
+att 29              dc_coverage
 # att 30              Date
 att 30              dc_date
 # att 31              Date-of-publication
