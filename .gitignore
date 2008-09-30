@@ -12,4 +12,5 @@ public/audio_recordings/
 public/documents/
 public/image_files/
 public/videos/
+tmp/restart.txt
 zebradb/conf/kete-zebra-servers.xml
