@@ -248,7 +248,7 @@ class IndexPageController < ApplicationController
   # search forms, rss feeds, user comments etc
   def robots
     @baskets = Basket.all
-    @controller_names = ZOOM_CLASSES.collect { |klass| zoom_class_controller(klass) }
+    @controller_names = ZOOM_CLASSES.collect { |name| zoom_class_controller(name) }
     render :action => 'robots', :layout => false
   end
 
