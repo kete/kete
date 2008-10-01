@@ -306,7 +306,7 @@ class ApplicationController < ActionController::Base
     if caches_controllers.include?(params[:controller])
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
-      item = item_from_controller_and_id
+      item = item_from_controller_and_id(false)
       item.private_version! if item.respond_to?(:private) && item.latest_version_is_private?
 
       expire_show_caches_for(item)
