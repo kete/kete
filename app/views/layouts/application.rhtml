@@ -106,7 +106,7 @@
                                                        :urlified_name => @site_basket.urlified_name,
                                                        :search_terms => nil } do %>
                               <div class="wrap"><label for="search_terms">Search:</label>
-                              <%= text_field_tag 'search_terms'  %>
+                              <%= text_field_tag 'search_terms', params[:search_terms], :accesskey => '3' -%>
                               <%= submit_tag 'Go' %></div>
                       <% end -%>
             </div>
@@ -134,13 +134,13 @@
         <% end %>
       </ul>
       <ul id="main-nav" class="nav-list">
-        <li class="first"><a href="/">Home</a></li>
+        <li class="first"><a href="/" accesskey="1">Home</a></li>
         <%= header_browse_links %>
         <li><%= link_to_unless_current(h(@about_basket.name),
                 basket_index_url(:urlified_name => @about_basket.urlified_name)) %></li>
         <li><%= link_to_unless_current(h(@help_basket.name),
                 basket_index_url(:urlified_name => @help_basket.urlified_name)) %></li>
-        <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex") %></li>
+        <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex", :accesskey => '9') %></li>
         <%= header_add_links %>
       </ul>
     </div> <!-- /header -->
@@ -162,6 +162,7 @@
           <% if render_full_width_content_wrapper? and !@displaying_error %>
              <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
           <% end %>
+          <div style="width:1px;height:1px;padding:0px;margin:0px;"><a name="content">&nbsp;</a></div>
           <%= @content_for_layout %>
         </div><!--  /container -->
         <div class="cleaner">&nbsp;</div>
@@ -259,6 +260,27 @@
                         </p>
                    </div>
                 <% end %>
+
+                <div id="footer_links">
+                  <ul>
+                    <% unless GOVERNMENT_WEBSITE.blank? -%>
+                      <li><%= link_to GOVERNMENT_WEBSITE.first, GOVERNMENT_WEBSITE.last, :accesskey => '/' -%></li>
+                    <% end -%>
+                    <% cache({:part => 'accessibility'}) do -%>
+                      <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>
+                      <%= content_tag('li', link_to('Accessibility', { :urlified_name => 'help',
+                                                                       :controller => 'topics',
+                                                                       :action => 'show',
+                                                                       :id => accessibility_topic },
+                                                                     :accesskey => '0')) if accessibility_topic -%>
+                    <% end -%>
+                    <li><%= link_to 'Sitemap', { :urlified_name => 'site',
+                                                         :controller => 'baskets',
+                                                         :action => 'list' },
+                                                       :accesskey => '2' -%></li>
+                    <li class="last"><%= link_to "Back to Content", '#content', :accesskey => '[' -%>
+                  </ul>
+                </div>
         </div>
 
  </div> <!-- /body-outer-wrapper -->
