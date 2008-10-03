@@ -106,7 +106,7 @@
                                                        :urlified_name => @site_basket.urlified_name,
                                                        :search_terms => nil } do %>
                               <div class="wrap"><label for="search_terms">Search:</label>
-                              <%= text_field_tag 'search_terms', params[:search_terms], :accesskey => '3' -%>
+                              <%= text_field_tag 'search_terms', nil, { :accesskey => '3' } -%>
                               <%= submit_tag 'Go' %></div>
                       <% end -%>
             </div>
