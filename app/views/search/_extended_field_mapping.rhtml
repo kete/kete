@@ -33,19 +33,19 @@
                                                     <% if @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag'  %>
                                                       <% z = @field_types[the_field_type] + '("' %>
                                                       <% z = z + "#{item_key}[#{f_id}][#{input_count}]" %>
-                                                      <% z = z + '", temp_hash[input_count.to_s][f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"})' %>
+                                                      <% z = z + '", temp_hash[input_count.to_s][f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}", :tabindex => '1'})' %>
                                                       <%= eval(z) %>
                                                     <% else %>
-                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", temp_hash[input_count.to_s][f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"}) %>
+                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", temp_hash[input_count.to_s][f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}", :tabindex => '1'}) %>
                                                     <% end %>
                                                  <% else %>
                                                     <% if @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag' %>
                                                       <% z = @field_types[the_field_type] + '("' %>
                                                       <% z = z + "#{item_key}[#{f_id}][#{input_count}]" %>
-                                                      <% z = z + '", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"})' %>
+                                                      <% z = z + '", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}", :tabindex => '1'})' %>
                                                       <%= eval(z) %>
                                                     <% else %>
-                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}"}) %>
+                                                      <%= text_field_tag("#{item_key}[#{f_id}][#{input_count}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}_#{input_count}", :tabindex => '1'}) %>
                                                     <% end %>
                                                  <% end %>
                                                  <% input_count += 1 -%>
@@ -60,10 +60,10 @@
                                                 <% else %>
                                                   <% z = z + '", item_extended_xml[f_id],' %>
                                                 <% end %>
-                                                <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}"})' %>
+                                                <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => '1'})' %>
                                                 <%= eval(z) %>
                                            <% else %>
-                                                <%= text_field_tag("#{item_key}[#{f_id}]", item_extended_xml[f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}"}) %>
+                                                <%= text_field_tag("#{item_key}[#{f_id}]", item_extended_xml[f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => '1'}) %>
                                            <% end %>
                                          <% else %>
                                            <% if  @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag' %>
@@ -74,10 +74,10 @@
                                                 <% else %>
                                                     <% z = z + '", nil,' %>
                                                 <% end %>
-                                                <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}"})' %>
+                                                <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => '1'})' %>
                                                 <%= eval(z) %>
                                            <% else %>
-                                                <%= text_field_tag("#{item_key}[#{f_id}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}"}) %>
+                                                <%= text_field_tag("#{item_key}[#{f_id}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => '1'}) %>
                                            <% end %>
                                          <% end %>
                                  <% end %>

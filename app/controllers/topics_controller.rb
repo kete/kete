@@ -40,7 +40,8 @@ class TopicsController < ApplicationController
                   :paste_unindented_list_class => "unindentedList",
                   :paste_convert_headers_to_strong => true,
                   :paste_insert_word_content_callback => "convertWord",
-                  :plugins => %w{ contextmenu paste table fullscreen} },
+                  :plugins => %w{ contextmenu paste table fullscreen },
+                  :accessibility_focus => false },
                 :only => [:new, :pick, :create, :edit, :update, :pick_topic_type])
   ### end TinyMCE WYSIWYG editor stuff
 

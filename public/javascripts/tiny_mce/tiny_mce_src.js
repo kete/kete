@@ -6888,6 +6888,7 @@ var tinyMCE = window.tinyMCE = tinymce.EditorManager;
 				id : t.id + "_ifr",
 				src : u || 'javascript:""', // Workaround for HTTPS warning in IE6/7
 				frameBorder : '0',
+        tabindex : '1',
 				style : {
 					width : '100%',
 					height : h
