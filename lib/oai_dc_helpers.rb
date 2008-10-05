@@ -30,6 +30,25 @@ module OaiDcHelpers
       xml.identifier("#{ZoomDb.zoom_id_stub}#{item.basket.urlified_name}:#{item.class.name}:#{item.id}")
     end
 
+    # Walter McGinnis, 2008-10-05
+    # adding better logic for determining last time the item was changed
+    # we want the datestamp to reflect the most recent change to the item
+    # that can be either when it is created/edited
+    # or when a relationship has been added
+    def oai_dc_xml_oai_datestamp(xml, item)
+      if item.content_item_relations.count == 0
+        xml.datestamp(item.updated_at.utc.xmlschema)
+      elsif item.class.name != 'Topic'
+        xml.datestamp(item.content_item_relations.last.updated_at.utc.xmlschema)
+      else
+        # topics can be on either side of the content_item_relation join model
+        # so to get all possible relations, you have to combine them
+        all_relations = item.content_item_relations + item.child_content_item_relations
+        all_relations.sort! { |a,b| a.updated_at <=> b.updated_at }
+        xml.datestamp(all_relations.last.updated_at.utc.xmlschema)
+      end
+    end
+
     # Walter McGinnis, 2008-06-16
     # adding oai pmh set support
     # assumes public zoom_db

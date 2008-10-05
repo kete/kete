@@ -6,7 +6,7 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
     xml.record do
       xml.header do
         oai_dc_xml_oai_identifier(xml,item)
-        xml.datestamp(item.updated_at.utc.xmlschema)
+        oai_dc_xml_oai_datestamp(xml, item)
         oai_dc_xml_oai_set_specs(xml,item)
       end
       xml.metadata do
