@@ -35,18 +35,30 @@ module OaiDcHelpers
     # we want the datestamp to reflect the most recent change to the item
     # that can be either when it is created/edited
     # or when a relationship has been added
+    # note that if a relation is removed, this may result in rolling back in time
+    # of datestamp, which may be counterintuitive, however that is a rare case
     def oai_dc_xml_oai_datestamp(xml, item)
-      if item.content_item_relations.count == 0
-        xml.datestamp(item.updated_at.utc.xmlschema)
-      elsif item.class.name != 'Topic'
-        xml.datestamp(item.content_item_relations.last.updated_at.utc.xmlschema)
-      else
+      most_recent_updated_at = item.updated_at
+
+      if item.class.name == 'Topic'
         # topics can be on either side of the content_item_relation join model
         # so to get all possible relations, you have to combine them
         all_relations = item.content_item_relations + item.child_content_item_relations
-        all_relations.sort! { |a,b| a.updated_at <=> b.updated_at }
-        xml.datestamp(all_relations.last.updated_at.utc.xmlschema)
+
+        if all_relations.size > 0
+          all_relations.sort! { |a,b| a.updated_at <=> b.updated_at }
+
+          last_relation = all_relations.last
+          if last_relation.updated_at > most_recent_updated_at
+            most_recent_updated_at = last_relation.updated_at
+          end
+        end
+      elsif item.content_item_relations.count > 0 &&
+          item.content_item_relations.last.updated_at > most_recent_updated_at
+        most_recent_updated_at = item.content_item_relations.last.updated_at
       end
+
+      xml.datestamp(most_recent_updated_at.utc.xmlschema)
     end
 
     # Walter McGinnis, 2008-06-16
