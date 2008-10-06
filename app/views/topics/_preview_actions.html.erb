@@ -2,8 +2,8 @@
   <h3>Actions:</h3>
   <ul>
     <li class="first"><%= link_to "History",
-                          :action => :history,
-      :id => item %></li>
+                          {:action => :history,
+      :id => item}, :tabindex => '1' %></li>
     <% if can_moderate -%>
     <li><%= link_to "Make this revision live",
          {:action => :restore,
@@ -11,7 +11,7 @@
       :version => item.version,
       :authenticity_token => form_authenticity_token},
          :method => :post,
-         :confirm => 'Are you sure?' %></li>
+         :confirm => 'Are you sure?', :tabindex => '1' %></li>
     <li><%= link_to "reject",
             {:action => :flag_form,
       :id => item,
@@ -19,7 +19,7 @@
       :version => item.version,
       :authenticity_token => form_authenticity_token},
       :method => :post,
-      :confirm => 'Are you sure?'%></li>
+      :confirm => 'Are you sure?', :tabindex => '1' %></li>
     <% end -%>
   </ul>
 </div>

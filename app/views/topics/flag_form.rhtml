@@ -23,11 +23,11 @@
                 <div class="form-element">
                         <label for="message_">Message for
                         <%= @user_type -%>:</label>
-                        <%= text_area 'message', '' %>
+                        <%= text_area 'message', '', :tabindex => '1' %>
                         <p><%= @instructions -%></p>
                 </div>
         </fieldset>
-        <div class="wrap"><%= submit_tag @submit_text %></div>
+        <div class="wrap"><%= submit_tag @submit_text, :tabindex => '1' %></div>
 <% end %>
 
 <%= link_to_cancel %>

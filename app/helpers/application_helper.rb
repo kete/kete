@@ -284,7 +284,7 @@ module ApplicationHelper
       phrase += ' in ' + @current_basket.name
     end
 
-    return link_to(phrase, :controller => zoom_class_controller(item_class), :action => :new)
+    return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
   end
 
   def link_to_add_related_item(options={})
@@ -308,7 +308,7 @@ module ApplicationHelper
                      :related_class => options[:related_class],
                      :relate_to_topic => options[:relate_to_topic],
                      :function => "add" },
-                     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
+                     {:popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes']})
   end
 
   def link_to_unlink_related_item(options={})
@@ -441,7 +441,7 @@ module ApplicationHelper
 
   def tags_input_field(form,label_for)
     "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
-                #{form.text_field :tag_list}</div>"
+                #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
 
   #---- related to extended_fields for either topic_types or content_types
