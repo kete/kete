@@ -61,13 +61,10 @@ class IndexPageController < ApplicationController
             stats_by_type_for(@current_basket)
           end
 
-
           # prepare blog list of most recent topics
           # replace limit with param from basket
-          @recent_topics_limit = @current_basket.index_page_number_of_recent_topics
-          if @recent_topics_limit.blank?
-            @recent_topics_limit = 0
-          end
+          @recent_topics_limit = @current_basket.index_page_number_of_recent_topics.blank? ? 0 : @current_basket.index_page_number_of_recent_topics
+
           # exclude index_topic
           if @recent_topics_limit > 0
             recent_query_hash = { :limit => @recent_topics_limit, :order => 'created_at desc'}
