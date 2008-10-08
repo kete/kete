@@ -14,7 +14,7 @@
     <title><%= h(@title) %></title>
   <% end -%>
 
-  <% if using_tiny_mce? && VALID_TINYMCE_ACTIONS.include?(params[:action]) -%>
+  <% if using_tiny_mce? -%>
     <% # Include TinyMCE before other JS to avoid problems,
        # tinymce not compatible with bundle_fu -%>
     <%= include_tiny_mce_js -%>
@@ -22,21 +22,6 @@
     <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" -%>
     <% @tiny_mce_options[:extended_valid_elements] = EXTENDED_VALID_ELEMENTS if @site_admin -%>
     <%= tiny_mce_init -%>
-    <script type="text/javascript">
-    function convertWord(type, content) {
-      switch (type) {
-        // Gets executed before the built in logic performes it's cleanups
-        case "before":
-          content = content.toLowerCase(); // Some dummy logic
-          break;
-        // Gets executed after the built in logic performes it's cleanups
-        case "after":
-          content = content.toLowerCase(); // Some dummy logic
-          break;
-      }
-      return content;
-    }
-    </script>
   <% end -%>
 
 <%= stylesheet_link_tag 'kete-print', :media => 'print' %>

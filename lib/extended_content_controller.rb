@@ -24,7 +24,8 @@ module ExtendedContentController
       klass.send :protect_from_forgery, :secret => KETE_SECRET, :except => ['new', 'destroy']
 
       ### TinyMCE WYSIWYG editor stuff
-      klass.send :uses_tiny_mce, :options => DEFAULT_TINYMCE_SETTINGS
+      klass.send :uses_tiny_mce, :options => DEFAULT_TINYMCE_SETTINGS,
+                                 :only => VALID_TINYMCE_ACTIONS
       ### end TinyMCE WYSIWYG editor stuff
 
       def load_content_type

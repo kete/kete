@@ -22,8 +22,7 @@ DEFAULT_TINYMCE_SETTINGS = {
   :paste_auto_cleanup_on_paste => true,
   :paste_convert_middot_lists => false,
   :paste_convert_headers_to_strong => true,
-  :paste_insert_word_content_callback => "convertWord",
 
   # which plugins we are enabling
-  :plugins => %w{ contextmenu paste table fullscreen}
+  :plugins => %w{ contextmenu paste table fullscreen }
 }

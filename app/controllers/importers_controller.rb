@@ -13,7 +13,8 @@ class ImportersController < ApplicationController
   permit "site_admin or admin of :current_basket or tech_admin of :site or member of :current_basket or moderater of :current_basket", :only => [:new_related_set_from_archive_file, :create]
 
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce(:options => DEFAULT_TINYMCE_SETTINGS)
+  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
+                :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   # Get the Privacy Controls helper
