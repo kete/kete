@@ -3,7 +3,7 @@
 <table>
   <tr>
   <% for column in WebLink.content_columns %>
-    <th><%= column.human_name %></th>
+    <th abbr="<%= column.human_name %>"><%= column.human_name %></th>
   <% end %>
   </tr>
 

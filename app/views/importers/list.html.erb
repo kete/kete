@@ -13,8 +13,14 @@
 <p>No previous imports have been run in this basket.</p>
 <% else %>
 <table class="history-table">
-  <tr><th>Folder</th><th>Started</th><th>Type</th><th>User</th><th>Status</th><th>Records
-  Processed</th></tr>
+  <tr>
+    <th abbr="Folder">Folder</th>
+    <th abbr="Started">Started</th>
+    <th abbr="Type">Type</th>
+    <th abbr="User">User</th>
+    <th abbr="Status">Status</th>
+    <th abbr="Processed">Records Processed</th>
+  </tr>
   <% for import in @imports %>
   <tr>
     <td>
