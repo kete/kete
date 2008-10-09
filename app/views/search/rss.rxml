@@ -10,7 +10,7 @@ xml.rss(:version=>"2.0"){
       xml.item do
         xml.title(result['title'])
         if result['locally_hosted'] && !result['image_file'].nil?
-                xml.description(render(:partial => 'thumb_image_tag', :object => result['image_file']) + result['short_summary'].to_s)
+                xml.description(render(:partial => 'thumb_image_tag', :locals => { :image_file => result['image_file'], :title => result['title'] }) + result['short_summary'].to_s)
         else
                 xml.description(result['short_summary'])
         end

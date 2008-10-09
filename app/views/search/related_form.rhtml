@@ -45,7 +45,7 @@
     <% for item in @results %>
     <li>
       <%= check_box_tag "item[#{item.id}]", "true", related?(item), "id" => "item_#{item.id}", :disabled => related?(item) -%>
-      <%= image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size) if item.instance_of?(StillImage) && !item.thumbnail_file.nil? %>
+      <%= image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size, :alt => item.title) if item.instance_of?(StillImage) && !item.thumbnail_file.nil? %>
       <%= content_tag "label", h(item.title), "for" => "item_#{item.id}" %></li>
     <% end %>
   </ul>
