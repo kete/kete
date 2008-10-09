@@ -232,13 +232,13 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['page_title_[privacy]', 'edit_[privacy]', 'history', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
+  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'page_description_[privacy]', 'edit_[privacy]', 'history', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
   PUBLIC_SHOW_PARTS = ['comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = [ 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
+  INDEX_PARTS = [ 'page_keywords', 'page_description', 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
 
   # the following method is used when clearing show caches
   def all_show_parts

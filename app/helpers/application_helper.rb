@@ -8,6 +8,24 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  def current_item
+    (item = @audio_recording || @document || @still_image || @topic || @video || @web_link || nil)
+  end
+
+  def page_keywords
+    return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
+    current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
+  end
+
+  def page_description
+    return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
+    if current_item.short_summary.blank?
+      strip_tags(truncate(current_item.description, 180)).gsub("\"", "").squish
+    else
+      strip_tags(truncate(current_item.short_summary, 180)).gsub("\"", "").squish
+    end
+  end
+
   def header_links_to_baskets
     html = '<ul id="basket-list" class="nav-list">'
 
