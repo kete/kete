@@ -19,7 +19,8 @@ class TopicsController < ApplicationController
   # the code should easily transferred to something else if we decide to drop it
 
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce(:options => DEFAULT_TINYMCE_SETTINGS)
+  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
+                :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   # stuff related to flagging and moderation

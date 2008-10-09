@@ -1,6 +1,7 @@
 class BasketsController < ApplicationController
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce(:options => DEFAULT_TINYMCE_SETTINGS)
+  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
+                :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :choose_type, :permission_denied]
