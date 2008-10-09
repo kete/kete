@@ -45,7 +45,7 @@
 <div style="float: left"><%= f.text_field :security_code, :size => '8' %></div>
 <% id = generate_captcha() -%>
 <% session[:captcha_id] = id -%>
-<img src="<%= captcha_url(id) %>" alt="security image" />
+<img src="<%= captcha_url(id) %>" alt="security image" width="107" height="31" />
 <div class="form_example">Text is case sensitive
 <% if CAPTCHA_TYPE == 'all' -%>
 <p>or use a <%= link_to 'non-image security question', :captcha_type => 'question' -%></p>
