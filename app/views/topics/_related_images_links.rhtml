@@ -8,7 +8,7 @@
               <% thumb_src_value = related_item.already_at_blank_version? ? '/images/pending.jpg' :  related_item.thumbnail_file.public_filename -%>
               <%= link_to(image_tag(thumb_src_value,
                     :size => related_item.thumbnail_file.image_size,
-                    :alt => related_item.title),
+                    :alt => "#{related_item.title}. "),
                     :controller => 'images',
                     :urlified_name => related_item.basket.urlified_name,
                     :action => 'show',
