@@ -1,7 +1,7 @@
 --- 
 format: 1
 handler: 
-  commit: ebec6f24a6dbeeba4184d911a934a8095af54d0f
+  commit: b28425508e90bb3a475877d2e2f739fd02a5c5bd
   branch: HEAD
 lock: false
 repository_url: git://github.com/gnufied/backgroundrb.git
