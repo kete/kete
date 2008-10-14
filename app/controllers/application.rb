@@ -200,8 +200,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def item_from_controller_and_id
-    Module.class_eval(zoom_class_from_controller(params[:controller])).find(params[:id])
+  # Walter McGinnis, 2008-09-29
+  # adding security fix, so you can't see another basket's item's history
+  # unless specifically allowed
+  def item_from_controller_and_id(and_basket = true)
+    if and_basket
+      @current_basket.send(zoom_class_from_controller(params[:controller]).tableize).find(params[:id])
+    else
+      Module.class_eval(zoom_class_from_controller(params[:controller])).find(params[:id])
+    end
   end
 
   # some updates will change the item so that the updating of zoom record
@@ -299,7 +306,7 @@ class ApplicationController < ActionController::Base
     if caches_controllers.include?(params[:controller])
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
-      item = item_from_controller_and_id
+      item = item_from_controller_and_id(false)
       item.private_version! if item.respond_to?(:private) && item.latest_version_is_private?
 
       expire_show_caches_for(item)
@@ -330,7 +337,7 @@ class ApplicationController < ActionController::Base
       # because old titles' friendly urls won't be matched in our expiry otherwise
       expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
     end
-    
+
     # images have an additional cache
     # and topics may also have a basket index page cached
     if controller == 'images'

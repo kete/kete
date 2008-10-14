@@ -24,7 +24,7 @@ module ImporterZoom
           xml.record do
             xml.header do
               oai_dc_xml_oai_identifier(xml,item)
-              xml.datestamp(Time.now.utc.xmlschema)
+              oai_dc_xml_oai_datestamp(xml, item)
               oai_dc_xml_oai_set_specs(xml,item)
             end
             xml.metadata do

@@ -51,13 +51,11 @@
 <p>or use a <%= link_to 'non-image security question', :captcha_type => 'question' -%></p>
 </div>
 <% end -%>
-<div style="float: left">
 <% elsif @captcha_type == 'question' -%>
 <%= render :partial => '/captcha' %>
 <% end -%>
 </div>
 
-</div>
 <div class="form-element">
 <%= f.check_box :agree_to_terms %> I agree that I have read and accept the
 <%= link_to_remote("Terms and conditions", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 4 }) %>, 

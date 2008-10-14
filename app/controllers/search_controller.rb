@@ -8,6 +8,15 @@ class SearchController < ApplicationController
 
   layout "application" , :except => [:rss]
 
+  # James - 2008-09-04
+  # Ensure RSS triggers a http_auth_basic response, not redirect
+  before_filter :set_xml_format_before_auth, :only => [:rss]
+
+  # James - 2008-09-03
+  # Check for access before running private searches
+  before_filter :require_login_if_private_search, :only => [:rss, :for, :all]
+  before_filter :private_search_authorisation, :only => [:rss, :for, :all]
+
   # we mimic caches_page so we have more control
   # note we specify extenstion .xml for rss url
   # in order to get caching to work correctly
@@ -19,9 +28,6 @@ class SearchController < ApplicationController
 
   # Reset slideshow object on new searches
   before_filter :reset_slideshow, :only => [:for, :all]
-
-  # Ensure private RSS feeds are authenticated
-  before_filter :authenticated_rss, :only => [:rss]
 
   # After running a search, store the results in a session
   # for slideshow functionality.
@@ -149,15 +155,10 @@ class SearchController < ApplicationController
 
     # James Stradling <james@katipo.co.nz> - 2008-05-02
     # Only allow private search if permitted
-    if accessing_private_search_and_allowed?
-      @privacy = "private"
-      zoom_db_instance = "private"
-    else
-      zoom_db_instance = "public"
-    end
+    @privacy = "private" if is_a_private_search?
 
     # Load the correct zoom_db instance and connect to it
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_database)
     @zoom_connection = @search.zoom_db.open_connection
 
     @result_sets = Hash.new
@@ -208,26 +209,13 @@ class SearchController < ApplicationController
     # 0 is the first index, so it's valid for start
     @start_record = 0
     @start = 1
-    
-    # James - 2008-08-28
-    # Only allow private search if permitted
-    if accessing_private_search_and_allowed?
-      zoom_db_instance = "private"
-    else
-      zoom_db_instance = "public"
-    end
 
     # TODO: skipping multiple source (federated) search for now
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_db_instance)
+    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_database)
 
     @result_sets = Hash.new
 
     populate_result_sets_for(@current_class)
-  end
-
-  def authenticated_rss
-    request.format = :xml
-    params[:privacy_type] == "private" ? login_required : true
   end
 
   def load_results(from_result_set)
@@ -288,24 +276,12 @@ class SearchController < ApplicationController
     # limit query to within our zoom_class
     @search.pqf_query.kind_is(zoom_class, :operator => 'none')
 
-    # limit baskets searched within, if appropriate
+    # limit baskets searched within
     unless searching_for_related_items?
-      if params[:privacy_type] == 'private'
-
-        # get the urlified_name for each basket the user has a role in
-        # from their session
-        basket_access_hash = logged_in? ? current_user.get_basket_permissions : Hash.new
-        session[:has_access_on_baskets] = basket_access_hash
-        basket_urlified_names = basket_access_hash.keys.collect { |key| key.to_s }
-
-        if @current_basket == @site_basket and !basket_urlified_names.blank?
-          @search.pqf_query.within(basket_urlified_names)
-        elsif (@current_basket != @site_basket) and basket_urlified_names.member?(@current_basket.urlified_name)
-          @search.pqf_query.within(@current_basket.urlified_name)
-        end
-
-      elsif @current_basket != @site_basket
+      if @current_basket != @site_basket
         @search.pqf_query.within(@current_basket.urlified_name)
+      elsif is_a_private_search?
+        @search.pqf_query.within(@authorised_basket_names)
       end
     end
 
@@ -466,7 +442,7 @@ class SearchController < ApplicationController
                       :sort_type => params[:sort_type],
                       :authenticity_token => nil }
 
-    if params[:privacy_type] == 'private'
+    if is_a_private_search?
       location_hash.merge!({ :privacy_type => params[:privacy_type] })
     end
 
@@ -928,6 +904,81 @@ class SearchController < ApplicationController
 
   def reset_slideshow
     session[:slideshow] = nil
+  end
+
+  # Walter McGinnis, 2008-09-29
+  # separate out login filter to better handle http auth for rss
+  def require_login_if_private_search
+    if is_a_private_search?
+      login_required
+    else
+      # this is a public search, no login required
+      return true
+    end
+  end
+
+  # James - 2008-09-03
+  # Check for authorisation when performing private searches
+  def private_search_authorisation
+
+    # Allow all public searches
+    return true unless is_a_private_search?
+
+    # Check for a login before continuing
+    basket_access_hash = logged_in? ? \
+      current_user.get_basket_permissions : Hash.new
+
+    # Store for future reference
+    session[:has_access_on_baskets] = basket_access_hash
+
+    # We only want the names
+    @authorised_basket_names = basket_access_hash.keys.collect { |key| key.to_s }
+
+    if @current_basket == @site_basket and !@authorised_basket_names.empty?
+
+      # In the case of the site basket, the only baskets that are searched privately are those
+      # which the user is a member of (using the same logic as above).
+      # For this reason, no unauthorised searching will take place, so it is safe to continue.
+
+      true
+    elsif @authorised_basket_names.member?(@current_basket.urlified_name)
+
+      # In the case of a specific, non-site basket, the search is limited to this basket, and
+      # we're checking if they're a member here. So, it is safe to continue now.
+
+      true
+    else
+
+      # Otherwise, they do not have permission and have probably forgotten to log in.
+      logger.info "A user who was #{logged_in? ? "" : "not "}logged was denied access to a private search."
+
+      respond_to do |format|
+        format.html do
+          redirect_to DEFAULT_REDIRECTION_HASH
+        end
+        format.xml do
+          render :text => "<error>Error 403: Forbidden</error>", :status => 403
+        end
+      end
+
+    end
+  end
+
+  # Check if we are meant to be running a private search #=> Boolean
+  def is_a_private_search?
+    @private_search ||= params[:privacy_type] == "private"
+  end
+
+  # Which zoom database to use #=> String (public/private)
+  def zoom_database
+    @zoom_database ||= is_a_private_search? ? "private" : "public"
+  end
+
+  # Ensure RSS errors are handled with a suitable response
+  # For instance, RSS should trigger a http_auth_basic response, while normal searches
+  # should trigger a redirect to login page
+  def set_xml_format_before_auth
+    request.format = :xml
   end
 
 end
