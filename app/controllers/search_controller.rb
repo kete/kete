@@ -447,22 +447,34 @@ class SearchController < ApplicationController
     end
 
     if !params[:search_terms].blank?
+      # we are searching
       location_hash.merge!({ :search_terms_slug => to_search_terms_slug(params[:search_terms]),
                              :search_terms => params[:search_terms],
                              :action => 'for' })
     else
+      # we are viewing all
       location_hash.merge!({ :action => 'all' })
     end
 
+    # If we're searching by tag, this will be set
     if !params[:tag].blank?
       location_hash.merge!({ :tag => params[:tag] })
     end
 
+    # If we're searching by contributor, this will be set
     if !params[:contributor].blank?
       location_hash.merge!({ :contributor => params[:contributor] })
     end
 
-    logger.info("terms_to_page_url_redirect hash: " + location_hash.inspect)
+    # If we're searching by relation, these will be set
+    if !params[:source_controller_singular].blank?
+      location_hash.merge!({ :source_controller_singular => params[:source_controller_singular] })
+    end
+    if !params[:source_item].blank?
+      location_hash.merge!({ :source_item => params[:source_item] })
+    end
+
+    logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)
 
     redirect_to url_for(location_hash)
   end
