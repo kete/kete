@@ -59,6 +59,12 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       logger.info("params: " + params.inspect)
 
       @import_photos_file_path = "#{@import_dir_path}/records.xml"
+
+      # this sets the instance vars that tell us what xml element paths we are using
+      # old style or new style
+      determine_elements_used(@import_photos_file_path)
+
+      # this gets rid of xml elements that have empty values
       @path_to_trimmed_photos = importer_trim_fat_from_xml_import_file(@import_photos_file_path,"#{RAILS_ROOT}/tmp/trimmed_photos_pp4.xml")
       @import_photos_xml = REXML::Document.new File.open(@path_to_trimmed_photos)
 
@@ -81,7 +87,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # and grab information from the accessions file
       # bases on ACCESSNO as a kind of forein key
       # as we need it
-      @import_photos_xml.elements.each("Root/Information/Record") do |record|
+      @import_photos_xml.elements.each(@root_element_name + '/' + @record_element_path) do |record|
         # we override this locally for our customizations
         importer_process(record, params)
       end
@@ -104,7 +110,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     image_objectid = nil
     objectid = nil
 
-    record_hash = importer_xml_record_to_hash(record)
+    record_hash = importer_xml_record_to_hash(record, true)
 
     # make sure there is a imagefile value
     # if not, log record to skipped photos file with reason skipped
@@ -176,7 +182,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
             # file may time out
             related_accession_record = nil
 
-            related_accession_record = @import_accessions_xml_root.elements["Information/Record[@ACCESSNO=\'#{related_topic_pp4_objectid}\']"]
+            related_accession_record = @import_accessions_xml_root.elements["#{@record_element_path}[@ACCESSNO=\'#{related_topic_pp4_objectid}\']"]
             # we have some accesion record's that are mangled
             # by being three sections
             # rather than two
@@ -199,13 +205,13 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
               end
 
               if related_topic.nil?
-                related_accession_record = @import_accessions_xml_root.elements["Information/Record[@ACCESSNO=\'#{cleaned_up_accessno}\']"]
+                related_accession_record = @import_accessions_xml_root.elements["#{@record_element_path}[@ACCESSNO=\'#{cleaned_up_accessno}\']"]
               end
               related_topic_pp4_objectid = cleaned_up_accessno
             end
 
             if !related_accession_record.blank? and related_topic.nil?
-              accession_record_hash = importer_xml_record_to_hash(related_accession_record)
+              accession_record_hash = importer_xml_record_to_hash(related_accession_record, true)
 
               # create a new topic from related_accession_record
               # prepare user_reference for extended_content
@@ -483,5 +489,26 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
     logger.info("new_record: " + new_record.inspect)
     return new_record
+  end
+
+  # set up the correct xml paths to use
+  # based on what is in the source file
+  def determine_elements_used(in_file)
+    # assume original style root element and paths
+    @root_element_name = 'Root'
+    @record_element_path = 'Information/Record'
+    # this should tell us what we need to know by around the second line
+    IO.foreach(in_file) do |line|
+      # if exported directly from Past Perfect, should match this
+      # empty means no match
+      if line.include?("<VFPData>")
+        @root_element_name = 'VFPData'
+        @record_element_path = 'export'
+        return
+      else
+        # we have matched the previous style, return without resetting vars
+        return if line.include?("<Record>")
+      end
+    end
   end
 end
