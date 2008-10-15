@@ -69,7 +69,9 @@ namespace :kete do
         topic_hash.delete('id') if Topic.count > 0
 
         if !Topic.find_by_title_and_basket_id(topic_hash['title'], topic_hash['basket_id'])
-          Topic.create!(topic_hash)
+          topic = Topic.create!(topic_hash)
+          topic.creator = User.first
+          topic.save
           p "added topic: " + topic_hash['title']
         end
       end
