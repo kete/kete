@@ -41,9 +41,12 @@ from the releases/[timestamp]/private directory to the new system folder at shar
 
 == 2008/09/26 - Backgroundrb configuration yml file updated
 
-1.      Open up background.yml and add the following line to the :backgroundrb: section and save
+1.      Stop your Backgroundrb processes
+2.      Update packet by running
+           sudo gem update packet
+3.      Open up background.yml and add the following line to the :backgroundrb: section and save
            :persistent_disabled: true
-2.      Restart Backgroundrb
+2.      Start your Backgroundrb processes
 
 == 2008/09/17 - CSS "tags" Identifier Changed
 
