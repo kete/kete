@@ -362,13 +362,25 @@ module Importer
     # switching to pulling record to a hash
     # and grabbing the specific fields
     # we need to check
-    def importer_xml_record_to_hash(record)
+    def importer_xml_record_to_hash(record, upcase = false)
       record_hash = Hash.from_xml(record.to_s)
 
       # HACK to go down one more level
       record_hash.keys.each do |record_field|
         record_hash = record_hash[record_field]
       end
+
+      # move all hash keys to upcase
+      # we use this to smooth some legacy code in past perfect import
+      if upcase
+        new_record_hash = Hash.new
+        record_hash.each do |key, value|
+          key = key.upcase if key.is_a?(String)
+          new_record_hash[key] = value
+        end
+        record_hash = new_record_hash
+      end
+
       logger.info("record_hash inspect: " + record_hash.inspect)
       record_hash
     end
@@ -384,13 +396,13 @@ module Importer
 
       fatty_re = Regexp.new("\/\>.*")
 
-      accessno_re = Regexp.new("ACCESSNO>(.*)<")
+      accessno_re = Regexp.new(/ACCESSNO>(.*)</i)
 
       IO.foreach(path_to_original_file) do |line|
         # HACK to seriously trim down accession records
         # and make them in a form we can search easily
         # only add non-fat to our fat_free_file
-        if !line.match(fatty_re) and !line.blank?
+        if !line.match(fatty_re) && !line.blank?
           if accession.nil?
             # replace double dotted version of maori vowels
             # with macrons
@@ -410,10 +422,21 @@ module Importer
             # but we change accessno to an attribute of record
             # rather than an element
             # this relies on the accessno line coming before the descrip line
-            if line.include?("ACCESSNO") or line.include?("DESCRIP") or line.include?("\/Record") or line.include?("Information") or line.include?("Root")
-              if line.include?("ACCESSNO")
+            # it tosses the original <Record> or <export> line, so that it can be replaced
+            # putting in both styles of records
+            if line.include?("ACCESSNO") || line.include?("accessno") ||
+                line.include?("DESCRIP") || line.include?("descrip") ||
+                line.include?("\/Record") || line.include?("\/export") ||
+                line.include?("Information") ||
+                line.include?("Root") || line.include?("VFPData")
+              if line.include?("accessno") || line.include?("ACCESSNO")
                 accessno = line.match(accessno_re)[1]
-                new_start_record_line = "<Record ACCESSNO=\'#{accessno}\'>\n"
+                if @root_element_name == 'Root'
+                  new_start_record_line = "<Record ACCESSNO=\'#{accessno}\'>\n"
+                else
+                  new_start_record_line = "<export ACCESSNO=\'#{accessno}\'>\n"
+                end
+
                 fat_free_file << new_start_record_line
               else
                 fat_free_file << line

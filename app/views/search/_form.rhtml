@@ -21,19 +21,19 @@
     <h4>Options</h4>
     <label for="sort_type">Sort by:</label>
     <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
-    <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action])  %>
+    <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'  %>
     <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
       <label for="sort_direction">In reverse?</label>
       <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
       <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
-      <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> />
+      <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
     </div>
     <% # Only show private search control if allowed and we aren't relating something to a topic. %>
     <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
     <label for="privacy_type">That are:</label>
-    <%= select_tag 'privacy_type', options_for_select({ 'Private' => 'private', 'Public' => 'public' }, params[:privacy_type] || 'public') %>
+    <%= select_tag 'privacy_type', options_for_select({ 'Private' => 'private', 'Public' => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1' %>
     <% end -%>
-  <input type="submit" name="update" id="update" value="update" />
+  <input type="submit" name="update" id="update" value="update" tabindex="1" />
 
 </div>
 
@@ -49,7 +49,7 @@
   <h3><%= headline -%></h3>
   <% end -%>
   <div class="wrap">
-  <%= text_field_tag 'search_terms', @search_terms, :class => 'searchheader-search', :size => '30' %>
+  <%= text_field_tag 'search_terms', @search_terms, {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
   <% if !params[:relate_to_topic].nil? or (!params[:related_class].nil? and params[:related_class] == 'Topic')-%>
   <% if !params[:relate_to_topic].nil? -%>
   <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
@@ -68,7 +68,7 @@
   <% end -%>
 
 
-  <%= submit_tag "Search", :class => 'searchbutton' %>
+  <%= submit_tag "Search", {:class => 'searchbutton', :tabindex => '1'} %>
   </div>
   <% if !simple_layout -%>
 </div>
