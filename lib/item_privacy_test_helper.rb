@@ -12,9 +12,6 @@ module ItemPrivacyTestHelper
 
     # Based on work-around described here http://www.fngtps.com/2007/04/testing-with-attachment_fu
     def full_filename(thumbnail = nil)
-      # file_system_path = "#{attachment_path_prefix}/#{self.class.table_name}"
-      # File.join(RAILS_ROOT, "tmp", "attachment_fu_test", file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
-      
       file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
       File.join(RAILS_ROOT, "tmp", "attachment_fu_test", attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
