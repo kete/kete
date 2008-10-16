@@ -5,7 +5,7 @@
 
 <% form_tag :action => 'update', :id => @web_link do %>
   <%= render :partial => 'form' %>
-  <div class="wrap"><%= submit_tag 'Save',:class => "save-button" %></div>
+  <div class="wrap"><%= submit_tag 'Save',{:class => "save-button", :tabindex => '1'} %></div>
 <% end %>
 
 <%= link_to_cancel %>

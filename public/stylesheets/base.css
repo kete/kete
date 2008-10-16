@@ -563,6 +563,23 @@ span.next-active {
     padding: 1em;
     padding-bottom: 2em;
 }
+#footer_links ul {
+    list-style-type: none;
+    height: 30px;
+    text-align: center;
+    margin: 30px auto 0 auto;
+    padding: 10px 0 0 0;
+    width: 460px;
+}
+#footer_links ul li {
+    border-right: 1px solid #000;
+    display: inline;
+    padding: 3px 15px;
+    margin: 0;
+}
+#footer_links ul li.last {
+    border-right: 0px;
+}
 
 #linkToRSS{
     background-image: url(../images/icon-feed.gif);
