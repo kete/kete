@@ -45,10 +45,12 @@
   <% id = generate_captcha() -%>
   <% session[:captcha_id] = id -%>
   <img src="<%= captcha_url(id) %>" alt="security image" />
-  <div class="form_example">Text is case sensitive</div>
-  <% if CAPTCHA_TYPE == 'all' -%>
-    <p>or use a <%= link_to 'non-image security question', {:captcha_type => 'question'}, :tabindex => '1' -%></p>
-  <% end -%>
+  <div class="form_example">
+    Text is case sensitive
+    <% if CAPTCHA_TYPE == 'all' -%>
+      <p>or use a <%= link_to 'non-image security question', {:captcha_type => 'question'}, :tabindex => '1' -%></p>
+    <% end -%>
+  </div>
 <% elsif @captcha_type == 'question' -%>
   <%= render :partial => '/captcha' %>
 <% end -%>

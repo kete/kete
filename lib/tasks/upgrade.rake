@@ -16,7 +16,8 @@ namespace :kete do
                     'kete:upgrade:add_missing_mime_types',
                     'kete:upgrade:correct_basket_defaults',
                     'zebra:load_initial_records',
-                    'kete:upgrade:update_existing_comments_commentable_private']
+                    'kete:upgrade:update_existing_comments_commentable_private',
+                    'kete:tools:remove_robots_txt']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
