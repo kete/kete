@@ -8,17 +8,17 @@
 <%= error_messages_for :user %>
 
 <div class="form-element">
-<label for="user_login">Login:</label> <%= f.text_field :login %>
+<label for="user_login">Login:</label> <%= f.text_field :login, :tabindex => '1' %>
 <div class="form_example">Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.</div>
 </div>
 <div class="form-element">
-<label for="user_email">Email:</label> <%= f.text_field :email %>
+<label for="user_email">Email:</label> <%= f.text_field :email, :tabindex => '1' %>
 </div>
 <div class="form-element">
-<label for="user_password">Password:</label> <%= f.password_field :password %>
+<label for="user_password">Password:</label> <%= f.password_field :password, :tabindex => '1' %>
 </div>
 <div class="form-element">
-<label for="user_password_confirmation">Confirm Password:</label> <%= f.password_field :password_confirmation %>
+<label for="user_password_confirmation">Confirm Password:</label> <%= f.password_field :password_confirmation, :tabindex => '1' %>
 </div>
 
 <% form_fields = @content_type.content_type_to_field_mappings -%>
@@ -36,39 +36,37 @@
   <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user} %>
 </div>
 
-<%= hidden_field_tag "captcha_type", @captcha_type %>
+<%= hidden_field_tag "captcha_type", @captcha_type, :tabindex => '1' %>
 
 <div class="form-element">
 <% if @captcha_type == 'image' -%>
-
-<label for="user_security_code">Security Code: Please enter the text from the image to the right</label>
-<div style="float: left"><%= f.text_field :security_code, :size => '8' %></div>
-<% id = generate_captcha() -%>
-<% session[:captcha_id] = id -%>
-<img src="<%= captcha_url(id) %>" alt="security image" width="107" height="31" />
-<div class="form_example">Text is case sensitive
-<% if CAPTCHA_TYPE == 'all' -%>
-<p>or use a <%= link_to 'non-image security question', :captcha_type => 'question' -%></p>
-</div>
-<% end -%>
-<div style="float: left">
+  <label for="user_security_code">Security Code: Please enter the text from the image to the right</label>
+  <div style="float: left"><%= f.text_field :security_code, {:size => '8', :tabindex => '1'} %></div>
+  <% id = generate_captcha() -%>
+  <% session[:captcha_id] = id -%>
+  <img src="<%= captcha_url(id) %>" alt="security image" />
+  <div class="form_example">
+    Text is case sensitive
+    <% if CAPTCHA_TYPE == 'all' -%>
+      <p>or use a <%= link_to 'non-image security question', {:captcha_type => 'question'}, :tabindex => '1' -%></p>
+    <% end -%>
+  </div>
 <% elsif @captcha_type == 'question' -%>
-<%= render :partial => '/captcha' %>
+  <%= render :partial => '/captcha' %>
 <% end -%>
 </div>
 
-</div>
 <div class="form-element">
-<%= f.check_box :agree_to_terms %> I agree that I have read and accept the
-<%= link_to_remote("Terms and conditions", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 4 }) %>, 
-<%= link_to_remote("Privacy policy", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 5 }) %>, and
-<%= link_to_remote("House Rules", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 2 }) %>.
+<%= f.check_box :agree_to_terms, :tabindex => '1' %> I agree that I have read and accept the
+<%= link_to_remote("Terms and conditions", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 4 }, :html => {:tabindex => '1'}) %>, 
+<%= link_to_remote("Privacy policy", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 5 }, :html => {:tabindex => '1'}) %>, and
+<%= link_to_remote("House Rules", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 2 }, :html => {:tabindex => '1'}) %>.
 </div>
 <div id="disclaimer"></div>
 
 </fieldset>
 
-<div style="margin:0;style:0"><%= submit_tag 'Sign up', :class => "save-button" %></div>
+<div style="margin:0;style:0"><%= submit_tag 'Sign up', {:class => "save-button", :tabindex => '1'} %></div>
 
 <% end -%>
 

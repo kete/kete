@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 22fa6eb7e7a31ead2621d370b826f12c84f673d9
+  branch: HEAD
+lock: 
+repository_url: git://github.com/jebw/redbox.git
+repository_class: Piston::Git::Repository
