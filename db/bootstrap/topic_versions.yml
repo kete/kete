@@ -565,10 +565,11 @@ topics_015:
       </table>
       <p>Note: Some browers do not support the numbers on the Number Pad being used as Accesskeys. Use the numbers at the top of the keyboard.</p>
       <h3>Text size</h3>
-      <p>You can make the text on this site bigger or smaller to suit you if your browser supports text resizing (i.e. recent versions of Internet Explorer, Firefox or Opera).</p>
+      <p>You can make the text on this site bigger or smaller to suit you if your browser supports text resizing (i.e. recent versions of Internet Explorer, Firefox, Safari or Opera).</p>
       <h4>To resize your fonts:</h4>
       <ul>
       <li>In Microsoft Internet Explorer: go to the View menu at the top of your screen, select Text size, then choose to view with larger or smaller type.</li>
-      <li>In Firefox: press CTL + to make text bigger, and CTL - to make text smaller.</li>
+      <li>In Firefox and Safari on a PC: press CTL + to make text bigger, and CTL - to make text smaller.</li>
+      <li>In Firefox and Safari on a Mac: press Command + to make text bigger, and Command - to make text smaller.</li>
       <li>In other browsers: consult the browser Help for details on how to resize the text.</li>
       </ul>
