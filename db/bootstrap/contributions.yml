@@ -134,3 +134,12 @@ contributions_015:
   contributed_item_id: "14"
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
+contributions_016:
+  contributed_item_type: Topic
+  id: "16"
+  version: "1"
+  contributor_role: creator
+  user_id: "1"
+  contributed_item_id: "15"
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>

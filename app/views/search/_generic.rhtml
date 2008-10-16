@@ -40,11 +40,11 @@
                                     <% end %>
                                 </div>
                                 <% else %>
-                                        <h4><%= link_to h(title), "#{source_url}"  %></h4>
+                                        <h4><%= link_to h(title), "#{source_url}", :tabindex => '1'  %></h4>
                                         </div>
                                 <div class="generic-result-description"><%= strip_tags(short_summary) %>
                                         <div class="generic-result-more">
-                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+                                        <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}", :tabindex => '1' })%>
                                         </div>
                                 </div>
                                 <% end %>

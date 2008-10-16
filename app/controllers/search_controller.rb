@@ -134,7 +134,7 @@ class SearchController < ApplicationController
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
 
     # calculate where to start and end based on page
-    @current_page = params[:page] ? params[:page].to_i : 1
+    @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
     @next_page = @current_page + 1
     @previous_page = @current_page - 1
 
@@ -221,17 +221,17 @@ class SearchController < ApplicationController
   def load_results(from_result_set)
     @results = Array.new
 
+    # protect against malformed requests
+    # for a start record that is more than the numbers of matching records, return a 404
+    # since it only seems to be bots that make the malformed request
     @end_record = from_result_set.size if from_result_set.size < @end_record
+    if @start_record > @end_record
+      rescue_404
+      return false
+    end
 
     if from_result_set.size > 0
       still_image_results = Array.new
-      # protect against malformed requests
-      # for a start record that is more than the numbers of matching records
-      # not handling adjust @start_record in view
-      # since it only seems to be bots that make the malformed request
-      if @start_record > @end_record
-        @start_record = 0
-      end
 
       # get the raw xml results from zoom
       raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => from_result_set,
@@ -447,22 +447,34 @@ class SearchController < ApplicationController
     end
 
     if !params[:search_terms].blank?
+      # we are searching
       location_hash.merge!({ :search_terms_slug => to_search_terms_slug(params[:search_terms]),
                              :search_terms => params[:search_terms],
                              :action => 'for' })
     else
+      # we are viewing all
       location_hash.merge!({ :action => 'all' })
     end
 
+    # If we're searching by tag, this will be set
     if !params[:tag].blank?
       location_hash.merge!({ :tag => params[:tag] })
     end
 
+    # If we're searching by contributor, this will be set
     if !params[:contributor].blank?
       location_hash.merge!({ :contributor => params[:contributor] })
     end
 
-    logger.info("terms_to_page_url_redirect hash: " + location_hash.inspect)
+    # If we're searching by relation, these will be set
+    if !params[:source_controller_singular].blank?
+      location_hash.merge!({ :source_controller_singular => params[:source_controller_singular] })
+    end
+    if !params[:source_item].blank?
+      location_hash.merge!({ :source_item => params[:source_item] })
+    end
+
+    logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)
 
     redirect_to url_for(location_hash)
   end
@@ -876,7 +888,7 @@ class SearchController < ApplicationController
 
     # if @results_sets is emtpy, then @result_sets[@current_class] is nil so we have
     # to stop here if thats the case, or we get a 500 error calling .size below
-    return if @result_sets[@current_class].nil?
+    return if @result_sets[@current_class].nil? or @displaying_error
 
     results = @results.map{ |r| r['url'] }
 

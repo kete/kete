@@ -7,7 +7,7 @@
     <fieldset>
       <div class="form-element">
         <label for="basket_index_page_redirect_to_all" class="inline">Redirect to results of?</label>
-        <%= homepage_form.select :index_page_redirect_to_all, zoom_controllers_as_options([["Don't redirect", '']]) %>
+        <%= homepage_form.select :index_page_redirect_to_all, zoom_controllers_as_options([["Don't redirect", '']]), {}, :tabindex => '1' %>
       </div>
     </fieldset>
   </div>
@@ -18,12 +18,12 @@
       <fieldset>
         <div class="form-element">
           <% options = @index_topic.blank? ? { :disabled => true } : {} %>
-          <%= homepage_form.check_box :index_page_topic_is_entire_page, options %>
+          <%= homepage_form.check_box :index_page_topic_is_entire_page, options.merge({:tabindex => '1'}) %>
           <label for="basket_index_page_topic_is_entire_page" class="inline">Show only homepage topic?</label>
           <div class="form-element" id="depth2" <%= 'style="display:none;"' if @basket.index_page_topic_is_entire_page %>>
             <br />
             <label for="basket_index_page_link_to_index_topic_as" class="inline">A link to the homepage topic's?</label>
-            <%= homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options %>
+            <%= homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options, {}, :tabindex => '1' %>
           </div>
         </div>
       </fieldset>
@@ -37,11 +37,11 @@
           </div>
           <div class="form-element">
             <label for="basket_index_page_number_of_recent_topics">List how many recent topics?</label>
-            <%= homepage_form.text_field :index_page_number_of_recent_topics, :size => '3' %>
+            <%= homepage_form.text_field :index_page_number_of_recent_topics, {:size => '3', :tabindex => '1'} %>
           </div>
           <div class="form-element" id="depth4" <%= 'style="display:none;"' unless @basket.index_page_number_of_recent_topics > 0 %>>
             <label for="basket_index_page_recent_topics_as">List basket's topics as?</label>
-            <%= homepage_form.select :index_page_recent_topics_as, Basket.recent_topics_as_options %>
+            <%= homepage_form.select :index_page_recent_topics_as, Basket.recent_topics_as_options, :tabindex => '1' %>
           </div>
         </fieldset>
       </div>
@@ -49,7 +49,7 @@
       <div class="form-element"><label>Search</label>
         <fieldset>
           <div class="form-element">
-            <%= homepage_form.check_box :index_page_basket_search %>
+            <%= homepage_form.check_box :index_page_basket_search, :tabindex => '1' %>
             <label for="basket_index_page_basket_search" class="inline">Include basket search form?</label>
           </div>
         </fieldset>
@@ -58,7 +58,7 @@
       <div class="form-element"><label for="basket_index_page_extra_side_bar_html">Sidebar content after search</label>
         <fieldset>
           <div class="form-element">
-            <%= homepage_form.text_area :index_page_extra_side_bar_html, :class => "mceEditor", :cols => 120, :rows => 10 %>
+            <%= homepage_form.text_area :index_page_extra_side_bar_html, {:class => "mceEditor", :cols => 120, :rows => 10, :tabindex => '1'} %>
           </div>
           <div class="form_example">
             Note: forms and javascript are not allowed for security reasons.
@@ -66,7 +66,7 @@
           </div>
           <% if @site_admin -%>
           <div class="form-element">
-            <%= homepage_form.check_box :do_not_sanitize %>
+            <%= homepage_form.check_box :do_not_sanitize, :tabindex => '1' %>
             <label for="basket_do_not_sanitize" class="inline">Allow
               forms and other possible insecure elements and attributes in
               the HTML?</label><br />
@@ -79,7 +79,7 @@
         <fieldset>
           <div class="form-element">
             <label for="basket_index_page_image_as" class="inline">Show image from basket?</label>
-            <%= homepage_form.select :index_page_image_as, Basket.image_as_options %>
+            <%= homepage_form.select :index_page_image_as, Basket.image_as_options, {}, :tabindex => '1' %>
           </div>
         </fieldset>
       </div>
@@ -88,7 +88,7 @@
         <fieldset>
           <div class="form-element">
             <label for="basket_index_page_archives_as" class="inline">List basket's archive contents as?</label>
-            <%= homepage_form.select :index_page_archives_as, Basket.archives_as_options %>
+            <%= homepage_form.select :index_page_archives_as, Basket.archives_as_options, {}, :tabindex => '1' %>
           </div>
         </fieldset>
       </div>
@@ -97,16 +97,16 @@
         <fieldset>
           <div class="form-element">
             <label for="basket_index_page_number_of_tags" class="inline">List how many tags?</label>
-            <%= homepage_form.text_field :index_page_number_of_tags, :size => '3' %>
+            <%= homepage_form.text_field :index_page_number_of_tags, {:size => '3', :tabindex => '1'} %>
           </div>
           <div id="depth5" <%= 'style="display:none;"' unless @basket.index_page_number_of_tags > 0 %>>
             <div class="form-element">
               <label for="basket_index_page_tags_as" class="inline">List basket's tags as?</label>
-              <%= homepage_form.select :index_page_tags_as, Basket.tags_as_options %>
+              <%= homepage_form.select :index_page_tags_as, Basket.tags_as_options, :tabindex => '1' %>
             </div>
             <div class="form-element">
               <label for="basket_index_page_order_tags_by" class="inline">Order tags by?</label>
-              <%= homepage_form.select :index_page_order_tags_by, Basket.order_tags_by_options %>
+              <%= homepage_form.select :index_page_order_tags_by, Basket.order_tags_by_options, :tabindex => '1' %>
             </div>
           </div>
         </fieldset>

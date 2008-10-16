@@ -20,6 +20,7 @@ namespace :deploy do
       deploy.update_code
       deploy.prepare.setup_zebra
       deploy.prepare.setup_imports
+      deploy.prepare.setup_private
       deploy.prepare.setup_themes
       deploy.symlink
       deploy.prepare.default
@@ -50,6 +51,11 @@ namespace :deploy do
     desc "The directory that holds everything related to imports needs to live under share/system/imports"
     task :setup_imports, :roles => :app do
       run "cp -r #{latest_release}/imports #{shared_path}/system/"
+    end
+
+    desc "The directory that holds everything related to private items needs to live under share/system/private"
+    task :setup_private, :roles => :app do
+      run "cp -r #{latest_release}/private #{shared_path}/system/"
     end
 
     desc "The directory that holds everything related to themes needs to live under share/system/themes"
@@ -99,6 +105,12 @@ namespace :deploy do
     run "mkdir -p #{shared_path}/system/imports"
     run "rm -rf #{current_path}/imports"
     run "ln -nfs #{shared_path}/system/imports #{current_path}/"
+
+    # handle our private directory and all the stuff that lives in it
+    # make system/private if it doesn't exist already
+    run "mkdir -p #{shared_path}/system/private"
+    run "rm -rf #{current_path}/private"
+    run "ln -nfs #{shared_path}/system/private #{current_path}/"
 
     # handle our themes directory and all the stuff that lives in it
     # make system/themes if it doesn't exist already

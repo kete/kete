@@ -33,11 +33,11 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
     <% end %>
   </div>
   <div class="image-result-header">
-    <h4><%= link_to h(title), "#{source_url}"  %></h4>
+    <h4><%= link_to h(title), "#{source_url}", :tabindex => '1'  %></h4>
   </div>
   <div class="image-result-description"><%= strip_tags(short_summary) %>
     <div class="image-result-more">
-      <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}" })%>
+      <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}", :tabindex => '1' })%>
     </div>
   </div>
   <% end %>
