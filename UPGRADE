@@ -41,8 +41,8 @@ To upgrade, please follow these instructions:
 
 1.      IMPORTANT: Back up your Kete instance, including MySQL and full application folder
 2.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
-3.      Run rake kete:upgrade:check_uploaded_files to see if any files need to be relocated in your Kete instance
-4.      Run rake kete:upgrade:correct_upload_locations to move files ONLY if necessary
+3.      Run rake kete:repair:check_uploaded_files to see if any files need to be relocated in your Kete instance
+4.      Run rake kete:repair:correct_upload_locations to move files ONLY if necessary
 
 Note: If you're using Capistrano to manage your Kete instance deployments, you may also need to retrieve uploaded files from earlier releases as they may have been archived. See http://kete.net.nz/documentation/topics/show/207 for full details.
 

@@ -122,5 +122,84 @@ namespace :kete do
       
       print "Finished. Added contributor to #{fixed} topic versions.\n"
     end
+    
+    desc "Copies incorrectly located uploads to the correct location"
+    task :correct_upload_locations => :environment do
+      
+      # Display a warning to the user, since we're copying files around on the file system
+      # and there is a possibility of overwriting something important.
+      
+      puts "\n/!\\ IMPORTANT /!\\\n\n"
+      puts "This task will copy files from audio_recordings/ into audio/, and videos/ into video/, "
+      puts "where they should be stored.\n\n"
+
+      puts "You should only run this once, to avoid overwriting files.\n\n"
+
+      puts "Please ensure you have backed up your application directory before continuing. If you "
+      puts "have not done this, press Ctrl+C now to abort. Otherwise, press any key to continue.\n\n"
+
+      puts "Press any key to continue, or Ctrl+C to abort.."
+      STDIN.gets
+      puts "Running.. please wait.."
+      
+      # A list of folders to copy files between
+      
+      copy_directives = {
+        'audio_recordings' => 'audio',
+        'videos' => 'video'
+      }
+      
+      # Do this in the context of both public and private files
+      
+      ['public', 'private'].each do |privacy_folder|
+        copy_directives.each_pair do |src, dest|
+          from  = File.join(RAILS_ROOT, privacy_folder, src, ".")
+          to    = File.join(RAILS_ROOT, privacy_folder, dest)
+          
+          # Skip if the wrongly named folder doesn't exist
+          next unless File.exists?(from)
+          
+          # Make the destination folder if it does not exist
+          # Also detects symlinks, so should be Capistrano safe.
+          FileUtils.mkdir(to) unless File.exists?(to)
+          
+          # Copy and report what's going on
+          print "Copying #{from.gsub(RAILS_ROOT, "")} to #{to.gsub(RAILS_ROOT, "")}.."
+          FileUtils.cp_r(from, to)
+          print " Done.\n"
+        end
+      end
+      
+      Rake::Task['kete:repair:check_uploaded_files'].invoke
+    end
+    
+    desc "Check uploaded files for accessibility"
+    task :check_uploaded_files => :environment do
+
+      puts "Checking files.. please wait.\n\n"
+      
+      inaccessible_files = [AudioRecording, Document, ImageFile, Video].collect do |item_type|
+        item_type.find(:all).collect do |instance|
+          instance unless File.exists?(instance.full_filename)
+        end
+      end.flatten.compact
+      
+      if inaccessible_files.empty?
+        puts "All files could be found. No further action required."
+      else
+        puts "WARNING: Some files could not be found. See below for details:\n\n"
+        inaccessible_files.each do |instance|
+          puts "- Missing uploaded file for #{instance.class.name} with ID #{instance.id.to_s}."
+        end
+        puts "\nRun rake kete:upgrade:correct_upload_locations to relocate files to the correct "
+        puts "location.\n\n"
+        
+        puts "If you have used Capistrano to deploy your Kete instance, you may also need to copy"
+        puts "archived files from previous versions of your Kete application, which are saved "
+        puts "under 'releases' in your main application folder."
+        puts "See http://kete.net.nz/documentation/topics/show/207 for complete instructions."
+      end
+    end
+    
   end
 end
