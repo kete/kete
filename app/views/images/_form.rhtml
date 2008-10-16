@@ -18,7 +18,7 @@
                 <% if edit and @site_admin %>
                         <div class="form-element">
                                 <label for="still_image_basket_id">Move to another basket?</label>
-                                <%= form.select 'basket_id', @baskets, :tabindex => '1' %>
+                                <%= form.select 'basket_id', @baskets, {}, :tabindex => '1' %>
                         </div>
                 <% end -%>
                

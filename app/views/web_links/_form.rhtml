@@ -14,7 +14,7 @@
         <div class="form-element">
                 <label for="web_link_basket_id">Move to another basket?</label>
                 <% # TODO: ugly hack till we move this to form.select -%>
-                <%= collection_select('web_link', 'basket_id', Basket.find(:all), :id, :name, :tabindex => '1') %>
+                <%= collection_select('web_link', 'basket_id', Basket.find(:all), :id, :name, {}, {:tabindex => '1'}) %>
         </div>
 <% end -%>
 
