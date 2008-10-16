@@ -1,15 +1,16 @@
 module TinyMCEHelper
   class InvalidOption < Exception    
   end
-  
+
   def using_tiny_mce?
     !@uses_tiny_mce.nil?
   end
-  
+
   def tiny_mce_init(options = @tiny_mce_options)
     options ||= {}
-    default_options = {:mode => 'textareas',
-                       :theme => 'simple'}
+    default_options = { :mode => 'textareas',
+                        :editor_selector => 'mceEditor',
+                        :theme => 'simple' }
     options = default_options.merge(options)
     TinyMCE::OptionValidator.plugins = options[:plugins]
     tinymce_js = "tinyMCE.init({\n"
@@ -20,7 +21,7 @@ module TinyMCEHelper
       tinymce_js += "#{key} : "
       case value
       when String, Symbol, Fixnum
-        tinymce_js += "'#{value}'"
+        tinymce_js += "'#{value.to_s}'"
       when Array
         tinymce_js += '"' + value.join(',') + '"'
       when TrueClass
@@ -37,12 +38,26 @@ module TinyMCEHelper
     javascript_tag tinymce_js
   end
   alias tiny_mce tiny_mce_init
-  
-  def javascript_include_tiny_mce
-    javascript_include_tag RAILS_ENV == 'development' ? "tiny_mce/tiny_mce_src" : "tiny_mce/tiny_mce"
+
+  def tiny_mce_init_if_needed
+    tiny_mce_init if @uses_tiny_mce
   end
-  
-  def javascript_include_tiny_mce_if_used
-    javascript_include_tiny_mce if @uses_tiny_mce
+  alias tiny_mce_if_needed tiny_mce_init_if_needed
+
+  def include_tiny_mce_js
+    javascript_include_tag ((RAILS_ENV == 'development') ? "tiny_mce/tiny_mce_src" : "tiny_mce/tiny_mce")
+  end
+  alias javascript_include_tiny_mce include_tiny_mce_js
+
+  def include_tiny_mce_js_if_needed
+    include_tiny_mce_js if @uses_tiny_mce
+  end
+  alias javascript_include_tiny_mce_if_used include_tiny_mce_js_if_needed
+
+  def include_tiny_mce_if_needed
+    if @uses_tiny_mce
+      include_tiny_mce_js
+      tiny_mce_init
+    end
   end
 end

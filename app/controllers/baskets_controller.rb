@@ -1,33 +1,13 @@
 class BasketsController < ApplicationController
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce(:options => { :theme => 'advanced',
-                  :mode => "textareas",
-                  :convert_urls => false,
-                  :content_css => "/stylesheets/base.css",
-                  :remove_script_host => true,
-                  :theme_advanced_toolbar_location => "top",
-                  :theme_advanced_toolbar_align => "left",
-                  :theme_advanced_resizing => true,
-                  :theme_advanced_resize_horizontal => false,
-                  :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright indent outdent separator bullist numlist forecolor backcolor separator link unlink image undo redo code},
-                  :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect pastetext pasteword selectall },
-                  :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen},
-                  :editor_selector => 'mceEditor',
-                  :paste_create_paragraphs => true,
-                  :paste_create_linebreaks => true,
-                  :paste_use_dialog => true,
-                  :paste_auto_cleanup_on_paste => true,
-                  :paste_convert_middot_lists => false,
-                  :paste_unindented_list_class => "unindentedList",
-                  :paste_convert_headers_to_strong => true,
-                  :paste_insert_word_content_callback => "convertWord",
-                  :plugins => %w{ contextmenu paste table fullscreen} },
-                :only => [:new, :pick, :create, :edit, :update, :homepage_options])
+  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
+                :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :choose_type, :permission_denied]
 
   after_filter :repopulate_basket_permissions, :only => [:create, :destroy]
+  after_filter :remove_robots_txt_cache, :only => [:create, :update, :destroy]
 
   def index
     list
@@ -265,6 +245,13 @@ class BasketsController < ApplicationController
 
   def repopulate_basket_permissions
     session[:has_access_on_baskets] = current_user.get_basket_permissions
+  end
+
+  # Kieran Pilkington, 2008/10/01
+  # When a basket is created, edited, or deleted, we have to clear
+  # the robots txt file caches to the new settings take effect
+  def remove_robots_txt_cache
+    expire_page "/robots.txt"
   end
 
 end

@@ -14,34 +14,14 @@
     <title><%= h(@title) %></title>
   <% end -%>
 
-  <% # logic for which javascript to load -%>
-  <% as_controllers = ACTIVE_SCAFFOLD_CONTROLLERS -%>
-  <% none_tinymce_controllers = as_controllers + ['members', 'topic_types', 'content_types'] -%>
-  <% tinymce_actions = ['new', 'create', 'edit', 'update',
-  'pick_topic_type', 'homepage_options', 'new_related_set_from_archive_file'] -%>
-  <% @do_not_use_tiny_mce ||= !(!none_tinymce_controllers.include?(params[:controller]) && tinymce_actions.include?(params[:action])) -%>
-  <% unless @do_not_use_tiny_mce -%>
-        <% # Include TinyMCE before other JS to avoid problems,
-                        # tinymce not compatible with bundle_fu -%>
-        <%= javascript_include_tiny_mce_if_used %>
-        <%# point tinymce at the correct css file %>
-        <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" if using_tiny_mce? %>
-        <% @tiny_mce_options[:extended_valid_elements] = EXTENDED_VALID_ELEMENTS if @site_admin and using_tiny_mce? %>
-        <%= tiny_mce if using_tiny_mce? %>
-        <script type="text/javascript">
-        function convertWord(type, content) {
-            switch (type) { // Gets executed before the built in logic performes it's cleanups
-              case "before":
-                   content = content.toLowerCase(); // Some dummy logic
-                   break;
-                   // Gets executed after the built in logic performes it's cleanups
-              case "after":
-                   content = content.toLowerCase(); // Some dummy logic
-                   break;
-            }
-            return content;
-        }
-        </script>
+  <% if using_tiny_mce? -%>
+    <% # Include TinyMCE before other JS to avoid problems,
+       # tinymce not compatible with bundle_fu -%>
+    <%= include_tiny_mce_js -%>
+    <% # point tinymce at the correct css file -%>
+    <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" -%>
+    <% @tiny_mce_options[:extended_valid_elements] = EXTENDED_VALID_ELEMENTS if @site_admin -%>
+    <%= tiny_mce_init -%>
   <% end -%>
 
 <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
@@ -77,7 +57,7 @@
   <% end %>
 <% end -%>
 
-  <% if as_controllers.include?(params[:controller]) -%>
+  <% if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>
    <%  bundle :name => "active_scaffold" do -%>
         <%= active_scaffold_includes %>
    <% end -%>
@@ -96,7 +76,7 @@
     <div id="header-wrapper">
       <div id="header">
             <!-- this would be a good place for your logo -->
-            <h1><%= link_to PRETTY_SITE_NAME, '/' -%><%= header_link_to_current_basket -%></h1>
+            <h1><%= link_to PRETTY_SITE_NAME, '/', :tabindex => '2' -%><%= header_link_to_current_basket -%></h1>
             <div id="head-search-wrapper">
                     <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
                                                        :controller => 'search',
@@ -106,8 +86,8 @@
                                                        :urlified_name => @site_basket.urlified_name,
                                                        :search_terms => nil } do %>
                               <div class="wrap"><label for="search_terms">Search:</label>
-                              <%= text_field_tag 'search_terms'  %>
-                              <%= submit_tag 'Go' %></div>
+                              <%= text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' } -%>
+                              <%= submit_tag 'Go', :tabindex => '2' %></div>
                       <% end -%>
             </div>
         <%= header_links_to_baskets %>
@@ -117,30 +97,30 @@
     <div id="top-menu">
       <ul class="user-nav nav-list">
         <% if !logged_in? %>
-        <li class="first"><%= link_to_unless_current "Register", :controller => 'account',
+        <li class="first"><%= link_to_unless_current "Register", {:controller => 'account',
           :action => :signup,
-          :urlified_name => @site_basket.urlified_name -%></li>
-        <li><%= link_to_unless_current "Login", :controller => 'account',
+          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
+        <li><%= link_to_unless_current "Login", {:controller => 'account',
           :action => :login,
-          :urlified_name => @site_basket.urlified_name -%></li>
+          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
         <!-- Logout -->
         <% else %>
-        <li class="first"><%= link_to_unless_current current_user.user_name, :controller => 'account',
+        <li class="first"><%= link_to_unless_current current_user.user_name, {:controller => 'account',
           :action => 'show',
-          :urlified_name => @site_basket.urlified_name -%></li>
-        <li><%= link_to_unless_current "Logout", :controller => 'account',
+          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
+        <li><%= link_to_unless_current "Logout", {:controller => 'account',
           :action => :logout,
-          :urlified_name => @site_basket.urlified_name -%></li>
+          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
         <% end %>
       </ul>
       <ul id="main-nav" class="nav-list">
-        <li class="first"><a href="/">Home</a></li>
+        <li class="first"><a href="/" accesskey="1" tabindex="2">Home</a></li>
         <%= header_browse_links %>
         <li><%= link_to_unless_current(h(@about_basket.name),
-                basket_index_url(:urlified_name => @about_basket.urlified_name)) %></li>
+                basket_index_url(:urlified_name => @about_basket.urlified_name), :tabindex => '2') %></li>
         <li><%= link_to_unless_current(h(@help_basket.name),
-                basket_index_url(:urlified_name => @help_basket.urlified_name)) %></li>
-        <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex") %></li>
+                basket_index_url(:urlified_name => @help_basket.urlified_name), :tabindex => '2') %></li>
+        <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex", :accesskey => '9', :tabindex => '2') %></li>
         <%= header_add_links %>
       </ul>
     </div> <!-- /header -->
@@ -162,6 +142,7 @@
           <% if render_full_width_content_wrapper? and !@displaying_error %>
              <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
           <% end %>
+          <div style="width:1px;height:1px;padding:0px;margin:0px;"><a name="content">&nbsp;</a></div>
           <%= @content_for_layout %>
         </div><!--  /container -->
         <div class="cleaner">&nbsp;</div>
@@ -176,27 +157,32 @@
                                 <h4>Tools for basket: <%= h(@current_basket.name) -%></h4>
                                 <ul>
                                 <li class="first"><%= link_to_unless_current "basket preferences",
-                                                                              :id => @current_basket,
+                                                                              {:id => @current_basket,
                                                                               :controller => '/baskets',
-                                                                              :action => :edit -%></li>
+                                                                              :action => :edit},
+                                                                              :tabindex => '2' -%></li>
                                 <li><%= link_to_unless_current "moderate basket contents",
-                                                                :controller => '/moderate',
-                                                                :action => :list -%></li>
+                                                                {:controller => '/moderate',
+                                                                :action => :list},
+                                                                :tabindex => '2' -%></li>
                                 <li><%= link_to_unless_current "basket members",
-                                                                :controller => '/members',
-                                                                :action => :list -%></li>
+                                                                {:controller => '/members',
+                                                                :action => :list},
+                                                                :tabindex => '2' -%></li>
                                 <% # when this is more refined, may open this up to non-tech-admins -%>
                                 <% if @tech_admin -%>
                                                                 <li><%= link_to_unless_current "import content into basket",
-                                                                                                :controller => '/importers',
-                                                                                                :action => :list -%></li>
+                                                                                                {:controller => '/importers',
+                                                                                                :action => :list},
+                                                                                                :tabindex => '2' -%></li>
                                 <% end %>
                                 <% if @current_basket.urlified_name != 'site' -%>
                                         <li><%= link_to_unless_current "delete this basket",
                                                         { :id => @current_basket,
                                                                :controller => '/baskets',
                                                                :action => :destroy },
-                                                                :confirm => 'Are you sure? All items in this basket will be deleted forever!', :method => :post -%></li>
+                                                                :confirm => 'Are you sure? All items in this basket will be deleted forever!', :method => :post,
+                                                                :tabindex => '2' -%></li>
                                 <% end %>
                                 </ul>
                         </div>
@@ -207,58 +193,92 @@
                         <h4>Administrator's Toolbox</h4>
                         <p>
                         Controls:
-                        <%= link_to_unless_current("add basket", :urlified_name => @site_basket.urlified_name,
+                        <%= link_to_unless_current("add basket", {:urlified_name => @site_basket.urlified_name,
                                                                :controller => 'baskets',
-                                                               :action => :new) %>
+                                                               :action => :new},
+                                                               :tabindex => '2') %>
                         |
-                        <%= link_to_unless_current "topic types", :controller => '/topic_types',
+                        <%= link_to_unless_current "topic types", {:controller => '/topic_types',
                                                                   :action => :list,
-                                                                  :urlified_name => @site_basket.urlified_name -%>
+                                                                  :urlified_name => @site_basket.urlified_name},
+                                                                  :tabindex => '2' -%>
                         |
-                        <%= link_to_unless_current "content types", :controller => '/content_types',
+                        <%= link_to_unless_current "content types", {:controller => '/content_types',
                                                                   :action => :list,
-                                                                  :urlified_name => @site_basket.urlified_name -%>
+                                                                  :urlified_name => @site_basket.urlified_name},
+                                                                  :tabindex => '2' -%>
                         |
-                        <%= link_to_unless_current "extended fields", :controller => '/extended_fields',
+                        <%= link_to_unless_current "extended fields", {:controller => '/extended_fields',
                                                                         :action => :list,
-                                                                        :urlified_name => @site_basket.urlified_name -%>
+                                                                        :urlified_name => @site_basket.urlified_name},
+                                                                        :tabindex => '2' -%>
                         |
-                        <%= link_to_unless_current "site members", :controller => '/members',
+                        <%= link_to_unless_current "site members", {:controller => '/members',
                                                                         :action => :list,
-                                                                        :urlified_name => @site_basket.urlified_name -%>
+                                                                        :urlified_name => @site_basket.urlified_name},
+                                                                        :tabindex => '2' -%>
                         |
-                        <%= link_to_unless_current "administer licenses", :controller => '/licenses',
-                            :action => :index, :urlified_name => @site_basket.urlified_name -%>
+                        <%= link_to_unless_current "administer licenses", {:controller => '/licenses',
+                            :action => :index, :urlified_name => @site_basket.urlified_name},
+                            :tabindex => '2' -%>
                         |
-                        <%= link_to_unless_current "List site on Kete.net.nz", :controller => '/configure',
+                        <%= link_to_unless_current "List site on Kete.net.nz", {:controller => '/configure',
                                                                                :action => 'add_link_from_kete_net',
-                                                                               :urlified_name => @site_basket.urlified_name -%>
+                                                                               :urlified_name => @site_basket.urlified_name},
+                                                                               :tabindex => '2' -%>
                         <% if @tech_admin -%>
                         |
-                        <%= link_to_unless_current "reconfigure site", :controller => '/configure',
+                        <%= link_to_unless_current "reconfigure site", {:controller => '/configure',
                                                                         :action => :index,
-                                                                        :urlified_name => @site_basket.urlified_name -%>
+                                                                        :urlified_name => @site_basket.urlified_name},
+                                                                        :tabindex => '2' -%>
                         |
-                        <%= link_to_unless_current "OAI PMH Sets", :controller => '/oai_pmh_repository_sets',
+                        <%= link_to_unless_current "OAI PMH Sets", {:controller => '/oai_pmh_repository_sets',
                                                                         :action => :index,
-                                                                        :urlified_name => @site_basket.urlified_name -%>
+                                                                        :urlified_name => @site_basket.urlified_name},
+                                                                        :tabindex => '2' -%>
                         |
-                        <%= link_to_unless_current "Z39.50 search databases", :controller => '/zoom_dbs',
+                        <%= link_to_unless_current "Z39.50 search databases", {:controller => '/zoom_dbs',
                                                                               :action => :list,
-                                                                              :urlified_name => @site_basket.urlified_name -%>
+                                                                              :urlified_name => @site_basket.urlified_name},
+                                                                              :tabindex => '2' -%>
 
                         |
-                        <%= link_to_unless_current "Rebuild search databases", :controller => '/search',
+                        <%= link_to_unless_current "Rebuild search databases", {:controller => '/search',
                                                                               :action => 'setup_rebuild',
-                                                                              :urlified_name => @site_basket.urlified_name -%>
+                                                                              :urlified_name => @site_basket.urlified_name},
+                                                                              :tabindex => '2' -%>
                         <% end -%>
                         </p>
                         <p>
                          Support:
-                        <%= link_to_unless_current("documentation", basket_index_url(:urlified_name => @documentation_basket.urlified_name)) %>
+                        <%= link_to_unless_current("documentation", basket_index_url(:urlified_name => @documentation_basket.urlified_name), :tabindex => '2') %>
                         </p>
                    </div>
                 <% end %>
+
+                <div id="footer_links">
+                  <ul>
+                    <% unless GOVERNMENT_WEBSITE.blank? -%>
+                      <li><%= link_to GOVERNMENT_WEBSITE.first, GOVERNMENT_WEBSITE.last, :accesskey => '/', :tabindex => '2' -%></li>
+                    <% end -%>
+                    <% cache({:part => 'accessibility'}) do -%>
+                      <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>
+                      <%= content_tag('li', link_to('Accessibility', { :urlified_name => 'help',
+                                                                       :controller => 'topics',
+                                                                       :action => 'show',
+                                                                       :id => accessibility_topic },
+                                                                     {:accesskey => '0',
+                                                                     :tabindex => '2'})) if accessibility_topic -%>
+                    <% end -%>
+                    <li><%= link_to 'Sitemap', { :urlified_name => 'site',
+                                                         :controller => 'baskets',
+                                                         :action => 'list' },
+                                                       :accesskey => '2',
+                                                       :tabindex => '2' -%></li>
+                    <li class="last"><%= link_to "Back to Content", '#content', :accesskey => '[', :tabindex => '2' -%>
+                  </ul>
+                </div>
         </div>
 
  </div> <!-- /body-outer-wrapper -->

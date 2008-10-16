@@ -158,7 +158,7 @@ class AccountController < ApplicationController
       @extended_fields = @user.xml_attributes
     else
       flash[:notice] = "You must be logged in to view user profiles."
-      redirect_to :action => 'index'
+      redirect_to :action => 'login'
     end
   end
 

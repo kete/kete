@@ -7,7 +7,7 @@
                         Security Code: <%= @captcha.question %>
                 </label>
 
-                <%= text_field_tag :captcha_answer, params[:captcha_answer], :size => 10, :maxlength => 40 %>
+                <%= text_field_tag :captcha_answer, params[:captcha_answer], :size => 10, :maxlength => 40, :tabindex => '1' %>
 
         </span>
 <% end %>

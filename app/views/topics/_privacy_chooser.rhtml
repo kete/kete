@@ -1,9 +1,9 @@
 <% cache_with_privacy(item, {:part => 'privacy_chooser'}) do -%>
   <% if item.respond_to?(:private?) -%>
     <% if item.private? -%>
-      <li><%= link_to "Public version (live)", :controller => params[:controller], :action => 'show', :id => params[:id], :private => "false" %></li>
+      <li><%= link_to "Public version (live)", {:controller => params[:controller], :action => 'show', :id => params[:id], :private => "false"}, :tabindex => '1' %></li>
     <% elsif !item.private? && item.has_private_version? -%>
-      <li><%= link_to "Private version", :controller => params[:controller], :action => 'show', :id => params[:id], :private => "true", :only_path => false %></li>
+      <li><%= link_to "Private version", {:controller => params[:controller], :action => 'show', :id => params[:id], :private => "true", :only_path => false}, :tabindex => '1' %></li>
     <% end -%>
   <% end -%>
 <% end -%>

@@ -1,18 +1,18 @@
 <div id="content-tabs">
   <ul class="nav-list">
-    <li class="first selected"><a href="#"><span class="view-link">View
+    <li class="first selected"><a href="#" tabindex="1"><span class="view-link">View
           this Item</span></a></li>
     <% cache_with_privacy(item, {:part => 'edit'}) do -%>
     <li><%= link_to "<span class=\"edit-link\">Edit</span>",
-            :action => :edit,
-      :id => item, :private => params[:private] %></li>
+            {:action => :edit,
+      :id => item, :private => params[:private]}, :tabindex => '1' %></li>
     <% end %>
     <% cache({:part => 'history', :id => @cache_id}) do -%>
     <li><%= link_to "<span class=\"history-link\">History</span>",
-            :action => :history,
-      :id => item %></li>
+            {:action => :history,
+      :id => item}, :tabindex => '1' %></li>
     <% end %>
-    <li><a href="#comments"><span class="discuss-link">Discuss</span></a></li>
+    <li><a href="#comments" tabindex="1"><span class="discuss-link">Discuss</span></a></li>
 
     <% if logged_in? and @site_admin -%>
        <% cache({:part => 'zoom_reindex', :id => @cache_id}) do -%>
@@ -22,10 +22,10 @@
              :items_to_rebuild => items_to_rebuild(item),
              :authenticity_token => form_authenticity_token},
              :method => :post,
-             :confirm => 'Are you sure you want to update?'%></li>
+             :confirm => 'Are you sure you want to update?', :tabindex => '1' %></li>
            <% if !@document.nil? -%>
               <% if @document.could_be_new_theme? -%>
-                 <li><%= link_to 'Make theme', :action => 'make_theme', :id => @document -%></li>
+                 <li><%= link_to 'Make theme', {:action => 'make_theme', :id => @document}, :tabindex => '1' -%></li>
               <% end -%>
            <% end -%>
        <% end -%>
@@ -37,7 +37,7 @@
             {:action => :destroy,
              :id => item},
       :method => :post,
-      :confirm => 'Are you sure?'%></li>
+      :confirm => 'Are you sure?', :tabindex => '1' %></li>
     <% end %>
     <% end -%>
                 <%= render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser -%>

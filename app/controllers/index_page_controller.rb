@@ -1,4 +1,6 @@
 class IndexPageController < ApplicationController
+  caches_page :robots
+
   def index
     if !@current_basket.index_page_redirect_to_all.blank?
       redirect_to_all_for(@current_basket.index_page_redirect_to_all)
@@ -61,13 +63,10 @@ class IndexPageController < ApplicationController
             stats_by_type_for(@current_basket)
           end
 
-
           # prepare blog list of most recent topics
           # replace limit with param from basket
-          @recent_topics_limit = @current_basket.index_page_number_of_recent_topics
-          if @recent_topics_limit.blank?
-            @recent_topics_limit = 0
-          end
+          @recent_topics_limit = @current_basket.index_page_number_of_recent_topics.blank? ? 0 : @current_basket.index_page_number_of_recent_topics
+
           # exclude index_topic
           if @recent_topics_limit > 0
             recent_query_hash = { :limit => @recent_topics_limit, :order => 'created_at desc'}
@@ -240,6 +239,14 @@ class IndexPageController < ApplicationController
 
   def validate_kete_net_link
     render(:xml => { :url => SITE_URL, :datetime => "#{Time.new.utc.xmlschema}" })
+  end
+
+  # page that tells search engines where not to go
+  # search forms, rss feeds, user comments etc
+  def robots
+    @baskets = Basket.all
+    @controller_names = ZOOM_CLASSES.collect { |name| zoom_class_controller(name) }
+    render :action => 'robots', :layout => false
   end
 
 end

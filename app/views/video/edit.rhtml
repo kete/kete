@@ -8,7 +8,7 @@
       :id => @video },
       :html => { :multipart => true } do |form| %>
       <%= render :partial => 'form', :object => form %>
-      <div class="wrap"><%= submit_tag 'Save' , :class => "save-button" %></div>
+      <div class="wrap"><%= submit_tag 'Save' , {:class => "save-button", :tabindex => '1'} %></div>
       <% end %>
 
       <%= link_to_cancel %>
