@@ -232,13 +232,13 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['page_title_[privacy]', 'edit_[privacy]', 'history', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
+  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'page_description_[privacy]', 'edit_[privacy]', 'history', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]']
   PUBLIC_SHOW_PARTS = ['comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = [ 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
+  INDEX_PARTS = [ 'page_keywords', 'page_description', 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
 
   # the following method is used when clearing show caches
   def all_show_parts
@@ -999,8 +999,12 @@ class ApplicationController < ActionController::Base
     render :template => "errors/#{template}", :layout => "application", :status => "500"
   end
 
+  def current_item
+    @current_item ||= @audio_recording || @document || @still_image || @topic || @video || @web_link || nil
+  end
+
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
 
   protected
 
