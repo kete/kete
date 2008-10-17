@@ -20,22 +20,22 @@
           <li>
        <% end -%>
        <%= link_to "<span class=\"#{tab_action}-link\">#{tab_label}</span>",
-            :action => tab_action,
+            {:action => tab_action,
             :controller => tab_controller,
-            :id => item %></li>
+            :id => item}, :tabindex => '1' %></li>
        <% tab_count += 1 -%>
     <% end -%>
     <% if @tech_admin -%>
     <li><%= link_to "Importers",
-            :action => :list,
-      :controller => 'importers' %></li>
+            {:action => :list,
+      :controller => 'importers'}, :tabindex => '1' %></li>
     <% end -%>
     <% if @current_basket != @site_basket -%>
     <li><%= link_to "Delete",
             {:action => :destroy,
       :id => item},
       :method => :post,
-      :confirm => 'Are you sure? All items in this basket will be deleted forever!'%></li>
+      :confirm => 'Are you sure? All items in this basket will be deleted forever!', :tabindex => '1' %></li>
     <% end -%>
   </ul>
 </div><!-- /content-tabs -->

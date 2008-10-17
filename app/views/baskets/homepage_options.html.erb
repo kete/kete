@@ -9,7 +9,7 @@
 
 <ul>
         <% if !@index_topic.blank? -%>
-        <li>Current homepage topic: <span class="current_homepage_link"><%= link_to h(@index_topic.title), :controller => 'topics', :action => 'show', :id => @index_topic, :urlified_name => @index_topic.basket.urlified_name -%></span></li>
+        <li>Current homepage topic: <span class="current_homepage_link"><%= link_to h(@index_topic.title), {:controller => 'topics', :action => 'show', :id => @index_topic, :urlified_name => @index_topic.basket.urlified_name}, :tabindex => '1' -%></span></li>
         <% end -%>
         <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add new basket homepage topic') -%></li>
         
@@ -22,7 +22,7 @@
 
 <% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
   <%= render :partial => 'homepage_form', :object => form %>
-  <div style="margin:0;padding:0"><%= submit_tag 'Save' , :class => "save-button" %></div>
+  <div style="margin:0;padding:0"><%= submit_tag 'Save' , {:class => "save-button", :tabindex => '1'} %></div>
 <% end %>
 <%= link_to_cancel %>
 

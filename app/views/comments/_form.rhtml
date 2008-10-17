@@ -15,12 +15,12 @@
 
                 <div class="form-element">
                   <label for="comment_title">Title:</label>
-                <%= form.text_field :title  %>
+                <%= form.text_field :title, :tabindex => '1'  %>
                 </div>
 
                 <div class="form-element">
                   <label for="comment_description" class="cleared-right">Description:</label>
-                  <%= form.text_area :description, :class => "mceEditor", :cols => 120 %>
+                  <%= form.text_area :description, {:class => "mceEditor", :cols => 120, :tabindex => '1'} %>
                   <div class="form-example">
                            Note: forms and javascript are not allowed
                            for security reasons.
@@ -33,7 +33,7 @@
                 <% if @site_admin -%>
                 <div class="form-element"><label for="comment_do_not_sanitize">Allow
                     forms and other possible insecure elements and attributes in the HTML?</label>
-                  <%= form.check_box :do_not_sanitize %></div>
+                  <%= form.check_box :do_not_sanitize, :tabindex => '1' %></div>
                 <% end -%>
 
                 <%= tags_input_field(form,"comment_tag_list") %>
@@ -52,7 +52,7 @@
                                 <label for="comment_version_comment">Comment on this edit:</label>
                                 <%  # delete the last version_comment's value
                                     @comment.version_comment = nil -%>
-                                  <%= form.text_field :version_comment %>
+                                  <%= form.text_field :version_comment, :tabindex => '1' %>
                         </div>
                 <% end -%>
 

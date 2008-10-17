@@ -8,6 +8,17 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  def page_keywords
+    return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
+    current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
+  end
+
+  def page_description
+    return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
+    description_text = current_item.short_summary.blank? ? current_item.description : current_item.short_summary
+    strip_tags(truncate(description_text, 180)).gsub("\"", "").squish
+  end
+
   def header_links_to_baskets
     html = '<ul id="basket-list" class="nav-list">'
 
@@ -31,7 +42,7 @@ module ApplicationHelper
     if baskets_limit < total_baskets_count
       html += '<li>' + link_to_unless_current('more...',
                                               url_for(:urlified_name => @site_basket.urlified_name,
-                                                      :controller => 'baskets' )) + '</li>'
+                                                      :controller => 'baskets' ), {:tabindex => '2'}) + '</li>'
     end
 
     html += '</ul>'
@@ -44,7 +55,7 @@ module ApplicationHelper
 
   def header_link_to_current_basket
     html = String.new
-    html += ': ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
+    html += ': ' + link_to_index_for(@current_basket, { :class => 'basket', :tabindex => '2' }) if @current_basket != @site_basket
   end
 
   def search_link_to_searched_basket
@@ -67,22 +78,22 @@ module ApplicationHelper
       site_link_text = @site_basket.name
       privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
       current_basket_html = " or " + link_to_unless_current( @current_basket.name,
-                                                            :controller => 'search',
+                                                            {:controller => 'search',
                                                             :action => 'all',
                                                             :urlified_name => @current_basket.urlified_name,
                                                             :controller_name_for_zoom_class => 'topics',
                                                             :trailing_slash => true,
-                                                            :privacy_type => privacy_type )
+                                                            :privacy_type => privacy_type}, {:tabindex => '2'} )
     else
       site_link_text = 'Browse'
     end
 
     html += pre_text + link_to_unless_current( site_link_text,
-                                               :controller => 'search',
+                                               {:controller => 'search',
                                                :action => 'all',
                                                :urlified_name => @site_basket.urlified_name,
                                                :controller_name_for_zoom_class => 'topics',
-                                               :trailing_slash => true ) + current_basket_html + '</li>'
+                                               :trailing_slash => true}, {:tabindex => '2'} ) + current_basket_html + '</li>'
   end
 
   def header_add_links
@@ -97,17 +108,19 @@ module ApplicationHelper
       pre_text = 'Add item to '
       site_link_text = @site_basket.name
       current_basket_html = " or " + link_to_unless_current( @current_basket.name,
-                                                            :controller => 'baskets',
+                                                            {:controller => 'baskets',
                                                             :action => 'choose_type',
-                                                            :urlified_name => @current_basket.urlified_name)
+                                                            :urlified_name => @current_basket.urlified_name},
+                                                            {:tabindex => '2'})
     else
       site_link_text = 'Add item'
     end
 
     html += pre_text + link_to_unless_current( site_link_text,
-                                               :controller => 'baskets',
+                                               {:controller => 'baskets',
                                                :action => 'choose_type',
-                                               :urlified_name => @site_basket.urlified_name) + current_basket_html + '</li>'
+                                               :urlified_name => @site_basket.urlified_name},
+                                               {:tabindex => '2'}) + current_basket_html + '</li>'
   end
 
 
@@ -164,10 +177,11 @@ module ApplicationHelper
 
         if basket.topics.count > basket_topic_count && basket_topic_count > 0
           html += content_tag("li", link_to("More..",
-                                            :controller => 'search',
+                                            {:controller => 'search',
                                             :action => 'all',
                                             :urlified_name => basket.urlified_name,
-                                            :controller_name_for_zoom_class => 'topics'))
+                                            :controller_name_for_zoom_class => 'topics'},
+                                            {:tabindex => '2'}))
         end
 
         html += '</ul>'
@@ -228,9 +242,9 @@ module ApplicationHelper
 
   def link_to_cancel
     if session[:return_to].blank?
-      return link_to("Cancel", :action => 'list')
+      return link_to("Cancel", :action => 'list', :tabindex => '1')
     else
-      return link_to("Cancel", url_for(session[:return_to]))
+      return link_to("Cancel", url_for(session[:return_to]), :tabindex => '1')
     end
   end
 
@@ -281,7 +295,7 @@ module ApplicationHelper
       phrase += ' in ' + @current_basket.name
     end
 
-    return link_to(phrase, :controller => zoom_class_controller(item_class), :action => :new)
+    return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
   end
 
   def link_to_add_related_item(options={})
@@ -305,7 +319,7 @@ module ApplicationHelper
                      :related_class => options[:related_class],
                      :relate_to_topic => options[:relate_to_topic],
                      :function => "add" },
-                     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
+                     {:popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes']})
   end
 
   def link_to_unlink_related_item(options={})
@@ -438,7 +452,7 @@ module ApplicationHelper
 
   def tags_input_field(form,label_for)
     "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
-                #{form.text_field :tag_list}</div>"
+                #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
 
   #---- related to extended_fields for either topic_types or content_types
