@@ -8,10 +8,6 @@ module ApplicationHelper
 
   include ZoomHelpers
 
-  def current_item
-    (item = @audio_recording || @document || @still_image || @topic || @video || @web_link || nil)
-  end
-
   def page_keywords
     return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
@@ -19,11 +15,8 @@ module ApplicationHelper
 
   def page_description
     return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
-    if current_item.short_summary.blank?
-      strip_tags(truncate(current_item.description, 180)).gsub("\"", "").squish
-    else
-      strip_tags(truncate(current_item.short_summary, 180)).gsub("\"", "").squish
-    end
+    description_text = current_item.short_summary.blank? ? current_item.description : current_item.short_summary
+    strip_tags(truncate(description_text, 180)).gsub("\"", "").squish
   end
 
   def header_links_to_baskets
