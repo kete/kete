@@ -16,7 +16,7 @@
                 <div class="form-element">
                         <label for="topic_basket_id">Move to another basket?</label>
                         <% # TODO: ugly hack till we move this to form.select -%>
-                        <%= collection_select('topic', 'basket_id', Basket.find(:all), :id, :name, {:class=>"select"}) %>
+                        <%= collection_select('topic', 'basket_id', Basket.find(:all), :id, :name, {}, {:class=>"select", :tabindex => '1' }) %>
                 </div>
         <% end -%>
         <% if edit %>
@@ -29,8 +29,8 @@
          <div class="form-element">
             <label>Privacy</label>
             <ul class="option-list">
-               <li><%= radio_button 'topic', :private, false, { :id => "topic_private_false" }.merge((@current_basket.private_default? && @topic.private.nil?) ? Hash.new : { "checked" => "checked" }) %><label for="topic_private_false" class="privacy-label">Public</label> (Can be viewed by everyone)</li>
-               <li><%= radio_button 'topic', :private, true, { :id => "topic_private_true" }.merge((@current_basket.private_default? && @topic.private.nil?) ? { "checked" => "checked" } : Hash.new) %><label for="topic_private_true">Private</label> (Can be viewed only by basket members)</li>
+               <li><%= radio_button 'topic', :private, false, { :id => "topic_private_false", :tabindex => '1' }.merge((@current_basket.private_default? && @topic.private.nil?) ? Hash.new : { "checked" => "checked" }) %><label for="topic_private_false" class="privacy-label">Public</label> (Can be viewed by everyone)</li>
+               <li><%= radio_button 'topic', :private, true, { :id => "topic_private_true", :tabindex => '1' }.merge((@current_basket.private_default? && @topic.private.nil?) ? { "checked" => "checked" } : Hash.new) %><label for="topic_private_true">Private</label> (Can be viewed only by basket members)</li>
             </ul>
          </div>
          <div class="form-element">
@@ -43,16 +43,16 @@
 
         <div class="form-element">
                 <label class="required" for="topic_title">Title:</label>
-                <%= text_field 'topic', 'title', {:class => "text-input"} %>
+                <%= text_field 'topic', 'title', {:class => "text-input", :tabindex => '1'} %>
         </div>
         <div class="form-element">
                 <label for="topic_short_summary">Short Summary:</label>
-                <%= text_area 'topic', 'short_summary', {:class => "text-area", :cols => 120, :rows => 2 } %>
+                <%= text_area 'topic', 'short_summary', {:class => "text-area", :cols => 120, :rows => 2, :tabindex => '1' } %>
         </div>
 
         <div class="form-element">
                 <label for="topic_description" class="cleared-right">Description:</label>
-                <%= text_area 'topic', 'description', :class => "mceEditor", :cols => 120 %>
+                <%= text_area 'topic', 'description', :class => "mceEditor", :cols => 120, :tabindex => '1' %>
                 <div class="form-example">
                   Note: forms and javascript are not allowed
                   for security reasons.
@@ -65,12 +65,12 @@
         <% if @site_admin -%>
         <div class="form-element"><label for="topic_do_not_sanitize">Allow
             forms and other possible insecure elements and attributes in the HTML?</label>
-          <%= check_box 'topic', 'do_not_sanitize', "id" => "topic_do_not_sanitize" %></div>
+          <%= check_box 'topic', 'do_not_sanitize', "id" => "topic_do_not_sanitize", :tabindex => '1' %></div>
         <% end -%>
 
         <div class="form-element">
                 <label for="topic_tag_list">Tags (separated by commas):</label>
-                <%= text_field 'topic', 'tag_list', {:class => "text-input"} %>
+                <%= text_field 'topic', 'tag_list', {:class => "text-input", :tabindex => '1'} %>
         </div>
 
         <% if edit
@@ -96,7 +96,7 @@
                         <label for="topic_version_comment">Comment on this edit:</label>
                         <%  # delete the last version_comment's value
                             @topic.version_comment = nil if @topic.version_comment -%>
-                        <%= text_field 'topic', 'version_comment', {:class => "text-input"} %>
+                        <%= text_field 'topic', 'version_comment', {:class => "text-input", :tabindex => '1'} %>
                 </div>
         <% end %>
         <%= render :partial => 'license_chooser_or_agreement',:locals => {:item => @topic || Topic.new} %>

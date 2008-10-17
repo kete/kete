@@ -39,7 +39,9 @@ Rails::Initializer.run do |config|
 
   # Specify gems that this application depends on.
   # They can then be installed with "rake gems:install" on new installations.
-  
+  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
+  # config.gem "aws-s3", :lib => "aws/s3"
+
   # Walter McGinnis, 2008-07-02
   # we currently use a hacked version of oai gem
   # and place it under vendor/gems
@@ -48,14 +50,11 @@ Rails::Initializer.run do |config|
   
   # Kieran, 2008-07-22
   # specify the specific versions we need to run Kete
-  # (currently causes problems, will investigate)
-  # lib-xml 0.8.0 causes errors in acts_as_zoom
-  #config.gem "libxml-ruby", :version => '< 0.8.0'
-  # packet 0.1.8 causes imports to fail silently
-  #config.gem "packet", :version => '0.1.7'
-  
-  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
-  # config.gem "aws-s3", :lib => "aws/s3"
+  # libxml-ruby 0.8.0 causes errors in acts_as_zoom
+  config.gem 'libxml-ruby', :lib => 'libxml', :version => '< 0.8.0'
+  # backgroundrb 1.1 requires packet 0.1.14
+  config.gem 'packet', :version => '>= 0.1.14'
+
 
   # Only load the plugins named here, in the order given. By default, all plugins
   # in vendor/plugins are loaded in alphabetical order.

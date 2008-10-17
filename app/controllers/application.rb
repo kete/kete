@@ -853,7 +853,7 @@ class ApplicationController < ActionController::Base
     if auto_detect
       tag +=  "\" />"
     else
-      tag += "\">" # A tag has a closing </a>
+      tag += "tabindex='1' \">" # A tag has a closing </a>
     end
   end
 

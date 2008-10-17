@@ -7,6 +7,7 @@ class BasketsController < ApplicationController
   permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :choose_type, :permission_denied]
 
   after_filter :repopulate_basket_permissions, :only => [:create, :destroy]
+  after_filter :remove_robots_txt_cache, :only => [:create, :update, :destroy]
 
   def index
     list
@@ -244,6 +245,13 @@ class BasketsController < ApplicationController
 
   def repopulate_basket_permissions
     session[:has_access_on_baskets] = current_user.get_basket_permissions
+  end
+
+  # Kieran Pilkington, 2008/10/01
+  # When a basket is created, edited, or deleted, we have to clear
+  # the robots txt file caches to the new settings take effect
+  def remove_robots_txt_cache
+    expire_page "/robots.txt"
   end
 
 end

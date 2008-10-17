@@ -4,7 +4,7 @@
 <% if item.has_license? %>
  <div id="license-agreement">
    This <%= item.class.name.humanize.singularize.downcase%> is licensed under the <%=item.license.title%>.
-   By editing it you agree that your changes will fall under this license (<a href="<%=item.license.url%>" target="_new">view license</a>).
+   By editing it you agree that your changes will fall under this license (<a href="<%=item.license.url%>" target="_new" tabindex="1">view license</a>).
 </div>
 
 <% else
@@ -14,7 +14,7 @@
 <% if licenses_are_available? %>
 <ul class="option-list">
    <% available_licenses do |license| %>
-   <li><%=  radio_button_for_license_selection(item.class.table_name.singularize, license) %></li>
+   <li><%=  radio_button_for_license_selection(item.class.table_name.singularize, license, { :tabindex => '1' }) %></li>
    <% end -%>
 </ul>
 <% if params[:controller] != 'account' -%>
@@ -22,7 +22,7 @@
   profile</p>
 <% end %>
 <% else %>
-<p>Please see the <%= link_to "site terms and conditions", :urlified_name => "about", :controller => "topics", :action => "show", :id => 4 -%> for information on how contributions are licensed.</p>
+<p>Please see the <%= link_to "site terms and conditions", :urlified_name => "about", :controller => "topics", :action => "show", :id => 4, :tabindex => '1' -%> for information on how contributions are licensed.</p>
 <% end %>
 
 <% end -%>
