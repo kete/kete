@@ -115,7 +115,7 @@ input.searchheader-search {
         background: transparent;
         border: none;
         clear: both;
-        font-size: 1px;
+        font-size: 0.1em;
         height: 1px;
         margin: 0;
         padding: 0;
@@ -124,7 +124,7 @@ input.searchheader-search {
         background: transparent;
         border: none;
         clear: left;
-        font-size: 1px;
+        font-size: 0.1em;
         height: 1px;
         margin: 0;
         padding: 0;
@@ -462,7 +462,6 @@ td.detail-extended-field-label {
 #errorexplanation h2 {
         background: #CC0000;
         color: #FFFFFF;
-        font-size: 12px;
         font-weight: bold;
         margin: -7px;
         padding: 5px 5px 5px 15px;
@@ -474,7 +473,6 @@ td.detail-extended-field-label {
         padding: 5px;
 }
 #errorexplanation ul li {
-        font-size: 12px;
         list-style: square;
 }
 div.uploadstatus {
@@ -759,7 +757,6 @@ fieldset {
   text-align: left;
   font-weight: bold;
   padding: 5px 5px 5px 15px;
-  font-size: 12px;
   margin: -7px;
   background-color: #c00;
   color: #fff;
@@ -772,7 +769,6 @@ fieldset {
 }
 
 #errorExplanation ul li {
-  font-size: 12px;
   list-style: square;
 }
 
