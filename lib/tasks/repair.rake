@@ -191,7 +191,7 @@ namespace :kete do
         inaccessible_files.each do |instance|
           puts "- Missing uploaded file for #{instance.class.name} with ID #{instance.id.to_s}."
         end
-        puts "\nRun rake kete:upgrade:correct_upload_locations to relocate files to the correct "
+        puts "\nRun rake kete:repair:correct_upload_locations to relocate files to the correct "
         puts "location.\n\n"
         
         puts "If you have used Capistrano to deploy your Kete instance, you may also need to copy"
