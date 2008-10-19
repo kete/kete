@@ -1,8 +1,18 @@
 <div id="archive-by-type">
-        <ul>
-        <% ZOOM_CLASSES.each do |zoom_class| -%>
-                <li><%= link_to zoom_class_plural_humanize(zoom_class) + " (#{number_with_delimiter(basket_stats_hash[zoom_class])})",
-                                basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(zoom_class)) -%></li>
+  <ul>
+    <% ZOOM_CLASSES.each do |zoom_class| -%>
+      <li>
+        <% counts = link_to("public: #{number_with_delimiter(basket_stats_hash["#{zoom_class}_public"])}",
+                            basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(zoom_class))) -%>
+        <% unless basket_stats_hash["#{zoom_class}_private"].nil? -%>
+          <% counts += (" - " + link_to("private: #{number_with_delimiter(basket_stats_hash["#{zoom_class}_private"])}",
+                                        basket_all_private_url(:controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+                                                               :privacy_type => 'private'))) -%>
         <% end -%>
-        </ul>
+        <%= link_to zoom_class_plural_humanize(zoom_class),
+                    basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(zoom_class)) -%>
+        (<%= counts -%>)
+      </li>
+    <% end -%>
+  </ul>
 </div>

@@ -238,7 +238,7 @@ class ApplicationController < ActionController::Base
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = [ 'page_keywords', 'page_description', 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
+  INDEX_PARTS = [ 'page_keywords', 'page_description', 'details', 'edit', 'recent_topics', 'search', 'extra_side_bar_html', 'archives_[privacy]', 'tags']
 
   # the following method is used when clearing show caches
   def all_show_parts
@@ -271,11 +271,24 @@ class ApplicationController < ActionController::Base
     # show up in the contents list, as well as most recent topics, etc.
     baskets_to_expire = [@current_basket, @site_basket]
     INDEX_PARTS.each do |part|
-      baskets_to_expire.each do |basket|
-        expire_fragment(:controller => 'index_page',
-                        :action => 'index',
-                        :urlified_name => basket.urlified_name,
-                        :part => part)
+      if part.include?('_[privacy]')
+        public_part = part.sub(/\[privacy\]/, 'public')
+        private_part = part.sub(/\[privacy\]/, 'private')
+        [public_part, private_part].each do |part|
+          baskets_to_expire.each do |basket|
+            expire_fragment(:controller => 'index_page',
+                            :action => 'index',
+                            :urlified_name => basket.urlified_name,
+                            :part => part)
+          end
+        end
+      else
+        baskets_to_expire.each do |basket|
+          expire_fragment(:controller => 'index_page',
+                          :action => 'index',
+                          :urlified_name => basket.urlified_name,
+                          :part => part)
+        end
       end
     end
   end
@@ -476,7 +489,12 @@ class ApplicationController < ActionController::Base
     case params[:controller]
     when 'index_page'
       INDEX_PARTS.each do |part|
-        return false unless has_fragment?({:part => part})
+        if part.include?('_[privacy]')
+          resulting_part = part.sub(/\[privacy\]/, @privacy_type)
+        else
+          resulting_part = part
+        end
+        return false unless has_fragment?({:part => resulting_part})
       end
     when 'topics'
       ZOOM_CLASSES.each do |zoom_class|
@@ -757,15 +775,24 @@ class ApplicationController < ActionController::Base
     # all contents of site basket plus all other baskets' contents
 
     # pending items are counted
-    conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
+    public_conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
+    private_conditions = "title != \'#{BLANK_TITLE}\' AND title = \'#{NO_PUBLIC_VERSION_TITLE}\'"
 
     if basket == @site_basket
       ZOOM_CLASSES.each do |zoom_class|
-        @basket_stats_hash[zoom_class] = Module.class_eval(zoom_class).count(:conditions => conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => public_conditions)
+        # Kieran Pilkington, 2008/10/20
+        # We can't currently get private items for the site basket because each user has different permissions
+        # So we'd need to cache different counts for different users. Other baskets don't have this problem
+        # They're either public or private, so we don't need each users settings
+        # @basket_stats_hash["#{zoom_class}_private"] = Module.class_eval(zoom_class).count(:conditions => private_conditions) if permitted_to_view_private_items?
       end
     else
       ZOOM_CLASSES.each do |zoom_class|
-        @basket_stats_hash[zoom_class] = basket.send(zoom_class.tableize).count(:conditions => conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => public_conditions)
+        if basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
+          @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions)
+        end
       end
     end
   end

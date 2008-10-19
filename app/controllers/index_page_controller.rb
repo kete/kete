@@ -5,6 +5,8 @@ class IndexPageController < ApplicationController
     if !@current_basket.index_page_redirect_to_all.blank?
       redirect_to_all_for(@current_basket.index_page_redirect_to_all)
     else
+      @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
+
       # Kieran Pilkington, 2008/08/06
       # Load the index page everytime (for now atleast, until a better title caching system is in place)
       @is_fully_cached = has_all_fragments?

@@ -104,13 +104,13 @@
     <% end -%>
 <% end -%>
 
-<% cache({:part => 'archives'}) do -%>
+<% cache({:part => 'archives_#{@privacy_type}'}) do -%>
    <% if !@basket_stats_hash.blank? -%>
    <div class="secondary-content-section-wrapper">
      <div id="contents-by-type" class="secondary-content-section">
        <h3>Contents by type</h3>
        <%= render :partial => 'archive_by_type',
-          :locals => { :basket_stats_hash => @basket_stats_hash } %>
+                  :locals => { :basket_stats_hash => @basket_stats_hash } %>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
      </div>
    </div>
