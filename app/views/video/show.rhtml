@@ -1,42 +1,37 @@
-<%= render :partial => "topics/slideshow_controls" if show_slideshow_controls? %>
-<% if current_user_can_see_action_menu? -%>
-  <%= render(:partial => "topics/actions_menu" , :locals => { :item =>
-  @video }) %>
-<% end -%>
+<%= render(:partial => "topics/slideshow_controls") if show_slideshow_controls? -%>
+<%= render(:partial => "topics/actions_menu", :locals => { :item => @video }) if current_user_can_see_action_menu? -%>
 
-<%= render(:partial => "topics/content_wrapper_start") %>
+<%= render(:partial => "topics/content_wrapper_start") -%>
 
 <% cache_with_privacy(@video, {:part => 'details_first'}) do -%>
-   <h2><%= h(@video.title) %></h2>
+  <h2><%= h(@video.title) %></h2>
+  <p><%= @video.description %></p>
+<% end -%>
 
-   <p><%= @video.description %></p>
-<% end %>
-   <% if show_attached_files_for?(@video) -%>
-       <%= render(:partial => "details", :locals => { :item => @video }) %>
-   <% end -%>
+<%= render(:partial => "details", :locals => { :item => @video }) if show_attached_files_for?(@video) -%>
+
 <% cache_with_privacy(@video, {:part => 'details_second'}) do -%>
-   <%= pending_review(@video) %>
-   <div class="license"><%= @video.license_metadata %></div>
+  <%= pending_review(@video) -%>
 <% end -%>
 
-<% if current_user_can_see_flagging? -%>
-   <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @video }) %>
+<%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @video }) if current_user_can_see_flagging? -%>
+
+<% if current_user_can_see_add_links? -%>
+  <% cache ({:related => 'topics', :id => @cache_id}) do -%>
+    <%= item_related_topics_wrapper(:class_phrase => 'web link',
+                                    :source_item => @video,
+                                    :source_item_class => 'WebLink',
+                                    :topics => @video.topics) -%>
+  <% end -%>
 <% end -%>
 
-<% if current_user_can_see_add_links? %>
-   <% cache ({:related => 'topics', :id => @cache_id}) do -%>
-      <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @video, :source_item_class => 'WebLink', :topics => @video.topics) %>
-   <% end -%>
-<% end -%>
+<%= render(:partial => "topics/discussion" , :locals => { :item => @video }) if current_user_can_see_discussion? -%>
 
-<% if current_user_can_see_discussion? %>
-  <%= render(:partial => "topics/discussion" , :locals => { :item => @video }) %>
-<% end -%>
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
-
   <div id="secondary-content-wrapper">
-    <%= render(:partial => "topics/tags_div" , :locals => { :item => @video }) %>
-    <%= render(:partial => "topics/extended_fields" , :locals => { :item => @video }) %>
+    <%= render(:partial => "topics/tags_div" , :locals => { :item => @video }) -%>
+    <%= render(:partial => "topics/extended_fields" , :locals => { :item => @video }) -%>
+    <%= render(:partial => "topics/license_div" , :locals => { :item => @video }) -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->
