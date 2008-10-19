@@ -25,4 +25,9 @@ module IndexPageHelper
       :controller_name_for_zoom_class => zoom_class_controller(options[:zoom_class])},
     :class => options[:css_class]
   end
+
+  def content_type_count_for(privacy, zoom_class)
+    "#{privacy}: #{number_with_delimiter(@basket_stats_hash["#{zoom_class}_#{privacy}"])}"
+  end
+
 end

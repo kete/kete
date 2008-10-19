@@ -263,6 +263,14 @@ class ApplicationController < ActionController::Base
     show_parts
   end
 
+  def get_resulting_part_with_privacy(part, privacy)
+    if part.include?('_[privacy]')
+      part.sub(/\[privacy\]/, privacy)
+    else
+      part
+    end
+  end
+
   # if anything is added, edited, or destroyed in a basket
   # expire the basket index page caches
   def expire_basket_index_caches
@@ -272,24 +280,24 @@ class ApplicationController < ActionController::Base
     baskets_to_expire = [@current_basket, @site_basket]
     INDEX_PARTS.each do |part|
       if part.include?('_[privacy]')
-        public_part = part.sub(/\[privacy\]/, 'public')
-        private_part = part.sub(/\[privacy\]/, 'private')
+        public_part = get_resulting_part_with_privacy(part, 'public')
+        private_part = get_resulting_part_with_privacy(part, 'private')
         [public_part, private_part].each do |part|
-          baskets_to_expire.each do |basket|
-            expire_fragment(:controller => 'index_page',
-                            :action => 'index',
-                            :urlified_name => basket.urlified_name,
-                            :part => part)
-          end
+          expire_basket_index_caches_for(part)
         end
       else
-        baskets_to_expire.each do |basket|
-          expire_fragment(:controller => 'index_page',
-                          :action => 'index',
-                          :urlified_name => basket.urlified_name,
-                          :part => part)
-        end
+        expire_basket_index_caches_for(part)
       end
+    end
+  end
+
+  def expire_basket_index_caches_for(part)
+    baskets_to_expire = [@current_basket, @site_basket]
+    baskets_to_expire.each do |basket|
+      expire_fragment(:controller => 'index_page',
+                      :action => 'index',
+                      :urlified_name => basket.urlified_name,
+                      :part => part)
     end
   end
 
@@ -340,11 +348,8 @@ class ApplicationController < ActionController::Base
       # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where
       # the current item is private.
 
-      if part.include?('_[privacy]')
-        resulting_part = part.sub(/\[privacy\]/, (item.private? ? "private" : "public"))
-      else
-        resulting_part = part
-      end
+      @privacy_type ||= (item.private? ? "private" : "public")
+      resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
 
       # we have to do this for each distinct title the item previously had
       # because old titles' friendly urls won't be matched in our expiry otherwise
@@ -443,12 +448,8 @@ class ApplicationController < ActionController::Base
   def expire_caches_after_comments(item, private_comment)
     ['zoom_reindex', 'comments-moderators_[privacy]', 'comments_[privacy]'].each do |part|
 
-      if part.include?('_[privacy]')
-        resulting_part = part.sub(/\[privacy\]/, (private_comment ? "private" : "public"))
-      else
-        resulting_part = part
-      end
-
+      @privacy_type ||= (private_comment ? "private" : "public")
+      resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,
                                          :controller => zoom_class_controller(item.class.name),
@@ -476,11 +477,8 @@ class ApplicationController < ActionController::Base
     name = params[:id].blank? ? Hash.new : { :id => params[:id].to_i }
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
-        if part.include?('_[privacy]')
-          resulting_part = part.sub(/\[privacy\]/, get_acceptable_privacy_type("public", "private"))
-        else
-          resulting_part = part
-        end
+        @privacy_type || = get_acceptable_privacy_type("public", "private")
+        resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
         return false unless has_fragment?(name.merge(:part => resulting_part))
       end
     end
@@ -489,11 +487,7 @@ class ApplicationController < ActionController::Base
     case params[:controller]
     when 'index_page'
       INDEX_PARTS.each do |part|
-        if part.include?('_[privacy]')
-          resulting_part = part.sub(/\[privacy\]/, @privacy_type)
-        else
-          resulting_part = part
-        end
+        resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
         return false unless has_fragment?({:part => resulting_part})
       end
     when 'topics'
