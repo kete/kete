@@ -33,6 +33,19 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2008/10/16 - Location of uploaded files changed and corrected
+
+Due to an error in recent Kete releases, uploaded audio recordings and videos were stored in an incorrect location. This version of Kete fixes this issue, and as a result you may need to move your uploaded files to the correct folder.
+
+To upgrade, please follow these instructions:
+
+1.      IMPORTANT: Back up your Kete instance, including MySQL and full application folder
+2.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
+3.      Run rake kete:repair:check_uploaded_files to see if any files need to be relocated in your Kete instance
+4.      Run rake kete:repair:correct_upload_locations to move files ONLY if necessary
+
+Note: If you're using Capistrano to manage your Kete instance deployments, you may also need to retrieve uploaded files from earlier releases as they may have been archived. See http://kete.net.nz/documentation/topics/show/207 for full details.
+
 == 2008/10/01 - Private files need to be copied to system folder
 
 Due to a missing configuration in the Capistrano deployment recipes, private files were archived every time the site was deploy.

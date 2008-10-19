@@ -23,6 +23,9 @@ class DocumentTest < Test::Unit::TestCase
 
     # name of fields that cannot be a duplicate, e.g. %(name description)
     @duplicate_attr_names = %w( )
+    
+    # Name of the folder we expect files to be saved to
+    @uploads_folder = 'documents'
   end
 
   # load in sets of tests and helper methods
