@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base
     show_parts
   end
 
-  def get_resulting_part_with_privacy(part, privacy)
+  def cache_name_for(part, privacy)
     if part.include?('_[privacy]')
       part.sub(/\[privacy\]/, privacy)
     else
@@ -280,8 +280,8 @@ class ApplicationController < ActionController::Base
     baskets_to_expire = [@current_basket, @site_basket]
     INDEX_PARTS.each do |part|
       if part.include?('_[privacy]')
-        public_part = get_resulting_part_with_privacy(part, 'public')
-        private_part = get_resulting_part_with_privacy(part, 'private')
+        public_part = cache_name_for(part, 'public')
+        private_part = cache_name_for(part, 'private')
         [public_part, private_part].each do |part|
           expire_basket_index_caches_for(part)
         end
@@ -349,7 +349,7 @@ class ApplicationController < ActionController::Base
       # the current item is private.
 
       @privacy_type ||= (item.private? ? "private" : "public")
-      resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
+      resulting_part = cache_name_for(part, @privacy_type)
 
       # we have to do this for each distinct title the item previously had
       # because old titles' friendly urls won't be matched in our expiry otherwise
@@ -449,7 +449,7 @@ class ApplicationController < ActionController::Base
     ['zoom_reindex', 'comments-moderators_[privacy]', 'comments_[privacy]'].each do |part|
 
       @privacy_type ||= (private_comment ? "private" : "public")
-      resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
+      resulting_part = cache_name_for(part, @privacy_type)
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,
                                          :controller => zoom_class_controller(item.class.name),
@@ -478,7 +478,7 @@ class ApplicationController < ActionController::Base
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
         @privacy_type || = get_acceptable_privacy_type("public", "private")
-        resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
+        resulting_part = cache_name_for(part, @privacy_type)
         return false unless has_fragment?(name.merge(:part => resulting_part))
       end
     end
@@ -487,7 +487,7 @@ class ApplicationController < ActionController::Base
     case params[:controller]
     when 'index_page'
       INDEX_PARTS.each do |part|
-        resulting_part = get_resulting_part_with_privacy(part, @privacy_type)
+        resulting_part = cache_name_for(part, @privacy_type)
         return false unless has_fragment?({:part => resulting_part})
       end
     when 'topics'
