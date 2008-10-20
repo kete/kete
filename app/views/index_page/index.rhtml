@@ -84,6 +84,10 @@
               :urlified_name => @topic.basket.urlified_name,
               :controller => 'topics',
               :id => @topic %></li>
+            <%= render :partial => 'topics/privacy_chooser',
+                       :locals => { :item => @topic,
+                                    :location_hash => { :action => 'index' } } if @current_basket.show_privacy_controls_with_inheritance? &&
+                                                                                  permitted_to_view_private_items? -%>
          </ul>
          <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
         </div>
