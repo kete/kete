@@ -80,7 +80,7 @@ class BasketsController < ApplicationController
       end
     end
 
-    convert_text_fields_to_boolean
+    convert_text_fields_to_boolean if params[:source_form] == 'edit'
 
     if @basket.update_attributes(params[:basket])
       # Reload to ensure basket.name is updated and not the previous
