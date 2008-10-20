@@ -8,6 +8,18 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  def page_keywords
+    return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
+    current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
+  end
+
+  def page_description
+    return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
+    description_text = (current_item.respond_to?(:short_summary) && !current_item.short_summary.blank?) ? current_item.short_summary : current_item.description
+    return DEFAULT_PAGE_DESCRIPTION if description_text.blank?
+    strip_tags(truncate(description_text, 180)).gsub("\"", "").squish
+  end
+
   def header_links_to_baskets
     html = '<ul id="basket-list" class="nav-list">'
 

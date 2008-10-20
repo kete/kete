@@ -59,7 +59,7 @@
         <% section_count = 1 -%>
         <% @sections.each do |section| -%>
         <tr>
-          <td><div id="<%= section.split.join("-") -%>-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
+          <td><div id="<%= section.split.join("-") -%>-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="Completed. " /></div></td>
           <td><%= link_to_remote_redbox(h(section),
             {
               :url => {
@@ -86,13 +86,13 @@
         <h3>Search Engine</h3>
         <table>
           <tr>
-            <td><div id="zoom-dbs-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
+            <td><div id="zoom-dbs-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="Completed. " /></div></td>
             <td>Click to <%= link_to_remote_redbox('set up Search Engine',
                     :url => { :action => 'zoom_dbs_edit' },
               :href => url_for( :action => 'zoom_dbs_edit' ) ) -%></td>
           </tr>
           <tr>
-            <td><div id="start-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
+            <td><div id="start-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="Completed. " /></div></td>
             <td>
               <div id="start-zebra-message">
                 <% if @search_engine_setup -%>
@@ -147,7 +147,7 @@
         </div>
         <table>
           <tr>
-            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="completed" /></div></td>
+            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="Completed. " /></div></td>
             <td>
               <% if @search_engine_started or @search_engine_primed -%>
               <div id="prime-zebra-message">
@@ -166,7 +166,7 @@
                                       :href => url_for( :action => 'prime_zebra' ) ) do %>
                   <div id="prime-spinner"
                   style="display:none; text-align:center"><img src="/images/indicator.gif"
-                  width="16" height="16" alt="completed" /></div>
+                  width="16" height="16" alt="Completed. " /></div>
 
                   <div class="wrap"><%= submit_tag 'Prime Search Engine', :id => 'prime-button' -%></div>
                   <% end -%>
