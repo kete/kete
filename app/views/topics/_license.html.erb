@@ -1,0 +1,11 @@
+<% cache_with_privacy(item, {:part => "secondary_content_license_metadata"}) do -%>
+<% unless item.license_metadata.nil? -%>
+<div class="secondary-content-section-wrapper">
+  <div id="license-box" class="secondary-content-section">
+    <div class="license"><%= item.license_metadata %></div>
+    <div style="clear:both;"></div>
+    <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+  </div>
+</div>
+<% end -%>
+<% end -%>

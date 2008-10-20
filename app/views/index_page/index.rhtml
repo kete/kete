@@ -1,183 +1,192 @@
 <% tool_count = 1 -%>
 
-<%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"notabs" }) %>
-<% cache({:part => 'details'}) do -%>
-   <% if !@topic.nil? -%>
-      <% extended_fields_html = display_xml_attributes(@topic) -%>
-      <% if !extended_fields_html.blank? %>
-         <div id="detail-extended">
-           <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-           <%= extended_fields_html %>
-         </div>
-      <% end %>
-      <%= @topic.description %>
-      <%= pending_review(@topic) %>
+<%= render(:partial => "topics/content_wrapper_start",
+           :locals => { :style_classes =>"notabs" }) -%>
 
-      <div class="detail-tools">
-      <% if !@url_to_full_topic.nil? -%>
-         <ul><%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li></ul>
-         <% tool_count += 1 -%>
-      <% end -%>
-      <% if !@url_to_comments.nil? -%>
-         <% if @comments.size > 0 -%>
-            <ul><%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li></ul>
-            <% tool_count += 1 -%>
-         <% end -%>
-      <% end -%>
-      </div>
-      <div class="license"><%= @topic.license_metadata %></div>
-   <% end -%>
-<% end # cache detals -%>
+<% cache({:part => 'details'}) do -%>
+  <%= @topic.description -%>
+  <%= pending_review(@topic) -%>
+<% end -%>
+
+<% cache({:part => 'extended_fields'}) do -%>
+  <% extended_fields_html = display_xml_attributes(@topic) -%>
+  <% if !extended_fields_html.blank? -%>
+  <div id="detail-extended">
+    <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+    <%= extended_fields_html -%>
+  </div>
+  <% end -%>
+<% end -%>
+
+<% cache({:part => 'tools'}) do -%>
+  <div class="detail-tools">
+  <% if !@url_to_full_topic.nil? -%>
+    <ul><%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li></ul>
+    <% tool_count += 1 -%>
+  <% end -%>
+  <% if !@url_to_comments.nil? -%>
+    <% if @comments.size > 0 -%>
+      <ul><%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li></ul>
+      <% tool_count += 1 -%>
+    <% end -%>
+  <% end -%>
+  </div>
+<% end -%>
 
 <% cache({:part => 'recent_topics'}) do -%>
-<% if @recent_topics_limit > 0 &&
-            @recent_topics_items.size > 0 &&
-            !@current_basket.index_page_recent_topics_as.blank? -%>
-<div class="home-feature-wrapper">
-  <h3>Latest <%= @recent_topics_items.size.to_s if @recent_topics_items.size > 1 -%> topic<%= 's' if @recent_topics_items.size > 1 -%></h3>
-  <% case @current_basket.index_page_recent_topics_as
-     when 'summaries' -%>
-  <%= render :partial => 'post_summary', :collection => @recent_topics_items %>
-  <% when 'headlines' -%>
-  <%= render :partial => 'post_headline', :collection => @recent_topics_items %>
+  <% if @recent_topics_limit > 0 &&
+        @recent_topics_items.size > 0 &&
+        !@current_basket.index_page_recent_topics_as.blank? -%>
+    <div class="home-feature-wrapper">
+      <h3>Latest <%= @recent_topics_items.size.to_s if @recent_topics_items.size > 1 -%> topic<%= 's' if @recent_topics_items.size > 1 -%></h3>
+      <% case @current_basket.index_page_recent_topics_as
+         when 'summaries' -%>
+        <%= render :partial => 'post_summary',
+                   :collection => @recent_topics_items -%>
+      <% when 'headlines' -%>
+        <%= render :partial => 'post_headline',
+                   :collection => @recent_topics_items -%>
+      <% end -%>
+    </div>
   <% end -%>
-</div>
 <% end -%>
-<% end -%>
-
 
    </div><!-- /main-content-container -->
 </div><!-- /main-content-wrapper -->
 <div id="secondary-content-wrapper">
 
 <% cache({:part => 'search'}) do -%>
-   <% if @current_basket.index_page_basket_search -%>
-      <div class="secondary-content-section-wrapper">
-        <div id="search-box" class="secondary-content-section">
-          <div id="right-search-box">
-            <% @headline = 'Keyword Search'
-               if @current_basket != @site_basket
-                  @headline += ' ' + @title
-               end -%>
-            <%= render :partial => '/search/form', :locals => {:headline => @headline, :search_terms => nil, :simple_layout => true } %>
-          </div>
-          <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+  <% if @current_basket.index_page_basket_search -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="search-box" class="secondary-content-section">
+        <div id="right-search-box">
+          <% @headline = 'Keyword Search'
+             @headline += (' ' + @title) if @current_basket != @site_basket -%>
+          <%= render :partial => '/search/form',
+                     :locals => { :headline => @headline,
+                                  :search_terms => nil,
+                                  :simple_layout => true } -%>
         </div>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
       </div>
-   <% end -%>
+    </div>
+  <% end -%>
 <% end -%>
 
 <% if logged_in? and @at_least_a_moderator -%>
-   <% cache({:part => 'edit'}) do -%>
-      <% if !@topic.nil? -%>
-      <div class="secondary-content-section-wrapper">
-        <div id="moderator-tools" class="secondary-content-section">
-          <ul>
-            <%= li_with_correct_class(tool_count) + link_to( "Edit",
-               :action => :edit,
-               :urlified_name => @topic.basket.urlified_name,
-               :controller => 'topics',
-               :id => @topic ) %></li>
-               <% tool_count += 1 -%>
-            <li><%= link_to "History",
-              :action => :history,
-              :urlified_name => @topic.basket.urlified_name,
-              :controller => 'topics',
-              :id => @topic %></li>
-         </ul>
-         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-        </div>
-      </div>
-      <% end -%>
-   <% end -%>
-<% end -%>
-
-
-<% cache({:part => 'extra_side_bar_html'}) do -%>
-    <% if !@current_basket.index_page_extra_side_bar_html.blank? -%>
+  <% cache({:part => 'edit'}) do -%>
     <div class="secondary-content-section-wrapper">
-      <div id="homepage-extra" class="secondary-content-section">
-       <%= @current_basket.index_page_extra_side_bar_html -%>
-       <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+      <div id="moderator-tools" class="secondary-content-section">
+        <ul>
+          <%= li_with_correct_class(tool_count) + 
+              link_to( "Edit", :action => :edit,
+                               :urlified_name => @topic.basket.urlified_name,
+                               :controller => 'topics',
+                               :id => @topic ) -%></li>
+          <% tool_count += 1 -%>
+          <li>
+            <%= link_to "History", :action => :history,
+                                   :urlified_name => @topic.basket.urlified_name,
+                                   :controller => 'topics',
+                                   :id => @topic -%>
+          </li>
+        </ul>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
       </div>
     </div>
-    <% end -%>
+  <% end -%>
+<% end -%>
+
+<% cache({:part => 'extra_side_bar_html'}) do -%>
+  <% if !@current_basket.index_page_extra_side_bar_html.blank? -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="homepage-extra" class="secondary-content-section">
+        <%= @current_basket.index_page_extra_side_bar_html -%>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+      </div>
+    </div>
+  <% end -%>
 <% end -%>
 
 <% cache({:part => 'archives'}) do -%>
-   <% if !@basket_stats_hash.blank? -%>
-   <div class="secondary-content-section-wrapper">
-     <div id="contents-by-type" class="secondary-content-section">
-       <h3>Contents by type</h3>
-       <%= render :partial => 'archive_by_type',
-          :locals => { :basket_stats_hash => @basket_stats_hash } %>
+  <% if !@basket_stats_hash.blank? -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="contents-by-type" class="secondary-content-section">
+        <h3>Contents by type</h3>
+        <%= render :partial => 'archive_by_type',
+                   :locals => { :basket_stats_hash => @basket_stats_hash } -%>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-     </div>
-   </div>
-   <% end -%>
+      </div>
+    </div>
+  <% end -%>
 <% end -%>
 
-<% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil?-%>
-   <div class="secondary-content-section-wrapper">
-     <div id="contents-by-type" class="secondary-content-section">
-       <div id="selected-image-headline"><h3><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h3></div>
-       <div id="selected-image-display">
-         <%= render :partial =>'selected_image',
-            :locals => { :selected_image_file => @selected_image_file,
-            :previous_url => @previous_url,
-            :next_url => @next_url,
-            :selected_still_image => @selected_still_image } %>
-       </div>
-       <%= periodically_call_remote :update => 'selected-image-display',
-          :url => { :action => 'selected_image' },
-          :frequency => 15 %>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-     </div>
-   </div>
+<% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil? -%>
+  <div class="secondary-content-section-wrapper">
+    <div id="contents-by-type" class="secondary-content-section">
+      <div id="selected-image-headline"><h3><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h3></div>
+      <div id="selected-image-display">
+        <%= render :partial =>'selected_image',
+                   :locals => { :selected_image_file => @selected_image_file,
+                                :previous_url => @previous_url,
+                                :next_url => @next_url,
+                                :selected_still_image => @selected_still_image } -%>
+      </div>
+      <%= periodically_call_remote :update => 'selected-image-display',
+                                   :url => { :action => 'selected_image' },
+                                   :frequency => 15 -%>
+      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+    </div>
+  </div>
 <% end -%>
-
-
-
-
 
 <% cache({:part => 'tags'}) do -%>
-                                <% if @tag_counts_array.size > 0 -%>
-   <div class="secondary-content-section-wrapper">
-     <div id="tags-box" class="secondary-content-section">
-
-                                        <% case @current_basket.index_page_tags_as
-                                           when 'tag cloud' -%>
-
-                                                <div id="tags-headline"><h3>Tags</h3></div>
-                                                <div id="tag-cloud">
-                                                <% tag_cloud @tag_counts_array, %w(tag_cloud1 tag_cloud2 tag_cloud3 tag_cloud4 tag_cloud5) do |id, name, css_class| -%>
-                                                        <%= link_to_tagged_in_basket :name => name,
-                                                                                     :id => id,
-                                                                                     :zoom_class => 'Topic',
-                                                                                     :css_class => css_class %>
-                                                <% end -%>
-                                                </div>
-                                        <% when 'categories' -%>
-                                                <div id="tags-headline"><h3>Categories</h3></div>
-                                                <div id="categories">
-                                                        <ul>
-                                                        <% @tag_counts_array.each do |tag| -%>
-                                                                <li><%= link_to_tagged_in_basket :name => tag[:name] + " (#{tag[:taggings_count]})",
-                                                                                     :id => tag[:id],
-                                                                                     :zoom_class => 'Topic' %></li>
-                                                        <% end -%>
-                                                        </ul>
-                                                </div>
-                                        <% end -%>
+  <% if @tag_counts_array.size > 0 -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="tags-box" class="secondary-content-section">
+        <% case @current_basket.index_page_tags_as
+           when 'tag cloud' -%>
+          <div id="tags-headline"><h3>Tags</h3></div>
+          <div id="tag-cloud">
+            <% tag_cloud @tag_counts_array, %w(tag_cloud1 tag_cloud2 tag_cloud3 tag_cloud4 tag_cloud5) do |id, name, css_class| -%>
+              <%= link_to_tagged_in_basket :name => name,
+                                           :id => id,
+                                           :zoom_class => 'Topic',
+                                           :css_class => css_class %>
+            <% end -%>
+          </div>
+        <% when 'categories' -%>
+          <div id="tags-headline"><h3>Categories</h3></div>
+          <div id="categories">
+            <ul>
+              <% @tag_counts_array.each do |tag| -%>
+                <li><%= link_to_tagged_in_basket :name => tag[:name] + " (#{tag[:taggings_count]})",
+                                                 :id => tag[:id],
+                                                 :zoom_class => 'Topic' %></li>
+              <% end -%>
+            </ul>
+          </div>
+        <% end -%>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
      </div>
    </div>
-
-                                <% end -%>
+  <% end -%>
 <% end -%>
-                        <% # TODO: add following with logic
-                           # archive_by_date - requires adding searching by date
-                        -%>
-                        </div>
 
+<% cache({:part => 'license'}) do -%>
+  <% unless @topic.license_metadata.nil? -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="license-box" class="secondary-content-section">
+        <div class="license"><%= @topic.license_metadata %></div>
+        <div style="clear:both;"></div>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+      </div>
+    </div>
+  <% end -%>
+<% end -%>
+
+<% # TODO: add following with logic -%>
+<% # archive_by_date - requires adding searching by date -%>
+
+   </div>
 </div>
