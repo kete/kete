@@ -87,9 +87,7 @@
             <% end -%>
           <% end -%>
           <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
-            <%= render :partial => 'topics/privacy_chooser',
-                       :locals => { :item => @topic,
-                                    :location_hash => { :action => 'index' } } -%>
+            <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
           <% end -%>
         </ul>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
