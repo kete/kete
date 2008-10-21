@@ -10,7 +10,7 @@ class IndexPageController < ApplicationController
       @is_fully_cached = has_all_fragments?
       #if !@is_fully_cached or params[:format] == 'xml'
         @topic = @current_basket.index_topic
-        @topic = @topic.private_version! if params[:private] == "true" and @topic.has_private_version? and permitted_to_view_private_items?
+        @topic = @topic.private_version! if params[:private] == "true" && @topic.has_private_version? && permitted_to_view_private_items?
       #end
 
       if !@topic.nil?
