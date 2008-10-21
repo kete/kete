@@ -474,9 +474,9 @@ systsystem_settings_054:
   name: Government Website
   technically_advanced: true
   required_to_be_configured: false
-  explanation: "Your local/countries government website. Opening [ and closing ] are required. Format: ['name', 'url']"
+  explanation: "Your local/countries government website. Opening [ and closing ] are required. Format: ['Government Name', 'http://yourgovernment.govt/']"
   id: "54"
-  value: "['newzealand.govt.nz', 'http://newzealand.govt.nz/']"
+  value: ""
   section: System
 system_settings_055:
   name: Default Page Keywords
