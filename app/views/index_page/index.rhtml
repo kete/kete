@@ -67,33 +67,35 @@
    <% end -%>
 <% end -%>
 
-<% if logged_in? and @at_least_a_moderator -%>
-   <% cache({:part => 'edit'}) do -%>
-      <% if !@topic.nil? -%>
-      <div class="secondary-content-section-wrapper">
-        <div id="moderator-tools" class="secondary-content-section">
-          <ul>
-            <%= li_with_correct_class(tool_count) + link_to( "Edit",
-               :action => :edit,
-               :urlified_name => @topic.basket.urlified_name,
-               :controller => 'topics',
-               :id => @topic ) %></li>
-               <% tool_count += 1 -%>
-            <li><%= link_to "History",
-              :action => :history,
-              :urlified_name => @topic.basket.urlified_name,
-              :controller => 'topics',
-              :id => @topic %></li>
+<% if logged_in? && (@at_least_a_moderator || permitted_to_view_private_items?) -%>
+  <% if !@topic.nil? -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="moderator-tools" class="secondary-content-section">
+        <ul>
+          <% if @at_least_a_moderator -%>
+            <% cache({:part => 'edit'}) do -%>
+              <%= li_with_correct_class(tool_count) + 
+                  link_to("Edit", :action => :edit,
+                                  :urlified_name => @topic.basket.urlified_name,
+                                  :controller => 'topics',
+                                  :id => @topic ) %></li>
+              <% tool_count += 1 -%>
+              <li><%= link_to "History", :action => :history,
+                                         :urlified_name => @topic.basket.urlified_name,
+                                         :controller => 'topics',
+                                         :id => @topic %></li>
+            <% end -%>
+          <% end -%>
+          <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
             <%= render :partial => 'topics/privacy_chooser',
                        :locals => { :item => @topic,
-                                    :location_hash => { :action => 'index' } } if @current_basket.show_privacy_controls_with_inheritance? &&
-                                                                                  permitted_to_view_private_items? -%>
-         </ul>
-         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-        </div>
+                                    :location_hash => { :action => 'index' } } -%>
+          <% end -%>
+        </ul>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
       </div>
-      <% end -%>
-   <% end -%>
+    </div>
+  <% end -%>
 <% end -%>
 
 

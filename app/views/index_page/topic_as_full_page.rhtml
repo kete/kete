@@ -4,10 +4,10 @@
       <%= pending_review(@topic) %>
       <% end -%>
 
-      <% if logged_in? and @at_least_a_moderator -%>
-    </div>
+  <% if logged_in? && (@at_least_a_moderator || permitted_to_view_private_items?) -%>
 
     <div id="secondary-content-wrapper">
+      <% if @at_least_a_moderator -%>
       <% extended_fields_html = display_xml_attributes(@topic) -%>
       <% if !extended_fields_html.blank? %>
       <div id="detail-extended">
@@ -15,26 +15,32 @@
         <%= extended_fields_html %>
       </div>
       <% end %>
+      <% end -%>
       <ul>
-        <% cache({:part => 'edit', :id => @topic.id}) do -%>
-        <li class="first"><%= link_to "Edit",
-                              :action => :edit,
-          :urlified_name => @topic.basket.urlified_name,
-          :controller => 'topics',
-          :id => @topic %></li>
-        <li><%= link_to "History",
-                :action => :history,
-          :urlified_name => @topic.basket.urlified_name,
-          :controller => 'topics',
-          :id => @topic %></li>
-        <%= render :partial => 'topics/privacy_chooser',
-                   :locals => { :item => @topic,
-                                :location_hash => { :action => 'index' } } if @current_basket.show_privacy_controls_with_inheritance? &&
-                                                                              permitted_to_view_private_items? -%>
-           <% end -%>
+        <% if @at_least_a_moderator -%>
+          <% cache({:part => 'edit', :id => @topic.id}) do -%>
+            <li class="first">
+              <%= link_to "Edit", :action => :edit,
+                                  :urlified_name => @topic.basket.urlified_name,
+                                  :controller => 'topics',
+                                  :id => @topic %>
+            </li>
+            <li>
+              <%= link_to "History", :action => :history,
+                                     :urlified_name => @topic.basket.urlified_name,
+                                     :controller => 'topics',
+                                     :id => @topic %>
+            </li>
+          <% end -%>
+        <% end -%>
+        <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? -%>
+          <%= render :partial => 'topics/privacy_chooser',
+                     :locals => { :item => @topic,
+                                  :location_hash => { :action => 'index' } } -%>
         <% end -%>
       </ul>
     </div>
+<% end -%>
 
     <% cache({:part => 'blog', :id => @topic.id}) do -%>
     <% end -%>
