@@ -11,7 +11,7 @@ RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
 # moving this up before other things that need it
 # acts_as_zoom declarations in models
 ZOOM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document', 'Comment']
-ACTIVE_SCAFFOLD_CONTROLLERS = ['extended_fields', 'zoom_dbs', 'system_settings', 'oai_pmh_repository_sets', 'licenses']
+ACTIVE_SCAFFOLD_CONTROLLERS = ['extended_fields', 'zoom_dbs', 'system_settings', 'oai_pmh_repository_sets', 'licenses', 'choices']
 
 # Walter McGinnis, 2007-01-07
 # You can override default authorization system constants here.

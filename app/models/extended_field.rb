@@ -1,5 +1,18 @@
 class ExtendedField < ActiveRecord::Base
   include ExtendedFieldsHelpers
+  
+  # Choices/enumerations
+  has_many :choice_mappings, :as => :field
+  has_many :choices, :through => :choice_mappings
+  
+  def pseudo_choices
+    choices.collect { |c| [c.label, c.id] }
+  end
+  
+  def pseudo_choices=(array_of_ids)
+    logger.debug "ARRAY_OF_IDS = #{array_of_ids.inspect}"
+    self.choices = array_of_ids.collect { |id| Choice.find(id) }
+  end
 
   has_many :topic_type_to_field_mappings, :dependent => :destroy
   # if we ever use this association, we'll want to add a test for it
