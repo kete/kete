@@ -1,4 +1,5 @@
 class Topic < ActiveRecord::Base
+  
   # this is where the actual content lives
   # using the extended_fields associated with this topic's topic_type
   # generate a form
@@ -155,4 +156,5 @@ class Topic < ActiveRecord::Base
   # turn pretty urls on or off here
   include FriendlyUrls
   alias :to_param :format_for_friendly_urls
+  
 end

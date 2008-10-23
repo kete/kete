@@ -1,32 +1,47 @@
                         <div class="form-element">
-                                 <% # we organize our custom form fields by label, because it is unique %>
-                                 <% # xml_element_name do not have to be %>
+                                 <%# we organize our custom form fields by label, because it is unique %>
+                                 <%# xml_element_name do not have to be %>
                                  <% f_id = extended_field_mapping.extended_field_label.downcase.gsub(/ /, '_') %>
+                                 
+                                 <%# Print out a label %>
                                  <% if extended_field_mapping.required -%>
                                          <label class="required" for="<%= "#{item_key}_#{f_id}" -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
                                  <% else -%>
                                          <label for="<%= "#{item_key}_#{f_id}" -%>"><%= extended_field_mapping.extended_field_label -%>:</label>
                                  <% end -%>
+                                 
+                                 
                                  <% if !extended_item.nil?
                                         item_extended_xml = extended_item.xml_attributes_without_position
                                     else
                                         item_extended_xml = nil
                                     end -%>
-                                 <% # TODO: date_select_tag doesn't currently exist but hopefully will soon %>
+                                    
+                                 <%# A list of all possible field types
+                                 <%# TODO: date_select_tag doesn't currently exist but hopefully will soon %>
                                  <% @field_types = {'checkbox' => 'check_box_tag',
                                                     'radio'    => 'radio_button_tag',
                                                     'date'     => 'date_select_tag',
                                                     'text'     => 'text_field_tag',
-                                                    'textarea' => 'text_area_tag'} %>
+                                                    'textarea' => 'text_area_tag',
+                                                    'choice'   => 'select_tag' } %>
+                                 
+                                 <%# Find the field type specified in the extended field mapping %>
                                  <% the_field_type = extended_field_mapping.extended_field["ftype"] %>
 
+                                 <%# If the field can have multiple values, then.. %>
                                  <% if extended_field_mapping.extended_field_multiple -%>
-                                         <% if edit
+                                 
+                                         <% if edit # This is passed in with partial
                                                  # there should be a subhash with a pluaralized name for the field
                                                  f_multiple = "#{f_id}_multiple"
                                             end -%>
+                                         
+                                         <%# Currently we only support a set number of multiple values, so fetch the limit %>
                                          <% num_field_inputs = DEFAULT_NUMBER_OF_MULTIPLES.to_i -%>
                                          <% input_count = 1 -%>
+                                         
+                                         <%# Iterate through them and send the form %>
                                          <% num_field_inputs.times do -%>
                                                 <% if edit && !item_extended_xml.blank? && !item_extended_xml[f_multiple].blank? && item_extended_xml[f_multiple][input_count.to_s] && !item_extended_xml[f_multiple][input_count.to_s][f_id].to_s.match("xml_element_name") -%>
                                                 <% temp_hash = item_extended_xml[f_multiple] -%>
@@ -54,7 +69,7 @@
                                          <% if edit && !item_extended_xml.blank? && !item_extended_xml[f_id].blank? && !item_extended_xml[f_id].to_s.match("xml_element_name") %>
                                            <% if  @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag' %>
                                                 <% z = @field_types[the_field_type] + '("' %>
-                                                <% z = z + "#{item_key}[#{f_id}]" %>
+                                                <% z = z + "#{item_key}[extended_content][#{f_id}]" %>
                                                 <% if the_field_type == 'checkbox' or the_field_type == 'radio' %>
                                                   <% z = z + '", item_extended_xml[f_id], true,' %>
                                                 <% else %>
@@ -63,12 +78,12 @@
                                                 <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => "1"})' %>
                                                 <%= eval(z) %>
                                            <% else %>
-                                                <%= text_field_tag("#{item_key}[#{f_id}]", item_extended_xml[f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => "1"}) %>
+                                                <%= text_field_tag("#{item_key}[extended_content][#{f_id}]", item_extended_xml[f_id], {:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => "1"}) %>
                                            <% end %>
                                          <% else %>
                                            <% if  @field_types[the_field_type] and @field_types[the_field_type] != 'date_select_tag' %>
                                                 <% z = @field_types[the_field_type] + '("' %>
-                                                <% z = z + "#{item_key}[#{f_id}]" %>
+                                                <% z = z + "#{item_key}[extended_content][#{f_id}]" %>
                                                 <% if the_field_type == 'checkbox' or the_field_type == 'radio' %>
                                                     <% z = z + '", "yes", false,' %>
                                                 <% else %>
@@ -77,7 +92,7 @@
                                                 <% z = z + '{:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => "1"})' %>
                                                 <%= eval(z) %>
                                            <% else %>
-                                                <%= text_field_tag("#{item_key}[#{f_id}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => "1"}) %>
+                                                <%= text_field_tag("#{item_key}[extended_content][#{f_id}]", nil, {:class => "text-input", :id => "#{item_key}_#{f_id}", :tabindex => "1"}) %>
                                            <% end %>
                                          <% end %>
                                  <% end %>

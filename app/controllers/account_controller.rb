@@ -170,9 +170,10 @@ class AccountController < ApplicationController
     @user = User.find(self.current_user.id)
 
     original_user_name = @user.user_name
-    if @user.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type,
-                                                                       :item_key => 'user',
-                                                                       :item_class => 'User'))
+    if @user.update_attributes(params[:user])
+    # if @user.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type,
+    #                                                                    :item_key => 'user',
+    #                                                                    :item_class => 'User'))
       # @user.user_name has changed
       if original_user_name != @user.user_name
         # we want to flush contribution caches

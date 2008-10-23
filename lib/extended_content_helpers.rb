@@ -33,7 +33,7 @@ module ExtendedContentHelpers
     def oai_dc_xml_dc_extended_content(xml,item)
       # work through extended_content, see what should be it's own dc element
       # and what should go in a group dc:description
-      temp_extended_content = item.extended_content
+      temp_extended_content = item.extended_content_xml
       if !temp_extended_content.blank? and temp_extended_content.starts_with?('<')
         extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
 
