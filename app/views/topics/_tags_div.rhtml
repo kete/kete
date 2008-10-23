@@ -1,8 +1,24 @@
 <% cache_with_privacy(item, {:part => "secondary_content_tags"}) do -%>
 <div class="secondary-content-section-wrapper">
   <div id="tags-box" class="secondary-content-section">
-    <h2>Tags</h2>
-    <%= tags_for(item) -%>
+    <h2>Tags <%= image_tag 'add.gif', :id => 'add_tag_button', :style => 'display:none;', :onclick => "Element.show('add_tag_form_div');$('tag_name').activate()" %></h2>
+    <div id="tags_list">
+      <%= tags_for(item) -%>
+    </div>
+    <div id="add_tag_form_div">
+      <% form_remote_tag( :url => { :action => 'add_tags', :id => item.id, :private => params[:private] },
+                          :before => "Element.show('data_spinner')",
+                          :complete => "Element.hide('data_spinner')",
+                          :html => { :id => 'add_tag_form' } ) do -%>
+        <%= hidden_field_tag "#{zoom_class_from_controller(params[:controller]).underscore.to_sym}[tag_list]", item.tag_list, :id => "#{zoom_class_from_controller(params[:controller]).underscore}_tag_list" %>
+        <%= text_field_with_auto_complete :tag, :name, {:size=> 15}, {:tokens => ',', :indicator => 'data_spinner'} %>
+        <%= submit_tag 'add tag' -%>
+        <span id="data_spinner" style="display:none; text-align:center; ">
+          <img src="/images/indicator.gif" width="16" height="16" alt="Sending. " />
+        </span>
+      <% end -%>
+    </div>
+    <%= javascript_tag "$('add_tag_button').show();$('add_tag_form_div').hide();" -%>
     <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
   </div>
 </div>
