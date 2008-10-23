@@ -53,7 +53,7 @@ module OaiDcHelpers
             most_recent_updated_at = last_relation.updated_at
           end
         end
-      elsif item.content_item_relations.count > 0 &&
+      elsif item.class.name != 'Comment' && item.content_item_relations.count > 0 &&
           item.content_item_relations.last.updated_at > most_recent_updated_at
         most_recent_updated_at = item.content_item_relations.last.updated_at
       end
