@@ -99,20 +99,21 @@ class Basket < ActiveRecord::Base
   # but we want all zoom_class's totals added together
   # special case is site basket
   # want to grab all tags from across all baskets
-  def tag_counts_array
-    tag_limit = self.index_page_number_of_tags
+  def tag_counts_array(options = {})
+    tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
 
     @tag_counts_hash = Hash.new
 
-    if tag_limit > 0
+    if !tag_limit || tag_limit > 0 # 0 = no tags, false = no limit
       tag_order = nil
-      case self.index_page_order_tags_by
+      tag_reversed = !options[:reverse].nil? ? options[:reverse] : false
+      case (!options[:order].nil? ? options[:order] : self.index_page_order_tags_by)
       when 'alphabetical'
-        tag_order = 'tags.name'
+        tag_order = "tags.name #{tag_reversed ? 'desc' : 'asc'}"
       when 'latest'
-        tag_order = 'taggings.created_at desc'
+        tag_order = "taggings.created_at #{tag_reversed ? 'asc' : 'desc'}"
       when 'number'
-        tag_order = 'count desc'
+        tag_order = "count #{tag_reversed ? 'asc' : 'desc'}"
       when 'random'
         tag_order = 'Rand()'
       end
@@ -147,17 +148,18 @@ class Basket < ActiveRecord::Base
     # can only resort by alpha and number
     # random doesn't need resorting
     # and latest should be covered in the query
-    case self.index_page_order_tags_by
+    case (!options[:order].nil? ? options[:order] : self.index_page_order_tags_by)
     when 'alphabetical'
       @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name]}
+      @tag_counts_array = @tag_counts_array.reverse if tag_reversed
     when 'number'
       @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:taggings_count]}
-      @tag_counts_array = @tag_counts_array.reverse
+      @tag_counts_array = @tag_counts_array.reverse unless tag_reversed
     when 'random'
       @tag_counts_array = @tag_counts_array.sort_by { rand }
     end
 
-    @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)]
+    @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)] unless !tag_limit # when tag_limit is false, we return all
     return @tag_counts_array
   end
 

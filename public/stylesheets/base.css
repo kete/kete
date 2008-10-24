@@ -625,6 +625,20 @@ div#notice div, div#error div {
     color: #333;
 }
 
+/* ################################ Tag Listing ################################ */
+#tag_search_div {
+  margin: 15px 0;
+}
+#tag_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#tag_list li {
+  float: left;
+  padding: 5px 15px;
+}
+
 /* #################################### Misc #################################### */
 .theme-choice-wrapper {
     /*            float:right;*/

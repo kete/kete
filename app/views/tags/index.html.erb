@@ -1,0 +1,40 @@
+<% @title = 'Listing Tags' -%>
+
+<h2><%= @title %></h2>
+
+<div id="tag_search_div">
+  <% form_tag({}, :method => :get) do -%>
+    <h4>Options</h4>
+    <label for="tag_order">Sort by:</label>
+    <%= select 'tag', 'order', [['Alphabetical', 'alphabetical'],
+                                ['Latest', 'latest'],
+                                ['Number', 'number'],
+                                ['Random', 'random']],
+                                {:selected => @order},
+                                {:name => 'order'} -%>
+    <span id="direction_field" <%= 'style="display:none;"' if @order == "random" -%>>
+      <label for="tag_reverse">In reverse?</label>
+      <%= check_box_tag 'reverse', 'reverse', @reverse -%>
+    </span>
+    <%= submit_tag 'Submit' -%>
+  <% end -%>
+</div>
+
+<%= toggle_in_reverse_field_js_helper -%>
+
+<div><%= will_paginate @results %></div>
+
+<br />
+
+<ul id="tag_list">
+  <% @tags.each do |tag| -%>
+    <li><%= link_to_tagged_in_basket :name => tag[:name] + " (#{tag[:taggings_count]})",
+                                     :id => tag[:id],
+                                     :zoom_class => 'Topic' %></li>
+  <% end -%>
+</ul>
+<div style="clear:both;"></div>
+
+<br />
+
+<div><%= will_paginate @results %></div>
