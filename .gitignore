@@ -4,13 +4,16 @@ config/database.yml
 config/backgroundrb.yml
 db/schema.rb
 public/blank.html
+public/robots.txt
 public/images/active_scaffold/DO_NOT_EDIT
 public/javascripts/cache/
 public/stylesheets/active_scaffold/DO_NOT_EDIT
 public/stylesheets/cache/
 public/audio_recordings/
+public/audio/
 public/documents/
 public/image_files/
 public/videos/
+public/video/
 tmp/restart.txt
 zebradb/conf/kete-zebra-servers.xml

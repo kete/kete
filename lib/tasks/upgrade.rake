@@ -10,12 +10,14 @@ namespace :kete do
   task :upgrade => ['kete:upgrade:add_new_baskets',
                     'kete:upgrade:add_tech_admin',
                     'kete:upgrade:add_new_system_settings',
+                    'kete:upgrade:add_new_default_topics',
                     'kete:upgrade:change_zebra_password',
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types',
                     'kete:upgrade:correct_basket_defaults',
                     'zebra:load_initial_records',
-                    'kete:upgrade:update_existing_comments_commentable_private']
+                    'kete:upgrade:update_existing_comments_commentable_private',
+                    'kete:tools:remove_robots_txt']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -47,6 +49,31 @@ namespace :kete do
         if !SystemSetting.find_by_name(setting_hash['name'])
           SystemSetting.create!(setting_hash)
           p "added " + setting_hash['name']
+        end
+      end
+    end
+
+    desc 'Add the new default topics that are missing from our Kete installation.'
+    task :add_new_default_topics => :environment do
+      topics_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/topics.yml")
+
+      # for each topic from yml
+      # check if it's in the db
+      # if not, add it
+      # system settings have unique names
+      topics_from_yml.each do |topic_array|
+        topic_hash = topic_array[1]
+
+        # if there are existing topics
+        # drop id from hash, as we want to determine it dynamically
+        # else we want to use the bootstap versions
+        topic_hash.delete('id') if Topic.count > 0
+
+        if !Topic.find_by_title_and_basket_id(topic_hash['title'], topic_hash['basket_id'])
+          topic = Topic.create!(topic_hash)
+          topic.creator = User.first
+          topic.save
+          p "added topic: " + topic_hash['title']
         end
       end
     end
@@ -233,5 +260,6 @@ namespace :kete do
         end
       end
     end
+  
   end
 end

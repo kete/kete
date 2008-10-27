@@ -13,14 +13,14 @@
 
   <div class="form-element">
     <label for="settings_theme_font_family">Font Family:</label>
-    <%= select_tag 'settings[theme_font_family]', @basket.font_family_select_options, "id" => "settings_theme_font_family" %>
+    <%= select_tag 'settings[theme_font_family]', @basket.font_family_select_options, {"id" => "settings_theme_font_family", :tabindex => '1'} %>
   </div>
 
   <div class="form-element">
-    <%= image_tag @basket.settings[:header_image] if !@basket.settings[:header_image].blank? -%>
+    <%= image_tag(@basket.settings[:header_image], :alt => "Current Basket Header Image. ") if !@basket.settings[:header_image].blank? -%>
     <label for="settings_header_image">URL for background image for the top
     of each page:</label>
-    <%= text_field 'settings', 'header_image', "id" => "settings_header_image" %>
+    <%= text_field 'settings', 'header_image', {"id" => "settings_header_image", :tabindex => '1'} %>
   </div>
 
   <div class="form-element">
@@ -29,9 +29,9 @@
       <% if @basket.possible_themes.size > 0 -%>
       <% @basket.possible_themes.each do |theme| -%>
       <div class="theme-choice-wrapper">
-        <%= image_tag "/themes/#{theme}/images/sample.jpg" -%>
+        <%= image_tag "/themes/#{theme}/images/sample.jpg", :alt => "Screenshot of #{theme} theme. " -%>
         <div class="theme-choice-text">
-          <%= radio_button_tag 'settings[theme]', theme, (@basket.settings[:theme] == theme), "id" => "settings_theme" %>
+          <%= radio_button_tag 'settings[theme]', theme, (@basket.settings[:theme] == theme), {"id" => "settings_theme", :tabindex => '1'} %>
           <%= theme.humanize %>
         </div>
       </div>
@@ -44,7 +44,7 @@
       <% if @site_admin -%>
       <div>
         <ul>
-          <li><%= link_to "Add new theme", :action => 'new', :controller => 'documents', :is_theme => true -%></li>
+          <li><%= link_to "Add new theme", {:action => 'new', :controller => 'documents', :is_theme => true}, :tabindex => '1' -%></li>
         </ul>
       </div>
       <% end -%>
@@ -59,26 +59,26 @@
 
       <div class="form-element">
         <label for="settings_show_action_menu">Show Action Menu to:</label>
-        <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket), "id" => "settings_show_action_menu" %><br />
+        <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket), {"id" => "settings_show_action_menu", :tabindex => '1'} %><br />
         (who can see the view, edit, history and other links)
       </div>
 
 
       <div class="form-element">
         <label for="settings_show_discussion">Show Comments to:</label>
-        <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket), "id" => "settings_show_discussion" %><br />
+        <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket), {"id" => "settings_show_discussion", :tabindex => '1'} %><br />
         (who can see and add comments)
       </div>
 
       <div class="form-element">
         <label for="settings_show_flagging">Show Flagging to:</label>
-        <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket), "id" => "settings_show_flagging" %><br />
+        <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket), {"id" => "settings_show_flagging", :tabindex => '1'} %><br />
         (who can flag items)
       </div>
 
       <div class="form-element">
         <label for="settings_show_add_links">Show Add Links to:</label>
-        <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket), "id" => "settings_show_add_links" %><br />
+        <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket), {"id" => "settings_show_add_links", :tabindex => '1'} %><br />
         (who can relate or link items together)
       </div>
     </fieldset>
@@ -95,16 +95,16 @@
       <div class="form-element">
         <label for="settings_side_menu_number_of_topics">Number of
         topics to show when in this basket?:</label>
-        <%= text_field_tag 'settings[side_menu_number_of_topics]', @basket.settings[:side_menu_number_of_topics], :size => 3, "id" => "settings_side_menu_number_of_topics" %>
+        <%= text_field_tag 'settings[side_menu_number_of_topics]', @basket.settings[:side_menu_number_of_topics], {:size => 3, "id" => "settings_side_menu_number_of_topics", :tabindex => '1'} %>
       </div>
 
       <div class="form-element">
         <label for="settings_side_menu_ordering_of_topics" style="width: 100%;">Sort by:</label>
-        <div style="clear: left;"><%= select_tag 'settings[side_menu_ordering_of_topics]', @basket.side_menu_ordering_of_topics_as_options(@site_basket), "id" => "side_menu_ordering_of_topics" %></div>
+        <div style="clear: left;"><%= select_tag 'settings[side_menu_ordering_of_topics]', @basket.side_menu_ordering_of_topics_as_options(@site_basket), {"id" => "side_menu_ordering_of_topics", :tabindex => '1'} %></div>
       </div>
 
       <div class="form-element">
-        <%= check_box 'settings', 'side_menu_direction_of_topics', {:checked => (@basket.settings[:side_menu_direction_of_topics] == 'reverse')}, 'reverse', '' %>
+        <%= check_box 'settings', 'side_menu_direction_of_topics', {:checked => (@basket.settings[:side_menu_direction_of_topics] == 'reverse'), :tabindex => '1'}, 'reverse', '' %>
         <label for="settings_side_menu_direction_of_topics" class="inline">in reverse?</label>
       </div>
 
@@ -116,7 +116,7 @@
 
 </fieldset>
 
-<div style="margin:0;padding:0"><%= submit_tag 'Save' , :class => "save-button" %></div>
+<div style="margin:0;padding:0"><%= submit_tag 'Save' , {:class => "save-button", :tabindex => '1'} %></div>
 <% end %>
 
 

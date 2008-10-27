@@ -1,6 +1,6 @@
 <p><%= link_to image_tag(selected_image_file.public_filename,
                          :size => selected_image_file.image_size,
-                         :alt => selected_still_image.title),
+                         :alt => "#{selected_still_image.title}. "),
                 :action => 'show',
                 :urlified_name => selected_still_image.basket.urlified_name,
                 :controller => 'images',

@@ -500,14 +500,14 @@ div#slideshow-controls div#slideshow-previous-button {
     float: left;
     margin: 4px 0 0 150px;
     width: 150px;
-    font-size: 14pt;
+    font-size: 1.4em;
 }
 
 div#slideshow-controls div#slideshow-next-button {
     float: right;
     margin: 4px 150px 0 0;
     width: 150px;
-    font-size: 14pt;
+    font-size: 1.4em;
 }
 
 div#slideshow-controls div#slideshow-middle {
@@ -562,6 +562,23 @@ span.next-active {
     margin-top: -1.5em;
     padding: 1em;
     padding-bottom: 2em;
+}
+#footer_links ul {
+    list-style-type: none;
+    height: 30px;
+    text-align: center;
+    margin: 30px auto 0 auto;
+    padding: 10px 0 0 0;
+    width: 460px;
+}
+#footer_links ul li {
+    border-right: 1px solid #000;
+    display: inline;
+    padding: 3px 15px;
+    margin: 0;
+}
+#footer_links ul li.last {
+    border-right: 0px;
 }
 
 #linkToRSS{
@@ -669,10 +686,15 @@ ul.option-list li img{
     font-weight: normal;
 }
 
-
+.license {
+  padding: 5px;
+}
 .license img {
     float: left;
-    margin-right: .5em;
+    margin: 0 10px 0 0;
+}
+.license br {
+  display: none;
 }
 
 /* width of members list table for basket administration of members */

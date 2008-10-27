@@ -37,7 +37,7 @@
    <% else -%>
      <h3>Your current default license is:</h3>
      <div class="license">
-       <%= image_tag(@user.license.image_url, :alt => "licence  thumbnail") %>
+       <%= image_tag(@user.license.image_url, :alt => "Licence thumbnail. ") %>
        <%= @user.license.title %>
        <%= link_to("(View license)", url_for(@user.license.url), "target" =>
        "_new") %>

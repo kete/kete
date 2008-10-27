@@ -12,7 +12,7 @@ class Video < ActiveRecord::Base
   # dependencies that we don't need
   # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
   # will rework with when we get to public/private split
-  has_attachment :storage => :file_system, :file_system_path => "public/video",
+  has_attachment :storage => :file_system, :file_system_path => "video",
   :content_type => VIDEO_CONTENT_TYPES, :processor => :none,
   :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 

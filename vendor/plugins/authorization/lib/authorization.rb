@@ -4,12 +4,19 @@ require File.dirname(__FILE__) + '/publishare/parser'
 module Authorization
   module Base
 
-    # Modify these constants in your environment.rb to tailor the plugin to your authentication system
-    if not Object.constants.include? "DEFAULT_REDIRECTION_HASH"
-      DEFAULT_REDIRECTION_HASH = { :controller => 'baskets', :action => 'permission_denied' }
+    # Modify these constants in your environment.rb to tailor the plugin to
+    # your authentication system
+    if not Object.constants.include? "LOGIN_REQUIRED_REDIRECTION"
+      LOGIN_REQUIRED_REDIRECTION = {
+        :controller => 'session',
+        :action => 'new'
+      }
+    end
+    if not Object.constants.include? "PERMISSION_DENIED_REDIRECTION"
+      PERMISSION_DENIED_REDIRECTION = ''
     end
     if not Object.constants.include? "STORE_LOCATION_METHOD"
-      STORE_LOCATION_METHOD = :store_return_location
+      STORE_LOCATION_METHOD = :store_location
     end
 
     def self.included( recipient )
@@ -66,7 +73,11 @@ module Authorization
       def has_permission?( authorization_expression )
         @current_user = get_user
         if not @options[:allow_guests]
-          if @current_user.nil?  # We aren't logged in, or an exception has already been raised
+          # We aren't logged in, or an exception has already been raised.
+          # Test for both nil and :false symbol as restful_authentication plugin
+          # will set current user to ':false' on a failed login (patch by Ho-Sheng Hsiao).
+          # Latest incarnations of restful_authentication plugin set current user to false.
+          if @current_user.nil? || @current_user == :false || @current_user == false
             return false
           elsif not @current_user.respond_to? :id
             raise( UserDoesntImplementID, "User doesn't implement #id")
@@ -80,18 +91,17 @@ module Authorization
       # Handle redirection within permit if authorization is denied.
       def handle_redirection
         return if not self.respond_to?( :redirect_to )
-        redirection = DEFAULT_REDIRECTION_HASH
-        redirection[:controller] = @options[:redirect_controller] if @options[:redirect_controller]
-        redirection[:action] = @options[:redirect_action] if @options[:redirect_action]
 
-        # Store url in session for return if this is available from authentication
+        # Store url in session for return if this is available from
+        # authentication
         send( STORE_LOCATION_METHOD ) if respond_to? STORE_LOCATION_METHOD
-        if @current_user
-          flash[:notice] = PERMISSION_DENIED_MESSAGE
+        if @current_user && @current_user != :false
+          flash[:notice] = @options[:permission_denied_message] || "Permission denied. You cannot access the requested page."
+          redirect_to @options[:permission_denied_redirection] || PERMISSION_DENIED_REDIRECTION
         else
-          flash[:notice] = @options[:redirect_message] ? @options[:redirect_message] : "Login is required"
+          flash[:notice] = @options[:login_required_message] || "Login is required to access the requested page."
+          redirect_to @options[:login_required_redirection] || LOGIN_REQUIRED_REDIRECTION
         end
-        redirect_to redirection
         false  # Want to short-circuit the filters
       end
 

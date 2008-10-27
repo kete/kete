@@ -456,3 +456,118 @@ topics_014:
     <p>Lastly you will want to edit this topic using the edit link below.  You can also replace it, either with another topic or by redirecting users to results for all topics, images, audio, video, web links, documents, or discussion via the site basket edit page.</p>
     <h5>Credits</h5>
     <p>This topic was originally written by Walter McGinnis at <a href="http://katipo.co.nz/">Katipo Communications</a> and Russel Garlick at <a href="http://liblime.com/">Liblime</a>.</p>
+
+topics_015:
+  title: Accessibility
+  short_summary: Accessibility features of this website
+  raw_tag_list: ""
+  id: "15"
+  version: "1"
+  basket_id: "2"
+  topic_type_id: "1"
+  index_for_basket_id:
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
+  description: |+
+    <h3>Standards</h3>
+    <p>Every effort has been made to ensure this site meets most of the <a href="http://webstandards.govt.nz/index.php/All_Standards"><strong class="selflink">New Zealand Government Web Standards and Recommendations v 1.0</strong></a></p>
+    <h3>Access keys</h3>
+    <p>Access keys help you to navigate to commonly used pages in the site without needing to use a mouse or other pointing device. To activate an access key, hold down the ALT key (for PCs) or CONTROL key (for Apple Macintosh) plus the relevant access key shown below (at the same time). For some browsers you may need to press enter to confirm your choice.</p>
+    <p>The available keyboard shortcuts are:</p>
+    <p>0 = Accessibility help page</p>
+    <p>1 = Home page</p>
+    <p>2 = Site map</p>
+    <p>3 = Search</p>
+    <p>9 = Contact us</p>
+    <p>[ = jump to content beginning</p>
+    <p>/ = link to govt.nz website</p>
+    <h4>To use the keyboard Accesskeys:</h4>
+    <table border="0" summary="Access key activation information layout table.">
+    <tbody>
+    <tr>
+    <td><strong>Browser</strong></td>
+    <td><strong>Version</strong></td>
+    <td><strong>Activate Accesskey</strong></td>
+    </tr>
+    <tr>
+    <td>Internet Explorer</td>
+    <td valign="top">IE 5+ (Windows)</td>
+    <td valign="top">Alt + Accesskey, then Enter</td>
+    </tr>
+    <tr>
+    <td>Internet Explorer</td>
+    <td valign="top">IE 5, 6 (Mac)</td>
+    <td valign="top">Ctrl+ Accesskey</td>
+    </tr>
+    <tr>
+    <td valign="top">Firefox</td>
+    <td valign="top">FF &lt;= 1.5 (Windows)&nbsp;</td>
+    <td valign="top">Alt + Accesskey</td>
+    </tr>
+    <tr>
+    <td>Firefox</td>
+    <td>FF 2 (Windows)</td>
+    <td>Alt + Shift + Accesskey</td>
+    </tr>
+    <tr>
+    <td>Firefox</td>
+    <td>FF 2 (Mac)</td>
+    <td>Ctrl+ Accesskey</td>
+    </tr>
+    <tr>
+    <td>Firefox</td>
+    <td>FF 3 (Windows)</td>
+    <td>Alt + Shift + Accesskey</td>
+    </tr>
+    <tr>
+    <td valign="top">Opera</td>
+    <td valign="top">Early versions</td>
+    <td valign="top">Accesskey not supported</td>
+    </tr>
+    <tr>
+    <td valign="top">Opera</td>
+    <td valign="top">v7+ (Windows or Mac)</td>
+    <td valign="top">Shift + Escape, (release) then Accesskey</td>
+    </tr>
+    <tr>
+    <td>Mozilla</td>
+    <td>(Windows)</td>
+    <td>Alt + Accesskey</td>
+    </tr>
+    <tr>
+    <td>Mozilla</td>
+    <td>(Mac)</td>
+    <td>Ctrl+ Accesskey</td>
+    </tr>
+    <tr>
+    <td>Safari</td>
+    <td>v1.2+ (Mac)</td>
+    <td>Ctrl+ Accesskey</td>
+    </tr>
+    <tr>
+    <td>Netscape</td>
+    <td>NN 6-8 (Windows)</td>
+    <td>Alt + Accesskey</td>
+    </tr>
+    <tr>
+    <td>Netscape</td>
+    <td>NN 9 (Windows)</td>
+    <td>Alt + Shift + Accesskey</td>
+    </tr>
+    <tr>
+    <td>Netscape</td>
+    <td>NN 6+ (Mac)</td>
+    <td>Ctrl+ Accesskey</td>
+    </tr>
+    </tbody>
+    </table>
+    <p>Note: Some browers do not support the numbers on the Number Pad being used as Accesskeys. Use the numbers at the top of the keyboard.</p>
+    <h3>Text size</h3>
+    <p>You can make the text on this site bigger or smaller to suit you if your browser supports text resizing (i.e. recent versions of Internet Explorer, Firefox, Safari or Opera).</p>
+    <h4>To resize your fonts:</h4>
+    <ul>
+    <li>In Microsoft Internet Explorer: go to the View menu at the top of your screen, select Text size, then choose to view with larger or smaller type.</li>
+    <li>In Firefox and Safari on a PC: press CTL + to make text bigger, and CTL - to make text smaller.</li>
+    <li>In Firefox and Safari on a Mac: press Command + to make text bigger, and Command - to make text smaller.</li>
+    <li>In other browsers: consult the browser Help for details on how to resize the text.</li>
+    </ul>

@@ -6,11 +6,11 @@ module SearchHelper
   def link_to_zoom_class_results(zoom_class,results_count)
     if params[:action] == 'all'
       link_to("#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})",
-              :overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil},
-              :trailing_slash => true)
+              {:overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil},
+              :trailing_slash => true}, :tabindex => '1')
     else
       link_to("#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})",
-              :overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil})
+              {:overwrite_params => {:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil}}, :tabindex => '1')
     end
 
   end

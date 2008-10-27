@@ -14,7 +14,7 @@
         <div class="form-element">
                 <label for="web_link_basket_id">Move to another basket?</label>
                 <% # TODO: ugly hack till we move this to form.select -%>
-                <%= collection_select('web_link', 'basket_id', Basket.find(:all), :id, :name) %>
+                <%= collection_select('web_link', 'basket_id', Basket.find(:all), :id, :name, {}, {:tabindex => '1'}) %>
         </div>
 <% end -%>
 
@@ -23,11 +23,11 @@
 	<label>Privacy</label>
 	<ul class="option-list">
 		<li>
-			<%= radio_button 'web_link', :private, false, { :id => "web_link_private_false" }.merge((@current_basket.private_default? && @web_link.private.nil?) ? Hash.new : { "checked" => "checked" }) %>
+			<%= radio_button 'web_link', :private, false, { :id => "web_link_private_false", :tabindex => '1' }.merge((@current_basket.private_default? && @web_link.private.nil?) ? Hash.new : { "checked" => "checked" }) %>
 			<label for="web_link_private_false">Public</label> (Can be viewed by everyone)
 		</li>
 		<li>	
-			<%= radio_button 'web_link', :private, true, { :id => "web_link_private_true" }.merge((@current_basket.private_default? && @web_link.private.nil?) ? { "checked" => "checked" } : Hash.new) %>
+			<%= radio_button 'web_link', :private, true, { :id => "web_link_private_true", :tabindex => '1' }.merge((@current_basket.private_default? && @web_link.private.nil?) ? { "checked" => "checked" } : Hash.new) %>
 			<label for="web_link_private_true">Private</label> (Can be viewed only by basket members)
 		</li>
 	</ul>
@@ -43,12 +43,12 @@
 
 <div class="form-element">
   <label class="required" for="web_link_title">Title:</label>
-  <%= text_field 'web_link', 'title' , {:class=>"text-input"} %>
+  <%= text_field 'web_link', 'title' , {:class=>"text-input", :tabindex => '1'} %>
 </div>
 
 <div class="form-element">
   <label for="web_link_description" class="cleared-right">Description:</label>
-  <%= text_area 'web_link', 'description', :class => "mceEditor", :cols => 120 %>
+  <%= text_area 'web_link', 'description', {:class => "mceEditor", :cols => 120, :tabindex => '1'} %>
   <div class="form-example">
     Note: forms and javascript are not allowed
     for security reasons.
@@ -61,11 +61,11 @@
 <% if @site_admin -%>
 <div class="form-element"><label for="web_link_do_not_sanitize">Allow
     forms and other possible insecure elements and attributes in the HTML?</label>
-  <%= check_box 'web_link', 'do_not_sanitize' %></div>
+  <%= check_box 'web_link', 'do_not_sanitize', :tabindex => '1' %></div>
 <% end -%>
 
 <% if show_privacy_controls_for?(@web_link) %>
-<div class="form-element"><label for="web_link_file_private">Attached web link privacy:</label> <%= radio_button 'web_link', 'file_private', false, file_private_radio_options(@web_link) %> Can be accessed by everyone <%= radio_button 'web_link', 'file_private', true, file_private_radio_options(@web_link) %> Can only be accessed by people who have <%= @current_basket.private_file_visibility -%> access.<br />
+<div class="form-element"><label for="web_link_file_private">Attached web link privacy:</label> <%= radio_button 'web_link', 'file_private', false, file_private_radio_options(@web_link).merge({:tabindex => '1'}) %> Can be accessed by everyone <%= radio_button 'web_link', 'file_private', true, file_private_radio_options(@web_link).merge({:tabindex => '1'}) %> Can only be accessed by people who have <%= @current_basket.private_file_visibility -%> access.<br />
 	<strong>Please note that once public, a web link cannot be made private.</strong></div>
 <% else %>
 <%# Use the default %>
@@ -74,13 +74,13 @@
 
 <div class="form-element">
   <label for="web_link_tag_list">Tags (separated by commas):</label>
-  <%= text_field 'web_link', 'tag_list', {:class => "text-input"} %>
+  <%= text_field 'web_link', 'tag_list', {:class => "text-input", :tabindex => '1'} %>
 </div>
 
 <% if show_privacy_controls_for?(@web_link) || !edit %>
 <div class="form-element">
   <label class="required" for="web_link_url">URL:</label>
-  <%= text_field 'web_link', 'url', {:class=>"text-input"} %>
+  <%= text_field 'web_link', 'url', {:class=>"text-input", :tabindex => '1'} %>
 </div>
 <% end %>
 
@@ -98,7 +98,7 @@
   <label for="web_link_version_comment">Comment on this edit:</label>
   <%  # delete the last version_comment's value
       @web_link.version_comment = nil -%>
-  <%= text_field 'web_link', 'version_comment', {:class => "text-input"} %>
+  <%= text_field 'web_link', 'version_comment', {:class => "text-input", :tabindex => '1'} %>
 </div>
 <% end -%>
 
