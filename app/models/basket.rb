@@ -101,43 +101,40 @@ class Basket < ActiveRecord::Base
   # want to grab all tags from across all baskets
   def tag_counts_array(options = {})
     tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
+    tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
+    tags_in_reverse = !options[:tags_in_reverse].nil? ? options[:tags_in_reverse] : false
 
-    @tag_counts_hash = Hash.new
-
-    if !tag_limit || tag_limit > 0 # 0 = no tags, false = no limit
-      tag_order = nil
-      tag_reversed = !options[:reverse].nil? ? options[:reverse] : false
-      case (!options[:order].nil? ? options[:order] : self.index_page_order_tags_by)
-      when 'alphabetical'
-        tag_order = "tags.name #{tag_reversed ? 'desc' : 'asc'}"
-      when 'latest'
-        tag_order = "taggings.created_at #{tag_reversed ? 'asc' : 'desc'}"
-      when 'number'
-        tag_order = "count #{tag_reversed ? 'asc' : 'desc'}"
-      when 'random'
-        tag_order = 'Rand()'
-      end
-      ZOOM_CLASSES.each do |zoom_class|
-        zoom_class_tag_counts = nil
-        if self.id == 1
-          zoom_class_tag_counts = Module.class_eval(zoom_class).tag_counts(:limit => tag_limit, :order => tag_order)
-        else
-          zoom_class_tag_counts = self.send(zoom_class.tableize).tag_counts(:limit => tag_limit, :order => tag_order)
-        end
-
-        # if exists in @tag_counts, update count with added number
-        zoom_class_tag_counts.each do |tag|
-          tag_key = tag.id.to_s
-          if !@tag_counts_hash.include?(tag_key)
-            @tag_counts_hash[tag_key] = { :id => tag.id, :name => tag.name, :taggings_count => tag.count }
-          else
-            @tag_counts_hash[tag_key][:taggings_count] +=  tag.count
-          end
-        end
-      end
-    else
+    unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
       return Array.new
     end
+
+    case tag_order
+    when 'alphabetical'
+      find_tag_order = "tags.name #{tags_in_reverse ? 'desc' : 'asc'}"
+    when 'latest'
+      find_tag_order = "taggings.created_at #{tags_in_reverse ? 'asc' : 'desc'}"
+    when 'number'
+      find_tag_order = "count #{tags_in_reverse ? 'asc' : 'desc'}"
+    else
+      find_tag_order = 'Rand()'
+    end
+
+    @tag_counts_hash = Hash.new
+    ZOOM_CLASSES.each do |zoom_class|
+      zoom_set = (self.id == 1) ? zoom_class.constantize : self.send(zoom_class.tableize)
+      zoom_class_tag_counts = zoom_set.tag_counts(:limit => tag_limit, :order => find_tag_order)
+
+      # if exists in @tag_counts, update count with added number
+      zoom_class_tag_counts.each do |tag|
+        tag_key = tag.id.to_s
+        if !@tag_counts_hash.include?(tag_key)
+          @tag_counts_hash[tag_key] = { :id => tag.id, :name => tag.name, :taggings_count => tag.count }
+        else
+          @tag_counts_hash[tag_key][:taggings_count] +=  tag.count
+        end
+      end
+    end
+
     # take the hash and create an ordered array by amount of taggings
     # with nested hashes for attributes
     @tag_counts_array = Array.new
@@ -145,21 +142,25 @@ class Basket < ActiveRecord::Base
       @tag_counts_array << @tag_counts_hash[tag_key]
     end
 
-    # can only resort by alpha and number
-    # random doesn't need resorting
-    # and latest should be covered in the query
-    case (!options[:order].nil? ? options[:order] : self.index_page_order_tags_by)
+    # We need to sort through the results here as well as in the query
+    # because we joined several ZOOM_CLASSES so they'll be out of order
+    case tag_order
     when 'alphabetical'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name]}
-      @tag_counts_array = @tag_counts_array.reverse if tag_reversed
+      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name] }
+      @tag_counts_array = @tag_counts_array.reverse if tags_in_reverse
+    when 'latest'
+      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:id] }
+      @tag_counts_array = @tag_counts_array.reverse if tags_in_reverse
     when 'number'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:taggings_count]}
-      @tag_counts_array = @tag_counts_array.reverse unless tag_reversed
-    when 'random'
+      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:taggings_count] }
+      @tag_counts_array = @tag_counts_array.reverse unless tags_in_reverse
+    else
       @tag_counts_array = @tag_counts_array.sort_by { rand }
     end
 
+    # the query limits per ZOOM_CLASS, no overall results, so we do that here
     @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)] unless !tag_limit # when tag_limit is false, we return all
+
     return @tag_counts_array
   end
 

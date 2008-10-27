@@ -16,13 +16,4 @@ module IndexPageHelper
       yield t[:id], t[:name], classes[(t_count - min) / divisor]
     }
   end
-
-  def link_to_tagged_in_basket(options = {})
-    link_to h(options[:name]),
-    { :controller => 'search', :action => 'all',
-      :tag => options[:id],
-      :trailing_slash => true,
-      :controller_name_for_zoom_class => zoom_class_controller(options[:zoom_class])},
-    :class => options[:css_class]
-  end
 end

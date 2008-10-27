@@ -159,11 +159,7 @@
           <div id="tags-headline"><h3>Categories</h3></div>
           <div id="categories">
             <ul>
-              <% @tag_counts_array.each do |tag| -%>
-                <li><%= link_to_tagged_in_basket :name => tag[:name] + " (#{tag[:taggings_count]})",
-                                                 :id => tag[:id],
-                                                 :zoom_class => 'Topic' %></li>
-              <% end -%>
+              <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array } -%>
             </ul>
           </div>
         <% end -%>

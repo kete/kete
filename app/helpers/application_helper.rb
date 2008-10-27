@@ -425,14 +425,26 @@ module ApplicationHelper
   end
 
   # tag related helpers
-  def link_to_tagged(tag,zoom_class)
-    link_to(h(tag.name), { :controller => 'search', :action => 'all',
-              :tag => tag,
+  def link_to_tagged(tag, zoom_class = nil)
+    is_hash = tag.kind_of?(Hash) ? true : false
+
+    name =          is_hash ? tag[:name]                    : tag.name
+    id =            is_hash ? tag[:id]                      : tag.id
+    zoom_class =    is_hash ? tag[:zoom_class]              : zoom_class
+    css_class =     is_hash ? tag[:css_class]               : nil
+    urlified_name = is_hash ? @current_basket.urlified_name : @site_basket.urlified_name
+    privacy_type =  is_hash ? nil                           : get_acceptable_privacy_type(nil, "private")
+
+    link_to h(name),
+            { :controller => 'search',
+              :action => 'all',
+              :tag => id,
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-              :urlified_name => @site_basket.urlified_name,
-              :privacy_type => get_acceptable_privacy_type(nil, "private") })
+              :urlified_name => urlified_name,
+              :privacy_type => privacy_type }
   end
+  alias :link_to_tagged_in_basket :link_to_tagged
 
   def tags_for(item)
     html_string = String.new

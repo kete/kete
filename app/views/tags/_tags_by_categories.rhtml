@@ -1,0 +1,5 @@
+<% tags.each do |tag| -%>
+  <li><%= link_to_tagged_in_basket :name => tag[:name] + " (#{tag[:taggings_count]})",
+                                   :id => tag[:id],
+                                   :zoom_class => 'Topic' %></li>
+<% end -%>
