@@ -425,26 +425,36 @@ module ApplicationHelper
   end
 
   # tag related helpers
-  def link_to_tagged(tag, zoom_class = nil)
-    is_hash = tag.kind_of?(Hash) ? true : false
-
-    name =          is_hash ? tag[:name]                    : tag.name
-    id =            is_hash ? tag[:id]                      : tag.id
-    zoom_class =    is_hash ? tag[:zoom_class]              : zoom_class
-    css_class =     is_hash ? tag[:css_class]               : nil
-    urlified_name = is_hash ? @current_basket.urlified_name : @site_basket.urlified_name
-    privacy_type =  is_hash ? nil                           : get_acceptable_privacy_type(nil, "private")
-
-    link_to h(name),
+  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
+    zoom_class = zoom_class || tag[:zoom_class]
+    link_to h(tag[:name]),
             { :controller => 'search',
               :action => 'all',
-              :tag => id,
+              :tag => tag[:id],
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-              :urlified_name => urlified_name,
-              :privacy_type => privacy_type }
+              :urlified_name => basket.urlified_name,
+              :privacy_type => get_acceptable_privacy_type(nil, "private") },
+            :class => tag[:css_class]
   end
   alias :link_to_tagged_in_basket :link_to_tagged
+
+  def tag_cloud(tags, classes)
+    logger.info("using this")
+    max, min = 0, 0
+    tags.each { |t|
+      t_count = t[:taggings_count].to_i
+      max = t_count if t_count > max
+      min = t_count if t_count < min
+    }
+
+    divisor = ((max - min) / classes.size) + 1
+
+    tags.each { |t|
+      t_count = t[:taggings_count].to_i
+      yield t[:id], t[:name], classes[(t_count - min) / divisor]
+    }
+  end
 
   def tags_for(item)
     html_string = String.new

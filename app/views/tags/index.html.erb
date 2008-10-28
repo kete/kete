@@ -11,6 +11,10 @@
       <label for="tags_in_reverse">In reverse?</label>
       <%= check_box_tag 'tags_in_reverse', 'reverse', @tags_in_reverse -%>
     </span>
+    <span id="tag_cloud_field" <%= 'style="display:none;"' unless @order == "random" -%>>
+      <label for="type">As Tag Cloud?</label>
+      <%= check_box_tag 'type', 'tag_cloud', (@type == 'tag_cloud') -%>
+    </span>
     <%= submit_tag 'Submit' -%>
   <% end -%>
 </div>
@@ -20,9 +24,11 @@
 <div><%= will_paginate @results %></div>
 
 <br />
-<ul id="tag_list">
+<% if @type == 'tag_cloud' -%>
+  <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tags } -%>
+<% else -%>
   <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tags } -%>
-</ul>
+<% end -%>
 <div style="clear:both;"></div>
 <br />
 

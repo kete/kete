@@ -158,7 +158,7 @@ class Basket < ActiveRecord::Base
       @tag_counts_array = @tag_counts_array.sort_by { rand }
     end
 
-    # the query limits per ZOOM_CLASS, no overall results, so we do that here
+    # the query limits per ZOOM_CLASS, not overall combined results, so we do that here
     @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)] unless !tag_limit # when tag_limit is false, we return all
 
     return @tag_counts_array

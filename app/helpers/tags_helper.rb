@@ -5,7 +5,9 @@ module TagsHelper
       var element = Event.element(event);
       if ( element.options[element.selectedIndex].value == \"random\" ) {
         $('direction_field').hide()
-      } else {
+        $('tag_cloud_field').show()
+      } else {  
+        $('tag_cloud_field').hide()
         $('direction_field').show()
       }
     }
