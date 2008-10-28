@@ -78,6 +78,7 @@ class TopicsController < ApplicationController
 
   def create
     begin
+=begin
       # since this is creation, grab the topic_type fields
       topic_type = TopicType.find(params[:topic][:topic_type_id])
 
@@ -114,6 +115,10 @@ class TopicsController < ApplicationController
 
       replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
       @topic = Topic.new(replacement_topic_hash)
+=end
+      # We need to set the topic_type first, because extended_content= depends on it.
+      @topic = Topic.new(:topic_type_id => params[:topic][:topic_type_id])
+      @topic.attributes = params[:topic]
       @successful = @topic.save
 
 
@@ -160,11 +165,10 @@ class TopicsController < ApplicationController
         :topic => @topic
       else
         flash[:notice] = 'Topic was successfully created.'
-        params[:topic] = replacement_topic_hash
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
-        render :action => 'pick_topic_type'
+      render :action => 'pick_topic_type'
     end
   end
 
@@ -175,6 +179,7 @@ class TopicsController < ApplicationController
       # logic to prevent plain old members from editing
       # site basket homepage
       if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
+=begin
         # using the new topic type value, just in case we add ajax update
         # of form in the future
         topic_type = TopicType.find(params[:topic][:topic_type_id])
@@ -204,6 +209,10 @@ class TopicsController < ApplicationController
         version_after_update = @topic.max_version + 1
 
         @successful = @topic.update_attributes(replacement_topic_hash)
+=end        
+        version_after_update = @topic.max_version + 1
+
+        @successful = @topic.update_attributes(params[:topic])
       else
         # they don't have permission
         # this will redirect them to edit
@@ -215,7 +224,7 @@ class TopicsController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
-    params[:topic] = replacement_topic_hash
+    # params[:topic] = replacement_topic_hash
 
     if @successful
       after_successful_zoom_item_update(@topic)

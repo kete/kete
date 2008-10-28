@@ -98,9 +98,9 @@ class Topic < ActiveRecord::Base
     alias_method :tag_counts, :flag_counts
   RUBY
 
-  validates_xml :extended_content
+  validates_xml :extended_content_xml
   validates_presence_of :title
-  validates_as_sanitized_html :description, :extended_content
+  validates_as_sanitized_html :description, :extended_content_xml
   # this may change
   # validates_uniqueness_of :title
 
@@ -156,5 +156,11 @@ class Topic < ActiveRecord::Base
   # turn pretty urls on or off here
   include FriendlyUrls
   alias :to_param :format_for_friendly_urls
+  
+  # All available extended field mappings for this topic instance, including those from ancestors
+  # of our TopicType.
+  def all_field_mappings
+    topic_type.topic_type_to_field_mappings + topic_type.ancestors.collect { |a| a.topic_type_to_field_mappings }.flatten
+  end
   
 end

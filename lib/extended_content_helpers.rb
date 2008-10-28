@@ -36,6 +36,9 @@ module ExtendedContentHelpers
       temp_extended_content = item.extended_content_xml
       if !temp_extended_content.blank? and temp_extended_content.starts_with?('<')
         extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
+        
+        # TODO: Remove logging
+        # raise "XML: #{temp_extended_content.size.to_s}, OUTPUT: #{extended_content_hash.size.to_s}"
 
         non_dc_extended_content_hash = Hash.new
         re = Regexp.new("^dc")

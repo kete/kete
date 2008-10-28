@@ -93,6 +93,7 @@ class ApplicationController < ActionController::Base
                                                        :add_index_topic, :link_index_topic]
 
   helper :slideshows
+  helper :extended_fields
 
   def set_cache_id
     @cache_id = params[:id] ? params[:id].to_i : nil

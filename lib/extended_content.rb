@@ -12,25 +12,41 @@ module ExtendedContent
     
     include ExtendedContentHelpers
     
-    def xml
-      @builder_xml ||= Builder::XmlMarkup.new
+    def xml(force_new = false)
+      if force_new
+        @builder_xml = Builder::XmlMarkup.new
+      else
+        @builder_xml ||= Builder::XmlMarkup.new
+      end
     end
     
     def extended_content_xml
+      # TODO: Remove these logging statements
+      logger.info "extended_content_xml.size: " + read_attribute(:extended_content).size.to_s
+      logger.info "extended_content_xml: " + read_attribute(:extended_content).to_s
       read_attribute(:extended_content)
     end
 
     def extended_content_xml=(xml_string)
+      # TODO: Remove loggers
+      logger.info "extended_content_xml(setter).size: " + xml_string.size.to_s
       write_attribute(:extended_content, xml_string)
     end
 
     def extended_content
       convert_xml_to_extended_fields_hash
     end
-
+    
+    def extended_content_without_metadata
+      convert_xml_to_key_value_hash
+    end
+    
     def extended_content=(content_as_array)
       # Do the behind the scenes stuff..
       self.extended_content_xml = convert_extended_content_to_xml(content_as_array)
+      
+      # TODO: Remove prints
+      puts   "In: #{content_as_array}, Out: #{read_attribute(:extended_content)}"
     end
 
     # simply pulls xml attributes in extended_content column out into a hash
@@ -46,7 +62,7 @@ module ExtendedContent
 
       if form_fields.size > 0
         form_fields.each do |extended_field_mapping|
-          f_id = extended_field_mapping.extended_field_label.downcase.gsub(/ /, '_')
+          f_id = extended_field_mapping.extended_field_label.downcase.gsub(/\s/, '_')
           f_multiple = "#{f_id}_multiple"
           field_xml = root.elements[f_multiple]
           # if we didn't match a multiple
@@ -66,8 +82,12 @@ module ExtendedContent
 
     def xml_attributes_without_position
       # we use rexml for better handling of the order of the hash
-      extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content_xml}</dummy_root>")
-      return extended_content_hash["dummy_root"]
+      
+      XmlSimple.xml_in("<dummy>#{extended_content_xml}</dummy>", "contentkey" => "value", "forcearray" => false)
+      
+      # OLD METHOD
+      # extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content_xml}</dummy_root>")
+      # return extended_content_hash["dummy_root"]
     end
 
     def can_have_short_summary?
@@ -77,12 +97,16 @@ module ExtendedContent
     private
 
       def convert_extended_content_to_xml(params_hash)
-        all_field_mappings.collect do |field_to_xml|
+        
+        # Force a new instance of Bulder::XMLMarkup to be spawned
+        xml(true)
+        
+        a = all_field_mappings.collect do |field_to_xml|
 
           # label is unique, whereas xml_element_name is not
           # thus we use label for our internal (topic.extended_content) storage of arbitrary attributes
           # xml_element_name is used for exported topics, such as oai/dc records
-          field_name = field_to_xml.extended_field_label.downcase.gsub(/\s+/, '_')
+          field_name = field_to_xml.extended_field_label.downcase.gsub(/\s/, '_')
           
           # because we piggyback multiple, it doesn't have a ? method
           # even though it is boolean
@@ -122,27 +146,42 @@ module ExtendedContent
               end
             end
           else
-            extended_content_field_xml_tag(
+            t = extended_content_field_xml_tag(
               :xml => xml,
               :field => field_name,
               :value => params_hash[field_name],
               :xml_element_name => field_to_xml.extended_field_xml_element_name,
               :xsi_type => field_to_xml.extended_field_xsi_type
             )
+            puts "tag: #{t}"
+            t
           end
-        end.flatten.join("\n")
+        end.flatten.uniq.join("\n")
+        
+        puts "all_field_mappings: #{all_field_mappings.size.to_s}"
+        puts "output size: #{a.size.to_s}"
+
+        a
       end
 
       def convert_xml_to_extended_fields_hash
-        xml_attributes
+        xml_attributes_without_position
       end
       
+      def convert_xml_to_key_value_hash
+        options = {
+          "contentkey"  => "value", 
+          "forcearray"  => false,
+          "noattr"      => true
+        }
+        
+        XmlSimple.xml_in("<dummy>#{extended_content_xml}</dummy>", options).collect { |k, v| [k, v.empty? ? nil : v] }
+      end
+      
+      # All available extended field mappings for the given item.
+      # Overloaded in Topic model (special case with hierarchical TopicTypes)
       def all_field_mappings
-        if self.is_a?(Topic)
-          topic_type.topic_type_to_field_mappings + topic_type.ancestors.collect { |a| a.topic_type_to_field_mappings }.flatten
-        else
-          ContentType.find_by_class_name(self.class.name).content_type_to_field_mappings
-        end
+        ContentType.find_by_class_name(self.class.name).content_type_to_field_mappings
       end
     
   end
