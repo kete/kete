@@ -7,13 +7,13 @@
     <h4>Options</h4>
     <label for="tag_order">Sort by:</label>
     <%= select 'tag', 'order', Basket.order_tags_by_options, { :selected => @order }, { :name => 'order' } -%>
+    <span id="tag_cloud_field">
+      <label for="type">As Tag Cloud?</label>
+      <%= check_box_tag 'type', 'tag_cloud', (@type == 'tag_cloud') -%>
+    </span>
     <span id="direction_field" <%= 'style="display:none;"' if @order == "random" -%>>
       <label for="tags_in_reverse">In reverse?</label>
       <%= check_box_tag 'tags_in_reverse', 'reverse', @tags_in_reverse -%>
-    </span>
-    <span id="tag_cloud_field" <%= 'style="display:none;"' unless @order == "random" -%>>
-      <label for="type">As Tag Cloud?</label>
-      <%= check_box_tag 'type', 'tag_cloud', (@type == 'tag_cloud') -%>
     </span>
     <%= submit_tag 'Submit' -%>
   <% end -%>
