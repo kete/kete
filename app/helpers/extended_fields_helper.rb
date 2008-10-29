@@ -22,12 +22,20 @@ module ExtendedFieldsHelper
     extended_field.multiple? ? base + additional_extended_field_control(extended_field) : base
   end
   
-  def extended_field_editor(extended_field, value = nil)
-    options = {
+  def extended_field_editor(extended_field, value = nil, options = HashWithIndifferentAccess.new)
+    
+    @field_multiple_id = options[:multiple] || 1
+    
+    # Compile options for text_field_tag
+    text_field_tag_options = {
       :id => id_for_extended_field(extended_field),
       :tabindex => 1
     }
-    text_field_tag(name_for_extended_field(extended_field), value, options)
+    
+    # Compile tag XHTML name
+    name = name_for_extended_field(extended_field)
+    
+    text_field_tag(name, value, text_field_tag_options)
   end
   
   # Generates label XHTML
@@ -37,12 +45,10 @@ module ExtendedFieldsHelper
     label_tag(id_for_extended_field(extended_field), extended_field.label, options)
   end
   
-  def additional_extended_field_control(extended_field)
-    id = base_name_for_extended_field(extended_field).gsub(/[\[\]]/, '_') + "additional"
+  def additional_extended_field_control(extended_field, n)
+    id = id_for_extended_field(extended_field) + "_additional"
     
-    link_to_function("Add another field", nil, :id => id) do |page|
-      page.call "alert(\"Not implemented.\")"
-    end
+    link_to_remote("Add another field", :url => { :controller => 'extended_fields', :action => 'add_field_to_multiples', :extended_field_id => extended_field.id, :n => n, :item_key => @item_type_for_params }, :id => id)
   end
   
   
@@ -60,9 +66,20 @@ module ExtendedFieldsHelper
   end
   
   def field_value_from_hash(extended_field, array)
-    array.select { |k, v| k == qualified_name_for_field(extended_field) }.flatten.last
+    array.select { |k, v| k == qualified_name_for_field(extended_field) }.flatten.last || ""
   rescue
     ""
+  end
+  
+  def field_value_from_multiples_hash(extended_field, array, position_in_set)
+    field_values = array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }.first.last
+    field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
+  rescue
+    ""
+  end
+  
+  def existing_multiples_in(extended_field, array)
+    array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }.first.last.collect { |k, v| k }
   end
   
   private
@@ -78,23 +95,6 @@ module ExtendedFieldsHelper
     
     def id_for_extended_field(extended_field)
       name_for_extended_field(extended_field).gsub(/\]/, "").gsub(/\[/, '_')
-    end
-  
-    def generate_id_for_extended_field(extended_field)
-      @field_multiple_id = index_of_multiple_field(extended_field) if extended_field.multiple?
-    end
-  
-    # We need to be careful when handling extended fields that can have multiples.
-    # So, keep track of IDs for fields as offering them
-    def index_of_multiple_field(extended_field)
-    
-      # Initialize the storage of existing indexes
-      @multiple_field_indexes ||= HashWithIndifferentAccess.new
-      @multiple_field_indexes[qualified_name_for_field(extended_field)] ||= 0 # We start at 1 (see below)
-    
-      # Increment and kick off the new ID
-      @multiple_field_indexes[qualified_name_for_field(extended_field)] = \
-        @multiple_field_indexes[qualified_name_for_field(extended_field)] + 1
     end
   
 end

@@ -117,8 +117,12 @@ module ExtendedContent
             # do an explicit key, so we end up with a hash
             xml.tag!("#{field_name}_multiple") do
               hash_of_values = params_hash[field_name]
+              
+              # Do not store empty values
+              hash_of_values = hash_of_values.reject { |k, v| v.blank? }
+              
               if !hash_of_values.blank?
-                hash_of_values.keys.each do |key|
+                hash_of_values.keys.sort.each do |key|
                   xml.tag!(key) do
                     extended_content_field_xml_tag(
                       :xml => xml,

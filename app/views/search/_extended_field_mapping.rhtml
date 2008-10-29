@@ -4,21 +4,29 @@
   * item_key => String: Name for params hash key (i.e. 'topic' or 'user')
   * extended_field_mapping => Mapping we're working on %>
 <% ef = extended_field_mapping.extended_field %>
+<% content = extended_item.extended_content_without_metadata %>
 <% @item_type_for_params = item_key %>
   
 <div class="form-element">
   <% if ef.multiple? %>
+    <div id="<%= qualified_name_for_field(ef) + "_multis"%>">
   
-    <%# Deal with multiple instances of fields %>
-    <%# extended_field_label(ef, item_key %>
-    HUH?
+      <%# Deal with multiple instances of fields %>
+    <%= extended_field_label(ef) %>
+    <% (existing_multiples_in(ef, content) || ["1"]).sort.each do |n| %>
+    <%= render :partial => 'search/extended_field_editor', :locals => { :ef => ef, :content => content, :n => n } %>
+    
+    <% end %>
 
+    <%= render :partial => 'search/additional_extended_field_control', :locals => { :n => existing_multiples_in(ef, content).flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => content } %>
+    
+    </div>
 
   <% else %>
     
     <%# Print out a control for a single field instance %>
     <%= extended_field_label(ef) %>
-    <%= extended_field_editor(ef, field_value_from_hash(ef, extended_item.extended_content_without_metadata)) %>
+    <%= extended_field_editor(ef, field_value_from_hash(ef, content)) %>
   <% end %>
 </div>
   

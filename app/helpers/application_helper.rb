@@ -478,7 +478,7 @@ module ApplicationHelper
             # and all values, separated by spaces (for now)
             field_name = String.new
             field_values = Array.new
-            field_value.keys.each do |subfield_key|
+            field_value.keys.sort.each do |subfield_key|
               field_hash = item_xml_hash[field_array[0]][field_key][subfield_key]
               field_hash.keys.each do |key|
                 if field_name.blank?
