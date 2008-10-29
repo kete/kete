@@ -10,7 +10,7 @@ DEFAULT_TINYMCE_SETTINGS = {
   :theme_advanced_statusbar_location => "bottom",
   :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright justifyfull separator indent outdent separator bullist numlist forecolor backcolor separator link unlink image separator undo redo separator code},
   :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect separator pastetext pasteword selectall },
-  :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen },
+  :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen separator spellchecker },
   :theme_advanced_resizing => true,
   :theme_advanced_resize_horizontal => false,
 
@@ -23,6 +23,9 @@ DEFAULT_TINYMCE_SETTINGS = {
   :paste_convert_middot_lists => false,
   :paste_convert_headers_to_strong => true,
 
+  # spell checker functionality
+  :spellchecker_languages => '+English=en',
+
   # which plugins we are enabling
-  :plugins => %w{ contextmenu paste table fullscreen }
+  :plugins => %w{ contextmenu paste table fullscreen spellchecker }
 }
