@@ -24,7 +24,7 @@ module ExtendedContentController
       klass.send :protect_from_forgery, :secret => KETE_SECRET, :except => ['new', 'destroy']
 
       ### TinyMCE WYSIWYG editor stuff
-      klass.send :uses_tiny_mce, :options => DEFAULT_TINYMCE_SETTINGS,
+      klass.send :uses_tiny_mce, :options => DEFAULT_TINYMCE_SETTINGS.merge({:spellchecker_rpc_url => "/site/#{klass.controller_name}/spellchecker"}),
                                  :only => VALID_TINYMCE_ACTIONS
       ### end TinyMCE WYSIWYG editor stuff
 
