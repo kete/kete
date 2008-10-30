@@ -228,6 +228,11 @@
                                                                         :urlified_name => @site_basket.urlified_name},
                                                                         :tabindex => '2' -%>
                         |
+                        <%= link_to_unless_current "choices for extended fields", {:controller => '/choices',
+                                                                        :action => :list,
+                                                                        :urlified_name => @site_basket.urlified_name},
+                                                                        :tabindex => '2' -%>
+                        |
                         <%= link_to_unless_current "site members", {:controller => '/members',
                                                                         :action => :list,
                                                                         :urlified_name => @site_basket.urlified_name},

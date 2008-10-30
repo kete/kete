@@ -47,12 +47,13 @@ module ExtendedFieldsHelper
     extended_field.multiple? ? base + additional_extended_field_control(extended_field) : base
   end
   
+  # Build a generic editor for the extended field
   def extended_field_editor(extended_field, value = nil, options = HashWithIndifferentAccess.new)
     
     @field_multiple_id = options[:multiple] || 1
     
     # Compile options for text_field_tag
-    text_field_tag_options = {
+    tag_options = {
       :id => id_for_extended_field(extended_field),
       :tabindex => 1
     }
@@ -60,7 +61,39 @@ module ExtendedFieldsHelper
     # Compile tag XHTML name
     name = name_for_extended_field(extended_field)
     
-    text_field_tag(name, value, text_field_tag_options)
+    builder = "extended_field_#{extended_field.ftype}_editor".to_sym
+    if extended_field.ftype == "choice"
+      send(:extended_field_choice_editor, name, value, tag_options, extended_field)
+    elsif respond_to?(builder)
+      send(builder, name, value, tag_options)
+    else
+      send(:extended_field_text_editor, name, value, tag_options)
+    end
+  end
+  
+  def extended_field_checkbox_editor(name, value, options)
+    check_box_tag(name, "1", (value.to_s == "1"), options)
+  end
+  
+  # def extended_field_radio_editor(name, value, options)
+  #   # Not implemented. How would this be used?
+  # end
+  
+  def extended_field_date_editor(name, value, options)
+    extended_field_text_editor(name, value, options)
+  end
+  
+  def extended_field_text_editor(name, value, options)
+    text_field_tag(name, value, options)
+  end
+  
+  def extended_field_textarea_editor(name, value, options)
+    text_area_tag(name, value, options.merge(:rows => 5))
+  end
+  
+  def extended_field_choice_editor(name, value, options, extended_field)
+    option_tags = options_for_select(extended_field.choices.map { |c| [c.label, c.value] }, value)
+    select_tag(name, option_tags, options)
   end
   
   # Generates label XHTML
@@ -94,7 +127,8 @@ module ExtendedFieldsHelper
   end
   
   def existing_multiples_in(extended_field, array)
-    array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }.first.last.collect { |k, v| k }
+    multiples = array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }
+    multiples.empty? ? nil : multiples.first.last.collect { |k, v| k }
   end
   
   private
