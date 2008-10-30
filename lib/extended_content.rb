@@ -22,8 +22,8 @@ module ExtendedContent
     
     def extended_content_xml
       # TODO: Remove these logging statements
-      logger.info "extended_content_xml.size: " + read_attribute(:extended_content).size.to_s
-      logger.info "extended_content_xml: " + read_attribute(:extended_content).to_s
+      # logger.info "extended_content_xml.size: " + read_attribute(:extended_content).size.to_s
+      # logger.info "extended_content_xml: " + read_attribute(:extended_content).to_s
       read_attribute(:extended_content)
     end
 

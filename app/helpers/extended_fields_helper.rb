@@ -1,5 +1,30 @@
 module ExtendedFieldsHelper
   
+  # Override for ActiveScaffold extended field controller edit view
+  # Refer to http://activescaffold.com/docs/form-overrides for details
+  def pseudo_choices_form_column(record, input_name)
+    select :record, :pseudo_choices, 
+      Choice.find(:all).collect { |c| [c.label, c.id] }, 
+      { :selected => record.choices.collect { |c| c.id } }, 
+      { :multiple => true, :name => input_name + "[]" }
+  end
+  
+  # Same as a above..
+  def ftype_form_column(record, input_name)
+
+    options_for_select = [
+      ['Check box', 'checkbox'],
+      ['Radio button', 'radio'],
+      ['Date', 'date'],
+      ['Text', 'text'],
+      ['Text box', 'textarea'],
+      ['Choices (drop-down)', 'choice']
+    ]
+    
+    select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name)
+  end
+  
+  
   # Generates label and editor for extended field
   # Also adds additional extended field control for multiples
   # Receives one of Topic#topic_type.topic_type_to_field_mapping (TopicTypeToFieldMapping),
@@ -49,16 +74,6 @@ module ExtendedFieldsHelper
     id = id_for_extended_field(extended_field) + "_additional"
     
     link_to_remote("Add another field", :url => { :controller => 'extended_fields', :action => 'add_field_to_multiples', :extended_field_id => extended_field.id, :n => n, :item_key => @item_type_for_params }, :id => id)
-  end
-  
-  
-  # Override for ActiveScaffold extended field controller edit view
-  # Refer to http://activescaffold.com/docs/form-overrides for details
-  def pseudo_choices_form_column(record, input_name)
-    select :record, :pseudo_choices, 
-      Choice.find(:all).collect { |c| [c.label, c.id] }, 
-      { :selected => record.choices.collect { |c| c.id } }, 
-      { :multiple => true, :name => input_name + "[]" }
   end
   
   def qualified_name_for_field(extended_field)

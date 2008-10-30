@@ -13,7 +13,7 @@ class ExtendedFieldsController < ApplicationController
     config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type]
     
     # Description for ftype
-    config.columns[:ftype].description = "Field type. Options include \"text\", \"choice\". Must be set to \"choice\" for Choices (see below) to be selectable."
+    # config.columns[:ftype].description = "Field type. Options include \"text\", \"choice\". Must be set to \"choice\" for Choices (see below) to be selectable."
     
     # CRUD for adding/removing choices
     config.columns << [:pseudo_choices]
