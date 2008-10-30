@@ -72,7 +72,7 @@ module ExtendedFieldsHelper
   end
   
   def extended_field_checkbox_editor(name, value, options)
-    check_box_tag(name, "1", (value.to_s == "1"), options)
+    check_box_tag(name, "Yes", (value.to_s == "Yes"), options)
   end
   
   # def extended_field_radio_editor(name, value, options)
