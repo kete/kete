@@ -7,6 +7,8 @@ class ConfigureController < ApplicationController
 
   permit "tech_admin of :site"
 
+  include SiteRegistration
+
   def index
     @advanced = params[:advanced] || false
     @sections = SETUP_SECTIONS.collect { |s| s}
@@ -217,50 +219,79 @@ class ConfigureController < ApplicationController
   # that we also at site configure in index
   def add_link_from_kete_net
     # check to see if the site is already listed
+    # loads variable used in the reload-site-index section
     site_listing
   end
 
   def send_information
-    register_url = "http://kete.net.nz"
-    kete_sites_link = register_url + "/site/kete_sites"
-    register_new_link = "#{kete_sites_link}/new"
+    set_kete_net_urls
     if !request.xhr?
-      redirect_to register_new_link
+      redirect_to @kete_sites_register
     else
-      # this will break if reached when these constants aren't set
-      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SITE_URL.blank? || PRETTY_SITE_NAME.blank?
-      begin
-        register = RegisterSiteResource.create(:name => PRETTY_SITE_NAME, :url => SITE_URL, :description => params[:site_description])
-      rescue
-        register = nil
-        @register_error = $!
+      @worker_type = "site_registration_worker".to_sym
+      if backgroundrb_is_running?(@worker_type)
+        MiddleMan.worker(@worker_type, @worker_type.to_s).delete
+        sleep 5 # give it time to kill the worker
       end
-      render :update do |page|
-        top_message = String.new
-        if !register.nil? && register && register.errors.empty? && register.id > 0
-          top_message = "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at " + link_to(kete_sites_link) + "."
-        elsif !register.nil? && !register.errors.empty?
-          register_message = "<strong>Some fields were incorrect:</strong><br />"
-          register.errors.each do |field, error|
-            register_message += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
-          end
-          page.replace_html("register_errors", register_message)
-          page.show('form_fields')
-          page.show('site_description')
-          page.show('data-button')
-          page.hide('top_message')
-        else
-          logger.error("Error linking from Kete.net.nz: " + @register_error) if @register_error
-          top_message = "There was an error linking to your site. "
-          site_listing
-          if @site_listing.blank?
-            top_message += "You can do it manually at "+ link_to(register_new_link) + "."
+
+      unless backgroundrb_is_running?(@worker_type)
+        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
+        MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :params => params } )
+        render :update do |page|
+          page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_registration_progress' }, :frequency => 3))
+        end
+      else
+        render :update do |page|
+          page.replace_html("top_message", "There is already a site registration worker active. Weird! Try refreshing the page.")
+          page.hide('spinner')
+        end
+      end
+    end
+  end
+
+  include WorkerControllerHelpers
+
+  def get_registration_progress
+    set_kete_net_urls
+    begin
+      @worker_type = "site_registration_worker".to_sym
+      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      logger.debug(status.inspect)
+      if !status.blank?
+        if status[:registration_complete] == true
+          # the following lines means the periodic calls to this method wont cause errors
+          # when trying to process the registration again
+          MiddleMan.worker(@worker_type, @worker_type.to_s).reset_worker
+          MiddleMan.worker(@worker_type, @worker_type.to_s).delete
+
+          if status[:registration_success] == true
+            top_message = "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='#{@kete_sites}'>#{@kete_sites}</a>."
+            render :update do |page|
+              page.hide('spinner')
+              page.replace_html("top_message", top_message)
+            end
+          elsif !status[:registration_validation_errors].blank?
+            register_errors = "<strong>Some fields were incorrect:</strong><br />"
+            status[:registration_validation_errors].each do |field, error|
+              register_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
+            end
+            render :update do |page|
+              page.replace_html("register_errors", register_errors)
+              page.hide('spinner')
+              page.show('form_fields')
+            end
           else
-            top_message += "However, it appears that your site is now listed. Please check the listing to make sure it is correct at " + link_to(@site_listing) + '.'
+            error_registering_site
+          end
+        else
+          render :update do |page| # we don't update anything, this just licenses errors
           end
         end
-        page.replace_html("top_message", top_message)
+      else
+        error_registering_site
       end
+    rescue
+      error_registering_site
     end
   end
 
@@ -281,19 +312,6 @@ class ConfigureController < ApplicationController
     @not_completed = SystemSetting.not_completed
   end
 
-  def site_listing
-    # we empty @site_listing in case it already exists
-    @site_listing = String.new
-    require 'net/http'
-    require 'uri'
-    remote_url = URI.parse("http://kete.net.nz/site/kete_sites/has_link_to")
-    remote_url.path = "/" if remote_url.path.length < 1
-    http = Net::HTTP.new(remote_url.host, 80)
-    @site_listing = http.request_post(remote_url.path, "url=#{SITE_URL}").body
-  end
-
-  helper_method :site_listing
-
   private
 
   def ssl_required?
@@ -306,10 +324,4 @@ class ConfigureController < ApplicationController
     nil
   end
 
-end
-
-class RegisterSiteResource < ActiveResource::Base
-  self.site = "http://kete.net.nz/site/"
-  self.element_name = "kete_site"
-  self.timeout = 60
 end
