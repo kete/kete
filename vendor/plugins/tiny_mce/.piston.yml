@@ -1,7 +1,7 @@
 --- 
 format: 1
 handler: 
-  commit: ff09e3700e5e0d9a469a0c69681b32ba4827f0ff
+  commit: d082504e1ac2d923bba320174d09693aa2d50613
   branch: HEAD
 lock: false
 repository_url: git://github.com/kete/tiny_mce.git

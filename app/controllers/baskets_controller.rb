@@ -1,6 +1,6 @@
 class BasketsController < ApplicationController
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS.merge({:spellchecker_rpc_url => "/site/baskets/spellchecker"}),
+  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
                 :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
