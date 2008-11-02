@@ -7,7 +7,7 @@ class ConfigureController < ApplicationController
 
   permit "tech_admin of :site"
 
-  include SiteRegistration
+  include SiteLinking
 
   def index
     @advanced = params[:advanced] || false
@@ -223,75 +223,80 @@ class ConfigureController < ApplicationController
     site_listing
   end
 
+  include WorkerControllerHelpers
+
   def send_information
     set_kete_net_urls
     if !request.xhr?
-      redirect_to @kete_sites_register
+      redirect_to @new_kete_site
     else
-      @worker_type = "site_registration_worker".to_sym
-      if backgroundrb_is_running?(@worker_type)
-        MiddleMan.worker(@worker_type, @worker_type.to_s).delete
-        sleep 5 # give it time to kill the worker
-      end
+      begin
+        @worker_type = "site_linking_worker".to_sym
 
-      unless backgroundrb_is_running?(@worker_type)
-        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
-        MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :params => params } )
-        render :update do |page|
-          page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_registration_progress' }, :frequency => 3))
+        # if the site registration never completed, this worker may still be operational
+        # (that should only happen when bgrb returns nothing, caused by errors in the worker)
+        # so we use this method to attempt to delete it (before starting another)
+        delete_existing_workers_for(@worker_type)
+
+        unless backgroundrb_is_running?(@worker_type)
+          MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
+          MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :params => params } )
+          render :update do |page|
+            page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_site_linking_progress' }, :frequency => 3))
+          end
+        else
+          render :update do |page|
+            page.replace_html("top_message", "There is already a site registration worker active. Wierd! Try refreshing the page.")
+            page.hide('spinner')
+          end
         end
-      else
-        render :update do |page|
-          page.replace_html("top_message", "There is already a site registration worker active. Weird! Try refreshing the page.")
-          page.hide('spinner')
-        end
+      rescue
+        error_linking_site
       end
     end
   end
 
-  include WorkerControllerHelpers
-
-  def get_registration_progress
+  def get_site_linking_progress
     set_kete_net_urls
     begin
-      @worker_type = "site_registration_worker".to_sym
+      @worker_type = "site_linking_worker".to_sym
       status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
       logger.debug(status.inspect)
       if !status.blank?
-        if status[:registration_complete] == true
+        if status[:linking_complete] == true
           # the following lines means the periodic calls to this method wont cause errors
           # when trying to process the registration again
           MiddleMan.worker(@worker_type, @worker_type.to_s).reset_worker
           MiddleMan.worker(@worker_type, @worker_type.to_s).delete
 
-          if status[:registration_success] == true
+          if status[:linking_success] == true
             top_message = "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='#{@kete_sites}'>#{@kete_sites}</a>."
             render :update do |page|
               page.hide('spinner')
               page.replace_html("top_message", top_message)
             end
-          elsif !status[:registration_validation_errors].blank?
-            register_errors = "<strong>Some fields were incorrect:</strong><br />"
-            status[:registration_validation_errors].each do |field, error|
-              register_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
+          elsif !status[:linking_validation_errors].blank?
+            linking_errors = "<strong>Some fields were incorrect:</strong><br />"
+            status[:linking_validation_errors].each do |field, error|
+              linking_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
             end
             render :update do |page|
-              page.replace_html("register_errors", register_errors)
+              page.replace_html("linking_errors", linking_errors)
               page.hide('spinner')
               page.show('form_fields')
             end
           else
-            error_registering_site
+            error_linking_site
           end
         else
-          render :update do |page| # we don't update anything, this just licenses errors
+          render :update do |page| # we don't update anything, this just silenses errors
           end
         end
       else
-        error_registering_site
+        error_linking_site
       end
     rescue
-      error_registering_site
+      error_linking_site
     end
   end
 
