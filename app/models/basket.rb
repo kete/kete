@@ -64,6 +64,9 @@ class Basket < ActiveRecord::Base
   # imports are processes to bring in content to a basket
   has_many :imports, :dependent => :destroy
 
+  # each basket can have multiple feeds displayed in the sidebar
+  has_many :feeds, :dependent => :destroy
+
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
 

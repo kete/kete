@@ -78,6 +78,15 @@ Complete steps are:
 2.      Run tmp:cache:clear (not necessary for capistrano deployments)
 3.      Restart your Kete server
 
+== 2008/09/12 - Adding Homepage Feed Reader
+
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Install the feed-normalizer gem
+          $ gem install feed-normalizer
+3.      Upgrade your code base
+4.      Run the database migration 'rake db:migrate'
+5.      Start your Kete server again (mongrels, backgroundrb)
+
 == 2008/08/07 - Fixing Caching Issues
 
 1.      Stop your Kete server (mongrels, backgroundrb).

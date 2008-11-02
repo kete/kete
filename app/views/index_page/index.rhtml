@@ -121,6 +121,23 @@
   <% end -%>
 <% end -%>
 
+<% if @current_basket.feeds.size > 0 %>
+  <div class="secondary-content-section-wrapper">
+    <div id="contents-by-type" class="secondary-content-section">
+      <h3>Latest Feeds</h3>
+      <% @current_basket.feeds.each do |feed| -%>
+        <h4><%=h feed.title %></h4>
+        <ul>
+          <% feed.latest_entries.each do |entry| -%>
+            <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+          <% end -%>
+        </ul>
+      <% end -%>
+      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+    </div>
+  </div>
+<% end -%>
+
 <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil? -%>
   <div class="secondary-content-section-wrapper">
     <div id="contents-by-type" class="secondary-content-section">

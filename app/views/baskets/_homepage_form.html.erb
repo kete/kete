@@ -112,6 +112,18 @@
         </fieldset>
       </div>
 
+      <div class="form-element"><label>Feeds<br />
+        <small>
+        (new-line separated list of urls)<br />
+        (Feed Title|Feed URL[|Amount])
+        </small>
+        </label>
+        <fieldset>
+          <div class="form-element">
+            <%= text_area_tag 'feeds_url_list', @feeds_list, :cols => 80, :rows => 3 %>
+          </div>
+        </fieldset>
+      </div>
     </div>
   </div>
   <!--[eoform:basket]-->

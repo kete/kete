@@ -56,6 +56,13 @@ class BasketsController < ApplicationController
 
   def homepage_options
     edit
+
+    @feeds_list = []
+    @basket.feeds.each do |feed|
+      limit = !feed.limit.nil? ? "|#{feed.limit.to_s}" : ''
+      @feeds_list << "#{feed.title}|#{feed.url}#{limit}"
+    end
+    @feeds_list = @feeds_list.join("\n")
   end
 
   def update
@@ -77,6 +84,14 @@ class BasketsController < ApplicationController
           expire_show_caches_for(item)
           zoom_destroy_for(item)
         end
+      end
+    end
+
+    if !params[:feeds_url_list].nil?
+      @basket.feeds.delete_all
+      params[:feeds_url_list].split("\n").each do |feed|
+        feed_parts = feed.split('|')
+        @basket.feeds << Feed.create({:title => feed_parts[0].strip, :url => feed_parts[1].strip, :limit => (feed_parts[2] || nil)})
       end
     end
 
