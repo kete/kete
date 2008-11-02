@@ -1,7 +1,7 @@
 module SiteRegistration
   unless included_modules.include? SiteRegistration
     def set_kete_net_urls
-      @kete_net = "http://localhost:3000/site"
+      @kete_net = "http://kete.net.nz/site"
       @kete_sites = "#{@kete_net}/kete_sites"
       @kete_sites_register = "#{@kete_sites}/new"
     end
@@ -40,7 +40,7 @@ module SiteRegistration
 end
 
 class RegisterSiteResource < ActiveResource::Base
-  self.site = "http://localhost:3000/site/"
+  self.site = "http://kete.net.nz/site/"
   self.element_name = "kete_site"
   self.timeout = 60
 end
