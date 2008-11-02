@@ -4,6 +4,7 @@ class AddChoices < ActiveRecord::Migration
     create_table 'choices' do |t|
       t.column 'label', :string
       t.column 'value', :string
+      t.column 'parent_id', :integer, :null => true
     end
     
     create_table 'choice_mappings' do |t|

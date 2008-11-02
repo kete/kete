@@ -5,6 +5,10 @@ class Choice < ActiveRecord::Base
   
   has_many :extended_fields, :through => :choice_mappings, 
     :source => :field, :source_type => 'ExtendedField'
+    
+  # STI for subcategories
+  belongs_to :parent, :class_name => 'Choice', :foreign_key => 'parent_id'
+  has_many :children, :class_name => 'Choice', :foreign_key => 'parent_id'
   
   # Label is compulsory
   validates_presence_of :label

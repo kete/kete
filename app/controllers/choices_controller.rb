@@ -1,13 +1,13 @@
 class ChoicesController < ApplicationController
   
-  before_filter :login_required
+  before_filter :login_required, :only => [ :list, :index ]
   
   permit "site_admin"
   
   active_scaffold :choices do |config|
     
     # Which columns to show
-    config.columns = [:label, :value]
+    config.columns = [:label, :value, :parent]
     config.list.columns.exclude :updated_at, :created_at
     
     # Column overrides

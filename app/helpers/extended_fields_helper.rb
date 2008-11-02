@@ -3,13 +3,22 @@ module ExtendedFieldsHelper
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
   def pseudo_choices_form_column(record, input_name)
+    parent_choices = Choice.find(:all, :conditions => 'parent_id IS NULL', :order => 'label ASC')
+    
+    all_choices = parent_choices.collect do |parent|
+      [[parent.label, parent.id]] + parent.children.find(:all, :order => 'label ASC').collect { |c| ["- #{c.label}", c.id] }
+    end
+    
+    choices_for_select = all_choices.inject([]) { |result, c| result.concat(c) }
+    
     select :record, :pseudo_choices, 
-      Choice.find(:all).collect { |c| [c.label, c.id] }, 
+      choices_for_select, 
       { :selected => record.choices.collect { |c| c.id } }, 
       { :multiple => true, :name => input_name + "[]" }
   end
   
-  # Same as a above..
+  # Same as above, but for ftype.
+  # We are not being strict about which ftypes are allowed and which are not.
   def ftype_form_column(record, input_name)
 
     options_for_select = [
@@ -22,6 +31,13 @@ module ExtendedFieldsHelper
     ]
     
     select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name)
+  end
+  
+  # Same as above, but for choice hierarchy
+  def parent_form_column(record, input_name)
+    select(:record, :parent_id, 
+      [['', nil]] + Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
+      { :select => record.parent_id }, :name => input_name)
   end
   
   

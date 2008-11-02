@@ -3,7 +3,7 @@ class ExtendedFieldsController < ApplicationController
   helper ExtendedFieldsHelper
   
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index]
+  before_filter :login_required, :only => [:list, :index, :add_field_to_multiples]
 
   permit "site_admin or admin of :site or tech_admin of :site"
 
