@@ -202,6 +202,10 @@ class User < ActiveRecord::Base
     return @show_email
   end
 
+  def accepts_emails?
+    self.allow_emails == true
+  end
+
   # we only need distinct items contributed to
   # because we have a polymorphic foreign key
   # this is tricky to do in sql,

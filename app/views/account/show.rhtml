@@ -11,10 +11,14 @@
     <%= h(@user.login) -%>
   </p>
 
-  <% if @user.show_email? or @viewer_is_user -%>
+  <% if @user.show_email? || @viewer_is_user -%>
   <p>
     <strong>Email:</strong>
     <%= mail_to(@user.email, @user.email, :encode => "hex") -%>
+  </p>
+  <% elsif @user.accepts_emails? -%>
+  <p>
+    <%= link_to 'Contact this user', :action => 'contact', :id => @user -%>
   </p>
   <% end -%>
 
@@ -41,7 +45,7 @@
     <% @viewer_portraits.each do |portrait| -%>
       <% unless portrait.thumbnail_file.file_private -%>
         <%= link_to image_tag(portrait.thumbnail_file.public_filename,
-                              { :border => 0, :width => 50, :height => 50, :alt => "#{portrait.title}" }),
+                              { :border => 0, :width => 50, :height => 50, :alt => "#{portrait.title}. " }),
                     { :urlified_name => portrait.basket.urlified_name,
                       :controller => 'images',
                       :action => 'show',
@@ -67,7 +71,7 @@
     <% else -%>
       <h3>Your current default license is:</h3>
       <div class="license">
-        <%= image_tag(@user.license.image_url, :alt => "licence  thumbnail") %>
+        <%= image_tag(@user.license.image_url, :alt => "License thumbnail. ") %>
         <%= @user.license.title %>
         <%= link_to("(View license)", url_for(@user.license.url), "target" => "_new") %>
       </div>

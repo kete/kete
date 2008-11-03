@@ -6,8 +6,14 @@ module EmailController
       #         but if you want basket/contact, you need to add that route manually)
 
     def self.included(klass)
+      if klass.name == 'BasketsController'
+        settings_method = :prepare_basket_contact_form
+      else
+        settings_method = :prepare_user_contact_form
+      end
+
       # set a few instance variables to be used later on
-      klass.send :before_filter, :prepare_contact_form_settings, :only => [:contact, :send_email, :redirect_if_contact_form_disabled]
+      klass.send :before_filter, settings_method, :only => [:contact, :send_email, :redirect_if_contact_form_disabled]
 
       # make sure we redirect with a flash message
       # if the basket contact form isn't enabled
@@ -38,14 +44,21 @@ module EmailController
 
     private
 
-    # created this method because of plans to integrate user mailing here
-    # which will have different settings, but the other methods will be the same
-    def prepare_contact_form_settings
+    def prepare_basket_contact_form
       @contact_form_enabled = @current_basket.allows_contact_with_inheritance?
       @recipient = @current_basket.administrators
       @recipient_name = @current_basket.name
       @from_basket = @current_basket
       @redirect_to = (session[:return_to] || '/')
+    end
+
+    def prepare_user_contact_form
+      @user = User.find_by_id(params[:id])
+      @contact_form_enabled = @user.accepts_emails?
+      @recipient = @user
+      @recipient_name = @user.user_name
+      @from_basket = nil
+      @redirect_to = { :controller => 'account', :action => 'show', :id => @user.id }
     end
 
     def redirect_if_contact_form_disabled

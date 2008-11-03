@@ -7,6 +7,7 @@ class AccountController < ApplicationController
 
   include ExtendedContent
   include ExtendedContentController
+  include EmailController
 
   # Be sure to include AuthenticationSystem in Application Controller instead
   # include AuthenticatedSystem
