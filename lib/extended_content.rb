@@ -21,15 +21,10 @@ module ExtendedContent
     end
     
     def extended_content_xml
-      # TODO: Remove these logging statements
-      # logger.info "extended_content_xml.size: " + read_attribute(:extended_content).size.to_s
-      # logger.info "extended_content_xml: " + read_attribute(:extended_content).to_s
       read_attribute(:extended_content)
     end
 
     def extended_content_xml=(xml_string)
-      # TODO: Remove loggers
-      logger.info "extended_content_xml(setter).size: " + xml_string.size.to_s
       write_attribute(:extended_content, xml_string)
     end
 
@@ -44,9 +39,6 @@ module ExtendedContent
     def extended_content=(content_as_array)
       # Do the behind the scenes stuff..
       self.extended_content_xml = convert_extended_content_to_xml(content_as_array)
-      
-      # TODO: Remove prints
-      puts   "In: #{content_as_array}, Out: #{read_attribute(:extended_content)}"
     end
 
     # simply pulls xml attributes in extended_content column out into a hash
@@ -101,7 +93,7 @@ module ExtendedContent
         # Force a new instance of Bulder::XMLMarkup to be spawned
         xml(true)
         
-        a = all_field_mappings.collect do |field_to_xml|
+        all_field_mappings.collect do |field_to_xml|
 
           # label is unique, whereas xml_element_name is not
           # thus we use label for our internal (topic.extended_content) storage of arbitrary attributes
@@ -150,22 +142,17 @@ module ExtendedContent
               end
             end
           else
-            t = extended_content_field_xml_tag(
+            extended_content_field_xml_tag(
               :xml => xml,
               :field => field_name,
               :value => params_hash[field_name],
               :xml_element_name => field_to_xml.extended_field_xml_element_name,
               :xsi_type => field_to_xml.extended_field_xsi_type
             )
-            puts "tag: #{t}"
-            t
           end
+          
+        # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
         end.flatten.uniq.join("\n")
-        
-        puts "all_field_mappings: #{all_field_mappings.size.to_s}"
-        puts "output size: #{a.size.to_s}"
-
-        a
       end
 
       def convert_xml_to_extended_fields_hash
