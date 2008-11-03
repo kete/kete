@@ -7,7 +7,7 @@ class <%= class_name %> < ActiveRecord::Migration
       t.boolean :is_available
       t.string :image_url
       t.boolean :is_creative_commons
-      t.text :metadata
+      t.text :metadata, :null => true
 
       t.timestamps
     end
