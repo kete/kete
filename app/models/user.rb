@@ -237,11 +237,13 @@ class User < ActiveRecord::Base
     Basket.find_all_by_id(DEFAULT_BASKETS_IDS).each { |basket| self.has_role('member',basket) }
   end
 
-  def get_basket_permissions
+  # this will be renamed once another branch that includes
+  # changes to the basket permissions code is merged in
+  def get_basket_permissions(show_private_memberships=true)
     permissions = Hash.new
     roles.find_all_by_authorizable_type('Basket').each do |role|
       basket = role.authorizable
-      if basket.is_a?(Basket)
+      if basket.is_a?(Basket) # && current_user_is(basket.settings[:memberlist_visibility])   <-  needs basket join policy work
         permissions[basket.urlified_name.to_sym] = { :id => basket.id,
           :role_id => role.id,
           :role_name => role.name }

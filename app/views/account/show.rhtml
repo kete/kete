@@ -64,6 +64,13 @@
   </div>
   <% end -%>
 
+  <p>
+    <strong>Users Baskets</strong>
+    <ul>
+      <%= users_baskets_list(@user, false) -%>
+    </ul>
+  </p>
+
   <% if @viewer_is_user and licenses_are_available? %>
   <div>
     <% if @user.license.nil? %>

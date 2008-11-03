@@ -143,6 +143,18 @@ module ApplicationHelper
                                                {:tabindex => '2'}) + current_basket_html + '</li>'
   end
 
+  def users_baskets_list(user=current_user, show_private_memberships=true, show_roles=false)
+    # when another branch is merged in which create an instance variable per request
+    # remove this call to speed up page loading
+    @baskets = user.get_basket_permissions(show_private_memberships)
+    html = String.new
+    @baskets.each do |name, basket|
+      link = link_to(Basket.find_by_urlified_name("#{name}").name, basket_index_url(:urlified_name => name))
+      link += " - #{basket[:role_name].humanize}" if show_roles
+      html += content_tag('li', link)
+    end
+    html
+  end
 
   def render_baskets_as_menu
     html = '<ul id="sub-menu" class="menu basket-list-menu">'

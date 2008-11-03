@@ -115,6 +115,43 @@ ul#main-nav {
 #basket-list li a{
     color: white;
 }
+
+
+/* #################################### User Basket Navigation #################################### */
+#top-menu #user_baskets_list em {
+  background-color: #333;
+  width: 14px;
+  height: 14px;
+  padding: 2px 4px;
+  font-size: .6em;
+  /* quick way to get rounded corners, doesn't work in IE */
+  -moz-border-radius-topleft:2px;
+  -moz-border-radius-topright:2px;
+  -moz-border-radius-bottomright:2px;
+  -moz-border-radius-bottomleft:2px;
+}
+#top-menu #user_baskets_list ul {
+  position: absolute;
+  top: 90px;
+  right: 70px;
+  width: 230px;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #838383;
+  margin: 0;
+  padding: 0;
+}
+#top-menu #user_baskets_list ul li {
+  display: block;
+  float: none;
+  border-bottom: 1px solid #eee;
+}
+#top-menu #user_baskets_list ul li a {
+  display: block;
+  color: #000;
+  padding: 5px 10px;
+}
+
 /* #################################### Content Navigation Tabs #################################### */
 #content-tabs ul{
     margin: 1em 0 5px 0;

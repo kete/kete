@@ -319,6 +319,9 @@ class AccountController < ApplicationController
     redirect_to_show_for(@still_image)
   end
 
+  def baskets
+  end
+
   private
 
     def redirect_if_user_portraits_arnt_enabled
