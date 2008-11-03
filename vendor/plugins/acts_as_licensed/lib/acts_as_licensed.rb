@@ -50,9 +50,25 @@ module Katipo
             :attribute_work_to_name => :author_for_license
           }
           
+          # Use provided meta-data or a template to generate output
+          if license.metadata.blank?
+            
+            # If there is no meta-data present, create some stub meta-data so the license is still
+            # displayed.
+            metadata_stub = "$$title$$ by <a href=\"$$attribute_work_to_url$$\">$$attribute_work_to_name$$</a> is <a rel=\"license\" href=\"$$license_url$$\">$$license_title$$</a>"
+            
+            # Only include the image segment if an image is present.
+            metadata_stub = "<a rel=\"license\" href=\"$$license_url$$\"><img alt=\"$$license_title$$\" style=\"border-width:0\" src=\"$$license_image_url$$\" /></a><br />" + metadata_stub unless license.image_url.blank?
+            
+          else
+            
+            # Otherwise, use the supplied license meta-data.
+            metadata_stub = license.metadata
+          end
+          
           # Replace keys with actual values as appropriate.
           signature = /(\${2}[a-zA-Z0-9\-\_]+\${2})/
-          license.metadata.gsub(signature) do |match|
+          metadata_stub.gsub(signature) do |match|
             value = replacements[match.gsub(/\$/, '').to_sym]
             
             # If replacement value is a symbol, send the symbol to self
