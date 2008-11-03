@@ -36,7 +36,15 @@
                                :controller => 'topics',
                                :id => @topic -%>
       </li>
-    </ul>  
+    </ul>
+  <% end -%>
+<% end -%>
+
+<% if @current_basket.allows_contact_with_inheritance? -%>
+  <% cache({:part => 'contact'}) do -%>
+    <ul>
+      <li><%= link_to_basket_contact_form %></li>
+    </ul>
   <% end -%>
 <% end -%>
 

@@ -232,6 +232,40 @@
     </fieldset>
   </div>
 
+  <div class="form-element">
+    <label>Administrator contact?</label>
+
+    <fieldset>
+
+      <div class="form-element">
+        <%= radio_button 'settings', 'allow_basket_admin_contact', 'true', {:checked => (@basket.settings[:allow_basket_admin_contact] == true)} %>
+        <label for="settings_allow_basket_admin_contact_true" class="inline">Enabled</label>
+        <div class="form_example">A link will be provided that allows users to send a message to administrators.</div>
+      </div>
+
+      <div class="form-element">
+        <%= radio_button 'settings', 'allow_basket_admin_contact', 'false', {:checked => (@basket.settings[:allow_basket_admin_contact] == false)} %>
+        <label for="settings_allow_basket_admin_contact_false" class="inline">Disabled</label>
+        <div class="form_example">Users will not be able to contact administrators.</div>
+      </div>
+
+      <% if @basket != @site_basket %>
+      <div class="form-element">
+        <%= radio_button 'settings', 'allow_basket_admin_contact', 'nil', {:checked => (@basket.settings[:allow_basket_admin_contact] == nil)} %>
+        <label for="settings_allow_basket_admin_contact_nil" class="inline">Inherit</label>
+        <div class="form_example">
+          Inherit this setting from the Site basket.<br />
+          The Site has <strong>
+          <%= (!@site_basket.settings[:allow_basket_admin_contact].blank? && @site_basket.settings[:allow_basket_admin_contact] == true) ? "enabled" : "disabled" %>
+          </strong> use of the administrator contact form.
+        </div>
+      </div>
+      <% end %>
+
+    </fieldset>
+
+  </div>
+
   <%= setupEnableDisableFunctions(true) %>
   <%= toggle_elements_applicable('settings_fully_moderated',
       '==', 'true', 'settings_moderated_except') %>

@@ -33,6 +33,17 @@ class UserNotifier < ActionMailer::Base
     @body[:url]  = "#{SITE_URL}"
   end
 
+  def email_to(recipient, sender, subject, message, from_basket = nil)
+    setup_email(sender)
+    @recipients = recipient.email
+    @reply_to = sender.email
+    @subject += "#{sender.user_name} has sent you a message."
+    @body[:recipient] = recipient
+    @body[:subject] = subject
+    @body[:message] = message
+    @body[:from_basket] = from_basket
+  end
+
   # notifications for flagging/moderation
   def item_flagged_for(moderator, flag, url, flagging_user, submitter, revision, message)
     setup_email(moderator)

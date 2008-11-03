@@ -64,5 +64,40 @@ class BasketsControllerTest < Test::Unit::TestCase
     assert_redirected_to :urlified_name => 'site'
     assert_equal 'Basket was successfully updated.', flash[:notice]
   end
-  
+
+  def test_contact_restricted
+    logout # logout to test contact form restricted
+    # test contact form restricted to logged in members
+    get :contact, :urlified_name => 'site'
+    assert_response :redirect
+    assert_redirected_to :controller => 'account', :action => 'login'
+  end
+
+  def test_contact
+    # test redirect when disabled
+    get :contact, :urlified_name => 'site'
+    assert_response :redirect
+    assert_redirected_to :urlified_name => 'site'
+    assert_equal "This contact form is not currently enabled.", flash[:notice]
+
+    Basket.first.settings[:allow_basket_admin_contact] = true
+
+    # test routes in place work
+    get :contact, :urlified_name => 'site'
+    assert_response :success
+    assert_template 'email/contact'
+
+    # test basic validation working
+    post :send_email, :urlified_name => 'site'
+    assert_response :success
+    assert_template 'email/contact'
+    assert_equal "Both subject and message must be filled in. Please try again.", flash[:error]
+
+    # test successfull emailing
+    post :send_email, :contact => { :subject => "test", :message => "test" }, :urlified_name => 'site'
+    assert_response :redirect
+    assert_redirected_to :urlified_name => 'site'
+    assert_equal "Your email has been sent. You will receive the reply in your email box.", flash[:notice]
+  end
+
 end

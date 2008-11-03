@@ -32,7 +32,8 @@ class ApplicationController < ActionController::Base
                                             :choose_type,
                                             :setup_rebuild,
                                             :rebuild_zoom_index,
-                                            :add_portrait, :remove_portrait, :default_portrait]
+                                            :add_portrait, :remove_portrait, :default_portrait,
+                                            :contact, :send_email]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes

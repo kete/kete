@@ -260,6 +260,10 @@ module ApplicationHelper
     end
   end
 
+  def link_to_basket_contact_form
+    link_to 'Contact ' + @current_basket.name, basket_contact_path
+  end
+
   def link_to_cancel
     if session[:return_to].blank?
       return link_to("Cancel", :action => 'list', :tabindex => '1')

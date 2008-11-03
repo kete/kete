@@ -110,6 +110,37 @@ class BasketTest < Test::Unit::TestCase
     assert_equal 'reverse', basket.settings[:side_menu_direction_of_topics]
   end
 
+  def test_allows_contact_with_inheritance
+    site_basket = Basket.first # site
+    site_basket.settings[:allow_basket_admin_contact] = true
+    assert_equal true, site_basket.allows_contact_with_inheritance?
+
+    about_basket = Basket.find_by_id(3) # about
+
+    about_basket.settings[:allow_basket_admin_contact] = true
+    assert_equal true, about_basket.allows_contact_with_inheritance?
+
+    about_basket.settings[:allow_basket_admin_contact] = false
+    assert_equal false, about_basket.allows_contact_with_inheritance?
+
+    about_basket.settings[:allow_basket_admin_contact] = nil
+    assert_equal true, about_basket.allows_contact_with_inheritance?
+  end
+
+  def test_should_get_administrator_instances
+    # test it catches site_admin
+    basket = Basket.first # site
+    administrators = basket.administrators
+    assert_equal User, administrators.first.class
+    assert_equal 1, administrators.size
+
+    # test it catches admin
+    basket = Basket.last # admin
+    administrators = basket.administrators
+    assert_equal User, administrators.first.class
+    assert_equal 1, administrators.size
+  end
+
   # TODO: tag_counts_array
   # TODO: index_page_order_tags_by
 

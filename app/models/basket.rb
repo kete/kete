@@ -355,9 +355,21 @@ class Basket < ActiveRecord::Base
     (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && @@site_basket.show_privacy_controls == true))
   end
 
-  # Get the roles this Basket has
-  def roles
-    Role.find_all_by_authorizable_type_and_authorizable_id('Basket', self)
+  # find if we should let users access the basket contact form
+  # get the baskets setting or if nil, get it from the site basket
+  def allows_contact_with_inheritance?
+    (self.settings[:allow_basket_admin_contact] == true || (self.settings[:allow_basket_admin_contact].class == NilClass && @@site_basket.settings[:allow_basket_admin_contact] == true))
+  end
+
+  # get a list of administrators (including site administrators
+  # if the current basket is the site basket)
+  # uses auto-generated methods from the authorization plugin
+  def administrators
+    if self == @@site_basket
+      self.has_site_admins_or_admins
+    else
+      self.has_admins
+    end
   end
 
   protected
@@ -402,7 +414,7 @@ class Basket < ActiveRecord::Base
   # otherwise authorizable tries to get the basket which no longer exists
   # when called in user.get_basket_permissions
   def remove_users_and_roles
-    roles.each do |role|
+    self.accepted_roles.each do |role|
       # authentication plugin's accepts_no_role was problematic
       # rolling our own
       role.users.each { |user| user.drop(role) }
