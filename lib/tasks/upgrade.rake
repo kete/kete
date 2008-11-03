@@ -57,10 +57,15 @@ namespace :kete do
     task :add_new_default_topics => :environment do
       topics_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/topics.yml")
 
+      # support for legacy kete installations where basket ids
+      # are different from those in topics.yml
+      # NOTE: if this gets uses again in another task, move this to a reusable method of its own
+      basket_ids = { "1" => 1,
+                     "2" => HELP_BASKET,
+                     "3" => ABOUT_BASKET,
+                     "4" => DOCUMENTATION_BASKET }
+
       # for each topic from yml
-      # check if it's in the db
-      # if not, add it
-      # system settings have unique names
       topics_from_yml.each do |topic_array|
         topic_hash = topic_array[1]
 
@@ -69,6 +74,11 @@ namespace :kete do
         # else we want to use the bootstap versions
         topic_hash.delete('id') if Topic.count > 0
 
+        # map basket id to Kete's basket id (support for legacy installations)
+        topic_hash['basket_id'] = basket_ids[topic_hash['basket_id'].to_s]
+
+        # check if it's in the db by looking for a similar topic title in
+        # the basket the topic is intended for, and if not present, add it
         if !Topic.find_by_title_and_basket_id(topic_hash['title'], topic_hash['basket_id'])
           topic = Topic.create!(topic_hash)
           topic.creator = User.first

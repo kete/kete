@@ -686,10 +686,15 @@ ul.option-list li img{
     font-weight: normal;
 }
 
-
+.license {
+  padding: 5px;
+}
 .license img {
     float: left;
-    margin-right: .5em;
+    margin: 0 10px 0 0;
+}
+.license br {
+  display: none;
 }
 
 /* width of members list table for basket administration of members */

@@ -470,7 +470,7 @@ topics_015:
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
     <h3>Standards</h3>
-    <p>This site was produced to meet <a href="http://webstandards.govt.nz/index.php/All_Standards"><strong class="selflink">New Zealand Government Web Standards and Recommendations v 1.0</strong></a></p>
+    <p>Every effort has been made to ensure this site meets most of the <a href="http://webstandards.govt.nz/index.php/All_Standards"><strong class="selflink">New Zealand Government Web Standards and Recommendations v 1.0</strong></a></p>
     <h3>Access keys</h3>
     <p>Access keys help you to navigate to commonly used pages in the site without needing to use a mouse or other pointing device. To activate an access key, hold down the ALT key (for PCs) or CONTROL key (for Apple Macintosh) plus the relevant access key shown below (at the same time). For some browsers you may need to press enter to confirm your choice.</p>
     <p>The available keyboard shortcuts are:</p>

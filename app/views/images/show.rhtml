@@ -1,54 +1,59 @@
-<%= render :partial => "topics/slideshow_controls" if show_slideshow_controls? %>
-<% if current_user_can_see_action_menu? -%>
-	<%= render(:partial => "topics/actions_menu" , :locals => { :item => @still_image }) %>
+<%= render(:partial => "topics/slideshow_controls") if show_slideshow_controls? -%>
+<%= render(:partial => "topics/actions_menu", :locals => { :item => @still_image }) if current_user_can_see_action_menu? -%>
+
+<%= render(:partial => "topics/content_wrapper_start") -%>
+
+<% cache_with_privacy(@still_image, {:part => 'details_first'}) do -%>
+  <h2><%= h(@still_image.title) %></h2>
 <% end -%>
 
-<%= render(:partial => "topics/content_wrapper_start") %>
-				<% cache_with_privacy(@still_image, {:part => 'details_first'}) do -%>
-          <h2><%= h(@still_image.title) %></h2>
-        <% end %>
-        <% if show_attached_files_for?(@still_image) %>
-          <% if !@still_image.original_file.nil? -%>
-            <% if !@still_image.already_at_blank_version? -%>
-              <%= render(:partial => "details", :locals => { :item => @still_image }) %>
-            <% end -%>
-          <% end -%>
-          <% # default to medium view %>
-          <% if !@image_file.nil? %>
-            <% if !@still_image.already_at_blank_version? -%>
-              <%= render(:partial => "image_file", :locals => { :image_file => @image_file,
-                                                                :title => @still_image.title }) %>
-            <% end -%>
-          <% else -%>
-            <p>Only available as original.</p>
-          <% end -%>
-        <% end -%>
-        <% cache_with_privacy(@still_image, {:part => 'details_second'}) do -%>
-        <% end %>
-        <% cache_with_privacy(@still_image, {:part => 'caption'}) do -%>
-          <% if !@still_image.already_at_blank_version? -%>
-            <h4>Caption</h4>
-            <p><%= @still_image.description %></p>
-          <% end -%>
-          <%= pending_review(@still_image) %>
-          <div class="license"><%= @still_image.license_metadata %></div>
-        <% end -%>
-        
-<% if current_user_can_see_flagging? -%>
-      <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) %>
+<% if show_attached_files_for?(@still_image) -%>
+  <% if !@still_image.original_file.nil? -%>
+    <% if !@still_image.already_at_blank_version? -%>
+      <%= render(:partial => "details", :locals => { :item => @still_image }) -%>
+    <% end -%>
+  <% end -%>
+  <% # default to medium view -%>
+  <% if !@image_file.nil? -%>
+    <% if !@still_image.already_at_blank_version? -%>
+      <%= render(:partial => "image_file",
+                 :locals => { :image_file => @image_file,
+                              :title => @still_image.title }) -%>
+    <% end -%>
+  <% else -%>
+    <p>Only available as original.</p>
+  <% end -%>
 <% end -%>
-<% if current_user_can_see_add_links? %>
-      <% cache ({:related => 'topics'}, :id => @still_image.id) do -%>
-      <%= item_related_topics_wrapper(:class_phrase => 'web link', :source_item => @still_image, :source_item_class => 'WebLink', :topics => @still_image.topics) %>
-      <% end -%>
+
+<% cache_with_privacy(@still_image, {:part => 'caption'}) do -%>
+  <% if !@still_image.already_at_blank_version? -%>
+    <h4>Caption</h4>
+    <p><%= @still_image.description %></p>
+  <% end -%>
 <% end -%>
-<% if current_user_can_see_discussion? %>
-      <%= render(:partial => "topics/discussion" , :locals => { :item => @still_image }) %>
+
+<% cache_with_privacy(@still_image, {:part => 'details_second'}) do -%>
+  <%= pending_review(@still_image) -%>
+<% end -%>   
+
+<%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) if current_user_can_see_flagging? -%>
+
+<% if current_user_can_see_add_links? -%>
+  <% cache ({:related => 'topics'}, :id => @still_image.id) do -%>
+    <%= item_related_topics_wrapper(:class_phrase => 'web link',
+                                    :source_item => @still_image,
+                                    :source_item_class => 'WebLink',
+                                    :topics => @still_image.topics) -%>
+  <% end -%>
 <% end -%>
+
+<%= render(:partial => "topics/discussion" , :locals => { :item => @still_image }) if current_user_can_see_discussion? -%>
+
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
-    <%= render(:partial => "topics/tags_div", :locals => { :item => @still_image }) %>
-    <%= render(:partial => "topics/extended_fields", :locals => { :item => @still_image }) %>
+    <%= render(:partial => "topics/tags_div", :locals => { :item => @still_image }) -%>
+    <%= render(:partial => "topics/extended_fields", :locals => { :item => @still_image }) -%>
+    <%= render(:partial => "topics/license" , :locals => { :item => @still_image }) -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

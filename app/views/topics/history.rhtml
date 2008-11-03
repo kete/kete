@@ -10,7 +10,15 @@
       </div>
       <div class="detail-tools">
         <table class="history-table">
-          <tr><th>Number</th><th></th><th>Flags</th><th>Privacy</th><th>Contributor</th><th>Updated</th><th>Comments</th></tr>
+          <tr>
+            <th abbr="Number">Number</th>
+            <th></th>
+            <th abbr="Flags">Flags</th>
+            <th abbr="Privacy">Privacy</th>
+            <th abbr="Contributor">Contributor</th>
+            <th abbr="Updated">Updated</th>
+            <th abbr="Comments">Comments</th>
+          </tr>
           <% item_contributors = @item.contributors.find(:all, :order => 'version ASC')
              contributor_index = 0 -%>
           <% @versions.each do |version| -%>

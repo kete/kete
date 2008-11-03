@@ -129,6 +129,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     if image_file.blank? or !File.exists?(path_to_file_to_grab)
       # TODO: add check to see if image_file has a, b, c, versions associated with it
       # and add them is if they exist
+      # change record imagefile accordingly for each and call importer_process on each
       reason_skipped =  'no image file specified or the image file isn\'t available'
       logger.info("record #{current_record} : reason skipped image")
     else
@@ -242,8 +243,12 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
       # this relies on user_reference extended_field
       # being mapped to the particular kete content type (not content type in mime sense)
-      existing_item = Module.class_eval(@zoom_class).find(:first,
-                                                          :conditions => "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
+      # Walter McGinnis, 2008-10-10
+      # User Reference may be used by multiple images (all under same parent record)
+      # they will have different filenames, but same user reference...
+      # so adding filename check as criteria
+      existing_item = StillImage.find(:first, :joins => 'join image_files on still_images.id = image_files.still_image_id',
+                                      :conditions => "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
 
       new_record = nil
       if existing_item.nil?
@@ -503,7 +508,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # empty means no match
       if line.include?("<VFPData>")
         @root_element_name = 'VFPData'
-        @record_element_path = 'export'
+        @record_element_path = 'ppdata'
         return
       else
         # we have matched the previous style, return without resetting vars
