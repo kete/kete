@@ -521,6 +521,14 @@ div#slideshow-controls div#slideshow-middle {
     border-left: 2px solid #666;
     background-color: white;
 }
+.comment-content .avatar {
+  padding: 0 10px;
+}
+.comment-content-inner {
+  margin-left: 70px;
+}
+
+
 .history-table td {
     padding: 0.5em;
     border: 1px solid #ccc;
@@ -625,6 +633,16 @@ div#notice div, div#error div {
     color: #333;
 }
 
+/* ############################### User Profiles ################################ */
+.avatar {
+  float: left;
+  padding: 0 10px;
+}
+.profile_content {
+  margin-left: 70px;
+}
+
+
 /* #################################### Misc #################################### */
 .theme-choice-wrapper {
     /*            float:right;*/
@@ -705,6 +723,10 @@ table.members-list-table {
 /* column widths for the above. */
 .members-list-table td {
     width: 25%;
+}
+.members-list-table td.member-avatar {
+    width: 50px;
+    padding: 10px;
 }
 
 /* for wrapping form elements in a block element - needed for XHTML validation */

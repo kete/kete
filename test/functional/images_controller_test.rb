@@ -115,7 +115,7 @@ class ImagesControllerTest < Test::Unit::TestCase
     assert_response :redirect
     assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image)
   end
-  
+
   private
   
     def thumbnails_of(still_image)

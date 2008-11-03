@@ -51,6 +51,10 @@ class User < ActiveRecord::Base
     :order => "#{zoom_class.tableize}.created_at"
   end
 
+  # Each user can have multiple portraits (images relating to their account)
+  has_many :user_portrait_relations, :order => 'position', :dependent => :delete_all
+  has_many :portraits, :through => :user_portrait_relations, :source => :still_image
+
   # Virtual attribute for the contribution.version join model
   # a hack to be able to pass it in
   # see topics_controller update action for example

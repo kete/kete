@@ -1,3 +1,6 @@
+# Controls needed for Gravatar support throughout the site
+require 'avatar/view/action_view_support'
+
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   include ExtendedFieldsHelpers
@@ -7,6 +10,22 @@ module ApplicationHelper
   include OaiDcHelpers
 
   include ZoomHelpers
+
+  # Controls needed for Gravatar support throughout the site
+  include Avatar::View::ActionViewSupport
+  def avatar_for(user)
+    default_options = { :width => 50, :height => 50, :alt => "#{user.user_name}'s Avatar" }
+
+    if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
+      return image_tag(user.portraits.first.thumbnail_file.public_filename, default_options)
+    end
+
+    if ENABLE_GRAVATAR_SUPPORT
+      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, default_options)
+    end
+
+    return image_tag('no-avatar.png', default_options)
+  end
 
   def page_keywords
     return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
@@ -592,8 +611,10 @@ module ApplicationHelper
         #html_string += "<div class=\"comment-wrapper\">""<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
         #html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5><div class=\"comment-content\">\n"
 
-
         html_string += "<div class=\"comment-content\">"
+
+        html_string += "<div class=\"avatar\">#{avatar_for(comment.creators.first)}</div>"
+        html_string += "<div class=\"comment-content-inner\">"
 
         if !comment.description.blank?
           html_string += "#{comment.description}\n"
@@ -604,6 +625,8 @@ module ApplicationHelper
           html_string += "#{tags_for_comment}\n"
         end
         html_string += pending_review(comment) + "\n"
+
+        html_string += "</div>"
 
         html_string += "<div class=\"comment-tools\">\n"
         html_string += flagging_links_for(comment,true,'comments')

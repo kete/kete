@@ -1,48 +1,78 @@
 <% @title = 'Profile of ' + h(@user.user_name) -%>
-<% @viewer_is_user = false -%>
-<% @viewer_is_user = true if @user == @current_user -%>
+<% @viewer_is_user = @user == @current_user ? true : false -%>
+<% @viewer_portraits = !@user.portraits.empty? ? @user.portraits : nil -%>
 
 <h2><%= h(@title) -%></h2>
 
-<p><b>Login:</b> <%= h(@user.login) -%></p>
+<div class="avatar"><%= avatar_for @user -%></div>
+<div class="profile_content">
+  <p>
+    <strong>Login:</strong>
+    <%= h(@user.login) -%>
+  </p>
 
-<%if @user.show_email? or @viewer_is_user -%>
-        <p><b>Email:</b> <%= mail_to(@user.email, @user.email, :encode => "hex") -%></p>
-<% end -%>
+  <% if @user.show_email? or @viewer_is_user -%>
+  <p>
+    <strong>Email:</strong>
+    <%= mail_to(@user.email, @user.email, :encode => "hex") -%>
+  </p>
+  <% end -%>
 
-<p><b>Created:</b> <%= h(@user.created_at.to_s(:euro_date_time)) -%></p>
+  <p>
+    <strong>Created:</strong>
+    <%= h(@user.created_at.to_s(:euro_date_time)) -%>
+  </p>
 
-<% extended_fields_html = display_xml_attributes(@user) %>
-<% if !extended_fields_html.blank? %>
-        <!-- <div id="detail-extended"> -->
-                <%= extended_fields_html %>
-        <!-- </div> -->
-<% end %>
+  <% extended_fields_html = display_xml_attributes(@user) %>
+  <% if !extended_fields_html.blank? %>
+  <!-- <div id="detail-extended"> -->
+    <%= extended_fields_html %>
+  <!-- </div> -->
+  <% end %>
 
-<p>Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%></p>
+  <p>
+    Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%>
+  </p>
 
-<% if @viewer_is_user -%>
-        <div class="detail-tools">
-                <ul>
-                        <li class="first"><%= link_to 'Edit', :action => 'edit' %></li>
-                        <li><%= link_to 'Change Password', :action => 'change_password' %></li>
-                </ul>
-        </div>
-<% end -%>
+  <% unless @viewer_portraits.nil? -%>
+  <div>
+    <strong>Users Portraits</strong>
+    <br />
+    <% @viewer_portraits.each do |portrait| -%>
+      <% unless portrait.thumbnail_file.file_private -%>
+        <%= link_to image_tag(portrait.thumbnail_file.public_filename,
+                              { :border => 0, :width => 50, :height => 50, :alt => "#{portrait.title}" }),
+                    { :urlified_name => portrait.basket.urlified_name,
+                      :controller => 'images',
+                      :action => 'show',
+                      :id => portrait.id } -%>
+      <% end -%>
+    <% end -%>
+  </div>
+  <% end -%>
 
-<% if @viewer_is_user and licenses_are_available? %>
-<div>
-   <% if @user.license.nil? %>
-     Click the edit link above to set your default license.
-   <% else -%>
-     <h3>Your current default license is:</h3>
-     <div class="license">
-       <%= image_tag(@user.license.image_url, :alt => "Licence thumbnail. ") %>
-       <%= @user.license.title %>
-       <%= link_to("(View license)", url_for(@user.license.url), "target" =>
-       "_new") %>
-     </div>
-   <% end -%>
+  <% if @viewer_is_user -%>
+  <div class="detail-tools">
+    <ul>
+      <li class="first"><%= link_to 'Edit', :action => 'edit' %></li>
+      <li><%= link_to 'Change Password', :action => 'change_password' %></li>
+    </ul>
+  </div>
+  <% end -%>
+
+  <% if @viewer_is_user and licenses_are_available? %>
+  <div>
+    <% if @user.license.nil? %>
+      Click the edit link above to set your default license.
+    <% else -%>
+      <h3>Your current default license is:</h3>
+      <div class="license">
+        <%= image_tag(@user.license.image_url, :alt => "licence  thumbnail") %>
+        <%= @user.license.title %>
+        <%= link_to("(View license)", url_for(@user.license.url), "target" => "_new") %>
+      </div>
+    <% end -%>
+  </div>
+  <% end -%>
 </div>
-<% end -%>
 <%= render(:partial => "topics/content_wrapper_end" ) %>

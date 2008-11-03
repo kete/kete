@@ -11,6 +11,8 @@ require File.dirname(__FILE__) + '/../stubs/account_helper.rb'
 # Re-raise errors caught by the controller.
 class AccountController; def rescue_action(e) raise e end; end
 
+ENABLE_USER_PORTRAITS = true
+
 class AccountControllerTest < Test::Unit::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead
   # Then, you can remove it from this and the units test.
@@ -254,6 +256,32 @@ class AccountControllerTest < Test::Unit::TestCase
   def assert_activate_error
     assert_response :success
     assert_template "account/activate"
+  end
+
+  def test_add_portrait
+    login_as :admin
+    still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
+    get :add_portrait, :urlified_name => 'site', :id => still_image.id
+    assert_response :redirect
+    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
+  end
+
+  def test_remove_portrait
+    login_as :admin
+    still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
+    get :add_portrait, :urlified_name => 'site', :id => still_image.id
+    get :remove_portrait, :urlified_name => 'site', :id => still_image.id
+    assert_response :redirect
+    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
+  end
+
+  def test_default_portrait
+    login_as :admin
+    still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
+    get :add_portrait, :urlified_name => 'site', :id => still_image.id
+    get :default_portrait, :urlified_name => 'site', :id => still_image.id
+    assert_response :redirect
+    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
   end
 
   protected

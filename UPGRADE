@@ -46,6 +46,16 @@ To upgrade, please follow these instructions:
 
 Note: If you're using Capistrano to manage your Kete instance deployments, you may also need to retrieve uploaded files from earlier releases as they may have been archived. See http://kete.net.nz/documentation/topics/show/207 for full details.
 
+== 2008/10/14 - Add Gravatar support, and new user portrait related settings/migrations
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Install the avatar gem
+          $ gem install avatar
+3.      Upgrade your code base
+4.      Run the migrations: 'rake db:migrate'
+5.      Run the upgrade script: 'rake kete:upgrade'
+6.      Start your Kete server again (mongrels or mod_rails)
+
 == 2008/10/01 - Private files need to be copied to system folder
 
 Due to a missing configuration in the Capistrano deployment recipes, private files were archived every time the site was deploy.

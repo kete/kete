@@ -13,6 +13,8 @@ class AccountController < ApplicationController
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :login_from_cookie
 
+  before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :default_portrait]
+
   # say something nice, you goof!  something sweet.
   def index
     if logged_in? || User.count > 0
@@ -286,7 +288,45 @@ class AccountController < ApplicationController
     redirect_back_or_default(:controller => '/account', :action => 'index')
   end
 
+  def add_portrait
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.new_portrait_for_user(current_user, @still_image)
+      flash[:notice] = "'#{@still_image.title}' has been added to your portraits."
+    else
+      flash[:error] = "'#{@still_image.title}' failed to add to your portraits."
+    end
+    redirect_to_show_for(@still_image)
+  end
+
+  def remove_portrait
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.remove_portrait_for_user(current_user, @still_image)
+      flash[:notice] = "'#{@still_image.title}' has been removed from your portraits."
+    else
+      flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
+    end
+    redirect_to_show_for(@still_image)
+  end
+
+  def default_portrait
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.make_portrait_default_for_user(current_user, @still_image)
+      flash[:notice] = "'#{@still_image.title}' has been make your default portrait."
+    else
+      flash[:error] = "'#{@still_image.title}' failed to become your default portrait."
+    end
+    redirect_to_show_for(@still_image)
+  end
+
   private
+
+    def redirect_if_user_portraits_arnt_enabled
+      unless ENABLE_USER_PORTRAITS
+        flash[:notice] = "User portraits are not enabled so you cannot use this feature."
+        @still_image = StillImage.find(params[:id])
+        redirect_to_show_for(@still_image)
+      end
+    end
 
     def load_content_type
       @content_type = ContentType.find_by_class_name('User')

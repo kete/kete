@@ -13,6 +13,7 @@ gems:
   zoom: zoom
   libxml-ruby: libxml
   feed-normalizer: feed-normalizer
+  avatar: avatar
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems
