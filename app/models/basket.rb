@@ -412,7 +412,7 @@ class Basket < ActiveRecord::Base
   # when a basket is to be deleted
   # we have to remove the roles assigned to it
   # otherwise authorizable tries to get the basket which no longer exists
-  # when called in user.get_basket_permissions
+  # when called in user.basket_permissions
   def remove_users_and_roles
     self.accepted_roles.each do |role|
       # authentication plugin's accepts_no_role was problematic

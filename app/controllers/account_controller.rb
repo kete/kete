@@ -33,7 +33,6 @@ class AccountController < ApplicationController
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
-        session[:has_access_on_baskets] = self.current_user.get_basket_permissions
         redirect_back_or_default(:controller => '/account', :action => 'index')
         flash[:notice] = "Logged in successfully"
       else
