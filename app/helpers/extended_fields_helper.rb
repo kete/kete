@@ -129,12 +129,21 @@ module ExtendedFieldsHelper
     extended_field.label.downcase.gsub(/\s/, "_")
   end
   
+  # Get the existing value for a single extended field
+  # Requires:
+  # * extended_field: An instance of ExtendedField
+  # * array: extended content pairs (i.e. ['field_name', 'value']) from the model
   def field_value_from_hash(extended_field, array)
     array.select { |k, v| k == qualified_name_for_field(extended_field) }.flatten.last || ""
   rescue
     ""
   end
   
+  # Get the existing values for a multiple value capable extended field.
+  # Requires:
+  # Same as above, plus:
+  # * position_in_set: A number offset of the value want. The collection starts with key 1, not 0 as in a traditional associative 
+  #   array.
   def field_value_from_multiples_hash(extended_field, array, position_in_set)
     field_values = array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }.first.last
     field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
@@ -142,9 +151,17 @@ module ExtendedFieldsHelper
     ""
   end
   
+  # Get the keys of existing values for a 'multiple' extended field.
+  # Requires:
+  # * extended_field: An instance of ExtendedField
+  # * Array: extended content pairs (i.e. ['field_name', 'values']) from the model.
   def existing_multiples_in(extended_field, array)
     multiples = array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }
-    multiples.empty? ? nil : multiples.first.last.collect { |k, v| k }
+    
+    # Flatten the results because otherwise we have a redundantly nested array, and then we want the second (last) part because
+    # that contains the actual sorted existing values hash (ala ['field_name', { results hash }]). Then we only want the keys (i.e.
+    # 1, 2, 3, etc..)
+    multiples.empty? ? nil : multiples.flatten.last.collect { |k, v| k }
   end
   
   private
