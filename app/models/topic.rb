@@ -161,6 +161,8 @@ class Topic < ActiveRecord::Base
   # of our TopicType.
   def all_field_mappings
     topic_type.topic_type_to_field_mappings + topic_type.ancestors.collect { |a| a.topic_type_to_field_mappings }.flatten
+  rescue
+    []
   end
   
 end

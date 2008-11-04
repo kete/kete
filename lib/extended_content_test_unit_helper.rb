@@ -69,7 +69,7 @@ module ExtendedContentTestUnitHelper
     assert_valid model
     
     assert_equal '<some_tag xml_element_name="dc:something">something</some_tag>', model.extended_content_xml 
-    assert_equal  [["some_tag", "something"]], model.extended_content_pairs
+    assert_equal  [["some_tag", "something"]].sort, model.extended_content_pairs.sort
     
     # Test with multiple nodes
     model = Module.class_eval(@base_class).create!(new_model_attributes)    

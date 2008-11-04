@@ -166,13 +166,98 @@ module ExtendedContent
           "noattr"      => true
         }
         
-        XmlSimple.xml_in("<dummy>#{extended_content_xml}</dummy>", options).collect { |k, v| [k, v.empty? ? nil : v] }
+        XmlSimple.xml_in("<dummy>#{extended_content_xml}</dummy>", options).map do |key, value|
+          if value.is_a?(Hash) && !value.empty?
+            [key, value.values.map { |h| h.values }.flatten]
+          else
+            [key, value.empty? ? nil : value]
+          end
+        end
       end
       
       # All available extended field mappings for the given item.
       # Overloaded in Topic model (special case with hierarchical TopicTypes)
       def all_field_mappings
         ContentType.find_by_class_name(self.class.name).content_type_to_field_mappings
+      end
+      
+      # Validation methods..
+      def validate
+        all_field_mappings.each do |mapping|
+          
+          field = mapping.extended_field
+          
+          if field.multiple?
+            value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') + "_multiple" }
+            values = value_pairs.map { |k, v| v }
+            validate_extended_content_multiple_values(mapping, values)
+          else
+            value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') }
+            values = value_pairs.map { |k, v| v }
+            validate_extended_content_single_value(mapping, values.to_s)
+          end
+        end
+      end
+      
+      # Generic validation methods
+      def validate_extended_content_single_value(extended_field_mapping, value)
+        # Handle required fields here..
+        if extended_field_mapping.required && value.blank?
+          errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank (#{value.inspect}, #{extended_content_pairs.inspect})")
+        else
+          
+          # Otherwise delegate to specialized method..
+          if message = send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
+            extended_field_mapping, value)
+            
+            errors.add_to_base("#{extended_field_mapping.extended_field_label} #{message}")
+          end
+          
+        end
+      end
+      
+      def validate_extended_content_multiple_values(extended_field_mapping, values)
+        
+        if extended_field_mapping.required && values.all? { |v| v.to_s.blank? }
+          errors.add_to_base("#{extended_field_mapping.extended_field.label} must have at least one value")
+        else
+          
+          # Delete to specialized method..
+          error_array = values.map do |v|
+            send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
+              extended_field_mapping, v.to_s)
+          end
+          
+          error_array.compact.each do |e| 
+            errors.add_to_base("#{extended_field_mapping.extended_field.label} #{e}")
+          end
+        end
+      end
+      
+      # Specialized validation methods below..
+      
+      def validate_extended_checkbox_field_content(extended_field_mapping, value)
+        nil
+      end
+    
+      def validate_extended_radio_field_content(extended_field_mapping, value)
+        nil
+      end
+    
+      def validate_extended_date_field_content(extended_field_mapping, value)
+        nil
+      end
+    
+      def validate_extended_text_field_content(extended_field_mapping, value)
+        nil
+      end
+    
+      def validate_extended_textarea_field_content(extended_field_mapping, value)
+        nil
+      end
+    
+      def validate_extended_choice_field_content(extended_field_mapping, value)
+        nil
       end
     
   end
