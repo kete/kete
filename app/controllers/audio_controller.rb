@@ -27,7 +27,7 @@ class AudioController < ApplicationController
   end
 
   def create
-    @audio_recording = AudioRecording.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
+    @audio_recording = AudioRecording.new(params[:audio_recording])
 
     @successful = @audio_recording.save
 
@@ -53,7 +53,7 @@ class AudioController < ApplicationController
 
     version_after_update = @audio_recording.max_version + 1
 
-    if @audio_recording.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
+    if @audio_recording.update_attributes(params[:audio_recording])
 
       after_successful_zoom_item_update(@audio_recording)
 

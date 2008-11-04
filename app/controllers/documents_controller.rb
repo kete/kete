@@ -27,7 +27,7 @@ class DocumentsController < ApplicationController
   end
 
   def create
-    @document = Document.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
+    @document = Document.new(params[:document])
     @successful = @document.save
 
     # add this to the user's empire of creations
@@ -52,7 +52,7 @@ class DocumentsController < ApplicationController
 
     version_after_update = @document.max_version + 1
 
-    if @document.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'document', :item_class => 'Document'))
+    if @document.update_attributes(params[:document])
 
       after_successful_zoom_item_update(@document)
 

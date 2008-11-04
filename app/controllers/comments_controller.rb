@@ -31,7 +31,7 @@ class CommentsController < ApplicationController
   end
 
   def create
-    @comment = Comment.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
+    @comment = Comment.new(params[:comment])
     
     # Reset the tag lists again to ensure they are saved to the correct privacies
     # This is required because tag_list= sets the contexted of the tags based on the private?
@@ -75,7 +75,7 @@ class CommentsController < ApplicationController
 
     version_after_update = @comment.max_version + 1
 
-    if @comment.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'comment', :item_class => 'Comment'))
+    if @comment.update_attributes(params[:comment])
 
       @comment.add_as_contributor(current_user)
 

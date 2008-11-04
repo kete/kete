@@ -68,10 +68,7 @@ class AccountController < ApplicationController
 
     # after this is processing submitted form only
     return unless request.post?
-    @user = User.new(extended_fields_and_params_hash_prepare(:content_type => @content_type,
-                                                             :item_key => 'user',
-                                                             :item_class => 'User',
-                                                             :extra_fields => ['password', 'password_confirmation']))
+    @user = User.new(params[:user].reject { |k, v| k == "captcha_type" })
 
     case @captcha_type
     when 'image'
@@ -171,9 +168,6 @@ class AccountController < ApplicationController
 
     original_user_name = @user.user_name
     if @user.update_attributes(params[:user])
-    # if @user.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type,
-    #                                                                    :item_key => 'user',
-    #                                                                    :item_class => 'User'))
       # @user.user_name has changed
       if original_user_name != @user.user_name
         # we want to flush contribution caches

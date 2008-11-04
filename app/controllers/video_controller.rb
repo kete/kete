@@ -27,7 +27,7 @@ class VideoController < ApplicationController
   end
 
   def create
-    @video = Video.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
+    @video = Video.new(params[:video])
     @successful = @video.save
 
 
@@ -52,7 +52,7 @@ class VideoController < ApplicationController
 
     version_after_update = @video.max_version + 1
 
-    if @video.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
+    if @video.update_attributes(params[:video])
 
       after_successful_zoom_item_update(@video)
 
@@ -72,8 +72,9 @@ class VideoController < ApplicationController
   end
 
   private
-  def load_content_type
-    @content_type = ContentType.find_by_class_name('Video')
-  end
+
+    def load_content_type
+      @content_type = ContentType.find_by_class_name('Video')
+    end
 
 end

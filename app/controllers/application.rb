@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
 
   include ZoomControllerHelpers
 
-  include ExtendedFieldsControllerHelpers
-
   include FriendlyUrls
 
   # for the remember me functionality
