@@ -42,6 +42,10 @@ class ApplicationController < ActionController::Base
   # sets up instance variables for authentication
   include KeteAuthorization
 
+  # Create an instance variable with a list of baskets the
+  # current user has roles in (member, admin etc)
+  before_filter :update_basket_permissions_hash
+
   # keep track of tag_list input by version
   before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]
 
@@ -1032,6 +1036,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def update_basket_permissions_hash
+    @basket_access_hash = logged_in? ? current_user.basket_permissions : Hash.new
+  end
 
   def current_user_is?(at_least_setting)
     begin

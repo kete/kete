@@ -129,7 +129,6 @@ module AuthenticatedSystem
         user.remember_me
         self.current_user = user
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-        session[:has_access_on_baskets] = self.current_user.get_basket_permissions
         flash[:notice] = "Logged in successfully"
       end
     end
