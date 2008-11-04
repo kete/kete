@@ -22,8 +22,11 @@ class MembersController < ApplicationController
     @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
 
     # list people who have all other roles
+    # use (true) because the roles are cached when first run but
+    # if we add roles (like moderator) this becomes problematic
     @current_basket.accepted_roles(true).each do |role|
       role_plural = role.name.pluralize
+
       # we cover members above
       if role_plural != 'members'
         instance_variable_set("@#{role_plural}", @current_basket.send("has_#{role_plural}"))
@@ -91,20 +94,18 @@ class MembersController < ApplicationController
     # members are paginated
     # since we are paginating we need to break a part
     # what the @current_basket.has_members method would do
-    @member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member','Basket', @current_basket)
+    @member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member', 'Basket', @current_basket)
     if @member_role.nil?
       # no members
       @members = User.paginate_by_id(0, :page => 1)
     else
       if params[:action] == 'rss'
-        @members = User.find(:all,
-                             :joins => "join roles_users on users.id = roles_users.user_id",
-                             :conditions => ["roles_users.role_id = ?", @member_role.id])
+        @members = @member_role.users
       else
-        @members = User.paginate(:joins => "join roles_users on users.id = roles_users.user_id",
-                                 :conditions => ["roles_users.role_id = ?", @member_role.id],
-                                 :page => params[:page],
-                                 :per_page => 20)
+        @members = @member_role.users.paginate(:include => :contributions,
+                                               :order => '`users`.`login` ASC',
+                                               :page => params[:page],
+                                               :per_page => 20)
 
       end
     end
@@ -162,9 +163,7 @@ class MembersController < ApplicationController
       end
       if can_change
         if clear_roles
-          @current_basket.accepted_roles.each do |role|
-            @user.has_no_role(role.name,@current_basket)
-          end
+          delete_current_basket_roles_for(@user)
         end
         @user.has_role(membership_type,@current_basket)
         if flash[:notice].blank?
@@ -244,9 +243,7 @@ class MembersController < ApplicationController
 
   def remove
     @user = User.find(params[:id])
-    @current_basket.accepted_roles.each do |role|
-      @user.has_no_role(role.name,@current_basket)
-    end
+    delete_current_basket_roles_for(@user)
     flash[:notice] = "Successfully removed user."
     redirect_to :action => 'list'
   end
@@ -259,6 +256,14 @@ class MembersController < ApplicationController
 
     respond_to do |format|
       format.xml
+    end
+  end
+
+  private
+
+  def delete_current_basket_roles_for(user)
+    @current_basket.accepted_roles.each do |role|
+      user.has_no_role(role.name, @current_basket)
     end
   end
 
