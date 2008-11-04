@@ -37,5 +37,36 @@ class TopicTest < Test::Unit::TestCase
     assert !topic.respond_to?(:file_private=)
   end
   
+  # Topic specific extended content tests
+  
+  def test_extended_content_setter
+    model = Topic.create!(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+    model.extended_content = { "first_names" => "Joe Bloggs" }
+    model.save!
+    
+    assert_valid model
+    
+    assert_equal '<first_names xml_element_name="dc:description">Joe Bloggs</first_names><last_name></last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>', model.extended_content_xml
+  end
+
+  def test_xml_attributes
+    model = Topic.create!(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+    model.update_attribute(:extended_content_xml, '<first_names xml_element_name="dc:description">Joe Bloggs</first_names><last_name></last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>')
+    
+    assert_valid model
+    
+    assert_equal({ "1" => { "first_names" => "Joe Bloggs" }, "2" => { "last_name" => nil }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }, model.xml_attributes)
+  end
+    
+  def test_xml_attributes_without_data
+    model = Topic.create!(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+    model.update_attribute(:extended_content_xml, '')
+    
+    assert_valid model
+    
+    assert_equal({}, model.xml_attributes)
+  end
+  
+  
 end
 

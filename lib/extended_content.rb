@@ -32,7 +32,7 @@ module ExtendedContent
       convert_xml_to_extended_fields_hash
     end
     
-    def extended_content_without_metadata
+    def extended_content_pairs
       convert_xml_to_key_value_hash
     end
     

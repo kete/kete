@@ -29,6 +29,7 @@ class UserTest < Test::Unit::TestCase
 
   # load in sets of tests and helper methods
   include KeteTestUnitHelper
+  
   include ExtendedContentTestUnitHelper
 
   # TODO: a number of Kete custom methods not tested
@@ -126,5 +127,11 @@ class UserTest < Test::Unit::TestCase
       # Walter McGinnis, 2007-07-10
       # adding terms agreement and capcha vars
       User.create(@new_model.merge(options))
+    end
+    
+    def new_model_attributes
+      @@incremental_id ||= 0
+      @@incremental_id = @@incremental_id + 1
+      @new_model.merge(:login => 'test_login_' + @@incremental_id.to_s)
     end
 end

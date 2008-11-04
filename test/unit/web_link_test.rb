@@ -32,5 +32,13 @@ class WebLinkTest < Test::Unit::TestCase
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   
+  protected
+  
+    def new_model_attributes
+      @@incremental_id ||= 0
+      @@incremental_id = @@incremental_id + 1
+      @new_model.merge(:url => 'http://www.google.co.nz/search?q=' + @@incremental_id.to_s)
+    end
+  
 end
 
