@@ -266,7 +266,7 @@ fieldset {
 .save-button{
     margin: 1em;
 }
-input {
+input, textarea {
     border: 1px solid #666;
     padding-left: .5em;
 }
@@ -726,4 +726,19 @@ div.wrap {
         width: 160px;
         float: left;
         margin-bottom: 200px;
+}
+
+/* Special formatting for extended fields with multiple values */
+div.extended_field_multiple_fields {
+				float: left;
+}
+
+div.extended_field_multiple_fields input, div.extended_field_multiple_fields input {
+				float: left;
+				margin-bottom: 2px;
+}
+
+div.extended_field_multiple_fields a {
+				float: left;
+				padding-left: .5em;
 }

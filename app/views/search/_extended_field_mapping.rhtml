@@ -9,12 +9,13 @@
   
 <div class="form-element">
   <% if ef.multiple? %>
-    <div id="<%= qualified_name_for_field(ef) + "_multis"%>">
+
+    <%= extended_field_label(ef) %>
+    
+    <div id="<%= qualified_name_for_field(ef) + "_multis"%>" class="extended_field_multiple_fields">
   
     <%# Deal with multiple instances of fields %>
     <% existing_multiples = existing_multiples_in(ef, extended_item.xml_attributes_without_position) || ["1"] %>
-
-    <%= extended_field_label(ef) %>
     <% existing_multiples.sort.each do |n| %>
     <%= render :partial => 'search/extended_field_editor', :locals => { :ef => ef, :content => extended_item.xml_attributes_without_position, :n => n } %>
     
