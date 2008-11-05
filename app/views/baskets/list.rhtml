@@ -3,7 +3,10 @@
 
 <ul>
   <% @baskets.each do |basket| -%>
-  <li><%= link_to_index_for(basket) -%></li>
+  <li>
+    <%= link_to_index_for(basket) -%>
+    [<ul class="basket_list_options"><%= link_to_actions_available_for(basket) -%></ul>]
+  </li>
   <% end -%>
 </ul>
 

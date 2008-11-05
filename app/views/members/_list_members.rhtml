@@ -11,6 +11,7 @@
     <tr>
       <td class="member-avatar"><%= avatar_for user -%></td>
       <td><%= link_to_contributions_of(user,'Topic') -%></td>
+      <% if @basket_admin -%>
       <td><%= mail_to h(user.email) -%></td>
       <%= render :partial =>'possible_roles',
                  :locals => { :user => user,
@@ -19,13 +20,14 @@
       <%= render :partial =>'admin_actions',
                  :locals => { :user => user,
                               :admin_actions => admin_actions } -%>
+      <% end -%>
     </tr>
     <% end -%>
   <% end -%>
 </table>
 
 <div id="prev-next"><%= will_paginate members -%></div>
-<% if @current_basket.urlified_name != 'site' -%>
+<% if @current_basket.urlified_name != 'site' && @basket_admin -%>
   <% form_tag :action => 'potential_new_members' do -%>
   <div id="searchheader">
     <h4>Search for new members</h4>

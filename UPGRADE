@@ -33,6 +33,13 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2008/11/05 - Added Basket Join Policy and Member List Policy
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      Run the migrations: 'rake db:migrate'
+4.      Start your Kete server again (mongrels or mod_rails)
+
 == 2008/11/04 - Added User contact form functionality
 
 1.      Stop your Kete server (mongrels or mod_rails).

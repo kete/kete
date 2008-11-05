@@ -10,6 +10,8 @@ class Basket < ActiveRecord::Base
 
   USER_LEVEL_OPTIONS = [['All users', 'all users']] + MEMBER_LEVEL_OPTIONS
 
+  ALL_LEVEL_OPTIONS = [['All users', 'all users']] + [['Logged in user', 'logged in']] + MEMBER_LEVEL_OPTIONS
+
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
@@ -201,6 +203,11 @@ class Basket < ActiveRecord::Base
     value == current_value
   end
 
+  def memberlist_policy_or_default
+    current_value = self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
+    select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value)
+  end
+
   def array_to_options_list_with_defaults(options_array, default_value)
     select_options = String.new
     options_array.each do |option|
@@ -361,18 +368,37 @@ class Basket < ActiveRecord::Base
     (self.settings[:allow_basket_admin_contact] == true || (self.settings[:allow_basket_admin_contact].class == NilClass && @@site_basket.settings[:allow_basket_admin_contact] == true))
   end
 
+  # return a boolean for whether basket join requests (with inheritance) are enabled
+  # open / request = true
+  # closed = false 
+  def allows_join_requests_with_inheritance?
+    ['open', 'request'].include?(self.join_policy_with_inheritance)
+  end
+
+  # get the current basket join policy. If nil, use the site baskets
+  def join_policy_with_inheritance
+    (!self.settings[:basket_join_policy].blank?) ? self.settings[:basket_join_policy] : self.site_basket.settings[:basket_join_policy]
+  end
+
   # get a list of administrators (including site administrators
   # if the current basket is the site basket)
   # uses auto-generated methods from the authorization plugin
   def administrators
-    if self == @@site_basket
+    if self == self.site_basket
       self.has_site_admins_or_admins
     else
       self.has_admins
     end
   end
 
+  def delete_roles_for(user)
+    self.accepted_roles.each do |role|
+      user.has_no_role(role.name, self)
+    end
+  end
+
   protected
+
   # before save filter
   def urlify_name
     return if name.blank?
@@ -392,6 +418,7 @@ class Basket < ActiveRecord::Base
   end
 
   private
+
   # when a basket is to be deleted
   # we have to update all versions for items that used to point
   # at the basket in question (but were previously moved out of basket)

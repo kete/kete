@@ -33,7 +33,8 @@ class ApplicationController < ActionController::Base
                                             :setup_rebuild,
                                             :rebuild_zoom_index,
                                             :add_portrait, :remove_portrait, :default_portrait,
-                                            :contact, :send_email]
+                                            :contact, :send_email,
+                                            :join ]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -190,6 +191,11 @@ class ApplicationController < ActionController::Base
     current_user_is?(basket.private_file_visibility)
   end
 
+  # Test for memberlist visibility in a given basket
+  def current_user_can_see_memberlist_for?(basket)
+    current_user_is?(basket.settings[:memberlist_policy], basket)
+  end
+
   # Walter McGinnis, 2006-04-03
   # bug fix for when site admin moves an item from one basket to another
   # if params[:topic][basket_id] exists and site admin
@@ -238,13 +244,21 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'page_description_[privacy]', 'edit_[privacy]', 'history', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]', 'secondary_content_license_metadata_[privacy]']
+  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]',
+                'page_description_[privacy]', 'edit_[privacy]',
+                'details_first_[privacy]', 'details_second_[privacy]',
+                'contributor_[privacy]', 'flagging_[privacy]',
+                'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
+                'secondary_content_license_metadata_[privacy]', 'history']
+
   PUBLIC_SHOW_PARTS = ['comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = [ 'page_keywords', 'page_description', 'details', 'license', 'extended_fields', 'edit', 'tools', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
+  INDEX_PARTS = ['page_keywords', 'page_description', 'details', 'license',
+                 'extended_fields', 'edit', 'tools', 'recent_topics',
+                 'search', 'extra_side_bar_html', 'archives', 'tags', 'contact']
 
   # the following method is used when clearing show caches
   def all_show_parts
@@ -1010,7 +1024,11 @@ class ApplicationController < ActionController::Base
   end
 
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
+                :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type,
+                :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?,
+                :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
+                :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
 
   protected
 
@@ -1043,7 +1061,7 @@ class ApplicationController < ActionController::Base
     @basket_access_hash = logged_in? ? current_user.basket_permissions : Hash.new
   end
 
-  def current_user_is?(at_least_setting)
+  def current_user_is?(at_least_setting, basket = @current_basket)
     begin
       # everyone can see, just return true
       return true if at_least_setting == 'all users' || at_least_setting.blank?
@@ -1051,10 +1069,21 @@ class ApplicationController < ActionController::Base
       # all other settings, you must be at least logged in
       return false unless logged_in?
 
+      # do we just want people logged in?
+      return true if at_least_setting == 'logged in'
+
       # finally, if they are logged in
       # we evaluate matching instance variable if they have the role that matches
       # our basket setting
-      instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
+
+      # if we are checking at least settings on a different basket, we have to
+      # populate new ones with the context of that basket, not the current basket
+      if basket != @current_basket
+        load_at_least(basket)
+        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}_of_specified_basket")
+      else
+        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
+      end
     rescue
       raise "Unknown authentication type: #{$!}"
     end

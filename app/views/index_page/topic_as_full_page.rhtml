@@ -48,6 +48,13 @@
   <% end -%>
 <% end -%>
 
+<div id="secondary-content-wrapper">
+  <ul>
+    <%= link_to_membership_request_of(@current_basket) %>
+    <%= link_to_members_of(@current_basket) %>
+  </ul>
+</div>
+
 <% cache({:part => 'tools'}) do -%>
 <% end -%>
 

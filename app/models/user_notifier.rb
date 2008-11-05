@@ -44,6 +44,30 @@ class UserNotifier < ActionMailer::Base
     @body[:from_basket] = from_basket
   end
 
+  # notifications for basket joins
+  def join_notification_to(recipient, sender, basket, type)
+    setup_email(recipient)
+    @body[:sender] = sender
+    @body[:basket] = basket
+
+    case type
+    when 'joined'
+      @subject += "#{sender.user_name} has joined the #{basket.urlified_name} basket"
+      @template = 'user_notifier/join_policy/join_member'
+    when 'request'
+      @subject += "#{sender.user_name} has requested membership in #{basket.urlified_name} basket"
+      @template = 'user_notifier/join_policy/join_request'
+    when 'approved'
+      @subject += "Membership to #{basket.urlified_name} accepted"
+      @template = 'user_notifier/join_policy/join_accepted'
+    when 'rejected'
+      @subject += "Membership to #{basket.urlified_name} rejected"
+      @template = 'user_notifier/join_policy/join_rejected'
+    else
+      raise "Invalid membership notification type. joined, request, approved and rejected only."
+    end
+  end
+
   # notifications for flagging/moderation
   def item_flagged_for(moderator, flag, url, flagging_user, submitter, revision, message)
     setup_email(moderator)
@@ -79,12 +103,14 @@ class UserNotifier < ActionMailer::Base
   end
 
   protected
+
   def setup_email(user)
     @recipients  = "#{user.email}"
     @from        = "#{NOTIFIER_EMAIL}"
     @subject     = "#{SITE_NAME} "
     @sent_on     = Time.now
     @body[:user] = user
+    @body[:recipient] = user # less confusing than user
   end
 
   def setup_body_with(revision, url, message, submitter = nil)
@@ -93,8 +119,7 @@ class UserNotifier < ActionMailer::Base
     @body[:submitter] = submitter
     @body[:message] = message
   end
-  
-  
+
   # James - 2008-06-29
   # Work around to fix active_scaffold exceptions
   class << self

@@ -1,19 +1,29 @@
-<% @title = 'Listing users' -%>
+<% @title = "Listing #{@listing_type} users" -%>
 
 <%= render(:partial => "baskets/actions_menu",
-           :locals => { :item => @current_basket }) %>
+           :locals => { :item => @current_basket }) if @basket_admin %>
 
 <%= render :partial => "topics/content_wrapper_start" %>
 
 <h2><%= @title %></h2>
 
+<% if @basket_admin -%>
+<p>
+  <%= link_to "All users", :type => 'all' %>
+  | <%= link_to "Membership Requests", :type => 'pending' %>
+  | <%= link_to "Rejected Memberships", :type => 'rejected' %>
+</p>
+<% end -%>
+
 <table class="members-list-table">
   <tr valign="top">
     <th colspan="2" abbr="Login">User name or Login</th>
+    <% if @basket_admin -%>
     <th abbr="Email">Email</th>
     <th abbr="Switch">Change to</th>
     <% if !@admin_actions.blank? -%>
     <th abbr="Administrate">Administrative Actions</th>
+    <% end -%>
     <% end -%>
   </tr>
   <% @non_member_roles_plural.each do |role_key, role_plural| %>
@@ -24,6 +34,7 @@
   <tr>
     <td class="member-avatar"><%= avatar_for user -%></td>
     <td><%= link_to_contributions_of(user,'Topic') -%></td>
+    <% if @basket_admin %>
     <td><%= mail_to h(user.email) -%></td>
     <%= render :partial =>'possible_roles',
                :locals => { :user => user,
@@ -31,17 +42,19 @@
                             :possible_roles => @possible_roles } %>
     <%= render :partial =>'admin_actions',
                :locals => { :user => user,
+                            :role_key => role_key,
                             :admin_actions => @admin_actions } %>
+    <% end -%>
   </tr>
   <% end %>
   <% end %>
 </table>
 
 <div id="list-members">
-  <%= render :partial =>'list_members',
+  <%= render(:partial =>'list_members',
              :locals => { :members => @members,
                           :possible_roles => @possible_roles,
-                          :admin_actions => @admin_actions } %>
+                          :admin_actions => @admin_actions }) if @listing_type == 'all' %>
 </div>
 
 <br />

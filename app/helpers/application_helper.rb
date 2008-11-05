@@ -143,10 +143,10 @@ module ApplicationHelper
                                                {:tabindex => '2'}) + current_basket_html + '</li>'
   end
 
-  def users_baskets_list(user=current_user, show_private_memberships=true, show_roles=false)
-    # when another branch is merged in which create an instance variable per request
-    # remove this call to speed up page loading
-    @baskets = user.get_basket_permissions(show_private_memberships)
+  def users_baskets_list(user=current_user, show_roles=false)
+    # if the user is the current user, use the basket_access_hash instead of fetching them again
+    @baskets = (user == current_user) ? @basket_access_hash : user.basket_permissions
+
     html = String.new
     @baskets.each do |name, basket|
       link = link_to(Basket.find_by_urlified_name("#{name}").name, basket_index_url(:urlified_name => name))
@@ -270,6 +270,69 @@ module ApplicationHelper
     else
       return link_to("&lt;&lt; Back to \"#{session[:return_to_title]}\"", session[:return_to])
     end
+  end
+
+  def link_to_members_of(basket, viewable_text="View this Baskets Member List", unavailable_text="")
+    if current_user_can_see_memberlist_for?(basket)
+      content_tag("li", link_to(viewable_text,
+                                :urlified_name => basket.urlified_name,
+                                :controller => 'members',
+                                :action => 'list'),
+                        :class => 'first' )
+    elsif !unavailable_text.blank?
+      content_tag("li", unavailable_text,
+                        :class => 'first')
+    end
+  end
+
+  def link_to_membership_request_of(basket, options={})
+    return '' unless logged_in?
+
+    options = { :join_text => "Join basket",
+                :request_text => "Request to join basket",
+                :closed_text => "",
+                :pending_text => "Basket membership pending",
+                :rejected_text => "Basket membership rejected",
+                :current_role => "You are a |role|." }.merge(options)
+
+    html = "<li>"
+    if @basket_access_hash[basket.urlified_name.to_sym].blank?
+      location_hash = { :urlified_name => basket.urlified_name,
+                        :controller => 'members',
+                        :action => 'join' }
+      case basket.join_policy_with_inheritance
+      when 'open'
+        html += link_to(options[:join_text], location_hash)
+      when 'request'
+        html += link_to(options[:request_text], location_hash)
+      else
+        return '' if options[:closed_text].blank?
+        html += options[:closed_text]
+      end
+    else
+      role = @basket_access_hash[basket.urlified_name.to_sym][:role_name].humanize
+      case role
+      when "Membership requested"
+        html += options[:pending_text]
+      when "Membership rejected"
+        html += options[:rejected_text]
+      else
+        html += options[:current_role].gsub('|role|', role)
+      end
+    end
+    html += "</li>"
+  end
+
+  def link_to_actions_available_for(basket)
+    options = { :join_text => "join basket",
+                :request_text => "request membership",
+                :closed_text => "closed membership",
+                :pending_text => "membership pending",
+                :rejected_text => "membership rejected",
+                :current_role => "currently |role|" }
+    html = ''
+    html += link_to_members_of(basket, 'see members', 'member list unavailable')
+    html += link_to_membership_request_of(basket, options)
   end
 
   def link_to_basket_contact_form

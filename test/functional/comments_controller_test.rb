@@ -72,7 +72,7 @@ class CommentsControllerTest < Test::Unit::TestCase
     login_as(:quire)
     get :new, :urlified_name => "closed_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
     assert_response :redirect
-    assert_redirected_to :controller => "index_page", :action => "permission_denied"
+    assert_redirected_to :controller => "baskets", :action => "permission_denied"
   end
   
   def test_protected_allows_member_comments_from_member
@@ -109,7 +109,7 @@ class CommentsControllerTest < Test::Unit::TestCase
     login_as(:quire)
     post :create, :urlified_name => "closed_basket", :comment => @new_comment_model
     assert_response :redirect
-    assert_redirected_to :controller => "index_page", :action => "permission_denied"
+    assert_redirected_to :controller => "baskets", :action => "permission_denied"
   end
   
   def test_can_create_if_non_member_on_unprotected

@@ -237,7 +237,7 @@ class User < ActiveRecord::Base
     Basket.find_all_by_id(DEFAULT_BASKETS_IDS).each { |basket| self.has_role('member',basket) }
   end
 
-  def basket_permissions(show_private_memberships=true)
+  def basket_permissions
     select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name"
     join = "INNER JOIN baskets on roles.authorizable_id = baskets.id"
     permissions = roles.find_all_by_authorizable_type('Basket', :select => select, :joins => join)

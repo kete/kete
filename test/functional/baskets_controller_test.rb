@@ -100,4 +100,13 @@ class BasketsControllerTest < Test::Unit::TestCase
     assert_equal "Your email has been sent. You will receive the reply in your email box.", flash[:notice]
   end
 
+  private
+
+  # Change a setting on a basket
+  def change_setting_on_basket(basket_urlified_name, setting, value)
+    @basket = Basket.find_by_urlified_name(basket_urlified_name)
+    raise "#{basket_urlified_name} basket not found" if @basket.nil?
+    @basket.settings[setting.to_sym] = value
+  end
+
 end

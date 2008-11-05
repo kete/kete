@@ -47,7 +47,6 @@
       <div class="form-element">
         <%= form.radio_button :show_privacy_controls, 'false', :tabindex => '1' %>
         <label for="basket_show_privacy_controls_false" class="inline">Disabled</label>
-        <br />
         <div class="form_example">
           Disable Privacy Controls if members can only create publicly
           readable items.
@@ -227,6 +226,62 @@
       <div class="form-element">
         <%= check_box 'settings', 'sort_direction_reversed_default', {:checked => (@basket.settings[:sort_direction_reversed_default] == 'reverse'), :tabindex => '1'}, 'reverse', '' %>
         <label for="settings_sort_direction_reversed_default" class="inline">in reverse?</label>
+      </div>
+
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <label>Join Policy:</label>
+
+    <fieldset>
+
+      <div class="form-element">
+        <%= radio_button 'settings', 'basket_join_policy', 'open', {:checked => (@basket.settings[:basket_join_policy] == 'open')} %>
+        <label for="settings_basket_join_policy_open" class="inline">Open Membership</label>
+        <div class="form_example">
+          Enable Open Basket Membership. Anyone can join this basket with one click.
+        </div>
+      </div>
+
+      <div class="form-element">
+        <%= radio_button 'settings', 'basket_join_policy', 'request', {:checked => (@basket.settings[:basket_join_policy] == 'request')} %>
+        <label for="settings_basket_join_policy_request" class="inline">Request Membership</label>
+        <div class="form_example">
+          Enable Requested Basket Membership. Basket Administrators have to approve or reject each application.
+        </div>
+      </div>
+
+      <div class="form-element">
+        <%= radio_button 'settings', 'basket_join_policy', 'closed', {:checked => (@basket.settings[:basket_join_policy] == 'closed')} %>
+        <label for="settings_basket_join_policy_closed" class="inline">Closed Membership</label>
+        <div class="form_example">
+          Closed Basket Membership. Members have to be added by Basket Administrators manually.
+        </div>
+      </div>
+
+      <% if @basket != @site_basket %>
+      <div class="form-element">
+        <%= radio_button 'settings', 'basket_join_policy', 'nil', {:checked => (@basket.settings[:basket_join_policy] == nil)} %>
+        <label for="settings_basket_join_policy_nil" class="inline">Inherit</label>
+        <div class="form_example">
+          Inherit this setting from the Site basket.<br />
+          The Site has basket membership <strong>
+          <%= @site_basket.settings[:basket_join_policy] -%>
+          </strong> by default
+        </div>
+      </div>
+      <% end -%>
+  </div>
+
+  <div class="form-element">
+    <label>Member List Policy:</label>
+
+    <fieldset>
+
+      <div class="form-element">
+        <label for="settings_memberlist_policy" style="width: 100%">To view the member list you must be at least a:</label>
+        <div style="clear: left"><%= select_tag 'settings[memberlist_policy]', @basket.memberlist_policy_or_default %></div>
       </div>
 
     </fieldset>
