@@ -120,17 +120,8 @@ class TopicTest < Test::Unit::TestCase
   end
   
   def test_extended_field_required_fields_are_validated_with_multiples
-    field = ExtendedField.create!(
-      :label => "Address",
-      :xml_element_name => "dc:description",
-      :multiple => true,
-      :ftype => "text"
-    )
+    topic_type = add_field_to(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }, { :required => true })
 
-    topic_type = TopicType.find_by_name("Person")
-    topic_type.topic_type_to_field_mappings.create(:extended_field => field, :required => true)
-    topic_type.save!
-    
     model = Topic.new(@new_model.merge(:topic_type => topic_type))
     model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "" } }
     
@@ -140,7 +131,151 @@ class TopicTest < Test::Unit::TestCase
     
     assert !model.valid?
     assert_equal 1, model.errors.size
+    
+    # Drop our newly created field and mapping
+    drop_last_field!
   end
+  
+  def test_helpers_work
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
+      t.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      assert_valid t
+      assert_kind_of Topic, t
+    end
+  end
+  
+  def test_extended_field_text_fields_are_validated
+    model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+    
+    assert_valid model
+    assert_equal 0, model.errors.size
+  end
+  
+  def test_extended_field_textarea_fields_are_validated
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
+      t.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => "New\n Line" }
+      assert_valid t
+    end
+  end
+  
+  def test_extended_field_radio_fields_are_validated
+    
+    # We do not have a plan for how radio fields are to be used in Kete.
+    print "Skipped"
+  end
+  
+  def test_extended_field_date_fields_are_validated
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Birthdate", :ftype => "date" }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      
+      t.extended_content = compulsory_content.merge("birthdate" => "1960-01-01")
+      assert_valid t
+      
+      t.extended_content = compulsory_content.merge("birthdate" => "In 1960")
+      assert !t.valid?
+      assert_equal 1, t.errors.size
+      assert_equal "Birthdate must be in the standard date format (YYYY-MM-DD)", t.errors.full_messages.join(", ")
+      
+      t.extended_content = compulsory_content.merge("birthdate" => "1960-1-1")
+      assert !t.valid?
+      assert_equal 1, t.errors.size
+      assert_equal "Birthdate must be in the standard date format (YYYY-MM-DD)", t.errors.full_messages.join(", ")
+    end
+  end
+  
+  def test_extended_field_checkbox_fields_are_validated
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Deceased", :ftype => "checkbox" }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      
+      ["Yes", "No", ""].each do |value|
+        t.extended_content = compulsory_content.merge("deceased" => value)
+        assert_valid t
+        assert_equal 0, t.errors.size
+      end
+      
+      [1, 0, "yes"].each do |value|
+        t.extended_content = compulsory_content.merge("deceased" => value)
+        assert !t.valid?
+        assert_equal "Deceased must be a valid checkbox value (Yes or No)", t.errors.full_messages.join(", ")
+      end
+    end
+  end
+  
+  def test_extended_field_choice_fields_are_validated
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice" }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      
+      # Set up choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+      
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+      
+      assert_equal 4, t.all_field_mappings.last.extended_field.choices.size
+      
+      # Run the tests
+      ["", "Married", "Defacto Relationship", "Dating", "Single"].each do |value|
+        t.extended_content = compulsory_content.merge("marital_status" => value)
+        assert_valid t
+        assert_equal 0, t.errors.size
+      end
+      
+      ["married", "something else", "123", "Defacto", "Defacto relationship"].each do |v|
+        t.extended_content = compulsory_content.merge("marital_status" => v)
+        assert !t.valid?
+        assert_equal 1, t.errors.size
+        assert_equal "Marital status must be a valid choice", t.errors.full_messages.join(", ")
+      end
+      
+      ExtendedField.last.choices.each { |c| c.destroy }
+      assert_equal 0, ExtendedField.last.choices.size
+      # assert_equal 0, t.all_field_mappings.last.extended_field.choices.size
+    end
+  end
+      
+      
+  protected
+  
+    # Some helpers for extended field tests
+    # Returns instance of TopicType.
+    def add_field_to(topic_type, field_attribute_hash = {}, mapping_options = {})
+
+      default_field_attributes = {
+        :label => "Test", 
+        :xml_element_name => "dc:description", 
+        :multiple => false, 
+        :ftype => "text"
+      }
+      
+      mapping_attributes = {
+        :extended_field => ExtendedField.create!(default_field_attributes.merge(field_attribute_hash)),
+        :required => false
+      }
+      
+      topic_type.topic_type_to_field_mappings.create(mapping_attributes.merge(mapping_options))
+      
+      topic_type
+    end
+    
+    def for_topic_with(topic_type, field_attribute_hash = {}, mapping_options = {})
+      tt = add_field_to(topic_type, field_attribute_hash, mapping_options)
+      model = Topic.new(@new_model.merge(:topic_type => tt))
+      yield(model)
+      drop_last_field!
+    end
+    
+    def drop_last_field!
+      ExtendedField.last.destroy
+      TopicTypeToFieldMapping.last.destroy
+    end
     
 end
 

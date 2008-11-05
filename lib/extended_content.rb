@@ -237,27 +237,50 @@ module ExtendedContent
       # Specialized validation methods below..
       
       def validate_extended_checkbox_field_content(extended_field_mapping, value)
-        nil
+        return nil if value.empty?
+        
+        unless value =~ /^(Yes|No)$/
+          "must be a valid checkbox value (Yes or No)"
+        end
       end
     
       def validate_extended_radio_field_content(extended_field_mapping, value)
+
+        # Unsure right now how to handle radio fields. A single radio field is not of any use in the context
+        # of extended fields/content.
         nil
       end
     
       def validate_extended_date_field_content(extended_field_mapping, value)
-        nil
+        
+        # Allow nil values. If this is required, the nil value will be caught earlier.
+        return nil if value.empty?
+        
+        unless value =~ /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/
+          "must be in the standard date format (YYYY-MM-DD)"
+        end
       end
     
       def validate_extended_text_field_content(extended_field_mapping, value)
+        
+        # We accept pretty much any value for text fields
         nil
       end
     
       def validate_extended_textarea_field_content(extended_field_mapping, value)
+        
+        # We accept pretty much any value for text fields
         nil
       end
     
       def validate_extended_choice_field_content(extended_field_mapping, value)
-        nil
+        
+        # Allow nil values. If this is required, the nil value will be caught earlier.
+        return nil if value.empty?
+        
+        unless extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(value)
+          "must be a valid choice"
+        end
       end
     
   end
