@@ -237,7 +237,6 @@ class TopicTest < Test::Unit::TestCase
       
       ExtendedField.last.choices.each { |c| c.destroy }
       assert_equal 0, ExtendedField.last.choices.size
-      # assert_equal 0, t.all_field_mappings.last.extended_field.choices.size
     end
   end
       

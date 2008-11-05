@@ -203,7 +203,7 @@ module ExtendedContent
       def validate_extended_content_single_value(extended_field_mapping, value)
         # Handle required fields here..
         if extended_field_mapping.required && value.blank?
-          errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank (#{value.inspect}, #{extended_content_pairs.inspect})")
+          errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank")
         else
           
           # Otherwise delegate to specialized method..
