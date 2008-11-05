@@ -12,15 +12,15 @@
     <div id="<%= qualified_name_for_field(ef) + "_multis"%>">
   
     <%# Deal with multiple instances of fields %>
-    <% existing_multiples = existing_multiples_in(ef, content) || ["1"] %>
-    
+    <% existing_multiples = existing_multiples_in(ef, extended_item.xml_attributes_without_position) || ["1"] %>
+
     <%= extended_field_label(ef) %>
     <% existing_multiples.sort.each do |n| %>
-    <%= render :partial => 'search/extended_field_editor', :locals => { :ef => ef, :content => content, :n => n } %>
+    <%= render :partial => 'search/extended_field_editor', :locals => { :ef => ef, :content => extended_item.xml_attributes_without_position, :n => n } %>
     
     <% end %>
 
-    <%= render :partial => 'search/additional_extended_field_control', :locals => { :n => existing_multiples.flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => content } %>
+    <%= render :partial => 'search/additional_extended_field_control', :locals => { :n => existing_multiples.flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => extended_item.xml_attributes_without_position } %>
     
     </div>
 

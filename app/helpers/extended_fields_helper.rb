@@ -144,9 +144,16 @@ module ExtendedFieldsHelper
   # Same as above, plus:
   # * position_in_set: A number offset of the value want. The collection starts with key 1, not 0 as in a traditional associative 
   #   array.
-  def field_value_from_multiples_hash(extended_field, array, position_in_set)
-    field_values = array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }.first.last
-    field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
+  def field_value_from_multiples_hash(extended_field, hash, position_in_set)
+    field_values = hash[qualified_name_for_field(extended_field) + "_multiple"]
+    field_values = field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
+    
+    if field_values.is_a?(Hash)
+      field_values["value"] || ""
+    else
+      field_values
+    end
+    
   rescue
     ""
   end
@@ -154,14 +161,12 @@ module ExtendedFieldsHelper
   # Get the keys of existing values for a 'multiple' extended field.
   # Requires:
   # * extended_field: An instance of ExtendedField
-  # * Array: extended content pairs (i.e. ['field_name', 'values']) from the model.
-  def existing_multiples_in(extended_field, array)
-    multiples = array.select { |k, v| k == qualified_name_for_field(extended_field) + "_multiple" }
-    
-    # Flatten the results because otherwise we have a redundantly nested array, and then we want the second (last) part because
-    # that contains the actual sorted existing values hash (ala ['field_name', { results hash }]). Then we only want the keys (i.e.
-    # 1, 2, 3, etc..)
-    multiples.empty? ? nil : multiples.flatten.last.collect { |k, v| k }
+  # * hash: xml_attributes from the model.
+  def existing_multiples_in(extended_field, hash)
+    multiples = hash[qualified_name_for_field(extended_field) + "_multiple"]
+    # We need to to .last.last because what we get initially is like [['field_name', ['value', 'value,..]]] and we need to unnest
+    # without flatten the values into the same dimension of the array as the field name.
+    multiples.blank? ? nil : multiples.keys
   end
   
   private

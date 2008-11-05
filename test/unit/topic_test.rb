@@ -70,6 +70,26 @@ class TopicTest < Test::Unit::TestCase
     assert_equal({}, model.xml_attributes)
   end
   
+  def test_xml_attributes_without_position_with_multiple_field_values
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
+      t.extended_content = {
+        "first_names" => "Joe",
+        "last_name" => "Bloggs",
+        "address" => { "1" => "The Parade", "2" => "Island Bay" }
+      }
+      
+      assert_valid t
+      assert_equal({
+        "first_names"=> { "xml_element_name" => "dc:description", "value" => "Joe" },
+        "address_multiple"=> {
+          "1" => { "address" => { "xml_element_name" => "dc:description", "value" => "The Parade" } },
+          "2" => { "address" => { "xml_element_name" => "dc:description", "value" => "Island Bay" } }
+        },
+       "place_of_birth" => { "xml_element_name" => "dc:subject" },
+       "last_name" => "Bloggs" }, t.xml_attributes_without_position)
+    end
+  end
+  
   def test_extended_content_pairs_with_multiple_field_values
 
     field = ExtendedField.create!(
