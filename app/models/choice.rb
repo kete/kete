@@ -12,6 +12,10 @@ class Choice < ActiveRecord::Base
   
   # Label is compulsory
   validates_presence_of :label
+  
+  # Label and value must be unique (for lookup reasons)
+  validates_uniqueness_of :label, :message => "must be unique"
+  validates_uniqueness_of :value, :message => "must be unique"
 
   # If no value is given, use the label as the value
   # I expect this will be a pretty common use-case
