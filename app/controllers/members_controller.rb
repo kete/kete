@@ -1,8 +1,10 @@
 class MembersController < ApplicationController
 
-  permit "site_admin or admin of :current_basket", :except => [:index, :list, :join, :rss]
+  permit "site_admin or admin of :current_basket", :except => [:index, :list, :join, :remove, :rss]
 
   before_filter :permitted_to_view_memberlist, :only => [:index, :list, :rss]
+
+  before_filter :permitted_to_remove_basket_members, :only => [:remove]
 
   def index
     redirect_to :action => 'list'
@@ -238,9 +240,31 @@ class MembersController < ApplicationController
   end
 
   def remove
+    if current_user_can_see_memberlist_for?(@current_basket)
+      redirect_location = { :action => 'list' }
+    else
+      redirect_location = "/#{@site_basket.urlified_name}/"
+    end
+
+    if @current_basket == @site_basket
+      flash[:error] = "You cannot remove yourself from the Site basket."
+      redirect_to redirect_location
+    else
+      @user ||= User.find(params[:id]) # will already be set by before filter 'permitted_to_remove_basket_members'
+      @current_basket.delete_roles_for(@user)
+      flash[:notice] = "Successfully removed user from #{@current_basket.name}."
+      redirect_to redirect_location
+    end
+  end
+
+  def destroy
     @user = User.find(params[:id])
-    @current_basket.delete_roles_for(@user)
-    flash[:notice] = "Successfully removed user."
+    if @user.contributions.size > 0
+      flash[:error] = "#{@user.user_name} has contributions and cannot be deleted from the site. Perhaps a ban instead?"
+    else
+      @user.destroy
+      flash[:notice] = "#{@user.user_name} has been deleted from the site."
+    end
     redirect_to :action => 'list'
   end
 
@@ -277,6 +301,14 @@ class MembersController < ApplicationController
   def permitted_to_view_memberlist
     unless current_user_can_see_memberlist_for?(@current_basket)
       flash[:error] = "You need to have the right permissions to access this baskets member list"
+      redirect_to DEFAULT_REDIRECTION_HASH
+    end
+  end
+
+  def permitted_to_remove_basket_members
+    @user = User.find(params[:id])
+    unless logged_in? && (permit?("site_admin or admin of :current_basket") || @current_user == @user)
+      flash[:error] = "You need to have the right permissions to remove basket members"
       redirect_to DEFAULT_REDIRECTION_HASH
     end
   end

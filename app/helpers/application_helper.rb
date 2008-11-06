@@ -305,18 +305,20 @@ module ApplicationHelper
   def link_to_membership_request_of(basket, options={})
     return '' unless logged_in?
 
-    options = { :join_text => "Join basket",
-                :request_text => "Request to join basket",
+    options = { :join_text => "Join",
+                :request_text => "Request",
                 :closed_text => "",
-                :pending_text => "Basket membership pending",
-                :rejected_text => "Basket membership rejected",
-                :current_role => "You are a |role|." }.merge(options)
+                :pending_text => "Membership pending",
+                :rejected_text => "Membership rejected",
+                :current_role => "You're a |role|.",
+                :leave_text => "Leave" }.merge(options)
+
+    location_hash = { :urlified_name => basket.urlified_name,
+                      :controller => 'members',
+                      :action => 'join' }
 
     html = "<li>"
     if @basket_access_hash[basket.urlified_name.to_sym].blank?
-      location_hash = { :urlified_name => basket.urlified_name,
-                        :controller => 'members',
-                        :action => 'join' }
       case basket.join_policy_with_inheritance
       when 'open'
         html += link_to(options[:join_text], location_hash)
@@ -335,18 +337,22 @@ module ApplicationHelper
         html += options[:rejected_text]
       else
         html += options[:current_role].gsub('|role|', role)
+        unless @current_basket == @site_basket # no one can remove themselves from the site basket
+          html += " " + link_to(options[:leave_text], location_hash.merge({:action => 'remove', :id => current_user}))
+        end
       end
     end
     html += "</li>"
   end
 
   def link_to_actions_available_for(basket)
-    options = { :join_text => "join basket",
-                :request_text => "request membership",
-                :closed_text => "closed membership",
-                :pending_text => "membership pending",
-                :rejected_text => "membership rejected",
-                :current_role => "currently |role|" }
+    options = { :join_text => "join",
+                :request_text => "request",
+                :closed_text => "closed",
+                :pending_text => "pending",
+                :rejected_text => "rejected",
+                :current_role => "|role|",
+                :leave_text => "leave" }
     html = ''
     html += link_to_members_of(basket, 'see members', 'member list unavailable')
     html += link_to_membership_request_of(basket, options)
