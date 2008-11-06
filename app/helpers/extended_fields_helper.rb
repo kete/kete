@@ -108,8 +108,37 @@ module ExtendedFieldsHelper
   end
   
   def extended_field_choice_editor(name, value, options, extended_field)
+    
+    # Provide an appropriate selection interface..
+    if extended_field.choices.size < 15
+      extended_field_choice_dropdown_editor(name, value, options, extended_field)
+    else
+      extended_field_choice_autocomplete_editor(name, value, options, extended_field)
+    end
+  end
+  
+  def extended_field_choice_dropdown_editor(name, value, options, extended_field)
     option_tags = options_for_select(extended_field.choices.map { |c| [c.label, c.value] }, value)
     select_tag(name, option_tags, options)
+  end
+  
+  def extended_field_choice_autocomplete_editor(name, value, options, extended_field)
+    
+    # Build a list of available choices
+    choices = extended_field.choices.map { |c| c.label }
+    
+    # Because we store the choice's value, not label, we need to find the label to be shown in the text field.
+    # We also handle validation failures here by displaying the submitted value.
+    value = Choice.find_by_value(value).label rescue value
+    
+    text_field_tag(name, value, options.merge(:autocomplete => "off")) + tag("br") +
+    content_tag("div", nil, :class => "extended_field_autocomplete", :id => options[:id] + "_autocomplete", :style => "display: none") +
+    
+    # Javascript code to initialize the autocompleter
+    javascript_tag("new Autocompleter.Local('#{options[:id]}', '#{options[:id] + "_autocomplete"}', #{array_or_string_for_javascript(choices)}, { })") + 
+    
+    # We need to let our controller know that we're using autocomplete for this field.
+    hidden_field_tag(name.first(name.length - 1) + "_from_autocomplete]", "true", :id => options[:id] + "_from_autocomplete")
   end
   
   # Generates label XHTML

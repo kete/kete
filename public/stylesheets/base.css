@@ -742,3 +742,30 @@ div.extended_field_multiple_fields a {
 				float: left;
 				padding-left: .5em;
 }
+
+div.extended_field_autocomplete {
+			  margin: 0px;  
+			  padding: 0px;  
+			  width: 250px;
+			  background: #fff;
+			  border: 1px solid #888;
+			  position: absolute;
+}
+
+div.extended_field_autocomplete ul {
+			  margin: 0px;
+			  padding: 0px;
+			  list-style-type: none;
+}
+
+div.extended_field_autocomplete ul li.selected { 
+			  background-color: #ffb;
+}
+
+div.extended_field_autocomplete ul li {
+			  margin: 0;
+			  padding: 2px;
+			  display: block;
+			  list-style-type: none;
+			  cursor: pointer;
+}

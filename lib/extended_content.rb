@@ -87,6 +87,19 @@ module ExtendedContent
     end
     
     private
+    
+      def converted_value(value, signal_from_params_hash = nil, options = {})
+        if signal_from_params_hash == "true"
+          
+          # When we're receiving values from choice field autocomplete type editors, we get sent the label always.
+          # So, we need to swap the label for the value of the label.
+          Choice.find_by_label(value).value rescue value
+        else
+          
+          # Otherwise, we get sent the value from the HTML SELECT, so we can proceed as normal
+          value
+        end
+      end
 
       def convert_extended_content_to_xml(params_hash)
         
@@ -119,7 +132,7 @@ module ExtendedContent
                     extended_content_field_xml_tag(
                       :xml => xml,
                       :field => field_name,
-                      :value => params_hash[field_name][key],
+                      :value => converted_value(params_hash[field_name][key], params_hash[field_name][key + "_from_autocomplete"]),
                       :xml_element_name => field_to_xml.extended_field_xml_element_name,
                       :xsi_type => field_to_xml.extended_field_xsi_type
                     )
@@ -145,7 +158,7 @@ module ExtendedContent
             extended_content_field_xml_tag(
               :xml => xml,
               :field => field_name,
-              :value => params_hash[field_name],
+              :value => converted_value(params_hash[field_name], params_hash[field_name + "_from_autocomplete"]),
               :xml_element_name => field_to_xml.extended_field_xml_element_name,
               :xsi_type => field_to_xml.extended_field_xsi_type
             )
