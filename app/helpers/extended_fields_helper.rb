@@ -23,11 +23,11 @@ module ExtendedFieldsHelper
 
     options_for_select = [
       ['Check box', 'checkbox'],
-      ['Radio button', 'radio'],
       ['Date', 'date'],
       ['Text', 'text'],
       ['Text box', 'textarea'],
-      ['Choices (drop-down)', 'choice']
+      ['Choices (radio buttons)', 'radio'],
+      ['Choices (drop-down or autocomplete)', 'choice']
     ]
     
     select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name)
@@ -78,8 +78,8 @@ module ExtendedFieldsHelper
     name = name_for_extended_field(extended_field)
     
     builder = "extended_field_#{extended_field.ftype}_editor".to_sym
-    if extended_field.ftype == "choice"
-      send(:extended_field_choice_editor, name, value, tag_options, extended_field)
+    if %w(choice radio).member?(extended_field.ftype)
+      send(builder, name, value, tag_options, extended_field)
     elsif respond_to?(builder)
       send(builder, name, value, tag_options)
     else
@@ -88,12 +88,19 @@ module ExtendedFieldsHelper
   end
   
   def extended_field_checkbox_editor(name, value, options)
-    content_tag("div", check_box_tag(name, "Yes", (value.to_s == "Yes"), options), "style" => "margin: 4px")
+    check_box_tag(name, "Yes", (value.to_s == "Yes"), options)
   end
   
-  # def extended_field_radio_editor(name, value, options)
-  #   # Not implemented. How would this be used?
-  # end
+  def extended_field_radio_editor(name, existing_value, options, extended_field)
+    default_choices = [["Yes", "Yes"], ["No", "No"], ["No value", ""]]
+    choices = extended_field.choices.empty? ? default_choices : extended_field.choices.map { |c| [c.label, c.value] }
+      
+    html = choices.map do |label, value|
+      radio_button_tag(name, value, existing_value.to_s == value) + " " + label
+    end.join("<br />\n")
+    
+    content_tag("div", html, "class" => "extended_field_radio_button_collection")
+  end
   
   def extended_field_date_editor(name, value, options)
     extended_field_text_editor(name, value, options)
@@ -104,7 +111,7 @@ module ExtendedFieldsHelper
   end
   
   def extended_field_textarea_editor(name, value, options)
-    text_area_tag(name, value, options.merge(:rows => 5))
+    text_area_tag(name, value, options.merge(:rows => 5, :class => "extended_field_textarea"))
   end
   
   def extended_field_choice_editor(name, value, options, extended_field)
@@ -132,13 +139,19 @@ module ExtendedFieldsHelper
     value = Choice.find_by_value(value).label rescue value
     
     text_field_tag(name, value, options.merge(:autocomplete => "off")) + tag("br") +
-    content_tag("div", nil, :class => "extended_field_autocomplete", :id => options[:id] + "_autocomplete", :style => "display: none") +
+    content_tag("div", nil, 
+      :class => "extended_field_autocomplete", 
+      :id => options[:id] + "_autocomplete", 
+      :style => "display: none"
+    ) +
     
     # Javascript code to initialize the autocompleter
-    javascript_tag("new Autocompleter.Local('#{options[:id]}', '#{options[:id] + "_autocomplete"}', #{array_or_string_for_javascript(choices)}, { })") + 
+    javascript_tag("new Autocompleter.Local('#{options[:id]}', '#{options[:id] + "_autocomplete"}', #{array_or_string_for_javascript(choices)}, { })") +
     
     # We need to let our controller know that we're using autocomplete for this field.
-    hidden_field_tag(name.first(name.length - 1) + "_from_autocomplete]", "true", :id => options[:id] + "_from_autocomplete")
+    # We know the field we expect should be something like topic[extended_content][someonething]..
+    
+    hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => options[:id] + "_from_autocomplete")
   end
   
   # Generates label XHTML

@@ -729,13 +729,19 @@ div.wrap {
 }
 
 /* Special formatting for extended fields with multiple values */
+
+textarea.extended_field_textarea {
+				width: 500px;
+}
+
 div.extended_field_multiple_fields {
 				float: left;
 }
 
-div.extended_field_multiple_fields input, div.extended_field_multiple_fields input {
+div.extended_field_radio_button_collection {
 				float: left;
-				margin-bottom: 2px;
+				clear: right;
+				margin-bottom: 5px;
 }
 
 div.extended_field_multiple_fields a {

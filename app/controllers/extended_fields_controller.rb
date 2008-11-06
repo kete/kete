@@ -35,7 +35,7 @@ class ExtendedFieldsController < ApplicationController
       # Add a new field editor to the bottom of the set
       page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \
         :partial => 'search/extended_field_editor', \
-        :locals => { :ef => extended_field, :content => [], :n => n }
+        :locals => { :ef => extended_field, :content => [], :n => n, :multiple => true }
         
       # Add the field adder control back to the bottom of the set
       page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \

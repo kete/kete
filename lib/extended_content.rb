@@ -1,8 +1,6 @@
 # Requirements for XML conversion of extended fields
 require "rexml/document"
 require 'builder'
-require 'xmlsimple'
-
 
 # not much here for now, but could expand later
 module ExtendedContent
@@ -132,7 +130,7 @@ module ExtendedContent
                     extended_content_field_xml_tag(
                       :xml => xml,
                       :field => field_name,
-                      :value => converted_value(params_hash[field_name][key], params_hash[field_name][key + "_from_autocomplete"]),
+                      :value => converted_value(params_hash[field_name][key], params_hash[field_name + "_from_autocomplete"]),
                       :xml_element_name => field_to_xml.extended_field_xml_element_name,
                       :xsi_type => field_to_xml.extended_field_xsi_type
                     )
@@ -202,6 +200,8 @@ module ExtendedContent
           
           if field.multiple?
             value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') + "_multiple" }
+            
+            # Remember to reject anything we use for signalling.
             values = value_pairs.map { |k, v| v }.flatten
             validate_extended_content_multiple_values(mapping, values)
           else
