@@ -124,7 +124,7 @@ module ExtendedContent
               hash_of_values = params_hash[field_name]
               
               # Do not store empty values
-              hash_of_values = hash_of_values.reject { |k, v| v.blank? }
+              hash_of_values = hash_of_values ? hash_of_values.reject { |k, v| v.blank? } : nil
               
               if !hash_of_values.blank?
                 hash_of_values.keys.sort.each do |key|
@@ -215,7 +215,9 @@ module ExtendedContent
       # Generic validation methods
       def validate_extended_content_single_value(extended_field_mapping, value)
         # Handle required fields here..
-        if extended_field_mapping.required && value.blank?
+        if extended_field_mapping.required && value.blank? && \
+          extended_field_mapping.extended_field.ftype != "checkbox"
+          
           errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank")
         else
           
@@ -231,7 +233,9 @@ module ExtendedContent
       
       def validate_extended_content_multiple_values(extended_field_mapping, values)
         
-        if extended_field_mapping.required && values.all? { |v| v.to_s.blank? }
+        if extended_field_mapping.required && values.all? { |v| v.to_s.blank? } && \
+          extended_field_mapping.extended_field.ftype != "checkbox"
+          
           errors.add_to_base("#{extended_field_mapping.extended_field.label} must have at least one value")
         else
           
