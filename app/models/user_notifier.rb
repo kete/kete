@@ -53,16 +53,16 @@ class UserNotifier < ActionMailer::Base
     case type
     when 'joined'
       @subject += "#{sender.user_name} has joined the #{basket.urlified_name} basket"
-      @template = 'user_notifier/join_policy/join_member'
+      @template = 'user_notifier/join_policy/member'
     when 'request'
       @subject += "#{sender.user_name} has requested membership in #{basket.urlified_name} basket"
-      @template = 'user_notifier/join_policy/join_request'
+      @template = 'user_notifier/join_policy/request'
     when 'approved'
       @subject += "Membership to #{basket.urlified_name} accepted"
-      @template = 'user_notifier/join_policy/join_accepted'
+      @template = 'user_notifier/join_policy/accepted'
     when 'rejected'
       @subject += "Membership to #{basket.urlified_name} rejected"
-      @template = 'user_notifier/join_policy/join_rejected'
+      @template = 'user_notifier/join_policy/rejected'
     else
       raise "Invalid membership notification type. joined, request, approved and rejected only."
     end
@@ -112,17 +112,17 @@ class UserNotifier < ActionMailer::Base
     when 'created'
       @subject += "#{sender.user_name} has created the #{basket.urlified_name} basket"
       @body[:needs_approval] = false
-      @template = 'user_notifier/basket_create_policy/basket_created'
+      @template = 'user_notifier/basket_create_policy/created'
     when 'request'
       @subject += "#{sender.user_name} has requested creation of the #{basket.urlified_name} basket"
       @body[:needs_approval] = true
-      @template = 'user_notifier/basket_create_policy/basket_created'
+      @template = 'user_notifier/basket_create_policy/created'
     when 'approved'
       @subject += "#{basket.urlified_name} basket creation has been approved"
-      @template = 'user_notifier/basket_create_policy/basket_approved'
+      @template = 'user_notifier/basket_create_policy/approved'
     when 'rejected'
       @subject += "#{basket.urlified_name} basket creation has been rejected"
-      @template = 'user_notifier/basket_create_policy/basket_rejected'
+      @template = 'user_notifier/basket_create_policy/rejected'
     else
       raise "Invalid basket notification type. created, request, approved and rejected only."
     end
