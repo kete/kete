@@ -150,9 +150,11 @@ module ApplicationHelper
     @baskets = (user == current_user) ? @basket_access_hash : user.basket_permissions
 
     html = String.new
-    @baskets.each do |name, basket|
-      link = link_to(Basket.find_by_urlified_name("#{name}").name, basket_index_url(:urlified_name => name))
-      link += " - #{basket[:role_name].humanize}" if show_roles
+    @baskets.each do |basket_name, role|
+      basket = Basket.find_by_urlified_name(basket_name.to_s)
+      next unless user == current_user || current_user_can_see_memberlist_for?(basket)
+      link = link_to(basket.name, basket_index_url(:urlified_name => basket_name))
+      link += " - #{role[:role_name].humanize}" if show_roles
       html += content_tag('li', link)
     end
     html
