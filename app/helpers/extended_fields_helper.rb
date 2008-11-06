@@ -88,7 +88,7 @@ module ExtendedFieldsHelper
   end
   
   def extended_field_checkbox_editor(name, value, options)
-    check_box_tag(name, "Yes", (value.to_s == "Yes"), options)
+    content_tag("div", check_box_tag(name, "Yes", (value.to_s == "Yes"), options), "style" => "margin: 4px")
   end
   
   # def extended_field_radio_editor(name, value, options)

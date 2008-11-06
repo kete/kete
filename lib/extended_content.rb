@@ -202,7 +202,7 @@ module ExtendedContent
           
           if field.multiple?
             value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') + "_multiple" }
-            values = value_pairs.map { |k, v| v }
+            values = value_pairs.map { |k, v| v }.flatten
             validate_extended_content_multiple_values(mapping, values)
           else
             value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') }
