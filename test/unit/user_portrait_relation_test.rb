@@ -19,24 +19,24 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
   def test_should_prohibit_any_action_when_uploader_isnt_current_user
     new_image_with_creator
     @user2 = User.create(:login => 'test')
-    assert_equal false, UserPortraitRelation.new_portrait_for_user(@user2, @still_image)
-    assert_equal false, UserPortraitRelation.remove_portrait_for_user(@user2, @still_image)
-    assert_equal false, UserPortraitRelation.make_portrait_default_for_user(@user2, @still_image)
+    assert_equal false, UserPortraitRelation.new_portrait_for(@user2, @still_image)
+    assert_equal false, UserPortraitRelation.remove_portrait_for(@user2, @still_image)
+    assert_equal false, UserPortraitRelation.make_portrait_default_for(@user2, @still_image)
   end
 
   def test_portrait_only_added_when_not_already_used
     new_image_with_creator(false)
-    assert_nil @still_image.user
+    assert_nil @still_image.portrayed_user
     creation_relation_between_user_and_still_image
-    assert_not_nil @still_image.user
+    assert_not_nil @still_image.portrayed_user
   end
 
   def test_remove_portrait_for_user
     new_image_with_creator
-    assert_not_nil @still_image.user
-    UserPortraitRelation.remove_portrait_for_user(@user, @still_image)
+    assert_not_nil @still_image.portrayed_user
+    UserPortraitRelation.remove_portrait_for(@user, @still_image)
     @still_image.reload
-    assert_nil @still_image.user
+    assert_nil @still_image.portrayed_user
   end
 
   def test_make_portrait_a_default
@@ -44,7 +44,7 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
     assert_equal 1, @relation.position
     new_image_with_creator
     assert_equal 2, @relation.position
-    UserPortraitRelation.make_portrait_default_for_user(@user, @still_image)
+    UserPortraitRelation.make_portrait_default_for(@user, @still_image)
     @relation.reload
     assert_equal 1, @relation.position
   end
@@ -61,7 +61,7 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
     end
 
     def creation_relation_between_user_and_still_image
-      UserPortraitRelation.new_portrait_for_user(@user, @still_image)
+      UserPortraitRelation.new_portrait_for(@user, @still_image)
       @relation = UserPortraitRelation.last
       @user.reload
       @still_image.reload

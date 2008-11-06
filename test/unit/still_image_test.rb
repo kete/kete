@@ -122,13 +122,13 @@ class StillImageTest < Test::Unit::TestCase
   def test_should_have_relation_and_user_when_in_portraits
     user = User.first
     new_image_with_creator user
-    UserPortraitRelation.new_portrait_for_user(user, @still_image)
+    UserPortraitRelation.new_portrait_for(user, @still_image)
     @still_image.reload
 
     assert_not_nil @still_image.user_portrait_relation
-    assert_not_nil @still_image.user
-    assert_kind_of User, @still_image.user
-    assert_equal User.first, @still_image.user 
+    assert_not_nil @still_image.portrayed_user
+    assert_kind_of User, @still_image.portrayed_user
+    assert_equal User.first, @still_image.portrayed_user 
   end
 
   def test_should_check_whether_user_is_image_uploader

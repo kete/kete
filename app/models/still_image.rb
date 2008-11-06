@@ -15,7 +15,7 @@ class StillImage < ActiveRecord::Base
 
   # Each image can only belong to one User's portrait
   has_one :user_portrait_relation, :dependent => :delete
-  has_one :user, :through => :user_portrait_relation
+  has_one :portrayed_user, :through => :user_portrait_relation, :source => :user
 
   # all the common configuration is handled by this module
   # Walter McGinnis, 2008-05-10

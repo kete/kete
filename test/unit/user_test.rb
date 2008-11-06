@@ -124,7 +124,7 @@ class UserTest < Test::Unit::TestCase
   def test_should_have_portraits
     user = create_user
     new_image_with_creator user
-    UserPortraitRelation.new_portrait_for_user(user, @still_image)
+    UserPortraitRelation.new_portrait_for(user, @still_image)
     user.reload
 
     assert_not_nil user.user_portrait_relations

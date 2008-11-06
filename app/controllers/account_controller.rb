@@ -290,7 +290,7 @@ class AccountController < ApplicationController
 
   def add_portrait
     @still_image = StillImage.find(params[:id])
-    if UserPortraitRelation.new_portrait_for_user(current_user, @still_image)
+    if UserPortraitRelation.new_portrait_for(current_user, @still_image)
       flash[:notice] = "'#{@still_image.title}' has been added to your portraits."
     else
       flash[:error] = "'#{@still_image.title}' failed to add to your portraits."
@@ -300,7 +300,7 @@ class AccountController < ApplicationController
 
   def remove_portrait
     @still_image = StillImage.find(params[:id])
-    if UserPortraitRelation.remove_portrait_for_user(current_user, @still_image)
+    if UserPortraitRelation.remove_portrait_for(current_user, @still_image)
       flash[:notice] = "'#{@still_image.title}' has been removed from your portraits."
     else
       flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
@@ -310,7 +310,7 @@ class AccountController < ApplicationController
 
   def default_portrait
     @still_image = StillImage.find(params[:id])
-    if UserPortraitRelation.make_portrait_default_for_user(current_user, @still_image)
+    if UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
       flash[:notice] = "'#{@still_image.title}' has been make your default portrait."
     else
       flash[:error] = "'#{@still_image.title}' failed to become your default portrait."

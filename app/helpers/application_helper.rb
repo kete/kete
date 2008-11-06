@@ -14,7 +14,8 @@ module ApplicationHelper
   # Controls needed for Gravatar support throughout the site
   include Avatar::View::ActionViewSupport
   def avatar_for(user)
-    default_options = { :width => 50, :height => 50, :alt => "#{user.user_name}'s Avatar" }
+    image_dimension = IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i
+    default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
 
     if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
       return image_tag(user.portraits.first.thumbnail_file.public_filename, default_options)
@@ -24,7 +25,8 @@ module ApplicationHelper
       return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, default_options)
     end
 
-    return image_tag('no-avatar.png', default_options)
+    #return image_tag('no-avatar.png', default_options)
+    return ''
   end
 
   def page_keywords
