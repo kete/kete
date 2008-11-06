@@ -208,14 +208,15 @@ class Basket < ActiveRecord::Base
 
   def memberlist_policy_or_default
     current_value = self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
-    select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value)
+    select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
   end
 
-  def array_to_options_list_with_defaults(options_array, default_value)
+  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
     select_options = String.new
     options_array.each do |option|
       label = option[0]
       value = option[1]
+      next if label == "Site admin" && !site_admin
       select_options += "<option value=\"#{value}\""
       if default_value == value
         select_options += " selected=\"selected\""
