@@ -160,6 +160,7 @@
                 basket_index_url(:urlified_name => @help_basket.urlified_name), :tabindex => '2') %></li>
         <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex", :accesskey => '9', :tabindex => '2') %></li>
         <%= header_add_links %>
+        <%= header_add_basket_link -%>
       </ul>
     </div> <!-- /header -->
 

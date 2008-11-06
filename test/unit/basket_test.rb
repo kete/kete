@@ -163,14 +163,19 @@ class BasketTest < Test::Unit::TestCase
     # test it catches site_admin
     basket = Basket.first # site
     administrators = basket.administrators
-    assert_equal User, administrators.first.class
     assert_equal 1, administrators.size
+    assert_kind_of User, administrators.first
 
     # test it catches admin
     basket = Basket.last # admin
     administrators = basket.administrators
-    assert_equal User, administrators.first.class
     assert_equal 1, administrators.size
+    assert_kind_of User, administrators.first
+  end
+
+  def test_basket_should_have_a_creator
+    basket = Basket.first
+    assert_kind_of User, basket.creator
   end
 
   # TODO: tag_counts_array

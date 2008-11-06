@@ -40,8 +40,8 @@ class CommentsControllerTest < Test::Unit::TestCase
     }
       
     
-    @closed_basket  = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => false, :name => "closed basket" }))
-    @open_basket    = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => true, :name => "open basket" }))
+    @closed_basket  = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => false, :name => "closed basket", :status => 'approved', :creator_id => 1 }))
+    @open_basket    = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => true, :name => "open basket", :status => 'approved', :creator_id => 1 }))
     @non_member_user = User.create!(@new_user_model)
     @member_user = User.create!(@new_user_model.merge({ :login => 'doug', :email => 'doug@example.com' }))
     @member_user.has_role('member', @closed_basket)

@@ -102,6 +102,32 @@ class UserNotifier < ActionMailer::Base
     setup_body_with(revision, url, approval_message)
   end
 
+  # notications for baskets
+  def basket_notification_to(recipient, sender, basket, type)
+    setup_email(recipient)
+    @body[:sender] = sender
+    @body[:basket] = basket
+
+    case type
+    when 'created'
+      @subject += "#{sender.user_name} has created the #{basket.urlified_name} basket"
+      @body[:needs_approval] = false
+      @template = 'user_notifier/basket_create_policy/basket_created'
+    when 'request'
+      @subject += "#{sender.user_name} has requested creation of the #{basket.urlified_name} basket"
+      @body[:needs_approval] = true
+      @template = 'user_notifier/basket_create_policy/basket_created'
+    when 'approved'
+      @subject += "#{basket.urlified_name} basket creation has been approved"
+      @template = 'user_notifier/basket_create_policy/basket_approved'
+    when 'rejected'
+      @subject += "#{basket.urlified_name} basket creation has been rejected"
+      @template = 'user_notifier/basket_create_policy/basket_rejected'
+    else
+      raise "Invalid basket notification type. created, request, approved and rejected only."
+    end
+  end
+
   protected
 
   def setup_email(user)

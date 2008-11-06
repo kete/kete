@@ -45,6 +45,8 @@ class ApplicationController < ActionController::Base
   # sets up instance variables for authentication
   include KeteAuthorization
 
+  before_filter :redirect_if_current_basket_isnt_approved_for_public_viewing
+
   # Create an instance variable with a list of baskets the
   # current user has roles in (member, admin etc)
   before_filter :update_basket_permissions_hash
@@ -171,6 +173,21 @@ class ApplicationController < ActionController::Base
 
   def current_user_can_see_add_links?
     current_user_is?(@current_basket.settings[:show_add_links])
+  end
+
+  def current_user_can_add_or_request_basket?
+    return false unless logged_in?
+    return true if @site_admin
+    case BASKET_CREATION_POLICY
+    when 'open', 'request'
+      true
+    else
+      false
+    end
+  end
+
+  def basket_policy_request_with_permissions?
+    BASKET_CREATION_POLICY == 'request' && !@site_admin
   end
 
   def current_user_can_see_action_menu?
@@ -1026,8 +1043,9 @@ class ApplicationController < ActionController::Base
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
                 :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type,
-                :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?,
-                :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
+                :current_user_can_see_flagging?, :current_user_can_see_add_links?, :current_user_can_add_or_request_basket?,
+                :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?,
+                :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
 
   protected
@@ -1086,6 +1104,13 @@ class ApplicationController < ActionController::Base
       end
     rescue
       raise "Unknown authentication type: #{$!}"
+    end
+  end
+
+  def redirect_if_current_basket_isnt_approved_for_public_viewing
+    if @current_basket.status != 'approved' && !@site_admin && !@basket_admin
+      flash[:error] = "The basket #{@current_basket.name} is not approved for public viewing"
+      redirect_to "/#{@site_basket.urlified_name}"
     end
   end
 

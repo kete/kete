@@ -134,6 +134,12 @@ class UserTest < Test::Unit::TestCase
     assert_equal StillImage.first, user.portraits.first
   end
 
+  def test_user_should_have_baskets
+    user = User.first
+    assert_equal 4, user.baskets.size
+    assert_kind_of Basket, user.baskets.first
+  end
+
   protected
   
     def new_model_attributes

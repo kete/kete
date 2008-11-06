@@ -510,3 +510,11 @@ system_settings_058:
   id: "58"
   value: "true"
   section: Accounts
+system_settings_059:
+  name: Basket Creation Policy
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Allow site members to create baskets? Can be 'open' (instant creation), 'request' (admin approved) or 'closed' (admin only).
+  id: "59"
+  value: "closed"
+  section: System

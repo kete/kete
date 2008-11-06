@@ -45,7 +45,7 @@ module ApplicationHelper
     except_certain_baskets = @standard_baskets
     except_certain_baskets += [@current_basket] if @current_basket != @site_basket
 
-    except_certain_baskets_args = { :conditions => ["id not in (?)", except_certain_baskets] }
+    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", except_certain_baskets] }
 
     baskets_limit = 2
 
@@ -156,9 +156,24 @@ module ApplicationHelper
     html
   end
 
+  def header_add_basket_link
+    return unless current_user_can_add_or_request_basket?
+
+    if basket_policy_request_with_permissions?
+      basket_text = 'Request Basket'
+    else
+      basket_text = 'Add Basket'
+    end
+
+    html = '<li>' + link_to_unless_current( basket_text,
+                                            :controller => 'baskets',
+                                            :action => 'new',
+                                            :urlified_name => @site_basket.urlified_name) + '</li>'
+  end
+
   def render_baskets_as_menu
     html = '<ul id="sub-menu" class="menu basket-list-menu">'
-    except_certain_baskets_args = { :conditions => ["id not in (?)", @standard_baskets] }
+    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", @standard_baskets] }
 
     basket_count = 0
     Basket.find(:all, except_certain_baskets_args).each do |basket|

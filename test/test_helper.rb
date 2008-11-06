@@ -2,13 +2,21 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
+def set_constant(constant, value)
+  if respond_to?(:silence_warnings)
+    silence_warnings do
+      Object.const_set(constant, value)
+    end
+  else
+    Object.const_set(constant, value)
+  end
+end
+
 # none of these settings is populated by default
 # so we'll set them here to make sure we get results we expect
-silence_warnings do
-  IS_CONFIGURED = true
-  SITE_NAME = "Test Site"
-  SITE_URL = "http://test.com/"
-end
+set_constant('IS_CONFIGURED', true)
+set_constant('SITE_NAME', "Test Site")
+set_constant('SITE_URL', "http://test.com/")
 
 # attempt to load zebra if it isn't already
 begin

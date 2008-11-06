@@ -16,6 +16,7 @@ namespace :kete do
                     'kete:upgrade:add_missing_mime_types',
                     'kete:upgrade:correct_basket_defaults',
                     'kete:upgrade:set_default_join_and_memberlist_policies',
+                    'kete:upgrade:make_baskets_approved_if_status_null',
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt']
@@ -171,6 +172,17 @@ namespace :kete do
       site_basket = Basket.first # site
       site_basket.settings[:basket_join_policy] = 'closed' if site_basket.settings[:basket_join_policy].class == NilClass
       site_basket.settings[:memberlist_policy] = 'at least admin' if site_basket.settings[:memberlist_policy].class == NilClass
+    end
+
+    desc 'Make all baskets with the status of NULL set to approved'
+    task :make_baskets_approved_if_status_null => :environment do
+      Basket.all.each do |basket|
+        if basket.status.nil?
+          basket.status = 'approved'
+          basket.creator_id = 1
+          basket.save
+        end
+      end
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

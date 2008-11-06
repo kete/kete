@@ -55,6 +55,9 @@ class User < ActiveRecord::Base
   has_many :user_portrait_relations, :order => 'position', :dependent => :delete_all
   has_many :portraits, :through => :user_portrait_relations, :source => :still_image
 
+  # users can create baskets if the system setting is enabled to do so
+  has_many :baskets, :class_name => 'Basket', :foreign_key => :creator_id
+
   # Virtual attribute for the contribution.version join model
   # a hack to be able to pass it in
   # see topics_controller update action for example

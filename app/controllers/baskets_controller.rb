@@ -4,7 +4,10 @@ class BasketsController < ApplicationController
                 :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
-  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :choose_type, :permission_denied, :contact, :send_email]
+  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :new, :create, :choose_type,
+                                                               :permission_denied, :contact, :send_email]
+
+  before_filter :redirect_if_current_user_cant_add_or_request_basket, :only => [:new, :create]
 
   after_filter :remove_robots_txt_cache, :only => [:create, :update, :destroy]
 
@@ -20,8 +23,18 @@ class BasketsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @baskets = Basket.paginate(:page => params[:page],
-                               :per_page => 10)
+
+    if !params[:type].blank? && @site_admin
+      @listing_type = params[:type]
+    else
+      @listing_type = 'approved'
+    end
+
+    options = { :page => params[:page],
+                :per_page => 10 }
+    options.merge!({ :conditions => ['status = ?', @listing_type] })
+
+    @baskets = Basket.paginate(options)
   end
 
   def show
@@ -35,15 +48,42 @@ class BasketsController < ApplicationController
   def create
     convert_text_fields_to_boolean
 
+    # if an site admin makes a basket, make sure the basket is instantly approved
+    if basket_policy_request_with_permissions?
+      params[:basket][:status] = 'requested'
+    else
+      params[:basket][:status] = 'approved'
+    end
+
+    params[:basket][:creator_id] = current_user.id
+
     @basket = Basket.new(params[:basket])
 
     if @basket.save
+      # Reload to ensure basket.creator is updated.
+      @basket.reload
+
       set_settings
 
-      @basket.accepts_role('admin', current_user)
+      # if basket creator is admin or creation not moderated, make creator basket admin
+      @basket.accepts_role('admin', current_user) if BASKET_CREATION_POLICY == 'open' || @site_admin
 
-      flash[:notice] = 'Basket was successfully created.'
-      redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
+      # if an site admin makes a basket, make sure emailing notifications are skipped
+      if basket_policy_request_with_permissions?
+        @site_basket.administrators.each do |administrator|
+          UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'request')
+        end
+        flash[:notice] = 'Basket will now be reviewed, and you\'ll be notified of the outcome.'
+        redirect_to "/#{@site_basket.urlified_name}"
+      else
+        if !@site_admin
+          @site_basket.administrators.each do |administrator|
+            UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'created')
+          end
+        end
+        flash[:notice] = 'Basket was successfully created.'
+        redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
+      end
     else
       render :action => 'new'
     end
@@ -71,6 +111,15 @@ class BasketsController < ApplicationController
     @basket = Basket.find(params[:id])
     @topics = @basket.topics
     original_name = @basket.name
+
+    unless params[:accept_basket].blank?
+      params[:basket][:status] = 'approved'
+      @basket.accepts_role('admin', @basket.creator)
+    end
+
+    unless params[:reject_basket].blank?
+      params[:basket][:status] = 'rejected'
+    end
 
     # have to update zoom records for things in the basket
     # in two steps
@@ -120,6 +169,16 @@ class BasketsController < ApplicationController
           end
         end
       end
+
+      # We send the emails right before a redirect so
+      # it doesn't break anything if the emailing fails
+      unless params[:accept_basket].blank?
+        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'approved')
+      end
+      unless params[:reject_basket].blank?
+        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'rejected')
+      end
+
       flash[:notice] = 'Basket was successfully updated.'
       redirect_to "/#{@basket.urlified_name}/"
     else
@@ -263,6 +322,15 @@ class BasketsController < ApplicationController
   # the robots txt file caches to the new settings take effect
   def remove_robots_txt_cache
     expire_page "/robots.txt"
+  end
+
+  # Kieran Pilkington - 2008/09/22
+  # redirect to permission denied if current user cant add/request baskets
+  def redirect_if_current_user_cant_add_or_request_basket
+    unless current_user_can_add_or_request_basket?
+      flash[:error] = "You need to have the right permissions to add or request a basket"
+      redirect_to DEFAULT_REDIRECTION_HASH
+    end
   end
 
 end

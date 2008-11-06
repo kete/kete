@@ -1,6 +1,14 @@
 <% @title = "Listing Baskets" -%>
 <h2><%= h(@title) -%></h2>
 
+<% if @site_admin -%>
+<p>
+  <%= link_to 'Approved', :type => 'approved' -%>
+  | <%= link_to 'Requested', :type => 'requested' -%>
+  | <%= link_to 'Rejected', :type => 'rejected' -%>
+</p>
+<% end -%>
+
 <ul>
   <% @baskets.each do |basket| -%>
   <li>
@@ -8,6 +16,10 @@
     [<ul class="basket_list_options"><%= link_to_actions_available_for(basket) -%></ul>]
   </li>
   <% end -%>
+</ul>
+
+<ul>
+  <%= header_add_basket_link %>
 </ul>
 
 <div id="prev-next"><%= will_paginate @baskets %></div>

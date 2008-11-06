@@ -63,6 +63,9 @@ class Basket < ActiveRecord::Base
   # a topic may be the designated index page for it's basket
   has_one :index_topic, :class_name => 'Topic', :foreign_key => 'index_for_basket_id'
 
+  # each basket was made by someone (admin or otherwise)
+  belongs_to :creator, :class_name => 'User'
+
   # imports are processes to bring in content to a basket
   has_many :imports, :dependent => :destroy
 
