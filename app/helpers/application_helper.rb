@@ -299,6 +299,8 @@ module ApplicationHelper
     elsif !unavailable_text.blank?
       content_tag("li", unavailable_text,
                         :class => 'first')
+    else
+      ''
     end
   end
 
