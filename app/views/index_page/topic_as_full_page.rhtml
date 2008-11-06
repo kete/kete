@@ -50,7 +50,7 @@
 
 <% links = link_to_membership_request_of(@current_basket) -%>
 <% links += link_to_members_of(@current_basket) -%>
-<% unless link.blank? -%>
+<% unless links.blank? -%>
   <div id="secondary-content-wrapper">
     <ul>
       <%= links %>
