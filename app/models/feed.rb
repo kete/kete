@@ -10,7 +10,7 @@ class Feed < ActiveRecord::Base
   validates_uniqueness_of :url, :case_sensitive => false
 
   def latest_entries
-    self.last_update = Time.now.utc.to_s :db
+    self.last_downloaded = Time.now.utc.to_s :db
     self.save!
 
     entries = []

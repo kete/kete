@@ -5,7 +5,7 @@ class CreateFeeds < ActiveRecord::Migration
       t.string :url
       t.integer :limit
       t.integer :basket_id
-      t.datetime :last_update
+      t.datetime :last_downloaded
 
       t.timestamps
     end
