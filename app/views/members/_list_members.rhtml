@@ -1,4 +1,3 @@
-<table class="members-list-table">
   <tr>
     <th colspan="5"><h4>Members</h4></th>
   </tr>
@@ -24,15 +23,21 @@
     </tr>
     <% end -%>
   <% end -%>
-</table>
-
-<div id="prev-next"><%= will_paginate members -%></div>
-<% if @current_basket.urlified_name != 'site' && @basket_admin -%>
-  <% form_tag :action => 'potential_new_members' do -%>
-  <div id="searchheader">
-    <h4>Search for new members</h4>
-    <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' -%>
-    <%= submit_tag "Search", :class => 'searchbutton' -%>
-    </div>
-  <% end -%>
-<% end -%>
+  <tr>
+    <td colspan="5">
+      <div id="prev-next"><%= will_paginate members -%></div>
+    </th>
+  </tr>
+  <tr>
+    <td colspan="5">
+      <% if @current_basket.urlified_name != 'site' && @basket_admin -%>
+        <% form_tag :action => 'potential_new_members' do -%>
+          <div id="searchheader">
+            <h4>Search for new members</h4>
+            <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' -%>
+            <%= submit_tag "Search", :class => 'searchbutton' -%>
+          </div>
+        <% end -%>
+      <% end -%>
+    </td>
+  </tr>

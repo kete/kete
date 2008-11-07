@@ -15,6 +15,18 @@
 </p>
 <% end -%>
 
+<p>
+  <h4>Refine Results</h4>
+  <% form_tag({}, :method => :get) do -%>
+    <label for="order">Order by:</label>
+    <%= select_tag 'order', options_for_select({ "Alphabetical" => "alphabetical", "Latest" => "latest" }, @order) -%>
+    <label for="members_in_reverse">in reverse?</label>
+    <%= check_box_tag 'members_in_reverse', 'reverse', @members_in_reverse -%>
+    <%= submit_tag 'Update' -%>
+  <% end -%>
+  <br />
+</p>
+
 <table class="members-list-table">
   <tr valign="top">
     <th colspan="2" abbr="Login">User name or Login</th>
@@ -48,14 +60,11 @@
   </tr>
   <% end %>
   <% end %>
-</table>
-
-<div id="list-members">
   <%= render(:partial =>'list_members',
              :locals => { :members => @members,
                           :possible_roles => @possible_roles,
                           :admin_actions => @admin_actions }) if @listing_type == 'all' %>
-</div>
+</table>
 
 <br />
 

@@ -17,9 +17,19 @@ class MembersController < ApplicationController
       @listing_type = 'all'
     end
 
+    @order = params[:order] || 'alphabetical'
+    @members_in_reverse = params[:members_in_reverse] && params[:members_in_reverse] == 'reverse' ? true : false
+    case @order
+    when 'latest'
+      # this is when they joined the basket (and the role was created), not when they join the site
+      paginate_order = "roles_users.updated_at #{@members_in_reverse ? 'asc' : 'desc'}"
+    when 'alphabetical'
+      paginate_order = "users.login #{@members_in_reverse ? 'desc' : 'asc'}"
+    end
+
     # this sets up all instance variables
     # as well as preparing @members
-    list_members
+    list_members(paginate_order)
 
     # turn on rss
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
@@ -46,7 +56,7 @@ class MembersController < ApplicationController
     end
   end
 
-  def list_members
+  def list_members(order='users.login ASC')
     @non_member_roles_plural = Hash.new
     @possible_roles = {'admin' => 'Admin',
       'moderator' => 'Moderator',
@@ -74,10 +84,10 @@ class MembersController < ApplicationController
       @members = User.paginate_by_id(0, :page => 1)
     else
       if params[:action] == 'rss'
-        @members = @member_role.users
+        @members = @member_role.users(:order => 'updated_at DESC')
       else
         @members = @member_role.users.paginate(:include => :contributions,
-                                               :order => '`users`.`login` ASC',
+                                               :order => order,
                                                :page => params[:page],
                                                :per_page => 20)
 

@@ -116,21 +116,6 @@ ul#main-nav {
     color: white;
 }
 
-.basket_list_options {
-    display: inline;
-    padding: 0;
-    margin: 0;
-}
-.basket_list_options li {
-    display: inline;
-    padding: 0 4px;
-    margin: 0;
-    border-left: 1px solid #000;
-}
-.basket_list_options li.first {
-    border-left: none;
-}
-
 /* #################################### User Basket Navigation #################################### */
 #top-menu #user_baskets_list em {
   background-color: #333;
@@ -772,11 +757,8 @@ table.members-list-table {
 }
 
 /* column widths for the above. */
-.members-list-table td {
-    width: 25%;
-}
 .members-list-table td.member-avatar {
-    width: 50px;
+    width: 50px !important;
     padding: 10px;
 }
 

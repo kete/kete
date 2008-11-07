@@ -9,18 +9,32 @@
 </p>
 <% end -%>
 
-<ul>
-  <% @baskets.each do |basket| -%>
-  <li>
-    <%= link_to_index_for(basket) -%>
-    [<ul class="basket_list_options"><%= link_to_actions_available_for(basket) -%></ul>]
-  </li>
+<p>
+  <h4>Refine Results</h4>
+  <% form_tag({}, :method => :get) do -%>
+    <label for="order">Order by:</label>
+    <%= select_tag 'order', options_for_select({ "Alphabetical" => "alphabetical", "Latest" => "latest" }, @order) -%>
+    <label for="baskets_in_reverse">in reverse?</label>
+    <%= check_box_tag 'baskets_in_reverse', 'reverse', @baskets_in_reverse -%>
+    <%= submit_tag 'Update' -%>
   <% end -%>
-</ul>
+  <br />
+</p>
 
-<ul>
-  <%= header_add_basket_link %>
-</ul>
+<table width="100%">
+  <tr>
+    <th abbr="Name" width="15%">Basket Name</th>
+    <th abbr="Options" width="85%">Options</th>
+  </tr>
+  <% @baskets.each do |basket| -%>
+  <tr>
+    <td><%= link_to_index_for(basket) -%></td>
+    <td>
+      <ul><%= link_to_actions_available_for(basket) -%></ul>
+    </td>
+  </tr>
+  <% end -%>
+</table>
 
 <div id="prev-next"><%= will_paginate @baskets %></div>
 

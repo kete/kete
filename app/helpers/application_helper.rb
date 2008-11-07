@@ -291,7 +291,7 @@ module ApplicationHelper
     end
   end
 
-  def link_to_members_of(basket, viewable_text="View this Baskets Member List", unavailable_text="")
+  def link_to_members_of(basket, viewable_text="Member List", unavailable_text="")
     if current_user_can_see_memberlist_for?(basket)
       content_tag("li", link_to(viewable_text,
                                 :urlified_name => basket.urlified_name,
@@ -341,7 +341,7 @@ module ApplicationHelper
         html += options[:rejected_text]
       else
         html += options[:current_role].gsub('|role|', role)
-        unless @current_basket == @site_basket # no one can remove themselves from the site basket
+        unless basket == @site_basket # no one can remove themselves from the site basket
           html += " " + link_to(options[:leave_text], location_hash.merge({:action => 'remove', :id => current_user}))
         end
       end
@@ -349,21 +349,15 @@ module ApplicationHelper
     html += "</li>"
   end
 
-  def link_to_actions_available_for(basket)
-    options = { :join_text => "join",
-                :request_text => "request",
-                :closed_text => "closed",
-                :pending_text => "pending",
-                :rejected_text => "rejected",
-                :current_role => "|role|",
-                :leave_text => "leave" }
-    html = ''
-    html += link_to_members_of(basket, 'see members', 'member list unavailable')
-    html += link_to_membership_request_of(basket, options)
+  def link_to_basket_contact_for(basket)
+    link_to 'Contact ' + basket.name, basket_contact_path(:urlified_name => basket.urlified_name)
   end
 
-  def link_to_basket_contact_form
-    link_to 'Contact ' + @current_basket.name, basket_contact_path
+  def link_to_actions_available_for(basket)
+    html = ''
+    html += link_to_members_of(basket)
+    html += link_to_membership_request_of(basket)
+    html += "<li>" + link_to_basket_contact_for(basket) + "</li>"
   end
 
   def link_to_cancel

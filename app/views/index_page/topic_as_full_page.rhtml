@@ -43,7 +43,7 @@
 <% if @current_basket.allows_contact_with_inheritance? -%>
   <% cache({:part => 'contact'}) do -%>
     <ul>
-      <li><%= link_to_basket_contact_form %></li>
+      <li><%= link_to_basket_contact_for(@current_basket) %></li>
     </ul>
   <% end -%>
 <% end -%>

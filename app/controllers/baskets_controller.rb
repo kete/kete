@@ -23,15 +23,24 @@ class BasketsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-
     if !params[:type].blank? && @site_admin
       @listing_type = params[:type]
     else
       @listing_type = 'approved'
     end
 
+    @order = params[:order] || 'alphabetical'
+    @baskets_in_reverse = params[:baskets_in_reverse] && params[:baskets_in_reverse] == 'reverse' ? true : false
+    case @order
+    when 'latest'
+      paginate_order = "updated_at #{@baskets_in_reverse ? 'asc' : 'desc'}"
+    when 'alphabetical'
+      paginate_order = "name #{@baskets_in_reverse ? 'desc' : 'asc'}"
+    end
+
     options = { :page => params[:page],
-                :per_page => 10 }
+                :per_page => 5,
+                :order => paginate_order }
     options.merge!({ :conditions => ['status = ?', @listing_type] })
 
     @baskets = Basket.paginate(options)
