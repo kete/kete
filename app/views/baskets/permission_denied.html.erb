@@ -2,20 +2,36 @@
 
 <h3><%= @title -%></h3>
 
-<p>We're sorry, but access to this page is restricted to members of
-  <%= @current_basket.name -%>.  Here are some possible ways you may proceed:</p>
+<p>We're sorry, but access to the page your requested is restricted. Here are some possible ways you may proceed:</p>
 
 <ul>
-  <li>Use <%= mail_to(CONTACT_EMAIL,'this Contact link', :encode => "javascript") %> to email a site administrator to request
-    membership in the "<%= @current_basket.name -%>" area of the
-    site.<br />Please specify that
-    you would like access to "<%= @current_basket.name -%>" in the email.</li>
-  <li>If you are using a shared computer, perhaps you aren't logged in
-    as yourself and therefore got this permission denied page in
-    error.<br />Try <%= link_to "logging in", :controller => 'account',
-    :action => :login,
-    :urlified_name => @site_basket.urlified_name -%> again before
-    revisiting the page in question.</li>
+  <li>
+    If you are using a shared computer, make sure you're logged in with the account that has access to this area.
+    Try <%= link_to "logging in", :urlified_name => @site_basket.urlified_name,
+                                  :controller => 'account',
+                                  :action => 'login' -%> again before revisiting the page.
+  </li>
+  <% if @basket_access_hash[@current_basket.urlified_name.to_sym].blank? && @current_basket.allows_join_requests_with_inheritance? %>
+    <li>
+      You can join, or apply to join, the basket by visiting the
+      <%= link_to "basket join form", :urlified_name => @current_basket.urlified_name,
+                                      :controller => 'members',
+                                      :action => 'join' -%>.
+      If joins need to be approved, you'll receive an email when you're let in.
+      Otherwise, you should be able to access the basket content instantly.
+    </li>
+  <% end -%>
+  <% if @current_basket.allows_contact_with_inheritance? %>
+    <li>
+      If you should have permission to access this part of the site, you can try
+      <%= link_to "contact this baskets administrators", "/#{@current_basket.urlified_name}/contact" -%>.
+    </li>
+  <% else -%>
+    <li>
+      Use <%= mail_to(CONTACT_EMAIL,'this Contact link', :encode => "javascript") %> to email a site administrator to report the issue.
+      Please specify that what page you tried to access in the email.
+    </li>
+  <% end -%>
   <li>Or simply proceed on to another page via the Browse or Search
   functions at the top of this page.</li>
 </ul>
