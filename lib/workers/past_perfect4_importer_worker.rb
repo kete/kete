@@ -43,7 +43,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # legacy support for kete horowhenua
       if !@import_request[:host].scan("horowhenua").blank?
         @description_end_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
-        @description_end_templates['/f\d/'] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
+        @description_end_templates[/^f\d/] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
         @description_end_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
 
         @collections_to_skip << "HHS Photograph Collection"
