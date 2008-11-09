@@ -341,7 +341,9 @@ module ApplicationHelper
         html += options[:rejected_text]
       else
         html += options[:current_role].gsub('|role|', role)
-        unless basket == @site_basket # no one can remove themselves from the site basket
+        # no one can remove themselves from the site basket
+        # and there needs to be at least one basket admin remaining if the user removed him/herself
+        if basket != @site_basket && @current_basket.more_than_one_basket_admin?
           html += " " + link_to(options[:leave_text], location_hash.merge({:action => 'remove', :id => current_user}))
         end
       end

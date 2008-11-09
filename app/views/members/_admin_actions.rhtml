@@ -11,6 +11,7 @@
       <% end -%>
       <% tool_count = 1 -%>
       <% admin_actions.each do |action_key,action_label| -%>
+        <% next if role_key == 'admin' && action_key == 'remove' && !@current_basket.more_than_one_basket_admin? -%>
         <%= admin_actions_correct_list_item(user, action_key, action_label, tool_count) %>
         <% tool_count += 1 -%>
       <% end -%>

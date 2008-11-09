@@ -395,6 +395,16 @@ class Basket < ActiveRecord::Base
     end
   end
 
+  # we need at least one site admin at all times
+  def more_than_one_site_admin?
+    self.has_site_admins.size > 1
+  end
+
+  # we need at least one admin in a basket at all times
+  def more_than_one_basket_admin?
+    self.has_admins.size > 1
+  end
+
   def delete_roles_for(user)
     self.accepted_roles.each do |role|
       user.has_no_role(role.name, self)

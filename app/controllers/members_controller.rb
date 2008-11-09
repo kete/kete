@@ -148,7 +148,7 @@ class MembersController < ApplicationController
 
     can_change = false
 
-    if @current_basket != @site_basket || !@user.has_role?('site_admin') || more_than_one_site_admin?
+    if @current_basket != @site_basket || !@user.has_role?('site_admin') || @site_basket.more_than_one_site_admin?
       can_change = true
     end
 
@@ -182,11 +182,6 @@ class MembersController < ApplicationController
       flash[:notice] = "Unable to have no site administrators."
     end
     redirect_to :action => 'list'
-  end
-
-  # we need at least one site admin at all times
-  def more_than_one_site_admin?
-    @site_basket.has_site_admins.size > 1
   end
 
   # added so site admins can assume identities of users if necessary
@@ -249,28 +244,39 @@ class MembersController < ApplicationController
     redirect_to :action => 'list'
   end
 
+  # Remove is called from non-site baskets, only usable when
+  #   the current basket isn't the site basket
+  #   the basket has one other admin besides this user
   def remove
+    # make sure we arn't trying to remove from site basket (destroy is the correct action for that)
+    if @current_basket == @site_basket
+      flash[:error] = "You cannot remove yourself from the Site basket."
+    elsif !@current_basket.more_than_one_basket_admin?
+      flash[:error] = "Unable to have no basket administrators."
+    else
+      @user ||= User.find(params[:id]) # will already be set by before filter 'permitted_to_remove_basket_members'
+      @current_basket.delete_roles_for(@user)
+      flash[:notice] = "Successfully removed user from #{@current_basket.name}."
+    end
+
     if current_user_can_see_memberlist_for?(@current_basket)
       redirect_location = { :action => 'list' }
     else
       redirect_location = "/#{@site_basket.urlified_name}/"
     end
 
-    if @current_basket == @site_basket
-      flash[:error] = "You cannot remove yourself from the Site basket."
-      redirect_to redirect_location
-    else
-      @user ||= User.find(params[:id]) # will already be set by before filter 'permitted_to_remove_basket_members'
-      @current_basket.delete_roles_for(@user)
-      flash[:notice] = "Successfully removed user from #{@current_basket.name}."
-      redirect_to redirect_location
-    end
+    redirect_to redirect_location
   end
 
+  # Destroy is called from the site basket, only usable when
+  #   the member has no contributions
+  #   the basket has one other site admin besides this user
   def destroy
     @user = User.find(params[:id])
     if @user.contributions.size > 0
       flash[:error] = "#{@user.user_name} has contributions and cannot be deleted from the site. Perhaps a ban instead?"
+    elsif !@site_basket.more_than_one_site_admin?
+      flash[:error] = "Unable to have no site administrators."
     else
       @user.destroy
       flash[:notice] = "#{@user.user_name} has been deleted from the site."
