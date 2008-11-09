@@ -77,6 +77,13 @@
         <%= active_scaffold_includes %>
    <% end -%>
   <% end -%>
+  
+  <%# bundle :name => "yui" do -%>
+    <%= javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min" %>
+  <%# end -%>
+
+  <%= stylesheet_link_tag 'yui/treeview'%>
+  
 
   <% if !@rss_tag_auto.nil?  -%>
         <%= @rss_tag_auto %>

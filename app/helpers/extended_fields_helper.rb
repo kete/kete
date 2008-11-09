@@ -2,19 +2,61 @@ module ExtendedFieldsHelper
   
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
+  
+  # Older version of choices column
+  
+  # def pseudo_choices_form_column(record, input_name)
+  #   parent_choices = Choice.find(:all, :conditions => 'parent_id IS NULL', :order => 'label ASC')
+  #   
+  #   all_choices = parent_choices.collect do |parent|
+  #     [[parent.label, parent.id]] + parent.children.find(:all, :order => 'label ASC').collect { |c| ["- #{c.label}", c.id] }
+  #   end
+  #   
+  #   choices_for_select = all_choices.inject([]) { |result, c| result.concat(c) }
+  #   
+  #   select :record, :pseudo_choices, 
+  #     choices_for_select, 
+  #     { :selected => record.choices.collect { |c| c.id } }, 
+  #     { :multiple => true, :name => input_name + "[]" }
+  # end
+  
+  # Newer version, using YUI TreeView
+  
   def pseudo_choices_form_column(record, input_name)
-    parent_choices = Choice.find(:all, :conditions => 'parent_id IS NULL', :order => 'label ASC')
+    top_level = Choice.find(:all, :conditions => 'parent_id IS NULL', :order => 'label ASC')
     
-    all_choices = parent_choices.collect do |parent|
-      [[parent.label, parent.id]] + parent.children.find(:all, :order => 'label ASC').collect { |c| ["- #{c.label}", c.id] }
+    '<div class="yui-skin-sam" style="float: left"><div id="choice_selection_' + record.id.to_s + '"><ul>' +
+    top_level.inject("") do |m, choice|
+      m = m + build_ul_for_choice(choice, record)
+    end +
+    '</ul></div></div>' +
+    '<script type="text/javascript>var tree_' + record.id.to_s + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); tree_' + record.id.to_s + '.render();</script>'
+  end
+  
+  def build_ul_for_choice(choice, record)
+    content_tag("li", check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice)) + " " + choice.label + build_ul_for_children_of(choice, record))
+  end
+  
+  def build_ul_for_children_of(choice, record)
+    if choice.children.empty?
+      ""
+    else
+      "<ul>" + 
+      choice.children.inject("") do |m, child|
+        m = m + build_ul_for_choice(child, record)
+      end + 
+      "</ul>"
     end
+  end
+  
+  def build_node_array_for(choice, record)
+    string_from_children = choice.children.map { |child| build_node_array_for(child, record) }.join(", ")
     
-    choices_for_select = all_choices.inject([]) { |result, c| result.concat(c) }
+    output = ["{type:'html', html:'#{check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice))} #{choice.label}'"]
+    output << ", children: [#{string_from_children}]" unless string_from_children.blank?
+    output << "}"
     
-    select :record, :pseudo_choices, 
-      choices_for_select, 
-      { :selected => record.choices.collect { |c| c.id } }, 
-      { :multiple => true, :name => input_name + "[]" }
+    output.join
   end
   
   # Same as above, but for ftype.
@@ -39,7 +81,6 @@ module ExtendedFieldsHelper
       [['', nil]] + Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
       { :select => record.parent_id }, :name => input_name)
   end
-  
   
   # Generates label and editor for extended field
   # Also adds additional extended field control for multiples
