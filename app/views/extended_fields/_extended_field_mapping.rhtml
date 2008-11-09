@@ -17,11 +17,11 @@
     <%# Deal with multiple instances of fields %>
     <% existing_multiples = existing_multiples_in(ef, extended_item.xml_attributes_without_position) || ["1"] %>
     <% existing_multiples.sort.each do |n| %>
-    <%= render :partial => 'search/extended_field_editor', :locals => { :ef => ef, :content => extended_item.xml_attributes_without_position, :n => n, :multiple => true } %>
+    <%= render :partial => 'extended_fields/extended_field_editor', :locals => { :ef => ef, :content => extended_item.xml_attributes_without_position, :n => n, :multiple => true } %>
     
     <% end %>
 
-    <%= render :partial => 'search/additional_extended_field_control', :locals => { :n => existing_multiples.flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => extended_item.xml_attributes_without_position } %>
+    <%= render :partial => 'extended_fields/additional_extended_field_control', :locals => { :n => existing_multiples.flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => extended_item.xml_attributes_without_position } %>
     
     </div>
 
