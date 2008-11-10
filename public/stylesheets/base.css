@@ -679,10 +679,15 @@ div#notice div, div#error div {
 /* ############################### User Profiles ################################ */
 .avatar {
   float: left;
-  padding: 0 10px;
+  padding: 15px 10px;
 }
-.profile_content {
-  margin-left: 70px;
+.profile_content_left {
+  margin-left: 75px;
+  width: 420px;
+}
+.profile_content_right {
+  float: right;
+  width: 420px;
 }
 
 

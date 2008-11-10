@@ -2,10 +2,45 @@
 <% @viewer_is_user = @user == @current_user ? true : false -%>
 <% @viewer_portraits = !@user.portraits.empty? ? @user.portraits : nil -%>
 
-<h2><%= h(@title) -%></h2>
+<p>
+  <h2 style="display:inline;"><%= h(@title) -%></h2>
+  <% if @viewer_is_user -%>
+    [
+    <%= link_to 'edit', :action => 'edit' %>
+    | <%= link_to 'change password', :action => 'change_password' %>
+    ]
+  <% end -%>
+</p>
+
+<div class="profile_content_right">
+  <% unless @viewer_portraits.nil? -%>
+  <div>
+    <h4>Portraits</h4>
+    <br />
+    <% @viewer_portraits.each do |portrait| -%>
+      <% unless portrait.thumbnail_file.file_private -%>
+        <%= link_to image_tag(portrait.thumbnail_file.public_filename,
+                              { :border => 0, :width => 50, :height => 50, :alt => "#{portrait.title}. " }),
+                    { :urlified_name => portrait.basket.urlified_name,
+                      :controller => 'images',
+                      :action => 'show',
+                      :id => portrait.id } -%>
+      <% end -%>
+    <% end -%>
+  </div>
+  <% end -%>
+
+  <p>
+    <h4>Baskets</h4>
+    <ul>
+      <%= users_baskets_list(@user) -%>
+    </ul>
+  </p>
+</div>
 
 <div class="avatar"><%= avatar_for @user -%></div>
-<div class="profile_content">
+
+<div class="profile_content_left">
   <p>
     <strong>Login:</strong>
     <%= h(@user.login) -%>
@@ -18,6 +53,7 @@
   </p>
   <% elsif @user.accepts_emails? -%>
   <p>
+    <strong>Email:</strong>
     <%= link_to 'Contact this user', :action => 'contact', :id => @user -%>
   </p>
   <% end -%>
@@ -35,55 +71,26 @@
   <% end %>
 
   <p>
+    <h4>Contributions</h4>
     Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%>
-  </p>
-
-  <% unless @viewer_portraits.nil? -%>
-  <div>
-    <strong>Users Portraits</strong>
-    <br />
-    <% @viewer_portraits.each do |portrait| -%>
-      <% unless portrait.thumbnail_file.file_private -%>
-        <%= link_to image_tag(portrait.thumbnail_file.public_filename,
-                              { :border => 0, :width => 50, :height => 50, :alt => "#{portrait.title}. " }),
-                    { :urlified_name => portrait.basket.urlified_name,
-                      :controller => 'images',
-                      :action => 'show',
-                      :id => portrait.id } -%>
-      <% end -%>
-    <% end -%>
-  </div>
-  <% end -%>
-
-  <% if @viewer_is_user -%>
-  <div class="detail-tools">
-    <ul>
-      <li class="first"><%= link_to 'Edit', :action => 'edit' %></li>
-      <li><%= link_to 'Change Password', :action => 'change_password' %></li>
-    </ul>
-  </div>
-  <% end -%>
-
-  <p>
-    <strong>Users Baskets</strong>
-    <ul>
-      <%= users_baskets_list(@user) -%>
-    </ul>
   </p>
 
   <% if @viewer_is_user and licenses_are_available? %>
   <div>
-    <% if @user.license.nil? %>
-      Click the edit link above to set your default license.
-    <% else -%>
-      <h3>Your current default license is:</h3>
-      <div class="license">
+    <h4>Current default license</h4>
+    <div class="license">
+      <% if @user.license.nil? %>
+        Click the edit link above to set your default license.
+      <% else -%>
         <%= image_tag(@user.license.image_url, :alt => "License thumbnail. ") %>
         <%= @user.license.title %>
-        <%= link_to("(View license)", url_for(@user.license.url), "target" => "_new") %>
-      </div>
-    <% end -%>
+        <%= link_to("(View license)", url_for(@user.license.url)) %>
+      <% end -%>
+    </div>
   </div>
   <% end -%>
 </div>
+
+<div style="clear:both;"></div>
+
 <%= render(:partial => "topics/content_wrapper_end" ) %>
