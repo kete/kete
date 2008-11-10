@@ -25,12 +25,15 @@ module ExtendedFieldsHelper
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find(:all, :conditions => 'parent_id IS NULL', :order => 'label ASC')
     
-    '<div class="yui-skin-sam" style="float: left"><div id="choice_selection_' + record.id.to_s + '"><ul>' +
+    
+    '<div class="yui-skin-sam" style="float: left">' +
+    content_tag("p", link_to_function("Expand all", "", :id => "tree_#{record.id.to_s}_expand") + " | " + link_to_function("Collapse all", "", :id => "tree_#{record.id.to_s}_collapse")) +
+    '<div id="choice_selection_' + record.id.to_s + '"><ul>' +
     top_level.inject("") do |m, choice|
       m = m + build_ul_for_choice(choice, record)
     end +
     '</ul></div></div>' +
-    '<script type="text/javascript>var tree_' + record.id.to_s + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); tree_' + record.id.to_s + '.render();</script>'
+    '<script type="text/javascript>var tree_' + record.id.to_s + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); tree_' + record.id.to_s + '.render(); tree_' + record.id.to_s + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("tree_' + record.id.to_s + '_expand", "click", function(tree) { tree_'+record.id.to_s+'.expandAll(); }, tree_' + record.id.to_s + '); YAHOO.util.Event.addListener("tree_' + record.id.to_s + '_collapse", "click", function(tree) {  tree_'+record.id.to_s+'.collapseAll(); }, tree_' + record.id.to_s + ');</script>'
   end
   
   def build_ul_for_choice(choice, record)
@@ -77,9 +80,18 @@ module ExtendedFieldsHelper
   
   # Same as above, but for choice hierarchy
   def parent_form_column(record, input_name)
-    select(:record, :parent_id, 
-      [['', nil]] + Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
-      { :select => record.parent_id }, :name => input_name)
+    if record.new_record?
+      
+      # Due to a limitation on better-nested-set, you cannot move_to any node unless the node you're
+      # moving has already been saved. The intention here is that hierarchical manipulation of choices 
+      # will be done from the parent side.
+      "You cannot select a parent choice until the choice has been created."
+    else
+      
+      select(:record, :parent_id, 
+        [['', nil]] + Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
+        { :select => record.parent_id }, :name => input_name)
+    end
   end
   
   # Generates label and editor for extended field
@@ -158,22 +170,25 @@ module ExtendedFieldsHelper
   def extended_field_choice_editor(name, value, options, extended_field)
     
     # Provide an appropriate selection interface..
-    if extended_field.choices.size < 15
-      extended_field_choice_dropdown_editor(name, value, options, extended_field)
-    else
-      extended_field_choice_autocomplete_editor(name, value, options, extended_field)
-    end
+    partial = extended_field.choices.size < 15 ? 'choice_select_editor' : 'choice_autocomplete_editor'
+    
+    render :partial => 'extended_fields/' + partial, :locals => { 
+      :name => name, 
+      :value => value, 
+      :options => options, 
+      :extended_field => extended_field
+    }
   end
   
-  def extended_field_choice_dropdown_editor(name, value, options, extended_field)
-    option_tags = options_for_select(extended_field.choices.map { |c| [c.label, c.value] }, value)
+  def extended_field_choice_select_editor(name, value, options, extended_field)
+    option_tags = options_for_select(extended_field.choices.find_top_level_and_orphaned_sorted.map { |c| [c.label, c.value] }, value)
     select_tag(name, option_tags, options)
   end
   
   def extended_field_choice_autocomplete_editor(name, value, options, extended_field)
     
     # Build a list of available choices
-    choices = extended_field.choices.map { |c| c.label }
+    choices = extended_field.choices.find_top_level_and_orphaned_sorted.map { |c| c.label }
     
     # Because we store the choice's value, not label, we need to find the label to be shown in the text field.
     # We also handle validation failures here by displaying the submitted value.
