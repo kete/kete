@@ -147,10 +147,10 @@ ul#main-nav {
   padding: 0;
 }
 #top-menu .user_basket_list_row1 {
-  background-color: #eee;
+  background-color: #fff;
 }
 #top-menu .user_basket_list_row2 {
-  background-color: #fff;
+  background-color: #eee;
 }
 #top-menu #user_baskets_list ul li a {
   display: block;

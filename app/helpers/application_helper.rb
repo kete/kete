@@ -149,13 +149,18 @@ module ApplicationHelper
     # if the user is the current user, use the basket_access_hash instead of fetching them again
     @baskets = (user == current_user) ? @basket_access_hash : user.basket_permissions
 
+    row1 = 'user_basket_list_row1'
+    row2 = 'user_basket_list_row2'
+    css_class = row1
+
     html = String.new
     @baskets.each do |basket_name, role|
       basket = Basket.find_by_urlified_name(basket_name.to_s)
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
       link = link_to(basket.name, basket_index_url(:urlified_name => basket_name))
       link += " - #{role[:role_name].humanize}" if show_roles
-      html += content_tag('li', link, :class => cycle('user_basket_list_row1', 'user_basket_list_row2'))
+      html += content_tag('li', link, :class => css_class)
+      css_class = css_class == row1 ? row2 : row1
     end
     html
   end
