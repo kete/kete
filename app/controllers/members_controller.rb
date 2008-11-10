@@ -27,10 +27,16 @@ class MembersController < ApplicationController
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
     @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
 
+    @requested_count = 0
+    @rejected_count = 0
+
     # list people who have all other roles
     # use (true) because the roles are cached when first run but
     # if we add roles (like moderator) this becomes problematic
     @current_basket.accepted_roles(true).each do |role|
+      @requested_count += 1 if role.name == 'membership_requested'
+      @rejected_count += 1 if role.name == 'membership_rejected'
+
       # skip this role if we're viewing all members and the role is requested or rejected
       next if (@listing_type == 'all' && (role.name == 'membership_requested' || role.name == 'membership_rejected'))
       # skip this role if we're viewing pending join requests and the role is something other than requested

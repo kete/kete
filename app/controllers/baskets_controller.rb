@@ -37,6 +37,9 @@ class BasketsController < ApplicationController
     options.merge!({ :conditions => ['status = ?', @listing_type] })
 
     @baskets = Basket.paginate(options)
+
+    @requested_count = Basket.count(:conditions => "status = 'requested'")
+    @rejected_count = Basket.count(:conditions => "status = 'rejected'")
   end
 
   def show

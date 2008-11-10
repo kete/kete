@@ -8,11 +8,11 @@
 
 <p>
   <h2 style="display:inline;"><%= @title %></h2>
-  <% if @basket_admin -%>
+  <% if @basket_admin && (@requested_count + @rejected_count) > 0 -%>
     [
     <%= link_to_unless_current "all", :type => nil %>
-    | <%= link_to_unless_current "requests", :type => 'pending' %>
-    | <%= link_to_unless_current "rejected", :type => 'rejected' %>
+    | <%= link_to_unless_current pluralize(@requested_count, 'request'), :type => 'pending' %>
+    | <%= link_to_unless_current "#{@rejected_count} rejected", :type => 'rejected' %>
     ]
   <% end -%>
 </p>
