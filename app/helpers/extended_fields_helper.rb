@@ -23,23 +23,32 @@ module ExtendedFieldsHelper
   # Newer version, using YUI TreeView
   
   def pseudo_choices_form_column(record, input_name)
-    top_level = Choice.find(:all, :conditions => 'parent_id IS NULL', :order => 'label ASC')
+    top_level = Choice.find_top_level
+    id = "tree_" + record.id.to_s
     
-    
+    # Containing DIV for theme
     '<div class="yui-skin-sam" style="float: left">' +
-    content_tag("p", link_to_function("Expand all", "", :id => "tree_#{record.id.to_s}_expand") + " | " + link_to_function("Collapse all", "", :id => "tree_#{record.id.to_s}_collapse")) +
+    
+    # Expand all and collapse all links
+    content_tag("p", link_to_function("Expand all", "", :id => "#{id}_expand") + " | " + link_to_function("Collapse all", "", :id => "#{id}_collapse")) +
+    
+    # Actual XHTML list that is shown in the case JS fails or is not supported
     '<div id="choice_selection_' + record.id.to_s + '"><ul>' +
     top_level.inject("") do |m, choice|
       m = m + build_ul_for_choice(choice, record)
     end +
     '</ul></div></div>' +
-    '<script type="text/javascript>var tree_' + record.id.to_s + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); tree_' + record.id.to_s + '.render(); tree_' + record.id.to_s + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("tree_' + record.id.to_s + '_expand", "click", function(tree) { tree_'+record.id.to_s+'.expandAll(); }, tree_' + record.id.to_s + '); YAHOO.util.Event.addListener("tree_' + record.id.to_s + '_collapse", "click", function(tree) {  tree_'+record.id.to_s+'.collapseAll(); }, tree_' + record.id.to_s + ');</script>'
+    
+    # Javascript call to initialise YUI TreeView, and listens for expand/collapse links
+    '<script type="text/javascript>var ' + id + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); ' + id + '.render(); ' + id + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("' + id + '_expand", "click", function(tree) { ' + id + '.expandAll(); }, ' + id + '); YAHOO.util.Event.addListener("' + id + '_collapse", "click", function(tree) {  ' + id + '.collapseAll(); }, ' + id + ');</script>'
   end
   
+  # Build hierarchical UL, LI structure for a choice and recurse through children elements
   def build_ul_for_choice(choice, record)
     content_tag("li", check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice)) + " " + choice.label + build_ul_for_children_of(choice, record))
   end
   
+  # Build hierarchicial UL, LI for children elements of a choice
   def build_ul_for_children_of(choice, record)
     if choice.children.empty?
       ""
@@ -52,6 +61,9 @@ module ExtendedFieldsHelper
     end
   end
   
+  # Create a Javascript array of hashes containing attributes for the construction of the TreeView.
+  # This is necessary because YUI's TreeView doesn't probably interpret checkboxes in XHTML when
+  # constructing a TreeView from existing content (ala progressive enhancement).
   def build_node_array_for(choice, record)
     string_from_children = choice.children.map { |child| build_node_array_for(child, record) }.join(", ")
     
@@ -61,6 +73,8 @@ module ExtendedFieldsHelper
     
     output.join
   end
+  
+  # More ActiveScaffold overloading..
   
   # Same as above, but for ftype.
   # We are not being strict about which ftypes are allowed and which are not.
@@ -89,9 +103,46 @@ module ExtendedFieldsHelper
     else
       
       select(:record, :parent_id, 
-        [['', nil]] + Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
+        Choice.find(:all).reject { |c| c.id == record.id }.map { |c| [c.label, c.id] },
         { :select => record.parent_id }, :name => input_name)
     end
+  end
+  
+  # Same as above, but for choice children selection
+  def children_form_column(record, input_name)
+    if record.new_record?
+      
+      # Due to a limitation on better-nested-set, you cannot move_to any node unless the node you're
+      # moving has already been saved. The intention here is that hierarchical manipulation of choices 
+      # will be done from the parent side.
+      "You cannot select child choices until the choice has been created."
+    else
+      
+      currently_selected = record.children.map do |choice|
+        check_box_tag("record[children][]", choice.id, true) + " " + choice.label
+      end
+      
+      candidates = Choice.root.children.reject { |c| record.parent == c || self == c }.map do |choice|
+        check_box_tag("record[children][]", choice.id, false) + " " + choice.label
+      end
+      
+      output = content_tag("h6", "Existing sub-choices")
+      output << "<ul>" + currently_selected.inject("") do |memo, choice|
+        memo = memo + content_tag("li", choice)
+      end + "</ul>"
+      
+      output << content_tag("h6", "Add more sub-choices")
+      output << "<ul>" + candidates.inject("") do |memo, choice|
+        memo = memo + content_tag("li", choice)
+      end + "</ul>"
+      
+      content_tag("div", output, :style => "float: left")
+    end
+  end
+  
+  # Ensure children of a choice are displayed in a reasonable manner
+  def children_column(record)
+    record.children.map { |c| c.label }.join(", ")
   end
   
   # Generates label and editor for extended field

@@ -4,7 +4,7 @@ class AddChoices < ActiveRecord::Migration
     create_table 'choices' do |t|
       t.column 'label', :string
       t.column 'value', :string
-      t.column 'parent_id', :integer, :null => true
+      t.column 'parent_id', :integer, :null => true, :references => nil
       t.column 'lft', :integer
       t.column 'rgt', :integer
       t.column 'data', :string

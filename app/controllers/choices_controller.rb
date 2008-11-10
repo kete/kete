@@ -7,7 +7,7 @@ class ChoicesController < ApplicationController
   active_scaffold :choices do |config|
     
     # Which columns to show
-    config.columns = [:label, :value, :parent]
+    config.columns = [:label, :value, :parent, :children]
     config.list.columns.exclude :updated_at, :created_at
     
     # Column overrides
@@ -17,5 +17,11 @@ class ChoicesController < ApplicationController
     # Subform column overrides
     # config.subform.columns = [:label]
   end
+  
+  # Ensure that the ROOT for better_nested_set isn't shown on activescaffold pages.
+  def conditions_for_collection
+    ['label != ?', 'ROOT']
+  end
+  
   
 end

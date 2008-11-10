@@ -1,5 +1,16 @@
 class Choice < ActiveRecord::Base
   
+  # Ensure any newly created choices become a child of root.
+  # Without this, they will need be found when doing lookups against all choices, since we are depending entirely on
+  # better_nested_set to provide choice hierachy and listings.
+  after_create :make_child_of_root
+  
+  def make_child_of_root
+    move_to_child_of(Choice.root)
+  end
+  
+  private :make_child_of_root
+  
   # Associations (polymorphic has_many :through)
   has_many :choice_mappings
   
@@ -26,20 +37,35 @@ class Choice < ActiveRecord::Base
     if new_record?
       # Do nothing..
     elsif parent_choice_id.blank? 
-      move_to_left_of(root.id)
+      move_to_left_of(roots.last)
     else
       move_to_child_of(parent_choice_id)
     end
   end
   
   def children=(array_of_choice_ids)
-    array_of_choice_ids.each do |choice|
-      choice.move_to_child_of(self)
+
+    # Remove existing children
+    children.each do |choice|
+      choice.move_to_child_of(root)
+    end
+    
+    # Add new children
+    unless array_of_choice_ids.blank?
+      array_of_choice_ids.map { |id| Choice.find(id) }.each do |choice|
+        choice.move_to_child_of(self)
+      end
     end
   end
   
+  # Ensure things make sense to end users
   def to_s
     label
+  end
+  
+  # Ensure things make sense to end users
+  def label
+    read_attribute(:label) == "ROOT" ? "(Top level)" : read_attribute(:label)
   end
   
   class << self
@@ -48,36 +74,10 @@ class Choice < ActiveRecord::Base
       find(:all).collect { |c| [c.label, c.value] }
     end
     
-    def find_without_parent_in(array_of_parent_choices, options_for_find = {})
-      default_options = { :conditions => 'parent_id IS NOT NULL' }
-      candidates = find(:all, default_options.merge(options_for_find))
-      
-      candidates.reject { |c| array_of_parent_choices.member?(c) }
+    def find_top_level
+      root.children
     end
-    
-    def find_top_level(options_for_find = {})
-      default_options = { :conditions => 'parent_id IS NULL' }
-      find(:all, default_options.merge(options_for_find))
-    end
-    
-    def find_top_level_and_all_ancestors(options_for_find = {})
-      top_level = find_top_level
-      candidates = [top_level] + top_level.map { |choice| ancestors_of(choice) }.flatten
-      candidates.flatten
-    end
-    
-    def find_top_level_and_orphaned
-      find_top_level + find_without_parent_in(find_top_level_and_all_ancestors)
-    end
-    
-    def find_top_level_and_orphaned_sorted
-      find_top_level_and_orphaned.sort { |a, b| a.label <=> b.label }
-    end
-    
-    def ancestors_of(choice)
-      choice.children + choice.children.map { |child| ancestors_of(child) }.flatten.uniq
-    end
-    
+        
   end
   
 end
