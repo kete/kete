@@ -125,19 +125,16 @@
                                      :tabindex => '2' -%>
         </li>
         <% else -%>
-        <li class="first">
-          <%= link_to_unless_current current_user.user_name,
+        <li id="user_baskets_list" class="first">
+          <%= link_to_unless_current "#{current_user.user_name}",
                                      { :controller => 'account',
                                        :action => 'show',
                                        :urlified_name => @site_basket.urlified_name},
                                      :tabindex => '2' -%>
-        </li>
-        <li id="user_baskets_list">
-          <%= link_to "Your Baskets <em>V</em>",
-                      { :urlified_name => @site_basket.urlified_name,
-                        :controller => 'account',
-                        :action => 'baskets' },
-                      :tabindex => '2' -%>
+          <%= link_to "<em>V</em>", { :urlified_name => @site_basket.urlified_name,
+                                      :controller => 'account',
+                                      :action => 'baskets' },
+                                    :tabindex => '2' -%>
           <ul class="submenu" style="display:none;">
             <%= users_baskets_list -%>
           </ul>
