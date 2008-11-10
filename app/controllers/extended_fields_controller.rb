@@ -18,7 +18,7 @@ class ExtendedFieldsController < ApplicationController
     # CRUD for adding/removing choices
     config.columns << [:pseudo_choices]
     config.columns[:pseudo_choices].label = "Available choices"
-    config.columns[:pseudo_choices].description = "Ftype must be \"choice\" for these options to be available."
+    config.columns[:pseudo_choices].description = "Ftype must be a \"choices\" option for these options to be available to users."
   end
   
   def add_field_to_multiples
