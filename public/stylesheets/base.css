@@ -751,16 +751,18 @@ ul.option-list li img{
   display: none;
 }
 
-/* width of members list table for basket administration of members */
-table.members-list-table {
-    width: 100%;
+/* column widths for the above. */
+.members-list-table {
+  width: 100%;
+}
+.members-list-table td.member-avatar {
+  width: 50px !important;
+  padding: 10px;
+}
+.member_joined, .member_email, .member_change_to, .member_administrate {
+  width: 18%;
 }
 
-/* column widths for the above. */
-.members-list-table td.member-avatar {
-    width: 50px !important;
-    padding: 10px;
-}
 
 /* for wrapping form elements in a block element - needed for XHTML validation */
 div.wrap {
@@ -781,4 +783,18 @@ div.wrap {
         width: 160px;
         float: left;
         margin-bottom: 200px;
+}
+#basket_list_table {
+  width: 100%;
+}
+.basket_name, .basket_created {
+  width: 20%;
+}
+.basket_options {
+  width: 60%;
+}
+
+/* SEARCH SORTING CONTROLS */
+.sorting_control {
+  border: none;
 }

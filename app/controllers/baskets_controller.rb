@@ -29,14 +29,9 @@ class BasketsController < ApplicationController
       @listing_type = 'approved'
     end
 
-    @order = params[:order] || 'alphabetical'
-    @baskets_in_reverse = params[:baskets_in_reverse] && params[:baskets_in_reverse] == 'reverse' ? true : false
-    case @order
-    when 'latest'
-      paginate_order = "updated_at #{@baskets_in_reverse ? 'asc' : 'desc'}"
-    when 'alphabetical'
-      paginate_order = "name #{@baskets_in_reverse ? 'desc' : 'asc'}"
-    end
+    @order = params[:order] || 'name'
+    @direction = params[:direction] || 'asc'
+    paginate_order = "#{@order} #{@direction}"
 
     options = { :page => params[:page],
                 :per_page => 5,

@@ -1,40 +1,32 @@
 <% @title = "Listing Baskets" -%>
-<h2><%= h(@title) -%></h2>
-
-<% if @site_admin -%>
-<p>
-  <%= link_to 'Approved', :type => 'approved' -%>
-  | <%= link_to 'Requested', :type => 'requested' -%>
-  | <%= link_to 'Rejected', :type => 'rejected' -%>
-</p>
-<% end -%>
 
 <p>
-  <h4>Refine Results</h4>
-  <% form_tag({}, :method => :get) do -%>
-    <label for="order">Order by:</label>
-    <%= select_tag 'order', options_for_select({ "Alphabetical" => "alphabetical", "Latest" => "latest" }, @order) -%>
-    <label for="baskets_in_reverse">in reverse?</label>
-    <%= check_box_tag 'baskets_in_reverse', 'reverse', @baskets_in_reverse -%>
-    <%= submit_tag 'Update' -%>
+  <h2 style="display:inline;"><%= h(@title) -%></h2>
+  <% if @site_admin -%>
+    [
+    <%= link_to_unless_current 'all', :type => nil -%>
+    | <%= link_to_unless_current 'requests', :type => 'requested' -%>
+    | <%= link_to_unless_current 'rejected', :type => 'rejected' -%>
+    ]
   <% end -%>
-  <br />
 </p>
 
-<table width="100%">
-  <tr>
-    <th abbr="Name" width="15%">Basket Name</th>
-    <th abbr="Options" width="85%">Options</th>
-  </tr>
-  <% @baskets.each do |basket| -%>
-  <tr>
-    <td><%= link_to_index_for(basket) -%></td>
-    <td>
-      <ul><%= link_to_actions_available_for(basket) -%></ul>
-    </td>
-  </tr>
-  <% end -%>
-</table>
+<p>
+  <table id="basket_list_table">
+    <tr>
+      <th abbr="Name" class="basket_name"><%= search_sorting_controls_for('Name', 'name', true) -%></th>
+      <th abbr="Created" class="basket_created"><%= search_sorting_controls_for('Created', 'created_at', false, 'desc') -%></th>
+      <th abbr="Options" class="basket_options">Options</th>
+    </tr>
+    <% @baskets.each do |basket| -%>
+    <tr>
+      <td class="basket_name"><%= link_to_index_for(basket) -%></td>
+      <td class="basket_created"><%= basket.created_at.to_s(:long) -%></td>
+      <td class="basket_options"><ul><%= link_to_actions_available_for(basket) -%></ul></td>
+    </tr>
+    <% end -%>
+  </table>
+</p>
 
 <div id="prev-next"><%= will_paginate @baskets %></div>
 
