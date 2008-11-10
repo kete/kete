@@ -4,7 +4,7 @@
     <h2>Portrait Controls</h2>
     <p>
       <ul>
-        <% unless @still_image.user.nil? -%>
+        <% unless @still_image.portrayed_user.nil? -%>
           <% unless @still_image.user_portrait_relation.first? -%>
             <li><%= link_to 'Make image default portrait', :controller => 'account',
                                                            :action => 'default_portrait',
