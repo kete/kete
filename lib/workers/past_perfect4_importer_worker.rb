@@ -488,12 +488,18 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
     new_record_added = new_record.save
 
-    importer_add_image_to(new_record, params, zoom_class)
+    if new_record_added
+      importer_add_image_to(new_record, params, zoom_class)
 
-    new_record.creator = @contributing_user
+      new_record.creator = @contributing_user
 
-    logger.info("new_record: " + new_record.inspect)
-    return new_record
+      logger.info("new_record: " + new_record.inspect)
+      return new_record
+    else
+      logger.info("new_record not added - save failed:")
+      logger.info("what are errors on save of new record: " + new_record.errors.inspect)
+      return nil
+    end
   end
 
   # set up the correct xml paths to use
