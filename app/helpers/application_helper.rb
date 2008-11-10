@@ -155,7 +155,7 @@ module ApplicationHelper
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
       link = link_to(basket.name, basket_index_url(:urlified_name => basket_name))
       link += " - #{role[:role_name].humanize}" if show_roles
-      html += content_tag('li', link)
+      html += content_tag('li', link, :class => cycle('user_basket_list_row1', 'user_basket_list_row2'))
     end
     html
   end

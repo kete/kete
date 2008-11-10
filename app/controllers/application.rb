@@ -1040,6 +1040,12 @@ class ApplicationController < ActionController::Base
     @current_item ||= @audio_recording || @document || @still_image || @topic || @video || @web_link || nil
   end
 
+  def current_sorting_options(default_order, default_direction, valid_orders = Array.new)
+    @order = valid_orders.include?(params[:order]) ? params[:order] : default_order
+    @direction = ['asc', 'desc'].include?(params[:direction]) ? params[:direction] : default_direction
+    "#{@order} #{@direction}"
+  end
+
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
                 :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type,

@@ -17,9 +17,7 @@ class MembersController < ApplicationController
       @listing_type = 'all'
     end
 
-    @order = params[:order] || 'users.login'
-    @direction = params[:direction] || 'asc'
-    paginate_order = "#{@order} #{@direction}"
+    paginate_order = current_sorting_options('users.login', 'asc', ['users.login', 'roles_users.created_at', 'users.email'])
 
     # this sets up all instance variables
     # as well as preparing @members

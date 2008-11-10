@@ -63,7 +63,7 @@
     <tr valign="top">
       <th colspan="2" abbr="Login" class="member_login"><%= search_sorting_controls_for('User name and/or Login', 'users.login', true) -%></th>
       <% if @basket_admin -%>
-        <th abbr="Joined" class="member_joined"><%= search_sorting_controls_for('Joined', 'roles_users.updated_at', false, 'desc') -%></th>
+        <th abbr="Joined" class="member_joined"><%= search_sorting_controls_for('Joined', 'roles_users.created_at', false, 'desc') -%></th>
         <th abbr="Email" class="member_email"><%= search_sorting_controls_for('Email', 'users.email', false, 'asc') -%></th>
         <th abbr="Switch" class="member_change_to">Change to</th>
         <% if !@admin_actions.blank? -%>
