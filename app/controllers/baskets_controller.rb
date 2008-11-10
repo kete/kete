@@ -29,9 +29,7 @@ class BasketsController < ApplicationController
       @listing_type = 'approved'
     end
 
-    @order = params[:order] || 'name'
-    @direction = params[:direction] || 'asc'
-    paginate_order = "#{@order} #{@direction}"
+    paginate_order = current_sorting_options('name', 'asc', ['name', 'created_at'])
 
     options = { :page => params[:page],
                 :per_page => 5,
