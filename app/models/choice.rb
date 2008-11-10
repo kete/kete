@@ -1,15 +1,26 @@
 class Choice < ActiveRecord::Base
   
+  ROOT = Choice.find(1)
+  
   # Ensure any newly created choices become a child of root.
   # Without this, they will need be found when doing lookups against all choices, since we are depending entirely on
   # better_nested_set to provide choice hierachy and listings.
   after_create :make_child_of_root
   
   def make_child_of_root
-    move_to_child_of(Choice.root)
+    move_to_child_of(ROOT)
   end
   
   private :make_child_of_root
+  
+  # After updating, check to see if we should change the parent choice.
+  after_update :change_parent
+  
+  def change_parent
+    move_to_child_of(@new_parent) if @new_parent
+  end
+  
+  private :change_parent
   
   # Associations (polymorphic has_many :through)
   has_many :choice_mappings
@@ -34,17 +45,13 @@ class Choice < ActiveRecord::Base
   end
   
   def parent=(parent_choice_id)
-    if new_record?
-      # Do nothing..
-    elsif parent_choice_id.blank? 
-      move_to_left_of(roots.last)
-    else
-      move_to_child_of(parent_choice_id)
+    unless new_record? 
+      @new_parent = parent_choice_id.blank? ? ROOT : parent_choice_id
     end
   end
   
   def children=(array_of_choice_ids)
-
+    
     # Remove existing children
     children.each do |choice|
       choice.move_to_child_of(root)
@@ -65,7 +72,7 @@ class Choice < ActiveRecord::Base
   
   # Ensure things make sense to end users
   def label
-    read_attribute(:label) == "ROOT" ? "(Top level)" : read_attribute(:label)
+    self == ROOT ? "(Top level)" : read_attribute(:label)
   end
   
   class << self
@@ -75,9 +82,16 @@ class Choice < ActiveRecord::Base
     end
     
     def find_top_level
-      root.children
+      ROOT.children
     end
-        
+    
+    # Find whether a set of choices (through an association) have a bunch of sub-choices we need to deal with.
+    def have_subchoices?
+      find_top_level.any? do |choice|
+        choice.children_count > 0
+      end
+    end
+    
   end
   
 end

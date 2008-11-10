@@ -197,7 +197,7 @@ module ExtendedFieldsHelper
   
   def extended_field_radio_editor(name, existing_value, options, extended_field)
     default_choices = [["Yes", "Yes"], ["No", "No"], ["No value", ""]]
-    choices = extended_field.choices.empty? ? default_choices : extended_field.choices.map { |c| [c.label, c.value] }
+    choices = extended_field.choices.empty? ? default_choices : extended_field.choices.find_top_level.map { |c| [c.label, c.value] }
       
     html = choices.map do |label, value|
       radio_button_tag(name, value, existing_value.to_s == value) + " " + label
@@ -221,44 +221,66 @@ module ExtendedFieldsHelper
   def extended_field_choice_editor(name, value, options, extended_field)
     
     # Provide an appropriate selection interface..
-    partial = extended_field.choices.size < 15 ? 'choice_select_editor' : 'choice_autocomplete_editor'
+    # partial = extended_field.choices.size < 15 ? 'choice_select_editor' : 'choice_autocomplete_editor'
+    partial = 'choice_autocomplete_editor'
+    
+    # Generate the choices we need to populate the SELECT or autocomplete.
+    choices = extended_field.choices.find_top_level
     
     render :partial => 'extended_fields/' + partial, :locals => { 
       :name => name, 
       :value => value, 
       :options => options, 
-      :extended_field => extended_field
+      :extended_field => extended_field,
+      :choices => choices,
+      
+      # The default level is 1.. is this increased by subsequent renderings in ExtendedFieldsController.
+      :level => 1
     }
   end
   
-  def extended_field_choice_select_editor(name, value, options, extended_field)
-    option_tags = options_for_select(extended_field.choices.find_top_level_and_orphaned_sorted.map { |c| [c.label, c.value] }, value)
-    select_tag(name, option_tags, options)
+  def extended_field_choice_select_editor(name, value, options, extended_field, choices, level = 1)
+    
+    # Build OPTION tags
+    option_tags = options_for_select([['', '']] + choices.map { |c| [c.label, c.value] }, value)
+    
+    default_options = {
+      :onchange => remote_function(:url => {
+        :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level
+      }, :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'")
+    }
+    
+    select_tag("name[]", option_tags, default_options.merge(options))
   end
   
-  def extended_field_choice_autocomplete_editor(name, value, options, extended_field)
+  def extended_field_choice_autocomplete_editor(name, value, options, extended_field, choices, level = 1)
     
     # Build a list of available choices
-    choices = extended_field.choices.find_top_level_and_orphaned_sorted.map { |c| c.label }
+    choices = choices.map { |c| c.label }
     
-    # Because we store the choice's value, not label, we need to find the label to be shown in the text field.
+    # Because we store the choice's value, not label, we need to find the label to be shown in the text 
+    # field.
     # We also handle validation failures here by displaying the submitted value.
     value = Choice.find_by_value(value).label rescue value
     
-    text_field_tag(name, value, options.merge(:autocomplete => "off")) + tag("br") +
+    remote_call = remote_function(:url => {
+        :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level
+      }, :with => "'label='+Form.Element.getValue(el)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'")
+    
+    text_field_tag("name[]", value, options.merge(:autocomplete => "off")) + tag("br") +
     content_tag("div", nil, 
       :class => "extended_field_autocomplete", 
-      :id => options[:id] + "_autocomplete", 
+      :id => id_for_extended_field(extended_field) + "_autocomplete", 
       :style => "display: none"
     ) +
     
     # Javascript code to initialize the autocompleter
-    javascript_tag("new Autocompleter.Local('#{options[:id]}', '#{options[:id] + "_autocomplete"}', #{array_or_string_for_javascript(choices)}, { })") +
+    javascript_tag("new Autocompleter.Local('#{id_for_extended_field(extended_field)}', '#{id_for_extended_field(extended_field) + "_autocomplete"}', #{array_or_string_for_javascript(choices)}, { afterUpdateElement:function(el, sel) { #{remote_call} } });") +
     
     # We need to let our controller know that we're using autocomplete for this field.
     # We know the field we expect should be something like topic[extended_content][someonething]..
     
-    hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => options[:id] + "_from_autocomplete")
+    hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => id_for_extended_field(extended_field) + "_from_autocomplete")
   end
   
   # Generates label XHTML

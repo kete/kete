@@ -1,1 +1,9 @@
-<%= extended_field_choice_select_editor(name, value, options, extended_field) %>
+<%# Prep stuff for sub-choices %>
+<% options ||= {} %>
+<% indent = level > 1 ? level * 10 : 0 %>
+<div style="margin: 3px 0; padding: 0; margin-left: <%= indent %>px">
+  <%= " Sub-category: " if level > 1 %>
+  <%= extended_field_choice_select_editor(name, value, options, extended_field, choices, level) %>
+
+  <%= content_tag("div", nil, :id => "#{id_for_extended_field(extended_field)}__level_#{level}", :style => "display: inline") %>
+</div>

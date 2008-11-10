@@ -34,13 +34,47 @@ class ExtendedFieldsController < ApplicationController
       
       # Add a new field editor to the bottom of the set
       page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \
-        :partial => 'search/extended_field_editor', \
+        :partial => 'extended_fields/extended_field_editor', \
         :locals => { :ef => extended_field, :content => [], :n => n, :multiple => true }
         
       # Add the field adder control back to the bottom of the set
       page.insert_html :bottom, "#{qualified_name_for_field(extended_field)}_multis", \
-        :partial => 'search/additional_extended_field_control', \
+        :partial => 'extended_fields/additional_extended_field_control', \
         :locals => { :ef => extended_field, :n => n.to_i + 1 }
+    end
+  end
+  
+  # Fetch subchoices for a choice. 
+  def fetch_subchoices
+    
+    # Find the current choice
+    current_choice = params[:value].blank? ? \
+      Choice.find_by_label(params[:label]) : Choice.find_by_value(params[:value]) || Choice.find_by_label(params[:value])
+      
+    options = {
+      :choices => current_choice.children,
+      :level => params[:for_level].to_i + 1,
+      :extended_field => ExtendedField.find(params[:options][:extended_field_id])
+    }
+    
+    # Ensure we have a standard environment to work with. Some parts of the helpers (esp. ID and NAME 
+    # attribute generation rely on these.
+    @item_type_for_params = params[:item_type_for_params]
+    @field_multiple_id = params[:field_multiple_id]
+      
+    
+    render :update do |page|
+      
+      # Generate the DOM ID
+      dom_id = "#{id_for_extended_field(options[:extended_field])}__level_#{params[:for_level]}"
+      
+      if options[:choices].empty?
+        page.replace_html dom_id, ""
+      else
+        page.replace_html dom_id,
+          :partial => "extended_fields/choice_#{params[:editor]}_editor",
+          :locals => params[:options].merge(options)
+      end
     end
   end
   
