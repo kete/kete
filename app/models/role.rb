@@ -6,8 +6,12 @@ class Role < ActiveRecord::Base
   has_many :user_roles
   has_many :users, :through => :user_roles
 
-  def self.user_role_for(user, name, authorizable_id)
-    self.find_by_name_and_authorizable_id(name, authorizable_id).user_roles.find_by_user_id(user)
+  def self.user_role_for(user, name, authorizable_id, options = {})
+    # this method will be called multiple times on the members page, so make sure the
+    # role query is only run once by caching it to a role named instance variable
+    class_eval("@#{name}_role ||= self.find_by_name_and_authorizable_id(name, authorizable_id, :select => 'id')")
+    class_eval("@role = @#{name}_role")
+    UserRole.find_by_role_id_and_user_id(@role, user, options)
   end
 
   belongs_to :authorizable, :polymorphic => true
