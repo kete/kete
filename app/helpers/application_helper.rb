@@ -455,10 +455,35 @@ module ApplicationHelper
     "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
+  
+  # 
+  def limit_search_to_choice_control
+    options_array = Choice.find_top_level.inject([]) do |memo, choice|
+      memo + option_for_choice_control(choice, :level => 0)
+    end
+    
+    # return options_array.inspect
+    
+    html_options_for_select = ([['', '']] + options_array).map do |k, v| 
+      attrs = { :value => v }
+      attrs.merge!(:selected => "selected") if params[:limit_to_choice] == v
+      content_tag("option", k, attrs)
+    end.join
+    
+    select_tag("limit_to_choice", html_options_for_select)
+  end
+  
+  def option_for_choice_control(choice, options = {})
+    level = options[:level] || 0
+    
+    values = choice.ancestors.reject { |c| c.id == 1 }.map { |a| a.value } + [choice.value]
+    array = [[("&nbsp;&nbsp;"*level) + choice.label, ":" + values.compact.join(":") + ":"]]
+    choice.children.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
+  end
 
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item)
-    raq = " &raquo "
+    raq = " &raquo; "
     html = []
     
     item.extended_content_pairs.each do |label, value|

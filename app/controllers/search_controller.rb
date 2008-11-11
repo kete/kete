@@ -299,6 +299,8 @@ class SearchController < ApplicationController
     # must be exact string
     @search.pqf_query.creators_or_contributors_include(@contributor.login) if !@contributor.nil?
 
+    @search.pqf_query.title_or_any_text_includes("\"#{params[:limit_to_choice]}\"") unless params[:limit_to_choice].blank?
+    
     if !@search_terms.blank?
       # add the actual text search if there are search terms
       @search.pqf_query.title_or_any_text_includes(@search_terms)
@@ -440,6 +442,7 @@ class SearchController < ApplicationController
                       :existing_array_string => params[:existing_array_string],
                       :sort_direction => params[:sort_direction],
                       :sort_type => params[:sort_type],
+                      :limit_to_choice => params[:limit_to_choice],
                       :authenticity_token => nil }
 
     if is_a_private_search?
