@@ -1,6 +1,4 @@
 <% @title = 'Profile of ' + h(@user.user_name) -%>
-<% @viewer_is_user = @user == @current_user ? true : false -%>
-<% @viewer_portraits = !@user.portraits.empty? ? @user.portraits : nil -%>
 
 <p>
   <h2 style="display:inline;"><%= h(@title) -%></h2>
@@ -15,8 +13,19 @@
 <div class="profile_content_right">
   <% unless @viewer_portraits.nil? -%>
   <div>
-    <h4>Portraits</h4>
-    <br />
+    <p>
+      <h4 style="display:inline;">Portraits</h4>
+      <% if @viewer_is_user -%>
+        <% location_hash = { :controller => 'images',
+                             :action => 'new',
+                             :portrait => true } -%>
+        [
+        <%= link_to 'new portrait', location_hash -%>
+        | <%= link_to 'new default portrait', location_hash.merge({ :default_portrait => true }) -%>
+        ]
+      <% end -%>
+    </p>
+    <p>
     <% @viewer_portraits.each do |portrait| -%>
       <% unless portrait.thumbnail_file.file_private -%>
         <%= link_to image_tag(portrait.thumbnail_file.public_filename,
@@ -27,15 +36,21 @@
                       :id => portrait.id } -%>
       <% end -%>
     <% end -%>
+    </p>
   </div>
   <% end -%>
 
-  <p>
-    <h4>Baskets</h4>
+  <% user_baskets = users_baskets_list(@user) -%>
+  <% unless user_baskets.blank? -%>
+  <div>
+    <p>
+      <h4 style="display:inline;">Baskets</h4>
+      <%= "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user -%>
     <ul>
       <%= users_baskets_list(@user) -%>
     </ul>
-  </p>
+  </div>
+  <% end -%>
 </div>
 
 <div class="avatar"><%= avatar_for @user -%></div>

@@ -174,10 +174,10 @@ module ApplicationHelper
       basket_text = 'Add Basket'
     end
 
-    html = '<li>' + link_to_unless_current( basket_text,
-                                            :controller => 'baskets',
-                                            :action => 'new',
-                                            :urlified_name => @site_basket.urlified_name) + '</li>'
+    link_to_unless_current( basket_text,
+                            :controller => 'baskets',
+                            :action => 'new',
+                            :urlified_name => @site_basket.urlified_name)
   end
 
   def render_baskets_as_menu

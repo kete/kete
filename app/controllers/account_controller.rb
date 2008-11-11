@@ -158,6 +158,8 @@ class AccountController < ApplicationController
         @user = self.current_user
       end
       @extended_fields = @user.xml_attributes
+      @viewer_is_user = (@user == @current_user) ? true : false
+      @viewer_portraits = !@user.portraits.empty? ? @user.portraits : nil
     else
       flash[:notice] = "You must be logged in to view user profiles."
       redirect_to :action => 'login'
