@@ -22,12 +22,16 @@ class AddChoices < ActiveRecord::Migration
         
     Choice.create!(:label => "ROOT", :value => "ROOT")
     
+    change_column :extended_fields, :ftype, :string, :limit => 15
+    
   end
 
   def self.down
     
     drop_table 'choices'
     drop_table 'choice_mappings'
+    
+    change_column :extended_fields, :ftype, :string, :limit => 10
     
   end
 end

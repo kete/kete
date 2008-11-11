@@ -82,11 +82,12 @@ module ExtendedFieldsHelper
 
     options_for_select = [
       ['Check box', 'checkbox'],
+      ['Radio buttons)', 'radio'],
       ['Date', 'date'],
       ['Text', 'text'],
       ['Text box', 'textarea'],
-      ['Choices (radio buttons)', 'radio'],
-      ['Choices (drop-down or autocomplete)', 'choice']
+      ['Choices (auto-completion)', 'autocomplete'],
+      ['Choices (drop-down)', 'choice']
     ]
     
     select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name)
@@ -122,7 +123,7 @@ module ExtendedFieldsHelper
         check_box_tag("record[children][]", choice.id, true) + " " + choice.label
       end
       
-      candidates = Choice.root.children.reject { |c| record.parent == c || self == c }.map do |choice|
+      candidates = Choice.root.children.reject { |c| record.parent == c || record == c }.map do |choice|
         check_box_tag("record[children][]", choice.id, false) + " " + choice.label
       end
       
@@ -182,8 +183,8 @@ module ExtendedFieldsHelper
     name = name_for_extended_field(extended_field)
     
     builder = "extended_field_#{extended_field.ftype}_editor".to_sym
-    if %w(choice radio).member?(extended_field.ftype)
-      send(builder, name, value, tag_options, extended_field)
+    if %w(choice autocomplete).member?(extended_field.ftype)
+      send(:extended_field_choice_editor, name, value, tag_options, extended_field)
     elsif respond_to?(builder)
       send(builder, name, value, tag_options)
     else
@@ -197,9 +198,11 @@ module ExtendedFieldsHelper
   
   def extended_field_radio_editor(name, existing_value, options, extended_field)
     default_choices = [["Yes", "Yes"], ["No", "No"], ["No value", ""]]
-    choices = extended_field.choices.empty? ? default_choices : extended_field.choices.find_top_level.map { |c| [c.label, c.value] }
+    
+    # In the future we might allow radio buttons to be used for selecting choices
+    # choices = extended_field.choices.empty? ? default_choices : extended_field.choices.find_top_level.map { |c| [c.label, c.value] }
       
-    html = choices.map do |label, value|
+    html = default_choices.map do |label, value|
       radio_button_tag(name, value, existing_value.to_s == value) + " " + label
     end.join("<br />\n")
     
@@ -221,8 +224,7 @@ module ExtendedFieldsHelper
   def extended_field_choice_editor(name, value, options, extended_field)
     
     # Provide an appropriate selection interface..
-    # partial = extended_field.choices.size < 15 ? 'choice_select_editor' : 'choice_autocomplete_editor'
-    partial = 'choice_autocomplete_editor'
+    partial = extended_field.ftype == "choice" ? 'choice_select_editor' : 'choice_autocomplete_editor'
     
     # Generate the choices we need to populate the SELECT or autocomplete.
     choices = extended_field.choices.find_top_level
