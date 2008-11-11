@@ -310,6 +310,17 @@ module ExtendedContent
           "must be a valid choice (you gave '#{values.to_sentence}')"
         end
       end
+      
+      def validate_extended_autocomplete_field_content(extended_field_mapping, values)
+        # Allow nil values. If this is required, the nil value will be caught earlier.
+        return nil if values.blank?
+
+        if !values.is_a?(Array) && !extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(values)
+          "must be a valid choice (you gave '#{values}')"
+        elsif !values.reject { |v| v.blank? }.all? { |v| extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(v) }
+          "must be a valid choice (you gave '#{values.to_sentence}')"
+        end
+      end
     
   end
 end

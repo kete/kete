@@ -462,15 +462,14 @@ module ApplicationHelper
       memo + option_for_choice_control(choice, :level => 0)
     end
     
-    # return options_array.inspect
-    
     html_options_for_select = ([['', '']] + options_array).map do |k, v| 
       attrs = { :value => v }
       attrs.merge!(:selected => "selected") if params[:limit_to_choice] == v
       content_tag("option", k, attrs)
     end.join
     
-    select_tag("limit_to_choice", html_options_for_select)
+    # Don't print out the SELECT tag unless there are choices available.
+    options_array.flatten.empty? ? "" : select_tag("limit_to_choice", html_options_for_select)
   end
   
   def option_for_choice_control(choice, options = {})
