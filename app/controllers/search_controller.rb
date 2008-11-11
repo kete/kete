@@ -132,6 +132,8 @@ class SearchController < ApplicationController
     @tag = params[:tag] ? Tag.find(params[:tag]) : nil
 
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
+    
+    @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
 
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
@@ -205,6 +207,8 @@ class SearchController < ApplicationController
     @tag = params[:tag] ? Tag.find(params[:tag]) : nil
 
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
+    
+    @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
 
     # 0 is the first index, so it's valid for start
     @start_record = 0
@@ -299,7 +303,7 @@ class SearchController < ApplicationController
     # must be exact string
     @search.pqf_query.creators_or_contributors_include(@contributor.login) if !@contributor.nil?
 
-    @search.pqf_query.title_or_any_text_includes("\"#{params[:limit_to_choice]}\"") unless params[:limit_to_choice].blank?
+    @search.pqf_query.any_text_include("':#{@limit_to_choice}:'") unless @limit_to_choice.blank?
     
     if !@search_terms.blank?
       # add the actual text search if there are search terms

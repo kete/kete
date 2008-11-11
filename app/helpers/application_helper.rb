@@ -476,8 +476,7 @@ module ApplicationHelper
   def option_for_choice_control(choice, options = {})
     level = options[:level] || 0
     
-    values = choice.ancestors.reject { |c| c.id == 1 }.map { |a| a.value } + [choice.value]
-    array = [[("&nbsp;&nbsp;"*level) + choice.label, ":" + values.compact.join(":") + ":"]]
+    array = [[("&nbsp;&nbsp;"*level) + choice.label, choice.value]]
     choice.children.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
   end
 
