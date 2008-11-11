@@ -37,9 +37,6 @@ module ExtendedContentHelpers
       if !temp_extended_content.blank? and temp_extended_content.starts_with?('<')
         extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
         
-        # TODO: Remove logging
-        # raise "XML: #{temp_extended_content.size.to_s}, OUTPUT: #{extended_content_hash.size.to_s}"
-
         non_dc_extended_content_hash = Hash.new
         re = Regexp.new("^dc")
         multi_re = Regexp.new("_multiple$")
@@ -66,7 +63,13 @@ module ExtendedContentHelpers
         if !non_dc_extended_content_hash.blank?
           xml.tag!("dc:description") do
             non_dc_extended_content_hash.each do |key, value|
-              xml.tag!(key, value)
+
+              if value.is_a?(Hash)
+                xml.tag!(key, ":#{value.values.join(":")}:")
+              else
+                xml.tag!(key, value)
+              end
+              
             end
           end
         end
