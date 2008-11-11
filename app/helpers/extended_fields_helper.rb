@@ -229,6 +229,9 @@ module ExtendedFieldsHelper
     # Generate the choices we need to populate the SELECT or autocomplete.
     choices = extended_field.choices.find_top_level
     
+    # If the top level is empty, find lower level tags to display
+    choices = choices.blank? ? extended_field.choices.reject { |c| extended_field.choices.member?(c.parent) } : choices
+    
     render :partial => 'extended_fields/' + partial, :locals => { 
       :name => name, 
       :value => value, 
