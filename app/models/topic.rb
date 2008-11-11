@@ -160,7 +160,7 @@ class Topic < ActiveRecord::Base
   # All available extended field mappings for this topic instance, including those from ancestors
   # of our TopicType.
   def all_field_mappings
-    topic_type.topic_type_to_field_mappings + topic_type.ancestors.collect { |a| a.topic_type_to_field_mappings }.flatten
+    topic_type.topic_type_to_field_mappings.find(:all, :order => 'position ASC') + topic_type.ancestors.collect { |a| a.topic_type_to_field_mappings }.flatten
   rescue
     []
   end

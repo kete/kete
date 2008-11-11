@@ -75,6 +75,7 @@ module ExtendedContentHelpers
 
     # extended_content_xml_helpers
     def extended_content_field_xml_tag(options = {})
+      
       begin
         xml = options[:xml]
         field = options[:field]
@@ -82,20 +83,30 @@ module ExtendedContentHelpers
         xml_element_name = options[:xml_element_name] || nil
         xsi_type = options[:xsi_type] || nil
 
-        # if we don't have xml_element_name, go with simplest case
-        if xml_element_name.blank?
-          xml.tag!(field, value)
-        else
-          # next simplest case, we have xml_element_name, but no xsi_type
-          if xsi_type.blank?
-            xml.tag!(field, value, :xml_element_name => xml_element_name )
-          else
-            xml.tag!(field, value, :xml_element_name => xml_element_name, :xsi_type => xsi_type)
+        options = {}
+        options.merge!(:xml_element_name => xml_element_name) unless xml_element_name.blank?
+        options.merge!(:xsi_type => xsi_type) unless xsi_type.blank?
+        
+        if value.is_a?(Hash)
+          xml.tag!(field, options) do |tag|
+            value.each_pair do |k, v|
+              tag.tag!(k, converted_choice_value(v)) unless v.to_s.blank?
+            end
           end
+        else
+          xml.tag!(field, value, options)
         end
+          
       rescue
         logger.error("failed to format xml: #{$!.to_s}")
       end
     end
+        
+    def converted_choice_value(value)
+      choice = Choice.find_by_value(value) || Choice.find_by_label(value)
+      choice ? choice.value : ""
+    end
+    
+    
   end
 end

@@ -1,6 +1,6 @@
 class Choice < ActiveRecord::Base
   
-  ROOT = Choice.find(1)
+  ROOT = Choice.find(1) rescue nil
   
   # Ensure any newly created choices become a child of root.
   # Without this, they will need be found when doing lookups against all choices, since we are depending entirely on
@@ -8,7 +8,7 @@ class Choice < ActiveRecord::Base
   after_create :make_child_of_root
   
   def make_child_of_root
-    move_to_child_of(ROOT)
+    move_to_child_of(ROOT) unless ROOT.nil?
   end
   
   private :make_child_of_root
@@ -54,15 +54,18 @@ class Choice < ActiveRecord::Base
     
     # Remove existing children
     children.each do |choice|
-      choice.move_to_child_of(root)
+      choice.move_to_child_of(ROOT)
     end
     
     # Add new children
     unless array_of_choice_ids.blank?
       array_of_choice_ids.map { |id| Choice.find(id) }.each do |choice|
-        choice.move_to_child_of(self)
+        choice.move_to_child_of(id)
       end
     end
+    
+    # Return true to stop saving from being aborted.
+    true
   end
   
   # Ensure things make sense to end users
@@ -75,11 +78,12 @@ class Choice < ActiveRecord::Base
     self == ROOT ? "(Top level)" : read_attribute(:label)
   end
   
+  # Find whether the choice has been mapped to something
+  def assigned?
+    choice_mappings.size > 0
+  end
+  
   class << self
-    
-    def options_for_select
-      find(:all).collect { |c| [c.label, c.value] }
-    end
     
     def find_top_level
       ROOT.children

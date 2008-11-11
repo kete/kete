@@ -11,6 +11,7 @@ class ExtendedField < ActiveRecord::Base
   
   def pseudo_choices=(array_of_ids)
     logger.debug "ARRAY_OF_IDS = #{array_of_ids.inspect}"
+    self.choices = []
     self.choices = array_of_ids.collect { |id| Choice.find(id) }
   end
 

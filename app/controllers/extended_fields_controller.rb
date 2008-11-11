@@ -46,13 +46,15 @@ class ExtendedFieldsController < ApplicationController
   
   # Fetch subchoices for a choice. 
   def fetch_subchoices
-    
+
     # Find the current choice
     current_choice = params[:value].blank? ? \
       Choice.find_by_label(params[:label]) : Choice.find_by_value(params[:value]) || Choice.find_by_label(params[:value])
-      
+    
+    choices = current_choice ? current_choice.children : []
+    
     options = {
-      :choices => current_choice.children,
+      :choices => choices,
       :level => params[:for_level].to_i + 1,
       :extended_field => ExtendedField.find(params[:options][:extended_field_id])
     }

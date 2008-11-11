@@ -458,73 +458,128 @@ module ApplicationHelper
 
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item)
-    html_string = String.new
-
-    if item.xml_attributes
-      # the outermost hash is keyed by the field's position
-      # i.e. "1" => {"some_field" => "some_field_value"}, "2" =>...
-      # so you have to go down one to get the actual fields
-      item_xml_hash = item.xml_attributes
-      item_xml_array = item_xml_hash.sort
-      item_xml_array.each do |field_array|
-        subhash = item_xml_hash[field_array[0]]
-        subhash.each do |field_key, field_value|
-          # we now handle multiples
-          multi_re = Regexp.new("_multiple$")
-          if multi_re.match(field_key)
-            # value is going to be a hash like this:
-            # "1" => {field_name => value}, "2" => ...
-            # we want the first field name followed by a :
-            # and all values, separated by spaces (for now)
-            field_name = String.new
-            field_values = Array.new
-            field_value.keys.sort.each do |subfield_key|
-              field_hash = item_xml_hash[field_array[0]][field_key][subfield_key]
-              field_hash.keys.each do |key|
-                if field_name.blank?
-                  field_name = key.humanize
-                end
-                if !field_hash[key].blank? && !field_hash[key].to_s.match("xml_element_name")
-                  field_values << field_hash[key]
-                end
-              end
-            end
-            if !field_values.to_s.strip.blank?
-              field_value_index = 0
-              field_values.each do |field_value|
-                if field_value =~ /^\w+:\/\/[^ ]+/
-                  # this is a url protocal of somesort, make link
-                  field_values[field_value_index] = link_to(field_value,field_value)
-                elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
-                  field_values[field_value_index] = mail_to(field_value,field_value, :encode => "hex")
-                else
-                  field_values[field_value_index] = sanitize(field_value)
-                end
-                field_value_index += 1
-              end
-              html_string += "<tr><td class=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
-            end
-          else
-            if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash) && field_key != 'email_visible'
-              if field_value =~ /^\w+:\/\/[^ ]+/
-                # this is a url protocal of somesort, make link
-                field_value = link_to(field_value,field_value)
-              elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
-                field_value = mail_to(field_value,field_value, :encode => "hex")
-              else
-                field_value = sanitize(field_value)
-              end
-              html_string += "<tr><td class=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
-            end
-          end
+    raq = " &raquo "
+    html = []
+    
+    item.extended_content_pairs.each do |label, value|
+      
+      if value_from_xml_is_choice?(label, value)
+        if label =~ /_multiple$/
+          value = value.map { |l| l.map { |l| formatted_value_from_xml(l) }.reject { |t| t.to_s.blank? }.join(raq) }.to_sentence
+        else
+          value = value.map { |l| formatted_value_from_xml(l) }.reject { |t| t.to_s.blank? }.join(raq)
+        end
+      else
+        if label =~ /_multiples$/
+          value = value.map { |l| formatted_value_from_xml(l) }.to_sentence
+        else
+          value = formatted_value_from_xml(value)
         end
       end
-      if !html_string.blank?
-        html_string = "<table class=\"detail-extended-field-table\" summary=\"Extended details\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
-      end
+
+      tds = content_tag("td", "#{label.gsub(/_multiple$/, '').humanize}:", :class => "detail-extended-field-label") + \
+            content_tag("td", value)
+            
+      html << content_tag("tr", tds) unless value.to_s.blank?
     end
-    return html_string
+    
+    unless html.empty?
+      content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
+    end
   end
+  
+  # Find whether the supplied data is likely to be from a choice field type.
+  def value_from_xml_is_choice?(label, value)
+    
+    # Results from choices always multiple due to sub-choices
+    if label =~ /_multiple$/
+      value.is_a?(Array) && value.first.is_a?(Array)
+    else
+      value.is_a?(Array)
+    end
+  end
+  
+  def formatted_value_from_xml(value)
+    case value
+    when /^\w+:\/\/[^ ]+/
+      # this is a url protocal of somesort, make link
+      link_to(value, value)
+    when /^\w+[^ ]*\@\w+\.\w/
+      mail_to(value, value, :encode => "hex")
+    else
+      sanitize(value)
+    end
+  end
+    
+  # JS: Internals of older method. Delete me.
+  
+  #   html_string = String.new
+  # 
+  #   if item.xml_attributes
+  #     # the outermost hash is keyed by the field's position
+  #     # i.e. "1" => {"some_field" => "some_field_value"}, "2" =>...
+  #     # so you have to go down one to get the actual fields
+  #     item_xml_hash = item.xml_attributes
+  #     item_xml_array = item_xml_hash.sort
+  #     item_xml_array.each do |field_array|
+  #       subhash = item_xml_hash[field_array[0]]
+  #       subhash.each do |field_key, field_value|
+  #         # we now handle multiples
+  #         multi_re = Regexp.new("_multiple$")
+  #         if multi_re.match(field_key)
+  #           # value is going to be a hash like this:
+  #           # "1" => {field_name => value}, "2" => ...
+  #           # we want the first field name followed by a :
+  #           # and all values, separated by spaces (for now)
+  #           field_name = String.new
+  #           field_values = Array.new
+  #           field_value.keys.sort.each do |subfield_key|
+  #             field_hash = item_xml_hash[field_array[0]][field_key][subfield_key]
+  #             field_hash.keys.each do |key|
+  #               if field_name.blank?
+  #                 field_name = key.humanize
+  #               end
+  #               if !field_hash[key].blank? && !field_hash[key].to_s.match("xml_element_name")
+  #                 field_values << field_hash[key]
+  #               end
+  #             end
+  #           end
+  #           if !field_values.to_s.strip.blank?
+  #             field_value_index = 0
+  #             field_values.each do |field_value|
+  #               if field_value =~ /^\w+:\/\/[^ ]+/
+  #                 # this is a url protocal of somesort, make link
+  #                 field_values[field_value_index] = link_to(field_value,field_value)
+  #               elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
+  #                 field_values[field_value_index] = mail_to(field_value,field_value, :encode => "hex")
+  #               else
+  #                 field_values[field_value_index] = sanitize(field_value)
+  #               end
+  #               field_value_index += 1
+  #             end
+  #             html_string += "<tr><td class=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
+  #           end
+  #         else
+  #           if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash) && field_key != 'email_visible'
+  #             if field_value =~ /^\w+:\/\/[^ ]+/
+  #               # this is a url protocal of somesort, make link
+  #               field_value = link_to(field_value,field_value)
+  #             elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
+  #               field_value = mail_to(field_value,field_value, :encode => "hex")
+  #             else
+  #               field_value = sanitize(field_value)
+  #             end
+  #             html_string += "<tr><td class=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
+  #           end
+  #         end
+  #       end
+  #     end
+  #     if !html_string.blank?
+  #       html_string = "<table class=\"detail-extended-field-table\" summary=\"Extended details\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
+  #     end
+  #   end
+  #   return html_string
+  # end
 
   #---- end related to extended_fields for either topic_types or content_types
 

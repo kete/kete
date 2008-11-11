@@ -250,7 +250,7 @@ module ExtendedFieldsHelper
       }, :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'")
     }
     
-    select_tag("name[]", option_tags, default_options.merge(options))
+    select_tag("#{name}[#{level}]", option_tags, default_options.merge(options))
   end
   
   def extended_field_choice_autocomplete_editor(name, value, options, extended_field, choices, level = 1)
@@ -258,24 +258,24 @@ module ExtendedFieldsHelper
     # Build a list of available choices
     choices = choices.map { |c| c.label }
     
-    # Because we store the choice's value, not label, we need to find the label to be shown in the text 
-    # field.
+    # Because we store the choice's value, not label, we need to find the label to be shown in the text field.
     # We also handle validation failures here by displaying the submitted value.
-    value = Choice.find_by_value(value).label rescue value
+    selected_choice = Choice.find_by_value(value) || Choice.find_by_label(value)
+    value = selected_choice && !value.blank? ? selected_choice.label : nil
     
     remote_call = remote_function(:url => {
         :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level
       }, :with => "'label='+Form.Element.getValue(el)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'")
     
-    text_field_tag("name[]", value, options.merge(:autocomplete => "off")) + tag("br") +
+    text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off")) + tag("br") +
     content_tag("div", nil, 
       :class => "extended_field_autocomplete", 
-      :id => id_for_extended_field(extended_field) + "_autocomplete", 
+      :id => id_for_extended_field(extended_field) + "_autocomplete_#{level}", 
       :style => "display: none"
     ) +
     
     # Javascript code to initialize the autocompleter
-    javascript_tag("new Autocompleter.Local('#{id_for_extended_field(extended_field)}', '#{id_for_extended_field(extended_field) + "_autocomplete"}', #{array_or_string_for_javascript(choices)}, { afterUpdateElement:function(el, sel) { #{remote_call} } });") +
+    javascript_tag("new Autocompleter.Local('#{id_for_extended_field(extended_field)}_#{level}', '#{id_for_extended_field(extended_field)}_autocomplete_#{level}', #{array_or_string_for_javascript(choices)}, { afterUpdateElement:function(el, sel) { #{remote_call} } });") +
     
     # We need to let our controller know that we're using autocomplete for this field.
     # We know the field we expect should be something like topic[extended_content][someonething]..
@@ -305,7 +305,7 @@ module ExtendedFieldsHelper
   # * extended_field: An instance of ExtendedField
   # * array: extended content pairs (i.e. ['field_name', 'value']) from the model
   def field_value_from_hash(extended_field, array)
-    array.select { |k, v| k == qualified_name_for_field(extended_field) }.flatten.last || ""
+    array.select { |k, v| k == qualified_name_for_field(extended_field) }.last.last
   rescue
     ""
   end
@@ -315,12 +315,12 @@ module ExtendedFieldsHelper
   # Same as above, plus:
   # * position_in_set: A number offset of the value want. The collection starts with key 1, not 0 as in a traditional associative 
   #   array.
-  def field_value_from_multiples_hash(extended_field, hash, position_in_set)
+  def field_value_from_multiples_hash(extended_field, hash, position_in_set, level = 1)
     field_values = hash[qualified_name_for_field(extended_field) + "_multiple"]
     field_values = field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
     
     if field_values.is_a?(Hash)
-      field_values["value"] || ""
+      field_values.reject { |k, v| k == "xml_element_name" }.values || []
     else
       field_values
     end

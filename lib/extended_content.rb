@@ -86,19 +86,6 @@ module ExtendedContent
     
     private
     
-      def converted_value(value, signal_from_params_hash = nil, options = {})
-        if signal_from_params_hash == "true"
-          
-          # When we're receiving values from choice field autocomplete type editors, we get sent the label always.
-          # So, we need to swap the label for the value of the label.
-          Choice.find_by_label(value).value rescue value
-        else
-          
-          # Otherwise, we get sent the value from the HTML SELECT, so we can proceed as normal
-          value
-        end
-      end
-
       def convert_extended_content_to_xml(params_hash)
         
         # Force a new instance of Bulder::XMLMarkup to be spawned
@@ -126,15 +113,22 @@ module ExtendedContent
               
               if !hash_of_values.blank?
                 hash_of_values.keys.sort.each do |key|
-                  xml.tag!(key) do
-                    extended_content_field_xml_tag(
-                      :xml => xml,
-                      :field => field_name,
-                      :value => converted_value(params_hash[field_name][key], params_hash[field_name + "_from_autocomplete"]),
-                      :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                      :xsi_type => field_to_xml.extended_field_xsi_type
-                    )
+                  
+                  # Do not store empty values of multiples for choices.
+                  unless params_hash[field_name][key].to_s.blank? || \
+                        ( params_hash[field_name][key].is_a?(Hash) && params_hash[field_name][key].values.to_s.blank? )
+                        
+                    xml.tag!(key) do
+                      extended_content_field_xml_tag(
+                        :xml => xml,
+                        :field => field_name,
+                        :value => params_hash[field_name][key],
+                        :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                        :xsi_type => field_to_xml.extended_field_xsi_type
+                      )
+                    end
                   end
+                  
                 end
               else
                 # this handles the case where edit has changed the item from one topic type to a sub topic type
@@ -156,7 +150,7 @@ module ExtendedContent
             extended_content_field_xml_tag(
               :xml => xml,
               :field => field_name,
-              :value => converted_value(params_hash[field_name], params_hash[field_name + "_from_autocomplete"]),
+              :value => params_hash[field_name],
               :xml_element_name => field_to_xml.extended_field_xml_element_name,
               :xsi_type => field_to_xml.extended_field_xsi_type
             )
@@ -178,10 +172,26 @@ module ExtendedContent
         }
         
         XmlSimple.xml_in("<dummy>#{extended_content_xml}</dummy>", options).map do |key, value|
-          if value.is_a?(Hash) && !value.empty?
-            [key, value.values.map { |h| h.values }.flatten]
+          recursively_convert_values(key, value)
+        end
+      end
+      
+      def recursively_convert_values(key, value = nil)
+        if value.is_a?(Hash) && !value.empty?
+          [key, array_of_values(value)]
+        else
+          [key, value.empty? ? nil : value.to_s]
+        end
+      rescue
+        raise "Error processing {#{key.inspect} => #{value.inspect}}"
+      end
+      
+      def array_of_values(hash)
+        hash.map do |k, v|
+          if v.is_a?(Hash) && !v.empty?
+            v.size == 1 ? array_of_values(v).flatten : array_of_values(v)
           else
-            [key, value.empty? ? nil : value]
+            v.to_s
           end
         end
       end
@@ -207,7 +217,7 @@ module ExtendedContent
           else
             value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') }
             values = value_pairs.map { |k, v| v }
-            validate_extended_content_single_value(mapping, values.to_s)
+            validate_extended_content_single_value(mapping, values.first)
           end
         end
       end
@@ -290,13 +300,14 @@ module ExtendedContent
         nil
       end
     
-      def validate_extended_choice_field_content(extended_field_mapping, value)
-        
+      def validate_extended_choice_field_content(extended_field_mapping, values)
         # Allow nil values. If this is required, the nil value will be caught earlier.
-        return nil if value.empty?
-        
-        unless extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(value)
-          "must be a valid choice"
+        return nil if values.blank?
+
+        if !values.is_a?(Array) && !extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(values)
+          "must be a valid choice (you gave '#{values}')"
+        elsif !values.reject { |v| v.blank? }.all? { |v| extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(v) }
+          "must be a valid choice (you gave '#{values.to_sentence}')"
         end
       end
     
