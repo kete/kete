@@ -207,11 +207,11 @@ module OaiDcHelpers
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:subject", commented_on_item.title)
+        xml.tag!("dc:subject", commented_on_item.title.gsub("& ", "&amp; "))
         xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
         item.topics.each do |related|
-          xml.tag!("dc:subject", related.title)
+          xml.tag!("dc:subject", related.title.gsub("& ", "&amp; "))
           xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
         end
       end
