@@ -19,17 +19,24 @@ module ExtendedFieldsHelper
     top_level.inject("") do |m, choice|
       m = m + build_ul_for_choice(choice, record)
     end +
-    '</ul></div></div>' +
+    '</ul></div>' + 
+    "Allow user addition of choices? Yes " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " No " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) + 
+    '</div>' +
     
     # Javascript call to initialise YUI TreeView, and listens for expand/collapse links
-    '<script type="text/javascript>var ' + id + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); ' + id + '.render(); ' + id + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("' + id + '_expand", "click", function(tree) { ' + id + '.expandAll(); }, ' + id + '); YAHOO.util.Event.addListener("' + id + '_collapse", "click", function(tree) {  ' + id + '.collapseAll(); }, ' + id + ');</script>' +
+    '<script type="text/javascript>var ' + id + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); ' + id + '.render(); ' + id + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("' + id + '_expand", "click", function(tree) { ' + id + '.expandAll(); }, ' + id + '); YAHOO.util.Event.addListener("' + id + '_collapse", "click", function(tree) {  ' + id + '.collapseAll(); }, ' + id + ');</script>' + 
     
     (%w(choice autocomplete).member?(record.ftype) ? "" : javascript_tag("$('hidden_choices_select_#{record.id.to_s}').hide();"))
+    
   end
   
   # Build hierarchical UL, LI structure for a choice and recurse through children elements
   def build_ul_for_choice(choice, record)
     content_tag("li", check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice)) + " " + choice.label + build_ul_for_children_of(choice, record))
+  end
+  
+  def user_choice_addition_form_column(record, input_name)
+    ""
   end
   
   # Build hierarchicial UL, LI for children elements of a choice

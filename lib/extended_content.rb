@@ -124,7 +124,8 @@ module ExtendedContent
                         :field => field_name,
                         :value => params_hash[field_name][key],
                         :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                        :xsi_type => field_to_xml.extended_field_xsi_type
+                        :xsi_type => field_to_xml.extended_field_xsi_type,
+                        :extended_field => field_to_xml.extended_field
                       )
                     end
                   end
@@ -141,7 +142,8 @@ module ExtendedContent
                       :field => field_name,
                       :value => '',
                       :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                      :xsi_type => field_to_xml.extended_field_xsi_type
+                      :xsi_type => field_to_xml.extended_field_xsi_type,
+                      :extended_field => field_to_xml.extended_field
                     )
                 end
               end
@@ -152,7 +154,8 @@ module ExtendedContent
               :field => field_name,
               :value => params_hash[field_name],
               :xml_element_name => field_to_xml.extended_field_xml_element_name,
-              :xsi_type => field_to_xml.extended_field_xsi_type
+              :xsi_type => field_to_xml.extended_field_xsi_type,
+              :extended_field => field_to_xml.extended_field
             )
           end
           
@@ -316,9 +319,9 @@ module ExtendedContent
         return nil if values.blank?
 
         if !values.is_a?(Array) && !extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(values)
-          "must be a valid choice (you gave '#{values}'. valid choices are #{extended_field_mapping.extended_field.choices.map { |c| c.value }.to_sentence} (s)"
+          "must be a valid choice"
         elsif !values.reject { |v| v.blank? }.all? { |v| extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(v) }
-          "must be a valid choice (you gave '#{values.to_sentence}' (m))"
+          "must be a valid choice"
         end
       end
     

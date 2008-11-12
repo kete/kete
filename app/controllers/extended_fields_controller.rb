@@ -9,16 +9,14 @@ class ExtendedFieldsController < ApplicationController
 
   active_scaffold :extended_field do |config|
     # Default columns and column exclusions
-    config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple]
-    config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type]
-    
-    # Description for ftype
-    # config.columns[:ftype].description = "Field type. Options include \"text\", \"choice\". Must be set to \"choice\" for Choices (see below) to be selectable."
+    config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition]
+    config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition]
     
     # CRUD for adding/removing choices
     config.columns << [:pseudo_choices]
     config.columns[:pseudo_choices].label = "Available choices"
     config.columns[:pseudo_choices].description = "Ftype must be a \"choices\" option for these options to be available to users."
+    config.columns[:user_choice_addition].label = nil
   end
   
   def add_field_to_multiples

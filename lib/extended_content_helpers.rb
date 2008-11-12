@@ -153,6 +153,7 @@ module ExtendedContentHelpers
         value = options[:value] || nil
         xml_element_name = options[:xml_element_name] || nil
         xsi_type = options[:xsi_type] || nil
+        extended_field = options[:extended_field] || nil
 
         options = {}
         options.merge!(:xml_element_name => xml_element_name) unless xml_element_name.blank?
@@ -161,7 +162,30 @@ module ExtendedContentHelpers
         if value.is_a?(Hash)
           xml.tag!(field, options) do |tag|
             value.each_pair do |k, v|
-              tag.tag!(k, converted_choice_value(v)) unless v.to_s.blank?
+              next if v.to_s.blank?
+              
+              # Handle the creation of new choices where the choice is not recognised.
+              if converted_choice_value(v).blank? && %w(choice autocomplete).member?(extended_field.ftype) && extended_field.user_choice_addition?
+                index = value.to_a.index([k, v])
+                parent = index >= 1 ? choice_from_value(value.to_a.at(index - 1).last) : Choice.find(1)
+                
+                begin
+                  choice = Choice.create!(:label => v)
+                  choice.move_to_child_of(parent)
+                  choice.save!
+                  extended_field.choices << choice
+                  extended_field.save!
+                  
+                  tag.tag!(k, choice.value)
+                rescue
+                  next
+                end
+              
+              # Handle the normal case  
+              else
+                tag.tag!(k, converted_choice_value(v).blank? ? v : converted_choice_value(v))
+              end
+              
             end
           end
         else
@@ -172,9 +196,13 @@ module ExtendedContentHelpers
         logger.error("failed to format xml: #{$!.to_s}")
       end
     end
+    
+    def choice_from_value(value)
+      Choice.find_by_value(value) || Choice.find_by_label(value) || nil
+    end
         
     def converted_choice_value(value)
-      choice = Choice.find_by_value(value) || Choice.find_by_label(value)
+      choice = choice_from_value(value)
       choice ? choice.value : ""
     end
     

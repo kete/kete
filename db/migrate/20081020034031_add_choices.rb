@@ -23,6 +23,7 @@ class AddChoices < ActiveRecord::Migration
     Choice.create!(:label => "ROOT", :value => "ROOT")
     
     change_column :extended_fields, :ftype, :string, :limit => 15
+    add_column :extended_fields, :user_choice_addition, :boolean
     
   end
 
@@ -32,6 +33,7 @@ class AddChoices < ActiveRecord::Migration
     drop_table 'choice_mappings'
     
     change_column :extended_fields, :ftype, :string, :limit => 10
+    remove_column :extended_fields, :user_choice_addition
     
   end
 end
