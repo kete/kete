@@ -1,6 +1,6 @@
 <% @title = 'Profile of ' + h(@user.user_name) -%>
 
-<p>
+<div>
   <h2 style="display:inline;"><%= h(@title) -%></h2>
   <% if @viewer_is_user -%>
     [
@@ -8,12 +8,12 @@
     | <%= link_to 'change password', :action => 'change_password' %>
     ]
   <% end -%>
-</p>
+</div>
 
 <div class="profile_content_right">
   <% unless @viewer_portraits.nil? -%>
-  <div>
-    <p>
+  <div id="portraits">
+    <div>
       <h4 style="display:inline;">Portraits</h4>
       <% if @viewer_is_user -%>
         <% location_hash = { :controller => 'images',
@@ -23,37 +23,35 @@
         <%= link_to 'new portrait', location_hash -%>
         | <%= link_to 'new default portrait', location_hash.merge({ :default_portrait => true }) -%>
         ]
+        <img src="/images/indicator.gif" width="16" height="16" alt="Editing portraits. " id="data_spinner" style="display:none;" />
       <% end -%>
-    </p>
-    <p>
-    <% @viewer_portraits.each do |portrait| -%>
-      <% unless portrait.thumbnail_file.file_private -%>
-        <%= link_to image_tag(portrait.thumbnail_file.public_filename,
-                              { :border => 0, :width => 50, :height => 50, :alt => "#{portrait.title}. " }),
-                    { :urlified_name => portrait.basket.urlified_name,
-                      :controller => 'images',
-                      :action => 'show',
-                      :id => portrait.id } -%>
-      <% end -%>
-    <% end -%>
-    </p>
+    </div>
+    <br />
+    <div id="portrait_images">
+      <%= render :partial => 'portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user } -%>
+    </div>
   </div>
   <% end -%>
+
+  <br />
 
   <% user_baskets = users_baskets_list(@user) -%>
   <% unless user_baskets.blank? -%>
   <div>
-    <p>
+    <div>
       <h4 style="display:inline;">Baskets</h4>
       <%= "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user -%>
-    <ul>
-      <%= users_baskets_list(@user) -%>
-    </ul>
+    </div>
+    <div>
+      <ul>
+        <%= users_baskets_list(@user) -%>
+      </ul>
+    </div>
   </div>
   <% end -%>
 </div>
 
-<div class="avatar"><%= avatar_for @user -%></div>
+<div id="profile_avatar" class="avatar"><%= avatar_for @user -%></div>
 
 <div class="profile_content_left">
   <p>
@@ -85,10 +83,10 @@
   <!-- </div> -->
   <% end %>
 
-  <p>
+  <div>
     <h4>Contributions</h4>
     Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%>
-  </p>
+  </div>
 
   <% if @viewer_is_user and licenses_are_available? %>
   <div>

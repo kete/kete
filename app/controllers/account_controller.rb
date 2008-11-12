@@ -303,11 +303,16 @@ class AccountController < ApplicationController
   def remove_portrait
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.remove_portrait_for(current_user, @still_image)
+      @successful = true
       flash[:notice] = "'#{@still_image.title}' has been removed from your portraits."
     else
+      @successful = false
       flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
     end
-    redirect_to_show_for(@still_image)
+    respond_to do |format|
+      format.html { redirect_to_show_for(@still_image) }
+      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
   end
 
   def default_portrait
@@ -318,6 +323,36 @@ class AccountController < ApplicationController
       flash[:error] = "'#{@still_image.title}' failed to become your default portrait."
     end
     redirect_to_show_for(@still_image)
+  end
+
+  def move_portrait_higher
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.move_portrait_higher_for(current_user, @still_image)
+      @successful = true
+      flash[:notice] = "'#{@still_image.title}' has been moved closer to the front of your portraits."
+    else
+      @successful = false
+      flash[:error] = "'#{@still_image.title}' failed to move closer to the front of your portraits."
+    end
+    respond_to do |format|
+      format.html { redirect_to_show_for(@still_image) }
+      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
+  end
+
+  def move_portrait_lower
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.move_portrait_lower_for(current_user, @still_image)
+      @successful = true
+      flash[:notice] = "'#{@still_image.title}' has been moved closer to the end of your portraits."
+    else
+      @successful = false
+      flash[:error] = "'#{@still_image.title}' failed to move closer to the end of your portraits."
+    end
+    respond_to do |format|
+      format.html { redirect_to_show_for(@still_image) }
+      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
   end
 
   def baskets

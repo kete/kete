@@ -31,4 +31,18 @@ class UserPortraitRelation < ActiveRecord::Base
     user_portrait_relation.move_to_top
   end
 
+  def self.move_portrait_higher_for(user, still_image)
+    return false unless still_image.created_by?(user)
+
+    user_portrait_relation = self.find_by_user_id_and_still_image_id(user, still_image)
+    user_portrait_relation.move_higher
+  end
+
+  def self.move_portrait_lower_for(user, still_image)
+    return false unless still_image.created_by?(user)
+
+    user_portrait_relation = self.find_by_user_id_and_still_image_id(user, still_image)
+    user_portrait_relation.move_lower
+  end
+
 end

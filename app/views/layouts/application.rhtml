@@ -161,12 +161,8 @@
       </ul>
     </div> <!-- /header -->
 
-    <% if flash[:notice] %>
-    <div id="notice"><div><%= flash[:notice] %></div></div>
-    <% end %>
-    <% if flash[:error] %>
-    <div id="error"><div><%= flash[:error] %></div></div>
-    <% end %>
+    <div id="notice" <%= flash[:notice].blank? ? "style='display:none;'" : '' -%>><div><%= flash[:notice] %></div></div>
+    <div id="error" <%= flash[:error].blank? ? "style='display:none;'" : '' -%>><div><%= flash[:error] %></div></div>
 
         <div id="container">
           <% if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>

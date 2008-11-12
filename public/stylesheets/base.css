@@ -689,7 +689,22 @@ div#notice div, div#error div {
   float: right;
   width: 420px;
 }
-
+.portrait_image {
+  display: inline;
+}
+.portrait_image img {
+  border: none;
+}
+.portrait_controls {
+  position: absolute;
+  margin-left: -5px;
+  border: 1px solid #000;
+  background-color: #fff;
+}
+.portrait_controls img {
+  border: none;
+  display: block;
+}
 
 /* #################################### Misc #################################### */
 .theme-choice-wrapper {
