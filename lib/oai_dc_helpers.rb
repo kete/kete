@@ -135,7 +135,8 @@ module OaiDcHelpers
       unless description.blank?
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
-        description = strip_tags(description).gsub("&nbsp;", " ")
+        # also pulling out some entities that sneak in
+        description = strip_tags(description).gsub("&nbsp;", " ").gsub("&ndash;", "-").gsub("&ldquo;", "\"").gsub("&rdquo;", "\"").gsub("&rsquo;", "'").gsub("&lsquo;", "'").gsub("&auml;", "").gsub("&Auml;", "").gsub("&mdash;", "-").gsub("&#8220;", "\"").gsub("&#8221;", "\"").gsub("&#8211;", "-").gsub("& ", "&amp; ")
         xml.tag!("dc:description", description)
       end
     end
