@@ -1,3 +1,4 @@
+include Utf8UrlFor
 include ActionView::Helpers::SanitizeHelper
 # oai dublin core xml helpers
 # TODO: evaluate whether we can simply go with SITE_URL
@@ -24,7 +25,7 @@ module OaiDcHelpers
         request_uri = request.request_uri
       end
       basket_urlified_name = @current_basket.nil? ? item.basket.urlified_name : @current_basket.urlified_name
-      xml.request(protocol + host + request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
+      xml.request(protocol + host + CGI::unescape(request_uri), :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
     end
 
     def oai_dc_xml_oai_identifier(xml, item)
@@ -115,7 +116,7 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(item)
 
-      xml.tag!("dc:identifier", "#{protocol}://#{host}#{url_for(uri_attrs.merge(:only_path => true))}")
+      xml.tag!("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true))}")
     end
 
     def oai_dc_xml_dc_title(xml, item)
@@ -136,7 +137,16 @@ module OaiDcHelpers
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
-        description = strip_tags(description).gsub("&nbsp;", " ").gsub("&ndash;", "-").gsub("&ldquo;", "\"").gsub("&rdquo;", "\"").gsub("&rsquo;", "'").gsub("&lsquo;", "'").gsub("&auml;", "").gsub("&Auml;", "").gsub("&mdash;", "-").gsub("&#8220;", "\"").gsub("&#8221;", "\"").gsub("&#8211;", "-").gsub("& ", "&amp; ")
+        description = strip_tags(description)
+        description = CGI::unescapeHTML(description)
+
+        # somethings simply aren't handled by unescapeHTML
+        # since it is meant to leave valid HTML
+        description = description.gsub("&nbsp;", " ").gsub("&ndash;", "-").gsub("&ldquo;", "\"").gsub("&rdquo;", "\"").gsub("&rsquo;", "'").gsub("&lsquo;", "'").gsub("&auml;", "").gsub("&Auml;", "").gsub("&mdash;", "-")
+
+        # finally, we actually need & to be escaped
+        description = description.gsub("& ", "&amp; ")
+
         xml.tag!("dc:description", description)
       end
     end
@@ -191,18 +201,18 @@ module OaiDcHelpers
           end
           related_items.each do |related|
             xml.tag!("dc:subject", related.title)
-            xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
+            xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
         xml.tag!("dc:subject", commented_on_item.title)
-        xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
+        xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
         item.topics.each do |related|
           xml.tag!("dc:subject", related.title)
-          xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => 'topics', :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
         end
       end
     end
@@ -262,11 +272,12 @@ module OaiDcHelpers
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = SITE_URL.chop + url_for(
+        rights = SITE_URL.chop + utf8_url_for(
           :id => 4,
           :urlified_name => Basket.find(ABOUT_BASKET).urlified_name,
           :action => 'show',
-          :controller => 'topics'
+          :controller => 'topics',
+          :escape => false
         )
       end
 
