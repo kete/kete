@@ -54,7 +54,7 @@ module ExtendedContentHelpers
       
       # Build the anonymous fields that have no dc:* attributes.
       @builder_instance.tag!("dc:description") do |nested|
-        anonymous_fields.each do |k, v|
+        @anonymous_fields.each do |k, v|
           nested.tag!(k, v)
         end
       end
