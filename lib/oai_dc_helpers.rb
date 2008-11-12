@@ -142,7 +142,7 @@ module OaiDcHelpers
 
         # somethings simply aren't handled by unescapeHTML
         # since it is meant to leave valid HTML
-        description = description.gsub("&nbsp;", " ").gsub("&ndash;", "-").gsub("&ldquo;", "\"").gsub("&rdquo;", "\"").gsub("&rsquo;", "'").gsub("&lsquo;", "'").gsub("&auml;", "").gsub("&Auml;", "").gsub("&mdash;", "-")
+        description = description.gsub("&nbsp;", " ").gsub("&ndash;", "-").gsub("&ldquo;", "\"").gsub("&rdquo;", "\"").gsub("&rsquo;", "'").gsub("&lsquo;", "'").gsub("&mdash;", "-").gsub("&auml;", "ā").gsub("&Auml;", "Ā").gsub("&euml;", "ē").gsub("&Euml;", "Ē").gsub("&iuml;", "ī").gsub("&Iuml;", "Ī").gsub("&ouml;", "ō").gsub("&Ouml;", "Ō").gsub("&uuml;", "ū").gsub("&Uuml;", "Ū")
 
         # finally, we actually need & to be escaped
         # as well as < and >
