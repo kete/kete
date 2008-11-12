@@ -100,7 +100,7 @@ class Topic < ActiveRecord::Base
   validates_xml :extended_content
   validates_presence_of :title
   # don't allow ampersands in title, it screws up our search records, because it is special character in xml
-  validates_format_of :title, :with => /\A[^\&]*\Z/, :message => "the &amp; character isn't allowed."
+  validates_format_of :title, :with => /\A[^\&]*\Z/, :message => "cannot contain the &amp; character."
 
   validates_as_sanitized_html :description, :extended_content
 
@@ -131,6 +131,10 @@ class Topic < ActiveRecord::Base
   end
 
   private :clear_basket_homepage_cache
+
+  def validate
+    errors.add('Tags', "cannot contain the &amp; character.") if raw_tag_list =~ /\&/
+  end
 
   def related_topics(only_non_pending = false)
     if only_non_pending
