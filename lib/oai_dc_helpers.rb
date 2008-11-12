@@ -200,7 +200,7 @@ module OaiDcHelpers
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.tag!("dc:subject", related.title)
+            xml.tag!("dc:subject", related.title.gsub("& ", "&amp; "))
             xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
           end
         end
