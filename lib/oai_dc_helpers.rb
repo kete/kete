@@ -1,3 +1,4 @@
+include ActionView::Helpers::SanitizeHelper
 # oai dublin core xml helpers
 # TODO: evaluate whether we can simply go with SITE_URL
 # rather than request hacking
@@ -131,10 +132,12 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_description(xml, description)
-      # strip out embedded html
-      # it only adds clutter at this point and fails oai_dc validation, too
-      description = strip_tags(description).gsub("&nbsp;", " ")
-      xml.tag!("dc:description", description)
+      unless description.blank?
+        # strip out embedded html
+        # it only adds clutter at this point and fails oai_dc validation, too
+        description = strip_tags(description).gsub("&nbsp;", " ")
+        xml.tag!("dc:description", description)
+      end
     end
 
     def oai_dc_xml_dc_creators_and_date(xml, item)
