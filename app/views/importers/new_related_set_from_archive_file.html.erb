@@ -58,7 +58,8 @@
 
   <div class="form-element">
     <label for="import_base_tags">What tags should
-    we add to each <%= @zoom_class_humanized -%> (separated by commas)?</label>
+    we add to each <%= @zoom_class_humanized -%> (separated by commas,
+    no &amp;s allowed in tags.)?</label>
 
     <%= form.text_field :base_tags %>
 
