@@ -478,13 +478,13 @@ module ApplicationHelper
     array = [[("&nbsp;&nbsp;"*level) + choice.label, choice.value]]
     choice.children.reject { |c| c.extended_fields.empty? }.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
   end
-
+  
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item)
     raq = " &raquo; "
     html = []
     
-    item.extended_content_pairs.each do |label, value|
+    item.extended_content_pairs.reverse.each do |label, value|
       
       if value_from_xml_is_choice?(label, value)
         if label =~ /_multiple$/

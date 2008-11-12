@@ -329,6 +329,42 @@ module ExtendedFieldsHelper
     multiples.blank? ? nil : multiples.keys
   end
   
+  # Get a list of choices for display
+  def extended_field_choices_unordered_list
+    if top_level = Choice.find_top_level
+      content_tag("ul",
+      
+        top_level.inject("") { |memo, choice|
+          memo + list_item_for_choice(choice)
+        }
+      
+      )
+    else
+      ""
+    end
+  end
+  
+  def list_item_for_choice(choice)
+    url_hash = {
+      :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
+      :controller => 'search',
+      :for => 'all'
+    }
+
+    if params[:privacy_type].blank?
+      method = 'basket_all_of_category_url'
+    else
+      method = 'basket_all_private_of_category_url'
+      url_hash.merge!(:privacy_type => params[:privacy_type])
+    end
+      
+    base = content_tag("li", link_to(choice.label, send(method, url_hash.merge(:limit_to_choice => choice.value))))
+    
+    children = choice.children.inject("") { |memo, child| list_item_for_choice(child) }
+    
+    children.blank? ? base : base + content_tag("ul", children.to_s)
+  end
+  
   private
   
     def base_name_for_extended_field(extended_field)
