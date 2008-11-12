@@ -51,7 +51,7 @@ module ExtendedFieldsHelper
   def build_node_array_for(choice, record)
     string_from_children = choice.children.map { |child| build_node_array_for(child, record) }.join(", ")
     
-    output = ["{type:'html', html:'#{check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice))} #{choice.label}'"]
+    output = ["{type:'html', html:'#{check_box_tag("record[pseudo_choices][]", choice.id.to_s, record.choices.member?(choice))} #{choice.label}', expanded:#{(record.choices.member?(choice) || choice.all_children.any? { |c| record.choices.member?(c) }).to_s}"]
     output << ", children: [#{string_from_children}]" unless string_from_children.blank?
     output << "}"
     
@@ -180,7 +180,7 @@ module ExtendedFieldsHelper
     check_box_tag(name, "Yes", (value.to_s == "Yes"), options)
   end
   
-  def extended_field_radio_editor(name, existing_value, options, extended_field)
+  def extended_field_radio_editor(name, existing_value, options)
     default_choices = [["Yes", "Yes"], ["No", "No"], ["No value", ""]]
     
     # In the future we might allow radio buttons to be used for selecting choices

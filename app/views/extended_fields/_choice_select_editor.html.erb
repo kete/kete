@@ -14,7 +14,7 @@
     :value => value, 
     :options => options, 
     :extended_field => extended_field,
-    :choices => choices.select { |c| c.value == single_value }.first.children,
+    :choices => choices.select { |c| c.value == single_value }.first.children.select { |c| extended_field.choices.member?(c) },
     :level => level + 1
   }) : nil %>
   <%= content_tag("div", sub_content, :id => "#{id_for_extended_field(extended_field)}__level_#{level}", :style => "display: inline") %>

@@ -316,9 +316,9 @@ module ExtendedContent
         return nil if values.blank?
 
         if !values.is_a?(Array) && !extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(values)
-          "must be a valid choice (you gave '#{values}')"
+          "must be a valid choice (you gave '#{values}'. valid choices are #{extended_field_mapping.extended_field.choices.map { |c| c.value }.to_sentence} (s)"
         elsif !values.reject { |v| v.blank? }.all? { |v| extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(v) }
-          "must be a valid choice (you gave '#{values.to_sentence}')"
+          "must be a valid choice (you gave '#{values.to_sentence}' (m))"
         end
       end
     

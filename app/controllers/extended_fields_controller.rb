@@ -47,16 +47,18 @@ class ExtendedFieldsController < ApplicationController
   # Fetch subchoices for a choice. 
   def fetch_subchoices
 
+    extended_field = ExtendedField.find(params[:options][:extended_field_id])
+    
     # Find the current choice
     current_choice = params[:value].blank? ? \
       Choice.find_by_label(params[:label]) : Choice.find_by_value(params[:value]) || Choice.find_by_label(params[:value])
     
-    choices = current_choice ? current_choice.children : []
+    choices = current_choice ? current_choice.children.select { |c| extended_field.choices.member?(c) } : []
     
     options = {
       :choices => choices,
       :level => params[:for_level].to_i + 1,
-      :extended_field => ExtendedField.find(params[:options][:extended_field_id])
+      :extended_field => extended_field
     }
     
     # Ensure we have a standard environment to work with. Some parts of the helpers (esp. ID and NAME 
