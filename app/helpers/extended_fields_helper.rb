@@ -3,31 +3,13 @@ module ExtendedFieldsHelper
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
   
-  # Older version of choices column
-  
-  # def pseudo_choices_form_column(record, input_name)
-  #   parent_choices = Choice.find(:all, :conditions => 'parent_id IS NULL', :order => 'label ASC')
-  #   
-  #   all_choices = parent_choices.collect do |parent|
-  #     [[parent.label, parent.id]] + parent.children.find(:all, :order => 'label ASC').collect { |c| ["- #{c.label}", c.id] }
-  #   end
-  #   
-  #   choices_for_select = all_choices.inject([]) { |result, c| result.concat(c) }
-  #   
-  #   select :record, :pseudo_choices, 
-  #     choices_for_select, 
-  #     { :selected => record.choices.collect { |c| c.id } }, 
-  #     { :multiple => true, :name => input_name + "[]" }
-  # end
-  
-  # Newer version, using YUI TreeView
-  
+  # Using YUI TreeView
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find_top_level
     id = "tree_" + record.id.to_s
     
     # Containing DIV for theme
-    '<div class="yui-skin-sam" style="float: left">' +
+    '<div class="yui-skin-sam" style="float: left" id="hidden_choices_select_' + record.id.to_s + '">' +
     
     # Expand all and collapse all links
     content_tag("p", link_to_function("Expand all", "", :id => "#{id}_expand") + " | " + link_to_function("Collapse all", "", :id => "#{id}_collapse")) +
@@ -40,7 +22,9 @@ module ExtendedFieldsHelper
     '</ul></div></div>' +
     
     # Javascript call to initialise YUI TreeView, and listens for expand/collapse links
-    '<script type="text/javascript>var ' + id + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); ' + id + '.render(); ' + id + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("' + id + '_expand", "click", function(tree) { ' + id + '.expandAll(); }, ' + id + '); YAHOO.util.Event.addListener("' + id + '_collapse", "click", function(tree) {  ' + id + '.collapseAll(); }, ' + id + ');</script>'
+    '<script type="text/javascript>var ' + id + ' = new YAHOO.widget.TreeView(document.getElementById("choice_selection_' + record.id.to_s + '"), [' + top_level.map { |t| build_node_array_for(t, record) }.join(", ") + ']); ' + id + '.render(); ' + id + '.subscribe("clickEvent", function(ev, node) { return false; }); YAHOO.util.Event.addListener("' + id + '_expand", "click", function(tree) { ' + id + '.expandAll(); }, ' + id + '); YAHOO.util.Event.addListener("' + id + '_collapse", "click", function(tree) {  ' + id + '.collapseAll(); }, ' + id + ');</script>' +
+    
+    (%w(choice autocomplete).member?(record.ftype) ? "" : javascript_tag("$('hidden_choices_select_#{record.id.to_s}').hide();"))
   end
   
   # Build hierarchical UL, LI structure for a choice and recurse through children elements
@@ -82,7 +66,7 @@ module ExtendedFieldsHelper
 
     options_for_select = [
       ['Check box', 'checkbox'],
-      ['Radio buttons)', 'radio'],
+      ['Radio buttons', 'radio'],
       ['Date', 'date'],
       ['Text', 'text'],
       ['Text box', 'textarea'],
@@ -90,7 +74,7 @@ module ExtendedFieldsHelper
       ['Choices (drop-down)', 'choice']
     ]
     
-    select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name)
+    select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
   end
   
   # Same as above, but for choice hierarchy
