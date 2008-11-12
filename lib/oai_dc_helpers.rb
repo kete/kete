@@ -145,7 +145,8 @@ module OaiDcHelpers
         description = description.gsub("&nbsp;", " ").gsub("&ndash;", "-").gsub("&ldquo;", "\"").gsub("&rdquo;", "\"").gsub("&rsquo;", "'").gsub("&lsquo;", "'").gsub("&auml;", "").gsub("&Auml;", "").gsub("&mdash;", "-")
 
         # finally, we actually need & to be escaped
-        description = description.gsub("& ", "&amp; ")
+        # as well as < and >
+        description = description.gsub("& ", "&amp; ").gsub("<", "&lt;").gsub(">", "&gt;")
 
         xml.tag!("dc:description", description)
       end
