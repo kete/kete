@@ -63,7 +63,7 @@ module ExtendedContentHelpers
         if !non_dc_extended_content_hash.blank?
           xml.tag!("dc:description") do
             non_dc_extended_content_hash.each do |key, value|
-              xml.tag!(key, value)
+              xml.tag!(key, value.gsub("& ", "&amp; "))
             end
           end
         end

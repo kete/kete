@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
 
   include FriendlyUrls
 
+  include Utf8UrlFor
+
   # for the remember me functionality
   before_filter :login_from_cookie
 
@@ -693,7 +695,11 @@ class ApplicationController < ActionController::Base
   end
 
   def url_for_dc_identifier(item)
-    url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => item.basket.urlified_name)
+    utf8_url_for(:controller => zoom_class_controller(item.class.name),
+                 :action => 'show',
+                 :id => item,
+                 :format => nil,
+                 :urlified_name => item.basket.urlified_name)
   end
 
   def render_oai_record_xml(options = {})
