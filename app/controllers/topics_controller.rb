@@ -1,5 +1,5 @@
 class TopicsController < ApplicationController
-  permit "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket", :only => [ :new, :pick_topic_type, :create, :edit, :update]
+  permit "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket", :only => [ :new, :create, :edit, :update]
 
   # moderators only
   permit "site_admin or moderator of :current_basket or admin of :current_basket", :only =>  [ :destroy, :restore, :reject ]
@@ -34,7 +34,7 @@ class TopicsController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :pick_topic_type, :destroy, :create, :update ],
+  verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
 
   def list
@@ -68,12 +68,6 @@ class TopicsController < ApplicationController
       flash[:notice] = 'You don\'t have permission to edit this topic.'
       redirect_to :action => 'show', :id => params[:id]
     end
-  end
-
-  # the first step in creating a new topic
-  # we need a topic_type to determine the proper form
-  def pick_topic_type
-    @topic = Topic.new
   end
 
   def create
@@ -164,7 +158,7 @@ class TopicsController < ApplicationController
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
-        render :action => 'pick_topic_type'
+        render :action => 'new'
     end
   end
 

@@ -451,11 +451,6 @@ module ApplicationHelper
     end
   end
 
-  def tags_input_field(form,label_for)
-    "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
-                #{form.text_field :tag_list, :tabindex => '1'}</div>"
-  end
-
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item)
     html_string = String.new

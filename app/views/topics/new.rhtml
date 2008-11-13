@@ -1,13 +1,7 @@
-<% @title = 'Choose a topic type' -%>
+<% unless params[:topic] && params[:topic][:topic_type_id] -%>
+  <%= render :partial => 'pick_form' -%>
+<% else -%>
+  <%= render :partial => 'form' -%>
+<% end -%>
 
-<h2><%= h(@title) -%></h2>
-
-<% form_tag :action => 'pick_topic_type' do %>
-  <%= render :partial => 'pick_form' %>
-  <div class="wrap"><%= submit_tag "Choose" , {:class => "save-button", :tabindex => '1'} %></div>
-<% end %>
-
-
-<%= link_to_cancel %> |
-<%= link_to("help", { :controller => 'index_page', :action => :help_file }, :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100'], :tabindex => '1') %>
-<%= render(:partial => "content_wrapper_end" ) %>
+<%= render :partial => "content_wrapper_end" -%>

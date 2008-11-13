@@ -1,0 +1,179 @@
+<%
+case params[:controller]
+when 'audio'
+  @item, @item_name, @item_type = @audio_recording, 'Audio Recording', :audio_recording
+when 'documents'
+  @item, @item_name, @item_type = @document, 'Document', :document
+when 'images'
+  @item, @item_name, @item_type = @still_image, 'Image', :still_image
+when 'topics'
+  @item, @item_name, @item_type = @topic, 'Topic', :topic
+when 'video'
+  @item, @item_name, @item_type = @video, 'Video', :video
+when 'web_links'
+  @item, @item_name, @item_type = @web_link, 'Web Link', :web_link
+end
+-%>
+
+<% @editing = !@item.new_record? -%>
+
+<% if @editing -%>
+  <% @title, @url, @submit_text = "Editing #{@item_name}", { :action => 'update', :id => @item }, 'Update' -%>
+<% else -%>
+  <% @title, @url, @submit_text = "New #{@item_name}", { :action => 'create' }, 'Create' -%>
+<% end -%>
+
+<h2><%= @title -%></h2>
+
+<% form_for(@item_type, @item, :builder => FormHelper,
+                               :url => @url,
+                               :html => { :multipart => true }) do |form| -%>
+
+  <fieldset>
+
+    <%= form.error_messages -%>
+
+    <% if @item_type == :still_image -%>
+      <%= error_messages_for 'image_file' -%>
+    <% end -%>
+
+    <% unless params[:relate_to_topic].nil? -%>
+      <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] -%>
+    <% end -%>
+
+    <% if @item_type == :topic && !params[:index_for_basket].nil? -%>
+      <%= hidden_field_tag "index_for_basket", params[:index_for_basket] -%>
+    <% end -%>
+
+    <% if @item_type == :document && !params[:is_theme].nil? && @site_admin -%>
+      <%= hidden_field_tag "is_theme", params[:is_theme] -%>
+    <% end -%>
+
+    <% if @item_type == :still_image && @editing -%>
+      <%= hidden_field_tag 'image_file[still_image_id]', @item.id, :id => "image_file_still_image_id" -%>
+    <% end -%>
+
+    <% if @editing && @site_admin -%>
+      <%= form.select 'basket_id', @baskets, {}, { :tabindex => '1', :label => 'Move to another basket?' } -%>
+    <% else -%>
+      <%= form.hidden_field :basket_id, :value => @current_basket.id -%>
+    <% end -%>
+
+    <% if @item_type == :topic && @editing -%>
+        <%= render :partial => 'topic_types', :locals => { :topic_types => @topic_types } -%>
+    <% elsif @item_type == :topic -%>
+        <%= form.hidden_field :topic_type_id, :value => params[:topic][:topic_type_id] -%>
+    <% end -%>
+
+    <% if show_privacy_controls? -%>
+      <% item_private = ((params[@item_type] && params[@item_type][:private] == 'true') || @item.private || @current_basket.private_default?) -%>
+      <%= form.radio_button :private,
+                            [ ['Public', false, { :label_for => "#{@item_type.to_s}_private_false",
+                                                  :note => '(Can be viewed by everyone)',
+                                                  :checked => (item_private ? '' : 'checked') }],
+                              ['Private', true, { :label_for => "#{@item_type.to_s}_private_true",
+                                                  :note => '(Can be viewed only by basket members)',
+                                                  :checked => (item_private ? 'checked' : '') }] ],
+                            { :tabindex => '1', :label => 'Privacy', :example => privacy_controls_description } -%>
+    <% else %>
+      <%= form.hidden_field :private, :value => (@item.private.nil? ? @current_basket.private_default? : @item.private?) -%>
+    <% end %>
+
+    <%= form.text_field :title, { :tabindex => '1', :label => 'Title' } -%>
+
+    <% if [:document, :topic].include?(@item_type) -%>
+      <%= form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1',
+                                           :label => 'Short Summary' } %>
+    <% end -%>
+
+    <%= form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
+                                       :label => 'Description', :label_class => 'cleared-right',
+                                       :example => "Note: forms and javascript are not allowed for security reasons
+                                                    #{", unless you check the box below" if @site_admin}." } -%>
+
+    <% if @site_admin -%>
+      <%= form.check_box :do_not_sanitize, { :tabindex => '1',
+                                             :label => 'Allow forms and other possible insecure elements
+                                                        and attributes in the HTML?' } -%>
+    <% end -%>
+
+		<% unless [:topic, :web_link].include?(@item_type) -%>
+		  <% if show_privacy_controls_for?(@item) %>
+		    <%= form.radio_button :file_private,
+		                          [ ['Can be downloaded by everyone', false,
+		                              { :label_for => "#{@item_type.to_s}_file_private_false" }],
+		                            ["Can only be downloaded by people who have #{@current_basket.private_file_visibility} access.", true,
+		                              { :label_for => "#{@item_type.to_s}_file_private_true" }] ],
+		                          file_private_radio_options(@item).merge({ :tabindex => '1',
+		                                                                    :label => 'Attached file privacy',
+		                                                                    :example => 'Please note that once public, an attached file
+		                                                                                 cannot be made private.' }) -%>
+		  <% else -%>
+        <%= form.hidden_field :file_private, :value => false -%>
+      <% end -%>
+    <% end -%>
+
+    <% if @item_type == :web_link && (show_privacy_controls_for?(@item) || !@editing) -%>
+      <%= form.text_field :url, { :tabindex => '1', :label => 'URL' } -%>
+    <% end -%>
+
+    <%= form.text_field :tag_list, { :tabindex => '1', :label => 'Tags (separated by commas)' } -%>
+
+    <% # disabling overwriting of original file for the timebeing
+       # when we support versioning of files, we'll likely re-enable this -%>
+    <% unless [:topic, :web_link].include?(@item_type) || @editing -%>
+      <% if @item_type == :still_image -%>
+        <div class="form-element">
+          <label for="image_file_uploaded_data">Upload image</label>
+          <%= file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' } -%>
+        </div>
+      <% else -%>
+        <%= form.file_field :uploaded_data, { :tabindex => '1', :label => "Upload #{@item_name}" } -%>
+      <% end -%>
+    <% end -%>
+
+    <% if @item_type == :topic -%>
+      <% @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
+                                                     TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors -%>
+      <% @self_topic_type_and_ancestors.each do |topic_type| -%>
+        <% form_fields = topic_type.topic_type_to_field_mappings -%>
+        <% if form_fields.size > 0 %>
+          <%= render(:partial => 'search/extended_field_mapping',
+                     :collection => form_fields,
+                     :locals => { :edit => @editing,
+                                  :extended_item => @item,
+                                  :item_key => @item_type.to_s}) %>
+        <% end %>
+      <% end -%>
+    <% else -%>
+      <% form_fields = @content_type.content_type_to_field_mappings -%>
+      <% if form_fields.size > 0 -%>
+        <%= render(:partial => 'search/extended_field_mapping',
+                   :collection => form_fields,
+                   :locals => { :edit => @editing,
+                                :extended_item => @item,
+                                :item_key => @item_type.to_s }) -%>
+      <% end %>
+    <% end -%>
+
+    <% if @editing -%>
+      <%= form.text_field :version_comment, { :tabindex => '1',
+                                              :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : ''),
+                                              :label => 'Comment on this edit' } -%>
+    <% end -%>
+
+		<%= render :partial => 'topics/license_chooser_or_agreement',
+		           :locals => { :item => @item } -%>
+
+  </fieldset>
+
+  <div class="wrap">
+    <%= form.submit @submit_text, { :class => "save-button", :tabindex => '1' } -%>
+  </div>
+
+<% end -%>
+
+<%= link_to_cancel -%> |
+<%= link_to("help", { :controller => 'index_page', :action => :help_file },
+                    :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100'],
+                    :tabindex => '1') -%>

@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   before_filter :login_from_cookie
 
   # only permit site members to add/delete things
-  before_filter :login_required, :only => [ :new, :pick_topic_type, :create,
+  before_filter :login_required, :only => [ :new, :create,
                                             :edit, :update, :destroy,
                                             :appearance, :homepage_options,
                                             :convert,
