@@ -1,21 +1,11 @@
 <%
-case params[:controller]
-when 'audio'
-  @item, @item_name, @item_type = @audio_recording, 'Audio Recording', :audio_recording
-when 'documents'
-  @item, @item_name, @item_type = @document, 'Document', :document
-when 'images'
-  @item, @item_name, @item_type = @still_image, 'Image', :still_image
-when 'topics'
-  @item, @item_name, @item_type = @topic, 'Topic', :topic
-when 'video'
-  @item, @item_name, @item_type = @video, 'Video', :video
-when 'web_links'
-  @item, @item_name, @item_type = @web_link, 'Web Link', :web_link
-end
--%>
+zoom_class = zoom_class_from_controller(params[:controller])
+@item = current_item
+@item_name = zoom_class.underscore.humanize
+@item_type = zoom_class.underscore.to_sym
 
-<% @editing = !@item.new_record? -%>
+@editing = !@item.new_record?
+-%>
 
 <% if @editing -%>
   <% @title, @url, @submit_text = "Editing #{@item_name}", { :action => 'update', :id => @item }, 'Update' -%>
@@ -35,22 +25,17 @@ end
 
     <% if @item_type == :still_image -%>
       <%= error_messages_for 'image_file' -%>
+      <% if @editing -%>
+        <%= hidden_field_tag 'image_file[still_image_id]', @item.id, :id => "image_file_still_image_id" -%>
+      <% end -%>
     <% end -%>
 
     <% unless params[:relate_to_topic].nil? -%>
       <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] -%>
     <% end -%>
 
-    <% if @item_type == :topic && !params[:index_for_basket].nil? -%>
-      <%= hidden_field_tag "index_for_basket", params[:index_for_basket] -%>
-    <% end -%>
-
     <% if @item_type == :document && !params[:is_theme].nil? && @site_admin -%>
       <%= hidden_field_tag "is_theme", params[:is_theme] -%>
-    <% end -%>
-
-    <% if @item_type == :still_image && @editing -%>
-      <%= hidden_field_tag 'image_file[still_image_id]', @item.id, :id => "image_file_still_image_id" -%>
     <% end -%>
 
     <% if @editing && @site_admin -%>
@@ -59,14 +44,21 @@ end
       <%= form.hidden_field :basket_id, :value => @current_basket.id -%>
     <% end -%>
 
-    <% if @item_type == :topic && @editing -%>
+    <% if @item_type == :topic -%>
+      <% unless params[:index_for_basket].nil? -%>
+        <%= hidden_field_tag "index_for_basket", params[:index_for_basket] -%>
+      <% end -%>
+      <% if @editing -%>
         <%= render :partial => 'topic_types', :locals => { :topic_types => @topic_types } -%>
-    <% elsif @item_type == :topic -%>
+      <% else -%>
         <%= form.hidden_field :topic_type_id, :value => params[:topic][:topic_type_id] -%>
+      <% end -%>
     <% end -%>
 
     <% if show_privacy_controls? -%>
-      <% item_private = ((params[@item_type] && params[@item_type][:private] == 'true') || @item.private || @current_basket.private_default?) -%>
+      <% item_private = ((params[@item_type] && params[@item_type][:private] == 'true') ||
+                         @item.private? ||
+                         @current_basket.private_default_with_inheritance?) -%>
       <%= form.radio_button :private,
                             [ ['Public', false, { :label_for => "#{@item_type.to_s}_private_false",
                                                   :note => '(Can be viewed by everyone)',
