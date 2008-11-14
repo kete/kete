@@ -1,3 +1,4 @@
+<% unless @viewer_portraits.nil? -%>
 <% @viewer_portraits.each do |portrait| -%>
   <% if @viewer_is_user || !portrait.thumbnail_file.file_private -%>
     <div id="portrait_image_<%= portrait.id -%>" class="portrait_image">
@@ -32,3 +33,4 @@
 
 <!-- We need this to run each time the partial is rendered, so we stick is here, not on page load -->
 <%= javascript_tag "updatePortraitControls();" -%>
+<% end -%>
