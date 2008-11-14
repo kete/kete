@@ -609,6 +609,8 @@ class ApplicationController < ActionController::Base
     elsif params[:is_theme] and item.class.name == 'Document' and @successful
       item.decompress_as_theme
       where_to_redirect = 'appearance'
+    elsif params[:portrait] and item.class.name == 'StillImage' and @successful
+      where_to_redirect = 'user_account'
     end
 
     if @successful
@@ -623,6 +625,8 @@ class ApplicationController < ActionController::Base
         redirect_to_show_for(commented_item, options)
       when 'appearance'
         redirect_to :action => :appearance, :controller => 'baskets'
+      when 'user_account'
+        redirect_to :action => :show, :controller => 'account', :id => @current_user
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created."

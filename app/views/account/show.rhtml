@@ -18,11 +18,9 @@
       <% if @viewer_is_user -%>
         <% location_hash = { :controller => 'images',
                              :action => 'new',
-                             :portrait => true } -%>
-        [
-        <%= link_to 'new portrait', location_hash -%>
-        | <%= link_to 'new default portrait', location_hash.merge({ :default_portrait => true }) -%>
-        ]
+                             :portrait => true,
+                              :default_portrait => true } -%>
+        [ <%= link_to 'new portrait', location_hash -%> ]
         <img src="/images/indicator.gif" width="16" height="16" alt="Editing portraits. " id="data_spinner" style="display:none;" />
       <% end -%>
     </div>
