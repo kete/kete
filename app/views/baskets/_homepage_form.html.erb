@@ -112,15 +112,17 @@
         </fieldset>
       </div>
 
-      <div class="form-element"><label>Feeds<br />
-        <small>
-        (new-line separated list of urls)<br />
-        (Feed Title|Feed URL[|Amount])
+      <div class="form-element"><label>RSS or Atom Feeds<br />
         </small>
         </label>
         <fieldset>
           <div class="form-element">
             <%= text_area_tag 'feeds_url_list', @feeds_list, :cols => 80, :rows => 3 %>
+          </div>
+          <div class="form_example">
+            <p>A new-line separated list of URLs in the following format
+            per line:</p>
+            <p>Feed Title|Feed URL|(Maximum number of entries to display - optional)</p>
           </div>
         </fieldset>
       </div>

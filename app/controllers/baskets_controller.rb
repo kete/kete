@@ -143,16 +143,29 @@ class BasketsController < ApplicationController
     end
 
     if !params[:feeds_url_list].nil?
-      @basket.feeds.delete_all
-      params[:feeds_url_list].split("\n").each do |feed|
-        feed_parts = feed.split('|')
-        @basket.feeds << Feed.create({:title => feed_parts[0].strip, :url => feed_parts[1].strip, :limit => (feed_parts[2] || nil)})
+      @feeds_successful = true
+      begin
+        new_feeds = Array.new
+        params[:feeds_url_list].split("\n").each do |feed|
+          feed_parts = feed.split('|')
+          feed_url = feed_parts[1].strip.gsub("feed:", "http:")
+          new_feeds << Feed.create({:title => feed_parts[0].strip, :url => feed_url, :limit => (feed_parts[2] || nil)})
+        end
+        if new_feeds.size > 0
+          @basket.feeds.delete_all
+          @basket.feeds = new_feeds
+        end
+      rescue
+        # if there is a problem adding feeds, raise an error the user
+        # chances are that they didn't format things correctly
+        @basket.errors.add('Feeds', "there was a problem adding your feeds.  Is the format you entered correct?")
+        @feeds_successful = false
       end
     end
 
     convert_text_fields_to_boolean if params[:source_form] == 'edit'
 
-    if @basket.update_attributes(params[:basket])
+    if @feeds_successful && @basket.update_attributes(params[:basket])
       # Reload to ensure basket.name is updated and not the previous
       # basket name.
       @basket.reload
