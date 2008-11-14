@@ -38,7 +38,7 @@
   <div>
     <div>
       <h4 style="display:inline;">Baskets</h4>
-      <%= "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user -%>
+      <%= "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user && !header_add_basket_link.blank?-%>
     </div>
     <div>
       <ul>
@@ -81,11 +81,6 @@
   <!-- </div> -->
   <% end %>
 
-  <div>
-    <h4>Contributions</h4>
-    Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%>
-  </div>
-
   <% if @viewer_is_user and licenses_are_available? %>
   <div>
     <h4>Current default license</h4>
@@ -100,6 +95,12 @@
     </div>
   </div>
   <% end -%>
+
+  <div>
+    <h4>Contributions</h4>
+    Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%>
+  </div>
+
 </div>
 
 <div style="clear:both;"></div>

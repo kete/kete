@@ -19,13 +19,14 @@ module ApplicationHelper
 
     if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
       return image_tag(user.portraits.first.thumbnail_file.public_filename, default_options)
+    elsif ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT
+      return image_tag('no-avatar.png', default_options)
     end
 
     if ENABLE_GRAVATAR_SUPPORT
       return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, default_options)
     end
 
-    #return image_tag('no-avatar.png', default_options)
     return ''
   end
 
