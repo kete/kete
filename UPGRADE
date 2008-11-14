@@ -36,9 +36,11 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 == 2008/11/12 - Better handling of unicode characters in search records
 
 1.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
-2.      Restart your mongrels or mod_rails
-3.      Restart your backgroundrb instance
-4.      If you have existing records that have non-latin characters in them, rebuild your search records (see other tasks below for summary under "Use the web interface to repopulate your Zebra database...")
+2.      Install the htmlentities gem by running
+           sudo gem install htmlentities
+3.      Restart your mongrels or mod_rails
+4.      Restart your backgroundrb instance
+5.      If you have existing records that have non-latin characters in them, rebuild your search records (see other tasks below for summary under "Use the web interface to repopulate your Zebra database...")
 
 == 2008/10/16 - Location of uploaded files changed and corrected
 

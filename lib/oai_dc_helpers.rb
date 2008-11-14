@@ -138,15 +138,14 @@ module OaiDcHelpers
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
         description = strip_tags(description)
-        description = CGI::unescapeHTML(description)
 
-        # somethings simply aren't handled by unescapeHTML
-        # since it is meant to leave valid HTML
-        description = description.gsub("&nbsp;", " ").gsub("&ndash;", "-").gsub("&ldquo;", "\"").gsub("&rdquo;", "\"").gsub("&rsquo;", "'").gsub("&lsquo;", "'").gsub("&mdash;", "-").gsub("&auml;", "ā").gsub("&Auml;", "Ā").gsub("&euml;", "ē").gsub("&Euml;", "Ē").gsub("&iuml;", "ī").gsub("&Iuml;", "Ī").gsub("&ouml;", "ō").gsub("&Ouml;", "Ō").gsub("&uuml;", "ū").gsub("&Uuml;", "Ū")
+        # convert unicode characters from entities back to unicode chars
+        require 'htmlentities'
+        entities = HTMLEntities.new
+        description = entities.decode(description)
 
-        # finally, we actually need & to be escaped
-        # as well as < and >
-        description = description.gsub("& ", "&amp; ").gsub("<", "&lt;").gsub(">", "&gt;")
+        # escape xml special chars &, <, and >
+        description = CGI::escapeHTML(description)
 
         xml.tag!("dc:description", description)
       end
