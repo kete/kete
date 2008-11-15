@@ -101,29 +101,13 @@ module ApplicationHelper
     return unless current_user_can_see_add_links?
 
     html = '<li>'
-
-    pre_text = String.new
-    site_link_text = String.new
-    current_basket_html = String.new
-    if @current_basket != @site_basket
-      pre_text = 'Add item to '
-      site_link_text = @site_basket.name
-      current_basket_html = " or " + link_to_unless_current( @current_basket.name,
-                                                            {:controller => 'baskets',
-                                                            :action => 'choose_type',
-                                                            :urlified_name => @current_basket.urlified_name},
-                                                            {:tabindex => '2'})
-    else
-      site_link_text = 'Add item'
-    end
-
-    html += pre_text + link_to_unless_current( site_link_text,
-                                               {:controller => 'baskets',
-                                               :action => 'choose_type',
-                                               :urlified_name => @site_basket.urlified_name},
-                                               {:tabindex => '2'}) + current_basket_html + '</li>'
+    html += link_to_unless_current('Add Item',
+                                   { :controller => 'baskets',
+                                     :action => 'choose_type',
+                                     :urlified_name => @current_basket.urlified_name },
+                                   { :tabindex => '2' })
+    html += '</li>'
   end
-
 
   def render_baskets_as_menu
     html = '<ul id="sub-menu" class="menu basket-list-menu">'

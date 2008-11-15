@@ -8,6 +8,11 @@ class BasketsController < ApplicationController
 
   after_filter :remove_robots_txt_cache, :only => [:create, :update, :destroy]
 
+  # Get the Privacy Controls helper for the add item forms
+  helper :privacy_controls
+
+  include ZoomControllerHelpers
+
   def index
     list
     render :action => 'list'
@@ -182,8 +187,30 @@ class BasketsController < ApplicationController
   end
 
   def choose_type
+    @basket_list = Array.new
+    @basket_list << [@site_basket.name, @site_basket.urlified_name] if @current_basket != @site_basket
+    @basket_list << [@current_basket.name, @current_basket.urlified_name]
+
+    @item_types = [ ['Topic', 'topics'],
+                    ['Image', 'images'],
+                    ['Audio', 'audio'],
+                    ['Video', 'video'],
+                    ['Web Link', 'web_links'],
+                    ['Document', 'documents'] ]
+
     return unless request.post?
-    redirect_to :controller => params[:new_controller], :action => 'new'
+
+    # we assign these instance vars to be used in js format response
+    @new_item_basket = params[:new_item_basket]
+    @new_item_controller = params[:new_item_controller]
+    @item_class = zoom_class_from_controller(@new_item_controller)
+
+    respond_to do |format|
+      format.html { redirect_to :urlified_name => @new_item_basket,
+                                :controller => @new_item_controller,
+                                :action => 'new' }
+      format.js { render :file => File.join(RAILS_ROOT, 'app/views/baskets/choose_type.js.rjs') }
+    end
   end
 
   # the start of a page

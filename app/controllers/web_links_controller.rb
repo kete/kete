@@ -25,8 +25,7 @@ class WebLinksController < ApplicationController
   end
 
   def new
-    @web_link = WebLink.new({ :private => @current_basket.private_default || false, 
-                              :file_private =>  @current_basket.file_private_default || false })
+    @web_link = WebLink.new
   end
 
   def create

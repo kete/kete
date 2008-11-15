@@ -1,0 +1,10 @@
+if @new_item_controller == 'topics'
+  page.replace_html 'add_item_form', :partial => 'topics/pick_form'
+else
+  @item = @item_class.constantize.new
+  @content_type = ContentType.find_by_class_name(@item_class)
+  page.replace_html 'add_item_form', :partial => 'topics/form'
+  page << "#{raw_tiny_mce_init}"
+  page << "tinyMCE.execCommand('mceRemoveControl', false, 'mceEditor');"
+  page << "tinyMCE.execCommand('mceAddControl', false, 'mceEditor');"
+end

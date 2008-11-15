@@ -2,22 +2,29 @@
 
 <h2><%= @title -%></h2>
 
-<% form_for(:topic, @topic, :url => { :action => 'new' }) do |form| -%>
+<% @basket = (Basket.find_by_urlified_name(@new_item_basket) || @current_basket) -%>
+
+<% form_remote_tag( :url => { :urlified_name => @basket.urlified_name,
+                              :controller => 'topics',
+                              :action => 'new' },
+                    :before => "Element.show('data_spinner')",
+                    :complete => "Element.hide('data_spinner')" ) do -%>
+
+  <% unless params[:relate_to_topic].nil? %>
+    <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+  <% end %>
+
+  <% unless params[:index_for_basket].nil? %>
+    <%= hidden_field_tag "index_for_basket", params[:index_for_basket] %>
+  <% end %>
 
   <fieldset>
-
-    <% unless params[:relate_to_topic].nil? %>
-      <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-    <% end %>
-
-    <% unless params[:index_for_basket].nil? %>
-      <%= hidden_field_tag "index_for_basket", params[:index_for_basket] %>
-    <% end %>
-
-    <%= render :partial => 'topic_types', :locals => { :topic_types => TopicType.find(1).full_set } -%>
-
+    <%= render :partial => 'topics/topic_types', :locals => { :topic_types => TopicType.find(1).full_set } -%>
   </fieldset>
 
-  <%= form.submit 'Choose Type', { :class => "save-button", :tabindex => '1' } -%>
+  <%= submit_tag 'Choose Type', { :class => "save-button", :tabindex => '1' } -%>
+  <img src='/images/indicator.gif' width='16' height='16' alt='Preparing new topic form. ' id='data_spinner' style='display:none;' />
 
 <% end -%>
+
+<%= link_to_cancel -%>

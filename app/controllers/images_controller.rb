@@ -25,8 +25,7 @@ class ImagesController < ApplicationController
   end
 
   def new
-    @still_image = StillImage.new({ :private => @current_basket.private_default || false, 
-                                    :file_private =>  @current_basket.file_private_default || false })
+    @still_image = StillImage.new
   end
 
   def create

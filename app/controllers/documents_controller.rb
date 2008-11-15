@@ -22,8 +22,7 @@ class DocumentsController < ApplicationController
   end
 
   def new
-    @document = Document.new({ :private => @current_basket.private_default || false,
-                               :file_private => @current_basket.file_private_default || false })
+    @document = Document.new
   end
 
   def create

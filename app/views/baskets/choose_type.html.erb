@@ -1,21 +1,32 @@
-<% form_tag :action => 'choose_type' do %>
+<% @title = "Choose New Item Type" -%>
 
-<% @type_options = String.new
-   [['Topic', 'topics'],
-   ['Image', 'images'],
-   ['Audio', 'audio'],
-   ['Video', 'video'],
-   ['Web Link', 'web_links'],
-   ['Document', 'documents']].each do |option|
-   @type_options += "<option value=\"#{option[1]}\">#{option[0]}</option>"
-   end -%>
-<div class="form-element">
-  <label for="type_for_url">Add what type of item?</label>
-    <%= select_tag 'new_controller', @type_options, :tabindex => '1' %>
+<div id="add_item_form">
+
+  <h2><%= @title -%></h2>
+
+  <% form_remote_tag( :url => { :action => 'choose_type' },
+                      :before => "Element.show('data_spinner')",
+                      :complete => "Element.hide('data_spinner')" ) do -%>
+
+    <fieldset>
+      <div class="form-element">
+        <label for="new_item_basket">Add item to basket:</label>
+        <%= select_tag 'new_item_basket', options_for_select(@basket_list, @current_basket.urlified_name), :tabindex => '1' -%>
+      </div>
+
+      <div class="form-element">
+        <label for="new_item_controller">Add what type of item?</label>
+        <%= select_tag 'new_item_controller', options_for_select(@item_types), :tabindex => '1' -%>
+      </div>
+    </fieldset>
+
+    <%= submit_tag "Choose" , { :class => "save-button", :tabindex => '1' } -%>
+    <img src='/images/indicator.gif' width='16' height='16' alt='Preparing new item forms. ' id='data_spinner' style='display:none;' />
+
+  <% end %>
+
+  <%= link_to_cancel -%>
+
 </div>
-<%= submit_tag "Choose" , {:class => "save-button", :tabindex => '1'} %>
-<% end %>
 
-
-<%= link_to_cancel %>
-<%= render(:partial => "topics/content_wrapper_end" ) %>
+<%= render :partial => "topics/content_wrapper_end" -%>

@@ -187,7 +187,7 @@ class ApplicationController < ActionController::Base
 
   # Test for private file visibility in a given basket
   def current_user_can_see_private_files_in_basket?(basket)
-    current_user_is?(basket.private_file_visibility)
+    current_user_is?(basket.private_file_visibility_with_inheritance)
   end
 
   # Walter McGinnis, 2006-04-03

@@ -190,13 +190,38 @@ class Basket < ActiveRecord::Base
 
   def private_file_visibility_as_options(site_basket)
     current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
-      select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
+    select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
   end
 
   def private_file_visibilty_selected_or_default(value, site_basket)
     current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
     value == current_value
   end
+
+  # If setting is nil, be conservative.
+  def allow_non_member_comments?
+    allow_non_member_comments === true
+  end
+
+
+  # Privacy related methods, taking into account inheritance from Site Basket
+
+  def show_privacy_controls_with_inheritance?
+    (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && self.site_basket.show_privacy_controls == true))
+  end
+
+  def private_default_with_inheritance?
+    (self.private_default == true || (self.private_default.nil? && self.site_basket.private_default == true))
+  end
+
+  def file_private_default_with_inheritance?
+    (self.file_private_default == true || (self.file_private_default.nil? && self.site_basket.file_private_default == true))
+  end
+
+  def private_file_visibility_with_inheritance
+    self.settings[:private_file_visibility] || self.site_basket.settings[:private_file_visibility] || "at least member"
+  end
+
 
   def array_to_options_list_with_defaults(options_array, default_value)
     select_options = String.new
@@ -268,13 +293,6 @@ class Basket < ActiveRecord::Base
     settings[:fully_moderated].blank? ? DEFAULT_POLICY_IS_FULL_MODERATION : settings[:fully_moderated]
   end
 
-  # Private file visibility, taking into account inheritance from
-  # site basket if not set locally
-  def private_file_visibility
-    self.settings[:private_file_visibility] || Basket.find(1).settings[:private_file_visibility] || "at least member"
-  end
-
-
   # if we don't have any moderators specified
   # find admins for basket
   # if no admins for basket, go with basket 1 (site) admins
@@ -337,19 +355,6 @@ class Basket < ActiveRecord::Base
       select_options += ">" + label + "</option>"
     end
     select_options
-  end
-
-  # If setting is nil, be conservative.
-  def allow_non_member_comments?
-    allow_non_member_comments === true
-  end
-
-  def private_default_with_inheritance?
-    (self.private_default == true || (self.private_default.nil? && @@site_basket.private_default == true))
-  end
-
-  def show_privacy_controls_with_inheritance?
-    (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && @@site_basket.show_privacy_controls == true))
   end
 
   # Get the roles this Basket has
