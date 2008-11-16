@@ -151,10 +151,10 @@ class BasketsController < ApplicationController
           feed_url = feed_parts[1].strip.gsub("feed:", "http:")
           new_feeds << Feed.create({:title => feed_parts[0].strip, :url => feed_url, :limit => (feed_parts[2] || nil)})
         end
-        if new_feeds.size > 0
-          @basket.feeds.delete_all
-          @basket.feeds = new_feeds
-        end
+        # this clears feeds
+        # submitted feeds include any old values, so they will be recreated
+        @basket.feeds.delete_all
+        @basket.feeds = new_feeds if new_feeds.size > 0
       rescue
         # if there is a problem adding feeds, raise an error the user
         # chances are that they didn't format things correctly
