@@ -13,4 +13,5 @@ end
 if @successful || @empty
   page[:add_tag_form].reset
   page[:add_tag_form_div].hide
+  page[:add_tag_button].show
 end
