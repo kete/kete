@@ -11,6 +11,7 @@ class BasketsController < ApplicationController
   # Get the Privacy Controls helper for the add item forms
   helper :privacy_controls
 
+  # TODO: pull this out, not necessary, covered in application controller (all controllers in other words)
   include ZoomControllerHelpers
 
   def index
@@ -187,10 +188,15 @@ class BasketsController < ApplicationController
   end
 
   def choose_type
+    # TODO: this should be user's baskets, i'm assuming you are holding off waiting for another branches code to be merged into master
+    # the current basket should be selected
+    # also this should only be displayed and be a hidden field if user only has one option
     @basket_list = Array.new
     @basket_list << [@site_basket.name, @site_basket.urlified_name] if @current_basket != @site_basket
     @basket_list << [@current_basket.name, @current_basket.urlified_name]
 
+    # TODO: this should be derived ZOOM_CLASSES and zoom controller helpers
+    # if that doesn't suit, you should add to zoom controller helpers instead of hardcoding here
     @item_types = [ ['Topic', 'topics'],
                     ['Image', 'images'],
                     ['Audio', 'audio'],

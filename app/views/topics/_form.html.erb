@@ -11,6 +11,7 @@ zoom_class = zoom_class_from_controller(controller)
 # @item is passed in from the ajax add item forms, so only set it if not already set
 @item ||= current_item
 
+# TODO: use zoom controller helpers instead
 @item_name = zoom_class.underscore.humanize
 @item_type = zoom_class.underscore.to_sym
 
@@ -105,24 +106,24 @@ zoom_class = zoom_class_from_controller(controller)
                                                         and attributes in the HTML?' } -%>
     <% end -%>
 
-		<% unless [:topic, :web_link].include?(@item_type) -%>
+                <% unless [:topic, :web_link].include?(@item_type) -%>
       <% file_private = ((params[@item_type] && params[@item_type][:file_private] == 'true') ||
                          (!@item.file_private.nil? && @item.file_private?) ||
                          @basket.file_private_default_with_inheritance? ||
                          false) -%>
-		  <% if show_privacy_controls_for?(@item) %>
-		    <%= form.radio_button :file_private,
-		                          [ ['Can be downloaded by everyone', false,
-		                              { :label_for => "#{@item_type.to_s}_file_private_false",
-		                                :checked => (file_private ? '' : 'checked') }],
-		                            ["Can only be downloaded by people who have #{@basket.private_file_visibility_with_inheritance} access.", true,
-		                              { :label_for => "#{@item_type.to_s}_file_private_true",
-		                                :checked => (file_private ? 'checked' : '') }] ],
-		                          file_private_radio_options(@item).merge({ :tabindex => '1',
-		                                                                    :label => 'Attached file privacy',
-		                                                                    :example => 'Please note that once public, an attached file
-		                                                                                 cannot be made private.' }) -%>
-		  <% else -%>
+                  <% if show_privacy_controls_for?(@item) %>
+                    <%= form.radio_button :file_private,
+                                          [ ['Can be downloaded by everyone', false,
+                                              { :label_for => "#{@item_type.to_s}_file_private_false",
+                                                :checked => (file_private ? '' : 'checked') }],
+                                            ["Can only be downloaded by people who have #{@basket.private_file_visibility_with_inheritance} access.", true,
+                                              { :label_for => "#{@item_type.to_s}_file_private_true",
+                                                :checked => (file_private ? 'checked' : '') }] ],
+                                          file_private_radio_options(@item).merge({ :tabindex => '1',
+                                                                                    :label => 'Attached file privacy',
+                                                                                    :example => 'Please note that once public, an attached file
+                                                                                                 cannot be made private.' }) -%>
+                  <% else -%>
         <%= form.hidden_field :file_private, :value => file_private -%>
       <% end -%>
     <% end -%>
@@ -176,8 +177,8 @@ zoom_class = zoom_class_from_controller(controller)
                                               :label => 'Comment on this edit' } -%>
     <% end -%>
 
-		<%= render :partial => 'topics/license_chooser_or_agreement',
-		           :locals => { :item => @item } -%>
+                <%= render :partial => 'topics/license_chooser_or_agreement',
+                           :locals => { :item => @item } -%>
 
   </fieldset>
 
