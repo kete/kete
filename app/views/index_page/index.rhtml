@@ -3,34 +3,34 @@
 <%= render(:partial => "topics/content_wrapper_start",
            :locals => { :style_classes =>"notabs" }) -%>
 
-<% cache({:part => 'details'}) do -%>
-  <%= @topic.description -%>
-  <%= pending_review(@topic) -%>
-<% end -%>
-
-<% cache({:part => 'extended_fields'}) do -%>
-  <% extended_fields_html = display_xml_attributes(@topic) -%>
-  <% if !extended_fields_html.blank? -%>
-  <div id="detail-extended">
-    <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-    <%= extended_fields_html -%>
-  </div>
+<% if !@topic.nil? -%>
+  <% cache({:part => 'details'}) do -%>
+    <%= @topic.description -%>
+    <%= pending_review(@topic) -%>
   <% end -%>
-<% end -%>
-
-<% cache({:part => 'tools'}) do -%>
-  <div class="detail-tools">
-  <% if !@url_to_full_topic.nil? -%>
-    <ul><%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li></ul>
-    <% tool_count += 1 -%>
-  <% end -%>
-  <% if !@url_to_comments.nil? -%>
-    <% if @comments.size > 0 -%>
-      <ul><%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li></ul>
-      <% tool_count += 1 -%>
+  <% cache({:part => 'extended_fields'}) do -%>
+    <% extended_fields_html = display_xml_attributes(@topic) -%>
+    <% if !extended_fields_html.blank? -%>
+    <div id="detail-extended">
+      <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+      <%= extended_fields_html -%>
+    </div>
     <% end -%>
   <% end -%>
-  </div>
+  <% cache({:part => 'tools'}) do -%>
+    <div class="detail-tools">
+    <% if !@url_to_full_topic.nil? -%>
+      <ul><%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li></ul>
+      <% tool_count += 1 -%>
+      <% end -%>
+      <% if !@url_to_comments.nil? -%>
+      <% if @comments.size > 0 -%>
+        <ul><%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li></ul>
+        <% tool_count += 1 -%>
+      <% end -%>
+    <% end -%>
+    </div>
+  <% end -%>
 <% end -%>
 
 <% cache({:part => 'recent_topics'}) do -%>
@@ -73,7 +73,7 @@
   <% end -%>
 <% end -%>
 
-<% if logged_in? and @at_least_a_moderator -%>
+<% if !@topic.nil? and logged_in? and @at_least_a_moderator -%>
   <% cache({:part => 'edit'}) do -%>
     <div class="secondary-content-section-wrapper">
       <div id="moderator-tools" class="secondary-content-section">
@@ -173,15 +173,17 @@
   <% end -%>
 <% end -%>
 
-<% cache({:part => 'license'}) do -%>
-  <% unless @topic.license_metadata.nil? -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="license-box" class="secondary-content-section">
-        <div class="license"><%= @topic.license_metadata %></div>
-        <div style="clear:both;"></div>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+<% if !@topic.nil? -%>
+  <% cache({:part => 'license'}) do -%>
+    <% unless @topic.license_metadata.nil? -%>
+      <div class="secondary-content-section-wrapper">
+        <div id="license-box" class="secondary-content-section">
+          <div class="license"><%= @topic.license_metadata %></div>
+          <div style="clear:both;"></div>
+          <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+        </div>
       </div>
-    </div>
+    <% end -%>
   <% end -%>
 <% end -%>
 

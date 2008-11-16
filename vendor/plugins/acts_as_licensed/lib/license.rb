@@ -1,4 +1,10 @@
 class License < ActiveRecord::Base
+  
+  # Required fields
+  validates_presence_of :name
+  validates_presence_of :url
+  validates_inclusion_of :is_available, :in => [true, false], :message => "must be true or false"
+  validates_inclusion_of :is_creative_commons, :in => [true, false], :message => "must be true or false"
 
   # the following could be a named scope which works the same way but shorter
   # named_scope :find_available, :conditions => ['is_available', true]

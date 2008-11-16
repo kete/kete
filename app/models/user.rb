@@ -229,17 +229,21 @@ class User < ActiveRecord::Base
     Basket.find_all_by_id(DEFAULT_BASKETS_IDS).each { |basket| self.has_role('member',basket) }
   end
 
-  def get_basket_permissions
-    permissions = Hash.new
-    roles.find_all_by_authorizable_type('Basket').each do |role|
-      basket = role.authorizable
-      if basket.is_a?(Basket)
-        permissions[basket.urlified_name.to_sym] = { :id => basket.id,
-          :role_id => role.id,
-          :role_name => role.name }
-      end
+  def basket_permissions
+    select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name"
+    join = "INNER JOIN baskets on roles.authorizable_id = baskets.id"
+    permissions = roles.find_all_by_authorizable_type('Basket', :select => select, :joins => join)
+
+    permissions_hash = Hash.new
+    permissions.each do |permission|
+      p = permission.attributes
+      permissions_hash[p['basket_urlified_name'].to_sym] = {
+        :id => p['basket_id'].to_i,
+        :role_id => p['role_id'].to_i,
+        :role_name => p['role_name']
+      }
     end
-    permissions
+    permissions_hash
   end
 
   def drop(role)
@@ -277,7 +281,7 @@ class User < ActiveRecord::Base
   # when a user is to be deleted
   # we have to remove the roles assigned to it
   # otherwise authorizable tries to get the basket which no longer exists
-  # when called in current_user.get_basket_permissions
+  # when called in current_user.basket_permissions
   def remove_roles
     roles.each { |role| drop(role) }
   end

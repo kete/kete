@@ -122,6 +122,13 @@ class UserTest < Test::Unit::TestCase
   end
 
   protected
+  
+    def new_model_attributes
+      @@incremental_id ||= 0
+      @@incremental_id = @@incremental_id + 1
+      @new_model.merge(:login => 'test_login_' + @@incremental_id.to_s)
+    end
+    
     def create_user(options = {})
       # Walter McGinnis, 2007-07-10
       # adding terms agreement and capcha vars
