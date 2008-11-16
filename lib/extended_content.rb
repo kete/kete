@@ -267,7 +267,7 @@ module ExtendedContent
       # Specialized validation methods below..
       
       def validate_extended_checkbox_field_content(extended_field_mapping, value)
-        return nil if value.empty?
+        return nil if value.blank?
         
         unless value =~ /^(Yes|No)$/
           "must be a valid checkbox value (Yes or No)"
@@ -284,7 +284,7 @@ module ExtendedContent
       def validate_extended_date_field_content(extended_field_mapping, value)
         
         # Allow nil values. If this is required, the nil value will be caught earlier.
-        return nil if value.empty?
+        return nil if value.blank?
         
         unless value =~ /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/
           "must be in the standard date format (YYYY-MM-DD)"
@@ -308,9 +308,9 @@ module ExtendedContent
         return nil if values.blank?
 
         if !values.is_a?(Array) && !extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(values)
-          "must be a valid choice (you gave '#{values}')"
+          "must be a valid choice"
         elsif !values.reject { |v| v.blank? }.all? { |v| extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(v) }
-          "must be a valid choice (you gave '#{values.to_sentence}')"
+          "must be a valid choice"
         end
       end
       
