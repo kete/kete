@@ -7,7 +7,7 @@
       <%= tags_for(item) -%>
     </div>
     <% if permitted_to_edit_current_item? -%>
-      <%= image_tag 'add.gif', :id => 'add_tag_button', :style => 'display:none;', :onclick => "Element.show('add_tag_form_div');$('#{item_key}_tag_list').activate()" %>
+      <div id="add_tag_button" style="display:none">[<a href="#" onclick="Element.show('add_tag_form_div');$('#{item_key}_tag_list').activate()">+</a>]</div>
     <% end -%>
 
     <% if permitted_to_edit_current_item? -%>
