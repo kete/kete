@@ -154,18 +154,18 @@ module ImporterZoom
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.tag!("dc:subject", related.title)
+            xml.tag!("dc:subject", related.title.gsub("& ", "&amp;"))
             xml.tag!("dc:relation", importer_item_url(:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name))
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:subject", commented_on_item.title)
+        xml.tag!("dc:subject", commented_on_item.title.gsub("& ", "&amp;"))
         xml.tag!("dc:relation", importer_item_url(:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name))
       else
         item.topics.each do |related|
-          xml.tag!("dc:subject", related.title)
+          xml.tag!("dc:subject", related.title.gsub("& ", "&amp;"))
           xml.tag!("dc:relation", importer_item_url(:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name))
         end
       end

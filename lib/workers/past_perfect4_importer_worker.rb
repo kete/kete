@@ -42,9 +42,9 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       logger.info("after description_end_template and var assigns")
       # legacy support for kete horowhenua
       if !@import_request[:host].scan("horowhenua").blank?
-        @description_end_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
-        @description_end_templates['/f\d/'] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
-        @description_end_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
+        @description_end_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
+        @description_end_templates[/^f\d/] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
+        @description_end_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
 
         @collections_to_skip << "HHS Photograph Collection"
       end
@@ -488,12 +488,18 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
     new_record_added = new_record.save
 
-    importer_add_image_to(new_record, params, zoom_class)
+    if new_record_added
+      importer_add_image_to(new_record, params, zoom_class)
 
-    new_record.creator = @contributing_user
+      new_record.creator = @contributing_user
 
-    logger.info("new_record: " + new_record.inspect)
-    return new_record
+      logger.info("new_record: " + new_record.inspect)
+      return new_record
+    else
+      logger.info("new_record not added - save failed:")
+      logger.info("what are errors on save of new record: " + new_record.errors.inspect)
+      return nil
+    end
   end
 
   # set up the correct xml paths to use

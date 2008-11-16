@@ -1,37 +1,6 @@
 module ExtendedContentHelpers
   unless included_modules.include? ExtendedContentHelpers
 
-    # OLDER METHODS
-    # def non_dc_extended_content_field_xml(extended_content_hash,non_dc_extended_content_hash,field)
-    #   # use xml_element_name, but append to non_dc_extended_content
-    #   if !extended_content_hash[field]['xml_element_name'].blank?
-    #     x = Builder::XmlMarkup.new
-    #     if !extended_content_hash[field]['xml_element_name']['xsi_type'].blank?
-    #       non_dc_extended_content += x.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'], "xsi:type".to_sym => extended_content_hash[field]['xml_element_name']['xsi_type'])
-    #     else
-    #       non_dc_extended_content += x.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'])
-    #     end
-    #   else
-    #     non_dc_extended_content_hash[field] = extended_content_hash[field]
-    #   end
-    # end
-    # 
-    # def extended_content_hash_field_xml(xml,extended_content_hash,non_dc_extended_content_hash,field,re)
-    #   if !extended_content_hash[field]['value'].blank? || !extended_content_hash[field].blank?
-    #     if !extended_content_hash[field]['xml_element_name'].blank? && re.match(extended_content_hash[field]['xml_element_name'])
-    #       # it's a dublin core tag, just spit it out
-    #       # we allow for xsi:type specification
-    #       if !extended_content_hash[field]['xml_element_name']['xsi_type'].blank?
-    #         xml.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'], "xsi:type".to_sym => extended_content_hash[field]['xml_element_name']['xsi_type'])
-    #       else
-    #         xml.tag!(extended_content_hash[field]['xml_element_name'], extended_content_hash[field]['value'])
-    #       end
-    #     else
-    #       non_dc_extended_content_field_xml(extended_content_hash,non_dc_extended_content_hash,field)
-    #     end
-    #   end
-    # end
-
     def oai_dc_xml_dc_extended_content(xml,item)
       @builder_instance = xml
       
@@ -55,7 +24,7 @@ module ExtendedContentHelpers
       # Build the anonymous fields that have no dc:* attributes.
       @builder_instance.tag!("dc:description") do |nested|
         @anonymous_fields.each do |k, v|
-          nested.tag!(k, v)
+          nested.tag!(k, encode_ampersands(v))
         end
       end
       
@@ -66,7 +35,8 @@ module ExtendedContentHelpers
       
       if data.is_a?(String)
         # This works as expected
-        # In the most simple case, the content is represented as "key" => "value", so use this directly now if it's available.
+        # In the most simple case, the content is represented as "key" => "value", so use this directly
+        # now if it's available.
         @anonymous_fields << [original_field_key, data]
       elsif data.has_key?("value")
 
@@ -74,7 +44,7 @@ module ExtendedContentHelpers
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, data["value"]]
         else
-          @builder_instance.tag!(data["xml_element_name"], data["value"])
+          @builder_instance.tag!(data["xml_element_name"], encode_ampersands(data["value"]))
         end
       else 
         
@@ -89,60 +59,6 @@ module ExtendedContentHelpers
       end
       
     end
-    
-    def oai_dc_xml_for_field_name_and_value(name, value, options = {})
-    end
-    
-    # OLD METHOD
-    # def oai_dc_xml_dc_extended_content(xml,item)
-    #   # work through extended_content, see what should be it's own dc element
-    #   # and what should go in a group dc:description
-    #   temp_extended_content = item.extended_content_xml
-    #   if !temp_extended_content.blank? and temp_extended_content.starts_with?('<')
-    #     extended_content_hash = XmlSimple.xml_in("<dummy>#{temp_extended_content}</dummy>", 'contentkey' => 'value', 'forcearray'   => false)
-    #     
-    #     non_dc_extended_content_hash = Hash.new
-    #     re = Regexp.new("^dc")
-    #     multi_re = Regexp.new("_multiple$")
-    #     extended_content_hash.keys.each do |field|
-    #       # condition that checks if this is a multiple field
-    #       # if so move into it and does the following for each
-    #       if multi_re.match(field)
-    #         logger.debug("in multi")
-    #         logger.debug("Working on field #{field.inspect}")
-    #         # value is going to be a hash like this:
-    #         # "1" => {field_name => value}, "2" => ...
-    #         # we want the first field name followed by a :
-    #         # and all values, separated by spaces (for now)
-    #         hash_of_values = extended_content_hash[field]
-    #         logger.debug("Hash of values is: #{hash_of_values.inspect}")
-    #         hash_of_values.each_pair do |key, value|
-    #           logger.debug("Working on key #{key.inspect} => #{value.inspect}")
-    #           hash_of_values[key].each_pair do |subfield, subfield_value|
-    #             logger.debug("Working on subfield #{subfield.inspect} => #{subfield_value.inspect}")
-    #             extended_content_hash_field_xml(xml,hash_of_values[key],non_dc_extended_content_hash,subfield,re)
-    #           end
-    #         end
-    #       else
-    #         extended_content_hash_field_xml(xml,extended_content_hash,non_dc_extended_content_hash,field,re)
-    #       end
-    #     end
-    # 
-    #     if !non_dc_extended_content_hash.blank?
-    #       xml.tag!("dc:description") do
-    #         non_dc_extended_content_hash.each do |key, value|
-    # 
-    #           if value.is_a?(Hash)
-    #             xml.tag!(key, ":#{value.values.join(":")}:")
-    #           else
-    #             xml.tag!(key, value)
-    #           end
-    #           
-    #         end
-    #       end
-    #     end
-    #   end
-    # end
 
     # extended_content_xml_helpers
     def extended_content_field_xml_tag(options = {})
@@ -204,6 +120,10 @@ module ExtendedContentHelpers
     def converted_choice_value(value)
       choice = choice_from_value(value)
       choice ? choice.value : ""
+    end
+    
+    def encode_ampersands(value)
+      value.gsub("&", "&amp;")
     end
     
     

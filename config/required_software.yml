@@ -12,6 +12,7 @@ gems:
   memcache-client: memcache
   zoom: zoom
   libxml-ruby: libxml
+  htmlentities: htmlentities
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems

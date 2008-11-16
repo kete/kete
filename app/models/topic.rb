@@ -29,12 +29,12 @@ class Topic < ActiveRecord::Base
   # this is where we handled "related to"
   has_many :content_item_relations,
   :order => 'position', :dependent => :delete_all
-  
+
   # Content Item Relationships when the topic is on the related_item end
   # of the relationship, and another topic occupies topic_id.
   has_many :child_content_item_relations, :class_name => "ContentItemRelation", :as => :related_item, :dependent => :delete_all
   has_many :parent_related_topics, :through => :child_content_item_relations, :source => :topic
-  
+
   # by using has_many :through associations we gain some bidirectional flexibility
   # with our polymorphic join model
   # basicaly specifically name the classes on the other side of the relationship here
@@ -70,11 +70,11 @@ class Topic < ActiveRecord::Base
   # out of the box
   # we also track each versions raw_tag_list input
   # so we can revert later if necessary
-  
+
   # Tags are tracked on a per-privacy basis.
   acts_as_taggable_on :public_tags
   acts_as_taggable_on :private_tags
-  
+
   # we override acts_as_versioned dependent => delete_all
   # because of the complexity our relationships of our models
   # delete_all won't do the right thing (at least not in migrations)
@@ -100,9 +100,10 @@ class Topic < ActiveRecord::Base
 
   validates_xml :extended_content_xml
   validates_presence_of :title
+  # don't allow ampersands in title, it screws up our search records, because it is special character in xml
+  validates_format_of :title, :with => /\A[^\&]*\Z/, :message => "cannot contain the &amp; character."
+
   validates_as_sanitized_html :description, :extended_content_xml
-  # this may change
-  # validates_uniqueness_of :title
 
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later
@@ -121,20 +122,28 @@ class Topic < ActiveRecord::Base
 
 
   after_save :store_correct_versions_after_save
-  
+
   # James - 2008-09-08
   # Ensure basket cache is cleared if this is a standard basket home-page topic
   after_save :clear_basket_homepage_cache
-  
+
   def clear_basket_homepage_cache
     self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self
   end
-  
+
   private :clear_basket_homepage_cache
+
+  def validate
+    errors.add('Tags', "cannot contain the &amp; character.") if raw_tag_list =~ /\&/
+    
+    # James
+    # Ensure EF validations are run
+    super
+  end
 
   def related_topics(only_non_pending = false)
     if only_non_pending
-      parent_related_topics.find_all_non_pending + 
+      parent_related_topics.find_all_non_pending +
         child_related_topics.find_all_non_pending
     else
       parent_related_topics + child_related_topics
