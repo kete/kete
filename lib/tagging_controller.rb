@@ -27,6 +27,7 @@ module TaggingController
 
         params[item_key][:tag_list] = "#{@item.tag_list.join(", ")}, #{params[item_key][:tag_list]}"
         params[item_key][:raw_tag_list] = params[item_key][:tag_list]
+        params[item_key][:version_comment] = "Only tags added: " + params[item_key][:tag_list]
 
         @successful = @item.update_attributes(params[item_key])
         if @successful
