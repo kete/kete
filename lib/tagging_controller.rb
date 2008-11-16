@@ -25,9 +25,9 @@ module TaggingController
       if ZOOM_CLASSES.include?(zoom_class) && !params[item_key].blank? && !params[item_key][:tag_list].blank?
         @item = item_from_controller_and_id
 
+        params[item_key][:version_comment] = "Only tags added: " + params[item_key][:tag_list]
         params[item_key][:tag_list] = "#{@item.tag_list.join(", ")}, #{params[item_key][:tag_list]}"
         params[item_key][:raw_tag_list] = params[item_key][:tag_list]
-        params[item_key][:version_comment] = "Only tags added: " + params[item_key][:tag_list]
 
         @successful = @item.update_attributes(params[item_key])
         if @successful
