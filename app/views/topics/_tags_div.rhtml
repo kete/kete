@@ -2,15 +2,14 @@
 <% item_key = zoom_class_from_controller(params[:controller]).underscore -%>
 <div class="secondary-content-section-wrapper">
   <div id="tags-box" class="secondary-content-section">
-    <h2>
-      Tags
-      <% if permitted_to_edit_current_item? -%>
-        <%= image_tag 'add.gif', :id => 'add_tag_button', :style => 'display:none;', :onclick => "Element.show('add_tag_form_div');$('#{item_key}_tag_list').activate()" %>
-      <% end -%>
-    </h2>
+    <h2>Tags</h2>
     <div id="tags_list">
       <%= tags_for(item) -%>
     </div>
+    <% if permitted_to_edit_current_item? -%>
+      <%= image_tag 'add.gif', :id => 'add_tag_button', :style => 'display:none;', :onclick => "Element.show('add_tag_form_div');$('#{item_key}_tag_list').activate()" %>
+    <% end -%>
+
     <% if permitted_to_edit_current_item? -%>
     <div id="add_tag_form_div">
       <% form_remote_tag( :url => { :action => 'add_tags', :id => item.id, :private => params[:private] },
