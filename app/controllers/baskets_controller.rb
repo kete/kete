@@ -153,6 +153,7 @@ class BasketsController < ApplicationController
         end
         # this clears feeds
         # submitted feeds include any old values, so they will be recreated
+        # or if the user is deleting feeds, this will do the trick
         @basket.feeds.delete_all
         @basket.feeds = new_feeds if new_feeds.size > 0
       rescue
