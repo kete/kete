@@ -165,7 +165,7 @@ class BasketsController < ApplicationController
       rescue
         # if there is a problem adding feeds, raise an error the user
         # chances are that they didn't format things correctly
-        @basket.errors.add('Feeds', "there was a problem adding your feeds. Is the format you entered correct and you havn't entered a feed twice?")
+        @basket.errors.add('Feeds', "there was a problem adding your feeds. Is the format you entered correct and you haven\'t entered a feed twice?")
         @feeds_successful = false
       end
     end
