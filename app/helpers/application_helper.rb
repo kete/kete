@@ -170,9 +170,9 @@ module ApplicationHelper
     return unless current_user_can_add_or_request_basket?
 
     if basket_policy_request_with_permissions?
-      basket_text = 'Request Basket'
+      basket_text = 'Request basket'
     else
-      basket_text = 'Add Basket'
+      basket_text = 'Add basket'
     end
 
     link_to_unless_current( basket_text,
