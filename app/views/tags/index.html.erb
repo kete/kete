@@ -1,37 +1,18 @@
 <% @title = 'Tags' -%>
 
-<h2><%= @title %></h2>
+<div id="content-tabs">
+  <%= render :partial => "tags/tag_order_buttons" -%>
+</div>
 
-<% if @results.size > 0 -%>
+<%= render :partial => "topics/content_wrapper_start" %>
 
-  <div id="tag_search_div">
-    <% form_tag({}, :method => :get) do -%>
-      <h4>Options</h4>
-      <label for="tag_order">Sort by:</label>
-      <%= select 'tag', 'order', Basket.order_tags_by_options, { :selected => @order }, { :name => 'order' } -%>
-      <span id="direction_field" <%= 'style="display:none;"' if @order == "random" -%>>
-        <label for="tags_in_reverse">In reverse?</label>
-        <%= check_box_tag 'tags_in_reverse', 'reverse', @tags_in_reverse -%>
-      </span>
-      <%= submit_tag 'Submit' -%>
-    <% end -%>
-  </div>
+<h2>
+  <%= @title -%>
+  <img src="/images/indicator.gif" width="16" height="16" alt="Retrieving tags. " id="data_spinner" style="display:none;" />
+</h2>
 
-  <%= toggle_in_reverse_field_js_helper -%>
+<div id="tags_list">
+  <%= render :partial => 'tags/tags_list', :locals => { :tags => @tags } -%>
+</div>
 
-  <div><%= will_paginate @results %></div>
-
-  <br />
-  <% if @type == 'tag cloud' -%>
-    <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tags } -%>
-  <% else -%>
-    <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tags } -%>
-  <% end -%>
-  <div style="clear:both;"></div>
-  <br />
-
-  <div><%= will_paginate @results %></div>
-
-<% else -%>
-  <h4>No tags to display.</h4>
-<% end -%>
+<%= render(:partial => "topics/content_wrapper_end" ) %>

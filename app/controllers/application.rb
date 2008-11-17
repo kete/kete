@@ -874,6 +874,8 @@ class ApplicationController < ActionController::Base
       return false
     elsif params[:controller] == 'index_page' and params[:action] == 'index'
       return false
+    elsif params[:controller] == "tags"
+      return false
     elsif params[:controller] == 'account' and params[:action] == 'show'
       return true
     elsif !['show', 'preview', 'show_private'].include?(params[:action])

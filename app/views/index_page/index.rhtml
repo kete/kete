@@ -144,11 +144,21 @@
   <% if @tag_counts_array.size > 0 -%>
     <div class="secondary-content-section-wrapper">
       <div id="tags-box" class="secondary-content-section">
+        <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
+                          link_to("(showing #{@tag_counts_array.size} of #{@tag_counts_size})",
+                                  :controller => 'tags',
+                                  :action => 'index') : '' -%>
         <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
-          <div id="tags-headline"><h3>Tags</h3></div>
+          <div id="tags-headline">
+            <h3 style="display:inline;">Tags</h3>
+            <span><%= tag_counts -%></span>
+          </div>
           <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array } -%>
         <% else -%>
-          <div id="tags-headline"><h3>Categories</h3></div>
+          <div id="tags-headline">
+            <h3 style="display:inline;">Categories</h3>
+            <span><%= tag_counts -%></span>
+          </div>
           <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array } -%>
         <% end -%>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>

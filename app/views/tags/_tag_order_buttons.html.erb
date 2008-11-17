@@ -1,0 +1,15 @@
+<ul class="nav-list">
+  <% tag_orders = [ ['Most Popular', 'number'],
+                    ['By Name', 'alphabetical'],
+                    ['Latest', 'latest'],
+                    ['Random', 'random'] ]
+    html = String.new
+    tag_orders.each_with_index do |tag_order, index|
+      html += content_tag('li', link_to_remote(tag_order[0], { :url => { :order => tag_order[1] },
+                                                               :before => "Element.show('data_spinner')",
+                                                               :complete => "Element.hide('data_spinner')" },
+                                               :href => url_for(:order => tag_order[1]) ),
+                                :class => "#{'first' if index == 0}#{' selected' if @order == tag_order[1]}") + "\n"
+    end -%>
+    <%= html -%>
+</ul>

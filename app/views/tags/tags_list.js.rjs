@@ -1,0 +1,2 @@
+page.replace_html 'tags_list', :partial => 'tags/tags_list'
+page.replace_html 'content-tabs', :partial => 'tags/tag_order_buttons'
