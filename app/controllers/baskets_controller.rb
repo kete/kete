@@ -143,22 +143,23 @@ class BasketsController < ApplicationController
     end
 
     if !params[:feeds_url_list].nil?
+      @basket.feeds.destroy_all
       @feeds_successful = true
       begin
         new_feeds = Array.new
         params[:feeds_url_list].split("\n").each do |feed|
           feed_parts = feed.split('|')
           feed_url = feed_parts[1].strip.gsub("feed:", "http:")
-          new_feeds << Feed.create({:title => feed_parts[0].strip, :url => feed_url, :limit => (feed_parts[2] || nil)})
+          new_feeds << Feed.create({ :title => feed_parts[0].strip,
+                                     :url => feed_url,
+                                     :limit => (feed_parts[2] || nil),
+                                     :basket_id => @basket.id })
         end
-        if new_feeds.size > 0
-          @basket.feeds.delete_all
-          @basket.feeds = new_feeds
-        end
+        @basket.feeds = new_feeds if new_feeds.size > 0
       rescue
         # if there is a problem adding feeds, raise an error the user
         # chances are that they didn't format things correctly
-        @basket.errors.add('Feeds', "there was a problem adding your feeds.  Is the format you entered correct?")
+        @basket.errors.add('Feeds', "there was a problem adding your feeds. Is the format you entered correct and you havn't entered a feed twice?")
         @feeds_successful = false
       end
     end
@@ -196,6 +197,9 @@ class BasketsController < ApplicationController
       unless params[:reject_basket].blank?
         UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'rejected')
       end
+
+      # Add this last because it takes the longest time to process
+      @basket.feeds.each { |feed| feed.update_feed }
 
       flash[:notice] = 'Basket was successfully updated.'
       redirect_to "/#{@basket.urlified_name}/"

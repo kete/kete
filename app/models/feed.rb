@@ -9,15 +9,23 @@ class Feed < ActiveRecord::Base
   validates_presence_of :url
   validates_uniqueness_of :url, :case_sensitive => false
 
-  def latest_entries
-    self.last_downloaded = Time.now.utc.to_s :db
-    self.save!
+  serialize :rss_feed_serialized
 
+  def entries
+    feed_limit = self.limit || 5
+    self.rss_feed_serialized[0..(feed_limit - 1)]
+  end
+
+  def update_feed
     entries = []
     feed = FeedNormalizer::FeedNormalizer.parse open(self.url)
     entries.push(*feed.entries)
 
-    feed_limit = self.limit || 5
-    entries[0..(feed_limit - 1)]
+    if self.rss_feed_serialized != entries # is there something different
+      self.rss_feed_serialized = entries
+      self.last_downloaded = Time.now.utc.to_s :db
+      self.save
+    end
   end
+
 end

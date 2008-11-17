@@ -151,12 +151,14 @@
   <div class="secondary-content-section-wrapper">
     <div id="contents-by-type" class="secondary-content-section">
       <% @current_basket.feeds.each do |feed| -%>
-        <h4><%=h feed.title %></h4>
-        <ul>
-          <% feed.latest_entries.each do |entry| -%>
-            <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
-          <% end -%>
-        </ul>
+        <% cache({ :part => "#{feed.title}_feed" }) do -%>
+          <h4><%=h feed.title %></h4>
+          <ul>
+            <% feed.entries.each do |entry| -%>
+              <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+            <% end -%>
+          </ul>
+        <% end -%>
       <% end -%>
       <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
     </div>

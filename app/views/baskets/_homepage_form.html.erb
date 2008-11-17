@@ -117,7 +117,7 @@
         </label>
         <fieldset>
           <div class="form-element">
-            <%= text_area_tag 'feeds_url_list', @feeds_list, :cols => 80, :rows => 3 %>
+            <%= text_area_tag 'feeds_url_list', (params[:feeds_url_list] || @feeds_list), :cols => 80, :rows => 3 %>
           </div>
           <div class="form_example">
             <p>A new-line separated list of URLs in the following format
