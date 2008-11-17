@@ -21,23 +21,28 @@
   <% end -%>
 <% end -%>
 
-<% if logged_in? and @at_least_a_moderator -%>
-  <% cache({:part => 'edit'}) do -%>
-    <ul>
-      <li class="first">
-        <%= link_to "Edit", :action => :edit,
-                            :urlified_name => @topic.basket.urlified_name,
-                            :controller => 'topics',
-                            :id => @topic -%>
-      </li>
-      <li>
-        <%= link_to "History", :action => :history,
-                               :urlified_name => @topic.basket.urlified_name,
-                               :controller => 'topics',
-                               :id => @topic -%>
-      </li>
-    </ul>
-  <% end -%>
+<% if logged_in? && (@at_least_a_moderator || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
+  <ul>
+    <% if @at_least_a_moderator -%>
+      <% cache({:part => 'edit'}) do -%>
+        <li class="first">
+          <%= link_to "Edit", :action => 'edit',
+                              :urlified_name => @topic.basket.urlified_name,
+                              :controller => 'topics',
+                              :id => @topic -%>
+        </li>
+        <li>
+          <%= link_to "History", :action => 'history',
+                                 :urlified_name => @topic.basket.urlified_name,
+                                 :controller => 'topics',
+                                 :id => @topic -%>
+        </li>
+      <% end -%>
+    <% end -%>  
+    <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? -%>
+      <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
+    <% end -%>
+  </ul>
 <% end -%>
 
 <% if @current_basket.allows_contact_with_inheritance? -%>

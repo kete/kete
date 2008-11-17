@@ -73,23 +73,28 @@
   <% end -%>
 <% end -%>
 
-<% if !@topic.nil? and logged_in? and @at_least_a_moderator -%>
-  <% cache({:part => 'edit'}) do -%>
+<% if logged_in? && (@at_least_a_moderator || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
+  <% if !@topic.nil? -%>
     <div class="secondary-content-section-wrapper">
       <div id="moderator-tools" class="secondary-content-section">
         <ul>
-          <%= li_with_correct_class(tool_count) +
-              link_to( "Edit", :action => :edit,
-                               :urlified_name => @topic.basket.urlified_name,
-                               :controller => 'topics',
-                               :id => @topic ) -%></li>
-          <% tool_count += 1 -%>
-          <li>
-            <%= link_to "History", :action => :history,
-                                   :urlified_name => @topic.basket.urlified_name,
-                                   :controller => 'topics',
-                                   :id => @topic -%>
-          </li>
+          <% if @at_least_a_moderator -%>
+            <% cache({:part => 'edit'}) do -%>
+              <%= li_with_correct_class(tool_count) + 
+                  link_to("Edit", :action => 'edit',
+                                  :urlified_name => @topic.basket.urlified_name,
+                                  :controller => 'topics',
+                                  :id => @topic ) %></li>
+              <% tool_count += 1 -%>
+              <li><%= link_to "History", :action => 'history',
+                                         :urlified_name => @topic.basket.urlified_name,
+                                         :controller => 'topics',
+                                         :id => @topic %></li>
+            <% end -%>
+          <% end -%>
+          <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
+            <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
+          <% end -%>
         </ul>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
       </div>
