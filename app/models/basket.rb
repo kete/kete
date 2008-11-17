@@ -110,7 +110,7 @@ class Basket < ActiveRecord::Base
   def tag_counts_array(options = {})
     tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
     tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
-    tags_in_reverse = !options[:tags_in_reverse].nil? ? options[:tags_in_reverse] : false
+    tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : 'asc'
 
     unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
       return Array.new
@@ -118,11 +118,11 @@ class Basket < ActiveRecord::Base
 
     case tag_order
     when 'alphabetical'
-      find_tag_order = "tags.name #{tags_in_reverse ? 'desc' : 'asc'}"
+      find_tag_order = "tags.name #{tag_direction}"
     when 'latest'
-      find_tag_order = "taggings.created_at #{tags_in_reverse ? 'asc' : 'desc'}"
+      find_tag_order = "taggings.created_at #{tag_direction}"
     when 'number'
-      find_tag_order = "count #{tags_in_reverse ? 'asc' : 'desc'}"
+      find_tag_order = "count #{tag_direction}"
     else
       find_tag_order = 'Rand()'
     end
@@ -155,13 +155,13 @@ class Basket < ActiveRecord::Base
     case tag_order
     when 'alphabetical'
       @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name] }
-      @tag_counts_array = @tag_counts_array.reverse if tags_in_reverse
+      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
     when 'latest'
       @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:id] }
-      @tag_counts_array = @tag_counts_array.reverse if tags_in_reverse
+      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
     when 'number'
       @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:taggings_count] }
-      @tag_counts_array = @tag_counts_array.reverse unless tags_in_reverse
+      @tag_counts_array = @tag_counts_array.reverse unless tag_direction == 'desc'
     else
       @tag_counts_array = @tag_counts_array.sort_by { rand }
     end

@@ -5,10 +5,12 @@
                     ['Random', 'random'] ]
     html = String.new
     tag_orders.each_with_index do |tag_order, index|
-      html += content_tag('li', link_to_remote(tag_order[0], { :url => { :order => tag_order[1] },
-                                                               :before => "Element.show('data_spinner')",
-                                                               :complete => "Element.hide('data_spinner')" },
-                                               :href => url_for(:order => tag_order[1]) ),
+      sort_direction = search_sorting_controls_for(tag_order[0],
+                                                   tag_order[1],
+                                                   (tag_order[1] == @default_order),
+                                                   (tag_order[1] == 'alphabetical' ? 'asc' : 'desc'),
+                                                   true)
+      html += content_tag('li', sort_direction,
                                 :class => "#{'first' if index == 0}#{' selected' if @order == tag_order[1]}") + "\n"
     end -%>
     <%= html -%>

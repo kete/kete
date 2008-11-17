@@ -72,6 +72,9 @@ ul.nav-list a:hover{
     text-decoration: underline;;
     color: #333;
 }
+ul.nav-list a img {
+  border: none; 
+}
 
 #top-menu {
 		clear: both;

@@ -977,9 +977,10 @@ module ApplicationHelper
   end
 
   # Controls for search sorting on pages like basket list and basket members list
-  def search_sorting_controls_for(sort_text, sort_type, main_sort_order=false, default_direction='asc')
+  def search_sorting_controls_for(sort_text, sort_type, main_sort_order=false, default_direction='asc', remote_link = false)
     # if searching, get the current sort direction else use the default order
     direction = (params[:order] == sort_type ? params[:direction] : nil) || default_direction
+
     # using the current sort direction, create the image we'll use display
     if direction == 'desc'
       direction_image = image_tag('arrow_down.gif', :alt => 'Descending. ', :class => 'sorting_control', :width => 16, :height => 7)
@@ -987,18 +988,30 @@ module ApplicationHelper
       direction == 'asc' # if direction is something else, we set it right here
       direction_image = image_tag('arrow_up.gif', :alt => 'Ascending. ', :class => 'sorting_control', :width => 16, :height => 7)
     end
+
     # create the link based on sort type and direction (user provided or default)
     location_hash = { :order => sort_type,
                       :direction => direction }
+
     # if sorting and the sort is for this sort type, or no sort made and this sort type is the main sort order
-    if (params[:order] && params[:order] == sort_type) || (!params[:order] && main_sort_order)
+    if (params[:order] && params[:order] == sort_type && sort_type != 'random') || (!params[:order] && main_sort_order)
       # flip the current direction so clicking the link reverses direction
       location_hash.merge!({ :direction => sort_direction_after(direction) })
-      # create the link with text, current direction image, pointing to oposite direction
-      link_to "#{sort_text} #{direction_image}", location_hash
+      link_to_text = "#{sort_text} #{direction_image}"
     else
-      # create the link with text, pointing to default sort options
-      link_to "#{sort_text}", location_hash
+      link_to_text = "#{sort_text}"
+    end
+
+    # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
+    if remote_link
+      # create a remote to link
+      link_to_remote link_to_text, { :url => location_hash,
+                                     :before => "Element.show('data_spinner')",
+                                     :complete => "Element.hide('data_spinner')" },
+                                   :href => url_for(location_hash)
+    else
+      # create a plain link
+      link_to link_to_text, location_hash
     end
   end
 

@@ -1,13 +1,14 @@
 class TagsController < ApplicationController
   def index
     @type = @current_basket.index_page_tags_as || 'categories'
-    @order = params[:order] || @current_basket.index_page_order_tags_by || 'random'
-    @tags_in_reverse = (params[:tags_in_reverse] && params[:tags_in_reverse] == 'reverse') ? true : false
+    @default_order = @current_basket.index_page_order_tags_by || 'latest'
+    @order = params[:order] || @default_order
+    @direction = params[:direction] || 'desc'
 
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
     @number_per_page = 25
 
-    @tag_counts_array = @current_basket.tag_counts_array({:limit => false, :order => @order, :tags_in_reverse => @tags_in_reverse})
+    @tag_counts_array = @current_basket.tag_counts_array({ :limit => false, :order => @order, :direction => params[:direction] })
     @results = WillPaginate::Collection.new(@current_page, @number_per_page, @tag_counts_array.size)
     @tags = @tag_counts_array[(@results.offset)..(@results.offset + (@number_per_page - 1))]
 
