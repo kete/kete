@@ -78,7 +78,7 @@
     <div class="secondary-content-section-wrapper">
       <div id="moderator-tools" class="secondary-content-section">
         <ul>
-          <%= li_with_correct_class(tool_count) + 
+          <%= li_with_correct_class(tool_count) +
               link_to( "Edit", :action => :edit,
                                :urlified_name => @topic.basket.urlified_name,
                                :controller => 'topics',
@@ -189,7 +189,8 @@
     <div class="secondary-content-section-wrapper">
       <div id="tags-box" class="secondary-content-section">
         <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
-                          link_to("(showing #{@tag_counts_array.size} of #{@tag_counts_size})",
+                         "( showing #{@tag_counts_array.size} of #{@tag_counts_size} | " +
+                          link_to(" all )",
                                   :controller => 'tags',
                                   :action => 'index') : '' -%>
         <% if @current_basket.index_page_tags_as == 'tag cloud' -%>

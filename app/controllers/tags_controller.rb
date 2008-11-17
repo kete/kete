@@ -6,7 +6,9 @@ class TagsController < ApplicationController
     @direction = params[:direction] || 'desc'
 
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
-    @number_per_page = 25
+    # clouds can accommodate more tags per page than category view
+    @number_per_page = 75
+    @number_per_page = 25 if @type == "categories"
 
     @tag_counts_array = @current_basket.tag_counts_array({ :limit => false, :order => @order, :direction => params[:direction] })
     @results = WillPaginate::Collection.new(@current_page, @number_per_page, @tag_counts_array.size)

@@ -1,4 +1,9 @@
-<% @title = 'Tags' -%>
+<% if @type != 'categories'
+     @title = 'Tags'
+   else
+     @title = @type.capitalize
+   end
+-%>
 
 <div id="content-tabs">
   <%= render :partial => "tags/tag_order_buttons" -%>
