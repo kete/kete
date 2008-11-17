@@ -58,9 +58,15 @@
 
 <div class="form-element">
 <%= f.check_box :agree_to_terms, :tabindex => '1' %> I agree that I have read and accept the
-<%= link_to_remote("Terms and conditions", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 4 }, :html => {:tabindex => '1'}) %>, 
-<%= link_to_remote("Privacy policy", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 5 }, :html => {:tabindex => '1'}) %>, and
-<%= link_to_remote("House Rules", :update => 'disclaimer', :url => { :action => :disclaimer, :id => 2 }, :html => {:tabindex => '1'}) %>.
+<%= link_to_remote("Terms and conditions", { :url => { :action => 'disclaimer', :id => 4 } },
+                                           { :href => url_for({ :action => 'disclaimer', :id => 4 }),
+                                             :tabindex => '1' }) %>,
+<%= link_to_remote("Privacy policy", { :url => { :action => 'disclaimer', :id => 5 } },
+                                     { :href => url_for({ :action => 'disclaimer', :id => 5 }),
+                                       :tabindex => '1' }) %>, and
+<%= link_to_remote("House Rules", { :url => { :action => 'disclaimer', :id => 2 } },
+                                  { :href => url_for({ :action => 'disclaimer', :id => 2 }),
+                                    :tabindex => '1' }) %>.
 </div>
 <div id="disclaimer"></div>
 

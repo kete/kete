@@ -131,7 +131,13 @@ zoom_class = zoom_class_from_controller(controller)
       <%= form.text_field :url, { :tabindex => '1', :label => 'URL' } -%>
     <% end -%>
 
-    <%= form.text_field :tag_list, { :tabindex => '1', :label => 'Tags (separated by commas)' } -%>
+    <div class="form-element">
+      <label for="<%= @item_type -%>_tag_list">Tags (separated by commas)</label>
+      <%= text_field_with_auto_complete(@item_type, :tag_list, { :tabindex => '1' },
+                                                               { :tokens => ',',
+                                                                 :indicator => 'data_spinner_tags' }) -%>
+      <img src='/images/indicator.gif' width='16' height='16' alt='Getting tags. ' id='data_spinner_tags' style='display:none;' />
+    </div>
 
     <% # disabling overwriting of original file for the timebeing
        # when we support versioning of files, we'll likely re-enable this -%>

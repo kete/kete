@@ -2,6 +2,11 @@
    post_excerpt = !post_headline.short_summary.blank? ? post_headline.short_summary : strip_tags(post_headline.description)
 -%>
 <div class="generic-result-wrapper" id="item_<%= post_headline.id %>_wrapper">
+        <% unless post_headline.first_related_image.blank? %>
+          <div class="image-result-thumb">
+            <%= render(:partial => "topics/related_images_links_tag", :locals => { :related_item => post_headline.first_related_image }) %>
+          </div>
+        <% end %>
         <div class="generic-result-header">
                 <h4><%= link_to h(post_headline.title), post_url -%></h4>
         </div>

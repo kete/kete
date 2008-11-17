@@ -145,6 +145,10 @@ class Topic < ActiveRecord::Base
     end
   end
 
+  def first_related_image
+    still_images.find_non_pending(:first) || {}
+  end
+
   def title_for_license
     title
   end

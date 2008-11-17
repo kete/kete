@@ -26,6 +26,10 @@ class TopicsController < ApplicationController
   # stuff related to flagging and moderation
   include FlaggingController
 
+  # Kieran Pilkington, 2008/10/23
+  # Autocomplete methods for tag adder on item pages
+  include TaggingController
+
   # Get the Privacy Controls helper
   helper :privacy_controls
 

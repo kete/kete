@@ -1,0 +1,19 @@
+if @successful
+  page.replace_html :notice, "<div>#{flash[:notice]}</div>"
+  page[:error].hide
+  page[:notice].show
+  flash.discard
+
+  @viewer_portraits = !current_user.portraits.empty? ? current_user.portraits : nil
+  page.replace_html 'profile_avatar', avatar_for(current_user)
+  if @viewer_portraits.nil?
+    page[:portraits].hide
+  else
+    @viewer_is_user = true
+    page.replace_html 'portrait_images', :partial => 'portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user }
+  end
+else
+  page.replace_html :error, "<div>#{flash[:error]}</div>"
+  page[:notice].hide
+  page[:error].show
+end

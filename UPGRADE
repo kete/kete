@@ -36,9 +36,25 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 == 2008/11/12 - Better handling of unicode characters in search records
 
 1.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
-2.      Restart your mongrels or mod_rails
-3.      Restart your backgroundrb instance
-4.      If you have existing records that have non-latin characters in them, rebuild your search records (see other tasks below for summary under "Use the web interface to repopulate your Zebra database...")
+2.      Install the htmlentities gem by running
+           sudo gem install htmlentities
+3.      Restart your mongrels or mod_rails
+4.      Restart your backgroundrb instance
+5.      If you have existing records that have non-latin characters in them, rebuild your search records (see other tasks below for summary under "Use the web interface to repopulate your Zebra database...")
+
+== 2008/11/05 - Added Basket Join Policy and Member List Policy
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      Run the migrations: 'rake db:migrate'
+4.      Start your Kete server again (mongrels or mod_rails)
+
+== 2008/11/04 - Added User contact form functionality
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      Run the migrations: 'rake db:migrate'
+4.      Start your Kete server again (mongrels or mod_rails)
 
 == 2008/10/16 - Location of uploaded files changed and corrected
 
@@ -52,6 +68,16 @@ To upgrade, please follow these instructions:
 4.      Run rake kete:repair:correct_upload_locations to move files ONLY if necessary
 
 Note: If you're using Capistrano to manage your Kete instance deployments, you may also need to retrieve uploaded files from earlier releases as they may have been archived. See http://kete.net.nz/documentation/topics/show/207 for full details.
+
+== 2008/10/14 - Add Gravatar support, and new user portrait related settings/migrations
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Install the avatar gem
+          $ gem install avatar
+3.      Upgrade your code base
+4.      Run the migrations: 'rake db:migrate'
+5.      Run the upgrade script: 'rake kete:upgrade'
+6.      Start your Kete server again (mongrels or mod_rails)
 
 == 2008/10/01 - Private files need to be copied to system folder
 
@@ -84,6 +110,15 @@ Complete steps are:
         The default Kete templates have already been updated.
 2.      Run tmp:cache:clear (not necessary for capistrano deployments)
 3.      Restart your Kete server
+
+== 2008/09/12 - Adding Homepage Feed Reader
+
+1.      Stop your Kete server (mongrels, backgroundrb).
+2.      Install the feed-normalizer gem
+          $ gem install feed-normalizer
+3.      Upgrade your code base
+4.      Run the database migration 'rake db:migrate'
+5.      Start your Kete server again (mongrels, backgroundrb)
 
 == 2008/08/07 - Fixing Caching Issues
 

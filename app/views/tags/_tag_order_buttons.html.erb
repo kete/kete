@@ -1,0 +1,13 @@
+<ul class="nav-list">
+  <% html = String.new
+    Basket.order_tags_by_options.each_with_index do |tag_order, index|
+      sort_direction = search_sorting_controls_for(tag_order[0],
+                                                   tag_order[1],
+                                                   (tag_order[1] == @default_order),
+                                                   (tag_order[1] == 'alphabetical' ? 'asc' : 'desc'),
+                                                   true)
+      html += content_tag('li', sort_direction,
+                                :class => "#{'first' if index == 0}#{' selected' if @order == tag_order[1]}") + "\n"
+    end -%>
+    <%= html -%>
+</ul>

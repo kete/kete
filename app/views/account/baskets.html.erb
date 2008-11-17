@@ -1,0 +1,9 @@
+<% @title = 'Your Baskets'  -%>
+
+<h2><%= h(@title) -%></h2>
+
+<ul>
+  <%= users_baskets_list(current_user, true) -%>
+</ul>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>

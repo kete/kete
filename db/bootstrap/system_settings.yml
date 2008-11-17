@@ -470,7 +470,7 @@ system_settings_053:
   id: "53"
   value: "[]"
   section: System
-systsystem_settings_054:
+system_settings_054:
   name: Government Website
   technically_advanced: true
   required_to_be_configured: false
@@ -494,3 +494,27 @@ system_settings_056:
   id: "56"
   value: "Kete is a knowledge basket of topics, images, audio, video, web links, documents, and discussion which are collected and catalogued by the community."
   section: Server
+system_settings_057:
+  name: Enable User Portraits
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If enabled, Users will be able to add images they upload to their 'portraits', a set of images displayed on their profile page. The first portrait image will be used as their avatar around the site.
+  id: "57"
+  value: "false"
+  section: Accounts
+system_settings_058:
+  name: Enable Gravatar Support
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: If enabled, and when a User Portrait has not been set, Kete will attempt to get the users Gravatar based on their registered email.
+  id: "58"
+  value: "true"
+  section: Accounts
+system_settings_059:
+  name: Basket Creation Policy
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: Allow site members to create baskets? Can be 'open' (instant creation), 'request' (admin approved) or 'closed' (admin only).
+  id: "59"
+  value: "closed"
+  section: System

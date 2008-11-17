@@ -118,7 +118,26 @@ class StillImageTest < Test::Unit::TestCase
     end
     
   end
-  
+
+  def test_should_have_relation_and_user_when_in_portraits
+    user = User.first
+    new_image_with_creator user
+    UserPortraitRelation.new_portrait_for(user, @still_image)
+    @still_image.reload
+
+    assert_not_nil @still_image.user_portrait_relation
+    assert_not_nil @still_image.portrayed_user
+    assert_kind_of User, @still_image.portrayed_user
+    assert_equal User.first, @still_image.portrayed_user 
+  end
+
+  def test_should_check_whether_user_is_image_uploader
+    user = User.first
+    new_image_with_creator user
+
+    assert_equal true, @still_image.created_by?(user)
+  end
+
   private
   
     def thumbnails_of(still_image)
@@ -129,5 +148,10 @@ class StillImageTest < Test::Unit::TestCase
     def original_of(still_image)
       still_image.original_file
     end
-  
+
+    def new_image_with_creator(user)
+      @still_image = StillImage.create(@new_model)
+      @still_image.creator = user
+      @still_image.save
+    end
 end
