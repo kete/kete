@@ -73,7 +73,7 @@
 
   <%= hidden_field_tag 'video[basket_id]', @current_basket.id, :id => 'video_basket_id' if @video.new_record? %>
 
-  <%= tags_input_field(form,"video_tag_list") %>
+  <%= tags_input_field(:video) -%>
 
   <% # disabling overwriting of original document for the timebeing
      # when we support versioning of document and image files,

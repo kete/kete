@@ -68,10 +68,7 @@
           <%= check_box 'topic', 'do_not_sanitize', "id" => "topic_do_not_sanitize", :tabindex => '1' %></div>
         <% end -%>
 
-        <div class="form-element">
-                <label for="topic_tag_list">Tags (separated by commas):</label>
-                <%= text_field 'topic', 'tag_list', {:class => "text-input", :tabindex => '1'} %>
-        </div>
+        <%= tags_input_field(:topic) -%>
 
         <% if edit
                 # this is an edit

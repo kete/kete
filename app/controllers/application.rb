@@ -935,6 +935,7 @@ class ApplicationController < ActionController::Base
     @permitted_to_view_private_items ||= logged_in? &&
                                          permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
   end
+  alias permitted_to_edit_current_item? permitted_to_view_private_items?
 
   # checks if the user is requesting a private version of an item, and see
   # if they are allowed to do so
@@ -1058,10 +1059,10 @@ class ApplicationController < ActionController::Base
 
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
-                :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type,
-                :current_user_can_see_flagging?, :current_user_can_see_add_links?, :current_user_can_add_or_request_basket?,
-                :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?,
-                :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
+                :permitted_to_edit_current_item?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?,
+                :get_acceptable_privacy_type, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
+                :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
+                :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
 
   protected
