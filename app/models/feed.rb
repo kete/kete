@@ -17,14 +17,18 @@ class Feed < ActiveRecord::Base
   end
 
   def update_feed
-    entries = []
-    feed = FeedNormalizer::FeedNormalizer.parse open(self.url)
-    entries.push(*feed.entries)
+    begin
+      entries = []
+      feed = FeedNormalizer::FeedNormalizer.parse open(self.url)
+      entries.push(*feed.entries)
 
-    if self.rss_feed_serialized != entries # is there something different
-      self.rss_feed_serialized = entries
-      self.last_downloaded = Time.now.utc.to_s :db
-      self.save
+      if self.rss_feed_serialized != entries # is there something different
+        self.rss_feed_serialized = entries
+        self.last_downloaded = Time.now.utc.to_s :db
+        self.save
+      end
+    rescue
+      # fail silently - make sure nothing causes errors to output
     end
   end
 
