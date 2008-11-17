@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
 
   include FriendlyUrls
 
+  include Utf8UrlFor
+
   # for the remember me functionality
   before_filter :login_from_cookie
 
@@ -41,6 +43,10 @@ class ApplicationController < ActionController::Base
 
   # sets up instance variables for authentication
   include KeteAuthorization
+
+  # Create an instance variable with a list of baskets the
+  # current user has roles in (member, admin etc)
+  before_filter :update_basket_permissions_hash
 
   # keep track of tag_list input by version
   before_filter :update_params_with_raw_tag_list, :only => [ :create, :update ]
@@ -693,7 +699,11 @@ class ApplicationController < ActionController::Base
   end
 
   def url_for_dc_identifier(item)
-    url_for(:controller => zoom_class_controller(item.class.name), :action => 'show', :id => item, :format => nil, :urlified_name => item.basket.urlified_name)
+    utf8_url_for(:controller => zoom_class_controller(item.class.name),
+                 :action => 'show',
+                 :id => item,
+                 :format => nil,
+                 :urlified_name => item.basket.urlified_name)
   end
 
   def render_oai_record_xml(options = {})
@@ -888,6 +898,7 @@ class ApplicationController < ActionController::Base
     @permitted_to_view_private_items ||= logged_in? &&
                                          permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
   end
+  alias permitted_to_edit_current_item? permitted_to_view_private_items?
 
   # checks if the user is requesting a private version of an item, and see
   # if they are allowed to do so
@@ -1004,7 +1015,7 @@ class ApplicationController < ActionController::Base
   end
 
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :permitted_to_edit_current_item?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
 
   protected
 
@@ -1032,6 +1043,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def update_basket_permissions_hash
+    @basket_access_hash = logged_in? ? current_user.basket_permissions : Hash.new
+  end
 
   def current_user_is?(at_least_setting)
     begin

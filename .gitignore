@@ -2,6 +2,7 @@
 *.sqlite3*
 config/database.yml
 config/backgroundrb.yml
+config/mongrel_cluster.yml
 db/schema.rb
 public/blank.html
 public/robots.txt

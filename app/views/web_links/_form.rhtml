@@ -72,10 +72,7 @@
 <%= hidden_field 'web_link', 'file_private' -%>
 <% end %>
 
-<div class="form-element">
-  <label for="web_link_tag_list">Tags (separated by commas):</label>
-  <%= text_field 'web_link', 'tag_list', {:class => "text-input", :tabindex => '1'} %>
-</div>
+<%= tags_input_field(:web_link) -%>
 
 <% if show_privacy_controls_for?(@web_link) || !edit %>
 <div class="form-element">

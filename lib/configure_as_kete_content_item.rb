@@ -32,7 +32,7 @@ module ConfigureAsKeteContentItem
       # out of the box
       # we also track each versions raw_tag_list input
       # so we can revert later if necessary
-      
+
       # Tags are tracked on a per-privacy basis.
       klass.send :acts_as_taggable_on, :public_tags
       klass.send :acts_as_taggable_on, :private_tags
@@ -47,7 +47,7 @@ module ConfigureAsKeteContentItem
       # is different than how we use tags on the versioned model
       # where we use it for flagging moderator options, like 'flag as inappropriate'
       # where 'inappropriate' is actually a tag on that particular version
-      
+
       # Moderation flags are tracked in a separate context.
       Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
         acts_as_taggable_on :flags
@@ -61,6 +61,9 @@ module ConfigureAsKeteContentItem
       klass.send :include, Flagging
 
       klass.send :validates_presence_of, :title
+
+      # don't allow ampersands in title, it screws up our search records, because it is special character in xml
+      klass.send :validates_format_of, :title, :with => /\A[^\&]*\Z/, :message => "cannot contain the &amp; character."
 
       klass.send :validates_as_sanitized_html, [:description, :extended_content]
 
@@ -84,5 +87,10 @@ module ConfigureAsKeteContentItem
     # turn pretty urls on or off here
     include FriendlyUrls
     alias :to_param :format_for_friendly_urls
+
+    private
+    def validate
+      errors.add('Tags', "cannot contain the &amp; character.") if raw_tag_list =~ /\&/
+    end
   end
 end

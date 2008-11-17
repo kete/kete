@@ -473,9 +473,15 @@ module ApplicationHelper
     end
   end
 
-  def tags_input_field(form,label_for)
-    "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
-                #{form.text_field :tag_list, :tabindex => '1'}</div>"
+  def tags_input_field(form_name)
+    "<div class=\"form-element\">" +
+      "<label for=\"#{form_name.to_s}_tag_list\">Tags (separated by commas):</label>" +
+      text_field_with_auto_complete(form_name.to_sym, :tag_list, { :class => "text-input",
+                                                                   :tabindex => '1' },
+                                                                 { :tokens => ',',
+                                                                   :indicator => 'data_spinner_tags' }) +
+      "<img src='/images/indicator.gif' width='16' height='16' alt='Getting tags. ' id='data_spinner_tags' style='display:none;' />" +
+    "</div>"
   end
 
   #---- related to extended_fields for either topic_types or content_types

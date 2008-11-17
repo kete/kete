@@ -9,7 +9,7 @@ ActiveRecord::Schema.define :version => 0 do
     t.column :is_available, :boolean, :null => false
     t.column :image_url, :string, :null => false
     t.column :is_creative_commons, :boolean, :null => false
-    t.column :metadata, :text, :null => false
+    t.column :metadata, :text, :null => true
     t.column :created_at, :datetime, :null => false
     t.column :updated_at, :datetime, :null => false
   end

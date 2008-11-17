@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: d7c1e32bdda8c1b966e62e513007a7b0c0f028ff
+  branch: HEAD
+lock: 
+repository_url: git://github.com/jfernandez/auto_complete.git
+repository_class: Piston::Git::Repository

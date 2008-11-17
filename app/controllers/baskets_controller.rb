@@ -6,7 +6,6 @@ class BasketsController < ApplicationController
 
   permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :choose_type, :permission_denied]
 
-  after_filter :repopulate_basket_permissions, :only => [:create, :destroy]
   after_filter :remove_robots_txt_cache, :only => [:create, :update, :destroy]
 
   def index
@@ -192,8 +191,7 @@ class BasketsController < ApplicationController
   # and they are presented with options to continue
   # in the future this will present the join policy of the basket, etc
   # now it only says "login as different user or contact an administrator"
-  def permissioned_denied
-    session[:has_access_on_baskets] = logged_in? ? current_user.get_basket_permissions : Hash.new
+  def permission_denied
   end
 
   def set_settings
@@ -241,10 +239,6 @@ class BasketsController < ApplicationController
         nil
       end
     end
-  end
-
-  def repopulate_basket_permissions
-    session[:has_access_on_baskets] = current_user.get_basket_permissions
   end
 
   # Kieran Pilkington, 2008/10/01
