@@ -33,4 +33,8 @@ class Feed < ActiveRecord::Base
     end
   end
 
+  # for backgroundrb feeds_worker support
+  def to_worker_key
+    @feed_worker_key ||= id.to_s + "_feed_worker"
+  end
 end

@@ -8,11 +8,13 @@ class FeedsWorker < BackgrounDRb::MetaWorker
     feed = Feed.find_by_id(feed_id)
     raise "Feed of id #{feed_id} not found! Please supply valid feed id." unless feed
 
-    frequency_in_seconds = (feed.update_frequency * 60 * 60).to_i
+    # update_frequency is stored in minutes
+    frequency_in_seconds = (feed.update_frequency * 60).to_i
     add_periodic_timer(frequency_in_seconds) { update(feed_id) }
   end
 
   def update(feed_id)
+    logger.info("what is time: " + Time.now.to_s)
     feed = Feed.find_by_id(feed_id)
     feed.update_feed if feed
   end

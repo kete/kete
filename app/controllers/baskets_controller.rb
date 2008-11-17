@@ -146,9 +146,17 @@ class BasketsController < ApplicationController
     end
 
     @feeds_successful = true
+    # it is important this is not nil, rather than not blank
+    # empty feeds_url_list may mean to delete all existing feeds
     if !params[:feeds_url_list].nil?
-      # we call destroy_all here instead of delete_all so that callbacks are triggered
-      @basket.feeds.destroy_all
+      # clear out existing feeds
+      # and their workers
+      # we will recreate them below if they are to be kept
+      @basket.feeds.each do |feed|
+        delete_existing_workers_for(:feeds_worker, feed.to_worker_key)
+        feed.destroy
+      end
+
       begin
         new_feeds = Array.new
         params[:feeds_url_list].split("\n").each do |feed|
@@ -206,9 +214,7 @@ class BasketsController < ApplicationController
       # Add this last because it takes the longest time to process
       @basket.feeds.each do |feed|
         feed.update_feed
-        feed_worker_key = "#{feed.id}_#{feed.title.gsub(/\W/, '_')}_feed_worker"
-        delete_existing_workers_for(:feeds_worker, feed_worker_key)
-        MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed_worker_key, :data => feed.id )
+        MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed.to_worker_key, :data => feed.id )
       end
 
       flash[:notice] = 'Basket was successfully updated.'
