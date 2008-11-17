@@ -117,12 +117,11 @@
         </label>
         <fieldset>
           <div class="form-element">
-            <%= text_area_tag 'feeds_url_list', (params[:feeds_url_list] || @feeds_list), :cols => 80, :rows => 3 %>
+            <%= text_area_tag 'feeds_url_list', (params[:feeds_url_list] || @feeds_list), :cols => 80, :rows => 5, :wrap => 'off' -%>
           </div>
           <div class="form_example">
-            <p>A new-line separated list of URLs in the following format
-            per line:</p>
-            <p>Feed Title|Feed URL|(Maximum number of entries to display - optional)</p>
+            <p>A new-line separated list of URLs in the following format per line:</p>
+            <p>Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in hours - optional)</p>
           </div>
         </fieldset>
       </div>

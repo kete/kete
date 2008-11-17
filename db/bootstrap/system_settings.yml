@@ -518,11 +518,3 @@ system_settings_059:
   id: "59"
   value: "closed"
   section: System
-system_settings_060:
-  name: Frequency of RSS Feed Updates
-  technically_advanced: true
-  required_to_be_configured: true
-  explanation: How often should the site updated RSS feeds displayed on basket homepages? Specify a number of hours between each update. Accepts integers or floats (for every half hour, you'd enter .5 for example).
-  id: "60"
-  value: "1"
-  section: System

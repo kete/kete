@@ -13,6 +13,8 @@ class BasketsController < ApplicationController
 
   include EmailController
 
+  include WorkerControllerHelpers
+
   def index
     list
     render :action => 'list'
@@ -105,8 +107,9 @@ class BasketsController < ApplicationController
 
     @feeds_list = []
     @basket.feeds.each do |feed|
-      limit = !feed.limit.nil? ? "|#{feed.limit.to_s}" : ''
-      @feeds_list << "#{feed.title}|#{feed.url}#{limit}"
+      limit = !feed.limit.nil? ? feed.limit.to_s : ''
+      frequency = !feed.update_frequency.nil? ? feed.update_frequency.to_s.gsub('.0', '') : ''
+      @feeds_list << "#{feed.title}|#{feed.url}|#{limit}|#{frequency}"
     end
     @feeds_list = @feeds_list.join("\n")
   end
@@ -154,7 +157,8 @@ class BasketsController < ApplicationController
           feed_url = feed_parts[1].strip.gsub("feed:", "http:")
           new_feeds << Feed.create({ :title => feed_parts[0].strip,
                                      :url => feed_url,
-                                     :limit => (feed_parts[2] || nil),
+                                     :limit => feed_parts[2],
+                                     :update_frequency => (feed_parts[3] || 1),
                                      :basket_id => @basket.id })
         end
         @basket.feeds = new_feeds if new_feeds.size > 0
@@ -201,7 +205,13 @@ class BasketsController < ApplicationController
       end
 
       # Add this last because it takes the longest time to process
-      @basket.feeds.each { |feed| feed.update_feed }
+      @basket.feeds.each do |feed|
+        feed.update_feed
+        feed_worker_key = "#{feed.title.gsub(/\W/, '_')}_feed_worker"
+        delete_existing_workers_for(:feeds_worker, feed_worker_key)
+        MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed_worker_key )
+        MiddleMan.worker( :feeds_worker, feed_worker_key ).async_do_work( :arg => { :feed_id => feed.id } )
+      end
 
       flash[:notice] = 'Basket was successfully updated.'
       redirect_to "/#{@basket.urlified_name}/"

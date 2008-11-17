@@ -7,13 +7,14 @@ class Feed < ActiveRecord::Base
 
   validates_presence_of :title
   validates_presence_of :url
-  validates_uniqueness_of :url, :case_sensitive => false
+  validates_presence_of :basket_id
+  validates_presence_of :update_frequency
 
-  serialize :rss_feed_serialized
+  serialize :serialized_feed
 
   def entries
     feed_limit = self.limit || 5
-    self.rss_feed_serialized[0..(feed_limit - 1)]
+    self.serialized_feed[0..(feed_limit - 1)]
   end
 
   def update_feed
@@ -22,8 +23,8 @@ class Feed < ActiveRecord::Base
       feed = FeedNormalizer::FeedNormalizer.parse open(self.url)
       entries.push(*feed.entries)
 
-      if self.rss_feed_serialized != entries # is there something different
-        self.rss_feed_serialized = entries
+      if self.serialized_feed != entries # is there something different
+        self.serialized_feed = entries
         self.last_downloaded = Time.now.utc.to_s :db
         self.save
       end
