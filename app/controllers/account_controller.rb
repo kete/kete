@@ -219,7 +219,6 @@ class AccountController < ApplicationController
     end
   end
 
-
   def show_captcha
     return unless !params[:id].nil?
     captcha = Captcha.find(params[:id])
@@ -232,10 +231,9 @@ class AccountController < ApplicationController
 
   def disclaimer
     @topic = Topic.find(params[:id])
-    if request.xhr?
-      render :layout => false
-    else
-      render
+    respond_to do |format|
+      format.html { render :partial => 'account/disclaimer', :layout => 'simple' }
+      format.js
     end
   end
 
