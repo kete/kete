@@ -36,7 +36,7 @@
                   <%= form.check_box :do_not_sanitize, :tabindex => '1' %></div>
                 <% end -%>
 
-                <%= tags_input_field(form,"comment_tag_list") %>
+                <%= tags_input_field(:comment) -%>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
                 <% if form_fields.size > 0 %>

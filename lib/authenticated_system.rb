@@ -86,7 +86,9 @@ module AuthenticatedSystem
       respond_to do |accepts|
         accepts.html do
           store_location
-          redirect_to :controller => '/account', :action => 'login'
+          redirect_to :urlified_name => 'site',
+                      :controller => 'account',
+                      :action => 'login'
         end
         accepts.xml do
           if user = authenticate_or_request_with_http_basic { |u, p| User.authenticate(u, p) }
@@ -129,7 +131,6 @@ module AuthenticatedSystem
         user.remember_me
         self.current_user = user
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-        session[:has_access_on_baskets] = self.current_user.get_basket_permissions
         flash[:notice] = "Logged in successfully"
       end
     end

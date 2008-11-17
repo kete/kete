@@ -15,6 +15,8 @@ namespace :kete do
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types',
                     'kete:upgrade:correct_basket_defaults',
+                    'kete:upgrade:set_default_join_and_memberlist_policies',
+                    'kete:upgrade:make_baskets_approved_if_status_null',
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt']
@@ -57,10 +59,15 @@ namespace :kete do
     task :add_new_default_topics => :environment do
       topics_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/topics.yml")
 
+      # support for legacy kete installations where basket ids
+      # are different from those in topics.yml
+      # NOTE: if this gets uses again in another task, move this to a reusable method of its own
+      basket_ids = { "1" => 1,
+                     "2" => HELP_BASKET,
+                     "3" => ABOUT_BASKET,
+                     "4" => DOCUMENTATION_BASKET }
+
       # for each topic from yml
-      # check if it's in the db
-      # if not, add it
-      # system settings have unique names
       topics_from_yml.each do |topic_array|
         topic_hash = topic_array[1]
 
@@ -69,6 +76,11 @@ namespace :kete do
         # else we want to use the bootstap versions
         topic_hash.delete('id') if Topic.count > 0
 
+        # map basket id to Kete's basket id (support for legacy installations)
+        topic_hash['basket_id'] = basket_ids[topic_hash['basket_id'].to_s]
+
+        # check if it's in the db by looking for a similar topic title in
+        # the basket the topic is intended for, and if not present, add it
         if !Topic.find_by_title_and_basket_id(topic_hash['title'], topic_hash['basket_id'])
           topic = Topic.create!(topic_hash)
           topic.creator = User.first
@@ -152,6 +164,24 @@ namespace :kete do
         end
         basket.save
         p "Corrected settings of #{basket.name} basket"
+      end
+    end
+
+    desc 'Make Site basket have membership requests closed, and member list visibility at least admin.'
+    task :set_default_join_and_memberlist_policies => :environment do
+      site_basket = Basket.first # site
+      site_basket.settings[:basket_join_policy] = 'closed' if site_basket.settings[:basket_join_policy].class == NilClass
+      site_basket.settings[:memberlist_policy] = 'at least admin' if site_basket.settings[:memberlist_policy].class == NilClass
+    end
+
+    desc 'Make all baskets with the status of NULL set to approved'
+    task :make_baskets_approved_if_status_null => :environment do
+      Basket.all.each do |basket|
+        if basket.status.nil?
+          basket.status = 'approved'
+          basket.creator_id = 1
+          basket.save
+        end
       end
     end
 

@@ -4,10 +4,16 @@ class BasketsController < ApplicationController
                 :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
-  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :choose_type, :permission_denied]
+  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :new, :create, :choose_type,
+                                                               :permission_denied, :contact, :send_email]
 
-  after_filter :repopulate_basket_permissions, :only => [:create, :destroy]
+  before_filter :redirect_if_current_user_cant_add_or_request_basket, :only => [:new, :create]
+
   after_filter :remove_robots_txt_cache, :only => [:create, :update, :destroy]
+
+  include EmailController
+
+  include WorkerControllerHelpers
 
   def index
     list
@@ -19,8 +25,23 @@ class BasketsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @baskets = Basket.paginate(:page => params[:page],
-                               :per_page => 10)
+    if !params[:type].blank? && @site_admin
+      @listing_type = params[:type]
+    else
+      @listing_type = 'approved'
+    end
+
+    paginate_order = current_sorting_options('name', 'asc', ['name', 'created_at'])
+
+    options = { :page => params[:page],
+                :per_page => 5,
+                :order => paginate_order }
+    options.merge!({ :conditions => ['status = ?', @listing_type] })
+
+    @baskets = Basket.paginate(options)
+
+    @requested_count = Basket.count(:conditions => "status = 'requested'")
+    @rejected_count = Basket.count(:conditions => "status = 'rejected'")
   end
 
   def show
@@ -34,15 +55,42 @@ class BasketsController < ApplicationController
   def create
     convert_text_fields_to_boolean
 
+    # if an site admin makes a basket, make sure the basket is instantly approved
+    if basket_policy_request_with_permissions?
+      params[:basket][:status] = 'requested'
+    else
+      params[:basket][:status] = 'approved'
+    end
+
+    params[:basket][:creator_id] = current_user.id
+
     @basket = Basket.new(params[:basket])
 
     if @basket.save
+      # Reload to ensure basket.creator is updated.
+      @basket.reload
+
       set_settings
 
-      @basket.accepts_role('admin', current_user)
+      # if basket creator is admin or creation not moderated, make creator basket admin
+      @basket.accepts_role('admin', current_user) if BASKET_CREATION_POLICY == 'open' || @site_admin
 
-      flash[:notice] = 'Basket was successfully created.'
-      redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
+      # if an site admin makes a basket, make sure emailing notifications are skipped
+      if basket_policy_request_with_permissions?
+        @site_basket.administrators.each do |administrator|
+          UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'request')
+        end
+        flash[:notice] = 'Basket will now be reviewed, and you\'ll be notified of the outcome.'
+        redirect_to "/#{@site_basket.urlified_name}"
+      else
+        if !@site_admin
+          @site_basket.administrators.each do |administrator|
+            UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'created')
+          end
+        end
+        flash[:notice] = 'Basket was successfully created.'
+        redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
+      end
     else
       render :action => 'new'
     end
@@ -56,6 +104,14 @@ class BasketsController < ApplicationController
 
   def homepage_options
     edit
+
+    @feeds_list = []
+    @basket.feeds.each do |feed|
+      limit = !feed.limit.nil? ? feed.limit.to_s : ''
+      frequency = !feed.update_frequency.nil? ? feed.update_frequency.to_s.gsub('.0', '') : ''
+      @feeds_list << "#{feed.title}|#{feed.url}|#{limit}|#{frequency}"
+    end
+    @feeds_list = @feeds_list.join("\n")
   end
 
   def update
@@ -63,6 +119,15 @@ class BasketsController < ApplicationController
     @basket = Basket.find(params[:id])
     @topics = @basket.topics
     original_name = @basket.name
+
+    unless params[:accept_basket].blank?
+      params[:basket][:status] = 'approved'
+      @basket.accepts_role('admin', @basket.creator)
+    end
+
+    unless params[:reject_basket].blank?
+      params[:basket][:status] = 'rejected'
+    end
 
     # have to update zoom records for things in the basket
     # in two steps
@@ -80,9 +145,41 @@ class BasketsController < ApplicationController
       end
     end
 
+    @feeds_successful = true
+    # it is important this is not nil, rather than not blank
+    # empty feeds_url_list may mean to delete all existing feeds
+    if !params[:feeds_url_list].nil?
+      # clear out existing feeds
+      # and their workers
+      # we will recreate them below if they are to be kept
+      @basket.feeds.each do |feed|
+        delete_existing_workers_for(:feeds_worker, feed.to_worker_key)
+        feed.destroy
+      end
+
+      begin
+        new_feeds = Array.new
+        params[:feeds_url_list].split("\n").each do |feed|
+          feed_parts = feed.split('|')
+          feed_url = feed_parts[1].strip.gsub("feed:", "http:")
+          new_feeds << Feed.create({ :title => feed_parts[0].strip,
+                                     :url => feed_url,
+                                     :limit => feed_parts[2],
+                                     :update_frequency => (feed_parts[3] || 1),
+                                     :basket_id => @basket.id })
+        end
+        @basket.feeds = new_feeds if new_feeds.size > 0
+      rescue
+        # if there is a problem adding feeds, raise an error the user
+        # chances are that they didn't format things correctly
+        @basket.errors.add('Feeds', "there was a problem adding your feeds. Is the format you entered correct and you haven\'t entered a feed twice?")
+        @feeds_successful = false
+      end
+    end
+
     convert_text_fields_to_boolean if params[:source_form] == 'edit'
 
-    if @basket.update_attributes(params[:basket])
+    if @feeds_successful && @basket.update_attributes(params[:basket])
       # Reload to ensure basket.name is updated and not the previous
       # basket name.
       @basket.reload
@@ -104,6 +201,22 @@ class BasketsController < ApplicationController
           end
         end
       end
+
+      # We send the emails right before a redirect so
+      # it doesn't break anything if the emailing fails
+      unless params[:accept_basket].blank?
+        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'approved')
+      end
+      unless params[:reject_basket].blank?
+        UserNotifier.deliver_basket_notification_to(@basket.creator, current_user, @basket, 'rejected')
+      end
+
+      # Add this last because it takes the longest time to process
+      @basket.feeds.each do |feed|
+        feed.update_feed
+        MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed.to_worker_key, :data => feed.id )
+      end
+
       flash[:notice] = 'Basket was successfully updated.'
       redirect_to "/#{@basket.urlified_name}/"
     else
@@ -192,8 +305,7 @@ class BasketsController < ApplicationController
   # and they are presented with options to continue
   # in the future this will present the join policy of the basket, etc
   # now it only says "login as different user or contact an administrator"
-  def permissioned_denied
-    session[:has_access_on_baskets] = logged_in? ? current_user.get_basket_permissions : Hash.new
+  def permission_denied
   end
 
   def set_settings
@@ -243,15 +355,20 @@ class BasketsController < ApplicationController
     end
   end
 
-  def repopulate_basket_permissions
-    session[:has_access_on_baskets] = current_user.get_basket_permissions
-  end
-
   # Kieran Pilkington, 2008/10/01
   # When a basket is created, edited, or deleted, we have to clear
   # the robots txt file caches to the new settings take effect
   def remove_robots_txt_cache
     expire_page "/robots.txt"
+  end
+
+  # Kieran Pilkington - 2008/09/22
+  # redirect to permission denied if current user cant add/request baskets
+  def redirect_if_current_user_cant_add_or_request_basket
+    unless current_user_can_add_or_request_basket?
+      flash[:error] = "You need to have the right permissions to add or request a basket"
+      redirect_to DEFAULT_REDIRECTION_HASH
+    end
   end
 
 end

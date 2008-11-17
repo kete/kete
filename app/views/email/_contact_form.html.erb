@@ -1,0 +1,15 @@
+<fieldset>
+
+  <div class="form-element">
+    <label for="contact_subject">Subject:</label>
+    <%= text_field_tag 'contact[subject]', (params[:contact][:subject] unless params[:contact].nil?), :id => "contact_subject" %>
+  </div>
+
+  <div class="form-element">
+    <label for="contact_message">Message:</label>
+    <%= text_area_tag 'contact[message]', (params[:contact][:message] unless params[:contact].nil?), :id => "contact_message", :rows => 10, :cols => 10, :style => "width:500px;" %>
+  </div>
+
+  <p>Note: Your email address will be shown to the person/people who receive this email.</p>
+
+</fieldset>

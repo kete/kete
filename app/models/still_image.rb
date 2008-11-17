@@ -13,6 +13,10 @@ class StillImage < ActiveRecord::Base
 
   has_many :resized_image_files, :conditions => 'parent_id is not null', :class_name => 'ImageFile'
 
+  # Each image can only belong to one User's portrait
+  has_one :user_portrait_relation, :dependent => :delete
+  has_one :portrayed_user, :through => :user_portrait_relation, :source => :user
+
   # all the common configuration is handled by this module
   # Walter McGinnis, 2008-05-10
   # this has to go after image files for successful basket destroys
@@ -36,6 +40,10 @@ class StillImage < ActiveRecord::Base
   end
 
   after_update :update_image_file_locations
+
+  def created_by?(user)
+    (self.creator || self.contributors.first) == user
+  end
 
   private
 

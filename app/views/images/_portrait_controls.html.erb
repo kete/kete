@@ -1,0 +1,26 @@
+<% if ENABLE_USER_PORTRAITS && @still_image.created_by?(current_user) -%>
+<div class="secondary-content-section-wrapper">
+  <div id="portrait-controls-box" class="secondary-content-section">
+    <h2>Portrait Controls</h2>
+    <p>
+      <ul>
+        <% unless @still_image.portrayed_user.nil? -%>
+          <% unless @still_image.user_portrait_relation.first? -%>
+            <li><%= link_to 'Make image default portrait', :controller => 'account',
+                                                           :action => 'default_portrait',
+                                                           :id => @still_image.id -%></li>
+          <% end -%>
+          <li><%= link_to 'Remove image from portraits', :controller => 'account',
+                                                         :action => 'remove_portrait',
+                                                         :id => @still_image.id -%></li>
+        <% else %>
+          <li><%= link_to 'Add image to portraits', :controller => 'account',
+                                                    :action => 'add_portrait',
+                                                    :id => @still_image.id -%>
+        <% end -%>
+      </ul>
+    </p>
+    <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+  </div>
+</div>
+<% end -%>

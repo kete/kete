@@ -26,6 +26,9 @@
   <p><strong>IMPORTANT NOTE: please do not use spaces in file names,
   use an underscore instead.  "_" will be replaced with a space in
   the final title for the item.</strong></p>
+  <p><strong>IMPORTANT NOTE: please do not use &amp; in file names,
+  use an "and" instead.  Items with ampersands in filenames will not
+  be added.</strong></p>
   <p>Alternatively, you may also edit any uploaded <%= @zoom_class_humanized -%>'s title or
   other details after it has been added to the site.</p></li>
 
@@ -55,7 +58,8 @@
 
   <div class="form-element">
     <label for="import_base_tags">What tags should
-    we add to each <%= @zoom_class_humanized -%> (separated by commas)?</label>
+    we add to each <%= @zoom_class_humanized -%> (separated by commas,
+    no &amp;s allowed in tags.)?</label>
 
     <%= form.text_field :base_tags %>
 
