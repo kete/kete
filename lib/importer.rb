@@ -385,6 +385,14 @@ module Importer
       record_hash
     end
 
+    # copied and modified from http://www.broobles.com/eml2mbox/eml2mboxscript.html (GPL 2 or later)
+    def remove_non_unix_new_lines(line)
+      line = line[0..-3] + line[-1..-1] if line[-2] == 0xD
+      line = line[0..-2] if line[-1] == 0xA
+      # add a unix newline if not already there
+      line = line + "\n" unless line.include?("\n")
+    end
+
     # override in your importer worker to customize
     # takes a potentially huge xml file and strips out all the empty fields
     # so it much more manageable
@@ -399,10 +407,13 @@ module Importer
       accessno_re = Regexp.new(/ACCESSNO>(.*)</i)
 
       IO.foreach(path_to_original_file) do |line|
+        line = remove_non_unix_new_lines(line)
+
         # HACK to seriously trim down accession records
         # and make them in a form we can search easily
         # only add non-fat to our fat_free_file
         if !line.match(fatty_re) && !line.blank?
+
           if accession.nil?
             # replace double dotted version of maori vowels
             # with macrons
@@ -424,20 +435,33 @@ module Importer
             # this relies on the accessno line coming before the descrip line
             # it tosses the original <Record> or <export> line, so that it can be replaced
             # putting in both styles of records
-            if line.include?("ACCESSNO") || line.include?("accessno") ||
-                line.include?("DESCRIP") || line.include?("descrip") ||
-                line.include?("\/Record") || line.include?("\/export") ||
-                line.include?("Information") ||
-                line.include?("Root") || line.include?("VFPData")
-              if line.include?("accessno") || line.include?("ACCESSNO")
-                accessno = line.match(accessno_re)[1]
-                if @root_element_name == 'Root'
-                  new_start_record_line = "<Record ACCESSNO=\'#{accessno}\'>\n"
+            if line.include?("<ACCESSNO") || line.include?("<accessno") ||
+                line.include?("<DESCRIP") || line.include?("<descrip") ||
+                line.include?("<\/DESCRIP") || line.include?("<\/descrip") ||
+                line.include?("<\/Record") || line.include?("<\/export") ||
+                line.include?("<Information") || line.include?("<\/Information") ||
+                line.include?("<Root") || line.include?("<VFPData") ||
+                line.include?("<\/Root") || line.include?("<\/VFPData")
+
+              # we expect accessno to be on one line, this will break if not
+              if line.include?("<accessno") || line.include?("<ACCESSNO")
+                accessno_match_result = line.match(accessno_re)
+                accessno = !accessno_match_result.nil? && !accessno_match_result[1].nil? ? accessno_match_result[1] : nil
+
+                new_start_record_line = "<"
+                # if accessno is empty, we just open the export or Record so we have valid xml
+                # otherwise set as appropriate to the source xml file's format
+                if !@root_element_name.nil? && @root_element_name == 'Root'
+                  new_start_record_line += "Record"
                 else
-                  new_start_record_line = "<export ACCESSNO=\'#{accessno}\'>\n"
+                  new_start_record_line += "export"
                 end
 
-                fat_free_file << new_start_record_line
+                unless accessno.blank?
+                  new_start_record_line += " ACCESSNO=\'#{accessno}\'"
+                end
+
+                fat_free_file << new_start_record_line + ">\n"
               else
                 fat_free_file << line
               end
@@ -446,6 +470,8 @@ module Importer
         end
       end
 
+      # add a blank line a the end
+      fat_free_file << ""
       fat_free_file.close
 
       return path_to_output

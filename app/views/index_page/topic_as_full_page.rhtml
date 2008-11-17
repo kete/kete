@@ -1,44 +1,84 @@
-<%= render(:partial => 'topics/content_wrapper_start', :locals => {:style_classes => 'full-width notabs' }) %>
-      <% cache({:part => 'details', :id => @topic.id}) do -%>
-      <%= @topic.description %>
-      <%= pending_review(@topic) %>
+<%= render(:partial => 'topics/content_wrapper_start',
+           :locals => {:style_classes => 'full-width notabs' }) -%>
+
+<% cache({:part => 'details'}) do -%>
+  <%= @topic.description -%>
+  <%= pending_review(@topic) -%>
+<% end -%>
+
+<% cache({:part => 'license'}) do -%>
+  <div class="license"><%= @topic.license_metadata %></div>
+  <div style="clear:both;"></div>
+<% end -%>
+
+<% cache({:part => 'extended_fields'}) do -%>
+  <% extended_fields_html = display_xml_attributes(@topic) -%>
+  <% if !extended_fields_html.blank? -%>
+  <div id="detail-extended">
+    <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+    <%= extended_fields_html -%>
+  </div>
+  <% end -%>
+<% end -%>
+
+<% if logged_in? && (@at_least_a_moderator || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
+  <ul>
+    <% if @at_least_a_moderator -%>
+      <% cache({:part => 'edit'}) do -%>
+        <li class="first">
+          <%= link_to "Edit", :action => 'edit',
+                              :urlified_name => @topic.basket.urlified_name,
+                              :controller => 'topics',
+                              :id => @topic -%>
+        </li>
+        <li>
+          <%= link_to "History", :action => 'history',
+                                 :urlified_name => @topic.basket.urlified_name,
+                                 :controller => 'topics',
+                                 :id => @topic -%>
+        </li>
       <% end -%>
-
-      <% if logged_in? and @at_least_a_moderator -%>
-    </div>
-
-    <div id="secondary-content-wrapper">
-      <% extended_fields_html = display_xml_attributes(@topic) -%>
-      <% if !extended_fields_html.blank? %>
-      <div id="detail-extended">
-        <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-        <%= extended_fields_html %>
-      </div>
-      <% end %>
-      <ul>
-        <% cache({:part => 'edit', :id => @topic.id}) do -%>
-        <li class="first"><%= link_to "Edit",
-                              :action => :edit,
-          :urlified_name => @topic.basket.urlified_name,
-          :controller => 'topics',
-          :id => @topic %></li>
-        <li><%= link_to "History",
-                :action => :history,
-          :urlified_name => @topic.basket.urlified_name,
-          :controller => 'topics',
-          :id => @topic %></li>
-
-           <% end -%>
-        <% end -%>
-      </ul>
-    </div>
-
-    <% cache({:part => 'blog', :id => @topic.id}) do -%>
+    <% end -%>  
+    <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? -%>
+      <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
     <% end -%>
+  </ul>
+<% end -%>
 
-    <% cache({:part => 'archives', :id => @topic.id}) do -%>
-    <% end -%>
+<% if @current_basket.allows_contact_with_inheritance? -%>
+  <% cache({:part => 'contact'}) do -%>
+    <ul>
+      <li><%= link_to_basket_contact_for(@current_basket) %></li>
+    </ul>
+  <% end -%>
+<% end -%>
 
-    <% cache({:part => 'tags', :id => @topic.id}) do -%>
-    <% end -%>
-<%= render(:partial => "topics/content_wrapper_end" ) %>
+<% links = link_to_membership_request_of(@current_basket) -%>
+<% links += link_to_members_of(@current_basket) -%>
+<% unless links.blank? -%>
+  <div id="secondary-content-wrapper">
+    <ul>
+      <%= links %>
+    </ul>
+  </div>
+<% end -%>
+
+<% cache({:part => 'tools'}) do -%>
+<% end -%>
+
+<% cache({:part => 'recent_topics'}) do -%>
+<% end -%>
+
+<% cache({:part => 'search'}) do -%>
+<% end -%>
+
+<% cache({:part => 'extra_side_bar_html'}) do -%>
+<% end -%>
+
+<% cache({:part => 'archives'}) do -%>
+<% end -%>
+
+<% cache({:part => 'tags'}) do -%>
+<% end -%>
+
+<%= render(:partial => "topics/content_wrapper_end" ) -%>

@@ -40,8 +40,8 @@ class CommentsControllerTest < Test::Unit::TestCase
     }
       
     
-    @closed_basket  = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => false, :name => "closed basket" }))
-    @open_basket    = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => true, :name => "open basket" }))
+    @closed_basket  = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => false, :name => "closed basket", :status => 'approved', :creator_id => 1 }))
+    @open_basket    = Basket.create!(@new_basket_model.merge({ :allow_non_member_comments => true, :name => "open basket", :status => 'approved', :creator_id => 1 }))
     @non_member_user = User.create!(@new_user_model)
     @member_user = User.create!(@new_user_model.merge({ :login => 'doug', :email => 'doug@example.com' }))
     @member_user.has_role('member', @closed_basket)
@@ -72,7 +72,7 @@ class CommentsControllerTest < Test::Unit::TestCase
     login_as(:quire)
     get :new, :urlified_name => "closed_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
     assert_response :redirect
-    assert_redirected_to :controller => "index_page", :action => "permission_denied"
+    assert_redirected_to :controller => "baskets", :action => "permission_denied"
   end
   
   def test_protected_allows_member_comments_from_member
@@ -109,7 +109,7 @@ class CommentsControllerTest < Test::Unit::TestCase
     login_as(:quire)
     post :create, :urlified_name => "closed_basket", :comment => @new_comment_model
     assert_response :redirect
-    assert_redirected_to :controller => "index_page", :action => "permission_denied"
+    assert_redirected_to :controller => "baskets", :action => "permission_denied"
   end
   
   def test_can_create_if_non_member_on_unprotected

@@ -1,30 +1,49 @@
-                <table class="members-list-table">
-                        <tr><th>&nbsp;<h4>Members</h4></th></tr>
-                        <% if members.blank? %>
-                                <tr><td><p>Currently no members</p></td></tr>
-                        <% else %>
-                                <% for user in members %>
-                                        <tr>
-                                                <td><%= link_to_contributions_of(user,'Topic') -%></td>
-                                                <td><%= mail_to h(user.email) -%></td>
-                                                <%= render :partial =>'possible_roles',
-                                                           :locals => { :user => user,
-                                                                        :role_key => 'member',
-                                                                        :possible_roles => possible_roles } %>
-                                                <%= render :partial =>'admin_actions',
-                                                           :locals => { :user => user,
-                                                                        :admin_actions => admin_actions } %>
-                                        </tr>
-                                <% end %>
-                        <% end %>
-                </table>
-                <div id="prev-next"><%= will_paginate members %></div>
-                <% if @current_basket.urlified_name != 'site' -%>
-                        <% form_tag :action => 'potential_new_members' do %>
-                                <div id="searchheader">
-                                        <h4>Search for new members</h4>
-                                        <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' %>
-                                        <%= submit_tag "Search", :class => 'searchbutton' %>
-                                </div>
-                        <% end %>
-                <% end %>
+  <tr>
+    <th colspan="6"><h4>Members</h4></th>
+  </tr>
+  <% if members.blank? -%>
+    <tr>
+      <td colspan="6">Currently no members</td>
+    </tr>
+  <% else %>
+    <% for user in members -%>
+    <tr>
+      <td class="member-avatar"><%= avatar_for user -%></td>
+      <td>
+        <%= link_to_contributions_of(user,'Topic') -%>
+        <%= "<br />(#{user.login})" unless user.user_name == user.login -%>
+      </td>
+      <% if @basket_admin -%>
+      <td>
+        <%= Role.user_role_for(user, 'member', @current_basket).created_at.to_s(:long) -%>
+      </td>
+      <td><%= mail_to h(user.email) -%></td>
+      <%= render :partial =>'possible_roles',
+                 :locals => { :user => user,
+                              :role_key => 'member',
+                              :possible_roles => possible_roles } -%>
+      <%= render :partial =>'admin_actions',
+                 :locals => { :user => user,
+                              :admin_actions => admin_actions } -%>
+      <% end -%>
+    </tr>
+    <% end -%>
+  <% end -%>
+  <tr>
+    <td colspan="6">
+      <div id="prev-next"><%= will_paginate members -%></div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="6">
+      <% if @current_basket.urlified_name != 'site' && @basket_admin -%>
+        <% form_tag :action => 'potential_new_members' do -%>
+          <div id="searchheader">
+            <h4>Search for new members</h4>
+            <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' -%>
+            <%= submit_tag "Search", :class => 'searchbutton' -%>
+          </div>
+        <% end -%>
+      <% end -%>
+    </td>
+  </tr>

@@ -47,7 +47,7 @@ Rails::Initializer.run do |config|
   # and place it under vendor/gems
   # specifying it here allows this to work
   config.gem "oai"
-  
+
   # Kieran, 2008-07-22
   # specify the specific versions we need to run Kete
   # libxml-ruby 0.8.0 causes errors in acts_as_zoom
@@ -98,7 +98,7 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
   # incremental step towards the proper way of doing this in 2.0
   # should go in a file under config/initializers/
-  config.active_record.observers = :user_observer
+  config.active_record.observers = :user_observer, :feed_sweeper
 
   # white list html elements here, besides defaults
   config.action_view.sanitized_allowed_tags = 'table', 'tr', 'td', 'tbody', 'th', 'thead', 'tfoot', 'font', 'object', 'param', 'embed'
@@ -118,3 +118,19 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 # Walter McGinnis, 2007-12-03
 # most application specific configuration has moved to files
 # under config/initializers/
+
+# Walter McGinnis, 2008-11-12
+# we want straight utf8 rather than unicode escaped to entities in our xml
+# in theory a declaration of
+# $KCODE='UTF8'
+# should do the trick, but isn't working
+# thus necessitating the monkey patch found in
+# http://groups.google.ca/group/rubyonrails-talk/browse_thread/thread/2c13ad7c0f8c0781/4cd8c300642a4971?lnk=raot
+# hopefully we can pull this out in Rails 2.2
+module Builder
+  class XmlBase
+    def _escape(text)
+      text
+    end
+  end
+end

@@ -42,9 +42,9 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       logger.info("after description_end_template and var assigns")
       # legacy support for kete horowhenua
       if !@import_request[:host].scan("horowhenua").blank?
-        @description_end_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
-        @description_end_templates['/f\d/'] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
-        @description_end_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
+        @description_end_templates['default'] = "Any use of this image must be accompanied by the credit \"Horowhenua Historical Society Inc.\""
+        @description_end_templates[/^f\d/] = "Any use of this image must be accompanied by the credit \"Foxton Historical Society\""
+        @description_end_templates["2000\.000\."] = "Any use of this image must be accompanied by the credit \"Horowhenua District Council\""
 
         @collections_to_skip << "HHS Photograph Collection"
       end
@@ -129,6 +129,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     if image_file.blank? or !File.exists?(path_to_file_to_grab)
       # TODO: add check to see if image_file has a, b, c, versions associated with it
       # and add them is if they exist
+      # change record imagefile accordingly for each and call importer_process on each
       reason_skipped =  'no image file specified or the image file isn\'t available'
       logger.info("record #{current_record} : reason skipped image")
     else
@@ -242,8 +243,12 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
 
       # this relies on user_reference extended_field
       # being mapped to the particular kete content type (not content type in mime sense)
-      existing_item = Module.class_eval(@zoom_class).find(:first,
-                                                          :conditions => "extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
+      # Walter McGinnis, 2008-10-10
+      # User Reference may be used by multiple images (all under same parent record)
+      # they will have different filenames, but same user reference...
+      # so adding filename check as criteria
+      existing_item = StillImage.find(:first, :joins => 'join image_files on still_images.id = image_files.still_image_id',
+                                      :conditions => "filename = \'#{File.basename(path_to_file_to_grab)}\' and extended_content like \'%<user_reference xml_element_name=\"dc:identifier\">#{objectid}</user_reference>%\'")
 
       new_record = nil
       if existing_item.nil?
@@ -483,12 +488,18 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
     new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
     new_record_added = new_record.save
 
-    importer_add_image_to(new_record, params, zoom_class)
+    if new_record_added
+      importer_add_image_to(new_record, params, zoom_class)
 
-    new_record.creator = @contributing_user
+      new_record.creator = @contributing_user
 
-    logger.info("new_record: " + new_record.inspect)
-    return new_record
+      logger.info("new_record: " + new_record.inspect)
+      return new_record
+    else
+      logger.info("new_record not added - save failed:")
+      logger.info("what are errors on save of new record: " + new_record.errors.inspect)
+      return nil
+    end
   end
 
   # set up the correct xml paths to use
@@ -503,7 +514,7 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
       # empty means no match
       if line.include?("<VFPData>")
         @root_element_name = 'VFPData'
-        @record_element_path = 'export'
+        @record_element_path = 'ppdata'
         return
       else
         # we have matched the previous style, return without resetting vars

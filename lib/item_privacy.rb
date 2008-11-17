@@ -249,8 +249,8 @@ module ItemPrivacy
     # Override the AttachmentFu default method to ensure we place the attachment
     # in the correct folder.
     def full_filename(thumbnail = nil)
-      file_system_path = "#{attachment_path_prefix}/#{self.class.table_name}"
-      File.join(RAILS_ROOT, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
+      file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
+      File.join(RAILS_ROOT, attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
     
     # Make sure that the correct base path is stripped off in 

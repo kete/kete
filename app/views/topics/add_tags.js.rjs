@@ -1,0 +1,17 @@
+if @successful
+  page.replace_html :tags_list, tags_for(@item)
+  page.replace_html :notice, "<div>#{flash[:notice]}</div>"
+  page[:error].hide
+  page[:notice].show
+  flash.discard
+else
+  page.replace_html :error, "<div>#{flash[:error]}</div>"
+  page[:notice].hide
+  page[:error].show
+end
+
+if @successful || @empty
+  page[:add_tag_form].reset
+  page[:add_tag_form_div].hide
+  page[:add_tag_button].show
+end

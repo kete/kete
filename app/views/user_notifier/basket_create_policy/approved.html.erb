@@ -1,0 +1,15 @@
+<%= @recipient.user_name %>,
+
+The basket you requested, '<%= @basket.name %>', was approved for use.
+
+You can edit this basket by going to
+
+<%= SITE_URL %><%= @basket.urlified_name %>/baskets/edit/<%= @basket.id %>
+
+And view it's contents at
+
+<%= SITE_URL %><%= @basket.urlified_name %>
+
+Thank you,
+<%= PRETTY_SITE_NAME %>
+<%= SITE_URL %>

@@ -33,6 +33,41 @@ class UserNotifier < ActionMailer::Base
     @body[:url]  = "#{SITE_URL}"
   end
 
+  def email_to(recipient, sender, subject, message, from_basket = nil)
+    setup_email(sender)
+    @recipients = recipient.email
+    @reply_to = sender.email
+    @subject += "#{sender.user_name} has sent you a message."
+    @body[:recipient] = recipient
+    @body[:subject] = subject
+    @body[:message] = message
+    @body[:from_basket] = from_basket
+  end
+
+  # notifications for basket joins
+  def join_notification_to(recipient, sender, basket, type)
+    setup_email(recipient)
+    @body[:sender] = sender
+    @body[:basket] = basket
+
+    case type
+    when 'joined'
+      @subject += "#{sender.user_name} has joined the #{basket.urlified_name} basket"
+      @template = 'user_notifier/join_policy/member'
+    when 'request'
+      @subject += "#{sender.user_name} has requested membership in #{basket.urlified_name} basket"
+      @template = 'user_notifier/join_policy/request'
+    when 'approved'
+      @subject += "Membership to #{basket.urlified_name} accepted"
+      @template = 'user_notifier/join_policy/accepted'
+    when 'rejected'
+      @subject += "Membership to #{basket.urlified_name} rejected"
+      @template = 'user_notifier/join_policy/rejected'
+    else
+      raise "Invalid membership notification type. joined, request, approved and rejected only."
+    end
+  end
+
   # notifications for flagging/moderation
   def item_flagged_for(moderator, flag, url, flagging_user, submitter, revision, message)
     setup_email(moderator)
@@ -67,13 +102,41 @@ class UserNotifier < ActionMailer::Base
     setup_body_with(revision, url, approval_message)
   end
 
+  # notications for baskets
+  def basket_notification_to(recipient, sender, basket, type)
+    setup_email(recipient)
+    @body[:sender] = sender
+    @body[:basket] = basket
+
+    case type
+    when 'created'
+      @subject += "#{sender.user_name} has created the #{basket.urlified_name} basket"
+      @body[:needs_approval] = false
+      @template = 'user_notifier/basket_create_policy/created'
+    when 'request'
+      @subject += "#{sender.user_name} has requested creation of the #{basket.urlified_name} basket"
+      @body[:needs_approval] = true
+      @template = 'user_notifier/basket_create_policy/created'
+    when 'approved'
+      @subject += "#{basket.urlified_name} basket creation has been approved"
+      @template = 'user_notifier/basket_create_policy/approved'
+    when 'rejected'
+      @subject += "#{basket.urlified_name} basket creation has been rejected"
+      @template = 'user_notifier/basket_create_policy/rejected'
+    else
+      raise "Invalid basket notification type. created, request, approved and rejected only."
+    end
+  end
+
   protected
+
   def setup_email(user)
     @recipients  = "#{user.email}"
     @from        = "#{NOTIFIER_EMAIL}"
     @subject     = "#{SITE_NAME} "
     @sent_on     = Time.now
     @body[:user] = user
+    @body[:recipient] = user # less confusing than user
   end
 
   def setup_body_with(revision, url, message, submitter = nil)
@@ -82,8 +145,7 @@ class UserNotifier < ActionMailer::Base
     @body[:submitter] = submitter
     @body[:message] = message
   end
-  
-  
+
   # James - 2008-06-29
   # Work around to fix active_scaffold exceptions
   class << self

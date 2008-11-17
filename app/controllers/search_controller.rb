@@ -936,15 +936,8 @@ class SearchController < ApplicationController
     # Allow all public searches
     return true unless is_a_private_search?
 
-    # Check for a login before continuing
-    basket_access_hash = logged_in? ? \
-      current_user.get_basket_permissions : Hash.new
-
-    # Store for future reference
-    session[:has_access_on_baskets] = basket_access_hash
-
     # We only want the names
-    @authorised_basket_names = basket_access_hash.keys.collect { |key| key.to_s }
+    @authorised_basket_names = @basket_access_hash.keys.collect { |key| key.to_s }
 
     if @current_basket == @site_basket and !@authorised_basket_names.empty?
 

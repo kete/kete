@@ -73,7 +73,7 @@
                <%= form.hidden_field :file_private -%>
                <% end %>
 
-                <%= tags_input_field(form,"still_image_tag_list") %>
+                <%= tags_input_field(:still_image) -%>
 
                 <% # disabling overwriting of original document for the timebeing
                    # when we support versioning of document and image files,
@@ -108,6 +108,14 @@
                 <% if !params[:id].nil? %>
                         <%= hidden_field_tag 'image_file[still_image_id]', params[:id], "id" => "image_file_still_image_id" %>
                 <% end %>
+
+                <% if !params[:portrait].nil? %>
+                  <%= hidden_field_tag 'portrait', true, :id => "portrait" %>
+                  <% if !params[:default_portrait].nil? %>
+                    <%= hidden_field_tag 'default_portrait', true, :id => "default_portrait" %>
+                  <% end -%>
+                <% end -%>
+
 		<%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @still_image} %>
                 <!--[eoform:still_image]-->
 

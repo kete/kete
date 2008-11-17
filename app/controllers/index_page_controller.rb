@@ -11,8 +11,11 @@ class IndexPageController < ApplicationController
       # Load the index page everytime (for now atleast, until a better title caching system is in place)
       @is_fully_cached = has_all_fragments?
       #if !@is_fully_cached or params[:format] == 'xml'
-        @topic = @current_basket.index_topic
-      #end
+      @topic = @current_basket.index_topic
+      if (params[:private] == "true" || (params[:private].blank? && @current_basket.private_default_with_inheritance?)) &&
+          @topic.has_private_version? && permitted_to_view_private_items?
+          @topic = @topic.private_version!
+      end
 
       if !@topic.nil?
         @title = @topic.title
@@ -67,7 +70,8 @@ class IndexPageController < ApplicationController
 
           # prepare blog list of most recent topics
           # replace limit with param from basket
-          @recent_topics_limit = @current_basket.index_page_number_of_recent_topics.blank? ? 0 : @current_basket.index_page_number_of_recent_topics
+          @recent_topics_limit = @current_basket.index_page_number_of_recent_topics
+          @recent_topics_limit = 0 if @recent_topics_limit.blank?
 
           # exclude index_topic
           if @recent_topics_limit > 0
@@ -81,7 +85,9 @@ class IndexPageController < ApplicationController
             end
           end
 
-          @tag_counts_array = @current_basket.tag_counts_array
+          @tag_counts_array = @current_basket.tag_counts_array({:limit => false})
+          @tag_counts_size = @tag_counts_array.size
+          @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
         end
 
         # don't bother caching, because this is likely a random image

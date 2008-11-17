@@ -34,7 +34,7 @@ class LicensesControllerTest < ActionController::TestCase
 
   def test_should_create_license
     assert_difference('License.count') do
-      post :create, {:urlified_name => 'site', :record => { :record_name => 'test', :record_description => 'test' }}
+      post :create, {:urlified_name => 'site', :record => { :name => 'test', :description => 'test', :url => "http://nothere.com", :is_available => true, :is_creative_commons => false }}
     end
 
     assert_redirected_to license_path(assigns(:license))
@@ -51,7 +51,7 @@ class LicensesControllerTest < ActionController::TestCase
   end
 
   def test_should_update_license
-    put :update, {:id => licenses(:one).id, :urlified_name => 'site', :record => { :record_name => 'test', :record_description => 'test' }}
+    put :update, {:id => licenses(:one).id, :urlified_name => 'site', :record => { :name => 'test', :description => 'test', :url => 'http://nothere.com', :is_available => true, :is_creative_commons => false }}
     assert_redirected_to license_path(assigns(:license))
   end
 

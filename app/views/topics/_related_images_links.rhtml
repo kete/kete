@@ -4,24 +4,7 @@
   <% if items.size > 0 -%>
      <% items[0..end_range].each do |related_item| -%>
         <li>
-           <% if !related_item.thumbnail_file.nil? -%>
-              <% thumb_src_value = related_item.already_at_blank_version? ? '/images/pending.jpg' :  related_item.thumbnail_file.public_filename -%>
-              <%= link_to(image_tag(thumb_src_value,
-                    :size => related_item.thumbnail_file.image_size,
-                    :alt => "#{related_item.title}. "),
-                    :controller => 'images',
-                    :urlified_name => related_item.basket.urlified_name,
-                    :action => 'show',
-                    :id => related_item)
-              -%>
-           <% else -%>
-              <%= link_to('only available as original',
-                    :controller => 'images',
-                    :urlified_name => related_item.basket.urlified_name,
-                    :action => 'show',
-                    :id => related_item)
-              -%>
-           <% end -%>
+           <%= render(:partial => "topics/related_images_links_tag", :locals => { :related_item => related_item }) %>
         </li>
      <% end -%>
      <% if items.size > last_item_n -%>

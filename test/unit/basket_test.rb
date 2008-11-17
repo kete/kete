@@ -110,6 +110,74 @@ class BasketTest < Test::Unit::TestCase
     assert_equal 'reverse', basket.settings[:side_menu_direction_of_topics]
   end
 
+  def test_allows_contact_with_inheritance
+    site_basket = Basket.first # site
+    site_basket.settings[:allow_basket_admin_contact] = true
+    assert_equal true, site_basket.allows_contact_with_inheritance?
+
+    about_basket = Basket.find_by_id(3) # about
+
+    about_basket.settings[:allow_basket_admin_contact] = true
+    assert_equal true, about_basket.allows_contact_with_inheritance?
+
+    about_basket.settings[:allow_basket_admin_contact] = false
+    assert_equal false, about_basket.allows_contact_with_inheritance?
+
+    about_basket.settings[:allow_basket_admin_contact] = nil
+    assert_equal true, about_basket.allows_contact_with_inheritance?
+  end
+
+  def test_memberlist_policy_or_default
+    about_basket = Basket.find_by_id(3) # about
+    result = about_basket.memberlist_policy_or_default
+    expected = "<option value=\"all users\">All users</option><option value=\"logged in\">Logged in user</option><option value=\"at least member\">Basket member</option><option value=\"at least moderator\">Basket moderator</option><option value=\"at least admin\" selected=\"selected\">Basket admin</option>"
+    assert_equal expected, result
+  end
+
+  def test_allows_join_requests_with_inheritance
+    site_basket = Basket.site_basket # site
+    about_basket = Basket.about_basket # about
+
+    site_basket.settings[:basket_join_policy] = 'open'
+    assert_equal 'open', site_basket.join_policy_with_inheritance
+    assert_equal true, site_basket.allows_join_requests_with_inheritance?
+
+    about_basket.settings[:basket_join_policy] = 'open'
+    assert_equal 'open', about_basket.join_policy_with_inheritance
+    assert_equal true, about_basket.allows_join_requests_with_inheritance?
+
+    about_basket.settings[:basket_join_policy] = 'request'
+    assert_equal 'request', about_basket.join_policy_with_inheritance
+    assert_equal true, about_basket.allows_join_requests_with_inheritance?
+
+    about_basket.settings[:basket_join_policy] = 'closed'
+    assert_equal 'closed', about_basket.join_policy_with_inheritance
+    assert_equal false, about_basket.allows_join_requests_with_inheritance?
+
+    about_basket.settings[:basket_join_policy] = nil
+    assert_equal 'open', about_basket.join_policy_with_inheritance
+    assert_equal true, about_basket.allows_join_requests_with_inheritance?
+  end
+
+  def test_should_get_administrator_instances
+    # test it catches site_admin
+    basket = Basket.first # site
+    administrators = basket.administrators
+    assert_equal 1, administrators.size
+    assert_kind_of User, administrators.first
+
+    # test it catches admin
+    basket = Basket.last # admin
+    administrators = basket.administrators
+    assert_equal 1, administrators.size
+    assert_kind_of User, administrators.first
+  end
+
+  def test_basket_should_have_a_creator
+    basket = Basket.first
+    assert_kind_of User, basket.creator
+  end
+
   # TODO: tag_counts_array
   # TODO: index_page_order_tags_by
 

@@ -12,8 +12,8 @@ module ItemPrivacyTestHelper
 
     # Based on work-around described here http://www.fngtps.com/2007/04/testing-with-attachment_fu
     def full_filename(thumbnail = nil)
-      file_system_path = "#{attachment_path_prefix}/#{self.class.table_name}"
-      File.join(RAILS_ROOT, "tmp", "attachment_fu_test", file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
+      file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
+      File.join(RAILS_ROOT, "tmp", "attachment_fu_test", attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
     
   end
@@ -22,8 +22,7 @@ module ItemPrivacyTestHelper
     
     # Generate a regex for us to test against to ensure the files are saved in the correct place.
     # Use this in your tests.
-    def attachment_fu_test_path(base_folder)
-      sub_folder = eval("#{@base_class}.table_name")
+    def attachment_fu_test_path(base_folder, sub_folder)
       /^[a-zA-Z0-9\/\-_\s\.]+\/#{base_folder}\/#{sub_folder}\/[a-zA-Z0-9\/\-_\s\.]+$/
     end
     
@@ -56,21 +55,21 @@ module ItemPrivacyTestHelper
       
       def test_attachment_fu_uses_correct_path_prefix
         item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
-        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert_valid item
       end
 
       def test_attachment_fu_uses_correct_path_prefix2
         item2 = eval(@base_class).create(@new_model.merge({ :file_private => true }))
-        assert_match(attachment_fu_test_path("private"), item2.full_filename)
+        assert_match(attachment_fu_test_path("private", @uploads_folder), item2.full_filename)
         assert File.exists?(item2.full_filename)
         assert_valid item2
       end
 
       def test_attachment_fu_does_not_move_files_when_going_from_public_to_private
         item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
-        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert_valid item
         old_filename = item.full_filename
@@ -78,7 +77,7 @@ module ItemPrivacyTestHelper
 
         item = eval(@base_class).find(id)
         item.update_attributes({ :file_private => true })
-        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert_equal old_filename, item.full_filename
         assert_valid item
@@ -86,7 +85,7 @@ module ItemPrivacyTestHelper
 
       def test_attachment_fu_moves_files_to_correct_path_when_going_from_private_to_public
         item = eval(@base_class).create(@new_model.merge({ :file_private => true }))
-        assert_match(attachment_fu_test_path("private"), item.full_filename)
+        assert_match(attachment_fu_test_path("private", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
         assert_valid item
         old_filename = item.full_filename
@@ -94,7 +93,7 @@ module ItemPrivacyTestHelper
 
         item = eval(@base_class).find(id)
         item.update_attributes({ :file_private => false })
-        assert_match(attachment_fu_test_path("public"), item.full_filename)
+        assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert !File.exists?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
         assert_valid item
@@ -110,10 +109,10 @@ module ItemPrivacyTestHelper
 
       def test_attachment_full_filename
         d = eval(@base_class).create(@new_model.merge({ :file_private => true }))
-        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "private", eval(@base_class).table_name, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
+        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "private", @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
 
         d = eval(@base_class).create(@new_model.merge({ :file_private => false }))
-        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "public", eval(@base_class).table_name, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
+        assert_equal File.join(RAILS_ROOT, "tmp", "attachment_fu_test", "public", @uploads_folder, *d.send(:partitioned_path, d.send(:thumbnail_name_for, nil))), d.full_filename
       end
 
       def test_file_private_setter_false_to_true_does_not_work

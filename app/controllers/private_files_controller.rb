@@ -9,11 +9,14 @@ class PrivateFilesController < ApplicationController
   def show
     
     # Only respond to known types to avoid code injection attacks
-    raise UnknownTypeError unless %w(documents image_files audio_recordings videos).member?(params[:type])
+    raise UnknownTypeError unless %w(documents image_files audio video).member?(params[:type])
+    
+    # Ensure we load the correct object type
+    type = params[:type] == "audio" ? "audio_recordings" : params[:type]
     
     # Instantiate an object instance based on the request parameters
     id = (params[:a] + params[:b] + params[:c]).to_i
-    @record = eval("#{params[:type].classify}").find(id)
+    @record = eval("#{type.classify}").find(id)
     
     @current_basket = @record.basket
 
@@ -55,7 +58,6 @@ class PrivateFilesController < ApplicationController
     render :text => "Error 400: Bad Request", :status => 400
   rescue PermissionDeniedError
     logger.warn("#{Time.now} - Permission Denied While Requesting Private Item: #{params.inspect}")
-    session[:has_access_on_baskets] = logged_in? ? current_user.get_basket_permissions : Hash.new
     render :text => "Error 401: Unauthorized", :status => 401
   end
   
