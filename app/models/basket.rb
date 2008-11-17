@@ -161,7 +161,7 @@ class Basket < ActiveRecord::Base
       @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
     when 'number'
       @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:taggings_count] }
-      @tag_counts_array = @tag_counts_array.reverse unless tag_direction == 'desc'
+      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
     else
       @tag_counts_array = @tag_counts_array.sort_by { rand }
     end
@@ -255,8 +255,8 @@ class Basket < ActiveRecord::Base
   end
 
   def self.order_tags_by_options
-    [['Number of items', 'number'],
-     ['Alphabetical', 'alphabetical'],
+    [['Most Popular', 'number'],
+     ['By Name', 'alphabetical'],
      ['Latest', 'latest'],
      ['Random', 'random']]
   end

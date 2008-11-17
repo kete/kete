@@ -82,7 +82,7 @@ class MembersController < ApplicationController
       @members = User.paginate_by_id(0, :page => 1)
     else
       if params[:action] == 'rss'
-        @members = @member_role.users(:order => 'updated_at desc')
+        @members = @member_role.users.find(:all, { :order => 'roles_users.created_at desc', :limit => 50 })
       else
         @members = @member_role.users.paginate(:include => :contributions,
                                                :order => order,

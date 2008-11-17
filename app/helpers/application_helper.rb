@@ -990,8 +990,8 @@ module ApplicationHelper
     end
 
     # create the link based on sort type and direction (user provided or default)
-    location_hash = { :order => sort_type,
-                      :direction => direction }
+    location_hash = { :order => sort_type }
+    location_hash[:direction] = direction if sort_type != 'random'
 
     # if sorting and the sort is for this sort type, or no sort made and this sort type is the main sort order
     if (params[:order] && params[:order] == sort_type && sort_type != 'random') || (!params[:order] && main_sort_order)
