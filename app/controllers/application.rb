@@ -477,7 +477,7 @@ class ApplicationController < ActionController::Base
     name = params[:id].blank? ? Hash.new : { :id => params[:id].to_i }
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
-        @privacy_type || = get_acceptable_privacy_type("public", "private")
+        @privacy_type ||= get_acceptable_privacy_type("public", "private")
         resulting_part = cache_name_for(part, @privacy_type)
         return false unless has_fragment?(name.merge(:part => resulting_part))
       end
