@@ -228,6 +228,7 @@ class AccountController < ApplicationController
   def disclaimer
     @topic = Topic.find(params[:id])
     respond_to do |format|
+      format.html { render :partial => 'account/disclaimer', :layout => 'simple' }
       format.js
     end
   end
