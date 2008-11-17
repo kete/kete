@@ -256,7 +256,7 @@ module ExtendedFieldsHelper
     
     # Because we store the choice's value, not label, we need to find the label to be shown in the text field.
     # We also handle validation failures here by displaying the submitted value.
-    selected_choice = Choice.find_by_value(value) || Choice.find_by_label(value)
+    selected_choice = Choice.find_by_value(value)
     value = selected_choice && !value.blank? ? selected_choice.label : nil
     
     remote_call = remote_function(:url => {

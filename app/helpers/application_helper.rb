@@ -485,21 +485,23 @@ module ApplicationHelper
     html = []
     
     item.extended_content_pairs.reverse.each do |label, value|
+      ef = ExtendedField.find_by_label(label.gsub(/(_multitple)$/, '').humanize)
+      raise "Could not find extended field with label '#{label.gsub(/(_multitple)$/, '')}'." if ef.blank?
       
       if value_from_xml_is_choice?(label, value)
         if label =~ /_multiple$/
-          value = value.map { |l| l.map { |l| formatted_value_from_xml(l) }.reject { |t| t.to_s.blank? }.join(raq) }.to_sentence
+          value = value.map { |l| l.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq) }.to_sentence
         else
-          value = value.map { |l| formatted_value_from_xml(l) }.reject { |t| t.to_s.blank? }.join(raq)
+          value = value.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq)
         end
       else
         if label =~ /_multiples$/
-          value = value.map { |l| formatted_value_from_xml(l) }.to_sentence
+          value = value.map { |l| formatted_value_from_xml(l, ef, item) }.to_sentence
         else
-          value = formatted_value_from_xml(value)
+          value = formatted_value_from_xml(value, ef, item)
         end
       end
-
+      
       tds = content_tag("td", "#{label.gsub(/_multiple$/, '').humanize}:", :class => "detail-extended-field-label") + \
             content_tag("td", value)
             
@@ -522,15 +524,35 @@ module ApplicationHelper
     end
   end
   
-  def formatted_value_from_xml(value)
-    case value
-    when /^\w+:\/\/[^ ]+/
-      # this is a url protocal of somesort, make link
-      link_to(value, value)
-    when /^\w+[^ ]*\@\w+\.\w/
-      mail_to(value, value, :encode => "hex")
+  def formatted_value_from_xml(value, ef = nil, item = nil)
+    if ef && %w(autocomplete choice).member?(ef.ftype)
+      
+      # If the extended field type is a choice, then link the value to the search page for the EF.
+      url_hash = {
+        :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
+        :controller => 'search',
+        :extended_field => ef.label.humanize
+      }
+
+      if item.respond_to?(:private?) && item.private?
+        method = 'basket_all_private_of_category_url'
+        url_hash.merge!(:privacy_type => 'private')
+      else
+        method = 'basket_all_of_category_url'
+      end
+
+      link_to(value, send(method, url_hash.merge(:limit_to_choice => value)))
+      
     else
-      sanitize(value)
+      case value
+      when /^\w+:\/\/[^ ]+/
+        # this is a url protocal of somesort, make link
+        link_to(value, value)
+      when /^\w+[^ ]*\@\w+\.\w/
+        mail_to(value, value, :encode => "hex")
+      else
+        sanitize(value)
+      end
     end
   end
     

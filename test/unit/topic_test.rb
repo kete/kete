@@ -110,7 +110,7 @@ class TopicTest < Test::Unit::TestCase
       model.save!
     end
     
-    assert_equal [["first_names", "Joe"], ["last_name", "Bloggs"], ["address_multiple", ["Wollaston St.", "Nelson"]], ["place_of_birth", nil]].sort, \
+    assert_equal [["first_names", "Joe"], ["last_name", "Bloggs"], ["address_multiple", [["Wollaston St."], ["Nelson"]]], ["place_of_birth", nil]].sort, \
       model.extended_content_pairs.sort
       
   end

@@ -114,7 +114,7 @@ module ExtendedContentHelpers
     end
     
     def choice_from_value(value)
-      Choice.find_by_value(value) || Choice.find_by_label(value) || nil
+      Choice.find_by_value(value) || nil
     end
         
     def converted_choice_value(value)

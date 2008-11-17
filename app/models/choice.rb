@@ -22,6 +22,15 @@ class Choice < ActiveRecord::Base
   
   private :change_parent
   
+  # Before saving, make sure the value is set with something
+  before_validation :construct_value_if_not_set
+  
+  def construct_value_if_not_set
+    self.value = self.label if value.blank?
+  end
+  
+  private :construct_value_if_not_set
+  
   # Associations (polymorphic has_many :through)
   has_many :choice_mappings
   
@@ -31,19 +40,14 @@ class Choice < ActiveRecord::Base
   # Use better nested set for STI
   acts_as_nested_set
   
-  # Label is compulsory
+  # Label and value are compulsory
   validates_presence_of :label
+  validates_presence_of :value
   
   # Label and value must be unique (for lookup reasons)
   validates_uniqueness_of :label, :message => "must be unique"
   validates_uniqueness_of :value, :message => "must be unique"
 
-  # If no value is given, use the label as the value
-  # I expect this will be a pretty common use-case
-  def value
-    read_attribute(:value).blank? ? label : read_attribute(:value)
-  end
-  
   def parent=(parent_choice_id)
     unless new_record? 
       @new_parent = parent_choice_id.blank? ? ROOT : parent_choice_id

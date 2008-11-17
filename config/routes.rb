@@ -42,11 +42,8 @@ ActionController::Routing::Routes.draw do |map|
   map.basket_all_contributed_by ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/', :controller => "search", :action => 'all'
   map.basket_all_private_contributed_by ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/', :controller => "search", :action => 'all'
 
-  map.basket_all_of_category ':urlified_name/all/:controller_name_for_zoom_class/of/:limit_to_choice', :controller => "search", :action => 'all'
-  map.basket_all_private_of_category ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:limit_to_choice', :controller => "search", :action => 'all'
-
-  map.basket_search_in_category ':urlified_name/search/:controller_name_for_zoom_class/of/:limit_to_choice/:search_terms_slug', :controller => "search", :action => 'for'
-  map.basket_private_search_in_category ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:limit_to_choice/:search_terms_slug', :controller => "search", :action => 'for'
+  map.basket_all_of_category ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice', :controller => "search", :action => 'all'
+  map.basket_all_private_of_category ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice', :controller => "search", :action => 'all'
 
   map.basket_all_related_to_rss ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml', :controller => "search", :action => 'rss'
 
