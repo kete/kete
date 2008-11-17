@@ -35,6 +35,7 @@ class PqfQuery
   ATTRIBUTE_SPECS = {
     'oai_identifier' => "@attr 1=12 ",
     'oai_setspec' => "@attr 1=20 ",
+    'description' => "@attr 1=1010 ",
     'relations' => "@attr 1=1026 ",
     'subjects' => "@attr 1=21 ",
     'creators' => "@attr 1=1003 ",

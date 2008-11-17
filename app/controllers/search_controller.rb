@@ -134,6 +134,7 @@ class SearchController < ApplicationController
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
     
     @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
+    @extended_field = ExtendedField.find_by_label(params[:extended_field])
 
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
@@ -209,6 +210,7 @@ class SearchController < ApplicationController
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
     
     @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
+    @extended_field = ExtendedField.find_by_label(params[:extended_field])
 
     # 0 is the first index, so it's valid for start
     @start_record = 0
@@ -302,8 +304,28 @@ class SearchController < ApplicationController
     # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
     # must be exact string
     @search.pqf_query.creators_or_contributors_include(@contributor.login) if !@contributor.nil?
+    
+    # James
+    # Extended Field choice searching mechanisms
+    
+    # Handle searching against a specific extended field.
+    dc_element = @extended_field ? @extended_field.xml_element_name.gsub(/^(dc:)/, "") : nil
+    plural_aliased_dc_methods = %w(relation subject creator contributor)
+    
+    if plural_aliased_dc_methods.member?(dc_element)
+      
+      # Since these attributes are mapped as plural, we need to ensure we use the correct method in the PqfQuery model.
+      @search.pqf_query.send("#{dc_element.pluralize}_include", "':#{@limit_to_choice}:'")
 
-    @search.pqf_query.any_text_include("':#{@limit_to_choice}:'") unless @limit_to_choice.blank?
+    elsif PqfQuery::ATTRIBUTE_SPECS.member?(dc_element)
+      @search.pqf_query.send("#{dc_element}_include", "':#{@limit_to_choice}:'")
+    else
+      
+      # Since the DC attribute is either bogus or non-existent, do the search against all search with demarcated terms
+      @search.pqf_query.any_text_include("':#{@limit_to_choice}:'") unless @limit_to_choice.blank?
+    end
+    
+    # Normal search terms..
     
     if !@search_terms.blank?
       # add the actual text search if there are search terms
@@ -480,7 +502,16 @@ class SearchController < ApplicationController
     if !params[:source_item].blank?
       location_hash.merge!({ :source_item => params[:source_item] })
     end
-
+    
+    # James
+    # Handle choice specific searching.
+    if !params[:limit_to_choice].blank?
+      location_hash.merge!({ :limit_to_choice => params[:limit_to_choice] })
+    end
+    if !params[:extended_field].blank?
+      location_hash.merge({ :extended_field => params[:extended_field] })
+    end
+    
     logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)
 
     redirect_to url_for(location_hash)
