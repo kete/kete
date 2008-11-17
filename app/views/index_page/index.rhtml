@@ -190,9 +190,9 @@
       <div id="tags-box" class="secondary-content-section">
         <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
                          "( showing #{@tag_counts_array.size} of #{@tag_counts_size} | " +
-                          link_to(" all )",
+                          link_to("all",
                                   :controller => 'tags',
-                                  :action => 'index') : '' -%>
+                                  :action => 'index') + " )" : '' -%>
         <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
           <div id="tags-headline">
             <h3 style="display:inline;">Tags</h3>
