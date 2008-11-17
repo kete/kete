@@ -98,7 +98,7 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
   # incremental step towards the proper way of doing this in 2.0
   # should go in a file under config/initializers/
-  config.active_record.observers = :user_observer
+  config.active_record.observers = :user_observer, :feed_sweeper
 
   # white list html elements here, besides defaults
   config.action_view.sanitized_allowed_tags = 'table', 'tr', 'td', 'tbody', 'th', 'thead', 'tfoot', 'font', 'object', 'param', 'embed'

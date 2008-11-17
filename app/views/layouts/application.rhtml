@@ -39,50 +39,48 @@
     <%= tiny_mce_init -%>
   <% end -%>
 
-<%= stylesheet_link_tag 'kete-print', :media => 'print' %>
+  <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
 
-<% bundle :name => "#{@theme}_theme" do -%>
- <%= stylesheet_link_tag 'base', :media => 'screen' %>
- <%= stylesheet_link_tag 'comment', :media => 'screen' %>
- <%= stylesheet_link_tag 'redbox' %>
- <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
- <% load_styles(@theme).each do |stylesheet| -%>
-  <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
- <% end -%>
-<% end -%>
+  <% bundle :name => "#{@theme}_theme" do -%>
+    <%= stylesheet_link_tag 'base', :media => 'screen' %>
+    <%= stylesheet_link_tag 'comment', :media => 'screen' %>
+    <%= stylesheet_link_tag 'redbox' %>
+    <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
+    <% load_styles(@theme).each do |stylesheet| -%>
+      <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
+    <% end -%>
+  <% end -%>
 
-<%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
+  <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
 
-<% if !@header_image.blank? -%>
- <% # allows for banner style background image -%>
- <style type="text/css">
-  #header { background: url('<%= @header_image -%>') no-repeat top left !important; }
- </style>
+  <% if !@header_image.blank? -%>
+    <% # allows for banner style background image -%>
+    <style type="text/css">
+      #header { background: url('<%= @header_image -%>') no-repeat top left !important; }
+    </style>
+  <% end -%>
 
-<% end -%>
-
-<%  bundle :name => "rails_defaults" do -%>
-  <%= javascript_include_tag :defaults %>
-  <%= javascript_include_tag 'redbox' %>
-  <% if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
-    <%= javascript_include_tag 'dan_webb_code_highlighter/code_highlighter' %>
-    <% AVAILABLE_SYNTAX_HIGHLIGHTERS.each do |syntax| %>
-      <%= javascript_include_tag "dan_webb_code_highlighter/#{syntax}" %>
+  <% bundle :name => "rails_defaults" do -%>
+    <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag 'redbox' %>
+    <% if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
+      <%= javascript_include_tag 'dan_webb_code_highlighter/code_highlighter' %>
+      <% AVAILABLE_SYNTAX_HIGHLIGHTERS.each do |syntax| %>
+        <%= javascript_include_tag "dan_webb_code_highlighter/#{syntax}" %>
+      <% end %>
     <% end %>
-  <% end %>
-<% end -%>
+    <%= javascript_include_tag 'kete' -%>
+  <% end -%>
 
   <% if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>
-   <%  bundle :name => "active_scaffold" do -%>
-        <%= active_scaffold_includes %>
-   <% end -%>
+    <% bundle :name => "active_scaffold" do -%>
+      <%= active_scaffold_includes %>
+    <% end -%>
   <% end -%>
 
-  <% if !@rss_tag_auto.nil?  -%>
-        <%= @rss_tag_auto %>
-  <% end -%>
+  <%= @rss_tag_auto if !@rss_tag_auto.nil? -%>
+
   <!--[if IE]><%= stylesheet_link_tag 'kete-ie', :media => 'screen' %><![endif]-->
-
 </head>
 <body id="<%= @current_basket.urlified_name -%>">
 <% if IS_CONFIGURED -%>
@@ -111,22 +109,44 @@
 
     <div id="top-menu">
       <ul class="user-nav nav-list">
-        <% if !logged_in? %>
-        <li class="first"><%= link_to_unless_current "Register", {:controller => 'account',
-          :action => :signup,
-          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
-        <li><%= link_to_unless_current "Login", {:controller => 'account',
-          :action => :login,
-          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
-        <!-- Logout -->
-        <% else %>
-        <li class="first"><%= link_to_unless_current current_user.user_name, {:controller => 'account',
-          :action => 'show',
-          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
-        <li><%= link_to_unless_current "Logout", {:controller => 'account',
-          :action => :logout,
-          :urlified_name => @site_basket.urlified_name}, :tabindex => '2' -%></li>
-        <% end %>
+        <% if !logged_in? -%>
+        <li class="first">
+          <%= link_to_unless_current "Register",
+                                     { :controller => 'account',
+                                       :action => 'signup',
+                                       :urlified_name => @site_basket.urlified_name},
+                                     :tabindex => '2' -%>
+        </li>
+        <li>
+          <%= link_to_unless_current "Login",
+                                     { :controller => 'account',
+                                       :action => 'login',
+                                       :urlified_name => @site_basket.urlified_name},
+                                     :tabindex => '2' -%>
+        </li>
+        <% else -%>
+        <li id="user_baskets_list" class="first">
+          <%= link_to_unless_current "#{current_user.user_name}",
+                                     { :controller => 'account',
+                                       :action => 'show',
+                                       :urlified_name => @site_basket.urlified_name},
+                                     :tabindex => '2' -%>
+          <%= link_to "<em>V</em>", { :urlified_name => @site_basket.urlified_name,
+                                      :controller => 'account',
+                                      :action => 'baskets' },
+                                    :tabindex => '2' -%>
+          <ul class="submenu" style="display:none;">
+            <%= users_baskets_list -%>
+          </ul>
+        </li>
+        <li>
+          <%= link_to_unless_current "Logout",
+                                     { :controller => 'account',
+                                       :action => :logout,
+                                       :urlified_name => @site_basket.urlified_name },
+                                     :tabindex => '2' -%>
+        </li>
+        <% end -%>
       </ul>
       <ul id="main-nav" class="nav-list">
         <li class="first"><a href="/" accesskey="1" tabindex="2">Home</a></li>
@@ -137,6 +157,7 @@
                 basket_index_url(:urlified_name => @help_basket.urlified_name), :tabindex => '2') %></li>
         <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex", :accesskey => '9', :tabindex => '2') %></li>
         <%= header_add_links %>
+        <li><%= header_add_basket_link -%></li>
       </ul>
     </div> <!-- /header -->
 

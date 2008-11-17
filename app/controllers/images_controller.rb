@@ -61,6 +61,13 @@ class ImagesController < ApplicationController
           thumb.still_image_id = @still_image.id
           thumb.save!
         end
+
+        if params[:portrait]
+          UserPortraitRelation.new_portrait_for(current_user, @still_image)
+          if params[:default_portrait]
+            UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
+          end
+        end
       end
 
       setup_related_topic_and_zoom_and_redirect(@still_image, nil, :private => (params[:still_image][:private] == "true"))

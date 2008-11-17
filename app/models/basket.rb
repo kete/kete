@@ -10,6 +10,8 @@ class Basket < ActiveRecord::Base
 
   USER_LEVEL_OPTIONS = [['All users', 'all users']] + MEMBER_LEVEL_OPTIONS
 
+  ALL_LEVEL_OPTIONS = [['All users', 'all users']] + [['Logged in user', 'logged in']] + MEMBER_LEVEL_OPTIONS
+
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
@@ -61,8 +63,14 @@ class Basket < ActiveRecord::Base
   # a topic may be the designated index page for it's basket
   has_one :index_topic, :class_name => 'Topic', :foreign_key => 'index_for_basket_id'
 
+  # each basket was made by someone (admin or otherwise)
+  belongs_to :creator, :class_name => 'User'
+
   # imports are processes to bring in content to a basket
   has_many :imports, :dependent => :destroy
+
+  # each basket can have multiple feeds displayed in the sidebar
+  has_many :feeds, :dependent => :destroy
 
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
@@ -201,11 +209,17 @@ class Basket < ActiveRecord::Base
     value == current_value
   end
 
-  def array_to_options_list_with_defaults(options_array, default_value)
+  def memberlist_policy_or_default
+    current_value = self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
+    select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
+  end
+
+  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
     select_options = String.new
     options_array.each do |option|
       label = option[0]
       value = option[1]
+      next if label == "Site admin" && !site_admin
       select_options += "<option value=\"#{value}\""
       if default_value == value
         select_options += " selected=\"selected\""
@@ -355,12 +369,53 @@ class Basket < ActiveRecord::Base
     (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && @@site_basket.show_privacy_controls == true))
   end
 
-  # Get the roles this Basket has
-  def roles
-    Role.find_all_by_authorizable_type_and_authorizable_id('Basket', self)
+  # find if we should let users access the basket contact form
+  # get the baskets setting or if nil, get it from the site basket
+  def allows_contact_with_inheritance?
+    (self.settings[:allow_basket_admin_contact] == true || (self.settings[:allow_basket_admin_contact].class == NilClass && @@site_basket.settings[:allow_basket_admin_contact] == true))
+  end
+
+  # return a boolean for whether basket join requests (with inheritance) are enabled
+  # open / request = true
+  # closed = false 
+  def allows_join_requests_with_inheritance?
+    ['open', 'request'].include?(self.join_policy_with_inheritance)
+  end
+
+  # get the current basket join policy. If nil, use the site baskets
+  def join_policy_with_inheritance
+    (!self.settings[:basket_join_policy].blank?) ? self.settings[:basket_join_policy] : self.site_basket.settings[:basket_join_policy]
+  end
+
+  # get a list of administrators (including site administrators
+  # if the current basket is the site basket)
+  # uses auto-generated methods from the authorization plugin
+  def administrators
+    if self == self.site_basket
+      self.has_site_admins_or_admins
+    else
+      self.has_admins
+    end
+  end
+
+  # we need at least one site admin at all times
+  def more_than_one_site_admin?
+    self.has_site_admins.size > 1
+  end
+
+  # we need at least one admin in a basket at all times
+  def more_than_one_basket_admin?
+    self.has_admins.size > 1
+  end
+
+  def delete_roles_for(user)
+    self.accepted_roles.each do |role|
+      user.has_no_role(role.name, self)
+    end
   end
 
   protected
+
   # before save filter
   def urlify_name
     return if name.blank?
@@ -380,6 +435,7 @@ class Basket < ActiveRecord::Base
   end
 
   private
+
   # when a basket is to be deleted
   # we have to update all versions for items that used to point
   # at the basket in question (but were previously moved out of basket)
@@ -402,7 +458,7 @@ class Basket < ActiveRecord::Base
   # otherwise authorizable tries to get the basket which no longer exists
   # when called in user.basket_permissions
   def remove_users_and_roles
-    roles.each do |role|
+    self.accepted_roles.each do |role|
       # authentication plugin's accepts_no_role was problematic
       # rolling our own
       role.users.each { |user| user.drop(role) }

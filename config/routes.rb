@@ -15,6 +15,11 @@ ActionController::Routing::Routes.draw do |map|
 
   map.oai '/oai_pmh_repository', :controller => 'oai_pmh_repository', :action => 'index'
 
+  # Kieran Pilkington, 2008-09-03
+  # Got to have these above the default routes or it will error
+  # when it looks for a contact controller
+  map.basket_contact ':urlified_name/contact', :controller => "baskets", :action => 'contact'
+
   # Walter McGinnis, 2007-01-08
   # TODO: DRY this up
   map.basket_with_format ':urlified_name/:controller/:action/:id.:format'

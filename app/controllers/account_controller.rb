@@ -7,11 +7,14 @@ class AccountController < ApplicationController
 
   include ExtendedContent
   include ExtendedContentController
+  include EmailController
 
   # Be sure to include AuthenticationSystem in Application Controller instead
   # include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :login_from_cookie
+
+  before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :default_portrait]
 
   # say something nice, you goof!  something sweet.
   def index
@@ -155,6 +158,8 @@ class AccountController < ApplicationController
         @user = self.current_user
       end
       @extended_fields = @user.xml_attributes
+      @viewer_is_user = (@user == @current_user) ? true : false
+      @viewer_portraits = !@user.portraits.empty? ? @user.portraits : nil
     else
       flash[:notice] = "You must be logged in to view user profiles."
       redirect_to :action => 'login'
@@ -285,7 +290,83 @@ class AccountController < ApplicationController
     redirect_back_or_default(:controller => '/account', :action => 'index')
   end
 
+  def add_portrait
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.new_portrait_for(current_user, @still_image)
+      flash[:notice] = "'#{@still_image.title}' has been added to your portraits."
+    else
+      flash[:error] = "'#{@still_image.title}' failed to add to your portraits."
+    end
+    redirect_to_show_for(@still_image)
+  end
+
+  def remove_portrait
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.remove_portrait_for(current_user, @still_image)
+      @successful = true
+      flash[:notice] = "'#{@still_image.title}' has been removed from your portraits."
+    else
+      @successful = false
+      flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
+    end
+    respond_to do |format|
+      format.html { redirect_to_show_for(@still_image) }
+      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
+  end
+
+  def default_portrait
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
+      flash[:notice] = "'#{@still_image.title}' has been make your default portrait."
+    else
+      flash[:error] = "'#{@still_image.title}' failed to become your default portrait."
+    end
+    redirect_to_show_for(@still_image)
+  end
+
+  def move_portrait_higher
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.move_portrait_higher_for(current_user, @still_image)
+      @successful = true
+      flash[:notice] = "'#{@still_image.title}' has been moved closer to the front of your portraits."
+    else
+      @successful = false
+      flash[:error] = "'#{@still_image.title}' failed to move closer to the front of your portraits."
+    end
+    respond_to do |format|
+      format.html { redirect_to_show_for(@still_image) }
+      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
+  end
+
+  def move_portrait_lower
+    @still_image = StillImage.find(params[:id])
+    if UserPortraitRelation.move_portrait_lower_for(current_user, @still_image)
+      @successful = true
+      flash[:notice] = "'#{@still_image.title}' has been moved closer to the end of your portraits."
+    else
+      @successful = false
+      flash[:error] = "'#{@still_image.title}' failed to move closer to the end of your portraits."
+    end
+    respond_to do |format|
+      format.html { redirect_to_show_for(@still_image) }
+      format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
+  end
+
+  def baskets
+  end
+
   private
+
+    def redirect_if_user_portraits_arnt_enabled
+      unless ENABLE_USER_PORTRAITS
+        flash[:notice] = "User portraits are not enabled so you cannot use this feature."
+        @still_image = StillImage.find(params[:id])
+        redirect_to_show_for(@still_image)
+      end
+    end
 
     def load_content_type
       @content_type = ContentType.find_by_class_name('User')

@@ -97,6 +97,32 @@
   <% end -%>
 <% end -%>
 
+<% if @current_basket.allows_contact_with_inheritance? -%>
+  <% cache({:part => 'contact'}) do -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="moderator-tools" class="secondary-content-section">
+        <ul>
+          <li><%= link_to_basket_contact_for(@current_basket) %></li>
+        </ul>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+      </div>
+    </div>
+  <% end -%>
+<% end -%>
+
+<% links = link_to_membership_request_of(@current_basket) -%>
+<% links += link_to_members_of(@current_basket) -%>
+<% unless links.blank? -%>
+  <div class="secondary-content-section-wrapper">
+    <div id="moderator-tools" class="secondary-content-section">
+      <ul>
+        <%= links %>
+      </ul>
+      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+    </div>
+  </div>
+<% end -%>
+
 <% cache({:part => 'extra_side_bar_html'}) do -%>
   <% if !@current_basket.index_page_extra_side_bar_html.blank? -%>
     <div class="secondary-content-section-wrapper">
@@ -119,6 +145,24 @@
       </div>
     </div>
   <% end -%>
+<% end -%>
+
+<% if @current_basket.feeds.size > 0 %>
+  <div class="secondary-content-section-wrapper">
+    <div id="contents-by-type" class="secondary-content-section">
+      <% @current_basket.feeds.each do |feed| -%>
+        <% cache({ :part => "#{feed.title}_feed" }) do -%>
+          <h4><%=h feed.title %></h4>
+          <ul>
+            <% feed.entries.each do |entry| -%>
+              <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+            <% end -%>
+          </ul>
+        <% end -%>
+      <% end -%>
+      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+    </div>
+  </div>
 <% end -%>
 
 <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil? -%>

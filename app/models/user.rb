@@ -51,6 +51,13 @@ class User < ActiveRecord::Base
     :order => "#{zoom_class.tableize}.created_at"
   end
 
+  # Each user can have multiple portraits (images relating to their account)
+  has_many :user_portrait_relations, :order => 'position', :dependent => :delete_all
+  has_many :portraits, :through => :user_portrait_relations, :source => :still_image, :order => 'user_portrait_relations.position'
+
+  # users can create baskets if the system setting is enabled to do so
+  has_many :baskets, :class_name => 'Basket', :foreign_key => :creator_id
+
   # Virtual attribute for the contribution.version join model
   # a hack to be able to pass it in
   # see topics_controller update action for example
@@ -196,6 +203,10 @@ class User < ActiveRecord::Base
       @show_email = true
     end
     return @show_email
+  end
+
+  def accepts_emails?
+    self.allow_emails == true
   end
 
   # we only need distinct items contributed to

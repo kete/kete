@@ -121,6 +121,25 @@ class UserTest < Test::Unit::TestCase
     assert_not_nil user.activation_code
   end
 
+  def test_should_have_portraits
+    user = create_user
+    new_image_with_creator user
+    UserPortraitRelation.new_portrait_for(user, @still_image)
+    user.reload
+
+    assert_not_nil user.user_portrait_relations
+    assert_not_nil user.portraits
+    assert_equal 1, user.portraits.size
+    assert_kind_of StillImage, user.portraits.first
+    assert_equal StillImage.first, user.portraits.first
+  end
+
+  def test_user_should_have_baskets
+    user = User.first
+    assert_equal 4, user.baskets.size
+    assert_kind_of Basket, user.baskets.first
+  end
+
   protected
   
     def new_model_attributes
@@ -133,5 +152,12 @@ class UserTest < Test::Unit::TestCase
       # Walter McGinnis, 2007-07-10
       # adding terms agreement and capcha vars
       User.create(@new_model.merge(options))
+    end
+
+    def new_image_with_creator(user)
+      @still_image = StillImage.create(:title => 'test item',
+                                       :basket_id => Basket.find(:first))
+      @still_image.creator = user
+      @still_image.save
     end
 end
