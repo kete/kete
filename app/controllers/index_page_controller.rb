@@ -9,9 +9,11 @@ class IndexPageController < ApplicationController
       # Load the index page everytime (for now atleast, until a better title caching system is in place)
       @is_fully_cached = has_all_fragments?
       #if !@is_fully_cached or params[:format] == 'xml'
-        @topic = @current_basket.index_topic
-        @topic = @topic.private_version! if params[:private] == "true" && @topic.has_private_version? && permitted_to_view_private_items?
-      #end
+      @topic = @current_basket.index_topic
+      if (params[:private] == "true" || (params[:private].blank? && @current_basket.private_default_with_inheritance?)) &&
+          @topic.has_private_version? && permitted_to_view_private_items?
+          @topic = @topic.private_version!
+      end
 
       if !@topic.nil?
         @title = @topic.title
