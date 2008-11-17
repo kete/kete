@@ -11,7 +11,7 @@ require File.dirname(__FILE__) + '/../stubs/account_helper.rb'
 # Re-raise errors caught by the controller.
 class AccountController; def rescue_action(e) raise e end; end
 
-ENABLE_USER_PORTRAITS = true
+set_constant('ENABLE_USER_PORTRAITS', true)
 
 class AccountControllerTest < Test::Unit::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead

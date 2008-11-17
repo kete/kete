@@ -145,11 +145,10 @@ class BasketsController < ApplicationController
       end
     end
 
+    @feeds_successful = true
     if !params[:feeds_url_list].nil?
       # we call destroy_all here instead of delete_all so that callbacks are triggered
       @basket.feeds.destroy_all
-
-      @feeds_successful = true
       begin
         new_feeds = Array.new
         params[:feeds_url_list].split("\n").each do |feed|

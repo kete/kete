@@ -130,7 +130,7 @@ class BasketTest < Test::Unit::TestCase
   def test_memberlist_policy_or_default
     about_basket = Basket.find_by_id(3) # about
     result = about_basket.memberlist_policy_or_default
-    expected = "<option value=\"all users\">All users</option><option value=\"logged in\">Logged in user</option><option value=\"at least member\">Basket member</option><option value=\"at least moderator\">Basket moderator</option><option value=\"at least admin\" selected=\"selected\">Basket admin</option><option value=\"at least site admin\">Site admin</option>"
+    expected = "<option value=\"all users\">All users</option><option value=\"logged in\">Logged in user</option><option value=\"at least member\">Basket member</option><option value=\"at least moderator\">Basket moderator</option><option value=\"at least admin\" selected=\"selected\">Basket admin</option>"
     assert_equal expected, result
   end
 
