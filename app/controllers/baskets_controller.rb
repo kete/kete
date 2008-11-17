@@ -207,10 +207,9 @@ class BasketsController < ApplicationController
       # Add this last because it takes the longest time to process
       @basket.feeds.each do |feed|
         feed.update_feed
-        feed_worker_key = "#{feed.title.gsub(/\W/, '_')}_feed_worker"
+        feed_worker_key = "#{feed.id}_#{feed.title.gsub(/\W/, '_')}_feed_worker"
         delete_existing_workers_for(:feeds_worker, feed_worker_key)
-        MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed_worker_key )
-        MiddleMan.worker( :feeds_worker, feed_worker_key ).async_do_work( :arg => { :feed_id => feed.id } )
+        MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed_worker_key, :data => feed.id )
       end
 
       flash[:notice] = 'Basket was successfully updated.'
