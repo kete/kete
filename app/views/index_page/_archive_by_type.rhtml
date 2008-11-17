@@ -6,8 +6,9 @@
         <%= link_to zoom_class_plural_humanize(zoom_class), basket_all_url(location) -%>
         (
         <%= link_to content_type_count_for('public', zoom_class), basket_all_url(location) -%>
-        <% unless basket_stats_hash["#{zoom_class}_private"].nil? -%>
-          -
+        <% unless basket_stats_hash["#{zoom_class}_private"].nil? ||
+        basket_stats_hash["#{zoom_class}_private"] == 0 -%>
+          | private:
           <% location = location.merge({:privacy_type => 'private'}) -%>
           <%= link_to content_type_count_for('private', zoom_class), basket_all_private_url(location) -%>
         <% end -%>

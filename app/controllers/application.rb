@@ -775,11 +775,14 @@ class ApplicationController < ActionController::Base
     if basket == @site_basket
       ZOOM_CLASSES.each do |zoom_class|
         @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => public_conditions)
-        # Kieran Pilkington, 2008/10/20
-        # We can't currently get private items for the site basket because each user has different permissions
-        # So we'd need to cache different counts for different users. Other baskets don't have this problem
-        # They're either public or private, so we don't need each users settings
-        # @basket_stats_hash["#{zoom_class}_private"] = Module.class_eval(zoom_class).count(:conditions => private_conditions) if permitted_to_view_private_items?
+        # Walter McGinnis, 2008-11-18
+        # normally the site basket is a special case, in that is shows all items from all baskets
+        # however in the context of private items, the rule is to show all private items that a USER has rights to see
+        # so the counts may vary by user
+        # because of caching, this becomes problematic to display counts for
+        # so instead, we only show private items that are actually in the site basket
+        # TODO: we will want to change this to match browsing of private items in site basket later
+        @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions) if permitted_to_view_private_items?
       end
     else
       ZOOM_CLASSES.each do |zoom_class|
