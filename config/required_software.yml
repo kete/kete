@@ -14,6 +14,7 @@ gems:
   libxml-ruby: libxml
   feed-normalizer: feed-normalizer
   avatar: avatar
+  htmlentities: htmlentities
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems

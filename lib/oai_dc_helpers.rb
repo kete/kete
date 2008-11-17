@@ -1,3 +1,5 @@
+include Utf8UrlFor
+include ActionView::Helpers::SanitizeHelper
 # oai dublin core xml helpers
 # TODO: evaluate whether we can simply go with SITE_URL
 # rather than request hacking
@@ -23,7 +25,7 @@ module OaiDcHelpers
         request_uri = request.request_uri
       end
       basket_urlified_name = @current_basket.nil? ? item.basket.urlified_name : @current_basket.urlified_name
-      xml.request(protocol + host + request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
+      xml.request(protocol + host + CGI::unescape(request_uri), :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
     end
 
     def oai_dc_xml_oai_identifier(xml, item)
@@ -114,7 +116,7 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(item)
 
-      xml.tag!("dc:identifier", "#{protocol}://#{host}#{url_for(uri_attrs.merge(:only_path => true))}")
+      xml.tag!("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true))}")
     end
 
     def oai_dc_xml_dc_title(xml, item)
@@ -131,10 +133,22 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_description(xml, description)
-      # strip out embedded html
-      # it only adds clutter at this point and fails oai_dc validation, too
-      description = strip_tags(description).gsub("&nbsp;", " ")
-      xml.tag!("dc:description", description)
+      unless description.blank?
+        # strip out embedded html
+        # it only adds clutter at this point and fails oai_dc validation, too
+        # also pulling out some entities that sneak in
+        description = strip_tags(description)
+
+        # convert unicode characters from entities back to unicode chars
+        require 'htmlentities'
+        entities = HTMLEntities.new
+        description = entities.decode(description)
+
+        # escape xml special chars &, <, and >
+        description = CGI::escapeHTML(description)
+
+        xml.tag!("dc:description", description)
+      end
     end
 
     def oai_dc_xml_dc_creators_and_date(xml, item)
@@ -186,19 +200,19 @@ module OaiDcHelpers
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.tag!("dc:subject", related.title)
-            xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
+            xml.tag!("dc:subject", related.title.gsub("& ", "&amp; "))
+            xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:subject", commented_on_item.title)
-        xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
+        xml.tag!("dc:subject", commented_on_item.title.gsub("& ", "&amp; "))
+        xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
         item.topics.each do |related|
-          xml.tag!("dc:subject", related.title)
-          xml.tag!("dc:relation", "http://#{host}#{url_for(:controller => 'topics', :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          xml.tag!("dc:subject", related.title.gsub("& ", "&amp; "))
+          xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
         end
       end
     end
@@ -258,11 +272,12 @@ module OaiDcHelpers
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = SITE_URL.chop + url_for(
+        rights = SITE_URL.chop + utf8_url_for(
           :id => 4,
           :urlified_name => Basket.find(ABOUT_BASKET).urlified_name,
           :action => 'show',
-          :controller => 'topics'
+          :controller => 'topics',
+          :escape => false
         )
       end
 
