@@ -819,24 +819,23 @@ class ApplicationController < ActionController::Base
     public_conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
     private_conditions = "title != \'#{BLANK_TITLE}\' AND title = \'#{NO_PUBLIC_VERSION_TITLE}\'"
 
-    if basket == @site_basket
-      ZOOM_CLASSES.each do |zoom_class|
+    ZOOM_CLASSES.each do |zoom_class|
+      if basket == @site_basket
         @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => public_conditions)
-        # Walter McGinnis, 2008-11-18
-        # normally the site basket is a special case, in that is shows all items from all baskets
-        # however in the context of private items, the rule is to show all private items that a USER has rights to see
-        # so the counts may vary by user
-        # because of caching, this becomes problematic to display counts for
-        # so instead, we only show private items that are actually in the site basket
-        # TODO: we will want to change this to match browsing of private items in site basket later
-        @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions) if permitted_to_view_private_items?
-      end
-    else
-      ZOOM_CLASSES.each do |zoom_class|
+      else
         @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => public_conditions)
-        if basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
-          @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions)
-        end
+      end
+
+      # Walter McGinnis, 2008-11-18
+      # normally the site basket is a special case, in that is shows all items from all baskets
+      # however in the context of private items, the rule is to show all private items that a USER has rights to see
+      # so the counts may vary by user
+      # because of caching, this becomes problematic to display counts for
+      # so instead, we only show private items that are actually in the site basket
+      # which happens to use the same code as other basket would, so we don't need to duplicate this at the moment
+      # TODO: we will want to change this to match browsing of private items in site basket later
+      if basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
+        @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions)
       end
     end
   end
