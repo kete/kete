@@ -33,6 +33,7 @@ module TaggingController
         if @successful
           # I think it's nessesary to run this (update zoom db's with new tag?). Could be wrong?
           after_successful_zoom_item_update(@item)
+          expire_basket_index_caches # application controller method that clears basket show caches
           respond_to do |format|
             flash[:notice] = "The new tag(s) have been added to #{@item.title}"
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
