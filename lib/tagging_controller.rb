@@ -1,11 +1,13 @@
 module TaggingController
   unless included_modules.include? TaggingController
     def self.included(klass)
-      controller = klass.name.gsub("Controller", "")
+      controller = klass.name.gsub("Controller", "").downcase
+      # the following code is basicly a copy of zoom_class_from_controller in ZoomControllerHelpers
+      # find a way to get that method in here without all the errors is brings with it
       case controller
-      when "Images"
+      when "images"
         zoom_class = 'StillImage'
-      when "Audio"
+      when "audio"
         zoom_class = 'AudioRecording'
       else
         zoom_class = controller.singularize
@@ -18,12 +20,14 @@ module TaggingController
     # Kieran Pilkington, 2008/10/23
     # If we are updating via AJAX tag editor, then append the tags to the current tags list
     # then update the item, update zoom databases, and redirect/update the page on success
+    # clearing of caches handled by application controller after_filter's
     def add_tags
       zoom_class = zoom_class_from_controller(params[:controller])
       item_key = zoom_class.underscore.to_sym
 
       if ZOOM_CLASSES.include?(zoom_class) && !params[item_key].blank? && !params[item_key][:tag_list].blank?
         @item = item_from_controller_and_id
+        @item = public_or_private_version_of(@item)
 
         params[item_key][:version_comment] = "Only tags added: " + params[item_key][:tag_list]
         params[item_key][:tag_list] = "#{@item.tag_list.join(", ")}, #{params[item_key][:tag_list]}"
@@ -31,9 +35,8 @@ module TaggingController
 
         @successful = @item.update_attributes(params[item_key])
         if @successful
-          # I think it's nessesary to run this (update zoom db's with new tag?). Could be wrong?
+          @item = public_or_private_version_of(@item) # make sure we are back to private item if needed
           after_successful_zoom_item_update(@item)
-          expire_basket_index_caches # application controller method that clears basket show caches
           respond_to do |format|
             flash[:notice] = "The new tag(s) have been added to #{@item.title}"
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
