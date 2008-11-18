@@ -165,6 +165,11 @@
     <div id="error" <%= flash[:error].blank? ? "style='display:none;'" : '' -%>><div><%= flash[:error] %></div></div>
 
         <div id="container">
+          
+          <%# James - 2008-11-19 %>
+          <%# Slideshow controls are shown on 'show' pages for all item types %>
+          <%= render(:partial => "slideshow_controls") if show_slideshow_controls? -%>
+          
           <% if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>
           <div id="basket-list-column">
           <%= render_baskets_as_menu %>
