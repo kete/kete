@@ -58,6 +58,12 @@ module ExtendedFieldsControllerHelpers
         extended_fields_update_param_for_item(:fields => @fields, :item_key => item_key)
       end
 
+      # Kieran Pilkington, 2008/11/19
+      # The browser is sending XML at this stage, and while most browsers know how to handle it,
+      # Internet Explorer outputs is as literal XML, instead of rendering it as a site, so to fix
+      # this, we have to send the text/html header instead of the application/xml is normally sends
+      response.headers["Content-Type"] = "text/html; charset=utf-8"
+
       return extended_fields_replacement_params_hash(:item_key => item_key, :item_class => item_class, :extra_fields => extra_fields )
     end
 
