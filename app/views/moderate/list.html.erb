@@ -1,9 +1,11 @@
+<% @title = 'Moderate' -%>
+
 <%= render(:partial => "baskets/actions_menu",
            :locals => { :item => @current_basket }) %>
 
 <%= render :partial => "topics/content_wrapper_start" %>
 
-<h2>Moderate</h2>
+<h2><%= h(@title) -%></h2>
 
 <% if @items.blank? %>
 <p>Currently no items needing moderation.</p>
