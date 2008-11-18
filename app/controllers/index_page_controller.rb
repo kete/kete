@@ -75,14 +75,15 @@ class IndexPageController < ApplicationController
 
           # exclude index_topic
           if @recent_topics_limit > 0
-            recent_query_hash = { :limit => @recent_topics_limit, :order => 'created_at desc'}
-            recent_query_hash[:conditions] = ['id != ?', @topic] unless @topic.nil?
-
-            if @current_basket == @site_basket
-              @recent_topics_items = Topic.find(:all, recent_query_hash).reject { |t| t.disputed_or_not_available? }
+            args = { :limit => @recent_topics_limit, :include => :versions }
+            topics_set = (@current_basket == @site_basket) ? Topic : @current_basket.topics
+            @recent_topics_items = if @privacy_type == 'private'
+              topics_set.recent(args).exclude(@topic)
             else
-              @recent_topics_items = @current_basket.topics.find(:all, recent_query_hash).reject { |t| t.disputed_or_not_available? }
+              topics_set.recent(args).exclude(@topic).public
             end
+            @recent_topics_items.collect! { |t| t.latest_version_is_private? ? t.private_version! : t } if @privacy_type == 'private'
+            @recent_topics_items.reject! { |t| t.disputed_or_not_available? }
           end
 
           @tag_counts_array = @current_basket.tag_counts_array({:limit => false})
