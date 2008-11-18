@@ -135,9 +135,11 @@ class IndexPageController < ApplicationController
       # and they are derived by hitting search controller
 
       limit = 20
-      find_args_hash = { :select => 'id, title, created_at',
-        :conditions => ['(private = :private OR private is null) AND (file_private = :file_private OR file_private is null)', {:private => false, :file_private => false}],
-        :limit => limit }
+
+      find_args_hash = { :select => 'id, title, created_at', :limit => limit }
+      unless @privacy_type == 'private'
+        find_args_hash.merge!(:conditions => ['(private = :private OR private is null) AND (file_private = :file_private OR file_private is null)', {:private => false, :file_private => false}])
+      end
 
       # we need public still images
       case @current_basket.index_page_image_as
