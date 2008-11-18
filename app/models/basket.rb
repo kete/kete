@@ -131,7 +131,7 @@ class Basket < ActiveRecord::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       zoom_set = (self.id == 1) ? zoom_class.constantize : self.send(zoom_class.tableize)
-      zoom_class_tag_counts = zoom_set.tag_counts({:limit => tag_limit, :order => find_tag_order}, private_tags)
+      zoom_class_tag_hash = zoom_set.tag_counts({:limit => tag_limit, :order => find_tag_order}, private_tags)
 
       # if exists in @tag_counts, update count with added number
       [:public, :private].each do |privacy|
