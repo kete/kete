@@ -31,10 +31,11 @@ class BasketsController < ApplicationController
       @listing_type = 'approved'
     end
 
-    paginate_order = current_sorting_options('name', 'asc', ['name', 'created_at'])
+    @default_sorting = {:order => 'created_at', :direction => 'desc'}
+    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], ['name', 'created_at'])
 
     options = { :page => params[:page],
-                :per_page => 5,
+                :per_page => 10,
                 :order => paginate_order }
     options.merge!({ :conditions => ['status = ?', @listing_type] })
 
