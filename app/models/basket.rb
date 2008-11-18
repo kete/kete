@@ -107,7 +107,7 @@ class Basket < ActiveRecord::Base
   # but we want all zoom_class's totals added together
   # special case is site basket
   # want to grab all tags from across all baskets
-  def tag_counts_array(options = {})
+  def tag_counts_array(options = {}, private_tags=false)
     tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
     tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
     tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : 'asc'
@@ -128,17 +128,26 @@ class Basket < ActiveRecord::Base
     end
 
     @tag_counts_hash = Hash.new
+
     ZOOM_CLASSES.each do |zoom_class|
       zoom_set = (self.id == 1) ? zoom_class.constantize : self.send(zoom_class.tableize)
-      zoom_class_tag_counts = zoom_set.tag_counts(:limit => tag_limit, :order => find_tag_order)
+      zoom_class_tag_counts = zoom_set.tag_counts({:limit => tag_limit, :order => find_tag_order}, private_tags)
 
       # if exists in @tag_counts, update count with added number
-      zoom_class_tag_counts.each do |tag|
-        tag_key = tag.id.to_s
-        if !@tag_counts_hash.include?(tag_key)
-          @tag_counts_hash[tag_key] = { :id => tag.id, :name => tag.name, :taggings_count => tag.count }
-        else
-          @tag_counts_hash[tag_key][:taggings_count] +=  tag.count
+      [:public, :private].each do |privacy|
+        zoom_class_tag_hash[privacy.to_sym].each do |tag|
+          tag_key = tag.id.to_s
+          if !@tag_counts_hash.include?(tag_key)
+            @tag_counts_hash[tag_key] = { :id => tag.id,
+                                          :name => tag.name,
+                                          :public_taggings_count => (privacy == :public) ? tag.count : 0,
+                                          :private_taggings_count => (privacy == :private) ? tag.count : 0,
+                                          :total_taggings_count => tag.count }
+          else
+            @tag_counts_hash[tag_key][:public_taggings_count] += tag.count if privacy == :public
+            @tag_counts_hash[tag_key][:private_taggings_count] += tag.count if privacy == :private
+            @tag_counts_hash[tag_key][:total_taggings_count] += tag.count
+          end
         end
       end
     end
@@ -160,7 +169,7 @@ class Basket < ActiveRecord::Base
       @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:id] }
       @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
     when 'number'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:taggings_count] }
+      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:total_taggings_count] }
       @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
     else
       @tag_counts_array = @tag_counts_array.sort_by { rand }

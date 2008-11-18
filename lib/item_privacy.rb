@@ -223,10 +223,13 @@ module ItemPrivacy
     module SingletonMethods
 
       # Required by tag cloud functionality on basket home-pages.
-      def tag_counts(options)
+      def tag_counts(options, private_tags=false)
       
         # Only return public tags (for the time being..)
-        public_tag_counts(options)
+        tags = Hash.new
+        tags[:public] = public_tag_counts(options)
+        tags[:private] = private_tags ? private_tag_counts(options) : {}
+        tags
       end
     
     end

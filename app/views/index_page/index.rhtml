@@ -193,7 +193,7 @@
   </div>
 <% end -%>
 
-<% cache({:part => 'tags'}) do -%>
+<% cache({:part => "tags_#{@privacy_type}"}) do -%>
   <% if @tag_counts_array.size > 0 -%>
     <div class="secondary-content-section-wrapper">
       <div id="tags-box" class="secondary-content-section">

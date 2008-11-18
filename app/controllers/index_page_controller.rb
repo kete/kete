@@ -86,7 +86,7 @@ class IndexPageController < ApplicationController
             @recent_topics_items.reject! { |t| t.disputed_or_not_available? }
           end
 
-          @tag_counts_array = @current_basket.tag_counts_array({:limit => false})
+          @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, (@privacy_type == 'private'))
           @tag_counts_size = @tag_counts_array.size
           @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
         end
