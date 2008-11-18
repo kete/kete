@@ -132,9 +132,6 @@ class Topic < ActiveRecord::Base
     args = (args.first || {})
     { :order => 'created_at desc', :limit => 5 }.merge(args)
   }
-  named_scope :exclude, lambda { |*args|
-    { :conditions => ['topics.id NOT IN (?)', args] }
-  }
   named_scope :public, :conditions => ['title != ?', NO_PUBLIC_VERSION_TITLE]
 
   def clear_basket_homepage_cache

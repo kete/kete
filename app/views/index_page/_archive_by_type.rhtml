@@ -5,11 +5,11 @@
       <li>
         <%= link_to zoom_class_plural_humanize(zoom_class), basket_all_url(location) -%>
         <% links = Array.new -%>
-        <% links << link_to(content_type_count_for('public', zoom_class), basket_all_url(location)) if @basket_stats_hash["#{zoom_class}_public"].size > 0 -%>
-        <% if @basket_stats_hash["#{zoom_class}_private"] && @basket_stats_hash["#{zoom_class}_private"].size > 0 -%>
-          <% links << " | private: " + link_to(content_type_count_for('private', zoom_class), basket_all_private_url(location.merge({:privacy_type => 'private'}))) -%>
+        <% links << link_to(content_type_count_for('public', zoom_class), basket_all_url(location)) if @basket_stats_hash["#{zoom_class}_public"] > 0 -%>
+        <% if @basket_stats_hash["#{zoom_class}_private"] && @basket_stats_hash["#{zoom_class}_private"] > 0 -%>
+          <% links << "private: " + link_to(content_type_count_for('private', zoom_class), basket_all_private_url(location.merge({:privacy_type => 'private'}))) -%>
         <% end -%>
-        <%= "(" + links.join(" - ") + ")" unless links.empty? -%>
+        <%= "( " + links.join(" | ") + " )" unless links.blank? -%>
       </li>
     <% end -%>
   </ul>

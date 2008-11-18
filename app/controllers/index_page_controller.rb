@@ -78,17 +78,21 @@ class IndexPageController < ApplicationController
             args = { :limit => @recent_topics_limit, :include => :versions }
             topics_set = (@current_basket == @site_basket) ? Topic : @current_basket.topics
             @recent_topics_items = if @privacy_type == 'private'
-              topics_set.recent(args).exclude(@topic)
+              topics_set.recent(args)
             else
-              topics_set.recent(args).exclude(@topic).public
+              topics_set.recent(args).public
             end
             @recent_topics_items.collect! { |t| t.latest_version_is_private? ? t.private_version! : t } if @privacy_type == 'private'
             @recent_topics_items.reject! { |t| t.disputed_or_not_available? }
+            # with the final topic, sort by the revisions updated_at, rather than the public topics update_at
+            @recent_topics_items.sort! { |t1,t2| t2.updated_at<=>t1.updated_at }
           end
 
-          @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, (@privacy_type == 'private'))
-          @tag_counts_size = @tag_counts_array.size
-          @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
+          if @current_basket.index_page_number_of_tags > 0
+            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, (@privacy_type == 'private'))
+            @tag_counts_size = @tag_counts_array.size
+            @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
+          end
         end
 
         # don't bother caching, because this is likely a random image
@@ -137,8 +141,12 @@ class IndexPageController < ApplicationController
       limit = 20
 
       find_args_hash = { :select => 'id, title, created_at', :limit => limit }
+
+      # We have to make sure the image is public on the site basket, or if they dont have permission to view it
+      # there is no way to get all private from the site basket and public from others without another query
       unless @privacy_type == 'private'
-        find_args_hash.merge!(:conditions => ['(private = :private OR private is null) AND (file_private = :file_private OR file_private is null)', {:private => false, :file_private => false}])
+        find_args_hash.merge!(:conditions => ['(private = :private OR private is null) AND (file_private = :file_private OR file_private is null)',
+                                              { :private => false, :file_private => false }])
       end
 
       # we need public still images

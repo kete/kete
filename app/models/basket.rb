@@ -110,7 +110,7 @@ class Basket < ActiveRecord::Base
   def tag_counts_array(options = {}, private_tags=false)
     tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
     tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
-    tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : 'asc'
+    tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
 
     unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
       return Array.new

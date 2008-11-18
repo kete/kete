@@ -31,13 +31,15 @@
           <%= link_to "Edit", :action => 'edit',
                               :urlified_name => @topic.basket.urlified_name,
                               :controller => 'topics',
-                              :id => @topic -%>
+                              :id => @topic,
+                              :private => params[:private] -%>
         </li>
         <li>
           <%= link_to "History", :action => 'history',
                                  :urlified_name => @topic.basket.urlified_name,
                                  :controller => 'topics',
-                                 :id => @topic -%>
+                                 :id => @topic,
+                                 :private => params[:private] -%>
         </li>
       <% end -%>
     <% end -%>  

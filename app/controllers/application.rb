@@ -815,11 +815,12 @@ class ApplicationController < ActionController::Base
     # special case: site basket contains everything
     # all contents of site basket plus all other baskets' contents
 
-    # pending items are counted
-    public_conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
-    private_conditions = "title != \'#{BLANK_TITLE}\' AND title = \'#{NO_PUBLIC_VERSION_TITLE}\'"
-
     ZOOM_CLASSES.each do |zoom_class|
+      # pending items aren't counted
+      private_field = zoom_class == "Comment" ? 'commentable_private' : 'private_version_serialized'
+      public_conditions = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
+      private_conditions = "title != '#{BLANK_TITLE}' AND #{private_field} IS NOT NULL"
+
       if basket == @site_basket
         @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => public_conditions)
       else

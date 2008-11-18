@@ -88,12 +88,14 @@
                   link_to("Edit", :action => 'edit',
                                   :urlified_name => @topic.basket.urlified_name,
                                   :controller => 'topics',
-                                  :id => @topic ) %></li>
+                                  :id => @topic,
+                                  :private => params[:private] ) %></li>
               <% tool_count += 1 -%>
               <li><%= link_to "History", :action => 'history',
                                          :urlified_name => @topic.basket.urlified_name,
                                          :controller => 'topics',
-                                         :id => @topic %></li>
+                                         :id => @topic,
+                                         :private => params[:private] %></li>
             <% end -%>
           <% end -%>
           <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
@@ -194,7 +196,7 @@
 <% end -%>
 
 <% cache({:part => "tags_#{@privacy_type}"}) do -%>
-  <% if @tag_counts_array.size > 0 -%>
+  <% if @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0 -%>
     <div class="secondary-content-section-wrapper">
       <div id="tags-box" class="secondary-content-section">
         <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
