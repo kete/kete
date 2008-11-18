@@ -73,6 +73,12 @@ class AccountController < ApplicationController
                                                              :item_class => 'User',
                                                              :extra_fields => ['password', 'password_confirmation']))
 
+    # Kieran Pilkington, 2008/11/19
+    # The browser is sending XML at this stage, and while most browsers know how to handle it,
+    # Internet Explorer outputs is as literal XML, instead of rendering it as a site, so to fix
+    # this, we have to send the text/html header instead of the application/xml is normally sends
+    response.headers["Content-Type"] = "text/html; charset=utf-8"
+
     case @captcha_type
     when 'image'
       if simple_captcha_valid?
