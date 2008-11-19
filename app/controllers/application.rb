@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
                                             :flag_version,
                                             :restore,
                                             :reject,
-                                            :choose_type,
+                                            :choose_type, :render_item_form,
                                             :setup_rebuild,
                                             :rebuild_zoom_index,
                                             :add_portrait, :remove_portrait, :default_portrait,

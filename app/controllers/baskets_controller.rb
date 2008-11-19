@@ -4,7 +4,7 @@ class BasketsController < ApplicationController
                 :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
-  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :new, :create, :choose_type,
+  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :new, :create, :choose_type, :render_item_form,
                                                                :permission_denied, :contact, :send_email]
 
   before_filter :redirect_if_current_user_cant_add_or_request_basket, :only => [:new, :create]
@@ -311,16 +311,31 @@ class BasketsController < ApplicationController
 
     return unless request.post?
 
-    # we assign these instance vars to be used in js format response
+    redirect_to :urlified_name => params[:new_item_basket],
+                :controller => params[:new_item_controller],
+                :action => 'new'
+  end
+
+  def render_item_form
     @new_item_basket = params[:new_item_basket]
     @new_item_controller = params[:new_item_controller]
+    params[:topic] = Hash.new
+    params[:topic][:topic_type_id] = params[:new_item_topic_type]
+
     @item_class = zoom_class_from_controller(@new_item_controller)
+    @item = @item_class.constantize.new
+    @content_type = ContentType.find_by_class_name(@item_class)
 
     respond_to do |format|
-      format.html { redirect_to :urlified_name => @new_item_basket,
-                                :controller => @new_item_controller,
-                                :action => 'new' }
-      format.js { render :file => File.join(RAILS_ROOT, 'app/views/baskets/choose_type.js.rjs') }
+      format.html { render :partial => 'topics/form', :layout => 'application' }
+      format.js do
+        render :update do |page|
+          page.replace_html 'item_form', :partial => 'topics/form'
+          page << "#{raw_tiny_mce_init}"
+          page << "tinyMCE.execCommand('mceRemoveControl', false, 'mceEditor');"
+          page << "tinyMCE.execCommand('mceAddControl', false, 'mceEditor');"
+        end
+      end
     end
   end
 

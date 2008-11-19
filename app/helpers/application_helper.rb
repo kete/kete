@@ -869,12 +869,13 @@ module ApplicationHelper
   end
 
   # we use this in imports, too
-  def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options={ })
+  def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options={ }, pre_options=[])
     result = "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
     html_options.each do |key, value|
         result << ' ' + key.to_s + '="' + value.to_s + '"'
     end
     result << ">\n"
+    result << options_for_select(pre_options)
     for element in collection
       indent_string = String.new
         element.level.times { indent_string += "&nbsp;" }
