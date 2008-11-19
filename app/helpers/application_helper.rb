@@ -282,7 +282,7 @@ module ApplicationHelper
     end
   end
 
-  def link_to_members_of(basket, viewable_text="Member List", unavailable_text="")
+  def link_to_members_of(basket, viewable_text="Members", unavailable_text="")
     if current_user_can_see_memberlist_for?(basket)
       content_tag("li", link_to(viewable_text,
                                 :urlified_name => basket.urlified_name,
@@ -301,7 +301,7 @@ module ApplicationHelper
     return '' unless logged_in?
 
     options = { :join_text => "Join",
-                :request_text => "Request",
+                :request_text => "Request membership",
                 :closed_text => "",
                 :pending_text => "Membership pending",
                 :rejected_text => "Membership rejected",
@@ -342,15 +342,17 @@ module ApplicationHelper
     html += "</li>"
   end
 
-  def link_to_basket_contact_for(basket)
-    link_to 'Contact ' + basket.name, basket_contact_path(:urlified_name => basket.urlified_name)
+  def link_to_basket_contact_for(basket, include_name = true)
+    link_text = 'Contact'
+    link_text += ' ' + basket.name if include_name
+    link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
   end
 
   def link_to_actions_available_for(basket)
     html = ''
-    html += link_to_members_of(basket)
     html += link_to_membership_request_of(basket)
-    html += "<li>" + link_to_basket_contact_for(basket) + "</li>"
+    html += link_to_members_of(basket)
+    html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>"
   end
 
   def link_to_cancel

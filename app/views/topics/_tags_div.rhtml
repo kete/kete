@@ -8,7 +8,7 @@
     </div>
     <% if permitted_to_edit_current_item? -%>
       <div id="add_tag_button" style="display:none">
-        [<a href="#" onclick="Element.show('add_tag_form_div');Element.hide('add_tag_button');$('<%= item_key -%>_tag_list').activate()">+</a>]
+        [<a href="#" onclick="Element.show('add_tag_form_div');Element.hide('add_tag_button');$('<%= item_key -%>_tag_list').activate();">+</a>]
       </div>
       <div id="add_tag_form_div">
         <% form_remote_tag( :url => { :action => 'add_tags', :id => item.id, :private => params[:private] },

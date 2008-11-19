@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
   # destroy has to happen before the item is deleted
   before_filter :expire_show_caches, :only => [ :destroy ]
   # everything else we do after the action is completed
-  after_filter :expire_show_caches, :only => [ :update, :convert ]
+  after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
@@ -101,7 +101,8 @@ class ApplicationController < ActionController::Base
   after_filter :expire_basket_index_caches, :only => [ :create,
                                                        :update,
                                                        :destroy,
-                                                       :add_index_topic, :link_index_topic]
+                                                       :add_index_topic, :link_index_topic,
+                                                       :add_tags ]
 
   helper :slideshows
 
@@ -277,7 +278,7 @@ class ApplicationController < ActionController::Base
 
   INDEX_PARTS = ['page_keywords', 'page_description', 'details', 'license',
                  'extended_fields', 'edit', 'tools', 'recent_topics',
-                 'search', 'extra_side_bar_html', 'archives', 'tags', 'contact']
+                 'search', 'extra_side_bar_html', 'archives_[privacy]', 'tags', 'contact']
 
   # the following method is used when clearing show caches
   def all_show_parts
@@ -302,6 +303,14 @@ class ApplicationController < ActionController::Base
     show_parts
   end
 
+  def cache_name_for(part, privacy)
+    if part.include?('_[privacy]')
+      part.sub(/\[privacy\]/, privacy)
+    else
+      part
+    end
+  end
+
   # if anything is added, edited, or destroyed in a basket
   # expire the basket index page caches
   def expire_basket_index_caches
@@ -310,12 +319,25 @@ class ApplicationController < ActionController::Base
     # show up in the contents list, as well as most recent topics, etc.
     baskets_to_expire = [@current_basket, @site_basket]
     INDEX_PARTS.each do |part|
-      baskets_to_expire.each do |basket|
-        expire_fragment(:controller => 'index_page',
-                        :action => 'index',
-                        :urlified_name => basket.urlified_name,
-                        :part => part)
+      if part.include?('_[privacy]')
+        public_part = cache_name_for(part, 'public')
+        private_part = cache_name_for(part, 'private')
+        [public_part, private_part].each do |part|
+          expire_basket_index_caches_for(part)
+        end
+      else
+        expire_basket_index_caches_for(part)
       end
+    end
+  end
+
+  def expire_basket_index_caches_for(part)
+    baskets_to_expire = [@current_basket, @site_basket]
+    baskets_to_expire.each do |basket|
+      expire_fragment(:controller => 'index_page',
+                      :action => 'index',
+                      :urlified_name => basket.urlified_name,
+                      :part => part)
     end
   end
 
@@ -366,11 +388,8 @@ class ApplicationController < ActionController::Base
       # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where
       # the current item is private.
 
-      if part.include?('_[privacy]')
-        resulting_part = part.sub(/\[privacy\]/, (item.private? ? "private" : "public"))
-      else
-        resulting_part = part
-      end
+      @privacy_type ||= (item.private? ? "private" : "public")
+      resulting_part = cache_name_for(part, @privacy_type)
 
       # we have to do this for each distinct title the item previously had
       # because old titles' friendly urls won't be matched in our expiry otherwise
@@ -469,12 +488,8 @@ class ApplicationController < ActionController::Base
   def expire_caches_after_comments(item, private_comment)
     ['zoom_reindex', 'comments-moderators_[privacy]', 'comments_[privacy]'].each do |part|
 
-      if part.include?('_[privacy]')
-        resulting_part = part.sub(/\[privacy\]/, (private_comment ? "private" : "public"))
-      else
-        resulting_part = part
-      end
-
+      @privacy_type ||= (private_comment ? "private" : "public")
+      resulting_part = cache_name_for(part, @privacy_type)
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,
                                          :controller => zoom_class_controller(item.class.name),
@@ -502,11 +517,8 @@ class ApplicationController < ActionController::Base
     name = params[:id].blank? ? Hash.new : { :id => params[:id].to_i }
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
-        if part.include?('_[privacy]')
-          resulting_part = part.sub(/\[privacy\]/, get_acceptable_privacy_type("public", "private"))
-        else
-          resulting_part = part
-        end
+        @privacy_type ||= get_acceptable_privacy_type("public", "private")
+        resulting_part = cache_name_for(part, @privacy_type)
         return false unless has_fragment?(name.merge(:part => resulting_part))
       end
     end
@@ -515,7 +527,8 @@ class ApplicationController < ActionController::Base
     case params[:controller]
     when 'index_page'
       INDEX_PARTS.each do |part|
-        return false unless has_fragment?({:part => part})
+        resulting_part = cache_name_for(part, @privacy_type)
+        return false unless has_fragment?({:part => resulting_part})
       end
     when 'topics'
       ZOOM_CLASSES.each do |zoom_class|
@@ -804,15 +817,26 @@ class ApplicationController < ActionController::Base
     # all contents of site basket plus all other baskets' contents
 
     # pending items are counted
-    conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
+    public_conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
+    private_conditions = "title != \'#{BLANK_TITLE}\' AND title = \'#{NO_PUBLIC_VERSION_TITLE}\'"
 
-    if basket == @site_basket
-      ZOOM_CLASSES.each do |zoom_class|
-        @basket_stats_hash[zoom_class] = Module.class_eval(zoom_class).count(:conditions => conditions)
+    ZOOM_CLASSES.each do |zoom_class|
+      if basket == @site_basket
+        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => public_conditions)
+      else
+        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => public_conditions)
       end
-    else
-      ZOOM_CLASSES.each do |zoom_class|
-        @basket_stats_hash[zoom_class] = basket.send(zoom_class.tableize).count(:conditions => conditions)
+
+      # Walter McGinnis, 2008-11-18
+      # normally the site basket is a special case, in that is shows all items from all baskets
+      # however in the context of private items, the rule is to show all private items that a USER has rights to see
+      # so the counts may vary by user
+      # because of caching, this becomes problematic to display counts for
+      # so instead, we only show private items that are actually in the site basket
+      # which happens to use the same code as other basket would, so we don't need to duplicate this at the moment
+      # TODO: we will want to change this to match browsing of private items in site basket later
+      if basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
+        @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions)
       end
     end
   end

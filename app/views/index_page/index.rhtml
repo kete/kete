@@ -139,7 +139,7 @@
   <% end -%>
 <% end -%>
 
-<% cache({:part => 'archives'}) do -%>
+<% cache({:part => 'archives_#{@privacy_type}'}) do -%>
   <% if !@basket_stats_hash.blank? -%>
     <div class="secondary-content-section-wrapper">
       <div id="contents-by-type" class="secondary-content-section">
