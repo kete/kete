@@ -40,23 +40,23 @@
   <% end -%>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
-
+  
   <% bundle :name => "#{@theme}_theme" do -%>
     <%= stylesheet_link_tag 'base', :media => 'screen' %>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>
     <%= stylesheet_link_tag 'redbox' %>
     <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
+
+    <%# James - 2008-11-19 %>
+    <%# Include a custom stylesheet if a third column is enabled. %>
+    <%= stylesheet_link_tag('left-hand-column') if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>
+
     <% load_styles(@theme).each do |stylesheet| -%>
       <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
     <% end -%>
   <% end -%>
 
   <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
-  
-  <%# James - 2008-11-19 %>
-  <%# Include a custom stylesheet if a third column is enabled. %>
-  <%= stylesheet_link_tag('left-hand-column') if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>
-
   <% if !@header_image.blank? -%>
     <% # allows for banner style background image -%>
     <style type="text/css">

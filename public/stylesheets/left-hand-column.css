@@ -1,19 +1,20 @@
 #body-outer-wrapper {
 	margin: 0 20px;
-	width: auto;
+	width: auto !important;
 	min-width: none;
 	max-width: none;
 }
 
-.main-content-wrapper {
+#main-content-wrapper {
 	width: 50%
 }
 
-.notabs .main-content-wrapper {
+.notabs #main-content-wrapper {
 	background: none;
+	background-image: none !important;
 }
 
-.search-refine-box .main-content-wrapper {
+#search-content-wrapper {
 	background-image: url(/images/content-tab-sel-lf.gif);
 	background-position: top left;
 	background-repeat: no-repeat;
@@ -21,14 +22,9 @@
 }
 
 
-.full-width .main-content-wrapper {
+#main-content-wrapper .full-width {
 	width: 70%;
 }
-
-/*.full-width .form-element textarea, .full-width .form-element input[type="text"] {
-	width: 69%;
-}
-*/
 
 #basket-list-column {
 	width: 25%;
@@ -41,14 +37,14 @@
 	background-repeat: no-repeat;
 }
 
-
-#secondary-content-wrapper {
-	width: 25%;
-}
-
 div.basket-list-column {
 	margin: 1em 0em 1em 1em;
 	margin-right: 15px;
+}
+
+
+#secondary-content-wrapper {
+	width: 25%;
 }
 
 #footer {
