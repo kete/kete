@@ -22,7 +22,7 @@
 }
 
 
-#main-content-wrapper .full-width {
+.full-width #main-content-wrapper {
 	width: 70%;
 }
 
@@ -48,5 +48,7 @@ div.basket-list-column {
 }
 
 #footer {
+	padding: 15px 0px;
+	width: 100%;
 	float: left;
 }
