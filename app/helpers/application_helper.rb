@@ -318,6 +318,8 @@ module ApplicationHelper
     options = { :join_text => "Join",
                 :request_text => "Request membership",
                 :closed_text => "",
+                :as_list_element => true,
+                :plus_divider => "",
                 :pending_text => "Membership pending",
                 :rejected_text => "Membership rejected",
                 :current_role => "You're a |role|.",
@@ -327,7 +329,9 @@ module ApplicationHelper
                       :controller => 'members',
                       :action => 'join' }
 
-    html = "<li>"
+    html = String.new
+    html += "<li>" if options[:as_list_element]
+
     if @basket_access_hash[basket.urlified_name.to_sym].blank?
       case basket.join_policy_with_inheritance
       when 'open'
@@ -354,7 +358,8 @@ module ApplicationHelper
         end
       end
     end
-    html += "</li>"
+    html += "</li>" if options[:as_list_element]
+    html += options[:plus_divider]
   end
 
   def link_to_basket_contact_for(basket, include_name = true)
