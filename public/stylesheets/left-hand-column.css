@@ -24,11 +24,14 @@
 
 .full-width #main-content-wrapper {
 	width: 70%;
+	margin-left: 0;
+	margin-right: 0;
 }
 
 #basket-list-column {
-	width: 25%;
+	width: 22%;
 	float: left;
+	margin-right: 0;
 }
 
 .notabs #basket-list-column {
@@ -45,6 +48,7 @@ div.basket-list-column {
 
 #secondary-content-wrapper {
 	width: 25%;
+	margin-left: 0;
 }
 
 #footer {
