@@ -1,5 +1,5 @@
 <% if !admin_actions.blank? -%>
-  <td>
+  <td class="member_administrate">
     <ul>
       <% if role_key == 'membership_requested' %>
         <li><%= link_to("Accept Membership", :action => 'change_request_status',

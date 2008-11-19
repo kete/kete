@@ -799,14 +799,13 @@ ul.option-list li img{
 .members-list-table {
   width: 100%;
 }
-.members-list-table td.member-avatar {
+.member_username, .member_joined, .member_email, .member_change_to, .member_administrate {
+  width: 18%;
+}
+.members-list-table td.member_avatar {
   width: 50px !important;
   padding: 10px;
 }
-.member_joined, .member_email, .member_change_to, .member_administrate {
-  width: 18%;
-}
-
 
 /* for wrapping form elements in a block element - needed for XHTML validation */
 div.wrap {

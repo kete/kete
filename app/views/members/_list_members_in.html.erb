@@ -5,16 +5,18 @@
   <% else %>
     <% for user in members -%>
     <tr>
-      <td class="member-avatar"><%= avatar_for user -%></td>
-      <td>
+      <td class="member_avatar"><%= avatar_for user -%></td>
+      <td class="member_username">
         <%= link_to_contributions_of(user,'Topic') -%>
         <%= "<br />(#{user.login})" unless user.user_name == user.login -%>
       </td>
-      <td>
+      <td class="member_joined">
         <%= Role.user_role_for(user, @listing_type, @current_basket).created_at.to_s(:long) -%>
       </td>
       <% if @site_admin -%>
       <td><%= mail_to h(user.email) -%></td>
+      <% else -%>
+      <td></td>
       <% end -%>
       <% if @basket_admin -%>
       <%# adjust possible roles for the user when in site admin or
@@ -39,6 +41,9 @@
                  :locals => { :user => user,
                               :role_key => @listing_type,
                               :admin_actions => admin_actions } -%>
+      <% else -%>
+        <td></td>
+        <td></td>
       <% end -%>
     </tr>
     <% end -%>
