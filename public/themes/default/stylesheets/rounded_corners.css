@@ -1,4 +1,4 @@
-.notabs #main-content-wrapper {
+.notabs .main-content-wrapper {
         background-image: url(/images/content-tab-sel-lf.gif);
         background-position: top left;
         background-repeat: no-repeat;
@@ -34,7 +34,7 @@
         background-repeat: no-repeat;
         background-position: 100% 0;
 }
-#content-wrapper {
+.content-wrapper {
         background-color: white;
         background-image: url(/images/content-tab-sel-rt.gif);
         background-repeat: no-repeat;

@@ -5,17 +5,17 @@ body {
     background-color: #dcdcdc;
 }
 /* #################################### Content Structural Items #################################### */
-#main-content-wrapper {
+.main-content-wrapper {
     width: 70%;
     float:left;
 }
-.full-width #main-content-wrapper {
+.full-width .main-content-wrapper {
     width: 100%;
 }
-#main-content-container {
+.main-content-container {
     padding: 1em 0 1em 1em;
 }
-#secondary-content-wrapper{
+#secondary-content-wrapper {
     width: 30%;
     float: right;
 }
@@ -183,7 +183,7 @@ ul#main-nav {
 #content-tabs ul li.selected a{
     padding: .75em 1em .5em 0;
 }
-#content-wrapper {
+.content-wrapper {
     background-color: white;
     float: left;
     width: 100%;

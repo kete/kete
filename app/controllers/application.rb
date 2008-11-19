@@ -935,7 +935,7 @@ class ApplicationController < ActionController::Base
       return false
     elsif params[:controller] == 'index_page' and params[:action] == 'index'
       return false
-    elsif params[:controller] == "tags"
+    elsif %w(tags search).include?(params[:controller])
       return false
     elsif params[:controller] == 'account' and params[:action] == 'show'
       return true

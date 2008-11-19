@@ -1,4 +1,10 @@
 <% @title = title_setup_first_part('Results in ') + last_part_of_title_if_refinement_of -%>
+<% style_classes ||= nil -%>
+<div class="content-wrapper<%= " " + style_classes unless style_classes.blank? -%> search-refine-box">
+  <div class="main-content-wrapper">
+    <div class="main-content-container">
+      <a name="main-contenet"></a>
+
 <%= render :partial => 'form', :locals => {:headline => 'Refine your results'} %>
 <div class="main-content-footer-wrapper">
   <div class="main-content-footer">&nbsp;</div>

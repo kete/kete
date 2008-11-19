@@ -52,6 +52,10 @@
   <% end -%>
 
   <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
+  
+  <%# James - 2008-11-19 %>
+  <%# Include a custom stylesheet if a third column is enabled. %>
+  <%= stylesheet_link_tag('left-hand-column') if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>
 
   <% if !@header_image.blank? -%>
     <% # allows for banner style background image -%>
@@ -169,15 +173,9 @@
           <%# James - 2008-11-19 %>
           <%# Slideshow controls are shown on 'show' pages for all item types %>
           <%= render(:partial => "slideshow_controls") if show_slideshow_controls? -%>
-          
-          <% if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>
-          <div id="basket-list-column">
-          <%= render_baskets_as_menu %>
-          </div>
-          <% end %>
 
           <% if render_full_width_content_wrapper? and !@displaying_error %>
-             <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
+            <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
           <% end %>
           <div style="width:1px;height:1px;padding:0px;margin:0px;"><a name="content">&nbsp;</a></div>
           <%= @content_for_layout %>
