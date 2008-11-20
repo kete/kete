@@ -21,11 +21,12 @@
 
       <div class="form-element">
         <label for="new_item_controller">Add a?</label>
-        <%= select_tag 'new_item_controller', options_for_select([['choose type', '']] + @item_types), :id => 'new_item_controller', :tabindex => '1' -%>
+        <%= select_tag 'new_item_controller', options_for_select([['choose item type', '']] + @item_types), :id => 'new_item_controller', :tabindex => '1' -%>
       </div>
 
       <div id="topic_type_form" style="display:none;">
-        <%= render :partial => 'topics/pick_form', :locals => { :pre_options => [['choose type', '']] } -%>
+        <%= render :partial => 'topics/pick_form', :locals =>
+        {:pre_options => [['', '']] } -%>
       </div>
 
     </fieldset>
