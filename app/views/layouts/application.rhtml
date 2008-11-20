@@ -137,6 +137,9 @@
                                     :tabindex => '2' -%>
           <ul class="submenu" style="display:none;">
             <%= users_baskets_list -%>
+            <li style="padding-top:15px;"><%= link_to "all baskets",
+                            { :controller => 'baskets',
+                              :action => 'list' } -%></li>
           </ul>
         </li>
         <li>
