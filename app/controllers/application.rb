@@ -263,6 +263,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def show_basket_list_naviation_menu?
+    return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
+    return false if params[:controller] == 'search'
+    USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
+  end
+
   # caching related
   SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]',
                 'page_description_[privacy]', 'edit_[privacy]',
@@ -1089,7 +1095,8 @@ class ApplicationController < ActionController::Base
                 :get_acceptable_privacy_type, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
-                :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
+                :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
+                :show_basket_list_naviation_menu?
 
   protected
 
