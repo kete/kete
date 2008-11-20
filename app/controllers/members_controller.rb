@@ -14,47 +14,44 @@ class MembersController < ApplicationController
     if !params[:type].blank? && @basket_admin
       @listing_type = params[:type]
     else
-      @listing_type = 'all'
+      @listing_type = 'member'
     end
 
-    paginate_order = current_sorting_options('users.login', 'asc', ['users.login', 'roles_users.created_at', 'users.email'])
-
-    # this sets up all instance variables
-    # as well as preparing @members
-    list_members(paginate_order)
-
-    # turn on rss
-    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
-    @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
-
-    @requested_count = 0
-    @rejected_count = 0
+    @there_are_requested = 0
+    @there_are_rejected = 0
 
     # list people who have all other roles
     # use (true) because the roles are cached when first run but
     # if we add roles (like moderator) this becomes problematic
     @current_basket.accepted_roles(true).each do |role|
-      @requested_count += 1 if role.name == 'membership_requested'
-      @rejected_count += 1 if role.name == 'membership_rejected'
+      @there_are_requested += 1 if role.name == 'membership_requested'
+      @there_are_rejected += 1 if role.name == 'membership_rejected'
 
-      # skip this role if we're viewing all members and the role is requested or rejected
-      next if (@listing_type == 'all' && (role.name == 'membership_requested' || role.name == 'membership_rejected'))
+      # skip this role if we're viewing members and the role is requested or rejected
+      # next if (@listing_type == 'members' && (role.name == 'membership_requested' || role.name == 'membership_rejected'))
       # skip this role if we're viewing pending join requests and the role is something other than requested
-      next if (@listing_type == 'pending' && role.name != 'membership_requested')
+      # next if (@listing_type == 'pending' && role.name != 'membership_requested')
       # skip this role if we're viewing rejected join requests and the role is something other than rejected
-      next if (@listing_type == 'rejected' && role.name != 'membership_rejected')
+      # next if (@listing_type == 'rejected' && role.name != 'membership_rejected')
 
       role_plural = role.name.pluralize
 
-      # we cover members above
-      if role_plural != 'members'
-        instance_variable_set("@#{role_plural}", @current_basket.send("has_#{role_plural}"))
-        @non_member_roles_plural[role.name] = role_plural
-      end
+      instance_variable_set("@#{role_plural}_count", @current_basket.send("has_#{role_plural}_count"))
     end
+
+    @default_sorting = {:order => 'roles_users.created_at', :direction => 'desc'}
+    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], ['users.login', 'roles_users.created_at', 'users.email'])
+
+    # this sets up all instance variables
+    # as well as preparing @members
+    list_members_in(@listing_type, paginate_order)
+
+    # turn on rss
+    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
+    @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
   end
 
-  def list_members(order='users.login asc')
+  def list_members_in(role_name, order='users.login asc')
     @non_member_roles_plural = Hash.new
     @possible_roles = {'admin' => 'Admin',
       'moderator' => 'Moderator',
@@ -76,29 +73,29 @@ class MembersController < ApplicationController
     # members are paginated
     # since we are paginating we need to break a part
     # what the @current_basket.has_members method would do
-    @member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member', 'Basket', @current_basket)
-    if @member_role.nil?
+    @role = Role.find_by_name_and_authorizable_type_and_authorizable_id(role_name, 'Basket', @current_basket)
+    if @role.nil?
       # no members
       @members = User.paginate_by_id(0, :page => 1)
     else
       if params[:action] == 'rss'
-        @members = @member_role.users.find(:all, { :order => 'roles_users.created_at desc', :limit => 50 })
+        @members = @role.users.find(:all, { :order => 'roles_users.created_at desc', :limit => 50 })
       else
-        @members = @member_role.users.paginate(:include => :contributions,
-                                               :order => order,
-                                               :page => params[:page],
-                                               :per_page => 20)
+        @members = @role.users.paginate(:include => :contributions,
+                                        :order => order,
+                                        :page => params[:page],
+                                        :per_page => 20)
 
       end
     end
 
     if request.xhr?
-      render :partial =>'list_members',
+      render :partial =>'list_members_in',
       :locals => { :members => @members,
         :possible_roles => @possible_roles,
         :admin_actions => @admin_actions }
     else
-      if params[:action] == 'list_members'
+      if params[:action] == 'list_members_in'
         redirect_to params.merge(:action => 'list')
       end
     end
@@ -303,7 +300,7 @@ class MembersController < ApplicationController
     # changed from @headers for Rails 2.0 compliance
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
 
-    list_members
+    list_members_in('member')
 
     respond_to do |format|
       format.xml

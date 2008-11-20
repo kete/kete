@@ -8,15 +8,19 @@
     <%= @topic.description -%>
     <%= pending_review(@topic) -%>
   <% end -%>
-  <% cache({:part => 'extended_fields'}) do -%>
-    <% extended_fields_html = display_xml_attributes(@topic) -%>
-    <% if !extended_fields_html.blank? -%>
-    <div id="detail-extended">
-      <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-      <%= extended_fields_html -%>
-    </div>
+
+  <% if @at_least_a_moderator -%>
+    <% cache({:part => 'extended_fields'}) do -%>
+      <% extended_fields_html = display_xml_attributes(@topic) -%>
+      <% if !extended_fields_html.blank? -%>
+        <div id="detail-extended">
+          <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+          <%= extended_fields_html -%>
+        </div>
+      <% end -%>
     <% end -%>
   <% end -%>
+
   <% cache({:part => 'tools'}) do -%>
     <div class="detail-tools">
     <% if !@url_to_full_topic.nil? -%>
@@ -33,7 +37,7 @@
   <% end -%>
 <% end -%>
 
-<% cache({:part => 'recent_topics'}) do -%>
+<% cache({:part => "recent_topics_#{@privacy_type}"}) do -%>
   <% if @recent_topics_limit > 0 &&
         @recent_topics_items.size > 0 &&
         !@current_basket.index_page_recent_topics_as.blank? -%>
@@ -84,12 +88,14 @@
                   link_to("Edit", :action => 'edit',
                                   :urlified_name => @topic.basket.urlified_name,
                                   :controller => 'topics',
-                                  :id => @topic ) %></li>
+                                  :id => @topic,
+                                  :private => params[:private] ) %></li>
               <% tool_count += 1 -%>
               <li><%= link_to "History", :action => 'history',
                                          :urlified_name => @topic.basket.urlified_name,
                                          :controller => 'topics',
-                                         :id => @topic %></li>
+                                         :id => @topic,
+                                         :private => params[:private] %></li>
             <% end -%>
           <% end -%>
           <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
@@ -139,7 +145,7 @@
   <% end -%>
 <% end -%>
 
-<% cache({:part => 'archives_#{@privacy_type}'}) do -%>
+<% cache({:part => "archives_#{@privacy_type}"}) do -%>
   <% if !@basket_stats_hash.blank? -%>
     <div class="secondary-content-section-wrapper">
       <div id="contents-by-type" class="secondary-content-section">
@@ -189,8 +195,8 @@
   </div>
 <% end -%>
 
-<% cache({:part => 'tags'}) do -%>
-  <% if @tag_counts_array.size > 0 -%>
+<% cache({:part => "tags_#{@privacy_type}"}) do -%>
+  <% if @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0 -%>
     <div class="secondary-content-section-wrapper">
       <div id="tags-box" class="secondary-content-section">
         <% tag_counts = @tag_counts_size > @tag_counts_array.size ?

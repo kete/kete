@@ -75,19 +75,35 @@ class IndexPageController < ApplicationController
 
           # exclude index_topic
           if @recent_topics_limit > 0
-            recent_query_hash = { :limit => @recent_topics_limit, :order => 'created_at desc'}
-            recent_query_hash[:conditions] = ['id != ?', @topic] unless @topic.nil?
-
-            if @current_basket == @site_basket
-              @recent_topics_items = Topic.find(:all, recent_query_hash).reject { |t| t.disputed_or_not_available? }
+            args = { :limit => @recent_topics_limit, :include => :versions }
+            @recent_topics_items = nil
+            if @privacy_type == 'private'
+              # not DRY, but the other way was pulling in all topics for a basket before limiting it
+              if @current_basket == @site_basket
+                @recent_topics_items = Topic.recent(args)
+              else
+                @recent_topics_items = @current_basket.topics.recent(args)
+              end
             else
-              @recent_topics_items = @current_basket.topics.find(:all, recent_query_hash).reject { |t| t.disputed_or_not_available? }
+              if @current_basket == @site_basket
+                @recent_topics_items = Topic.recent(args).public
+              else
+                @recent_topics_items = @current_basket.topics.recent(args).public
+              end
             end
+            @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @privacy_type == 'private'
+            logger.debug("recent_topics_items after latest version: " + @recent_topics_items.inspect)
+
+            @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
+            # with the final topic, sort by the revisions updated_at, rather than the public topics update_at
+            @recent_topics_items.sort! { |t1,t2| t2.updated_at<=>t1.updated_at }
           end
 
-          @tag_counts_array = @current_basket.tag_counts_array({:limit => false})
-          @tag_counts_size = @tag_counts_array.size
-          @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
+          if @current_basket.index_page_number_of_tags > 0
+            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, (@privacy_type == 'private'))
+            @tag_counts_size = @tag_counts_array.size
+            @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
+          end
         end
 
         # don't bother caching, because this is likely a random image
@@ -134,9 +150,15 @@ class IndexPageController < ApplicationController
       # and they are derived by hitting search controller
 
       limit = 20
-      find_args_hash = { :select => 'id, title, created_at',
-        :conditions => ['(private = :private OR private is null) AND (file_private = :file_private OR file_private is null)', {:private => false, :file_private => false}],
-        :limit => limit }
+
+      find_args_hash = { :select => 'id, title, created_at', :limit => limit }
+
+      # We have to make sure the image is public on the site basket, or if they dont have permission to view it
+      # there is no way to get all private from the site basket and public from others without another query
+      unless @privacy_type == 'private'
+        find_args_hash.merge!(:conditions => ["(#{PUBLIC_CONDITIONS}) AND (file_private = :file_private OR file_private is null)",
+                                              { :file_private => false }])
+      end
 
       # we need public still images
       case @current_basket.index_page_image_as

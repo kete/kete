@@ -1,4 +1,4 @@
-<% @title = (@current_basket == @site_basket) ? "Site Members" : "Basket Members" -%>
+<% @title = @current_basket.name + " Members" -%>
 
 <%= render(:partial => "baskets/actions_menu",
            :locals => { :item => @current_basket }) if @basket_admin %>
@@ -8,75 +8,51 @@
 
 <p>
   <h2 style="display:inline;"><%= @title %></h2>
-  <% if @basket_admin && (@requested_count + @rejected_count) > 0 -%>
-    [
-    <%= link_to_unless_current "all", :type => nil %>
-    | <%= link_to_unless_current pluralize(@requested_count, 'request'), :type => 'pending' %>
-    | <%= link_to_unless_current "#{@rejected_count} rejected", :type => 'rejected' %>
-    ]
+  [ <%= link_to_membership_request_of(@current_basket, :plus_divider => ' | ', :as_list_element => false) -%>
+  <%= link_to_unless_current pluralize(@members_count, 'member'), :type => nil %>
+  <% if @admins_count && @admins_count > 0 -%>
+    | <%= link_to_unless_current pluralize(@admins_count, 'administrator'), :type => 'admin' %>
   <% end -%>
+  <% if @moderators_count && @moderators_count > 0 -%>
+    | <%= link_to_unless_current pluralize(@moderators_count, 'moderator'), :type => 'moderator' if @moderators %>
+  <% end -%>
+  <% if @site_admin && @current_basket == @site_basket -%>
+    <%# there should always be at least one site admin and one tech admins -%>
+    | <%= link_to_unless_current pluralize(@site_admins_count, 'site administrator'), :type => 'site_admin' %>
+    | <%= link_to_unless_current pluralize(@tech_admins_count, 'technical administrator'), :type => 'tech_admin' %>
+  <% end -%>
+  <% if @basket_admin && @membership_requesteds_count && @membership_requesteds_count > 0 -%>
+    | <%= link_to_unless_current pluralize(@membership_requesteds_count, 'request'), :type => 'membership_requested' %>
+  <% end -%>
+  <% if @basket_admin && @membership_rejecteds_count && @membership_rejecteds_count > 0 -%>
+    | <%= link_to_unless_current "#{@membership_rejecteds_count} rejected", :type => 'membership_rejected' %>
+  <% end -%>
+      </ul>
+    ]
 </p>
 
 <p>
   <table class="members-list-table">
     <tr valign="top">
-      <th colspan="2" abbr="Login" class="member_login">User name and/or Login</th>
-      <% if @basket_admin -%>
-        <th abbr="Joined" class="member_joined">Joined</th>
-        <th abbr="Email" class="member_email">Email</th>
-        <th abbr="Switch" class="member_change_to">Change to</th>
-        <% if !@admin_actions.blank? -%>
-          <th abbr="Administrate" class="member_administrate">Administrative Actions</th>
-        <% end -%>
-      <% end -%>
-    </tr>
-    <% @non_member_roles_plural.each do |role_key, role_plural| %>
-      <tr>
-        <td colspan="6"><h4><%= role_plural.humanize -%></h4></td>
-      </tr>
-      <% for user in eval("@" << role_plural) %>
-        <tr>
-          <td class="member-avatar"><%= avatar_for user -%></td>
-          <td>
-            <%= link_to_contributions_of(user,'Topic') -%>
-            <%= "<br />(#{user.login})" unless user.user_name == user.login -%>
-          </td>
-          <% if @basket_admin %>
-            <td>
-              <%= Role.user_role_for(user, role_key, @current_basket).created_at.to_s(:long) -%>
-            </td>
-            <td><%= mail_to h(user.email) -%></td>
-            <%= render :partial =>'possible_roles',
-                       :locals => { :user => user,
-                                    :role_key => role_key,
-                                    :possible_roles => @possible_roles } %>
-            <%= render :partial =>'admin_actions',
-                       :locals => { :user => user,
-                                    :role_key => role_key,
-                                    :admin_actions => @admin_actions } %>
-          <% end -%>
-        </tr>
-      <% end %>
-    <% end %>
-  </table>
-</p>
-<p>
-  <table class="members-list-table">
-    <tr valign="top">
-      <th colspan="2" abbr="Login" class="member_login"><%= search_sorting_controls_for('User name and/or Login', 'users.login', true) -%></th>
-      <% if @basket_admin -%>
-        <th abbr="Joined" class="member_joined"><%= search_sorting_controls_for('Joined', 'roles_users.created_at', false, 'desc') -%></th>
+      <th colspan="2" abbr="Login" class="member_login"><%= search_sorting_controls_for('User name and/or Login', 'users.login', false) -%></th>
+      <th abbr="Joined" class="member_joined"><%= search_sorting_controls_for('Joined', 'roles_users.created_at', true, 'desc') -%></th>
+
+      <% if @site_admin -%>
         <th abbr="Email" class="member_email"><%= search_sorting_controls_for('Email', 'users.email', false, 'asc') -%></th>
+      <% end -%>
+
+      <% if @basket_admin -%>
         <th abbr="Switch" class="member_change_to">Change to</th>
         <% if !@admin_actions.blank? -%>
           <th abbr="Administrate" class="member_administrate">Administrative Actions</th>
         <% end -%>
       <% end -%>
     </tr>
-    <%= render(:partial =>'list_members',
+
+    <%= render(:partial =>'list_members_in',
                :locals => { :members => @members,
                             :possible_roles => @possible_roles,
-                            :admin_actions => @admin_actions }) if @listing_type == 'all' %>
+                            :admin_actions => @admin_actions }) %>
   </table>
 </p>
 

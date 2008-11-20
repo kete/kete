@@ -10,7 +10,9 @@ class TagsController < ApplicationController
     @number_per_page = 75
     @number_per_page = 25 if @type == "categories"
 
-    @tag_counts_array = @current_basket.tag_counts_array({ :limit => false, :order => @order, :direction => @direction })
+    @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
+
+    @tag_counts_array = @current_basket.tag_counts_array({ :limit => false, :order => @order, :direction => @direction }, (@privacy_type == 'private'))
     @results = WillPaginate::Collection.new(@current_page, @number_per_page, @tag_counts_array.size)
     @tags = @tag_counts_array[(@results.offset)..(@results.offset + (@number_per_page - 1))]
 

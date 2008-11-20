@@ -40,19 +40,23 @@
   <% end -%>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
-
+  
   <% bundle :name => "#{@theme}_theme" do -%>
     <%= stylesheet_link_tag 'base', :media => 'screen' %>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>
     <%= stylesheet_link_tag 'redbox' %>
     <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
+
+    <%# James - 2008-11-19 %>
+    <%# Include a custom stylesheet if a third column is enabled. %>
+    <%= stylesheet_link_tag('left-hand-column') if show_basket_list_naviation_menu? %>
+
     <% load_styles(@theme).each do |stylesheet| -%>
       <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
     <% end -%>
   <% end -%>
 
   <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
-
   <% if !@header_image.blank? -%>
     <% # allows for banner style background image -%>
     <style type="text/css">
@@ -137,6 +141,9 @@
                                     :tabindex => '2' -%>
           <ul class="submenu" style="display:none;">
             <%= users_baskets_list -%>
+            <li style="padding-top:15px;"><%= link_to "all baskets",
+                            { :controller => 'baskets',
+                              :action => 'list' } -%></li>
           </ul>
         </li>
         <li>
@@ -157,7 +164,10 @@
                 basket_index_url(:urlified_name => @help_basket.urlified_name), :tabindex => '2') %></li>
         <li><%= mail_to(CONTACT_EMAIL,'Contact', :encode => "hex", :accesskey => '9', :tabindex => '2') %></li>
         <%= header_add_links %>
-        <li><%= header_add_basket_link -%></li>
+        <% add_basket_link = header_add_basket_link -%>
+        <% unless add_basket_link.blank? -%>
+          <li><%= add_basket_link -%></li>
+        <% end -%>
       </ul>
     </div> <!-- /header -->
 
@@ -165,14 +175,13 @@
     <div id="error" <%= flash[:error].blank? ? "style='display:none;'" : '' -%>><div><%= flash[:error] %></div></div>
 
         <div id="container">
-          <% if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE %>
-          <div id="basket-list-column">
-          <%= render_baskets_as_menu %>
-          </div>
-          <% end %>
+          
+          <%# James - 2008-11-19 %>
+          <%# Slideshow controls are shown on 'show' pages for all item types %>
+          <%= render(:partial => "slideshow_controls") if show_slideshow_controls? -%>
 
           <% if render_full_width_content_wrapper? and !@displaying_error %>
-             <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
+            <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
           <% end %>
           <div style="width:1px;height:1px;padding:0px;margin:0px;"><a name="content">&nbsp;</a></div>
           <%= @content_for_layout %>

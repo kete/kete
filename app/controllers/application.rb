@@ -1,6 +1,8 @@
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
+  # these are commonly used across controllers
+  PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
 
   # See lib/ssl_helpers.rb
   include SslHelpers
@@ -261,6 +263,12 @@ class ApplicationController < ActionController::Base
     if ZOOM_CLASSES.include?(zoom_class) and zoom_class != 'Comment'
       @baskets = Basket.find(:all, :order => 'name').map { |basket| [ basket.name, basket.id ] }
     end
+  end
+
+  def show_basket_list_naviation_menu?
+    return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
+    return false if params[:controller] == 'search'
+    USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
   end
 
   # caching related
@@ -816,15 +824,15 @@ class ApplicationController < ActionController::Base
     # special case: site basket contains everything
     # all contents of site basket plus all other baskets' contents
 
-    # pending items are counted
-    public_conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
-    private_conditions = "title != \'#{BLANK_TITLE}\' AND title = \'#{NO_PUBLIC_VERSION_TITLE}\'"
-
     ZOOM_CLASSES.each do |zoom_class|
+      # pending items aren't counted
+      private_field = zoom_class == "Comment" ? 'commentable_private' : 'private_version_serialized'
+      private_conditions = "title != '#{BLANK_TITLE}' AND #{private_field} IS NOT NULL"
+
       if basket == @site_basket
-        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => public_conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => PUBLIC_CONDITIONS)
       else
-        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => public_conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => PUBLIC_CONDITIONS)
       end
 
       # Walter McGinnis, 2008-11-18
@@ -935,7 +943,7 @@ class ApplicationController < ActionController::Base
       return false
     elsif params[:controller] == 'index_page' and params[:action] == 'index'
       return false
-    elsif params[:controller] == "tags"
+    elsif %w(tags search).include?(params[:controller])
       return false
     elsif params[:controller] == 'account' and params[:action] == 'show'
       return true
@@ -1089,7 +1097,8 @@ class ApplicationController < ActionController::Base
                 :get_acceptable_privacy_type, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
-                :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
+                :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
+                :show_basket_list_naviation_menu?
 
   protected
 
