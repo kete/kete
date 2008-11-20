@@ -76,14 +76,25 @@ class IndexPageController < ApplicationController
           # exclude index_topic
           if @recent_topics_limit > 0
             args = { :limit => @recent_topics_limit, :include => :versions }
-            topics_set = (@current_basket == @site_basket) ? Topic : @current_basket.topics
-            @recent_topics_items = if @privacy_type == 'private'
-              topics_set.recent(args)
+            @recent_topics_items = nil
+            if @privacy_type == 'private'
+              # not DRY, but the other way was pulling in all topics for a basket before limiting it
+              if @current_basket == @site_basket
+                @recent_topics_items = Topic.recent(args)
+              else
+                @recent_topics_items = @current_basket.topics.recent(args)
+              end
             else
-              topics_set.recent(args).public
+              if @current_basket == @site_basket
+                @recent_topics_items = Topic.recent(args).public
+              else
+                @recent_topics_items = @current_basket.topics.recent(args).public
+              end
             end
-            @recent_topics_items.collect! { |t| t.latest_version_is_private? ? t.private_version! : t } if @privacy_type == 'private'
-            @recent_topics_items.reject! { |t| t.disputed_or_not_available? }
+            @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @privacy_type == 'private'
+            logger.debug("recent_topics_items after latest version: " + @recent_topics_items.inspect)
+
+            @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
             # with the final topic, sort by the revisions updated_at, rather than the public topics update_at
             @recent_topics_items.sort! { |t1,t2| t2.updated_at<=>t1.updated_at }
           end
@@ -145,8 +156,8 @@ class IndexPageController < ApplicationController
       # We have to make sure the image is public on the site basket, or if they dont have permission to view it
       # there is no way to get all private from the site basket and public from others without another query
       unless @privacy_type == 'private'
-        find_args_hash.merge!(:conditions => ['(private = :private OR private is null) AND (file_private = :file_private OR file_private is null)',
-                                              { :private => false, :file_private => false }])
+        find_args_hash.merge!(:conditions => ["(#{PUBLIC_CONDITIONS}) AND (file_private = :file_private OR file_private is null)",
+                                              { :file_private => false }])
       end
 
       # we need public still images

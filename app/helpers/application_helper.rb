@@ -1022,4 +1022,16 @@ module ApplicationHelper
     directions[current_direction]
   end
 
+  def privacy_image
+    # not happy with this icon, just say private: for now
+    # TODO: replace with better icon
+    # image_tag 'privacy_icon.gif', :width => 16, :height => 15, :alt => "This item is private. ", :class => 'privacy_icon'
+      "private: "
+  end
+
+  def privacy_image_for(item)
+    if item.is_private?
+      privacy_image
+    end
+  end
 end
