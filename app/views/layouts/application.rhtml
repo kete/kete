@@ -178,7 +178,7 @@
           
           <%# James - 2008-11-19 %>
           <%# Slideshow controls are shown on 'show' pages for all item types %>
-          <%= render(:partial => "slideshow_controls") if show_slideshow_controls? -%>
+          <%= render(:partial => "topics/slideshow_controls") if show_slideshow_controls? -%>
 
           <% if render_full_width_content_wrapper? and !@displaying_error %>
             <%= render(:partial => "topics/content_wrapper_start" , :locals => { :style_classes =>"full-width notabs" }) %>
