@@ -75,6 +75,14 @@ $('topic_topic_type_id').observe('change', function(event) {
   if (Event.element(event).value == '') { return true; }
   request_item_form($('topic_topic_type_id').value);
 });
+$('new_item_basket').observe('change', function(event) {
+  if ($('item_form').innerHTML != '') {
+    // a form is showing, we have to reload it to reset basket settings in the form
+    $('item_form').hide();
+    $('item_form').innerHTML = '';
+    request_item_form($('topic_topic_type_id').value);
+  }
+});
 //]]>
 </script>
 
