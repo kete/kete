@@ -300,11 +300,11 @@ class BasketsController < ApplicationController
   end
 
   def choose_type
-    # TODO: this should be user's baskets, i'm assuming you are holding off waiting for another branches code to be merged into master
-    # the current basket should be selected
+    # give the user the option to add the item to any place the have access to
     @basket_list = Array.new
-    @basket_list << [@site_basket.name, @site_basket.urlified_name] if @current_basket != @site_basket
-    @basket_list << [@current_basket.name, @current_basket.urlified_name]
+    @basket_access_hash.each do |basket_urlified_name, basket_hash|
+      @basket_list << [basket_hash[:basket_name], basket_urlified_name.to_s]
+    end
 
     @item_types = Array.new
     ZOOM_CLASSES.each { |zoom_class| @item_types << [zoom_class_humanize(zoom_class),

@@ -355,12 +355,14 @@ module ApplicationHelper
     html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>"
   end
 
-  def link_to_cancel
+  def link_to_cancel(from_form = "")
+    html = "<div id=\"cancel#{from_form}\" style=\"display:inline\">"
     if session[:return_to].blank?
-      return link_to("Cancel", :action => 'list', :tabindex => '1')
+      html += link_to("Cancel", :action => 'list', :tabindex => '1')
     else
-      return link_to("Cancel", url_for(session[:return_to]), :tabindex => '1')
+      html += link_to("Cancel", url_for(session[:return_to]), :tabindex => '1')
     end
+    html += "</div>"
   end
 
   def link_to_item(item)

@@ -241,7 +241,7 @@ class User < ActiveRecord::Base
   end
 
   def basket_permissions
-    select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name"
+    select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name"
     join = "INNER JOIN baskets on roles.authorizable_id = baskets.id"
     permissions = roles.find_all_by_authorizable_type('Basket', :select => select, :joins => join)
 
@@ -251,7 +251,8 @@ class User < ActiveRecord::Base
       permissions_hash[p['basket_urlified_name'].to_sym] = {
         :id => p['basket_id'].to_i,
         :role_id => p['role_id'].to_i,
-        :role_name => p['role_name']
+        :role_name => p['role_name'],
+        :basket_name => p['basket_name']
       }
     end
     permissions_hash

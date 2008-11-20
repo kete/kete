@@ -40,7 +40,7 @@
 
   <img src='/images/indicator.gif' width='16' height='16' alt='Working.. ' id='data_spinner' style='display:none;' />
 
-  <%= link_to_cancel -%>
+  <%= link_to_cancel("choose") -%>
 
 </div>
 
@@ -54,7 +54,7 @@ function request_item_form(topic_type) {
     parameters: { new_item_basket: $('new_item_basket').value, new_item_controller: $('new_item_controller').value, new_item_topic_type: topic_type },
     onLoading: function(loading) { $('data_spinner').show(); },
     onComplete: function(complete) { $('data_spinner').hide(); },
-    onSuccess: function(success) { $('add_item_form').hide(); $('item_form').show(); }
+    onSuccess: function(success) { $('cancelchoose').hide(); $('item_form').show(); }
   });
 }
 $('new_item_controller').observe('change', function(event) {
