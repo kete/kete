@@ -268,6 +268,7 @@ class ApplicationController < ActionController::Base
   def show_basket_list_naviation_menu?
     return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
     return false if params[:controller] == 'search'
+    return false if params[:controller] == 'account' && params[:action] == 'login'
     USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
   end
 
