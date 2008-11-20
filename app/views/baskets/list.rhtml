@@ -1,4 +1,4 @@
-<% @title = "Listing Baskets" -%>
+<% @title = "Baskets" -%>
 
 <p>
   <h2 style="display:inline;"><%= h(@title) -%></h2>
@@ -14,8 +14,8 @@
 <p>
   <table id="basket_list_table">
     <tr>
-      <th abbr="Name" class="basket_name"><%= search_sorting_controls_for('Name', 'name', true) -%></th>
-      <th abbr="Created" class="basket_created"><%= search_sorting_controls_for('Created', 'created_at', false, 'desc') -%></th>
+      <th abbr="Name" class="basket_name"><%= search_sorting_controls_for('Name', 'name', false) -%></th>
+      <th abbr="Created" class="basket_created"><%= search_sorting_controls_for('Created', 'created_at', true, 'desc') -%></th>
       <th abbr="Options" class="basket_options">Options</th>
     </tr>
     <% @baskets.each do |basket| -%>

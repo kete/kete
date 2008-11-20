@@ -1,5 +1,9 @@
-<% form_tag :action => 'choose_type' do %>
+<% @title = 'Choose Item Type' -%>
 
+<h2><%= h(@title) -%></h2>
+
+<% form_tag :action => 'choose_type' do %>
+<fieldset>
 <% @type_options = String.new
    [['Topic', 'topics'],
    ['Image', 'images'],
@@ -13,9 +17,9 @@
   <label for="type_for_url">Add what type of item?</label>
     <%= select_tag 'new_controller', @type_options, :tabindex => '1' %>
 </div>
+</fieldset>
 <%= submit_tag "Choose" , {:class => "save-button", :tabindex => '1'} %>
 <% end %>
-
 
 <%= link_to_cancel %>
 <%= render(:partial => "topics/content_wrapper_end" ) %>

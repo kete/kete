@@ -98,12 +98,24 @@ module Authorization
     module ModelExtensions
       module InstanceMethods
 
+        # Kieran Pilkington, 2008/11/19
+        # Adding ability run to has_site_admins_count to get the number of users that role
+        # Also optimized the has_site_admin?  type calls to reduce queries
+
         def method_missing( method_sym, *args )
           method_name = method_sym.to_s
           if method_name =~ /^has_(\w+)\?$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact
-            self.accepted_roles.find_all_by_name(roles, :include => :users).any? { |role| role.users.compact.any? }
+            count = 0
+            self.accepted_roles.find_all_by_name(roles).each { |role| count += role.users.count }
+            count > 0
+          elsif method_name =~ /^has_(\w+)_count$/
+            roles = $1.split('_or_').collect { |role| role.singularize }
+            roles = roles.flatten.compact
+            count = 0
+            self.accepted_roles.find_all_by_name(roles).each { |role| count += role.users.count }
+            count
           elsif method_name =~ /^has_(\w+)$/
             roles = $1.split('_or_').collect { |role| role.singularize }
             roles = roles.flatten.compact

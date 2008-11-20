@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
   # destroy has to happen before the item is deleted
   before_filter :expire_show_caches, :only => [ :destroy ]
   # everything else we do after the action is completed
-  after_filter :expire_show_caches, :only => [ :update, :convert ]
+  after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
@@ -103,7 +103,8 @@ class ApplicationController < ActionController::Base
   after_filter :expire_basket_index_caches, :only => [ :create,
                                                        :update,
                                                        :destroy,
-                                                       :add_index_topic, :link_index_topic]
+                                                       :add_index_topic, :link_index_topic,
+                                                       :add_tags ]
 
   helper :slideshows
 

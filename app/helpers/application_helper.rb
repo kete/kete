@@ -297,7 +297,7 @@ module ApplicationHelper
     end
   end
 
-  def link_to_members_of(basket, viewable_text="Member List", unavailable_text="")
+  def link_to_members_of(basket, viewable_text="Members", unavailable_text="")
     if current_user_can_see_memberlist_for?(basket)
       content_tag("li", link_to(viewable_text,
                                 :urlified_name => basket.urlified_name,
@@ -316,8 +316,10 @@ module ApplicationHelper
     return '' unless logged_in?
 
     options = { :join_text => "Join",
-                :request_text => "Request",
+                :request_text => "Request membership",
                 :closed_text => "",
+                :as_list_element => true,
+                :plus_divider => "",
                 :pending_text => "Membership pending",
                 :rejected_text => "Membership rejected",
                 :current_role => "You're a |role|.",
@@ -327,7 +329,9 @@ module ApplicationHelper
                       :controller => 'members',
                       :action => 'join' }
 
-    html = "<li>"
+    html = String.new
+    html += "<li>" if options[:as_list_element]
+
     if @basket_access_hash[basket.urlified_name.to_sym].blank?
       case basket.join_policy_with_inheritance
       when 'open'
@@ -354,18 +358,21 @@ module ApplicationHelper
         end
       end
     end
-    html += "</li>"
+    html += "</li>" if options[:as_list_element]
+    html += options[:plus_divider]
   end
 
-  def link_to_basket_contact_for(basket)
-    link_to 'Contact ' + basket.name, basket_contact_path(:urlified_name => basket.urlified_name)
+  def link_to_basket_contact_for(basket, include_name = true)
+    link_text = 'Contact'
+    link_text += ' ' + basket.name if include_name
+    link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
   end
 
   def link_to_actions_available_for(basket)
     html = ''
-    html += link_to_members_of(basket)
     html += link_to_membership_request_of(basket)
-    html += "<li>" + link_to_basket_contact_for(basket) + "</li>"
+    html += link_to_members_of(basket)
+    html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>"
   end
 
   def link_to_cancel
@@ -990,8 +997,12 @@ module ApplicationHelper
     end
 
     # create the link based on sort type and direction (user provided or default)
-    location_hash = { :order => sort_type }
-    location_hash[:direction] = direction if sort_type != 'random'
+    # keep existing parameters
+    location_hash = Hash.new
+    # this has keys in strings, rather than symbols
+    request.query_parameters.each { |key, value| location_hash[key.to_sym] = value }
+    location_hash.merge!({ :order => sort_type })
+    location_hash.merge!({ :direction => direction}) if sort_type != 'random'
 
     # if sorting and the sort is for this sort type, or no sort made and this sort type is the main sort order
     if (params[:order] && params[:order] == sort_type && sort_type != 'random') || (!params[:order] && main_sort_order)
