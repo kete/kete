@@ -1,9 +1,9 @@
-/*#body-outer-wrapper {
+#body-outer-wrapper {
 	margin: 0 20px;
 	width: auto !important;
 	min-width: none;
 	max-width: none;
-}*/
+}
 
 #main-content-wrapper {
 	width: 50%
