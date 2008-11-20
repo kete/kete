@@ -1,6 +1,8 @@
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
+  # these are commonly used across controllers
+  PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
 
   # See lib/ssl_helpers.rb
   include SslHelpers
@@ -822,15 +824,15 @@ class ApplicationController < ActionController::Base
     # special case: site basket contains everything
     # all contents of site basket plus all other baskets' contents
 
-    # pending items are counted
-    public_conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
-    private_conditions = "title != \'#{BLANK_TITLE}\' AND title = \'#{NO_PUBLIC_VERSION_TITLE}\'"
-
     ZOOM_CLASSES.each do |zoom_class|
+      # pending items aren't counted
+      private_field = zoom_class == "Comment" ? 'commentable_private' : 'private_version_serialized'
+      private_conditions = "title != '#{BLANK_TITLE}' AND #{private_field} IS NOT NULL"
+
       if basket == @site_basket
-        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => public_conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => PUBLIC_CONDITIONS)
       else
-        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => public_conditions)
+        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => PUBLIC_CONDITIONS)
       end
 
       # Walter McGinnis, 2008-11-18

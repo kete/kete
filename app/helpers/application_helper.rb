@@ -318,6 +318,8 @@ module ApplicationHelper
     options = { :join_text => "Join",
                 :request_text => "Request membership",
                 :closed_text => "",
+                :as_list_element => true,
+                :plus_divider => "",
                 :pending_text => "Membership pending",
                 :rejected_text => "Membership rejected",
                 :current_role => "You're a |role|.",
@@ -327,7 +329,9 @@ module ApplicationHelper
                       :controller => 'members',
                       :action => 'join' }
 
-    html = "<li>"
+    html = String.new
+    html += "<li>" if options[:as_list_element]
+
     if @basket_access_hash[basket.urlified_name.to_sym].blank?
       case basket.join_policy_with_inheritance
       when 'open'
@@ -354,7 +358,8 @@ module ApplicationHelper
         end
       end
     end
-    html += "</li>"
+    html += "</li>" if options[:as_list_element]
+    html += options[:plus_divider]
   end
 
   def link_to_basket_contact_for(basket, include_name = true)
@@ -992,8 +997,12 @@ module ApplicationHelper
     end
 
     # create the link based on sort type and direction (user provided or default)
-    location_hash = { :order => sort_type }
-    location_hash[:direction] = direction if sort_type != 'random'
+    # keep existing parameters
+    location_hash = Hash.new
+    # this has keys in strings, rather than symbols
+    request.query_parameters.each { |key, value| location_hash[key.to_sym] = value }
+    location_hash.merge!({ :order => sort_type })
+    location_hash.merge!({ :direction => direction}) if sort_type != 'random'
 
     # if sorting and the sort is for this sort type, or no sort made and this sort type is the main sort order
     if (params[:order] && params[:order] == sort_type && sort_type != 'random') || (!params[:order] && main_sort_order)
@@ -1024,4 +1033,16 @@ module ApplicationHelper
     directions[current_direction]
   end
 
+  def privacy_image
+    # not happy with this icon, just say private: for now
+    # TODO: replace with better icon
+    # image_tag 'privacy_icon.gif', :width => 16, :height => 15, :alt => "This item is private. ", :class => 'privacy_icon'
+      "private: "
+  end
+
+  def privacy_image_for(item)
+    if item.is_private?
+      privacy_image
+    end
+  end
 end
