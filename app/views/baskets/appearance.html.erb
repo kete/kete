@@ -17,10 +17,9 @@
   </div>
 
   <div class="form-element">
-    <%= image_tag(@basket.settings[:header_image], :alt => "Current Basket Header Image. ") if !@basket.settings[:header_image].blank? -%>
-    <label for="settings_header_image">URL for background image for the top
-    of each page:</label>
-    <%= text_field 'settings', 'header_image', {"id" => "settings_header_image", :tabindex => '1'} %>
+    <%= image_tag(@basket.settings[:header_image], :alt => "Current Basket Header Image. ") + "<br />" if !@basket.settings[:header_image].blank? -%>
+    <label for="settings_header_image">URL for background image for the top of each page:</label>
+    <%= text_field 'settings', 'header_image', { "id" => "settings_header_image", :tabindex => '1', :value => @basket.settings[:header_image] } %>
   </div>
 
   <div class="form-element">
