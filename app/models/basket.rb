@@ -243,7 +243,7 @@ class Basket < ActiveRecord::Base
   end
 
   def additional_footer_content_with_inheritance
-    (!self.settings[:additional_footer_content].squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
+    (!settings[:additional_footer_content].nil? && !self.settings[:additional_footer_content].squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
   end
 
   def replace_existing_footer_with_inheritance?
