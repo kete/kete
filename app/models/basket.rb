@@ -242,6 +242,13 @@ class Basket < ActiveRecord::Base
     self.settings[:private_file_visibility] || self.site_basket.settings[:private_file_visibility] || "at least member"
   end
 
+  def additional_footer_content_with_inheritance
+    (!self.settings[:additional_footer_content].squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
+  end
+
+  def replace_existing_footer_with_inheritance?
+    (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] = true))
+  end
 
   def memberlist_policy_or_default
     current_value = self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'

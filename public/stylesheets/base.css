@@ -616,7 +616,10 @@ span.next-active {
     background-color: white;
     margin-top: -1.5em;
     padding: 1em;
-    padding-bottom: 2em;
+}
+#footer_extra {
+  background-color: #fff;
+  padding: 1px;
 }
 #footer_links ul {
     list-style-type: none;

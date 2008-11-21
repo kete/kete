@@ -297,29 +297,41 @@
                         </p>
                    </div>
                 <% end %>
+        </div>
 
-                <div id="footer_links">
-                  <ul>
-                    <% unless GOVERNMENT_WEBSITE.blank? -%>
-                      <li><%= link_to GOVERNMENT_WEBSITE.first, GOVERNMENT_WEBSITE.last, :accesskey => '/', :tabindex => '2' -%></li>
-                    <% end -%>
-                    <% cache({:part => 'accessibility'}) do -%>
-                      <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>
-                      <%= content_tag('li', link_to('Accessibility', { :urlified_name => 'help',
-                                                                       :controller => 'topics',
-                                                                       :action => 'show',
-                                                                       :id => accessibility_topic },
-                                                                     {:accesskey => '0',
-                                                                     :tabindex => '2'})) if accessibility_topic -%>
-                    <% end -%>
-                    <li><%= link_to 'Sitemap', { :urlified_name => 'site',
-                                                         :controller => 'baskets',
-                                                         :action => 'list' },
-                                                       :accesskey => '2',
-                                                       :tabindex => '2' -%></li>
-                    <li class="last"><%= link_to "Back to Content", '#content', :accesskey => '[', :tabindex => '2' -%></li>
-                  </ul>
-                </div>
+        <div id="footer_extra">
+          <% unless @current_basket.additional_footer_content_with_inheritance.squish.blank? -%>
+            <div id="footer_custom">
+              <%= @current_basket.additional_footer_content_with_inheritance -%>
+              <div style="clear:both;"></div>
+            </div>
+          <% end -%>
+          <% unless @current_basket.replace_existing_footer_with_inheritance? -%>
+            <div id="footer_links">
+              <ul>
+                <% unless GOVERNMENT_WEBSITE.blank? -%>
+                  <li><%= link_to GOVERNMENT_WEBSITE.first, GOVERNMENT_WEBSITE.last, :accesskey => '/', :tabindex => '2' -%></li>
+                <% end -%>
+                <% cache({:part => 'accessibility'}) do -%>
+                  <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>
+                  <%= content_tag('li', link_to('Accessibility', { :urlified_name => 'help',
+                                                                   :controller => 'topics',
+                                                                   :action => 'show',
+                                                                   :id => accessibility_topic },
+                                                                 { :accesskey => '0',
+                                                                   :tabindex => '2' })) if accessibility_topic -%>
+                <% end -%>
+                <li><%= link_to 'Sitemap', { :urlified_name => 'site',
+                                             :controller => 'baskets',
+                                             :action => 'list' },
+                                           { :accesskey => '2',
+                                             :tabindex => '2' } -%></li>
+                <li class="last"><%= link_to "Back to Content", '#content', :accesskey => '[', :tabindex => '2' -%></li>
+              </ul>
+              <div style="clear:both;"></div>
+            </div>
+          <% end -%>
+          <div style="clear:both;"></div>
         </div>
 
  </div> <!-- /body-outer-wrapper -->

@@ -18,6 +18,8 @@ class BasketsController < ApplicationController
 
   include WorkerControllerHelpers
 
+  include ActionView::Helpers::SanitizeHelper
+
   def index
     list
     render :action => 'list'
@@ -294,6 +296,10 @@ class BasketsController < ApplicationController
 
   def update_appearance
     @basket = Basket.find(params[:id])
+    do_not_sanitize = (params[:settings][:do_not_sanitize_footer_content] == 'true')
+    unless do_not_sanitize && @site_admin
+      params[:settings][:additional_footer_content] = sanitize(params[:settings][:additional_footer_content])
+    end
     set_settings
     flash[:notice] = 'Basket appearance was updated.'
     redirect_to :action => :appearance
