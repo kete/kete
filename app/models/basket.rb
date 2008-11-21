@@ -247,7 +247,7 @@ class Basket < ActiveRecord::Base
   end
 
   def replace_existing_footer_with_inheritance?
-    (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] = true))
+    (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] == true))
   end
 
   def memberlist_policy_or_default
@@ -398,7 +398,7 @@ class Basket < ActiveRecord::Base
 
   # return a boolean for whether basket join requests (with inheritance) are enabled
   # open / request = true
-  # closed = false 
+  # closed = false
   def allows_join_requests_with_inheritance?
     ['open', 'request'].include?(self.join_policy_with_inheritance)
   end
