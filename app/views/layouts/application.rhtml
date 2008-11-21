@@ -300,7 +300,7 @@
         </div>
 
         <div id="footer_extra">
-          <% unless @current_basket.additional_footer_content_with_inheritance.squish.blank? -%>
+          <% unless @current_basket.additional_footer_content_with_inheritance.nil? || @current_basket.additional_footer_content_with_inheritance.squish.blank? -%>
             <div id="footer_custom">
               <%= @current_basket.additional_footer_content_with_inheritance -%>
               <div style="clear:both;"></div>
