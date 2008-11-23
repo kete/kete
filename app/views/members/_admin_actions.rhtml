@@ -1,11 +1,20 @@
-        <% if !admin_actions.blank? -%>
-                <td>
-                <ul>
-                <% tool_count = 1 -%>
-                <% admin_actions.each do |action_key,action_label| -%>
-                        <%= admin_actions_correct_list_item(user, action_key, action_label, tool_count) %>
-                        <% tool_count += 1 -%>
-                <% end -%>
-                </ul>
-                </td>
-        <% end -%>
+<% if !admin_actions.blank? -%>
+  <td class="member_administrate">
+    <ul>
+      <% if role_key == 'membership_requested' %>
+        <li><%= link_to("Accept Membership", :action => 'change_request_status',
+                                             :id => user,
+                                             :status => 'approved' ) -%></li>
+        <li><%= link_to("Reject Membership", :action => 'change_request_status',
+                                             :id => user,
+                                             :status => 'rejected' ) -%></li>
+      <% end -%>
+      <% tool_count = 1 -%>
+      <% admin_actions.each do |action_key,action_label| -%>
+        <% next if role_key == 'admin' && (action_key == 'remove' || action_key == 'ban') && !@current_basket.more_than_one_basket_admin? -%>
+        <%= admin_actions_correct_list_item(user, action_key, action_label, tool_count) %>
+        <% tool_count += 1 -%>
+      <% end -%>
+    </ul>
+  </td>
+<% end -%>

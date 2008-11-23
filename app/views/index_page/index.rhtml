@@ -8,15 +8,19 @@
     <%= @topic.description -%>
     <%= pending_review(@topic) -%>
   <% end -%>
-  <% cache({:part => 'extended_fields'}) do -%>
-    <% extended_fields_html = display_xml_attributes(@topic) -%>
-    <% if !extended_fields_html.blank? -%>
-    <div id="detail-extended">
-      <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-      <%= extended_fields_html -%>
-    </div>
+
+  <% if @at_least_a_moderator -%>
+    <% cache({:part => 'extended_fields'}) do -%>
+      <% extended_fields_html = display_xml_attributes(@topic) -%>
+      <% if !extended_fields_html.blank? -%>
+        <div id="detail-extended">
+          <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+          <%= extended_fields_html -%>
+        </div>
+      <% end -%>
     <% end -%>
   <% end -%>
+
   <% cache({:part => 'tools'}) do -%>
     <div class="detail-tools">
     <% if !@url_to_full_topic.nil? -%>
@@ -33,7 +37,7 @@
   <% end -%>
 <% end -%>
 
-<% cache({:part => 'recent_topics'}) do -%>
+<% cache({:part => "recent_topics_#{@privacy_type}"}) do -%>
   <% if @recent_topics_limit > 0 &&
         @recent_topics_items.size > 0 &&
         !@current_basket.index_page_recent_topics_as.blank? -%>
@@ -73,28 +77,61 @@
   <% end -%>
 <% end -%>
 
-<% if !@topic.nil? and logged_in? and @at_least_a_moderator -%>
-  <% cache({:part => 'edit'}) do -%>
+<% if logged_in? && (@at_least_a_moderator || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
+  <% if !@topic.nil? -%>
     <div class="secondary-content-section-wrapper">
       <div id="moderator-tools" class="secondary-content-section">
         <ul>
-          <%= li_with_correct_class(tool_count) + 
-              link_to( "Edit", :action => :edit,
-                               :urlified_name => @topic.basket.urlified_name,
-                               :controller => 'topics',
-                               :id => @topic ) -%></li>
-          <% tool_count += 1 -%>
-          <li>
-            <%= link_to "History", :action => :history,
-                                   :urlified_name => @topic.basket.urlified_name,
-                                   :controller => 'topics',
-                                   :id => @topic -%>
-          </li>
+          <% if @at_least_a_moderator -%>
+            <% cache({:part => 'edit'}) do -%>
+              <%= li_with_correct_class(tool_count) + 
+                  link_to("Edit", :action => 'edit',
+                                  :urlified_name => @topic.basket.urlified_name,
+                                  :controller => 'topics',
+                                  :id => @topic,
+                                  :private => params[:private] ) %></li>
+              <% tool_count += 1 -%>
+              <li><%= link_to "History", :action => 'history',
+                                         :urlified_name => @topic.basket.urlified_name,
+                                         :controller => 'topics',
+                                         :id => @topic,
+                                         :private => params[:private] %></li>
+            <% end -%>
+          <% end -%>
+          <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
+            <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
+          <% end -%>
         </ul>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
       </div>
     </div>
   <% end -%>
+<% end -%>
+
+<% if @current_basket.allows_contact_with_inheritance? -%>
+  <% cache({:part => 'contact'}) do -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="moderator-tools" class="secondary-content-section">
+        <ul>
+          <li><%= link_to_basket_contact_for(@current_basket) %></li>
+        </ul>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+      </div>
+    </div>
+  <% end -%>
+<% end -%>
+
+<% links = link_to_membership_request_of(@current_basket) -%>
+<% links += link_to_members_of(@current_basket) -%>
+<% unless links.blank? -%>
+  <div class="secondary-content-section-wrapper">
+    <div id="moderator-tools" class="secondary-content-section">
+      <ul>
+        <%= links %>
+      </ul>
+      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+    </div>
+  </div>
 <% end -%>
 
 <% cache({:part => 'extra_side_bar_html'}) do -%>
@@ -108,7 +145,7 @@
   <% end -%>
 <% end -%>
 
-<% cache({:part => 'archives'}) do -%>
+<% cache({:part => "archives_#{@privacy_type}"}) do -%>
   <% if !@basket_stats_hash.blank? -%>
     <div class="secondary-content-section-wrapper">
       <div id="contents-by-type" class="secondary-content-section">
@@ -119,6 +156,24 @@
       </div>
     </div>
   <% end -%>
+<% end -%>
+
+<% if @current_basket.feeds.size > 0 %>
+  <div class="secondary-content-section-wrapper">
+    <div id="contents-by-type" class="secondary-content-section">
+      <% @current_basket.feeds.each do |feed| -%>
+        <% cache({ :part => "#{feed.title}_feed" }) do -%>
+          <h4><%=h feed.title %></h4>
+          <ul>
+            <% feed.entries.each do |entry| -%>
+              <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+            <% end -%>
+          </ul>
+        <% end -%>
+      <% end -%>
+      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+    </div>
+  </div>
 <% end -%>
 
 <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil? -%>
@@ -140,32 +195,27 @@
   </div>
 <% end -%>
 
-<% cache({:part => 'tags'}) do -%>
-  <% if @tag_counts_array.size > 0 -%>
+<% cache({:part => "tags_#{@privacy_type}"}) do -%>
+  <% if @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0 -%>
     <div class="secondary-content-section-wrapper">
       <div id="tags-box" class="secondary-content-section">
-        <% case @current_basket.index_page_tags_as
-           when 'tag cloud' -%>
-          <div id="tags-headline"><h3>Tags</h3></div>
-          <div id="tag-cloud">
-            <% tag_cloud @tag_counts_array, %w(tag_cloud1 tag_cloud2 tag_cloud3 tag_cloud4 tag_cloud5) do |id, name, css_class| -%>
-              <%= link_to_tagged_in_basket :name => name,
-                                           :id => id,
-                                           :zoom_class => 'Topic',
-                                           :css_class => css_class %>
-            <% end -%>
+        <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
+                         "( showing #{@tag_counts_array.size} of #{@tag_counts_size} | " +
+                          link_to("all",
+                                  :controller => 'tags',
+                                  :action => 'index') + " )" : '' -%>
+        <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
+          <div id="tags-headline">
+            <h3 style="display:inline;">Tags</h3>
+            <span><%= tag_counts -%></span>
           </div>
-        <% when 'categories' -%>
-          <div id="tags-headline"><h3>Categories</h3></div>
-          <div id="categories">
-            <ul>
-              <% @tag_counts_array.each do |tag| -%>
-                <li><%= link_to_tagged_in_basket :name => tag[:name] + " (#{tag[:taggings_count]})",
-                                                 :id => tag[:id],
-                                                 :zoom_class => 'Topic' %></li>
-              <% end -%>
-            </ul>
+          <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array } -%>
+        <% else -%>
+          <div id="tags-headline">
+            <h3 style="display:inline;">Categories</h3>
+            <span><%= tag_counts -%></span>
           </div>
+          <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array } -%>
         <% end -%>
         <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
      </div>

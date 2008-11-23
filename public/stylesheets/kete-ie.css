@@ -4,7 +4,7 @@ body {
 
 }
 #body-outer-wrapper {
-        width: 900px;
+        width: 900px !important;
         margin: auto;
 }
 #secondary-content-wrapper{

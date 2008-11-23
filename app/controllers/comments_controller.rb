@@ -1,6 +1,10 @@
 class CommentsController < ApplicationController
   include ExtendedContentController
-  
+
+  # Kieran Pilkington, 2008/10/23
+  # Autocomplete methods for tag adder on item pages
+  include TaggingController
+
   def index
     redirect_to_search_for('Comment')
   end

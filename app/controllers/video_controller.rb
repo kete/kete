@@ -1,6 +1,10 @@
 class VideoController < ApplicationController
   include ExtendedContentController
 
+  # Kieran Pilkington, 2008/10/23
+  # Autocomplete methods for tag adder on item pages
+  include TaggingController
+
   helper :privacy_controls
 
   def index
@@ -22,8 +26,7 @@ class VideoController < ApplicationController
   end
 
   def new
-    @video = Video.new({ :private => @current_basket.private_default || false,
-                         :file_private =>  @current_basket.file_private_default || false })
+    @video = Video.new
   end
 
   def create
@@ -70,11 +73,5 @@ class VideoController < ApplicationController
   def destroy
     zoom_destroy_and_redirect('Video')
   end
-
-  private
-
-    def load_content_type
-      @content_type = ContentType.find_by_class_name('Video')
-    end
 
 end

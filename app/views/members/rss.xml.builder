@@ -1,4 +1,4 @@
-@title = SITE_NAME + ' - ' + @current_basket.name + ' - Members'
+@title = SITE_NAME + ' - ' + @current_basket.name + ' - Latest 50 Members'
 xml.instruct! :xml, :version=>"1.0"
 xml.rss(:version=>"2.0"){
   xml.channel{

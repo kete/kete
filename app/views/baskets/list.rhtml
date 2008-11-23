@@ -1,12 +1,35 @@
-<% @title = "Listing Baskets" -%>
-<h2><%= h(@title) -%></h2>
+<% @title = "Baskets" -%>
 
-<ul>
-  <% @baskets.each do |basket| -%>
-  <li><%= link_to_index_for(basket) -%></li>
+<p>
+  <h2 style="display:inline;"><%= h(@title) -%></h2>
+  <% if @site_admin && (@requested_count + @rejected_count) > 0 -%>
+    [
+    <%= link_to_unless_current 'all', :type => nil -%>
+    | <%= link_to_unless_current pluralize(@requested_count, 'request'), :type => 'requested' -%>
+    | <%= link_to_unless_current "#{@rejected_count} rejected", :type => 'rejected' -%>
+    ]
   <% end -%>
-</ul>
+</p>
+
+<p>
+  <table id="basket_list_table">
+    <tr>
+      <th abbr="Name" class="basket_name"><%= search_sorting_controls_for('Name', 'name', false) -%></th>
+      <th abbr="Created" class="basket_created"><%= search_sorting_controls_for('Created', 'created_at', true, 'desc') -%></th>
+      <th abbr="Options" class="basket_options">Options</th>
+    </tr>
+    <% @baskets.each do |basket| -%>
+    <tr>
+      <td class="basket_name"><%= link_to_index_for(basket) -%></td>
+      <td class="basket_created"><%= basket.created_at.to_s(:long) -%></td>
+      <td class="basket_options"><ul><%= link_to_actions_available_for(basket) -%></ul></td>
+    </tr>
+    <% end -%>
+  </table>
+</p>
 
 <div id="prev-next"><%= will_paginate @baskets %></div>
+
+<h4><%= header_add_basket_link %></h4>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

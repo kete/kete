@@ -12,10 +12,11 @@ body {
 .full-width #main-content-wrapper {
     width: 100%;
 }
-#main-content-container {
+#main-content-container, #search-content-container {
     padding: 1em 0 1em 1em;
 }
-#secondary-content-wrapper{
+
+#secondary-content-wrapper {
     width: 30%;
     float: right;
 }
@@ -72,6 +73,9 @@ ul.nav-list a:hover{
     text-decoration: underline;;
     color: #333;
 }
+ul.nav-list a img {
+  border: none; 
+}
 
 #top-menu {
 		clear: both;
@@ -115,6 +119,49 @@ ul#main-nav {
 #basket-list li a{
     color: white;
 }
+
+/* #################################### User Basket Navigation #################################### */
+#top-menu #user_baskets_list em {
+  background-color: #333;
+  width: 14px;
+  height: 14px;
+  padding: 2px 4px;
+  font-size: .6em;
+  /* quick way to get rounded corners, doesn't work in IE */
+  -moz-border-radius-topleft:2px;
+  -moz-border-radius-topright:2px;
+  -moz-border-radius-bottomright:2px;
+  -moz-border-radius-bottomleft:2px;
+}
+#top-menu #user_baskets_list ul {
+  position: absolute;
+  top: 90px;
+  right: 70px;
+  width: 230px;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #838383;
+  margin: 0;
+  padding: 0;
+}
+#top-menu #user_baskets_list ul li {
+  display: block;
+  float: none;
+  border-bottom: 1px solid #eee;
+  padding: 0;
+}
+#top-menu .user_basket_list_row1 {
+  background-color: #fff;
+}
+#top-menu .user_basket_list_row2 {
+  background-color: #eee;
+}
+#top-menu #user_baskets_list ul li a {
+  display: block;
+  color: #000;
+  padding: 8px 12px;
+}
+
 /* #################################### Content Navigation Tabs #################################### */
 #content-tabs ul{
     margin: 1em 0 5px 0;
@@ -137,7 +184,7 @@ ul#main-nav {
 #content-tabs ul li.selected a{
     padding: .75em 1em .5em 0;
 }
-#content-wrapper {
+#content-wrapper, #search-wrapper {
     background-color: white;
     float: left;
     width: 100%;
@@ -521,6 +568,14 @@ div#slideshow-controls div#slideshow-middle {
     border-left: 2px solid #666;
     background-color: white;
 }
+.comment-content .avatar {
+  padding: 0 10px;
+}
+.comment-content-inner {
+  margin-left: 70px;
+}
+
+
 .history-table td {
     padding: 0.5em;
     border: 1px solid #ccc;
@@ -561,7 +616,10 @@ span.next-active {
     background-color: white;
     margin-top: -1.5em;
     padding: 1em;
-    padding-bottom: 2em;
+}
+#footer_extra {
+  background-color: #fff;
+  padding: 1px;
 }
 #footer_links ul {
     list-style-type: none;
@@ -623,6 +681,50 @@ div#notice div, div#error div {
     padding: .5em;
     margin-bottom: 1em;
     color: #333;
+}
+
+/* ################################ Tag Listing ################################ */
+#tag_search_div {
+  margin: 15px 0;
+}
+#tag_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#tag_list li {
+  float: left;
+  padding: 5px 15px;
+}
+
+/* ############################### User Profiles ################################ */
+.avatar {
+  float: left;
+  padding: 15px 10px;
+}
+.profile_content_left {
+  margin-left: 75px;
+  width: 420px;
+}
+.profile_content_right {
+  float: right;
+  width: 420px;
+}
+.portrait_image {
+  display: inline;
+}
+.portrait_image img {
+  border: none;
+}
+.portrait_controls {
+  position: absolute;
+  margin-left: -5px;
+  border: 1px solid #000;
+  background-color: #fff;
+}
+.portrait_controls img {
+  border: none;
+  display: block;
 }
 
 /* #################################### Misc #################################### */
@@ -697,14 +799,16 @@ ul.option-list li img{
   display: none;
 }
 
-/* width of members list table for basket administration of members */
-table.members-list-table {
-    width: 100%;
-}
-
 /* column widths for the above. */
-.members-list-table td {
-    width: 25%;
+.members-list-table {
+  width: 100%;
+}
+.member_username, .member_joined, .member_email, .member_change_to, .member_administrate {
+  width: 18%;
+}
+.members-list-table td.member_avatar {
+  width: 50px !important;
+  padding: 10px;
 }
 
 /* for wrapping form elements in a block element - needed for XHTML validation */
@@ -727,6 +831,21 @@ div.wrap {
         float: left;
         margin-bottom: 200px;
 }
+#basket_list_table {
+  width: 100%;
+}
+.basket_name, .basket_created {
+  width: 20%;
+}
+.basket_options {
+  width: 60%;
+}
+
+/* SEARCH SORTING CONTROLS */
+.sorting_control {
+  border: none;
+}
+
 
 /* Special formatting for extended fields with multiple values */
 

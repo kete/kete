@@ -3,7 +3,11 @@ require 'uri'
 
 class WebLinksController < ApplicationController
   include ExtendedContentController
-  
+
+  # Kieran Pilkington, 2008/10/23
+  # Autocomplete methods for tag adder on item pages
+  include TaggingController
+
   helper :privacy_controls
 
   def index
@@ -25,8 +29,7 @@ class WebLinksController < ApplicationController
   end
 
   def new
-    @web_link = WebLink.new({ :private => @current_basket.private_default || false, 
-                              :file_private =>  @current_basket.file_private_default || false })
+    @web_link = WebLink.new
   end
 
   def create

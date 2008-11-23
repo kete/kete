@@ -11,33 +11,60 @@
   <div style="clear:both;"></div>
 <% end -%>
 
-<% cache({:part => 'extended_fields'}) do -%>
-  <% extended_fields_html = display_xml_attributes(@topic) -%>
-  <% if !extended_fields_html.blank? -%>
-  <div id="detail-extended">
-    <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-    <%= extended_fields_html -%>
-  </div>
+<% if logged_in? && @at_least_a_moderator -%>
+  <% cache({:part => 'extended_fields'}) do -%>
+    <% extended_fields_html = display_xml_attributes(@topic) -%>
+    <% if !extended_fields_html.blank? -%>
+      <div id="detail-extended">
+        <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+        <%= extended_fields_html -%>
+      </div>
+    <% end -%>
   <% end -%>
 <% end -%>
 
-<% if logged_in? and @at_least_a_moderator -%>
-  <% cache({:part => 'edit'}) do -%>
+<% if logged_in? && (@at_least_a_moderator || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
+  <ul>
+    <% if @at_least_a_moderator -%>
+      <% cache({:part => 'edit'}) do -%>
+        <li class="first">
+          <%= link_to "Edit", :action => 'edit',
+                              :urlified_name => @topic.basket.urlified_name,
+                              :controller => 'topics',
+                              :id => @topic,
+                              :private => params[:private] -%>
+        </li>
+        <li>
+          <%= link_to "History", :action => 'history',
+                                 :urlified_name => @topic.basket.urlified_name,
+                                 :controller => 'topics',
+                                 :id => @topic,
+                                 :private => params[:private] -%>
+        </li>
+      <% end -%>
+    <% end -%>  
+    <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? -%>
+      <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
+    <% end -%>
+  </ul>
+<% end -%>
+
+<% if @current_basket.allows_contact_with_inheritance? -%>
+  <% cache({:part => 'contact'}) do -%>
     <ul>
-      <li class="first">
-        <%= link_to "Edit", :action => :edit,
-                            :urlified_name => @topic.basket.urlified_name,
-                            :controller => 'topics',
-                            :id => @topic -%>
-      </li>
-      <li>
-        <%= link_to "History", :action => :history,
-                               :urlified_name => @topic.basket.urlified_name,
-                               :controller => 'topics',
-                               :id => @topic -%>
-      </li>
-    </ul>  
+      <li><%= link_to_basket_contact_for(@current_basket) %></li>
+    </ul>
   <% end -%>
+<% end -%>
+
+<% links = link_to_membership_request_of(@current_basket) -%>
+<% links += link_to_members_of(@current_basket) -%>
+<% unless links.blank? -%>
+  <div id="secondary-content-wrapper">
+    <ul>
+      <%= links %>
+    </ul>
+  </div>
 <% end -%>
 
 <% cache({:part => 'tools'}) do -%>
@@ -52,7 +79,7 @@
 <% cache({:part => 'extra_side_bar_html'}) do -%>
 <% end -%>
 
-<% cache({:part => 'archives'}) do -%>
+<% cache({:part => "archives_#{@privacy_type}"}) do -%>
 <% end -%>
 
 <% cache({:part => 'tags'}) do -%>

@@ -1,13 +1,24 @@
-<% post_url = url_for :controller => 'topics', :action => 'show', :id => post_summary, :urlified_name => post_summary.basket.urlified_name
-   post_excerpt = !post_summary.description.blank? ? post_summary.description : post_summary.short_summary
--%>
+<% post_url = url_for(:urlified_name => post_summary.basket.urlified_name,
+                      :controller => 'topics',
+                      :action => 'show',
+                      :id => post_summary,
+                      :private => (post_summary.is_private?) ? 'true' : nil)
+   post_excerpt = !post_summary.description.blank? ? post_summary.description : post_summary.short_summary -%>
 <div class="generic-result-wrapper" id="item_<%= post_summary.id %>_wrapper">
-        <div class="generic-result-header">
-                <h4><%= link_to h(post_summary.title), post_url -%></h4>
-        </div>
-        <div class="generic-result-description"><%= prepare_short_summary(post_excerpt,100) %>
-                <div class="generic-result-more">
-                        <%= link_to("read more &gt;&gt;", post_url, { :title => "Read More about #{post_summary.title}" })%>
-                </div>
-        </div>
+  <div class="generic-result-header">
+    <h4>
+      <%= privacy_image_for(post_summary) -%>
+      <%= link_to h(post_summary.title), post_url -%>
+    </h4>
+  </div>
+  <% unless post_summary.first_related_image.blank? %>
+    <div class="image-result-thumb">
+      <%= render(:partial => "topics/related_images_links_tag", :locals => { :related_item => post_summary.first_related_image }) %>
+    </div>
+  <% end %>
+  <div class="generic-result-description"><%= prepare_short_summary(post_excerpt, 100) %>
+    <div class="generic-result-more">
+      <%= link_to("read more &gt;&gt;", post_url, { :title => "Read More about #{post_summary.title}" })%>
+    </div>
+  </div>
 </div>

@@ -2,6 +2,9 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
 
+  # these are commonly used across controllers
+  PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
+
   # See lib/ssl_helpers.rb
   include SslHelpers
 
@@ -17,7 +20,7 @@ class ApplicationController < ActionController::Base
   before_filter :login_from_cookie
 
   # only permit site members to add/delete things
-  before_filter :login_required, :only => [ :new, :pick_topic_type, :create,
+  before_filter :login_required, :only => [ :new, :create,
                                             :edit, :update, :destroy,
                                             :appearance, :homepage_options,
                                             :convert,
@@ -29,9 +32,12 @@ class ApplicationController < ActionController::Base
                                             :flag_version,
                                             :restore,
                                             :reject,
-                                            :choose_type,
+                                            :choose_type, :render_item_form,
                                             :setup_rebuild,
-                                            :rebuild_zoom_index]
+                                            :rebuild_zoom_index,
+                                            :add_portrait, :remove_portrait, :default_portrait,
+                                            :contact, :send_email,
+                                            :join ]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -41,6 +47,8 @@ class ApplicationController < ActionController::Base
 
   # sets up instance variables for authentication
   include KeteAuthorization
+
+  before_filter :redirect_if_current_basket_isnt_approved_for_public_viewing
 
   # Create an instance variable with a list of baskets the
   # current user has roles in (member, admin etc)
@@ -78,7 +86,7 @@ class ApplicationController < ActionController::Base
   # destroy has to happen before the item is deleted
   before_filter :expire_show_caches, :only => [ :destroy ]
   # everything else we do after the action is completed
-  after_filter :expire_show_caches, :only => [ :update, :convert ]
+  after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
@@ -94,7 +102,8 @@ class ApplicationController < ActionController::Base
   after_filter :expire_basket_index_caches, :only => [ :create,
                                                        :update,
                                                        :destroy,
-                                                       :add_index_topic, :link_index_topic]
+                                                       :add_index_topic, :link_index_topic,
+                                                       :add_tags ]
 
   helper :slideshows
   helper :extended_fields
@@ -171,6 +180,21 @@ class ApplicationController < ActionController::Base
     current_user_is?(@current_basket.settings[:show_add_links])
   end
 
+  def current_user_can_add_or_request_basket?
+    return false unless logged_in?
+    return true if @site_admin
+    case BASKET_CREATION_POLICY
+    when 'open', 'request'
+      true
+    else
+      false
+    end
+  end
+
+  def basket_policy_request_with_permissions?
+    BASKET_CREATION_POLICY == 'request' && !@site_admin
+  end
+
   def current_user_can_see_action_menu?
     current_user_is?(@current_basket.settings[:show_action_menu])
   end
@@ -186,7 +210,12 @@ class ApplicationController < ActionController::Base
 
   # Test for private file visibility in a given basket
   def current_user_can_see_private_files_in_basket?(basket)
-    current_user_is?(basket.private_file_visibility)
+    current_user_is?(basket.private_file_visibility_with_inheritance)
+  end
+
+  # Test for memberlist visibility in a given basket
+  def current_user_can_see_memberlist_for?(basket)
+    current_user_is?(basket.settings[:memberlist_policy], basket)
   end
 
   # Walter McGinnis, 2006-04-03
@@ -236,14 +265,29 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def show_basket_list_naviation_menu?
+    return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options', 'contact', 'new', 'choose_type'].include?(params[:action])
+    return false if params[:controller] == 'search'
+    return false if params[:controller] == 'account' && params[:action] == 'login'
+    USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
+  end
+
   # caching related
-  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'page_description_[privacy]', 'edit_[privacy]', 'history', 'details_first_[privacy]', 'details_second_[privacy]', 'contributor_[privacy]', 'flagging_[privacy]', 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]', 'secondary_content_license_metadata_[privacy]']
+  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]',
+                'page_description_[privacy]', 'edit_[privacy]',
+                'details_first_[privacy]', 'details_second_[privacy]',
+                'contributor_[privacy]', 'flagging_[privacy]',
+                'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
+                'secondary_content_license_metadata_[privacy]', 'history']
+
   PUBLIC_SHOW_PARTS = ['comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = [ 'page_keywords', 'page_description', 'details', 'license', 'extended_fields', 'edit', 'tools', 'recent_topics', 'search', 'extra_side_bar_html', 'archives', 'tags']
+  INDEX_PARTS = ['page_keywords', 'page_description', 'details', 'license',
+                 'extended_fields', 'edit', 'tools', 'recent_topics',
+                 'search', 'extra_side_bar_html', 'archives_[privacy]', 'tags', 'contact']
 
   # the following method is used when clearing show caches
   def all_show_parts
@@ -268,6 +312,14 @@ class ApplicationController < ActionController::Base
     show_parts
   end
 
+  def cache_name_for(part, privacy)
+    if part.include?('_[privacy]')
+      part.sub(/\[privacy\]/, privacy)
+    else
+      part
+    end
+  end
+
   # if anything is added, edited, or destroyed in a basket
   # expire the basket index page caches
   def expire_basket_index_caches
@@ -276,12 +328,25 @@ class ApplicationController < ActionController::Base
     # show up in the contents list, as well as most recent topics, etc.
     baskets_to_expire = [@current_basket, @site_basket]
     INDEX_PARTS.each do |part|
-      baskets_to_expire.each do |basket|
-        expire_fragment(:controller => 'index_page',
-                        :action => 'index',
-                        :urlified_name => basket.urlified_name,
-                        :part => part)
+      if part.include?('_[privacy]')
+        public_part = cache_name_for(part, 'public')
+        private_part = cache_name_for(part, 'private')
+        [public_part, private_part].each do |part|
+          expire_basket_index_caches_for(part)
+        end
+      else
+        expire_basket_index_caches_for(part)
       end
+    end
+  end
+
+  def expire_basket_index_caches_for(part)
+    baskets_to_expire = [@current_basket, @site_basket]
+    baskets_to_expire.each do |basket|
+      expire_fragment(:controller => 'index_page',
+                      :action => 'index',
+                      :urlified_name => basket.urlified_name,
+                      :part => part)
     end
   end
 
@@ -332,11 +397,8 @@ class ApplicationController < ActionController::Base
       # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where
       # the current item is private.
 
-      if part.include?('_[privacy]')
-        resulting_part = part.sub(/\[privacy\]/, (item.private? ? "private" : "public"))
-      else
-        resulting_part = part
-      end
+      @privacy_type ||= (item.private? ? "private" : "public")
+      resulting_part = cache_name_for(part, @privacy_type)
 
       # we have to do this for each distinct title the item previously had
       # because old titles' friendly urls won't be matched in our expiry otherwise
@@ -435,12 +497,8 @@ class ApplicationController < ActionController::Base
   def expire_caches_after_comments(item, private_comment)
     ['zoom_reindex', 'comments-moderators_[privacy]', 'comments_[privacy]'].each do |part|
 
-      if part.include?('_[privacy]')
-        resulting_part = part.sub(/\[privacy\]/, (private_comment ? "private" : "public"))
-      else
-        resulting_part = part
-      end
-
+      @privacy_type ||= (private_comment ? "private" : "public")
+      resulting_part = cache_name_for(part, @privacy_type)
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,
                                          :controller => zoom_class_controller(item.class.name),
@@ -468,11 +526,8 @@ class ApplicationController < ActionController::Base
     name = params[:id].blank? ? Hash.new : { :id => params[:id].to_i }
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
-        if part.include?('_[privacy]')
-          resulting_part = part.sub(/\[privacy\]/, get_acceptable_privacy_type("public", "private"))
-        else
-          resulting_part = part
-        end
+        @privacy_type ||= get_acceptable_privacy_type("public", "private")
+        resulting_part = cache_name_for(part, @privacy_type)
         return false unless has_fragment?(name.merge(:part => resulting_part))
       end
     end
@@ -481,7 +536,8 @@ class ApplicationController < ActionController::Base
     case params[:controller]
     when 'index_page'
       INDEX_PARTS.each do |part|
-        return false unless has_fragment?({:part => part})
+        resulting_part = cache_name_for(part, @privacy_type)
+        return false unless has_fragment?({:part => resulting_part})
       end
     when 'topics'
       ZOOM_CLASSES.each do |zoom_class|
@@ -577,6 +633,8 @@ class ApplicationController < ActionController::Base
     elsif params[:is_theme] and item.class.name == 'Document' and @successful
       item.decompress_as_theme
       where_to_redirect = 'appearance'
+    elsif params[:portrait] and item.class.name == 'StillImage' and @successful
+      where_to_redirect = 'user_account'
     end
 
     if @successful
@@ -591,6 +649,8 @@ class ApplicationController < ActionController::Base
         redirect_to_show_for(commented_item, options)
       when 'appearance'
         redirect_to :action => :appearance, :controller => 'baskets'
+      when 'user_account'
+        redirect_to :action => :show, :controller => 'account', :id => @current_user
       else
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created."
@@ -765,16 +825,37 @@ class ApplicationController < ActionController::Base
     # special case: site basket contains everything
     # all contents of site basket plus all other baskets' contents
 
-    # pending items are counted
-    conditions = "title != \'#{BLANK_TITLE}\' AND title != \'#{NO_PUBLIC_VERSION_TITLE}\'"
+    ZOOM_CLASSES.each do |zoom_class|
+      # pending items aren't counted
+      private_conditions = "title != '#{BLANK_TITLE}' "
+      local_public_conditions = PUBLIC_CONDITIONS
 
-    if basket == @site_basket
-      ZOOM_CLASSES.each do |zoom_class|
-        @basket_stats_hash[zoom_class] = Module.class_eval(zoom_class).count(:conditions => conditions)
+      # comments are a special case
+      # they have a subtly different data model that means they need an different condition
+      if zoom_class == 'Comment'
+        commentable_private_condition = " AND commentable_private = ?"
+        local_public_conditions = [local_public_conditions + commentable_private_condition, false]
+        private_conditions = [private_conditions + commentable_private_condition, true]
+      else
+        private_conditions += "AND private_version_serialized IS NOT NULL"
       end
-    else
-      ZOOM_CLASSES.each do |zoom_class|
-        @basket_stats_hash[zoom_class] = basket.send(zoom_class.tableize).count(:conditions => conditions)
+
+      if basket == @site_basket
+        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => local_public_conditions)
+      else
+        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => local_public_conditions)
+      end
+
+      # Walter McGinnis, 2008-11-18
+      # normally the site basket is a special case, in that is shows all items from all baskets
+      # however in the context of private items, the rule is to show all private items that a USER has rights to see
+      # so the counts may vary by user
+      # because of caching, this becomes problematic to display counts for
+      # so instead, we only show private items that are actually in the site basket
+      # which happens to use the same code as other basket would, so we don't need to duplicate this at the moment
+      # TODO: we will want to change this to match browsing of private items in site basket later
+      if basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?
+        @basket_stats_hash["#{zoom_class}_private"] = basket.send(zoom_class.tableize).count(:conditions => private_conditions)
       end
     end
   end
@@ -862,7 +943,7 @@ class ApplicationController < ActionController::Base
     if auto_detect
       tag +=  "\" />"
     else
-      tag += "tabindex='1' \">" # A tag has a closing </a>
+      tag += "\" tabindex='1'>" # A tag has a closing </a>
     end
   end
 
@@ -872,6 +953,8 @@ class ApplicationController < ActionController::Base
     elsif ['moderate', 'members', 'importers'].include?(params[:controller]) and ['list', 'create', 'new', 'potential_new_members'].include?(params[:action])
       return false
     elsif params[:controller] == 'index_page' and params[:action] == 'index'
+      return false
+    elsif %w(tags search).include?(params[:controller])
       return false
     elsif params[:controller] == 'account' and params[:action] == 'show'
       return true
@@ -897,6 +980,7 @@ class ApplicationController < ActionController::Base
     @permitted_to_view_private_items ||= logged_in? &&
                                          permit?("site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket")
   end
+  alias permitted_to_edit_current_item? permitted_to_view_private_items?
 
   # checks if the user is requesting a private version of an item, and see
   # if they are allowed to do so
@@ -1012,8 +1096,20 @@ class ApplicationController < ActionController::Base
     @current_item ||= @audio_recording || @document || @still_image || @topic || @video || @web_link || nil
   end
 
+  def current_sorting_options(default_order, default_direction, valid_orders = Array.new)
+    @order = valid_orders.include?(params[:order]) ? params[:order] : default_order
+    @direction = ['asc', 'desc'].include?(params[:direction]) ? params[:direction] : default_direction
+    "#{@order} #{@direction}"
+  end
+
   # methods that should be available in views as well
-  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?, :get_acceptable_privacy_type, :current_user_can_see_flagging?,  :current_user_can_see_add_links?, :current_user_can_see_action_menu?, :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item
+  helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
+                :permitted_to_edit_current_item?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?,
+                :get_acceptable_privacy_type, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
+                :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
+                :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
+                :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
+                :show_basket_list_naviation_menu?
 
   protected
 
@@ -1046,7 +1142,7 @@ class ApplicationController < ActionController::Base
     @basket_access_hash = logged_in? ? current_user.basket_permissions : Hash.new
   end
 
-  def current_user_is?(at_least_setting)
+  def current_user_is?(at_least_setting, basket = @current_basket)
     begin
       # everyone can see, just return true
       return true if at_least_setting == 'all users' || at_least_setting.blank?
@@ -1054,12 +1150,30 @@ class ApplicationController < ActionController::Base
       # all other settings, you must be at least logged in
       return false unless logged_in?
 
+      # do we just want people logged in?
+      return true if at_least_setting == 'logged in'
+
       # finally, if they are logged in
       # we evaluate matching instance variable if they have the role that matches
       # our basket setting
-      instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
+
+      # if we are checking at least settings on a different basket, we have to
+      # populate new ones with the context of that basket, not the current basket
+      if basket != @current_basket
+        load_at_least(basket)
+        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}_of_specified_basket")
+      else
+        instance_variable_get("@#{at_least_setting.gsub(" ", "_")}")
+      end
     rescue
       raise "Unknown authentication type: #{$!}"
+    end
+  end
+
+  def redirect_if_current_basket_isnt_approved_for_public_viewing
+    if @current_basket.status != 'approved' && !@site_admin && !@basket_admin
+      flash[:error] = "The basket #{@current_basket.name} is not approved for public viewing"
+      redirect_to "/#{@site_basket.urlified_name}"
     end
   end
 

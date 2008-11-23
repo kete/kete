@@ -1,14 +1,10 @@
-<fieldset>
-    <!--[form:topic]-->
-    <% if !params[:relate_to_topic].nil? %>
-        <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-    <% end %>
-    <% if !params[:index_for_basket].nil? %>
-        <%= hidden_field_tag "index_for_basket", params[:index_for_basket] %>
-    <% end %>
+  <% unless params[:relate_to_topic].nil? %>
+    <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+  <% end %>
 
-    <%= render :partial => 'topic_types', :locals => {:topic_types => TopicType.find(1).full_set} %>
+  <% unless params[:index_for_basket].nil? %>
+    <%= hidden_field_tag "index_for_basket", params[:index_for_basket] %>
+  <% end %>
 
-<!--[eoform:topic]-->
-
-</fieldset>
+  <%= render :partial => 'topics/topic_types', :locals => { :topic_types => TopicType.find(1).full_set,
+                                                            :pre_options => (!defined?(pre_options).nil? ? pre_options : Array.new) } -%>

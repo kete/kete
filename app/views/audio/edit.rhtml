@@ -1,19 +1,7 @@
 <% if current_user_can_see_action_menu? -%>
-      <% @title = 'Editing audio recording' -%>
-
-      <h2><%= h(@title) -%></h2>
-
-      <% form_for :audio_recording,
-         :url => { :action => 'update',
-      :id => @audio_recording },
-      :html => { :multipart => true } do |form| %>
-      <%= render :partial => 'form', :object => form %>
-      <div class="wrap"><%= submit_tag 'Save' , {:class => "save-button", :tabindex => '1'} %></div>
-      <% end %>
-
-      <%= link_to_cancel %>
+  <%= render :partial => 'topics/form' -%>
 <% else %>
-<h2>Sorry - editing on this section of the site has been disallowed</h2>
+  <h2>Sorry - editing on this section of the site has been disallowed</h2>
 <% end -%>
 
-  <%= render(:partial => "topics/content_wrapper_end" ) %>
+<%= render :partial => "topics/content_wrapper_end" -%>
