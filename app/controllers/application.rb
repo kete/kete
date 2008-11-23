@@ -1,7 +1,7 @@
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
-  
+
   # these are commonly used across controllers
   PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
 
@@ -828,12 +828,18 @@ class ApplicationController < ActionController::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       # pending items aren't counted
-      private_field = zoom_class == "Comment" ? 'commentable_private' : 'private_version_serialized'
-      private_conditions = "title != '#{BLANK_TITLE}' AND #{private_field} IS NOT NULL"
-
-      # comments have a subtly different data model, that means they need an extra condition
+      private_conditions = "title != '#{BLANK_TITLE}' "
       local_public_conditions = PUBLIC_CONDITIONS
-      local_public_conditions += ' AND ' + private_field + ' IS NULL' if zoom_class == 'Comment'
+
+      # comments are a special case
+      # they have a subtly different data model that means they need an different condition
+      if zoom_class == 'Comment'
+        commentable_private_condition = " AND commentable_private = ?"
+        local_public_conditions = [local_public_conditions + commentable_private_condition, false]
+        private_conditions = [private_conditions + commentable_private_condition, true]
+      else
+        private_conditions += "AND private_version_serialized IS NOT NULL"
+      end
 
       if basket == @site_basket
         @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => local_public_conditions)
