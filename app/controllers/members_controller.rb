@@ -22,7 +22,7 @@ class MembersController < ApplicationController
     @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
 
     # list people who have all other roles
-    @current_basket.accepted_roles.each do |role|
+    @current_basket.accepted_roles(true).each do |role|
       role_plural = role.name.pluralize
       # we cover members above
       if role_plural != 'members'
