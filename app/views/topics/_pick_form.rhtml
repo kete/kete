@@ -7,4 +7,4 @@
   <% end %>
 
   <%= render :partial => 'topics/topic_types', :locals => { :topic_types => TopicType.find(1).full_set,
-                                                            :pre_options => pre_options } -%>
+                                                            :pre_options => (!defined?(pre_options).nil? ? pre_options : Array.new) } -%>
