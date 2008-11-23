@@ -1,6 +1,7 @@
 # Filters added to this controller will be run for all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
+  
   # these are commonly used across controllers
   PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
 
