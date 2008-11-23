@@ -830,10 +830,14 @@ class ApplicationController < ActionController::Base
       private_field = zoom_class == "Comment" ? 'commentable_private' : 'private_version_serialized'
       private_conditions = "title != '#{BLANK_TITLE}' AND #{private_field} IS NOT NULL"
 
+      # comments have a subtly different data model, that means they need an extra condition
+      local_public_conditions = PUBLIC_CONDITIONS
+      local_public_conditions += ' AND ' + private_field + ' IS NULL' if zoom_class == 'Comment'
+
       if basket == @site_basket
-        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => PUBLIC_CONDITIONS)
+        @basket_stats_hash["#{zoom_class}_public"] = Module.class_eval(zoom_class).count(:conditions => local_public_conditions)
       else
-        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => PUBLIC_CONDITIONS)
+        @basket_stats_hash["#{zoom_class}_public"] = basket.send(zoom_class.tableize).count(:conditions => local_public_conditions)
       end
 
       # Walter McGinnis, 2008-11-18
