@@ -297,11 +297,16 @@ class BasketsController < ApplicationController
   def update_appearance
     @basket = Basket.find(params[:id])
     do_not_sanitize = (params[:settings][:do_not_sanitize_footer_content] == 'true')
+    original_html = params[:settings][:additional_footer_content]
+    sanitized_html = original_html
     unless do_not_sanitize && @site_admin
-      params[:settings][:additional_footer_content] = sanitize(params[:settings][:additional_footer_content])
+      sanitized_html = sanitize(original_html)
+      params[:settings][:additional_footer_content] = sanitized_html
     end
     set_settings
     flash[:notice] = 'Basket appearance was updated.'
+    logger.debug("sanitized yes") if original_html != sanitized_html
+    flash[:notice] += ' Your submitted footer content was changed for security reasons.' if original_html != sanitized_html
     redirect_to :action => :appearance
   end
 
@@ -378,7 +383,7 @@ class BasketsController < ApplicationController
   end
 
   def current_basket_is_selected?
-    params[:id].blank? or @current_basket.id == params[:id]
+    params[:id].blank? || @current_basket.id == params[:id]
   end
 
   private

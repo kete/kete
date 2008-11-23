@@ -130,8 +130,14 @@
       </div>
       <% end -%>
       <div class="form-element">
-        <%= check_box 'settings', 'replace_existing_footer', {:checked => (@basket.settings[:replace_existing_footer] == true), :tabindex => '1'}, 'true', 'false' -%> 
+        <%= check_box 'settings', 'replace_existing_footer', {:checked => (@basket.settings[:replace_existing_footer] == true), :tabindex => '1'}, 'true', 'false' -%>
         <label for="settings_replace_existing_footer" class="inline">replace existing footer with above content?</label>
+          <div class="form_example">
+            If checked, the above footer will totally replace the
+            bottom of each page.  If you would rather it appear above
+            the "Accessibility | Sitemap | Back to Content" links,
+            rather than replace them, leave this unchecked.
+          </div>
       </div>
     </fieldset>
   </div>

@@ -19,6 +19,10 @@ class Basket < ActiveRecord::Base
   # sanitize our descriptions and extended_content for security
   acts_as_sanitized :fields => [:index_page_extra_side_bar_html]
 
+  # Kieran Pilkington, 2008-07-09
+  # remove the roles from a basket before destroying it to prevent problems later on
+  before_destroy :remove_users_and_roles
+
   # Kieran Pilkington, 2008/08/19
   # setup our default baskets on application load, rather than each request
   cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_baskets
@@ -87,10 +91,6 @@ class Basket < ActiveRecord::Base
   # Walter McGinnis, 2008-05-10
   # old versions of items have to updated to not point at non-existing basket
   before_destroy :clear_item_version_foreign_keys
-
-  # Kieran Pilkington, 2008-07-09
-  # remove the roles from a basket before destroying it to prevent problems later on
-  before_destroy :remove_users_and_roles
 
   def update_index_topic(index_topic)
     if !index_topic.nil? and index_topic.is_a?(Topic)
@@ -247,7 +247,7 @@ class Basket < ActiveRecord::Base
   end
 
   def replace_existing_footer_with_inheritance?
-    (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] = true))
+    (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] == true))
   end
 
   def memberlist_policy_or_default
@@ -398,7 +398,7 @@ class Basket < ActiveRecord::Base
 
   # return a boolean for whether basket join requests (with inheritance) are enabled
   # open / request = true
-  # closed = false 
+  # closed = false
   def allows_join_requests_with_inheritance?
     ['open', 'request'].include?(self.join_policy_with_inheritance)
   end
