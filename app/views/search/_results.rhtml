@@ -9,7 +9,8 @@
   end
 -%>
 
-&nbsp;
+<div class="clear">&nbsp;</div>
+
 <div id="content-tabs">
 <ul class="nav-list">
   <% ZOOM_CLASSES.each do |zoom_class| %>
@@ -28,24 +29,9 @@
 </ul>
 </div><!-- /content-tabs -->
 
+<%= render(:partial => "topics/content_wrapper_start",
+           :locals => { :style_classes => "full-width" }) -%>
 
-<div id="content-wrapper" class="full-width">
-  
-  <% if show_basket_list_naviation_menu? %>
-  <div id="basket-list-column">
-    <div class="secondary-content-section-wrapper basket-list-column">
-      <div id="basket-list-column-content" class="secondary-content-section">
-        <h2>Baskets</h2>
-        <%= render_baskets_as_menu %>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-      </div>
-    </div>
-  </div>
-  <% end %>
-  
-  <div id="main-content-wrapper">
-    <div id="main-content-container">
-      <a name="main-content"></a>
       <h3><%= @title %></h3>
       <div class="prev-next"><%= will_paginate @results %></div>
       <div id="result-show">
@@ -105,9 +91,6 @@
                                 </div>
                         </div>
 
-                </div><!-- /result-container -->
-
                 <div class="cleaner">&nbsp;</div>
-</div>
-</div>
-</div>
+
+<%= render(:partial => "topics/content_wrapper_end" ) %>
