@@ -111,10 +111,10 @@ module ImporterZoom
       if item.class.name == 'Comment'
         commented_on_item = item.commentable
         url += zoom_class_controller(commented_on_item.class.name) + '/show/'
-        if commented_on_item.respond_to?(:private) && commented_on_item.private?
+        if item.should_save_to_private_zoom?
           url += "#{commented_on_item.id.to_s}?private=true"
         else
-          url += "#{commented_on_item.to_param}?"
+          url += "#{commented_on_item.to_param}"
         end
         url += "#comment-#{item.id}"
       else
