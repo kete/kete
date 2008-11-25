@@ -32,6 +32,7 @@
 	width: 22%;
 	float: left;
 	margin-right: 0;
+	margin-bottom: 0;
 }
 
 .notabs #basket-list-column {
@@ -49,10 +50,4 @@ div.basket-list-column {
 #secondary-content-wrapper {
 	width: 25%;
 	margin-left: 0;
-}
-
-#footer {
-	padding: 15px 0px;
-	width: 100%;
-	float: left;
 }

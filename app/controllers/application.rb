@@ -266,9 +266,9 @@ class ApplicationController < ActionController::Base
   end
 
   def show_basket_list_naviation_menu?
-    return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options', 'contact', 'new', 'choose_type'].include?(params[:action])
+    return false unless IS_CONFIGURED
+    return false if params[:controller] == 'baskets' && ['edit', 'appearance', 'homepage_options'].include?(params[:action])
     return false if params[:controller] == 'search'
-    return false if params[:controller] == 'account' && params[:action] == 'login'
     USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE
   end
 
@@ -948,7 +948,9 @@ class ApplicationController < ActionController::Base
   end
 
   def render_full_width_content_wrapper?
-    if params[:controller] == 'baskets' and ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
+    if @displaying_error
+      return false
+    elsif params[:controller] == 'baskets' and ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
       return false
     elsif ['moderate', 'members', 'importers'].include?(params[:controller]) and ['list', 'create', 'new', 'potential_new_members'].include?(params[:action])
       return false
