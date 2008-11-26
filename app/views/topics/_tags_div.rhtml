@@ -6,7 +6,7 @@
     <div id="tags_list">
       <%= tags_for(item) -%>
     </div>
-    <% if permitted_to_edit_current_item? -%>
+    <% if permitted_to_edit_current_item? && params[:action] != 'preview' -%>
       <div id="add_tag_button" style="display:none">
         [<a href="#" onclick="Element.show('add_tag_form_div');Element.hide('add_tag_button');$('<%= item_key -%>_tag_list').activate();">+</a>]
       </div>
