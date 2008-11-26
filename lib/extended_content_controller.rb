@@ -4,6 +4,10 @@ module ExtendedContentController
       # stuff related to flagging and moderation
       klass.send :include, FlaggingController
 
+      # Kieran Pilkington, 2008/11/26
+      # Instantiation of Google Map code for location settings
+      klass.send :include, LocationMapper
+
       # used to determined appropriate extended fields for the model
       # you are operating on
       klass.send :before_filter, :load_content_type,

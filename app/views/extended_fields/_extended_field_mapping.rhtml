@@ -29,6 +29,7 @@
 
   <% else %>
     
+    <% @needing_to_load_google_maps = true if ef.ftype == 'map' -%>
     <%# Print out a control for a single field instance %>
     <%= extended_field_editor(ef, field_value_from_hash(ef, content)) %>
   <% end %>

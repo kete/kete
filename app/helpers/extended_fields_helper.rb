@@ -280,7 +280,10 @@ module ExtendedFieldsHelper
     hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => id_for_extended_field(extended_field) + "_from_autocomplete")
   end
 
-  def extended_field_map_editor(name, value, options)
+  def extended_field_map_editor(name, value, options = {}, show_text_fields = true)
+    map_options = { :style => 'width:300px; height:300px;' }
+    map_options.merge!(options)
+    
     if !param_from_field_name(name).blank?
       @current_coords = param_from_field_name(name)[:coords]
       @current_zoom_lvl = param_from_field_name(name)[:zoom_lvl]
@@ -291,9 +294,10 @@ module ExtendedFieldsHelper
       @current_coords = nil
       @current_zoom_lvl = nil
     end
-    content_tag('div', nil, :id => 'google_map_div', :style => 'width:300px;height:300px;' ) +
-    text_field_tag("#{name}[coords]", @current_coords, options.merge(:id => 'google_map_coords_value')) +
-    text_field_tag("#{name}[zoom_lvl]", @current_zoom_lvl, options.merge(:id => 'google_map_zoom_value', :size => '2'))
+    html = content_tag('div', nil, map_options.merge({ :id => 'google_map_div' }))
+    html += text_field_tag("#{name}[coords]", @current_coords, { :id => 'google_map_coords_value' }) if show_text_fields
+    html += text_field_tag("#{name}[zoom_lvl]", @current_zoom_lvl, { :id => 'google_map_zoom_value', :size => '2' }) if show_text_fields
+    html
   end
   
   # Generates label XHTML

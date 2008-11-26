@@ -628,6 +628,9 @@ module ApplicationHelper
       if value_from_xml_is_choice?(label, value)
         if label =~ /_multiple$/
           value = value.map { |l| l.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq) }.to_sentence
+        elsif ef.ftype == 'map'
+          # Google maps ae classed as multiple choice (latitude/longitude/zoom)
+          value = extended_field_map_editor(label, value, { :style => 'width:220px; height:220px;' }, false)
         else
           value = value.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq)
         end
@@ -638,10 +641,14 @@ module ApplicationHelper
           value = formatted_value_from_xml(value, ef, item)
         end
       end
-      
-      tds = content_tag("td", "#{label.gsub(/_multiple$/, '').humanize}:", :class => "detail-extended-field-label") + \
-            content_tag("td", value)
-            
+
+      if ef.ftype == 'map'
+        tds = content_tag("td", "#{label.humanize}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
+      else
+        tds = content_tag("td", "#{label.gsub(/_multiple$/, '').humanize}:", :class => "detail-extended-field-label") + \
+              content_tag("td", value)
+      end
+  
       html << content_tag("tr", tds) unless value.to_s.blank?
     end
     

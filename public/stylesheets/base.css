@@ -907,3 +907,11 @@ div.extended_field_autocomplete ul li {
 			  list-style-type: none;
 			  cursor: pointer;
 }
+
+
+/*
+ * Google Map CSS
+ */
+div.gmnoprint {
+  white-space: normal !important;
+}
