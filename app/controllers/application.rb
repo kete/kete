@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
 
   # see method definition for details
 
-  before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore ]
+  before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore, :add_tags ]
 
   # we often need baskets for edits
   before_filter :load_array_of_baskets, :only => [ :edit, :update ]
@@ -904,7 +904,7 @@ class ApplicationController < ActionController::Base
     update_comments_basket_for(item, @current_basket)
 
     # finally, sync up our search indexes
-    prepare_and_save_to_zoom(item)
+    prepare_and_save_to_zoom(item) if !item.already_at_blank_version?
   end
 
   def history_url(item)
