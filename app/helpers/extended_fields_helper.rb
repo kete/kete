@@ -78,7 +78,8 @@ module ExtendedFieldsHelper
       ['Text', 'text'],
       ['Text box', 'textarea'],
       ['Choices (auto-completion)', 'autocomplete'],
-      ['Choices (drop-down)', 'choice']
+      ['Choices (drop-down)', 'choice'],
+      ['Google Map', 'map']
     ]
     
     select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
@@ -278,6 +279,22 @@ module ExtendedFieldsHelper
     
     hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => id_for_extended_field(extended_field) + "_from_autocomplete")
   end
+
+  def extended_field_map_editor(name, value, options)
+    if !param_from_field_name(name).blank?
+      @current_coords = param_from_field_name(name)[:coords]
+      @current_zoom_lvl = param_from_field_name(name)[:zoom_lvl]
+    elsif !value.blank?
+      @current_coords = value[1]
+      @current_zoom_lvl = value[0]
+    else
+      @current_coords = nil
+      @current_zoom_lvl = nil
+    end
+    content_tag('div', nil, :id => 'google_map_div', :style => 'width:300px;height:300px;' ) +
+    text_field_tag("#{name}[coords]", @current_coords, options.merge(:id => 'google_map_coords_value')) +
+    text_field_tag("#{name}[zoom_lvl]", @current_zoom_lvl, options.merge(:id => 'google_map_zoom_value', :size => '2'))
+  end
   
   # Generates label XHTML
   def extended_field_label(extended_field, required = false)
@@ -386,5 +403,15 @@ module ExtendedFieldsHelper
     def id_for_extended_field(extended_field)
       name_for_extended_field(extended_field).gsub(/\]/, "").gsub(/\[/, '_')
     end
-  
+
+    def param_from_field_name(field_name)
+      parts = ''
+      field_name.gsub(/\[/, " ").gsub(/\]/, "").split(" ").each { |part| parts += "[:#{part}]" }
+      begin
+        eval("params#{parts}")
+      rescue
+        ''
+      end
+    end
+
 end

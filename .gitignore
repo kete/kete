@@ -3,6 +3,7 @@
 config/database.yml
 config/backgroundrb.yml
 config/mongrel_cluster.yml
+config/google_map_api.yml
 db/schema.rb
 public/blank.html
 public/robots.txt

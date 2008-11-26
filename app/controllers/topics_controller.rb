@@ -30,6 +30,10 @@ class TopicsController < ApplicationController
   # Autocomplete methods for tag adder on item pages
   include TaggingController
 
+  # Kieran Pilkington, 2008/11/26
+  # Instantiation of Google Map code for location settings
+  include LocationMapper
+
   # Get the Privacy Controls helper
   helper :privacy_controls
 
