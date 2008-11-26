@@ -579,8 +579,8 @@ module ApplicationHelper
 
   def tags_for(item)
     html_string = String.new
-    raw_tag_array = item.raw_tag_list.split(', ')
-    tags = item.tags.reject { |tag| !raw_tag_array.include?(tag.name) }
+    raw_tag_array = item.raw_tag_list.split(',').collect { |tag| tag.squish }
+    tags = Tag.all(:conditions => ["tags.name IN (?)", raw_tag_array])
     if tags.size > 0
       html_string = "<p>Tags: "
       tag_count = 1
