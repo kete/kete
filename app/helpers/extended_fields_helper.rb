@@ -281,7 +281,7 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_map_editor(name, value, options = {}, show_text_fields = true)
-    map_options = { :style => 'width:300px; height:300px;' }
+    map_options = { :style => 'width:550px; height:380px;' }
     map_options.merge!(options)
     
     if !param_from_field_name(name).blank?
