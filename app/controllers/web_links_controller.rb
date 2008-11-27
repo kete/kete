@@ -4,12 +4,6 @@ require 'uri'
 class WebLinksController < ApplicationController
   include ExtendedContentController
 
-  # Kieran Pilkington, 2008/10/23
-  # Autocomplete methods for tag adder on item pages
-  include TaggingController
-
-  helper :privacy_controls
-
   def index
     redirect_to_search_for('WebLink')
   end

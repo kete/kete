@@ -555,7 +555,7 @@ module ApplicationHelper
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
               :urlified_name => basket.urlified_name,
-              :privacy_type => get_acceptable_privacy_type(nil, "private") },
+              :privacy_type => get_acceptable_privacy_type_for(nil, '', "private") },
             :class => tag[:css_class]
   end
   alias :link_to_tagged_in_basket :link_to_tagged
