@@ -12,8 +12,12 @@ module ExtendedContentController
       # Instantiation of Google Map code for location settings
       klass.send :include, LocationMapper
 
-      klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket",
-                          :only => [ :new, :create, :edit, :update, :convert]
+      if klass.name == 'CommentsController'
+        klass.send :before_filter, :is_authorized?, :only => [ :new, :create, :edit, :update ]
+      else  
+        klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket",
+                            :only => [ :new, :create, :edit, :update, :convert ]
+      end
 
       klass.send :permit, "site_admin or moderator of :current_basket or admin of :current_basket",
                           :only =>  [ :destroy, :restore, :reject, :make_theme ]
