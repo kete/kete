@@ -579,14 +579,16 @@ module ApplicationHelper
 
   def tags_for(item)
     html_string = String.new
-    if item.tags.size > 0
+    raw_tag_array = item.raw_tag_list.split(',').collect { |tag| tag.squish }
+    tags = Tag.all(:conditions => ["tags.name IN (?)", raw_tag_array])
+    if tags.size > 0
       html_string = "<p>Tags: "
       tag_count = 1
-      item.tags.each do |tag|
-        if item.tags.size != tag_count
-          html_string += link_to_tagged(tag,item.class.name) +", "
+      tags.each do |tag|
+        if tags.size != tag_count
+          html_string += link_to_tagged(tag, item.class.name) + ", "
         else
-          html_string += link_to_tagged(tag,item.class.name)
+          html_string += link_to_tagged(tag, item.class.name)
         end
         tag_count += 1
       end

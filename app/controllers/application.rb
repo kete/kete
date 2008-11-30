@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
 
   # see method definition for details
 
-  before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore ]
+  before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore, :add_tags ]
 
   # we often need baskets for edits
   before_filter :load_array_of_baskets, :only => [ :edit, :update ]
@@ -285,8 +285,8 @@ class ApplicationController < ActionController::Base
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = ['page_keywords', 'page_description', 'details', 'license',
-                 'extended_fields', 'edit', 'tools', 'recent_topics',
+  INDEX_PARTS = ['page_keywords', 'page_description', 'details_[privacy]', 'license_[privacy]',
+                 'extended_fields_[privacy]', 'edit_[privacy]', 'privacy_chooser_[privacy]', 'tools', 'recent_topics',
                  'search', 'extra_side_bar_html', 'archives_[privacy]', 'tags', 'contact']
 
   # the following method is used when clearing show caches
@@ -521,12 +521,13 @@ class ApplicationController < ActionController::Base
   def has_all_fragments?
     #logger.info('Looking for all fragments')
 
+    @privacy_type ||= get_acceptable_privacy_type("public", "private")
+
     # we are going a bit overboard with the params[:id].to_i bit
     # but we need to be consistent
     name = params[:id].blank? ? Hash.new : { :id => params[:id].to_i }
     if params[:controller] != 'index_page'
       relevant_show_parts.each do |part|
-        @privacy_type ||= get_acceptable_privacy_type("public", "private")
         resulting_part = cache_name_for(part, @privacy_type)
         return false unless has_fragment?(name.merge(:part => resulting_part))
       end
@@ -903,7 +904,7 @@ class ApplicationController < ActionController::Base
     update_comments_basket_for(item, @current_basket)
 
     # finally, sync up our search indexes
-    prepare_and_save_to_zoom(item)
+    prepare_and_save_to_zoom(item) if !item.already_at_blank_version?
   end
 
   def history_url(item)
