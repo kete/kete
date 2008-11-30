@@ -4,24 +4,22 @@
            :locals => { :style_classes =>"notabs" }) -%>
 
 <% if !@topic.nil? -%>
-  <% cache({:part => 'details'}) do -%>
+  <% cache_with_privacy(@topic, {:part => 'details'}) do -%>
     <%= @topic.description -%>
     <%= pending_review(@topic) -%>
   <% end -%>
 
-  <% if @at_least_a_moderator -%>
-    <% cache({:part => 'extended_fields'}) do -%>
-      <% extended_fields_html = display_xml_attributes(@topic) -%>
-      <% if !extended_fields_html.blank? -%>
-        <div id="detail-extended">
-          <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-          <%= extended_fields_html -%>
-        </div>
-      <% end -%>
+  <% cache_with_privacy(@topic, {:part => 'extended_fields'}) do -%>
+    <% extended_fields_html = display_xml_attributes(@topic) -%>
+    <% if !extended_fields_html.blank? -%>
+      <div id="detail-extended">
+        <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+        <%= extended_fields_html -%>
+      </div>
     <% end -%>
   <% end -%>
 
-  <% cache({:part => 'tools'}) do -%>
+  <% cache_with_privacy(@topic, {:part => 'tools'}) do -%>
     <div class="detail-tools">
     <% if !@url_to_full_topic.nil? -%>
       <ul><%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li></ul>
@@ -83,7 +81,7 @@
       <div id="moderator-tools" class="secondary-content-section">
         <ul>
           <% if @at_least_a_moderator -%>
-            <% cache({:part => 'edit'}) do -%>
+            <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
               <%= li_with_correct_class(tool_count) + 
                   link_to("Edit", :action => 'edit',
                                   :urlified_name => @topic.basket.urlified_name,
@@ -223,17 +221,15 @@
   <% end -%>
 <% end -%>
 
-<% if !@topic.nil? -%>
-  <% cache({:part => 'license'}) do -%>
-    <% unless @topic.license_metadata.nil? -%>
-      <div class="secondary-content-section-wrapper">
-        <div id="license-box" class="secondary-content-section">
-          <div class="license"><%= @topic.license_metadata %></div>
-          <div style="clear:both;"></div>
-          <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-        </div>
+<% cache_with_privacy(@topic, {:part => 'license'}) do -%>
+  <% unless @topic.nil? || @topic.license_metadata.nil? -%>
+    <div class="secondary-content-section-wrapper">
+      <div id="license-box" class="secondary-content-section">
+        <div class="license"><%= @topic.license_metadata %></div>
+        <div style="clear:both;"></div>
+        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
       </div>
-    <% end -%>
+    </div>
   <% end -%>
 <% end -%>
 
