@@ -15,7 +15,7 @@
       </td>
       <% if @basket_admin -%>
       <td>
-        <%= Role.user_role_for(user, 'member', @current_basket).created_at.to_s(:long) -%>
+        <%= get_user_role_creation_date_for(user, 'member', @current_basket) -%>
       </td>
       <td><%= mail_to h(user.email) -%></td>
       <%= render :partial =>'possible_roles',
