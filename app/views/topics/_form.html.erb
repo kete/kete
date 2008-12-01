@@ -73,7 +73,7 @@ zoom_class = zoom_class_from_controller(controller)
     <% end -%>
 
     <% if params[@item_type]; item_private = params[@item_type][:private] == 'true' ? true : false
-       elsif !@item.private.nil?; item_private = @item.private?
+       elsif @editing && !@item.private.nil?; item_private = @item.private?
        else; item_private = @basket.private_default_with_inheritance?; end -%>
     <% if show_privacy_controls? -%>
       <%= form.radio_button :private,
@@ -108,7 +108,7 @@ zoom_class = zoom_class_from_controller(controller)
 
     <% unless [:topic, :web_link].include?(@item_type) -%>
       <% if params[@item_type]; item_private = params[@item_type][:file_private] == 'true' ? true : false
-         elsif !@item.file_private.nil?; item_private = @item.file_private?
+         elsif @editing && !@item.file_private.nil?; item_private = @item.file_private?
          else; item_private = @basket.file_private_default_with_inheritance?; end -%>
       <% if show_privacy_controls_for?(@item) %>
         <%= form.radio_button :file_private,
