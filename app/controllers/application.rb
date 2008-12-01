@@ -1123,6 +1123,14 @@ class ApplicationController < ActionController::Base
 
   def rescue_action_in_public(exception)
     #logger.info("ERROR: #{exception.to_s}")
+
+    # when an exception occurs, before filters arn't called, so we have to manually call them here
+    # only call the ones absolutely nessesary (required settings, themes, permissions etc)
+    load_standard_baskets
+    load_theme_related
+    redirect_if_current_basket_isnt_approved_for_public_viewing
+    update_basket_permissions_hash
+
     case exception
     when ActionController::UnknownAction,
          ActiveRecord::RecordNotFound,
@@ -1131,6 +1139,8 @@ class ApplicationController < ActionController::Base
       rescue_404
     when BackgrounDRb::NoServerAvailable then
       rescue_500('backgroundrb_connection_failed')
+    when ActionController::InvalidAuthenticityToken then
+      rescue_500('invalid_authenticity_token')
     else
       if exception.to_s.match(/Connect\ failed/)
         rescue_500('zebra_connection_failed')
