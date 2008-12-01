@@ -15,6 +15,9 @@ module ExtendedFieldsControllerHelpers
                                                              :layout => false,
                                                              :locals => { :item_key => item_key})
       logger.debug("after field_to_xml")
+
+      convert_xml_header_to_html
+
       return params
     end
 
@@ -41,6 +44,9 @@ module ExtendedFieldsControllerHelpers
         end
       end
       logger.debug("end of replacement")
+
+      convert_xml_header_to_html
+
       return replacement_hash
     end
 
@@ -58,7 +64,20 @@ module ExtendedFieldsControllerHelpers
         extended_fields_update_param_for_item(:fields => @fields, :item_key => item_key)
       end
 
+      convert_xml_header_to_html
+
       return extended_fields_replacement_params_hash(:item_key => item_key, :item_class => item_class, :extra_fields => extra_fields )
+    end
+
+    private
+
+    def convert_xml_header_to_html
+      # Kieran Pilkington, 2008/11/19
+      # The browser is sending XML when the above methods are called, and while most browsers know how to handle it,
+      # Internet Explorer outputs it as literal XML, instead of rendering it as a site, so to fix
+      # this, we have to send the text/html header instead of the application/xml is normally sends
+      # It also mucks up javascript, and we can't have that happening
+      response.headers["Content-Type"] = "text/html; charset=utf-8"
     end
 
   end

@@ -21,11 +21,13 @@ zoom_class = zoom_class_from_controller(controller)
   <% @title, @url, @submit_text = "Editing #{@item_name}", { :urlified_name => @basket.urlified_name,
                                                              :controller => controller,
                                                              :action => 'update',
-                                                             :id => @item }, 'Update' -%>
+                                                             :id => @item,
+                                                             :private => params[:private] }, 'Update' -%>
 <% else -%>
   <% @title, @url, @submit_text = "New #{@item_name}", { :urlified_name => @basket.urlified_name,
                                                          :controller => controller,
-                                                         :action => 'create' }, 'Create' -%>
+                                                         :action => 'create',
+                                                         :private => params[:private] }, 'Create' -%>
 <% end -%>
 
 <h2><%= @title -%></h2>
