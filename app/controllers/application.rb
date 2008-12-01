@@ -378,8 +378,7 @@ class ApplicationController < ActionController::Base
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
       item = item_from_controller_and_id(false)
-      item.private_version! if item.respond_to?(:private) && item.latest_version_is_private?
-
+      public_or_private_version_of(item)
       expire_show_caches_for(item)
     end
   end
@@ -390,6 +389,8 @@ class ApplicationController < ActionController::Base
     controller = zoom_class_controller(item_class)
     return unless ZOOM_CLASSES.include?(item_class)
 
+    @privacy_type ||= (item.private? ? "private" : "public")
+
     all_show_parts.each do |part|
 
       # James - 2008-07-01
@@ -397,8 +398,6 @@ class ApplicationController < ActionController::Base
       # In these cases, replace this with the actual item's current privacy.
       # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where
       # the current item is private.
-
-      @privacy_type ||= (item.private? ? "private" : "public")
       resulting_part = cache_name_for(part, @privacy_type)
 
       # we have to do this for each distinct title the item previously had
@@ -409,7 +408,7 @@ class ApplicationController < ActionController::Base
     # images have an additional cache
     # and topics may also have a basket index page cached
     if controller == 'images'
-      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => ('caption_'+(item.private? ? "private" : "public")) })
+      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => "caption_#{@privacy_type}" })
     elsif controller == 'topics'
       if item.index_for_basket.is_a?(Basket)
         # slight overkill, but most parts
