@@ -51,21 +51,14 @@ module GoogleMap
       # second, if we're editing but not submitted yet, we use the items values
       # lastly, if it's a brand new item (no values, not submitted form), we pull default coords from yml config
 
-      @current_coords = '0,0'
-      @current_zoom_lvl = '1'
+      @current_coords = ''
+      @current_zoom_lvl = ''
       if !param_from_field_name(name).blank?
         @current_coords = param_from_field_name(name)[:coords]
         @current_zoom_lvl = param_from_field_name(name)[:zoom_lvl]
       elsif !value.blank?
         @current_coords = value[1]
         @current_zoom_lvl = value[0]
-      else
-        @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-        if File.exists?(@gma_config_path)
-          @gma_config = YAML.load(IO.read(@gma_config_path))
-          @current_coords = "#{@gma_config[:google_map_api][:default_latitude]},#{@gma_config[:google_map_api][:default_longitude]}"
-          @current_zoom_lvl = "#{@gma_config[:google_map_api][:default_zoom_lvl]}"
-        end
       end
 
       safe_name = name.gsub('[', '_').gsub(']', '')
@@ -79,7 +72,7 @@ module GoogleMap
       @google_maps_list ||= Array.new             
       @google_maps_list << map_data
 
-      html = content_tag('div', nil, map_options.merge({ :id => map_data[:map_id]  }))
+      html = content_tag('div', nil, map_options.merge({ :id => map_data[:map_id] }))
       if show_text_fields
         html += text_field_tag("#{name}[coords]",
                                @current_coords,
@@ -124,7 +117,14 @@ module GoogleMap
       unless @google_maps_list.blank?
         @google_maps_initializers = String.new
         @google_maps_list.each do |google_map|
-          @google_maps_initializers += "initialize_google_map('#{google_map[:map_id]}', #{google_map[:latitude]}, #{google_map[:longitude]}, #{google_map[:zoom_lvl]}, '#{google_map[:coords_field]}', '#{google_map[:zoom_lvl_field]}');\n"
+          @google_maps_initializers += "initialize_google_map("
+          @google_maps_initializers += "'#{google_map[:map_id]}'"
+          @google_maps_initializers += (google_map[:latitude].blank? ? ", ''" : ", #{google_map[:latitude]}")
+          @google_maps_initializers += (google_map[:longitude].blank? ? ", ''" : ", #{google_map[:longitude]}")
+          @google_maps_initializers += (google_map[:zoom_lvl].blank? ? ", ''" : ", #{google_map[:zoom_lvl]}")
+          @google_maps_initializers += ", '#{google_map[:coords_field]}'"
+          @google_maps_initializers += ", '#{google_map[:zoom_lvl_field]}'"
+          @google_maps_initializers += ");\n"
         end
         @google_maps_initializers
       else
@@ -135,12 +135,20 @@ module GoogleMap
     def load_google_map_api
       if @using_google_maps
         # Google maps cannot run without a configuration so make sure, if they're using Google Maps, that they configure it.
-        @gma_config_path ||= File.join(RAILS_ROOT, 'config/google_map_api.yml')
+        @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
         raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)." unless File.exists?(@gma_config_path)
-        @gma_config ||= YAML.load(IO.read(@gma_config_path))
+        @gma_config = YAML.load(IO.read(@gma_config_path))
 
         # Prepare the Google Maps needing to load
         @google_maps_initializers = google_map_initializers
+
+        unless @gma_config[:google_map_api][:default_latitude].blank? || @gma_config[:google_map_api][:default_longitude].blank?
+          @default_latitude = @gma_config[:google_map_api][:default_latitude]
+          @default_longitude = @gma_config[:google_map_api][:default_longitude]
+        end
+        unless @gma_config[:google_map_api][:default_zoom_lvl].blank?
+          @default_zoom_lvl = @gma_config[:google_map_api][:default_zoom_lvl]
+        end
 
         # This works, but rails tries to add a .js on the end, which invalidated the api key, so we add the format= to hackishly fix this
         html = javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}&amp;format=") + "\n"
@@ -162,6 +170,22 @@ module GoogleMap
             // store the latlng/zoom text field id's on the map object for use later
             map.latlng_text_field = latlng_text_field
             map.zoom_text_field = zoom_text_field
+            // If these values are blank, make one last attempt to add values to them
+            if (latitude == '') {
+              if (google.loader.ClientLocation.latitude) { latitude = google.loader.ClientLocation.latitude; }
+              else { latitude = #{@default_latitude}; }
+            }
+            if (longitude == '') {
+              if (google.loader.ClientLocation.longitude) { longitude = google.loader.ClientLocation.longitude; }
+              else { longitude = #{@default_longitude}; }
+            }
+            if (zoom_lvl == '') { zoom_lvl = #{@default_zoom_lvl}; }
+            // If the values arn't populated by now, something went wrong.
+            if (latitude == '' || longitude == '' || zoom_lvl == '') {
+              alert('ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!'); return;
+            }
+            if ($(map.latlng_text_field).value == '') { $(map.latlng_text_field).value = latitude + ',' + longitude; }
+            if ($(map.zoom_text_field).value == '') { $(map.zoom_text_field).value = zoom_lvl; }
             // center the map on the default latitude, longitude and zoom level
             // (comes from either params, the item being edited, or config)
             map.setCenter(new google.maps.LatLng(latitude, longitude), zoom_lvl);
