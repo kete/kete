@@ -10,6 +10,8 @@ module ExtendedContent
     
     include ExtendedContentHelpers
     
+    include GoogleMap::ExtendedContent
+
     def xml(force_new = false)
       if force_new
         @builder_xml = Builder::XmlMarkup.new

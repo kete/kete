@@ -152,7 +152,6 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
-    <% @needing_to_load_google_maps = false -%>
     <% if @item_type == :topic -%>
       <% @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
                                                      TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors -%>
@@ -176,7 +175,6 @@ zoom_class = zoom_class_from_controller(controller)
                                 :item_key => @item_type.to_s }) -%>
       <% end %>
     <% end -%>
-    <% @using_google_maps = false unless @needing_to_load_google_maps -%>
 
     <% if @editing -%>
       <%= form.text_field :version_comment, { :tabindex => '1',

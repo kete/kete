@@ -1,5 +1,7 @@
 module ExtendedFieldsHelper
   
+  include GoogleMap::ExtendedFieldsHelper
+
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
   
@@ -279,26 +281,6 @@ module ExtendedFieldsHelper
     
     hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => id_for_extended_field(extended_field) + "_from_autocomplete")
   end
-
-  def extended_field_map_editor(name, value, options = {}, show_text_fields = true)
-    map_options = { :style => 'width:550px; height:380px;' }
-    map_options.merge!(options)
-    
-    if !param_from_field_name(name).blank?
-      @current_coords = param_from_field_name(name)[:coords]
-      @current_zoom_lvl = param_from_field_name(name)[:zoom_lvl]
-    elsif !value.blank?
-      @current_coords = value[1]
-      @current_zoom_lvl = value[0]
-    else
-      @current_coords = nil
-      @current_zoom_lvl = nil
-    end
-    html = content_tag('div', nil, map_options.merge({ :id => 'google_map_div' }))
-    html += text_field_tag("#{name}[coords]", @current_coords, { :id => 'google_map_coords_value' }) if show_text_fields
-    html += text_field_tag("#{name}[zoom_lvl]", @current_zoom_lvl, { :id => 'google_map_zoom_value', :size => '2' }) if show_text_fields
-    html
-  end
   
   # Generates label XHTML
   def extended_field_label(extended_field, required = false)
@@ -406,16 +388,6 @@ module ExtendedFieldsHelper
     
     def id_for_extended_field(extended_field)
       name_for_extended_field(extended_field).gsub(/\]/, "").gsub(/\[/, '_')
-    end
-
-    def param_from_field_name(field_name)
-      parts = ''
-      field_name.gsub(/\[/, " ").gsub(/\]/, "").split(" ").each { |part| parts += "[:#{part}]" }
-      begin
-        eval("params#{parts}")
-      rescue
-        ''
-      end
     end
 
 end
