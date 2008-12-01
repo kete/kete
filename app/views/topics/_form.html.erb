@@ -70,10 +70,9 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
-    <% item_private = ((params[@item_type] && params[@item_type][:private] == 'true') ||
-                       (!@item.private.nil? && @item.private?) ||
-                       @basket.private_default_with_inheritance? ||
-                       false) -%>
+    <% if params[@item_type]; item_private = params[@item_type][:private] == 'true' ? true : false
+       elsif !@item.private.nil?; item_private = @item.private?
+       else; item_private = @basket.private_default_with_inheritance?; end -%>
     <% if show_privacy_controls? -%>
       <%= form.radio_button :private,
                             [ ['Public', false, { :label_for => "#{@item_type.to_s}_private_false",
@@ -106,10 +105,9 @@ zoom_class = zoom_class_from_controller(controller)
     <% end -%>
 
     <% unless [:topic, :web_link].include?(@item_type) -%>
-      <% file_private = ((params[@item_type] && params[@item_type][:file_private] == 'true') ||
-                         (!@item.file_private.nil? && @item.file_private?) ||
-                         @basket.file_private_default_with_inheritance? ||
-                         false) -%>
+      <% if params[@item_type]; item_private = params[@item_type][:file_private] == 'true' ? true : false
+         elsif !@item.file_private.nil?; item_private = @item.file_private?
+         else; item_private = @basket.file_private_default_with_inheritance?; end -%>
       <% if show_privacy_controls_for?(@item) %>
         <%= form.radio_button :file_private,
                               [ ['Can be downloaded by everyone', false,
