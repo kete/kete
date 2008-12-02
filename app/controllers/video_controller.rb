@@ -75,6 +75,7 @@ class VideoController < ApplicationController
   end
 
 <<<<<<< HEAD:app/controllers/video_controller.rb
+<<<<<<< HEAD:app/controllers/video_controller.rb
   private
 
     def load_content_type
@@ -83,4 +84,6 @@ class VideoController < ApplicationController
 
 =======
 >>>>>>> master:app/controllers/video_controller.rb
+=======
+>>>>>>> origin/enhancement_lh97_choices_for_extended_fields:app/controllers/video_controller.rb
 end

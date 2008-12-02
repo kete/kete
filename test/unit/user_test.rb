@@ -148,18 +148,25 @@ class UserTest < Test::Unit::TestCase
       User.create(@new_model.merge(options))
     end
 <<<<<<< HEAD:test/unit/user_test.rb
+<<<<<<< HEAD:test/unit/user_test.rb
     
+=======
+
+>>>>>>> origin/enhancement_lh97_choices_for_extended_fields:test/unit/user_test.rb
     def new_model_attributes
       @@incremental_id ||= 0
       @@incremental_id = @@incremental_id + 1
       @new_model.merge(:login => 'test_login_' + @@incremental_id.to_s)
-=======
+    end
 
     def new_image_with_creator(user)
       @still_image = StillImage.create(:title => 'test item',
                                        :basket_id => Basket.find(:first))
       @still_image.creator = user
       @still_image.save
+<<<<<<< HEAD:test/unit/user_test.rb
 >>>>>>> master:test/unit/user_test.rb
+=======
+>>>>>>> origin/enhancement_lh97_choices_for_extended_fields:test/unit/user_test.rb
     end
 end

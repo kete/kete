@@ -1,6 +1,10 @@
 class ExtendedFieldsController < ApplicationController
+  
+  helper ExtendedFieldsHelper
+  
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index]
+  before_filter :login_required, :only => [:list, :index, :add_field_to_multiples]
+
   before_filter :set_page_title
 
   permit "site_admin or admin of :site or tech_admin of :site"
@@ -77,12 +81,10 @@ class ExtendedFieldsController < ApplicationController
       end
     end
   end
-  
+
   private
 
-    def set_page_title
-      @title = 'Extended Fields'
-    end
-  
-  
+  def set_page_title
+    @title = 'Extended Fields'
+  end
 end
