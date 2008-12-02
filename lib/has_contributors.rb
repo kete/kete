@@ -37,6 +37,7 @@ module HasContributors
     # method definitions
     def add_as_contributor(user, version = nil)
       user.version = version.nil? ? self.version : version
+      logger.debug("Adding contributor to version #{user.version} of item #{self.id}")
       self.contributors << user
     end
 
@@ -53,7 +54,12 @@ module HasContributors
       if version == 1
         submitter = self.creator
       else
-        submitter = self.contributions.find_by_version(version).user
+        contribution = self.contributions.find_by_version(version)
+        begin
+          submitter = contribution.user
+        rescue
+          submitter = User.new({:login => 'unknown'}) # a hack, but it'll stop 500 errors an display what it can
+        end
       end
       submitter
     end

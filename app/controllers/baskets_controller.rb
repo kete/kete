@@ -279,17 +279,6 @@ class BasketsController < ApplicationController
     end
   end
 
-  def link_index_topic
-    @topic = Topic.find(params[:topic])
-    @successful = Basket.find(params[:index_for_basket]).update_index_topic(@topic)
-    if @successful
-      # this action saves a new version of the topic
-      # add this as a contribution
-      @topic.add_as_contributor(current_user)
-      render :text => 'Basket homepage was successfully chosen.  Please close this window. Clicking on another topic will replace this topic with the new topic clicked.'
-    end
-  end
-
   def appearance
     appropriate_basket
   end
