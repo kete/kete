@@ -261,7 +261,9 @@ class SearchController < ApplicationController
         end
       end
     end
-    @results = WillPaginate::Collection.new(@current_page, @number_per_page, from_result_set.size).concat(@results) unless params[:action] == 'rss'
+    @results = WillPaginate::Collection.new(@current_page,
+                                            @number_per_page,
+                                            from_result_set.size).concat(@results) unless params[:action] == 'rss'
   end
 
   def populate_result_sets_for(zoom_class)
@@ -278,7 +280,7 @@ class SearchController < ApplicationController
 
     # limit baskets searched within
     unless searching_for_related_items?
-      if @current_basket != @site_basket
+      if @current_basket != @site_basket || !@topics_outside_of_this_basket
         @search.pqf_query.within(@current_basket.urlified_name)
       elsif is_a_private_search?
         @search.pqf_query.within(@authorised_basket_names)
@@ -606,7 +608,8 @@ class SearchController < ApplicationController
 
             if records_failed > 0
               failed_message = "<p>#{records_failed} records failed</p>"
-              failed_message += "<p>These maybe private or pending moderation records, depending on the case.  See log/backgroundrb... for details.</p>"
+              failed_message += "<p>These maybe private or pending moderation records, depending on the case.
+                                  See log/backgroundrb... for details.</p>"
               page.replace_html 'report_records_failed', failed_message
             end
 
@@ -692,8 +695,8 @@ class SearchController < ApplicationController
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_index
     @current_basket = Basket.find(params[:current_basket_id])
-    @site_basket = 0 # leaving this default (unset) makes all baskets topics show up when in site basket
-                     # comment out that assignment if you wish to allow topics from other baskets to show up in the site basket homepage selection
+    @topics_outside_of_this_basket = false  # turn this to true if you want to allow the Site basket
+                                            # homepage to be an About basket topic for example
     @current_homepage = @current_basket.index_topic
 
     case params[:function]
@@ -709,10 +712,33 @@ class SearchController < ApplicationController
         end
       when "change"
         @new_homepage_topic = Topic.find(params[:homepage_topic_id])
-        @success = (@current_homepage != @new_homepage_topic) ? @current_basket.update_index_topic(@new_homepage_topic) : true
-        if @success
+        @homepage_different = (@current_homepage != @new_homepage_topic)
+        # if the homepage isn't different, don't do anything or it mucks up versions, just return true so it passes
+        if @homepage_different
+          # update the homepage topic. Unfortunatly, the method created new topic versions for both the old and new homepage topics
+          # and because the basket doesn't have flagging controls, we can't save it without the version
+          # so instead, we have to make sure we assign contributors below, one for the old homepage topic, and one for the new
+          # homepage topic, which is taken care of in the method after_successful_zoom_item_update
+          @current_basket.update_index_topic(@new_homepage_topic)
+          unless @current_homepage.nil?
+            # if there was a previous homepage topic, it'll be given a new version by update_index_topic
+            # so we need to add a contributor to prevent 500 errors on the history page of the topic
+            # we also have to pass in the version + 1, because we are working from an old copy of the previous homepage topic
+            # and the version is out of date by this stage, and calling reload on it will load the new homepage topic, not the old
+            @current_homepage.add_as_contributor(current_user, (@current_homepage.version + 1))
+          end
+          # this adds a contributor to the new homepage topic version, and clears the relevant show caches.
+          # clearing of the basket homepage index page caches are taken care of in a before filter in application.rb
+          after_successful_zoom_item_update(@new_homepage_topic)
+          @successful = true
+        else
+          @successful = true
+        end
+        if @successful
           flash[:notice] = "Homepage topic changed successfully"
-          @current_homepage = @current_basket.index_topic
+          # we assign the current_homepage instance var to the new homepage,
+          # because its used in the template we populate the search fields and links
+          @current_homepage = @new_homepage_topic
         else
           flash[:error] = "Problem changing Homepage topic"
         end
@@ -748,11 +774,11 @@ class SearchController < ApplicationController
       @next_action = "link"
 
       # Find resulting items through deleted relationships
-      @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@current_topic,
-                                                                                         related_class_name).collect { |r| related_class.find(r.related_item_id) }
+      @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@current_topic, related_class_name) \
+                                             .collect { |r| related_class.find(r.related_item_id) }
       if related_class_is_topic
-        @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@current_topic,
-                                                                                                   'Topic').collect { |r| Topic.find(r.topic_id) }
+        @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@current_topic, 'Topic') \
+                                                .collect { |r| Topic.find(r.topic_id) }
       end
     when "add"
       @verb = "Add"
@@ -845,7 +871,10 @@ class SearchController < ApplicationController
   def write_rss_cache
     # start of caching code, work in progress
     request_string = request.request_uri
-    if request_string.split("?")[1].nil? and request_string.scan("contributed_by").blank? and request_string.scan("related_to").blank? and request_string.scan("tagged").blank?
+    if request_string.split("?")[1].nil? &&
+       request_string.scan("contributed_by").blank? &&
+       request_string.scan("related_to").blank? &&
+       request_string.scan("tagged").blank?
       # mimic page caching
       # by writing the file to fs under public
       cache_page(response.body,params)
