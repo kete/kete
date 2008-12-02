@@ -2,7 +2,7 @@ module BasketsHelper
   def link_to_link_index_topic(options={})
     link_to options[:phrase], {
       :controller => 'search',
-      :action => :find_index,
+      :action => 'find_index',
       :current_basket_id => options[:current_basket_id],
       :current_homepage_id => options[:current_homepage_id] },
     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100'], :tabindex => '1'

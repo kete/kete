@@ -596,6 +596,15 @@ module ApplicationHelper
     end
   end
 
+<<<<<<< HEAD:app/helpers/application_helper.rb
+  def tags_input_field(form,label_for)
+    "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
+                #{form.text_field :tag_list, :tabindex => '1'}</div>"
+  end
+  
+  # 
+=======
+>>>>>>> origin/enhancement_lh97_choices_for_extended_fields:app/helpers/application_helper.rb
   def limit_search_to_choice_control
     options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
       memo + option_for_choice_control(choice, :level => 0)
@@ -617,7 +626,11 @@ module ApplicationHelper
     array = [[("&nbsp;&nbsp;"*level) + choice.label, choice.value]]
     choice.children.reject { |c| c.extended_fields.empty? }.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
   end
+<<<<<<< HEAD:app/helpers/application_helper.rb
+  
+=======
 
+>>>>>>> origin/enhancement_lh97_choices_for_extended_fields:app/helpers/application_helper.rb
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item)
     raq = " &raquo; "
