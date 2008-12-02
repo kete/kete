@@ -375,7 +375,7 @@ module ExtendedFieldsHelper
   private
   
     def base_name_for_extended_field(extended_field)
-      "#{@item_type_for_params}[extended_content][#{qualified_name_for_field(extended_field)}]"
+      "#{@item_type_for_params}[extended_content_values][#{qualified_name_for_field(extended_field)}]"
     end
     
     def name_for_extended_field(extended_field)
