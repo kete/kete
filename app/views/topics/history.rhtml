@@ -50,7 +50,7 @@
               <%= private_condition ? "<strong>Private</strong>" : "Public" -%>
             </td>
             <td>
-              <% if version.version == 1 or version.version.nil? -%>
+              <% if version.version.nil? || version.version == 1 -%>
               <% @item.creators.each do |creator| -%>
               <%= link_to_contributions_of(creator, @item.class.name) %>
               <% end -%>

@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
                                             :make_theme,
                                             :find_related,
                                             :link_related,
-                                            :link_index_topic,
+                                            :find_index,
                                             :flag_form,
                                             :flag_version,
                                             :restore,
@@ -102,7 +102,7 @@ class ApplicationController < ActionController::Base
   after_filter :expire_basket_index_caches, :only => [ :create,
                                                        :update,
                                                        :destroy,
-                                                       :add_index_topic, :link_index_topic,
+                                                       :add_index_topic, :find_index,
                                                        :add_tags ]
 
   helper :slideshows
@@ -326,15 +326,10 @@ class ApplicationController < ActionController::Base
     # we always expire the site basket index page, too
     # since items added, edited, or destroyed from any basket
     # show up in the contents list, as well as most recent topics, etc.
-    baskets_to_expire = [@current_basket, @site_basket]
     INDEX_PARTS.each do |part|
-      if part.include?('_[privacy]')
-        public_part = cache_name_for(part, 'public')
-        private_part = cache_name_for(part, 'private')
-        [public_part, private_part].each do |part|
-          expire_basket_index_caches_for(part)
-        end
-      else
+      public_part = cache_name_for(part, 'public')
+      private_part = cache_name_for(part, 'private')
+      [public_part, private_part].each do |part|
         expire_basket_index_caches_for(part)
       end
     end
@@ -897,7 +892,7 @@ class ApplicationController < ActionController::Base
     # TODO: allow current_user whom is at least moderator to pick another user
     # as contributor
     # uses virtual attr as hack to pass version to << method
-    item.add_as_contributor(current_user, item.max_version)
+    item.add_as_contributor(current_user)
 
     # if the basket has been changed, make sure comments are moved, too
     update_comments_basket_for(item, @current_basket)
