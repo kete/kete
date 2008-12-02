@@ -1,3 +1,6 @@
+# Controls needed for Gravatar support throughout the site
+require 'avatar/view/action_view_support'
+
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   include ExtendedFieldsHelpers
@@ -7,6 +10,25 @@ module ApplicationHelper
   include OaiDcHelpers
 
   include ZoomHelpers
+
+  # Controls needed for Gravatar support throughout the site
+  include Avatar::View::ActionViewSupport
+  def avatar_for(user)
+    image_dimension = IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i
+    default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
+
+    if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
+      return image_tag(user.portraits.first.thumbnail_file.public_filename, default_options)
+    elsif ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT
+      return image_tag('no-avatar.png', default_options)
+    end
+
+    if ENABLE_GRAVATAR_SUPPORT
+      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, default_options)
+    end
+
+    return ''
+  end
 
   def page_keywords
     return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
@@ -26,7 +48,7 @@ module ApplicationHelper
     except_certain_baskets = @standard_baskets
     except_certain_baskets += [@current_basket] if @current_basket != @site_basket
 
-    except_certain_baskets_args = { :conditions => ["id not in (?)", except_certain_baskets] }
+    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", except_certain_baskets] }
 
     baskets_limit = 2
 
@@ -101,33 +123,52 @@ module ApplicationHelper
     return unless current_user_can_see_add_links?
 
     html = '<li>'
-
-    pre_text = String.new
-    site_link_text = String.new
-    current_basket_html = String.new
-    if @current_basket != @site_basket
-      pre_text = 'Add item to '
-      site_link_text = @site_basket.name
-      current_basket_html = " or " + link_to_unless_current( @current_basket.name,
-                                                            {:controller => 'baskets',
-                                                            :action => 'choose_type',
-                                                            :urlified_name => @current_basket.urlified_name},
-                                                            {:tabindex => '2'})
-    else
-      site_link_text = 'Add item'
-    end
-
-    html += pre_text + link_to_unless_current( site_link_text,
-                                               {:controller => 'baskets',
-                                               :action => 'choose_type',
-                                               :urlified_name => @site_basket.urlified_name},
-                                               {:tabindex => '2'}) + current_basket_html + '</li>'
+    html += link_to_unless_current('Add Item',
+                                   { :controller => 'baskets',
+                                     :action => 'choose_type',
+                                     :urlified_name => @current_basket.urlified_name },
+                                   { :tabindex => '2' })
+    html += '</li>'
   end
 
+  def users_baskets_list(user=current_user, show_roles=false)
+    # if the user is the current user, use the basket_access_hash instead of fetching them again
+    @baskets = (user == current_user) ? @basket_access_hash : user.basket_permissions
+
+    row1 = 'user_basket_list_row1'
+    row2 = 'user_basket_list_row2'
+    css_class = row1
+
+    html = String.new
+    @baskets.each do |basket_name, role|
+      basket = Basket.find_by_urlified_name(basket_name.to_s)
+      next unless user == current_user || current_user_can_see_memberlist_for?(basket)
+      link = link_to(basket.name, basket_index_url(:urlified_name => basket_name))
+      link += " - #{role[:role_name].humanize}" if show_roles
+      html += content_tag('li', link, :class => css_class)
+      css_class = css_class == row1 ? row2 : row1
+    end
+    html
+  end
+
+  def header_add_basket_link
+    return unless current_user_can_add_or_request_basket?
+
+    if basket_policy_request_with_permissions?
+      basket_text = 'Request basket'
+    else
+      basket_text = 'Add basket'
+    end
+
+    link_to_unless_current( basket_text,
+                            :controller => 'baskets',
+                            :action => 'new',
+                            :urlified_name => @site_basket.urlified_name)
+  end
 
   def render_baskets_as_menu
     html = '<ul id="sub-menu" class="menu basket-list-menu">'
-    except_certain_baskets_args = { :conditions => ["id not in (?)", @standard_baskets] }
+    except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", @standard_baskets] }
 
     basket_count = 0
     Basket.find(:all, except_certain_baskets_args).each do |basket|
@@ -241,12 +282,92 @@ module ApplicationHelper
     end
   end
 
-  def link_to_cancel
-    if session[:return_to].blank?
-      return link_to("Cancel", :action => 'list', :tabindex => '1')
+  def link_to_members_of(basket, viewable_text="Members", unavailable_text="")
+    if current_user_can_see_memberlist_for?(basket)
+      content_tag("li", link_to(viewable_text,
+                                :urlified_name => basket.urlified_name,
+                                :controller => 'members',
+                                :action => 'list'),
+                        :class => 'first' )
+    elsif !unavailable_text.blank?
+      content_tag("li", unavailable_text,
+                        :class => 'first')
     else
-      return link_to("Cancel", url_for(session[:return_to]), :tabindex => '1')
+      ''
     end
+  end
+
+  def link_to_membership_request_of(basket, options={})
+    return '' unless logged_in?
+
+    options = { :join_text => "Join",
+                :request_text => "Request membership",
+                :closed_text => "",
+                :as_list_element => true,
+                :plus_divider => "",
+                :pending_text => "Membership pending",
+                :rejected_text => "Membership rejected",
+                :current_role => "You're a |role|.",
+                :leave_text => "Leave" }.merge(options)
+
+    location_hash = { :urlified_name => basket.urlified_name,
+                      :controller => 'members',
+                      :action => 'join' }
+
+    html = String.new
+    html += "<li>" if options[:as_list_element]
+
+    if @basket_access_hash[basket.urlified_name.to_sym].blank?
+      case basket.join_policy_with_inheritance
+      when 'open'
+        html += link_to(options[:join_text], location_hash)
+      when 'request'
+        html += link_to(options[:request_text], location_hash)
+      else
+        return '' if options[:closed_text].blank?
+        html += options[:closed_text]
+      end
+    else
+      role = @basket_access_hash[basket.urlified_name.to_sym][:role_name].humanize
+      case role
+      when "Membership requested"
+        html += options[:pending_text]
+      when "Membership rejected"
+        html += options[:rejected_text]
+      else
+        html += options[:current_role].gsub('|role|', role)
+        # no one can remove themselves from the site basket
+        # and there needs to be at least one basket admin remaining if the user removed him/herself
+        if basket != @site_basket && @current_basket.more_than_one_basket_admin?
+          html += " " + link_to(options[:leave_text], location_hash.merge({:action => 'remove', :id => current_user}))
+        end
+      end
+    end
+    html += "</li>" if options[:as_list_element]
+    html += options[:plus_divider]
+  end
+
+  def link_to_basket_contact_for(basket, include_name = true)
+    link_text = 'Contact'
+    link_text += ' ' + basket.name if include_name
+    link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
+  end
+
+  def link_to_actions_available_for(basket)
+    html = ''
+    html += link_to_membership_request_of(basket)
+    html += link_to_members_of(basket)
+    html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>"
+  end
+
+  def link_to_cancel(from_form = "")
+    html = "<div id=\"cancel#{from_form}\" style=\"display:inline\">"
+    if session[:return_to].blank?
+      html += link_to("Cancel", :action => 'list', :tabindex => '1')
+    else
+      html += link_to("Cancel", url_for(session[:return_to]), :tabindex => '1')
+    end
+    html += "</div>"
   end
 
   def link_to_item(item)
@@ -425,25 +546,49 @@ module ApplicationHelper
   end
 
   # tag related helpers
-  def link_to_tagged(tag,zoom_class)
-    link_to(h(tag.name), { :controller => 'search', :action => 'all',
-              :tag => tag,
+  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
+    zoom_class = zoom_class || tag[:zoom_class]
+    link_to h(tag[:name]),
+            { :controller => 'search',
+              :action => 'all',
+              :tag => tag[:id],
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
-              :urlified_name => @site_basket.urlified_name,
-              :privacy_type => get_acceptable_privacy_type(nil, "private") })
+              :urlified_name => basket.urlified_name,
+              :privacy_type => get_acceptable_privacy_type(nil, "private") },
+            :class => tag[:css_class]
+  end
+  alias :link_to_tagged_in_basket :link_to_tagged
+
+  def tag_cloud(tags, classes)
+    logger.info("using this")
+    max, min = 0, 0
+    tags.each { |t|
+      t_count = t[:taggings_count].to_i
+      max = t_count if t_count > max
+      min = t_count if t_count < min
+    }
+
+    divisor = ((max - min) / classes.size) + 1
+
+    tags.each { |t|
+      t_count = t[:taggings_count].to_i
+      yield t[:id], t[:name], classes[(t_count - min) / divisor]
+    }
   end
 
   def tags_for(item)
     html_string = String.new
-    if item.tags.size > 0
+    raw_tag_array = item.raw_tag_list.split(',').collect { |tag| tag.squish }
+    tags = Tag.all(:conditions => ["tags.name IN (?)", raw_tag_array])
+    if tags.size > 0
       html_string = "<p>Tags: "
       tag_count = 1
-      item.tags.each do |tag|
-        if item.tags.size != tag_count
-          html_string += link_to_tagged(tag,item.class.name) +", "
+      tags.each do |tag|
+        if tags.size != tag_count
+          html_string += link_to_tagged(tag, item.class.name) + ", "
         else
-          html_string += link_to_tagged(tag,item.class.name)
+          html_string += link_to_tagged(tag, item.class.name)
         end
         tag_count += 1
       end
@@ -622,8 +767,10 @@ module ApplicationHelper
         #html_string += "<div class=\"comment-wrapper\">""<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
         #html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5><div class=\"comment-content\">\n"
 
-
         html_string += "<div class=\"comment-content\">"
+
+        html_string += "<div class=\"avatar\">#{avatar_for(comment.creators.first)}</div>"
+        html_string += "<div class=\"comment-content-inner\">"
 
         if !comment.description.blank?
           html_string += "#{comment.description}\n"
@@ -634,6 +781,8 @@ module ApplicationHelper
           html_string += "#{tags_for_comment}\n"
         end
         html_string += pending_review(comment) + "\n"
+
+        html_string += "</div>"
 
         html_string += "<div class=\"comment-tools\">\n"
         html_string += flagging_links_for(comment,true,'comments')
@@ -766,12 +915,13 @@ module ApplicationHelper
   end
 
   # we use this in imports, too
-  def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options={ })
+  def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options=Hash.new, pre_options=Array.new)
     result = "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
     html_options.each do |key, value|
         result << ' ' + key.to_s + '="' + value.to_s + '"'
     end
     result << ">\n"
+    result << options_for_select(pre_options) unless pre_options.blank?
     for element in collection
       indent_string = String.new
         element.level.times { indent_string += "&nbsp;" }
@@ -847,4 +997,66 @@ module ApplicationHelper
         @current_user == item.creator )
   end
 
+  # Controls for search sorting on pages like basket list and basket members list
+  def search_sorting_controls_for(sort_text, sort_type, main_sort_order=false, default_direction='asc', remote_link = false)
+    # if searching, get the current sort direction else use the default order
+    direction = (params[:order] == sort_type ? params[:direction] : nil) || default_direction
+
+    # using the current sort direction, create the image we'll use display
+    if direction == 'desc'
+      direction_image = image_tag('arrow_down.gif', :alt => 'Descending. ', :class => 'sorting_control', :width => 16, :height => 7)
+    else
+      direction == 'asc' # if direction is something else, we set it right here
+      direction_image = image_tag('arrow_up.gif', :alt => 'Ascending. ', :class => 'sorting_control', :width => 16, :height => 7)
+    end
+
+    # create the link based on sort type and direction (user provided or default)
+    # keep existing parameters
+    location_hash = Hash.new
+    # this has keys in strings, rather than symbols
+    request.query_parameters.each { |key, value| location_hash[key.to_sym] = value }
+    location_hash.merge!({ :order => sort_type })
+    location_hash.merge!({ :direction => direction}) if sort_type != 'random'
+
+    # if sorting and the sort is for this sort type, or no sort made and this sort type is the main sort order
+    if (params[:order] && params[:order] == sort_type && sort_type != 'random') || (!params[:order] && main_sort_order)
+      # flip the current direction so clicking the link reverses direction
+      location_hash.merge!({ :direction => sort_direction_after(direction) })
+      link_to_text = "#{sort_text} #{direction_image}"
+    else
+      link_to_text = "#{sort_text}"
+    end
+
+    # create the link with text, current direction image (if needed), and pointing to opposite direction (if needed)
+    if remote_link
+      # create a remote to link
+      link_to_remote link_to_text, { :url => location_hash,
+                                     :before => "Element.show('data_spinner')",
+                                     :complete => "Element.hide('data_spinner')" },
+                                   :href => url_for(location_hash)
+    else
+      # create a plain link
+      link_to link_to_text, location_hash
+    end
+  end
+
+  # The method uses to flip the current direction, so we get the reverse of the current
+  # Used in search_sorting_controls_for
+  def sort_direction_after(current_direction)
+    directions = { 'asc' => 'desc', 'desc' => 'asc' }
+    directions[current_direction]
+  end
+
+  def privacy_image
+    # not happy with this icon, just say private: for now
+    # TODO: replace with better icon
+    # image_tag 'privacy_icon.gif', :width => 16, :height => 15, :alt => "This item is private. ", :class => 'privacy_icon'
+      "private: "
+  end
+
+  def privacy_image_for(item)
+    if item.is_private?
+      privacy_image
+    end
+  end
 end

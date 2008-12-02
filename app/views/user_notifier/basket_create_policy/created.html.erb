@@ -1,0 +1,13 @@
+<%= @recipient.user_name %>,
+
+<%= @sender.user_name %> has created a new basket titled '<%= @basket.name %>'.
+
+<% if @needs_approval -%>It requires moderation before it will be available to the public.<% end %>
+
+You can edit this basket by going to
+
+<%= SITE_URL %><%= @basket.urlified_name %>/baskets/edit/<%= @basket.id %>
+
+Thank you,
+<%= PRETTY_SITE_NAME %>
+<%= SITE_URL %>

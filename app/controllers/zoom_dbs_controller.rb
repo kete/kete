@@ -1,6 +1,7 @@
 class ZoomDbsController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, :only => [:list, :index]
+  before_filter :set_page_title
 
   permit "tech_admin of :site"
 
@@ -18,6 +19,10 @@ class ZoomDbsController < ApplicationController
     # so ensure it is not set in this controller.
     def ssl_allowed?
       nil
+    end
+
+    def set_page_title
+      @title = 'Zoom Dbs'
     end
     
 end

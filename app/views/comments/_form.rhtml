@@ -10,7 +10,7 @@
                 <% if !params[:relate_to_topic].nil? %>
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
-                
+
                 <%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || params[:comment][:commentable_private] if !edit %>
 
                 <div class="form-element">
@@ -36,7 +36,15 @@
                   <%= form.check_box :do_not_sanitize, :tabindex => '1' %></div>
                 <% end -%>
 
-                <%= tags_input_field(form,"comment_tag_list") %>
+                <div class="form-element">
+                  <label for="<%= @item_type -%>_tag_list">Tags (separated by commas)</label>
+                  <%= text_field_with_auto_complete(:comment,
+                                                    :tag_list,
+                                                    { :tabindex => '1' },
+                                                    { :taokens => ',',
+                                                    :indicator => 'data_spinner_tags' }) -%>
+                  <img src='/images/indicator.gif' width='16' height='16' alt='Getting tags. ' id='data_spinner_tags' style='display:none;' />
+                </div>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
                 <% if form_fields.size > 0 %>

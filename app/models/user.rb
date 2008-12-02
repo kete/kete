@@ -51,6 +51,13 @@ class User < ActiveRecord::Base
     :order => "#{zoom_class.tableize}.created_at"
   end
 
+  # Each user can have multiple portraits (images relating to their account)
+  has_many :user_portrait_relations, :order => 'position', :dependent => :delete_all
+  has_many :portraits, :through => :user_portrait_relations, :source => :still_image, :order => 'user_portrait_relations.position'
+
+  # users can create baskets if the system setting is enabled to do so
+  has_many :baskets, :class_name => 'Basket', :foreign_key => :creator_id
+
   # Virtual attribute for the contribution.version join model
   # a hack to be able to pass it in
   # see topics_controller update action for example
@@ -198,6 +205,10 @@ class User < ActiveRecord::Base
     return @show_email
   end
 
+  def accepts_emails?
+    self.allow_emails == true
+  end
+
   # we only need distinct items contributed to
   # because we have a polymorphic foreign key
   # this is tricky to do in sql,
@@ -230,7 +241,7 @@ class User < ActiveRecord::Base
   end
 
   def basket_permissions
-    select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name"
+    select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name"
     join = "INNER JOIN baskets on roles.authorizable_id = baskets.id"
     permissions = roles.find_all_by_authorizable_type('Basket', :select => select, :joins => join)
 
@@ -240,7 +251,8 @@ class User < ActiveRecord::Base
       permissions_hash[p['basket_urlified_name'].to_sym] = {
         :id => p['basket_id'].to_i,
         :role_id => p['role_id'].to_i,
-        :role_name => p['role_name']
+        :role_name => p['role_name'],
+        :basket_name => p['basket_name']
       }
     end
     permissions_hash

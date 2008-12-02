@@ -1,6 +1,10 @@
 class ImagesController < ApplicationController
   include ExtendedContentController
   
+  # Kieran Pilkington, 2008/10/23
+  # Autocomplete methods for tag adder on item pages
+  include TaggingController
+
   helper :privacy_controls
 
   def index
@@ -25,8 +29,7 @@ class ImagesController < ApplicationController
   end
 
   def new
-    @still_image = StillImage.new({ :private => @current_basket.private_default || false, 
-                                    :file_private =>  @current_basket.file_private_default || false })
+    @still_image = StillImage.new
   end
 
   def create
@@ -56,6 +59,13 @@ class ImagesController < ApplicationController
         @image_file.thumbnails.each do |thumb|
           thumb.still_image_id = @still_image.id
           thumb.save!
+        end
+
+        if params[:portrait]
+          UserPortraitRelation.new_portrait_for(current_user, @still_image)
+          if params[:default_portrait]
+            UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
+          end
         end
       end
 

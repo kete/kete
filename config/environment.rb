@@ -98,11 +98,11 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
   # incremental step towards the proper way of doing this in 2.0
   # should go in a file under config/initializers/
-  config.active_record.observers = :user_observer
+  config.active_record.observers = :user_observer, :feed_sweeper
 
   # white list html elements here, besides defaults
   config.action_view.sanitized_allowed_tags = 'table', 'tr', 'td', 'tbody', 'th', 'thead', 'tfoot', 'font', 'object', 'param', 'embed'
-  config.action_view.sanitized_allowed_attributes = 'id', 'style', 'hspace', 'vspace', 'align', 'dir', 'border', 'cellspacing',  'cellpadding', 'summary', 'bgcolor', 'background', 'bordercolor', 'rowspan', 'valign', 'colspan', 'scope', 'lang', 'face', 'color', 'size', 'target', 'classid', 'codebase', 'quality', 'type', 'pluginspage', 'wmode'
+  config.action_view.sanitized_allowed_attributes = 'id', 'style', 'hspace', 'vspace', 'align', 'dir', 'border', 'cellspacing',  'cellpadding', 'summary', 'bgcolor', 'background', 'bordercolor', 'rowspan', 'valign', 'colspan', 'scope', 'lang', 'face', 'color', 'size', 'target', 'classid', 'codebase', 'quality', 'type', 'pluginspage', 'wmode', 'data', 'flashvars', 'allowfullscreen'
 
   # we need to set up randmom_finders first
   config.plugins = [ :random_finders, :all ]

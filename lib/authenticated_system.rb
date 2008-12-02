@@ -86,7 +86,9 @@ module AuthenticatedSystem
       respond_to do |accepts|
         accepts.html do
           store_location
-          redirect_to :controller => '/account', :action => 'login'
+          redirect_to :urlified_name => 'site',
+                      :controller => 'account',
+                      :action => 'login'
         end
         accepts.xml do
           if user = authenticate_or_request_with_http_basic { |u, p| User.authenticate(u, p) }

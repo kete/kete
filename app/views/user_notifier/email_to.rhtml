@@ -1,0 +1,24 @@
+<%= @recipient.user_name %>,
+
+<%= @user.user_name %> has sent you a message from <%= "the #{@from_basket.name} basket on " unless @from_basket.nil? -%><%= PRETTY_SITE_NAME %>.
+
+-----------------------
+
+<%= @subject %>
+
+
+<%= @message %>
+
+---------------------------
+
+This email was sent by <%= PRETTY_SITE_NAME %> on behalf of <%= @user.user_name %>.
+
+Replying to this message should send an email to <%= @user.user_name %>'s email address.
+
+If not, you can create a new message and send it to
+
+<%= @user.email %>
+
+Thank you,
+<%= PRETTY_SITE_NAME %>
+<%= SITE_URL %>

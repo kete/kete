@@ -431,6 +431,9 @@ class SearchController < ApplicationController
       # field_value = dublin_core[field[0]]
       # field_value = dc_attributes["oai_dc:dc"]["dc:#{field[0]}"]
 
+      # description may sometimes be nil so if it is, skip this element so we don't get 500 errors
+      next if field_value.nil?
+
       field_name = String.new
       if field[1].nil?
         field_name = field[0]

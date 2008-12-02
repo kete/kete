@@ -10,12 +10,18 @@ class Basket < ActiveRecord::Base
 
   USER_LEVEL_OPTIONS = [['All users', 'all users']] + MEMBER_LEVEL_OPTIONS
 
+  ALL_LEVEL_OPTIONS = [['All users', 'all users']] + [['Logged in user', 'logged in']] + MEMBER_LEVEL_OPTIONS
+
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
   attr_accessor :do_not_sanitize
   # sanitize our descriptions and extended_content for security
   acts_as_sanitized :fields => [:index_page_extra_side_bar_html]
+
+  # Kieran Pilkington, 2008-07-09
+  # remove the roles from a basket before destroying it to prevent problems later on
+  before_destroy :remove_users_and_roles
 
   # Kieran Pilkington, 2008/08/19
   # setup our default baskets on application load, rather than each request
@@ -61,8 +67,14 @@ class Basket < ActiveRecord::Base
   # a topic may be the designated index page for it's basket
   has_one :index_topic, :class_name => 'Topic', :foreign_key => 'index_for_basket_id'
 
+  # each basket was made by someone (admin or otherwise)
+  belongs_to :creator, :class_name => 'User'
+
   # imports are processes to bring in content to a basket
   has_many :imports, :dependent => :destroy
+
+  # each basket can have multiple feeds displayed in the sidebar
+  has_many :feeds, :dependent => :destroy
 
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
@@ -80,10 +92,6 @@ class Basket < ActiveRecord::Base
   # old versions of items have to updated to not point at non-existing basket
   before_destroy :clear_item_version_foreign_keys
 
-  # Kieran Pilkington, 2008-07-09
-  # remove the roles from a basket before destroying it to prevent problems later on
-  before_destroy :remove_users_and_roles
-
   def update_index_topic(index_topic)
     if !index_topic.nil? and index_topic.is_a?(Topic)
       self.index_topic = index_topic
@@ -99,44 +107,51 @@ class Basket < ActiveRecord::Base
   # but we want all zoom_class's totals added together
   # special case is site basket
   # want to grab all tags from across all baskets
-  def tag_counts_array
-    tag_limit = self.index_page_number_of_tags
+  def tag_counts_array(options = {}, private_tags=false)
+    tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
+    tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
+    tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
+
+    unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
+      return Array.new
+    end
+
+    case tag_order
+    when 'alphabetical'
+      find_tag_order = "tags.name #{tag_direction}"
+    when 'latest'
+      find_tag_order = "taggings.created_at #{tag_direction}"
+    when 'number'
+      find_tag_order = "count #{tag_direction}"
+    else
+      find_tag_order = 'Rand()'
+    end
 
     @tag_counts_hash = Hash.new
 
-    if tag_limit > 0
-      tag_order = nil
-      case self.index_page_order_tags_by
-      when 'alphabetical'
-        tag_order = 'tags.name'
-      when 'latest'
-        tag_order = 'taggings.created_at desc'
-      when 'number'
-        tag_order = 'count desc'
-      when 'random'
-        tag_order = 'Rand()'
-      end
-      ZOOM_CLASSES.each do |zoom_class|
-        zoom_class_tag_counts = nil
-        if self.id == 1
-          zoom_class_tag_counts = Module.class_eval(zoom_class).tag_counts(:limit => tag_limit, :order => tag_order)
-        else
-          zoom_class_tag_counts = self.send(zoom_class.tableize).tag_counts(:limit => tag_limit, :order => tag_order)
-        end
+    ZOOM_CLASSES.each do |zoom_class|
+      zoom_set = (self.id == 1) ? zoom_class.constantize : self.send(zoom_class.tableize)
+      zoom_class_tag_hash = zoom_set.tag_counts({:limit => tag_limit, :order => find_tag_order}, private_tags)
 
-        # if exists in @tag_counts, update count with added number
-        zoom_class_tag_counts.each do |tag|
+      # if exists in @tag_counts, update count with added number
+      [:public, :private].each do |privacy|
+        zoom_class_tag_hash[privacy.to_sym].each do |tag|
           tag_key = tag.id.to_s
           if !@tag_counts_hash.include?(tag_key)
-            @tag_counts_hash[tag_key] = { :id => tag.id, :name => tag.name, :taggings_count => tag.count }
+            @tag_counts_hash[tag_key] = { :id => tag.id,
+                                          :name => tag.name,
+                                          :public_taggings_count => (privacy == :public) ? tag.count : 0,
+                                          :private_taggings_count => (privacy == :private) ? tag.count : 0,
+                                          :total_taggings_count => tag.count }
           else
-            @tag_counts_hash[tag_key][:taggings_count] +=  tag.count
+            @tag_counts_hash[tag_key][:public_taggings_count] += tag.count if privacy == :public
+            @tag_counts_hash[tag_key][:private_taggings_count] += tag.count if privacy == :private
+            @tag_counts_hash[tag_key][:total_taggings_count] += tag.count
           end
         end
       end
-    else
-      return Array.new
     end
+
     # take the hash and create an ordered array by amount of taggings
     # with nested hashes for attributes
     @tag_counts_array = Array.new
@@ -144,20 +159,25 @@ class Basket < ActiveRecord::Base
       @tag_counts_array << @tag_counts_hash[tag_key]
     end
 
-    # can only resort by alpha and number
-    # random doesn't need resorting
-    # and latest should be covered in the query
-    case self.index_page_order_tags_by
+    # We need to sort through the results here as well as in the query
+    # because we joined several ZOOM_CLASSES so they'll be out of order
+    case tag_order
     when 'alphabetical'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name]}
+      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name] }
+      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
+    when 'latest'
+      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:id] }
+      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
     when 'number'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:taggings_count]}
-      @tag_counts_array = @tag_counts_array.reverse
-    when 'random'
+      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:total_taggings_count] }
+      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
+    else
       @tag_counts_array = @tag_counts_array.sort_by { rand }
     end
 
-    @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)]
+    # the query limits per ZOOM_CLASS, not overall combined results, so we do that here
+    @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)] unless !tag_limit # when tag_limit is false, we return all
+
     return @tag_counts_array
   end
 
@@ -190,7 +210,7 @@ class Basket < ActiveRecord::Base
 
   def private_file_visibility_as_options(site_basket)
     current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
-      select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
+    select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
   end
 
   def private_file_visibilty_selected_or_default(value, site_basket)
@@ -198,11 +218,49 @@ class Basket < ActiveRecord::Base
     value == current_value
   end
 
-  def array_to_options_list_with_defaults(options_array, default_value)
+  # If setting is nil, be conservative.
+  def allow_non_member_comments?
+    allow_non_member_comments === true
+  end
+
+
+  # Privacy related methods, taking into account inheritance from Site Basket
+
+  def show_privacy_controls_with_inheritance?
+    (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && self.site_basket.show_privacy_controls == true))
+  end
+
+  def private_default_with_inheritance?
+    (self.private_default == true || (self.private_default.nil? && self.site_basket.private_default == true))
+  end
+
+  def file_private_default_with_inheritance?
+    (self.file_private_default == true || (self.file_private_default.nil? && self.site_basket.file_private_default == true))
+  end
+
+  def private_file_visibility_with_inheritance
+    self.settings[:private_file_visibility] || self.site_basket.settings[:private_file_visibility] || "at least member"
+  end
+
+  def additional_footer_content_with_inheritance
+    (!settings[:additional_footer_content].nil? && !self.settings[:additional_footer_content].squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
+  end
+
+  def replace_existing_footer_with_inheritance?
+    (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] == true))
+  end
+
+  def memberlist_policy_or_default
+    current_value = self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
+    select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
+  end
+
+  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
     select_options = String.new
     options_array.each do |option|
       label = option[0]
       value = option[1]
+      next if label == "Site admin" && !site_admin
       select_options += "<option value=\"#{value}\""
       if default_value == value
         select_options += " selected=\"selected\""
@@ -238,8 +296,8 @@ class Basket < ActiveRecord::Base
   end
 
   def self.order_tags_by_options
-    [['Number of items', 'number'],
-     ['Alphabetical', 'alphabetical'],
+    [['Most Popular', 'number'],
+     ['By Name', 'alphabetical'],
      ['Latest', 'latest'],
      ['Random', 'random']]
   end
@@ -267,13 +325,6 @@ class Basket < ActiveRecord::Base
   def fully_moderated?
     settings[:fully_moderated].blank? ? DEFAULT_POLICY_IS_FULL_MODERATION : settings[:fully_moderated]
   end
-
-  # Private file visibility, taking into account inheritance from
-  # site basket if not set locally
-  def private_file_visibility
-    self.settings[:private_file_visibility] || Basket.find(1).settings[:private_file_visibility] || "at least member"
-  end
-
 
   # if we don't have any moderators specified
   # find admins for basket
@@ -339,25 +390,53 @@ class Basket < ActiveRecord::Base
     select_options
   end
 
-  # If setting is nil, be conservative.
-  def allow_non_member_comments?
-    allow_non_member_comments === true
+  # find if we should let users access the basket contact form
+  # get the baskets setting or if nil, get it from the site basket
+  def allows_contact_with_inheritance?
+    (self.settings[:allow_basket_admin_contact] == true || (self.settings[:allow_basket_admin_contact].class == NilClass && @@site_basket.settings[:allow_basket_admin_contact] == true))
   end
 
-  def private_default_with_inheritance?
-    (self.private_default == true || (self.private_default.nil? && @@site_basket.private_default == true))
+  # return a boolean for whether basket join requests (with inheritance) are enabled
+  # open / request = true
+  # closed = false
+  def allows_join_requests_with_inheritance?
+    ['open', 'request'].include?(self.join_policy_with_inheritance)
   end
 
-  def show_privacy_controls_with_inheritance?
-    (self.show_privacy_controls == true || (self.show_privacy_controls.nil? && @@site_basket.show_privacy_controls == true))
+  # get the current basket join policy. If nil, use the site baskets
+  def join_policy_with_inheritance
+    (!self.settings[:basket_join_policy].blank?) ? self.settings[:basket_join_policy] : self.site_basket.settings[:basket_join_policy]
   end
 
-  # Get the roles this Basket has
-  def roles
-    Role.find_all_by_authorizable_type_and_authorizable_id('Basket', self)
+  # get a list of administrators (including site administrators
+  # if the current basket is the site basket)
+  # uses auto-generated methods from the authorization plugin
+  def administrators
+    if self == self.site_basket
+      self.has_site_admins_or_admins
+    else
+      self.has_admins
+    end
+  end
+
+  # we need at least one site admin at all times
+  def more_than_one_site_admin?
+    self.has_site_admins.size > 1
+  end
+
+  # we need at least one admin in a basket at all times
+  def more_than_one_basket_admin?
+    self.has_admins.size > 1
+  end
+
+  def delete_roles_for(user)
+    self.accepted_roles.each do |role|
+      user.has_no_role(role.name, self)
+    end
   end
 
   protected
+
   # before save filter
   def urlify_name
     return if name.blank?
@@ -377,6 +456,7 @@ class Basket < ActiveRecord::Base
   end
 
   private
+
   # when a basket is to be deleted
   # we have to update all versions for items that used to point
   # at the basket in question (but were previously moved out of basket)
@@ -399,7 +479,7 @@ class Basket < ActiveRecord::Base
   # otherwise authorizable tries to get the basket which no longer exists
   # when called in user.basket_permissions
   def remove_users_and_roles
-    roles.each do |role|
+    self.accepted_roles.each do |role|
       # authentication plugin's accepts_no_role was problematic
       # rolling our own
       role.users.each { |user| user.drop(role) }

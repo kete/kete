@@ -5,6 +5,10 @@ module AuthenticatedTestHelper
     @request.session[:user] = user ? User.find_by_login(user.to_s).id : nil
   end
 
+  def logout
+    @request.session[:user] = nil
+  end
+
   def content_type(type)
     @request.env['Content-Type'] = type
   end

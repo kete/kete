@@ -1,0 +1,13 @@
+<%= @recipient.user_name %>,
+
+<%= @sender.user_name %> has joined the <%= @basket.name %> basket.
+
+You are receiving this notification because our records show you are an admin of that basket.
+
+You can view the member list at
+
+<%= SITE_URL %><%= @basket.urlified_name %>/members/list
+
+Thank you,
+<%= PRETTY_SITE_NAME %>
+<%= SITE_URL %>

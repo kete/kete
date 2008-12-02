@@ -127,6 +127,14 @@ class Topic < ActiveRecord::Base
   # Ensure basket cache is cleared if this is a standard basket home-page topic
   after_save :clear_basket_homepage_cache
 
+  # Kieran Pilkington - 2008/10/21
+  # Named scopes used in the index page controller for recent topics
+  named_scope :recent, lambda { |*args|
+    args = (args.first || {})
+    { :order => 'created_at desc', :limit => 5 }.merge(args)
+  }
+  named_scope :public, :conditions => ['title != ?', NO_PUBLIC_VERSION_TITLE]
+
   def clear_basket_homepage_cache
     self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self
   end
@@ -148,6 +156,10 @@ class Topic < ActiveRecord::Base
     else
       parent_related_topics + child_related_topics
     end
+  end
+
+  def first_related_image
+    still_images.find_non_pending(:first) || {}
   end
 
   def title_for_license

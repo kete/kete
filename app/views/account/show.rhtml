@@ -1,48 +1,108 @@
 <% @title = 'Profile of ' + h(@user.user_name) -%>
-<% @viewer_is_user = false -%>
-<% @viewer_is_user = true if @user == @current_user -%>
 
-<h2><%= h(@title) -%></h2>
-
-<p><b>Login:</b> <%= h(@user.login) -%></p>
-
-<%if @user.show_email? or @viewer_is_user -%>
-        <p><b>Email:</b> <%= mail_to(@user.email, @user.email, :encode => "hex") -%></p>
-<% end -%>
-
-<p><b>Created:</b> <%= h(@user.created_at.to_s(:euro_date_time)) -%></p>
-
-<% extended_fields_html = display_xml_attributes(@user) %>
-<% if !extended_fields_html.blank? %>
-        <!-- <div id="detail-extended"> -->
-                <%= extended_fields_html %>
-        <!-- </div> -->
-<% end %>
-
-<p>Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%></p>
-
-<% if @viewer_is_user -%>
-        <div class="detail-tools">
-                <ul>
-                        <li class="first"><%= link_to 'Edit', :action => 'edit' %></li>
-                        <li><%= link_to 'Change Password', :action => 'change_password' %></li>
-                </ul>
-        </div>
-<% end -%>
-
-<% if @viewer_is_user and licenses_are_available? %>
 <div>
-   <% if @user.license.nil? %>
-     Click the edit link above to set your default license.
-   <% else -%>
-     <h3>Your current default license is:</h3>
-     <div class="license">
-       <%= image_tag(@user.license.image_url, :alt => "Licence thumbnail. ") %>
-       <%= @user.license.title %>
-       <%= link_to("(View license)", url_for(@user.license.url), "target" =>
-       "_new") %>
-     </div>
-   <% end -%>
+  <h2 style="display:inline;"><%= h(@title) -%></h2>
+  <% if @viewer_is_user -%>
+    [
+    <%= link_to 'edit', :action => 'edit' %>
+    | <%= link_to 'change password', :action => 'change_password' %>
+    ]
+  <% end -%>
 </div>
-<% end -%>
+
+<div class="profile_content_right">
+  <% if @viewer_is_user || !@viewer_portraits.nil? -%>
+  <div id="portraits">
+    <div>
+      <h4 style="display:inline;">Portraits</h4>
+      <% if @viewer_is_user -%>
+        <% location_hash = { :controller => 'images',
+                             :action => 'new',
+                             :portrait => true,
+                              :default_portrait => true } -%>
+        [ <%= link_to 'new portrait', location_hash -%> ]
+        <img src="/images/indicator.gif" width="16" height="16" alt="Editing portraits. " id="data_spinner" style="display:none;" />
+      <% end -%>
+    </div>
+    <br />
+    <div id="portrait_images">
+      <%= render :partial => 'portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user } -%>
+    </div>
+  </div>
+  <% end -%>
+
+  <br />
+
+  <% user_baskets = users_baskets_list(@user) -%>
+  <% unless user_baskets.blank? -%>
+  <div>
+    <div>
+      <h4 style="display:inline;">Baskets</h4>
+      <%= "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user && !header_add_basket_link.blank?-%>
+    </div>
+    <div>
+      <ul>
+        <%= users_baskets_list(@user) -%>
+      </ul>
+    </div>
+  </div>
+  <% end -%>
+</div>
+
+<div id="profile_avatar" class="avatar"><%= avatar_for @user -%></div>
+
+<div class="profile_content_left">
+  <p>
+    <strong>Login:</strong>
+    <%= h(@user.login) -%>
+  </p>
+
+  <% if @user.show_email? || @viewer_is_user -%>
+  <p>
+    <strong>Email:</strong>
+    <%= mail_to(@user.email, @user.email, :encode => "hex") -%>
+  </p>
+  <% elsif @user.accepts_emails? -%>
+  <p>
+    <strong>Email:</strong>
+    <%= link_to 'Contact this user', :action => 'contact', :id => @user -%>
+  </p>
+  <% end -%>
+
+  <p>
+    <strong>Created:</strong>
+    <%= h(@user.created_at.to_s(:euro_date_time)) -%>
+  </p>
+
+  <% extended_fields_html = display_xml_attributes(@user) %>
+  <% if !extended_fields_html.blank? %>
+  <!-- <div id="detail-extended"> -->
+    <%= extended_fields_html %>
+  <!-- </div> -->
+  <% end %>
+
+  <% if @viewer_is_user and licenses_are_available? %>
+  <div>
+    <h4>Current default license</h4>
+    <div class="license">
+      <% if @user.license.nil? %>
+        Click the edit link above to set your default license.
+      <% else -%>
+        <%= image_tag(@user.license.image_url, :alt => "License thumbnail. ") %>
+        <%= @user.license.title %>
+        <%= link_to("(View license)", url_for(@user.license.url)) %>
+      <% end -%>
+    </div>
+  </div>
+  <% end -%>
+
+  <div>
+    <h4>Contributions</h4>
+    Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%>
+  </div>
+
+</div>
+
+<div style="clear:both;"></div>
+
 <%= render(:partial => "topics/content_wrapper_end" ) %>
