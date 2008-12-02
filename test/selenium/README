@@ -1,0 +1,13 @@
+= Selenium Testing =
+
+Most of the work is done for you.
+
+Just open test/selenium/test_helper.rb, and change the following variables:
+  SELENIUM_WEB_SERVER_URL
+  SELENIUM_WEB_SERVER_PORT
+  
+Save the file, then in your Rails root, run
+
+rake test:selenium
+
+Enjoy!

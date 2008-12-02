@@ -4,8 +4,8 @@ class SampleTest < Test::Unit::TestCase
   def setup
     @selenium = Selenium::SeleniumDriver.new(SELENIUM_SERVER_HOST,
                                              SELENIUM_SERVER_PORT,
-                                             SELENIUM_SERVER_BORWSER,
-                                             SELENIUM_SERVER_BASE_URL,
+                                             SELENIUM_SERVER_BROWSER,
+                                             SELENIUM_WEB_SERVER_PATH,
                                              SELENIUM_SERVER_TIMEOUT);
     @selenium.start
   end

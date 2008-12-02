@@ -4,18 +4,17 @@ require File.dirname(__FILE__) + '/ruby-bindings/selenium'
 
 SELENIUM_SERVER_HOST = '0.0.0.0'
 SELENIUM_SERVER_PORT = 4444
-SELENIUM_SERVER_BORWSER = '*firefox'
-SELENIUM_SERVER_BASE_URL = 'http://kete_trunk:3001'
+SELENIUM_SERVER_BROWSER = '*firefox'
 SELENIUM_SERVER_TIMEOUT = 10000
 
-begin
-  ps = `ps aux | grep selenium`
-  if ps.scan('selenium-server.jar').blank?
-    raise unless system "java -jar #{File.dirname(__FILE__)}/server/selenium-server.jar > #{Rails.root}/log/selenium.log & sleep 5"
-  end
-rescue
-  raise "ERROR: Could not find or start Selenium Server. Please start it manually."
-end
+SELENIUM_WEB_SERVER_URL = 'http://kete_trunk'
+SELENIUM_WEB_SERVER_PORT = '3001'
+SELENIUM_WEB_SERVER_PATH = "#{SELENIUM_WEB_SERVER_URL}:#{SELENIUM_WEB_SERVER_PORT}"
+
+require File.dirname(__FILE__) + '/server_controls'
+include ServerControls
+SeleniumRCServer.start
+SeleniumWebServer.start
 
 class Test::Unit::TestCase
   include SeleniumHelper
