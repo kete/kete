@@ -47,11 +47,11 @@ class MembersControllerTest < Test::Unit::TestCase
     assert_response :success
   end
 
-  def test_listing_type_all_for_all_but_admin
+  def test_listing_type_member_for_all_but_admin
     login_as(:bryan)
     change_setting_on_basket('about', 'memberlist_policy', 'all users')
     get :list, :urlified_name => 'about', :type => 'pending'
-    assert_equal 'all', assigns(:listing_type)
+    assert_equal 'member', assigns(:listing_type)
   end
 
   def test_listing_type_provided_for_admins
