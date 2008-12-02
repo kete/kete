@@ -629,43 +629,33 @@ module ApplicationHelper
     raq = " &raquo; "
     html = []
     
-    item.extended_content_pairs.reverse.each do |label, value|
-      ef = ExtendedField.find_by_label(label.gsub(/(_multitple)$/, '').humanize)
-      raise "Could not find extended field with label '#{label.gsub(/(_multitple)$/, '')}'." if ef.blank?
+    mappings = item.is_a?(Topic) ? item.all_field_mappings : @content_type.content_type_to_field_mappings
+    content = item.extended_content_pairs
+
+    mappings.each do |mapping|
+      field = mapping.extended_field
+      # value = content[qualified_name_for_field(field)]
+      field_name = field.multiple? ? qualified_name_for_field(field) + "_multiple" : qualified_name_for_field(field)
       
-      if value_from_xml_is_choice?(label, value)
-        if label =~ /_multiple$/
-          value = value.map { |l| l.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq) }.to_sentence
-        else
-          value = value.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq)
-        end
-      else
-        if label =~ /_multiples$/
-          value = value.map { |l| formatted_value_from_xml(l, ef, item) }.to_sentence
-        else
-          value = formatted_value_from_xml(value, ef, item)
-        end
-      end
+      value = content.select { |pair| pair[0] == field_name }.first.last rescue nil
+      next if value.to_s.blank?
       
-      tds = content_tag("td", "#{label.gsub(/_multiple$/, '').humanize}:", :class => "detail-extended-field-label") + \
-            content_tag("td", value)
-            
-      html << content_tag("tr", tds) unless value.to_s.blank?
+      for_tr = content_tag("td", formatted_extended_content_value(value, field, item))
+      
+      html << content_tag("tr", content_tag("td", "#{field.label}:", :class => "detail-extended-field-label") + for_tr)
     end
     
     unless html.empty?
       content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
     end
+    
   end
   
-  # Find whether the supplied data is likely to be from a choice field type.
-  def value_from_xml_is_choice?(label, value)
-    
-    # Results from choices always multiple due to sub-choices
-    if label =~ /_multiple$/
-      value.is_a?(Array) && value.first.is_a?(Array)
+  def formatted_extended_content_value(value, field, item)
+    if field.multiple?
+      value.collect { |v| formatted_value_from_xml(v, field, item) }.to_sentence
     else
-      value.is_a?(Array)
+      formatted_value_from_xml(value, field, item)
     end
   end
   
@@ -685,8 +675,10 @@ module ApplicationHelper
       else
         method = 'basket_all_of_category_url'
       end
-
-      link_to(value, send(method, url_hash.merge(:limit_to_choice => value)))
+      
+      value.map do |v|
+        link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
+      end.join(" &raquo; ")
       
     else
       case value
