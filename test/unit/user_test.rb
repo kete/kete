@@ -142,17 +142,13 @@ class UserTest < Test::Unit::TestCase
   end
 
   protected
+
     def create_user(options = {})
       # Walter McGinnis, 2007-07-10
       # adding terms agreement and capcha vars
       User.create(@new_model.merge(options))
     end
-<<<<<<< HEAD:test/unit/user_test.rb
-<<<<<<< HEAD:test/unit/user_test.rb
-    
-=======
 
->>>>>>> origin/enhancement_lh97_choices_for_extended_fields:test/unit/user_test.rb
     def new_model_attributes
       @@incremental_id ||= 0
       @@incremental_id = @@incremental_id + 1
@@ -164,9 +160,5 @@ class UserTest < Test::Unit::TestCase
                                        :basket_id => Basket.find(:first))
       @still_image.creator = user
       @still_image.save
-<<<<<<< HEAD:test/unit/user_test.rb
->>>>>>> master:test/unit/user_test.rb
-=======
->>>>>>> origin/enhancement_lh97_choices_for_extended_fields:test/unit/user_test.rb
     end
 end

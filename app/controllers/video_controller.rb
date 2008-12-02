@@ -74,16 +74,4 @@ class VideoController < ApplicationController
     zoom_destroy_and_redirect('Video')
   end
 
-<<<<<<< HEAD:app/controllers/video_controller.rb
-<<<<<<< HEAD:app/controllers/video_controller.rb
-  private
-
-    def load_content_type
-      @content_type = ContentType.find_by_class_name('Video')
-    end
-
-=======
->>>>>>> master:app/controllers/video_controller.rb
-=======
->>>>>>> origin/enhancement_lh97_choices_for_extended_fields:app/controllers/video_controller.rb
 end
