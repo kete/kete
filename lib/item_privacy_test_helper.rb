@@ -562,8 +562,8 @@ module ItemPrivacyTestHelper
         end
       end
       
-      def test_class_tag_counts_accepts_an_argument
-        assert_equal 1, eval(@base_class).method(:tag_counts).arity
+      def test_class_tag_counts_accepts_an_required_argument_and_one_optional_one
+        assert_equal -2, eval(@base_class).method(:tag_counts).arity
       end
       
       def test_instances_respond_to_instance_methods_as_expected
