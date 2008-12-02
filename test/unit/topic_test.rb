@@ -147,7 +147,7 @@ class TopicTest < Test::Unit::TestCase
     
     assert_valid model
     
-    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "", "2" => "" } }
+    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "", "2" => "" } }
     
     assert !model.valid?
     assert_equal 1, model.errors.size
