@@ -14,7 +14,6 @@ class FeedsWorker < BackgrounDRb::MetaWorker
   end
 
   def update(feed_id)
-    logger.info("what is time: " + Time.now.to_s)
     feed = Feed.find_by_id(feed_id)
     feed.update_feed if feed
   end
