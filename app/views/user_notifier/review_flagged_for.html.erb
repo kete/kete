@@ -5,7 +5,7 @@ Please review the submitted content in <%= @basket.name -%> and take the appropr
 
 <% for item in @disputed_revisions %>
 ----
-# <%= item.id %>: <%= h(item.title) %>
+# <%= item.versions.last.id %>: <%= h(item.title) %>
 
 Marked as <%= h(item.flag) %> at <%= item.flagged_at %>
 
@@ -29,7 +29,7 @@ Review this version:
      :urlified_name => item.basket.urlified_name,
      :action => 'preview',
      :id => item.id,
-     :version => item.id)
+     :version => item.versions.last.id)
 
    url_for_history = site_url + url_for(:controller => zoom_class_controller,
                                         :urlified_name => item.basket.urlified_name,
