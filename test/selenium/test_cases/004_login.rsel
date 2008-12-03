@@ -1,8 +1,0 @@
-open "/site/account/logout"
-open "/site/account/login"
-type "login", "admin"
-type "password", "kete"
-click "remember_me"
-click "//input[@name='commit' and @value='Log in']"
-wait_for_page_to_load 10000
-verify_text_present "Logged in successfully"

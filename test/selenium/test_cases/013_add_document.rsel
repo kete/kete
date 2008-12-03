@@ -1,5 +1,0 @@
-open "/site/documents/new"
-verify_text_present "New document"
-click "//input[@name='commit' and @value='Create']"
-wait_for_page_to_load 10000
-verify_text_present "6 errors prohibited this document from being saved"
