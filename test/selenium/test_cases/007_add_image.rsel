@@ -1,0 +1,5 @@
+open "/site/images/new"
+verify_text_present "New image"
+click "//input[@name='commit' and @value='Create']"
+wait_for_page_to_load 10000
+verify_text_present "5 errors prohibited this image file from being saved"

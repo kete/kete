@@ -1,0 +1,16 @@
+verify_text_present "Kete Test Basket Edit"
+type "basket_name", "Edit Test Basket"
+select "settings_fully_moderated", "label=moderation upon being flagged"
+click "//option[@value='false']"
+click "basket_show_privacy_controls_false"
+click "basket_private_default_false"
+click "basket_file_private_default_false"
+click "basket_allow_non_member_comments_true"
+click "//input[@name='commit' and @value='Save']"
+wait_for_page_to_load 10000
+verify_text_present "Basket was successfully updated."
+verify_text_present "Kete: Edit Test Basket"
+verify_text_present "Keyword Search Edit Test Basket"
+choose_cancel_on_next_confirmation
+click "link=delete this basket"
+assert_confirmation "Are you sure? All items in this basket will be deleted forever!"

@@ -1,0 +1,5 @@
+open "/site/video/new"
+verify_text_present "New video"
+click "//input[@name='commit' and @value='Create']"
+wait_for_page_to_load 10000
+verify_text_present "6 errors prohibited this video from being saved"

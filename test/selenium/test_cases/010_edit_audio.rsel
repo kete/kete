@@ -1,0 +1,20 @@
+open "/site/audio/show/1"
+verify_text_present "Recording type"
+click "link=Edit"
+wait_for_page_to_load 10000
+select "audio_recording_basket_id", "label=About"
+type "audio_recording_title", "Rails Example"
+type "audio_recording_tag_list", "audio,demo,test"
+type "audio_recording_version_comment", "This is an audio edit test"
+click "//input[@name='commit' and @value='Save']"
+wait_for_page_to_load 10000
+verify_text_present "AudioRecording was successfully updated."
+verify_text_present "Kete: About"
+verify_text_present "Rails Example"
+verify_text_present "Tags: test, demo, audio"
+click "link=Edit"
+wait_for_page_to_load 10000
+select "audio_recording_basket_id", "label=Site"
+click "//input[@name='commit' and @value='Save']"
+wait_for_page_to_load 10000
+verify_text_present "AudioRecording was successfully updated."

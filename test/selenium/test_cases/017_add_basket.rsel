@@ -1,0 +1,18 @@
+open "/site/baskets/new"
+click "//input[@name='commit' and @value='Create']"
+wait_for_page_to_load 10000
+verify_text_present "1 error prohibited this basket from being saved"
+type "basket_name", "Kete Test Basket"
+select "settings_fully_moderated", "label=moderator views before item approved"
+click "//option[@value='true']"
+click "settings[moderated_except][]"
+click "//input[@name='settings[moderated_except][]' and @value='AudioRecording']"
+click "//input[@name='settings[moderated_except][]' and @value='Document']"
+click "basket_show_privacy_controls_true"
+click "basket_private_default_true"
+click "basket_file_private_default_true"
+click "basket_allow_non_member_comments_false"
+click "//input[@name='commit' and @value='Create']"
+wait_for_page_to_load 10000
+verify_text_present "Basket was successfully created."
+verify_text_present "Kete Test Basket Edit"

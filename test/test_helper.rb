@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
+require "webrat/rails"
 
 def set_constant(constant, value)
   if respond_to?(:silence_warnings)

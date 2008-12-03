@@ -1,0 +1,20 @@
+open "/site/images/show/1"
+verify_text_present "Original Filename"
+click "link=Edit"
+wait_for_page_to_load 10000
+select "still_image_basket_id", "label=About"
+type "still_image_title", "Rails Example"
+type "still_image_tag_list", "image,demo,test"
+type "still_image_version_comment", "This is an image edit test"
+click "//input[@name='commit' and @value='Save']"
+wait_for_page_to_load 10000
+verify_text_present "Image was successfully updated."
+verify_text_present "Kete: About"
+verify_text_present "Rails Example"
+verify_text_present "Tags: test, demo, image"
+click "link=Edit"
+wait_for_page_to_load 10000
+select "still_image_basket_id", "label=Site"
+click "//input[@name='commit' and @value='Save']"
+wait_for_page_to_load 10000
+verify_text_present "Image was successfully updated."

@@ -1,0 +1,20 @@
+open "/"
+click "link=Browse"
+wait_for_page_to_load 10000
+verify_text_present "Topics (14)"
+verify_text_present "Web Links (1)"
+open "/site/all/topics?number_of_results_per_page=5"
+click "link=3"
+wait_for_page_to_load 10000
+click "link=1"
+wait_for_page_to_load 10000
+open "/site/all/topics?number_of_results_per_page=10"
+verify_text_present "Showing 1-10 results of 14"
+click "link=About Kete"
+wait_for_page_to_load 10000
+verify_text_present "Topic: About Kete"
+click "link=Help"
+wait_for_page_to_load 10000
+click "link=Privacy Policy"
+wait_for_page_to_load 10000
+verify_text_present "Topic: Privacy Policy"

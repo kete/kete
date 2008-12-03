@@ -1,0 +1,10 @@
+click "link=Members"
+wait_for_page_to_load 10000
+verify_text_present "Listing users"
+click "//input[@name='commit' and @value='Search']"
+wait_for_page_to_load 10000
+verify_text_present "Potential New Members"
+click "user_2-kete_add_checkbox"
+click "//input[@name='commit' and @value='Add members']"
+wait_for_page_to_load 10000
+verify_text_present "Successfully added new member."

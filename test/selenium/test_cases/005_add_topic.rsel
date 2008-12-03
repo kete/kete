@@ -1,0 +1,16 @@
+open "/site/topics/new"
+click "//input[@name='commit' and @value='Choose']"
+wait_for_page_to_load 10000
+verify_text_present "New topic"
+click "//input[@name='commit' and @value='Create']"
+wait_for_page_to_load 10000
+verify_text_present "1 error prohibited this topic from being saved"
+type "topic_title", "New Topic"
+type "topic_short_summary", "This is a new topic."
+type "topic_description", "This is a new topic used in Selenium testing."
+type "topic_tag_list", "test,new,demo"
+click "//input[@name='commit' and @value='Create']"
+wait_for_page_to_load 10000
+verify_text_present "Topic was successfully created."
+verify_text_present "Topic: New Topic"
+verify_text_present "Tags: test, new, demo"

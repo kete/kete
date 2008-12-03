@@ -1,0 +1,20 @@
+open "/site/video/show/1"
+verify_text_present "Recording type"
+click "link=Edit"
+wait_for_page_to_load 10000
+select "video_basket_id", "label=About"
+type "video_title", "Rails Example"
+type "video_tag_list", "video,demo,test"
+type "video_version_comment", "This is an video edit test"
+click "//input[@name='commit' and @value='Save']"
+wait_for_page_to_load 10000
+verify_text_present "Video was successfully updated."
+verify_text_present "Kete: About"
+verify_text_present "Rails Example"
+verify_text_present "Tags: test, demo, video"
+click "link=Edit"
+wait_for_page_to_load 10000
+select "video_basket_id", "label=Site"
+click "//input[@name='commit' and @value='Save']"
+wait_for_page_to_load 10000
+verify_text_present "Video was successfully updated."
