@@ -3,14 +3,14 @@
 Please review the submitted content in <%= @basket.name -%> and take the appropriate action.
 
 
-<% for item in @disputed_revisions %>
+<% for item in @disputed_revisions -%>
 ----
-# <%= item.versions.last.id %>: <%= h(item.title) %>
+
+# <%= item.version %>: <%= h(item.title) %>
 
 Marked as <%= h(item.flag) %> at <%= item.flagged_at %>
 
 Review this version:
-
 <% zoom_class_controller = item.class.name.tableize
    case item.class.name
    when "StillImage"
@@ -29,12 +29,12 @@ Review this version:
      :urlified_name => item.basket.urlified_name,
      :action => 'preview',
      :id => item.id,
-     :version => item.versions.last.id)
+     :version => item.version)
 
    url_for_history = site_url + url_for(:controller => zoom_class_controller,
                                         :urlified_name => item.basket.urlified_name,
                                         :action => :history, :id => item.id)
-%>
+-%>
 
 <%= preview_url %>
 
@@ -46,7 +46,7 @@ the full item's history:
 
 ----
 
-<% end %>
+<% end -%>
 
 Thank you,
 <%= PRETTY_SITE_NAME %>
