@@ -107,11 +107,7 @@ class TopicsController < ApplicationController
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
-<<<<<<< HEAD:app/controllers/topics_controller.rb
-        render :action => 'new'
-=======
       render :action => 'new'
->>>>>>> origin/enhancement_lh97_choices_for_extended_fields:app/controllers/topics_controller.rb
     end
   end
 

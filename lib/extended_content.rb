@@ -20,15 +20,7 @@ module ExtendedContent
       end
     end
     
-    def extended_content_xml
-      read_attribute(:extended_content)
-    end
-
-    def extended_content_xml=(xml_string)
-      write_attribute(:extended_content, xml_string)
-    end
-
-    def extended_content
+    def extended_content_values
       convert_xml_to_extended_fields_hash
     end
     
@@ -36,15 +28,15 @@ module ExtendedContent
       convert_xml_to_key_value_hash
     end
     
-    def extended_content=(content_as_array)
+    def extended_content_values=(content_as_array)
       # Do the behind the scenes stuff..
-      self.extended_content_xml = convert_extended_content_to_xml(content_as_array)
+      self.extended_content = convert_extended_content_to_xml(content_as_array)
     end
 
     # simply pulls xml attributes in extended_content column out into a hash
     def xml_attributes
       # we use rexml for better handling of the order of the hash
-      extended_content = REXML::Document.new("<dummy_root>#{self.extended_content_xml}</dummy_root>")
+      extended_content = REXML::Document.new("<dummy_root>#{self.extended_content}</dummy_root>")
 
       temp_hash = Hash.new
       root = extended_content.root
@@ -75,10 +67,10 @@ module ExtendedContent
     def xml_attributes_without_position
       # we use rexml for better handling of the order of the hash
       
-      XmlSimple.xml_in("<dummy>#{extended_content_xml}</dummy>", "contentkey" => "value", "forcearray" => false)
+      XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", "contentkey" => "value", "forcearray" => false)
       
       # OLD METHOD
-      # extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content_xml}</dummy_root>")
+      # extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
       # return extended_content_hash["dummy_root"]
     end
 
@@ -176,7 +168,7 @@ module ExtendedContent
           "noattr"      => true
         }
         
-        XmlSimple.xml_in("<dummy>#{extended_content_xml}</dummy>", options).map do |key, value|
+        XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", options).map do |key, value|
           recursively_convert_values(key, value)
         end
       end

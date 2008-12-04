@@ -98,12 +98,12 @@ class Topic < ActiveRecord::Base
     alias_method :tag_counts, :flag_counts
   RUBY
 
-  validates_xml :extended_content_xml
+  validates_xml :extended_content
   validates_presence_of :title
   # don't allow ampersands in title, it screws up our search records, because it is special character in xml
   validates_format_of :title, :with => /\A[^\&]*\Z/, :message => "cannot contain the &amp; character."
 
-  validates_as_sanitized_html :description, :extended_content_xml
+  validates_as_sanitized_html :description, :extended_content
 
   # TODO: add validation that prevents markup in short_summary
   # globalize stuff, uncomment later

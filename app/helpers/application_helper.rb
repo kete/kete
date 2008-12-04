@@ -579,7 +579,10 @@ module ApplicationHelper
 
   def tags_for(item)
     html_string = String.new
-    raw_tag_array = item.raw_tag_list.split(',').collect { |tag| tag.squish }
+    raw_tag_array = Array.new
+    unless item.raw_tag_list.nil?
+      raw_tag_array = item.raw_tag_list.split(',').collect { |tag| tag.squish }
+    end
     tags = Tag.all(:conditions => ["tags.name IN (?)", raw_tag_array])
     if tags.size > 0
       html_string = "<p>Tags: "
@@ -596,15 +599,12 @@ module ApplicationHelper
     end
   end
 
-<<<<<<< HEAD:app/helpers/application_helper.rb
   def tags_input_field(form,label_for)
     "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
   
   # 
-=======
->>>>>>> origin/enhancement_lh97_choices_for_extended_fields:app/helpers/application_helper.rb
   def limit_search_to_choice_control
     options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
       memo + option_for_choice_control(choice, :level => 0)
@@ -626,60 +626,48 @@ module ApplicationHelper
     array = [[("&nbsp;&nbsp;"*level) + choice.label, choice.value]]
     choice.children.reject { |c| c.extended_fields.empty? }.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
   end
-<<<<<<< HEAD:app/helpers/application_helper.rb
-  
-=======
 
->>>>>>> origin/enhancement_lh97_choices_for_extended_fields:app/helpers/application_helper.rb
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item)
     raq = " &raquo; "
     html = []
     
-    item.extended_content_pairs.reverse.each do |label, value|
-      ef = ExtendedField.find_by_label(label.gsub(/(_multitple)$/, '').humanize)
-      raise "Could not find extended field with label '#{label.gsub(/(_multitple)$/, '')}'." if ef.blank?
-      
-      if value_from_xml_is_choice?(label, value)
-        if label =~ /_multiple$/
-          value = value.map { |l| l.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq) }.to_sentence
-        elsif ef.ftype == 'map'
-          # Google maps ae classed as multiple choice (latitude/longitude/zoom)
-          value = extended_field_map_editor(label, value, { :style => 'width:220px; height:220px;' }, false)
-        else
-          value = value.map { |l| formatted_value_from_xml(l, ef, item) }.reject { |t| t.to_s.blank? }.join(raq)
-        end
+    mappings = item.is_a?(Topic) ? item.all_field_mappings : @content_type.content_type_to_field_mappings
+    content = item.extended_content_pairs
+
+    mappings.each do |mapping|
+      field = mapping.extended_field
+      # value = content[qualified_name_for_field(field)]
+      field_name = field.multiple? ? qualified_name_for_field(field) + "_multiple" : qualified_name_for_field(field)
+
+      value = content.select { |pair| pair[0] == field_name }.first.last rescue nil
+      next if value.to_s.blank?
+
+      value = formatted_extended_content_value(field, field_name, value, item)
+
+      if field.ftype == 'map'
+        td = content_tag("td", "#{field.label}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
       else
-        if label =~ /_multiples$/
-          value = value.map { |l| formatted_value_from_xml(l, ef, item) }.to_sentence
-        else
-          value = formatted_value_from_xml(value, ef, item)
-        end
+        td = content_tag("td", "#{field.label}:", :class => "detail-extended-field-label") +
+             content_tag("td", value)
       end
 
-      if ef.ftype == 'map'
-        tds = content_tag("td", "#{label.humanize}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
-      else
-        tds = content_tag("td", "#{label.gsub(/_multiple$/, '').humanize}:", :class => "detail-extended-field-label") + \
-              content_tag("td", value)
-      end
-  
-      html << content_tag("tr", tds) unless value.to_s.blank?
+      html << content_tag("tr", td)
     end
     
     unless html.empty?
       content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
     end
+    
   end
   
-  # Find whether the supplied data is likely to be from a choice field type.
-  def value_from_xml_is_choice?(label, value)
-    
-    # Results from choices always multiple due to sub-choices
-    if label =~ /_multiple$/
-      value.is_a?(Array) && value.first.is_a?(Array)
+  def formatted_extended_content_value(field, field_name, value, item)
+    if field.ftype == 'map'
+      extended_field_map_editor(field_name, value, { :style => 'width:220px; height:220px;' }, false)
+    elsif field.multiple?
+      value.collect { |v| formatted_value_from_xml(v, field, item) }.to_sentence
     else
-      value.is_a?(Array)
+      formatted_value_from_xml(value, field, item)
     end
   end
   
@@ -699,8 +687,10 @@ module ApplicationHelper
       else
         method = 'basket_all_of_category_url'
       end
-
-      link_to(value, send(method, url_hash.merge(:limit_to_choice => value)))
+      
+      value.map do |v|
+        link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
+      end.join(" &raquo; ")
       
     else
       case value

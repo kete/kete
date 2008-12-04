@@ -65,7 +65,7 @@ module ConfigureAsKeteContentItem
       # don't allow ampersands in title, it screws up our search records, because it is special character in xml
       klass.send :validates_format_of, :title, :with => /\A[^\&]*\Z/, :message => "cannot contain the &amp; character."
 
-      klass.send :validates_as_sanitized_html, [:description, :extended_content_xml]
+      klass.send :validates_as_sanitized_html, [:description, :extended_content]
 
       # TODO: globalize stuff, uncomment later
       # translates :title, :description

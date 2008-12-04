@@ -44,17 +44,17 @@ class TopicTest < Test::Unit::TestCase
   
   def test_extended_content_setter
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
     model.save!
     
     assert_valid model
     
-    assert_equal '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>', model.extended_content_xml
+    assert_equal '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>', model.extended_content
   end
 
   def test_xml_attributes
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.update_attribute(:extended_content_xml, '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>')
+    model.update_attribute(:extended_content, '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>')
     
     assert_valid model
     
@@ -63,7 +63,7 @@ class TopicTest < Test::Unit::TestCase
     
   def test_xml_attributes_without_data
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.update_attribute(:extended_content_xml, '')
+    model.update_attribute(:extended_content, '')
     
     assert !model.valid?
     
@@ -72,7 +72,7 @@ class TopicTest < Test::Unit::TestCase
   
   def test_xml_attributes_without_position_with_multiple_field_values
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
-      t.extended_content = {
+      t.extended_content_values = {
         "first_names" => "Joe",
         "last_name" => "Bloggs",
         "address" => { "1" => "The Parade", "2" => "Island Bay" }
@@ -104,7 +104,7 @@ class TopicTest < Test::Unit::TestCase
     topic_type.save!
     
     model = Topic.new(@new_model.merge(:topic_type => topic_type))
-    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "Nelson" } }
+    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "Nelson" } }
     
     assert_nothing_raised do
       model.save!
@@ -119,7 +119,7 @@ class TopicTest < Test::Unit::TestCase
 
     # Test with valid fields
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "city" => "Wellington" }
+    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "city" => "Wellington" }
     
     assert_valid model
     
@@ -129,7 +129,7 @@ class TopicTest < Test::Unit::TestCase
     
     # Test with invalid fields
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content = { "first_names" => "", "last_name" => "Bloggs Fam." }
+    model.extended_content_values = { "first_names" => "", "last_name" => "Bloggs Fam." }
     assert_equal [["first_names", nil], ["last_name", "Bloggs Fam."], ["place_of_birth", nil]].sort, model.extended_content_pairs.sort
     assert !model.valid?
     assert_equal 1, model.errors.size
@@ -143,11 +143,11 @@ class TopicTest < Test::Unit::TestCase
     topic_type = add_field_to(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }, { :required => true })
 
     model = Topic.new(@new_model.merge(:topic_type => topic_type))
-    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "" } }
+    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "" } }
     
     assert_valid model
     
-    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "", "2" => "" } }
+    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "", "2" => "" } }
     
     assert !model.valid?
     assert_equal 1, model.errors.size
@@ -158,7 +158,7 @@ class TopicTest < Test::Unit::TestCase
   
   def test_helpers_work
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
-      t.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      t.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
       assert_valid t
       assert_kind_of Topic, t
     end
@@ -166,7 +166,7 @@ class TopicTest < Test::Unit::TestCase
   
   def test_extended_field_text_fields_are_validated
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
     
     assert_valid model
     assert_equal 0, model.errors.size
@@ -174,7 +174,7 @@ class TopicTest < Test::Unit::TestCase
   
   def test_extended_field_textarea_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
-      t.extended_content = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => "New\n Line" }
+      t.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => "New\n Line" }
       assert_valid t
     end
   end
@@ -189,15 +189,15 @@ class TopicTest < Test::Unit::TestCase
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Birthdate", :ftype => "date" }) do |t|
       compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
       
-      t.extended_content = compulsory_content.merge("birthdate" => "1960-01-01")
+      t.extended_content_values = compulsory_content.merge("birthdate" => "1960-01-01")
       assert_valid t
       
-      t.extended_content = compulsory_content.merge("birthdate" => "In 1960")
+      t.extended_content_values = compulsory_content.merge("birthdate" => "In 1960")
       assert !t.valid?
       assert_equal 1, t.errors.size
       assert_equal "Birthdate must be in the standard date format (YYYY-MM-DD)", t.errors.full_messages.join(", ")
       
-      t.extended_content = compulsory_content.merge("birthdate" => "1960-1-1")
+      t.extended_content_values = compulsory_content.merge("birthdate" => "1960-1-1")
       assert !t.valid?
       assert_equal 1, t.errors.size
       assert_equal "Birthdate must be in the standard date format (YYYY-MM-DD)", t.errors.full_messages.join(", ")
@@ -209,13 +209,13 @@ class TopicTest < Test::Unit::TestCase
       compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
       
       ["Yes", "No", ""].each do |value|
-        t.extended_content = compulsory_content.merge("deceased" => value)
+        t.extended_content_values = compulsory_content.merge("deceased" => value)
         assert_valid t
         assert_equal 0, t.errors.size
       end
       
       [1, 0, "yes"].each do |value|
-        t.extended_content = compulsory_content.merge("deceased" => value)
+        t.extended_content_values = compulsory_content.merge("deceased" => value)
         assert !t.valid?
         assert_equal "Deceased must be a valid checkbox value (Yes or No)", t.errors.full_messages.join(", ")
       end
@@ -243,13 +243,13 @@ class TopicTest < Test::Unit::TestCase
       
       # Run the tests
       ["", "Married", "Defacto Relationship", "Dating", "Single"].each do |value|
-        t.extended_content = compulsory_content.merge("marital_status" => value)
+        t.extended_content_values = compulsory_content.merge("marital_status" => value)
         assert_valid t
         assert_equal 0, t.errors.size
       end
       
       ["married", "something else", "123", "Defacto", "Defacto relationship"].each do |v|
-        t.extended_content = compulsory_content.merge("marital_status" => v)
+        t.extended_content_values = compulsory_content.merge("marital_status" => v)
         assert !t.valid?
         assert_equal 1, t.errors.size
         assert_equal "Marital status must be a valid choice", t.errors.full_messages.join(", ")

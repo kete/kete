@@ -184,8 +184,12 @@ module GoogleMap
             if (latitude == '' || longitude == '' || zoom_lvl == '') {
               alert('ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!'); return;
             }
-            if ($(map.latlng_text_field).value == '') { $(map.latlng_text_field).value = latitude + ',' + longitude; }
-            if ($(map.zoom_text_field).value == '') { $(map.zoom_text_field).value = zoom_lvl; }
+            if ($(map.latlng_text_field) && $(map.latlng_text_field).value == '') {
+              $(map.latlng_text_field).value = latitude + ',' + longitude;
+            }
+            if ($(map.zoom_text_field) && $(map.zoom_text_field).value == '') {
+              $(map.zoom_text_field).value = zoom_lvl;
+            }
             // center the map on the default latitude, longitude and zoom level
             // (comes from either params, the item being edited, or config)
             map.setCenter(new google.maps.LatLng(latitude, longitude), zoom_lvl);

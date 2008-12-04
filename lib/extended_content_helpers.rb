@@ -50,6 +50,8 @@ module ExtendedContentHelpers
         
         # This means we're dealing with a second set of nested values, to build these now.
         data_for_values = data.reject { |k, v| k == "xml_element_name" }.map { |k, v| v }
+        
+        return nil if data_for_values.empty?
 
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
