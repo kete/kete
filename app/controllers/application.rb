@@ -730,8 +730,7 @@ class ApplicationController < ActionController::Base
   def clear_caches_and_update_zoom_for_commented_item(item)
     if item.class.name == 'Comment'
       commented_item = item.commentable
-
-      expire_comments_caches_for(commented_item)
+      expire_caches_after_comments(commented_item, item.private?)
       prepare_and_save_to_zoom(commented_item)
     end
   end
