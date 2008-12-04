@@ -45,7 +45,9 @@ module ResizeAsJpegWhenNecessary
           allowed_content_types.delete(:image)
           allowed_content_types += Technoweenie::AttachmentFu.content_types
         end
-        allowed_content_types.include?(content_type)
+        content_type_parts = content_type.split("/")
+        format = content_type_parts[1].upcase
+        allowed_content_types.include?(content_type) && rmagick_can_read_format?(format)
       end
     end
 
