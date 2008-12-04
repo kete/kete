@@ -33,6 +33,7 @@ class StillImageTest < Test::Unit::TestCase
   include ItemPrivacyTestHelper::TestHelper
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
+  include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
   # TODO: more testing of image_file population?
   # TODO: find_with

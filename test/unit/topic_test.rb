@@ -29,6 +29,7 @@ class TopicTest < Test::Unit::TestCase
   include ItemPrivacyTestHelper::TestHelper
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
+  include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
   
   def test_does_not_respond_to_file_private
     topic = Topic.create

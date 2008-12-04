@@ -143,7 +143,7 @@ module ItemPrivacy
             without_saving_private do
               # if the basket has moved, make sure we update the public version its reverting to
               # else you get the public in one basket, and the private in another which doesn't work well
-              public_version.basket_id = basket_id if public_version.basket_id != basket_id
+              public_version.basket_id = basket_id
               revert_to!(public_version)
             end
 
