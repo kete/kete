@@ -760,7 +760,107 @@ module ItemPrivacyTestHelper
         end
         
     end
-    
+
+    module MovingItemsBetweenBasketsWithDifferentPrivacies
+      def test_moving_public_item_to_public_basket
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
+        @new_topic.update_attributes({:basket => @new_public_basket})
+        assert_equal @new_public_basket, @new_topic.basket
+        assert !@new_topic.has_private_version?
+      end
+
+      def test_moving_private_item_to_public_basket
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => true, :basket => @new_either_basket}))
+        assert @new_topic.has_private_version?
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_either_basket, @new_topic.basket
+        @new_topic.update_attributes({:basket => @new_public_basket})
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_public_basket, @new_topic.basket
+      end
+
+      def test_moving_public_item_to_private_basket
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
+        @new_topic.update_attributes({:basket => @new_private_basket})
+        assert_equal @new_private_basket, @new_topic.basket
+        assert !@new_topic.has_private_version?
+      end
+
+      def test_moving_private_item_to_private_basket
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => true, :basket => @new_either_basket}))
+        assert @new_topic.has_private_version?
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_either_basket, @new_topic.basket
+        @new_topic.update_attributes({:basket => @new_private_basket})
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_private_basket, @new_topic.basket
+      end
+
+      def test_not_moving_public_item_to_new_basket
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
+        @old_basket = @new_topic.basket
+        @new_topic.update_attributes({:description => 'hey'})
+        assert_equal @old_basket, @new_topic.basket
+        assert !@new_topic.has_private_version?
+      end
+
+      def test_not_moving_private_item_to_new_basket
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => true, :basket => @new_either_basket}))
+        assert @new_topic.has_private_version?
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_either_basket, @new_topic.basket
+        @new_topic.update_attributes({:description => 'hey'})
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_either_basket, @new_topic.basket
+      end
+
+      def test_moving_public_version_updates_private_version_basket_id
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
+        @new_topic.update_attributes({:private => true, :description => 'hey'})
+        assert @new_topic.has_private_version?
+        @new_topic.update_attributes({:basket => @new_private_basket})
+        assert_equal @new_private_basket, @new_topic.basket
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_private_basket, @new_topic.basket
+      end
+
+      def test_moving_private_version_updates_public_version_basket_id
+        setup_new_baskets
+        @new_topic = @base_class.constantize.create(@new_model.merge({:private => false, :basket => @new_either_basket}))
+        @new_topic.update_attributes({:private => true, :description => 'hey'})
+        assert @new_topic.has_private_version?
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        @new_topic.update_attributes({:basket => @new_private_basket})
+        assert_equal @new_private_basket, @new_topic.basket
+        @new_topic.private_version!
+        assert @new_topic.is_private?
+        assert_equal @new_private_basket, @new_topic.basket
+      end
+
+      private
+
+      def setup_new_baskets
+        @new_either_basket = Basket.create({:name => 'Either Basket', :show_privacy_controls => true, :private_default => false})
+        @new_public_basket = Basket.create({:name => 'Public Basket', :show_privacy_controls => false, :private_default => false})
+        @new_private_basket = Basket.create({:name => 'Private Basket', :show_privacy_controls => true, :private_default => true})
+      end
+    end
+
   end
   
 end
