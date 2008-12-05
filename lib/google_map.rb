@@ -38,13 +38,10 @@ module GoogleMap
   end
 
   module ExtendedFieldsHelper
-    def extended_field_map_editor(name, value, options = {}, field_type = 'map', generate_text_fields = true, display_coords = false, display_address = false)
+    def extended_field_map_editor(name, value, options = {}, latlng_options = {}, field_type = 'map', generate_text_fields = true, display_coords = false, display_address = false)
       # Google maps are disabled by default, so make sure we enable them here
       # This method is called on all pages
       @using_google_maps = true
-
-      map_options = { :style => 'width:550px;' }
-      map_options.merge!(options)
 
       # we fill the text field values in one of two ways
       # first, if the new/edit form has been submitted, we use those values
@@ -108,13 +105,22 @@ module GoogleMap
       # If we're on the show pages, and the map type shows the address
       # append a paragraph after the google map with the address value
       html += content_tag('p', @current_address) if display_address
+
+      # create the lat/lng display
+      latlng_data = { :style => 'width:550px;' }
+      latlng_data.merge!(latlng_options)
+      latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
       html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
                                   <small>Show Latitude/Longitude</small>
                                 </a><br />
                                 <em id='#{map_data[:coords_field]}_display'><span>Latitude and Longitude coordinates:</span> #{@current_coords}</em>",
-                               { :style => "margin-bottom:0px; text-align:right;" }) if display_coords
+                               latlng_data) if display_coords
+
       # create the google map div
-      html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({ :id => map_data[:map_id] }))
+      map_options = { :style => 'width:550px;', :id => map_data[:map_id] }
+      map_options.merge!(options)
+      html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options)
+
       html
     end
     # both the google map and google map with address options use the same code
