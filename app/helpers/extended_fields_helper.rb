@@ -81,7 +81,8 @@ module ExtendedFieldsHelper
       ['Text box', 'textarea'],
       ['Choices (auto-completion)', 'autocomplete'],
       ['Choices (drop-down)', 'choice'],
-      ['Google Map', 'map']
+      ['Location on map', 'map'],
+      ['Location on map with address', 'map_address']
     ]
     
     select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
