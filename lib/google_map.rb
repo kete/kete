@@ -108,7 +108,11 @@ module GoogleMap
       # If we're on the show pages, and the map type shows the address
       # append a paragraph after the google map with the address value
       html += content_tag('p', @current_address) if display_address
-      html += content_tag('p', "Latitude and Longitude coordinates: #{@current_coords}") if display_coords
+      html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
+                                  <small>Show Latitude/Longitude</small>
+                                </a><br />
+                                <em id='#{map_data[:coords_field]}_display'><span>Latitude and Longitude coordinates:</span> #{@current_coords}</em>",
+                               { :style => "margin-bottom:0px; text-align:right;" }) if display_coords
       # create the google map div
       html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({ :id => map_data[:map_id] }))
       html
@@ -215,7 +219,23 @@ module GoogleMap
             }
             // clear/resize the div on both displays, and replace the warning/hide the fields
             $(map_id).value = '';
-            #{@google_map_on_index_or_show_page ? '$(map_id).setStyle({height: \'220px\'});' :
+            #{@google_map_on_index_or_show_page ? '$(map_id).setStyle({height: \'220px\'});
+                                                   $(latlng_text_field + \'_display\').hide();
+                                                   $(latlng_text_field + \'_display\').hidden_status = \'hidden\';
+                                                   $(latlng_text_field + \'_display\').firstChild.hide();
+                                                   $(latlng_text_field + \'_show_hide\').show();
+                                                   $(latlng_text_field + \'_show_hide\').observe(\'click\', function(event) {
+                                                     if ($(latlng_text_field + \'_display\').hidden_status == \'hidden\') {
+                                                       $(latlng_text_field + \'_display\').show();
+                                                       $(latlng_text_field + \'_display\').hidden_status = \'showing\';
+                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>Hide Latitude/Longitude</small>\');
+                                                     } else {
+                                                       $(latlng_text_field + \'_display\').hide();
+                                                       $(latlng_text_field + \'_display\').hidden_status = \'hidden\';
+                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>Show Latitude/Longitude</small>\');
+                                                     }
+                                                     event.stop();
+                                                   });' :
                                                   '$(map_id).setStyle({height: \'380px\'});
                                                    $(map_id + \'_warning\').hide();
                                                    $(map_id + \'_fields\').hide();'}
