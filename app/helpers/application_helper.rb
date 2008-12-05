@@ -663,9 +663,9 @@ module ApplicationHelper
   
   def formatted_extended_content_value(field, field_name, value, item)
     if field.ftype == 'map'
-      extended_field_map_editor(field_name, value, { :style => 'width:220px; height:220px;' }, false, false)
+      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, 'map', false, true, false)
     elsif field.ftype == 'map_address'
-      extended_field_map_editor(field_name, value, { :style => 'width:220px; height:220px;' }, false, true)
+      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, 'map_address', false, true, true)
     elsif field.multiple?
       value.collect { |v| formatted_value_from_xml(v, field, item) }.to_sentence
     else

@@ -38,12 +38,12 @@ module GoogleMap
   end
 
   module ExtendedFieldsHelper
-    def extended_field_map_editor(name, value, options = {}, generate_text_fields = true, display_address = false)
+    def extended_field_map_editor(name, value, options = {}, field_type = 'map', generate_text_fields = true, display_coords = false, display_address = false)
       # Google maps are disabled by default, so make sure we enable them here
       # This method is called on all pages
       @using_google_maps = true
 
-      map_options = { :style => 'width:550px; height:380px;' }
+      map_options = { :style => 'width:550px;' }
       map_options.merge!(options)
 
       # we fill the text field values in one of two ways
@@ -71,6 +71,7 @@ module GoogleMap
 
       # populate a map data hash with details for this map (can have multiple maps on each item)
       map_data = { :map_id => "#{safe_name}_map_div",
+                   :map_type => field_type,
                    :latitude => @current_coords.split(',')[0],
                    :longitude => @current_coords.split(',')[1],
                    :zoom_lvl => @current_zoom_lvl,
@@ -82,35 +83,40 @@ module GoogleMap
       @google_maps_list ||= Array.new
       @google_maps_list << map_data
 
-      # create the google map div
-      html = content_tag('div', nil, map_options.merge({ :id => map_data[:map_id] }))
+      html = String.new
       if generate_text_fields
         # if we're on the edit pages, we want these fields to be present
-        html += text_field_tag("#{name}[coords]",
-                               @current_coords,
-                               { :id => map_data[:coords_field],
-                                 :readonly => 'readonly',
-                                 :style => 'display:none;' })
-        html += text_field_tag("#{name}[zoom_lvl]",
-                               @current_zoom_lvl,
-                               { :id => map_data[:zoom_lvl_field],
-                                 :readonly => 'readonly',
-                                 :size => '2',
-                                  :style => 'display:none;' })
-        html += "<br />" + text_field_tag("#{name}[address]",
-                               @current_address,
-                               { :id => map_data[:address_field],
-                                 :readonly => 'readonly',
-                                 :size => '45',
-                                  :style => 'display:none;' })
+        fields = String.new
+        if field_type == 'map_address'
+          fields += label_tag(map_data[:address_field], "Address:", :class => 'inline') +
+                    text_field_tag("#{name}[address]",
+                                    @current_address,
+                                   { :id => map_data[:address_field], :size => 45 }) + "<br />"
+        end
+        fields += label_tag(map_data[:coords_field], "Latitude and Longitude coordinates:", :class => 'inline') +
+                  text_field_tag("#{name}[coords]",
+                                  @current_coords,
+                                 { :id => map_data[:coords_field] }) + "<br />"
+        fields += label_tag(map_data[:zoom_lvl_field], "Zoom level for map:", :class => 'inline') +
+                  text_field_tag("#{name}[zoom_lvl]",
+                                  @current_zoom_lvl,
+                                 { :id => map_data[:zoom_lvl_field], :size => 2 })
+        html += content_tag('div', fields, { :id => "#{map_data[:map_id]}_fields" })
+        html += content_tag('div', "This feature requires exact data to function properly.",
+                                   { :id => "#{map_data[:map_id]}_warning" })
       end
       # If we're on the show pages, and the map type shows the address
       # append a paragraph after the google map with the address value
       html += content_tag('p', @current_address) if display_address
+      html += content_tag('p', "Latitude and Longitude coordinates: #{@current_coords}") if display_coords
+      # create the google map div
+      html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({ :id => map_data[:map_id] }))
       html
     end
     # both the google map and google map with address options use the same code
-    alias extended_field_map_address_editor extended_field_map_editor
+    def extended_field_map_address_editor(name, value, options = {}, field_type = 'map_address', generate_text_fields = true, display_coords = false, display_address = false)
+      extended_field_map_editor(name, value, options, field_type, generate_text_fields, display_coords, display_address)
+    end
 
     private
 
@@ -152,6 +158,7 @@ module GoogleMap
         @google_maps_list.each do |google_map|
           @google_maps_initializers += "initialize_google_map("
           @google_maps_initializers += "'#{google_map[:map_id]}'"
+          @google_maps_initializers += ", '#{google_map[:map_type]}'"
           @google_maps_initializers += (google_map[:latitude].blank? ? ", ''" : ", #{google_map[:latitude]}")
           @google_maps_initializers += (google_map[:longitude].blank? ? ", ''" : ", #{google_map[:longitude]}")
           @google_maps_initializers += (google_map[:zoom_lvl].blank? ? ", ''" : ", #{google_map[:zoom_lvl]}")
@@ -197,7 +204,7 @@ module GoogleMap
           google.load('maps', '2', {'other_params':'sensor=true'});
 
           // the function run when the page finishes loading, to initiate the google map
-          function initialize_google_map(map_id, latitude, longitude, zoom_lvl, latlng_text_field, zoom_text_field, address_text_field) {
+          function initialize_google_map(map_id, map_type, latitude, longitude, zoom_lvl, latlng_text_field, zoom_text_field, address_text_field) {
             // make sure we don't do any google map code unless the browser supports it
             if (!google.maps.BrowserIsCompatible()) {
               alert('Google Maps is not compatible with this browser. Try using Firefox 3, Internet Explorer 7, or Safari 3.'); return;
@@ -206,17 +213,26 @@ module GoogleMap
             if (!$(map_id)) {
               alert('You are trying to initiate the google map api on a non-existant div (' + map_id + '). Debug this!'); return;
             }
+            // clear/resize the div on both displays, and replace the warning/hide the fields
+            $(map_id).value = '';
+            #{@google_map_on_index_or_show_page ? '$(map_id).setStyle({height: \'220px\'});' :
+                                                  '$(map_id).setStyle({height: \'380px\'});
+                                                   $(map_id + \'_warning\').hide();
+                                                   $(map_id + \'_fields\').hide();'}
             // initialize the google map
             var map = new google.maps.Map2($(map_id));
             // store the several objects/values in the map object for easy access
             // it also makes it possible to have different maps on the same page
             map.geocoder_obj = new google.maps.ClientGeocoder();
-            map.latitude_value = latitude
-            map.longitude_value = longitude
-            map.zoom_lvl_value = zoom_lvl
-            map.latlng_text_field = latlng_text_field
-            map.zoom_text_field = zoom_text_field
-            map.address_text_field = address_text_field
+            map.map_type = map_type;
+            map.latitude_value = latitude;
+            map.longitude_value = longitude;
+            map.zoom_lvl_value = zoom_lvl;
+            map.latlng_text_field = latlng_text_field;
+            map.zoom_text_field = zoom_text_field;
+            if (map.map_type == 'map_address') {
+              map.address_text_field = address_text_field;
+            }
             // Make sure we have the nessesary fields present
             if (!verify_all_fields_present(map)) { return; }
             // center the map on the default latitude, longitude and zoom level
@@ -231,7 +247,13 @@ module GoogleMap
                                                    new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(10,25)));
                                                    remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, true);'}
             // the code from this point only executes on new/edit pages, not the show pages
-            if ($(map.latlng_text_field) && $(map.zoom_text_field) && $(map.address_text_field)) {
+            if ($(map.latlng_text_field) && $(map.zoom_text_field) && (map.map_type == 'map' || (map.map_type == 'map_address' && $(map.address_text_field)))) {
+              // make readonly
+              $(map.latlng_text_field).readonly = true;
+              $(map.zoom_text_field).readonly = true;
+              if (map.map_type == 'map_address') {
+                $(map.address_text_field).readonly = true;
+              }
               // when a user clicks the map, add a marker and update the coords and zoom level
               google.maps.Event.addListener(map, 'click', function(overlay, latlng) {
                 // make sure that a latitude and longitude is passed in
@@ -321,8 +343,10 @@ module GoogleMap
                   $(map.latlng_text_field).value = place.Point.coordinates[1] + ',' + place.Point.coordinates[0];
                   // the current maps zoom level
                   $(map.zoom_text_field).value = map.getZoom();
-                  // the address details from the result
-                  $(map.address_text_field).value = place.address;
+                  if (map.map_type == 'map_address') {
+                    // the address details from the result
+                    $(map.address_text_field).value = place.address;
+                  }
                 }
               }
             });

@@ -80,11 +80,15 @@ module ExtendedFieldsHelper
       ['Text', 'text'],
       ['Text box', 'textarea'],
       ['Choices (auto-completion)', 'autocomplete'],
-      ['Choices (drop-down)', 'choice'],
-      ['Location on map', 'map'],
-      ['Location on map with address', 'map_address']
+      ['Choices (drop-down)', 'choice']
     ]
-    
+
+    @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
+    if File.exists?(@gma_config_path)
+      options_for_select << ['Location on map (lat/lng coordinates)', 'map']
+      options_for_select << ['Location on map with address', 'map_address']
+    end
+
     select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
   end
   
