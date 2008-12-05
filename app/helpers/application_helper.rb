@@ -944,9 +944,10 @@ module ApplicationHelper
   end
 
   # Check if privacy controls should be displayed?
-  def show_privacy_controls?
-    @current_basket.show_privacy_controls_with_inheritance?
+  def show_privacy_controls?(basket = @current_basket)
+    basket.show_privacy_controls_with_inheritance?
   end
+  alias show_privacy_controls_for_basket? show_privacy_controls?
 
   def show_privacy_search_controls?
     if @current_basket == @site_basket
