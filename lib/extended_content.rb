@@ -261,7 +261,7 @@ module ExtendedContent
       def validate_extended_checkbox_field_content(extended_field_mapping, value)
         return nil if value.blank?
         
-        unless value =~ /^(Yes|No)$/
+        unless value =~ /^((Y|y)es|(N|n)o)$/
           "must be a valid checkbox value (Yes or No)"
         end
       end

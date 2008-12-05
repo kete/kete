@@ -184,11 +184,11 @@ module ExtendedFieldsHelper
   end
   
   def extended_field_checkbox_editor(name, value, options)
-    check_box_tag(name, "Yes", (value.to_s == "Yes"), options)
+    check_box_tag(name, "yes", (value.to_s =~ /^(Yes|yes)$/), options)
   end
   
   def extended_field_radio_editor(name, existing_value, options)
-    default_choices = [["Yes", "Yes"], ["No", "No"], ["No value", ""]]
+    default_choices = [["Yes", "yes"], ["No", "no"], ["No value", ""]]
     
     # In the future we might allow radio buttons to be used for selecting choices
     # choices = extended_field.choices.empty? ? default_choices : extended_field.choices.find_top_level.map { |c| [c.label, c.value] }
