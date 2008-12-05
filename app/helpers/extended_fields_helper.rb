@@ -392,7 +392,11 @@ module ExtendedFieldsHelper
     end
     
     def id_for_extended_field(extended_field)
-      name_for_extended_field(extended_field).gsub(/\]/, "").gsub(/\[/, '_')
+      create_safe_extended_field_string(name_for_extended_field(extended_field))
+    end
+
+    def create_safe_extended_field_string(string)
+      string.gsub(/\]/, "").gsub(/\[/, '_')
     end
 
 end

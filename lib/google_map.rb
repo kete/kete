@@ -67,7 +67,7 @@ module GoogleMap
       end
 
       # create a safe name (letters and underscores only) from the field name
-      safe_name = name.gsub('[', '_').gsub(']', '')
+      safe_name = create_safe_extended_field_string(name)
 
       # populate a map data hash with details for this map (can have multiple maps on each item)
       map_data = { :map_id => "#{safe_name}_map_div",
