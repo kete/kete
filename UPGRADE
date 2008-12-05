@@ -33,6 +33,13 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2008/12/05 - Fixing Zebra configuration that wasn't allowing for large sets of search records to be handled
+
+1.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
+        If using Capistrano, you will want to make sure the new code from shared/cached-copy/zebradb/conf/zebra-public.cfg (also, the zebra-private.cfg) is in place.  This may require a manual cp to shared/system/zebradb/conf/
+2.      Stop zebra with "rake zebra:stop"
+3.      Start zebra with "rake zebra:start"
+
 == 2008/11/12 - Better handling of unicode characters in search records
 
 1.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
