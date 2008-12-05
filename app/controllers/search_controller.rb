@@ -312,7 +312,14 @@ class SearchController < ApplicationController
     # Extended Field choice searching mechanisms
     
     # Handle searching against a specific extended field.
-    dc_element = @extended_field ? @extended_field.xml_element_name.gsub(/^(dc:)/, "") : nil
+    begin
+      dc_element = @extended_field ? @extended_field.xml_element_name.gsub(/^(dc:)/, "") : nil
+    rescue
+      
+      # We need to handle the case where no xml_element_name has been given.
+      dc_element = "description"
+    end
+    
     plural_aliased_dc_methods = %w(relation subject creator contributor)
     
     if plural_aliased_dc_methods.member?(dc_element)

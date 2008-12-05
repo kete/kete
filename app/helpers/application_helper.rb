@@ -678,7 +678,7 @@ module ApplicationHelper
       
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
-        :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
+        :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
         :controller => 'search',
         :extended_field => ef.label.humanize
       }

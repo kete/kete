@@ -88,8 +88,30 @@ module ExtendedFieldsHelper
       options_for_select << ['Location on map (lat/lng coordinates)', 'map']
       options_for_select << ['Location on map with address', 'map_address']
     end
-
-    select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
+    
+    if record.new_record?
+      select(:record, :ftype, options_for_select, {}, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
+    else
+      "#{record.ftype} (cannot be changed)"
+    end
+  end
+  
+  # Ensure that label value cannot be changed (attr_readonly)
+  def label_form_column(record, input_name)
+    if record.new_record?
+      text_field(:record, :label, :class => "label-input text-input", :id => "record_label_", :size => "20", :autocomplete => "off")
+    else
+      "#{record.label} (cannot be changed)"
+    end
+  end
+  
+  # Ensure that multiple value cannot be changed (attr_readonly)
+  def multiple_form_column(record, input_name)
+    if record.new_record?
+      select(:record, :multiple, [["True", true], ["False", false]])
+    else
+      "#{record.multiple.to_s.capitalize} (cannot be changed)"
+    end
   end
   
   # Same as above, but for choice hierarchy
@@ -192,11 +214,11 @@ module ExtendedFieldsHelper
   end
   
   def extended_field_checkbox_editor(name, value, options)
-    check_box_tag(name, "Yes", (value.to_s == "Yes"), options)
+    check_box_tag(name, "yes", (value.to_s =~ /^(Yes|yes)$/), options)
   end
   
   def extended_field_radio_editor(name, existing_value, options)
-    default_choices = [["Yes", "Yes"], ["No", "No"], ["No value", ""]]
+    default_choices = [["Yes", "yes"], ["No", "no"], ["No value", ""]]
     
     # In the future we might allow radio buttons to be used for selecting choices
     # choices = extended_field.choices.empty? ? default_choices : extended_field.choices.find_top_level.map { |c| [c.label, c.value] }
