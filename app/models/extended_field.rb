@@ -5,6 +5,13 @@ class ExtendedField < ActiveRecord::Base
   has_many :choice_mappings, :as => :field
   has_many :choices, :through => :choice_mappings
   
+  # James - 2008-12-05
+  # Ensure attributes that when changed could be potentially destructive on existing data cannot
+  # be changed after the initial save.
+  # When sufficient testing and conversion code as been added to handle all events relating to changing
+  # these fields, this attributes can be made writeable again.
+  attr_readonly :label, :ftype, :multiple
+  
   def pseudo_choices
     choices.collect { |c| [c.label, c.id] }
   end

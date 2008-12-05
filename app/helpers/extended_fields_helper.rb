@@ -81,7 +81,29 @@ module ExtendedFieldsHelper
       ['Choices (drop-down)', 'choice']
     ]
     
-    select(:record, :ftype, options_for_select, { :select => record.ftype }, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
+    if record.new_record?
+      select(:record, :ftype, options_for_select, {}, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
+    else
+      "#{record.ftype} (cannot be changed)"
+    end
+  end
+  
+  # Ensure that label value cannot be changed (attr_readonly)
+  def label_form_column(record, input_name)
+    if record.new_record?
+      text_field(:record, :label, :class => "label-input text-input", :id => "record_label_", :size => "20", :autocomplete => "off")
+    else
+      "#{record.label} (cannot be changed)"
+    end
+  end
+  
+  # Ensure that multiple value cannot be changed (attr_readonly)
+  def multiple_form_column(record, input_name)
+    if record.new_record?
+      select(:record, :multiple, [["True", true], ["False", false]])
+    else
+      "#{record.multiple.to_s.capitalize} (cannot be changed)"
+    end
   end
   
   # Same as above, but for choice hierarchy
