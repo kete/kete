@@ -209,13 +209,13 @@ class TopicTest < Test::Unit::TestCase
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Deceased", :ftype => "checkbox" }) do |t|
       compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
       
-      ["Yes", "No", ""].each do |value|
+      ["Yes", "No", "yes", "no", ""].each do |value|
         t.extended_content_values = compulsory_content.merge("deceased" => value)
         assert_valid t
         assert_equal 0, t.errors.size
       end
       
-      [1, 0, "yes"].each do |value|
+      [1, 0].each do |value|
         t.extended_content_values = compulsory_content.merge("deceased" => value)
         assert !t.valid?
         assert_equal "Deceased must be a valid checkbox value (Yes or No)", t.errors.full_messages.join(", ")
