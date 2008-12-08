@@ -50,4 +50,7 @@ class Test::Unit::TestCase
 
 end
 
+# James - 2008-12-08
+# Load webrat for integration tests
+require 'webrat/rails'
 
