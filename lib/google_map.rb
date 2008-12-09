@@ -189,7 +189,7 @@ module GoogleMap
       if @using_google_maps
         # Google maps cannot run without a configuration so make sure, if they're using Google Maps, that they configure it.
         @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-        raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)." unless File.exists?(@gma_config_path)
+        return "<!-- Error: Trying to use Google Maps without configuation (config/google_map_api.yml) -->" unless File.exists?(@gma_config_path)
         @gma_config = YAML.load(IO.read(@gma_config_path))
 
         # Prepare the Google Maps needing to load
