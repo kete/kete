@@ -88,7 +88,9 @@
 
   <%= stylesheet_link_tag 'yui/treeview'%>
 
-  <%= load_google_map_api if defined?(load_google_map_api) -%>
+  <% cache_with_privacy(current_item, {:part => 'google_map_api'}) do -%>
+    <%= load_google_map_api if defined?(load_google_map_api) -%>
+  <% end -%>
 
   <%= @rss_tag_auto if !@rss_tag_auto.nil? -%>
 
