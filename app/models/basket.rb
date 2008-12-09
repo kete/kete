@@ -428,4 +428,18 @@ class Basket < ActiveRecord::Base
   def any_privacy_enabled_baskets?
     @@privacy_exists = (Basket.should_show_privacy_controls.count > 0)
   end
+  
+  # James - 2008-12-10
+  # Prevent site basket from being deleted
+  before_destroy :prevent_site_basket_destruction
+  
+  def prevent_site_basket_destruction
+    if self == @@site_basket
+      raise "Error: Cannot delete site basket!"
+      false
+    else
+      true
+    end
+  end
+  
 end

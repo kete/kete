@@ -191,7 +191,7 @@
                                                                                                 :controller => '/importers',
                                                                                                 :action => :list -%></li>
                                 <% end %>
-                                <% if @current_basket.urlified_name != 'site' -%>
+                                <% if @current_basket != @site_basket -%>
                                         <li><%= link_to_unless_current "delete this basket",
                                                         { :id => @current_basket,
                                                                :controller => '/baskets',

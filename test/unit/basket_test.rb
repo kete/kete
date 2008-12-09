@@ -109,6 +109,34 @@ class BasketTest < Test::Unit::TestCase
     assert_equal 'alphabetical', basket.settings[:side_menu_ordering_of_topics]
     assert_equal 'reverse', basket.settings[:side_menu_direction_of_topics]
   end
+  
+  # James - 2008-12-10
+  # Ensure normal baskets can be deleted
+  def test_baskets_other_than_site_can_be_deleted
+    basket = Basket.find(2)
+    basket.destroy
+    
+    assert_raises(ActiveRecord::RecordNotFound) { Basket.find(2) }
+  end
+  
+  # Ensure that the site basket cannot be deleted
+  def test_site_basket_cannot_be_deleted
+    basket = Basket.find(1)
+    assert_raises(RuntimeError) { basket.destroy }
+    assert_equal basket, Basket.find(1)
+  end
+  
+  # Ensure that site basket cannot be deleted after rename
+  def test_site_basket_cannot_be_deleted_after_rename
+    basket = Basket.find(1)
+    assert_equal "site", basket.urlified_name
+    
+    basket.update_attributes(:name => "Another name")
+    assert_equal "another_name", basket.urlified_name
+    
+    assert_raises(RuntimeError) { basket.destroy }
+    assert_equal basket, Basket.find(1)
+  end    
 
   # TODO: tag_counts_array
   # TODO: index_page_order_tags_by
