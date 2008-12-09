@@ -25,6 +25,14 @@ ActionController::Routing::Routes.draw do |map|
   map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
   map.basket ':urlified_name/:controller/:action/:id'
 
+  # Kieran Pilkington, 2008-12-09
+  # adding support for basket list feed
+  map.basket_list_rss ':urlified_name/baskets/rss.:format', :controller => "baskets", :action => 'rss'
+
+  # Kieran Pilkington, 2008-12-09
+  # adding support for tags list feed
+  map.tags_list_rss ':urlified_name/tags/rss.:format', :controller => "tags", :action => 'rss'
+
   # Walter McGinnis, 2007-12-12
   # adding support for moderator feed
   map.basket_moderate_rss ':urlified_name/moderate/rss.:format', :controller => "moderate", :action => 'rss'

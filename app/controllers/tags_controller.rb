@@ -16,6 +16,9 @@ class TagsController < ApplicationController
     @results = WillPaginate::Collection.new(@current_page, @number_per_page, @tag_counts_array.size)
     @tags = @tag_counts_array[(@results.offset)..(@results.offset + (@number_per_page - 1))]
 
+    @rss_tag_auto = rss_tag
+    @rss_tag_link = rss_tag(:auto_detect => false)
+
     respond_to do |format|
       format.html
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/tags/tags_list.js.rjs') }
@@ -25,4 +28,20 @@ class TagsController < ApplicationController
   def list
     index
   end
+
+  def rss
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+
+    @number_per_page = 100
+
+    # this doesn't work with http auth from and IRC client
+    @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
+
+    @tags = @current_basket.tag_counts_array({ :limit => @number_per_page, :order => 'latest', :direction => 'desc' }, (@privacy_type == 'private'))
+
+    respond_to do |format|
+      format.xml
+    end
+  end
+
 end
