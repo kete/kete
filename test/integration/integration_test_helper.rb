@@ -5,6 +5,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
 require 'test_help'
 require File.expand_path(File.dirname(__FILE__) + "/../common_test_methods")
+require File.expand_path(File.dirname(__FILE__) + "/../factories")
 
 # James - 2008-12-08
 # Load webrat for integration tests

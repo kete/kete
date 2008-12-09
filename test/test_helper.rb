@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require File.expand_path(File.dirname(__FILE__) + "/common_test_methods")
+require File.expand_path(File.dirname(__FILE__) + "/factories")
 
 # none of these settings is populated by default
 # so we'll set them here to make sure we get results we expect
