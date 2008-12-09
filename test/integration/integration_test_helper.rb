@@ -1,17 +1,3 @@
-
-def set_constant(constant, value)
-  if respond_to?(:silence_warnings)
-    silence_warnings do
-      Object.remove_const(constant) if Object.const_defined?(constant)
-      Object.const_set(constant, value)
-    end
-  else
-    Object.const_set(constant, value)
-  end
-end
-
-require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
-
 # Skip the system configuration steps
 SKIP_SYSTEM_CONFIGURATION = true
 
@@ -19,6 +5,29 @@ ENV["RAILS_ENV"] = "test"
 
 require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
 require 'test_help'
+
+def set_constant(constant, value)
+  if respond_to?(:silence_warnings)
+    silence_warnings do
+      Object.send(:remove_const, constant) if Object.const_defined?(constant)
+      Object.const_set(constant, value)
+    end
+  else
+    Object.const_set(constant, value)
+  end
+end
+
+def configure_environment(&block)
+  yield(block)
+
+  # Reload the routes based on the current configuration
+  ActionController::Routing::Routes.reload!
+end
+
+
+configure_environment do
+  require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
+end
 
 # attempt to load zebra if it isn't already
 begin
@@ -56,3 +65,15 @@ end
 # Load webrat for integration tests
 require 'webrat/rails'
 
+
+# Overload the IntegrationTest class to ensure tear down occurs OK.
+class ActionController::IntegrationTest
+  
+  def teardown
+    configure_environment do
+      require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
+    end
+    super
+  end
+  
+end

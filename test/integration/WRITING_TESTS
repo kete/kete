@@ -1,0 +1,40 @@
+How to Write Integration Tests for Kete
+
+Basics
+
+The basic premise is to add a separate test suite for each context you want test in. For 
+instance if you want to write a test for User Portraits, you might add a test suite named 
+UserPortraitTest in test/integration/user_portrait_test.rb. In that test you might have 
+something like the following:
+
+  # The test must extend ActionController::IntegrationTest to get all of the Webrat goodies..
+  class UserTest < ActionController::IntegrationTest
+  
+    context "A user instance" do
+  
+      # Configure any environment specifics you need in the context of the test you want to run
+      def setup
+    
+        # configure_environment allows you to configure any environmental specifics you need for 
+        # the test sweet and then reloads the routing afterwards.
+        configure_environment do
+      
+          # set_constant allows you to overwrite a constant with another value without receiving 
+          # any warnings, etc.
+          set_constant :ENABLE_USER_PORTRAITS, true
+        end
+      
+      end
+    
+      # Add your tests here, using shoulda for setting out in test contexts, etc.
+      should "have a default portrait image for a user" do
+        assert blah, blah
+      end
+      
+    end
+    
+  end
+  
+ActionController::IntegrationTest#teardown is overloaded so that the environment (constants, etc)
+are reset between tests suites to avoid conflicts.
+
