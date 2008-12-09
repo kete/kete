@@ -124,8 +124,8 @@ module GoogleMap
       html
     end
     # both the google map and google map with address options use the same code
-    def extended_field_map_address_editor(name, value, options = {}, field_type = 'map_address', generate_text_fields = true, display_coords = false, display_address = false)
-      extended_field_map_editor(name, value, options, field_type, generate_text_fields, display_coords, display_address)
+    def extended_field_map_address_editor(name, value, options = {}, latlng_options = {}, field_type = 'map_address', generate_text_fields = true, display_coords = false, display_address = false)
+      extended_field_map_editor(name, value, options, latlng_options, field_type, generate_text_fields, display_coords, display_address)
     end
 
     private
