@@ -11,6 +11,10 @@ require File.expand_path(File.dirname(__FILE__) + "/../factories")
 # Load webrat for integration tests
 require 'webrat/rails'
 
+# Kieran - 2008-12-09
+# Load shoulda for testing
+require 'shoulda/rails'
+
 def configure_environment(&block)
   yield(block)
   # Reload the routes based on the current configuration
