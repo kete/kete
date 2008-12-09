@@ -1,4 +1,5 @@
 class Topic < ActiveRecord::Base
+  
   # this is where the actual content lives
   # using the extended_fields associated with this topic's topic_type
   # generate a form
@@ -142,6 +143,10 @@ class Topic < ActiveRecord::Base
 
   def validate
     errors.add('Tags', "cannot contain the &amp; character.") if raw_tag_list =~ /\&/
+    
+    # James
+    # Ensure EF validations are run
+    super
   end
 
   def related_topics(only_non_pending = false)
@@ -172,4 +177,13 @@ class Topic < ActiveRecord::Base
   # turn pretty urls on or off here
   include FriendlyUrls
   alias :to_param :format_for_friendly_urls
+  
+  # All available extended field mappings for this topic instance, including those from ancestors
+  # of our TopicType.
+  def all_field_mappings
+    topic_type.topic_type_to_field_mappings.find(:all, :order => 'position ASC') + topic_type.ancestors.collect { |a| a.topic_type_to_field_mappings }.flatten
+  rescue
+    []
+  end
+  
 end

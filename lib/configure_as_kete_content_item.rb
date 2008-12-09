@@ -89,8 +89,14 @@ module ConfigureAsKeteContentItem
     alias :to_param :format_for_friendly_urls
 
     private
-    def validate
-      errors.add('Tags', "cannot contain the &amp; character.") if raw_tag_list =~ /\&/
-    end
+
+      def validate
+        errors.add('Tags', "cannot contain the &amp; character.") if raw_tag_list =~ /\&/
+      
+        # James
+        # Ensure EF validatins are run
+        super
+      end
+    
   end
 end

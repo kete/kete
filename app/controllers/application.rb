@@ -12,8 +12,6 @@ class ApplicationController < ActionController::Base
 
   include ZoomControllerHelpers
 
-  include ExtendedFieldsControllerHelpers
-
   include FriendlyUrls
 
   include Utf8UrlFor
@@ -108,6 +106,7 @@ class ApplicationController < ActionController::Base
                                                        :add_tags ]
 
   helper :slideshows
+  helper :extended_fields
 
   def set_cache_id
     @cache_id = params[:id] ? params[:id].to_i : nil
@@ -275,7 +274,7 @@ class ApplicationController < ActionController::Base
 
   # caching related
   SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]',
-                'page_description_[privacy]', 'edit_[privacy]',
+                'page_description_[privacy]', 'google_map_api_[privacy]', 'edit_[privacy]',
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
@@ -286,7 +285,7 @@ class ApplicationController < ActionController::Base
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = ['page_keywords', 'page_description', 'details_[privacy]', 'license_[privacy]',
+  INDEX_PARTS = ['page_keywords', 'page_description', 'google_map_api_[privacy]', 'details_[privacy]', 'license_[privacy]',
                  'extended_fields_[privacy]', 'edit_[privacy]', 'privacy_chooser_[privacy]', 'tools', 'recent_topics',
                  'search', 'extra_side_bar_html', 'archives_[privacy]', 'tags', 'contact']
 
@@ -516,7 +515,7 @@ class ApplicationController < ActionController::Base
   def has_all_fragments?
     #logger.info('Looking for all fragments')
 
-    @privacy_type ||= get_acceptable_privacy_type("public", "private")
+    @privacy_type ||= get_acceptable_privacy_type_for(nil)
 
     # we are going a bit overboard with the params[:id].to_i bit
     # but we need to be consistent
@@ -789,8 +788,7 @@ class ApplicationController < ActionController::Base
   def clear_caches_and_update_zoom_for_commented_item(item)
     if item.class.name == 'Comment'
       commented_item = item.commentable
-
-      expire_comments_caches_for(commented_item)
+      expire_caches_after_comments(commented_item, item.private?)
       prepare_and_save_to_zoom(commented_item)
     end
   end
@@ -964,7 +962,7 @@ class ApplicationController < ActionController::Base
   end
 
   def public_or_private_version_of(item)
-    if params[:private] == "true" && item.has_private_version? && permitted_to_view_private_items?
+    if allowed_to_access_private_version_of?(item)
       item.private_version!
     else
       item
@@ -982,8 +980,9 @@ class ApplicationController < ActionController::Base
 
   # checks if the user is requesting a private version of an item, and see
   # if they are allowed to do so
-  def accessing_private_version_and_allowed?
-    (!params[:private].nil? and params[:private] == "true" and permitted_to_view_private_items?)
+  def allowed_to_access_private_version_of?(item)
+    return false unless item.nil? || item.has_private_version?
+    (!params[:private].nil? && params[:private] == "true" && permitted_to_view_private_items?)
   end
 
   # checks if the user is requesting a private search of a basket, and see
@@ -995,8 +994,8 @@ class ApplicationController < ActionController::Base
   # used to get the acceptable privacy type (that is the current requested
   # privacy type unless not allowed), and return a value
   # (used in caching to decide whether to look for public or private fragments)
-  def get_acceptable_privacy_type(value_when_public, value_when_private)
-    if accessing_private_version_and_allowed?
+  def get_acceptable_privacy_type_for(item, value_when_public='public', value_when_private='private')
+    if allowed_to_access_private_version_of?(item)
       value_when_private
     else
       value_when_public
@@ -1049,29 +1048,28 @@ class ApplicationController < ActionController::Base
     # for blank version to determine whether to show it
     @item = @current_basket.send(zoom_class.tableize).find(params[:id]) if always_load
 
-    if permitted_to_view_private_items?
-      @show_privacy_chooser = true
-    end
+    @show_privacy_chooser = true if permitted_to_view_private_items?
 
-    if params[:format] == 'xml' or !has_all_fragments? or accessing_private_version_and_allowed?
+    if params[:format] == 'xml' || !has_all_fragments? || allowed_to_access_private_version_of?(@item)
       @item = @current_basket.send(zoom_class.tableize).find(params[:id]) unless always_load
-      @item = @item.private_version! if params[:private] == "true" and @item.has_private_version? and permitted_to_view_private_items?
+      public_or_private_version_of(@item)
+      privacy = get_acceptable_privacy_type_for(@item)
 
-      if params[:format] == 'xml' or !has_fragment?({:part => ("page_title_" + get_acceptable_privacy_type("public", "private")) })
+      if params[:format] == 'xml' || !has_fragment?({ :part => "page_title_#{privacy}" })
         @title = @item.title
       end
 
-      if params[:format] == 'xml' or !has_fragment?({:part => ("contributor_" + get_acceptable_privacy_type("public", "private")) })
+      if params[:format] == 'xml' || !has_fragment?({ :part => "contributor_#{privacy}" })
         @creator = @item.creator
         @last_contributor = @item.contributors.last || @creator
       end
 
-      if logged_in? and @at_least_a_moderator
-        if params[:format] == 'xml' or !has_fragment?({:part => ("comments-moderators_" + get_acceptable_privacy_type("public", "private"))})
+      if logged_in? && @at_least_a_moderator
+        if params[:format] == 'xml' || !has_fragment?({ :part => "comments-moderators_#{privacy}" })
           @comments = @item.non_pending_comments
         end
       else
-        if params[:format] == 'xml' or !has_fragment?({:part => ("comments_" + get_acceptable_privacy_type("public", "private"))})
+        if params[:format] == 'xml' || !has_fragment?({ :part => "comments_#{privacy}" })
           @comments = @item.non_pending_comments
         end
       end
@@ -1102,8 +1100,8 @@ class ApplicationController < ActionController::Base
 
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
-                :permitted_to_edit_current_item?, :accessing_private_version_and_allowed?, :accessing_private_search_and_allowed?,
-                :get_acceptable_privacy_type, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
+                :permitted_to_edit_current_item?, :allowed_to_access_private_version_of?, :accessing_private_search_and_allowed?,
+                :get_acceptable_privacy_type_for, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,

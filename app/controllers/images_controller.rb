@@ -1,11 +1,5 @@
 class ImagesController < ApplicationController
   include ExtendedContentController
-  
-  # Kieran Pilkington, 2008/10/23
-  # Autocomplete methods for tag adder on item pages
-  include TaggingController
-
-  helper :privacy_controls
 
   def index
     redirect_to_search_for('StillImage')
@@ -40,7 +34,7 @@ class ImagesController < ApplicationController
 
     if @successful
 
-      @still_image = StillImage.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
+      @still_image = StillImage.new(params[:still_image])
       @successful = @still_image.save
 
       if @successful
@@ -85,7 +79,7 @@ class ImagesController < ApplicationController
 
     version_after_update = @still_image.max_version + 1
 
-    if @still_image.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'still_image', :item_class => 'StillImage'))
+    if @still_image.update_attributes(params[:still_image])
 
       if !params[:image_file][:uploaded_data].blank?
         # if they have uploaded something new, insert it

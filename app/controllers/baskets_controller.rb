@@ -20,6 +20,10 @@ class BasketsController < ApplicationController
 
   include ActionView::Helpers::SanitizeHelper
 
+  # Kieran Pilkington, 2008/11/26
+  # Instantiation of Google Map code for location settings
+  include GoogleMap::Mapper
+
   def index
     list
     render :action => 'list'
@@ -335,6 +339,7 @@ class BasketsController < ApplicationController
           page << "#{raw_tiny_mce_init}"
           page << "tinyMCE.execCommand('mceRemoveControl', false, 'mceEditor');"
           page << "tinyMCE.execCommand('mceAddControl', false, 'mceEditor');"
+          page << google_map_initializers if defined?(google_map_initializers)
         end
       end
     end

@@ -1,12 +1,6 @@
 class AudioController < ApplicationController
   include ExtendedContentController
 
-  # Kieran Pilkington, 2008/10/23
-  # Autocomplete methods for tag adder on item pages
-  include TaggingController
-
-  helper :privacy_controls
-
   def index
     redirect_to_search_for('AudioRecording')
   end
@@ -26,12 +20,11 @@ class AudioController < ApplicationController
   end
 
   def new
-    @audio_recording = AudioRecording.new({ :private => @current_basket.private_default || false,
-                                            :file_private => @current_basket.file_private_default || false })
+    @audio_recording = AudioRecording.new
   end
 
   def create
-    @audio_recording = AudioRecording.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
+    @audio_recording = AudioRecording.new(params[:audio_recording])
 
     @successful = @audio_recording.save
 
@@ -57,7 +50,7 @@ class AudioController < ApplicationController
 
     version_after_update = @audio_recording.max_version + 1
 
-    if @audio_recording.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'audio_recording', :item_class => 'AudioRecording'))
+    if @audio_recording.update_attributes(params[:audio_recording])
 
       after_successful_zoom_item_update(@audio_recording)
 

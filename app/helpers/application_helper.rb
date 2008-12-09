@@ -555,7 +555,7 @@ module ApplicationHelper
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
               :urlified_name => basket.urlified_name,
-              :privacy_type => get_acceptable_privacy_type(nil, "private") },
+              :privacy_type => get_acceptable_privacy_type_for(nil, '', "private") },
             :class => tag[:css_class]
   end
   alias :link_to_tagged_in_basket :link_to_tagged
@@ -599,76 +599,114 @@ module ApplicationHelper
     end
   end
 
-  #---- related to extended_fields for either topic_types or content_types
-  def display_xml_attributes(item)
-    html_string = String.new
-
-    if item.xml_attributes
-      # the outermost hash is keyed by the field's position
-      # i.e. "1" => {"some_field" => "some_field_value"}, "2" =>...
-      # so you have to go down one to get the actual fields
-      item_xml_hash = item.xml_attributes
-      item_xml_array = item_xml_hash.sort
-      item_xml_array.each do |field_array|
-        subhash = item_xml_hash[field_array[0]]
-        subhash.each do |field_key, field_value|
-          # we now handle multiples
-          multi_re = Regexp.new("_multiple$")
-          if multi_re.match(field_key)
-            # value is going to be a hash like this:
-            # "1" => {field_name => value}, "2" => ...
-            # we want the first field name followed by a :
-            # and all values, separated by spaces (for now)
-            field_name = String.new
-            field_values = Array.new
-            field_value.keys.each do |subfield_key|
-              field_hash = item_xml_hash[field_array[0]][field_key][subfield_key]
-              field_hash.keys.each do |key|
-                if field_name.blank?
-                  field_name = key.humanize
-                end
-                if !field_hash[key].blank? && !field_hash[key].to_s.match("xml_element_name")
-                  field_values << field_hash[key]
-                end
-              end
-            end
-            if !field_values.to_s.strip.blank?
-              field_value_index = 0
-              field_values.each do |field_value|
-                if field_value =~ /^\w+:\/\/[^ ]+/
-                  # this is a url protocal of somesort, make link
-                  field_values[field_value_index] = link_to(field_value,field_value)
-                elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
-                  field_values[field_value_index] = mail_to(field_value,field_value, :encode => "hex")
-                else
-                  field_values[field_value_index] = sanitize(field_value)
-                end
-                field_value_index += 1
-              end
-              html_string += "<tr><td class=\"detail-extended-field-label\">#{field_name}:</td><td>#{field_values.to_sentence}</td></tr>\n"
-            end
-          else
-            if !field_value.to_s.strip.blank? && !field_value.is_a?(Hash) && field_key != 'email_visible'
-              if field_value =~ /^\w+:\/\/[^ ]+/
-                # this is a url protocal of somesort, make link
-                field_value = link_to(field_value,field_value)
-              elsif field_value =~ /^\w+[^ ]*\@\w+\.\w/
-                field_value = mail_to(field_value,field_value, :encode => "hex")
-              else
-                field_value = sanitize(field_value)
-              end
-              html_string += "<tr><td class=\"detail-extended-field-label\">#{field_key.humanize}:</td><td>#{field_value}</td></tr>\n"
-            end
-          end
-        end
-      end
-      if !html_string.blank?
-        html_string = "<table class=\"detail-extended-field-table\" summary=\"Extended details\">\n<tbody>\n#{html_string}\n</tbody>\n</table>"
-      end
+  def tags_input_field(form,label_for)
+    "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
+                #{form.text_field :tag_list, :tabindex => '1'}</div>"
+  end
+  
+  # 
+  def limit_search_to_choice_control
+    options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
+      memo + option_for_choice_control(choice, :level => 0)
     end
-    return html_string
+    
+    html_options_for_select = ([['', '']] + options_array).map do |k, v| 
+      attrs = { :value => v }
+      attrs.merge!(:selected => "selected") if params[:limit_to_choice] == v
+      content_tag("option", k, attrs)
+    end.join
+    
+    # Don't print out the SELECT tag unless there are choices available.
+    options_array.flatten.empty? ? "" : select_tag("limit_to_choice", html_options_for_select)
+  end
+  
+  def option_for_choice_control(choice, options = {})
+    level = options[:level] || 0
+    
+    array = [[("&nbsp;&nbsp;"*level) + choice.label, choice.value]]
+    choice.children.reject { |c| c.extended_fields.empty? }.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
   end
 
+  #---- related to extended_fields for either topic_types or content_types
+  def display_xml_attributes(item)
+    raq = " &raquo; "
+    html = []
+    
+    mappings = item.is_a?(Topic) ? item.all_field_mappings : @content_type.content_type_to_field_mappings
+    content = item.extended_content_pairs
+
+    mappings.each do |mapping|
+      field = mapping.extended_field
+      # value = content[qualified_name_for_field(field)]
+      field_name = field.multiple? ? qualified_name_for_field(field) + "_multiple" : qualified_name_for_field(field)
+
+      value = content.select { |pair| pair[0] == field_name }.first.last rescue nil
+      next if value.to_s.blank?
+
+      value = formatted_extended_content_value(field, field_name, value, item)
+
+      if field.ftype == 'map' || field.ftype == 'map_address'
+        td = content_tag("td", "#{field.label}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
+      else
+        td = content_tag("td", "#{field.label}:", :class => "detail-extended-field-label") +
+             content_tag("td", value)
+      end
+
+      html << content_tag("tr", td)
+    end
+    
+    unless html.empty?
+      content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
+    end
+    
+  end
+  
+  def formatted_extended_content_value(field, field_name, value, item)
+    if field.ftype == 'map'
+      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map', false, true, false)
+    elsif field.ftype == 'map_address'
+      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map_address', false, true, true)
+    elsif field.multiple?
+      value.collect { |v| formatted_value_from_xml(v, field, item) }.to_sentence
+    else
+      formatted_value_from_xml(value, field, item)
+    end
+  end
+  
+  def formatted_value_from_xml(value, ef = nil, item = nil)
+    if ef && %w(autocomplete choice).member?(ef.ftype)
+      
+      # If the extended field type is a choice, then link the value to the search page for the EF.
+      url_hash = {
+        :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
+        :controller => 'search',
+        :extended_field => ef.label.humanize
+      }
+
+      if item.respond_to?(:private?) && item.private?
+        method = 'basket_all_private_of_category_url'
+        url_hash.merge!(:privacy_type => 'private')
+      else
+        method = 'basket_all_of_category_url'
+      end
+      
+      value.map do |v|
+        link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
+      end.join(" &raquo; ")
+      
+    else
+      case value
+      when /^\w+:\/\/[^ ]+/
+        # this is a url protocal of somesort, make link
+        link_to(value, value)
+      when /^\w+[^ ]*\@\w+\.\w/
+        mail_to(value, value, :encode => "hex")
+      else
+        sanitize(value)
+      end
+    end
+  end
+    
   #---- end related to extended_fields for either topic_types or content_types
 
   # return an array of hashes of related items
@@ -944,9 +982,10 @@ module ApplicationHelper
   end
 
   # Check if privacy controls should be displayed?
-  def show_privacy_controls?
-    @current_basket.show_privacy_controls_with_inheritance?
+  def show_privacy_controls?(basket = @current_basket)
+    basket.show_privacy_controls_with_inheritance?
   end
+  alias show_privacy_controls_for_basket? show_privacy_controls?
 
   def show_privacy_search_controls?
     if @current_basket == @site_basket

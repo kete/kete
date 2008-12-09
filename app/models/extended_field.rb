@@ -1,5 +1,26 @@
 class ExtendedField < ActiveRecord::Base
   include ExtendedFieldsHelpers
+  
+  # Choices/enumerations
+  has_many :choice_mappings, :as => :field
+  has_many :choices, :through => :choice_mappings
+  
+  # James - 2008-12-05
+  # Ensure attributes that when changed could be potentially destructive on existing data cannot
+  # be changed after the initial save.
+  # When sufficient testing and conversion code as been added to handle all events relating to changing
+  # these fields, this attributes can be made writeable again.
+  attr_readonly :label, :ftype, :multiple
+  
+  def pseudo_choices
+    choices.collect { |c| [c.label, c.id] }
+  end
+  
+  def pseudo_choices=(array_of_ids)
+    logger.debug "ARRAY_OF_IDS = #{array_of_ids.inspect}"
+    self.choices = []
+    self.choices = array_of_ids.collect { |id| Choice.find(id) }
+  end
 
   has_many :topic_type_to_field_mappings, :dependent => :destroy
   # if we ever use this association, we'll want to add a test for it

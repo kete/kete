@@ -75,7 +75,7 @@ zoom_class = zoom_class_from_controller(controller)
     <% if params[@item_type] && params[@item_type][:private]; item_private = params[@item_type][:private] == 'true' ? true : false
        elsif @editing && !@item.private.nil?; item_private = @item.private?
        else; item_private = @basket.private_default_with_inheritance?; end -%>
-    <% if show_privacy_controls? -%>
+    <% if show_privacy_controls_for_basket?(@basket) -%>
       <%= form.radio_button :private,
                             [ ['Public', false, { :label_for => "#{@item_type.to_s}_private_false",
                                                   :note => '(Can be viewed by everyone)',
@@ -158,7 +158,7 @@ zoom_class = zoom_class_from_controller(controller)
       <% @self_topic_type_and_ancestors.each do |topic_type| -%>
         <% form_fields = topic_type.topic_type_to_field_mappings -%>
         <% if form_fields.size > 0 %>
-          <%= render(:partial => 'search/extended_field_mapping',
+          <%= render(:partial => 'extended_fields/extended_field_mapping',
                      :collection => form_fields,
                      :locals => { :edit => @editing,
                                   :extended_item => @item,
@@ -168,7 +168,7 @@ zoom_class = zoom_class_from_controller(controller)
     <% else -%>
       <% form_fields = @content_type.content_type_to_field_mappings -%>
       <% if form_fields.size > 0 -%>
-        <%= render(:partial => 'search/extended_field_mapping',
+        <%= render(:partial => 'extended_fields/extended_field_mapping',
                    :collection => form_fields,
                    :locals => { :edit => @editing,
                                 :extended_item => @item,

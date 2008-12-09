@@ -1,0 +1,3 @@
+<%# Variables ef, content and n are received as locals from render :partial. %>
+<%= extended_field_editor(ef, field_value_from_multiples_hash(ef, content, n), :multiple => n) %>
+<div class="form-example"><%=h ef.example %></div>

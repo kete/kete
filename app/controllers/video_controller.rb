@@ -1,12 +1,6 @@
 class VideoController < ApplicationController
   include ExtendedContentController
 
-  # Kieran Pilkington, 2008/10/23
-  # Autocomplete methods for tag adder on item pages
-  include TaggingController
-
-  helper :privacy_controls
-
   def index
     redirect_to_search_for('Video')
   end
@@ -30,7 +24,7 @@ class VideoController < ApplicationController
   end
 
   def create
-    @video = Video.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
+    @video = Video.new(params[:video])
     @successful = @video.save
 
 
@@ -55,7 +49,7 @@ class VideoController < ApplicationController
 
     version_after_update = @video.max_version + 1
 
-    if @video.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'video', :item_class => 'Video'))
+    if @video.update_attributes(params[:video])
 
       after_successful_zoom_item_update(@video)
 

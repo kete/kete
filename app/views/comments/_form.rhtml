@@ -48,7 +48,7 @@
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
                 <% if form_fields.size > 0 %>
-                        <%= render(:partial => 'search/extended_field_mapping',
+                        <%= render(:partial => 'extended_fields/extended_field_mapping',
                                    :collection => form_fields,
                                    :locals => { :edit => edit,
                                                 :extended_item => @comment,

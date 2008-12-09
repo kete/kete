@@ -81,6 +81,16 @@
       <%= active_scaffold_includes %>
     <% end -%>
   <% end -%>
+  
+  <%# bundle :name => "yui" do -%>
+    <%= javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min" %>
+  <%# end -%>
+
+  <%= stylesheet_link_tag 'yui/treeview'%>
+
+  <% cache_with_privacy(current_item, {:part => 'google_map_api'}) do -%>
+    <%= load_google_map_api if defined?(load_google_map_api) -%>
+  <% end -%>
 
   <%= @rss_tag_auto if !@rss_tag_auto.nil? -%>
 
@@ -252,6 +262,11 @@
                                                                 :controller => 'extended_fields',
                                                                 :action => 'list' },
                                                               :tabindex => '2' %>
+                |
+                <%= link_to_unless_current "choices for extended fields", { :urlified_name => @site_basket.urlified_name,
+                                                                            :controller => 'choices',
+                                                                            :action => 'list'},
+                                                                          :tabindex => '2' %>
                 |
                 <%= link_to_unless_current "site members", { :urlified_name => @site_basket.urlified_name,
                                                              :controller => 'members',

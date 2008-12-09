@@ -31,9 +31,10 @@ class WebLinkTest < Test::Unit::TestCase
   # include ItemPrivacyTestHelper::Tests::FilePrivate
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
+  include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
   
   protected
-
+  
     def new_model_attributes
       @@incremental_id ||= 0
       @@incremental_id = @@incremental_id + 1

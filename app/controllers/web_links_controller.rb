@@ -4,12 +4,6 @@ require 'uri'
 class WebLinksController < ApplicationController
   include ExtendedContentController
 
-  # Kieran Pilkington, 2008/10/23
-  # Autocomplete methods for tag adder on item pages
-  include TaggingController
-
-  helper :privacy_controls
-
   def index
     redirect_to_search_for('WebLink')
   end
@@ -33,7 +27,7 @@ class WebLinksController < ApplicationController
   end
 
   def create
-    @web_link = WebLink.new(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
+    @web_link = WebLink.new(params[:web_link])
     @successful = @web_link.save
 
     if @successful
@@ -54,7 +48,7 @@ class WebLinksController < ApplicationController
 
     version_after_update = @web_link.max_version + 1
 
-    if @web_link.update_attributes(extended_fields_and_params_hash_prepare(:content_type => @content_type, :item_key => 'web_link', :item_class => 'WebLink'))
+    if @web_link.update_attributes(params[:web_link])
 
       after_successful_zoom_item_update(@web_link)
 

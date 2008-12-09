@@ -1,45 +1,9 @@
 class TopicsController < ApplicationController
-  permit "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket", :only => [ :new, :create, :edit, :update]
-
-  # moderators only
-  permit "site_admin or moderator of :current_basket or admin of :current_basket", :only =>  [ :destroy, :restore, :reject ]
-
-  # override the site wide protect_from_forgery to exclude
-  # things that you must be logged in to do anyway or at least a moderator
-  protect_from_forgery :secret => KETE_SECRET, :except => ['new', 'destroy']
-
-  # since we use dynamic forms based on topic_types and extended_fields
-  # and topics have their main attributes stored in an xml doc
-  # within their content field
-  # in fact none of the topics table fields are edited directly
-  # we don't do CRUD for topics directly
-  # instead we override CRUD here, as well as show
-  # and use app/views/topics/_form.rhtml to customize
-  # we'll start with using the override syntax for ajaxscaffold
-  # the code should easily transferred to something else if we decide to drop it
-
-  ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
-                :only => VALID_TINYMCE_ACTIONS
-  ### end TinyMCE WYSIWYG editor stuff
-
-  # stuff related to flagging and moderation
-  include FlaggingController
-
-  # Kieran Pilkington, 2008/10/23
-  # Autocomplete methods for tag adder on item pages
-  include TaggingController
-
-  # Get the Privacy Controls helper
-  helper :privacy_controls
+  include ExtendedContentController
 
   def index
     redirect_to_search_for('Topic')
   end
-
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
 
   def list
     index
@@ -80,20 +44,6 @@ class TopicsController < ApplicationController
 
   def create
     begin
-      # since this is creation, grab the topic_type fields
-      topic_type = TopicType.find(params[:topic][:topic_type_id])
-
-      @fields = topic_type.topic_type_to_field_mappings
-
-      # work through inherited fields as well as current topic_type
-      @ancestors = TopicType.find(topic_type).ancestors
-      # everything descends from topic topic_type,
-      # so there is always at least one ancestor
-      if @ancestors.size > 1
-        @ancestors.each do |ancestor|
-          @fields = @fields + ancestor.topic_type_to_field_mappings
-        end
-      end
 
       # ultimately I would like url's for peole to do look like the following:
       # topics/people/mcginnis/john
@@ -105,17 +55,9 @@ class TopicsController < ApplicationController
       # topics/events/2006/10/31
       # in the meantime we'll just use :name or :first_names and :last_names
 
-      # here's where we populate the extended_content with our xml
-      if @fields.size > 0
-        extended_fields_update_param_for_item(:fields => @fields, :item_key => 'topic')
-      end
-
-      # in order to get the ajax to work, we put form values in the topic hash
-      # in parameters, this will break new and update, because they aren't apart of the model
-      # directly, so strip them out of parameters
-
-      replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
-      @topic = Topic.new(replacement_topic_hash)
+      # We need to set the topic_type first, because extended_content= depends on it.
+      @topic = Topic.new(:topic_type_id => params[:topic][:topic_type_id])
+      @topic.attributes = params[:topic]
       @successful = @topic.save
 
 
@@ -162,11 +104,10 @@ class TopicsController < ApplicationController
         :topic => @topic
       else
         flash[:notice] = 'Topic was successfully created.'
-        params[:topic] = replacement_topic_hash
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
-        render :action => 'new'
+      render :action => 'new'
     end
   end
 
@@ -176,36 +117,11 @@ class TopicsController < ApplicationController
 
       # logic to prevent plain old members from editing
       # site basket homepage
-      if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
-        # using the new topic type value, just in case we add ajax update
-        # of form in the future
-        topic_type = TopicType.find(params[:topic][:topic_type_id])
-
-        @fields = topic_type.topic_type_to_field_mappings
-
-        # work through inherited fields as well as current topic_type
-        @ancestors = TopicType.find(topic_type).ancestors
-        # everything descends from topic topic_type,
-        # so there is always at least one ancestor
-        if @ancestors.size > 1
-          @ancestors.each do |ancestor|
-            @fields = @fields + ancestor.topic_type_to_field_mappings
-          end
-        end
-
-        if @fields.size > 0
-          extended_fields_update_param_for_item(:fields => @fields, :item_key => 'topic')
-        end
-
-        # in order to get the ajax to work, we put form values in the topic hash
-        # in parameters, this will break new and update, because they aren't apart of the model
-        # directly, so strip them out of parameters
-
-        replacement_topic_hash = extended_fields_replacement_params_hash(:item_key => 'topic', :item_class => 'Topic')
+      if @topic != @site_basket.index_topic or permit?("site_admin of :site_basket or admin of :site_basket")
 
         version_after_update = @topic.max_version + 1
 
-        @successful = @topic.update_attributes(replacement_topic_hash)
+        @successful = @topic.update_attributes(params[:topic])
       else
         # they don't have permission
         # this will redirect them to edit
@@ -216,8 +132,6 @@ class TopicsController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-
-    params[:topic] = replacement_topic_hash
 
     if @successful
       after_successful_zoom_item_update(@topic)
@@ -230,7 +144,7 @@ class TopicsController < ApplicationController
 
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
     else
-      if @topic != @site_basket.index_topic or permit? "site_admin of :site_basket or admin of :site_basket"
+      if @topic != @site_basket.index_topic or permit?("site_admin of :site_basket or admin of :site_basket")
         @topic_types = @topic.topic_type.full_set
       end
       render :action => 'edit'

@@ -1,6 +1,10 @@
 class IndexPageController < ApplicationController
   caches_page :robots
 
+  # Kieran Pilkington, 2008/11/26
+  # Instantiation of Google Map code for location settings
+  include GoogleMap::Mapper
+
   def index
     if !@current_basket.index_page_redirect_to_all.blank?
       redirect_to_all_for(@current_basket.index_page_redirect_to_all)
