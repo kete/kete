@@ -93,7 +93,26 @@ module ItemPrivacy
         def store_correct_versions_after_save
           if private?
             store_private!
+            
+            # Store the basket id from the private version for future use..
+            private_basket_id = basket_id
+            
             load_public!
+            
+            # James - 2008-12-08
+            # Ensure we keep the public verion of the item in sync if the basket of the private
+            # version has changed.
+            update_attribute(:basket_id, private_basket_id) if basket_id != private_basket_id
+
+          elsif has_private_version?
+            
+            # Ensure we keep the private version of the item in sync as well..
+            public_basket_id = basket_id
+            
+            private_version do
+              update_attribute(:basket_id, public_basket_id) if basket_id != public_basket_id
+            end
+            
           end
 
           ## Always return true to avoid halting the filter chain
@@ -141,9 +160,6 @@ module ItemPrivacy
         def load_public!
           if public_version = latest_public_version
             without_saving_private do
-              # if the basket has moved, make sure we update the public version its reverting to
-              # else you get the public in one basket, and the private in another which doesn't work well
-              public_version.basket_id = basket_id
               revert_to!(public_version)
             end
 
@@ -156,12 +172,9 @@ module ItemPrivacy
               :description => NO_PUBLIC_VERSION_DESCRIPTION,
               :extended_content => nil,
               :tag_list => nil,
-              :private => false
+              :private => false,
+              :basket_id => basket_id
             }
-
-            # if the basket has moved, make sure we update the public version its reverting to
-            # else you get the public in one basket, and the private in another which doesn't work well
-            update_hash[:basket_id] = basket_id
 
             update_hash[:short_summary] = nil if can_have_short_summary?
 
