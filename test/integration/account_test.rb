@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/integration_test_helper'
 
 class AccountTest < ActionController::IntegrationTest
   
@@ -9,7 +9,7 @@ class AccountTest < ActionController::IntegrationTest
     fill_in "password", :with => "test"
     click_button "Log in"
     
-    contain "<div>Logged in successfully</div>"
+    assert response.body.include?("<div>Logged in successfully</div>")
   end
   
 end
