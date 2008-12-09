@@ -9,4 +9,6 @@ Factory.define :user do |u|
   u.updated_at Time.now.to_s(:db)
   u.activation_code 'admincode'
   u.activated_at Time.now.to_s(:db)
+  u.agree_to_terms true
+  u.security_code "a"
 end

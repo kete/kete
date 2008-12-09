@@ -13,7 +13,7 @@ something like the following:
     context "A user instance" do
   
       # Configure any environment specifics you need in the context of the test you want to run
-      def setup
+      setup do
     
         # configure_environment allows you to configure any environmental specifics you need for 
         # the test sweet and then reloads the routing afterwards.
