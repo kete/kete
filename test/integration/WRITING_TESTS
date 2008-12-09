@@ -38,3 +38,7 @@ something like the following:
 ActionController::IntegrationTest#teardown is overloaded so that the environment (constants, etc)
 are reset between tests suites to avoid conflicts.
 
+More Information
+
+Webrat Docs: http://gitrdoc.com/brynary/webrat/tree/master/
+Shoulda Docs: http://www.thoughtbot.com/projects/shoulda/
