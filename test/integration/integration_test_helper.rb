@@ -29,10 +29,94 @@ ensure_zebra_running
 
 # Overload the IntegrationTest class to ensure tear down occurs OK.
 class ActionController::IntegrationTest
+  # setup basket variables for use later
+  @@site_basket ||= Basket.site_basket
+  @@help_basket ||= Basket.help_basket
+  @@about_basket ||= Basket.about_basket
+  @@documentation_basket ||= Basket.documentation_basket
+
+  def logout
+    visit "/site/account/logout"
+  end
+
+  def login_as(username, password)
+    logout # make sure we arn't logged in first
+    visit "/"
+    click_link "Login"
+    fill_in "login", :with => username
+    fill_in "password", :with => password
+    click_button "Log in"
+  end
+
+  def body_should_contain(text, message = nil, dump_response = false)
+    message = "Body should contain '#{text}', but does not." if message.nil?
+    dump(response.body) if dump_response
+    assert response.body.include?(text), message
+  end
+
+  def body_should_not_contain(text, message = nil, dump_response = false)
+    message = "Body should not contain '#{text}', but does." if message.nil?
+    dump(response.body) if dump_response
+    assert !response.body.include?(text), message
+  end
+
+  # Debugging method
+  def dump(text)
+    puts "-----------------"
+    puts text
+    puts "-----------------"
+  end
+
+  # When a test is finished, reset the constants, and remove all users for the new test
   def teardown
     configure_environment do
       require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
     end
+    User.destroy_all
     super
   end
+
+  private
+
+  # this shouldn't be called directly, use the method missing functionality to add users on the fly
+  # add_bob_as_tech_admin(:baskets => @@site_basket)
+  def create_new_user(args)
+    @user = User.find_by_login(args[:login])
+    return @user unless @user.nil?
+    @user = Factory(:user, args)
+    @user
+  end
+
+  def method_missing( method_sym, *args )
+    method_name = method_sym.to_s
+    if method_name =~ /^add_(\w+)_as_super_user$/
+      # add_bob_as_super_user
+      args = args[0] || Hash.new
+      @user = create_new_user({:login => $1}.merge(args))
+      @user.has_role('site_admin', @@site_basket)
+      @user.has_role('tech_admin', @@site_basket)
+      @user.has_role('admin', @@help_basket)
+      @user.has_role('admin', @@about_basket)
+      @user.has_role('admin', @@documentation_basket)
+      eval("@#{$1} = @user")
+    elsif method_name =~ /^add_(\w+)_as_regular_user$/
+      # add_bob_as_regular_user
+      args = args[0] || Hash.new
+      @user = create_new_user({:login => $1}.merge(args))
+      @user.add_as_member_to_default_baskets
+      eval("@#{$1} = @user")
+    elsif method_name =~ /^add_(\w+)_as_(\w+)_to$/
+      # add_bob_as_moderator_to(@@site_basket)
+      # can take single basket, or an array of them
+      baskets = args[0] || Array.new
+      args = args[1] || Hash.new
+      @user = create_new_user({:login => $1}.merge(args))
+      baskets = [baskets] unless baskets.kind_of?(Array)
+      baskets.each { |basket| @user.has_role($2, basket) }
+      eval("@#{$1} = @user")
+    else
+      super
+    end
+  end
+
 end

@@ -14,7 +14,7 @@
     | <%= link_to_unless_current pluralize(@admins_count, 'administrator'), :type => 'admin' %>
   <% end -%>
   <% if @moderators_count && @moderators_count > 0 -%>
-    | <%= link_to_unless_current pluralize(@moderators_count, 'moderator'), :type => 'moderator' if @moderators %>
+    | <%= link_to_unless_current pluralize(@moderators_count, 'moderator'), :type => 'moderator' %>
   <% end -%>
   <% if @site_admin && @current_basket == @site_basket -%>
     <%# there should always be at least one site admin and one tech admins -%>
