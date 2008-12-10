@@ -17,13 +17,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       
       @user.add_as_member_to_default_baskets
       
-      # Log in
-      visits "/"
-      clicks_link "Login"
-      fills_in "login", :with => "joe"
-      fills_in "password", :with => "test"
-      clicks_button "Log in"
-      assert response.body.include?("Logged in successfully"), "Should say logged in successfully"
+      login_as('joe', 'test')
     end
     
     should "have open basket creation policy" do

@@ -29,6 +29,24 @@ ensure_zebra_running
 
 # Overload the IntegrationTest class to ensure tear down occurs OK.
 class ActionController::IntegrationTest
+  def logout
+    visit "/site/account/logout"
+  end
+
+  def login_as(username, password)
+    logout # make sure we arn't logged in first
+    visit "/"
+    click_link "Login"
+    fill_in "login", :with => username
+    fill_in "password", :with => password
+    click_button "Log in"
+  end
+
+  def body_should_contain(text, message = nil)
+    message = "Body should contain '#{text}', but does not." if message.nil?
+    assert response.body.include?(text), message
+  end
+
   def teardown
     configure_environment do
       require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
