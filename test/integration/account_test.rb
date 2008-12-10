@@ -5,6 +5,7 @@ class AccountTest < ActionController::IntegrationTest
   context "A User" do
 
     setup do
+      add_admin_as_super_user
     end
 
     should "be able to login" do
