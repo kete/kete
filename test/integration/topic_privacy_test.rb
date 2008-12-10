@@ -25,24 +25,91 @@ class TopicPrivacyTest < ActionController::IntegrationTest
     end
     
     should "be logged in as joe" do
-      visits "/"
-      assert response.body.include?("joe"), "Should display your login"
-      assert response.body.include?("Logout"), "Should have log out link"
+      visit "/"
+      body_should_contain "joe", "Should display your login"
+      body_should_contain "Logout", "Should have log out link"
     end
     
     should "create a public topic" do
-      visits "/site/baskets/choose_type"
+      Basket.find(1).update_attribute(:show_privacy_controls, true)
+      
+      on_create_topic_form do
+        
+        fill_in "topic[title]", :with => "Test Topic"
+        fill_in "topic[short_summary]", :with => "A test summary"
+        fill_in "topic[description]", :with => "A test description"
+        
+      end
+      
+      body_should_contain("Topic was successfully created.")
+      body_should_contain("Topic: Test Topic")
+      body_should_contain("view-link")
+      body_should_contain("Created by:")
+      body_should_not_contain("Private version")
+    end
+    
+    should "create a private topic" do
+      Basket.find(1).update_attribute(:show_privacy_controls, true)
+      
+      on_create_topic_form do
 
-      selects "Topic", :from => "new_item_controller"
-      clicks_button "Choose"
+        choose "Private"
+        fill_in "topic[title]", :with => "Test Topic"
+        fill_in "topic[short_summary]", :with => "A test summary"
+        fill_in "topic[description]", :with => "A test description"
+        
+      end
+
+      body_should_contain("Topic was successfully created.")
+      body_should_contain("Topic: Test Topic")
+      body_should_contain("view-link")
+      body_should_contain("A test description")
+      body_should_contain("Created by:")
+      body_should_contain("Public version (live)")
+      body_should_not_contain("Private version")
       
-      selects "Topic", :from => "topic[topic_type_id]"
-      clicks_button "Choose"
+      click_link "Public version (live)"
       
-      assert response.body.include?("New Topic")
-      assert response.body.include?("Title")
-      assert !response.body.include?("Private version")
+      body_should_contain "Topic: #{NO_PUBLIC_VERSION_TITLE}"
+      body_should_contain("view-link")
+      body_should_contain NO_PUBLIC_VERSION_DESCRIPTION
+      body_should_contain("Created by:")
+      body_should_contain "Private version"
+      body_should_not_contain "Public version (live)"
+      
+      click_link "Private version"
+      
+      body_should_contain("Topic: Test Topic")
+      body_should_contain("view-link")
+      body_should_contain("A test description")
+      body_should_contain("Created by:")
+      body_should_contain("Public version (live)")
+      body_should_not_contain("Private version")
+
     end
     
   end
+  
+  private
+  
+    def on_create_topic_form(&block)
+      raise "Please pass a block with topic form actions" unless block_given?
+    
+      visit "/site/baskets/choose_type"
+
+      select "Topic", :from => "new_item_controller"
+      click_button "Choose"
+    
+      select "Topic", :from => "topic[topic_type_id]"
+      click_button "Choose"
+
+      body_should_contain "New Topic"
+      body_should_contain "Title"
+    
+      # Here you give instructions to the topic creation form
+      yield(block)
+    
+      click_button "Create"
+    end
+  
 end
