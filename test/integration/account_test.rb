@@ -24,7 +24,19 @@ class AccountTest < ActionController::IntegrationTest
       logout
       body_should_contain "Results in topics"
     end
-
+    
+    should "be redirected back to last tried location when logged in" do
+      visit "/site/baskets/choose_type"
+      body_should_contain "Login to Kete"
+      
+      fill_in "login", :with => "admin"
+      fill_in "password", :with => "test"
+      click_button "Log in"
+      
+      body_should_contain "What would you like to add? Where would you like to add it?"
+      assert request.url.include?("/site/baskets/choose_type")
+    end
+    
   end
 
 end
