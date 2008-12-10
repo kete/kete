@@ -62,29 +62,20 @@ class TopicPrivacyTest < ActionController::IntegrationTest
 
       body_should_contain("Topic was successfully created.")
       body_should_contain("Topic: Test Topic")
-      body_should_contain("view-link")
       body_should_contain("A test description")
-      body_should_contain("Created by:")
       body_should_contain("Public version (live)")
-      body_should_not_contain("Private version")
       
       click_link "Public version (live)"
       
       body_should_contain "Topic: #{NO_PUBLIC_VERSION_TITLE}"
-      body_should_contain("view-link")
       body_should_contain NO_PUBLIC_VERSION_DESCRIPTION
-      body_should_contain("Created by:")
       body_should_contain "Private version"
-      body_should_not_contain "Public version (live)"
       
       click_link "Private version"
       
       body_should_contain("Topic: Test Topic")
-      body_should_contain("view-link")
       body_should_contain("A test description")
-      body_should_contain("Created by:")
       body_should_contain("Public version (live)")
-      body_should_not_contain("Private version")
 
     end
     
