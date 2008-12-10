@@ -508,7 +508,7 @@ system_settings_058:
   required_to_be_configured: true
   explanation: If enabled, and when a User Portrait has not been set, Kete will attempt to get the users Gravatar based on their registered email.
   id: "58"
-  value: "true"
+  value: "false"
   section: Accounts
 system_settings_059:
   name: Basket Creation Policy
