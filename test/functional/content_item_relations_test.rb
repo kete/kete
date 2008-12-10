@@ -1,17 +1,13 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'search_controller'
 
-# Re-raise errors caught by the controller.
-class SearchController; def rescue_action(e) raise e end; end
-
-class ContentItemRelationsTest < Test::Unit::TestCase
+class ContentItemRelationsTest < ActionController::TestCase
   
-  include AuthenticatedTestHelper
+  tests SearchController
+
+  include KeteTestFunctionalHelper
   
   def setup
-    @controller = SearchController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @base_class = "ContentItem"
     
     @class_names = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document']
     

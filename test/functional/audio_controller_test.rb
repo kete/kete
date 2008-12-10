@@ -1,19 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'audio_controller'
 
-# Re-raise errors caught by the controller.
-class AudioController; def rescue_action(e) raise e end; end
+class AudioControllerTest < ActionController::TestCase
 
-class AudioControllerTest < Test::Unit::TestCase
-  # fixtures are preloaded if necessary
+  include KeteTestFunctionalHelper
+
   def setup
-    @controller = AudioController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @base_class = "Audio"
+    load_test_environment
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end  
 end
