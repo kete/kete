@@ -39,7 +39,7 @@ class ActionController::IntegrationTest
     visit "/site/account/logout"
   end
 
-  def login_as(username, password)
+  def login_as(username, password='test')
     logout # make sure we arn't logged in first
     visit "/"
     click_link "Login"
@@ -89,7 +89,16 @@ class ActionController::IntegrationTest
 
   def method_missing( method_sym, *args )
     method_name = method_sym.to_s
-    if method_name =~ /^add_(\w+)_as_super_user$/
+    if method_name =~ /^add_(\w+)_as_(\w+)_to$/
+      # add_bob_as_moderator_to(@@site_basket)
+      # can take single basket, or an array of them
+      baskets = args[0] || Array.new
+      args = args[1] || Hash.new
+      @user = create_new_user({:login => $1}.merge(args))
+      baskets = [baskets] unless baskets.kind_of?(Array)
+      baskets.each { |basket| @user.has_role($2, basket) }
+      eval("@#{$1} = @user")
+    elsif method_name =~ /^add_(\w+)_as_super_user$/
       # add_bob_as_super_user
       args = args[0] || Hash.new
       @user = create_new_user({:login => $1}.merge(args))
@@ -99,20 +108,12 @@ class ActionController::IntegrationTest
       @user.has_role('admin', @@about_basket)
       @user.has_role('admin', @@documentation_basket)
       eval("@#{$1} = @user")
-    elsif method_name =~ /^add_(\w+)_as_regular_user$/
+    elsif method_name =~ /^add_(\w+)(_as_regular_user)?$/
       # add_bob_as_regular_user
+      # add_john
       args = args[0] || Hash.new
       @user = create_new_user({:login => $1}.merge(args))
-      @user.add_as_member_to_default_baskets
-      eval("@#{$1} = @user")
-    elsif method_name =~ /^add_(\w+)_as_(\w+)_to$/
-      # add_bob_as_moderator_to(@@site_basket)
-      # can take single basket, or an array of them
-      baskets = args[0] || Array.new
-      args = args[1] || Hash.new
-      @user = create_new_user({:login => $1}.merge(args))
-      baskets = [baskets] unless baskets.kind_of?(Array)
-      baskets.each { |basket| @user.has_role($2, basket) }
+      @user.add_as_member_to_default_baskets unless $2.blank?
       eval("@#{$1} = @user")
     else
       super

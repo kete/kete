@@ -1,7 +1,4 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+# see db/bootstrap/ fixture that is preloaded
+# add additional records here if you need them
+--- {}
 
-# one:
-#   column: value
-#
-# two:
-#   column: value

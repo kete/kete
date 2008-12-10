@@ -1,30 +1,22 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'account_controller'
 
 # Require stubs
-require File.dirname(__FILE__) +  '/../stubs/captcha.rb'
-require File.dirname(__FILE__) + '/../stubs/account_helper.rb'
+require File.dirname(__FILE__) + '/../stubs/captcha'
 
 # TODO: fix the use of users (no fixture loaded in to set it up)
 # TODO: look at approx. 6 failing tests
 
-# Re-raise errors caught by the controller.
-class AccountController; def rescue_action(e) raise e end; end
-
 set_constant('ENABLE_USER_PORTRAITS', true)
 
-class AccountControllerTest < Test::Unit::TestCase
-  # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead
-  # Then, you can remove it from this and the units test.
-  include AuthenticatedTestHelper
+class AccountControllerTest < ActionController::TestCase
+
+  include KeteTestFunctionalHelper
 
   # fixtures preloaded
   fixtures :users
 
   def setup
-    @controller = AccountController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @base_class = "Account"
 
     # for testing action mailer
     ActionMailer::Base.delivery_method = :test

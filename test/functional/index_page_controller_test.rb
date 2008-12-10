@@ -1,19 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'index_page_controller'
 
-# Re-raise errors caught by the controller.
-class IndexPageController; def rescue_action(e) raise e end; end
+class IndexPageControllerTest < ActionController::TestCase
 
-class IndexPageControllerTest < Test::Unit::TestCase
-  # fixtures are preloaded if necessary
+  include KeteTestFunctionalHelper
+
   def setup
-    @controller = IndexPageController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @base_class = "IndexPage"
+    load_test_environment
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
 end
