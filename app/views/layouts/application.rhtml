@@ -88,7 +88,11 @@
 
   <%= stylesheet_link_tag 'yui/treeview'%>
 
-  <% cache_with_privacy(current_item, {:part => 'google_map_api'}) do -%>
+  <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) and params[:action] == "show") %>
+    <% cache_with_privacy(current_item, {:part => 'google_map_api'}) do -%>
+      <%= load_google_map_api if defined?(load_google_map_api) -%>
+    <% end -%>
+  <% else %>
     <%= load_google_map_api if defined?(load_google_map_api) -%>
   <% end -%>
 
