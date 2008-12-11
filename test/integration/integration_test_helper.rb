@@ -39,10 +39,13 @@ class ActionController::IntegrationTest
     visit "/site/account/logout"
   end
 
-  def login_as(username, password='test')
-    logout # make sure we arn't logged in first
-    visit "/"
-    click_link "Login"
+  def login_as(username, password='test', click_login=true)
+    if click_login
+      logout # make sure we arn't logged in first
+      visit "/"
+      click_link "Login"
+    end
+    body_should_contain "Login to Kete"
     fill_in "login", :with => username
     fill_in "password", :with => password
     click_button "Log in"
@@ -58,6 +61,18 @@ class ActionController::IntegrationTest
     message = "Body should not contain '#{text}', but does." if message.nil?
     dump(response.body) if dump_response
     assert !response.body.include?(text), message
+  end
+
+  def url_should_contain(text, message = nil, dump_response = false)
+    message = "URL should contain '#{text}', but does not." if message.nil?
+    dump(request.url) if dump_response
+    assert request.url.include?(text), message
+  end
+
+  def url_should_not_contain(text, message = nil, dump_response = false)
+    message = "URL should not contain '#{text}', but does." if message.nil?
+    dump(request.url) if dump_response
+    assert !request.url.include?(text), message
   end
 
   # Debugging method
@@ -84,6 +99,7 @@ class ActionController::IntegrationTest
     @user = User.find_by_login(args[:login])
     return @user unless @user.nil?
     @user = Factory(:user, args)
+    assert_kind_of User, @user
     @user
   end
 
@@ -108,13 +124,19 @@ class ActionController::IntegrationTest
       @user.has_role('admin', @@about_basket)
       @user.has_role('admin', @@documentation_basket)
       eval("@#{$1} = @user")
-    elsif method_name =~ /^add_(\w+)(_as_regular_user)?$/
+    elsif method_name =~ /^add_(\w+)$/
       # add_bob_as_regular_user
       # add_john
+      login = $1
+      add_to_baskets = false
+      if $1 =~ /^(\w+)_as_regular_user$/
+        login = $1
+        add_to_baskets = true
+      end
       args = args[0] || Hash.new
-      @user = create_new_user({:login => $1}.merge(args))
-      @user.add_as_member_to_default_baskets unless $2.blank?
-      eval("@#{$1} = @user")
+      @user = create_new_user({:login => login}.merge(args))
+      @user.add_as_member_to_default_baskets if add_to_baskets
+      eval("@#{login} = @user")
     else
       super
     end
