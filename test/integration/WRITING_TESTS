@@ -1,44 +1,105 @@
-How to Write Integration Tests for Kete
+===============================================
+How to Run and Write Integration Tests for Kete
+===============================================
 
-Basics
+-----
+Setup
+-----
 
-The basic premise is to add a separate test suite for each context you want test in. For 
-instance if you want to write a test for User Portraits, you might add a test suite named 
-UserPortraitTest in test/integration/user_portrait_test.rb. In that test you might have 
+Run the following rake command to install the necessary gems
+  rake manage_gems:testing:install
+
+-------------
+Running Tests
+-------------
+
+To run tests, change into the project root, and run the following rake command
+  rake test:integration
+
+-------------
+Writing Tests
+-------------
+
+The basic premise is to add a separate test suite for each context you want test in. For
+instance if you want to write a test for User Portraits, you might add a test suite named
+UserPortraitTest in test/integration/user_portrait_test.rb. In that test you might have
 something like the following:
 
   # The test must extend ActionController::IntegrationTest to get all of the Webrat goodies..
   class UserTest < ActionController::IntegrationTest
-  
     context "A user instance" do
-  
       # Configure any environment specifics you need in the context of the test you want to run
       setup do
-    
-        # configure_environment allows you to configure any environmental specifics you need for 
+        # configure_environment allows you to configure any environmental specifics you need for
         # the test sweet and then reloads the routing afterwards.
         configure_environment do
-      
-          # set_constant allows you to overwrite a constant with another value without receiving 
+
+          # set_constant allows you to overwrite a constant with another value without receiving
           # any warnings, etc.
           set_constant :ENABLE_USER_PORTRAITS, true
         end
-      
       end
-    
+
       # Add your tests here, using shoulda for setting out in test contexts, etc.
       should "have a default portrait image for a user" do
         assert blah, blah
       end
-      
     end
-    
   end
-  
+
 ActionController::IntegrationTest#teardown is overloaded so that the environment (constants, etc)
 are reset between tests suites to avoid conflicts.
 
-More Information
+-------
+Helpers
+-------
 
-Webrat Docs: http://gitrdoc.com/brynary/webrat/tree/master/
-Shoulda Docs: http://www.thoughtbot.com/projects/shoulda/
+There are a bunch of methods that help with test creation. A few of the more popular ones include:
+* login_as(username, password='test', navigate_to_login=true)
+* logout
+* body_should_contain(text, message = nil, dump_response = false)
+    (with a corresponding body_should_not_contain method)
+* url_should_contain(text, message = nil, dump_response = false)
+    (with a corresponding url_should_not_contain method)
+
+There is also an method_missing definition which provides functionality like:
+* add_joe_as_super_admin
+    (creates new user with site/tech admin role on site basket and admin role on all others)
+* add_bob_as_moderator_on(@@site_basket)
+    (creates new user with moderator role on the site basket)
+* add_john_as_regular_user
+    (creates new user with member role on the default baskets)
+* add_dave
+    (creates new user with no roles at all)
+
+See test/common_test_helpers.rb and test/integration/integration_test_helper.rb for more available helper methods.
+
+---------
+Factories
+---------
+
+When you make a new user via methods like add_joe_as_super_admin, it uses factories to create a user.
+
+We use these factories in place of Fixtures and the traditional User.create. If you need
+data in various places please make a Factory instead of create methods throughout the code.
+
+----------------
+More Information
+----------------
+
+A lot of the methods used in the tests comes from the Webrat, shoulda and factory-girl gems. Read more about each at:
+
+Webrat:
+  Docs: http://gitrdoc.com/brynary/webrat/
+  Source: http://github.com/brynary/webrat/
+Shoulda:
+  Homepage: http://www.thoughtbot.com/projects/shoulda/
+  Docs: http://dev.thoughtbot.com/shoulda/
+  Source: http://github.com/thoughtbot/shoulda/
+Factory-girl:
+  Homepage: http://www.thoughtbot.com/projects/factory_girl/
+  Docs: http://dev.thoughtbot.com/factory_girl/
+  Source: http://github.com/thoughtbot/factory_girl/
+
+
+Have fun testing!

@@ -39,8 +39,8 @@ class ActionController::IntegrationTest
     visit "/site/account/logout"
   end
 
-  def login_as(username, password='test', click_login=true)
-    if click_login
+  def login_as(username, password='test', navigate_to_login=true)
+    if navigate_to_login
       logout # make sure we arn't logged in first
       visit "/"
       click_link "Login"
@@ -120,9 +120,7 @@ class ActionController::IntegrationTest
       @user = create_new_user({:login => $1}.merge(args))
       @user.has_role('site_admin', @@site_basket)
       @user.has_role('tech_admin', @@site_basket)
-      @user.has_role('admin', @@help_basket)
-      @user.has_role('admin', @@about_basket)
-      @user.has_role('admin', @@documentation_basket)
+      Basket.all(:conditions => ["id != 1"]).each { |basket| @user.has_role('admin', basket) }
       eval("@#{$1} = @user")
     elsif method_name =~ /^add_(\w+)$/
       # add_bob_as_regular_user
