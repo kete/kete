@@ -11,12 +11,14 @@ class AudioRecordingTest < Test::Unit::TestCase
     eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
     # fake out file upload
-    audiodata = fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
+    @@audiodata ||= fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { :title => 'test item',
+    @new_model = {
+      :title => 'test item',
       :basket => Basket.find(:first),
-      :uploaded_data => audiodata }
+      :uploaded_data => @@audiodata
+    }
     @req_attr_names = %w(title) # name of fields that must be present, e.g. %(name description)
     @duplicate_attr_names = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
     

@@ -9,7 +9,19 @@ module RequiredSoftware
     # --- [ check that we have all the gems and libs we need ] ---
     def missing_libs(required_software)
       missing_libs = Array.new
-      required_libs = required_software['gems']
+      required_libs = Hash.new
+
+      required_software['gems'].each do |key, value|
+        if !value.blank? && value.kind_of?(Hash)
+          if !value['lib_name'].blank?
+            required_libs[key] = value['lib_name']
+          else
+            required_libs[key] = value['gem_name']
+          end
+        else
+          required_libs[key] = key
+        end
+      end
 
       required_software['libs'].each do |key, value|
         required_libs[key] = value

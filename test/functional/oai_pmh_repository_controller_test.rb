@@ -1,8 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class OaiPmhRepositoryControllerTest < ActionController::TestCase
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+
+  include KeteTestFunctionalHelper
+
+  def setup
+    @base_class = "OaiPmhRepository"
+    load_test_environment
   end
+
 end

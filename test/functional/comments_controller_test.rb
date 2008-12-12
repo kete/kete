@@ -1,18 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'comments_controller'
 
-# Re-raise errors caught by the controller.
-class CommentsController; def rescue_action(e) raise e end; end
-
-class CommentsControllerTest < Test::Unit::TestCase
-  # fixtures are preloaded if necessary
+class CommentsControllerTest < ActionController::TestCase
   
-  include AuthenticatedTestHelper
+  include KeteTestFunctionalHelper
   
   def setup
-    @controller = CommentsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @base_class = "Comments"
     
     @new_basket_model = { 
       :name                 => 'test basket', 

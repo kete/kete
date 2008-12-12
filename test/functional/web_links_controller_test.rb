@@ -1,19 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'web_links_controller'
 
-# Re-raise errors caught by the controller.
-class WebLinksController; def rescue_action(e) raise e end; end
+class WebLinksControllerTest < ActionController::TestCase
 
-class WebLinksControllerTest < Test::Unit::TestCase
-  # preloaded fixtures
+  include KeteTestFunctionalHelper
+
   def setup
-    @controller = WebLinksController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @base_class = "WebLinks"
+    load_test_environment
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
 end

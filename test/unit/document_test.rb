@@ -11,12 +11,14 @@ class DocumentTest < Test::Unit::TestCase
     eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
     # fake out file upload
-    documentdata = fixture_file_upload('/files/test.pdf', 'application/pdf')
+    @@documentdata ||= fixture_file_upload('/files/test.pdf', 'application/pdf')
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { :title => 'test item',
+    @new_model = {
+      :title => 'test item',
       :basket => Basket.find(:first),
-      :uploaded_data => documentdata }
+      :uploaded_data => @@documentdata
+    }
 
     # name of fields that must be present, e.g. %(name description)
     @req_attr_names = %w(title)
