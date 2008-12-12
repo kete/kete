@@ -50,6 +50,12 @@ module ItemPrivacy
         nil
       end
 
+      def public_version!
+        load_public!
+      rescue
+        nil
+      end
+
       def has_private_version?
         respond_to?(:private?) && respond_to?(:private_version_serialized) && !private_version_serialized.blank?
       end
