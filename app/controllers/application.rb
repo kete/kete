@@ -289,9 +289,10 @@ class ApplicationController < ActionController::Base
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
 
-  INDEX_PARTS = ['page_keywords_[privacy]', 'page_description_[privacy]', 'google_map_api_[privacy]', 'details_[privacy]', 'license_[privacy]',
-                 'extended_fields_[privacy]', 'edit_[privacy]', 'privacy_chooser_[privacy]', 'tools_[privacy]', 'recent_topics',
-                 'search', 'extra_side_bar_html', 'archives_[privacy]', 'tags', 'contact']
+  INDEX_PARTS = ['page_keywords_[privacy]', 'page_description_[privacy]', 'google_map_api_[privacy]',
+                 'details_[privacy]', 'license_[privacy]', 'extended_fields_[privacy]', 'edit_[privacy]',
+                 'privacy_chooser_[privacy]', 'tools_[privacy]', 'recent_topics_[privacy]', 'search',
+                 'extra_side_bar_html', 'archives_[privacy]', 'tags_[privacy]', 'contact']
 
   # the following method is used when clearing show caches
   def all_show_parts

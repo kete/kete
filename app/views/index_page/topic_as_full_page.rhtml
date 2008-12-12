@@ -68,7 +68,7 @@
 <% cache_with_privacy(@topic, {:part => 'tools'}) do -%>
 <% end -%>
 
-<% cache({:part => 'recent_topics'}) do -%>
+<% cache({:part => "recent_topics_#{@privacy_type}"}) do -%>
 <% end -%>
 
 <% cache({:part => 'search'}) do -%>
@@ -80,7 +80,7 @@
 <% cache({:part => "archives_#{@privacy_type}"}) do -%>
 <% end -%>
 
-<% cache({:part => 'tags'}) do -%>
+<% cache({:part => "tags_#{@privacy_type}"}) do -%>
 <% end -%>
 
 <%= render(:partial => "topics/content_wrapper_end" ) -%>
