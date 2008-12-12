@@ -35,9 +35,8 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 
 == 2008/12/09 - Webrat integration tests
 
-You will need to install the webrat library gem in order to perform integration tests. In order to do this, please run the following as root (or a super-user):
-  gem install thoughtbot-webrat --source=http://gems.github.com
-  gem install thoughtbot-shoulda --source=http://gems.github.com
+You will need to install the webrat, shoulda, and factory-girl gems in order to perform integration tests. In order to do this, please run the following as root (or a super-user):
+  rake manage_gems:testing:install
 
 If you are not planning on running the integration test suite for Kete, you can safely ignore this upgrade step.
 
