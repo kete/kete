@@ -81,6 +81,7 @@ class ActionController::IntegrationTest
 
   def new_item(basket, zoom_class, homepage_topic = false, title='Homepage Title', description='Homepage Description')
     controller = zoom_class_controller(zoom_class)
+    field_prefix = zoom_class.underscore
     if controller == 'topics' && homepage_topic
       visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
       click_link "Add new basket homepage topic"
@@ -90,8 +91,9 @@ class ActionController::IntegrationTest
     if controller == 'topics'
       click_button("Choose Type")
     end
-    fill_in "#{zoom_class.underscore}_title", :with => title
-    fill_in "#{zoom_class.underscore}_description", :with => description
+    fill_in "#{field_prefix}_title", :with => title
+    fill_in "#{field_prefix}_description", :with => description
+    yield(field_prefix) if block_given?
     click_button "Create"
     if controller == 'topics' && homepage_topic
       body_should_contain "Basket homepage was successfully created."
@@ -104,10 +106,12 @@ class ActionController::IntegrationTest
   def update_item(item, title='Homepage Title Updated', description='Homepage Description Updated')
     controller = zoom_class_controller(item.class.name)
     zoom_class = zoom_class_from_controller(controller)
+    field_prefix = zoom_class.underscore
     visit "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}"
     body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
-    fill_in "#{zoom_class.underscore}_title", :with => title
-    fill_in "#{zoom_class.underscore}_description", :with => description
+    fill_in "#{field_prefix}_title", :with => title
+    fill_in "#{field_prefix}_description", :with => description
+    yield(field_prefix) if block_given?
     click_button "Update"
     body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully edited."
     item.reload # update the instace var with the latest information
