@@ -35,97 +35,33 @@ class MemberListTest < ActionController::IntegrationTest
 
     end
 
-    context 'when view policy is set to at least admin' do
-
-      setup do
-        @@site_basket.settings[:memberlist_policy] = 'at least admin'
+    # This wraps 9 different tests of relativly same testing pattern into an easy to manage loop
+    member_roles = [
+      ['Basket admin', 'at least admin', 'admin'],
+      ['Basket moderator', 'at least moderator', 'bob'],
+      ['Basket member', 'at least member', 'joe'],
+      ['Logged in user', 'logged in', 'john'],
+      ['All users', 'all users', nil]
+    ]
+    member_roles.each_with_index do |role,index|
+      title, at_least, user = role[0], role[1], role[2]
+      context "when view policy is set to #{at_least}" do
+        setup do
+          @@site_basket.settings[:memberlist_policy] = "#{at_least}"
+        end
+        should "allow #{title} access" do
+          !user.nil? ? login_as(user) : logout
+          visit '/site/members/list'
+          body_should_contain 'Site Members'
+        end
+        if !member_roles[(index + 1)].blank? && !member_roles[(index + 1)][2].blank?
+          should "deny less than #{title} access" do
+            login_as(member_roles[(index + 1)][2])
+            visit '/site/members/list'
+            body_should_contain 'Permission Denied'
+          end
+        end
       end
-
-      should 'allow admins access' do
-        visit '/site/members/list'
-        body_should_contain 'Site Members'
-      end
-
-      should 'deny less than admins access' do
-        login_as('bob')
-        visit '/site/members/list'
-        body_should_contain 'Permission Denied'
-      end
-
-    end
-
-    context 'when view policy is set to at least moderator' do
-
-      setup do
-        @@site_basket.settings[:memberlist_policy] = 'at least moderator'
-      end
-
-      should 'allow moderators access' do
-        login_as('bob')
-        visit '/site/members/list'
-        body_should_contain 'Site Members'
-      end
-
-      should 'deny less than moderators access' do
-        login_as('joe')
-        visit '/site/members/list'
-        body_should_contain 'Permission Denied'
-      end
-
-    end
-
-    context 'when view policy is set to at least member' do
-
-      setup do
-        @@site_basket.settings[:memberlist_policy] = 'at least member'
-      end
-
-      should 'allow members access' do
-        login_as('joe')
-        visit '/site/members/list'
-        body_should_contain 'Site Members'
-      end
-
-      should 'deny less than members access' do
-        login_as('john')
-        visit '/site/members/list'
-        body_should_contain 'Permission Denied'
-      end
-
-    end
-
-    context 'when view policy is set to logged in' do
-
-      setup do
-        @@site_basket.settings[:memberlist_policy] = 'logged in'
-      end
-
-      should 'allow logged in users access' do
-        login_as('john')
-        visit '/site/members/list'
-        body_should_contain 'Site Members'
-      end
-
-      should 'deny less than logged in users access' do
-        logout
-        visit '/site/members/list'
-        body_should_contain 'Permission Denied'
-      end
-
-    end
-
-    context 'when view policy is set to all users' do
-
-      setup do
-        @@site_basket.settings[:memberlist_policy] = 'all users'
-      end
-
-      should 'allow anyone access' do
-        logout
-        visit '/site/members/list'
-        body_should_contain 'Site Members'
-      end
-
     end
 
   end
