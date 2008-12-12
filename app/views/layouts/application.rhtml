@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
   <% cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links'] %>
-  <% if cached_controllers.include?(params[:controller]) and params[:action] == "show" %>
+  <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) && params[:action] == "show") %>
     <% cache_with_privacy(current_item, {:part => 'page_title'}) do %><title><%= h(@title) %></title><% end -%>
   <% else -%>
     <title><%= h(@title) %></title>

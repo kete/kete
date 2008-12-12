@@ -65,7 +65,7 @@
   </div>
 <% end -%>
 
-<% cache({:part => 'tools'}) do -%>
+<% cache_with_privacy(@topic, {:part => 'tools'}) do -%>
 <% end -%>
 
 <% cache({:part => 'recent_topics'}) do -%>

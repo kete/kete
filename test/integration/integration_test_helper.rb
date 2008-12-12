@@ -29,6 +29,9 @@ ensure_zebra_running
 
 # Overload the IntegrationTest class to ensure tear down occurs OK.
 class ActionController::IntegrationTest
+
+  include ZoomControllerHelpers
+
   # setup basket variables for use later
   @@site_basket ||= Basket.site_basket
   @@help_basket ||= Basket.help_basket
@@ -49,6 +52,7 @@ class ActionController::IntegrationTest
     fill_in "login", :with => username
     fill_in "password", :with => password
     click_button "Log in"
+    body_should_contain "Logged in successfully"
   end
 
   def body_should_contain(text, message = nil, dump_response = false)
@@ -75,6 +79,48 @@ class ActionController::IntegrationTest
     assert !request.url.include?(text), message
   end
 
+  def new_item(basket, zoom_class, homepage_topic = false, title='Homepage Title', description='Homepage Description')
+    controller = zoom_class_controller(zoom_class)
+    if controller == 'topics' && homepage_topic
+      visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
+      click_link "Add new basket homepage topic"
+    else
+      visit "/#{basket.urlified_name}/#{controller}/new"
+    end
+    if controller == 'topics'
+      click_button("Choose Type")
+    end
+    fill_in "#{zoom_class.underscore}_title", :with => title
+    fill_in "#{zoom_class.underscore}_description", :with => description
+    click_button "Create"
+    if controller == 'topics' && homepage_topic
+      body_should_contain "Basket homepage was successfully created."
+    else
+      body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully created."
+    end
+    zoom_class.constantize.last # return the last item made (the one created above)
+  end
+
+  def update_item(item, title='Homepage Title Updated', description='Homepage Description Updated')
+    controller = zoom_class_controller(item.class.name)
+    zoom_class = zoom_class_from_controller(controller)
+    visit "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}"
+    body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
+    fill_in "#{zoom_class.underscore}_title", :with => title
+    fill_in "#{zoom_class.underscore}_description", :with => description
+    click_button "Update"
+    body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully edited."
+    item.reload # update the instace var with the latest information
+  end
+
+  def delete_item(item)
+    controller = zoom_class_controller(item.class.name)
+    visit "/#{item.basket.urlified_name}/#{controller}/show/#{item.to_param}"
+    click_link "Delete"
+    body_should_contain "Refine your results"
+    nil # return nil (to simulate an item deletion)
+  end
+
   # Debugging method
   def dump(text)
     puts "-----------------"
@@ -92,16 +138,6 @@ class ActionController::IntegrationTest
   end
 
   private
-
-  # this shouldn't be called directly, use the method missing functionality to add users on the fly
-  # add_bob_as_tech_admin(:baskets => @@site_basket)
-  def create_new_user(args)
-    @user = User.find_by_login(args[:login])
-    return @user unless @user.nil?
-    @user = Factory(:user, args)
-    assert_kind_of User, @user
-    @user
-  end
 
   def method_missing( method_sym, *args )
     method_name = method_sym.to_s
