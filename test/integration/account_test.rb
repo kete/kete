@@ -20,7 +20,7 @@ class AccountTest < ActionController::IntegrationTest
     end
 
     should "fail login with incorrect credentials" do
-      login_as('incorrect_login')
+      login_as('incorrect', 'login', true, true)
       body_should_contain "Your password or login do not match our records. Please try again."
     end
 

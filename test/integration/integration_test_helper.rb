@@ -42,7 +42,7 @@ class ActionController::IntegrationTest
     visit "/site/account/logout"
   end
 
-  def login_as(username, password='test', navigate_to_login=true)
+  def login_as(username, password='test', navigate_to_login=true, should_fail_login=false)
     if navigate_to_login
       logout # make sure we arn't logged in first
       visit "/"
@@ -52,7 +52,7 @@ class ActionController::IntegrationTest
     fill_in "login", :with => username
     fill_in "password", :with => password
     click_button "Log in"
-    body_should_contain "Logged in successfully"
+    body_should_contain("Logged in successfully") unless should_fail_login
   end
 
   def body_should_contain(text, message = nil, dump_response = false)
