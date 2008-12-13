@@ -35,6 +35,8 @@ gems:
   hpricot:
   unicode:
   RedCloth:
+    gem_name: RedCloth
+    lib_name: redcloth
   mime-types:
     gem_name: mime-types
     lib_name: mime/types

@@ -4,20 +4,13 @@ SKIP_SYSTEM_CONFIGURATION = true
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
 require 'test_help'
+
 require File.expand_path(File.dirname(__FILE__) + "/../common_test_methods")
+load_testing_libs(['webrat/rails', 'shoulda/rails', 'factory_girl',
+                   'rake', 'rake/rdoctask', 'rake/testtask', 'tasks/rails'])
+verify_zebra_changes_allowed
+
 require File.expand_path(File.dirname(__FILE__) + "/../factories")
-
-# Load webrat for integration tests
-require 'webrat/rails'
-
-# Load shoulda for testing
-require 'shoulda/rails'
-
-# Load the nessessary files for cache clearing
-require 'rake'
-require 'rake/rdoctask'
-require 'rake/testtask'
-require 'tasks/rails'
 
 def configure_environment(&block)
   yield(block)
