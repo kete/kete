@@ -42,7 +42,7 @@ namespace :db do
   namespace :test do
     desc 'Prepare the test database with the bootstrapped data necessary for Kete'
     Rake::Task.redefine_task(:prepare => :environment) do
-      RAILS_ENV = 'test'
+      ENV['RAILS_ENV'] = 'test'
       Rake::Task['db:bootstrap'].invoke
     end
   end
