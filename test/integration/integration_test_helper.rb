@@ -13,8 +13,11 @@ require 'webrat/rails'
 # Load shoulda for testing
 require 'shoulda/rails'
 
-# Load fileutils for cache clearing
-require 'fileutils'
+# Load the nessessary files for cache clearing
+require 'rake'
+require 'rake/rdoctask'
+require 'rake/testtask'
+require 'tasks/rails'
 
 def configure_environment(&block)
   yield(block)
@@ -145,7 +148,7 @@ class ActionController::IntegrationTest
   end
 
   def enable_caching
-    FileUtils.rm_rf(Dir["#{File.expand_path(File.dirname(__FILE__) + '/../../tmp/cache')}/[^.]*"])
+    Rake::Task['tmp:cache:clear'].execute(ENV)
     ActionController::Base.perform_caching = true
     ActionView::Base.cache_template_loading = true
   end
@@ -153,7 +156,7 @@ class ActionController::IntegrationTest
   def disable_caching
     ActionView::Base.cache_template_loading = false
     ActionController::Base.perform_caching = false
-    FileUtils.rm_rf(Dir["#{File.expand_path(File.dirname(__FILE__) + '/../../tmp/cache')}/[^.]*"])
+    Rake::Task['tmp:cache:clear'].execute(ENV)
   end
 
   private
