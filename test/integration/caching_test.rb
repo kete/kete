@@ -1,15 +1,11 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
-require 'fileutils'
-
 class CachingTest < ActionController::IntegrationTest
 
   context "The homepage cache" do
 
     setup do
-      FileUtils.rm_rf(Dir["#{File.expand_path(File.dirname(__FILE__) + '/../../tmp/cache')}/[^.]*"])
-      ActionController::Base.perform_caching = true
-      ActionView::Base.cache_template_loading = true
+      enable_caching
       @@cache_basket ||= create_new_basket({ :name => 'Cache Basket' })
       @@cache_basket.index_page_link_to_index_topic_as = 'full topic and comments'
       @@cache_basket.save
@@ -23,9 +19,7 @@ class CachingTest < ActionController::IntegrationTest
     teardown do
       @@cache_basket.index_page_link_to_index_topic_as = nil
       @@cache_basket.save
-      ActionController::Base.perform_caching = false
-      ActionView::Base.cache_template_loading = false
-      FileUtils.rm_rf(Dir["#{File.expand_path(File.dirname(__FILE__) + '/../../tmp/cache')}/[^.]*"])
+      disable_caching
     end
 
     context "when homepage topic is added" do

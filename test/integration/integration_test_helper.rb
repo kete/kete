@@ -7,13 +7,14 @@ require 'test_help'
 require File.expand_path(File.dirname(__FILE__) + "/../common_test_methods")
 require File.expand_path(File.dirname(__FILE__) + "/../factories")
 
-# James - 2008-12-08
 # Load webrat for integration tests
 require 'webrat/rails'
 
-# Kieran - 2008-12-09
 # Load shoulda for testing
 require 'shoulda/rails'
+
+# Load fileutils for cache clearing
+require 'fileutils'
 
 def configure_environment(&block)
   yield(block)
@@ -37,6 +38,7 @@ class ActionController::IntegrationTest
   @@help_basket ||= Basket.help_basket
   @@about_basket ||= Basket.about_basket
   @@documentation_basket ||= Basket.documentation_basket
+  @@users_created = Array.new
 
   def logout
     visit "/site/account/logout"
@@ -137,8 +139,21 @@ class ActionController::IntegrationTest
     configure_environment do
       require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
     end
-    User.destroy_all
+    @@users_created.each { |user| user.destroy }
+    @@users_created = Array.new
     super
+  end
+
+  def enable_caching
+    FileUtils.rm_rf(Dir["#{File.expand_path(File.dirname(__FILE__) + '/../../tmp/cache')}/[^.]*"])
+    ActionController::Base.perform_caching = true
+    ActionView::Base.cache_template_loading = true
+  end
+
+  def disable_caching
+    ActionView::Base.cache_template_loading = false
+    ActionController::Base.perform_caching = false
+    FileUtils.rm_rf(Dir["#{File.expand_path(File.dirname(__FILE__) + '/../../tmp/cache')}/[^.]*"])
   end
 
   private
@@ -153,6 +168,7 @@ class ActionController::IntegrationTest
       @user = create_new_user({:login => $1}.merge(args))
       baskets = [baskets] unless baskets.kind_of?(Array)
       baskets.each { |basket| @user.has_role($2, basket) }
+      @@users_created << @user
       eval("@#{$1} = @user")
     elsif method_name =~ /^add_(\w+)_as_super_user$/
       # add_bob_as_super_user
@@ -161,6 +177,7 @@ class ActionController::IntegrationTest
       @user.has_role('site_admin', @@site_basket)
       @user.has_role('tech_admin', @@site_basket)
       Basket.all(:conditions => ["id != 1"]).each { |basket| @user.has_role('admin', basket) }
+      @@users_created << @user
       eval("@#{$1} = @user")
     elsif method_name =~ /^add_(\w+)$/
       # add_bob_as_regular_user
@@ -174,6 +191,7 @@ class ActionController::IntegrationTest
       args = args[0] || Hash.new
       @user = create_new_user({:login => login}.merge(args))
       @user.add_as_member_to_default_baskets if add_to_baskets
+      @@users_created << @user
       eval("@#{login} = @user")
     else
       super
