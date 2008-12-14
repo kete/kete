@@ -18,11 +18,11 @@ management_gems:
 testing_gems:
   webrat:
     gem_name: brynary-webrat
-    lib_name: webrat
+    lib_name: webrat/rails
     source: http://gems.github.com
   shoulda:
     gem_name: thoughtbot-shoulda
-    lib_name: shoulda
+    lib_name: shoulda/rails
     source: http://gems.github.com
   factory-girl:
     gem_name: thoughtbot-factory_girl

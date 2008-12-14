@@ -7,11 +7,12 @@ module RequiredSoftware
     # poached and modified to include non-gem/lib requirements
     # from http://www.depixelate.com/2006/8/9/quick-tip-ensuring-required-gems-and-libs-are-available
     # --- [ check that we have all the gems and libs we need ] ---
-    def missing_libs(required_software)
+    def missing_libs(required_software, lib_type='gems', args = {})
       missing_libs = Array.new
       required_libs = Hash.new
 
-      required_software['gems'].each do |key, value|
+      required_software[lib_type].each do |key, value|
+        next if !args[:exclude].blank? && args[:exclude].include?(key)
         if !value.blank? && value.kind_of?(Hash)
           if !value['lib_name'].blank?
             required_libs[key] = value['lib_name']
@@ -23,8 +24,10 @@ module RequiredSoftware
         end
       end
 
-      required_software['libs'].each do |key, value|
-        required_libs[key] = value
+      unless lib_type == 'testing_gems'
+        required_software['libs'].each do |key, value|
+          required_libs[key] = value
+        end
       end
 
       required_libs.values.each do |lib|
