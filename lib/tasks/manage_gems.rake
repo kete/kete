@@ -53,15 +53,16 @@ namespace :manage_gems do
     desc "Check that you have required gems"
     task :check do
       required_software = load_required_software
-
       missing_lib_count = 0
-      p "Missing Gems or Libs:"
+      puts "Missing Gems or Libs:\n-----"
       missing_libs(required_software).each do |lib|
-        p lib
-        missing_lib_count += 0
+        puts lib
+        missing_lib_count += 1
       end
+      puts "-----"
       if missing_lib_count > 0
-        p "You have to install the above for Kete to work.\nUsually \"sudo gem install gem_name\", but double check documentation.  For example Rmagick is usually best installed via a port or package."
+        puts "You have to install the above for Kete to work."
+        puts "Usually \"sudo gem install gem_name\", but double check documentation.For example Rmagick is usually best installed via a port or package."
       else
         p "None.  Feel free to proceed."
       end
