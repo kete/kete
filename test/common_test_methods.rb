@@ -1,15 +1,3 @@
-def set_constant(constant, value)
-  if respond_to?(:silence_warnings)
-    silence_warnings do
-      Object.send(:remove_const, constant) if Object.const_defined?(constant)
-      Object.const_set(constant, value)
-    end
-  else
-    Object.send(:remove_const, constant) if Object.const_defined?(constant)
-    Object.const_set(constant, value)
-  end
-end
-
 include RequiredSoftware
 def load_testing_libs(args = {})
   missing_gems = missing_libs(load_required_software, 'testing_gems', args)
@@ -31,14 +19,50 @@ def verify_zebra_changes_allowed
   ENV['ZEBRA_CHANGES_PERMITTED'] = 'true'
 end
 
-def ensure_zebra_running
-  begin
-    zoom_db = ZoomDb.find_by_database_name('public')
-    Topic.process_query(:zoom_db => zoom_db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")
-  rescue
-    start_zebra = system('rake zebra:start')
-    unless start_zebra
-      raise "Zebra unable to start. Please start it manually before rerunning the tests."
-    end
+require 'rake'
+require 'rake/rdoctask'
+require 'rake/testtask'
+require 'tasks/rails'
+
+# If Zebra is running, stop it, init it, start it, populate it
+# If Zebra is running, same as the above but without a stop
+def bootstrap_zebra_with_initial_records
+  Rake::Task['zebra:stop'].execute(ENV) if zebra_running?('public') || zebra_running?('private')
+  ENV['ZEBRA_DB'] = 'public'
+  Rake::Task['zebra:init'].execute(ENV)
+  ENV['ZEBRA_DB'] = 'private'
+  Rake::Task['zebra:init'].execute(ENV)
+  Rake::Task['zebra:start'].execute(ENV)
+  Rake::Task['zebra:load_initial_records'].execute(ENV)
+  unless zebra_running?('public') && zebra_running?('private')
+    raise "ERROR: Zebra's public and private databases failed to start up properly. Double check configuration and try again."
   end
+end
+
+def zebra_running?(zebra_db)
+  begin
+    zoom_db = ZoomDb.find_by_database_name(zebra_db)
+    Topic.process_query(:zoom_db => zoom_db, :query => "@attr 1=_ALLRECORDS @attr 2=103 ''")
+    return true
+  rescue
+    return false
+  end
+end
+
+def set_constant(constant, value)
+  if respond_to?(:silence_warnings)
+    silence_warnings do
+      Object.send(:remove_const, constant) if Object.const_defined?(constant)
+      Object.const_set(constant, value)
+    end
+  else
+    Object.send(:remove_const, constant) if Object.const_defined?(constant)
+    Object.const_set(constant, value)
+  end
+end
+
+def configure_environment(&block)
+  yield(block)
+  # Reload the routes based on the current configuration
+  ActionController::Routing::Routes.reload!
 end

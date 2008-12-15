@@ -8,25 +8,14 @@ require 'test_help'
 require File.expand_path(File.dirname(__FILE__) + "/../common_test_methods")
 
 load_testing_libs
-require 'rake'
-require 'rake/rdoctask'
-require 'rake/testtask'
-require 'tasks/rails'
 verify_zebra_changes_allowed
+bootstrap_zebra_with_initial_records
 
 require File.expand_path(File.dirname(__FILE__) + "/../factories")
 
-def configure_environment(&block)
-  yield(block)
-  # Reload the routes based on the current configuration
-  ActionController::Routing::Routes.reload!
-end
-
 configure_environment do
-  require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
+  require File.expand_path(File.dirname(__FILE__) + "/../system_configuration_constants")
 end
-
-ensure_zebra_running
 
 # Overload the IntegrationTest class to ensure tear down occurs OK.
 class ActionController::IntegrationTest
@@ -82,45 +71,60 @@ class ActionController::IntegrationTest
     assert !request.url.include?(text), message
   end
 
-  def new_item(basket, zoom_class, is_homepage_topic = false, args = {})
-    fields = { :title => 'Topic Title',
-               :description => 'Topic Description' }
-    fields.merge!(args) unless args.nil?
+  def new_item(args = {}, basket = @@site_basket, is_homepage_topic = false, zoom_class = 'Topic')
     controller = zoom_class_controller(zoom_class)
     field_prefix = zoom_class.underscore
+
+    fields = { :new_path => "/#{basket.urlified_name}/#{controller}/new",
+               :title => 'Topic Title',
+               :description => 'Topic Description' }
+    fields.merge!(args) unless args.nil?
+    new_path = fields.delete(:new_path)
+
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
       click_link "Add new basket homepage topic"
     else
-      new_path = (args[:new_path] || "/#{basket.urlified_name}/#{controller}/new")
       visit new_path
     end
+
     click_button("Choose Type") if controller == 'topics'
     get_webrat_actions_from(fields, field_prefix)
     yield(field_prefix) if block_given?
     click_button "Create"
+
     if controller == 'topics' && is_homepage_topic
       body_should_contain "Basket homepage was successfully created."
     else
       body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully created."
     end
+
     zoom_class.constantize.last # return the last item made (the one created above)
   end
 
+  def new_homepage_topic(args = {}, basket = @@site_basket)
+    new_item(args, basket, true, 'Topic')
+  end
+
   def update_item(item, args = {})
-    fields = { :title => 'Topic Updated Title',
-               :description => 'Topic Updated Description' }
-    fields.merge!(args) unless args.nil?
     controller = zoom_class_controller(item.class.name)
     zoom_class = zoom_class_from_controller(controller)
     field_prefix = zoom_class.underscore
-    edit_path = (args[:edit_path] || "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}")
+
+    fields = { :edit_path => "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}",
+               :title => 'Topic Updated Title',
+               :description => 'Topic Updated Description' }
+    fields.merge!(args) unless args.nil?
+    edit_path = fields.delete(:edit_path)
+
     visit edit_path
     body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
     get_webrat_actions_from(fields, field_prefix)
     yield(field_prefix) if block_given?
     click_button "Update"
+
     body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully edited."
+
     item.reload # update the instace var with the latest information
   end
 
@@ -179,7 +183,7 @@ class ActionController::IntegrationTest
   # When a test is finished, reset the constants, and remove all users for the new test
   def teardown
     configure_environment do
-      require File.join(File.dirname(__FILE__), 'system_configuration_constants.rb')
+      require File.expand_path(File.dirname(__FILE__) + "/../system_configuration_constants")
     end
     @@users_created.each { |user| user.destroy }
     @@users_created = Array.new
@@ -210,9 +214,9 @@ class ActionController::IntegrationTest
       # new_topic / new_audio_recording
       # takes basket and a hash of values, plus an optional block
       if block_given?
-        new_item(args[0], $1.classify, args[1], args[2], &block)
+        new_item(args[0], args[1], args[2], $1.classify, &block)
       else
-        new_item(args[0], $1.classify, args[1], args[2])
+        new_item(args[0], args[1], args[2], $1.classify)
       end
     elsif method_name =~ /^add_(\w+)_as_(\w+)_to$/
       # add_bob_as_moderator_to(@@site_basket)
