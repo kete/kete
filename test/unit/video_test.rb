@@ -10,12 +10,14 @@ class VideoTest < Test::Unit::TestCase
     eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
     # fake out file upload
-    videodata = fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
+    @@videodata ||= fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
-    @new_model = { :title => 'test item',
+    @new_model = {
+      :title => 'test item',
       :basket => Basket.find(:first),
-      :uploaded_data => videodata }
+      :uploaded_data => @@videodata
+    }
 
     # name of fields that must be present, e.g. %(name description)
     @req_attr_names = %w(title)
@@ -26,7 +28,7 @@ class VideoTest < Test::Unit::TestCase
     # Name of the folder we expect files to be saved to
     @uploads_folder = 'video'
   end
-
+  
   # load in sets of tests and helper methods
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper

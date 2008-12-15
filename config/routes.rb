@@ -118,7 +118,7 @@ ActionController::Routing::Routes.draw do |map|
   else
     is_configured = false
   end
-  if is_configured
+  if is_configured || Object.const_defined?(:SKIP_SYSTEM_CONFIGURATION)
     # comment this line and uncomment the next after initial migration
     site_basket = Basket.find(1)
     site_urlified_name = !site_basket.nil? ? site_basket.urlified_name : 'site'

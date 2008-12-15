@@ -1,27 +1,41 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'licenses_controller'
-
-class LicensesController; def rescue_action(e) raise e end; end
 
 class LicensesControllerTest < ActionController::TestCase
-  include AuthenticatedTestHelper
+
+  include KeteTestFunctionalHelper
 
   fixtures :licenses
 
   def setup
-    @site_basket = Basket.find(:first)
-    login_as :admin
+    @base_class = "License"
+    @assignment_var = "record" # singular, lowercase
+    load_test_environment
+    login_as(:admin)
+
+    # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
+    @new_model =     { :name => 'License1',
+                       :description => 'License1',
+                       :url => 'http://www.licenses.com/license1.html',
+                       :is_available => true,
+                       :is_creative_commons => true }
+    @updated_model = { :name => 'License2',
+                       :description => 'License2',
+                       :url => 'http://www.licenses.com/license2.html',
+                       :is_available => true,
+                       :is_creative_commons => true }
   end
 
-  def test_should_get_index
-    get :index, :urlified_name => 'site', :controller => 'licenses'
-    assert_response :success
-    assert_not_nil assigns(:records)
+  def test_index
+    get :index, index_path
+    assert_viewing_template 'licenses/list'
+    assert_var_assigned true
+    assert_equal 4, assigns(:records).size
   end
 
-  def test_should_get_new
-    get :new, :urlified_name => 'site'
-    assert_response :success
+  def test_show
+    get :show, show_path({ :id => licenses(:one).id })
+    assert_viewing_template 'licenses/show'
+    assert_var_assigned
   end
 
   # Kieran Pilkington, 2008/08/11
@@ -32,48 +46,34 @@ class LicensesControllerTest < ActionController::TestCase
   #  end
   #end
 
-  def test_should_create_license
-    assert_difference('License.count') do
-      post :create, {:urlified_name => 'site', :record => { :name => 'test', :description => 'test', :url => "http://nothere.com", :is_available => true, :is_creative_commons => false }}
-    end
-
-    assert_redirected_to license_path(assigns(:license))
+  def test_new
+    get :new, new_path
+    assert_viewing_template 'licenses/create_form'
+    assert_var_assigned
   end
 
-  def test_should_show_license
-    get :show, :id => licenses(:one).id, :urlified_name => 'site'
-    assert_response :success
+  def test_create
+    create_record
+    assert_var_assigned
+    assert_attributes_same_as @new_model
+    assert_redirect_to( index_path )
   end
 
-  def test_should_get_edit
-    get :edit, :id => licenses(:one).id, :urlified_name => 'site'
-    assert_response :success
+  def test_edit
+    get :edit, edit_path({ :id => licenses(:one).id })
+    assert_viewing_template 'licenses/update_form'
+    assert_var_assigned
   end
 
-  def test_should_update_license
-    put :update, {:id => licenses(:one).id, :urlified_name => 'site', :record => { :name => 'test', :description => 'test', :url => 'http://nothere.com', :is_available => true, :is_creative_commons => false }}
-    assert_redirected_to license_path(assigns(:license))
+  def test_update
+    update_record( {}, { :id => licenses(:one).id } )
+    assert_var_assigned
+    assert_attributes_same_as @updated_model
+    assert_redirect_to( index_path )
   end
 
-  def test_should_destroy_license
-    assert_difference('License.count', -1) do
-      delete :destroy, :id => licenses(:one).id, :urlified_name => 'site'
-    end
-
-    assert_redirected_to licenses_path
-  end
-
-  private
-
-  def license_path(options = {})
-    license_path_hash = { :urlified_name => 'site', :controller => 'licenses' }
-    license_path_hash = license_path_hash.merge(options) unless options.nil?
-    license_path_hash
-  end
-
-  def licenses_path(options = {})
-    license_path_hash = { :urlified_name => 'site', :controller => 'licenses' }
-    license_path_hash = license_path_hash.merge(options) unless options.nil?
-    license_path_hash
+  def test_destroy
+    destroy_record({ :id => licenses(:one).id })
+    assert_redirect_to( index_path )
   end
 end

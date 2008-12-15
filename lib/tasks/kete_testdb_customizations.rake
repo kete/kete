@@ -42,7 +42,11 @@ namespace :db do
   namespace :test do
     desc 'Prepare the test database with the bootstrapped data necessary for Kete'
     Rake::Task.redefine_task(:prepare => :environment) do
-      RAILS_ENV = 'test'
+      ENV['RAILS_ENV'] = 'test'
+      require File.expand_path(File.dirname(__FILE__) + "/../required_software")
+      require File.expand_path(File.dirname(__FILE__) + "/../../test/common_test_methods")
+      #load_testing_libs
+      verify_zebra_changes_allowed
       Rake::Task['db:bootstrap'].invoke
     end
   end

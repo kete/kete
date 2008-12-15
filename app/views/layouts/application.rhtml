@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
   <% cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links'] %>
-  <% if cached_controllers.include?(params[:controller]) and params[:action] == "show" %>
+  <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) && params[:action] == "show") %>
     <% cache_with_privacy(current_item, {:part => 'page_title'}) do %><title><%= h(@title) %></title><% end -%>
   <% else -%>
     <title><%= h(@title) %></title>
@@ -88,7 +88,13 @@
 
   <%= stylesheet_link_tag 'yui/treeview'%>
 
-  <%= load_google_map_api if defined?(load_google_map_api) -%>
+  <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) and params[:action] == "show") %>
+    <% cache_with_privacy(current_item, {:part => 'google_map_api'}) do -%>
+      <%= load_google_map_api if defined?(load_google_map_api) -%>
+    <% end -%>
+  <% else %>
+    <%= load_google_map_api if defined?(load_google_map_api) -%>
+  <% end -%>
 
   <%= @rss_tag_auto if !@rss_tag_auto.nil? -%>
 
@@ -221,7 +227,7 @@
                                                :tabindex => '2' %>
                   </li>
                 <% end -%>
-                <% if @current_basket.urlified_name != 'site' -%>
+                <% if @current_basket != @site_basket -%>
                   <li>
                     <%= link_to_unless_current "delete this basket",
                                                { :controller => 'baskets',

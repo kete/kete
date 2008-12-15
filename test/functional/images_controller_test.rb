@@ -1,15 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'images_controller'
 
-# Re-raise errors caught by the controller.
-class ImagesController; def rescue_action(e) raise e end; end
-
-class ImagesControllerTest < Test::Unit::TestCase
+class ImagesControllerTest < ActionController::TestCase
 
   # Load fixtures for users for login..
   fixtures :users
   
-  include AuthenticatedTestHelper
+  include KeteTestFunctionalHelper
   include ItemPrivacyTestHelper::TestHelper
   
   def setup
@@ -20,11 +16,11 @@ class ImagesControllerTest < Test::Unit::TestCase
     load_test_environment
     
     # fake out file upload
-    documentdata = fixture_file_upload('/files/white.jpg', 'image/jpeg')
+    @@documentdata ||= fixture_file_upload('/files/white.jpg', 'image/jpeg')
     
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_still_image  = { :title => 'test still image', :basket_id => Basket.find(:first) }
-    @new_image_file   = { :uploaded_data => documentdata }
+    @new_image_file   = { :uploaded_data => @@documentdata }
     
   end
 

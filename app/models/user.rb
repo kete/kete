@@ -258,6 +258,8 @@ class User < ActiveRecord::Base
     permissions_hash
   end
 
+  # For single role deletion
+  # To delete all roles, use user.roles.delete_all
   def drop(role)
     # has_no_role(role.name, role.authorizable)
     # unlike has_no_role, doesn't destroy role
@@ -295,7 +297,7 @@ class User < ActiveRecord::Base
   # otherwise authorizable tries to get the basket which no longer exists
   # when called in current_user.basket_permissions
   def remove_roles
-    roles.each { |role| drop(role) }
+    roles.delete_all
   end
 
 end

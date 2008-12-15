@@ -22,9 +22,17 @@ namespace :manage_gems do
     ENV['GEMS_ACTION'] ||= 'update'
 
     required = load_required_software
-    required[ENV['GEMS_TO_GRAB']].keys.each do |gem_name|
-      p gem_name
-      `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}`
+    required[ENV['GEMS_TO_GRAB']].each do |key,value|
+      if !value.blank? && value.kind_of?(Hash)
+        gem_name = value['gem_name']
+        version = " --version=#{value['version']}" unless value['version'].blank?
+        source = " --source=#{value['source']}" unless value['source'].blank?
+        p "sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
+        `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}`
+      else
+        p "sudo gem #{ENV['GEMS_ACTION']} #{key}"
+        `sudo gem #{ENV['GEMS_ACTION']} #{key}`
+      end
     end
   end
 
@@ -32,7 +40,7 @@ namespace :manage_gems do
     desc "Install required gems"
     task :install do
       ENV['GEMS_TO_GRAB'] = 'gems'
-      ENV['GEMS_ACTION'] = 'install'
+      ENV['GEMS_ACTION'] = 'install -y'
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
 
@@ -45,15 +53,16 @@ namespace :manage_gems do
     desc "Check that you have required gems"
     task :check do
       required_software = load_required_software
-
       missing_lib_count = 0
-      p "Missing Gems or Libs:"
+      puts "Missing Gems or Libs:\n-----"
       missing_libs(required_software).each do |lib|
-        p lib
-        missing_lib_count += 0
+        puts lib
+        missing_lib_count += 1
       end
+      puts "-----"
       if missing_lib_count > 0
-        p "You have to install the above for Kete to work.\nUsually \"sudo gem install gem_name\", but double check documentation.  For example Rmagick is usually best installed via a port or package."
+        puts "You have to install the above for Kete to work."
+        puts "Usually \"sudo gem install gem_name\", but double check documentation.For example Rmagick is usually best installed via a port or package."
       else
         p "None.  Feel free to proceed."
       end
@@ -74,4 +83,20 @@ namespace :manage_gems do
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
   end
+
+  namespace :testing do
+    desc "Install testing gems"
+    task :install do
+      ENV['GEMS_TO_GRAB'] = 'testing_gems'
+      ENV['GEMS_ACTION'] = 'install -y'
+      Rake::Task['manage_gems:exec_action'].execute(ENV)
+    end
+
+    desc "Update testing gems"
+    task :update do
+      ENV['GEMS_TO_GRAB'] = 'testing_gems'
+      Rake::Task['manage_gems:exec_action'].execute(ENV)
+    end
+  end
+
 end
