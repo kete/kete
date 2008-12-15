@@ -92,7 +92,8 @@ class ActionController::IntegrationTest
       visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
       click_link "Add new basket homepage topic"
     else
-      visit (args[:new_path] || "/#{basket.urlified_name}/#{controller}/new")
+      new_path = (args[:new_path] || "/#{basket.urlified_name}/#{controller}/new")
+      visit new_path
     end
     click_button("Choose Type") if controller == 'topics'
     get_webrat_actions_from(fields, field_prefix)
@@ -113,7 +114,8 @@ class ActionController::IntegrationTest
     controller = zoom_class_controller(item.class.name)
     zoom_class = zoom_class_from_controller(controller)
     field_prefix = zoom_class.underscore
-    visit (args[:edit_path] || "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}")
+    edit_path = (args[:edit_path] || "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}")
+    visit edit_path
     body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
     get_webrat_actions_from(fields, field_prefix)
     yield(field_prefix) if block_given?
@@ -204,19 +206,15 @@ class ActionController::IntegrationTest
 
   def method_missing( method_sym, *args, &block )
     method_name = method_sym.to_s
-    # Dont think this is working at the moment, will investigate
-    #if method_name =~ /^new_(\w+)$/
-    #  # new_topic / new_audio_recording
-    #  # takes basket and a hash of values
-    #  if block_given?
-    #    new_item(args[0], $1.classify, args[1]) do |field_prefix|
-    #      yield(field_prefix)
-    #    end
-    #  else
-    #    new_item(args[0], $1.classify, args[1])
-    #  end
-    #els
-    if method_name =~ /^add_(\w+)_as_(\w+)_to$/
+    if method_name =~ /^new_(\w+)$/
+      # new_topic / new_audio_recording
+      # takes basket and a hash of values, plus an optional block
+      if block_given?
+        new_item(args[0], $1.classify, args[1], &block)
+      else
+        new_item(args[0], $1.classify, args[1])
+      end
+    elsif method_name =~ /^add_(\w+)_as_(\w+)_to$/
       # add_bob_as_moderator_to(@@site_basket)
       # can take single basket, or an array of them
       baskets = args[0] || Array.new
