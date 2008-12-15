@@ -1,5 +1,9 @@
 <% @title = "Baskets" -%>
 
+<h2 class="basket-list-headline">
+  <%= @title -%>
+</h2>
+
 <p>
   <% if @site_admin && (@requested_count + @rejected_count) > 0 -%>
     [
