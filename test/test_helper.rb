@@ -3,7 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
 require File.expand_path(File.dirname(__FILE__) + "/common_test_methods")
-load_testing_libs(['shoulda/rails', 'factory_girl'])
+
+load_testing_libs({ :exclude => ['webrat'] })
 verify_zebra_changes_allowed
 
 require File.expand_path(File.dirname(__FILE__) + "/factories")
