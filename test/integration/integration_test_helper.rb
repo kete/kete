@@ -92,7 +92,7 @@ class ActionController::IntegrationTest
       visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
       click_link "Add new basket homepage topic"
     else
-      visit "/#{basket.urlified_name}/#{controller}/new"
+      visit (args[:new_path] || "/#{basket.urlified_name}/#{controller}/new")
     end
     click_button("Choose Type") if controller == 'topics'
     get_webrat_actions_from(fields, field_prefix)
@@ -113,7 +113,7 @@ class ActionController::IntegrationTest
     controller = zoom_class_controller(item.class.name)
     zoom_class = zoom_class_from_controller(controller)
     field_prefix = zoom_class.underscore
-    visit "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}"
+    visit (args[:edit_path] || "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}")
     body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
     get_webrat_actions_from(fields, field_prefix)
     yield(field_prefix) if block_given?
