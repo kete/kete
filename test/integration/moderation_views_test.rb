@@ -18,7 +18,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
         # Create a test item
         @item = new_item(@@site_basket, "Topic")
         update_item(@item)
-        update_item(@item, "Homepage Title Updated Again")
+        update_item(@item, :title => "Homepage Title Updated Again")
       end
       
       should "be able to visit item page" do
