@@ -124,7 +124,12 @@ class ActionController::IntegrationTest
     visit "/#{item.basket.urlified_name}/#{controller}/show/#{item.to_param}"
     click_link "Delete"
     body_should_contain "Refine your results"
-    nil # return nil (to simulate an item deletion)
+    # we actually want this to fail and return nil, it means the item was deleted properly
+    begin
+      return item.reload
+    rescue
+      return nil
+    end
   end
 
   # Debugging method
@@ -144,15 +149,17 @@ class ActionController::IntegrationTest
     super
   end
 
-  def enable_caching
+  def enable_production_mode
     Rake::Task['tmp:cache:clear'].execute(ENV)
+    ActionController::Base.consider_all_requests_local = false
     ActionController::Base.perform_caching = true
     ActionView::Base.cache_template_loading = true
   end
 
-  def disable_caching
+  def disable_production_mode
     ActionView::Base.cache_template_loading = false
     ActionController::Base.perform_caching = false
+    ActionController::Base.consider_all_requests_local = true
     Rake::Task['tmp:cache:clear'].execute(ENV)
   end
 
