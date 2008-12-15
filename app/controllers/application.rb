@@ -88,7 +88,7 @@ class ApplicationController < ActionController::Base
   # if anything is updated or deleted
   # we need toss our show action fragments
   # destroy has to happen before the item is deleted
-  before_filter :expire_show_caches, :only => [ :destroy ]
+  before_filter :expire_show_caches_on_destroy, :only => [ :destroy ]
   # everything else we do after the action is completed
   after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
 
@@ -282,7 +282,7 @@ class ApplicationController < ActionController::Base
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
-                'secondary_content_license_metadata_[privacy]', 'history']
+                'secondary_content_license_metadata_[privacy]', 'history_[privacy]']
 
   PUBLIC_SHOW_PARTS = ['comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
@@ -351,19 +351,13 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_fragment_for_all_versions(item, name = {})
-
     name = name.merge(:id => item.id)
     file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}"
-    if File.exists?(file_path)
-      File.delete(file_path)
-    end
+    File.delete(file_path) if File.exists?(file_path)
 
-    # Kieran Pilkington, 2008-08-05
-    # we dont need to remove history caches, they dont change, only the live versions do
-    # (from what I can see anyway)
-
-    # slight change for postgresql
-    # this works with mysql and postgresql, not sure about sqlite or oracle
+    # Kieran Pilkington, 2008-12-15
+    # Caches no longer store the title in the cache name, only the id, so we no
+    # longer need to loop over past version titles and clear them out one by one
     #item.versions.find(:all, :select => 'distinct title, version').each do |version|
     #  expire_fragment(name.merge(:id => item.id.to_s + format_friendly_for(version.title)))
     #end
@@ -381,6 +375,7 @@ class ApplicationController < ActionController::Base
       expire_show_caches_for(item)
     end
   end
+  alias :expire_show_caches_on_destroy :expire_show_caches
 
   def expire_show_caches_for(item)
     # only do this for zoom_classes
@@ -393,15 +388,19 @@ class ApplicationController < ActionController::Base
     all_show_parts.each do |part|
 
       # James - 2008-07-01
-      # Some cache keys have a privacy scope, indicated by [privacy] in the key name.
+      # Most cache keys have a privacy scope, indicated by [privacy] in the key name.
       # In these cases, replace this with the actual item's current privacy.
       # I.e. secondary_content_tags_[privacy] => secondary_content_tags_private where
       # the current item is private.
-      resulting_part = cache_name_for(part, @privacy_type)
-
-      # we have to do this for each distinct title the item previously had
-      # because old titles' friendly urls won't be matched in our expiry otherwise
-      expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
+      if params[:action] == 'destroy'
+        resulting_part = cache_name_for(part, 'public')
+        expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
+        resulting_part = cache_name_for(part, 'private')
+        expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
+      else
+        resulting_part = cache_name_for(part, @privacy_type)
+        expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
+      end
     end
 
     # images have an additional cache

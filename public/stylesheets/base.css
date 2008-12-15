@@ -53,14 +53,14 @@ ul.navlist {
     list-style-type: none;
 }
 ul.nav-list li{
-		display: inline;
-		padding: 2px;
-		padding-left: .5em;
+                display: inline;
+                padding: 2px;
+                padding-left: .5em;
 }
 
 #top-menu ul.nav-list li {
-		display: block;
-		float: left;	
+                display: block;
+                float: left;
     padding: 2px 4px;
 }
 
@@ -74,21 +74,21 @@ ul.nav-list a:hover{
     color: #333;
 }
 ul.nav-list a img {
-  border: none; 
+  border: none;
 }
 
 #top-menu {
-		clear: both;
-		float: left;
-		width: 100%;
-		margin-bottom: 2em;
-		padding: 0;
+                clear: both;
+                float: left;
+                width: 100%;
+                margin-bottom: 2em;
+                padding: 0;
     background-color: #838383;
 }
 
 #top-menu ul {
-		margin: 0;
-		padding: 7px;
+                margin: 0;
+                padding: 7px;
 }
 #top-menu ul.user-nav {
     background-image: none;
@@ -96,9 +96,9 @@ ul.nav-list a img {
     margin-right: 15px;
 }
 ul#main-nav {
-		float: left;
-		width: 70%;
-		padding-left: 15px;
+                float: left;
+                width: 70%;
+                padding-left: 15px;
 }
 #basket-list{
     margin: 0;
@@ -118,6 +118,10 @@ ul#main-nav {
 #top-menu li a,
 #basket-list li a{
     color: white;
+}
+
+.basket-list-headline{
+    display:none;
 }
 
 /* #################################### User Basket Navigation #################################### */
@@ -524,10 +528,10 @@ th {
 }
 
 div#slideshow-controls {
-		float: left;
-		width: 100%;
+                float: left;
+                width: 100%;
 }
-			
+
 div#slideshow-controls div.wrapper {
     background-repeat: no-repeat;
     border: 2px solid #7A0203;
@@ -536,11 +540,11 @@ div#slideshow-controls div.wrapper {
     margin-bottom: 30px;
     -moz-border-radius: 1em;
     -webkit-border-radius: 1em;
-		text-align:center;
+                text-align:center;
 }
 
 div#slideshow-controls p {
-		margin: 4px 0;
+                margin: 4px 0;
 }
 
 div#slideshow-controls div#slideshow-previous-button {
@@ -678,8 +682,8 @@ span.next-active {
 }
 
 div#notice, div#error {
-		float: left;
-		width: 100%;
+                float: left;
+                width: 100%;
 }
 
 div#notice div, div#error div {
@@ -856,55 +860,55 @@ div.wrap {
 /* Special formatting for extended fields with multiple values */
 
 textarea.extended_field_textarea {
-				width: 500px;
+                                width: 500px;
 }
 
 div.extended_field_multiple_fields {
-				float: left;
-				margin: 0;
-				padding: 0;
+                                float: left;
+                                margin: 0;
+                                padding: 0;
 }
 
 div.extended_field_multiple_fields div {
-				margin: 4px 0;
+                                margin: 4px 0;
 }
 
 div.extended_field_radio_button_collection {
-				float: left;
-				clear: right;
-				margin-bottom: 5px;
+                                float: left;
+                                clear: right;
+                                margin-bottom: 5px;
 }
 
 div.extended_field_multiple_fields a {
-				float: left;
-				padding-left: .5em;
+                                float: left;
+                                padding-left: .5em;
 }
 
 div.extended_field_autocomplete {
-			  margin: 0px;  
-			  padding: 0px;  
-			  width: 250px;
-			  background: #fff;
-			  border: 1px solid #888;
-			  position: absolute;
+                          margin: 0px;
+                          padding: 0px;
+                          width: 250px;
+                          background: #fff;
+                          border: 1px solid #888;
+                          position: absolute;
 }
 
 div.extended_field_autocomplete ul {
-			  margin: 0px;
-			  padding: 0px;
-			  list-style-type: none;
+                          margin: 0px;
+                          padding: 0px;
+                          list-style-type: none;
 }
 
-div.extended_field_autocomplete ul li.selected { 
-			  background-color: #ffb;
+div.extended_field_autocomplete ul li.selected {
+                          background-color: #ffb;
 }
 
 div.extended_field_autocomplete ul li {
-			  margin: 0;
-			  padding: 2px;
-			  display: block;
-			  list-style-type: none;
-			  cursor: pointer;
+                          margin: 0;
+                          padding: 2px;
+                          display: block;
+                          list-style-type: none;
+                          cursor: pointer;
 }
 
 

@@ -12,7 +12,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       # Ensure a user account to log in with is present
-      add_joe_as_regular_user
+      add_joe_as_super_user
       login_as('joe')
     end
 
@@ -27,7 +27,8 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       should "create a public topic" do
-        on_create_topic_form do
+        
+        new_topic do
           fill_in "topic[title]", :with => "Test Topic"
           fill_in "topic[short_summary]", :with => "A test summary"
           fill_in "topic[description]", :with => "A test description"
@@ -41,7 +42,8 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       should "create a private topic" do
-        on_create_topic_form do
+        
+        new_topic do
           choose "Private"
           fill_in "topic[title]", :with => "Test Topic"
           fill_in "topic[short_summary]", :with => "A test summary"
@@ -67,31 +69,69 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
     end
+    
+    context 'with private baskets and items of various privacies' do
+
+      setup do
+        @first_basket   = new_basket("First basket", true)
+        @second_basket  = new_basket("Second basket", true)
+        
+        @private_topic  = new_topic({:title => 'Mixed topic (public)'}, @first_basket)
+        
+        update_item(@private_topic) do
+          choose 'Private'
+          fill_in 'topic[title]', :with => 'Mixed topic (private)'
+        end
+      
+        body_should_contain 'Public version (live)'
+      end
+      
+      should "be able to move a private item to another basket" do
+        update_item(@private_topic, :edit_path => "#{@first_basket.urlified_name}/topics/edit/#{@private_topic.id}?private=true") do
+          select @second_basket.name, :from => "topic_basket_id"
+        end
+        
+        # Perform a reload to ensure we have the public version of the item
+        @private_topic.reload
+        
+        should_not_be_private @private_topic
+        assert_equal @second_basket, @private_topic.basket
+        
+        @private_topic.private_version do
+          should_be_private @private_topic
+          assert_equal @second_basket, @private_topic.basket
+        end
+      end
+      
+      should "be able to move the public version of an item to another basket" do
+        assert_equal @first_basket, @private_topic.basket
+        
+        update_item(@private_topic) do
+          select @second_basket.name, :from => "topic_basket_id"
+        end
+        
+        @private_topic.reload
+        
+        should_not_be_private @private_topic
+        assert_equal @second_basket, @private_topic.basket
+        
+        @private_topic.private_version do
+          should_be_private @private_topic
+          assert_equal @second_basket, @private_topic.basket
+        end
+      end
+    end
 
   end
 
   private
-
-    def on_create_topic_form(&block)
-      raise "Please pass a block with topic form actions" unless block_given?
-
-      visit "/site/baskets/choose_type"
-
-      body_should_contain "What would you like to add?"
-
-      select "Topic", :from => "new_item_controller"
-      click_button "Choose"
-
-      select "Topic", :from => "topic[topic_type_id]"
-      click_button "Choose"
-
-      body_should_contain "New Topic"
-      body_should_contain "Title"
-
-      # Here you give instructions to the topic creation form
-      yield(block)
-
-      click_button "Create"
+    
+    def should_be_private(item)
+      assert item.private?, "#{item.class.name} instance expected to be private, but was not:  #{item.inspect}."
+    end
+    
+    def should_not_be_private(item)
+      assert !item.private?, "#{item.class.name} instance expected not to be private, but it was:  #{item.inspect}."
     end
 
 end

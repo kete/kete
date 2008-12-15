@@ -54,25 +54,12 @@ are reset between tests suites to avoid conflicts.
 Helpers
 -------
 
-There are a bunch of methods that help with test creation. A few of the more popular ones include:
-* login_as(username, password='test', navigate_to_login=true)
-* logout
-* body_should_contain(text, message = nil, dump_response = false)
-    (with a corresponding body_should_not_contain method)
-* url_should_contain(text, message = nil, dump_response = false)
-    (with a corresponding url_should_not_contain method)
+There are a bunch of methods that help with test creation. To view them (and their documentation) see the following files:
 
-There is also an method_missing definition which provides functionality like:
-* add_joe_as_super_admin
-    (creates new user with site/tech admin role on site basket and admin role on all others)
-* add_bob_as_moderator_on(@@site_basket)
-    (creates new user with moderator role on the site basket)
-* add_john_as_regular_user
-    (creates new user with member role on the default baskets)
-* add_dave
-    (creates new user with no roles at all)
+test/integration/integration_test_helper.rb
+test/common_test_helpers.rb
 
-See test/common_test_helpers.rb and test/integration/integration_test_helper.rb for more available helper methods.
+Each test can specify it's own private methods are well, so when you edit a file, check them out before you start.
 
 ---------
 Factories

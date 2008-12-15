@@ -1,7 +1,10 @@
 <% @title = "Baskets" -%>
 
+<h2 class="basket-list-headline">
+  <%= @title -%>
+</h2>
+
 <p>
-  <h2 style="display:inline;"><%= h(@title) -%></h2>
   <% if @site_admin && (@requested_count + @rejected_count) > 0 -%>
     [
     <%= link_to_unless_current 'all', :type => nil -%>

@@ -46,7 +46,11 @@
     <li>
       <%= check_box_tag "item[#{item.id}]", "true", related?(item), "id" => "item_#{item.id}", :disabled => related?(item) -%>
       <%= image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size, :alt => "#{item.title}. ") if item.instance_of?(StillImage) && !item.thumbnail_file.nil? %>
-      <%= content_tag "label", h(item.title), "for" => "item_#{item.id}" %></li>
+      <%= link_to h(item.title), { :urlified_name => item.basket.urlified_name,
+                                   :controller => zoom_class_controller(item.class.name),
+                                   :action => 'show',
+                                   :id => item },
+                                 :target => '_blank' %></li>
     <% end %>
   </ul>
   

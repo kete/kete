@@ -6,16 +6,13 @@ require File.expand_path(File.dirname(__FILE__) + "/common_test_methods")
 
 load_testing_libs({ :exclude => ['webrat'] })
 verify_zebra_changes_allowed
+bootstrap_zebra_with_initial_records
 
 require File.expand_path(File.dirname(__FILE__) + "/factories")
 
-# none of these settings is populated by default
-# so we'll set them here to make sure we get results we expect
-set_constant('IS_CONFIGURED', true)
-set_constant('SITE_NAME', "Test Site")
-set_constant('SITE_URL', "http://test.com/")
-
-ensure_zebra_running
+configure_environment do
+  require File.expand_path(File.dirname(__FILE__) + "/system_configuration_constants")
+end
 
 class Test::Unit::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method

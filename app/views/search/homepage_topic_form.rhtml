@@ -36,14 +36,22 @@
         <% if !@current_homepage.nil? %>
         <li>
           <%= radio_button_tag "homepage_topic_id", @current_homepage.id, true -%>
-          <strong><%= h(@current_homepage.title) %></strong>
+          <strong><%= link_to h(@current_homepage.title), { :urlified_name => @current_homepage.basket.urlified_name,
+                                                            :controller => 'topics',
+                                                            :action => 'show',
+                                                            :id => @current_homepage },
+                                                          :target => '_blank' %></strong>
           (current homepage topic)
         </li>
         <% end %>
         <% for item in @results %>
         <li>
           <%= radio_button_tag "homepage_topic_id", item.id, false -%>
-          <%= h(item.title) %>
+          <%= link_to h(item.title), { :urlified_name => item.basket.urlified_name,
+                                       :controller => 'topics',
+                                       :action => 'show',
+                                       :id => item },
+                                     :target => '_blank' -%>
         </li>
         <% end %>
       </ul>
