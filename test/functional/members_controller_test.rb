@@ -1,19 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'members_controller'
 
-# Re-raise errors caught by the controller.
-class MembersController; def rescue_action(e) raise e end; end
+class MembersControllerTest < ActionController::TestCase
 
-class MembersControllerTest < Test::Unit::TestCase
-  # fixtures are preloaded
-
-  include AuthenticatedTestHelper
+  include KeteTestFunctionalHelper
 
   def setup
-    @controller = MembersController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
+    @base_class = "Members"
+    load_test_environment
     login_as(:admin)
   end
 

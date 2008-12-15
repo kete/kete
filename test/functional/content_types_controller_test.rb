@@ -1,19 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'content_types_controller'
 
-# Re-raise errors caught by the controller.
-class ContentTypesController; def rescue_action(e) raise e end; end
+class ContentTypesControllerTest < ActionController::TestCase
 
-class ContentTypesControllerTest < Test::Unit::TestCase
-  # fixtures are preloaded
+  include KeteTestFunctionalHelper
+
   def setup
-    @controller = ContentTypesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @base_class = "ContentTypes"
+    load_test_environment
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
 end

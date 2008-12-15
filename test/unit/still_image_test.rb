@@ -20,8 +20,8 @@ class StillImageTest < Test::Unit::TestCase
     @duplicate_attr_names = %w( )
     
     # ImageFile fixture for testing
-    documentdata = fixture_file_upload('/files/white.jpg', 'image/jpeg')
-    @new_image_file = { :uploaded_data => documentdata }
+    @@documentdata ||= fixture_file_upload('/files/white.jpg', 'image/jpeg')
+    @new_image_file = { :uploaded_data => @@documentdata }
     
   end
 
