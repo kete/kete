@@ -1,4 +1,13 @@
+#
+# A collection of methods shared between the unit/functional and integration test helpers
+#
+
+# The <tt>load_testing_libs</tt> method relies on methods in the RequiredSoftware module
 include RequiredSoftware
+
+# Load the gems needed, pass it to the <tt>missing_libs</tt> method which will return an array of missing gem dependancies
+# Takes an optional args parameter which, at the moment, only allows you to exclude which gems get loaded through :exclude
+# If there are gems missing (i.e. the missing_gems array is not blank) then output which are missing and exit the execution
 def load_testing_libs(args = {})
   missing_gems = missing_libs(load_required_software, 'testing_gems', args)
   unless missing_gems.blank?
@@ -9,6 +18,11 @@ def load_testing_libs(args = {})
   end
 end
 
+# Currently the tests use the Zebra instance configured for the development/production mode, so when tests are run, the data
+# in the database is overwritten, and this can be bad if you run it in a production host. So prevent accidental data manipulation
+# we provide the person running the test a chance to back out, making it clear that Zebra will be affected if they continue.
+# We use a ZEBRA_CHANGES_PERMITTED environment variable so that the prompt only occurs once per testing session, rather than 3
+# times for each test type when 'rake test' is run
 def verify_zebra_changes_allowed
   return if ENV['ZEBRA_CHANGES_PERMITTED']
   puts "\n/!\\ IMPORTANT /!\\\n\n"
@@ -19,13 +33,15 @@ def verify_zebra_changes_allowed
   ENV['ZEBRA_CHANGES_PERMITTED'] = 'true'
 end
 
+# Include the necessary rake libraries for running Rake tasks within the tests. These are used for operations such as
+# stopping/starting the Zebra database in <tt>bootstrap_zebra_with_initial_records</tt> and for clearing the tmp cache
 require 'rake'
 require 'rake/rdoctask'
 require 'rake/testtask'
 require 'tasks/rails'
 
-# If Zebra is running, stop it, init it, start it, populate it
-# If Zebra is running, same as the above but without a stop
+# Stop Zebra if it is running, initilize the databases (wiping them clean), start zebra, and load in some initial records ready
+# for testing. If after that, Zebra has not loaded properly, raise an exception to inform the person running the tests
 def bootstrap_zebra_with_initial_records
   Rake::Task['zebra:stop'].execute(ENV) if zebra_running?('public') || zebra_running?('private')
   ENV['ZEBRA_DB'] = 'public'
@@ -39,6 +55,8 @@ def bootstrap_zebra_with_initial_records
   end
 end
 
+# Checks whether a Zebra database of a certain type (public or private) is currently running. If a query succeeds then its running
+# and we return true, else we capture the exception when it fails, and return false
 def zebra_running?(zebra_db)
   begin
     zoom_db = ZoomDb.find_by_database_name(zebra_db)
@@ -49,6 +67,9 @@ def zebra_running?(zebra_db)
   end
 end
 
+# To change a constant, use this method. It removes any existing constant and sets the new one from the arguments passed in
+# If silence_warnings is available (which suppresses any output to the console) then we use it, else don't worry warnings
+# and continue to run it anyway. Should be used within the block of <tt>configure_environment</tt>
 def set_constant(constant, value)
   if respond_to?(:silence_warnings)
     silence_warnings do
@@ -61,6 +82,8 @@ def set_constant(constant, value)
   end
 end
 
+# Takes a block of <tt>set_constant</tt> declarations, executes it, then reloads the routes
+# (this method is used to setup Kete without running through the setup process)
 def configure_environment(&block)
   yield(block)
   # Reload the routes based on the current configuration

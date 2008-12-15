@@ -1,4 +1,4 @@
-# when you make a factory, make a corresponding create_new_xxxxx  tasks which
+# When you make a factory, make a corresponding create_new_xxxxx  tasks which
 # checks if it exists (if nessessary) and return existing one if so, or make
 # a new one, assert it's a kind_of class we want, and return that
 
