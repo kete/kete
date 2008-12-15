@@ -210,9 +210,9 @@ class ActionController::IntegrationTest
       # new_topic / new_audio_recording
       # takes basket and a hash of values, plus an optional block
       if block_given?
-        new_item(args[0], $1.classify, args[1], &block)
+        new_item(args[0], $1.classify, args[1], args[2], &block)
       else
-        new_item(args[0], $1.classify, args[1])
+        new_item(args[0], $1.classify, args[1], args[2])
       end
     elsif method_name =~ /^add_(\w+)_as_(\w+)_to$/
       # add_bob_as_moderator_to(@@site_basket)
