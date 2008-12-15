@@ -13,10 +13,16 @@ xml.rss(:version=>"2.0"){
         name = entities.decode(tag[:name])
         name = CGI::escapeHTML(name)
         xml.title(name)
-        @tag_search = basket_all_private_tagged_url( :urlified_name => 'site',
-                                                     :privacy_type => get_acceptable_privacy_type_for(nil, '', "private"),
-                                                     :controller_name_for_zoom_class => zoom_class_controller('Topic'),
-                                                     :tag => tag[:id] )
+        if tag[:public_taggings_count] < 1 && tag[:private_taggings_count] > 0
+          @tag_search = basket_all_private_tagged_url( :urlified_name => 'site',
+                                                       :privacy_type => 'private',
+                                                       :controller_name_for_zoom_class => zoom_class_controller('Topic'),
+                                                       :tag => tag[:id] )
+        else
+          @tag_search = basket_all_tagged_url( :urlified_name => 'site',
+                                               :controller_name_for_zoom_class => zoom_class_controller('Topic'),
+                                               :tag => tag[:id] )
+        end
         xml.link(@tag_search)
         xml.guid(@tag_search)
       end
