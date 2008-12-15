@@ -7,7 +7,7 @@
             {:action => :edit,
       :id => item, :private => params[:private]}, :tabindex => '1' %></li>
     <% end %>
-    <% cache({:part => 'history', :id => @cache_id}) do -%>
+    <% cache_with_privacy(item, {:part => 'history'}) do -%>
     <li><%= link_to "<span class=\"history-link\">History</span>",
             {:action => :history,
       :id => item}, :tabindex => '1' %></li>

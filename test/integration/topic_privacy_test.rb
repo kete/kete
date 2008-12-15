@@ -12,7 +12,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       # Ensure a user account to log in with is present
-      add_joe_as_regular_user
+      add_joe_as_super_user
       login_as('joe')
     end
 
@@ -67,6 +67,59 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
     end
+    
+    context 'with private baskets and items of various privacies' do
+
+      setup do
+        @first_basket   = new_basket("First basket", true)
+        @second_basket  = new_basket("Second basket", true)
+        
+        @private_topic  = new_item(@first_basket, 'Topic', false, 'Mixed topic (public)')
+        # @mixed_topic    = new_item(@first_basket, 'Topic', false, 'Mixed topic (public)')
+        
+        on_edit_topic_form(@private_topic) do
+          choose 'Private'
+          fill_in 'topic[title]', :with => 'Mixed topic (private)'
+        end
+      
+        body_should_contain 'Public version (live)'
+      end
+      
+      should "be able to move a private item to another basket" do
+        on_edit_topic_form(@private_topic, "#{@first_basket.urlified_name}/topics/edit/#{@private_topic.id}?private=true") do
+          select @second_basket.name, :from => "topic_basket_id"
+        end
+        
+        # Perform a reload to ensure we have the public version of the item
+        @private_topic.reload
+        
+        assert !@private_topic.private?
+        assert_equal @second_basket, @private_topic.basket
+        
+        @private_topic.private_version do
+          assert_private_version @private_topic
+          assert_equal @second_basket, @private_topic.basket
+        end
+      end
+      
+      should "be able to move the public version of an item to another basket" do
+        assert_equal @first_basket, @private_topic.basket
+        
+        on_edit_topic_form(@private_topic) do
+          select @second_basket.name, :from => "topic_basket_id"
+        end
+        
+        @private_topic.reload
+        
+        assert !@private_topic.private?
+        assert_equal @second_basket, @private_topic.basket
+        
+        @private_topic.private_version do
+          assert @private_topic.private?
+          assert_equal @second_basket, @private_topic.basket
+        end
+      end
+    end
 
   end
 
@@ -92,6 +145,25 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       yield(block)
 
       click_button "Create"
+    end
+    
+    
+    def on_edit_topic_form(topic, edit_path = nil, &block)
+      raise "Please pass a block with topic form actions" unless block_given?
+      
+      path = edit_path || "/#{topic.basket.urlified_name}/topics/edit/#{topic.id}"
+      visit path
+      
+      body_should_contain "Editing Topic"
+      
+      yield(block)
+      
+      click_button "Update"
+      body_should_contain "Topic was successfully edited."
+    end
+    
+    def assert_private_version(item)
+      assert item.private?, "#{item.class.name} instance expected to be private, but was not:  #{item.inspect}."
     end
 
 end

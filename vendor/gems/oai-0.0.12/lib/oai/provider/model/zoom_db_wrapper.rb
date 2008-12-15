@@ -140,8 +140,10 @@ module OAI::Provider
         @search.pqf_query.oai_identifier_include(id_stub, :operator => 'none')
 
         # add sorting as specified
-        @search.pqf_query.sort_spec = options[:sort_spec]
-        @search.update_sort_direction_value_for_pqf_query(options[:sort_direction]) if !options[:sort_direction].nil?
+        # Walter McGinnis, 2008-12-04
+        # adding default sorting of oldest update
+        @search.pqf_query.sort_spec = options[:sort_spec] || 'last_modified'
+        @search.update_sort_direction_value_for_pqf_query(options[:sort_direction] || 'reverse') if !options[:sort_direction].nil?
 
         # lookup set and add to query as appropriate
         @search.pqf_query.oai_setspec_include(options[:set]) if !options[:set].blank?
