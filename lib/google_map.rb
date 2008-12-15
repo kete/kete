@@ -107,8 +107,7 @@ module GoogleMap
       html += content_tag('p', @current_address) if display_address
 
       # create the lat/lng display
-      latlng_data = { :style => 'width:550px;' }
-      latlng_data.merge!(latlng_options)
+      latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
       latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
       html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
                                   <small>Show Latitude/Longitude</small>
@@ -117,15 +116,14 @@ module GoogleMap
                                latlng_data) if display_coords
 
       # create the google map div
-      map_options = { :style => 'width:550px;', :id => map_data[:map_id] }
-      map_options.merge!(options)
-      html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options)
+      map_options = { :style => 'width:550px;' }.merge(options)
+      html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({:id => map_data[:map_id]}))
 
       html
     end
     # both the google map and google map with address options use the same code
-    def extended_field_map_address_editor(name, value, options = {}, field_type = 'map_address', generate_text_fields = true, display_coords = false, display_address = false)
-      extended_field_map_editor(name, value, options, field_type, generate_text_fields, display_coords, display_address)
+    def extended_field_map_address_editor(name, value, options = {}, latlng_options = {}, field_type = 'map_address', generate_text_fields = true, display_coords = false, display_address = false)
+      extended_field_map_editor(name, value, options, latlng_options, field_type, generate_text_fields, display_coords, display_address)
     end
 
     private
@@ -191,7 +189,7 @@ module GoogleMap
       if @using_google_maps
         # Google maps cannot run without a configuration so make sure, if they're using Google Maps, that they configure it.
         @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-        raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)." unless File.exists?(@gma_config_path)
+        return "<!-- Error: Trying to use Google Maps without configuation (config/google_map_api.yml) -->" unless File.exists?(@gma_config_path)
         @gma_config = YAML.load(IO.read(@gma_config_path))
 
         # Prepare the Google Maps needing to load

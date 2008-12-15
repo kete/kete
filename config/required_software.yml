@@ -1,20 +1,56 @@
+# Format 1: (simple gem name)
+# RedCloth:
+
+# Format 2: (source or version specific gems)
+# libxml-ruby:
+#   gem_name: libxml-ruby
+#   lib_name: libxml
+#   source: http://gems.rubyforge.org
+#   version: 0.7.0
+
 management_gems:
-  capistrano: capistrano
-  piston: piston
+  capistrano:
+  piston:
+    gem_name: francois-piston
+    lib_name: piston
+    source: http://gems.github.com
+
+testing_gems:
+  webrat:
+    gem_name: brynary-webrat
+    lib_name: webrat/rails
+    source: http://gems.github.com
+  shoulda:
+    gem_name: thoughtbot-shoulda
+    lib_name: shoulda/rails
+    source: http://gems.github.com
+  factory-girl:
+    gem_name: thoughtbot-factory_girl
+    lib_name: factory_girl
+    source: http://gems.github.com
 
 gems:
-  packet: packet
-  chronic: chronic
-  hpricot: hpricot
-  unicode: unicode
-  RedCloth: redcloth
-  mime-types: mime/types
-  memcache-client: memcache
-  zoom: zoom
-  libxml-ruby: libxml
-  feed-normalizer: feed-normalizer
-  avatar: avatar
-  htmlentities: htmlentities
+  packet:
+  chronic:
+  hpricot:
+  unicode:
+  RedCloth:
+    gem_name: RedCloth
+    lib_name: redcloth
+  mime-types:
+    gem_name: mime-types
+    lib_name: mime/types
+  memcache-client:
+    gem_name: memcache-client
+    lib_name: memcache
+  zoom:
+  libxml-ruby:
+    gem_name: libxml-ruby
+    lib_name: libxml
+    version: 0.7.0
+  feed-normalizer:
+  avatar:
+  htmlentities:
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems

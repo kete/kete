@@ -1,16 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'documents_controller'
 
-# Re-raise errors caught by the controller.
-class DocumentsController; def rescue_action(e) raise e end; end
-
-class DocumentsControllerTest < Test::Unit::TestCase
-  # fixtures are preloaded if necessary
-  
+class DocumentsControllerTest < ActionController::TestCase
   # Load fixtures for users for login..
   fixtures :users
   
-  include AuthenticatedTestHelper
+  include KeteTestFunctionalHelper
   include ItemPrivacyTestHelper::TestHelper
   
   def setup
@@ -21,27 +15,18 @@ class DocumentsControllerTest < Test::Unit::TestCase
     load_test_environment
     
     # fake out file upload
-    documentdata = fixture_file_upload('/files/test.pdf', 'application/pdf')
+    @@documentdata ||= fixture_file_upload('/files/test.pdf', 'application/pdf')
     
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_model = { 
       :title => 'test document',
       :basket_id => '1',
-      :uploaded_data => documentdata,
+      :uploaded_data => @@documentdata,
       :tag_list => "" 
     }
     
   end
-  
-  def test_index
-    # Unknown action
-    print "Skipped"
-  end
-  
-  def test_list
-    test_index
-  end
-  
+
   def test_show_new_public_document_by_owner_and_admin
     id = create_record
   
@@ -103,8 +88,6 @@ class DocumentsControllerTest < Test::Unit::TestCase
   
   def test_show_public_with_no_public_version
     
-    # print "Skipped" #flunk "Not implemented"
-
     # Create the first (public version)
     id = create_record({ :private => true, :description => "Private version" })
     

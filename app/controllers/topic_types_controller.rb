@@ -9,7 +9,8 @@ class TopicTypesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def index
-    redirect_to :action => 'list'
+    list
+    render :action => 'list'
   end
 
   def list
@@ -31,7 +32,7 @@ class TopicTypesController < ApplicationController
 
       # TODO: globalize translate
       flash[:notice] = 'TopicType was successfully created.'
-      redirect_to :action => 'edit', :id => @topic_type
+      redirect_to :urlified_name => 'site', :action => 'edit', :id => @topic_type
     else
       render :action => 'new'
     end
@@ -55,15 +56,19 @@ class TopicTypesController < ApplicationController
 
       # TODO: globalize translate
       flash[:notice] = 'TopicType was successfully updated.'
-      redirect_to :action => 'edit', :id => @topic_type
+      redirect_to :urlified_name => 'site', :action => 'edit', :id => @topic_type
     else
       render :action => 'edit'
     end
   end
 
   def destroy
-    TopicType.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    @topic_type = TopicType.find(params[:id])
+    @successful = @topic_type.destroy
+    if @successful
+      flash[:notice] = 'TopicType was successfully deleted.'
+      redirect_to :urlified_name => 'site', :action => 'list'
+    end
   end
 
   def add_to_topic_type
@@ -94,13 +99,13 @@ class TopicTypesController < ApplicationController
         end
       end
     end
-    redirect_to :action => :edit, :id => topic_type
+    redirect_to :urlified_name => 'site', :action => 'edit', :id => topic_type
   end
 
   def reorder_fields_for_topic_type
     # update position in the topic_type's form
     TopicTypeToFieldMapping.update(params[:mapping].keys, params[:mapping].values)
-    redirect_to :action => :edit, :id => params[:id]
+    redirect_to :urlified_name => 'site', :action => 'edit', :id => params[:id]
   end
 
   private
