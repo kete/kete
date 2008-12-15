@@ -25,7 +25,8 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is added" do
 
       setup do
-        @topic = new_item(@@cache_basket, 'Topic', true, 'Homepage 1 Title', 'Homepage 1 Description')
+        @topic = new_item(@@cache_basket, 'Topic', true, { :title => 'Homepage 1 Title',
+                                                           :description => 'Homepage 1 Description' })
       end
 
       should "be populated with the new topic" do
@@ -37,9 +38,11 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is replaced" do
 
       setup do
-        @topic1 = new_item(@@cache_basket, 'Topic', true, 'Old Homepage Topic Title', 'Old Homepage Topic Description')
+        @topic1 = new_item(@@cache_basket, 'Topic', true, { :title => 'Old Homepage Topic Title',
+                                                            :description => 'Old Homepage Topic Description' })
         check_cache_current_for(@topic1)
-        @topic2 = new_item(@@cache_basket, 'Topic', true, 'Homepage 2 Title', 'Homepage 2 Description')
+        @topic2 = new_item(@@cache_basket, 'Topic', true, { :title => 'Homepage 2 Title',
+                                                            :description => 'Homepage 2 Description' })
       end
 
       should "be populated with the new topic" do
@@ -53,9 +56,11 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is updated" do
 
       setup do
-        @topic = new_item(@@cache_basket, 'Topic', true, 'Homepage 3 Title', 'Homepage 3 Description')
+        @topic = new_item(@@cache_basket, 'Topic', true, { :title => 'Homepage 3 Title',
+                                                           :description => 'Homepage 3 Description' })
         check_cache_current_for(@topic)
-        @topic = update_item(@topic, 'Homepage 3 Updated Title', 'Homepage 3 Updated Description')
+        @topic = update_item(@topic, { :title => 'Homepage 3 Updated Title',
+                                       :description => 'Homepage 3 Updated Description' })
       end
 
       should "be populated with the updated topic" do
@@ -69,7 +74,8 @@ class CachingTest < ActionController::IntegrationTest
     context "when homepage topic is deleted" do
 
       setup do
-        @topic = new_item(@@cache_basket, 'Topic', true, 'Homepage 4 Title', 'Homepage 4 Description')
+        @topic = new_item(@@cache_basket, 'Topic', true, { :title => 'Homepage 4 Title',
+                                                           :description => 'Homepage 4 Description' })
         check_cache_current_for(@topic)
         @topic = delete_item(@topic)
       end
@@ -100,7 +106,8 @@ class CachingTest < ActionController::IntegrationTest
       context "and when the basket has a topic added" do
 
         setup do
-          @topic = new_item(@@cache_basket, 'Topic', false, 'Recent Topic 1 Title', 'Recent Topic 1 Description')
+          @topic = new_item(@@cache_basket, 'Topic', false, { :title => 'Recent Topic 1 Title',
+                                                              :description => 'Recent Topic 1 Description' })
         end
 
         should "show up in the recent topic list" do
@@ -112,9 +119,11 @@ class CachingTest < ActionController::IntegrationTest
       context "and when the basket has a topic updated" do
 
         setup do
-          @topic = new_item(@@cache_basket, 'Topic', false, 'Recent Topic 2 Title', 'Recent Topic 2 Description')
+          @topic = new_item(@@cache_basket, 'Topic', false, { :title => 'Recent Topic 2 Title',
+                                                              :description => 'Recent Topic 2 Description' })
           check_recent_topics_includes(@topic)
-          @topic = update_item(@topic, 'Recent Topic 2 Updated Title', 'Recent Topic 2 Updated Description')
+          @topic = update_item(@topic, { :title => 'Recent Topic 2 Updated Title',
+                                         :description => 'Recent Topic 2 Updated Description' })
         end
 
         should "be updated in the recent topic list" do
@@ -128,7 +137,8 @@ class CachingTest < ActionController::IntegrationTest
       context "and when the basket has a topic deleted" do
 
         setup do
-          @topic = new_item(@@cache_basket, 'Topic', false, 'Recent Topic 3 Title', 'Recent Topic 3 Description')
+          @topic = new_item(@@cache_basket, 'Topic', false, { :title => 'Recent Topic 3 Title',
+                                                              :description => 'Recent Topic 3 Description' })
           check_recent_topics_includes(@topic)
           @topic = delete_item(@topic)
         end
@@ -159,13 +169,13 @@ class CachingTest < ActionController::IntegrationTest
       context "and when homepage has a private version" do
 
         setup do
-          @topic = new_item(@@cache_basket, 'Topic', true, 'Public Title', 'Public Description') do |field_prefix|
-            choose "#{field_prefix}_private_false"
-          end
+          @topic = new_item(@@cache_basket, 'Topic', true, { :title => 'Public Title',
+                                                             :description => 'Public Description',
+                                                             :private_false => true })
           check_cache_current_for(@topic)
-          @topic = update_item(@topic, 'Private Title', 'Private Description') do |field_prefix|
-            choose "#{field_prefix}_private_true"
-          end
+          @topic = update_item(@topic, { :title => 'Private Title',
+                                         :description => 'Private Description',
+                                         :private_true => true })
         end
 
         should "cache seperate privacies" do
@@ -248,7 +258,8 @@ class CachingTest < ActionController::IntegrationTest
     context "when a topic is added" do
 
       setup do
-        @topic = new_item(@@cache_basket, 'Topic', false, 'Topic 1 Title', 'Topic 1 Description')
+        @topic = new_item(@@cache_basket, 'Topic', false, { :title => 'Topic 1 Title',
+                                                            :description => 'Topic 1 Description' })
       end
 
       should "be populated with the new topic" do
@@ -260,9 +271,11 @@ class CachingTest < ActionController::IntegrationTest
     context "when a topic is updated" do
 
       setup do
-        @topic = new_item(@@cache_basket, 'Topic', false, 'Topic 2 Title', 'Topic 2 Description')
+        @topic = new_item(@@cache_basket, 'Topic', false, { :title => 'Topic 2 Title',
+                                                            :description => 'Topic 2 Description' })
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
-        @topic = update_item(@topic, 'Topic 2 Updated Title', 'Topic 2 Updated Description')
+        @topic = update_item(@topic, { :title => 'Topic 2 Updated Title',
+                                       :description => 'Topic 2 Updated Description' })
       end
 
       should "be populated with the updated topic" do
@@ -276,7 +289,8 @@ class CachingTest < ActionController::IntegrationTest
     context "when a topic is deleted" do
 
       setup do
-        @topic = new_item(@@cache_basket, 'Topic', false, 'Topic 3 Title', 'Topic 3 Description')
+        @topic = new_item(@@cache_basket, 'Topic', false, { :title => 'Topic 3 Title',
+                                                            :description => 'Topic 3 Description' })
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
         @old_topic = @topic
         @topic = delete_item(@topic)
@@ -308,13 +322,13 @@ class CachingTest < ActionController::IntegrationTest
       context "and when topic has a private version" do
 
         setup do
-          @topic = new_item(@@cache_basket, 'Topic', false, 'Public Title', 'Public Description') do |field_prefix|
-            choose "#{field_prefix}_private_false"
-          end
+          @topic = new_item(@@cache_basket, 'Topic', false, { :title => 'Public Title',
+                                                              :description => 'Public Description',
+                                                              :private_false => true })
           check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
-          @topic = update_item(@topic, 'Private Title', 'Private Description') do |field_prefix|
-            choose "#{field_prefix}_private_true"
-          end
+          @topic = update_item(@topic, { :title => 'Private Title',
+                                         :description => 'Private Description',
+                                         :private_true => true })
         end
 
         should "cache seperate privacies" do
