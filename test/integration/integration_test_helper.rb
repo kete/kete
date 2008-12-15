@@ -71,7 +71,15 @@ class ActionController::IntegrationTest
     assert !request.url.include?(text), message
   end
 
-  def new_item(args = {}, basket = @@site_basket, is_homepage_topic = false, zoom_class = 'Topic')
+  def new_item(args = nil, basket = nil, is_homepage_topic = nil, zoom_class = nil)
+    # because we use method missing, something like  new_topic()  (without any args) will return nil when it calls this method
+    # and because of some funkyness in ruby, setting defaults in the args above is replaced by nil, rather than the value
+    # so instead of setting it there, we set them here instead, which should provide better support
+    args = Hash.new if args.nil?
+    basket = @@site_basket if basket.nil?
+    is_homepage_topic = false if is_homepage_topic.nil?
+    zoom_class = 'Topic' if zoom_class.nil?
+
     controller = zoom_class_controller(zoom_class)
     field_prefix = zoom_class.underscore
 
