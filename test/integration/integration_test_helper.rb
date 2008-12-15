@@ -39,6 +39,7 @@ class ActionController::IntegrationTest
   @@about_basket ||= Basket.about_basket
   @@documentation_basket ||= Basket.documentation_basket
   @@users_created = Array.new
+  @@baskets_created = Array.new
 
   def logout
     visit "/site/account/logout"
@@ -131,7 +132,39 @@ class ActionController::IntegrationTest
       return nil
     end
   end
-
+  
+  # Add a new basket
+  # Optionally receives a block which could be webrat control methods run on the basket creation form
+  # prior to clicking "Create".
+  # Returns the newly created basket instance.
+  def new_basket(name = "New basket", privacy_controls = false, &block)
+    visit '/site/baskets/new'
+    body_should_contain 'New basket'
+    
+    fill_in 'basket[name]', :with => name
+    
+    privacy_controls ? choose('basket_show_privacy_controls_true') : \
+      choose('basket_show_privacy_controls_false')
+      
+    yield(block) if block_given?
+    
+    click_button 'Create'
+    
+    body_should_contain 'Basket was successfully created.'
+    body_should_contain "#{name} Edit"
+    
+    # Return the last basket (the basket we just created)
+    basket = Basket.last
+    @@baskets_created << basket
+    basket
+  end
+  
+  # The "delete this basket" link requires JavaScript due to a confirm method, etc.
+  # We will need to add a Selenium test to run this method.
+  def delete_basket(name)
+    raise "Not implemented."
+  end
+  
   # Debugging method
   def dump(text)
     puts "-----------------"
@@ -146,6 +179,8 @@ class ActionController::IntegrationTest
     end
     @@users_created.each { |user| user.destroy }
     @@users_created = Array.new
+    @@baskets_created.each { |basket| basket.destroy }
+    @@baskets_created = Array.new
     super
   end
 
