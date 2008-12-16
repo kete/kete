@@ -16,7 +16,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       setup do
         
         # Create a test item
-        @item = new_item(@@site_basket, "Topic")
+        @item = new_topic
         update_item(@item)
         update_item(@item, :title => "Homepage Title Updated Again")
       end
@@ -60,81 +60,46 @@ class ModerationViewsTest < ActionController::IntegrationTest
       add_grant_as_super_user
       login_as('grant')
       
-      @image = on_new_image_form
-
-      on_edit_image_form(@image) do
-        fill_in 'still_image[title]', :with => "New image updated"
+      @image = new_image do
+        attach_file "image_file[uploaded_data]", \
+          File.join(RAILS_ROOT, "test/fixtures/files/white.jpg"), "image/jpg"
       end
-      on_edit_image_form(@image) do
-        fill_in 'still_image[title]', :with => "New image updated again"
-      end
+  
+      update_image(@image, :title => "New image updated")
+      update_image(@image, :title => "New image updated again")
     end
     
-    should "be able to visit item page" do
-      visit "/site/images/show/#{@image.id}"
-      body_should_contain "New image updated again"
-      body_should_contain "History"
-    end
-    
-    should "be able to visit history page for item" do
-      visit "/site/images/history/#{@image.id}"
-      body_should_contain "Revision History: New image updated again"
-      body_should_contain "Back to live"
-      1.upto(3) do |i|
-        body_should_contain "# #{i}"
-      end
-    end
-    
-    should_eventually "be able to visit previews for each version of an item" do
-      1.upto(2) do |i|
-        visit "/site/images/preview/#{@image.id}?version=#{i}"
-        body_should_contain "Preview revision ##{i}: view live"
-        body_should_contain "Topic: #{@image.versions.find_by_version(i).title}"
-        body_should_contain @image.versions.find_by_version(i).description
-        body_should_contain "Actions"
-        body_should_contain "Make this revision live"
-        body_should_contain "reject"
-      end
+    should "have functioning moderation pages" do
+      should_have_functioning_moderation_pages(@image, 'images', 'Image')
     end
     
   end
     
   private
   
-    def on_new_image_form(options = {}, &block)
-      visit "/site/baskets/choose_type"
-      
-      select "Image", :from => "new_item_controller"
-      click_button "Choose"
-      
-      choose(options[:item_privacy]) if options[:item_privacy]
-      fill_in "still_image[title]", :with => options[:title] || "New image"
-      fill_in "still_image[tag_list]", :with => options[:tags] if options[:tags]
-      
-      file_path = options[:file_path] || File.join(RAILS_ROOT, "test/fixtures/files/white.jpg")
-      content_type = options[:content_type] || "image/jpg"
-      attach_file "image_file[uploaded_data]", file_path, content_type
-      
-      yield(block) if block_given?
-      
-      click_button "Create"
-      
-      body_should_contain "Image was successfully created."
-      
-      StillImage.last
-    end
+    def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name)
     
-    def on_edit_image_form(image, &block)
-      raise "Please pass a block with image form actions" unless block_given?
+      visit "/site/#{controller_name}/show/#{item.id}"
+      body_should_contain "New #{controller_name} updated again"
+      body_should_contain "History"
+
+      visit "/site/#{controller_name}/history/#{item.id}"
+      body_should_contain "Revision History: New #{controller_name} updated again"
+      body_should_contain "Back to live"
+      1.upto(3) do |i|
+        body_should_contain "# #{i}"
+      end
+
+      1.upto(2) do |i|
+        visit "/site/#{controller_name}/preview/#{item.id}?version=#{i}"
+        body_should_contain "Preview revision ##{i}: view live"
+        body_should_contain "#{zoom_class_name}: #{item.versions.find_by_version(i).title}"
+        body_should_contain item.versions.find_by_version(i).description
+        body_should_contain "Actions"
+        body_should_contain "Make this revision live"
+        body_should_contain "reject"
+      end
       
-      visit "/#{image.basket.urlified_name}/images/edit/#{image.id}"
-      body_should_contain "Editing Image"
-      
-      yield(block)
-      
-      click_button "Update"
-      
-      body_should_contain "Image was successfully updated."
     end
 
 end
