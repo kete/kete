@@ -4,7 +4,7 @@ class BasketsController < ApplicationController
                 :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
-  permit "site_admin or admin of :current_basket", :except => [:index, :list, :show, :new, :create, :choose_type, :render_item_form,
+  permit "site_admin or admin of :current_basket", :except => [:index, :list, :rss, :show, :new, :create, :choose_type, :render_item_form,
                                                                :permission_denied, :contact, :send_email]
 
   before_filter :redirect_if_current_user_cant_add_or_request_basket, :only => [:new, :create]
@@ -34,24 +34,24 @@ class BasketsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    if !params[:type].blank? && @site_admin
-      @listing_type = params[:type]
-    else
-      @listing_type = 'approved'
-    end
+    list_baskets
 
-    @default_sorting = {:order => 'created_at', :direction => 'desc'}
-    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], ['name', 'created_at'])
-
-    options = { :page => params[:page],
-                :per_page => 10,
-                :order => paginate_order }
-    options.merge!({ :conditions => ['status = ?', @listing_type] })
-
-    @baskets = Basket.paginate(options)
+    @rss_tag_auto = rss_tag
+    @rss_tag_link = rss_tag(:auto_detect => false)
 
     @requested_count = Basket.count(:conditions => "status = 'requested'")
     @rejected_count = Basket.count(:conditions => "status = 'rejected'")
+  end
+
+  def rss
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+
+    @number_per_page = 100
+    list_baskets(@number_per_page)
+
+    respond_to do |format|
+      format.xml
+    end
   end
 
   def show
@@ -381,6 +381,24 @@ class BasketsController < ApplicationController
   end
 
   private
+
+  def list_baskets(per_page=10)
+    if !params[:type].blank? && @site_admin
+      @listing_type = params[:type]
+    else
+      @listing_type = 'approved'
+    end
+
+    @default_sorting = {:order => 'created_at', :direction => 'desc'}
+    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], ['name', 'created_at'])
+
+    options = { :page => params[:page],
+                :per_page => per_page,
+                :order => paginate_order }
+    options.merge!({ :conditions => ['status = ?', @listing_type] })
+
+    @baskets = Basket.paginate(options)
+  end
 
   # Kieran Pilkington, 2008/08/26
   # In order to set settings back to inherit, we have to take strings

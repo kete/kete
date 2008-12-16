@@ -58,7 +58,10 @@ module HasContributors
         begin
           submitter = contribution.user
         rescue
-          submitter = User.new({:login => 'unknown'}) # a hack, but it'll stop 500 errors an display what it can
+          # catch the ugly error message and display something nicer
+          message = "It looks like there is no contributor associated with version #{version.to_s} of #{self.class.name} #{self.id}.\n"
+          message = "Possible data corruption. You should consider running rake kete:repair."
+          raise message
         end
       end
       submitter
