@@ -632,7 +632,9 @@ module ApplicationHelper
     raq = " &raquo; "
     html = []
     
-    mappings = item.is_a?(Topic) ? item.all_field_mappings : @content_type.content_type_to_field_mappings
+    mappings = item.is_a?(Topic) ? item.all_field_mappings : \
+      ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
+      
     content = item.extended_content_pairs
 
     mappings.each do |mapping|
