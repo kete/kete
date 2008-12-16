@@ -29,6 +29,13 @@ end
 # Overload the IntegrationTest class to ensure tear down occurs OK.
 class ActionController::IntegrationTest
 
+  # Turn off error 500 page opening (it's output to the console aleady)
+  # Turn the mode to rails as well (or we get errors)
+  Webrat.configure do |config|
+    config.open_error_files = false
+    config.mode = :rails
+  end
+
   include ZoomControllerHelpers
 
   # setup basket variables for use later

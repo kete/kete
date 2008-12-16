@@ -50,15 +50,23 @@
               <%= private_condition ? "<strong>Private</strong>" : "Public" -%>
             </td>
             <td>
-              <% if version.version.nil? || version.version == 1 -%>
-              <% @item.creators.each do |creator| -%>
-              <%= link_to_contributions_of(creator, @item.class.name) %>
-              <% end -%>
-              <% else -%>
-              <%= link_to_contributions_of(item_contributors[contributor_index],
-              @item.class.name) if item_contributors.size > 0 %>
-              <% contributor_index += 1 -%>
-              <% end -%>
+              <% begin -%>
+                <% if version.version.nil? || version.version == 1 -%>
+                  <% @item.creators.each do |creator| -%>
+                    <%= link_to_contributions_of(creator, @item.class.name) %>
+                  <% end -%>
+                <% else -%>
+                  <%= link_to_contributions_of(item_contributors[contributor_index], @item.class.name) if item_contributors.size > 0 %>
+                  <% contributor_index += 1 -%>
+                <% end -%>
+              <% rescue -%>
+                <%
+                # catch the ugly error message and display something nicer
+                message = "It looks like there is no contributor associated with version #{version.version.to_s} of #{@item.class.name} #{@item.id}.\n"
+                message += "Possible data corruption. You should consider running rake kete:repair."
+                raise message
+                -%>
+              <% end %>
             </td>
             <td><%= version.updated_at.to_s(:euro_date_time) %></td>
             <td>
