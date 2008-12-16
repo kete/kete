@@ -234,6 +234,20 @@ class BasketsControllerTest < ActionController::TestCase
     assert_equal 'approved', assigns(:listing_type)
   end
 
+  def test_rss_feed_accessible_logged_out
+    logout
+    get :rss, :urlified_name => 'site', :controller => 'baskets', :action => 'rss'
+    assert_response :success
+    assert_not_nil(:baskets)
+  end
+  
+  def test_rss_feed_accessible_logged_in
+    login_as(:admin)
+    get :rss, :urlified_name => 'site', :controller => 'baskets', :action => 'rss'
+    assert_response :success
+    assert_not_nil(:baskets)
+  end
+
   private
 
   # Change a setting on a basket
