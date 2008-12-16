@@ -43,13 +43,18 @@ require 'tasks/rails'
 # Stop Zebra if it is running, initilize the databases (wiping them clean), start zebra, and load in some initial records ready
 # for testing. If after that, Zebra has not loaded properly, raise an exception to inform the person running the tests
 def bootstrap_zebra_with_initial_records
-  Rake::Task['zebra:stop'].execute(ENV) if zebra_running?('public') || zebra_running?('private')
-  ENV['ZEBRA_DB'] = 'public'
-  Rake::Task['zebra:init'].execute(ENV)
-  ENV['ZEBRA_DB'] = 'private'
-  Rake::Task['zebra:init'].execute(ENV)
-  Rake::Task['zebra:start'].execute(ENV)
-  Rake::Task['zebra:load_initial_records'].execute(ENV)
+  # both of the silencers are need to supress the two types of messages Zebra outputs to the console
+  silence_stream(STDERR) do
+    silence_stream(STDOUT) do
+      Rake::Task['zebra:stop'].execute(ENV) if zebra_running?('public') || zebra_running?('private')
+      ENV['ZEBRA_DB'] = 'public'
+      Rake::Task['zebra:init'].execute(ENV)
+      ENV['ZEBRA_DB'] = 'private'
+      Rake::Task['zebra:init'].execute(ENV)
+      Rake::Task['zebra:start'].execute(ENV)
+      Rake::Task['zebra:load_initial_records'].execute(ENV)
+    end
+  end
   unless zebra_running?('public') && zebra_running?('private')
     raise "ERROR: Zebra's public and private databases failed to start up properly. Double check configuration and try again."
   end

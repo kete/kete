@@ -125,8 +125,8 @@ class ActionController::IntegrationTest
     # Set a bunch of default values to enter. Only title and description fields exist on every item so only those
     # can be set at this point. :new_path is also provided here, but later removed using .delete(:new_path)
     fields = { :new_path => "/#{basket.urlified_name}/#{controller}/new",
-               :title => 'Topic Title',
-               :description => 'Topic Description' }
+               :title => "#{zoom_class_humanize(zoom_class)} Title",
+               :description => "#{zoom_class_humanize(zoom_class)} Description" }
     fields.merge!(args) unless args.nil?
     new_path = fields.delete(:new_path)
 
@@ -185,8 +185,8 @@ class ActionController::IntegrationTest
     # Set a bunch of default values to enter. Only title and description fields exist on every item so only those
     # can be set at this point. :edit_path is also provided here, but later removed using .delete(:edit_path)
     fields = { :edit_path => "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}",
-               :title => 'Topic Updated Title',
-               :description => 'Topic Updated Description' }
+               :title => "#{zoom_class_humanize(zoom_class)} Updated Title",
+               :description => "#{zoom_class_humanize(zoom_class)} Updated Description" }
     fields.merge!(args) unless args.nil?
     edit_path = fields.delete(:edit_path)
 
@@ -313,6 +313,8 @@ class ActionController::IntegrationTest
       # new_topic / new_audio_recording
       # takes basket and a hash of values, plus an optional block
       # provides a more readable option for the <tt>add_item</tt> declaration
+      valid_zoom_types = ['topic', 'still_image', 'audio_recording', 'video', 'web_link', 'document']
+      raise "ERROR: Invalid item type '#{$1}'. Must be one of #{valid_zoom_types.join(', ')}." unless valid_zoom_types.include?($1)
       if block_given?
         new_item(args[0], args[1], args[2], $1.classify, &block)
       else
