@@ -75,6 +75,124 @@ class ModerationViewsTest < ActionController::IntegrationTest
     
   end
     
+  context "Image with multiple versions" do
+    
+    setup do
+      
+      # Ensure a user account to log in with is present
+      add_grant_as_super_user
+      login_as('grant')
+      
+      @image = new_still_image do
+        attach_file "image_file[uploaded_data]", \
+          File.join(RAILS_ROOT, "test/fixtures/files/white.jpg"), "image/jpg"
+      end
+      
+      update_item(@image, :title => "New image updated")
+      update_item(@image, :title => "New image updated again")
+    end
+    
+    should "have functioning moderation pages" do
+      should_have_functioning_moderation_pages(@image, 'images', 'Image')
+    end
+    
+  end
+    
+  context "Video with multiple versions" do
+    
+    setup do
+      
+      # Ensure a user account to log in with is present
+      add_grant_as_super_user
+      login_as('grant')
+      
+      @video = new_video do
+        attach_file "video[uploaded_data]", \
+          File.join(RAILS_ROOT, "test/fixtures/files/teststrip.mpg"), "video/mpeg"
+      end
+      
+      update_item(@video, :title => "New video updated")
+      update_item(@video, :title => "New video updated again")
+    end
+    
+    should "have functioning moderation pages" do
+      should_have_functioning_moderation_pages(@video, 'video', 'Video')
+    end
+    
+  end
+    
+  context "Audio with multiple versions" do
+    
+    setup do
+      
+      # Ensure a user account to log in with is present
+      add_grant_as_super_user
+      login_as('grant')
+      
+      @audio = new_audio_recording do
+        attach_file "audio_recording[uploaded_data]", \
+          File.join(RAILS_ROOT, "test/fixtures/files/Sin1000Hz.mp3"), "audio/mpeg"
+      end
+      
+      update_item(@audio, :title => "New audio updated")
+      update_item(@audio, :title => "New audio updated again")
+    end
+    
+    should "have functioning moderation pages" do
+      should_have_functioning_moderation_pages(@audio, 'audio', 'Audio')
+    end
+    
+  end
+    
+  context "Document with multiple versions" do
+    
+    setup do
+      
+      # Ensure a user account to log in with is present
+      add_grant_as_super_user
+      login_as('grant')
+      
+      @document = new_document do
+        attach_file "document[uploaded_data]", \
+          File.join(RAILS_ROOT, "test/fixtures/files/test.pdf"), "application/pdf"
+      end
+      
+      update_item(@document, :title => "New document updated")
+      update_item(@document, :title => "New document updated again")
+    end
+    
+    should "have functioning moderation pages" do
+      should_have_functioning_moderation_pages(@document, 'documents', 'Document')
+    end
+    
+  end
+    
+  # context "Weblink with multiple versions" do
+  #   
+  #   setup do
+  #     
+  #     # Ensure a user account to log in with is present
+  #     add_grant_as_super_user
+  #     login_as('grant')
+  #     
+  #     @weblink = new_web_link do
+  #       fill_in "web_link[url]", :with => "http://www.google.com/"
+  #     end
+  #     
+  #     update_item(@weblink, :title => "New weblink updated")
+  #     update_item(@weblink, :title => "New weblink updated again")
+  #   end
+  #   
+  #   should "have functioning moderation pages" do
+  #     should_have_functioning_moderation_pages(@weblink, 'weblinks', 'WebLink')
+  #   end
+  #   
+  #   # teardown do
+  #   #   @weblink.destroy
+  #   # end
+  #   
+  # end
+    
   private
   
     def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name)
