@@ -140,7 +140,7 @@ class TopicsController < ApplicationController
         @topic.versions.exists?(:version => version_after_update)
 
       # TODO: replace with translation stuff when we get globalize going
-      flash[:notice] = 'Topic was successfully edited.'
+      flash[:notice] = 'Topic was successfully updated.'
 
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
     else

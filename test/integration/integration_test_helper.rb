@@ -193,6 +193,7 @@ class ActionController::IntegrationTest
     # Visit the items edit url (formed from either the items values, or pass in the path manually using :edit_path in the args param),
     # and confirm we are on the right page
     visit edit_path
+    
     body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
     
     # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc). See the declartion of
@@ -207,7 +208,7 @@ class ActionController::IntegrationTest
     click_button "Update"
 
     # Confirm the item was successfully edited before continuing
-    body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully edited."
+    body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully updated."
 
     # Finally, lets reload the item so the values are repopulated for use in later assertions
     item.reload
