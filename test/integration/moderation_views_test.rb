@@ -60,13 +60,13 @@ class ModerationViewsTest < ActionController::IntegrationTest
       add_grant_as_super_user
       login_as('grant')
       
-      @image = new_image do
+      @image = new_still_image do
         attach_file "image_file[uploaded_data]", \
           File.join(RAILS_ROOT, "test/fixtures/files/white.jpg"), "image/jpg"
       end
-  
-      update_image(@image, :title => "New image updated")
-      update_image(@image, :title => "New image updated again")
+      
+      update_item(@image, :title => "New image updated")
+      update_item(@image, :title => "New image updated again")
     end
     
     should "have functioning moderation pages" do
@@ -80,11 +80,12 @@ class ModerationViewsTest < ActionController::IntegrationTest
     def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name)
     
       visit "/site/#{controller_name}/show/#{item.id}"
-      body_should_contain "New #{controller_name} updated again"
+      
+      body_should_contain "New #{controller_name.singularize} updated again"
       body_should_contain "History"
 
       visit "/site/#{controller_name}/history/#{item.id}"
-      body_should_contain "Revision History: New #{controller_name} updated again"
+      body_should_contain "Revision History: New #{controller_name.singularize} updated again"
       body_should_contain "Back to live"
       1.upto(3) do |i|
         body_should_contain "# #{i}"
