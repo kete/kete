@@ -144,10 +144,13 @@ class ApplicationController < ActionController::Base
         @current_basket = Basket.find_by_urlified_name(params[:urlified_name])
       end
     end
+
     if @current_basket.nil?
       @current_basket = @site_basket
-      load_theme_related
-      raise ActiveRecord::RecordNotFound, "Couldn't find Basket with NAME=#{params[:urlified_name]}."
+      # if were are already raising an error, don't call this again
+      unless @displaying_error
+        raise ActiveRecord::RecordNotFound, "Couldn't find Basket with NAME=#{params[:urlified_name]}."
+      end
     end
   end
 
@@ -1082,13 +1085,11 @@ class ApplicationController < ActionController::Base
 
   def rescue_404
     @title = "404 Not Found"
-    @displaying_error = true
     render :template => "errors/error404", :layout => "application", :status => "404"
   end
 
   def rescue_500(template)
     @title = "500 Internal Server Error"
-    @displaying_error = true
     render :template => "errors/#{template}", :layout => "application", :status => "500"
   end
 
@@ -1119,6 +1120,8 @@ class ApplicationController < ActionController::Base
 
   def rescue_action_in_public(exception)
     #logger.info("ERROR: #{exception.to_s}")
+
+    @displaying_error = true
 
     # when an exception occurs, before filters arn't called, so we have to manually call them here
     # only call the ones absolutely nessesary (required settings, themes, permissions etc)
