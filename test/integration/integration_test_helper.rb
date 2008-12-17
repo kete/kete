@@ -148,9 +148,12 @@ class ActionController::IntegrationTest
 
     # Set a bunch of default values to enter. Only title and description fields exist on every item so only those
     # can be set at this point. :new_path is also provided here, but later removed using .delete(:new_path)
-    fields = { :new_path => "/#{basket.urlified_name}/#{controller}/new",
-               :title => "#{zoom_class_humanize(zoom_class)} Title",
-               :description => "#{zoom_class_humanize(zoom_class)} Description" }
+    fields = {
+      :new_path => "/#{basket.urlified_name}/#{controller}/new",
+      :title => "#{zoom_class_humanize(zoom_class)} Title",
+      :description => "#{zoom_class_humanize(zoom_class)} Description",
+      :success_message => "#{zoom_class_humanize(zoom_class)} was successfully created."
+    }
     fields.merge!(args) unless args.nil?
     new_path = fields.delete(:new_path)
 
@@ -166,6 +169,9 @@ class ActionController::IntegrationTest
 
     # If we are making a Topic, it has one more step before we actually reach the new topic page, and that is to provide a Topic Type
     click_button("Choose Type") if controller == 'topics'
+    
+    # Handle succcess message here, so as to not consume the below method.
+    success_message = fields.delete(:success_message)
 
     # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc)
     get_webrat_actions_from(fields, field_prefix)
@@ -182,7 +188,7 @@ class ActionController::IntegrationTest
     if controller == 'topics' && is_homepage_topic
       body_should_contain "Basket homepage was successfully created."
     else
-      body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully created."
+      body_should_contain success_message
     end
 
     # Finally, lets return the last item of this type made (which will be the one we just created).
