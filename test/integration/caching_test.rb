@@ -380,8 +380,8 @@ class CachingTest < ActionController::IntegrationTest
     contents << "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}" if args[:check_edit_link] || (args[:check_edit_link].nil? && (args[:check_all_links].nil? || args[:check_all_links]))
     contents << "/#{item.basket.urlified_name}/#{controller}/history/#{item.to_param}" if args[:check_history_link] || (args[:check_history_link].nil? && (args[:check_all_links].nil? || args[:check_all_links]))
     contents.each do |content|
-      args[:check_should_not] ? body_should_not_contain(content, nil, args[:debug_output]) :
-                                body_should_contain(content, nil, args[:debug_output])
+      args[:check_should_not] ? body_should_not_contain(content, args) :
+                                body_should_contain(content, args)
     end
   end
 
