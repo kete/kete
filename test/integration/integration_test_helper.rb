@@ -288,6 +288,36 @@ class ActionController::IntegrationTest
     raise "Not implemented."
   end
 
+  # Restore a moderated item (make live).
+  # Takes required item object, and optional options hash, that can set :version to the version of the item you wish to
+  # make live (default version is the latest version of the item)
+  def moderate_restore(item, options = {})
+    item_class = item.class.name
+    controller = zoom_class_controller(item_class)
+    version = options[:version] || item.version
+    visit "/#{item.basket.urlified_name}/#{controller}/preview/#{item.id}?version=#{version}"
+    body_should_contain 'Preview revision'
+    click_link 'Make this revision live'
+    body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved from the selected revision."
+  end
+
+  # Reject a moderated item.
+  # Takes a require item object, and an option options hash, that can set :message (the reason for rejection), and :version
+  # of the version of the item you wish to reject (default version is the latest version of the item)
+  def moderate_reject(item, options = {})
+    item_class = item.class.name
+    controller = zoom_class_controller(item_class)
+    message = options[:message] || ""
+    version = options[:version] || item.version
+    visit "/#{item.basket.urlified_name}/#{controller}/preview/#{item.id}?version=#{version}"
+    body_should_contain 'Preview revision'
+    click_link 'reject'
+    body_should_contain "Reject this revision"
+    fill_in 'message_', :with => message
+    click_button 'Reject'
+    body_should_contain "This version of this #{zoom_class_humanize(item_class)} has been rejected. The user who submitted the revision will be notified by email."
+  end
+
   # Redefine the Webrat attach_file method because we repeat actions each time we use it
   # So lets put them in a method that reduces the code needed to get it to work, and then call
   # super passing in the values we generate. Still provide the option to overwrite the mime type
