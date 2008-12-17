@@ -73,39 +73,54 @@ class ActionController::IntegrationTest
   end
 
   # Asserts whether the supplied text is within the response body returned from a visit request.
-  # Takes required text, optional message (if not provided, message will be auto generated), and dump_response option (which will
-  # output the entire response body (html source) to the console)
-  def body_should_contain(text, message = nil, dump_response = false)
-    message = "Body should contain '#{text}', but does not." if message.nil?
+  # Takes required text, optional times (how many occurances of text should be on this page), and dump_response option
+  # (which will output the entire response body (html source) to the console)
+  def body_should_contain(text, times = nil, dump_response = false)
     dump(response.body) if dump_response
-    assert response.body.include?(text), message
+    if !times.nil?
+      occurances = response.body.scan(text).size
+      assert (occurances == times), "Body should contain '#{text}' #{times} times, but only has #{occurances}."
+    else
+      assert response.body.include?(text), "Body should contain '#{text}', but does not."
+    end
   end
 
   # Asserts whether the supplied text is not within the response body returned from a visit request.
-  # Takes required text, optional message (if not provided, message will be auto generated), and dump_response option (which will
-  # output the entire response body (html source) to the console)
-  def body_should_not_contain(text, message = nil, dump_response = false)
-    message = "Body should not contain '#{text}', but does." if message.nil?
+  # Takes required text, optional times (how many occurances of text should be on this page), and dump_response option
+  # (which will output the entire response body (html source) to the console)
+  def body_should_not_contain(text, times = nil, dump_response = false)
     dump(response.body) if dump_response
-    assert !response.body.include?(text), message
+    if !times.nil?
+      occurances = response.body.scan(text).size
+      assert !(occurances == times), "Body should not contain '#{text}' #{times} times, but does."
+    else
+      assert !response.body.include?(text), "Body should not contain '#{text}', but does."
+    end
+  end
+
+  # UGLY METHOD - FIND BETTER WAY
+  # Checks elements exist on a page in the order they are rendered. Pass in an array in the order they should appear, and a divider
+  # which seperates each text in the array (a div, hr, new line etc)
+  def body_should_contain_in_order(text_array, divider)
+    parts = response.body.split(divider)
+    parts.each_with_index do |part,index|
+      next if text_array[index].nil?
+      assert part.include?(text_array[index]), "#{text_array[index]} is not in the right order it should be."
+    end
   end
 
   # Asserts whether the supplied text is within the request url of the currently viewed page
-  # Takes required text, optional message (if not provided, message will be auto generated), and dump_response option (which will
-  # output the entire request url to the console)
-  def url_should_contain(text, message = nil, dump_response = false)
-    message = "URL should contain '#{text}', but does not." if message.nil?
+  # Takes required text, optional dump_response option (which will output the entire request url to the console)
+  def url_should_contain(text, dump_response = false)
     dump(request.url) if dump_response
-    assert request.url.include?(text), message
+    assert request.url.include?(text), "URL should contain '#{text}', but does not."
   end
 
   # Asserts whether the supplied text is not within the request url of the currently viewed page
-  # Takes required text, optional message (if not provided, message will be auto generated), and dump_response option (which will
-  # output the entire request url to the console)
-  def url_should_not_contain(text, message = nil, dump_response = false)
-    message = "URL should not contain '#{text}', but does." if message.nil?
+  # Takes required text, optional dump_response option (which will output the entire request url to the console)
+  def url_should_not_contain(text, dump_response = false)
     dump(request.url) if dump_response
-    assert !request.url.include?(text), message
+    assert !request.url.include?(text), "URL should not contain '#{text}', but does."
   end
 
   # Create a new item by navigating to the item new page, filling in fields and clicking "Create". While this method works properly,

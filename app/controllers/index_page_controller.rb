@@ -99,8 +99,8 @@ class IndexPageController < ApplicationController
             logger.debug("recent_topics_items after latest version: " + @recent_topics_items.inspect)
 
             @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
-            # with the final topic, sort by the revisions updated_at, rather than the public topics update_at
-            @recent_topics_items.sort! { |t1,t2| t2.updated_at<=>t1.updated_at }
+            # with the final topic, sort by the revisions created_at, rather than the public topics created_at
+            @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
           end
 
           if @current_basket.index_page_number_of_tags > 0
