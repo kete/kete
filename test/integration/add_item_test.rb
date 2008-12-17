@@ -11,8 +11,9 @@ class AddItemTest < ActionController::IntegrationTest
 
     context "when Javascript is off" do
 
-      ['Topic', 'Image', 'Audio', 'Video', 'Web Link', 'Document'].each do |item_type|
-        should "still function properly for #{item_type}" do
+      ITEM_CLASSES.each do |item_class|
+        should "still function properly for #{item_class}" do
+          item_type = zoom_class_humanize(item_class)
           visit "/"
           click_link "Add Item"
           body_should_contain "What would you like to add? Where would you like to add it?"
