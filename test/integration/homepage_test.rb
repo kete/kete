@@ -38,7 +38,7 @@ class HomepageTest < ActionController::IntegrationTest
         end
 
         should "only display the amount of topics requested" do
-          body_should_contain "generic-result-header", 5
+          body_should_contain "generic-result-header", :number_of_times => 5
         end
 
         should "order by recently added topics" do

@@ -73,26 +73,26 @@ class ActionController::IntegrationTest
   end
 
   # Asserts whether the supplied text is within the response body returned from a visit request.
-  # Takes required text, optional times (how many occurances of text should be on this page), and dump_response option
-  # (which will output the entire response body (html source) to the console)
-  def body_should_contain(text, times = nil, dump_response = false)
-    dump(response.body) if dump_response
-    if !times.nil?
+  # Takes required text, optional options hash, which can set :number_of_times (how many occurances of text should be on
+  # this page), and :dump_response option (which will output the entire response body (html source) to the console)
+  def body_should_contain(text, options = {})
+    dump(response.body) if options[:dump_response]
+    if !options[:number_of_times].nil?
       occurances = response.body.scan(text).size
-      assert (occurances == times), "Body should contain '#{text}' #{times} times, but only has #{occurances}."
+      assert (occurances == options[:number_of_times]), "Body should contain '#{text}' #{options[:number_of_times]} times, but only has #{occurances}."
     else
       assert response.body.include?(text), "Body should contain '#{text}', but does not."
     end
   end
 
   # Asserts whether the supplied text is not within the response body returned from a visit request.
-  # Takes required text, optional times (how many occurances of text should be on this page), and dump_response option
-  # (which will output the entire response body (html source) to the console)
-  def body_should_not_contain(text, times = nil, dump_response = false)
-    dump(response.body) if dump_response
-    if !times.nil?
+  # Takes required text, optional options hash, which can set :number_of_times (how many occurances of text should be on
+  # this page), and :dump_response option (which will output the entire response body (html source) to the console)
+  def body_should_not_contain(text, options = {})
+    dump(response.body) if options[:dump_response]
+    if !options[:number_of_times].nil?
       occurances = response.body.scan(text).size
-      assert !(occurances == times), "Body should not contain '#{text}' #{times} times, but does."
+      assert !(occurances == options[:number_of_times]), "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
     else
       assert !response.body.include?(text), "Body should not contain '#{text}', but does."
     end
@@ -110,16 +110,18 @@ class ActionController::IntegrationTest
   end
 
   # Asserts whether the supplied text is within the request url of the currently viewed page
-  # Takes required text, optional dump_response option (which will output the entire request url to the console)
-  def url_should_contain(text, dump_response = false)
-    dump(request.url) if dump_response
+  # Takes required text, optional options hash which can set :dump_response option (which will output the entire
+  # request url to the console)
+  def url_should_contain(text, options = {})
+    dump(request.url) if options[:dump_response]
     assert request.url.include?(text), "URL should contain '#{text}', but does not."
   end
 
   # Asserts whether the supplied text is not within the request url of the currently viewed page
-  # Takes required text, optional dump_response option (which will output the entire request url to the console)
-  def url_should_not_contain(text, dump_response = false)
-    dump(request.url) if dump_response
+  # Takes required text, optional options hash which can set :dump_response option (which will output the entire
+  # request url to the console)
+  def url_should_not_contain(text, options = {})
+    dump(request.url) if options[:dump_response]
     assert !request.url.include?(text), "URL should not contain '#{text}', but does."
   end
 
