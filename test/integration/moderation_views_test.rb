@@ -61,8 +61,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       login_as('grant')
       
       @image = new_still_image do
-        attach_file "image_file[uploaded_data]", \
-          File.join(RAILS_ROOT, "test/fixtures/files/white.jpg"), "image/jpg"
+        attach_file "image_file_uploaded_data", "white.jpg"
       end
       
       update_item(@image, :title => "New image updated")

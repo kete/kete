@@ -29,6 +29,13 @@ end
 # Overload the IntegrationTest class to ensure tear down occurs OK.
 class ActionController::IntegrationTest
 
+  # Turn off error 500 page opening (it's output to the console aleady)
+  # Turn the mode to rails as well (or we get errors)
+  Webrat.configure do |config|
+    config.open_error_files = false
+    config.mode = :rails
+  end
+
   include ZoomControllerHelpers
 
   # setup basket variables for use later
@@ -36,7 +43,7 @@ class ActionController::IntegrationTest
   @@help_basket ||= Basket.help_basket
   @@about_basket ||= Basket.about_basket
   @@documentation_basket ||= Basket.documentation_basket
-  
+
   # setup object creation variables for use later
   @@users_created = Array.new
   @@baskets_created = Array.new
@@ -56,12 +63,12 @@ class ActionController::IntegrationTest
       visit "/"
       click_link "Login"
     end
-    
+
     body_should_contain "Login to Kete"
     fill_in "login", :with => username
     fill_in "password", :with => password
     click_button "Log in"
-    
+
     body_should_contain("Logged in successfully") unless should_fail_login
   end
 
@@ -82,7 +89,7 @@ class ActionController::IntegrationTest
     dump(response.body) if dump_response
     assert !response.body.include?(text), message
   end
-  
+
   # Asserts whether the supplied text is within the request url of the currently viewed page
   # Takes required text, optional message (if not provided, message will be auto generated), and dump_response option (which will
   # output the entire request url to the console)
@@ -131,8 +138,8 @@ class ActionController::IntegrationTest
     new_path = fields.delete(:new_path)
 
     # If we are making a topic, and it is intended as a homepage, then browse to the homepage options and click on the "Add new basket
-    # homepage topic" link, otherwise, if we are making a different item or a topic that isn't a homepage, browse directly to the 
-    # add item form for that type (created above as :new_path) 
+    # homepage topic" link, otherwise, if we are making a different item or a topic that isn't a homepage, browse directly to the
+    # add item form for that type (created above as :new_path)
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
       click_link "Add new basket homepage topic"
@@ -149,7 +156,7 @@ class ActionController::IntegrationTest
     # If we have been passed in a block of additional actions (because for example <tt>get_webrat_actions_from</tt> doesn't support
     # what we need), then yield that block here, passing to it the field_prefix
     yield(field_prefix) if block_given?
-    
+
     # With all fields filled in, create the item
     click_button "Create"
 
@@ -193,17 +200,17 @@ class ActionController::IntegrationTest
     # Visit the items edit url (formed from either the items values, or pass in the path manually using :edit_path in the args param),
     # and confirm we are on the right page
     visit edit_path
-    
+
     body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
-    
+
     # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc). See the declartion of
     # <tt>get_webrat_actions_from</tt> to see how this is done.
     get_webrat_actions_from(fields, field_prefix)
-    
+
     # If we have been passed in a block of additional actions (because for example <tt>get_webrat_actions_from</tt> doesn't support
     # what we need), then yield that block here, passing to it the field_prefix
     yield(field_prefix) if block_given?
-    
+
     # With all fields filled in, update the item
     click_button "Update"
 
@@ -217,7 +224,7 @@ class ActionController::IntegrationTest
   # Deletes an item by going to it's show page and clicking the "Delete" button
   # Takes a required item argument (the Object of whatever item you're wanting to delete)
   def delete_item(item)
-    # Lets get the controller from the item passed in 
+    # Lets get the controller from the item passed in
     controller = zoom_class_controller(item.class.name)
     # Go to the items show page and click the Delete button
     visit "/#{item.basket.urlified_name}/#{controller}/show/#{item.to_param}"
@@ -262,6 +269,16 @@ class ActionController::IntegrationTest
   # We will need to add a Selenium test to run this method.
   def delete_basket(name)
     raise "Not implemented."
+  end
+
+  # Redefine the Webrat attach_file method because we repeat actions each time we use it
+  # So lets put them in a method that reduces the code needed to get it to work, and then call
+  # super passing in the values we generate. Still provide the option to overwrite the mime type
+  # incase the one mimetype-fu tries to use is not compatible
+  def attach_file(locator, filename, mime_type = nil)
+    file_path = File.join(RAILS_ROOT, "test/fixtures/files/#{filename}")
+    mime_type = File.mime_type?(File.open(file_path)).split(';').first if mime_type.blank?
+    super(locator, file_path, mime_type)
   end
 
   # When a test is finished, reset the constants, and remove all users/baskets created, ready for the next test

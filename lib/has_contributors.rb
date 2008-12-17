@@ -60,7 +60,7 @@ module HasContributors
         rescue
           # catch the ugly error message and display something nicer
           message = "It looks like there is no contributor associated with version #{version.to_s} of #{self.class.name} #{self.id}.\n"
-          message = "Possible data corruption. You should consider running rake kete:repair."
+          message += "Possible data corruption. You should consider running rake kete:repair."
           raise message
         end
       end
