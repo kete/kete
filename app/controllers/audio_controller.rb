@@ -57,7 +57,7 @@ class AudioController < ApplicationController
       @audio_recording.do_notifications_if_pending(version_after_update, current_user) if
         @audio_recording.versions.exists?(:version => version_after_update)
 
-      flash[:notice] = 'AudioRecording was successfully updated.'
+      flash[:notice] = 'Audio was successfully updated.'
 
       redirect_to_show_for(@audio_recording, :private => (params[:audio_recording][:private] == "true"))
     else
