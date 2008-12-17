@@ -69,30 +69,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     end
     
     should "have functioning moderation pages" do
-      should_have_functioning_moderation_pages(@image, 'images', 'Image')
-    end
-    
-  end
-    
-  context "Image with multiple versions" do
-    
-    setup do
-      
-      # Ensure a user account to log in with is present
-      add_grant_as_super_user
-      login_as('grant')
-      
-      @image = new_still_image do
-        attach_file "image_file[uploaded_data]", \
-          File.join(RAILS_ROOT, "test/fixtures/files/white.jpg"), "image/jpg"
-      end
-      
-      update_item(@image, :title => "New image updated")
-      update_item(@image, :title => "New image updated again")
-    end
-    
-    should "have functioning moderation pages" do
-      should_have_functioning_moderation_pages(@image, 'images', 'Image')
+      should_have_functioning_moderation_pages(@image, 'images', 'StillImage')
     end
     
   end
@@ -106,8 +83,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       login_as('grant')
       
       @video = new_video do
-        attach_file "video[uploaded_data]", \
-          File.join(RAILS_ROOT, "test/fixtures/files/teststrip.mpg"), "video/mpeg"
+        attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
       end
       
       update_item(@video, :title => "New video updated")
@@ -129,8 +105,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       login_as('grant')
       
       @audio = new_audio_recording do
-        attach_file "audio_recording[uploaded_data]", \
-          File.join(RAILS_ROOT, "test/fixtures/files/Sin1000Hz.mp3"), "audio/mpeg"
+        attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3" #, "audio/mpeg"
       end
       
       update_item(@audio, :title => "New audio updated")
@@ -138,7 +113,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     end
     
     should "have functioning moderation pages" do
-      should_have_functioning_moderation_pages(@audio, 'audio', 'Audio')
+      should_have_functioning_moderation_pages(@audio, 'audio', 'AudioRecording')
     end
     
   end
@@ -152,8 +127,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       login_as('grant')
       
       @document = new_document do
-        attach_file "document[uploaded_data]", \
-          File.join(RAILS_ROOT, "test/fixtures/files/test.pdf"), "application/pdf"
+        attach_file "document[uploaded_data]", "test.pdf" #, "application/pdf"
       end
       
       update_item(@document, :title => "New document updated")
@@ -166,31 +140,31 @@ class ModerationViewsTest < ActionController::IntegrationTest
     
   end
     
-  # context "Weblink with multiple versions" do
-  #   
-  #   setup do
-  #     
-  #     # Ensure a user account to log in with is present
-  #     add_grant_as_super_user
-  #     login_as('grant')
-  #     
-  #     @weblink = new_web_link do
-  #       fill_in "web_link[url]", :with => "http://www.google.com/"
-  #     end
-  #     
-  #     update_item(@weblink, :title => "New weblink updated")
-  #     update_item(@weblink, :title => "New weblink updated again")
-  #   end
-  #   
-  #   should "have functioning moderation pages" do
-  #     should_have_functioning_moderation_pages(@weblink, 'weblinks', 'WebLink')
-  #   end
-  #   
-  #   # teardown do
-  #   #   @weblink.destroy
-  #   # end
-  #   
-  # end
+  context "Weblink with multiple versions" do
+    
+    setup do
+      
+      # Ensure a user account to log in with is present
+      add_grant_as_super_user
+      login_as('grant')
+      
+      @weblink = new_web_link do
+        fill_in "web_link[url]", :with => "http://www.google.com/"
+      end
+      
+      update_item(@weblink, :title => "New web_link updated")
+      update_item(@weblink, :title => "New web_link updated again")
+    end
+    
+    should "have functioning moderation pages" do
+      should_have_functioning_moderation_pages(@weblink, 'web_links', 'WebLink')
+    end
+    
+    teardown do
+      @weblink.destroy unless @weblink.new_record?
+    end
+    
+  end
     
   private
   
@@ -211,7 +185,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       1.upto(2) do |i|
         visit "/site/#{controller_name}/preview/#{item.id}?version=#{i}"
         body_should_contain "Preview revision ##{i}: view live"
-        body_should_contain "#{zoom_class_name}: #{item.versions.find_by_version(i).title}"
+        body_should_contain "#{zoom_class_humanize(zoom_class_name)}: #{item.versions.find_by_version(i).title}"
         body_should_contain item.versions.find_by_version(i).description
         body_should_contain "Actions"
         body_should_contain "Make this revision live"

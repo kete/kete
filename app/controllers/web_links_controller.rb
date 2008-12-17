@@ -55,7 +55,7 @@ class WebLinksController < ApplicationController
       @web_link.do_notifications_if_pending(version_after_update, current_user) if 
         @web_link.versions.exists?(:version => version_after_update)
 
-      flash[:notice] = 'WebLink was successfully updated.'
+      flash[:notice] = 'Web Link was successfully updated.'
 
       redirect_to_show_for(@web_link, :private => (params[:web_link][:private] == "true"))
     else
