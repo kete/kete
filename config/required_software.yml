@@ -10,12 +10,16 @@
 
 management_gems:
   capistrano:
+  capistrano-ext:
   piston:
-    gem_name: francois-piston
-    lib_name: piston
-    source: http://gems.github.com
+    # Currently the Github gem version of this tool isnt available
+    #gem_name: francois-piston
+    #lib_name: piston
+    #source: http://gems.github.com
 
 testing_gems:
+  nokogiri:
+  selenium-client:
   webrat:
     gem_name: brynary-webrat
     lib_name: webrat/rails
