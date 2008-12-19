@@ -77,6 +77,7 @@ class ActionController::IntegrationTest
   # this page), and :dump_response option (which will output the entire response body (html source) to the console)
   def body_should_contain(text, options = {})
     dump(response.body) if options[:dump_response]
+    text = escape(text) if options[:escape_chars]
     if !options[:number_of_times].nil?
       occurances = response.body.scan(text).size
       assert (occurances == options[:number_of_times]), "Body should contain '#{text}' #{options[:number_of_times]} times, but only has #{occurances}."
@@ -90,6 +91,7 @@ class ActionController::IntegrationTest
   # this page), and :dump_response option (which will output the entire response body (html source) to the console)
   def body_should_not_contain(text, options = {})
     dump(response.body) if options[:dump_response]
+    text = escape(text) if options[:escape_chars]
     if !options[:number_of_times].nil?
       occurances = response.body.scan(text).size
       assert !(occurances == options[:number_of_times]), "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
@@ -155,7 +157,9 @@ class ActionController::IntegrationTest
       :success_message => "#{zoom_class_humanize(zoom_class)} was successfully created."
     }
     fields.merge!(args) unless args.nil?
+    # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an exception
     new_path = fields.delete(:new_path)
+    success_message = fields.delete(:success_message)
 
     # If we are making a topic, and it is intended as a homepage, then browse to the homepage options and click on the "Add new basket
     # homepage topic" link, otherwise, if we are making a different item or a topic that isn't a homepage, browse directly to the
@@ -169,9 +173,6 @@ class ActionController::IntegrationTest
 
     # If we are making a Topic, it has one more step before we actually reach the new topic page, and that is to provide a Topic Type
     click_button("Choose Type") if controller == 'topics'
-    
-    # Handle succcess message here, so as to not consume the below method.
-    success_message = fields.delete(:success_message)
 
     # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc)
     get_webrat_actions_from(fields, field_prefix)
@@ -214,11 +215,16 @@ class ActionController::IntegrationTest
 
     # Set a bunch of default values to enter. Only title and description fields exist on every item so only those
     # can be set at this point. :edit_path is also provided here, but later removed using .delete(:edit_path)
-    fields = { :edit_path => "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}",
-               :title => "#{zoom_class_humanize(zoom_class)} Updated Title",
-               :description => "#{zoom_class_humanize(zoom_class)} Updated Description" }
+    fields = {
+      :edit_path => "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}",
+      :title => "#{zoom_class_humanize(zoom_class)} Updated Title",
+      :description => "#{zoom_class_humanize(zoom_class)} Updated Description",
+      :success_message => "#{zoom_class_humanize(zoom_class)} was successfully updated."
+    }
     fields.merge!(args) unless args.nil?
+    # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an exception
     edit_path = fields.delete(:edit_path)
+    success_message = fields.delete(:success_message)
 
     # Visit the items edit url (formed from either the items values, or pass in the path manually using :edit_path in the args param),
     # and confirm we are on the right page
@@ -238,7 +244,7 @@ class ActionController::IntegrationTest
     click_button "Update"
 
     # Confirm the item was successfully edited before continuing
-    body_should_contain "#{zoom_class_humanize(zoom_class)} was successfully updated."
+    body_should_contain success_message
 
     # Finally, lets reload the item so the values are repopulated for use in later assertions
     item.reload
@@ -452,6 +458,11 @@ class ActionController::IntegrationTest
     puts "-----------------"
     puts text
     puts "-----------------"
+  end
+
+  # Escapes the &, <, >, and " chars
+  def escape(text)
+    text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;').gsub(/"/, '&quot;')
   end
 
 end

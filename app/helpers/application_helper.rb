@@ -579,11 +579,11 @@ module ApplicationHelper
 
   def tags_for(item)
     html_string = String.new
-    raw_tag_array = Array.new
-    unless item.raw_tag_list.nil?
-      raw_tag_array = item.raw_tag_list.split(',').collect { |tag| tag.squish }
+    tags = Array.new
+    unless item.nil? || item.raw_tag_list.nil?
+      tags = item.raw_tag_list.split(',').collect { |tag| Tag.find_by_name(tag.squish) }
     end
-    tags = Tag.all(:conditions => ["tags.name IN (?)", raw_tag_array])
+    tags = tags.compact.flatten
     if tags.size > 0
       html_string = "<p>Tags: "
       tag_count = 1
