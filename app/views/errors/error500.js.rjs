@@ -1,0 +1,3 @@
+page[:notice].hide
+page.replace_html :error, "<div>Response returned an Error 500. Please check the logs.</div>"
+page[:error].show

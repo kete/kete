@@ -355,7 +355,7 @@ class ApplicationController < ActionController::Base
 
   def expire_fragment_for_all_versions(item, name = {})
     name = name.merge(:id => item.id)
-    file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}"
+    file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache"
     File.delete(file_path) if File.exists?(file_path)
 
     # Kieran Pilkington, 2008-12-15
@@ -515,7 +515,7 @@ class ApplicationController < ActionController::Base
   def has_fragment?(name = {})
     # strip out everything after id (title in friendly url)
     name[:id] = name[:id].to_i unless name[:id].blank?
-    File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub("?", ".") + '.cache'}")
+    File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache")
   end
 
   # used by show actions to determine whether to load item
@@ -1145,12 +1145,18 @@ class ApplicationController < ActionController::Base
     when BackgrounDRb::NoServerAvailable then
       rescue_500('backgroundrb_connection_failed')
     when ActionController::InvalidAuthenticityToken then
-      rescue_500('invalid_authenticity_token')
+      respond_to do |format|
+        format.html { rescue_500('invalid_authenticity_token') }
+        format.js { render :file => File.join(RAILS_ROOT, 'app/views/errors/invalid_authenticity_token.js.rjs') }
+      end
     else
       if exception.to_s.match(/Connect\ failed/)
         rescue_500('zebra_connection_failed')
       else
-        rescue_500('error500')
+        respond_to do |format|
+          format.html { rescue_500('error500') }
+          format.js { render :file => File.join(RAILS_ROOT, 'app/views/errors/error500.js.rjs') }
+        end
       end
     end
   end
