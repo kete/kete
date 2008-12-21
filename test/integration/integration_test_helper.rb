@@ -354,12 +354,12 @@ class ActionController::IntegrationTest
   # and hence is not useful for big result sets.
   def should_appear_once_in_search_results(item, options = {})
     
+    # Reload to ensure that item is progressed past moderation version
+    item.reload
+    
     options = {
       :title => item.title
     }.merge!(options)
-    
-    # Reload to ensure that item is progressed past moderation version
-    item.reload
     
     raise "You asked to check that item is in search results, but item is pending moderation. \n\n#{item.inspect}\n\n#{item.versions.inspect}\n\n" if item.title == BLANK_TITLE
     

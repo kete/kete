@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ModerationTest < ActionController::IntegrationTest
-  context "with a new basket" do
+  context "a Kete instance" do
     
     setup do
       
@@ -34,32 +34,22 @@ class ModerationTest < ActionController::IntegrationTest
         create_a_new_pending_topic_and_accept_it
       end
     
-      # James - 2008-12-21 
-      # Work in progress. Current the below test fails because an except is raised as a contributor is not 
-      # added to the latest version of an item when full moderation is on. This will be fixed shortly.
+      should "update an item and have it moderated" do
+        create_a_new_topic_with_several_approved_versions
+      end
       
-      # should "update an item and have it moderated" do
-      #   create_a_new_pending_topic_and_accept_it
-      #   
-      #   login_as('paul')
-      # 
-      #   update_item(@topic, :title => "Title has been changed.")
-      #   assert_equal @topic.versions.find_by_version(1).title, @topic.title
-      #   should_appear_once_in_search_results(@topic, :title => @topic.versions.find_by_version(1).title)
-      #   
-      #   login_as('sarah')
-      #   
-      #   moderate_restore(@topic, :version => 4)
-      #   
-      #   @topic.reload
-      #   latest_version_should_be_live(@topic)
-      #   should_appear_once_in_search_results(@topic, :title => @topic.title)
-      # end
-    
+      should_eventually "revert to an earlier version" do
+        create_a_new_topic_with_several_approved_versions
+        # TODO: Add specific tests
+      end
+      
+      should_eventually "create a new item and have it rejected"
+      should_eventually "update an item and have it rejected"
+      should_eventually "flag an accepted version of an item"
     end
   
     context "an open basket" do
-      
+      # TODO: Test flagging and moderation in an open basket
     end
   
     teardown do
@@ -88,6 +78,24 @@ class ModerationTest < ActionController::IntegrationTest
       @topic.reload
       latest_version_should_be_live(@topic)
       should_appear_once_in_search_results(@topic, :title => "Test moderated topic")
+    end
+    
+    def create_a_new_topic_with_several_approved_versions
+      create_a_new_pending_topic_and_accept_it
+      
+      login_as('paul')
+    
+      update_item(@topic, :title => "Title has been changed.")
+      assert_equal @topic.versions.find_by_version(1).title, @topic.title
+      should_appear_once_in_search_results(@topic, :title => @topic.versions.find_by_version(1).title)
+      
+      login_as('sarah')
+      
+      moderate_restore(@topic, :version => 4)
+      
+      @topic.reload
+      latest_version_should_be_live(@topic)
+      should_appear_once_in_search_results(@topic, :title => @topic.title)
     end
   
     # Some helpers below
