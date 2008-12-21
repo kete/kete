@@ -20,6 +20,8 @@ management_gems:
 testing_gems:
   nokogiri:
   selenium-client:
+    gem_name: selenium-client
+    lib_name: selenium/client
   webrat:
     gem_name: brynary-webrat
     lib_name: webrat/rails
