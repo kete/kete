@@ -22,8 +22,9 @@ module OaiDcHelpers
       else
         protocol = request.protocol
         host= request.host
-        request_uri = request.request_uri
+        request_uri = url_for_dc_identifier(item)
       end
+      
       basket_urlified_name = @current_basket.nil? ? item.basket.urlified_name : @current_basket.urlified_name
       xml.request(protocol + host + CGI::unescape(request_uri), :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
     end

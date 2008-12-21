@@ -1110,7 +1110,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier
 
   protected
 
