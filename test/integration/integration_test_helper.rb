@@ -300,11 +300,12 @@ class ActionController::IntegrationTest
   def moderate_restore(item, options = {})
     item_class = item.class.name
     controller = zoom_class_controller(item_class)
-    version = options[:version] || item.version
+    version = options[:version] || item.version - 1
     visit "/#{item.basket.urlified_name}/#{controller}/preview/#{item.id}?version=#{version}"
+    save_and_open_page unless response.body.include?("Preview revision")
     body_should_contain 'Preview revision'
     click_link 'Make this revision live'
-    body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved from the selected revision."
+    body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved from the selected revision."    
   end
 
   # Reject a moderated item.
@@ -314,7 +315,7 @@ class ActionController::IntegrationTest
     item_class = item.class.name
     controller = zoom_class_controller(item_class)
     message = options[:message] || ""
-    version = options[:version] || item.version
+    version = options[:version] || item.version - 1
     visit "/#{item.basket.urlified_name}/#{controller}/preview/#{item.id}?version=#{version}"
     body_should_contain 'Preview revision'
     click_link 'reject'
@@ -322,6 +323,61 @@ class ActionController::IntegrationTest
     fill_in 'message_', :with => message
     click_button 'Reject'
     body_should_contain "This version of this #{zoom_class_humanize(item_class)} has been rejected. The user who submitted the revision will be notified by email."
+  end
+  
+  # Turn on full moderation on a basket
+  def turn_on_full_moderation(basket)
+    visit "/site/baskets/edit/#{basket.id}"
+    select "moderator views before item approved", :from => "settings_fully_moderated"
+    click_button "Update"
+    body_should_contain "Basket was successfully updated."
+    assert_equal "true", basket.settings[:fully_moderated].to_s, "Basket fully_moderated setting should be true, but is not."
+  end
+
+  # Turn off full moderation on a basket
+  def turn_off_full_moderation(basket)
+    visit "/site/baskets/edit/#{basket.id}"
+    select "moderation upon being flagged", :from => "settings_fully_moderated"
+    click_button "Update"
+    body_should_contain "Basket was successfully updated."
+    assert_equal "false", basket.settings[:fully_moderated].to_s, "Basket fully_moderated setting should be false, but is not."
+  end
+  
+  # Check that an item occurs in search results only once
+  # Note that an important limitation of this method is that it only checks the first page of results,
+  # and hence is not useful for big result sets.
+  def should_appear_once_in_search_results(item, options = {})
+    
+    options = {
+      :title => item.title
+    }.merge!(options)
+    
+    # Reload to ensure that item is progressed past moderation version
+    item.reload
+    
+    raise "You asked to check that item is in search results, but item is pending moderation. \n\n#{item.inspect}\n\n#{item.versions.inspect}\n\n" if item.title == BLANK_TITLE
+    
+    visit "/#{item.basket.urlified_name}/all/#{zoom_class_controller(item.class.name)}/"
+    
+    basket_mention = item.basket == @@site_basket ? "" : item.basket.name + " "
+    body_should_contain "Results in #{basket_mention}#{zoom_class_plural_humanize(item.class.name).downcase}"
+    
+    # We can't use the item title because it can appear several times legitimately.
+    body_should_contain "item_#{item.id}_wrapper", :number_of_times => 1
+    body_should_contain options[:title]
+  end
+  
+  # Check that an item DOES NOT occur in search results
+  # Note that an important limitation of this method is that it only checks the first page of results,
+  # and hence is not useful for big result sets.
+  def should_not_appear_in_search_results(item)
+    visit "/#{item.basket.urlified_name}/all/#{zoom_class_controller(item.class.name)}/"
+    
+    basket_mention = item.basket == @@site_basket ? "" : item.basket.name + " "
+    body_should_contain "Results in #{basket_mention}#{zoom_class_plural_humanize(item.class.name).downcase}"
+    
+    # We can't use the item title because it can appear several times legitimately.
+    body_should_not_contain "item_#{item.id}_wrapper"
   end
 
   # Redefine the Webrat attach_file method because we repeat actions each time we use it
