@@ -1,12 +1,11 @@
-<% item_key = zoom_class_from_controller(params[:controller]).underscore -%>
 <% cache_with_privacy(item, {:part => "secondary_content_tags"}) do -%>
+<% item_key = zoom_class_from_controller(params[:controller]).underscore -%>
 <div class="secondary-content-section-wrapper">
   <div id="tags-box" class="secondary-content-section">
     <h2>Tags</h2>
     <div id="tags_list">
       <%= tags_for(item) -%>
     </div>
-<% end %>
     <% if permitted_to_edit_current_item? && params[:action] != 'preview' -%>
       <div id="add_tag_button" style="display:none">
         [<a href="#" onclick="Element.show('add_tag_form_div');Element.hide('add_tag_button');$('<%= item_key -%>_tag_list').activate();">+</a>]
@@ -30,3 +29,4 @@
     <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
   </div>
 </div>
+<% end %>
