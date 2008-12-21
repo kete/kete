@@ -894,12 +894,18 @@ class ApplicationController < ActionController::Base
   end
 
   def after_successful_zoom_item_update(item)
+
+    # James - 2008-12-21 
+    # Ensure the contribution is added against the latest version, not the current verrsion as it could
+    # have been reverted automatically if full moderation is on for the basket.
+    version = item.versions.find(:first, :order => 'version DESC').version
+    
     # add this to the user's empire of contributions
     # TODO: allow current_user whom is at least moderator to pick another user
     # as contributor
     # uses virtual attr as hack to pass version to << method
-    item.add_as_contributor(current_user)
-
+    item.add_as_contributor(current_user, version)
+    
     # if the basket has been changed, make sure comments are moved, too
     update_comments_basket_for(item, @current_basket)
 
