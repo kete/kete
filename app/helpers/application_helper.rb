@@ -580,6 +580,8 @@ module ApplicationHelper
   def tags_for(item)
     html_string = String.new
 
+    return html_string if item.raw_tag_list.nil?
+
     raw_tag_array = Array.new
     # Get the raw tag list, split, squish (removed whitespace), and add each to raw_tag_array
     # Make sure we skip if the array already has that tag name (remove any duplicates that occur)
