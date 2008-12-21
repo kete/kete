@@ -579,24 +579,37 @@ module ApplicationHelper
 
   def tags_for(item)
     html_string = String.new
-    tags = Array.new
-    unless item.nil? || item.raw_tag_list.nil?
-      tags = item.raw_tag_list.split(',').collect { |tag| Tag.find_by_name(tag.squish) }
+
+    raw_tag_array = Array.new
+    # Get the raw tag list, split, squish (removed whitespace), and add each to raw_tag_array
+    # Make sure we skip if the array already has that tag name (remove any duplicates that occur)
+    item.raw_tag_list.split(',').each do |raw_tag|
+      next if raw_tag_array.include?(raw_tag.squish)
+      raw_tag_array << raw_tag.squish
     end
-    tags = tags.compact.flatten
-    if tags.size > 0
+
+    # grab all the tag objects
+    tags_out_of_order = Tag.find_all_by_name(raw_tag_array)
+    if tags_out_of_order.size > 0
+      tags = Array.new
+      # resort them to match raw_tag_list order
+      raw_tag_array.each do |tag_name|
+        tag = tags_out_of_order.select { |tag| tag.name == tag_name }
+        tags << tag
+      end
+      # at this point, we have an array, with arrays of object  [[tag], [tag], [tag]]
+      # use compact to remove any nil objects, and flatten to convert it to [tag, tag, tag]
+      tags = tags.compact.flatten
+
       html_string = "<p>Tags: "
-      tag_count = 1
-      tags.each do |tag|
-        if tags.size != tag_count
-          html_string += link_to_tagged(tag, item.class.name) + ", "
-        else
-          html_string += link_to_tagged(tag, item.class.name)
-        end
-        tag_count += 1
+      tags.each_with_index do |tag,index|
+        html_string += link_to_tagged(tag, item.class.name)
+        html_string += ", " unless tags.size == (index + 1)
       end
       html_string += "</p>"
     end
+
+    html_string
   end
 
   def tags_input_field(form,label_for)
