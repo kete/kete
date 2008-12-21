@@ -25,10 +25,10 @@ module TaggingController
       zoom_class = zoom_class_from_controller(params[:controller])
       item_key = zoom_class.underscore.to_sym
 
-      if ZOOM_CLASSES.include?(zoom_class) && !params[item_key].blank? && !params[item_key][:tag_list].blank?
-        @item = item_from_controller_and_id
-        @item = public_or_private_version_of(@item)
+      @item = item_from_controller_and_id
+      @item = public_or_private_version_of(@item)
 
+      if ZOOM_CLASSES.include?(zoom_class) && !params[item_key].blank? && !params[item_key][:tag_list].blank?
         params[item_key][:version_comment] = "Only tags added: " + params[item_key][:tag_list]
         params[item_key][:tag_list] = "#{@item.tag_list.join(", ")}, #{params[item_key][:tag_list]}"
         params[item_key][:raw_tag_list] = params[item_key][:tag_list]
@@ -45,7 +45,7 @@ module TaggingController
           return true
         else
           respond_to do |format|
-            flash[:error] = "There was an error adding the new tags to #{@item.title}"
+            flash[:error] = "There was an error adding the new tags to #{@item.title}: Tags #{@item.errors['Tags']}"
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
             format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
           end
@@ -54,6 +54,8 @@ module TaggingController
       else
         @empty = true
         respond_to do |format|
+          flash[:error] = "There was an error adding the new tags to #{@item.title}: No tags were entered."
+          format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
           format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
         end
         return false
