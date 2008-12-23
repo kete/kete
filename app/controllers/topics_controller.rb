@@ -95,7 +95,7 @@ class TopicsController < ApplicationController
 
       case where_to_redirect
       when 'show_related'
-        flash[:notice] = 'Related topic was successfully created.'
+        flash[:notice] = 'Related Topic was successfully created.'
         redirect_to_related_topic(@new_related_topic.id)
       when 'basket'
         redirect_to :action => 'add_index_topic',

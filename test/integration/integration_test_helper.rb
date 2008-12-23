@@ -154,12 +154,16 @@ class ActionController::IntegrationTest
       :new_path => "/#{basket.urlified_name}/#{controller}/new",
       :title => "#{zoom_class_humanize(zoom_class)} Title",
       :description => "#{zoom_class_humanize(zoom_class)} Description",
-      :success_message => "#{zoom_class_humanize(zoom_class)} was successfully created."
+      :success_message => "#{zoom_class_humanize(zoom_class)} was successfully created.",
+      :relate_to => nil
     }
     fields.merge!(args) unless args.nil?
     # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an exception
     new_path = fields.delete(:new_path)
     success_message = fields.delete(:success_message)
+    relate_to = fields.delete(:relate_to)
+
+    raise "ERROR: You must relate an item to a Topic, not a #{relate_to.class.name}" unless relate_to.nil? || relate_to.is_a?(Topic)
 
     # If we are making a topic, and it is intended as a homepage, then browse to the homepage options and click on the "Add new basket
     # homepage topic" link, otherwise, if we are making a different item or a topic that isn't a homepage, browse directly to the
@@ -167,6 +171,8 @@ class ActionController::IntegrationTest
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
       click_link "Add new basket homepage topic"
+    elsif !relate_to.nil?
+      visit "/#{relate_to.basket.urlified_name}/topics/new?relate_to_topic=#{relate_to.to_param}"
     else
       visit new_path
     end
@@ -184,16 +190,24 @@ class ActionController::IntegrationTest
     # With all fields filled in, create the item
     click_button "Create"
 
+    # Get the last created item (the one created above)
+    item = zoom_class.constantize.last
+
     # If we made a homepage, then we should gets text saying that we did so successfully,
     # otherwise we get test saying the Item was created successfully.
     if controller == 'topics' && is_homepage_topic
       body_should_contain "Basket homepage was successfully created."
+    elsif !relate_to.nil?
+      body_should_contain "Related #{zoom_class_humanize(zoom_class)} was successfully created."
+      body_should_contain "Topic: #{relate_to.title}"
+      body_should_contain "#{item.title}"
+      click_link "#{item.title}"
     else
       body_should_contain success_message
     end
 
-    # Finally, lets return the last item of this type made (which will be the one we just created).
-    zoom_class.constantize.last
+    # Finally, lets return the last item of this type made (we assigned item earlier)
+    item
   end
 
   # A quick method for adding a new homepage topic.
@@ -311,7 +325,7 @@ class ActionController::IntegrationTest
     save_and_open_page unless response.body.include?("Preview revision")
     body_should_contain 'Preview revision'
     click_link 'Make this revision live'
-    body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved from the selected revision."    
+    body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved from the selected revision."
   end
 
   # Reject a moderated item.
@@ -330,7 +344,7 @@ class ActionController::IntegrationTest
     click_button 'Reject'
     body_should_contain "This version of this #{zoom_class_humanize(item_class)} has been rejected. The user who submitted the revision will be notified by email."
   end
-  
+
   # Turn on full moderation on a basket
   def turn_on_full_moderation(basket)
     visit "/site/baskets/edit/#{basket.id}"
@@ -348,40 +362,40 @@ class ActionController::IntegrationTest
     body_should_contain "Basket was successfully updated."
     assert_equal "false", basket.settings[:fully_moderated].to_s, "Basket fully_moderated setting should be false, but is not."
   end
-  
+
   # Check that an item occurs in search results only once
   # Note that an important limitation of this method is that it only checks the first page of results,
   # and hence is not useful for big result sets.
   def should_appear_once_in_search_results(item, options = {})
-    
+
     # Reload to ensure that item is progressed past moderation version
     item.reload
-    
+
     options = {
       :title => item.title
     }.merge!(options)
-    
+
     raise "You asked to check that item is in search results, but item is pending moderation. \n\n#{item.inspect}\n\n#{item.versions.inspect}\n\n" if item.title == BLANK_TITLE
-    
+
     visit "/#{item.basket.urlified_name}/all/#{zoom_class_controller(item.class.name)}/"
-    
+
     basket_mention = item.basket == @@site_basket ? "" : item.basket.name + " "
     body_should_contain "Results in #{basket_mention}#{zoom_class_plural_humanize(item.class.name).downcase}"
-    
+
     # We can't use the item title because it can appear several times legitimately.
     body_should_contain "item_#{item.id}_wrapper", :number_of_times => 1
     body_should_contain options[:title]
   end
-  
+
   # Check that an item DOES NOT occur in search results
   # Note that an important limitation of this method is that it only checks the first page of results,
   # and hence is not useful for big result sets.
   def should_not_appear_in_search_results(item)
     visit "/#{item.basket.urlified_name}/all/#{zoom_class_controller(item.class.name)}/"
-    
+
     basket_mention = item.basket == @@site_basket ? "" : item.basket.name + " "
     body_should_contain "Results in #{basket_mention}#{zoom_class_plural_humanize(item.class.name).downcase}"
-    
+
     # We can't use the item title because it can appear several times legitimately.
     body_should_not_contain "item_#{item.id}_wrapper"
   end
