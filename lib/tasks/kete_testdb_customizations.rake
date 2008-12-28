@@ -38,6 +38,15 @@ unless Rake::TaskManager.methods.include?(:redefine_task)
   end
 end
 
+namespace :test do
+  Rake::TestTask.new(:selenium => "db:test:prepare") do |t|
+    t.libs << "test"
+    t.pattern = 'test/selenium/**/*_test.rb'
+    t.verbose = true
+  end
+  Rake::Task['test:selenium'].comment = "Run the selenium tests in test/selenium"
+end
+
 namespace :db do
   namespace :test do
     desc 'Prepare the test database with the bootstrapped data necessary for Kete'

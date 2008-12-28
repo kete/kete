@@ -24,7 +24,7 @@ testing_gems:
     lib_name: selenium/client
   webrat:
     gem_name: brynary-webrat
-    lib_name: webrat/rails
+    lib_name: webrat
     source: http://gems.github.com
   shoulda:
     gem_name: thoughtbot-shoulda
