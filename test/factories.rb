@@ -18,10 +18,10 @@ Factory.define :basket do |b|
   b.status 'approved'
   b.creator_id 1
 end
-def create_new_basket(args)
-  @basket = Basket.find_by_name(args[:name])
+def create_new_basket(options)
+  @basket = Basket.find_by_name(options[:name])
   return @basket unless @basket.nil?
-  @basket = Factory(:basket, args)
+  @basket = Factory(:basket, options)
   assert_kind_of Basket, @basket
   @basket
 end
@@ -44,10 +44,10 @@ Factory.define :user do |u|
 end
 # this shouldn't be called directly, use the method missing functionality to add users on the fly
 # add_bob_as_tech_admin(:baskets => @@site_basket)
-def create_new_user(args)
-  @user = User.find_by_login(args[:login])
+def create_new_user(options)
+  @user = User.find_by_login(options[:login])
   return @user unless @user.nil?
-  @user = Factory(:user, args)
+  @user = Factory(:user, options)
   assert_kind_of User, @user
   @user
 end

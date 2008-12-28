@@ -27,7 +27,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       should "create a public topic" do
-        
+
         new_topic do
           fill_in "topic[title]", :with => "Test Topic"
           fill_in "topic[short_summary]", :with => "A test summary"
@@ -42,7 +42,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       should "create a private topic" do
-        
+
         new_topic do
           choose "Private"
           fill_in "topic[title]", :with => "Test Topic"
@@ -69,52 +69,54 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
     end
-    
+
     context 'with private baskets and items of various privacies' do
 
       setup do
-        @first_basket   = new_basket("First basket", true)
-        @second_basket  = new_basket("Second basket", true)
-        
+        @first_basket   = new_basket({ :name => "First basket",
+                                       :show_privacy_controls_true => true })
+        @second_basket  = new_basket({ :name => "Second basket",
+                                       :show_privacy_controls_true => true })
+
         @private_topic  = new_topic({:title => 'Mixed topic (public)'}, @first_basket)
-        
+
         update_item(@private_topic) do
           choose 'Private'
           fill_in 'topic[title]', :with => 'Mixed topic (private)'
         end
-      
+
         body_should_contain 'Public version (live)'
       end
-      
+
       should "be able to move a private item to another basket" do
         update_item(@private_topic, :edit_path => "#{@first_basket.urlified_name}/topics/edit/#{@private_topic.id}?private=true") do
           select @second_basket.name, :from => "topic_basket_id"
         end
-        
+
         # Perform a reload to ensure we have the public version of the item
         @private_topic.reload
-        
+
         should_not_be_private @private_topic
         assert_equal @second_basket, @private_topic.basket
-        
+
         @private_topic.private_version do
           should_be_private @private_topic
           assert_equal @second_basket, @private_topic.basket
         end
       end
-      
+
       should "be able to move the public version of an item to another basket" do
         assert_equal @first_basket, @private_topic.basket
-        
+
         update_item(@private_topic) do
           select @second_basket.name, :from => "topic_basket_id"
         end
-        
+
         @private_topic.reload
-        
+
         should_not_be_private @private_topic
         assert_equal @second_basket, @private_topic.basket
-        
+
         @private_topic.private_version do
           should_be_private @private_topic
           assert_equal @second_basket, @private_topic.basket
@@ -125,11 +127,11 @@ class TopicPrivacyTest < ActionController::IntegrationTest
   end
 
   private
-    
+
     def should_be_private(item)
       assert item.private?, "#{item.class.name} instance expected to be private, but was not:  #{item.inspect}."
     end
-    
+
     def should_not_be_private(item)
       assert !item.private?, "#{item.class.name} instance expected not to be private, but it was:  #{item.inspect}."
     end

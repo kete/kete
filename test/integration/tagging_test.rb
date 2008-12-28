@@ -38,12 +38,6 @@ class TaggingTest < ActionController::IntegrationTest
 
     end
 
-    # Needs Selenium testing available
-    #context "when Javascript is on" do
-    #  should "function without a page load" do
-    #  end
-    #end
-
     context "when a tag is added" do
 
       setup do

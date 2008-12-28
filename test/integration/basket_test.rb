@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class BasketTest < ActionController::IntegrationTest
 
-  context "When you view a basket doesn't exist" do
+  context "When you view a basket that doesn't exist" do
 
     context "in production mode, it" do
 
@@ -38,41 +38,93 @@ class BasketTest < ActionController::IntegrationTest
       end
 
     end
-    
-    context "A new basket" do
 
-      setup do
-        add_sarah_as_super_user
-        login_as('sarah')
+  end
 
-        @basket = new_basket
-      end
+  context "Full moderation in a basket" do
 
-      should "be able to turn on full moderation" do
-        
-        # For some reason false != false ??
-        assert_equal "false", @basket.settings[:fully_moderated].to_s
-        
-        visit "/site/baskets/edit/#{@basket.id}"
-        select "moderator views before item approved", :from => "settings_fully_moderated"
-        click_button "Update"
-        body_should_contain "Basket was successfully updated."
-        assert @basket.settings[:fully_moderated]
-      end
+    setup do
+      add_sarah_as_super_user
+      login_as('sarah')
 
-      should "be able to turn off full moderation" do
-        @basket.settings[:fully_moderated] = true
-        @basket.save!
-        assert @basket.settings[:fully_moderated]
-        
-        visit "/site/baskets/edit/#{@basket.id}"
-        body_should_contain '<option value="true" selected="selected">moderator views before item approved</option>'
-        select "moderation upon being flagged", :from => "settings_fully_moderated"
-        click_button "Update"
-        body_should_contain "Basket was successfully updated."
-        assert_equal "false", @basket.settings[:fully_moderated].to_s
-      end
+      @basket = new_basket
+    end
 
+    should "be able to be turned on" do
+      @basket.settings[:fully_moderated] = false
+      @basket.save!
+      assert_equal "false", @basket.settings[:fully_moderated].to_s
+      turn_on_full_moderation(@basket)
+    end
+
+    should "be able to be turned off" do
+      @basket.settings[:fully_moderated] = true
+      @basket.save!
+      assert_equal "true", @basket.settings[:fully_moderated].to_s
+      turn_off_full_moderation(@basket)
+    end
+
+  end
+
+  context "When adding a new basket, it" do
+
+    setup do
+      add_sarah_as_super_user
+      login_as('sarah')
+      visit "/site/baskets/new"
+    end
+
+    should "require a name field" do
+      click_button 'Create'
+      body_should_contain '1 error prohibited this basket from being saved'
+      body_should_contain 'Name can\'t be blank'
+    end
+
+    should "be successful when name field is filled in" do
+      fill_in 'basket_name', :with => 'Kete Test Basket'
+      click_button 'Create'
+      body_should_contain 'Basket was successfully created.'
+      body_should_contain 'Kete Test Basket Edit'
+      @@baskets_created << Basket.last
+    end
+
+  end
+
+  context "When editing a basket, it" do
+
+    setup do
+      @@edit_basket = create_new_basket({ :name => 'Edit Basket' })
+      add_sarah_as_super_user
+      login_as('sarah')
+      visit "/#{@@edit_basket.urlified_name}/baskets/edit/#{@@edit_basket.to_param}"
+    end
+
+    should "require a name field" do
+      fill_in 'basket_name', :with => ''
+      click_button 'Update'
+      body_should_contain '1 error prohibited this basket from being saved'
+      body_should_contain 'Name can\'t be blank'
+    end
+
+    should "be succssful when name field is filled in" do
+      fill_in 'basket_name', :with => 'Updated Kete Test Basket'
+      click_button 'Update'
+      body_should_contain 'Basket was successfully updated.'
+      body_should_contain 'Updated Kete Test Basket'
+    end
+
+  end
+
+  context "When deleting a basket, it" do
+
+    setup do
+      @@delete_basket ||= create_new_basket({ :name => 'Delete Basket' })
+      add_sarah_as_super_user
+      login_as('sarah')
+    end
+
+    should "be successful in its operation" do
+      assert delete_basket(@@delete_basket)
     end
 
   end

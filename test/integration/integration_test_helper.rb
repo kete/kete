@@ -1,4 +1,5 @@
-# Skip the system configuration steps when we load the environment/routes, because we'll set and reload routes later
+# Skip the system configuration steps when we load the environment/routes,
+# because we'll set and reload routes later
 SKIP_SYSTEM_CONFIGURATION = true
 
 # Standard test initialization code
@@ -27,7 +28,8 @@ else
   end
 end
 
-# Request permission to alter the Zebra database (if this has already been run, the environment check will just skip this step)
+# Request permission to alter the Zebra database (if this has already been run,
+# the environment check will just skip this step)
 verify_zebra_changes_allowed
 
 # Stop, initialize, start, and bootstrap the zebra databases ready for the tests
@@ -61,56 +63,64 @@ class ActionController::IntegrationTest
     visit "/site/account/logout"
   end
 
-  # Attempt to login. If we arn't on the login page aleady, we'll navigate to the login by first logging out (see <tt>logout</tt>)
-  # visiting the root path (site basket homepage) and clicking the link "Login" in the header. Then fill in fields and click "Log in"
-  # Takes required username, and optional password, whether to navigate to login (not needed if we're there already) and whether we
-  # are expecting this login to fail
-  def login_as(username, password='test', navigate_to_login=true, should_fail_login=false)
-    if navigate_to_login
+  # Attempt to login. If we arn't on the login page aleady, we'll navigate to the login by first logging out
+  # (see <tt>logout</tt>) visiting the root path (site basket homepage) and clicking the link "Login" in the
+  # header. Then fill in fields and click "Log in" Takes required username, and optional password, whether to
+  # navigate to login (not needed if we're there already) and whether we are expecting this login to fail
+  def login_as(username, password='test', options = {})
+    options = { :navigate_to_login => true,
+                :should_fail_login => false }.merge(options)
+    if options[:navigate_to_login]
       logout # make sure we arn't logged in first
       visit "/"
       click_link "Login"
     end
 
     body_should_contain "Login to Kete"
-    fill_in "login", :with => username
+    fill_in "login", :with => username.to_s
     fill_in "password", :with => password
     click_button "Log in"
 
-    body_should_contain("Logged in successfully") unless should_fail_login
+    body_should_contain("Logged in successfully") unless options[:should_fail_login]
   end
 
   # Asserts whether the supplied text is within the response body returned from a visit request.
-  # Takes required text, optional options hash, which can set :number_of_times (how many occurances of text should be on
-  # this page), and :dump_response option (which will output the entire response body (html source) to the console)
+  # Takes required text, optional options hash, which can set :number_of_times (how many occurances of text
+  # should be on this page), and :dump_response option (which will output the entire response body (html
+  # source) to the console)
   def body_should_contain(text, options = {})
+    response_body = response.body.squish
+    text = options[:escape_chars] ? escape(text.squish) : text.squish
     dump(response.body) if options[:dump_response]
-    text = escape(text) if options[:escape_chars]
     if !options[:number_of_times].nil?
-      occurances = response.body.scan(text).size
-      assert (occurances == options[:number_of_times]), "Body should contain '#{text}' #{options[:number_of_times]} times, but only has #{occurances}."
+      occurances = response_body.scan(text).size
+      assert (occurances == options[:number_of_times]),
+             "Body should contain '#{text}' #{options[:number_of_times]} times, but only has #{occurances}."
     else
-      assert response.body.include?(text), "Body should contain '#{text}', but does not."
+      assert response_body.include?(text), "Body should contain '#{text}', but does not."
     end
   end
 
   # Asserts whether the supplied text is not within the response body returned from a visit request.
-  # Takes required text, optional options hash, which can set :number_of_times (how many occurances of text should be on
-  # this page), and :dump_response option (which will output the entire response body (html source) to the console)
+  # Takes required text, optional options hash, which can set :number_of_times (how many occurances of text
+  # should be on this page), and :dump_response option (which will output the entire response body (html
+  # source) to the console)
   def body_should_not_contain(text, options = {})
+    response_body = response.body.squish
+    text = options[:escape_chars] ? escape(text.squish) : text.squish
     dump(response.body) if options[:dump_response]
-    text = escape(text) if options[:escape_chars]
     if !options[:number_of_times].nil?
-      occurances = response.body.scan(text).size
-      assert !(occurances == options[:number_of_times]), "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
+      occurances = response_body.scan(text).size
+      assert !(occurances == options[:number_of_times]),
+             "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
     else
-      assert !response.body.include?(text), "Body should not contain '#{text}', but does."
+      assert !response_body.include?(text), "Body should not contain '#{text}', but does."
     end
   end
 
   # UGLY METHOD - FIND BETTER WAY
-  # Checks elements exist on a page in the order they are rendered. Pass in an array in the order they should appear, and a divider
-  # which seperates each text in the array (a div, hr, new line etc)
+  # Checks elements exist on a page in the order they are rendered. Pass in an array in the order they
+  # should appear, and a divider which seperates each text in the array (a div, hr, new line etc)
   def body_should_contain_in_order(text_array, divider)
     parts = response.body.split(divider)
     parts.each_with_index do |part,index|
@@ -120,34 +130,38 @@ class ActionController::IntegrationTest
   end
 
   # Asserts whether the supplied text is within the request url of the currently viewed page
-  # Takes required text, optional options hash which can set :dump_response option (which will output the entire
-  # request url to the console)
+  # Takes required text, optional options hash which can set :dump_response option (which will output the
+  # entire request url to the console)
   def url_should_contain(text, options = {})
     dump(request.url) if options[:dump_response]
     assert request.url.include?(text), "URL should contain '#{text}', but does not."
   end
 
   # Asserts whether the supplied text is not within the request url of the currently viewed page
-  # Takes required text, optional options hash which can set :dump_response option (which will output the entire
-  # request url to the console)
+  # Takes required text, optional options hash which can set :dump_response option (which will output the
+  # entire request url to the console)
   def url_should_not_contain(text, options = {})
     dump(request.url) if options[:dump_response]
     assert !request.url.include?(text), "URL should not contain '#{text}', but does."
   end
 
-  # Create a new item by navigating to the item new page, filling in fields and clicking "Create". While this method works properly,
-  # it is advised you use the functionality provided by <tt>method_missing</tt>, such as add_topic or add_audio_recording (which will
-  # save you having to provide the zoom_class on the end as it automatically determines that from the method name)
+  # Create a new item by navigating to the item new page, filling in fields and clicking "Create". While
+  # this method works properly, it is advised you use the functionality provided by <tt>method_missing</tt>,
+  # such as add_topic or add_audio_recording (which will save you having to provide the zoom_class on the
+  # end as it automatically determines that from the method name).
   # Takes all optional parameters (which will be populated with defaults if they remain nil)
-  # args takes a hash of field values to be filled in. basket takes Basket object where the item will be added to. is_homepage_topic
-  # specifies if the topic should be created through the Baskets "Add new basket homepage topic" option on the homepage options page.
-  # If you plan to make a homepage topic, use <tt>new_homepage_topic</tt> instead as it provides a cleaner syntax
-  # zoom_class specifies what type of item is being added. Should be the class of the item such as Topic or AudioRecording
-  def new_item(args = nil, basket = nil, is_homepage_topic = nil, zoom_class = nil)
-    # because we use method missing, something like  new_topic()  (without any args) will return nil when it calls this method
-    # and because of some funkyness in ruby, setting defaults in the args above is replaced by nil, rather than the value
-    # so instead of setting it there, we set them here instead, which should provide better support
-    args = Hash.new if args.nil?
+  # options takes a hash of field values to be filled in. basket takes Basket object where the item will be
+  # added to. is_homepage_topic specifies if the topic should be created through the Baskets "Add new basket
+  # homepage topic" option on the homepage options page.
+  # If you plan to make a homepage topic, use <tt>new_homepage_topic</tt> instead as it provides a cleaner
+  # syntax zoom_class specifies what type of item is being added. Should be the class of the item such as
+  # Topic or AudioRecording
+  def new_item(options = nil, basket = nil, is_homepage_topic = nil, zoom_class = nil)
+    # because we use method missing, something like  new_topic()  (without any options) will return nil when
+    # it calls this method and because of some funkyness in ruby, setting defaults in the options above is
+    # replaced by nil, rather than the value so instead of setting it there, we set them here instead,
+    # which should provide better support
+    options = Hash.new if options.nil?
     basket = @@site_basket if basket.nil?
     is_homepage_topic = false if is_homepage_topic.nil?
     zoom_class = 'Topic' if zoom_class.nil?
@@ -156,8 +170,9 @@ class ActionController::IntegrationTest
     controller = zoom_class_controller(zoom_class)
     field_prefix = zoom_class.underscore
 
-    # Set a bunch of default values to enter. Only title and description fields exist on every item so only those
-    # can be set at this point. :new_path is also provided here, but later removed using .delete(:new_path)
+    # Set a bunch of default values to enter. Only title and description fields exist on every item so
+    # only those can be set at this point. :new_path is also provided here, but later removed using
+    # .delete(:new_path)
     fields = {
       :new_path => "/#{basket.urlified_name}/#{controller}/new",
       :title => "#{zoom_class_humanize(zoom_class)} Title",
@@ -165,17 +180,21 @@ class ActionController::IntegrationTest
       :success_message => "#{zoom_class_humanize(zoom_class)} was successfully created.",
       :relate_to => nil
     }
-    fields.merge!(args) unless args.nil?
-    # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an exception
+    fields.merge!(options)
+    # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise
+    # an exception
     new_path = fields.delete(:new_path)
     success_message = fields.delete(:success_message)
     relate_to = fields.delete(:relate_to)
 
-    raise "ERROR: You must relate an item to a Topic, not a #{relate_to.class.name}" unless relate_to.nil? || relate_to.is_a?(Topic)
+    unless relate_to.nil? || relate_to.is_a?(Topic)
+      raise "ERROR: You must relate an item to a Topic, not a #{relate_to.class.name}"
+    end
 
-    # If we are making a topic, and it is intended as a homepage, then browse to the homepage options and click on the "Add new basket
-    # homepage topic" link, otherwise, if we are making a different item or a topic that isn't a homepage, browse directly to the
-    # add item form for that type (created above as :new_path)
+    # If we are making a topic, and it is intended as a homepage, then browse to the homepage options and
+    # click on the "Add new basket homepage topic" link, otherwise, if we are making a different item or a
+    # topic that isn't a homepage, browse directly to the add item form for that type (created above as
+    # :new_path)
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
       click_link "Add new basket homepage topic"
@@ -185,14 +204,16 @@ class ActionController::IntegrationTest
       visit new_path
     end
 
-    # If we are making a Topic, it has one more step before we actually reach the new topic page, and that is to provide a Topic Type
+    # If we are making a Topic, it has one more step before we actually reach the new topic page, and that
+    # is to provide a Topic Type
     click_button("Choose Type") if controller == 'topics'
 
     # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc)
     get_webrat_actions_from(fields, field_prefix)
 
-    # If we have been passed in a block of additional actions (because for example <tt>get_webrat_actions_from</tt> doesn't support
-    # what we need), then yield that block here, passing to it the field_prefix
+    # If we have been passed in a block of additional actions (because for example
+    # <tt>get_webrat_actions_from</tt> doesn't support what we need), then yield that block here, passing
+    # to it the field_prefix
     yield(field_prefix) if block_given?
 
     # With all fields filled in, create the item
@@ -219,47 +240,52 @@ class ActionController::IntegrationTest
   end
 
   # A quick method for adding a new homepage topic.
-  # Takes both optional arguments. To see what should be supplied for args and basket, see the definition of add_item above
-  def new_homepage_topic(args = {}, basket = @@site_basket)
+  # Takes both optional arguments. To see what should be supplied for options and basket, see the definition
+  # of add_item above
+  def new_homepage_topic(options = {}, basket = @@site_basket)
     # Homepage topics are always made through homepage topic form, and are always of class Topic,
     # so we can remove two arguments by supplyin them both here manually
-    new_item(args, basket, true, 'Topic')
+    new_item(options, basket, true, 'Topic')
   end
 
-  # Update the item with a set of values from either args or passed in as a block
+  # Update the item with a set of values from either options or passed in as a block
   # Takes a required item argument (the Object of whatever item you're wanting to update),
-  # and an optional args value, a hash of field values to be filled in
-  def update_item(item, args = {})
-    # Lets get the controller from the item passed in, the zoom_class from the controller, and the field_prefix from the zoom_class
+  # and an optional options value, a hash of field values to be filled in
+  def update_item(item, options = {})
+    # Lets get the controller from the item passed in, the zoom_class from the controller, and the
+    # field_prefix from the zoom_class
     controller = zoom_class_controller(item.class.name)
     zoom_class = zoom_class_from_controller(controller)
     field_prefix = zoom_class.underscore
 
-    # Set a bunch of default values to enter. Only title and description fields exist on every item so only those
-    # can be set at this point. :edit_path is also provided here, but later removed using .delete(:edit_path)
+    # Set a bunch of default values to enter. Only title and description fields exist on every item so
+    # only those can be set at this point. :edit_path is also provided here, but later removed using
+    # .delete(:edit_path)
     fields = {
       :edit_path => "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}",
       :title => "#{zoom_class_humanize(zoom_class)} Updated Title",
       :description => "#{zoom_class_humanize(zoom_class)} Updated Description",
       :success_message => "#{zoom_class_humanize(zoom_class)} was successfully updated."
     }
-    fields.merge!(args) unless args.nil?
-    # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an exception
+    fields.merge!(options)
+    # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an
+    # exception
     edit_path = fields.delete(:edit_path)
     success_message = fields.delete(:success_message)
 
-    # Visit the items edit url (formed from either the items values, or pass in the path manually using :edit_path in the args param),
-    # and confirm we are on the right page
+    # Visit the items edit url (formed from either the items values, or pass in the path manually using
+    # :edit_path in the options param), and confirm we are on the right page
     visit edit_path
 
     body_should_contain "Editing #{zoom_class_humanize(zoom_class)}"
 
-    # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc). See the declartion of
-    # <tt>get_webrat_actions_from</tt> to see how this is done.
+    # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc). See
+    # the declartion of <tt>get_webrat_actions_from</tt> to see how this is done.
     get_webrat_actions_from(fields, field_prefix)
 
-    # If we have been passed in a block of additional actions (because for example <tt>get_webrat_actions_from</tt> doesn't support
-    # what we need), then yield that block here, passing to it the field_prefix
+    # If we have been passed in a block of additional actions (because for example
+    # <tt>get_webrat_actions_from</tt> doesn't support what we need), then yield that block here, passing to
+    # it the field_prefix
     yield(field_prefix) if block_given?
 
     # With all fields filled in, update the item
@@ -290,25 +316,26 @@ class ActionController::IntegrationTest
     end
   end
 
-  # Add a new basket
+  # Add a new basket via the forms (as apposed to create_new_method basket that creates the objects)
   # Optionally receives a block which could be webrat control methods run on the basket creation form
-  # prior to clicking "Create".
-  # Returns the newly created basket instance.
-  def new_basket(name = "New basket", privacy_controls = false, &block)
+  # prior to clicking "Create". Returns the newly created basket instance.
+  def new_basket(options = {})
+    fields = { :name => "New basket" }
+    fields.merge!(options)
+
     visit '/site/baskets/new'
     body_should_contain 'New basket'
 
-    fill_in 'basket[name]', :with => name
+    # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc). See
+    # the declartion of <tt>get_webrat_actions_from</tt> to see how this is done.
+    get_webrat_actions_from(fields, 'basket')
 
-    privacy_controls ? choose('basket_show_privacy_controls_true') : \
-      choose('basket_show_privacy_controls_false')
-
-    yield(block) if block_given?
+    yield('basket') if block_given?
 
     click_button 'Create'
 
     body_should_contain 'Basket was successfully created.'
-    body_should_contain "#{name} Edit"
+    body_should_contain "#{fields[:name]} Edit"
 
     # Return the last basket (the basket we just created)
     basket = Basket.last
@@ -316,15 +343,29 @@ class ActionController::IntegrationTest
     basket
   end
 
-  # The "delete this basket" link requires JavaScript due to a confirm method, etc.
-  # We will need to add a Selenium test to run this method.
-  def delete_basket(name)
-    raise "Not implemented."
+  # Delete a basket via the Delete button from the Basket edit page
+  # Takes require basket object. Returns true if basket was deleted or false if the basket still remains
+  def delete_basket(basket)
+    visit "/#{basket.urlified_name}/baskets/edit/#{basket.to_param}"
+
+    click_link 'Delete'
+
+    body_should_contain 'Basket was successfully deleted.'
+    body_should_contain 'Introduction'
+
+    @@baskets_created.delete(basket)
+
+    begin
+      basket.reload
+      false
+    rescue
+      true
+    end
   end
 
   # Restore a moderated item (make live).
-  # Takes required item object, and optional options hash, that can set :version to the version of the item you wish to
-  # make live (default version is the latest version of the item)
+  # Takes required item object, and optional options hash, that can set :version to the version of the item
+  # you wish to make live (default version is the latest version of the item)
   def moderate_restore(item, options = {})
     item_class = item.class.name
     controller = zoom_class_controller(item_class)
@@ -333,12 +374,14 @@ class ActionController::IntegrationTest
     save_and_open_page unless response.body.include?("Preview revision")
     body_should_contain 'Preview revision'
     click_link 'Make this revision live'
-    body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved from the selected revision."
+    body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved
+                         from the selected revision."
   end
 
   # Reject a moderated item.
-  # Takes a require item object, and an option options hash, that can set :message (the reason for rejection), and :version
-  # of the version of the item you wish to reject (default version is the latest version of the item)
+  # Takes a require item object, and an option options hash, that can set :message (the reason for
+  # rejection), and :version of the version of the item you wish to reject (default version is the
+  # latest version of the item)
   def moderate_reject(item, options = {})
     item_class = item.class.name
     controller = zoom_class_controller(item_class)
@@ -350,32 +393,34 @@ class ActionController::IntegrationTest
     body_should_contain "Reject this revision"
     fill_in 'message_', :with => message
     click_button 'Reject'
-    body_should_contain "This version of this #{zoom_class_humanize(item_class)} has been rejected. The user who submitted the revision will be notified by email."
+    body_should_contain "This version of this #{zoom_class_humanize(item_class)} has been rejected.
+                         The user who submitted the revision will be notified by email."
   end
 
   # Turn on full moderation on a basket
   def turn_on_full_moderation(basket)
-    visit "/site/baskets/edit/#{basket.id}"
+    visit "/#{basket.urlified_name}/baskets/edit/#{basket.id}"
     select "moderator views before item approved", :from => "settings_fully_moderated"
     click_button "Update"
     body_should_contain "Basket was successfully updated."
-    assert_equal "true", basket.settings[:fully_moderated].to_s, "Basket fully_moderated setting should be true, but is not."
+    assert_equal "true", basket.settings[:fully_moderated].to_s,
+                         "Basket fully_moderated setting should be true, but is not."
   end
 
   # Turn off full moderation on a basket
   def turn_off_full_moderation(basket)
-    visit "/site/baskets/edit/#{basket.id}"
+    visit "/#{basket.urlified_name}/baskets/edit/#{basket.id}"
     select "moderation upon being flagged", :from => "settings_fully_moderated"
     click_button "Update"
     body_should_contain "Basket was successfully updated."
-    assert_equal "false", basket.settings[:fully_moderated].to_s, "Basket fully_moderated setting should be false, but is not."
+    assert_equal "false", basket.settings[:fully_moderated].to_s,
+                          "Basket fully_moderated setting should be false, but is not."
   end
 
   # Check that an item occurs in search results only once
   # Note that an important limitation of this method is that it only checks the first page of results,
   # and hence is not useful for big result sets.
   def should_appear_once_in_search_results(item, options = {})
-
     # Reload to ensure that item is progressed past moderation version
     item.reload
 
@@ -383,7 +428,11 @@ class ActionController::IntegrationTest
       :title => item.title
     }.merge!(options)
 
-    raise "You asked to check that item is in search results, but item is pending moderation. \n\n#{item.inspect}\n\n#{item.versions.inspect}\n\n" if item.title == BLANK_TITLE
+    if item.title == BLANK_TITLE
+      error = "You asked to check that item is in search results, but item is pending moderation."
+      error += "\n\n#{item.inspect}\n\n#{item.versions.inspect}\n\n"
+      raise error
+    end
 
     visit "/#{item.basket.urlified_name}/all/#{zoom_class_controller(item.class.name)}/"
 
@@ -424,16 +473,28 @@ class ActionController::IntegrationTest
     configure_environment do
       require File.expand_path(File.dirname(__FILE__) + "/../system_configuration_constants")
     end
+    # at the end of tests, we get rid of all baskets and users created to prevent naming collisions
     @@users_created.each { |user| user.destroy }
     @@users_created = Array.new
     @@baskets_created.each { |basket| basket.destroy }
     @@baskets_created = Array.new
+    # we need to ensure at the end of tests that only the default user and baskets exist
+    # if there are more, they were added outside of the helpers, and this cannot be permitted, or
+    # you'll run into unaccounted issues later with basket/login names already existing
+    if User.count > 1
+      logins = User.all.collect { |user| user.login }
+      raise "A user(s) was created outside of the standard helpers. Remaining ones are: #{logins.join(',')}"
+    end
+    if Basket.count > 4
+      baskets = Basket.all.collect { |basket| basket.urlified_name }
+      raise "A basket(s) was created outside of the standard helpers. Remaining ones are: #{baskets.join(',')}"
+    end
     super
   end
 
   # Enables production mode simulation (page caching, template caching, all request are remote)
-  # This means we get error 404's when normally we'd get error 500's. We can also test caches are being cleared properly
-  # Also clears the cache
+  # This means we get error 404's when normally we'd get error 500's. We can also test caches are
+  # being cleared properly. Also clears the cache
   def enable_production_mode
     Rake::Task['tmp:cache:clear'].execute(ENV)
     ActionController::Base.consider_all_requests_local = false
@@ -442,8 +503,8 @@ class ActionController::IntegrationTest
   end
 
   # Disables production mode simulation (no page caching, no template caching, all request are local)
-  # This means we get error 500's instead of 404's on some pages. We can also test things are working properly before caching
-  # Also clears the cache
+  # This means we get error 500's instead of 404's on some pages. We can also test things are working
+  # properly before caching. Also clears the cache
   def disable_production_mode
     ActionView::Base.cache_template_loading = false
     ActionController::Base.perform_caching = false
@@ -468,7 +529,9 @@ class ActionController::IntegrationTest
       # takes basket and a hash of values, plus an optional block
       # provides a more readable option for the <tt>add_item</tt> declaration
       valid_zoom_types = ['topic', 'still_image', 'audio_recording', 'video', 'web_link', 'document']
-      raise "ERROR: Invalid item type '#{$1}'. Must be one of #{valid_zoom_types.join(', ')}." unless valid_zoom_types.include?($1)
+      unless valid_zoom_types.include?($1)
+        raise "ERROR: Invalid item type '#{$1}'. Must be one of #{valid_zoom_types.join(', ')}."
+      end
       if block_given?
         new_item(args[0], args[1], args[2], $1.classify, &block)
       else
@@ -512,6 +575,24 @@ class ActionController::IntegrationTest
     end
   end
 
+  # This method exists in the test/factories.rb file, however, that file does not have access to the
+  # @@baskets_created class variable, and so any baskets created using that method don't get deleted at
+  # the end. We fix this by redefining the method, calling it's super, and setting what it returns here
+  def create_new_basket(options)
+    basket = super
+    @@baskets_created << basket
+    basket
+  end
+
+  # This method exists in the test/factories.rb file, however, that file does not have access to the
+  # @@users_created class variable, and so any users created using that method don't get deleted at the
+  # end. We fix this by redefining the method, calling it's super, and setting what it returns here
+  def create_new_user(options)
+    user = super
+    @@users_created << user
+    user
+  end
+
   # Convert a hash of options to webrat actions
   # Current supports:
   #   String    ->  fill_in   (text fields)
@@ -539,6 +620,9 @@ class ActionController::IntegrationTest
   end
 
   # Escapes the &, <, >, and " chars
+  # Used when you enter content into fields which is saved into a database and then displayed on a page
+  # They'll convert to htmlentities on display, so we need to do the same thing since body_should_contain
+  # works on page source, not on the generated display
   def escape(text)
     text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;').gsub(/"/, '&quot;')
   end

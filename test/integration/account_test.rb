@@ -20,7 +20,7 @@ class AccountTest < ActionController::IntegrationTest
     end
 
     should "fail login with incorrect credentials" do
-      login_as('incorrect', 'login', true, true)
+      login_as('incorrect', 'login', { :should_fail_login => true })
       body_should_contain "Your password or login do not match our records. Please try again."
     end
 
@@ -33,7 +33,7 @@ class AccountTest < ActionController::IntegrationTest
 
     should "be redirected back to last tried location when logged in" do
       visit "/site/baskets/choose_type"
-      login_as('admin', 'test', false)
+      login_as('admin', 'test', { :navigate_to_login => false })
       body_should_contain "What would you like to add? Where would you like to add it?"
       url_should_contain "/site/baskets/choose_type"
     end

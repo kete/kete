@@ -21,6 +21,15 @@ class MemberListTest < ActionController::IntegrationTest
       body_should_contain 'joe'
     end
 
+    should "allow members to be added to it" do
+      visit '/about/members/list'
+      fill_in 'search_name', :with => 'john'
+      click_button 'Search'
+      check "user_#{@john.to_param}_add_checkbox"
+      click_button 'Add members'
+      body_should_contain 'Successfully added new member.'
+    end
+
     context 'when a basket admin or site admin views it' do
 
       should 'have links to various role types' do

@@ -27,12 +27,6 @@ class AddItemTest < ActionController::IntegrationTest
 
     end
 
-    # Needs Selenium testing available
-    #context "when Javascript is on" do
-    #  should "function without a page load" do
-    #  end
-    #end
-
   end
 
 end

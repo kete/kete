@@ -6,9 +6,8 @@ class CachingTest < ActionController::IntegrationTest
 
     setup do
       enable_production_mode
-      @@cache_basket ||= create_new_basket({ :name => 'Cache Basket' })
-      @@cache_basket.index_page_link_to_index_topic_as = 'full topic and comments'
-      @@cache_basket.save
+      @@cache_basket = create_new_basket({ :name => 'Cache Basket' })
+      @@cache_basket.update_attribute(:index_page_link_to_index_topic_as, 'full topic and comments')
 
       add_admin_as_super_user
       add_joe_as_member_to(@@cache_basket)
@@ -17,8 +16,7 @@ class CachingTest < ActionController::IntegrationTest
     end
 
     teardown do
-      @@cache_basket.index_page_link_to_index_topic_as = nil
-      @@cache_basket.save
+      @@cache_basket.update_attribute(:index_page_link_to_index_topic_as, nil)
       disable_production_mode
     end
 
@@ -92,15 +90,13 @@ class CachingTest < ActionController::IntegrationTest
     context "when recent topics are enabled" do
 
       setup do
-        @@cache_basket.index_page_number_of_recent_topics = 5
-        @@cache_basket.index_page_recent_topics_as = 'headlines'
-        @@cache_basket.save
+        @@cache_basket.update_attributes({ :index_page_number_of_recent_topics => 5,
+                                           :index_page_recent_topics_as => 'headlines' })
       end
 
       teardown do
-        @@cache_basket.index_page_number_of_recent_topics = 0
-        @@cache_basket.index_page_recent_topics_as = nil
-        @@cache_basket.save
+        @@cache_basket.update_attributes({ :index_page_number_of_recent_topics => 0,
+                                           :index_page_recent_topics_as => nil })
       end
 
       context "and when the basket has a topic added" do
@@ -157,13 +153,11 @@ class CachingTest < ActionController::IntegrationTest
     context "when privacy controls are enabled" do
 
       setup do
-        @@cache_basket.show_privacy_controls = true
-        @@cache_basket.save
+        @@cache_basket.update_attribute(:show_privacy_controls, true)
       end
 
       teardown do
-        @@cache_basket.show_privacy_controls = false
-        @@cache_basket.save
+        @@cache_basket.update_attribute(:show_privacy_controls, false)
       end
 
       context "and when homepage has a private version" do
@@ -209,13 +203,11 @@ class CachingTest < ActionController::IntegrationTest
         context "and when basket has private as default privacy" do
 
           setup do
-            @@cache_basket.private_default = true
-            @@cache_basket.save
+            @@cache_basket.update_attribute(:private_default, true)
           end
 
           teardown do
-            @@cache_basket.private_default = false
-            @@cache_basket.save
+            @@cache_basket.update_attribute(:private_default, false)
           end
 
           should "show private homepage automatically unless user is less than member" do
@@ -244,7 +236,7 @@ class CachingTest < ActionController::IntegrationTest
 
     setup do
       enable_production_mode
-      @@cache_basket ||= create_new_basket({ :name => 'Cache Basket' })
+      @@cache_basket = create_new_basket({ :name => 'Cache Basket' })
       add_admin_as_super_user
       add_joe_as_member_to(@@cache_basket)
       add_john
@@ -310,13 +302,11 @@ class CachingTest < ActionController::IntegrationTest
     context "when privacy controls are enabled" do
 
       setup do
-        @@cache_basket.show_privacy_controls = true
-        @@cache_basket.save
+        @@cache_basket.update_attribute(:show_privacy_controls, true)
       end
 
       teardown do
-        @@cache_basket.show_privacy_controls = false
-        @@cache_basket.save
+        @@cache_basket.update_attribute(:show_privacy_controls, false)
       end
 
       context "and when topic has a private version" do
@@ -371,17 +361,17 @@ class CachingTest < ActionController::IntegrationTest
 
   private
 
-  def check_cache_current_for(item, args = {})
-    visit "/#{item.basket.urlified_name}" unless args[:on_topic_already]
+  def check_cache_current_for(item, options = {})
+    visit "/#{item.basket.urlified_name}" unless options[:on_topic_already]
     contents = [item.description]
-    contents << item.title if args[:check_page_title]
+    contents << item.title if options[:check_page_title]
     controller = zoom_class_controller(item.class.name)
-    contents << "/#{item.basket.urlified_name}/#{controller}/show/#{item.to_param}" if args[:check_show_link] || (args[:check_show_link].nil? && (args[:check_all_links].nil? || args[:check_all_links]))
-    contents << "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}" if args[:check_edit_link] || (args[:check_edit_link].nil? && (args[:check_all_links].nil? || args[:check_all_links]))
-    contents << "/#{item.basket.urlified_name}/#{controller}/history/#{item.to_param}" if args[:check_history_link] || (args[:check_history_link].nil? && (args[:check_all_links].nil? || args[:check_all_links]))
+    contents << "/#{item.basket.urlified_name}/#{controller}/show/#{item.to_param}" if options[:check_show_link] || (options[:check_show_link].nil? && (options[:check_all_links].nil? || options[:check_all_links]))
+    contents << "/#{item.basket.urlified_name}/#{controller}/edit/#{item.to_param}" if options[:check_edit_link] || (options[:check_edit_link].nil? && (options[:check_all_links].nil? || options[:check_all_links]))
+    contents << "/#{item.basket.urlified_name}/#{controller}/history/#{item.to_param}" if options[:check_history_link] || (options[:check_history_link].nil? && (options[:check_all_links].nil? || options[:check_all_links]))
     contents.each do |content|
-      args[:check_should_not] ? body_should_not_contain(content, args) :
-                                body_should_contain(content, args)
+      options[:check_should_not] ? body_should_not_contain(content, options) :
+                                   body_should_contain(content, options)
     end
   end
 
@@ -391,28 +381,28 @@ class CachingTest < ActionController::IntegrationTest
     body_should_contain item.description
   end
 
-  def check_viewing_public_version_of(item, args = {})
-    unless args[:on_topic_already]
+  def check_viewing_public_version_of(item, options = {})
+    unless options[:on_topic_already]
       visit "/#{item.basket.urlified_name}"
       body_should_not_contain "Private version"
-      args[:on_topic_already] = true
+      options[:on_topic_already] = true
     end
-    check_cache_current_for(item, args)
+    check_cache_current_for(item, options)
     item.private_version! if item.has_private_version?
-    check_cache_current_for(item, args.merge({ :check_should_not => true }))
+    check_cache_current_for(item, options.merge({ :check_should_not => true }))
     item.public_version! if item.is_private? # make sure we revert it back to public version for the next test
   end
 
-  def check_viewing_private_version_of(item, args = {})
-    unless args[:on_topic_already]
+  def check_viewing_private_version_of(item, options = {})
+    unless options[:on_topic_already]
       visit "/#{item.basket.urlified_name}"
       body_should_contain "Private version"
       click_link "Private Version"
-      args[:on_topic_already] = true
+      options[:on_topic_already] = true
     end
-    check_cache_current_for(item, args.merge({ :check_should_not => true }))
+    check_cache_current_for(item, options.merge({ :check_should_not => true }))
     item.private_version! if item.has_private_version?
-    check_cache_current_for(item, args)
+    check_cache_current_for(item, options)
     body_should_contain "Public version (live)"
     item.public_version! if item.is_private? # make sure we revert it back to public version for the next test
   end
