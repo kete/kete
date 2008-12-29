@@ -54,6 +54,10 @@ class ActionController::IntegrationTest
   @@about_basket ||= Basket.about_basket
   @@documentation_basket ||= Basket.documentation_basket
 
+  # how many users/baskets do we have when we start these tests
+  @@user_count = User.count
+  @@basket_count = Basket.count
+
   # setup object creation variables for use later
   @@users_created = Array.new
   @@baskets_created = Array.new
@@ -481,14 +485,14 @@ class ActionController::IntegrationTest
     @@users_created = Array.new
     @@baskets_created.each { |basket| basket.destroy }
     @@baskets_created = Array.new
-    # we need to ensure at the end of tests that only the default user and baskets exist
-    # if there are more, they were added outside of the helpers, and this cannot be permitted, or
-    # you'll run into unaccounted issues later with basket/login names already existing
-    if User.count > 1
+    # we need to ensure at the end of tests that we are left with only the users and baskets we started
+    # the tests with. If there are more, they were added outside of the helpers, and this cannot be
+    # permitted, or you'll run into unaccounted issues later with basket/login names already existing
+    if User.count > @@user_count
       logins = User.all.collect { |user| user.login }
       raise "A user(s) was created outside of the standard helpers. Remaining ones are: #{logins.join(',')}"
     end
-    if Basket.count > 4
+    if Basket.count > @@basket_count
       baskets = Basket.all.collect { |basket| basket.urlified_name }
       raise "A basket(s) was created outside of the standard helpers. Remaining ones are: #{baskets.join(',')}"
     end
