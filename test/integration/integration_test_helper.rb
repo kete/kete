@@ -89,6 +89,7 @@ class ActionController::IntegrationTest
   # should be on this page), and :dump_response option (which will output the entire response body (html
   # source) to the console)
   def body_should_contain(text, options = {})
+    raise "body_should_contain method should be called after a page visit" if response.nil? || response.body.nil?
     response_body = response.body.squish
     text = options[:escape_chars] ? escape(text.squish) : text.squish
     dump(response.body) if options[:dump_response]
@@ -106,6 +107,7 @@ class ActionController::IntegrationTest
   # should be on this page), and :dump_response option (which will output the entire response body (html
   # source) to the console)
   def body_should_not_contain(text, options = {})
+    raise "body_should_not_contain method should be called after a page visit" if response.nil? || response.body.nil?
     response_body = response.body.squish
     text = options[:escape_chars] ? escape(text.squish) : text.squish
     dump(response.body) if options[:dump_response]
@@ -122,6 +124,7 @@ class ActionController::IntegrationTest
   # Checks elements exist on a page in the order they are rendered. Pass in an array in the order they
   # should appear, and a divider which seperates each text in the array (a div, hr, new line etc)
   def body_should_contain_in_order(text_array, divider)
+    raise "body_should_contain_in_order method should be called after a page visit" if response.nil? || response.body.nil?
     parts = response.body.split(divider)
     parts.each_with_index do |part,index|
       next if text_array[index].nil?
