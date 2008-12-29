@@ -1090,11 +1090,13 @@ class ApplicationController < ActionController::Base
   end
 
   def rescue_404
+    @displaying_error = true
     @title = "404 Not Found"
     render :template => "errors/error404", :layout => "application", :status => "404"
   end
 
   def rescue_500(template)
+    @displaying_error = true
     @title = "500 Internal Server Error"
     render :template => "errors/#{template}", :layout => "application", :status => "500"
   end
