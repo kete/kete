@@ -2,11 +2,11 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class DocumentTest < Test::Unit::TestCase
   # fixtures preloaded
-  
+
   def setup
     @base_class = "Document"
-    
-    # Extend the base class so test files from attachment_fu get put in the 
+
+    # Extend the base class so test files from attachment_fu get put in the
     # tmp directory, and not in the development/production directories.
     eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
@@ -25,7 +25,7 @@ class DocumentTest < Test::Unit::TestCase
 
     # name of fields that cannot be a duplicate, e.g. %(name description)
     @duplicate_attr_names = %w( )
-    
+
     # Name of the folder we expect files to be saved to
     @uploads_folder = 'documents'
   end
@@ -35,6 +35,7 @@ class DocumentTest < Test::Unit::TestCase
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
   include FlaggingTestUnitHelper
+  include RelatedItemsTestUnitHelper
   include ItemPrivacyTestHelper::TestHelper
   include ItemPrivacyTestHelper::Tests::FilePrivate
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
@@ -42,14 +43,14 @@ class DocumentTest < Test::Unit::TestCase
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
   # TODO: attachment_attributes_valid?
-  
+
   # Test attachment_fu overrides
 
   def test_not_fully_moderated_add_succeeds
     model = Module.class_eval(@base_class).new @new_model
     model.save
     model.reload
-    
+
     # version should be 1
     assert_equal 1, model.version
     # no flags on version
@@ -91,42 +92,42 @@ class DocumentTest < Test::Unit::TestCase
     # no flags on version
     assert_equal 0, model.versions.find_by_version(1).tags.size
   end
-  
+
   def test_acts_as_taggable_abides_by_separate_contexts_when_deleting
-    
+
     # This test case fails due to a bug in acts_as_taggable_on
-    
+
     # Create a new document to test with
     document = Module.class_eval(@base_class).new @new_model
     document.save!
-    
+
     # Add some tags on different contexts
     ["a", "b", "c"].each do |tag|
       document.private_tag_list << tag
     end
-    
+
     ["x", "y", "z", "c"].each do |tag|
       document.public_tag_list << tag
     end
-     
+
     # Save anc check tags exist as we expect
     document.save
     document.reload
-    
+
     assert_equal ["a", "b", "c"], document.private_tag_list.sort
     assert_equal ["c", "x", "y", "z"], document.public_tag_list.sort
-    
+
     # Delete a common tag and check the deletion was only in the specified context.
     document.save
     document.reload
-    
+
     document.public_tag_list.delete("c")
     document.save
-    
+
     # Reload correctly
     document = nil
     document = Document.last
-        
+
     assert_equal ["a", "b", "c"], document.tags_on(:private_tags).map(&:name).sort
     assert_equal ["x", "y", "z"], document.tags_on(:public_tags).map(&:name).sort
   end

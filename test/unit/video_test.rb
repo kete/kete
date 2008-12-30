@@ -4,8 +4,8 @@ class VideoTest < Test::Unit::TestCase
   # fixtures preloaded
   def setup
     @base_class = "Video"
-    
-    # Extend the base class so test files from attachment_fu get put in the 
+
+    # Extend the base class so test files from attachment_fu get put in the
     # tmp directory, and not in the development/production directories.
     eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
@@ -24,21 +24,22 @@ class VideoTest < Test::Unit::TestCase
 
     # name of fields that cannot be a duplicate, e.g. %(name description)
     @duplicate_attr_names = %w( )
-    
+
     # Name of the folder we expect files to be saved to
     @uploads_folder = 'video'
   end
-  
+
   # load in sets of tests and helper methods
   include KeteTestUnitHelper
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
   include FlaggingTestUnitHelper
   include FlaggingTestUnitHelper
+  include RelatedItemsTestUnitHelper
   include ItemPrivacyTestHelper::TestHelper
   include ItemPrivacyTestHelper::Tests::FilePrivate
-  include ItemPrivacyTestHelper::Tests::VersioningAndModeration  
-  include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext  
+  include ItemPrivacyTestHelper::Tests::VersioningAndModeration
+  include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
 end

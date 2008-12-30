@@ -5,8 +5,8 @@ class WebLinkTest < Test::Unit::TestCase
 
   def setup
     @base_class = "WebLink"
-    
-    # Extend the base class so test files from attachment_fu get put in the 
+
+    # Extend the base class so test files from attachment_fu get put in the
     # tmp directory, and not in the development/production directories.
     eval(@base_class).send(:include, ItemPrivacyTestHelper::Model)
 
@@ -27,19 +27,20 @@ class WebLinkTest < Test::Unit::TestCase
   include HasContributorsTestUnitHelper
   include ExtendedContentTestUnitHelper
   include FlaggingTestUnitHelper
+  include RelatedItemsTestUnitHelper
   include ItemPrivacyTestHelper::TestHelper
   # include ItemPrivacyTestHelper::Tests::FilePrivate
   include ItemPrivacyTestHelper::Tests::VersioningAndModeration
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
-  
+
   protected
-  
+
     def new_model_attributes
       @@incremental_id ||= 0
       @@incremental_id = @@incremental_id + 1
       @new_model.merge(:url => 'http://www.google.co.nz/search?q=' + @@incremental_id.to_s)
     end
-  
+
 end
 
