@@ -29,7 +29,7 @@ module HasContributorsTestUnitHelper
     # now add the contributor of the new version
     model.add_as_contributor(user)
 
-    # test that we have a creator for that item
-    assert_equal 1, model.creators.size, "#{@base_class} failed to add contributor"
+    # test that we have a contributor for that item
+    assert_equal 1, model.contributors.size, "#{@base_class} failed to add contributor"
   end
 end
