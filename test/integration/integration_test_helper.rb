@@ -76,8 +76,7 @@ class ActionController::IntegrationTest
                 :should_fail_login => false }.merge(options)
     if options[:navigate_to_login]
       logout # make sure we arn't logged in first
-      visit "/"
-      click_link "Login"
+      visit "/site/account/login"
     end
 
     body_should_contain "Login to Kete"
@@ -96,7 +95,7 @@ class ActionController::IntegrationTest
     raise "body_should_contain method should be called after a page visit" if response.nil? || response.body.nil?
     response_body = response.body.squish
     text = options[:escape_chars] ? escape(text.squish) : text.squish
-    dump(response.body) if options[:dump_response]
+    save_and_open_page if options[:dump_response]
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert (occurances == options[:number_of_times]),
@@ -114,7 +113,7 @@ class ActionController::IntegrationTest
     raise "body_should_not_contain method should be called after a page visit" if response.nil? || response.body.nil?
     response_body = response.body.squish
     text = options[:escape_chars] ? escape(text.squish) : text.squish
-    dump(response.body) if options[:dump_response]
+    save_and_open_page if options[:dump_response]
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert !(occurances == options[:number_of_times]),
@@ -127,9 +126,11 @@ class ActionController::IntegrationTest
   # UGLY METHOD - FIND BETTER WAY
   # Checks elements exist on a page in the order they are rendered. Pass in an array in the order they
   # should appear, and a divider which seperates each text in the array (a div, hr, new line etc)
-  def body_should_contain_in_order(text_array, divider)
+  def body_should_contain_in_order(text_array, divider, options = {})
     raise "body_should_contain_in_order method should be called after a page visit" if response.nil? || response.body.nil?
-    parts = response.body.split(divider)
+    save_and_open_page if options[:dump_response]
+    response_body = response.body.squish
+    parts = response_body.split(divider).compact.flatten
     parts.each_with_index do |part,index|
       next if text_array[index].nil?
       assert part.include?(text_array[index]), "#{text_array[index]} is not in the right order it should be."
@@ -140,7 +141,7 @@ class ActionController::IntegrationTest
   # Takes required text, optional options hash which can set :dump_response option (which will output the
   # entire request url to the console)
   def url_should_contain(text, options = {})
-    dump(request.url) if options[:dump_response]
+    puts request.url if options[:dump_response]
     assert request.url.include?(text), "URL should contain '#{text}', but does not."
   end
 
@@ -148,7 +149,7 @@ class ActionController::IntegrationTest
   # Takes required text, optional options hash which can set :dump_response option (which will output the
   # entire request url to the console)
   def url_should_not_contain(text, options = {})
-    dump(request.url) if options[:dump_response]
+    puts request.url if options[:dump_response]
     assert !request.url.include?(text), "URL should not contain '#{text}', but does."
   end
 
@@ -198,13 +199,11 @@ class ActionController::IntegrationTest
       raise "ERROR: You must relate an item to a Topic, not a #{relate_to.class.name}"
     end
 
-    # If we are making a topic, and it is intended as a homepage, then browse to the homepage options and
-    # click on the "Add new basket homepage topic" link, otherwise, if we are making a different item or a
-    # topic that isn't a homepage, browse directly to the add item form for that type (created above as
-    # :new_path)
+    # If we are making a topic, and it is intended as a homepage, then make sure we append index_for_basket,
+    # otherwise, if we are making a different item or a topic that isn't a homepage, browse directly to the
+    # add item form for that type (created above as :new_path)
     if controller == 'topics' && is_homepage_topic
-      visit "/#{basket.urlified_name}/baskets/homepage_options/#{basket.id}"
-      click_link "Add new basket homepage topic"
+      visit "/#{basket.urlified_name}/topics/new?index_for_basket=#{basket.id}"
     elsif !relate_to.nil?
       visit "/#{relate_to.basket.urlified_name}/topics/new?relate_to_topic=#{relate_to.to_param}"
     else
@@ -310,9 +309,8 @@ class ActionController::IntegrationTest
   def delete_item(item)
     # Lets get the controller from the item passed in
     controller = zoom_class_controller(item.class.name)
-    # Go to the items show page and click the Delete button
-    visit "/#{item.basket.urlified_name}/#{controller}/show/#{item.to_param}"
-    click_link "Delete"
+    # Go to the items delete URL
+    visit "/#{item.basket.urlified_name}/#{controller}/destroy/#{item.to_param}", :post
     # Confirm the item was deleted and we are redirected to the items browse page before continuing
     body_should_contain "Refine your results"
     # we actually want this to fail and return nil, it means the item was deleted properly
@@ -353,9 +351,7 @@ class ActionController::IntegrationTest
   # Delete a basket via the Delete button from the Basket edit page
   # Takes require basket object. Returns true if basket was deleted or false if the basket still remains
   def delete_basket(basket)
-    visit "/#{basket.urlified_name}/baskets/edit/#{basket.to_param}"
-
-    click_link 'Delete'
+    visit "/#{basket.urlified_name}/baskets/destroy/#{basket.to_param}", :post
 
     body_should_contain 'Basket was successfully deleted.'
     body_should_contain 'Introduction'
@@ -616,14 +612,6 @@ class ActionController::IntegrationTest
         raise "Don't know what to do with #{key} and value #{value}"
       end
     end
-  end
-
-  # Debugging method used in the [body|url]_should[_not]_contain methods
-  # Shouldn't be used in tests though, so making this method private
-  def dump(text)
-    puts "-----------------"
-    puts text
-    puts "-----------------"
   end
 
   # Escapes the &, <, >, and " chars

@@ -14,8 +14,7 @@ class AddItemTest < ActionController::IntegrationTest
       ITEM_CLASSES.each do |item_class|
         should "still function properly for #{item_class}" do
           item_type = zoom_class_humanize(item_class)
-          visit "/"
-          click_link "Add Item"
+          visit "/site/baskets/choose_type"
           body_should_contain "What would you like to add? Where would you like to add it?"
           select "Site", :from => 'new_item_basket'
           select item_type, :from => 'new_item_controller'
