@@ -126,9 +126,11 @@ class ActionController::IntegrationTest
   # UGLY METHOD - FIND BETTER WAY
   # Checks elements exist on a page in the order they are rendered. Pass in an array in the order they
   # should appear, and a divider which seperates each text in the array (a div, hr, new line etc)
-  def body_should_contain_in_order(text_array, divider)
+  def body_should_contain_in_order(text_array, divider, options = {})
     raise "body_should_contain_in_order method should be called after a page visit" if response.nil? || response.body.nil?
-    parts = response.body.split(divider)
+    save_and_open_page if options[:dump_response]
+    response_body = response.body.squish
+    parts = response_body.split(divider).compact.flatten
     parts.each_with_index do |part,index|
       next if text_array[index].nil?
       assert part.include?(text_array[index]), "#{text_array[index]} is not in the right order it should be."
