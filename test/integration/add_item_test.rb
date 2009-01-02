@@ -11,6 +11,12 @@ class AddItemTest < ActionController::IntegrationTest
 
     context "when Javascript is off" do
 
+      # TODO: this doesn't actually complete the process
+      # it just tests the form
+      # we should probably add tests for bad data (missing title) that should receive validation error
+      # and actual successful submission of items
+      # obviously there will need to be work with temp files for uploads
+      # this is probably the reason this is skipped, since this may be trickier with webrat
       ITEM_CLASSES.each do |item_class|
         should "still function properly for #{item_class}" do
           item_type = zoom_class_humanize(item_class)
