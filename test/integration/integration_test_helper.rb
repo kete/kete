@@ -155,7 +155,7 @@ class ActionController::IntegrationTest
 
   # Create a new item by navigating to the item new page, filling in fields and clicking "Create". While
   # this method works properly, it is advised you use the functionality provided by <tt>method_missing</tt>,
-  # such as add_topic or add_audio_recording (which will save you having to provide the zoom_class on the
+  # such as new_topic or new_audio_recording (which will save you having to provide the zoom_class on the
   # end as it automatically determines that from the method name).
   # Takes all optional parameters (which will be populated with defaults if they remain nil)
   # options takes a hash of field values to be filled in. basket takes Basket object where the item will be
