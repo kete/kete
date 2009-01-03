@@ -10,7 +10,7 @@ RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
 # acts_as_zoom declarations in models
-ITEM_CLASSES = ['Topic', 'StillImage', 'AudioRecording', 'Video', 'WebLink', 'Document']
+ITEM_CLASSES = %w(Topic StillImage AudioRecording Video WebLink Document)
 ZOOM_CLASSES = ITEM_CLASSES + ['Comment']
 # items that may have attached file(s)
 ATTACHABLE_CLASSES = ITEM_CLASSES - %w(WebLink Topic)
