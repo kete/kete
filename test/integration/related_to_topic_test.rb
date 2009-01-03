@@ -23,24 +23,87 @@ class RelatedToTopicTest < ActionController::IntegrationTest
         body_should_contain "Related Items"
       end
 
-      related_classes = ZOOM_CLASSES - %w(Comment)
-
-      # only relevant to related classes that have attachments
-      attachable_classes = related_classes - %w(WebLink Topic)
-
-      related_classes.each do |class_name|
+      ITEM_CLASSES.each do |class_name|
         context "the related #{class_name} subsection" do
-          should "be empty to start" do
-            body_should_contain "#{zoom_class_plural_humanize(class_name)} (0)"
+          setup do
+            # strangely i couldn't just do these as local variables outside of the setup scope
+            # except for tableize, zoom_class_... helper methods were not being found
+            @humanized_plural = zoom_class_plural_humanize(class_name)
+            @item_type = zoom_class_humanize(class_name)
+            @tableized = class_name.tableize
+            @item_title = "Related #{@item_type}"
           end
 
-          should_eventually "be able to create related #{class_name}"
+          should "be empty to start" do
+            body_should_contain "#{@humanized_plural} (0)"
+          end
+
+          should "be able to create related #{class_name}" do
+            # TODO: we might want to be more standard about the div ids for these sections...
+            div_id = "#detail-linked-"
+            if !%w(WebLink Video).include?(class_name)
+              div_id += @humanized_plural.downcase
+            elsif class_name == 'Video'
+              div_id += 'video'
+            else
+              div_id += @tableized
+            end
+
+            click_link_within(div_id, "Create")
+
+            # additional step for topics
+            # you have to choose topic type
+            # just choosing default "Topic" type
+            click_button("Choose Type") if class_name == 'Topic'
+
+            # fill out new item form and submit it
+            fill_in "Title", :with => @item_title
+
+            # get the attribute that defines each class
+            if ATTACHABLE_CLASSES.include?(class_name)
+              # put in a case statement
+              case class_name
+              when 'StillImage'
+                attach_file "image_file_uploaded_data", "white.jpg"
+              when 'Video'
+                attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
+              when 'AudioRecording'
+                attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
+              when 'Document'
+                attach_file "document[uploaded_data]", "test.pdf"
+              end
+            elsif class_name == 'WebLink'
+              # this will only work if you have internet connection
+              fill_in "URL", :with => "http://kete.net.nz/robots.txt"
+            end
+
+            click_button "Create"
+
+            # we should arrive back at the topic the item is related to
+            # and the item should be listed and the total should be 1
+            body_should_contain "#{@humanized_plural} (1)"
+            body_should_contain @item_title
+
+            # we should be able to visit the new related item and the topic it is related to
+            # should be listed
+            click_link @item_title
+            unless class_name == 'Topic'
+              body_should_contain "Related Topics"
+            else
+              # topics are a special case since they are what we always link through
+              body_should_contain "Topics (1)"
+            end
+            body_should_contain @topic.title
+          end
+
           should_eventually "be able to link existing related #{class_name}"
           should_eventually "be able to unlink related #{class_name}"
           should_eventually "be able to restore unlinked related #{class_name}"
+          should_eventually "be able to destroy related #{class_name} and have the item be dropped from the related #{class_name} list"
+          should_eventually "be able to destroy topic that #{class_name} is related to and have the item's related topics list will be blank"
 
-          if attachable_classes.include?(class_name)
-            should_eventually "be able to upload a zip file of related #{class_name.tableize}"
+          if ATTACHABLE_CLASSES.include?(class_name)
+            should_eventually "be able to upload a zip file of related #{@tableized}"
           end
 
           should_eventually "not display links to items with no public version"
