@@ -24,12 +24,10 @@ class HomepageTest < ActionController::IntegrationTest
       context "and topics are added and edited, it" do
 
         setup do
-          @topic1 = new_topic(:title => 'Topic 1')
-          @topic2 = new_topic(:title => 'Topic 2')
-          @topic3 = new_topic(:title => 'Topic 3')
-          @topic4 = new_topic(:title => 'Topic 4')
-          @topic5 = new_topic(:title => 'Topic 5')
-          @topic6 = new_topic(:title => 'Topic 6')
+          1.upto(6) do |i|
+            i = i.to_s
+            instance_variable_set("@topic#{i}", new_topic(:title => "Topic #{i}"))
+          end
           @topic2 = update_item(@topic2, :title => 'Topic Updated 2')
           @topic4 = update_item(@topic4, :title => 'Topic Updated 4')
           visit "/site"
