@@ -5,7 +5,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
     setup do
       enable_production_mode
-      add_john
+      add_john_as_regular_user
       login_as('john')
     end
 
@@ -16,16 +16,19 @@ class RelatedToTopicTest < ActionController::IntegrationTest
     context "when a topic is added" do
 
       setup do
-        @topic = new_topic({ :title => 'Topic 1 Title',
-                             :description => 'Topic 1 Description' }, @@cache_basket)
+        @topic = new_topic(:title => 'Topic 1 Title')
       end
 
       should "have a related items section" do
         body_should_contain "Related Items"
       end
 
+      related_classes = ZOOM_CLASSES - %w(Comment)
+      related_classes.each do |class_name|
+        should "have empty related #{class_name}" do
+          body_should_contain "#{zoom_class_plural_humanize(class_name)} (0)"
+        end
+      end
     end
-
   end
-
 end
