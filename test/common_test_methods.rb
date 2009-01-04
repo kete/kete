@@ -28,6 +28,7 @@ def verify_zebra_changes_allowed
   puts "\n/!\\ IMPORTANT /!\\\n\n"
   puts "Testing currently uses the Zebra instance for this Kete codebase and will add, update and remove records from it.\n\n"
   puts "Do not run these tests unless you're sure that the Zebra search engine is not being used on a production host!\n\n"
+  puts "To skip this warning in the future, set the ZEBRA_CHANGES_PERMITTED environmental variable to true.  I.e. \"ZEBRA_CHANGES_PERMITTED=true; export ZEBRA_CHANGES_PERMITTED\" in your bash shell session.\n\n"
   puts "Press any key to continue, or Ctrl+C to abort before any changes are made.."
   STDIN.gets
   ENV['ZEBRA_CHANGES_PERMITTED'] = 'true'
