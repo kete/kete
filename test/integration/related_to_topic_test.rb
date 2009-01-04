@@ -74,7 +74,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               end
             elsif class_name == 'WebLink'
               # this will only work if you have internet connection
-              fill_in "URL", :with => "http://kete.net.nz/robots.txt"
+              fill_in "web_link[url]", :with => "http://google.co.nz/"
             end
 
             click_button "Create"
