@@ -24,11 +24,32 @@ namespace :manage_gems do
     required = load_required_software
     required[ENV['GEMS_TO_GRAB']].each do |key,value|
       if !value.blank? && value.kind_of?(Hash)
-        gem_name = value['gem_name']
-        version = " --version=#{value['version']}" unless value['version'].blank?
-        source = " --source=#{value['source']}" unless value['source'].blank?
-        p "sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
-        `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}`
+        unless value['pre_command'].blank?
+          p value['pre_command']
+          `#{value['pre_command']}`
+        end
+        if !value['gem_repo'].blank?
+          # we don't have a gem available for what we need, build it
+          unless value['gem_deps'].blank?
+            p "Install dependancies for building gem #{key} (#{value['gem_deps'].join(', ')})"
+            value['gem_deps'].each do |dependancy_key,dependancy_value|
+              `sudo gem install #{dependancy_key}`
+            end
+          end
+          raise "rake_build_gem command not present" if value['rake_build_gem'].blank?
+          raise "rake_install_gem command not present" if value['rake_install_gem'].blank?
+          p "cd tmp && git clone #{value['gem_repo']} #{key} && cd #{key} && #{value['rake_build_gem']} && #{value['rake_install_gem']}"
+          `cd tmp && git clone #{value['gem_repo']} #{key} && cd #{key} && #{value['rake_build_gem']} && #{value['rake_install_gem']}`
+          p "Cleaning up #{key}"
+          `cd tmp && sudo rm -rf #{key}`
+        else
+          # we are installing a prebuilt gem
+          gem_name = value['gem_name']
+          version = " --version=#{value['version']}" unless value['version'].blank?
+          source = " --source=#{value['source']}" unless value['source'].blank?
+          p "sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
+          `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}`
+        end
       else
         p "sudo gem #{ENV['GEMS_ACTION']} #{key}"
         `sudo gem #{ENV['GEMS_ACTION']} #{key}`
