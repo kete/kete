@@ -1,6 +1,6 @@
 class Import < ActiveRecord::Base
   IMPORTS_DIR = RAILS_ROOT + '/imports/'
-  VALID_ARCHIVE_CLASSES = ['StillImage', 'AudioRecording', 'Video', 'Document']
+  VALID_ARCHIVE_CLASSES = ATTACHABLE_CLASSES
 
   belongs_to :basket
   belongs_to :topic_type
