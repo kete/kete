@@ -61,11 +61,17 @@ test/common_test_helpers.rb
 
 Each test can specify it's own private methods are well, so when you edit a file, check them out before you start.
 
+-------
+Conventions
+-------
+
+Don't use elevated roles (site admin, tech admin, admin, moderator) unless your test requires it to recreate the situation you are testing.  Regular users are the most common type of user on real sites and therefore should have their circumstancs as thoroughly tested as possible.  Using a test user with an elevated role, such as site admin, may also undermine the intent of your test.  For example if you are testing whether a non-member of a basket can view items private to basket members, but you use a site admin user who can see anything anywhere, you will get false failures.
+
 ---------
 Factories
 ---------
 
-When you make a new user via methods like add_joe_as_super_admin, it uses factories to create a user.
+When you make a new user via methods like add_joe_as_super_user, it uses factories to create a user.
 
 We use these factories in place of Fixtures and the traditional User.create. If you need
 data in various places please make a Factory instead of create methods throughout the code.
