@@ -550,7 +550,15 @@ class SearchController < ApplicationController
 
     slug = terms.join('-and-')
 
-    slug = Unicode::normalize_KD(slug+"-").downcase.gsub(/[^a-z0-9\s_-]+/,'').gsub(/[\s_-]+/,'-')[0..-2]
+    slug = Unicode::normalize_KD(slug+"-").downcase.gsub(/[\s_-]+/,'-')[0..-2]
+
+    # in the case of urls
+    slug = slug.gsub(/^(\w+):\/\/(www.)?/, '').gsub(/[\/\?&]/, '_').gsub('.', '-')
+
+    # Lets decode then escape any characters that might cause invalid urls
+    require 'htmlentities'
+    entities = HTMLEntities.new
+    slug = CGI::escapeHTML(entities.decode(slug))
   end
 
   # expects a comma separated list of zoom_class-id
@@ -966,7 +974,7 @@ class SearchController < ApplicationController
 
     # if @results_sets is emtpy, then @result_sets[@current_class] is nil so we have
     # to stop here if thats the case, or we get a 500 error calling .size below
-    return if @result_sets[@current_class].nil? or @displaying_error
+    return if @result_sets.nil? || @result_sets[@current_class].nil? || @displaying_error
 
     results = @results.map{ |r| r['url'] }
 
