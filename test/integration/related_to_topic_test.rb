@@ -96,17 +96,17 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             body_should_contain @topic.title
           end
 
-          should_eventually "be able to link existing related #{class_name}"
-          should_eventually "be able to unlink related #{class_name}"
-          should_eventually "be able to restore unlinked related #{class_name}"
-          should_eventually "be able to destroy related #{class_name} and have the item be dropped from the related #{class_name} list"
-          should_eventually "be able to destroy topic that #{class_name} is related to and have the item's related topics list will be blank"
+          # should_eventually "be able to link existing related #{class_name}"
+          # should_eventually "be able to unlink related #{class_name}"
+          # should_eventually "be able to restore unlinked related #{class_name}"
+          # should_eventually "be able to destroy related #{class_name} and have the item be dropped from the related #{class_name} list"
+          # should_eventually "be able to destroy topic that #{class_name} is related to and have the item's related topics list will be blank"
 
           if ATTACHABLE_CLASSES.include?(class_name)
-            should_eventually "be able to upload a zip file of related #{@tableized}"
+            # should_eventually "be able to upload a zip file of related #{@tableized}"
           end
 
-          should_eventually "not display links to items with no public version"
+          # should_eventually "not display links to items with no public version"
 
         end
       end
