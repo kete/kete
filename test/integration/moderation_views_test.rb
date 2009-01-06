@@ -2,52 +2,99 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ModerationViewsTest < ActionController::IntegrationTest
 
-  context "A Kete instance" do
+  context "Topic with multiple versions as a regular user" do
 
     setup do
 
       # Ensure a user account to log in with is present
-      add_grant_as_super_user
+      add_grant_as_regular_user
       login_as('grant')
+
+      # Create a test item
+      @item = new_topic
+      update_item(@item)
+      update_item(@item, :title => "Homepage Title Updated Again")
     end
 
-    context "Topic with multiple versions" do
+    should "be able to visit item page" do
+      visit "/site/topics/show/#{@item.id}"
+      body_should_contain "Topic: Homepage Title Updated Again"
+      body_should_contain "History"
+    end
+
+    should "be able to visit history page for item" do
+      visit "/site/topics/history/#{@item.id}"
+      body_should_contain "Revision History: Homepage Title Updated Again"
+      body_should_contain "Back to live"
+      1.upto(3) do |i|
+        body_should_contain "# #{i}"
+      end
+    end
+
+    should "be able to visit previews for each version of an item" do
+      1.upto(2) do |i|
+        visit "/site/topics/preview/#{@item.id}?version=#{i}"
+        body_should_contain "Preview revision ##{i}: view live"
+        body_should_contain "Topic: #{@item.versions.find_by_version(i).title}"
+        body_should_contain @item.versions.find_by_version(i).description
+        body_should_contain "Actions"
+        body_should_not_contain "Make this revision live"
+        body_should_not_contain "reject"
+      end
+    end
+      
+    context "as a super user" do
 
       setup do
-
-        # Create a test item
-        @item = new_topic
-        update_item(@item)
-        update_item(@item, :title => "Homepage Title Updated Again")
+        add_mac_as_super_user
+        login_as("mac")
       end
 
-      should "be able to visit item page" do
-        visit "/site/topics/show/#{@item.id}"
-        body_should_contain "Topic: Homepage Title Updated Again"
-        body_should_contain "History"
-      end
-
-      should "be able to visit history page for item" do
-        visit "/site/topics/history/#{@item.id}"
-        body_should_contain "Revision History: Homepage Title Updated Again"
-        body_should_contain "Back to live"
-        1.upto(3) do |i|
-          body_should_contain "# #{i}"
-        end
-      end
-
-      should "be able to visit previews for each version of an item" do
+      should "be able to visit previews for each version of an item and see controls" do
         1.upto(2) do |i|
           visit "/site/topics/preview/#{@item.id}?version=#{i}"
           body_should_contain "Preview revision ##{i}: view live"
           body_should_contain "Topic: #{@item.versions.find_by_version(i).title}"
           body_should_contain @item.versions.find_by_version(i).description
           body_should_contain "Actions"
+
+          # Should have controls for making versions live or not
           body_should_contain "Make this revision live"
           body_should_contain "reject"
         end
       end
+      
+    end
 
+  end
+
+  context "Topic with multiple versions as a super user" do
+
+    setup do
+
+      # Ensure a user account to log in with is present
+      add_grant_as_super_user
+      login_as('grant')
+
+      # Create a test item
+      @item = new_topic
+      update_item(@item)
+      update_item(@item, :title => "Homepage Title Updated Again")
+    end
+
+    should "be able to visit item page" do
+      visit "/site/topics/show/#{@item.id}"
+      body_should_contain "Topic: Homepage Title Updated Again"
+      body_should_contain "History"
+    end
+
+    should "be able to visit history page for item" do
+      visit "/site/topics/history/#{@item.id}"
+      body_should_contain "Revision History: Homepage Title Updated Again"
+      body_should_contain "Back to live"
+      1.upto(3) do |i|
+        body_should_contain "# #{i}"
+      end
     end
 
   end
@@ -57,7 +104,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     setup do
 
       # Ensure a user account to log in with is present
-      add_grant_as_super_user
+      add_grant_as_regular_user
       login_as('grant')
 
       @image = new_still_image do
@@ -79,7 +126,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     setup do
 
       # Ensure a user account to log in with is present
-      add_grant_as_super_user
+      add_grant_as_regular_user
       login_as('grant')
 
       @video = new_video do
@@ -101,7 +148,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     setup do
 
       # Ensure a user account to log in with is present
-      add_grant_as_super_user
+      add_grant_as_regular_user
       login_as('grant')
 
       @audio = new_audio_recording do
@@ -123,7 +170,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     setup do
 
       # Ensure a user account to log in with is present
-      add_grant_as_super_user
+      add_grant_as_regular_user
       login_as('grant')
 
       @document = new_document do
@@ -145,7 +192,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
     setup do
 
       # Ensure a user account to log in with is present
-      add_grant_as_super_user
+      add_grant_as_regular_user
       login_as('grant')
 
       @weblink = new_web_link do
@@ -168,7 +215,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
 
   private
 
-    def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name)
+    def should_have_functioning_moderation_pages(item, controller_name, zoom_class_name, super_user = false)
 
       visit "/site/#{controller_name}/show/#{item.id}"
 
@@ -188,8 +235,10 @@ class ModerationViewsTest < ActionController::IntegrationTest
         body_should_contain "#{zoom_class_humanize(zoom_class_name)}: #{item.versions.find_by_version(i).title}"
         body_should_contain item.versions.find_by_version(i).description
         body_should_contain "Actions"
-        body_should_contain "Make this revision live"
-        body_should_contain "reject"
+        if super_user
+          body_should_contain "Make this revision live"
+          body_should_contain "reject"
+        end
       end
 
     end

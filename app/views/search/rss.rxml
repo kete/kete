@@ -1,23 +1,32 @@
+require 'htmlentities'
+entities = HTMLEntities.new
+
 @title = title_setup_first_part(SITE_NAME + ' - Latest 50 Results in ') + last_part_of_title_for_rss_if_refinement_of
 xml.instruct! :xml, :version=>"1.0"
 xml.rss(:version=>"2.0"){
   xml.channel{
     xml.title(@title)
-    xml.link(request.protocol + request.host + request.request_uri)
+    xml.link(CGI::escapeHTML(request.protocol + request.host + request.request_uri))
     xml.description("Showing #{@start} - #{@end_record} results of #{@result_sets[@current_class].size}")
     xml.language('en-nz')
     for result in @results
       xml.item do
-        xml.title(result['title'])
+        title = CGI::escapeHTML(entities.decode(result['title']))
+        xml.title(title)
+        short_summary = CGI::escapeHTML(entities.decode(strip_tags(result['short_summary'].to_s)))
         if result['locally_hosted'] && !result['image_file'].nil?
-                xml.description(render(:partial => 'thumb_image_tag', :locals => { :image_file => result['image_file'], :title => result['title'] }) + result['short_summary'].to_s)
+          image_file = render(:partial => 'thumb_image_tag',
+                              :locals => { :thumb_image_tag => result['image_file'],
+                                           :title => result['title'] })
+          image_file = CGI::escapeHTML(entities.decode(image_file))
+          xml.description(image_file + short_summary)
         else
-                xml.description(result['short_summary'])
+          xml.description(short_summary)
         end
         # rfc822
         xml.pubDate(result['date'])
-      xml.link(result['url'])
-      xml.guid(result['url'])
+        xml.link(result['url'])
+        xml.guid(result['url'])
       end
     end
   }

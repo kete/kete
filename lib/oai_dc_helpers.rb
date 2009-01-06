@@ -121,7 +121,15 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_title(xml, item)
-      xml.tag!("dc:title", item.title)
+      # convert unicode characters from entities back to unicode chars
+      require 'htmlentities'
+      entities = HTMLEntities.new
+      title = entities.decode(item.title)
+
+      # escape xml special chars &, <, and >
+      title = CGI::escapeHTML(title)
+      
+      xml.tag!("dc:title", title)
     end
 
     def oai_dc_xml_dc_publisher(xml, publisher = nil)
