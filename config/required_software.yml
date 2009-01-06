@@ -26,7 +26,7 @@ testing_gems:
     gem_repo: git://github.com/brynary/webrat.git
     rake_build_gem: rake gem
     rake_install_gem: sudo rake install_gem
-    lib_name: webrat
+    lib_name: webrat/rails
   shoulda:
     gem_name: thoughtbot-shoulda
     lib_name: shoulda/rails
