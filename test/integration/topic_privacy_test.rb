@@ -12,7 +12,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       # Ensure a user account to log in with is present
-      add_joe_as_super_user
+      add_joe_as_regular_user
       login_as('joe')
     end
 
@@ -77,7 +77,10 @@ class TopicPrivacyTest < ActionController::IntegrationTest
                                        :show_privacy_controls_true => true })
         @second_basket  = new_basket({ :name => "Second basket",
                                        :show_privacy_controls_true => true })
-
+        
+        add_laura_as_super_user
+        login_as('laura')
+        
         @private_topic  = new_topic({:title => 'Mixed topic (public)'}, @first_basket)
 
         update_item(@private_topic) do
@@ -107,16 +110,16 @@ class TopicPrivacyTest < ActionController::IntegrationTest
 
       should "be able to move the public version of an item to another basket" do
         assert_equal @first_basket, @private_topic.basket
-
+      
         update_item(@private_topic) do
           select @second_basket.name, :from => "topic_basket_id"
         end
-
+      
         @private_topic.reload
-
+      
         should_not_be_private @private_topic
         assert_equal @second_basket, @private_topic.basket
-
+      
         @private_topic.private_version do
           should_be_private @private_topic
           assert_equal @second_basket, @private_topic.basket

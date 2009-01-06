@@ -18,7 +18,7 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
       add_paul_as_member_to(@new_basket)
       User.find_by_login('paul').add_as_member_to_default_baskets
 
-      login_as('sarah')
+      login_as('paul')
     end
 
     should "return no results because the zebra db is empty" do
@@ -67,7 +67,9 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
 
     should "only show one search result when a comment is added to a related topic" do
       [@@site_basket, @new_basket].each do |basket|
+        login_as('sarah')
         turn_off_full_moderation(basket)
+        login_as('paul')
 
         create_a_topic_with_a_related_topic(basket)
 
@@ -93,15 +95,11 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
       end
     end
 
-    # James - 2008-12-21
-    # Work in progress. The below test fails due to a mission contributor on a new version of an existing
-    # item when full moderation is on for the basket.
-
     should "only show one search result when a comment is added to a related topic with moderation" do
-      # [@@site_basket, @new_basket].each do |basket|
-      [@@site_basket].each do |basket|
+      [@@site_basket, @new_basket].each do |basket|
+        login_as('sarah')
+        
         turn_on_full_moderation(basket)
-
         create_a_topic_with_a_related_topic(basket)
 
         # Right now this is failing to a moderation contribution email. See email from James 2008-12-18.
