@@ -23,6 +23,18 @@ class ApplicationController < ActionController::Base
   # for the remember me functionality
   before_filter :login_from_cookie
 
+  # Setup HTTP Basic Authentication if we have the username and password
+  # available in constants (set in config/initializers/site_lockdown_auth.rb)
+  if defined?(USERNAME) && defined?(PASSWORD)
+    before_filter :password_protect
+    def password_protect
+      authenticate_or_request_with_http_basic do |user_name, password|
+        user_name == USERNAME && password == PASSWORD
+      end
+    end
+    private :password_protect
+  end
+
   # only permit site members to add/delete things
   before_filter :login_required, :only => [ :new, :create,
                                             :edit, :update, :destroy,
