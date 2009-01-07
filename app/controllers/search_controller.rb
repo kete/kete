@@ -697,7 +697,7 @@ class SearchController < ApplicationController
         logger.info(rebuild_error)
         message = "Rebuild failed. #{rebuild_error}"
         message += " - #{$!}" unless $!.blank?
-        message +=  " at #{status[:done_with_do_work_time]}." unless status[:done_with_do_work_time].blank?
+        message +=  " at #{status[:done_with_do_work_time]}." unless status.nil? || status[:done_with_do_work_time].blank?
         flash[:notice] = message
         render :update do |page|
           page.hide("spinner")
