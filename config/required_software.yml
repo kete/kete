@@ -11,6 +11,9 @@
 management_gems:
   capistrano:
   capistrano-ext:
+  capistrano-configuration:
+    gem_name: kete-capistrano-configuration
+    source: http://gems.github.com
   piston:
     pre_command: sudo gem uninstall francois-piston
     gem_deps: ['hoe', 'newgem', 'rubigen', 'log4r', 'main', 'mocha']

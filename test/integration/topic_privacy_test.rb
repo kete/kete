@@ -12,7 +12,7 @@ class TopicPrivacyTest < ActionController::IntegrationTest
       end
 
       # Ensure a user account to log in with is present
-      add_joe_as_super_user
+      add_joe_as_regular_user
       login_as('joe')
     end
 
@@ -77,6 +77,9 @@ class TopicPrivacyTest < ActionController::IntegrationTest
                                        :show_privacy_controls_true => true })
         @second_basket  = new_basket({ :name => "Second basket",
                                        :show_privacy_controls_true => true })
+
+        add_laura_as_super_user
+        login_as('laura')
 
         @private_topic  = new_topic({:title => 'Mixed topic (public)'}, @first_basket)
 
