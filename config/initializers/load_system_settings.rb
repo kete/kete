@@ -5,7 +5,9 @@ if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.tabl
   site_name_setting = SystemSetting.find_by_name('Site Name')
   SystemSetting.find(:all).each do |setting|
     value = setting.value
-    if !value.blank? and value.match(/^([0-9\{\[]|true|false)/)
+    # Check the value we are about to eval not only matches int/array/hash/bool, but also isn't our site name/url
+    # On intranets, IP's in these fields would cause float errors which would prevent the site starting up at all
+    if !['Site Name', 'Site URL'].include?(setting.name) && !value.blank? && value.match(/^([0-9\{\[]|true|false)/)
       # Serious potential security issue, we eval user inputed value at startup
       # for things that are recognized as boolean, integer, hash, or array
       # by regexp above
