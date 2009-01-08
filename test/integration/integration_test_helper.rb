@@ -94,14 +94,20 @@ class ActionController::IntegrationTest
   def body_should_contain(text, options = {})
     raise "body_should_contain method should be called after a page visit" if response.nil? || response.body.nil?
     response_body = response.body.squish
-    text = options[:escape_chars] ? escape(text.squish) : text.squish
+    unless text.kind_of?(Regexp)
+      text = options[:escape_chars] ? escape(text.squish) : text.squish
+    end
     save_and_open_page if options[:dump_response]
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert (occurances == options[:number_of_times]),
              "Body should contain '#{text}' #{options[:number_of_times]} times, but only has #{occurances}."
     else
-      assert response_body.include?(text), "Body should contain '#{text}', but does not."
+      if text.kind_of?(Regexp)
+        assert (response_body =~ text), "Body should contain '#{text}', but does not."
+      else
+        assert response_body.include?(text), "Body should contain '#{text}', but does not."
+      end
     end
   end
 
@@ -112,14 +118,20 @@ class ActionController::IntegrationTest
   def body_should_not_contain(text, options = {})
     raise "body_should_not_contain method should be called after a page visit" if response.nil? || response.body.nil?
     response_body = response.body.squish
-    text = options[:escape_chars] ? escape(text.squish) : text.squish
+    unless text.kind_of?(Regexp)
+      text = options[:escape_chars] ? escape(text.squish) : text.squish
+    end
     save_and_open_page if options[:dump_response]
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert !(occurances == options[:number_of_times]),
              "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
     else
-      assert !response_body.include?(text), "Body should not contain '#{text}', but does."
+      if text.kind_of?(Regexp)
+        assert !(response_body =~ text), "Body should not contain '#{text}', but does."
+      else
+        assert !response_body.include?(text), "Body should not contain '#{text}', but does."
+      end
     end
   end
 
