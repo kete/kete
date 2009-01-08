@@ -79,8 +79,10 @@ class Basket < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
 
+  # DEPRECIATED - urlified_name handles things correctly
+  # and our xml escaping does the rest for plain old name attribute
   # don't allow special characters in label that will break our xml
-  validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
+  # validates_format_of :name, :with => /^[^\'\"<>\:\&,\?\}\{\/\\]*$/, :message => ": \', \\, /, &, \", <, and > characters aren't allowed"
 
   # check the quality of submitted html
   validates_as_sanitized_html :index_page_extra_side_bar_html
@@ -437,22 +439,18 @@ class Basket < ActiveRecord::Base
 
   protected
 
+  include FriendlyUrls
+
   # before save filter
   def urlify_name
     return if name.blank?
 
     formatted_name = name.to_s
 
-    # we may want to make this based on a constant
-    # in the future
-    chars_to_be_replaced = [' ', '-', '.']
-    chars_to_be_replaced.each do |char|
-      formatted_name = formatted_name.gsub(char, '_')
-    end
-
-    formatted_name = formatted_name.downcase
-
-    self.urlified_name = formatted_name
+    self.urlified_name = format_friendly_unicode_for(formatted_name,
+                                                     :demarkator => "_",
+                                                     :at_start => false,
+                                                     :at_end => false)
   end
 
   private
@@ -508,11 +506,11 @@ class Basket < ActiveRecord::Base
   def any_privacy_enabled_baskets?
     @@privacy_exists = (Basket.should_show_privacy_controls.count > 0)
   end
-  
+
   # James - 2008-12-10
   # Prevent site basket from being deleted
   before_destroy :prevent_site_basket_destruction
-  
+
   def prevent_site_basket_destruction
     if self == @@site_basket
       raise "Error: Cannot delete site basket!"
@@ -521,5 +519,5 @@ class Basket < ActiveRecord::Base
       true
     end
   end
-  
+
 end

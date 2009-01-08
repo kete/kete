@@ -8,6 +8,16 @@ module FriendlyUrlsTestUnitHelper
     assert_equal '-something-wicked-this-way-comes', format_friendly, "#{@base_class}. format_friendly_for failed"
   end
 
+  # TODO: test that is retains unicode
+  def test_format_friendly_unicode_for
+    # call to format_friendly_for is BROKEN
+    format_friendly = format_friendly_unicode_for('something wicked this way comes!')
+    assert_equal '-something-wicked-this-way-comes', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
+
+    format_friendly = format_friendly_unicode_for('something wicked this way comes!', :demarkator => "_", :at_end => true, :at_start => false)
+    assert_equal 'something_wicked_this_way_comes_', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
+  end
+
   def test_format_for_friendly_urls
     model = Module.class_eval(@base_class).create! @new_model
     formatted_title = model.format_for_friendly_urls

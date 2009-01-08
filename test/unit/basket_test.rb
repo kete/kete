@@ -8,26 +8,13 @@ class BasketTest < Test::Unit::TestCase
 
     # hash of params to create new instance of model, e.g. {:name => 'Test Model', :description => 'Dummy'}
     @new_model = { :name => 'test basket', :private_default => false, :file_private_default => false }
-    @req_attr_names = %w(name) 
+    @req_attr_names = %w(name)
     # name of fields that must be present, e.g. %(name description)
     @duplicate_attr_names = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
   end
 
   # load in sets of tests and helper methods
   include KeteTestUnitHelper
-
-  # make sure that basket names don't have special chars
-  def test_validates_format_of
-    special_chars = %w(: { } \\ / & ? < >)
-    # the list above throws off syntax highlighting if it has single and double quotes
-    # even though it's valid, adding here for clarity
-    special_chars += ["'", "\""]
-
-    special_chars.each do |special_char|
-      basket = Basket.new(@new_model.merge({ :name => "something with a #{special_char}" }))
-      assert !basket.valid?, "#{@base_class} with name that includes #{special_char} shouldn't be valid"
-    end
-  end
 
   def test_before_save_urlify_name
     basket = Basket.new(@new_model.merge({ :name => "something wicked this way comes" }))
@@ -55,11 +42,11 @@ class BasketTest < Test::Unit::TestCase
     basket.reload
     assert_nil basket.index_topic, "#{@base_class}.index_topic should have been made nil."
   end
-  
+
   def test_basket_defaults
     basket = Basket.new
     assert  basket.new_record?
-    
+
     assert_equal false, basket.private_default?
     assert_equal false, basket.file_private_default?
     assert_equal false, basket.allow_non_member_comments?
@@ -109,34 +96,34 @@ class BasketTest < Test::Unit::TestCase
     assert_equal 'alphabetical', basket.settings[:side_menu_ordering_of_topics]
     assert_equal 'reverse', basket.settings[:side_menu_direction_of_topics]
   end
-  
+
   # James - 2008-12-10
   # Ensure normal baskets can be deleted
   def test_baskets_other_than_site_can_be_deleted
     basket = Basket.find(2)
     basket.destroy
-    
+
     assert_raises(ActiveRecord::RecordNotFound) { Basket.find(2) }
   end
-  
+
   # Ensure that the site basket cannot be deleted
   def test_site_basket_cannot_be_deleted
     basket = Basket.find(1)
     assert_raises(RuntimeError) { basket.destroy }
     assert_equal basket, Basket.find(1)
   end
-  
+
   # Ensure that site basket cannot be deleted after rename
   def test_site_basket_cannot_be_deleted_after_rename
     basket = Basket.find(1)
     assert_equal "site", basket.urlified_name
-    
+
     basket.update_attributes(:name => "Another name")
     assert_equal "another_name", basket.urlified_name
-    
+
     assert_raises(RuntimeError) { basket.destroy }
     assert_equal basket, Basket.find(1)
-  end    
+  end
 
   def test_allows_contact_with_inheritance
     site_basket = Basket.first # site
