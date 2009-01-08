@@ -11,7 +11,7 @@ module OaiDcHelpers
 
     # TODO: this is duplicated in application.rb, fix
     def user_to_dc_creator_or_contributor(user)
-      decode_and_escape(user.user_name)
+      user.user_name
     end
 
     def oai_dc_xml_request(xml,item, passed_request = nil)
@@ -26,7 +26,7 @@ module OaiDcHelpers
       end
       
       basket_urlified_name = @current_basket.nil? ? item.basket.urlified_name : @current_basket.urlified_name
-      xml.request(decode_and_escape(request_uri), :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
+      xml.request(request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
     end
 
     def oai_dc_xml_oai_identifier(xml, item)
@@ -121,15 +121,15 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_title(xml, item)
-      xml.tag!("dc:title", decode_and_escape(item.title))
+      xml.tag!("dc:title", item.title)
     end
 
     def oai_dc_xml_dc_publisher(xml, publisher = nil)
       # this website is the publisher by default
       if publisher.nil?
-        xml.tag!("dc:publisher", decode_and_escape(request.host))
+        xml.tag!("dc:publisher", request.host)
       else
-        xml.tag!("dc:publisher", decode_and_escape(publisher))
+        xml.tag!("dc:publisher", publisher)
       end
     end
 
@@ -139,7 +139,7 @@ module OaiDcHelpers
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
         description = strip_tags(description)
-        xml.tag!("dc:description", decode_and_escape(description))
+        xml.tag!("dc:description", description)
       end
     end
 
@@ -148,11 +148,11 @@ module OaiDcHelpers
       xml.tag!("dc:date", item_created)
       item.creators.each do |creator|
         user_name = user_to_dc_creator_or_contributor(creator)
-        xml.tag!("dc:creator", decode_and_escape(user_name))
+        xml.tag!("dc:creator", user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
         # this way we can limit exactly to one user
-        xml.tag!("dc:creator", decode_and_escape(creator.login)) unless user_name == creator.login
+        xml.tag!("dc:creator", creator.login) unless user_name == creator.login
       end
     end
 
@@ -162,11 +162,11 @@ module OaiDcHelpers
     def oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
       item.contributors.each do |contributor|
         user_name = user_to_dc_creator_or_contributor(contributor)
-        xml.tag!("dc:contributor", decode_and_escape(user_name))
+        xml.tag!("dc:contributor", user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
         # this way we can limit exactly to one user
-        xml.tag!("dc:contributor", decode_and_escape(contributor.login)) unless user_name == contributor.login
+        xml.tag!("dc:contributor", contributor.login) unless user_name == contributor.login
       end
     end
 
@@ -192,18 +192,18 @@ module OaiDcHelpers
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.tag!("dc:subject", decode_and_escape(related.title))
+            xml.tag!("dc:subject", related.title)
             xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:subject", decode_and_escape(commented_on_item.title))
+        xml.tag!("dc:subject", commented_on_item.title)
         xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
         item.topics.each do |related|
-          xml.tag!("dc:subject", decode_and_escape(related.title))
+          xml.tag!("dc:subject", related.title)
           xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related, :format => nil, :urlified_name => related.basket.urlified_name)}")
         end
       end
@@ -211,7 +211,7 @@ module OaiDcHelpers
 
     def oai_dc_xml_tags_to_dc_subjects(xml, item)
       item.tags.each do |tag|
-        xml.tag!("dc:subject", decode_and_escape(tag.name))
+        xml.tag!("dc:subject", tag.name)
       end
     end
 
@@ -244,7 +244,7 @@ module OaiDcHelpers
         format = item.content_type
       end
       if !format.blank?
-        xml.tag!("dc:format", decode_and_escape(format))
+        xml.tag!("dc:format", format)
       end
     end
 
@@ -253,9 +253,9 @@ module OaiDcHelpers
       return unless item.is_a?(Topic)
       topic_type = item.topic_type
       topic_type.ancestors.each do |ancestor|
-        xml.tag!("dc:coverage", decode_and_escape(ancestor.name))
+        xml.tag!("dc:coverage", ancestor.name)
       end
-      xml.tag!("dc:coverage", decode_and_escape(topic_type.name))
+      xml.tag!("dc:coverage", topic_type.name)
     end
 
     # if there is a license for item, put in its url
@@ -273,7 +273,7 @@ module OaiDcHelpers
         )
       end
 
-      xml.tag!("dc:rights", decode_and_escape(rights))
+      xml.tag!("dc:rights", rights)
     end
 
     def oai_dc_xml_dc_description_for_file(xml, item, passed_request = nil)
@@ -312,7 +312,7 @@ module OaiDcHelpers
       end
 
       if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
-        xml.tag!("dc:source", decode_and_escape(file_url_from_bits_for(item, host)))
+        xml.tag!("dc:source", file_url_from_bits_for(item, host))
       end
     end
   end

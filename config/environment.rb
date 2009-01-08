@@ -130,10 +130,21 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 # thus necessitating the monkey patch found in
 # http://groups.google.ca/group/rubyonrails-talk/browse_thread/thread/2c13ad7c0f8c0781/4cd8c300642a4971?lnk=raot
 # hopefully we can pull this out in Rails 2.2
+class String
+  def escape
+    require 'htmlentities'
+    entities = HTMLEntities.new
+    # decode special chars (like multi language chars)
+    # escape xml special chars &, <, and >
+    CGI::escapeHTML(entities.decode(self))
+  end
+end
+
 module Builder
   class XmlBase
+    private
     def _escape(text)
-      text
+      text.escape
     end
   end
 end
