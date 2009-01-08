@@ -772,18 +772,6 @@ class ApplicationController < ActionController::Base
     redirect_to url_for(path_hash)
   end
 
-  # Decodes and escapes output for error free xml generation
-  def decode_and_escape(string)
-    require 'htmlentities'
-    entities = HTMLEntities.new
-    # decode special chars (like multi language chars)
-    string = entities.decode(string)
-    # escape xml special chars &, <, and >
-    string = CGI::escapeHTML(string)
-    # give back the clean string
-    string
-  end
-
   def url_for_dc_identifier(item)
     utf8_url_for(:controller => zoom_class_controller(item.class.name),
                  :action => 'show',
@@ -1143,7 +1131,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :decode_and_escape
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier
 
   protected
 

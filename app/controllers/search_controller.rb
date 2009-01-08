@@ -533,11 +533,23 @@ class SearchController < ApplicationController
   end
 
   def to_search_terms_slug(search_terms)
+    # This method should return the following:
+    #  quotes phrases:       word_after_word
+    #  non-quoted phrases:   word+after+word
+    # Join both types with +. i.e.
+    #  this 'is quoted' you see -> this+you+see+is_quoted
+
+    # For multi lingual URLs
     require 'unicode'
 
-    # Find all phrases enclosed in quotes and pull
-    # them into a flat array of phrases
+    # Find all phrases enclosed in quotes and pull them into a flat array of phrases
     search_terms = search_terms.to_s
+
+    # While we need to preserver ampersands in the search terms within single/double quotes,
+    # in the search slug, this isn't necessary, and without it, you end up with this-_-that
+    # rather than the desired this-and-that, so before splitting it up, convert & to and
+    search_terms = search_terms.gsub('&', 'and')
+
     double_phrases = search_terms.scan(/"(.*?)"/).flatten
     single_phrases = search_terms.scan(/'(.*?)'/).flatten
 
@@ -545,20 +557,18 @@ class SearchController < ApplicationController
     left_over = search_terms.gsub(/"(.*?)"/, "").squeeze(" ").strip
     left_over = left_over.gsub(/'(.*?)'/, "").squeeze(" ").strip
 
-    # Change & to and (to fix issue), and break up the remaining keywords on whitespace
-    keywords = left_over.gsub('&', 'and').squeeze(" ").strip.split(/ /)
+    # Break up the remaining keywords on whitespace
+    keywords = left_over.split(/ /)
 
+    # join everything into one big terms array
     terms = keywords + double_phrases + single_phrases
 
-    slug = terms.join('-and-')
+    # Join each search term with +, change everything that isn't a number into an underscore
+    # and cut mulitple underscores in a row down to just one
+    slug = terms.join('+').gsub(/[^\w\+_-]/, '_').gsub(/_+/, '_')
 
-    slug = Unicode::normalize_KD(slug+"-").downcase.gsub(/[\s_-]+/,'-')[0..-2]
-
-    # in the case of urls
-    slug = slug.gsub(/^(\w+):\/\/(www.)?/, '').gsub(/[\/\?&]/, '_').gsub('.', '-')
-
-    # Lets decode then escape any characters that might cause invalid urls
-    slug = decode_and_escape(slug)
+    # Lets escape any characters that might cause invalid urls, normalize it, and downcase
+    Unicode::normalize_KD(slug.escape).downcase
   end
 
   # expects a comma separated list of zoom_class-id
