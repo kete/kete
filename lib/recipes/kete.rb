@@ -1,121 +1,109 @@
-# config/recipes/kete.rb
-#
-# capistrano recipes specific to our kete set up
-# assumes debian etch target server
-# so you mileage will vary
-#
-# a decent amount of these may be replaced by deprec 2
-#
-# Walter McGinnis, 2007-08-15
-#
-# $ID: $
-
+# kete specific capistrano recipes
 
 namespace :deploy do
-  desc "Wrapper for tasks to setup, update, prepare, then start our shiny new Kete"
-  namespace :first_time do
-    desc "Run the steps necessary to get Kete going for the first time.  May take awhile."
-    task :default do
-      deploy.setup
-      deploy.update_code
-      deploy.prepare.setup_zebra
-      deploy.prepare.setup_imports
-      deploy.prepare.setup_private
-      deploy.prepare.setup_themes
-      deploy.symlink
-      deploy.prepare.default
-      deploy.start
-    end
+
+  desc "Run the steps necessary to get Kete going for the first time.  May take awhile."
+  task :first_time do
+    deploy.setup
+    deploy.update_code
+    deploy.kete.prepare.setup_zebra
+    deploy.kete.prepare.setup_imports
+    deploy.kete.prepare.setup_private
+    deploy.kete.prepare.setup_themes
+    deploy.symlink
+    deploy.symlink.all
+    deploy.gems.install
+    deploy.db.bootstrap
+    deploy.restart
   end
 
-  desc "What to we need to happen after code checkout, but before the app is ready to be started."
-  namespace :prepare do
-    desc "Prepare required software, initialize database, etc."
-    task :default do
-      install_gems
-      db_bootstrap
-    end
-
-    desc "Installs required gems for Kete"
-    task :install_gems, :roles => :app do
-      rake = fetch(:rake, 'rake')
-      rails_env = fetch(:rails_env, 'production')
-      run "cd #{current_path}; #{rake} RAILS_ENV=production manage_gems:required:install"
-    end
-
-    desc "The directory that holds everything related to zebra needs to live under share/system/zebradb"
-    task :setup_zebra, :roles => :app do
-      run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
-    end
-
-    desc "The directory that holds everything related to imports needs to live under share/system/imports"
-    task :setup_imports, :roles => :app do
-      run "cp -r #{latest_release}/imports #{shared_path}/system/"
-    end
-
-    desc "The directory that holds everything related to private items needs to live under share/system/private"
-    task :setup_private, :roles => :app do
-      run "cp -r #{latest_release}/private #{shared_path}/system/"
-    end
-
-    desc "The directory that holds everything related to themes needs to live under share/system/themes"
-    task :setup_themes, :roles => :app do
-      run "cp -r #{latest_release}/public/themes #{shared_path}/system/"
-    end
-
-    desc "Set up the database with migrations and default data."
-    task :db_bootstrap , :roles => :db do
-      rake = fetch(:rake, 'rake')
-      rails_env = fetch(:rails_env, 'production')
-      run "cd #{current_path}; #{rake} RAILS_ENV=production db:bootstrap"
-    end
+  desc "Run the steps necessary to update Kete. Overrides the default Capistrano task."
+  task :update do
+    deploy.backgroundrb.stop
+    run "cd #{current_path} && rake tmp:cache:clear"
+    deploy.update_code
+    deploy.symlink
+    deploy.kete.symlink.all
+    deploy.gems.update
+    deploy.db.migrate
+    deploy.kete.upgrade
+    deploy.backgroundrb.start
+    deploy.restart
   end
 
-  desc "Any tasks that need to run to need to happen after we have updated our code, but before our site runs."
-  namespace :upgrade do
-    task :default do
-      deploy.upgrade.run_upgrade
+  namespace :kete do
+
+    desc 'Upgrade Kete Installation'
+    task :upgrade, :role => :app do
+      run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:upgrade"
     end
 
-    desc "Use upgrade rake task for Kete"
-    task :run_upgrade, :roles => :app do
-      rake = fetch(:rake, 'rake')
-      rails_env = fetch(:rails_env, 'production')
-      run "cd #{current_path}; #{rake} RAILS_ENV=production kete:upgrade"
+    desc "What to we need to happen after code checkout, but before the app is ready to be started."
+    namespace :prepare do
+
+      desc "The directory that holds everything related to zebra needs to live under share/system/zebradb"
+      task :setup_zebra, :roles => :app do
+        run "cp -r #{latest_release}/zebradb #{shared_path}/system/"
+      end
+
+      desc "The directory that holds everything related to imports needs to live under share/system/imports"
+      task :setup_imports, :roles => :app do
+        run "cp -r #{latest_release}/imports #{shared_path}/system/"
+      end
+
+      desc "The directory that holds everything related to private items needs to live under share/system/private"
+      task :setup_private, :roles => :app do
+        run "cp -r #{latest_release}/private #{shared_path}/system/"
+      end
+
+      desc "The directory that holds everything related to themes needs to live under share/system/themes"
+      task :setup_themes, :roles => :app do
+        run "cp -r #{latest_release}/public/themes #{shared_path}/system/"
+      end
+
     end
+
+    desc "Symlink folders for existing Kete installations"
+    namespace :symlink do
+
+      public_dirs = %w{ audio documents image_files video themes }
+      non_public_dirs = %w{ zebradb imports private }
+      all_dirs = public_dirs + non_public_dirs
+
+      desc "Symlink all files"
+      task :all do
+        all_dirs.each do |dir|
+          eval("deploy.kete.symlink.#{dir}")
+        end
+      end
+
+      public_dirs.each do |dir|
+        desc "Symlink the /public/#{dir} directory"
+        task dir.to_sym, :role => :app do
+          symlink_system_directory(dir)
+        end
+      end
+
+      non_public_dirs.each do |dir|
+        desc "Symlink the /#{dir} directory"
+        task dir.to_sym, :role => :app do
+          symlink_system_directory(dir, false)
+        end
+      end
+
+      def symlink_system_directory(dir, is_public=true)
+        public_dir = is_public ? 'public/' : ''
+        run "mkdir -p #{shared_path}/system/#{dir}"
+        run "rm -rf #{current_path}/#{public_dir}#{dir}"
+        run "ln -nfs #{shared_path}/system/#{dir} #{current_path}/#{public_dir}#{dir}"
+      end
+
+    end
+
+    def set_app_environment
+      set :app_environment, 'production' unless defined?(app_environment)
+    end
+
   end
 
-  desc "Put in Kete's specific symlinks, not worrying about page caches (not using memcache for them yet) that get orphaned in the last release's public directory.  Just letting them expire."
-  task :after_symlink do
-    # handle file upload directories
-    %w{audio documents image_files video}.each do |share|
-      # this WON'T overwrite an existing directory, just create it if it's not there
-      run "mkdir -p #{shared_path}/system/#{share}"
-      run "ln -nfs #{shared_path}/system/#{share} #{current_path}/public/#{share}"
-    end
-
-    # handle our zebra databases
-    # make system/zebradb if it doesn't exist already
-    run "mkdir -p #{shared_path}/system/zebradb"
-    run "rm -rf #{current_path}/zebradb"
-    run "ln -nfs #{shared_path}/system/zebradb #{current_path}/"
-
-    # handle our imports directory and all the stuff that lives in it
-    # make system/imports if it doesn't exist already
-    run "mkdir -p #{shared_path}/system/imports"
-    run "rm -rf #{current_path}/imports"
-    run "ln -nfs #{shared_path}/system/imports #{current_path}/"
-
-    # handle our private directory and all the stuff that lives in it
-    # make system/private if it doesn't exist already
-    run "mkdir -p #{shared_path}/system/private"
-    run "rm -rf #{current_path}/private"
-    run "ln -nfs #{shared_path}/system/private #{current_path}/"
-
-    # handle our themes directory and all the stuff that lives in it
-    # make system/themes if it doesn't exist already
-    run "mkdir -p #{shared_path}/system/themes"
-    run "rm -rf #{current_path}/public/themes"
-    run "ln -nfs #{shared_path}/system/themes #{current_path}/public/themes"
-  end
 end

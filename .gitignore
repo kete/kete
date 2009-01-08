@@ -4,6 +4,7 @@ config/database.yml
 config/backgroundrb.yml
 config/mongrel_cluster.yml
 config/google_map_api.yml
+config/site_lockdown_auth_credentials.yml
 db/schema.rb
 public/blank.html
 public/robots.txt

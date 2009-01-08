@@ -1,16 +1,14 @@
-# Recipe adapted from deprec gem
+# capistrano recipes specific to backgroundrb server
+# Adapted from Capistrano Bells plugin (http://github.com/nakajima/capistrano-bells)
 
 namespace :deploy do
 
   namespace :mongrel do
-    desc <<-DESC
-    Configure Mongrel processes on the app server. This uses the :use_sudo
-    variable to determine whether to use sudo or not. By default, :use_sudo is
-    set to true.
-    DESC
+
+    desc "Configure Mongrel processes"
     task :configure, :roles => :app do
       set_mongrel_conf
-      
+
       argv = []
       argv << "mongrel_rails cluster::configure"
       argv << "-N #{mongrel_servers.to_s}"
@@ -23,41 +21,34 @@ namespace :deploy do
       sudo cmd
     end
 
-    desc <<-DESC
-    Start Mongrel processes on the app server.  This uses the :use_sudo variable to determine whether to use sudo or not. By default, :use_sudo is
-    set to true.
-    DESC
-    task :start , :roles => :app do
+    desc "Start Mongrel processes"
+    task :start, :roles => :app do
       set_mongrel_conf
-      sudo "mongrel_rails cluster::start -C #{mongrel_conf}"
+      run "mongrel_rails cluster::start -C #{mongrel_conf}"
     end
 
-    desc <<-DESC
-    Restart the Mongrel processes on the app server by starting and stopping the cluster. This uses the :use_sudo
-    variable to determine whether to use sudo or not. By default, :use_sudo is set to true.
-    DESC
-    task :restart , :roles => :app do
+    desc "Stop Mongrel processes"
+    task :stop, :roles => :app do
       set_mongrel_conf
-      sudo "mongrel_rails cluster::restart -C #{mongrel_conf}"
+      run "mongrel_rails cluster::stop -C #{mongrel_conf}"
     end
 
-    desc <<-DESC
-    Stop the Mongrel processes on the app server.  This uses the :use_sudo
-    variable to determine whether to use sudo or not. By default, :use_sudo is
-    set to true.
-    DESC
-    task :stop , :roles => :app do
+    desc "Restart the Mongrel processes"
+    task :restart, :roles => :app do
       set_mongrel_conf
-      sudo "mongrel_rails cluster::stop -C #{mongrel_conf}"
+      run "mongrel_rails cluster::restart -C #{mongrel_conf}"
     end
-    
+
     desc "Deletes mongrel configuration file."
-    task :delete do
+    task :delete, :roles => :app do
+      set_mongrel_conf
       sudo "rm #{mongrel_conf}"
     end
 
     def set_mongrel_conf
-      set :mongrel_conf, "/etc/mongrel_cluster/#{application}.yml" unless mongrel_conf
+      set :mongrel_conf, "/etc/mongrel_cluster/#{application}.yml" unless defined?(mongrel_conf)
     end
+
   end
+
 end
