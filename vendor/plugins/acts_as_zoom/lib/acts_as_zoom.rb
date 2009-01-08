@@ -236,8 +236,8 @@ module ZoomMixin
           left_over = query.gsub(/"(.*?)"/, "").squeeze(" ").strip
           left_over = left_over.gsub(/'(.*?)'/, "").squeeze(" ").strip
 
-          # Break up the remaining keywords on whitespace
-          keywords = left_over.split(/ /)
+          # Change & to and (to fix issue), and break up the remaining keywords on whitespace
+          keywords = left_over.gsub('&', 'and').squeeze(" ").strip.split(/ /)
 
           keywords + double_phrases + single_phrases
         end

@@ -2,20 +2,16 @@
 xml.instruct! :xml, :version=>"1.0"
 xml.rss(:version=>"2.0"){
   xml.channel{
-    xml.title(@title)
-    xml.link(request.protocol + request.host + request.request_uri)
+    xml.title(decode_and_escape(@title))
+    xml.link(decode_and_escape(request.protocol + request.host + request.request_uri))
     xml.description("Latest Baskets")
     xml.language('en-nz')
     for basket in @baskets
       xml.item do
-        require 'htmlentities'
-        entities = HTMLEntities.new
-        name = entities.decode(basket.name)
-        name = CGI::escapeHTML(name)
-        xml.title(name)
+        xml.title(decode_and_escape(basket.name))
         @basket_homepage = basket_index_url( :urlified_name => basket.urlified_name )
-        xml.link(@basket_homepage)
-        xml.guid(@basket_homepage)
+        xml.link(decode_and_escape(@basket_homepage))
+        xml.guid(decode_and_escape(@basket_homepage))
       end
     end
   }

@@ -303,13 +303,12 @@ class SearchController < ApplicationController
     @search.pqf_query.relations_include(url_for_dc_identifier(@source_item), :should_be_exact => true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
-    @search.pqf_query.subjects_include(@tag.name) if !@tag.nil?
-
+    @search.pqf_query.subjects_include("'#{@tag.name}'") if !@tag.nil?
 
     # this should go last because of "or contributor"
     # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
     # must be exact string
-    @search.pqf_query.creators_or_contributors_include(@contributor.login) if !@contributor.nil?
+    @search.pqf_query.creators_or_contributors_include("'#{@contributor.login}'") if !@contributor.nil?
     
     # James
     # Extended Field choice searching mechanisms
@@ -546,8 +545,8 @@ class SearchController < ApplicationController
     left_over = search_terms.gsub(/"(.*?)"/, "").squeeze(" ").strip
     left_over = left_over.gsub(/'(.*?)'/, "").squeeze(" ").strip
 
-    # Break up the remaining keywords on whitespace
-    keywords = left_over.split(/ /)
+    # Change & to and (to fix issue), and break up the remaining keywords on whitespace
+    keywords = left_over.gsub('&', 'and').squeeze(" ").strip.split(/ /)
 
     terms = keywords + double_phrases + single_phrases
 
@@ -559,9 +558,7 @@ class SearchController < ApplicationController
     slug = slug.gsub(/^(\w+):\/\/(www.)?/, '').gsub(/[\/\?&]/, '_').gsub('.', '-')
 
     # Lets decode then escape any characters that might cause invalid urls
-    require 'htmlentities'
-    entities = HTMLEntities.new
-    slug = CGI::escapeHTML(entities.decode(slug))
+    slug = decode_and_escape(slug)
   end
 
   # expects a comma separated list of zoom_class-id

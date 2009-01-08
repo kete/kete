@@ -86,18 +86,6 @@ class TaggingTest < ActionController::IntegrationTest
           add_tags_to @topic, ['āūāōā']
         end
 
-        context "or the prohibited ampersand character" do
-
-          setup do
-             add_tags_to @topic, ['&'], false
-          end
-
-          should "show not allow the ampersand and show an error to the user" do
-            body_should_contain "There was an error adding the new tags to #{@topic.title}: Tags cannot contain the &amp; character."
-          end
-
-        end
-
       end
 
     end
