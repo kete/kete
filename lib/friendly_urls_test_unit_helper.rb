@@ -3,19 +3,23 @@ module FriendlyUrlsTestUnitHelper
 
   # TODO: test case unicode
   def test_format_friendly_for
-    # call to format_friendly_for is BROKEN
     format_friendly = format_friendly_for('something wicked this way comes!')
     assert_equal '-something-wicked-this-way-comes', format_friendly, "#{@base_class}. format_friendly_for failed"
+
+    # this tests that transliteration is done
+    format_friendly = format_friendly_for('āēīōū and in your 家!')
+    assert_equal '-aeiou-and-in-your', format_friendly, "#{@base_class}. format_friendly_for failed"
   end
 
-  # TODO: test that is retains unicode
   def test_format_friendly_unicode_for
-    # call to format_friendly_for is BROKEN
     format_friendly = format_friendly_unicode_for('something wicked this way comes!')
     assert_equal '-something-wicked-this-way-comes', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
 
     format_friendly = format_friendly_unicode_for('something wicked this way comes!', :demarkator => "_", :at_end => true, :at_start => false)
     assert_equal 'something_wicked_this_way_comes_', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
+
+    format_friendly = format_friendly_unicode_for('& it is āēīōū and in your 家!')
+    assert_equal '-it-is-āēīōū-and-in-your-家', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
   end
 
   def test_format_for_friendly_urls
