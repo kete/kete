@@ -4,20 +4,10 @@ if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.tabl
   # see reference for Module for more details about constant setting, etc.
   site_name_setting = SystemSetting.find_by_name('Site Name')
   SystemSetting.find(:all).each do |setting|
-    value = setting.value
-    # Check the value we are about to eval not only matches int/array/hash/bool, but also isn't our site name/url
-    # On intranets, IP's in these fields would cause float errors which would prevent the site starting up at all
-    if !['Site Name', 'Site URL'].include?(setting.name) && !value.blank? && value.match(/^([0-9\{\[]|true|false)/)
-      # Serious potential security issue, we eval user inputed value at startup
-      # for things that are recognized as boolean, integer, hash, or array
-      # by regexp above
-      # Make sure only knowledgable and AUTHORIZED people can edit System Settings
-      value = eval(setting.value)
-    end
     if setting.name == 'Site URL' and setting.value.blank? and !site_name_setting.value.blank?
       SITE_URL = 'http://' + site_name_setting.value + '/'
     else
-      Object.const_set(setting.name.upcase.gsub(/[^A-Z0-9\s_-]+/,'').gsub(/[\s-]+/,'_'), value)
+      setting.to_constant
     end
   end
 

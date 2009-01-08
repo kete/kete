@@ -26,6 +26,30 @@ class SystemSetting < ActiveRecord::Base
     value
   end
 
+  # setting names
+  # get transposed from "A Name" to "A_NAME"
+  def constant_name
+    name.upcase.gsub(/[^A-Z0-9\s_-]+/,'').gsub(/[\s-]+/,'_')
+  end
+
+  def constant_value
+    constant_value = value
+    # we don't need to eval certain setting values
+    # like empty strings, hash or array definitions, or booleans
+    if !constant_value.blank? and constant_value.match(/^([0-9\{\[]|true|false)/)
+      # Serious potential security issue, we eval user inputed value at startup
+      # for things that are recognized as boolean, integer, hash, or array
+      # by regexp above
+      # Make sure only knowledgable and AUTHORIZED people can edit System Settings
+      constant_value = eval(value)
+    end
+    constant_value
+  end
+
+  def to_constant
+    Object.const_set(constant_name, constant_value)
+  end
+
   def push(additional_value)
     return false if self.value.include?(additional_value)
     self.value = self.value.gsub(']', ", \'#{additional_value}\']")
