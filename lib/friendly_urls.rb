@@ -16,7 +16,7 @@ module FriendlyUrls
       at_start = options[:at_start].nil? ? true : options[:at_start]
       at_end = options[:at_end].nil? ? false : options[:at_end]
 
-      string.downcase!
+      string = string.downcase
 
       CHARS_TO_REPLACE_IN_URLS.each { |char| string = string.gsub(char, demarkator) }
 
@@ -29,11 +29,11 @@ module FriendlyUrls
       if at_end
         string = string + demarkator
       else
-        string.sub!(/#{demarkator}+$/, '')
+        string = string.sub(/#{demarkator}+$/, '')
       end
 
       # get rid of multiple demarkators in a row
-      string.gsub!(/#{demarkator}+/, demarkator)
+      string = string.gsub(/#{demarkator}+/, demarkator)
       string
     end
 
