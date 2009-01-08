@@ -84,14 +84,6 @@ module ConfigureAsKeteContentItem
     # turn pretty urls on or off here
     include FriendlyUrls
     alias :to_param :format_for_friendly_urls
-
-    private
-
-      def validate
-        # James
-        # Ensure EF validatins are run
-        super
-      end
     
   end
 end

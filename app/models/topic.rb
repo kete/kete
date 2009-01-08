@@ -175,12 +175,5 @@ class Topic < ActiveRecord::Base
   rescue
     []
   end
-  
-  private
-  
-  def validate
-    # James
-    # Ensure EF validatins are run
-    super
-  end
+
 end
