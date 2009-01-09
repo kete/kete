@@ -20,7 +20,7 @@ module FriendlyUrls
       if at_start
         string = demarkator + string
       else
-        string.sub!(/^#{demarkator}+/, '')
+        string = string.sub(/^#{demarkator}+/, '')
       end
 
       if at_end
