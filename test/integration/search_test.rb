@@ -4,7 +4,7 @@ class SearchTest < ActionController::IntegrationTest
 
   ['jane', 'īōūāē', 'a&b'].each do |login|
 
-    context "Topics with alphanumeric chars in title, description, and tags" do
+    context "Topics with alphanumeric chars in title, description, and tags, using #{login} as a user login" do
 
       setup do
         @user = create_new_user({:login => login})
@@ -31,7 +31,7 @@ class SearchTest < ActionController::IntegrationTest
 
     end
 
-    context "Topics with utf8 chars in title, description, and tags" do
+    context "Topics with utf8 chars in title, description, and tags, using #{login} as a user login" do
 
       setup do
         @user = create_new_user({:login => login})
@@ -58,7 +58,7 @@ class SearchTest < ActionController::IntegrationTest
 
     end
 
-    context "Topics with specials chars in title, description, and tags" do
+    context "Topics with specials chars in title, description, and tags, using #{login} as a user login" do
 
       setup do
         @user = create_new_user({:login => login})
