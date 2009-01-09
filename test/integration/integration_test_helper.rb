@@ -101,7 +101,7 @@ class ActionController::IntegrationTest
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert (occurances == options[:number_of_times]),
-             "Body should contain '#{text}' #{options[:number_of_times]} times, but only has #{occurances}."
+             "Body should contain '#{text}' #{options[:number_of_times]} times, but has #{occurances}."
     else
       if text.kind_of?(Regexp)
         assert (response_body =~ text), "Body should contain '#{text}', but does not."
