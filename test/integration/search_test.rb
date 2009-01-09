@@ -2,52 +2,60 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class SearchTest < ActionController::IntegrationTest
 
-  context "Topics with alphanumeric chars in title, description, and tags" do
+  ['jane', 'īōūāē', 'a&b'].each do |login|
 
-    setup do
-      add_jane_as_regular_user
-      login_as('jane')
-      @fields = { :title => 'abc', :description => 'def', :tag_list => 'ghi' }
-      @should_have = Regexp.new("<h4><a (.+)>abc</a></h4>")
-      @topic = new_topic(@fields)
+    context "Topics with alphanumeric chars in title, description, and tags" do
+
+      setup do
+        @user = create_new_user({:login => login})
+        @user.add_as_member_to_default_baskets
+        @@users_created << @user
+        login_as(login)
+        @fields = { :title => 'abc', :description => 'def', :tag_list => 'ghi' }
+        @should_have = Regexp.new("<h4><a (.+)>abc</a></h4>")
+        @topic = new_topic(@fields)
+      end
+
+      should "be able to be found when searching topics" do
+        make_search_at("/site/all/topics", @fields, @should_have)
+      end
+
+      should "be able to be found when searching contributors" do
+        make_search_at("/site/all/topics/contributed_by/user/#{@user.to_param}", @fields, @should_have)
+      end
+
+      should "be able to be found when searching taggings" do
+        tag = Tag.last
+        make_search_at("/site/all/topics/tagged/#{tag.id}", @fields, @should_have)
+      end
+
     end
 
-    should "be able to be found when searching topics" do
-      make_search_at("/site/all/topics", @fields, @should_have)
-    end
+    context "Topics with utf8 chars in title, description, and tags" do
 
-    should "be able to be found when searching contributors" do
-      make_search_at("/site/all/topics/contributed_by/user/#{@jane.to_param}", @fields, @should_have)
-    end
+      setup do
+        @user = create_new_user({:login => login})
+        @user.add_as_member_to_default_baskets
+        @@users_created << @user
+        login_as(login)
+        @fields = { :title => 'āēīōū', :description => 'こんにちは', :tag_list => 'مرحبا' }
+        @should_have = Regexp.new("<h4><a (.+)>āēīōū</a></h4>")
+        @topic = new_topic(@fields)
+      end
 
-    should "be able to be found when searching taggings" do
-      tag = Tag.last
-      make_search_at("/site/all/topics/tagged/#{tag.id}", @fields, @should_have)
-    end
+      should "be able to be found when searching topics" do
+        make_search_at("/site/all/topics", @fields, @should_have)
+      end
 
-  end
+      should "be able to be found when searching contributors" do
+        make_search_at("/site/all/topics/contributed_by/user/#{@user.to_param}", @fields, @should_have)
+      end
 
-  context "Topics with utf8 chars in title, description, and tags" do
+      should "be able to be found when searching taggings" do
+        tag = Tag.last
+        make_search_at("/site/all/topics/tagged/#{tag.id}", @fields, @should_have)
+      end
 
-    setup do
-      add_jane_as_regular_user
-      login_as('jane')
-      @fields = { :title => 'āēīōū', :description => 'こんにちは', :tag_list => 'مرحبا' }
-      @should_have = Regexp.new("<h4><a (.+)>āēīōū</a></h4>")
-      @topic = new_topic(@fields)
-    end
-
-    should "be able to be found when searching topics" do
-      make_search_at("/site/all/topics", @fields, @should_have)
-    end
-
-    should "be able to be found when searching contributors" do
-      make_search_at("/site/all/topics/contributed_by/user/#{@jane.to_param}", @fields, @should_have)
-    end
-
-    should "be able to be found when searching taggings" do
-      tag = Tag.last
-      make_search_at("/site/all/topics/tagged/#{tag.id}", @fields, @should_have)
     end
 
   end

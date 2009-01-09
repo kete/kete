@@ -1,7 +1,4 @@
 module FriendlyUrls
-  # by adding "-" or "_", we can change them to whatever demarkator makes sense in context
-  CHARS_TO_REPLACE_IN_URLS = [' ', ',', '.', '`', ':', "\\", "\/", '&', '$', '<', '>', '=', '?', "'", "\"", "!", "\#", "-", "_"]
-
   unless included_modules.include? FriendlyUrls
     # eventually we will want to depreciate the use of normalize_KD transliteration
     # and just stick unicode in the URL
@@ -18,7 +15,6 @@ module FriendlyUrls
 
       string = string.downcase
 
-      #CHARS_TO_REPLACE_IN_URLS.each { |char| string = string.gsub(char, demarkator) }
       string = string.gsub(/\W/, demarkator)
 
       if at_start
