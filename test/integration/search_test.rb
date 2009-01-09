@@ -32,8 +32,8 @@ class SearchTest < ActionController::IntegrationTest
     setup do
       add_jane_as_regular_user
       login_as('jane')
-      @fields = { :title => 'āūāōā', :description => 'こんにちは', :tag_list => 'مرحبا' }
-      @should_have = Regexp.new("<h4><a (.+)>āūāōā</a></h4>")
+      @fields = { :title => 'āēīōū', :description => 'こんにちは', :tag_list => 'مرحبا' }
+      @should_have = Regexp.new("<h4><a (.+)>āēīōū</a></h4>")
       @topic = new_topic(@fields)
     end
 

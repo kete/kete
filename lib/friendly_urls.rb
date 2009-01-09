@@ -18,7 +18,8 @@ module FriendlyUrls
 
       string = string.downcase
 
-      CHARS_TO_REPLACE_IN_URLS.each { |char| string = string.gsub(char, demarkator) }
+      #CHARS_TO_REPLACE_IN_URLS.each { |char| string = string.gsub(char, demarkator) }
+      string = string.gsub(/\W/, demarkator)
 
       if at_start
         string = demarkator + string

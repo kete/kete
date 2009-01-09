@@ -81,10 +81,12 @@ class TaggingTest < ActionController::IntegrationTest
           # escape chars, arabic, chinese, japanese, maori
           add_tags_to @topic, ['~ ! @ # $ % ^ * ( ) _ + { } | : " < > ? ` - = [ ] \\ ; \' . /']
           add_tags_to @topic, ['مرحبا']
-          add_tags_to @topic, ['餵']
+          add_tags_to @topic, ['餵-家']
           add_tags_to @topic, ['こんにちは']
-          add_tags_to @topic, ['āūāōā']
+          add_tags_to @topic, ['āēīōū']
         end
+
+        # we don't really need to test anything. If anything in add_tags_to fails, that's what we check
 
       end
 
