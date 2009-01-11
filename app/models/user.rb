@@ -189,9 +189,9 @@ class User < ActiveRecord::Base
     user_name_field = EXTENDED_FIELD_FOR_USER_NAME
     extended_content_hash = self.xml_attributes_without_position
     @user_name = self.login
-    if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field].to_s.match("xml_element_name")
+    if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field]['value'].blank?
       # most likely have to pull the other attributes out
-      @user_name = extended_content_hash[user_name_field].strip
+      @user_name = extended_content_hash[user_name_field]['value'].strip
     end
     return @user_name
   end
