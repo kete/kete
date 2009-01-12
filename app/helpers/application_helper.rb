@@ -35,7 +35,7 @@ module ApplicationHelper
   def avatar_updater_js(options = {})
     options = options.merge({ :email_id => 'user_email', :avatar_id => 'user_avatar_img', :spinner_id => 'user_avatar_spinner' })
     javascript_tag("
-      $('#{options[:email_id]}').observe('change', function(event){
+      $('#{options[:email_id]}').observe('blur', function(event){
         // if we dont have something that looks like an email, don't make a request
         if (!$('#{options[:email_id]}').value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i)) { return true; }
         new Ajax.Request('#{url_for(:controller => 'account', :action => 'fetch_gravatar')}', {
