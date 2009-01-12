@@ -160,7 +160,7 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
   end
 
   context "a couple of related topics without moderation" do
-s
+
     setup do
       add_robert_as_regular_user
       add_roberta_as_regular_user
