@@ -51,3 +51,18 @@ def create_new_user(options)
   assert_kind_of User, @user
   @user
 end
+
+#
+# Extended Field
+#
+Factory.define :extended_field do |ef|
+  ef.label 'A bit of data'
+  ef.description 'a description of the field for admins'
+end
+def create_extended_field(options)
+  @extended_field = ExtendedField.find_by_label(options[:label])
+  return @extended_field unless @extended_field.nil?
+  @extended_field = Factory(:extended_field, options)
+  assert_kind_of ExtendedField, @extended_field
+  @extended_field
+end
