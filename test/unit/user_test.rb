@@ -141,18 +141,26 @@ class UserTest < Test::Unit::TestCase
     assert_kind_of Basket, user.baskets.first
   end
 
-  # Lets make sure that the extended content code is working correctly for user.user_name
-  def test_user_should_have_username
-    user = create_user({ :login => 'user100', :extended_content => '<user_name xml_element_name="dc:subject">User 100</user_name>' })
-    assert 'user100', user.login
-    assert 'User 100', user.user_name
-  end
+  context "When dealing with display/resolved names, a user" do
 
-  # Lets make sure that we fall back to the login name if user_name extended content isn't set
-  def test_user_should_use_login_if_no_user_name
-    user = create_user({ :login => 'user101', :extended_content => '' })
-    assert 'user101', user.login
-    assert 'user101', user.user_name
+    should "have the resolved name populated on save" do
+      user = create_user({ :login => 'user100' })
+      assert_equal 'user100', user.login
+      assert_equal 'user100', user.resolved_name
+      assert_nil user.display_name
+
+      user = create_user({ :login => 'user101', :display_name => 'User 101' })
+      assert_equal 'user101', user.login
+      assert_equal 'User 101', user.resolved_name
+      assert_equal 'User 101', user.display_name
+    end
+
+    should "have resolved name accessible through user_name" do
+      user = create_user({ :login => 'user102', :display_name => 'User 102' })
+      assert_equal 'User 102', user.resolved_name
+      assert_equal 'User 102', user.user_name
+    end
+
   end
 
   protected
