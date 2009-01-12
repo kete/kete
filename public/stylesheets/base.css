@@ -738,6 +738,20 @@ div#notice div, div#error div {
   display: block;
 }
 
+/* ################################ Registration ################################ */
+#user_avatar_updater_table {
+  display: inline;
+  margin-left: 15px;
+}
+#user_avatar_updater_table td {
+  width: 280px;
+  font-size: .8em;
+}
+#user_avatar_updater_table td#user_avatar_img {
+  width: 50px;
+  text-align: center;
+}
+
 /* #################################### Misc #################################### */
 .theme-choice-wrapper {
     /*            float:right;*/
