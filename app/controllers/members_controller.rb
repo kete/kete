@@ -40,7 +40,9 @@ class MembersController < ApplicationController
     end
 
     @default_sorting = {:order => 'roles_users.created_at', :direction => 'desc'}
-    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], ['users.resolved_name', 'users.login', 'roles_users.created_at', 'users.email'])
+    acceptable_sort_types = ['users.resolved_name', 'roles_users.created_at', 'users.email']
+    acceptable_sort_types << ['users.login'] if @site_admin
+    paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], acceptable_sort_types)
 
     # this sets up all instance variables
     # as well as preparing @members
