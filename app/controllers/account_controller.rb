@@ -111,6 +111,19 @@ class AccountController < ApplicationController
     render :action => 'signup'
   end
 
+  def fetch_gravatar
+    respond_to do |format|
+      format.js do
+        render :update do |page|
+          page.replace_html params[:avatar_id],
+                            avatar_tag(User.new({ :email => params[:email] }),
+                                                { :size => 30, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" },
+                                                { :width => 30, :height => 30, :alt => 'Your Gravatar. ' })
+        end
+      end
+    end
+  end
+
   def simple_captcha_valid?
     if params[:user][:security_code] != ''
       return true
