@@ -98,7 +98,7 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
     should "only show one search result when a comment is added to a related topic with moderation" do
       [@@site_basket, @new_basket].each do |basket|
         login_as('sarah')
-        
+
         turn_on_full_moderation(basket)
         create_a_topic_with_a_related_topic(basket)
 
@@ -159,11 +159,52 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
 
   end
 
+  context "a couple of related topics without moderation" do
+s
+    setup do
+      add_robert_as_regular_user
+      add_roberta_as_regular_user
+
+      login_as("roberta")
+
+      create_a_topic_with_a_related_topic(@@site_basket, :member => 'roberta')
+    end
+
+    should "have appropriate search results initially" do
+      [@topic, @related_topic].each do |t|
+        should_appear_once_in_search_results(t)
+      end
+    end
+
+    should "still have appropriate search results after numerous edits on each item" do
+      update_and_check_search_results(@topic)
+      should_appear_once_in_search_results(@related_topic)
+      update_and_check_search_results(@related_topic)
+      should_appear_once_in_search_results(@topic)
+    end
+
+    should "still have appropriate search results after numerous edits on each item with different users" do
+      update_and_check_search_results(@topic)
+      should_appear_once_in_search_results(@related_topic)
+
+      login_as("robert")
+
+      update_and_check_search_results(@related_topic)
+      should_appear_once_in_search_results(@topic)
+    end
+
+  end
+
   private
 
-    def create_a_topic_with_a_related_topic(basket = @@site_basket)
+    def create_a_topic_with_a_related_topic(basket = @@site_basket, options = {})
 
-      login_as('paul') if is_fully_moderated?(basket)
+      options = {
+        :member => 'paul',
+        :moderator => 'sarah'
+      }.merge!(options)
+
+      login_as(options[:member]) if is_fully_moderated?(basket)
 
       @topic = new_topic({ :title => "A topic" }, basket)
 
@@ -173,7 +214,7 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
       should_not_appear_in_search_results(@topic) if is_fully_moderated?(basket)
 
       if is_fully_moderated?(basket)
-        login_as('sarah')
+        login_as(options[:moderator])
         moderate_restore(@topic, :version => 1)
       end
 
@@ -181,14 +222,14 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
       should_appear_once_in_search_results(@topic)
 
       # Emulate clicking the "Create" link for related topics
-      login_as('paul') if is_fully_moderated?(basket)
+      login_as(options[:member]) if is_fully_moderated?(basket)
 
       @related_topic = new_item({ :new_path => "/#{basket.urlified_name}/topics/new?relate_to_topic=#{@topic.id}", :title => "A topic related to 'A topic'", :success_message => "Related Topic was successfully created." }, basket)
 
       should_not_appear_in_search_results(@related_topic) if is_fully_moderated?(basket)
 
       if is_fully_moderated?(basket)
-        login_as('sarah')
+        login_as(options[:moderator])
 
         moderate_restore(@related_topic, :version => 1)
         @related_topic.reload
@@ -200,6 +241,11 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
       body_should_contain "<a href=\"/#{basket.urlified_name}/topics/show/#{@related_topic.id}"
       should_appear_once_in_search_results(@topic)
       should_appear_once_in_search_results(@related_topic)
+    end
+
+    def update_and_check_search_results(item, title = "Changed items")
+      update_item(item, :title => title)
+      should_appear_once_in_search_results(item)
     end
 
     def is_fully_moderated?(basket)
