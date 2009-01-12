@@ -13,21 +13,37 @@ module ApplicationHelper
 
   # Controls needed for Gravatar support throughout the site
   include Avatar::View::ActionViewSupport
-  def avatar_for(user)
+  def avatar_for(user, options = {})
     image_dimension = IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i
     default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
+    options = default_options.merge(options)
 
     if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
-      return image_tag(user.portraits.first.thumbnail_file.public_filename, default_options)
+      return image_tag(user.portraits.first.thumbnail_file.public_filename, options)
     elsif ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT
-      return image_tag('no-avatar.png', default_options)
+      return image_tag('no-avatar.png', options)
     end
 
     if ENABLE_GRAVATAR_SUPPORT
-      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, default_options)
+      return avatar_tag(user, { :size => 50, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" }, options)
     end
 
     return ''
+  end
+
+  # Adds the necessary javascript to update a div with the id of user_avat
+  def avatar_updater_js(options = {})
+    options = options.merge({ :email_id => 'user_email', :avatar_id => 'user_avatar_img', :spinner_id => 'user_avatar_spinner' })
+    javascript_tag("
+      $('#{options[:email_id]}').observe('blur', function(event) {
+        new Ajax.Request('#{url_for(:controller => 'account', :action => 'fetch_gravatar')}', {
+          method: 'get',
+          parameters: { email: $('#{options[:email_id]}').value, avatar_id: '#{options[:avatar_id]}' },
+          onLoading: function(loading) { $('#{options[:spinner_id]}').show(); },
+          onComplete: function(complete) { $('#{options[:spinner_id]}').hide(); }
+        });
+      });
+    ")
   end
 
   def page_keywords

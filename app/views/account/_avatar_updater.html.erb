@@ -1,0 +1,29 @@
+<% if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT -%>
+  <img src="/images/indicator.gif" width="16" height="16" alt="Fetching Avatar. " id="user_avatar_spinner" style="display:none;" />
+  <table id="user_avatar_updater_table">
+  <tr>
+    <td id="user_avatar_img">
+      <% options = { :width => 30, :height => 30, :alt => 'Your Gravatar. ' } -%>
+      <% if !current_user.nil? && current_user != :false -%>
+        <%= avatar_for(current_user, options) -%>
+      <% else -%>
+        <%= image_tag('no-avatar.png', options) -%>
+      <% end -%>
+    </td>
+    <td>
+      <% if ENABLE_USER_PORTRAITS -%>
+        <% if !current_user.nil? && current_user != :false -%>
+          You may designate a picture you have uploaded to the site as your portrait from
+          <%= link_to('your profile page', :action => 'show') -%>.
+        <% else %>
+          You may designate a picture you have uploaded to the site as your portrait after you signup.
+        <% end -%>
+      <% end -%>
+      <% if ENABLE_GRAVATAR_SUPPORT -%>
+        This site supports <a href="http://gravatar.com/">Gravatar</a>.
+      <% end -%>
+    </td>
+  </tr>
+  </table>
+  <%= avatar_updater_js if ENABLE_GRAVATAR_SUPPORT -%>
+<% end -%>

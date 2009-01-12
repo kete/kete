@@ -11,7 +11,11 @@ namespace :deploy do
 
     desc "Stop backgroundrb server"
     task :stop, :roles => :app do
-      run "cd #{current_path} && script/backgroundrb stop"
+      begin
+        run "if [ -f #{current_path}/config/backgroundrb.yml ]; then cd #{current_path} && script/backgroundrb stop; fi"
+      rescue
+        puts "WARNING: Failed to stop Backgroundrb, but not fatal. Continuing with deployment."
+      end
     end
 
     desc "Restart backgroundrb server"

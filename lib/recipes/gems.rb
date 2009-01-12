@@ -6,12 +6,12 @@ namespace :deploy do
 
     desc 'Install Required Gems'
     task :install, :role => :app do
-      run "cd #{current_path} && sudo rake manage_gems:required:install"
+      sudo "rake -f #{current_path}/Rakefile manage_gems:required:install"
     end
 
     desc 'Update Required Gems'
     task :update, :role => :app do
-      run "cd #{current_path} && sudo rake manage_gems:required:update"
+      sudo "rake -f #{current_path}/Rakefile manage_gems:required:update"
     end
 
   end
