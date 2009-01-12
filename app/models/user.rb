@@ -96,6 +96,9 @@ class User < ActiveRecord::Base
 
   before_save :encrypt_password
 
+  # Create the resolved name based on the display name or login
+  before_save :display_name_or_login
+
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     # hide records with a nil activated_at
@@ -186,14 +189,7 @@ class User < ActiveRecord::Base
   end
 
   def user_name
-    user_name_field = EXTENDED_FIELD_FOR_USER_NAME
-    extended_content_hash = self.xml_attributes_without_position
-    @user_name = self.login
-    if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field]['value'].blank?
-      # most likely have to pull the other attributes out
-      @user_name = extended_content_hash[user_name_field]['value'].strip
-    end
-    return @user_name
+    self.resolved_name
   end
 
   def show_email?
@@ -288,6 +284,10 @@ class User < ActiveRecord::Base
 
   def password_required?
     crypted_password.blank? || !password.blank?
+  end
+
+  def display_name_or_login
+    self.resolved_name = (self.display_name || self.login)
   end
 
   private
