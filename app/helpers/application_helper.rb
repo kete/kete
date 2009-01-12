@@ -35,14 +35,12 @@ module ApplicationHelper
   def avatar_updater_js(options = {})
     options = options.merge({ :email_id => 'user_email', :avatar_id => 'user_avatar_img', :spinner_id => 'user_avatar_spinner' })
     javascript_tag("
-      $('#{options[:email_id]}').observe('blur', function(event){
-        // if we dont have something that looks like an email, don't make a request
-        if (!$('#{options[:email_id]}').value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i)) { return true; }
+      $('#{options[:email_id]}').observe('blur', function(event) {
         new Ajax.Request('#{url_for(:controller => 'account', :action => 'fetch_gravatar')}', {
           method: 'get',
           parameters: { email: $('#{options[:email_id]}').value, avatar_id: '#{options[:avatar_id]}' },
           onLoading: function(loading) { $('#{options[:spinner_id]}').show(); },
-          onComplete: function(complete) { $('#{options[:spinner_id]}').hide(); },
+          onComplete: function(complete) { $('#{options[:spinner_id]}').hide(); }
         });
       });
     ")
