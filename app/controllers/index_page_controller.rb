@@ -10,6 +10,7 @@ class IndexPageController < ApplicationController
       redirect_to_all_for(@current_basket.index_page_redirect_to_all)
     else
       @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
+      @allow_private = (@privacy_type == 'private')
 
       # Kieran Pilkington, 2008/08/06
       # Load the index page everytime (for now atleast, until a better title caching system is in place)
@@ -80,31 +81,25 @@ class IndexPageController < ApplicationController
           # exclude index_topic
           if @recent_topics_limit > 0
             args = { :limit => @recent_topics_limit, :include => :versions }
+            args[:conditions] = ["id != ?", @topic] if @topic
             @recent_topics_items = nil
-            if @privacy_type == 'private'
-              # not DRY, but the other way was pulling in all topics for a basket before limiting it
-              if @current_basket == @site_basket
-                @recent_topics_items = Topic.recent(args)
-              else
-                @recent_topics_items = @current_basket.topics.recent(args)
+            if @current_basket == @site_basket
+              @recent_topics_items = @allow_private ? Topic.recent(args) : Topic.recent(args).public
+              @recent_topics_items.reject! do |topic|
+                topic.basket != @site_basket && topic.basket.settings[:recent_topics_display].blank?
               end
             else
-              if @current_basket == @site_basket
-                @recent_topics_items = Topic.recent(args).public
-              else
-                @recent_topics_items = @current_basket.topics.recent(args).public
-              end
+              @recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
             end
-            @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @privacy_type == 'private'
+            @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @allow_private
             logger.debug("recent_topics_items after latest version: " + @recent_topics_items.inspect)
-
             @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
             # with the final topic, sort by the revisions created_at, rather than the public topics created_at
             @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
           end
 
           if @current_basket.index_page_number_of_tags > 0
-            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, (@privacy_type == 'private'))
+            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, @allow_private)
             @tag_counts_size = @tag_counts_array.size
             @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
           end
