@@ -101,12 +101,12 @@ class ActionController::IntegrationTest
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert (occurances == options[:number_of_times]),
-             "Body should contain '#{text}' #{options[:number_of_times]} times, but has #{occurances}."
+             (options[:message] || "Body should contain '#{text}' #{options[:number_of_times]} times, but has #{occurances}.")
     else
       if text.kind_of?(Regexp)
-        assert (response_body =~ text), "Body should contain '#{text}', but does not."
+        assert (response_body =~ text), (options[:message] || "Body should contain '#{text}', but does not.")
       else
-        assert response_body.include?(text), "Body should contain '#{text}', but does not."
+        assert response_body.include?(text), (options[:message] || "Body should contain '#{text}', but does not.")
       end
     end
   end
@@ -125,12 +125,12 @@ class ActionController::IntegrationTest
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert !(occurances == options[:number_of_times]),
-             "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
+             (options[:message] || "Body should not contain '#{text}' #{options[:number_of_times]} times, but does.")
     else
       if text.kind_of?(Regexp)
-        assert !(response_body =~ text), "Body should not contain '#{text}', but does."
+        assert !(response_body =~ text), (options[:message] || "Body should not contain '#{text}', but does.")
       else
-        assert !response_body.include?(text), "Body should not contain '#{text}', but does."
+        assert !response_body.include?(text), (options[:message] || "Body should not contain '#{text}', but does.")
       end
     end
   end

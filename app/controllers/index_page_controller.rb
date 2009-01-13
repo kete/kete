@@ -9,7 +9,7 @@ class IndexPageController < ApplicationController
     if !@current_basket.index_page_redirect_to_all.blank?
       redirect_to_all_for(@current_basket.index_page_redirect_to_all)
     else
-      @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
+      @privacy_type = @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? ? 'private' : 'public'
       @allow_private = (@privacy_type == 'private')
 
       # Kieran Pilkington, 2008/08/06

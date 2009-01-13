@@ -228,31 +228,42 @@ class CachingTest < ActionController::IntegrationTest
 
       end
 
-      context "and archive by type is enabled and it has one public and one private item, it" do
+    end
 
-        setup do
-          @@cache_basket.update_attributes({ :index_page_archives_as => 'by type' })
-          @topic1 = new_topic({ :title => 'Public Item' }, @@cache_basket)
-          @topic2 = new_topic({ :title => 'Private Item', :private_true => true }, @@cache_basket)
+    context "when privacy options and archive by type are enabled, and the basket has one public and one private item, it" do
+
+      setup do
+        [@@site_basket, @@cache_basket].each do |basket|
+          basket.update_attributes({ :show_privacy_controls => true, :index_page_archives_as => 'by type' })
+          @topic1 = new_topic({ :title => 'Public Item' }, basket)
+          @topic2 = new_topic({ :title => 'Private Item', :private_true => true }, basket)
         end
+      end
 
-        teardown do
-          @@site_basket.update_attributes({ :index_page_archives_as => 'by type' })
+      teardown do
+        [@@site_basket, @@cache_basket].each do |basket|
+          basket.update_attributes({ :show_privacy_controls => false, :index_page_archives_as => '' })
         end
+      end
 
-        should "show the private links to users with permission" do
-          visit '/cache_basket'
-          body_should_contain Regexp.new("\\( <a (.+)>(\\d)</a> \\| private: <a (.+)>(\\d)</a> \\)")
+      should "show the private links to users with permission" do
+        [@@site_basket, @@cache_basket].each do |basket|
+          visit "/#{basket.urlified_name}"
+          body_should_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\| private: <a (.+)>(\\d+)</a> \\)"),
+                              :message => "Both public and private links should be visible on the #{basket.name} basket, but arn't."
         end
+      end
 
-        should "not show the private links if the user doesn't have permission" do
-          visit '/cache_basket' # as admin to populate private cache
+      should "not show the private links if the user doesn't have permission" do
+        [@@site_basket, @@cache_basket].each do |basket|
+          visit "/#{basket.urlified_name}" # as admin to populate private cache
           logout
-          visit '/cache_basket'
-          body_should_not_contain Regexp.new("\\( <a (.+)>(\\d)</a> \\| private: <a (.+)>(\\d)</a> \\)")
-          body_should_contain Regexp.new("\\( <a (.+)>(\\d)</a> \\)")
+          visit "/#{basket.urlified_name}"
+          body_should_not_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\| private: <a (.+)>(\\d+)</a> \\)"),
+                                  :message => "Public and private links together should not be visible on the #{basket.name} basket, but they are."
+          body_should_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\)"),
+                              :message => "The public link should be visible on the #{basket.name} basket, but isn't."
         end
-
       end
 
     end
