@@ -17,9 +17,11 @@ namespace :kete do
                     'kete:upgrade:correct_basket_defaults',
                     'kete:upgrade:set_default_join_and_memberlist_policies',
                     'kete:upgrade:make_baskets_approved_if_status_null',
+                    'kete:upgrade:ignore_default_baskets_if_setting_not_set',
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private',
-                    'kete:tools:remove_robots_txt']
+                    'kete:tools:remove_robots_txt',
+                    'kete:upgrade:move_user_name_to_display_and_resolved_name']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -185,6 +187,46 @@ namespace :kete do
       end
     end
 
+    desc 'Make about, documentation, and help baskets ignore on the site basket recent topics if not done yet.'
+    task :ignore_default_baskets_if_setting_not_set => :environment do
+      Basket.find_all_by_urlified_name(['about', 'documentation', 'help']).each do |basket|
+        if basket.settings[:disable_site_recent_topics_display].class == NilClass
+          basket.settings[:disable_site_recent_topics_display] = true
+        end
+      end
+    end
+
+    desc 'Transfer the old user names in the extended content fields into the display/resolved name fields on the users table, and remove the user name field mapping for Users'
+    task :move_user_name_to_display_and_resolved_name => :environment do
+      user_count = 0
+      already_set_resolved_name = false
+      User.find(:all, :conditions => { :resolved_name => '' }).each do |user|
+        already_set_resolved_name = true unless user.resolved_name.blank?
+
+        unless already_set_resolved_name
+
+          unless user.display_name.nil?
+            user_name_field = EXTENDED_FIELD_FOR_USER_NAME
+            extended_content_hash = user.xml_attributes_without_position
+            if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field]['value'].blank?
+              user.display_name = extended_content_hash[user_name_field]['value'].strip
+              extended_content_hash = extended_content_hash.delete(user_name_field)
+              user.extended_content_values = extended_content_hash
+            end
+          end
+          user.resolved_name = user.login # this will get rewritten using an before save callback on the User model
+          user.save!
+          user_count += 1
+        end
+      end
+      # finally, lets removing the user name field mapping to prevent new user names from being set
+      content_type_id = ContentType.find_by_class_name('User').id
+      extended_field_id = ExtendedField.find_by_label('User Name').id
+      content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
+      content_mapping.destroy unless content_mapping.nil?
+      p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
+    end
+
     desc 'Checks for mimetypes an adds them if needed.'
     task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
                                      'kete:upgrade:add_aiff_to_audio_recordings',
@@ -290,6 +332,6 @@ namespace :kete do
         end
       end
     end
-  
+
   end
 end

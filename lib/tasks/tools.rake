@@ -11,5 +11,18 @@ namespace :kete do
       path = "#{RAILS_ROOT}/public/robots.txt"
       File.delete(path) if File.exist?(path)
     end
+
+    desc 'Resets the database and zebra to their preconfigured state.'
+    task :reset => ['kete:tools:reset:zebra', 'db:bootstrap']
+    namespace :reset do
+
+      desc 'Stops and clears zebra'
+      task :zebra => :environment do
+        Rake::Task["zebra:stop"].invoke
+        Rake::Task["zebra:init"].invoke
+        ENV['ZEBRA_DB'] = 'private'
+        Rake::Task["zebra:init"].execute(ENV)
+      end
+    end
   end
 end

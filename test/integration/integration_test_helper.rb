@@ -101,12 +101,12 @@ class ActionController::IntegrationTest
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert (occurances == options[:number_of_times]),
-             "Body should contain '#{text}' #{options[:number_of_times]} times, but has #{occurances}."
+             (options[:message] || "Body should contain '#{text}' #{options[:number_of_times]} times, but has #{occurances}.")
     else
       if text.kind_of?(Regexp)
-        assert (response_body =~ text), "Body should contain '#{text}', but does not."
+        assert (response_body =~ text), (options[:message] || "Body should contain '#{text}', but does not.")
       else
-        assert response_body.include?(text), "Body should contain '#{text}', but does not."
+        assert response_body.include?(text), (options[:message] || "Body should contain '#{text}', but does not.")
       end
     end
   end
@@ -125,12 +125,12 @@ class ActionController::IntegrationTest
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert !(occurances == options[:number_of_times]),
-             "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
+             (options[:message] || "Body should not contain '#{text}' #{options[:number_of_times]} times, but does.")
     else
       if text.kind_of?(Regexp)
-        assert !(response_body =~ text), "Body should not contain '#{text}', but does."
+        assert !(response_body =~ text), (options[:message] || "Body should not contain '#{text}', but does.")
       else
-        assert !response_body.include?(text), "Body should not contain '#{text}', but does."
+        assert !response_body.include?(text), (options[:message] || "Body should not contain '#{text}', but does.")
       end
     end
   end
@@ -143,9 +143,10 @@ class ActionController::IntegrationTest
     save_and_open_page if options[:dump_response]
     response_body = response.body.squish
     parts = response_body.split(divider).compact.flatten
+    offset = options[:offset] ? options[:offset] : 0
     parts.each_with_index do |part,index|
-      next if text_array[index].nil?
-      assert part.include?(text_array[index]), "#{text_array[index]} is not in the right order it should be."
+      next if (index - offset) < 0 || text_array[(index - offset)].nil?
+      assert part.include?(text_array[(index - offset)]), "#{text_array[(index - offset)]} is not in the right order it should be."
     end
   end
 

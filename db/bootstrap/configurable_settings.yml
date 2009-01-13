@@ -1,0 +1,22 @@
+---
+configurable_settings_001:
+  id: "1"
+  configurable_id: 2
+  configurable_type: Basket
+  name: disable_site_recent_topics_display
+  value_type: TrueClass
+  value: "--- true\n"
+configurable_settings_002:
+  id: "2"
+  configurable_id: 3
+  configurable_type: Basket
+  name: disable_site_recent_topics_display
+  value_type: TrueClass
+  value: "--- true\n"
+configurable_settings_003:
+  id: "3"
+  configurable_id: 4
+  configurable_type: Basket
+  name: disable_site_recent_topics_display
+  value_type: TrueClass
+  value: "--- true\n"

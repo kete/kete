@@ -8,7 +8,7 @@
       <td class="member_avatar"><%= avatar_for user -%></td>
       <td class="member_username">
         <%= link_to_contributions_of(user,'Topic') -%>
-        <%= "<br />(#{user.login})" unless user.user_name == user.login -%>
+        <%= "<br />(#{user.login})" if @site_admin && user.user_name != user.login -%>
       </td>
       <td class="member_joined">
         <%= get_user_role_creation_date_for(user, @listing_type, @current_basket) -%>

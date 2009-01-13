@@ -20,6 +20,11 @@
 </div>
 
 <div class="form-element">
+<label for="user_display_name">User Name:</label> <%= f.text_field :display_name, :tabindex => '1' %>
+<div class="form_example">This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".</div>
+</div>
+
+<div class="form-element">
   <label for="allow_emails">Allow Emails from other users:</label>
   <%= f.check_box :allow_emails, :tabindex => '1' %>
 </div>

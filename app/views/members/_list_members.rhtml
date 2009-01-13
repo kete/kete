@@ -11,7 +11,7 @@
       <td class="member-avatar"><%= avatar_for user -%></td>
       <td>
         <%= link_to_contributions_of(user,'Topic') -%>
-        <%= "<br />(#{user.login})" unless user.user_name == user.login -%>
+        <%= "<br />(#{user.login})" if @site_admin && user.user_name != user.login -%>
       </td>
       <% if @basket_admin -%>
       <td>
