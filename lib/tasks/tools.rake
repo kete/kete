@@ -21,7 +21,7 @@ namespace :kete do
         Rake::Task["zebra:stop"].invoke
         Rake::Task["zebra:init"].invoke
         ENV['ZEBRA_DB'] = 'private'
-        Rake::Task["zebra:init"].invoke
+        Rake::Task["zebra:init"].execute(ENV)
       end
     end
   end
