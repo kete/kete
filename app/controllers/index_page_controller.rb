@@ -80,12 +80,13 @@ class IndexPageController < ApplicationController
 
           if @recent_topics_limit > 0
             # get an array of baskets that we need to exclude from the site recent topics list
-            disabled_recent_topics_baskets = nil
+            disabled_recent_topics_baskets = Array.new
             if @current_basket == @site_basket
-              disabled_recent_topics_baskets = ConfigurableSetting.find_all_by_name_and_value('disable_site_recent_topics_display', true.to_yaml, :conditions => ["configurable_id != ?", @site_basket])
-              disabled_recent_topics_baskets = disabled_recent_topics_baskets.collect { |setting| setting.configurable_id }
+              disabled_recent_topics_baskets = ConfigurableSetting.find_all_by_name_and_value('disable_site_recent_topics_display', true.to_yaml, :select => :configurable_id, :conditions => ["configurable_id != ?", @site_basket])
+              disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
             end
-            disabled_recent_topics_baskets = nil if disabled_recent_topics_baskets.blank?
+            # If we have a blank array, reset it to nil so later on, it'll default to 0 (instead of causing the SQL to return nothing)
+            disabled_recent_topics_baskets = nil unless disabled_recent_topics_baskets.size > 0
 
             # form our find arguments
             args = { :limit => @recent_topics_limit, :include => :versions }
