@@ -1,11 +1,10 @@
-<% pretty_function = pretty_function
-   @title = "#{@verb || pretty_function} related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}" -%>
+<% @title = "#{@verb} related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}" -%>
 <% item_class = params[:related_class].tableize.humanize.downcase.pluralize %>
 <!-- Params: <%= params.inspect %> -->
 
 <fieldset>
 
-  <legend><%= @verb || pretty_function %> related <%= item_class -%></legend>
+  <legend><%= @verb %> related <%= item_class -%></legend>
 
   <% if params[:function] == "add" %>
 
@@ -53,13 +52,13 @@
                                  :target => '_blank' %></li>
     <% end %>
   </ul>
-  
+
   <div class="prev-next">
     <%# Pagination for search results %>
     <%= will_paginate @results, :params => params.reject { |k, v| k == :page } if @results.respond_to?(:total_entries) %>
   </div>
 
-  <%= submit_tag pretty_function %>
+  <%= submit_tag params[:function].capitalize %>
 
   </form>
 
