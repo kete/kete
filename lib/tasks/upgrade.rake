@@ -188,24 +188,33 @@ namespace :kete do
 
     desc 'Transfer the old user names in the extended content fields into the display/resolved name fields on the users table, and remove the user name field mapping for Users'
     task :move_user_name_to_display_and_resolved_name => :environment do
-      User.all.each do |user|
-        unless user.display_name.nil?
-          user_name_field = EXTENDED_FIELD_FOR_USER_NAME
-          extended_content_hash = user.xml_attributes_without_position
-          if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field]['value'].blank?
-            user.display_name = extended_content_hash[user_name_field]['value'].strip
-            extended_content_hash = extended_content_hash.delete(user_name_field)
-            user.extended_content_values = extended_content_hash
+      user_count = 0
+      already_set_resolved_name = false
+      User.find(:all, :conditions => { :resolved_name => '' }).each do |user|
+        already_set_resolved_name = true unless user.resolved_name.blank?
+
+        unless already_set_resolved_name
+
+          unless user.display_name.nil?
+            user_name_field = EXTENDED_FIELD_FOR_USER_NAME
+            extended_content_hash = user.xml_attributes_without_position
+            if !extended_content_hash.blank? && !extended_content_hash[user_name_field].blank? && !extended_content_hash[user_name_field]['value'].blank?
+              user.display_name = extended_content_hash[user_name_field]['value'].strip
+              extended_content_hash = extended_content_hash.delete(user_name_field)
+              user.extended_content_values = extended_content_hash
+            end
           end
+          user.resolved_name = user.login # this will get rewritten using an before save callback on the User model
+          user.save!
+          user_count += 1
         end
-        user.resolved_name = user.login # this will get rewritten using an before save callback on the User model
-        user.save!
       end
       # finally, lets removing the user name field mapping to prevent new user names from being set
       content_type_id = ContentType.find_by_class_name('User').id
       extended_field_id = ExtendedField.find_by_label('User Name').id
       content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
       content_mapping.destroy unless content_mapping.nil?
+      p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
     end
 
     desc 'Checks for mimetypes an adds them if needed.'
@@ -313,6 +322,6 @@ namespace :kete do
         end
       end
     end
-  
+
   end
 end
