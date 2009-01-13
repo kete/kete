@@ -53,8 +53,9 @@
 
 <div class="profile_content_left">
   <p>
-    <strong>Login:</strong>
-    <%= h(@user.login) -%>
+    <strong>User name:</strong>
+    <%= h(@user.user_name) -%>
+    <%= "(#{@user.login})" if @site_admin && @user.user_name != @user.login -%>
   </p>
 
   <% if @user.show_email? || @viewer_is_user -%>

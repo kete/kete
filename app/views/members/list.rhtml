@@ -34,7 +34,12 @@
 <p>
   <table class="members-list-table">
     <tr valign="top">
-      <th colspan="2" abbr="Login" class="member_login"><%= search_sorting_controls_for('User name and/or Login', 'users.login', false) -%></th>
+      <th colspan="2" abbr="Login" class="member_login">
+        <%= search_sorting_controls_for('User name', 'users.resolved_name', false) -%>
+        <% if @site_admin -%>
+          or <%= search_sorting_controls_for('Login', 'users.login', false) -%>
+        <% end -%>
+      </th>
       <th abbr="Joined" class="member_joined"><%= search_sorting_controls_for('Joined', 'roles_users.created_at', true, 'desc') -%></th>
 
       <% if @site_admin -%>

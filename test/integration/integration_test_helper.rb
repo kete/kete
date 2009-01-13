@@ -143,9 +143,10 @@ class ActionController::IntegrationTest
     save_and_open_page if options[:dump_response]
     response_body = response.body.squish
     parts = response_body.split(divider).compact.flatten
+    offset = options[:offset] ? options[:offset] : 0
     parts.each_with_index do |part,index|
-      next if text_array[index].nil?
-      assert part.include?(text_array[index]), "#{text_array[index]} is not in the right order it should be."
+      next if (index - offset) < 0 || text_array[(index - offset)].nil?
+      assert part.include?(text_array[(index - offset)]), "#{text_array[(index - offset)]} is not in the right order it should be."
     end
   end
 
