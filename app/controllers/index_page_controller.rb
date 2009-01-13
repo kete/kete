@@ -78,22 +78,36 @@ class IndexPageController < ApplicationController
           @recent_topics_limit = @current_basket.index_page_number_of_recent_topics
           @recent_topics_limit = 0 if @recent_topics_limit.blank?
 
-          # exclude index_topic
           if @recent_topics_limit > 0
+            # get an array of baskets that we need to exclude from the site recent topics list
+            disabled_recent_topics_baskets = nil
+            if @current_basket == @site_basket
+              disabled_recent_topics_baskets = ConfigurableSetting.find_all_by_name_and_value('disable_site_recent_topics_display', true.to_yaml, :conditions => ["configurable_id != ?", @site_basket])
+              disabled_recent_topics_baskets = disabled_recent_topics_baskets.collect { |setting| setting.configurable_id }
+            end
+            disabled_recent_topics_baskets = nil if disabled_recent_topics_baskets.blank?
+
+            # form our find arguments
             args = { :limit => @recent_topics_limit, :include => :versions }
-            args[:conditions] = ["id != ?", @topic] if @topic
+            args[:conditions] = ["basket_id NOT IN (?) AND id != ?", (disabled_recent_topics_baskets || 0), (@topic || 0)]
+
+            # Make the find query based on current basket and privacy level
             @recent_topics_items = nil
             if @current_basket == @site_basket
               @recent_topics_items = @allow_private ? Topic.recent(args) : Topic.recent(args).public
-              @recent_topics_items.reject! do |topic|
-                topic.basket != @site_basket && topic.basket.settings[:recent_topics_display].blank?
-              end
             else
               @recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
             end
+
+            # If the current user is allowed to see private items, and a private item is the most recent version
+            # collect either the private version or the public one
             @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @allow_private
+
             logger.debug("recent_topics_items after latest version: " + @recent_topics_items.inspect)
+
+            # If the version we have isn't available, remove it
             @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
+
             # with the final topic, sort by the revisions created_at, rather than the public topics created_at
             @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
           end

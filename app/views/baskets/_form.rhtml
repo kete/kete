@@ -234,15 +234,15 @@
   <% if @basket != @site_basket %>
     <div class="form-element">
       <label>
-        Recent Topics Display:<br />
+        Disable Site Recent Topics Display:<br />
         <small>(this setting is not inherited from site basket)</small>
       </label>
 
       <fieldset>
 
         <div class="form-element">
-          <%= check_box 'settings', 'recent_topics_display', {:checked => (@basket.settings[:recent_topics_display] == true), :tabindex => '1'}, 'true', 'false' %>
-          <label for="settings_recent_topics_display" class="inline">Show new/edited topics in recent results on the Site basket?</label>
+          <%= check_box 'settings', 'disable_site_recent_topics_display', {:checked => (@basket.settings[:disable_site_recent_topics_display] == true), :tabindex => '1'}, 'true', 'false' %>
+          <label for="settings_disable_site_recent_topics_display" class="inline">Do not show new/edited topics in recent results on the Site basket?</label>
         </div>
 
       </fieldset>

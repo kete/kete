@@ -98,10 +98,10 @@ class HomepageTest < ActionController::IntegrationTest
   private
 
   def verify_site_basket_recent_topics(text, basket)
-    basket.settings[:recent_topics_display] = true
+    basket.settings[:disable_site_recent_topics_display] = false
     visit '/site'
     body_should_contain text
-    basket.settings[:recent_topics_display] = false
+    basket.settings[:disable_site_recent_topics_display] = true
     visit '/site'
     body_should_not_contain text
   end

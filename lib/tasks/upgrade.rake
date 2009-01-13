@@ -17,6 +17,7 @@ namespace :kete do
                     'kete:upgrade:correct_basket_defaults',
                     'kete:upgrade:set_default_join_and_memberlist_policies',
                     'kete:upgrade:make_baskets_approved_if_status_null',
+                    'kete:upgrade:ignore_default_baskets_if_setting_not_set',
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt']
@@ -181,6 +182,15 @@ namespace :kete do
           basket.status = 'approved'
           basket.creator_id = 1
           basket.save
+        end
+      end
+    end
+
+    desc 'Make about, documentation, and help baskets ignore on the site basket recent topics if not done yet.'
+    task :ignore_default_baskets_if_setting_not_set => :environment do
+      Basket.find_all_by_urlified_name(['about', 'documentation', 'help']).each do |basket|
+        if basket.settings[:disable_site_recent_topics_display].class == NilClass
+          basket.settings[:disable_site_recent_topics_display] = true
         end
       end
     end
