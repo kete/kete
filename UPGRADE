@@ -39,7 +39,8 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 2.      Upgrade your code base
 3.      Run the migrations: 'rake db:migrate'
 4.      Run Kete upgrade: 'rake kete:upgrade'
-4.      Start your Kete server again (mongrels or mod_rails)
+5.      Start your Kete server again (mongrels or mod_rails)
+6.      Restart backgrounrb
 
 == 2008/12/09 - Webrat integration tests
 
