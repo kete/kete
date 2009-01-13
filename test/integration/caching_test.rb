@@ -228,6 +228,33 @@ class CachingTest < ActionController::IntegrationTest
 
       end
 
+      context "and archive by type is enabled and it has one public and one private item, it" do
+
+        setup do
+          @@cache_basket.update_attributes({ :index_page_archives_as => 'by type' })
+          @topic1 = new_topic({ :title => 'Public Item' }, @@cache_basket)
+          @topic2 = new_topic({ :title => 'Private Item', :private_true => true }, @@cache_basket)
+        end
+
+        teardown do
+          @@site_basket.update_attributes({ :index_page_archives_as => 'by type' })
+        end
+
+        should "show the private links to users with permission" do
+          visit '/cache_basket'
+          body_should_contain Regexp.new("\\( <a (.+)>(\\d)</a> \\| private: <a (.+)>(\\d)</a> \\)")
+        end
+
+        should "not show the private links if the user doesn't have permission" do
+          visit '/cache_basket' # as admin to populate private cache
+          logout
+          visit '/cache_basket'
+          body_should_not_contain Regexp.new("\\( <a (.+)>(\\d)</a> \\| private: <a (.+)>(\\d)</a> \\)")
+          body_should_contain Regexp.new("\\( <a (.+)>(\\d)</a> \\)")
+        end
+
+      end
+
     end
 
   end
