@@ -30,7 +30,7 @@
            end
          else
            # we don't want to allow admins to change roles if they are the only one
-           users_possible_roles = Hash.new if !@current_basket.more_than_one_basket_admin?
+           users_possible_roles = Hash.new if @current_basket != @site_basket && !@current_basket.more_than_one_basket_admin?
          end
          -%>
       <%= render :partial =>'possible_roles',
