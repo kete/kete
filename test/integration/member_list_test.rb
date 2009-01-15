@@ -44,6 +44,26 @@ class MemberListTest < ActionController::IntegrationTest
 
     end
 
+    context 'when there is one basket admin for the site basket, a site admin' do
+
+      setup do
+        add_jane_as_admin_to(@@site_basket)
+      end
+
+      should 'be able to promote that single basket admin for site basket to site admin ' do
+        visit '/site/members/list'
+        click_link '1 administrator'
+        body_should_contain 'jane'
+        body_should_contain Regexp.new("<a .+(change_membership_type).+(role=site_admin).+>Site Admin</a>")
+        click_link 'Site Admin'
+        # goes to site member list after changing the user's role
+        # flash message plus new number for role should indicate that our change role was successful
+        body_should_contain '2 site administrators'
+        # thought there was a specific macro for flash, but can't find it
+        body_should_contain 'User successfully changed role.'
+      end
+    end
+
     # This wraps 9 different tests of relativly same testing pattern into an easy to manage loop
     member_roles = [
       ['Basket admin', 'at least admin', 'admin'],
