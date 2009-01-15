@@ -206,13 +206,13 @@ module ExtendedContent
           field = mapping.extended_field
           
           if field.multiple?
-            value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') + "_multiple" }
+            value_pairs = extended_content_pairs.select { |k, v| k == field.label_for_params + "_multiple" }
             
             # Remember to reject anything we use for signalling.
             values = value_pairs.map { |k, v| v }.flatten
             validate_extended_content_multiple_values(mapping, values)
           else
-            value_pairs = extended_content_pairs.select { |k, v| k == field.label.downcase.gsub(/\s/, '_') }
+            value_pairs = extended_content_pairs.select { |k, v| k == field.label_for_params }
             values = value_pairs.map { |k, v| v }
             validate_extended_content_single_value(mapping, values.first)
           end
@@ -246,7 +246,7 @@ module ExtendedContent
           errors.add_to_base("#{extended_field_mapping.extended_field.label} must have at least one value")
         else
           
-          # Delete to specialized method..
+          # Delegate to specialized method..
           error_array = values.map do |v|
             send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
               extended_field_mapping, v.to_s)
