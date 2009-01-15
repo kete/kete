@@ -72,6 +72,27 @@ module FlaggingController
       # unlike flag_version, we create a new version
       # so we track the restore in our version history
       @item.revert_to(@version)
+      
+      # James - 2009-01-16
+      # If the version we're restoring to is invalid, then the moderator must improve the content
+      # to make it valid before restoring the version.
+      # unless true
+        name_for_params = @item.class.table_name.singularize
+        eval("@#{name_for_params} = @item")
+        @editing = true
+        
+        # We need topic types for editing a topic
+        @topic_types = @topic.topic_type.full_set if @item.is_a?(Topic)
+        
+        # Set the version comment
+        params[name_for_params.to_sym] = {}
+        params[name_for_params.to_sym][:version_comment] = "Content from revision # #{@version}."
+        
+        flash[:notice] = "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing."
+        render :action => 'edit'
+        return true
+      # end
+      
       @item.tag_list = @item.raw_tag_list
       @item.version_comment = "Content from revision \# #{@version}."
       @item.do_not_moderate = true

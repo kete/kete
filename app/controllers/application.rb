@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
   before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore, :add_tags ]
 
   # we often need baskets for edits
-  before_filter :load_array_of_baskets, :only => [ :edit, :update ]
+  before_filter :load_array_of_baskets, :only => [ :edit, :update, :restore ]
 
   # only site_admin can set item.do_not_sanitize to true
   before_filter :security_check_of_do_not_sanitize, :only => [ :create, :update ]
