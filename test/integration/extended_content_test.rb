@@ -2,83 +2,83 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class ExtendedContentTest < ActionController::IntegrationTest
 
-  # context "some configured extended fields on topics" do
-  #   
-  #   setup do
-  #     @@extended_fields, @@topic_types = [], []
-  #     
-  #     add_james_as_super_user
-  #     login_as("james")
-  #     
-  #     @with_optional_field = configure_new_topic_type_with_extended_field
-  #     @with_required_field = configure_new_topic_type_with_extended_field(
-  #       :extended_field_label => "Required extended data",
-  #       :extended_field_value_required => true,
-  #       :topic_type_name => "Required test topic type"
-  #     )
-  #   end
-  #   
-  #   teardown do
-  #     (Topic.find(:all) + @@extended_fields + @@topic_types).each do |item|
-  #       item.destroy
-  #     end
-  #   end
-  #   
-  #   should "be able to create a record with optional extended content" do
-  #     topic = new_topic :title => "Topic with optional extended content", :topic_type => "Test topic type" do
-  #       fill_in "Extended data", :with => "Test value"
-  #     end
-  #     
-  #     body_should_contain "Extended data"
-  #     body_should_contain "Test value"
-  #     
-  #     # Check that we can update the topic
-  #     visit "/site/topics/edit/#{topic.to_param}"
-  #     fill_in "Extended data", :with => "Different value"
-  #     click_button "Update"
-  #     
-  #     body_should_contain "Extended data"
-  #     body_should_contain "Different value"
-  #     body_should_not_contain "Test value"
-  #   end
-  #   
-  #   should "be able to create a record with required extended content" do
-  #     topic = new_topic :title => "Topic with required extended content", :topic_type => "Required test topic type" do
-  #       fill_in "Required extended data", :with => "Test value"
-  #     end
-  #     
-  #     body_should_contain "Required extended data"
-  #     body_should_contain "Test value"
-  #     
-  #     # Check that we can update the topic
-  #     visit "/site/topics/edit/#{topic.to_param}"
-  #     fill_in "Required extended data", :with => "Different value"
-  #     click_button "Update"
-  #     
-  #     body_should_contain "Required extended data"
-  #     body_should_contain "Different value"
-  #     body_should_not_contain "Test value"
-  #         
-  #     # Check that validations work
-  #     visit "/site/topics/edit/#{topic.to_param}"
-  #     fill_in "Required extended data", :with => ""
-  #     click_button "Update"
-  #     
-  #     body_should_contain "Required extended data cannot be blank"
-  #   end
-  #   
-  #   should "raise validation error when missing required extended content" do
-  #     visit "/site/topics/new"
-  #     select(/Required test topic type/, :from => "topic_topic_type_id")
-  #     click_button "Choose Type"
-  #     fill_in "Title", :with => "Topic missing required extended content"
-  #     fill_in "Description", :with => "Test description"
-  #     click_button "Create"
-  #     
-  #     body_should_contain "Required extended data cannot be blank"
-  #   end
-  # 
-  # end
+  context "some configured extended fields on topics" do
+    
+    setup do
+      @@extended_fields, @@topic_types = [], []
+      
+      add_james_as_super_user
+      login_as("james")
+      
+      @with_optional_field = configure_new_topic_type_with_extended_field
+      @with_required_field = configure_new_topic_type_with_extended_field(
+        :extended_field_label => "Required extended data",
+        :extended_field_value_required => true,
+        :topic_type_name => "Required test topic type"
+      )
+    end
+    
+    teardown do
+      (Topic.find(:all) + @@extended_fields + @@topic_types).each do |item|
+        item.destroy
+      end
+    end
+    
+    should "be able to create a record with optional extended content" do
+      topic = new_topic :title => "Topic with optional extended content", :topic_type => "Test topic type" do
+        fill_in "Extended data", :with => "Test value"
+      end
+      
+      body_should_contain "Extended data"
+      body_should_contain "Test value"
+      
+      # Check that we can update the topic
+      visit "/site/topics/edit/#{topic.to_param}"
+      fill_in "Extended data", :with => "Different value"
+      click_button "Update"
+      
+      body_should_contain "Extended data"
+      body_should_contain "Different value"
+      body_should_not_contain "Test value"
+    end
+    
+    should "be able to create a record with required extended content" do
+      topic = new_topic :title => "Topic with required extended content", :topic_type => "Required test topic type" do
+        fill_in "Required extended data", :with => "Test value"
+      end
+      
+      body_should_contain "Required extended data"
+      body_should_contain "Test value"
+      
+      # Check that we can update the topic
+      visit "/site/topics/edit/#{topic.to_param}"
+      fill_in "Required extended data", :with => "Different value"
+      click_button "Update"
+      
+      body_should_contain "Required extended data"
+      body_should_contain "Different value"
+      body_should_not_contain "Test value"
+          
+      # Check that validations work
+      visit "/site/topics/edit/#{topic.to_param}"
+      fill_in "Required extended data", :with => ""
+      click_button "Update"
+      
+      body_should_contain "Required extended data cannot be blank"
+    end
+    
+    should "raise validation error when missing required extended content" do
+      visit "/site/topics/new"
+      select(/Required test topic type/, :from => "topic_topic_type_id")
+      click_button "Choose Type"
+      fill_in "Title", :with => "Topic missing required extended content"
+      fill_in "Description", :with => "Test description"
+      click_button "Create"
+      
+      body_should_contain "Required extended data cannot be blank"
+    end
+  
+  end
   
   (ITEM_CLASSES - ["Topic"]).each do |class_name|
   
@@ -219,7 +219,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
         end
       elsif zoom_class_name == 'WebLink'
         # this will only work if you have internet connection
-        WebLink.find_by_url("http://google.co.nz/").destroy
+        WebLink.find_by_url("http://google.co.nz/").destroy rescue true
         fill_in "web_link[url]", :with => "http://google.co.nz/"
       end
       
