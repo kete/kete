@@ -199,7 +199,8 @@ class ActionController::IntegrationTest
       :title => "#{zoom_class_humanize(zoom_class)} Title",
       :description => "#{zoom_class_humanize(zoom_class)} Description",
       :success_message => "#{zoom_class_humanize(zoom_class)} was successfully created.",
-      :relate_to => nil
+      :relate_to => nil,
+      :topic_type => "Topic"
     }
     fields.merge!(options)
     # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise
@@ -207,6 +208,7 @@ class ActionController::IntegrationTest
     new_path = fields.delete(:new_path)
     success_message = fields.delete(:success_message)
     relate_to = fields.delete(:relate_to)
+    topic_type = fields.delete(:topic_type)
 
     unless relate_to.nil? || relate_to.is_a?(Topic)
       raise "ERROR: You must relate an item to a Topic, not a #{relate_to.class.name}"
@@ -225,7 +227,10 @@ class ActionController::IntegrationTest
 
     # If we are making a Topic, it has one more step before we actually reach the new topic page, and that
     # is to provide a Topic Type
-    click_button("Choose Type") if controller == 'topics'
+    if controller == 'topics'
+      select(/#{topic_type}/, :from => "topic_topic_type_id")
+      click_button("Choose Type")
+    end
 
     # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc)
     get_webrat_actions_from(fields, field_prefix)
