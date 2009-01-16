@@ -324,9 +324,9 @@ class AccountController < ApplicationController
   def default_portrait
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
-      flash[:notice] = "'#{@still_image.title}' has been make your default portrait."
+      flash[:notice] = "'#{@still_image.title}' has been made your selected portrait."
     else
-      flash[:error] = "'#{@still_image.title}' failed to become your default portrait."
+      flash[:error] = "'#{@still_image.title}' failed to become your selected portrait."
     end
     redirect_to_image_or_profile
   end
@@ -366,11 +366,11 @@ class AccountController < ApplicationController
       portrait_ids = params[:portraits].gsub('&', '').split('portrait_images[]=')
       # portrait_ids will now contain two blank spaces at the front, then the order of other portraits
       # we could strip these, but they actually work well here. One of then aligns positions with array indexs
-      # The other fills in for the default portrait not in this list.
+      # The other fills in for the selected portrait not in this list.
       logger.debug("Portrait Order: #{portrait_ids.inspect}")
       UserPortraitRelation.update_all({ :position => 1 }, { :user_id => current_user })
       portrait_ids.each_with_index do |portrait_id,index|
-        # The first element we leave in (to represent the default portrait)
+        # The first element we leave in (to represent the selected portrait)
         next if portrait_id.blank?
         # We get each portrait as we loop through the new order (perhaps not super effeciant)
         portrait = UserPortraitRelation.find_by_user_id_and_still_image_id(current_user, portrait_id)
@@ -381,7 +381,7 @@ class AccountController < ApplicationController
       flash[:notice] = "Your portraits have been successfully reordered."
     rescue
       @successful = false
-      flash[:error] = "Your portraits did not successfully get reordered. Please try again."
+      flash[:error] = "The portraits were not reordered permanently. You may only reorder portraits if they are yours.  If they are, please try again."
     end
     # This action is only called via Ajax JS request, so don't respond to HTML
     respond_to do |format|
