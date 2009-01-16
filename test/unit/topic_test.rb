@@ -328,6 +328,31 @@ class TopicTest < Test::Unit::TestCase
 
     topic.extended_content_values = { "is_a_test" => { "1" => "" } }
     assert !topic.valid?
+
+    topic.extended_content_values = nil
+    assert topic.valid?
+  end
+
+  def test_empty_values_are_validated_correctly_on_existing_records_with_multiples_and_nil_values_disallowed
+    topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
+    topic = Topic.new(@new_model.merge(:topic_type => topic_type))
+    topic.send(:allow_nil_values_for_extended_content=, false)
+
+    assert topic.valid?
+
+    assert_equal false, topic.send(:allow_nil_values_for_extended_content)
+
+    add_field_to(topic_type, { :multiple => true, :label => "Is a test" }, :required => true)
+    assert !topic.valid?
+
+    topic.extended_content_values = { "is_a_test" => { "1" => "Yes" } }
+    assert topic.valid?
+
+    topic.extended_content_values = { "is_a_test" => { "1" => "" } }
+    assert !topic.valid?
+
+    topic.extended_content_values = nil
+    assert !topic.valid?
   end
 
   protected

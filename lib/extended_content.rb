@@ -80,7 +80,14 @@ module ExtendedContent
 
     private
 
+      attr_writer :allow_nil_values_for_extended_content
+
+      def allow_nil_values_for_extended_content
+        @allow_nil_values_for_extended_content.nil? ? true : @allow_nil_values_for_extended_content
+      end
+
       def convert_extended_content_to_xml(params_hash)
+        return "" if params_hash.blank?
 
         # Force a new instance of Bulder::XMLMarkup to be spawned
         xml(true)
@@ -225,8 +232,10 @@ module ExtendedContent
         if extended_field_mapping.required && value.blank? && \
           extended_field_mapping.extended_field.ftype != "checkbox"
 
-          errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank") if \
-            xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params]
+          errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank") unless \
+            xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params].nil? && \
+            allow_nil_values_for_extended_content
+
         else
 
           # Otherwise delegate to specialized method..
@@ -244,7 +253,10 @@ module ExtendedContent
         if extended_field_mapping.required && values.all? { |v| v.to_s.blank? } && \
           extended_field_mapping.extended_field.ftype != "checkbox"
 
-          errors.add_to_base("#{extended_field_mapping.extended_field.label} must have at least one value") if xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + "_multiple"]
+          errors.add_to_base("#{extended_field_mapping.extended_field.label} must have at least one value") unless \
+            xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + "_multiple"].nil? && \
+            allow_nil_values_for_extended_content
+
         else
 
           # Delegate to specialized method..
