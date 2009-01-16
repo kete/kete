@@ -415,8 +415,9 @@ module ApplicationHelper
             :action => :show, :id => user, :only_path => false)
   end
 
-  def link_to_profile_for(user)
-    link_to h(user.user_name), url_for_profile_of(user)
+  def link_to_profile_for(user, phrase = nil)
+    phrase ||= h(user.user_name)
+    link_to phrase, url_for_profile_of(user)
   end
 
   def link_to_related_to_source(options={})
@@ -640,26 +641,26 @@ module ApplicationHelper
     "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
-  
-  # 
+
+  #
   def limit_search_to_choice_control
     options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
       memo + option_for_choice_control(choice, :level => 0)
     end
-    
-    html_options_for_select = ([['', '']] + options_array).map do |k, v| 
+
+    html_options_for_select = ([['', '']] + options_array).map do |k, v|
       attrs = { :value => v }
       attrs.merge!(:selected => "selected") if params[:limit_to_choice] == v
       content_tag("option", k, attrs)
     end.join
-    
+
     # Don't print out the SELECT tag unless there are choices available.
     options_array.flatten.empty? ? "" : select_tag("limit_to_choice", html_options_for_select)
   end
-  
+
   def option_for_choice_control(choice, options = {})
     level = options[:level] || 0
-    
+
     array = [[("&nbsp;&nbsp;"*level) + choice.label, choice.value]]
     choice.children.reject { |c| c.extended_fields.empty? }.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
   end
@@ -668,10 +669,10 @@ module ApplicationHelper
   def display_xml_attributes(item)
     raq = " &raquo; "
     html = []
-    
+
     mappings = item.is_a?(Topic) ? item.all_field_mappings : \
       ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
-      
+
     content = item.extended_content_pairs
 
     mappings.each do |mapping|
@@ -693,13 +694,13 @@ module ApplicationHelper
 
       html << content_tag("tr", td)
     end
-    
+
     unless html.empty?
       content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
     end
-    
+
   end
-  
+
   def formatted_extended_content_value(field, field_name, value, item)
     if field.ftype == 'map'
       extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map', false, true, false)
@@ -711,10 +712,10 @@ module ApplicationHelper
       formatted_value_from_xml(value, field, item)
     end
   end
-  
+
   def formatted_value_from_xml(value, ef = nil, item = nil)
     if ef && %w(autocomplete choice).member?(ef.ftype)
-      
+
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
@@ -728,11 +729,11 @@ module ApplicationHelper
       else
         method = 'basket_all_of_category_url'
       end
-      
+
       value.map do |v|
         link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
       end.join(" &raquo; ")
-      
+
     else
       case value
       when /^\w+:\/\/[^ ]+/
@@ -745,7 +746,7 @@ module ApplicationHelper
       end
     end
   end
-    
+
   #---- end related to extended_fields for either topic_types or content_types
 
   # return an array of hashes of related items

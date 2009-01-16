@@ -16,7 +16,8 @@ class ImagesController < ApplicationController
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 
-    @viewer_portraits = !@still_image.creator.portraits.blank? ? @still_image.creator.portraits.all(:conditions => ['position != 1'], :limit => 12) : nil
+    @portraits_total_count = @still_image.creator.portraits.count - 1
+    @viewer_portraits = @portraits_total_count > 0 ? @still_image.creator.portraits.all(:conditions => ['position != 1'], :limit => 12) : nil
 
     respond_to do |format|
       format.html
