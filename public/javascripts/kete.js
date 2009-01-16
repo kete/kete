@@ -44,7 +44,6 @@ function makePortraitsSortable() {
 
 function updatePortraitPositions() {
   serialized = Sortable.serialize('portrait_images', { tag: 'div' });
-  console.log(serialized);
   new Ajax.Request('/site/account/update_portraits', {
     method: 'get',
     parameters: { portraits: serialized }
