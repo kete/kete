@@ -25,7 +25,7 @@ namespace :deploy do
     deploy.symlink
     deploy.kete.symlink.all
     deploy.gems.update
-    deploy.db.migrate
+    deploy.migrate
     deploy.kete.upgrade
     deploy.backgroundrb.start
     deploy.restart
