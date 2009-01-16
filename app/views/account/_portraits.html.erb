@@ -3,15 +3,7 @@
 <div class="portrait_image blank_div" style="width:1px;"></div>
 <% @viewer_portraits.each do |portrait| -%>
   <% if @viewer_is_user || !portrait.thumbnail_file.file_private -%>
-    <div id="image_<%= portrait.id -%>" class="portrait_image">
-      <%= link_to image_tag(portrait.thumbnail_file.public_filename,
-                            { :width => 50, :height => 50, :alt => "#{portrait.title}. " }),
-                  { :urlified_name => portrait.basket.urlified_name,
-                    :controller => 'images',
-                    :action => 'show',
-                    :id => portrait.id } -%>
-      <%= render :partial => 'portrait_controls', :locals => { :portrait => portrait } -%>
-    </div>
+    <%= render :partial => 'portrait', :locals => { :portrait => portrait } -%>
   <% end -%>
 <% end -%>
 <% end -%>

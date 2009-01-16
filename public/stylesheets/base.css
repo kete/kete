@@ -724,6 +724,18 @@ div#notice div, div#error div {
   float: right;
   width: 420px;
 }
+#portrait_help_div {
+  margin: 25px auto;
+  border: 1px solid #000;
+  background-color: #eee;
+  width: 80%;
+}
+#current_portrait, #portrait_help {
+  clear: both;
+  padding-top: 14px;
+  font-size: 0.8em;
+  text-align: center;
+}
 .portrait_image {
   float: left;
   width: 50px;
