@@ -78,7 +78,7 @@ module FlaggingController
       # to make it valid before restoring the version.
       # unless true
         name_for_params = @item.class.table_name.singularize
-        eval("@#{name_for_params} = @item")
+        instance_variable_set("@#{name_for_params}", @item)
         @editing = true
         
         # We need topic types for editing a topic
@@ -88,7 +88,7 @@ module FlaggingController
         params[name_for_params.to_sym] = {}
         params[name_for_params.to_sym][:version_comment] = "Content from revision # #{@version}."
         
-        flash[:notice] = "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing."
+        flash[:notice] = "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect missing information."
         render :action => 'edit'
         return true
       # end
