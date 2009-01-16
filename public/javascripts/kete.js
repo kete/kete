@@ -75,20 +75,15 @@ document.observe('dom:loaded', function() {
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
   
   if ($('portrait_help_div')) {
-    $('portrait_help_div').hide();
-    $('portrait_help_div').hidden_status = 'hidden';
-    $('portrait_help').show();
     $('portrait_help').down('a').observe('click', function(event) {
-      if ($('portrait_help_div').hidden_status == 'hidden') {
-        $('portrait_help_div').show();
-        $('portrait_help_div').hidden_status = 'showing';
-        $('portrait_help').down('a').update('hide help');
-      } else {
-        $('portrait_help_div').hide();
-        $('portrait_help_div').hidden_status = 'hidden';
-        $('portrait_help').down('a').update('show help');
-      }
+      $('portrait_help_div').show();
+      $('portrait_help').down('a').hide();
       event.stop();
     });
+    $('close_help').observe('click', function(event) {
+      $('portrait_help_div').hide();
+      $('portrait_help').down('a').show();
+      event.stop();
+    })
   }
 });

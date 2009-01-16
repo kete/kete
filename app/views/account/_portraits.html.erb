@@ -3,7 +3,7 @@
 <div class="portrait_image blank_div" style="width:1px;"></div>
 <% @viewer_portraits.each do |portrait| -%>
   <% if @viewer_is_user || !portrait.thumbnail_file.file_private -%>
-    <%= render :partial => 'portrait', :locals => { :portrait => portrait } -%>
+    <%= render :partial => 'account/portrait', :locals => { :portrait => portrait } -%>
   <% end -%>
 <% end -%>
 <% end -%>

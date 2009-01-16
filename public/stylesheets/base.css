@@ -726,11 +726,16 @@ div#notice div, div#error div {
 }
 #portrait_help_div {
   margin: 25px auto;
+  padding: 0 15px;
   border: 1px solid #000;
   background-color: #eee;
   width: 80%;
 }
-#current_portrait, #portrait_help {
+#close_help {
+  padding: 5px 0 10px 0;
+  text-align: center;
+}
+#current_portrait, #portrait_help, #new_portrait {
   clear: both;
   padding-top: 14px;
   font-size: 0.8em;

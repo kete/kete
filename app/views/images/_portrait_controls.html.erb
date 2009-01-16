@@ -6,9 +6,9 @@
       <ul>
         <% unless @still_image.portrayed_user.nil? -%>
           <% unless @still_image.user_portrait_relation.first? -%>
-            <li><%= link_to 'Make image default portrait', :controller => 'account',
-                                                           :action => 'default_portrait',
-                                                           :id => @still_image.id -%></li>
+            <li><%= link_to 'Make image selected portrait', :controller => 'account',
+                                                            :action => 'default_portrait',
+                                                            :id => @still_image.id -%></li>
           <% end -%>
           <li><%= link_to 'Remove image from portraits', :controller => 'account',
                                                          :action => 'remove_portrait',
@@ -20,6 +20,20 @@
         <% end -%>
       </ul>
     </p>
+    <h4>Selected Portrait</h4>
+    <div id="profile_avatar" class="avatar">
+      <% portrait_obj = avatar_for(current_user, :return_portrait => true) -%>
+      <% unless portrait_obj.nil? -%>
+        <%= render :partial => 'account/portrait', :locals => { :portrait => portrait_obj } -%>
+      <% end -%>
+    </div>
+    <div style="clear:both;"></div>
+    <h4>Other Portraits</h4>
+    <div id="portrait_images">
+      <%= render :partial => 'account/portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => true } -%>
+    </div>
+    <div style="clear:both;"></div>
+    <div id="portrait_help"><%= link_to "what's this?", :controller => 'account', :action => 'show', :whats_this => true -%></div>
     <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
   </div>
 </div>

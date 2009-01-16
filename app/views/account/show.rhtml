@@ -12,29 +12,45 @@
 
 <% if @viewer_is_user && (ENABLE_USER_PORTRAITS || (ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil?)) -%>
   <div id="portrait_help_div">
+    <p>
+      Portraits are a set of images you display on your profile page to users who view it.
+      It can be your own artwork uploaded to the site, or your favorite images.
+      The first portrait added (which can be reordered later) becomes your 'selected' portrait, that is,
+      the one you wish to use as an avatar around the site. It will be displayed on your profile page and next
+      to any comments you post.
+    </p>
     <ul>
-      <% if ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil? -%>
-        <li>Add an avatar to your account by registering a global portrait with <%= link_to 'gravatar.com', 'http://gravatar.com/' -%>.</li>
-        <% if ENABLE_USER_PORTRAITS -%>
-          <li>Alternatively, you can add a user portrait using the instructions below.</li>
+      <% if ENABLE_USER_PORTRAITS -%>
+        <li>
+          You can create a <%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :default_portrait => true } -%> by uploading a new image.
+          Alternatively, you can go to an image you've <%= link_to 'uploaded before', url_for_contributions_of(current_user, 'StillImage') -%>, and select 'Add image to portraits' in the right sidebar.
+        </li>
+        <% if !@viewer_portraits.blank? -%>
+          <li>To change your default portrait:
+            <ul>
+              <li>Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).</li>
+              <li>Use the arrow buttons to shift them around (when Javascript is off).</li>
+            </ul>
+          </li>
         <% end -%>
       <% end -%>
-      <% if ENABLE_USER_PORTRAITS -%>
-        <li>You can create a <%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :default_portrait => true } -%> by uploading a new image.</li>
-        <li>Alternatively, you can go to an image you've <%= link_to 'uploaded before', url_for_contributions_of(current_user, 'StillImage') -%>, and select 'Add image to portraits' in the right sidebar.</li>
-        <li>To change your default portrait:
-          <ul>
-            <li>Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).</li>
-            <li>Use the arrow buttons to shift them around (when Javascript is off).</li>
-          </ul>
+      <% if ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil? -%>
+        <li>
+          Add an avatar to your account by registering a global portrait with <%= link_to 'gravatar.com', 'http://gravatar.com/' -%>.
+          <%= "Alternatively, you can add a user portrait using the instructions above." if ENABLE_USER_PORTRAITS -%>
         </li>
       <% end -%>
     </ul>
+    <div id="close_help"><%= link_to 'Close X', :action => 'show' -%></a></div>
   </div>
+  <% if !params[:whats_this] -%>
+    <%= javascript_tag "$('portrait_help_div').hide();" -%>
+    <noscript><style type="text/css">#portrait_help_div { display:none; }</style></noscript>
+  <% end -%>
 <% end -%>
 
 <div class="profile_content_right">
-  <% if ENABLE_USER_PORTRAITS && (@viewer_is_user || !@viewer_portraits.nil?) -%>
+  <% if ENABLE_USER_PORTRAITS && !@viewer_portraits.blank? -%>
   <div id="portraits">
     <div>
       <h4>Other Portraits</h4>
@@ -77,8 +93,11 @@
       <%= avatar_for @user -%>
     <% end -%>
   </div>
-  <div id="current_portrait">Selected<br />Portrait</div>
-  <div id="portrait_help" style="display:none;"><%= link_to '[show help]', '#' -%></div>
+  <% if @viewer_is_user && ENABLE_USER_PORTRAITS -%>
+    <div id="current_portrait">Selected<br />Portrait</div>
+    <div id="portrait_help"><%= link_to "what's this?", :whats_this => true -%></div>
+    <div id="new_portrait"><%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :default_portrait => true } -%></div>
+  <% end -%>
 </div>
 
 <div class="profile_content_left">

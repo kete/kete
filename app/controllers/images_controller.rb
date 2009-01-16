@@ -16,6 +16,8 @@ class ImagesController < ApplicationController
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 
+    @viewer_portraits = !current_user.portraits.blank? ? current_user.portraits.all(:conditions => ['position != 1'], :limit => 12) : nil
+
     respond_to do |format|
       format.html
       format.xml { render_oai_record_xml(:item => @still_image) }
