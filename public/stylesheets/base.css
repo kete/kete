@@ -713,6 +713,9 @@ div#notice div, div#error div {
   float: left;
   padding: 15px 10px;
 }
+.avatar_hover {
+  border: 1px solid black;
+}
 .profile_content_left {
   margin-left: 75px;
   width: 420px;
@@ -722,16 +725,16 @@ div#notice div, div#error div {
   width: 420px;
 }
 .portrait_image {
-  display: inline;
+  float: left;
+  width: 50px;
+  height: 50px;
+}
+#portrait_images .portrait_image {
+  padding-right: 5px;
 }
 .portrait_image img {
   border: none;
-}
-.portrait_controls {
-  position: absolute;
-  margin-left: -5px;
-  border: 1px solid #000;
-  background-color: #fff;
+  float: left;
 }
 .portrait_controls img {
   border: none;

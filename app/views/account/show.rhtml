@@ -11,7 +11,7 @@
 </div>
 
 <div class="profile_content_right">
-  <% if @viewer_is_user || !@viewer_portraits.nil? -%>
+  <% if ENABLE_USER_PORTRAITS && (@viewer_is_user || !@viewer_portraits.nil?) -%>
   <div id="portraits">
     <div>
       <h4 style="display:inline;">Portraits</h4>
@@ -19,7 +19,7 @@
         <% location_hash = { :controller => 'images',
                              :action => 'new',
                              :portrait => true,
-                              :default_portrait => true } -%>
+                             :default_portrait => true } -%>
         [ <%= link_to 'new portrait', location_hash -%> ]
         <img src="/images/indicator.gif" width="16" height="16" alt="Editing portraits. " id="data_spinner" style="display:none;" />
       <% end -%>
@@ -28,6 +28,7 @@
     <div id="portrait_images">
       <%= render :partial => 'portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user } -%>
     </div>
+    <div style="clear:both;"></div>
   </div>
   <% end -%>
 
@@ -49,7 +50,17 @@
   <% end -%>
 </div>
 
-<div id="profile_avatar" class="avatar"><%= avatar_for @user -%></div>
+<div id="profile_avatar" class="avatar">
+  <% portrait_obj = avatar_for(@user, :return_portrait => true) -%>
+  <% unless portrait_obj.nil? -%>
+    <div id="image_<%= portrait_obj.id -%>" class="portrait_image">
+  <% end -%>
+  <%= avatar_for @user -%>
+  <% unless portrait_obj.nil? -%>
+    <%= render :partial => 'portrait_controls', :locals => { :portrait => portrait_obj } -%>
+    </div>
+  <% end %>
+</div>
 
 <div class="profile_content_left">
   <p>

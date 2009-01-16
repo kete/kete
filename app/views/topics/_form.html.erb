@@ -45,6 +45,12 @@ zoom_class = zoom_class_from_controller(controller)
       <% if @editing -%>
         <%= hidden_field_tag 'image_file[still_image_id]', @item.id, :id => "image_file_still_image_id" -%>
       <% end -%>
+      <% if params[:portrait] -%>
+        <%= hidden_field_tag 'portrait', params[:portrait] -%>
+      <% end -%>
+      <% if params[:default_portrait] -%>
+        <%= hidden_field_tag 'default_portrait', params[:default_portrait] -%>
+      <% end -%>
     <% end -%>
 
     <% unless params[:relate_to_topic].nil? -%>

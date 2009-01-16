@@ -1,36 +1,17 @@
 <% unless @viewer_portraits.nil? -%>
+<%# we need to add a blank portrait here, so the second image can be moved to first place (prototype restriction) -%>
+<div class="portrait_image blank_div" style="width:1px;"></div>
 <% @viewer_portraits.each do |portrait| -%>
   <% if @viewer_is_user || !portrait.thumbnail_file.file_private -%>
-    <div id="portrait_image_<%= portrait.id -%>" class="portrait_image">
+    <div id="image_<%= portrait.id -%>" class="portrait_image">
       <%= link_to image_tag(portrait.thumbnail_file.public_filename,
                             { :width => 50, :height => 50, :alt => "#{portrait.title}. " }),
                   { :urlified_name => portrait.basket.urlified_name,
                     :controller => 'images',
                     :action => 'show',
                     :id => portrait.id } -%>
-      <% if @viewer_is_user -%>
-        <span id="portrait_image_<%= portrait.id -%>_controls" class="portrait_controls">
-          <% link_hash = { :before => "Element.show('data_spinner')",
-                           :complete => "Element.hide('data_spinner')" } -%>
-          <% unless portrait.user_portrait_relation.first? %>
-            <%= link_to_remote image_tag('icon_results_previous.gif'),
-                               link_hash.merge({ :url => { :action => 'move_portrait_higher',
-                                                           :id => portrait.id } }) -%>
-          <% end -%>
-          <% unless portrait.user_portrait_relation.last? %>
-            <%= link_to_remote image_tag('icon_results_next.gif'),
-                               link_hash.merge({ :url => { :action => 'move_portrait_lower',
-                                                           :id => portrait.id } }) -%>
-          <% end -%>
-          <%= link_to_remote image_tag('cross.png'),
-                             link_hash.merge({ :url => { :action => 'remove_portrait',
-                                                         :id => portrait.id } }) -%>
-        </span>
-      <% end -%>
+      <%= render :partial => 'portrait_controls', :locals => { :portrait => portrait } -%>
     </div>
   <% end -%>
 <% end -%>
-
-<!-- We need this to run each time the partial is rendered, so we stick is here, not on page load -->
-<%= javascript_tag "updatePortraitControls();" -%>
 <% end -%>

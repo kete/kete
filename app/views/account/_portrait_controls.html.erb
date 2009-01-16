@@ -1,0 +1,16 @@
+<% if @viewer_is_user -%>
+  <noscript>
+    <span id="image_<%= portrait.id -%>_controls" class="portrait_controls">
+      <% link_hash = { :before => "Element.show('data_spinner')",
+                       :complete => "Element.hide('data_spinner')" } -%>
+      <% unless portrait.user_portrait_relation.first? %>
+        <%= link_to image_tag('icon_results_previous.gif'), { :action => 'move_portrait_higher', :id => portrait.id } -%>
+      <% end -%>
+      <% unless portrait.user_portrait_relation.last? %>
+        <%= link_to image_tag('icon_results_next.gif'), { :action => 'move_portrait_lower', :id => portrait.id } -%>
+      <% end -%>
+      <%= link_to image_tag('cross.png'), { :action => 'remove_portrait', :id => portrait.id } -%>
+    </span>
+    <style type="text/css">#portrait_images .portrait_image { width: 70px; }</style>
+  </noscript>
+<% end -%>

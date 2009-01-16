@@ -169,7 +169,7 @@ class AccountController < ApplicationController
       end
       @extended_fields = @user.xml_attributes
       @viewer_is_user = (@user == @current_user) ? true : false
-      @viewer_portraits = !@user.portraits.empty? ? @user.portraits : nil
+      @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(:conditions => ['position != 1']) : nil
     else
       flash[:notice] = "You must be logged in to view user profiles."
       redirect_to :action => 'login'
@@ -303,7 +303,7 @@ class AccountController < ApplicationController
     else
       flash[:error] = "'#{@still_image.title}' failed to add to your portraits."
     end
-    redirect_to_show_for(@still_image)
+    redirect_to_image_or_profile
   end
 
   def remove_portrait
@@ -316,7 +316,7 @@ class AccountController < ApplicationController
       flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
     end
     respond_to do |format|
-      format.html { redirect_to_show_for(@still_image) }
+      format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
@@ -328,7 +328,7 @@ class AccountController < ApplicationController
     else
       flash[:error] = "'#{@still_image.title}' failed to become your default portrait."
     end
-    redirect_to_show_for(@still_image)
+    redirect_to_image_or_profile
   end
 
   def move_portrait_higher
@@ -341,7 +341,7 @@ class AccountController < ApplicationController
       flash[:error] = "'#{@still_image.title}' failed to move closer to the front of your portraits."
     end
     respond_to do |format|
-      format.html { redirect_to_show_for(@still_image) }
+      format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
@@ -356,8 +356,36 @@ class AccountController < ApplicationController
       flash[:error] = "'#{@still_image.title}' failed to move closer to the end of your portraits."
     end
     respond_to do |format|
-      format.html { redirect_to_show_for(@still_image) }
+      format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
+  end
+
+  def update_portraits
+    begin
+      portrait_ids = params[:portraits].gsub('&', '').split('portrait_images[]=')
+      # portrait_ids will now contain two blank spaces at the front, then the order of other portraits
+      # we could strip these, but they actually work well here. One of then aligns positions with array indexs
+      # The other fills in for the default portrait not in this list.
+      logger.debug("Portrait Order: #{portrait_ids.inspect}")
+      UserPortraitRelation.update_all({ :position => 1 }, { :user_id => current_user })
+      portrait_ids.each_with_index do |portrait_id,index|
+        # The first element we leave in (to represent the default portrait)
+        next if portrait_id.blank?
+        # We get each portrait as we loop through the new order (perhaps not super effeciant)
+        portrait = UserPortraitRelation.find_by_user_id_and_still_image_id(current_user, portrait_id)
+        # once we have the portrait, update the position to index
+        portrait.update_attribute(:position, index)
+      end
+      @successful = true
+      flash[:notice] = "Your portraits have been successfully reordered."
+    rescue
+      @successful = false
+      flash[:error] = "Your portraits did not successfully get reordered. Please try again."
+    end
+    # This action is only called via Ajax JS request, so don't respond to HTML
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -371,6 +399,14 @@ class AccountController < ApplicationController
         flash[:notice] = "User portraits are not enabled so you cannot use this feature."
         @still_image = StillImage.find(params[:id])
         redirect_to_show_for(@still_image)
+      end
+    end
+
+    def redirect_to_image_or_profile
+      if session[:return_to].blank?
+        redirect_to :action => 'show'
+      else
+        redirect_to url_for(session[:return_to])
       end
     end
 
