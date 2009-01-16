@@ -18,7 +18,7 @@ module ApplicationHelper
     default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
     options = default_options.merge(options)
 
-    return nil if options[:return_portrait] && !ENABLE_USER_PORTRAITS
+    return nil if options[:return_portrait] && (!ENABLE_USER_PORTRAITS || user.portraits.empty?)
 
     if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
       if options[:return_portrait]
