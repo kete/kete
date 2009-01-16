@@ -4,12 +4,6 @@ namespace :deploy do
 
   namespace :db do
 
-    desc 'Migrate the Database'
-    task :migrate, :roles => :app do
-      set_app_environment
-      run "cd #{current_path} && RAILS_ENV=#{app_environment} rake db:migrate"
-    end
-
     desc 'Bootstrap the Database'
     task :bootstrap, :roles => :app do
       set_app_environment
