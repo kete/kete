@@ -735,7 +735,7 @@ div#notice div, div#error div {
   padding: 5px 0 10px 0;
   text-align: center;
 }
-#current_portrait, #portrait_help, #new_portrait {
+#selected_portrait, #portrait_help, #new_portrait {
   clear: both;
   padding-top: 14px;
   font-size: 0.8em;

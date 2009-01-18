@@ -86,15 +86,15 @@
 
 <div class="avatar" style="padding:0px;">
   <div id="profile_avatar" class="avatar">
-    <% portrait_obj = avatar_for(@user, :return_portrait => true) -%>
-    <% unless portrait_obj.nil? -%>
-      <%= render :partial => 'portrait', :locals => { :portrait => portrait_obj } -%>
+    <% selected_portrait = avatar_for(@user, :return_portrait => true) -%>
+    <% unless selected_portrait.nil? -%>
+      <%= render :partial => 'portrait', :locals => { :portrait => selected_portrait } -%>
     <% else -%>
       <%= avatar_for @user -%>
     <% end -%>
   </div>
   <% if @viewer_is_user && ENABLE_USER_PORTRAITS -%>
-    <div id="current_portrait">Selected<br />Portrait</div>
+    <div id="selected_portrait">Selected<br />Portrait</div>
     <div id="portrait_help"><%= link_to "what's this?", :whats_this => true -%></div>
     <div id="new_portrait"><%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :default_portrait => true } -%></div>
   <% end -%>
