@@ -70,7 +70,7 @@
                 -%>
               <% end %>
             </td>
-            <td><%= version.updated_at.to_s(:euro_date_time) %></td>
+            <td><%= kete_time_ago_in_words(version.updated_at) %></td>
             <td>
               <% if !version.version_comment.blank? -%>
               <%= h(version.version_comment) %>
