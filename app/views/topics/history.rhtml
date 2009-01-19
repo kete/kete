@@ -41,21 +41,23 @@
               <% end -%>
             </td>
             <td>
-							<% private_condition = case params[:controller]
-								when "comments"
-									@item.private?
-								else
-									(version.respond_to?(:private?) && version.private?)
-								end -%>
+                                                        <% private_condition = case params[:controller]
+                                                                when "comments"
+                                                                        @item.private?
+                                                                else
+                                                                        (version.respond_to?(:private?) && version.private?)
+                                                                end -%>
               <%= private_condition ? "<strong>Private</strong>" : "Public" -%>
             </td>
             <td>
               <% begin -%>
                 <% if version.version.nil? || version.version == 1 -%>
                   <% @item.creators.each do |creator| -%>
+                    <%= avatar_for creator -%>
                     <%= link_to_contributions_of(creator, @item.class.name) %>
                   <% end -%>
                 <% else -%>
+                  <%= avatar_for(item_contributors[contributor_index]) if item_contributors.size > 0 -%>
                   <%= link_to_contributions_of(item_contributors[contributor_index], @item.class.name) if item_contributors.size > 0 %>
                   <% contributor_index += 1 -%>
                 <% end -%>
@@ -78,9 +80,9 @@
           <% end -%>
         </table>
 
-				<% if @show_private_versions_notice -%>
-					<p><strong>This item has private versions. <%= link_to "Login", :controller => "account", :action => "login" -%> as a basket member to view these.</strong></p>
-				<% end -%>
+                                <% if @show_private_versions_notice -%>
+                                        <p><strong>This item has private versions. <%= link_to "Login", :controller => "account", :action => "login" -%> as a basket member to view these.</strong></p>
+                                <% end -%>
 
         <h3>Back to live <%= link_to_item(@item) -%></h3>
       </div>
