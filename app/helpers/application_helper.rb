@@ -1106,4 +1106,14 @@ module ApplicationHelper
       privacy_image
     end
   end
+
+  def kete_time_ago_in_words(from_time)
+    string = String.new
+    if from_time < Time.now - 1.week
+      string = "on " + from_time.to_s(:euro_date_time)
+    else
+      string = time_ago_in_words(from_time) + " ago"
+    end
+    string
+  end
 end

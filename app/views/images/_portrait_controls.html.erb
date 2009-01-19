@@ -26,16 +26,6 @@
     </p>
     <% end -%>
     <% if !@viewer_portraits.blank? -%>
-    <h4>Selected Portrait
-    <% unless @viewer_is_user -%>
-    of <%= @still_image.creator.user_name -%>
-    <% end -%>
-    </h4>
-    <div id="profile_avatar" class="avatar">
-      <% unless selected_portrait.nil? -%>
-        <%= render :partial => 'account/portrait', :locals => { :portrait => selected_portrait } -%>
-      <% end -%>
-    </div>
     <div style="clear:both;"></div>
     <h4>Other Portraits</h4>
     <div id="portrait_images">

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class AccountTest < ActionController::IntegrationTest
-  context "A user's profile" do
+  context "If user portraits are enabled, a user" do
     setup do
       configure_environment do
         set_constant :ENABLE_USER_PORTRAITS, true
@@ -18,7 +18,7 @@ class AccountTest < ActionController::IntegrationTest
       body_should_not_contain "Other Portraits"
     end
 
-    context "for a user who has created one image" do
+    context "who has created one image" do
       setup do
         @item = new_still_image { attach_file "image_file_uploaded_data", "white.jpg" }
       end
@@ -31,6 +31,20 @@ class AccountTest < ActionController::IntegrationTest
         click_link 'joe'
         body_should_contain 'Selected<br />Portrait'
         body_should_contain Regexp.new("<a href=\"#{item_base_url}\"")
+      end
+
+      context "and that image has been made a portrait" do
+        setup do
+          UserPortraitRelation.new_portrait_for(@user, @item)
+        end
+
+        should "have the selected image by their resolved display name in on an item they created" do
+          @created_item = new_topic
+          visit "/site/topics/show/#{@created_item.id}"
+          thumbnail_url = @item.public_filename
+          created_by_string = "contributed_by/user/#{@user.to_param}/\"><img alt=\"#{@item.title}. \" src=\"#{thumbnail_url}\">, creator username, created by string "
+          body_should_contain Regexp.new("contributed_by/user/#{@user.to_param}/><img.+ src=#{thumbnail_url}.+>")
+        end
       end
     end
 

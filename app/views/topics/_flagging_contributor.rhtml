@@ -1,13 +1,35 @@
 <div class="secondary-content-section-wrapper">
   <div  class="content-tools secondary-content-section">
     <% cache_with_privacy(item, {:part => 'contributor'}) do -%>
-    <div class="detail-tools">
-      <ul>
-        <li class="first">Created by: <%= link_to_contributions_of(@creator,'Topic') %></li>
-        <li>Last Edited by: <%= link_to_contributions_of(@last_contributor,'Topic') %></li>
-        <li>Last Edited: <%= item.updated_at.to_s(:euro_date_time) -%></li>
-      </ul>
+
+    <div style="float: left; padding: 5px; border-left: 2px solid gray">
+    <div style="float: left; padding-right: 5px">
+    <%= avatar_for @creator -%>
     </div>
+    <div>
+      <%= link_to_contributions_of(@creator,'Topic') %>
+    </div>
+    <div>
+    created <%= h(item.title) + ' at ' + item.created_at.to_s(:euro_date_time) -%>
+    </div>
+    </div>
+    <% if item.updated_at != item.created_at -%>
+    <div style="float: left; padding: 5px; border-left: 2px solid gray">
+    <div style="float: left; padding-right: 5px">
+    <%= avatar_for @last_contributor -%>
+    </div>
+    <div>
+    <%= link_to_contributions_of(@last_contributor,'Topic') %>
+    </div>
+    <div>
+    was the last to edit at
+    <%= item.updated_at.to_s(:euro_date_time) -%>
+    </div>
+    </div>
+    <% end -%>
+
+    <div style="clear:both;"></div>
+
     <% end -%>
 
     <% cache_with_privacy(item, {:part => 'flagging'}) do -%>
