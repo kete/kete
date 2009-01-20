@@ -13,7 +13,7 @@ class RegisterTest < ActionController::IntegrationTest
                  :user_email => 'test@kete.net.nz',
                  :user_password => 'test',
                  :user_password_confirmation => 'test',
-                 :user_extended_content_values_user_name => 'Test',
+                 :user_display_name => 'Test',
                  :user_security_code => 'SECURITY' }
       fields.each { |name,value| fill_in name.to_s, :with => '' }
       click_button 'Sign up'
