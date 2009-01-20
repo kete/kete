@@ -18,7 +18,7 @@ load_testing_libs
 if defined?(SELENIUM_MODE) && SELENIUM_MODE
   Webrat.configure do |config|
     config.mode = :selenium
-    config.selenium_environment = :test
+    config.application_environment = :test
     config.open_error_files = false
   end
 else
