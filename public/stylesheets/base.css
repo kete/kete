@@ -752,9 +752,10 @@ div#notice div, div#error div {
   float: left;
   border: none;
   padding-right: 4px;
+  height: 55px;
 }
 .stylish_user_contribution_link {
-  float: left;
+  clear: both;
 }
 .stylish_user_contribution_link_avatar {
   float: left;

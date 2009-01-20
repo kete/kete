@@ -419,19 +419,21 @@ module ApplicationHelper
   def stylish_link_to_contributions_of(user, zoom_class, options = {})
     options = { :with_avatar => true }.merge(options)
     display_html = '<div class="stylish_user_contribution_link">'
-    display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' if options[:with_avatar]
-    if options[:link_text]
-      link_text = options[:link_text].gsub('|user_name_link|', link_to(h(user.user_name), url_for_contributions_of(user, zoom_class)))
-      display_html += content_tag('div', link_text)
-    else
-      display_html += content_tag('div', link_to(h(user.user_name), url_for_contributions_of(user, zoom_class)))
+    if options[:with_avatar]
+      avatar = avatar_for(user)
+      display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' unless avatar.blank?
     end
+    user_link = link_to(h(user.user_name), url_for_contributions_of(user, zoom_class))
+    link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link)
+    display_html += content_tag('div', link_text, :class => 'stylish_user_contribution_link_extra')
     if options[:item]
       item = options[:item]
-      display_html += content_tag('div', "created #{h(item.title)} at #{item.created_at.to_s(:euro_date_time)}")
+      display_html += content_tag('div', " created #{h(item.title)} at #{item.created_at.to_s(:euro_date_time)}",
+                                  :class => 'stylish_user_contribution_link_extra')
       if item.updated_at != item.created_at
         display_html += stylish_link_to_contributions_of(@last_contributor, 'Topic',
-                                         :additional_html => "<div>was the last to edit at #{item.updated_at.to_s(:euro_date_time)}</div>")
+                                         :additional_html => content_tag('div', " was the last to edit at #{item.updated_at.to_s(:euro_date_time)}",
+                                                                         :class => 'stylish_user_contribution_link_extra'))
       end
     end
     display_html += options[:additional_html] if options[:additional_html]
@@ -869,7 +871,7 @@ module ApplicationHelper
         
         html_string += '<div class="comment-outer-wrapper">'
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
-                                                        :link_text => "<h3>|user_name_link| said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3>",
+                                                        :link_text => "<h3>|user_name_link|</h3> <div class=\"stylish_user_contribution_link_extra\"><h3>said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end
