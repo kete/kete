@@ -2,6 +2,14 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class SearchTest < ActionController::IntegrationTest
 
+  context "When getting results for topics" do
+    setup do
+    end
+    should_eventually "topic with 1 related image should show thumbnail for image"
+    should_eventually "topic with more than 5 related images should only show first 5 image thumbnails"
+    should_eventually "topic with no related images should not have any images"
+  end
+
   ['jane', 'īōūāē', 'a&b'].each do |login|
 
     context "Topics with alphanumeric chars in title, description, and tags, using #{login} as a user login" do
