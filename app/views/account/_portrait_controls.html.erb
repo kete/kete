@@ -1,4 +1,4 @@
-<% if @viewer_is_user -%>
+<% if @viewer_is_user && params[:controller] != 'images' -%>
   <noscript>
     <span id="image_<%= portrait.id -%>_controls" class="portrait_controls">
       <% link_hash = { :before => "Element.show('data_spinner')",

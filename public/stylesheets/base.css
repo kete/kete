@@ -739,6 +739,7 @@ div#notice div, div#error div {
 #portrait_images .portrait_image,
 #portrait_images_static .portrait_image {
   padding-right: 5px;
+  padding-bottom: 5px;
 }
 .portrait_image img {
   border: none;
@@ -754,8 +755,9 @@ div#notice div, div#error div {
   padding-right: 4px;
   height: 55px;
 }
-.stylish_user_contribution_link {
-  clear: both;
+.last_edited_link {
+  margin-top: -45px;
+  margin-left: 270px;
 }
 .stylish_user_contribution_link_avatar {
   float: left;

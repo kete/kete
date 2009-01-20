@@ -418,7 +418,8 @@ module ApplicationHelper
 
   def stylish_link_to_contributions_of(user, zoom_class, options = {})
     options = { :with_avatar => true }.merge(options)
-    display_html = '<div class="stylish_user_contribution_link">'
+    div_classes = (['stylish_user_contribution_link'] + options[:additional_classes].to_a).flatten.compact.join(' ')
+    display_html = "<div class=\"#{div_classes}\">"
     if options[:with_avatar]
       avatar = avatar_for(user)
       display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' unless avatar.blank?
@@ -428,12 +429,14 @@ module ApplicationHelper
     display_html += content_tag('div', link_text, :class => 'stylish_user_contribution_link_extra')
     if options[:item]
       item = options[:item]
-      display_html += content_tag('div', " created #{h(item.title)} at #{item.created_at.to_s(:euro_date_time)}",
+      display_html += content_tag('div', " created #{h(item.title)}",
+                                  :class => 'stylish_user_contribution_link_extra')
+      display_html += content_tag('div', " at #{item.created_at.to_s(:euro_date_time)}",
                                   :class => 'stylish_user_contribution_link_extra')
       if item.updated_at != item.created_at
-        display_html += stylish_link_to_contributions_of(@last_contributor, 'Topic',
-                                         :additional_html => content_tag('div', " was the last to edit at #{item.updated_at.to_s(:euro_date_time)}",
-                                                                         :class => 'stylish_user_contribution_link_extra'))
+        additional_html = content_tag('div', " was the last to edit #{h(item.title)}", :class => 'stylish_user_contribution_link_extra')
+        additional_html += content_tag('div', " at #{item.updated_at.to_s(:euro_date_time)}", :class => 'stylish_user_contribution_link_extra')
+        display_html += stylish_link_to_contributions_of(@last_contributor, 'Topic', :additional_html => additional_html, :additional_classes => ['last_edited_link'])
       end
     end
     display_html += options[:additional_html] if options[:additional_html]

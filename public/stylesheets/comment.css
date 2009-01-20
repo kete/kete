@@ -7,9 +7,7 @@
 }
 
 .comment-wrapper {
-  margin-left: 10px;
-  margin-top: 20px;
-  width: 43em;
+  margin: 1.5em .8em 1em .8em;
 }
 
 .comment-wrapper-header-wrapper,

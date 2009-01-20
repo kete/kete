@@ -368,14 +368,18 @@ class AccountController < ApplicationController
       # we could strip these, but they actually work well here. One of then aligns positions with array indexs
       # The other fills in for the selected portrait not in this list.
       logger.debug("Portrait Order: #{portrait_ids.inspect}")
+      # Move everything to position one (so that the one that isn't updated remains the default)
       UserPortraitRelation.update_all({ :position => 1 }, { :user_id => current_user })
+      # Get all of the portrait relations in one query
+      portrait_list = current_user.user_portrait_relations
+      # For each of the portrait ids, update their position based on the array index
       portrait_ids.each_with_index do |portrait_id,index|
         # The first element we leave in (to represent the selected portrait)
         next if portrait_id.blank?
-        # We get each portrait as we loop through the new order (perhaps not super effeciant)
-        portrait = UserPortraitRelation.find_by_user_id_and_still_image_id(current_user, portrait_id)
+        # Get this portrait from the portrait_list array
+        portrait_placement = portrait_list.select { |placement| placement.still_image_id.to_i == portrait_id.to_i }.first
         # once we have the portrait, update the position to index
-        portrait.update_attribute(:position, index)
+        portrait_placement.update_attribute(:position, index)
       end
       @successful = true
       flash[:notice] = "Your portraits have been successfully reordered."

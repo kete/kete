@@ -1,6 +1,6 @@
 <% unless @viewer_portraits.nil? -%>
   <%# we need to add a blank portrait here, so the second image can be moved to first place (prototype restriction) -%>
-  <div class="portrait_image blank_div" style="width:1px;"></div>
+  <div class="portrait_image" style="width:1px;padding-right:0px;"></div>
   <% @viewer_portraits.each do |portrait| -%>
     <% if @viewer_is_user || !portrait.thumbnail_file.file_private -%>
       <%= render :partial => 'account/portrait', :locals => { :portrait => portrait } -%>
