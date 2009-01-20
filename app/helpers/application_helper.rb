@@ -405,8 +405,39 @@ module ApplicationHelper
             :action => :all, :contributor => user, :trailing_slash => true, :only_path => false)
   end
 
-  def link_to_contributions_of(user,zoom_class)
-    link_to h(user.user_name), url_for_contributions_of(user, zoom_class)
+  def link_to_contributions_of(user, zoom_class, options = {})
+    if options[:with_avatar]
+      display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
+      display_html += h(user.user_name)
+      display_html += '<div class="clear"></div>'
+    else
+      display_html = h(user.user_name)
+    end
+    link_to display_html, url_for_contributions_of(user, zoom_class)
+  end
+
+  def stylish_link_to_contributions_of(user, zoom_class, options = {})
+    options = { :with_avatar => true }.merge(options)
+    display_html = '<div class="stylish_user_contribution_link">'
+    display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' if options[:with_avatar]
+    if options[:link_text]
+      link_text = options[:link_text].gsub('|user_name_link|', link_to(h(user.user_name), url_for_contributions_of(user, zoom_class)))
+      display_html += content_tag('div', link_text)
+    else
+      display_html += content_tag('div', link_to(h(user.user_name), url_for_contributions_of(user, zoom_class)))
+    end
+    if options[:item]
+      item = options[:item]
+      display_html += content_tag('div', "created #{h(item.title)} at #{item.created_at.to_s(:euro_date_time)}")
+      if item.updated_at != item.created_at
+        display_html += stylish_link_to_contributions_of(@last_contributor, 'Topic',
+                                         :additional_html => "<div>was the last to edit at #{item.updated_at.to_s(:euro_date_time)}</div>")
+      end
+    end
+    display_html += options[:additional_html] if options[:additional_html]
+    display_html += '</div>'
+    display_html += '<div style="clear:both;"></div>'
+    display_html
   end
 
   def url_for_profile_of(user)
@@ -803,54 +834,46 @@ module ApplicationHelper
 
     if @comments.size > 0
       @comments.each do |comment|
-        html_string += "<div class=\"comment-wrapper\"><h5>"
-        html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}"
-        html_string += " said "
-        html_string += "<a name=\"comment-#{comment.id}\">#{h(comment.title)}</a>"
-        html_string += "</h5>"
-
-        #changed Steven Upritchard katipo.co.nz todo: clean this up
-        #html_string += "<div class=\"comment-wrapper\">""<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
-        #html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5><div class=\"comment-content\">\n"
-
-        html_string += "<div class=\"comment-content\">"
-
-        html_string += "<div class=\"avatar\">#{avatar_for(comment.creators.first)}</div>"
-        html_string += "<div class=\"comment-content-inner\">"
-
-        if !comment.description.blank?
-          html_string += "#{comment.description}\n"
-        end
-
+        comment_string = "<div class=\"comment-wrapper\">"
+        comment_string += "<div class=\"comment-wrapper-header-wrapper\"><div class=\"comment-wrapper-header\"></div></div>"
+        comment_string += "<div class=\"comment-content\">"
+        comment_string += "#{comment.description}\n" unless comment.description.blank?
         tags_for_comment = tags_for(comment)
-        if !tags_for_comment.blank?
-          html_string += "#{tags_for_comment}\n"
-        end
-        html_string += pending_review(comment) + "\n"
-
-        html_string += "</div>"
-
-        html_string += "<div class=\"comment-tools\">\n"
-        html_string += flagging_links_for(comment,true,'comments')
+        comment_string += "#{tags_for_comment}\n" unless tags_for_comment.blank?
+        comment_string += pending_review(comment) + "\n"
+        comment_string += "<div class=\"comment-tools\">\n"
+        comment_string += flagging_links_for(comment,true,'comments')
         if logged_in? and @at_least_a_moderator
-          html_string += "<ul><li>" + link_to("Edit",
-                                          :controller => 'comments',
-                                          :action => :edit,
-                                          :id => comment) + "</li>\n"
-          html_string += "<li>" + link_to("History",
-                                          :controller => 'comments',
-                                          :action => :history,
-                                          :id => comment) + "</li>\n"
-          html_string += "<li>" + link_to("Delete",
-                                          {:action => :destroy,
-                                            :controller => 'comments',
-                                            :id => comment,
-                                            :authenticity_token => form_authenticity_token},
-                                          :method => :post,
-                                          :confirm => 'Are you sure?') + "</li>\n"
+          comment_string += "<ul>"
+          comment_string += "<li class='first'>" + link_to("Edit",
+                                             :controller => 'comments',
+                                             :action => :edit,
+                                             :id => comment) + "</li>\n"
+          comment_string += "<li>" + link_to("History",
+                                             :controller => 'comments',
+                                             :action => :history,
+                                             :id => comment) + "</li>\n"
+          comment_string += "<li>" + link_to("Delete",
+                                             {:action => :destroy,
+                                               :controller => 'comments',
+                                               :id => comment,
+                                               :authenticity_token => form_authenticity_token},
+                                             :method => :post,
+                                             :confirm => 'Are you sure?') + "</li>\n"
+          comment_string += "</ul>\n"
         end
-        html_string += "</ul>\n</div></div></div>"
+        comment_string += "</div>" # comment-tools
+        comment_string += "</div>" # comment-content
+        comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
+        comment_string += "</div>" # comment-wrapper
+        
+        html_string += '<div class="comment-outer-wrapper">'
+        html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
+                                                        :link_text => "<h3>|user_name_link| said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3>",
+                                                        :additional_html => comment_string)
+        html_string += '</div>' # comment-outer-wrapper
       end
+      
       html_string += "<p>" + link_to("join this discussion",
                                      {:action => :new,
                                        :controller => 'comments',
@@ -861,6 +884,7 @@ module ApplicationHelper
                                      },
                                      :method => :post) + "</p>"
     end
+
     return html_string
   end
 

@@ -16,15 +16,9 @@ class ImagesController < ApplicationController
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
 
-    portrait_relation = @still_image.user_portrait_relation
-    if portrait_relation
-      subtract_amount = portrait_relation.still_image_id == @still_image.id ? 1 : 2
-      logger.debug("what is subtract_amount: " + subtract_amount.inspect)
-      logger.debug("what is portrait_relation " + portrait_relation.inspect)
-      @portraits_total_count = @still_image.creator.portraits.count - subtract_amount
-      @viewer_portraits = @portraits_total_count > 0 ? @still_image.creator.portraits.all(:conditions => "position != 1 AND still_image_id != #{@still_image.id}",
-                                                                                          :limit => 12) : nil
-    end
+    exclude = { :conditions => "user_portrait_relations.position != 1 AND user_portrait_relations.still_image_id != #{@still_image.id}" }
+    @portraits_total_count = @still_image.creator.portraits.count(exclude)
+    @viewer_portraits = @portraits_total_count > 0 ? @still_image.creator.portraits.all(exclude.merge(:limit => 12)) : nil
 
     respond_to do |format|
       format.html

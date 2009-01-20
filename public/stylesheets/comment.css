@@ -1,21 +1,43 @@
-.commentwrapper{
-        background-image: url(../images/comment_tplf.gif);
-        background-position: 0 20px;
-        background-repeat: no-repeat;
-        margin: 1.5em 0 1em 0;
+.comment-outer-wrapper {
+  margin-top: 20px;
 }
 
-.commentwrapper h5{
-        background-image: url(../images/comment_tprt.gif);
-        background-position: 100% 20px;
-        background-repeat: no-repeat;
-        padding: 2px 1em 40px 1.2em;
-        margin: 2px 0 -20px -1em;
-        font-size: 1.2em;
+.comment-outer-wrapper h3 {
+  margin: 0;
 }
-.comment-content{
-        padding: 0em 1em 1em 1em;
-        border: 1px solid #b6b5b2;
-        border-top: none;
-        background-color: white;
+
+.comment-wrapper {
+  margin-left: 70px;
+  width: 43em;
+}
+
+.comment-wrapper-header-wrapper,
+.comment-wrapper-header {
+  height: 66px;
+}
+
+.comment-content {
+  padding: 1px 10px;
+  border-left: 1px solid #B6B5B2;
+  border-right: 1px solid #B6B5B2;
+  background-color: #fff;
+  margin-top: -47px;
+}
+
+.comment-tools ul {
+  margin-bottom: 0;
+}
+
+.comment-tools ul li {
+  border-left: 1px solid #000;
+  padding: 0 5px;
+}
+
+.comment-tools ul li.first {
+  border-left: none;
+}
+
+.comment-wrapper-footer-wrapper,
+.comment-wrapper-footer {
+  height: 10px;
 }

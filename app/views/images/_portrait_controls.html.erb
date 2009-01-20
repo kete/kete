@@ -28,7 +28,8 @@
     <% if !@viewer_portraits.blank? -%>
     <div style="clear:both;"></div>
     <h4>Other Portraits</h4>
-    <div id="portrait_images">
+    <% div_id = (params[:controller] == 'images') ? 'portrait_images_static' : 'portrait_images' -%>
+    <div id="<%= div_id -%>">
       <%= render :partial => 'account/portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user } -%>
     </div>
     <% end -%>

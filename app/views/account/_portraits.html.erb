@@ -1,13 +1,12 @@
 <% unless @viewer_portraits.nil? -%>
-<%# we need to add a blank portrait here, so the second image can be moved to first place (prototype restriction) -%>
-<div class="portrait_image blank_div" style="width:1px;"></div>
-<% @viewer_portraits.each do |portrait| -%>
-  <% if @viewer_is_user || !portrait.thumbnail_file.file_private -%>
-    <%= render :partial => 'account/portrait', :locals => { :portrait => portrait } -%>
+  <%# we need to add a blank portrait here, so the second image can be moved to first place (prototype restriction) -%>
+  <div class="portrait_image blank_div" style="width:1px;"></div>
+  <% @viewer_portraits.each do |portrait| -%>
+    <% if @viewer_is_user || !portrait.thumbnail_file.file_private -%>
+      <%= render :partial => 'account/portrait', :locals => { :portrait => portrait } -%>
+    <% end -%>
   <% end -%>
-<% end -%>
-<% if !@portraits_total_count.nil? && @portraits_total_count > @viewer_portraits.size -%>
-<%= link_to_profile_for(@viewer_portraits.last.creator,
-    "<div class=\"generic-result-more\">more &gt; &gt;</div>") %>
-<% end -%>
+  <% if !@portraits_total_count.nil? && @portraits_total_count > @viewer_portraits.size -%>
+    <%= link_to_profile_for(@viewer_portraits.last.creator, "<div class=\"generic-result-more\">more &gt; &gt;</div>") %>
+  <% end -%>
 <% end -%>

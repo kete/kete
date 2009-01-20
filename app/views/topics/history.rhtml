@@ -53,12 +53,10 @@
               <% begin -%>
                 <% if version.version.nil? || version.version == 1 -%>
                   <% @item.creators.each do |creator| -%>
-                    <%= avatar_for creator -%>
-                    <%= link_to_contributions_of(creator, @item.class.name) %>
+                    <%= link_to_contributions_of(creator, @item.class.name, :with_avatar => true) %>
                   <% end -%>
                 <% else -%>
-                  <%= avatar_for(item_contributors[contributor_index]) if item_contributors.size > 0 -%>
-                  <%= link_to_contributions_of(item_contributors[contributor_index], @item.class.name) if item_contributors.size > 0 %>
+                  <%= link_to_contributions_of(item_contributors[contributor_index], @item.class.name, :with_avatar => true) if item_contributors.size > 0 %>
                   <% contributor_index += 1 -%>
                 <% end -%>
               <% rescue -%>

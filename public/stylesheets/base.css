@@ -566,18 +566,8 @@ div#slideshow-controls div#slideshow-middle {
 }
 
 
-.comment-wrapper {
-    margin: 1.5em 0 1em 0;
-    padding: .2em 1em 1em .5em;
-    border-left: 2px solid #666;
-    background-color: white;
-}
-.comment-content .avatar {
-  padding: 0 10px;
-}
-.comment-content-inner {
-  margin-left: 70px;
-}
+/* ################################## Comments ################################## */
+/* see public/stylesheets/comment.css */
 
 
 .history-table td {
@@ -746,7 +736,8 @@ div#notice div, div#error div {
   width: 50px;
   height: 50px;
 }
-#portrait_images .portrait_image {
+#portrait_images .portrait_image,
+#portrait_images_static .portrait_image {
   padding-right: 5px;
 }
 .portrait_image img {
@@ -756,6 +747,19 @@ div#notice div, div#error div {
 .portrait_controls img {
   border: none;
   display: block;
+}
+.user_contribution_link_avatar {
+  float: left;
+  border: none;
+  padding-right: 4px;
+}
+.stylish_user_contribution_link {
+  float: left;
+}
+.stylish_user_contribution_link_avatar {
+  float: left;
+  padding: 5px;
+  border-left: 2px solid gray;
 }
 
 /* ################################ Registration ################################ */

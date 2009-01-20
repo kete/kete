@@ -1,39 +1,10 @@
 <div class="secondary-content-section-wrapper">
   <div  class="content-tools secondary-content-section">
     <% cache_with_privacy(item, {:part => 'contributor'}) do -%>
-
-    <div style="float: left; padding: 5px; border-left: 2px solid gray">
-    <div style="float: left; padding-right: 5px">
-    <%= avatar_for @creator -%>
-    </div>
-    <div>
-      <%= link_to_contributions_of(@creator,'Topic') %>
-    </div>
-    <div>
-    created <%= h(item.title) + ' at ' + item.created_at.to_s(:euro_date_time) -%>
-    </div>
-    </div>
-    <% if item.updated_at != item.created_at -%>
-    <div style="float: left; padding: 5px; border-left: 2px solid gray">
-    <div style="float: left; padding-right: 5px">
-    <%= avatar_for @last_contributor -%>
-    </div>
-    <div>
-    <%= link_to_contributions_of(@last_contributor,'Topic') %>
-    </div>
-    <div>
-    was the last to edit at
-    <%= item.updated_at.to_s(:euro_date_time) -%>
-    </div>
-    </div>
+      <%= stylish_link_to_contributions_of(@creator, 'Topic', :item => item) %>
     <% end -%>
-
-    <div style="clear:both;"></div>
-
-    <% end -%>
-
     <% cache_with_privacy(item, {:part => 'flagging'}) do -%>
-    <%= flagging_links_for(item) %>
+      <%= flagging_links_for(item) %>
     <% end -%>
     <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
   </div>
