@@ -33,7 +33,7 @@ class ModerationTest < ActionController::IntegrationTest
       should "create a new item and have it moderated" do
         create_a_new_pending_topic_and_accept_it
       end
-
+      
       should "update an item and have it moderated" do
         create_a_new_topic_with_several_approved_versions
       end
@@ -55,6 +55,11 @@ class ModerationTest < ActionController::IntegrationTest
     context "a topic with several revisions, one of which is invalid due to an additional extended field" do
       
       setup do
+        
+        @basket = new_basket :name => "Moderation test basket" do
+          select 'moderator views before item approved', :from => 'settings_fully_moderated'
+        end
+        
         # Create a new topic type
         visit "/site/topic_types/new?parent_id=1"
         fill_in "Name", :with => "Topic type for moderation test"
@@ -64,7 +69,7 @@ class ModerationTest < ActionController::IntegrationTest
         @topic_type = TopicType.last
         
         # Create a new topic of this topic type
-        @topic = new_topic :title => "Initial version", :topic_type => "Topic type for moderation test"
+        @topic = new_topic({ :title => "Initial version", :topic_type => "Topic type for moderation test" }, @basket)
         assert @topic.valid?
         
         # Add a required extended field to the topic type
@@ -96,6 +101,10 @@ class ModerationTest < ActionController::IntegrationTest
         @extended_field.destroy rescue false
       end
       
+      should "be a fully moderated basket" do
+        assert @basket.fully_moderated?
+      end
+      
       should "have an invalid earlier version" do
         @topic.revert_to(1)
         @topic.send(:allow_nil_values_for_extended_content=, false)
@@ -105,7 +114,7 @@ class ModerationTest < ActionController::IntegrationTest
       end
       
       should "force content update when reverting to the first version" do
-        visit "/site/topics/preview/#{@topic.id}?version=1"
+        visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
         click_link "Make this revision live"
         body_should_contain "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
         
@@ -120,11 +129,36 @@ class ModerationTest < ActionController::IntegrationTest
           fill_in "topic[extended_content_values][required_field]", :with => "Value for required field"
         end
         
-        visit "/site/topics/preview/#{@topic.id}?version=2"
+        visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=2"
         click_link "Make this revision live"
         
         body_should_contain "The content of this Topic has been approved from the selected revision."
         body_should_contain "Value for required field"
+      end
+      
+      context "as a moderator" do
+
+        setup do
+          add_jenny_as_moderator_to(@basket)
+          login_as('jenny')
+        end
+        
+        should "revert to first version, supply additional content and have version made live immediately" do
+          visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
+          click_link "Make this revision live"
+          
+          body_should_contain "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
+          
+          fill_in "topic[extended_content_values][required_field]", :with => "Moderator set value for required field after moderation"
+          click_button "Update"
+          
+          body_should_contain "Topic was successfully updated."
+          body_should_contain "Moderator set value for required field after moderation"
+          
+          @topic.reload
+          assert_equal 3, @topic.version
+        end
+        
       end
       
     end

@@ -88,7 +88,9 @@ module FlaggingController
         params[name_for_params.to_sym] = {}
         params[name_for_params.to_sym][:version_comment] = "Content from revision # #{@version}."
 
-        # TODO: Except the next version from moderation
+        # Exempt the next version from moderation
+        # See app/controllers/application.rb lines 241 through 282
+        exempt_next_version_from_moderation!(@item)
 
         flash[:notice] = "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
         render :action => 'edit'
