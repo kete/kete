@@ -186,15 +186,7 @@ class AccountController < ApplicationController
     original_user_name = @user.user_name
     if @user.update_attributes(params[:user])
       # @user.user_name has changed
-      if original_user_name != @user.user_name
-        # we want to flush contribution caches
-        # incase they updated something we display
-        # we also want to update zoom for all items they have contributed to
-        @user.distinct_contributions.each do |contribution|
-          expire_contributions_caches_for(contribution)
-          prepare_and_save_to_zoom(contribution)
-        end
-      end
+      expire_contributions_caches_for(@user) if original_user_name != @user.user_name
 
       flash[:notice] = 'User was successfully updated.'
       redirect_to :action => 'show', :id => @user
@@ -303,6 +295,7 @@ class AccountController < ApplicationController
     else
       flash[:error] = "'#{@still_image.title}' failed to add to your portraits."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
   end
 
@@ -315,6 +308,7 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
@@ -328,6 +322,7 @@ class AccountController < ApplicationController
     else
       flash[:error] = "'#{@still_image.title}' failed to become your selected portrait."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
   end
 
@@ -340,6 +335,7 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = "'#{@still_image.title}' failed to move closer to the front of your portraits."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
@@ -355,6 +351,7 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = "'#{@still_image.title}' failed to move closer to the end of your portraits."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
       format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
@@ -381,6 +378,7 @@ class AccountController < ApplicationController
         # once we have the portrait, update the position to index
         portrait_placement.update_attribute(:position, index)
       end
+      expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
       @successful = true
       flash[:notice] = "Your portraits have been successfully reordered."
     rescue
@@ -408,7 +406,7 @@ class AccountController < ApplicationController
 
     def redirect_to_image_or_profile
       if session[:return_to].blank?
-        redirect_to :action => 'show'
+        redirect_to_show_for(@still_image)
       else
         redirect_to url_for(session[:return_to])
       end

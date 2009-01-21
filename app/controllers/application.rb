@@ -495,16 +495,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def expire_contributions_caches_for(item)
-    # rather than find out if the contribution is for a public/private item
-    # just clear both the caches
-    ['contributor_public', 'contributor_private'].each do |part|
-      expire_fragment_for_all_versions(item,
-                                      { :urlified_name => item.basket.urlified_name,
-                                        :controller => zoom_class_controller(item.class.name),
-                                        :action => 'show',
-                                        :id => item,
-                                        :part => part })
+  def expire_contributions_caches_for(item_or_user, options = {})
+    if item_or_user.kind_of?(User)
+      # we want to flush contribution caches incase they updated something we display
+      # we also want to update zoom for all items they have contributed to
+      item_or_user.distinct_contributions.each do |contribution|
+        expire_contributions_caches_for(contribution)
+        prepare_and_save_to_zoom(contribution) unless options[:dont_rebuild_zoom]
+      end
+    else
+      # rather than find out if the contribution is for a public/private item
+      # just clear both the caches
+      ['contributor_public', 'contributor_private'].each do |part|
+        expire_fragment_for_all_versions(item_or_user,
+                                        { :urlified_name => item_or_user.basket.urlified_name,
+                                          :controller => zoom_class_controller(item_or_user.class.name),
+                                          :action => 'show',
+                                          :id => item_or_user,
+                                          :part => part })
+      end
     end
   end
 

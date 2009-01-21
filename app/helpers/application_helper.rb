@@ -427,21 +427,9 @@ module ApplicationHelper
     user_link = link_to(h(user.user_name), url_for_contributions_of(user, zoom_class))
     link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link)
     display_html += content_tag('div', link_text, :class => 'stylish_user_contribution_link_extra')
-    if options[:item]
-      item = options[:item]
-      display_html += content_tag('div', " created #{h(item.title)}",
-                                  :class => 'stylish_user_contribution_link_extra')
-      display_html += content_tag('div', " at #{item.created_at.to_s(:euro_date_time)}",
-                                  :class => 'stylish_user_contribution_link_extra')
-      if item.updated_at != item.created_at
-        additional_html = content_tag('div', " was the last to edit #{h(item.title)}", :class => 'stylish_user_contribution_link_extra')
-        additional_html += content_tag('div', " at #{item.updated_at.to_s(:euro_date_time)}", :class => 'stylish_user_contribution_link_extra')
-        display_html += stylish_link_to_contributions_of(@last_contributor, 'Topic', :additional_html => additional_html, :additional_classes => ['last_edited_link'])
-      end
-    end
     display_html += options[:additional_html] if options[:additional_html]
-    display_html += '</div>'
     display_html += '<div style="clear:both;"></div>'
+    display_html += '</div>'
     display_html
   end
 
@@ -874,7 +862,7 @@ module ApplicationHelper
         
         html_string += '<div class="comment-outer-wrapper">'
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
-                                                        :link_text => "<h3>|user_name_link|</h3> <div class=\"stylish_user_contribution_link_extra\"><h3>said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
+                                                        :link_text => "<h3>|user_name_link|</h3>&nbsp;<div class=\"stylish_user_contribution_link_extra\"><h3>said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end

@@ -707,12 +707,12 @@ div#notice div, div#error div {
   border: 1px solid black;
 }
 .profile_content_left {
-  margin-left: 75px;
-  width: 420px;
+  margin-left: 90px;
+  width: 380px;
 }
 .profile_content_right {
   float: right;
-  width: 420px;
+  width: 400px;
 }
 #portrait_help_div {
   margin: 25px auto;
@@ -750,14 +750,17 @@ div#notice div, div#error div {
   display: block;
 }
 .user_contribution_link_avatar {
-  float: left;
   border: none;
   padding-right: 4px;
   height: 55px;
 }
+.created_link {
+  float: left;
+  width: 290px;
+}
 .last_edited_link {
-  margin-top: -45px;
-  margin-left: 270px;
+  float: right;
+  width: 290px;
 }
 .stylish_user_contribution_link_avatar {
   float: left;

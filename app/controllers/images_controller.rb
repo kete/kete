@@ -64,6 +64,7 @@ class ImagesController < ApplicationController
           if params[:selected_portrait]
             UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
           end
+          expire_contribution_caches_for(current_user, :dont_rebuild_zoom => true)
         end
       end
 
