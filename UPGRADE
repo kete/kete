@@ -33,6 +33,14 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2009/01/22 - Portrait UI refinements
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      Clear your sites cache (rake tmp:cache:clear)
+4.      Start your Kete server again (mongrels or mod_rails)
+5.      Restart backgroundrb
+
 == 2009/01/20 - Updates to Webrat for better Selenium testing
 
 1.      Update your webrat gem to >= 0.4.0
