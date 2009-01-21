@@ -10,9 +10,11 @@ class ConfigurationTest < ActionController::IntegrationTest
                            to continue to configuration of the site."
       fill_in 'login', :with => 'admin'
       fill_in 'password', :with => 'test'
-      click_button 'Login'
-
-      body_should_contain 'Logged in successfully'
+      click_button 'Log in'
+      
+      sleep 3
+      
+      body_should_contain 'Logged in successfully', :dump_response => true
       click_button 'Change password'
 
       body_should_contain 'Change password'
