@@ -743,6 +743,9 @@ class ApplicationController < ActionController::Base
   #
   # We can return to this location by calling #redirect_back_or_default.
   def store_location
+    # Because private files are served through a show action, this method gets called, but we
+    # don't want to set the return_to url to a private image link
+    return if params[:controller] == 'private_files'
     # this should prevent the same page from being added to return_to
     # but does not prevent case of differnt size images...
     session[:return_to] = request.request_uri
