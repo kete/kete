@@ -36,7 +36,7 @@ namespace :deploy do
   end
 
   def set_app_server
-    set :app_server, :apache unless defined?(app_server)
+    begin; app_server; rescue; set(:app_server, :apache); end
     raise "Unknown Application Server #{app_server}" unless [:apache, :mongrel].include?(app_server)
   end
 
