@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
                                             :choose_type, :render_item_form,
                                             :setup_rebuild,
                                             :rebuild_zoom_index,
-                                            :add_portrait, :remove_portrait, :default_portrait,
+                                            :add_portrait, :remove_portrait, :make_selected_portrait,
                                             :contact, :send_email,
                                             :join ]
 
@@ -665,6 +665,11 @@ class ApplicationController < ActionController::Base
       when 'appearance'
         redirect_to :action => :appearance, :controller => 'baskets'
       when 'user_account'
+        if params[:portrait] && params[:selected_portrait]
+          flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created as your selected portrait."
+        elsif params[:portrait]
+          flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created as a portrait."
+        end
         redirect_to :action => :show, :controller => 'account', :id => @current_user
       else
         # TODO: replace with translation stuff when we get globalize going

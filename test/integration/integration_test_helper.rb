@@ -202,6 +202,18 @@ class ActionController::IntegrationTest
       :relate_to => nil
     }
     fields.merge!(options)
+
+    # If we're dealing with portraits, lets tack on params to the end of new_path
+    if zoom_class == "StillImage"
+      if fields.delete(:portrait)
+        fields[:new_path] = "#{fields[:new_path]}?portrait=true"
+        fields[:success_message] = "#{zoom_class_humanize(zoom_class)} was successfully created as a portrait."
+      elsif fields.delete(:selected_portrait)
+        fields[:new_path] = "#{fields[:new_path]}?selected_portrait=true"
+        fields[:success_message] = "#{zoom_class_humanize(zoom_class)} was successfully created as your selected portrait."
+      end
+    end
+
     # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise
     # an exception
     new_path = fields.delete(:new_path)

@@ -22,7 +22,7 @@
     <ul>
       <% if ENABLE_USER_PORTRAITS -%>
         <li>
-          You can create a <%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :default_portrait => true } -%> by uploading a new image.
+          You can create a <%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :selected_portrait => true } -%> by uploading a new image.
           Alternatively, you can go to an image you've <%= link_to 'uploaded before', url_for_contributions_of(current_user, 'StillImage') -%>, and select 'Add image to portraits' in the right sidebar.
         </li>
         <% if !@viewer_portraits.blank? -%>
@@ -85,18 +85,22 @@
 </div>
 
 <div class="avatar" style="padding:0px;">
-  <div id="profile_avatar" class="avatar">
+  <% if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT -%>
     <% selected_portrait = avatar_for(@user, :return_portrait => true) -%>
-    <% unless selected_portrait.nil? -%>
-      <%= render :partial => 'portrait', :locals => { :portrait => selected_portrait } -%>
-    <% else -%>
-      <%= avatar_for @user -%>
+    <div id="profile_avatar" class="avatar">
+      <% unless selected_portrait.nil? -%>
+        <%= render :partial => 'portrait', :locals => { :portrait => selected_portrait } -%>
+      <% else -%>
+        <%= avatar_for @user -%>
+      <% end -%>
+    </div>
+    <% if @viewer_is_user && ENABLE_USER_PORTRAITS -%>
+      <% unless selected_portrait.nil? %>
+        <div id="selected_portrait">Selected<br />Portrait</div>
+      <% end -%>
+      <div id="portrait_help"><%= link_to "what's this?", :whats_this => true -%></div>
+      <div id="new_portrait"><%= link_to 'new portrait', { :controller => 'images', :action => 'new', :selected_portrait => true } -%></div>
     <% end -%>
-  </div>
-  <% if @viewer_is_user && ENABLE_USER_PORTRAITS -%>
-    <div id="selected_portrait">Selected<br />Portrait</div>
-    <div id="portrait_help"><%= link_to "what's this?", :whats_this => true -%></div>
-    <div id="new_portrait"><%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :default_portrait => true } -%></div>
   <% end -%>
 </div>
 

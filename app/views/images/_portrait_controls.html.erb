@@ -11,7 +11,7 @@
         <% unless @still_image.portrayed_user.nil? -%>
           <% unless @still_image.user_portrait_relation.first? -%>
             <li><%= link_to 'Make image selected portrait', :controller => 'account',
-                                                            :action => 'default_portrait',
+                                                            :action => 'make_selected_portrait',
                                                             :id => @still_image.id -%></li>
           <% end -%>
           <li><%= link_to 'Remove image from portraits', :controller => 'account',

@@ -14,7 +14,7 @@ class AccountController < ApplicationController
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :login_from_cookie
 
-  before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :default_portrait]
+  before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :make_selected_portrait]
 
   # say something nice, you goof!  something sweet.
   def index
@@ -321,9 +321,9 @@ class AccountController < ApplicationController
     end
   end
 
-  def default_portrait
+  def make_selected_portrait
     @still_image = StillImage.find(params[:id])
-    if UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
+    if UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
       flash[:notice] = "'#{@still_image.title}' has been made your selected portrait."
     else
       flash[:error] = "'#{@still_image.title}' failed to become your selected portrait."
@@ -368,7 +368,7 @@ class AccountController < ApplicationController
       # we could strip these, but they actually work well here. One of then aligns positions with array indexs
       # The other fills in for the selected portrait not in this list.
       logger.debug("Portrait Order: #{portrait_ids.inspect}")
-      # Move everything to position one (so that the one that isn't updated remains the default)
+      # Move everything to position one (so that the one that isn't updated remains the selected)
       UserPortraitRelation.update_all({ :position => 1 }, { :user_id => current_user })
       # Get all of the portrait relations in one query
       portrait_list = current_user.user_portrait_relations

@@ -61,8 +61,8 @@ class ImagesController < ApplicationController
 
         if params[:portrait]
           UserPortraitRelation.new_portrait_for(current_user, @still_image)
-          if params[:default_portrait]
-            UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
+          if params[:selected_portrait]
+            UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
           end
         end
       end
