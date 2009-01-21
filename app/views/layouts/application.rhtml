@@ -56,6 +56,18 @@
     <% end -%>
   <% end -%>
 
+  <% if !ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT %>
+    <style type="text/css">
+      .comment-outer-wrapper .stylish_user_contribution_link_extra,
+      .comment-outer-wrapper .stylish_user_contribution_link_extra h3 {
+        display: inline;
+      }
+      .comment-wrapper {
+        margin-top: 0px;
+      }
+    </style>
+  <% end -%>
+
   <%= stylesheet_link_tag('serif') if @theme_font_family == 'serif' %>
   <% if !@header_image.blank? -%>
     <% # allows for banner style background image -%>

@@ -33,7 +33,9 @@ module SearchHelper
 
     if !@contributor.nil?
       contributor = add_links ? link_to_profile_for(@contributor) : @contributor.user_name
-      end_of_title_parts << " contributed by \"#{contributor}\""
+      contributor_string = " contributed by \"#{contributor}\""
+      contributor_string += ' ' + avatar_for(@contributor) if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT
+      end_of_title_parts << contributor_string
     end
 
     end_of_title_parts << " related to \"#{@source_item.title}\"" if !@source_item.nil?

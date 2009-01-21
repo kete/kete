@@ -1,14 +1,18 @@
-<% if ENABLE_USER_PORTRAITS && @still_image.created_by?(current_user) -%>
+<% if ENABLE_USER_PORTRAITS -%>
+<% selected_portrait = avatar_for(@still_image.creator, :return_portrait => true)
+   @viewer_is_user = @still_image.created_by?(current_user) -%>
+<% if @viewer_is_user || (!@viewer_portraits.blank? && !selected_portrait.blank?) -%>
 <div class="secondary-content-section-wrapper">
   <div id="portrait-controls-box" class="secondary-content-section">
+    <% if @viewer_is_user -%>
     <h2>Portrait Controls</h2>
     <p>
       <ul>
         <% unless @still_image.portrayed_user.nil? -%>
           <% unless @still_image.user_portrait_relation.first? -%>
-            <li><%= link_to 'Make image default portrait', :controller => 'account',
-                                                           :action => 'default_portrait',
-                                                           :id => @still_image.id -%></li>
+            <li><%= link_to 'Make image selected portrait', :controller => 'account',
+                                                            :action => 'make_selected_portrait',
+                                                            :id => @still_image.id -%></li>
           <% end -%>
           <li><%= link_to 'Remove image from portraits', :controller => 'account',
                                                          :action => 'remove_portrait',
@@ -20,7 +24,18 @@
         <% end -%>
       </ul>
     </p>
+    <% end -%>
+    <% if !@viewer_portraits.blank? -%>
+    <div style="clear:both;"></div>
+    <h4>Other Portraits</h4>
+    <div id="portrait_images_static">
+      <%= render :partial => 'account/portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user } -%>
+    </div>
+    <% end -%>
+    <div style="clear:both;"></div>
+    <div id="portrait_help"><%= link_to "what's this?", :controller => 'account', :action => 'show', :whats_this => true -%></div>
     <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
   </div>
 </div>
+<% end -%>
 <% end -%>

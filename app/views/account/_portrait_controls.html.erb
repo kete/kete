@@ -1,0 +1,26 @@
+<% if @viewer_is_user && params[:controller] != 'images' -%>
+  <noscript>
+    <% control_id = "image_#{portrait.id}_controls" -%>
+    <span id="<%= control_id -%>" class="portrait_controls">
+      <% link_hash = { :before => "Element.show('data_spinner')",
+                       :complete => "Element.hide('data_spinner')" } -%>
+      <% unless portrait.user_portrait_relation.first? %>
+        <%= link_to image_tag('icon-tag.gif',
+                              { :alt => 'Make Selected. ', :title => 'Make Selected. ', :width => 14, :height => 14 }),
+                    { :action => 'make_selected_portrait', :id => portrait.id }, { :id => "#{control_id}_selected" } -%>
+        <%= link_to image_tag('icon_results_previous.gif',
+                              { :alt => 'Move Higher. ', :title => 'Move Higher. ', :width => 14, :height => 14 }),
+                    { :action => 'move_portrait_higher', :id => portrait.id }, { :id => "#{control_id}_higher" } -%>
+      <% end -%>
+      <% unless portrait.user_portrait_relation.last? %>
+        <%= link_to image_tag('icon_results_next.gif',
+                              { :alt => 'Move Lower. ', :title => 'Move Lower. ', :width => 14, :height => 14 }),
+                    { :action => 'move_portrait_lower', :id => portrait.id }, { :id => "#{control_id}_lower" } -%>
+      <% end -%>
+      <%= link_to image_tag('cross.png',
+                            { :alt => 'Remove Portrait. ', :title => 'Remove Portrait. ', :width => 14, :height => 14 }),
+                  { :action => 'remove_portrait', :id => portrait.id }, { :id => "#{control_id}_remove" } -%>
+    </span>
+    <style type="text/css">#portrait_images .portrait_image { width: 70px; }</style>
+  </noscript>
+<% end -%>

@@ -10,17 +10,51 @@
   <% end -%>
 </div>
 
+<% if @viewer_is_user && (ENABLE_USER_PORTRAITS || (ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil?)) -%>
+  <div id="portrait_help_div">
+    <p>
+      Portraits are a set of images you display on your profile page to users who view it.
+      It can be your own artwork uploaded to the site, or your favorite images.
+      The first portrait added (which can be reordered later) becomes your 'selected' portrait, that is,
+      the one you wish to use as an avatar around the site. It will be displayed on your profile page and next
+      to any comments you post.
+    </p>
+    <ul>
+      <% if ENABLE_USER_PORTRAITS -%>
+        <li>
+          You can create a <%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :selected_portrait => true } -%> by uploading a new image.
+          Alternatively, you can go to an image you've <%= link_to 'uploaded before', url_for_contributions_of(current_user, 'StillImage') -%>, and select 'Add image to portraits' in the right sidebar.
+        </li>
+        <% if !@viewer_portraits.blank? -%>
+          <li>To change your selected portrait:
+            <ul>
+              <li>Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).</li>
+              <li>Use the arrow buttons to shift them around (when Javascript is off).</li>
+            </ul>
+          </li>
+        <% end -%>
+      <% end -%>
+      <% if ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil? -%>
+        <li>
+          Add an avatar to your account by registering a global portrait with <%= link_to 'gravatar.com', 'http://gravatar.com/' -%>.
+          <%= "Alternatively, you can add a user portrait using the instructions above." if ENABLE_USER_PORTRAITS -%>
+        </li>
+      <% end -%>
+    </ul>
+    <div id="close_help"><%= link_to 'Close X', :action => 'show' -%></a></div>
+  </div>
+  <% if !params[:whats_this] -%>
+    <%= javascript_tag "$('portrait_help_div').hide();" -%>
+    <noscript><style type="text/css">#portrait_help_div { display:none; }</style></noscript>
+  <% end -%>
+<% end -%>
+
 <div class="profile_content_right">
-  <% if @viewer_is_user || !@viewer_portraits.nil? -%>
+  <% if ENABLE_USER_PORTRAITS && !@viewer_portraits.blank? -%>
   <div id="portraits">
     <div>
-      <h4 style="display:inline;">Portraits</h4>
+      <h4>Other Portraits</h4>
       <% if @viewer_is_user -%>
-        <% location_hash = { :controller => 'images',
-                             :action => 'new',
-                             :portrait => true,
-                              :default_portrait => true } -%>
-        [ <%= link_to 'new portrait', location_hash -%> ]
         <img src="/images/indicator.gif" width="16" height="16" alt="Editing portraits. " id="data_spinner" style="display:none;" />
       <% end -%>
     </div>
@@ -28,6 +62,7 @@
     <div id="portrait_images">
       <%= render :partial => 'portraits', :locals => { :viewer_portraits => @viewer_portraits, :viewer_is_user => @viewer_is_user } -%>
     </div>
+    <div style="clear:both;"></div>
   </div>
   <% end -%>
 
@@ -49,7 +84,25 @@
   <% end -%>
 </div>
 
-<div id="profile_avatar" class="avatar"><%= avatar_for @user -%></div>
+<div class="avatar" style="padding:0px;">
+  <% if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT -%>
+    <% selected_portrait = avatar_for(@user, :return_portrait => true) -%>
+    <div id="profile_avatar" class="avatar">
+      <% unless selected_portrait.nil? -%>
+        <%= render :partial => 'portrait', :locals => { :portrait => selected_portrait } -%>
+      <% else -%>
+        <%= avatar_for @user -%>
+      <% end -%>
+    </div>
+    <% if @viewer_is_user && ENABLE_USER_PORTRAITS -%>
+      <% unless selected_portrait.nil? %>
+        <div id="selected_portrait">Selected<br />Portrait</div>
+      <% end -%>
+      <div id="portrait_help"><%= link_to "what's this?", :whats_this => true -%></div>
+      <div id="new_portrait"><%= link_to 'new portrait', { :controller => 'images', :action => 'new', :selected_portrait => true } -%></div>
+    <% end -%>
+  <% end -%>
+</div>
 
 <div class="profile_content_left">
   <p>

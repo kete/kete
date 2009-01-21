@@ -566,18 +566,8 @@ div#slideshow-controls div#slideshow-middle {
 }
 
 
-.comment-wrapper {
-    margin: 1.5em 0 1em 0;
-    padding: .2em 1em 1em .5em;
-    border-left: 2px solid #666;
-    background-color: white;
-}
-.comment-content .avatar {
-  padding: 0 10px;
-}
-.comment-content-inner {
-  margin-left: 70px;
-}
+/* ################################## Comments ################################## */
+/* see public/stylesheets/comment.css */
 
 
 .history-table td {
@@ -713,29 +703,69 @@ div#notice div, div#error div {
   float: left;
   padding: 15px 10px;
 }
+.avatar_hover {
+  border: 1px solid black;
+}
 .profile_content_left {
-  margin-left: 75px;
-  width: 420px;
+  margin-left: 90px;
+  width: 380px;
 }
 .profile_content_right {
   float: right;
-  width: 420px;
+  width: 400px;
+}
+#portrait_help_div {
+  margin: 25px auto;
+  padding: 0 15px;
+  border: 1px solid #000;
+  background-color: #eee;
+  width: 80%;
+}
+#close_help {
+  padding: 5px 0 10px 0;
+  text-align: center;
+}
+#selected_portrait, #portrait_help, #new_portrait {
+  clear: both;
+  padding-top: 14px;
+  font-size: 0.8em;
+  text-align: center;
 }
 .portrait_image {
-  display: inline;
+  float: left;
+  width: 50px;
+  height: 50px;
+}
+#portrait_images .portrait_image,
+#portrait_images_static .portrait_image {
+  padding-right: 5px;
+  padding-bottom: 5px;
 }
 .portrait_image img {
   border: none;
-}
-.portrait_controls {
-  position: absolute;
-  margin-left: -5px;
-  border: 1px solid #000;
-  background-color: #fff;
+  float: left;
 }
 .portrait_controls img {
   border: none;
   display: block;
+}
+.user_contribution_link_avatar {
+  border: none;
+  padding-right: 4px;
+  height: 55px;
+}
+.created_link {
+  float: left;
+  width: 290px;
+}
+.last_edited_link {
+  float: right;
+  width: 290px;
+}
+.stylish_user_contribution_link_avatar {
+  float: left;
+  padding: 5px;
+  border-left: 2px solid gray;
 }
 
 /* ################################ Registration ################################ */

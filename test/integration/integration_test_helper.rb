@@ -18,7 +18,7 @@ load_testing_libs
 if defined?(SELENIUM_MODE) && SELENIUM_MODE
   Webrat.configure do |config|
     config.mode = :selenium
-    config.selenium_environment = :test
+    config.application_environment = :test
     config.open_error_files = false
   end
 else
@@ -203,6 +203,18 @@ class ActionController::IntegrationTest
       :topic_type => "Topic"
     }
     fields.merge!(options)
+
+    # If we're dealing with portraits, lets tack on params to the end of new_path
+    if zoom_class == "StillImage"
+      if fields.delete(:portrait)
+        fields[:new_path] = "#{fields[:new_path]}?portrait=true"
+        fields[:success_message] = "#{zoom_class_humanize(zoom_class)} was successfully created as a portrait."
+      elsif fields.delete(:selected_portrait)
+        fields[:new_path] = "#{fields[:new_path]}?selected_portrait=true"
+        fields[:success_message] = "#{zoom_class_humanize(zoom_class)} was successfully created as your selected portrait."
+      end
+    end
+
     # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise
     # an exception
     new_path = fields.delete(:new_path)

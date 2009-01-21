@@ -24,7 +24,7 @@ class UserPortraitRelation < ActiveRecord::Base
     user_portrait_relation.destroy
   end
 
-  def self.make_portrait_default_for(user, still_image)
+  def self.make_portrait_selected_for(user, still_image)
     return false unless still_image.created_by?(user)
 
     user_portrait_relation = self.find_by_user_id_and_still_image_id(user, still_image)

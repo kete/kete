@@ -14,7 +14,7 @@ class AccountController < ApplicationController
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :login_from_cookie
 
-  before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :default_portrait]
+  before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :make_selected_portrait]
 
   # say something nice, you goof!  something sweet.
   def index
@@ -169,7 +169,7 @@ class AccountController < ApplicationController
       end
       @extended_fields = @user.xml_attributes
       @viewer_is_user = (@user == @current_user) ? true : false
-      @viewer_portraits = !@user.portraits.empty? ? @user.portraits : nil
+      @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(:conditions => ['position != 1']) : nil
     else
       flash[:notice] = "You must be logged in to view user profiles."
       redirect_to :action => 'login'
@@ -186,15 +186,7 @@ class AccountController < ApplicationController
     original_user_name = @user.user_name
     if @user.update_attributes(params[:user])
       # @user.user_name has changed
-      if original_user_name != @user.user_name
-        # we want to flush contribution caches
-        # incase they updated something we display
-        # we also want to update zoom for all items they have contributed to
-        @user.distinct_contributions.each do |contribution|
-          expire_contributions_caches_for(contribution)
-          prepare_and_save_to_zoom(contribution)
-        end
-      end
+      expire_contributions_caches_for(@user) if original_user_name != @user.user_name
 
       flash[:notice] = 'User was successfully updated.'
       redirect_to :action => 'show', :id => @user
@@ -303,7 +295,8 @@ class AccountController < ApplicationController
     else
       flash[:error] = "'#{@still_image.title}' failed to add to your portraits."
     end
-    redirect_to_show_for(@still_image)
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
+    redirect_to_image_or_profile
   end
 
   def remove_portrait
@@ -315,20 +308,22 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
-      format.html { redirect_to_show_for(@still_image) }
+      format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
 
-  def default_portrait
+  def make_selected_portrait
     @still_image = StillImage.find(params[:id])
-    if UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
-      flash[:notice] = "'#{@still_image.title}' has been make your default portrait."
+    if UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
+      flash[:notice] = "'#{@still_image.title}' has been made your selected portrait."
     else
-      flash[:error] = "'#{@still_image.title}' failed to become your default portrait."
+      flash[:error] = "'#{@still_image.title}' failed to become your selected portrait."
     end
-    redirect_to_show_for(@still_image)
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
+    redirect_to_image_or_profile
   end
 
   def move_portrait_higher
@@ -340,8 +335,9 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = "'#{@still_image.title}' failed to move closer to the front of your portraits."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
-      format.html { redirect_to_show_for(@still_image) }
+      format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
     end
   end
@@ -355,9 +351,43 @@ class AccountController < ApplicationController
       @successful = false
       flash[:error] = "'#{@still_image.title}' failed to move closer to the end of your portraits."
     end
+    expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
-      format.html { redirect_to_show_for(@still_image) }
+      format.html { redirect_to_image_or_profile }
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/account/portrait_controls.js.rjs') }
+    end
+  end
+
+  def update_portraits
+    begin
+      portrait_ids = params[:portraits].gsub('&', '').split('portrait_images[]=')
+      # portrait_ids will now contain two blank spaces at the front, then the order of other portraits
+      # we could strip these, but they actually work well here. One of then aligns positions with array indexs
+      # The other fills in for the selected portrait not in this list.
+      logger.debug("Portrait Order: #{portrait_ids.inspect}")
+      # Move everything to position one (so that the one that isn't updated remains the selected)
+      UserPortraitRelation.update_all({ :position => 1 }, { :user_id => current_user })
+      # Get all of the portrait relations in one query
+      portrait_list = current_user.user_portrait_relations
+      # For each of the portrait ids, update their position based on the array index
+      portrait_ids.each_with_index do |portrait_id,index|
+        # The first element we leave in (to represent the selected portrait)
+        next if portrait_id.blank?
+        # Get this portrait from the portrait_list array
+        portrait_placement = portrait_list.select { |placement| placement.still_image_id.to_i == portrait_id.to_i }.first
+        # once we have the portrait, update the position to index
+        portrait_placement.update_attribute(:position, index)
+      end
+      expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
+      @successful = true
+      flash[:notice] = "Your portraits have been successfully reordered."
+    rescue
+      @successful = false
+      flash[:error] = "The portraits were not reordered permanently. You may only reorder portraits if they are yours.  If they are, please try again."
+    end
+    # This action is only called via Ajax JS request, so don't respond to HTML
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -371,6 +401,14 @@ class AccountController < ApplicationController
         flash[:notice] = "User portraits are not enabled so you cannot use this feature."
         @still_image = StillImage.find(params[:id])
         redirect_to_show_for(@still_image)
+      end
+    end
+
+    def redirect_to_image_or_profile
+      if session[:return_to].blank?
+        redirect_to_show_for(@still_image)
+      else
+        redirect_to url_for(session[:return_to])
       end
     end
 
