@@ -35,6 +35,7 @@ namespace :deploy do
 
     desc 'Upgrade Kete Installation'
     task :upgrade, :role => :app do
+      set_app_environment
       run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:upgrade"
     end
 
