@@ -433,6 +433,10 @@ module ApplicationHelper
     display_html
   end
 
+  def add_to_stylish_display_with(content)
+    "<div class=\"stylish_user_contribution_link_extra\">#{content}</div>"
+  end
+
   def url_for_profile_of(user)
     url_for(:controller => 'account',
             :urlified_name => @site_basket.urlified_name,
@@ -862,7 +866,7 @@ module ApplicationHelper
         
         html_string += '<div class="comment-outer-wrapper">'
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
-                                                        :link_text => "<h3>|user_name_link|</h3>&nbsp;<div class=\"stylish_user_contribution_link_extra\"><h3>said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
+                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end
