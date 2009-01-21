@@ -655,4 +655,33 @@ class ActionController::IntegrationTest
     text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;').gsub(/"/, '&quot;')
   end
 
+  # tranform an array of ids
+  # to a hash suitable to post as params
+  # as if checkboxes of ids with value true
+  def item_checkbox_hash_from(*ids)
+    item_checkbox_hash = Hash.new
+    ids.each { |id| item_checkbox_hash[id.to_s] = "true"}
+    item_checkbox_hash
+  end
+
+  # directly hit the link_related action
+  # assumes relation_candidates are of the same class
+  # by doing this through the web interface we trigger all the zebra interaction and cache clearing
+  def add_relation_between(topic, zoom_class, *relation_candidate_ids)
+    topic = topic.id.to_s if topic.is_a?(Topic)
+    item_checkbox_hash = item_checkbox_hash_from(relation_candidate_ids)
+    post '/site/search/link_related', :relate_to_topic => topic, :related_class => zoom_class, :item => item_checkbox_hash
+    assert_response :redirect
+    # body_should_contain "Successfully added item relationships"
+  end
+
+  # shortcut to unlink related items
+  def unlink_relation_between(topic, zoom_class, *relation_candidate_ids)
+    topic = topic.id.to_s if topic.is_a?(Topic)
+    item_checkbox_hash = item_checkbox_hash_from(relation_candidate_ids)
+    post '/site/search/unlink_related', :relate_to_topic => topic, :related_class => zoom_class, :item => item_checkbox_hash
+    assert_response :redirect
+    # body_should_contain "Successfully removed item relationships."
+  end
+
 end

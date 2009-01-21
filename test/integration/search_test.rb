@@ -2,12 +2,57 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 
 class SearchTest < ActionController::IntegrationTest
 
-  context "When getting results for topics" do
+  context "When getting results for topics, results" do
     setup do
+      add_sally_as_regular_user
+      login_as('sally')
+      @topic = new_topic(:title => 'abcdef')
+      @image_file_base_url = SITE_URL + '/image_files/'
+      @first_image = new_still_image{ attach_file "image_file_uploaded_data", "white.jpg"}
     end
-    should_eventually "topic with 1 related image should show thumbnail for image"
-    should_eventually "topic with more than 5 related images should only show first 5 image thumbnails"
-    should_eventually "topic with no related images should not have any images"
+
+    should "have a topic with no related images should not have any images" do
+      # check that browse has topic, but no images
+      browse_for(@topic)
+      body_should_not_contain Regexp.new("<img (.+)src=\"#{@image_file_base_url}.+\">")
+    end
+
+    context "after a related image has been added to the topic, the topic result" do
+      setup do
+        add_relation_between(@topic, 'StillImage', [@first_image.id])
+      end
+
+      should "show thumbnail for related image" do
+        browse_for(@topic)
+        body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{@first_image.thumbnail_file.public_filename}\">")
+      end
+
+      should "after the relationship with an image was unlinked should not have a thumbnail for image" do
+        unlink_relation_between(@topic, 'StillImage', [@first_image.id])
+        browse_for(@topic)
+        body_should_not_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{@first_image.thumbnail_file.public_filename}\">")
+      end
+    end
+
+    should "topic with more than 5 related images should only show first 5 image thumbnails" do
+      images = Array.new
+      1.upto(6) do |i|
+        images << new_still_image(:title => 'image ' + i.to_s) { attach_file "image_file_uploaded_data", "white.jpg"}
+      end
+      image_ids = images.collect { |image| image.id}
+      add_relation_between(@topic, 'StillImage', image_ids)
+
+      browse_for(@topic)
+      images.each do |image|
+        # index 5 is actually the six item, because we are dealing with array indexes, blah blah blah
+        # so we don't want to see a match for the sixth image
+        unless images.index(image) < 5
+          body_should_not_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
+        else
+          body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
+        end
+      end
+    end
   end
 
   ['jane', 'īōūāē', 'a&b'].each do |login|
@@ -111,4 +156,8 @@ class SearchTest < ActionController::IntegrationTest
     end
   end
 
+  def browse_for(item)
+    visit '/site/all/' + zoom_class_controller(item.class.name)
+    body_should_contain item.title
+  end
 end
