@@ -19,7 +19,7 @@ module FlaggingController
 
       # Revert to the passed in version if applicable
       @item.revert_to(params[:version]) if !params[:version].blank?
-      
+
       # we tag the current version with the flag passed
       # and revert to an unflagged version
       # or create a blank unflagged version if necessary
@@ -27,7 +27,7 @@ module FlaggingController
 
       # Reload to public version so zoom code works as expected
       @item.reload
-      
+
       raise "We are not on public version" if @item.respond_to?(:private) && @item.private?
 
       flagging_clear_caches_and_update_zoom(@item)
@@ -63,64 +63,97 @@ module FlaggingController
     # and removes flags on that version
     def restore
       setup_flagging_vars
-      
-      # if version we are about to supersede
-      # is blank, flag it as blank for clarity in the history
-      # this doesn't do the reversion in itself
-      @item.flag_at_with(@item.version, BLANK_FLAG) if @item.already_at_blank_version?
+
+      current_version = @item.version
 
       # unlike flag_version, we create a new version
       # so we track the restore in our version history
       @item.revert_to(@version)
-      @item.tag_list = @item.raw_tag_list
-      @item.version_comment = "Content from revision \# #{@version}."
-      @item.do_not_moderate = true
-      # turn off sanitizing in restores
-      # for the rare case when invalid code made it in
-      # otherwise validation may cause save action to fail
-      @item.do_not_sanitize = true
-      
-      versions_before_save = @item.versions.size
-      
-      if @item.respond_to?(:save_without_saving_private!)
-        @item.save_without_saving_private!
+
+      @item.send(:allow_nil_values_for_extended_content=, false)
+
+      if not @item.valid?
+
+        # James - 2009-01-16
+        # If the version we're restoring to is invalid, then the moderator must improve the content
+        # to make it valid before restoring the version.
+        name_for_params = @item.class.table_name.singularize
+        instance_variable_set("@#{name_for_params}", @item)
+        @editing = true
+
+        # We need topic types for editing a topic
+        @topic_types = @topic.topic_type.full_set if @item.is_a?(Topic)
+
+        # Set the version comment
+        params[name_for_params.to_sym] = {}
+        params[name_for_params.to_sym][:version_comment] = "Content from revision # #{@version}."
+
+        # Exempt the next version from moderation
+        # See app/controllers/application.rb lines 241 through 282
+        exempt_next_version_from_moderation!(@item)
+
+        flash[:notice] = "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
+        render :action => 'edit'
+
+        @item.send(:allow_nil_values_for_extended_content=, true)
+
       else
-        @item.save!
+
+        # if version we are about to supersede
+        # is blank, flag it as blank for clarity in the history
+        # this doesn't do the reversion in itself
+        @item.flag_at_with(current_version, BLANK_FLAG) if @item.already_at_blank_version?
+
+        @item.tag_list = @item.raw_tag_list
+        @item.version_comment = "Content from revision \# #{@version}."
+        @item.do_not_moderate = true
+        # turn off sanitizing in restores
+        # for the rare case when invalid code made it in
+        # otherwise validation may cause save action to fail
+        @item.do_not_sanitize = true
+
+        versions_before_save = @item.versions.size
+
+        if @item.respond_to?(:save_without_saving_private!)
+          @item.save_without_saving_private!
+        else
+          @item.save!
+        end
+
+        # If the version is not what we expect, there may have been a race condition.
+        logger.debug "Race condition during restore. Version expected to be #{versions_before_save + 1} but was #{@item.version}." unless @item.version == versions_before_save + 1
+
+        # keep track of the moderator's contribution
+        @item.add_as_contributor(@current_user)
+
+        # now that this item is approved by moderator
+        # we get rid of pending flag
+        # then flag it as reviewed
+        @item.change_pending_to_reviewed_flag(@version)
+
+        # Return to latest public version before changing flags..
+        @item.send :store_correct_versions_after_save if @item.respond_to?(:store_correct_versions_after_save)
+
+        flagging_clear_caches_and_update_zoom(@item)
+
+        clear_caches_and_update_zoom_for_commented_item(@item)
+
+        approval_message = 'Your contribution to ' + PRETTY_SITE_NAME + ' '
+        approval_message += 'in ' + @current_basket.name + ' ' if @current_basket != @site_basket
+        approval_message += 'has been made the live version.'
+
+
+        # notify the contributor of this revision
+        UserNotifier.deliver_approval_of(@version,
+                                         @item_url,
+                                         @submitter,
+                                         approval_message)
+
+
+        flash[:notice] = "The content of this #{zoom_class_humanize(@item.class.name)} has been approved from the selected revision."
+
+        redirect_to @item_url
       end
-      
-      # If the version is not what we expect, there may have been a race condition.
-      logger.debug "Race condition during restore. Version expected to be #{versions_before_save + 1} but was #{@item.version}." unless @item.version == versions_before_save + 1
-
-      # keep track of the moderator's contribution
-      @item.add_as_contributor(@current_user)
-      
-      # now that this item is approved by moderator
-      # we get rid of pending flag
-      # then flag it as reviewed
-      @item.change_pending_to_reviewed_flag(@version)
-
-      # Return to latest public version before changing flags..
-      @item.send :store_correct_versions_after_save if @item.respond_to?(:store_correct_versions_after_save)
-
-      flagging_clear_caches_and_update_zoom(@item)
-
-      clear_caches_and_update_zoom_for_commented_item(@item)
-
-      approval_message = 'Your contribution to ' + PRETTY_SITE_NAME + ' '
-      approval_message += 'in ' + @current_basket.name + ' ' if @current_basket != @site_basket
-      approval_message += 'has been made the live version.'
-
-
-      # notify the contributor of this revision
-      UserNotifier.deliver_approval_of(@version,
-                                       @item_url,
-                                       @submitter,
-                                       approval_message)
-
-
-      flash[:notice] = "The content of this #{zoom_class_humanize(@item.class.name)} has been approved from the selected revision."
-
-      redirect_to @item_url
     end
 
     def reject
@@ -145,7 +178,7 @@ module FlaggingController
     # so that different types of items can have their history display customized
     def history
       @item = item_from_controller_and_id
-      
+
       # Only show private versions to authorized people.
       if permitted_to_view_private_items?
         @versions = @item.versions
@@ -153,10 +186,10 @@ module FlaggingController
         @versions = @item.versions.reject { |v| v.respond_to?(:private) and v.private? }
         @show_private_versions_notice = (@versions.size != @item.versions.size)
       end
-      
+
       @current_public_version = @item.version
 
-      @item.private_version do 
+      @item.private_version do
         @current_private_version = @item.version
       end if @item.respond_to?(:private_version)
 
@@ -168,7 +201,7 @@ module FlaggingController
     # assumes a preview templates under the controller
     def preview
       setup_flagging_vars
-      
+
       # no need to preview live version
       if @item.version.to_s == @version
         redirect_to correct_url_for(@item)
