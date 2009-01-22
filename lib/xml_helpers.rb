@@ -37,5 +37,48 @@ module XmlHelpers
         xml.enclosure args
       end
     end
+
+    # if the item is a topic
+    # put in an element for each related item
+    # plus attributes for totals by zoom class
+    # still_images should include image_file subelement for thumbnail
+    # if item is not a topic
+    # simply has related topics
+    def xml_for_related_items(xml, item, passed_request = nil)
+      protocol = appropriate_protocol_for(item)
+      host = !passed_request.nil? ? passed_request[:host] : request.host
+
+      totals_hash = Hash.new
+      # only add to totals if there are items
+      unless item.is_a?(Topic)
+        total = item.topics.count
+        totals_hash[:topics] = total if total > 0
+      else
+        ZOOM_CLASSES.each do |class_name|
+          tableized = class_name.tableize
+          total = 0
+          unless class_name == 'Topic'
+            total = item.send(tableized).count
+          else
+            total = item.parent_related_topics.count + item.child_related_topics.count
+          end
+          totals_hash[tableized.to_sym] = total if total > 0
+        end
+      end
+      options = ['related_items']
+      options << totals_hash unless totals_hash.blank?
+      xml.related_items(totals_hash) do
+        # get the thumbnails for any still images we have
+        # in the future we may also have audio, video, too
+        unless totals_hash[:still_images].blank?
+          item.still_images.each do |image|
+            xml.still_image(:title => image.title, :id => image.id) do
+              thumb = image.thumbnail_file
+              xml.thumbnail(:height  => thumb.height, :width => thumb.width, :size => thumb.size, :url => protocol + '://' + host + thumb.public_filename)
+            end
+          end
+        end
+      end
+    end
   end
 end

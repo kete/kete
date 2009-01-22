@@ -57,7 +57,14 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
           # this is currently only used for topic type
           oai_dc_xml_dc_coverage(xml,item)
         end
-      end
+      end # end metadata
+
+      # this is meant to be a cache, outside of the oai_dc namespace
+      # of things like thumbnails to related images for a topic
+      # for non-topics
+      # it should store related topics
+      xml_for_related_items(xml, item)
+
     end
   end
 end
