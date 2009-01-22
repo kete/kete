@@ -596,6 +596,23 @@ module ApplicationHelper
       :relate_to_topic => relate_to_topic }
   end
 
+  def related_items_links_display_of(items, images = false)
+    return '' if items.blank?
+    display_html = String.new
+    display_html += images ? '<ul class="results-list images-list">' : '<ul>'
+    items.each do |related_item|
+      if !related_item[:still_image].blank?
+        link = render :partial => "topics/related_images_links_tag",
+                      :locals => { :related_item => related_item[:still_image] }
+        display_html += "<li>#{link}</li>"
+      else
+        display_html += "<li>#{link_to(related_item[:title], related_item[:url])}</li>"
+      end
+    end
+    display_html += "</ul>"
+    display_html
+  end
+
   # tag related helpers
   def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
     zoom_class = zoom_class || tag[:zoom_class]

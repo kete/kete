@@ -1,7 +1,7 @@
 <% if !pipe_list -%>
 <% pretty_class_plural = zoom_class_plural_humanize(related_class) -%>
 <div id="detail-linked-<%= zoom_class_controller(related_class) -%>">
-  <h4><%= "#{pretty_class_plural} (#{items.size})" -%></h4>
+  <h4><%= "#{pretty_class_plural} (#{(@items[related_class] + items.size)})" -%></h4>
   <% else -%>
   <div class="pipe-list">
     <% end -%>

@@ -21,6 +21,8 @@
                           :class_suffix => "-blue" }) -%>
   <h2 class="related-link">Related Items</h2>
   <div id="detail-linked-toprow">
+    <% @items= Hash.new %>
+    <% @items['StillImage'] = find_private_related_items_for(@topic, 'StillImage').size %>
     <% cache ({:related => 'images', :id => @cache_id}) do -%>
       <%= related_items_links(:source_item => @topic,
                               :related_class => 'StillImage') -%>
@@ -29,9 +31,11 @@
     <%= render(:partial => "related_items_control_links",
                :locals => { :relate_to_topic => @topic,
                             :related_class => 'StillImage' }) -%>
+    <%= related_items_links_display_of find_private_related_items_for(@topic, 'StillImage'), true -%>
   </div>
   <div class="two-col">
     <!-- <div id="detail-linked-midrow"> -->
+    <% @items['Topic'] = find_private_related_items_for(@topic, 'Topic').size %>
     <% cache ({:related => 'topics', :id => @cache_id}) do -%>
       <%= related_items_links(:source_item => @topic,
                               :related_class => 'Topic') -%>
@@ -40,6 +44,9 @@
     <%= render(:partial => "related_items_control_links",
                :locals => { :relate_to_topic => @topic,
                             :related_class => 'Topic' }) -%>
+    <%= related_items_links_display_of find_private_related_items_for(@topic, 'Topic') -%>
+
+    <% @items['AudioRecording'] = find_private_related_items_for(@topic, 'AudioRecording').size %>
     <% cache ({:related => 'audio', :id => @cache_id}) do -%>
     <%= related_items_links(:source_item => @topic,
                             :related_class => 'AudioRecording') -%>
@@ -48,7 +55,9 @@
     <%= render(:partial => "related_items_control_links",
                :locals => { :relate_to_topic => @topic,
                             :related_class => 'AudioRecording' }) -%>
-
+    <%= related_items_links_display_of find_private_related_items_for(@topic, 'AudioRecording') -%>
+    
+    <% @items['Video'] = find_private_related_items_for(@topic, 'Video').size %>
     <% cache ({:related => 'video', :id => @cache_id}) do -%>
       <%= related_items_links(:source_item => @topic,
                               :related_class => 'Video') -%>
@@ -57,10 +66,12 @@
     <%= render(:partial => "related_items_control_links",
                :locals => { :relate_to_topic => @topic,
                             :related_class => 'Video' }) -%>
+    <%= related_items_links_display_of find_private_related_items_for(@topic, 'Video') -%>
     <div class="cleaner-left">&nbsp;</div>
   </div>
   <div class="two-col">
     <!-- <div id="detail-linked-bottomrow"> -->
+    <% @items['Document'] = find_private_related_items_for(@topic, 'Document').size %>
     <% cache ({:related => 'documents', :id => @cache_id}) do -%>
       <%= related_items_links(:source_item => @topic,
                               :related_class => 'Document') -%>
@@ -69,6 +80,9 @@
     <%= render(:partial => "related_items_control_links",
                :locals => { :relate_to_topic => @topic,
                             :related_class => 'Document' }) -%>
+    <%= related_items_links_display_of find_private_related_items_for(@topic, 'Document') -%>
+    
+    <% @items['WebLink'] = find_private_related_items_for(@topic, 'WebLink').size %>
     <% cache ({:related => 'web_links', :id => @cache_id}) do -%>
     <%= related_items_links(:source_item => @topic,
                             :related_class => 'WebLink') -%>
@@ -77,6 +91,7 @@
     <%= render(:partial => "related_items_control_links",
                :locals => { :relate_to_topic => @topic,
                             :related_class => 'WebLink' }) -%>
+    <%= related_items_links_display_of find_private_related_items_for(@topic, 'WebLink') -%>
   </div>
   <%= render(:partial => "secondary_wrapper_end") -%>
 <% end -%>

@@ -1,5 +1,5 @@
 <div id="detail-linked-<%= zoom_class_controller(related_class) -%>">
-  <h3><%= "#{zoom_class_plural_humanize(related_class)} (#{items.size})" -%></h3>
+  <h3><%= "#{zoom_class_plural_humanize(related_class)} (#{(@items[related_class] + items.size)})" -%></h3>
   <ul class="results-list images-list">
   <% if items.size > 0 -%>
      <% items[0..end_range].each do |related_item| -%>

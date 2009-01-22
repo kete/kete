@@ -143,17 +143,14 @@
   <% end -%>
 <% end -%>
 
-<% cache({:part => "archives_#{@privacy_type}"}) do -%>
-  <% if !@basket_stats_hash.blank? -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="contents-by-type" class="secondary-content-section">
-        <h3>Contents by type</h3>
-        <%= render :partial => 'archive_by_type',
-                   :locals => { :basket_stats_hash => @basket_stats_hash } -%>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-      </div>
+<% if !@current_basket.index_page_archives_as.blank? && @current_basket.index_page_archives_as == 'by type' %>
+  <div class="secondary-content-section-wrapper">
+    <div id="contents-by-type" class="secondary-content-section">
+      <h3>Contents by type</h3>
+      <%= render :partial => 'archive_by_type' -%>
+      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
     </div>
-  <% end -%>
+  </div>
 <% end -%>
 
 <% if @current_basket.feeds.size > 0 %>

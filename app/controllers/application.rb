@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
 
   include Utf8UrlFor
 
+  include ZoomSearch
+
   # for the remember me functionality
   before_filter :login_from_cookie
 
