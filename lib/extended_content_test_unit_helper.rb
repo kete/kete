@@ -122,31 +122,20 @@ module ExtendedContentTestUnitHelper
           # not sure if respond_to? works in the context of method missing
           # may need a begin rescue block instead
           # assert_equal @extended_item.respond_to?(method_name), true
-          begin
-            @extended_item.send(method_name, 'something')
-            assert_equal 'something', @extended_item.xml_attributes_without_position['some_tag']
-          rescue
-            assert false, "Extended Field = setter does not exist."
-          end
+
+          @extended_item.send(method_name, 'something')
+          assert_equal 'something', @extended_item.xml_attributes_without_position['some_tag']
         end
 
         should "have a method that will append its value to existing value" do
           @extended_item.update_attribute(:extended_content, '<some_tag>something</some_tag>')
-          begin
-            @extended_item.send(@extended_field.label_for_paramss + "+=", 'something')
-            assert_equal 'something' + 'something', @extended_field.xml_attributes_without_position['some_tag']
-          rescue
-            assert false, "Extended Field += setter does not exist."
-          end
+          @extended_item.send(@extended_field.label_for_params + "+=", 'something')
+          assert_equal 'something' + 'something', @extended_item.xml_attributes_without_position['some_tag']
         end
 
         should "have a method that will set return its value" do
           @extended_item.update_attribute(:extended_content, '<some_tag>something</some_tag>')
-          begin
-            assert_equal @extended_field.xml_attributes_without_position['some_tag'], @extended_item.send(@extended_field.label_for_params)
-          rescue
-            assert false, "Extended Field += setter does not exist."
-          end
+          assert_equal @extended_item.xml_attributes_without_position['some_tag'], @extended_item.send(@extended_field.label_for_params)
         end
       end
     end

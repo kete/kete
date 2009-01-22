@@ -41,7 +41,9 @@ module ExtendedContent
     # An item with extended fields mapped with 'Field one' with a single value ('value for field one') and 'Field two' with
     # multiple values ('first value for field two', 'second value for field two', would return the following:
     # [['field_one', 'value for field one'], ['field_two', ['first value for field two', 'second value for field two']]]
-    alias_method :extended_content_pairs, :convert_xml_to_key_value_hash
+    def extended_content_pairs
+      convert_xml_to_key_value_hash
+    end
 
     # Return a hash of values for extended field content
     #
@@ -51,7 +53,9 @@ module ExtendedContent
     # returned:
     # { "some_tag" => { "xml_element_name" => "dc:something", "value" => "something" }, "some_other_tag" => {
     # "xml_element_name" => "dc:something_else", "value" => "something_else" } }
-    alias_method :extended_content_values, :convert_xml_to_extended_fields_hash
+    def extended_content_values
+      convert_xml_to_extended_fields_hash
+    end
 
     # The setter used to save extended content into XML. This accepts an array directly from params (i.e.
     # params[:topic][:extended_content_values], etc). This allows you do to topic.update_attributes(:extended_content_values
@@ -100,7 +104,7 @@ module ExtendedContent
     end
 
     # Refer to #xml_attributes.
-    alias :extended_content_ordered_hash :xml_attributes
+    alias_method :extended_content_ordered_hash, :xml_attributes
 
     # Pulls a hash of values from XML without position references (i.e. contrary to #xml_attributes).
     # Example output:
@@ -113,6 +117,7 @@ module ExtendedContent
     #     "2" => { "address" => { "xml_element_name" => "dc:description", "value" => "Island Bay" } }
     #   }
     # }
+    
     def xml_attributes_without_position
       # we use rexml for better handling of the order of the hash
 
@@ -130,120 +135,235 @@ module ExtendedContent
     def can_have_short_summary?
       CLASSES_WITH_SUMMARIES.include?(self.class.name)
     end
-
-    # given a
-    def reader_for(extended_field_element_name)
-      extended_content_pairs[extended_field_element_name]
-    end
-
-    # this will take existing extend_content's xml
-    # and replace the value for only the specified xml_element
-    # which is extended_field.label_for_params
-    def replace_value_for(extended_field_element_name, value, content_hash = nil)
-      # get existing datastructure transformed to a hash
-      content_hash = xml_attributes_without_position unless content_hash
-
-      multiple_name = extended_field_element_name + '_multiple'
-
-      # if the extended field hasn't already been added to the datastructure
-      unless content_hash.keys.include?(extended_field_element_name) ||
-          content_hash.keys.include?(multiple_name)
-        raise "#{extended_field_element_name} must already be in extended_content xml datastructure for this method to work."
-      end
-
-      # replace value
-      if content_hash.keys.include?(extended_field_element_name)
-        content_hash[extended_field_element_name]['value'] = value
-      else content_hash.keys.include?(multiple_name)
-        # skipping multiples for now
-        # content_hash[multiple_name] = value
-      end
-
-      # prepare the xml content to stuff back in
-      # WARNING - xmlsimple may not like multiple hash keys that are only numbers and do the wrong thing
-      # multiples are skipped for now
-      xml_string = XmlSimple.xml_out(content_hash, "contentkey" => "value")
-
-      # we pull of the opt opening and closing tags that xml simple adds
-      xml_string.sub!(/^<opt>/, '').sub!(/<\/opt>$/, '')
-
-      extended_content = xml_string
-    end
-
-    # same as replace_value_for
-    # except it will create an element
-    # if the extended_content's xml doesn't already have one
-    def replace_value_or_create_element_for(extended_field_element_name, value)
-      content_hash = xml_attributes_without_position
-
-      multiple_name = extended_field_element_name + '_multiple'
-
-      if content_hash.keys.include?(extended_field_element_name) ||
-          content_hash.keys.include?(multiple_name)
-        replace_value_for(extended_field_element_name, value, content_hash)
-      else
-        # add this field to the hash
-        # content_hash =
+    
+    # Returns extended content values in a structured format for modification.
+    # Together with #structured_extended_content=, this method can be used to modify extended content values internally.
+    # Example: #=> { "field_name" => [['value'], ..] }
+    # From the example above you should be able to see that where multiple values are present, these are provided as 
+    # successive items in the values array. The values are doubly nested to allow for hierarchical choices, for example:
+    # #=> { "field_name" => [['first value', 'child of first value'], ['second choice selection']] }
+    def structured_extended_content
+      convert_xml_to_key_value_hash.inject(Hash.new) do |hash, field|
+        
+        field_name = field.delete(field.first)
+        
+        # We need to handle singular and multiple field values separate as they come out in different formats.
+        if field_name.include?("_multiple")
+          
+          # At this stage we expect to have something like:
+          # ['field_name_multiple', [['value 1'], ['value 2']]
+          
+          # So we can assume the first element in the array is the field name, and the remainder are the values,
+          # already in the correct format. 'field' now contains what we want because we've removed the first
+          # element (the name) above. It is nested an extra level, through.
+          values = field.first
+          
+          field_name = field_name.gsub("_multiple", "")
+        else
+          
+          # For singular values we expect something like:
+          # ['field_name', 'value']
+          # So, we need to adjust the format to be consistent with the expected output..
+          values = [field]
+        end
+        
+        hash[field_name] = values
+        hash
       end
     end
+    
+    # Sets extended content values based on those provided to the method in a standardized hash format.
+    # The hash format accepted is identical to that provided by #structured_extended_content; the methods are intended
+    # to be used together.
+    # Below is an example of a valid hash
+    # #=> { "text_field" => [['value'], ['second selected value']],
+    #       "choice" => [['first choice', 'child of first choice - hierarchical selection'], ['second choice']] }
+    # Note especially that the nesting of values is standardized and consistent. In the example above, both "text_field" 
+    # and "choice" accept multiple values. In the "choice" values, the first choice contains a hierachical selection.
+    # An example of a basic field that accepts a single text value is below:
+    # #=> { "basic_text_field" => [['value for field']] }
+    # Underneath the hood, conversion is done by #extended_content_values=, the same way it is handled normally
+    # for POSTed params.
+    def structured_extended_content=(hash)
+      hash_for_conversion = hash.inject(Hash.new) do |result, field|
+        
+        # Extract the name of the field
+        field_param_name = field.delete(field.first)
+        
+        # Remove the extra level of nesting left after removing the first of two elements
+        field = field.first
+        
+        if field.size > 1
+          
+          # We're dealing with a multiple field value.
+          result[field_param_name] = field.inject(Hash.new) do |multiple, value|
+            multiple[(field.index(value) + 1).to_s] = value.to_s
+            multiple
+          end
+          
+        else
+          result[field_param_name] = field.to_s
+        end
+        result  
+      end
+      
+      # Pass the pseudo params hash for conversion using the usual methods.
+      self.extended_content_values = hash_for_conversion
+    end
 
-    # grab existing value and add to it
-    def append_value_for(extended_field_element_name, additional_value)
+    # Read a value for a singular extended field from extended content XML.
+    # Singular values are returned as a raw String, multiples as an array of Strings.
+    # Where hierarchical choices are present, they are joined with " -> ".
+    # I.e. when selecting a singular choice value where hierarchical choices have been selected,
+    # you would expect "parent choice -> child choice".
+    def reader_for(extended_field_element_name, field = nil)
+      values = structured_extended_content[extended_field_element_name]
+      values.size == 1 ? values.first.join(" -> ") : values.collect { |v| v.join(" -> ") }
+    end
+
+    # Replace the value of an extended field's content.
+    # This works by retrieving the data from XML, replacing the value, then writing the entire XML content back
+    # to the XML string kept in #extended_content.
+    def replace_value_for(extended_field_element_name, value, field = nil)
+      
+      # Fetch the existing data from XML
+      sandpit_data = structured_extended_content
+      
+      # Replace the value we're changing
+      # The value needs to be nested to form an array if necessary, since we ALWAYS pass in an array.
+      sandpit_data[extended_field_element_name] = value.is_a?(Array) ? value : [value]
+      
+      # Write the data back to XML
+      self.structured_extended_content = sandpit_data
+      
+      value
+    end
+
+    # Append a value to an extended field's content. 
+    # Used for string concatenatation
+    # I.e.  topic.field_name = "first"
+    #       => "first"
+    #       topic.field_name += "second"
+    #       => "firstsecond"
+    def append_value_for(extended_field_element_name, additional_value, field = nil)
+      current_value = structured_extended_content[extended_field_element_name]
+
+      raise "Cannot concatenate a value as #{extended_field_element_name} already has multiple values." if \
+        current_value.size > 1
+        
+      replace_value_for(extended_field_element_name, current_value.to_s + additional_value)
+      
+      # Confirm new values
+      reader_for(extended_field_element_name)
+    end
+    
+    # Append a new multiple value to an extended field which supports multiple values
+    # In contrast to append_value_for, this adds a value to an array on the attribute, instead of concatenating 
+    # to the current string.
+    def append_new_multiple_value_for(extended_field_element_name, additional_value, field = nil)
+      raise "Cannot add a new multiple value on #{extended_field_element_name} as it is not a multiple value field." \
+        unless field.nil? || field.multiple?
+          
+      current_values = structured_extended_content[extended_field_element_name]
+      additional_value = [additional_value] unless additional_value.is_a?(Array)
+      
+      replace_value_for(extended_field_element_name, current_values + additional_value)
+      
+      # Confirm new values
+      reader_for(extended_field_element_name)
     end
 
     private
+    
     # we want dynamic setters (= and +=) and getters for our extended fields
     # we dynamically extend the model with method definitions when a new field_mapping is added
     # triggered by the after_create and after_destroy methods in the join model
 
     # first up, define the three skeleton methods
-    def self.define_methods_for(extended_field)
-      base_method_name = extended_field.label_for_params
+    # def self.define_methods_for(extended_field)
+    #   base_method_name = extended_field.label_for_params
+    #
+    #   define_method(base_method_name) do
+    #     reader_for(base_method_name)
+    #   end
+    #
+    #   define_method(base_method_name + '=') do |value|
+    #     replace_value_or_create_element_for(base_method_name, value)
+    #   end
+    #
+    #   define_method(base_method_name + '+=') do |value|
+    #     append_value_for(base_method_name, additional_value)
+    #   end
+    # end
+    #
+    # def self.undefine_methods_for(extended_field)
+    #   base_method_name = extended_field.label_for_params
+    #
+    #   ['', '=', '+='].each do |method_operator|
+    #     remove_method(base_method_name + method_operator)
+    #   end
+    # end
 
-      define_method(base_method_name) do
-        reader_for(base_method_name)
+    # Refining method_missing. Handle requests for extended content accessor methods
+    # Since we are not handling extended content using attribute accessors extremely frequently,
+    # method_missing should be able to handle all requests to these methods.
+    def method_missing(symbol, *args, &block)
+      
+      # Construct some information we need
+      method_name = symbol.to_s
+      method_root = method_name.gsub(/[=\+]/, "")
+      
+      # all_fields : Get all extended fields from mappings. Since we're going to be accessing this construct when
+      # setting values anyhow, we hitting it here shouldn't be too much of a performance penalty, at least
+      # when compared to writing out the XML.
+      
+      # If we can find the field on this item..
+      if (field = all_fields.find { |field| method_root == field.label_for_params }) && !field.blank?
+        
+        # If we're sending a single argument/value, don't send it as an array.
+        args = args.size == 1 ? args.first : args
+        
+        # Run one of the generic methods as appropriate
+        case method_name
+        when /(\+=|<<)$/
+          field.multiple? ? append_new_multiple_value_for(method_root, args, field) : \
+            append_value_for(method_root, args, field)
+        when /=$/
+          replace_value_for(method_root, args, field)
+        else
+          reader_for(method_root, field)
+        end
+      else
+        
+        # Otherwise, forward the message request to the usual suspects
+        super
       end
-
-      define_method(base_method_name + '=') do |value|
-        replace_value_or_create_element_for(base_method_name, value)
-      end
-
-      define_method(base_method_name + '+=') do |value|
-        append_value_for(base_method_name, additional_value)
-      end
+      
     end
-
-    def self.undefine_methods_for(extended_field)
-      base_method_name = extended_field.label_for_params
-
-      ['', '=', '+='].each do |method_operator|
-        remove_method(base_method_name + method_operator)
-      end
-    end
-
+    
     # usually when a new extended field is mapped to a content type or a topic type
     # corresponding methods are defined
     # however these dynamic methods definitions are lost at system restart
     # this is meant redefine those methods the first time they are called
-    def method_missing( method_sym, *args, &block )
-      method_name = method_sym.to_s
-
-      method_root = method_name.sub(/\+=$/, '').sub(/=$/, '')
-
-      # TODO: evaluate whether this works in PostgreSQL
-      extended_field = ExtendedField.find(:first, :conditions => "UPPER(label) = '#{method_root.upcase.gsub('_', ' ')}'")
-
-      unless extended_field
-        super
-      else
-        # if any of the extended field methods are called
-        # we define them all
-        self.class.define_methods_for(extended_field)
-
-        # after the methods are defined, go ahead and call the method
-        self.send(method_sym, *args, &block)
-      end
-    end
+    # def method_missing( method_sym, *args, &block )
+    #   method_name = method_sym.to_s
+    # 
+    #   method_root = method_name.sub(/\+=$/, '').sub(/=$/, '')
+    # 
+    #   # TODO: evaluate whether this works in PostgreSQL
+    #   extended_field = ExtendedField.find(:first, :conditions => "UPPER(label) = '#{method_root.upcase.gsub('_', ' ')}'")
+    # 
+    #   unless extended_field
+    #     super
+    #   else
+    #     # if any of the extended field methods are called
+    #     # we define them all
+    #     self.class.define_methods_for(extended_field)
+    # 
+    #     # after the methods are defined, go ahead and call the method
+    #     self.send(method_sym, *args, &block)
+    #   end
+    # end
 
     def convert_extended_content_to_xml(params_hash)
 
@@ -362,6 +482,10 @@ module ExtendedContent
       # Overloaded in Topic model (special case with hierarchical TopicTypes)
       def all_field_mappings
         ContentType.find_by_class_name(self.class.name).content_type_to_field_mappings
+      end
+      
+      def all_fields
+        all_field_mappings.map { |mapping| mapping.extended_field }.flatten
       end
 
       # Validation methods..

@@ -261,6 +261,65 @@ class TopicTest < Test::Unit::TestCase
     end
   end
 
+  def test_structured_extended_content_getter
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
+      t.extended_content_values = {
+        "first_names" => "Joe",
+        "last_name" => "Bloggs",
+        "address" => { "1" => "The Parade", "2" => "Island Bay" }
+      }
+
+      assert_valid t
+
+      expected_hash = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "place_of_birth" => [[nil]],
+        "address" => [["The Parade"], ["Island Bay"]]
+      }
+      assert_equal expected_hash, t.structured_extended_content
+    end
+  end
+
+  def test_structured_extended_content_getter_with_choices
+    # TODO
+  end
+
+  def test_structured_extended_content_getter_with_multiple_choices
+    # TODO
+  end
+
+  def test_structured_extended_content_getter_with_no_values
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
+      t.extended_content = nil
+
+      assert_equal({}, t.structured_extended_content)
+    end
+  end
+
+  def test_structured_extended_content_setter
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
+      t.structured_extended_content = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "place_of_birth" => [[nil]],
+        "address" => [["The Parade"], ["Island Bay"]]
+      }
+
+      assert_valid t
+
+      expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><address_multiple><1><address xml_element_name="dc:description">The Parade</address></1><2><address xml_element_name="dc:description">Island Bay</address></2></address_multiple>'
+      assert_equal expected_value, t.extended_content
+    end
+  end
+
+  def test_structured_extended_content_setter_with_choices
+    # TODO
+  end
+
+  def test_structured_extended_content_setter_with_multiple_choices
+    # TODO
+  end
 
   protected
 
