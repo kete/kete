@@ -74,25 +74,15 @@
 .secondary-content-section-wrapper-blue .secondary-content-section-footer{
         background: transparent url(/images/insetbox-2-btrt.gif) no-repeat bottom right;
 }
-.comment-wrapper{
-        padding: 0;
-        background-image: url(/images/comment_tplf.gif);
-        background-position: 0 20px;
-        background-repeat: no-repeat;
-        border: none;
-        background-color: transparent;
+.comment-wrapper-header-wrapper {
+        background: transparent url(/images/comment_tplf.gif) no-repeat top left;
 }
-.comment-wrapper h5{
-       	background-image: url(/images/comment_tprt.gif);
-        background-position: 100% 20px;
-        background-repeat: no-repeat;
-        padding: 2px 1em 40px 1.2em;
-        margin: 2px 0 -20px -1em;
-        font-size: 1.2em;
+.comment-wrapper-header {
+        background: transparent url(/images/comment_tprt.gif) no-repeat top right;
 }
-.comment-content{
-        padding: 0em 1em 1em 1em;
-        border: 1px solid #b6b5b2;
-        border-top: none;
-        background-color: white;
+.comment-wrapper-footer-wrapper {
+        background: transparent url(/images/comment_btlf.gif) no-repeat bottom left;
+}
+.comment-wrapper-footer {
+        background: transparent url(/images/comment_btrt.gif) no-repeat bottom right;
 }

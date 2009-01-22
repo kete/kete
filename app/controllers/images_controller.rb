@@ -8,13 +8,17 @@ class ImagesController < ApplicationController
   def list
     index
   end
-  
+
   def show
     prepare_item_variables_for("StillImage", true)
     @still_image = @item
 
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])
+
+    exclude = { :conditions => "user_portrait_relations.position != 1 AND user_portrait_relations.still_image_id != #{@still_image.id}" }
+    @portraits_total_count = @still_image.creator.portraits.count(exclude)
+    @viewer_portraits = @portraits_total_count > 0 ? @still_image.creator.portraits.all(exclude.merge(:limit => 12)) : nil
 
     respond_to do |format|
       format.html
@@ -47,7 +51,7 @@ class ImagesController < ApplicationController
 
         @image_file.still_image_id = @still_image.id
         @image_file.save
-        
+
         # Set the file privacy ahead of time so AttachmentFuOverload can find the value..# attachment_fu doesn't insert our still_image_id into the thumbnails
         # automagically
         @image_file.thumbnails.each do |thumb|
@@ -57,9 +61,10 @@ class ImagesController < ApplicationController
 
         if params[:portrait]
           UserPortraitRelation.new_portrait_for(current_user, @still_image)
-          if params[:default_portrait]
-            UserPortraitRelation.make_portrait_default_for(current_user, @still_image)
+          if params[:selected_portrait]
+            UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
           end
+          expire_contribution_caches_for(current_user, :dont_rebuild_zoom => true)
         end
       end
 
@@ -88,7 +93,7 @@ class ImagesController < ApplicationController
 
       after_successful_zoom_item_update(@still_image)
 
-      @still_image.do_notifications_if_pending(version_after_update, current_user) if 
+      @still_image.do_notifications_if_pending(version_after_update, current_user) if
         @still_image.versions.exists?(:version => version_after_update)
 
       flash[:notice] = 'Image was successfully updated.'

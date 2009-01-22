@@ -267,11 +267,11 @@ class AccountControllerTest < ActionController::TestCase
     assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
   end
 
-  def test_default_portrait
+  def test_make_selected_portrait
     login_as :admin
     still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
     get :add_portrait, :urlified_name => 'site', :id => still_image.id
-    get :default_portrait, :urlified_name => 'site', :id => still_image.id
+    get :make_selected_portrait, :urlified_name => 'site', :id => still_image.id
     assert_response :redirect
     assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
   end

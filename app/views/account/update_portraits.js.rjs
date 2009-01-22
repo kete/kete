@@ -1,0 +1,10 @@
+if @successful
+  page.replace_html :notice, "<div>#{flash[:notice]}</div>"
+  page[:error].hide
+  page[:notice].show
+  flash.discard
+else
+  page.replace_html :error, "<div>#{flash[:error]}</div>"
+  page[:notice].hide
+  page[:error].show
+end

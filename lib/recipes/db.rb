@@ -11,7 +11,7 @@ namespace :deploy do
     end
 
     def set_app_environment
-      set :app_environment, 'production' unless defined?(app_environment)
+      begin; app_environment; rescue; set(:app_environment, 'production'); end
     end
 
   end

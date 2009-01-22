@@ -45,6 +45,10 @@ class StillImage < ActiveRecord::Base
     (self.creator || self.contributors.first) == user
   end
 
+  def is_portrait?
+    user_portrait_relation
+  end
+
   private
 
   def update_image_file_locations

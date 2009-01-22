@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
                                             :choose_type, :render_item_form,
                                             :setup_rebuild,
                                             :rebuild_zoom_index,
-                                            :add_portrait, :remove_portrait, :default_portrait,
+                                            :add_portrait, :remove_portrait, :make_selected_portrait,
                                             :contact, :send_email,
                                             :join ]
 
@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
   before_filter :delete_zoom_record, :only => [ :update, :flag_version, :restore, :add_tags ]
 
   # we often need baskets for edits
-  before_filter :load_array_of_baskets, :only => [ :edit, :update ]
+  before_filter :load_array_of_baskets, :only => [ :edit, :update, :restore ]
 
   # only site_admin can set item.do_not_sanitize to true
   before_filter :security_check_of_do_not_sanitize, :only => [ :create, :update ]
@@ -89,7 +89,7 @@ class ApplicationController < ActionController::Base
 
   # set do_not_moderate if site_admin, otherwise things like moving from one basket to another
   # may get tripped up
-  before_filter :set_do_not_moderate_if_site_admin, :only => [ :create, :update ]
+  before_filter :set_do_not_moderate_if_site_admin_or_exempted, :only => [ :create, :update ]
 
   # ensure that users who are in a basket where the action menu has been hidden can edit
   # by posting a dummy form
@@ -242,16 +242,46 @@ class ApplicationController < ActionController::Base
   # bug fix for when site admin moves an item from one basket to another
   # if params[:topic][basket_id] exists and site admin
   # set do_not_moderate to true
-  def set_do_not_moderate_if_site_admin
+  # James - Also allows for versions of an item modified my a moderator due to insufficient content to bypass moderation
+  def set_do_not_moderate_if_site_admin_or_exempted
     item_class = zoom_class_from_controller(params[:controller])
     item_class_for_param_key = item_class.tableize.singularize
     if ZOOM_CLASSES.include?(item_class)
       if !params[item_class_for_param_key].nil? && @site_admin
         params[item_class_for_param_key][:do_not_moderate] = true
+        
+      # James - Allow an item to be exempted from moderation - this allows for items that have been edited by a moderator prior to
+      # acceptance or reversion to be passed through without needing a second moderation pass.
+      # Only applicable usage can be found in lib/flagging_controller.rb line 93 (also see 2x methods below).
+      elsif !params[item_class_for_param_key].nil? && exempt_from_moderation?(params[:id], item_class)
+        params[item_class_for_param_key][:do_not_moderate] = true
+        
       elsif !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
         params[item_class_for_param_key][:do_not_moderate] = false
       end
     end
+  end
+  
+  # James - Allow us to flag a version as except from moderation
+  def exempt_next_version_from_moderation!(item)
+    session[:moderation_exempt_item] = {
+      :item_class_name => item.class.name,
+      :item_id => item.id.to_s
+    }
+  end
+  
+  # James - Find whether an item is exempt from moderation. Used in #set_do_not_moderate_if_site_admin_or_exempted
+  # Note that this can only be used once, so when this is called, the exemption on the item is cleared and future versions will
+  # be moderated if full moderation is turned on.
+  def exempt_from_moderation?(item_id, item_class_name)
+    key = session[:moderation_exempt_item]
+    return false if key.blank?
+    
+    result = ( item_class_name == key[:item_class_name] && item_id.to_s.split("-").first == key[:item_id] )
+      
+    session[:moderation_exempt_item] = nil
+    
+    return result
   end
 
   # Walter McGinnis, 2008-09-29
@@ -495,16 +525,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def expire_contributions_caches_for(item)
-    # rather than find out if the contribution is for a public/private item
-    # just clear both the caches
-    ['contributor_public', 'contributor_private'].each do |part|
-      expire_fragment_for_all_versions(item,
-                                      { :urlified_name => item.basket.urlified_name,
-                                        :controller => zoom_class_controller(item.class.name),
-                                        :action => 'show',
-                                        :id => item,
-                                        :part => part })
+  def expire_contributions_caches_for(item_or_user, options = {})
+    if item_or_user.kind_of?(User)
+      # we want to flush contribution caches incase they updated something we display
+      # we also want to update zoom for all items they have contributed to
+      item_or_user.distinct_contributions.each do |contribution|
+        expire_contributions_caches_for(contribution)
+        prepare_and_save_to_zoom(contribution) unless options[:dont_rebuild_zoom]
+      end
+    else
+      # rather than find out if the contribution is for a public/private item
+      # just clear both the caches
+      ['contributor_public', 'contributor_private'].each do |part|
+        expire_fragment_for_all_versions(item_or_user,
+                                        { :urlified_name => item_or_user.basket.urlified_name,
+                                          :controller => zoom_class_controller(item_or_user.class.name),
+                                          :action => 'show',
+                                          :id => item_or_user,
+                                          :part => part })
+      end
     end
   end
 
@@ -665,6 +704,11 @@ class ApplicationController < ActionController::Base
       when 'appearance'
         redirect_to :action => :appearance, :controller => 'baskets'
       when 'user_account'
+        if params[:portrait] && params[:selected_portrait]
+          flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created as your selected portrait."
+        elsif params[:portrait]
+          flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created as a portrait."
+        end
         redirect_to :action => :show, :controller => 'account', :id => @current_user
       else
         # TODO: replace with translation stuff when we get globalize going
@@ -729,6 +773,9 @@ class ApplicationController < ActionController::Base
   #
   # We can return to this location by calling #redirect_back_or_default.
   def store_location
+    # Because private files are served through a show action, this method gets called, but we
+    # don't want to set the return_to url to a private image link
+    return if params[:controller] == 'private_files'
     # this should prevent the same page from being added to return_to
     # but does not prevent case of differnt size images...
     session[:return_to] = request.request_uri
