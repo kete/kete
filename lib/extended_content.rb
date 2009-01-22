@@ -2,7 +2,20 @@
 require "rexml/document"
 require 'builder'
 
-# not much here for now, but could expand later
+# ExtendedContent provides a way to access additional, extended content directly on a model. (ExtendedContent is included in all
+# Kete content types.)
+# 
+# Extended Content definitions are configured separately by users with ExtendedField records which are mapped to topic types or 
+# content types via the TopicTypeToFieldMapping and ContentTypeToFieldMapping relationship models. So, the relationships between
+# item classes and extended fields is something like AudioRecording -> ContentTypeToFieldMapping(s) -> ExtendedField. In the case 
+# of Topics the relations are Topic -> TopicType -> TopicTypeToFieldMapping(s) -> ExtendedField. Refer to the individual classes 
+# for more information.
+# 
+# On the model, extended content can be accessed by the #extended_content_values accessor methods, and in the future by individual 
+# accessor methods for each field. Behind the scenes the data received as a Hash instance of values (or single value in the case 
+# of accessor methods) is stored into a particular XML data structure in the #extended_content attribute, which is present as a 
+# column in the item class's table.
+
 module ExtendedContent
   CLASSES_WITH_SUMMARIES = ['Topic', 'Document']
 
@@ -12,6 +25,8 @@ module ExtendedContent
 
     include GoogleMap::ExtendedContent
 
+    # Provide an instance of Builder::XmlMarkup for creating the XML representation stored in each item's extended content 
+    # attribute.
     def xml(force_new = false)
       if force_new
         @builder_xml = Builder::XmlMarkup.new
@@ -19,22 +34,40 @@ module ExtendedContent
         @builder_xml ||= Builder::XmlMarkup.new
       end
     end
-
-    def extended_content_values
-      convert_xml_to_extended_fields_hash
-    end
-
-    def extended_content_pairs
-      convert_xml_to_key_value_hash
-    end
-
+    
+    # Return key value pairs of extended field content stored in #extended_content.
+    #
+    # Example: 
+    # An item with extended fields mapped with 'Field one' with a single value ('value for field one') and 'Field two' with 
+    # multiple values ('first value for field two', 'second value for field two', would return the following:
+    # [['field_one', 'value for field one'], ['field_two', ['first value for field two', 'second value for field two']]]
+    alias_method :extended_content_pairs, :convert_xml_to_key_value_hash
+    
+    # Return a hash of values for extended field content
+    #
+    # Example:
+    # If the following XML is in #extended_content: <some_tag xml_element_name="dc:something">something</some_tag>
+    # <some_other_tag xml_element_name="dc:something_else">something_else</some_other_tag>, then the following would be 
+    # returned:
+    # { "some_tag" => { "xml_element_name" => "dc:something", "value" => "something" }, "some_other_tag" => { 
+    # "xml_element_name" => "dc:something_else", "value" => "something_else" } }
+    alias_method :extended_content_values, :convert_xml_to_extended_fields_hash
+    
+    # The setter used to save extended content into XML. This accepts an array directly from params (i.e.
+    # params[:topic][:extended_content_values], etc). This allows you do to topic.update_attributes(:extended_content_values
+    #  => '..'), for example. This is heavily used for creating and updating items with extended fields mapped by views and 
+    # controller methods.
+    # The format received has several conventions.
+    # For instance, for single values, the structure for the content as array hash would be { "field_name" => "value" }, but 
+    # for multiple values would be { "field_name" => { "1" => "value one", "2" => "value two" } }.
     def extended_content_values=(content_as_array)
       # Do the behind the scenes stuff..
       self.extended_content = convert_extended_content_to_xml(content_as_array)
     end
 
-    # pulls xml attributes in extended_content column out into a hash
-    # wrapped in a key that corresponds to the fields position
+    # Pulls xml attributes in extended_content column out into a hash wrapped in a key that corresponds to the fields position
+    # Example output:
+    # => { "1" => { "first_names" => "Joe" }, "2" => { "last_name" => "Bloggs" }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }
     def xml_attributes
       # TODO: replace rexml with nokogiri
       # we use rexml for better handling of the order of the hash
@@ -65,19 +98,35 @@ module ExtendedContent
 
       return temp_hash
     end
-
+    
+    # Refer to #xml_attributes.
     alias :extended_content_ordered_hash :xml_attributes
-
+    
+    # Pulls a hash of values from XML without position references (i.e. contrary to #xml_attributes).
+    # Example output:
+    # => 
+    # { "first_names"=> { 
+    #     "xml_element_name" => "dc:description", "value" => "Joe"
+    #   },
+    #   "address_multiple"=> {
+    #     "1" => { "address" => { "xml_element_name" => "dc:description", "value" => "The Parade" } },
+    #     "2" => { "address" => { "xml_element_name" => "dc:description", "value" => "Island Bay" } }
+    #   }
+    # }
     def xml_attributes_without_position
       # we use rexml for better handling of the order of the hash
 
       XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", "contentkey" => "value", "forcearray" => false)
-
+      
+      # TODO: Clean this up
+      
       # OLD METHOD
       # extended_content_hash = Hash.from_xml("<dummy_root>#{self.extended_content}</dummy_root>")
       # return extended_content_hash["dummy_root"]
     end
 
+    # Checks whether the current class (Topic, AudioRecording, etc) can have a short summary
+    # NOTE: Unsure how this relates to extended content
     def can_have_short_summary?
       CLASSES_WITH_SUMMARIES.include?(self.class.name)
     end
