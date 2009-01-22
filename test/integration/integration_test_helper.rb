@@ -155,7 +155,11 @@ class ActionController::IntegrationTest
   # entire request url to the console)
   def url_should_contain(text, options = {})
     puts request.url if options[:dump_response]
-    assert request.url.include?(text), "URL should contain '#{text}', but does not."
+    if text.is_a?(Regexp)
+      assert (request.url =~ text), "URL should contain '#{text}', but does not."
+    else
+      assert request.url.include?(text), "URL should contain '#{text}', but does not."
+    end
   end
 
   # Asserts whether the supplied text is not within the request url of the currently viewed page
@@ -163,7 +167,11 @@ class ActionController::IntegrationTest
   # entire request url to the console)
   def url_should_not_contain(text, options = {})
     puts request.url if options[:dump_response]
-    assert !request.url.include?(text), "URL should not contain '#{text}', but does."
+    if text.is_a?(Regexp)
+      assert !(request.url =~ text), "URL should not contain '#{text}', but does."
+    else
+      assert !request.url.include?(text), "URL should not contain '#{text}', but does."
+    end
   end
 
   # Create a new item by navigating to the item new page, filling in fields and clicking "Create". While
