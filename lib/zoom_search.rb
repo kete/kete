@@ -10,6 +10,7 @@ module ZoomSearch
       make_search(zoom_class, options) do
         @search.pqf_query.kind_is(zoom_class, :operator => 'none')
         if @current_basket != @site_basket
+          return Array.new unless permitted_to_view_private_items?
           @search.pqf_query.within(@current_basket.urlified_name)
         else
           @search.pqf_query.within(@authorised_basket_names)
@@ -41,7 +42,7 @@ module ZoomSearch
 
 
     def make_search(zoom_class, options={})
-      @privacy = (options[:privacy] == 'private' && permitted_to_view_private_items?) ? 'private' : 'public'
+      @privacy = (options[:privacy] == 'private') ? 'private' : 'public'
       @search = Search.new
       @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', @privacy)
       @zoom_connection = @search.zoom_db.open_connection
