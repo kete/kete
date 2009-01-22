@@ -553,7 +553,7 @@ module ApplicationHelper
     if options[:items].nil?
       if related_class != 'Topic'
         items = source_item.send(related_class.tableize)
-        items = items.find_all_non_pending if items.size > 0
+        items = items.find_all_public_non_pending if items.size > 0
       else
         items = source_item.send('related_topics', :only_non_pending => true)
       end

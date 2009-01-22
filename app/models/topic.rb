@@ -141,8 +141,8 @@ class Topic < ActiveRecord::Base
 
   def related_topics(only_non_pending = false)
     if only_non_pending
-      parent_related_topics.find_all_non_pending +
-        child_related_topics.find_all_non_pending
+      parent_related_topics.find_all_public_non_pending +
+        child_related_topics.find_all_public_non_pending
     else
       parent_related_topics + child_related_topics
     end

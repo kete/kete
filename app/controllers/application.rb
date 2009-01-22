@@ -2,13 +2,6 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
 
-  # these are commonly used across controllers
-  if Object.const_defined?(:BLANK_TITLE) && Object.const_defined?(:NO_PUBLIC_VERSION_TITLE)
-    PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
-  else
-    PUBLIC_CONDITIONS = "title IS NOT NULL"
-  end
-
   # See lib/ssl_helpers.rb
   include SslHelpers
 

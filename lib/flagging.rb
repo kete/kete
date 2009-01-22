@@ -328,14 +328,21 @@ module Flagging
       find_flagged(basket_id).select(&:disputed_version?)
     end
 
-    def find_non_pending(type = :all)
-      conditions_string = "title != :pending_title"
-      conditions_string += " or description is not null" if name != 'Comment'
-      find(type, :conditions => [conditions_string, {:pending_title => BLANK_TITLE}])
+    def find_non_pending(type = :all, conditions_string = String.new)
+      if conditions_string.blank?
+        conditions_string = "title != :pending_title"
+        conditions_string += " or description is not null" if name != 'Comment'
+      end
+      find(type, :conditions => [conditions_string, { :pending_title => BLANK_TITLE }])
+    end
+
+    def find_all_public_non_pending
+      find_non_pending(:all, PUBLIC_CONDITIONS)
     end
 
     def find_all_non_pending
       find_non_pending
     end
+
   end
 end
