@@ -22,7 +22,7 @@ class HomepageTest < ActionController::IntegrationTest
       end
 
       context "and topics are added and edited, it" do
-      
+
         setup do
           1.upto(6) do |i|
             i = i.to_s
@@ -32,17 +32,17 @@ class HomepageTest < ActionController::IntegrationTest
           @topic4 = update_item(@topic4, :title => 'Topic Updated 4')
           visit "/site"
         end
-      
+
         should "only display the amount of topics requested" do
           body_should_contain "generic-result-header", :number_of_times => 5
         end
-      
+
         should "order by recently added topics" do
           body_should_not_contain "Topic 1"
           body_should_contain_in_order ['Topic 6', 'Topic 5', 'Topic Updated 4', 'Topic 3', 'Topic Updated 2'],
                                         '<div class="recent-topic-divider"></div>'
         end
-      
+
       end
 
       context "and in a new basket" do
@@ -87,6 +87,60 @@ class HomepageTest < ActionController::IntegrationTest
             verify_site_basket_recent_topics('>Topic Title<', @@recent_basket)
           end
 
+        end
+
+      end
+
+    end
+
+    context "when archive by types is enabled" do
+
+      setup do
+        @@site_basket.update_attributes({ :show_privacy_controls => true, :index_page_archives_as => 'by type' })
+      end
+
+      teardown do
+        @@site_basket.update_attributes({ :show_privacy_controls => false, :index_page_archives_as => nil })
+      end
+
+      context "and a public topic has been added, archive by type" do
+
+        setup do
+          @topic = new_topic({ :title => 'Public Item' })
+        end
+
+        should "only show public items links" do
+          body_should_not_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\| private: <a (.+)>(\\d+)</a> \\)"),
+                                  :message => "Public and private links together should not be visible on the site basket, but they are."
+          body_should_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\)"),
+                              :message => "The public link should be visible on the site basket, but isn't."
+        end
+
+      end
+
+      context "and a private topic has been added, archive by type" do
+
+        setup do
+          @topic = new_topic({ :title => 'Private Item', :private_true => true })
+        end
+
+        should "show the private items links" do
+          body_should_contain Regexp.new("private: <a (.+)>(\\d+)</a> \\)"),
+                              :message => "The private link should be visible on the site basket, but isn't."
+        end
+
+      end
+
+      context "and both public and private topics are added, archive by type" do
+
+        setup do
+          @topic1 = new_topic({ :title => 'Public Item' })
+          @topic2 = new_topic({ :title => 'Private Item', :private_true => true })
+        end
+
+        should "show both public and private item links" do
+          body_should_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\| private: <a (.+)>(\\d+)</a> \\)"),
+                              :message => "Both public and private links should be visible on the site basket, but arn't."
         end
 
       end
