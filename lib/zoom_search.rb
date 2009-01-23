@@ -6,14 +6,14 @@ module ZoomSearch
 
     def count_items_for(zoom_class, options = {})
       options = { :dont_parse_results => true }.merge(options)
-      @authorised_basket_names = @basket_access_hash.keys.collect { |key| key.to_s }
+
       make_search(zoom_class, options) do
         @search.pqf_query.kind_is(zoom_class, :operator => 'none')
         if @current_basket != @site_basket
           return Array.new unless permitted_to_view_private_items?
           @search.pqf_query.within(@current_basket.urlified_name)
         else
-          @search.pqf_query.within(@authorised_basket_names)
+          @search.pqf_query.within(authorised_basket_names)
         end
       end
     end
@@ -24,10 +24,9 @@ module ZoomSearch
     end
 
     def find_related_items_for(item, zoom_class, options={})
-      @authorised_basket_names = @basket_access_hash.keys.collect { |key| key.to_s }
       make_search(zoom_class, options) do
         @search.pqf_query.kind_is(zoom_class, :operator => 'none')
-        @search.pqf_query.within(@authorised_basket_names)
+        @search.pqf_query.within(authorised_basket_names)
         @search.pqf_query.relations_include(url_for_dc_identifier(item), :should_be_exact => true)
         @search.add_sort_to_query_if_needed(:user_specified => 'last_modified', :direction => nil)
       end
@@ -39,7 +38,10 @@ module ZoomSearch
     end
 
     private
-
+    # get the urlified_names for baskets that we know the user has a right to see
+    def authorised_basket_names
+      @authorised_basket_names ||= @basket_access_hash.keys.collect { |key| key.to_s }
+    end
 
     def make_search(zoom_class, options={})
       @privacy = (options[:privacy] == 'private') ? 'private' : 'public'
