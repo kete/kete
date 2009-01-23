@@ -282,11 +282,49 @@ class TopicTest < Test::Unit::TestCase
   end
 
   def test_structured_extended_content_getter_with_choices
-    # TODO
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+
+      # Set up choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+
+      t.extended_content_values = compulsory_content.merge("marital_status" => { "1" => "Married", "2" => "Dating" })
+
+      assert_equal({ "first_names" => [["Joe"]], "last_name" => [["Bloggs"]], "marital_status" => [["Married", "Dating"]], "place_of_birth" => [[nil]] }, t.structured_extended_content)
+    end
   end
 
   def test_structured_extended_content_getter_with_multiple_choices
-    # TODO
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+
+      # Set up choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+
+      t.extended_content_values = compulsory_content.merge("marital_status" => { "1" => { "1" => "Married", "2" => "Dating" }, "2" => { "1" => "Single" } })
+
+      assert_equal({ "first_names" => [["Joe"]], "last_name" => [["Bloggs"]], "marital_status" => [["Married", "Dating"], ["Single"]], "place_of_birth" => [[nil]] }, t.structured_extended_content)
+    end
   end
 
   def test_structured_extended_content_getter_with_no_values
@@ -314,11 +352,157 @@ class TopicTest < Test::Unit::TestCase
   end
 
   def test_structured_extended_content_setter_with_choices
-    # TODO
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+
+      # Set up choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+
+      t.structured_extended_content = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "marital_status" => [["Married", "Dating"]],
+        "place_of_birth" => [[nil]]
+      }
+
+      expected_hash = {
+        "first_names" => [["Joe"]],
+        "marital_status" => [["Married", "Dating"]],
+        "place_of_birth" => [[nil]],
+        "last_name" => [["Bloggs"]]
+      }
+
+      assert_equal(expected_hash, t.structured_extended_content)
+
+      expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><marital_status xml_element_name="dc:description"><1>Married</1><2>Dating</2></marital_status>'
+
+      assert_equal expected_value, t.extended_content
+    end
   end
 
   def test_structured_extended_content_setter_with_multiple_choices
-    # TODO
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+
+      # Set up choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+
+      t.structured_extended_content = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "marital_status" => [["Married", "Dating"], ["Single"]],
+        "place_of_birth" => [[nil]]
+      }
+
+      expected_hash = {
+        "first_names" => [["Joe"]],
+        "marital_status" => [["Married", "Dating"], ["Single"]],
+        "place_of_birth" => [[nil]],
+        "last_name" => [["Bloggs"]]
+      }
+
+      assert_equal(expected_hash, t.structured_extended_content)
+
+      expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><marital_status_multiple><1><marital_status xml_element_name="dc:description"><1>Married</1><2>Dating</2></marital_status></1><2><marital_status xml_element_name="dc:description"><1>Single</1></marital_status></2></marital_status_multiple>'
+
+      assert_equal expected_value, t.extended_content
+    end
+  end
+
+  def test_extended_content_accessors_with_multiple_choices
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+
+      # Set up choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+
+      t.structured_extended_content = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "marital_status" => [["Married", "Dating"], ["Single"]],
+        "place_of_birth" => [[nil]]
+      }
+
+      assert_equal "Joe", t.first_names
+      assert_equal ["Married -> Dating", "Single"], t.marital_status
+      assert_equal "", t.place_of_birth
+
+      t.marital_status = "Married"
+      assert_equal "Married", t.marital_status
+      assert t.extended_content.include?("<1><marital_status xml_element_name=\"dc:description\">Married</marital_status></1>")
+
+      t.send("marital_status+=", "Single")
+      assert_equal ["Married", "Single"], t.marital_status
+      assert t.extended_content.include?("<1><marital_status xml_element_name=\"dc:description\"><1>Married</1></marital_status></1><2><marital_status xml_element_name=\"dc:description\"><1>Single</1></marital_status></2>"), "<1><marital_status xml_element_name=\"dc:description\">Married</marital_status></1><2><marital_status xml_element_name=\"dc:description\">Single</marital_status></2> expected but was #{t.extended_content}"
+
+      t.send("first_names+=", " John")
+      assert_equal "Joe John", t.first_names
+    end
+  end
+
+  def test_extended_content_accessors_with_choices
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+
+      # Set up choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+
+      t.structured_extended_content = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "marital_status" => [["Married", "Dating"]],
+        "place_of_birth" => [[nil]]
+      }
+
+      assert_equal "Joe", t.first_names
+      assert_equal "Married -> Dating", t.marital_status
+      assert_equal "", t.place_of_birth
+
+      t.marital_status = "Single"
+      assert_equal "Single", t.marital_status
+
+      assert t.extended_content.include?("<marital_status xml_element_name=\"dc:description\"><1>Single</1></marital_status>")
+    end
   end
 
   protected

@@ -72,6 +72,10 @@ class ExtendedField < ActiveRecord::Base
   def label_for_params
     self.label.downcase.gsub(/ /, '_')
   end
+  
+  def is_a_choice?
+    ['autocomplete', 'choice'].include?(ftype)
+  end
 
   protected
 
