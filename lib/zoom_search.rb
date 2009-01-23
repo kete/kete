@@ -34,10 +34,10 @@ module ZoomSearch
     def make_search(zoom_class, options={})
       @privacy = (options[:privacy] == 'private') ? 'private' : 'public'
       @search = Search.new
-      @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', @privacy)
+      @search.zoom_db = zoom_database
       @zoom_connection = @search.zoom_db.open_connection
       yield
-      scope_to_authorized_baskets # we'll likely always want to scope to baskets the user has permission to
+      return Array.new unless scoped_to_authorized_baskets # we'll likely always want to scope to baskets the user has permission to
       logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
       @zoom_results = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
       @search.pqf_query = PqfQuery.new
@@ -50,25 +50,33 @@ module ZoomSearch
     end
 
     # Filter results to only show in authorized baskets
-    def scope_to_authorized_baskets
+    def scoped_to_authorized_baskets
       if logged_in?
         if @current_basket != @site_basket
-          return Array.new if is_a_private_search? && !authorised_basket_names.include?(@current_basket.urlified_name)
+          return false if is_a_private_search? && !authorised_basket_names.include?(@current_basket.urlified_name)
           @search.pqf_query.within(@current_basket.urlified_name)
         elsif is_a_private_search?
           @search.pqf_query.within(authorised_basket_names)
         end
       else
-        return Array.new if is_a_private_search?
+        return false if is_a_private_search?
         if @current_basket != @site_basket
           @search.pqf_query.within(@current_basket.urlified_name)
         end
       end
+      true
     end
 
     # Check if we are meant to be running a private search #=> Boolean
     def is_a_private_search?
-      @private_search ||= (@privacy == "private")
+      @privacy == "private"
+    end
+
+    # Fetch both databases in one go which will be used later
+    def zoom_database
+      @public_database ||= ZoomDb.find_by_host_and_database_name('localhost', 'public')
+      @private_database ||= ZoomDb.find_by_host_and_database_name('localhost', 'private')
+      return (is_a_private_search? ? @private_database : @public_database)
     end
 
     # get the urlified_names for baskets that we know the user has a right to see
