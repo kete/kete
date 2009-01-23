@@ -382,7 +382,7 @@ module ExtendedContent
 
       # Construct some information we need
       method_name = symbol.to_s
-      method_root = method_name.gsub(/[^a-z_]/, "")
+      method_root = method_name.gsub(/[^\w]/, "")
 
       # all_fields : Get all extended fields from mappings. Since we're going to be accessing this construct when
       # setting values anyhow, we hitting it here shouldn't be too much of a performance penalty, at least
