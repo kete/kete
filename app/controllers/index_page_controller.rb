@@ -9,7 +9,8 @@ class IndexPageController < ApplicationController
     if !@current_basket.index_page_redirect_to_all.blank?
       redirect_to_all_for(@current_basket.index_page_redirect_to_all)
     else
-      @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
+      @privacy_type = @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? ? 'private' : 'public'
+      @allow_private = (@privacy_type == 'private')
 
       # Kieran Pilkington, 2008/08/06
       # Load the index page everytime (for now atleast, until a better title caching system is in place)
@@ -77,34 +78,43 @@ class IndexPageController < ApplicationController
           @recent_topics_limit = @current_basket.index_page_number_of_recent_topics
           @recent_topics_limit = 0 if @recent_topics_limit.blank?
 
-          # exclude index_topic
           if @recent_topics_limit > 0
-            args = { :limit => @recent_topics_limit, :include => :versions }
-            @recent_topics_items = nil
-            if @privacy_type == 'private'
-              # not DRY, but the other way was pulling in all topics for a basket before limiting it
-              if @current_basket == @site_basket
-                @recent_topics_items = Topic.recent(args)
-              else
-                @recent_topics_items = @current_basket.topics.recent(args)
-              end
-            else
-              if @current_basket == @site_basket
-                @recent_topics_items = Topic.recent(args).public
-              else
-                @recent_topics_items = @current_basket.topics.recent(args).public
-              end
+            # get an array of baskets that we need to exclude from the site recent topics list
+            disabled_recent_topics_baskets = Array.new
+            if @current_basket == @site_basket
+              disabled_recent_topics_baskets = ConfigurableSetting.find_all_by_name_and_value('disable_site_recent_topics_display', true.to_yaml, :select => :configurable_id, :conditions => ["configurable_id != ?", @site_basket])
+              disabled_recent_topics_baskets.collect! { |setting| setting.configurable_id }
             end
-            @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @privacy_type == 'private'
+            # If we have a blank array, reset it to nil so later on, it'll default to 0 (instead of causing the SQL to return nothing)
+            disabled_recent_topics_baskets = nil unless disabled_recent_topics_baskets.size > 0
+
+            # form our find arguments
+            args = { :limit => @recent_topics_limit, :include => :versions }
+            args[:conditions] = ["basket_id NOT IN (?) AND id != ?", (disabled_recent_topics_baskets || 0), (@topic || 0)]
+
+            # Make the find query based on current basket and privacy level
+            @recent_topics_items = nil
+            if @current_basket == @site_basket
+              @recent_topics_items = @allow_private ? Topic.recent(args) : Topic.recent(args).public
+            else
+              @recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
+            end
+
+            # If the current user is allowed to see private items, and a private item is the most recent version
+            # collect either the private version or the public one
+            @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @allow_private
+
             logger.debug("recent_topics_items after latest version: " + @recent_topics_items.inspect)
 
+            # If the version we have isn't available, remove it
             @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
+
             # with the final topic, sort by the revisions created_at, rather than the public topics created_at
             @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
           end
 
           if @current_basket.index_page_number_of_tags > 0
-            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, (@privacy_type == 'private'))
+            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, @allow_private)
             @tag_counts_size = @tag_counts_array.size
             @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
           end

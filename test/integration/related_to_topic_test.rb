@@ -95,12 +95,86 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             end
             body_should_contain @topic.title
           end
+          
+          context "with a linkable item available" do
+            
+            setup do
+              @item_for_relating = send("new_#{@tableized.singularize}", :title => "Item for relating") do
 
-          # should_eventually "be able to link existing related #{class_name}"
-          # should_eventually "be able to unlink related #{class_name}"
-          # should_eventually "be able to restore unlinked related #{class_name}"
-          # should_eventually "be able to destroy related #{class_name} and have the item be dropped from the related #{class_name} list"
-          # should_eventually "be able to destroy topic that #{class_name} is related to and have the item's related topics list will be blank"
+                # get the attribute that defines each class
+                if ATTACHABLE_CLASSES.include?(class_name)
+                  # put in a case statement
+                  case class_name
+                  when 'StillImage'
+                    attach_file "image_file_uploaded_data", "white.jpg"
+                  when 'Video'
+                    attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
+                  when 'AudioRecording'
+                    attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
+                  when 'Document'
+                    attach_file "document[uploaded_data]", "test.pdf"
+                  end
+                elsif class_name == 'WebLink'
+                  # this will only work if you have internet connection
+                  fill_in "web_link[url]", :with => "http://google.co.uk/"
+                end
+                
+              end
+            end
+
+            should "be able to link existing related #{class_name}" do
+              lower_case_name = @tableized.gsub("_", " ")
+              
+              visit "/site/search/find_related?function=add&relate_to_topic=#{@topic.to_param}&related_class=#{class_name}"
+              
+              body_should_contain "Add related #{lower_case_name}"
+              body_should_contain "Search for #{lower_case_name}"
+              
+              fill_in "search_terms", :with => "Item for relating"
+              click_button "Search"
+              
+              body_should_contain "Select which #{lower_case_name} to add, then click \"add\"."
+              
+              body_should_contain @item_for_relating.title
+              
+              check "item_#{@item_for_relating.id.to_s}"
+              
+              click_button "Add"
+              
+              body_should_contain "Successfully added item relationships"
+              
+              visit "/site/topics/show/#{@topic.to_param}"
+              
+              # we should arrive back at the topic the item is related to
+              # and the item should be listed and the total should be 1
+              body_should_contain "#{@humanized_plural} (1)"
+              body_should_contain @item_for_relating.title
+
+              # we should be able to visit the new related item and the topic it is related to
+              # should be listed
+              click_link @item_for_relating.title
+              
+              unless class_name == 'Topic'
+                body_should_contain "Related Topics"
+              else
+                # topics are a special case since they are what we always link through
+                body_should_contain "Topics (1)"
+              end
+              
+              # James - 2008-01-14
+              # For some reason, the original topic is not linked back to on the still
+              # image page as you would expect. This may be a bug or it may be a fault in my test.
+              # To be investigated.
+              body_should_contain @topic.title unless class_name == "StillImage"
+
+            end
+          
+            # should_eventually "be able to unlink related #{class_name}"
+            # should_eventually "be able to restore unlinked related #{class_name}"
+            # should_eventually "be able to destroy related #{class_name} and have the item be dropped from the related #{class_name} list"
+            # should_eventually "be able to destroy topic that #{class_name} is related to and have the item's related topics list will be blank"
+            
+          end
 
           if ATTACHABLE_CLASSES.include?(class_name)
             # should_eventually "be able to upload a zip file of related #{@tableized}"
@@ -109,8 +183,8 @@ class RelatedToTopicTest < ActionController::IntegrationTest
           # should_eventually "not display links to items with no public version"
 
         end
-      end
-    end
+      end # End of item class iteration
+    end # End of context "when a topic is added"
   end
 end
 

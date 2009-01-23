@@ -44,6 +44,26 @@ class MemberListTest < ActionController::IntegrationTest
 
     end
 
+    context 'when there is one basket admin for the site basket, a site admin' do
+
+      setup do
+        add_jane_as_admin_to(@@site_basket)
+      end
+
+      should 'be able to promote that single basket admin for site basket to site admin ' do
+        visit '/site/members/list'
+        click_link '1 administrator'
+        body_should_contain 'jane'
+        body_should_contain Regexp.new("<a .+(change_membership_type).+(role=site_admin).+>Site Admin</a>")
+        click_link 'Site Admin'
+        # goes to site member list after changing the user's role
+        # flash message plus new number for role should indicate that our change role was successful
+        body_should_contain '2 site administrators'
+        # thought there was a specific macro for flash, but can't find it
+        body_should_contain 'User successfully changed role.'
+      end
+    end
+
     # This wraps 9 different tests of relativly same testing pattern into an easy to manage loop
     member_roles = [
       ['Basket admin', 'at least admin', 'admin'],
@@ -71,6 +91,38 @@ class MemberListTest < ActionController::IntegrationTest
           end
         end
       end
+    end
+
+    should "only allow site admins to sort by login" do
+      visit "/site/members/list"
+      body_should_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
+      login_as('joe')
+      visit "/site/members/list"
+      body_should_not_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
+      body_should_contain Regexp.new("<a (.+)>User name</a>")
+    end
+
+    context "when being sorted" do
+
+      setup do
+        @@sorting_basket = create_new_basket({ :name => 'Sorting Basket' })
+        add_user1_as_member_to(@@sorting_basket, { :display_name => 'Brian' })
+        add_user2_as_member_to(@@sorting_basket, { :display_name => 'Josh' })
+        add_user3_as_member_to(@@sorting_basket, { :display_name => 'Amy' })
+      end
+
+      should "sort correctly by resolved name" do
+        visit '/sorting_basket/members/list?direction=asc&order=users.resolved_name'
+        # Surounding the names with >< is a quick way to check the name is within a tag (likely <a></a>)
+        body_should_contain_in_order(['>Amy<', '>Brian<', '>Josh<'], '<td class="member_avatar">', :offset => 1)
+      end
+
+      should "sort correctly by login" do
+        visit '/sorting_basket/members/list?direction=asc&order=users.login'
+        # Surounding the names with () is a quick way to check it's not part of a link
+        body_should_contain_in_order(['(user1)', '(user2)', '(user3)'], '<td class="member_avatar">', :offset => 1)
+      end
+
     end
 
   end

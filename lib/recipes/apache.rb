@@ -29,7 +29,7 @@ namespace :deploy do
     end
 
     def set_apache_clt
-      set :apache_ctl, "/etc/init.d/apache2" unless defined?(apache_ctl)
+      begin; apache_ctl; rescue; set(:apache_ctl, "/etc/init.d/apache2"); end
     end
 
   end

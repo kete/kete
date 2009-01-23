@@ -18,8 +18,14 @@ module ApplicationHelper
     default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
     options = default_options.merge(options)
 
+    return nil if options[:return_portrait] && (!ENABLE_USER_PORTRAITS || user.portraits.empty?)
+
     if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
-      return image_tag(user.portraits.first.thumbnail_file.public_filename, options)
+      if options[:return_portrait]
+        return user.portraits.first
+      else
+        return image_tag(user.portraits.first.thumbnail_file.public_filename, options)
+      end
     elsif ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT
       return image_tag('no-avatar.png', options)
     end
@@ -399,8 +405,36 @@ module ApplicationHelper
             :action => :all, :contributor => user, :trailing_slash => true, :only_path => false)
   end
 
-  def link_to_contributions_of(user,zoom_class)
-    link_to h(user.user_name), url_for_contributions_of(user, zoom_class)
+  def link_to_contributions_of(user, zoom_class, options = {})
+    if options[:with_avatar]
+      display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
+      display_html += h(user.user_name)
+      display_html += '<div class="clear"></div>'
+    else
+      display_html = h(user.user_name)
+    end
+    link_to display_html, url_for_contributions_of(user, zoom_class)
+  end
+
+  def stylish_link_to_contributions_of(user, zoom_class, options = {})
+    options = { :with_avatar => true }.merge(options)
+    div_classes = (['stylish_user_contribution_link'] + options[:additional_classes].to_a).flatten.compact.join(' ')
+    display_html = "<div class=\"#{div_classes}\">"
+    if options[:with_avatar]
+      avatar = avatar_for(user)
+      display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' unless avatar.blank?
+    end
+    user_link = link_to(h(user.user_name), url_for_contributions_of(user, zoom_class))
+    link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link)
+    display_html += content_tag('div', link_text, :class => 'stylish_user_contribution_link_extra')
+    display_html += options[:additional_html] if options[:additional_html]
+    display_html += '<div style="clear:both;"></div>'
+    display_html += '</div>'
+    display_html
+  end
+
+  def add_to_stylish_display_with(content)
+    "<div class=\"stylish_user_contribution_link_extra\">#{content}</div>"
   end
 
   def url_for_profile_of(user)
@@ -409,8 +443,9 @@ module ApplicationHelper
             :action => :show, :id => user, :only_path => false)
   end
 
-  def link_to_profile_for(user)
-    link_to h(user.user_name), url_for_profile_of(user)
+  def link_to_profile_for(user, phrase = nil)
+    phrase ||= h(user.user_name)
+    link_to phrase, url_for_profile_of(user)
   end
 
   def link_to_related_to_source(options={})
@@ -634,26 +669,26 @@ module ApplicationHelper
     "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
-  
-  # 
+
+  #
   def limit_search_to_choice_control
     options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
       memo + option_for_choice_control(choice, :level => 0)
     end
-    
-    html_options_for_select = ([['', '']] + options_array).map do |k, v| 
+
+    html_options_for_select = ([['', '']] + options_array).map do |k, v|
       attrs = { :value => v }
       attrs.merge!(:selected => "selected") if params[:limit_to_choice] == v
       content_tag("option", k, attrs)
     end.join
-    
+
     # Don't print out the SELECT tag unless there are choices available.
     options_array.flatten.empty? ? "" : select_tag("limit_to_choice", html_options_for_select)
   end
-  
+
   def option_for_choice_control(choice, options = {})
     level = options[:level] || 0
-    
+
     array = [[("&nbsp;&nbsp;"*level) + choice.label, choice.value]]
     choice.children.reject { |c| c.extended_fields.empty? }.inject(array) { |a, c| a + option_for_choice_control(c, :level => level + 1) }
   end
@@ -662,10 +697,10 @@ module ApplicationHelper
   def display_xml_attributes(item)
     raq = " &raquo; "
     html = []
-    
+
     mappings = item.is_a?(Topic) ? item.all_field_mappings : \
       ContentType.find_by_class_name(item.class.name).content_type_to_field_mappings
-      
+
     content = item.extended_content_pairs
 
     mappings.each do |mapping|
@@ -687,13 +722,13 @@ module ApplicationHelper
 
       html << content_tag("tr", td)
     end
-    
+
     unless html.empty?
       content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
     end
-    
+
   end
-  
+
   def formatted_extended_content_value(field, field_name, value, item)
     if field.ftype == 'map'
       extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map', false, true, false)
@@ -705,10 +740,10 @@ module ApplicationHelper
       formatted_value_from_xml(value, field, item)
     end
   end
-  
+
   def formatted_value_from_xml(value, ef = nil, item = nil)
     if ef && %w(autocomplete choice).member?(ef.ftype)
-      
+
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
@@ -722,11 +757,11 @@ module ApplicationHelper
       else
         method = 'basket_all_of_category_url'
       end
-      
+
       value.map do |v|
         link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
       end.join(" &raquo; ")
-      
+
     else
       case value
       when /^\w+:\/\/[^ ]+/
@@ -739,7 +774,7 @@ module ApplicationHelper
       end
     end
   end
-    
+
   #---- end related to extended_fields for either topic_types or content_types
 
   # return an array of hashes of related items
@@ -796,54 +831,46 @@ module ApplicationHelper
 
     if @comments.size > 0
       @comments.each do |comment|
-        html_string += "<div class=\"comment-wrapper\"><h5>"
-        html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}"
-        html_string += " said "
-        html_string += "<a name=\"comment-#{comment.id}\">#{h(comment.title)}</a>"
-        html_string += "</h5>"
-
-        #changed Steven Upritchard katipo.co.nz todo: clean this up
-        #html_string += "<div class=\"comment-wrapper\">""<h5><a name=\"comment-#{comment.id}\">#{h(comment.title)}</a> by "
-        #html_string += "#{link_to_contributions_of(comment.creators.first,'Comment')}</h5><div class=\"comment-content\">\n"
-
-        html_string += "<div class=\"comment-content\">"
-
-        html_string += "<div class=\"avatar\">#{avatar_for(comment.creators.first)}</div>"
-        html_string += "<div class=\"comment-content-inner\">"
-
-        if !comment.description.blank?
-          html_string += "#{comment.description}\n"
-        end
-
+        comment_string = "<div class=\"comment-wrapper\">"
+        comment_string += "<div class=\"comment-wrapper-header-wrapper\"><div class=\"comment-wrapper-header\"></div></div>"
+        comment_string += "<div class=\"comment-content\">"
+        comment_string += "#{comment.description}\n" unless comment.description.blank?
         tags_for_comment = tags_for(comment)
-        if !tags_for_comment.blank?
-          html_string += "#{tags_for_comment}\n"
-        end
-        html_string += pending_review(comment) + "\n"
-
-        html_string += "</div>"
-
-        html_string += "<div class=\"comment-tools\">\n"
-        html_string += flagging_links_for(comment,true,'comments')
+        comment_string += "#{tags_for_comment}\n" unless tags_for_comment.blank?
+        comment_string += pending_review(comment) + "\n"
+        comment_string += "<div class=\"comment-tools\">\n"
+        comment_string += flagging_links_for(comment,true,'comments')
         if logged_in? and @at_least_a_moderator
-          html_string += "<ul><li>" + link_to("Edit",
-                                          :controller => 'comments',
-                                          :action => :edit,
-                                          :id => comment) + "</li>\n"
-          html_string += "<li>" + link_to("History",
-                                          :controller => 'comments',
-                                          :action => :history,
-                                          :id => comment) + "</li>\n"
-          html_string += "<li>" + link_to("Delete",
-                                          {:action => :destroy,
-                                            :controller => 'comments',
-                                            :id => comment,
-                                            :authenticity_token => form_authenticity_token},
-                                          :method => :post,
-                                          :confirm => 'Are you sure?') + "</li>\n"
+          comment_string += "<ul>"
+          comment_string += "<li class='first'>" + link_to("Edit",
+                                             :controller => 'comments',
+                                             :action => :edit,
+                                             :id => comment) + "</li>\n"
+          comment_string += "<li>" + link_to("History",
+                                             :controller => 'comments',
+                                             :action => :history,
+                                             :id => comment) + "</li>\n"
+          comment_string += "<li>" + link_to("Delete",
+                                             {:action => :destroy,
+                                               :controller => 'comments',
+                                               :id => comment,
+                                               :authenticity_token => form_authenticity_token},
+                                             :method => :post,
+                                             :confirm => 'Are you sure?') + "</li>\n"
+          comment_string += "</ul>\n"
         end
-        html_string += "</ul>\n</div></div></div>"
+        comment_string += "</div>" # comment-tools
+        comment_string += "</div>" # comment-content
+        comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
+        comment_string += "</div>" # comment-wrapper
+        
+        html_string += '<div class="comment-outer-wrapper">'
+        html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
+                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
+                                                        :additional_html => comment_string)
+        html_string += '</div>' # comment-outer-wrapper
       end
+      
       html_string += "<p>" + link_to("join this discussion",
                                      {:action => :new,
                                        :controller => 'comments',
@@ -854,6 +881,7 @@ module ApplicationHelper
                                      },
                                      :method => :post) + "</p>"
     end
+
     return html_string
   end
 
@@ -1098,5 +1126,15 @@ module ApplicationHelper
     if item.is_private?
       privacy_image
     end
+  end
+
+  def kete_time_ago_in_words(from_time)
+    string = String.new
+    if from_time < Time.now - 1.week
+      string = "on " + from_time.to_s(:euro_date_time)
+    else
+      string = time_ago_in_words(from_time) + " ago"
+    end
+    string
   end
 end

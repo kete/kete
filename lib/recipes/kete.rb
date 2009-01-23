@@ -25,7 +25,7 @@ namespace :deploy do
     deploy.symlink
     deploy.kete.symlink.all
     deploy.gems.update
-    deploy.db.migrate
+    deploy.migrate
     deploy.kete.upgrade
     deploy.backgroundrb.start
     deploy.restart
@@ -35,6 +35,7 @@ namespace :deploy do
 
     desc 'Upgrade Kete Installation'
     task :upgrade, :role => :app do
+      set_app_environment
       run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:upgrade"
     end
 
@@ -101,7 +102,7 @@ namespace :deploy do
     end
 
     def set_app_environment
-      set :app_environment, 'production' unless defined?(app_environment)
+      begin; app_environment; rescue; set(:app_environment, 'production'); end
     end
 
   end

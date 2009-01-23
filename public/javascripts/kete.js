@@ -17,33 +17,72 @@ var SubMenu = Class.create({
   }
 });
 
-// Called in the account/_portraits.html.erb partial,
-// so it gets updated each time the partial is rendered
-function updatePortraitControls() {
-  $$('.portrait_image').each(function(portrait) {
-    if(!portrait) return;
-    portrait.trigger = portrait.down('img');
-    if(!portrait.trigger) return;
-    portrait.menu = portrait.down('span')
-    if(!portrait.menu) return;
-
-    portrait.menu.hide();
-
-    portrait.trigger.observe('mouseover', function(event) {
-      portrait.menu.show();
-    });
-    portrait.menu.observe('mouseover', function(event) {
-      portrait.menu.show();
-    });
-    portrait.trigger.observe('mouseout', function(event) {
-      portrait.menu.hide();
-    });
-    portrait.menu.observe('mouseout', function(event) {
-      portrait.menu.hide();
+function preventLinksExecuting() {
+  $$('.portrait_image a').each(function(link) {
+    link.observe('click', function(evt) {
+      Event.stop(evt);
+      link.stopObserving('click');
     });
   });
 }
 
+function makePortraitsSortable() {
+  Sortable.create('portrait_images', {
+    tag: 'div',
+    constraint: false,
+    overlap: false,
+    containment: ['portrait_images', 'profile_avatar'],
+    onChange: function(element) {
+      preventLinksExecuting();
+    },
+    onUpdate: function(element) {
+      preventLinksExecuting();
+      updatePortraitPositions();
+    }
+  });
+}
+
+function updatePortraitPositions() {
+  serialized = Sortable.serialize('portrait_images', { tag: 'div' });
+  new Ajax.Request('/site/account/update_portraits', {
+    method: 'get',
+    parameters: { portraits: serialized }
+  });
+}
+
+function enablePortraitDragAndDrop() {
+  makePortraitsSortable();
+  if ($$('#profile_avatar .portrait_image')) {
+    Droppables.add('profile_avatar', {
+      accept: 'portrait_image',
+      hoverclass: 'avatar_hover',
+      onDrop: function(element) {
+        preventLinksExecuting();
+        $('portrait_images').insert($('profile_avatar').innerHTML);
+        $('profile_avatar').innerHTML = "<div id='" + element.id + "' class='portrait_image' style='position: relative;'>" + element.innerHTML + "</div>";
+        element.remove();
+        Sortable.destroy('portrait_images');
+        makePortraitsSortable();
+        updatePortraitPositions();
+      }
+    });
+  }
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
+  if ($('portrait_images')) { enablePortraitDragAndDrop(); }
+  
+  if ($('portrait_help_div')) {
+    $('portrait_help').down('a').observe('click', function(event) {
+      $('portrait_help_div').show();
+      $('portrait_help').down('a').hide();
+      event.stop();
+    });
+    $('close_help').observe('click', function(event) {
+      $('portrait_help_div').hide();
+      $('portrait_help').down('a').show();
+      event.stop();
+    })
+  }
 });

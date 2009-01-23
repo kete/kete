@@ -18,7 +18,7 @@ load_testing_libs
 if defined?(SELENIUM_MODE) && SELENIUM_MODE
   Webrat.configure do |config|
     config.mode = :selenium
-    config.selenium_environment = :test
+    config.application_environment = :test
     config.open_error_files = false
   end
 else
@@ -101,12 +101,12 @@ class ActionController::IntegrationTest
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert (occurances == options[:number_of_times]),
-             "Body should contain '#{text}' #{options[:number_of_times]} times, but has #{occurances}."
+             (options[:message] || "Body should contain '#{text}' #{options[:number_of_times]} times, but has #{occurances}.")
     else
       if text.kind_of?(Regexp)
-        assert (response_body =~ text), "Body should contain '#{text}', but does not."
+        assert (response_body =~ text), (options[:message] || "Body should contain '#{text}', but does not.")
       else
-        assert response_body.include?(text), "Body should contain '#{text}', but does not."
+        assert response_body.include?(text), (options[:message] || "Body should contain '#{text}', but does not.")
       end
     end
   end
@@ -125,12 +125,12 @@ class ActionController::IntegrationTest
     if !options[:number_of_times].nil?
       occurances = response_body.scan(text).size
       assert !(occurances == options[:number_of_times]),
-             "Body should not contain '#{text}' #{options[:number_of_times]} times, but does."
+             (options[:message] || "Body should not contain '#{text}' #{options[:number_of_times]} times, but does.")
     else
       if text.kind_of?(Regexp)
-        assert !(response_body =~ text), "Body should not contain '#{text}', but does."
+        assert !(response_body =~ text), (options[:message] || "Body should not contain '#{text}', but does.")
       else
-        assert !response_body.include?(text), "Body should not contain '#{text}', but does."
+        assert !response_body.include?(text), (options[:message] || "Body should not contain '#{text}', but does.")
       end
     end
   end
@@ -143,9 +143,10 @@ class ActionController::IntegrationTest
     save_and_open_page if options[:dump_response]
     response_body = response.body.squish
     parts = response_body.split(divider).compact.flatten
+    offset = options[:offset] ? options[:offset] : 0
     parts.each_with_index do |part,index|
-      next if text_array[index].nil?
-      assert part.include?(text_array[index]), "#{text_array[index]} is not in the right order it should be."
+      next if (index - offset) < 0 || text_array[(index - offset)].nil?
+      assert part.include?(text_array[(index - offset)]), "#{text_array[(index - offset)]} is not in the right order it should be."
     end
   end
 
@@ -154,7 +155,11 @@ class ActionController::IntegrationTest
   # entire request url to the console)
   def url_should_contain(text, options = {})
     puts request.url if options[:dump_response]
-    assert request.url.include?(text), "URL should contain '#{text}', but does not."
+    if text.is_a?(Regexp)
+      assert (request.url =~ text), "URL should contain '#{text}', but does not."
+    else
+      assert request.url.include?(text), "URL should contain '#{text}', but does not."
+    end
   end
 
   # Asserts whether the supplied text is not within the request url of the currently viewed page
@@ -162,7 +167,11 @@ class ActionController::IntegrationTest
   # entire request url to the console)
   def url_should_not_contain(text, options = {})
     puts request.url if options[:dump_response]
-    assert !request.url.include?(text), "URL should not contain '#{text}', but does."
+    if text.is_a?(Regexp)
+      assert !(request.url =~ text), "URL should not contain '#{text}', but does."
+    else
+      assert !request.url.include?(text), "URL should not contain '#{text}', but does."
+    end
   end
 
   # Create a new item by navigating to the item new page, filling in fields and clicking "Create". While
@@ -198,14 +207,28 @@ class ActionController::IntegrationTest
       :title => "#{zoom_class_humanize(zoom_class)} Title",
       :description => "#{zoom_class_humanize(zoom_class)} Description",
       :success_message => "#{zoom_class_humanize(zoom_class)} was successfully created.",
-      :relate_to => nil
+      :relate_to => nil,
+      :topic_type => "Topic"
     }
     fields.merge!(options)
+
+    # If we're dealing with portraits, lets tack on params to the end of new_path
+    if zoom_class == "StillImage"
+      if fields.delete(:portrait)
+        fields[:new_path] = "#{fields[:new_path]}?portrait=true"
+        fields[:success_message] = "#{zoom_class_humanize(zoom_class)} was successfully created as a portrait."
+      elsif fields.delete(:selected_portrait)
+        fields[:new_path] = "#{fields[:new_path]}?selected_portrait=true"
+        fields[:success_message] = "#{zoom_class_humanize(zoom_class)} was successfully created as your selected portrait."
+      end
+    end
+
     # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise
     # an exception
     new_path = fields.delete(:new_path)
     success_message = fields.delete(:success_message)
     relate_to = fields.delete(:relate_to)
+    topic_type = fields.delete(:topic_type)
 
     unless relate_to.nil? || relate_to.is_a?(Topic)
       raise "ERROR: You must relate an item to a Topic, not a #{relate_to.class.name}"
@@ -224,7 +247,10 @@ class ActionController::IntegrationTest
 
     # If we are making a Topic, it has one more step before we actually reach the new topic page, and that
     # is to provide a Topic Type
-    click_button("Choose Type") if controller == 'topics'
+    if controller == 'topics'
+      select(/#{topic_type}/, :from => "topic_topic_type_id")
+      click_button("Choose Type")
+    end
 
     # Convert the field values into webrat actions (strings to fields, booleans to radio buttons etc)
     get_webrat_actions_from(fields, field_prefix)

@@ -33,6 +33,29 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2009/01/22 - Portrait UI refinements
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      Clear your sites cache (rake tmp:cache:clear)
+4.      Start your Kete server again (mongrels or mod_rails)
+5.      Restart backgroundrb
+
+== 2009/01/20 - Updates to Webrat for better Selenium testing
+
+1.      Update your webrat gem to >= 0.4.0
+           (you should be able to run  'rake manage_gems:testing:update')
+2.      Run  rake test:selenium   to get going
+
+== 2009/01/13 - user_name moved to display_name and resolved_name
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      Run the migrations: 'rake db:migrate'
+4.      Run Kete upgrade: 'rake kete:upgrade'
+5.      Start your Kete server again (mongrels or mod_rails)
+6.      Restart backgrounrb
+
 == 2008/12/09 - Webrat integration tests
 
 You will need to install the webrat, shoulda, and factory-girl gems in order to perform integration tests. In order to do this, please run the following as root (or a super-user):

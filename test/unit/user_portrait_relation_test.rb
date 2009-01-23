@@ -21,7 +21,7 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
     @user2 = User.create(:login => 'test')
     assert_equal false, UserPortraitRelation.new_portrait_for(@user2, @still_image)
     assert_equal false, UserPortraitRelation.remove_portrait_for(@user2, @still_image)
-    assert_equal false, UserPortraitRelation.make_portrait_default_for(@user2, @still_image)
+    assert_equal false, UserPortraitRelation.make_portrait_selected_for(@user2, @still_image)
   end
 
   def test_portrait_only_added_when_not_already_used
@@ -44,7 +44,7 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
     assert_equal 1, @relation.position
     new_image_with_creator
     assert_equal 2, @relation.position
-    UserPortraitRelation.make_portrait_default_for(@user, @still_image)
+    UserPortraitRelation.make_portrait_selected_for(@user, @still_image)
     @relation.reload
     assert_equal 1, @relation.position
   end

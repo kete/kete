@@ -261,6 +261,101 @@ class TopicTest < Test::Unit::TestCase
     end
   end
 
+  def test_adding_a_new_extended_field_renders_all_versions_invalid
+
+    # Create a topic
+    topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
+    topic = Topic.create!(@new_model.merge(:topic_type => topic_type))
+
+    # Update it and check that it's still valid
+    topic.update_attributes! :description => "Changed description"
+    assert_valid topic
+
+    # Add a new required field to the topic type
+    add_field_to(topic_type, { :label => "Is a test" }, :required => true)
+
+    # The current version is still valid as it never had a value for the extended content.
+    assert_valid topic
+
+    # But updating the topic requires a value to be passed now, because it is a new requirement.
+    assert !topic.update_attributes(:description => "Updated description again", :extended_content_values => { "is_a_test" => "" })
+    assert !topic.valid?
+
+    assert topic.update_attributes( \
+      :description => "Updated description again",
+      :extended_content_values => { "is_a_test" => "Yes" }
+    )
+
+    assert_valid topic
+  end
+
+
+  def test_empty_values_are_validated_correctly_on_new_records
+    topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
+    add_field_to(topic_type, { :label => "Is a test" }, :required => true)
+
+    topic = Topic.new(@new_model.merge(:topic_type => topic_type))
+    topic.extended_content_values = { "is_a_test" => "Yes" }
+
+    assert_valid topic
+
+    topic = Topic.new(@new_model.merge(:topic_type => topic_type))
+    topic.extended_content_values = { "is_a_test" => "" }
+
+    assert !topic.valid?
+  end
+
+  def test_empty_values_are_validated_correctly_on_existing_records
+    topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
+    topic = Topic.new(@new_model.merge(:topic_type => topic_type))
+    assert topic.valid?
+
+    add_field_to(topic_type, { :label => "Is a test" }, :required => true)
+    assert topic.valid?
+
+    topic.extended_content_values = { "is_a_test" => "Yes" }
+    assert topic.valid?
+  end
+
+  def test_empty_values_are_validated_correctly_on_existing_records_with_multiples
+    topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
+    topic = Topic.new(@new_model.merge(:topic_type => topic_type))
+    assert topic.valid?
+
+    add_field_to(topic_type, { :multiple => true, :label => "Is a test" }, :required => true)
+    assert topic.valid?
+
+    topic.extended_content_values = { "is_a_test" => { "1" => "Yes" } }
+    assert topic.valid?
+
+    topic.extended_content_values = { "is_a_test" => { "1" => "" } }
+    assert !topic.valid?
+
+    topic.extended_content_values = nil
+    assert topic.valid?
+  end
+
+  def test_empty_values_are_validated_correctly_on_existing_records_with_multiples_and_nil_values_disallowed
+    topic_type = TopicType.create!(:name => "Test", :description => "A test", :parent_id => 1)
+    topic = Topic.new(@new_model.merge(:topic_type => topic_type))
+    topic.send(:allow_nil_values_for_extended_content=, false)
+
+    assert topic.valid?
+
+    assert_equal false, topic.send(:allow_nil_values_for_extended_content)
+
+    add_field_to(topic_type, { :multiple => true, :label => "Is a test" }, :required => true)
+    assert !topic.valid?
+
+    topic.extended_content_values = { "is_a_test" => { "1" => "Yes" } }
+    assert topic.valid?
+
+    topic.extended_content_values = { "is_a_test" => { "1" => "" } }
+    assert !topic.valid?
+
+    topic.extended_content_values = nil
+    assert !topic.valid?
+  end
   def test_structured_extended_content_getter
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
       t.extended_content_values = {
