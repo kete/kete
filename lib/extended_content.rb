@@ -15,6 +15,49 @@ require 'builder'
 # accessor methods for each field. Behind the scenes the data received as a Hash instance of values (or single value in the case
 # of accessor methods) is stored into a particular XML data structure in the #extended_content attribute, which is present as a
 # column in the item class's table.
+#
+# XML Schema
+#
+# Extended content is stored as XML in the #extended_content attribute in the model. There are several conventions for how the XML 
+# is represented, outlined below:
+#
+# Items with single values are stored simply as follows:
+# <field_label>Value</field_label>
+#
+# Items with multiple values:
+# <field_label_multiple><1><field_label>Value</field_label></1><2><field_label>Value 2</field_label></2></field_label_multiple>
+#
+# Choices with single values:
+# <field_label><1>Value</1></field_label>
+#
+# Choices with multiple hierarchical values:
+# <field_label><1>Value</1><2>Child of value</2></field_label>
+#
+# Choices with multiple hierarchical values AND multiple values (i.e. multiple different hierchical selections)
+# <field_label_multiple><1><field_label><1>Value</1><2>Child of value</2></field_label></1> ..
+#   <2><field_label><1>Value</1><2>Child of value</2></field_label></2></field_label_multiple>
+#
+# General notes on XML schema:
+# XML element name for the OAI XML schema is stored in the xml_element_name attribute in the XML tag, for instance:
+# <field_name xml_element_name="dc:description">value</field_name>
+#
+# OAI XML Schema
+#
+# The OAI XML Schema has a different representation to the internal XML schema.
+# The main differences are:
+# 
+# * Where an XML element name has been declared in the ExtendedField record, it is used as the tag name. For instance, 
+#   <field_name xml_element_name="dc:subject">value</field_name> in the internal XML is translated to 
+#   <dc:subject>value</dc:subject> in the OAI XML.
+# * Where an XML element name is not given in the ExtendedField record, the whole tag is wrapped verbatim in a 
+#   dc:description tag. For instance, <field_name>value</field_name> translates to the following in the OAI XML schema:
+#   <dc:description>\n<field_name>value</field_name>\n</dc:description>. Where multiple fields are missing XML element
+#   names, they are all wrapped in a single dc:description tag.
+# * For values relating to the Choice ftypes are present, these are delimited by colons. For instance, assuming that the
+#   ftype on the ExtendedField record is a variation of Choice, a singular, single level selection would be represented
+#   as follows: <dc:description>:choice value:</dc:description> (note the dc:description could be the field name wrapped
+#   in a dc:description tag as mentioned in the point above in some cases. Where hierarchical selections are present, the
+#   values are presented as follows <dc:description>:first choice:child of first choice:</dc:description>.
 
 module ExtendedContent
   CLASSES_WITH_SUMMARIES = ['Topic', 'Document']
