@@ -67,7 +67,7 @@ class TopicTest < Test::Unit::TestCase
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
     model.update_attribute(:extended_content, '')
 
-    assert !model.valid?
+    assert model.valid?
 
     assert_equal({}, model.xml_attributes)
   end
