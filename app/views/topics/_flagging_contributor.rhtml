@@ -1,10 +1,12 @@
 <div class="secondary-content-section-wrapper">
   <div  class="content-tools secondary-content-section">
     <% cache_with_privacy(item, {:part => 'contributor'}) do -%>
-      <%= stylish_link_to_contributions_of(@last_contributor, 'Topic',
-                                           :additional_classes => ['last_edited_link'],
-                                           :additional_html => add_to_stylish_display_with("was the last to edit #{h(item.title)}") +
-                                                               add_to_stylish_display_with("at #{item.updated_at.to_s(:euro_date_time)}")) %>
+      <% if item.created_at < item.updated_at -%>
+        <%= stylish_link_to_contributions_of(@last_contributor, 'Topic',
+                                             :additional_classes => ['last_edited_link'],
+                                             :additional_html => add_to_stylish_display_with("was the last to edit #{h(item.title)}") +
+                                                                 add_to_stylish_display_with("at #{item.updated_at.to_s(:euro_date_time)}")) %>
+      <% end -%>
       <%= stylish_link_to_contributions_of(@creator, 'Topic',
                                            :additional_classes => ['created_link'],
                                            :additional_html => add_to_stylish_display_with("created #{h(item.title)}") +
