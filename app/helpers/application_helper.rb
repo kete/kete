@@ -535,14 +535,16 @@ module ApplicationHelper
       middle_html = related_items_links(:source_item => options[:source_item], :related_class => 'Topic', :items => options[:topics], :pipe_list => :true )
     end
 
-    end_html = %q(
-                        </div>
-                        <div class="cleaner">&nbsp;</div>
-                        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-                        </div>
-                        </div>
-                </div>)
-    return beginning_html + middle_html + end_html
+    return beginning_html + middle_html
+  end
+
+  def item_related_topics_wrapper_end
+    %q(      </div>
+             <div class="cleaner">&nbsp;</div>
+             <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+           </div>
+         </div>
+       </div>)
   end
 
   def related_items_links(options={})

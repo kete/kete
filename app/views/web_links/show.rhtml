@@ -19,8 +19,10 @@
     <%= item_related_topics_wrapper(:class_phrase => 'web link',
                                     :source_item => @web_link,
                                     :source_item_class => 'WebLink',
-                                    :topics => @web_link.topics) -%>
+                                    :topics => @web_link.topics.find_all_public_non_pending) -%>
   <% end -%>
+  <%= related_items_links_display_of find_private_related_items_for(@web_link, 'Topic') -%>
+  <%= item_related_topics_wrapper_end -%>
 <% end -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @web_link }) if current_user_can_see_discussion? -%>
