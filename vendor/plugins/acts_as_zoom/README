@@ -43,6 +43,8 @@ This plugin uses the ruby-zoom library (http://ruby-zoom.rubyforge.org/) to impl
 
 http://blog.katipo.co.nz/?p=26
 
+It now also uses Nokogiri gem to extend a zoom record model to be able to grab it's oai dc parts (http://nokogiri.rubyforge.org/nokogiri/).  You'll need to install the nokogiri gem.
+
 Usage:
 ======
 You will need to define at least one Z39.50 server to point acts_as_zoom via ZoomDb class instance.  After that you have several options to specify.

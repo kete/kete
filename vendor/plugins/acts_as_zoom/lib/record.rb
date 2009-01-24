@@ -1,66 +1,106 @@
-# using the faster libxml parser (as compared to Rexml)
-require 'libxml'
+# using the faster xml parser (supposedly fastest)
+# using nokogiri instead of libxml ruby gem now
+require 'nokogiri'
 require 'date'
-# we extend the libxml node class
-# to have some convenience methods
-require File.dirname(__FILE__) + "/libxml_helper"
-
 require 'oai'
-# reopen ZOOM::Record and alias to_oai to xml
-# xml record normally returns record verbatim
-# if it is already in xml
-# in Kete's use of acts_as_zoom this is true
-# putting use of it here because it might be useful to other apps
-# handy when using oai gem to create an OAI-PMH Repository!
+# reopen ZOOM::Record
+# and create some data extraction methods
+# based on the assumption of the record being oai_dc based
+# as they are in Kete
+# some extraction methods are specifically targeted
+# at use with the oai gem as a oai pmh repository provider
+# see Kete's included version of the oai gem for details
 ZOOM::Record.class_eval do
+  # return the id string, with no wrapping xml
+  def oai_identifier
+    @oai_identifier ||= header.at("identifier").content
+  end
 
-  # returns fully formed oai_identifier from the record
+  # returns fully formed oai_identifier from the record including wrapping xml
   def complete_id
-    complete_id = header.at("identifier").inner_xml
+    # complete_id = header.at("identifier").inner_xml
+    complete_id = header.at("identifier")
   end
 
   # returns fully formed oai_datestamp from the record
+  # including wrapping xml
   def complete_datestamp
     # make sure we are in utc as per oai standard for datestamp
     # doing this for backwards compatibility
     # may pull out, may also need an "Z" at end, not sure
-    complete_datestamp = header.at("datestamp").inner_xml
+    # complete_datestamp = header.at("datestamp").inner_xml
+    complete_datestamp = header.at("datestamp")
   end
 
   def sets
     @sets = Array.new
-    header.at("setSpec").to_a.each { |set_spec| @sets << OAI::Set.new(:spec => set_spec) }
+    header.xpath("setSpec").each { |set_spec| @sets << OAI::Set.new(:spec => set_spec.content) }
   end
 
+  # return the header as Nokogiri::XML::Element
   def header
     setup_for_being_parsed
-    @header = @root.at("oai:header").to_s.to_libxml_doc.root
+    @header ||= @root.at(".//xmlns:header", @root.namespaces)
   end
 
+  # return the header element as a string of the xml
   def complete_header
     header.to_s
   end
 
-  def to_oai_dc
+  # return the metadata as Nokogiri::XML::Element
+  def metadata
     setup_for_being_parsed
-    # argh.  libxml can be a royal pain in the ass
-    # when using xpath
-    # kludge
-    # using brittle hardcoding of array index!!!
-    oai_dc = @root.to_a[3]
+    @metadata ||= @root.at(".//xmlns:metadata", @root.namespaces)
+  end
+
+  # return the metadata element as a string of the xml
+  def complete_metadata
+    metadata.to_s
+  end
+
+  # return only the oai_dc bit
+  # without the wrapping metadata element
+  # as Nokogiri::XML::Element
+  def to_oai_dc
+    @oai_dc ||= metadata.at(".//oai_dc:dc", @metadata.namespaces)
   end
 
   # we use to_complete_oai_dc for speed
   # when answering ListRecords
+  # this is all aspects of the record
+  # that are valid for oai_dc
+  # record may have non-oai_dc, and that is not returned
+  # returned as string of xml
+  # should be faster to deal with tearing apart xml
+  # and rebuilding it, rather than building it from scratch for the ActiveRecord model
+  # at least in Kete
   def to_complete_oai_dc
     setup_for_being_parsed
-    @root.to_s
+
+    # we only want to return record/header and record/metadata
+    # and dropped any other non-oai elements (Kete, i'm looking at you)
+    # Kete includes non-oai schema in the record to other nifty things from within Kete
+    complete_oai_dc = '<' + @root.name
+    @root.namespaces.each { |k, v| complete_oai_dc += " #{k}=\"#{v}\"" }
+    complete_oai_dc += '>'
+    complete_oai_dc += complete_header
+    complete_oai_dc += complete_metadata
+    complete_oai_dc += '</' + @root.name + '>'
+
+    complete_oai_dc
   end
 
   private
 
+  # take the xml that is returned as a string from our ZOOM request for the record
+  # and instantiate a new Nokogir::XML::Document as @doc
+  # and set up @root as @doc's root Nokogir::XML::Element
   def setup_for_being_parsed
-    @root = xml.to_libxml_doc.root
-    @root.register_default_namespace("oai")
+    @doc ||= Nokogiri::XML(xml)
+    # sort of annoying, haven't found a way with nokogiri to set default namespace
+    # so you don't have to specify it in searches
+    # @root.register_default_namespace("oai")
+    @root ||= @doc.root
   end
 end
