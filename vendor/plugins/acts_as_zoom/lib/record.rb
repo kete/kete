@@ -19,7 +19,7 @@ require 'oai'
 ZOOM::Record.class_eval do
 
   # return the id string, with no wrapping xml
-  def oai_id
+  def oai_identifier
     oai_id = header.at("identifier").content
   end
 
