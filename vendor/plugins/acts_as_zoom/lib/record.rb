@@ -18,7 +18,12 @@ require 'oai'
 # handy when using oai gem to create an OAI-PMH Repository!
 ZOOM::Record.class_eval do
 
-  # returns fully formed oai_identifier from the record
+  # return the id string, with no wrapping xml
+  def oai_id
+    oai_id = header.at("identifier").content
+  end
+
+  # returns fully formed oai_identifier from the record including wrapping xml
   def complete_id
     # complete_id = header.at("identifier").inner_xml
     complete_id = header.at("identifier")
