@@ -56,34 +56,30 @@ module XmlHelpers
       xml.thumbnail(:height  => thumb.height, :width => thumb.width, :size => thumb.size, :src => protocol + '://' + host + thumb.public_filename)
     end
 
-    # we are using non-oai_dc namespaces for keeping informationn about
-    # binary files (except for dc:source) with the search record
-    # DEPRECIATED
-    def oai_dc_xml_dc_description_for_file(xml, item, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
-      else
-        host = request.host
-      end
+    # output xml intended to give us all we need to know
+    # to display the content of any uploaded original
+    # this will use large version for still images and original for everything else
+    def xml_for_media_content_file(xml, item, passed_request = nil)
+      # right now StillImage is the only class with thumbnails
+      # this may change in the future for videos and documents
+      # possibly even audio if there are samples
+      # at that point, refactor accordingly
+      # unless ATTACHABLE_CLASSES.include?(item.class.name)
+      return unless ATTACHABLE_CLASSES.include?(item.class.name)
 
-      if ATTACHABLE_CLASSES.include?(item.class.name)
-        xml.tag!("dc:description") do
-          xml.files do
-            # images we describe all image versions via image_files
-            # where as everything else only has one file
-            if item.class.name == 'StillImage'
-              item.image_files.each do |image_file|
-                xml.tag!('file') do
-                  xml_enclosure_for_item_with_file(xml, image_file, host)
-                end
-              end
-            else
-              xml.tag!(item.class.name.tableize.singularize) do
-                xml_enclosure_for_item_with_file(xml, item, host)
-              end
-            end
-          end
-        end
+      protocol = appropriate_protocol_for(item)
+      host = !passed_request.nil? ? passed_request[:host] : request.host
+
+      unless item.is_a?(StillImage)
+        xml.media_content(:size => item.size,
+                          :content_type => item.content_type,
+                          :src => protocol + '://' + host + item.public_filename)
+      else
+        large = item.large_file
+        xml.media_content(:height  => large.height, :width => large.width,
+                          :size => large.size,
+                          :content_type => large.content_type,
+                          :src => protocol + '://' + host + large.public_filename)
       end
     end
 

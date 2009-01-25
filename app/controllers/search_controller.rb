@@ -386,9 +386,13 @@ class SearchController < ApplicationController
     # make this nil by default
     # overwrite for local results with actual thumbnail object
     result_hash[:thumbnail] = nil
+    result_hash[:media_content] = nil
     if ATTACHABLE_CLASSES.include?(result_hash[:class])
       thumbnail_xml = zoom_record.root.at(".//xmlns:thumbnail", zoom_record.root.namespaces)
       result_hash[:thumbnail] = thumbnail_xml.attributes.symbolize_keys unless thumbnail_xml.blank?
+
+      media_content_xml = zoom_record.root.at(".//xmlns:media_content", zoom_record.root.namespaces)
+      result_hash[:media_content] = media_content_xml.attributes.symbolize_keys unless media_content_xml.blank?
     end
 
     # get the oai_dc element
@@ -396,7 +400,10 @@ class SearchController < ApplicationController
     # for all our standard dc element values
     oai_dc = zoom_record.to_oai_dc
 
-    desired_fields = [['identifier', 'url'], ['title'], ['description', 'short_summary'], ['date']]
+    desired_fields = [['identifier', 'url'],
+                      ['title'],
+                      ['description', 'short_summary'],
+                      ['date']]
 
     desired_fields.each do |field|
       # make xpath request to get first instance of the desired field's value
