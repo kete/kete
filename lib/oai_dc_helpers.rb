@@ -24,7 +24,7 @@ module OaiDcHelpers
         host= request.host
         request_uri = url_for_dc_identifier(item)
       end
-      
+
       basket_urlified_name = @current_basket.nil? ? item.basket.urlified_name : @current_basket.urlified_name
       xml.request(request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
     end
@@ -276,6 +276,9 @@ module OaiDcHelpers
       xml.tag!("dc:rights", rights)
     end
 
+    # we are using non-oai_dc namespaces for keeping informationn about
+    # binary files (except for dc:source) with the search record
+    # DEPRECIATED
     def oai_dc_xml_dc_description_for_file(xml, item, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]

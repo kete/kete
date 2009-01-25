@@ -30,7 +30,10 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
           # for any associated binary files
           # that can be used to derive the url for things like thumbnails
           # or populate rss enclosure
-          oai_dc_xml_dc_description_for_file(xml, item)
+          # DEPRECIATED
+          # we are using non-oai_dc namespaces for keeping informationn about
+          # binary files (except for dc:source) with the search record
+          # oai_dc_xml_dc_description_for_file(xml, item)
 
           # we do a dc:source element for the original binary file
           oai_dc_xml_dc_source_for_file(xml, item)
