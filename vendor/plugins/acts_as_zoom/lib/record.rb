@@ -11,7 +11,13 @@ require 'oai'
 # at use with the oai gem as a oai pmh repository provider
 # see Kete's included version of the oai gem for details
 ZOOM::Record.class_eval do
-  attr_accessor :doc, :root
+  def doc
+    @doc ||= Nokogiri::XML(xml)
+  end
+
+  def root
+    @root ||= doc.root
+  end
 
   # return the id string, with no wrapping xml
   def oai_identifier
@@ -42,8 +48,7 @@ ZOOM::Record.class_eval do
 
   # return the header as Nokogiri::XML::Element
   def header
-    setup_for_being_parsed
-    @header ||= @root.at(".//xmlns:header", @root.namespaces)
+    @header ||= root.at(".//xmlns:header", root.namespaces)
   end
 
   # return the header element as a string of the xml
@@ -53,8 +58,7 @@ ZOOM::Record.class_eval do
 
   # return the metadata as Nokogiri::XML::Element
   def metadata
-    setup_for_being_parsed
-    @metadata ||= @root.at(".//xmlns:metadata", @root.namespaces)
+    @metadata ||= root.at(".//xmlns:metadata", root.namespaces)
   end
 
   # return the metadata element as a string of the xml
@@ -79,31 +83,16 @@ ZOOM::Record.class_eval do
   # and rebuilding it, rather than building it from scratch for the ActiveRecord model
   # at least in Kete
   def to_complete_oai_dc
-    setup_for_being_parsed
-
     # we only want to return record/header and record/metadata
     # and dropped any other non-oai elements (Kete, i'm looking at you)
     # Kete includes non-oai schema in the record to other nifty things from within Kete
-    complete_oai_dc = '<' + @root.name
-    @root.namespaces.each { |k, v| complete_oai_dc += " #{k}=\"#{v}\"" }
+    complete_oai_dc = '<' + root.name
+    root.namespaces.each { |k, v| complete_oai_dc += " #{k}=\"#{v}\"" }
     complete_oai_dc += '>'
     complete_oai_dc += complete_header
     complete_oai_dc += complete_metadata
-    complete_oai_dc += '</' + @root.name + '>'
+    complete_oai_dc += '</' + root.name + '>'
 
     complete_oai_dc
-  end
-
-  private
-
-  # take the xml that is returned as a string from our ZOOM request for the record
-  # and instantiate a new Nokogir::XML::Document as @doc
-  # and set up @root as @doc's root Nokogir::XML::Element
-  def setup_for_being_parsed
-    @doc ||= Nokogiri::XML(xml)
-    # sort of annoying, haven't found a way with nokogiri to set default namespace
-    # so you don't have to specify it in searches
-    # @root.register_default_namespace("oai")
-    @root ||= @doc.root
   end
 end
