@@ -228,6 +228,7 @@ class ActionController::IntegrationTest
     new_path = fields.delete(:new_path)
     success_message = fields.delete(:success_message)
     relate_to = fields.delete(:relate_to)
+    go_to_related = fields.delete(:go_to_related)
     topic_type = fields.delete(:topic_type)
 
     unless relate_to.nil? || relate_to.is_a?(Topic)
@@ -273,8 +274,16 @@ class ActionController::IntegrationTest
     elsif !relate_to.nil?
       body_should_contain "Related #{zoom_class_humanize(zoom_class)} was successfully created."
       body_should_contain "Topic: #{relate_to.title}"
-      body_should_contain "#{item.title}"
-      click_link "#{item.title}"
+      body_should_not_contain 'No Public Version Available'
+      if item.latest_version_is_private?
+        item.private_version!
+        body_should_contain "#{item.title}"
+        body_should_contain "/#{basket.urlified_name}/#{controller}/show/#{item.id}?private=true"
+      else
+        body_should_contain "#{item.title}"
+        body_should_contain "/#{basket.urlified_name}/#{controller}/show/#{item.id}"
+      end
+      click_link "#{item.title}" if go_to_related.nil? || go_to_related
     else
       body_should_contain success_message
     end
