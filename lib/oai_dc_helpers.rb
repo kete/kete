@@ -276,37 +276,6 @@ module OaiDcHelpers
       xml.tag!("dc:rights", rights)
     end
 
-    # we are using non-oai_dc namespaces for keeping informationn about
-    # binary files (except for dc:source) with the search record
-    # DEPRECIATED
-    def oai_dc_xml_dc_description_for_file(xml, item, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
-      else
-        host = request.host
-      end
-
-      if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
-        xml.tag!("dc:description") do
-          xml.files do
-            # images we describe all image versions via image_files
-            # where as everything else only has one file
-            if item.class.name == 'StillImage'
-              item.image_files.each do |image_file|
-                xml.tag!('file') do
-                  xml_enclosure_for_item_with_file(xml, image_file, host)
-                end
-              end
-            else
-              xml.tag!(item.class.name.tableize.singularize) do
-                xml_enclosure_for_item_with_file(xml, item, host)
-              end
-            end
-          end
-        end
-      end
-    end
-
     def oai_dc_xml_dc_source_for_file(xml, item, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]

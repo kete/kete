@@ -82,6 +82,8 @@ module ImporterZoom
             # for non-topics
             # it should store related topics
             xml_for_related_items(xml, item, @import_request)
+
+            xml_for_thumbnail_image_file(xml, item, @import_request)
           end
         end
       end
