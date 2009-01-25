@@ -96,20 +96,27 @@ class HomepageTest < ActionController::IntegrationTest
     context "when archive by types is enabled" do
 
       setup do
-        @@site_basket.update_attributes({ :show_privacy_controls => true, :index_page_archives_as => 'by type' })
+        @@homepage_basket = create_new_basket({ :name => 'Homepage Basket' })
+        @@homepage_basket.update_attributes({ :show_privacy_controls => true, :index_page_archives_as => 'by type' })
+        add_admin_as_member_to(@@homepage_basket)
       end
 
       teardown do
-        @@site_basket.update_attributes({ :show_privacy_controls => false, :index_page_archives_as => nil })
+        @@homepage_basket.update_attributes({ :show_privacy_controls => false, :index_page_archives_as => nil })
       end
 
       context "and a public topic has been added, archive by type" do
 
         setup do
-          @topic = new_topic({ :title => 'Public Item' })
+          @topic = new_topic({ :title => 'Public Item' }, @@homepage_basket)
+        end
+
+        teardown do
+          @topic = delete_item(@topic)
         end
 
         should "only show public items links" do
+          visit "/homepage_basket"
           body_should_not_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\| private: <a (.+)>(\\d+)</a> \\)"),
                                   :message => "Public and private links together should not be visible on the site basket, but they are."
           body_should_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\)"),
@@ -121,12 +128,35 @@ class HomepageTest < ActionController::IntegrationTest
       context "and a private topic has been added, archive by type" do
 
         setup do
-          @topic = new_topic({ :title => 'Private Item', :private_true => true })
+          @topic = new_topic({ :title => 'Private Item', :private_true => true }, @@homepage_basket)
+        end
+
+        teardown do
+          @topic = delete_item(@topic)
         end
 
         should "show the private items links" do
+          visit "/homepage_basket"
           body_should_contain Regexp.new("private: <a (.+)>(\\d+)</a> \\)"),
                               :message => "The private link should be visible on the site basket, but isn't."
+        end
+
+        context "and the user is logged out, archive by type" do
+
+          setup do
+            logout
+          end
+
+          teardown do
+            login_as('admin')
+          end
+
+          should "not show the private items links" do
+            visit "/homepage_basket"
+            body_should_not_contain Regexp.new("private: <a (.+)>(\\d+)</a> \\)"),
+                                    :message => "The private link should not be visible on the site basket, but is."
+          end
+
         end
 
       end
@@ -134,13 +164,43 @@ class HomepageTest < ActionController::IntegrationTest
       context "and both public and private topics are added, archive by type" do
 
         setup do
-          @topic1 = new_topic({ :title => 'Public Item' })
-          @topic2 = new_topic({ :title => 'Private Item', :private_true => true })
+          @topic1 = new_topic({ :title => 'Public Item' }, @@homepage_basket)
+          @topic2 = new_topic({ :title => 'Private Item', :private_true => true }, @@homepage_basket)
+        end
+
+        teardown do
+          @topic1 = delete_item(@topic1)
+          @topic2 = delete_item(@topic2)
         end
 
         should "show both public and private item links" do
+          visit "/homepage_basket"
           body_should_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\| private: <a (.+)>(\\d+)</a> \\)"),
                               :message => "Both public and private links should be visible on the site basket, but arn't."
+        end
+
+        context "and the user is logged out, archive by type" do
+
+          setup do
+            logout
+          end
+
+          teardown do
+            login_as('admin')
+          end
+
+          should "show the public items links" do
+            visit "/homepage_basket"
+            body_should_contain Regexp.new("\\( <a (.+)>(\\d+)</a> \\)"),
+                                :message => "The public link should be visible on the site basket, but isn't."
+          end
+
+          should "not show the private items links" do
+            visit "/homepage_basket"
+            body_should_not_contain Regexp.new("private: <a (.+)>(\\d+)</a> \\)"),
+                                    :message => "The private link should not be visible on the site basket, but is."
+          end
+
         end
 
       end

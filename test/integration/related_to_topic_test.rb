@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class RelatedToTopicTest < ActionController::IntegrationTest
+
   context "A Topic\'s related items" do
 
     setup do
@@ -95,9 +96,9 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             end
             body_should_contain @topic.title
           end
-          
+
           context "with a linkable item available" do
-            
+
             setup do
               @item_for_relating = send("new_#{@tableized.singularize}", :title => "Item for relating") do
 
@@ -118,33 +119,33 @@ class RelatedToTopicTest < ActionController::IntegrationTest
                   # this will only work if you have internet connection
                   fill_in "web_link[url]", :with => "http://google.co.uk/"
                 end
-                
+
               end
             end
 
             should "be able to link existing related #{class_name}" do
               lower_case_name = @tableized.gsub("_", " ")
-              
+
               visit "/site/search/find_related?function=add&relate_to_topic=#{@topic.to_param}&related_class=#{class_name}"
-              
+
               body_should_contain "Add related #{lower_case_name}"
               body_should_contain "Search for #{lower_case_name}"
-              
+
               fill_in "search_terms", :with => "Item for relating"
               click_button "Search"
-              
+
               body_should_contain "Select which #{lower_case_name} to add, then click \"add\"."
-              
+
               body_should_contain @item_for_relating.title
-              
+
               check "item_#{@item_for_relating.id.to_s}"
-              
+
               click_button "Add"
-              
+
               body_should_contain "Successfully added item relationships"
-              
+
               visit "/site/topics/show/#{@topic.to_param}"
-              
+
               # we should arrive back at the topic the item is related to
               # and the item should be listed and the total should be 1
               body_should_contain "#{@humanized_plural} (1)"
@@ -153,14 +154,14 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               # we should be able to visit the new related item and the topic it is related to
               # should be listed
               click_link @item_for_relating.title
-              
+
               unless class_name == 'Topic'
                 body_should_contain "Related Topics"
               else
                 # topics are a special case since they are what we always link through
                 body_should_contain "Topics (1)"
               end
-              
+
               # James - 2008-01-14
               # For some reason, the original topic is not linked back to on the still
               # image page as you would expect. This may be a bug or it may be a fault in my test.
@@ -168,12 +169,12 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               body_should_contain @topic.title unless class_name == "StillImage"
 
             end
-          
+
             # should_eventually "be able to unlink related #{class_name}"
             # should_eventually "be able to restore unlinked related #{class_name}"
             # should_eventually "be able to destroy related #{class_name} and have the item be dropped from the related #{class_name} list"
             # should_eventually "be able to destroy topic that #{class_name} is related to and have the item's related topics list will be blank"
-            
+
           end
 
           if ATTACHABLE_CLASSES.include?(class_name)
@@ -185,6 +186,45 @@ class RelatedToTopicTest < ActionController::IntegrationTest
         end
       end # End of item class iteration
     end # End of context "when a topic is added"
+
   end
+
+  context "When a private related topic is added, it" do
+
+    setup do
+      @@site_basket.update_attributes({ :show_privacy_controls => true })
+      add_luise_as_regular_user
+      login_as('luise')
+      @topic1 = new_topic({ :title => 'Parent Topic' })
+      @topic2 = new_topic({ :title => 'Child Topic 1', :private_true => true, :relate_to => @topic1, :go_to_related => false })
+    end
+
+    teardown do
+      @@site_basket.update_attributes({ :show_privacy_controls => false })
+    end
+
+    should "show up for members or higher" do
+      body_should_contain 'Topics (1)'
+    end
+
+    should "not show up for logged out users or non basket members" do
+      add_larry
+      login_as('larry')
+      check_private_topics_not_showing
+      logout
+      check_private_topics_not_showing
+    end
+
+  end
+
+  private
+
+  def check_private_topics_not_showing
+    visit "/site/topics/show/#{@topic1.to_param}"
+    body_should_contain 'Topics (0)'
+    body_should_not_contain 'Child Topic 1'
+    body_should_not_contain "/site/topics/show/#{@topic2.id}?private=true"
+  end
+
 end
 
