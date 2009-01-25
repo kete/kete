@@ -386,8 +386,10 @@ class SearchController < ApplicationController
     # make this nil by default
     # overwrite for local results with actual thumbnail object
     result_hash[:thumbnail] = nil
-    thumbnail_xml = zoom_record.root.at(".//xmlns:thumbnail", zoom_record.root.namespaces)
-    result_hash[:thumbnail] = thumbnail_xml.attributes.symbolize_keys unless thumbnail_xml.blank?
+    if ATTACHABLE_CLASSES.include?(result_hash[:class])
+      thumbnail_xml = zoom_record.root.at(".//xmlns:thumbnail", zoom_record.root.namespaces)
+      result_hash[:thumbnail] = thumbnail_xml.attributes.symbolize_keys unless thumbnail_xml.blank?
+    end
 
     # get the oai_dc element
     # which we can use xpath to search

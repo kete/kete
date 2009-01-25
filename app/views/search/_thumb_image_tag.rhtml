@@ -1,1 +1,7 @@
-<p><%= image_tag(thumb_image_tag.public_filename, :size => thumb_image_tag.image_size, :alt => "#{title}. ") -%></p>
+<% @thumb_src = thumbnail[:src]
+   thumbnail.delete(:src)
+   thumbnail.delete(:size)
+   @thumb_options = thumbnail
+   @thumb_options[:alt] = altify(title) -%>
+
+<p><%= image_tag(@thumb_src, @thumb_options) -%></p>
