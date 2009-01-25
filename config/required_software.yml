@@ -40,6 +40,7 @@ testing_gems:
     source: http://gems.github.com
 
 gems:
+  nokogiri:
   packet:
   chronic:
   hpricot:
