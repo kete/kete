@@ -45,6 +45,9 @@ module XmlHelpers
     # if item is not a topic
     # simply has related topics
     def xml_for_related_items(xml, item, passed_request = nil)
+      # comments are the only zoom class without content_item_relations
+      return if item.class == Comment
+
       protocol = appropriate_protocol_for(item)
       host = !passed_request.nil? ? passed_request[:host] : request.host
 
@@ -66,15 +69,19 @@ module XmlHelpers
         end
       end
       options = ['related_items']
-      options << totals_hash unless totals_hash.blank?
-      xml.related_items(totals_hash) do
-        # get the thumbnails for any still images we have
-        # in the future we may also have audio, video, too
-        unless totals_hash[:still_images].blank?
-          item.still_images.each do |image|
-            xml.still_image(:title => image.title, :id => image.id) do
-              thumb = image.thumbnail_file
-              xml.thumbnail(:height  => thumb.height, :width => thumb.width, :size => thumb.size, :url => protocol + '://' + host + thumb.public_filename)
+      unless totals_hash.blank?
+        options << totals_hash
+        xml.related_items(totals_hash) do
+          # get the thumbnails for any still images we have
+          # in the future we may also have audio, video, too
+          unless totals_hash[:still_images].blank?
+            count = 1
+            item.still_images.each do |image|
+              xml.still_image(:title => image.title, :id => image.id, :relation_order => count ) do
+                thumb = image.thumbnail_file
+                xml.thumbnail(:height  => thumb.height, :width => thumb.width, :size => thumb.size, :src => protocol + '://' + host + thumb.public_filename)
+              end
+              count += 1
             end
           end
         end
