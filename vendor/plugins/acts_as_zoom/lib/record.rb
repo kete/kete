@@ -11,15 +11,17 @@ require 'oai'
 # at use with the oai gem as a oai pmh repository provider
 # see Kete's included version of the oai gem for details
 ZOOM::Record.class_eval do
+  attr_accessor :doc, :root
+
   # return the id string, with no wrapping xml
   def oai_identifier
-    @oai_identifier ||= header.at("identifier").content
+    @oai_identifier ||= complete_id.content
   end
 
   # returns fully formed oai_identifier from the record including wrapping xml
   def complete_id
     # complete_id = header.at("identifier").inner_xml
-    complete_id = header.at("identifier")
+    complete_id = Nokogiri::XML(complete_header).at("identifier")
   end
 
   # returns fully formed oai_datestamp from the record
@@ -29,12 +31,13 @@ ZOOM::Record.class_eval do
     # doing this for backwards compatibility
     # may pull out, may also need an "Z" at end, not sure
     # complete_datestamp = header.at("datestamp").inner_xml
-    complete_datestamp = header.at("datestamp")
+    complete_datestamp = Nokogiri::XML(complete_header).at("datestamp")
   end
 
   def sets
     @sets = Array.new
-    header.xpath("setSpec").each { |set_spec| @sets << OAI::Set.new(:spec => set_spec.content) }
+    Nokogiri::XML(complete_header).xpath("setSpec").each { |set_spec| @sets << OAI::Set.new(:spec => set_spec.content) }
+    @sets
   end
 
   # return the header as Nokogiri::XML::Element
@@ -63,7 +66,7 @@ ZOOM::Record.class_eval do
   # without the wrapping metadata element
   # as Nokogiri::XML::Element
   def to_oai_dc
-    @oai_dc ||= metadata.at(".//oai_dc:dc", @metadata.namespaces)
+    @oai_dc ||= Nokogiri::XML(metadata.inner_html)
   end
 
   # we use to_complete_oai_dc for speed
