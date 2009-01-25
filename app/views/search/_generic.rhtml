@@ -53,10 +53,7 @@
                                 </div>
 
                                   <% if related -%>
-                                        <div class="generic-result-related"
-                                             style="float: right;
-                                          margin-right: 12em;
-                                          text-align: right; display: inline">
+                                        <div class="generic-result-related">
                                           Related:
                                           <% totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) } -%>
                                              <%= totals_array.to_sentence %>
@@ -64,10 +61,9 @@
                                              <% if related && !related[:still_images].blank? -%>
                                              <div class="topic-result-related-images">
                                                <%= topic_related_thumbs_from(related[:still_images],
-                                                   :as_image_list => true,
-                                               :link_to => source_url,
-                                               :more => link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}", :tabindex => '1' })) -%>
-                                             </div
+                                                   :link_to => source_url,
+                                               :title => "More information on #{title}", :tabindex => '1' ) -%>
+                                             </div>
                                         <% end %>
                                         </div
                                            <div style="clear:both;"></div>

@@ -66,8 +66,11 @@ xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-inst
       # of things like thumbnails to related images for a topic
       # for non-topics
       # it should store related topics
-      xml_for_related_items(xml, item)
+      xml.kete do
+        xml_for_related_items(xml, item)
 
+        xml_for_thumbnail_image_file(xml, item)
+      end
     end
   end
 end

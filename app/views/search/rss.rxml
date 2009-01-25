@@ -8,13 +8,13 @@ xml.rss(:version=>"2.0"){
     xml.language('en-nz')
     for result in @results
       xml.item do
-        xml.title(result['title'])
-        short_summary = strip_tags(result['short_summary'].to_s)
-        if result['locally_hosted'] && !result['image_file'].nil?
-          image_file = render(:partial => 'thumb_image_tag',
-                              :locals => { :thumb_image_tag => result['image_file'],
-                                           :title => result['title'] })
-          xml.description(image_file + short_summary)
+        xml.title(result[:title])
+        short_summary = strip_tags(result[:short_summary].to_s)
+        if !result[:thumbnail].nil?
+          thumbnail = render(:partial => 'thumb_image_tag',
+                             :locals => { :thumbnail => result[:thumbnail],
+                               :title => result[:title] })
+          xml.description(thumbnail + short_summary)
         else
           xml.description(short_summary)
         end

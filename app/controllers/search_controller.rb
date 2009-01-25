@@ -135,7 +135,7 @@ class SearchController < ApplicationController
     @tag = params[:tag] ? Tag.find(params[:tag]) : nil
 
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
-    
+
     @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
     @extended_field = ExtendedField.find_by_label(params[:extended_field])
 
@@ -211,7 +211,7 @@ class SearchController < ApplicationController
     @tag = params[:tag] ? Tag.find(params[:tag]) : nil
 
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
-    
+
     @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
     @extended_field = ExtendedField.find_by_label(params[:extended_field])
 
@@ -240,34 +240,14 @@ class SearchController < ApplicationController
     end
 
     if from_result_set.size > 0
-      still_image_results = Array.new
-
       # get the raw xml results from zoom
       raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => from_result_set,
                                                                                     :start_record => @start_record,
                                                                                     :end_record => @end_record)
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
-        result_from_xml_hash = parse_from_xml_oai_dc(raw_record)
+        result_from_xml_hash = parse_from_xml_in(raw_record)
         @results << result_from_xml_hash
-
-        # we want to load local thumbnails for image results
-        # we'll collect the still_image_ids as keys and then run one query below
-        if result_from_xml_hash['locally_hosted'] && result_from_xml_hash['class'] == 'StillImage'
-          still_image_results << result_from_xml_hash['id']
-        end
-      end
-      if @current_class == 'StillImage' || params[:related_class] == "StillImage"
-        ImageFile.find_all_by_thumbnail('small_sq',
-                                        :conditions => ["still_image_id in (?)", still_image_results]).each do |thumb|
-          # now work through results array and add image_file
-          # if appropriate
-          @results.each do |result|
-            if result['locally_hosted'] && result['id'].to_i == thumb.still_image_id
-              result['image_file'] = thumb
-            end
-          end
-        end
       end
     end
     @results = WillPaginate::Collection.new(@current_page,
@@ -309,36 +289,36 @@ class SearchController < ApplicationController
     # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
     # must be exact string
     @search.pqf_query.creators_or_contributors_include("'#{@contributor.login}'") if !@contributor.nil?
-    
+
     # James
     # Extended Field choice searching mechanisms
-    
+
     # Handle searching against a specific extended field.
     begin
       dc_element = @extended_field ? @extended_field.xml_element_name.gsub(/^(dc:)/, "") : nil
     rescue
-      
+
       # We need to handle the case where no xml_element_name has been given.
       dc_element = "description"
     end
-    
+
     plural_aliased_dc_methods = %w(relation subject creator contributor)
-    
+
     if plural_aliased_dc_methods.member?(dc_element)
-      
+
       # Since these attributes are mapped as plural, we need to ensure we use the correct method in the PqfQuery model.
       @search.pqf_query.send("#{dc_element.pluralize}_include", "':#{@limit_to_choice}:'")
 
     elsif PqfQuery::ATTRIBUTE_SPECS.member?(dc_element)
       @search.pqf_query.send("#{dc_element}_include", "':#{@limit_to_choice}:'")
     else
-      
+
       # Since the DC attribute is either bogus or non-existent, do the search against all search with demarcated terms
       @search.pqf_query.any_text_include("':#{@limit_to_choice}:'") unless @limit_to_choice.blank?
     end
-    
+
     # Normal search terms..
-    
+
     if !@search_terms.blank?
       # add the actual text search if there are search terms
       @search.pqf_query.title_or_any_text_includes(@search_terms)
@@ -375,73 +355,53 @@ class SearchController < ApplicationController
 
   # grab the values we want from the zoom_record
   # and return them as a hash
-  def parse_from_xml_oai_dc(zoom_record)
-    # TODO: speed up more!
-    # i still went with a middle ground and used REXML
-    # since Hash.from_xml was falling over on multiple elements with the same name
-    # break the record up into a hash with subhashes - partially done
-    # which is faster than using XPath on an REXML doc
-    # since we know the structure of the xml anyway
-    # because of the instruct, we add an additional level
-    record_parts = zoom_record.to_s.split("</header>")
-
-    header_parts = record_parts[0].split("<header>")
-    header_xml = '<header>' + header_parts[1] + '</header>'
-    header = Hash.from_xml(header_xml)
-    header = header['header']
-
-    metadata_parts = record_parts[1].split("xsd\">")
-    metadata_parts = metadata_parts[1].split("</oai_dc:dc>")
-
-    dc_xml = metadata_parts[0].gsub("<dc:", "<").gsub("</dc:", "</")
-
-    # record_xml = REXML::Document.new zoom_record.xml
-    dublin_core = REXML::Document.new "<root>#{dc_xml}</root>"
-
-    root = dublin_core.root
-
+  # zoom_record has been extended to be a nokogiri doc (http://nokogiri.rubyforge.org/nokogiri/)
+  # and contains a lot of convenience methods to grab parts of the record
+  # see vendor/plugins/acts_as_zoom/lib/record.rb
+  def parse_from_xml_in(zoom_record)
     # work through record and grab the values
-    # we do this step because there may be a sub array for values
-    # when the xml had multiples of the same element
-    # we only want the first
+    # there maybe multiples of the same element
+    # we only want the first by convention
     result_hash = Hash.new
 
     # we should be able to deduce the class
     # whether the result is local
     # and the object's id from the oai_identifier
-    # oai_identifier = root.elements["header/identifier"].get_text.to_s
-    oai_identifier = header["identifier"]
+    oai_identifier = zoom_record.oai_identifier
 
     local_re = Regexp.new("^#{ZoomDb.zoom_id_stub}")
     class_id_re = Regexp.new("([^:]+):([0-9]+)$")
 
     class_id_match = oai_identifier.match class_id_re
     # index 0 is whole matching string
-    result_hash['class'] = class_id_match[1]
-    result_hash['id'] = class_id_match[2]
+    result_hash[:class] = class_id_match[1]
+    result_hash[:id] = class_id_match[2]
 
     if oai_identifier =~ local_re
-      result_hash['locally_hosted'] = true
+      result_hash[:locally_hosted] = true
     else
-      result_hash['locally_hosted'] = false
+      result_hash[:locally_hosted] = false
     end
 
     # make this nil by default
     # overwrite for local results with actual thumbnail object
-    result_hash['image_file'] = nil
+    result_hash[:thumbnail] = nil
+    if ATTACHABLE_CLASSES.include?(result_hash[:class])
+      thumbnail_xml = zoom_record.root.at(".//xmlns:thumbnail", zoom_record.root.namespaces)
+      result_hash[:thumbnail] = thumbnail_xml.attributes.symbolize_keys unless thumbnail_xml.blank?
+    end
+
+    # get the oai_dc element
+    # which we can use xpath to search
+    # for all our standard dc element values
+    oai_dc = zoom_record.to_oai_dc
 
     desired_fields = [['identifier', 'url'], ['title'], ['description', 'short_summary'], ['date']]
 
     desired_fields.each do |field|
-      # TODO: this xpath is expensive, replace if possible!
-      # moving the record to a hash is much faster
-      # but i'm stuck on how to get "from_xml" to handle namespace stuff
-      # // xpath short cut to go right to element that matches
-      # regardless of path that led to it
-      # field_value = root.elements["//dc:#{field[0]}"]
-      field_value = root.elements[field[0]]
-      # field_value = dublin_core[field[0]]
-      # field_value = dc_attributes["oai_dc:dc"]["dc:#{field[0]}"]
+      # make xpath request to get first instance of the desired field's value
+      # (dc elements may be used more than once)
+      field_value = oai_dc.xpath(".//dc:#{field[0]}", oai_dc.namespaces).first.content
 
       # description may sometimes be nil so if it is, skip this element so we don't get 500 errors
       next if field_value.nil?
@@ -453,18 +413,28 @@ class SearchController < ApplicationController
         field_name = field[1]
       end
 
-      # value_for_return_hash = field_value
-      value_for_return_hash = field_value.text
+      # may want to truncate short_summary
+      field_value = prepare_short_summary(field_value) if field_name == 'short_summary'
 
-      # short_summary may have some html
-      # which is being handed back as rexml object
-      # rather than string
-      if field_name == 'short_summary'
-        value_for_return_hash = prepare_short_summary(value_for_return_hash.to_s)
-      end
-
-      result_hash[field_name] = value_for_return_hash
+      result_hash[field_name.to_sym] = field_value
     end
+
+    related_items = zoom_record.root.at(".//xmlns:related_items", zoom_record.root.namespaces)
+    unless related_items.blank?
+      result_hash[:related] = Hash.new
+      result_hash[:related][:counts] = related_items.attributes.symbolize_keys
+      result_hash[:related][:still_images] = Hash.new
+      zoom_record.root.xpath(".//xmlns:still_image", zoom_record.root.namespaces).each do |image_xml|
+        image_attributes = image_xml.attributes.symbolize_keys
+        key = image_attributes[:relation_order]
+        image_attributes.delete(:relation_order)
+        result_hash[:related][:still_images][key] = image_attributes
+        result_hash[:related][:still_images][key][:thumbnail] = image_xml.at(".//xmlns:thumbnail", zoom_record.root.namespaces).attributes.symbolize_keys
+      end
+    end
+
+    logger.debug("what is result_hash: " + result_hash.inspect)
+
 
     return result_hash
   end
@@ -517,7 +487,7 @@ class SearchController < ApplicationController
     if !params[:source_item].blank?
       location_hash.merge!({ :source_item => params[:source_item] })
     end
-    
+
     # James
     # Handle choice specific searching.
     if !params[:limit_to_choice].blank?
@@ -526,7 +496,7 @@ class SearchController < ApplicationController
     if !params[:extended_field].blank?
       location_hash.merge({ :extended_field => params[:extended_field] })
     end
-    
+
     logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)
 
     redirect_to url_for(location_hash)
@@ -872,7 +842,7 @@ class SearchController < ApplicationController
       # Ensure results do not include already linked items or the current item.
       unless @results.empty?
         # grab result ids to optimize look up of local objects
-        valid_result_ids = @results.collect { |result| result["id"].to_i }
+        valid_result_ids = @results.collect { |result| result[:id].to_i }
         @results = related_class.find(valid_result_ids)
 
         # Don't include the current topic in the results
@@ -887,10 +857,9 @@ class SearchController < ApplicationController
               #{pagination_methods[method_name]}
             end
           end"
+
         end
-
       end
-
     end
 
     render :action => 'related_form', :layout => "popup_dialog"

@@ -136,10 +136,10 @@ module SearchHelper
       key = key.to_s
 
       image_hash = still_images_hash[key][:thumbnail]
-      image_hash[:alt] = altify(still_images_hash[key]['title'])
-      src = image_hash['src']
-      image_hash.delete('size')
-      image_hash.delete('src')
+      image_hash[:alt] = altify(still_images_hash[key][:title])
+      src = image_hash[:src]
+      image_hash.delete(:size)
+      image_hash.delete(:src)
 
       image_tag_string += "<li>" if options[:as_image_list]
 

@@ -43,20 +43,22 @@
          <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
          <%# for now lets just get this up with one set of @results %>
          <% @results.each do |result|  %>
-            <% if result['class'] == 'StillImage' %>
-             <%= render(:partial => "image", :locals => {:title => result['title'],
-                                                         :source_url => result['url'],
-                                                         :locally_hosted => result['locally_hosted'],
-                                                         :image_file => result['image_file'],
+            <% if result[:class] == 'StillImage' %>
+             <%= render(:partial => "image", :locals => {:title => result[:title],
+                                                         :source_url => result[:url],
+                                                         :locally_hosted => result[:locally_hosted],
+                                                         :thumbnail => result[:thumbnail],
                                                          :existing_relations => @existing_relations,
-                                                         :short_summary => result['short_summary'],
-                                                         :result => result['id']}) %>
+                                                         :short_summary => result[:short_summary],
+                                                         :related => result[:related],
+                                                         :result => result[:id]}) %>
             <% else %>
-             <%= render(:partial => "generic", :locals => {:title => result['title'],
-                                                           :source_url => result['url'],
-                                                           :short_summary => result['short_summary'],
+             <%= render(:partial => "generic", :locals => {:title => result[:title],
+                                                           :source_url => result[:url],
+                                                           :short_summary => result[:short_summary],
                                                            :existing_relations => @existing_relations,
-                                                           :result => result['id']}) %>
+                                                           :related => result[:related],
+                                                           :result => result[:id]}) %>
              <% end %>
             <% end %>
          <% else %>
