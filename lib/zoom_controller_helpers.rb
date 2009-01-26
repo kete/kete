@@ -159,7 +159,7 @@ module ZoomControllerHelpers
     # I.e.  "StillImage" => StillImage
     def only_valid_zoom_class(param)
       if ZOOM_CLASSES.member?(param)
-        Module.class_eval(param)
+        param.constantize
       else
         raise(ArgumentError, "Zoom class name expected. #{param} is not registered in ZOOM_CLASSES.")
       end

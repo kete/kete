@@ -4,6 +4,18 @@
 
 <h2><%= h(@title) -%></h2>
 
+<p>
+  <strong>Switch upload to a:</strong>
+  <ul class="item_class_choices">
+    <% ITEM_CLASSES.each_with_index do |item_class_name,index| -%>
+      <li class="<%= (index == 0 ? 'first' : '') -%>">
+        <%= link_to(item_class_name.tableize.humanize.singularize, params.merge({ :zoom_class => item_class_name })) -%>
+      </li>
+    <% end -%>
+  </ul>
+  <div style="clear:both;"></div>
+</p>
+
 <h3>Some things to keep in mind when uploading a batch of
   <%= @zoom_class_plural_humanized -%> in a .zip, .tar, .gz, or other
   archive file:</h3>

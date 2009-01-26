@@ -1,31 +1,29 @@
-<% @title = "#{@verb} related #{zoom_class_plural_humanize(zoom_class_controller(params[:related_class]))}" -%>
-<% item_class = params[:related_class].tableize.humanize.downcase.pluralize %>
-<!-- Params: <%= params.inspect %> -->
+<% @title = "#{@verb} related #{zoom_class_plural_humanize(zoom_class_controller(@related_class))}" -%>
+<% item_class = @related_class.tableize.humanize.downcase.pluralize -%>
+
+<p>
+  <strong><%= params[:function].capitalize %> a:</strong>
+  <ul class="item_class_choices">
+    <% ITEM_CLASSES.each_with_index do |item_class_name,index| -%>
+      <li class="<%= (index == 0 ? 'first' : '') -%>">
+        <%= link_to(item_class_name.tableize.humanize.singularize, params.merge({ :related_class => item_class_name })) -%>
+      </li>
+    <% end -%>
+  </ul>
+  <div style="clear:both;"></div>
+</p>
 
 <fieldset>
 
   <legend><%= @verb %> related <%= item_class -%></legend>
 
   <% if params[:function] == "add" %>
-
-  <!-- Start search form -->
-  <%= form_tag(
-    :controller => 'search',
-    :action => 'find_related',
-    :relate_to_topic => params[:relate_to_topic],
-    :urlified_name => params[:urlified_name],
-    :related_class => params[:related_class],
-    :sort_type => 'title',
-    :function => 'add'
-  ) %>
-
-    <%= content_tag "label", "Search for #{item_class}:", "for" => "search_terms" -%>
-    <%= text_field_tag "search_terms", params[:search_terms] %> <%= submit_tag "Search" %>
-
-  </form>
-  <!-- End search form -->
-
-  <% end %>
+    <%= form_tag(params) -%>
+      <%= content_tag "label", "Search for #{item_class}:", "for" => "search_terms" -%>
+      <%= text_field_tag "search_terms", params[:search_terms] %>
+      <%= submit_tag "Search" %>
+    </form>
+  <% end -%>
 
   <% if @results.blank? && !params[:search_terms].blank? %>
   <p class="alone"><strong>No <%= item_class %> found</strong></p>
@@ -37,7 +35,7 @@
     :action => "#{@next_action}_related",
     :relate_to_topic => params[:relate_to_topic],
     :urlified_name => params[:urlified_name],
-    :related_class => params[:related_class]
+    :related_class => @related_class
   ) %>
 
   <ul>

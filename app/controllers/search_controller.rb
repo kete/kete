@@ -718,9 +718,10 @@ class SearchController < ApplicationController
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_related
     @current_topic = Topic.find(params[:relate_to_topic])
-    related_class_is_topic = params[:related_class] == "Topic" ? true : false
+    @related_class = (params[:related_class] || "Topic")
+    related_class_is_topic = @related_class == "Topic" ? true : false
     # this will throw exception if passed in related_class isn't valid
-    related_class = only_valid_zoom_class(params[:related_class])
+    related_class = only_valid_zoom_class(@related_class)
     related_class_name = related_class.name
 
     # there is an instance variable for each zoom_class
