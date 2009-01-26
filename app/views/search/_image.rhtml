@@ -1,3 +1,10 @@
+<% unless thumbnail.nil?
+   @thumb_src = thumbnail[:src]
+   thumbnail.delete(:src)
+   thumbnail.delete(:size)
+   @thumb_options = thumbnail
+   end -%>
+
 <div class="image-result-wrapper" id="item_<%= result %>_wrapper">
 <% if params[:relate_to_topic] -%>
  <% if existing_relations.include?(result) -%>
@@ -9,12 +16,13 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
 '/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}&authenticity_token=#{params[:authenticity_token]}',
 {asynchronous:true, evalScripts:true}); return false;"}) %>
   <% end %>
+
   <div class="image-result-thumb">
-    <% if locally_hosted && !image_file.nil? %>
-    <%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size, :alt => "#{title}. "), "#{source_url}", { :popup => true })  %>
-    <% else %>
+    <% unless thumbnail.nil? -%>
+           <%= link_to(image_tag(@thumb_src, @thumb_options.merge(:alt => altify(title))), "#{source_url}", { :popup => true })  %>
+    <% else -%>
     <%= link_to "View Image", "#{source_url}", { :popup => true }  %>
-    <% end %>
+    <% end -%>
   </div>
   <div class="image-result-header">
     <h4><%= link_to h(title), "#{source_url}", { :popup => true }   %></h4>
@@ -26,8 +34,8 @@ check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
   </div>
   <% else %>
   <div class="image-result-thumb">
-    <% if locally_hosted && !image_file.nil? %>
-    <%= link_to(image_tag(image_file.public_filename, :size => image_file.image_size, :alt => "#{title}. "), "#{source_url}")  %>
+    <% unless thumbnail.nil? %>
+    <%= link_to(image_tag(@thumb_src, @thumb_options.merge(:alt => altify(title))), "#{source_url}")  %>
     <% else %>
     <%= link_to "View Image", "#{source_url}"  %>
     <% end %>

@@ -854,14 +854,14 @@ module ApplicationHelper
         comment_string += "</div>" # comment-content
         comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
         comment_string += "</div>" # comment-wrapper
-        
+
         html_string += '<div class="comment-outer-wrapper">'
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
                                                         :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end
-      
+
       html_string += "<p>" + link_to("join this discussion",
                                      {:action => :new,
                                        :controller => 'comments',
@@ -1126,6 +1126,19 @@ module ApplicationHelper
     else
       string = time_ago_in_words(from_time) + " ago"
     end
+    string
+  end
+
+  # if string ends with a period already, or a period and a space, don't add them
+  # otherwise, add them
+  # we also replace any ending punctuation with period for the purposes of alts
+  # including multiple instances
+  def altify(string)
+    return string if string =~ /\. $/
+    string = string.chomp(" ")
+    string = string.sub(/\W+$/, ".")
+    string += ". " if string =~ /[^\.]$/
+    string += " " if string =~ /\.$/
     string
   end
 end
