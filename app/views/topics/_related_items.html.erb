@@ -1,0 +1,61 @@
+<%
+topics_only = defined?(topics_only) ? topics_only : false
+
+# These queries uses zoom and arn't caches
+@public_item_counts = public_related_items_for(item, { :topics_only => topics_only, :count_only => true })
+@private_item_counts = private_related_items_for(item, { :topics_only => topics_only, :count_only => true })
+
+# The public query uses mysql and is cached
+cache({ :part => 'related_to_public_query' }) do
+  @public_items = public_related_items_for(item, { :topics_only => topics_only })
+  "(this just ensures queries don't run when unless needed - ignore this file)"
+end
+# The private query uses zoom and isn't cached
+@private_items = private_related_items_for(item, { :topics_only => topics_only })
+
+-%>
+
+<% if topics_only -%>
+
+  <%= render(:partial => "topics/secondary_wrapper_start",
+             :locals => { :div_id => "related-link", :class_suffix => "-blue" }) -%>
+
+  <%= render(:partial => "topics/related_items_section",
+             :locals => { :item => item, :zoom_class => 'Topic',
+                          :display_heading => '<h3>Related Topics:</h3>',
+                          :display_no_item_text => true }) -%>
+
+  <%= render(:partial => "topics/secondary_wrapper_end") -%>
+
+<% else -%>
+
+  <%= render(:partial => "topics/secondary_wrapper_start",
+             :locals => { :div_id => "related", :class_suffix => "-blue" }) -%>
+
+  <h2 class="related-link">Related Items</h2>
+
+  <div id="detail-linked-toprow">
+    <%= render(:partial => "topics/related_items_section",
+               :locals => { :item => item, :zoom_class => 'StillImage' }) -%>
+  </div>
+
+  <div class="two-col">
+    <%= render(:partial => "topics/related_items_section",
+               :locals => { :item => item, :zoom_class => 'Topic' }) -%>
+    <%= render(:partial => "topics/related_items_section",
+               :locals => { :item => item, :zoom_class => 'AudioRecording' }) -%>
+    <%= render(:partial => "topics/related_items_section",
+               :locals => { :item => item, :zoom_class => 'Video' }) -%>
+    <div class="cleaner-left">&nbsp;</div>
+  </div>
+
+  <div class="two-col">
+    <%= render(:partial => "topics/related_items_section",
+               :locals => { :item => item, :zoom_class => 'Document' }) -%>
+    <%= render(:partial => "topics/related_items_section",
+               :locals => { :item => item, :zoom_class => 'WebLink' }) -%>
+  </div>
+
+  <%= render(:partial => "topics/secondary_wrapper_end") -%>
+  
+<% end -%>

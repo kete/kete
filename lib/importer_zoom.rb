@@ -121,7 +121,9 @@ module ImporterZoom
         if item.respond_to?(:private) && item.private?
           url += "#{controller}/show/#{item.id.to_s}?private=true"
         else
-          url += "#{controller}/show/#{item.to_param}"
+          # Make sure id just the integer, and not the value of to_param (because changing
+          # titles or private versions of items seemed to lose related items because of this)
+          url += "#{controller}/show/#{item.id.to_s}"
         end
       end
       url

@@ -515,104 +515,102 @@ module ApplicationHelper
                      :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
   end
 
-  def item_related_topics_wrapper(options={})
-    beginning_html = %q(
-                    <div id="detail-linked">)
-    if options[:topics].nil?
-      beginning_html += "
-                        <h3>This #{options[:class_phrase]} is not related to any topics at this time.</h3>"
-    else
-      beginning_html += "
-                        <div class=\"secondary-content-section-wrapper-blue\">
-                        <div id=\"related-link\" class=\"secondary-content-section\">
-                        <h3>Related Topics:</h3>"
-    end
-    beginning_html +=%q(
-                        <div id="related_topics">)
-
-    middle_html = String.new
-    if !options[:topics].blank?
-      middle_html = related_items_links(:source_item => options[:source_item], :related_class => 'Topic', :items => options[:topics], :pipe_list => :true )
-    end
-
-    return beginning_html + middle_html
-  end
-
-  def item_related_topics_wrapper_end
-    %q(      </div>
-             <div class="cleaner">&nbsp;</div>
-             <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-           </div>
-         </div>
-       </div>)
-  end
-
-  def related_items_links(options={})
-    source_item = options[:source_item]
-    related_class = options[:related_class]
-
-    items = Array.new
-    if options[:items].nil?
-      if related_class != 'Topic'
-        items = source_item.send(related_class.tableize)
-        items = items.find_all_public_non_pending if items.size > 0
+  # Public items need to be sorted based on the acts_as_list position in the database so
+  # we can't use zebra to find public items in this case, so pull it from the database
+  def public_related_items_for(item, options={})
+    @items = Hash.new
+    item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
+    item_classes.each do |item_class|
+      if options[:count_only]
+        items = find_related_items_for(item, item_class, { :start_record => nil })
+        @items[item_class] = items.size
       else
-        items = source_item.send('related_topics', :only_non_pending => true)
+        if item_class != 'Topic' || options[:topics_only]
+          items = item.send(item_class.tableize)
+          items = items.find_all_public_non_pending if items.size > 0
+        else
+          items = item.related_topics(:only_non_pending => true)
+        end
+        @items[item_class] = items
       end
-    else
-      items = options[:items]
     end
-
-    relate_to_topic = source_item.class.name == 'Topic' ? source_item : nil
-
-    last_item_n = 0
-    if related_class == 'StillImage'
-      last_item_n = NUMBER_OF_RELATED_IMAGES_TO_DISPLAY
-    else
-      last_item_n = NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE
-    end
-
-    end_range = last_item_n - 1
-
-    more_message = String.new
-    if items.size > last_item_n
-      more_items_n = items.size - last_item_n
-      more_message = "#{more_items_n.to_s} more like this &gt;&gt;"
-    end
-
-    # use a different template for images than text based links
-    if related_class == 'StillImage'
-      template_name = 'related_images_links'
-    else
-      template_name = 'related_items_links'
-    end
-
-    render :partial => "topics/#{template_name}",
-    :locals => { :related_class => related_class,
-      :items => items,
-      :end_range => end_range,
-      :more_message => more_message,
-      :source_item => source_item,
-      :last_item_n => last_item_n,
-      :pipe_list => options[:pipe_list],
-      :relate_to_topic => relate_to_topic }
+    @items
   end
 
-  def related_items_links_display_of(items, images = false)
+  # We use a method in lib/zoom_search.rb to find all private items the current user has access to
+  # (should be faster than a bunch of mysql queries - might be an interesting thing to benchmark)
+  def private_related_items_for(item, options={})
+    @items = Hash.new
+    item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
+    item_classes.each do |item_class|
+      items = find_private_related_items_for(item, item_class, { :start_record => nil })
+      @items[item_class] = options[:count_only] ? items.size : items
+    end
+    @items
+  end
+
+  # Link to the related items of a certain item (rewrite of link_to_related_to_source)
+  def link_to_related_items_of(item, zoom_class, options={}, location={})
+    options = { :link_text => "View items related to #{item.title}",
+                :privacy_type => "private" }.merge(options)
+    location = { :urlified_name => @site_basket.urlified_name,
+                 :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+                 :source_controller_singular => zoom_class_controller(item.class.name).singularize,
+                 :source_item => item }.merge(location)
+    related_item_url = (location[:privacy_type] == 'private') ? basket_all_private_related_to_path(location) :
+                                                                basket_all_related_to_path(location)
+    link_to options[:link_text], related_item_url, { :class => 'small' }
+  end
+
+  # Creates the item list for display
+  def related_items_display_of(items, options={})
     return '' if items.blank?
+    unless options[:display_num].nil?
+      display_num = options[:display_num]
+      items = Array.new if display_num == 0
+      items = items[0..(display_num - 1)] if display_num > 0
+    end
     display_html = String.new
-    display_html += images ? '<ul class="results-list images-list">' : '<ul>'
-    items.each do |related_item|
-      if !related_item[:still_image].blank?
-        link = render :partial => "topics/related_images_links_tag",
-                      :locals => { :related_item => related_item[:still_image] }
-        display_html += "<li>#{link}</li>"
+    display_html += options[:are_still_images] ? '<ul class="results-list images-list">' : '<ul>'
+    items.each_with_index do |related_item,index|
+      li_class = index == 0 ? 'first' : ''
+      if related_item.is_a?(Hash)
+        if !related_item[:still_image].blank?
+          display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item[:still_image], { :privacy_type => options[:privacy_type] })}</li>"
+        else
+          display_html += "<li class='#{li_class}'>#{link_to(related_item[:title], related_item[:url])}</li>"
+        end
+      elsif related_item.is_a?(StillImage)
+        display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, { :privacy_type => options[:privacy_type] })}</li>"
       else
-        display_html += "<li>#{link_to(related_item[:title], related_item[:url])}</li>"
+        display_html += "<li class='#{li_class}'>#{link_to_item(related_item)}</li>"
       end
+    end
+    if (options[:item] && options[:zoom_class] && options[:display_num] && options[:total_num]) &&
+          (options[:total_num] > options[:display_num])
+      display_html += "<li>"
+      more_num = options[:total_num] - options[:display_num]
+      display_html += link_to_related_items_of(options[:item], options[:zoom_class], { :link_text => "#{more_num.to_s} more like this &gt;&gt;" }, { :privacy_type => options[:privacy_type] })
+      display_html += "</li>"
     end
     display_html += "</ul>"
     display_html
+  end
+
+  # Creates an image and wraps in within a link tag
+  def related_image_link_for(still_image, options={})
+    options = { :privacy_type => 'public' }.merge(options)
+    if !still_image.thumbnail_file.nil?
+      thumb_src_value = still_image.already_at_blank_version? ? '/images/pending.jpg' :
+                                                                still_image.thumbnail_file.public_filename
+      link_text = image_tag(thumb_src_value, { :size => still_image.thumbnail_file.image_size,
+                                               :alt => "#{still_image.title}. " })
+    else
+      link_text = 'only available as original'
+    end
+    link_to(link_text, { :urlified_name => still_image.basket.urlified_name,
+                         :controller => 'images', :action => 'show', :id => still_image,
+                         :private => (options[:privacy_type] == 'private') })
   end
 
   # tag related helpers

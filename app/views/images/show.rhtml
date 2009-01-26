@@ -37,16 +37,7 @@
 
 <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) if current_user_can_see_flagging? -%>
 
-<% if current_user_can_see_add_links? -%>
-  <% cache ({:related => 'topics'}, :id => @still_image.id) do -%>
-    <%= item_related_topics_wrapper(:class_phrase => 'web link',
-                                    :source_item => @still_image,
-                                    :source_item_class => 'WebLink',
-                                    :topics => @still_image.topics.find_all_public_non_pending) -%>
-  <% end -%>
-  <%= related_items_links_display_of find_private_related_items_for(@still_image, 'Topic') -%>
-  <%= item_related_topics_wrapper_end -%>
-<% end -%>
+<%= render(:partial => "topics/related_items", :locals => { :item => @still_image, :topics_only => true }) if current_user_can_see_add_links? -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @still_image }) if current_user_can_see_discussion? -%>
 

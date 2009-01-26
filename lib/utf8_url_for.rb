@@ -11,6 +11,9 @@ module Utf8UrlFor
     # like populating search records
     # or creating a search term to search against search records
     def utf8_url_for(options)
+      # Make sure :id id an integer, and no the value of to_param (because changing
+      # titles or private version seemed to lose related items because of this)
+      options[:id] = options[:id].is_a?(Integer) ? options[:id] : options[:id].id
       escaped_url = url_for(options)
       unescaped_url = CGI::unescape(escaped_url)
     end
