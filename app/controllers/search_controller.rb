@@ -429,14 +429,20 @@ class SearchController < ApplicationController
     related_items = zoom_record.root.at(".//xmlns:related_items", zoom_record.root.namespaces)
     unless related_items.blank?
       result_hash[:related] = Hash.new
-      result_hash[:related][:counts] = related_items.attributes.symbolize_keys
+      result_hash[:related][:counts] = Hash.new
+      # we have to use the .value to retrieve the actual value, otherwise it is returned as a Nokogiri::XML:Attr object
+      related_items.attributes.each { |k, v| result_hash[:related][:counts][k.to_sym] = v.value }
       result_hash[:related][:still_images] = Hash.new
       zoom_record.root.xpath(".//xmlns:still_image", zoom_record.root.namespaces).each do |image_xml|
-        image_attributes = image_xml.attributes.symbolize_keys
+        image_attributes = Hash.new
+        image_xml.attributes.each { |k, v| image_attributes[k.to_sym] = v.value }
         key = image_attributes[:relation_order]
         image_attributes.delete(:relation_order)
         result_hash[:related][:still_images][key] = image_attributes
-        result_hash[:related][:still_images][key][:thumbnail] = image_xml.at(".//xmlns:thumbnail", zoom_record.root.namespaces).attributes.symbolize_keys
+        result_hash[:related][:still_images][key][:thumbnail] = Hash.new
+        image_xml.at(".//xmlns:thumbnail", zoom_record.root.namespaces).attributes.each do |k, v|
+          result_hash[:related][:still_images][key][:thumbnail][k.to_sym] = v.value
+        end
       end
     end
 
