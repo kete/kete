@@ -49,6 +49,8 @@ class StillImage < ActiveRecord::Base
     user_portrait_relation
   end
 
+  include Embedded if ENABLE_EMBEDDED_SUPPORT
+
   private
 
   def update_image_file_locations

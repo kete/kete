@@ -34,11 +34,17 @@ class ImagesController < ApplicationController
     @still_image = StillImage.new
     # handle problems with image file first
     @image_file = ImageFile.new(params[:image_file].merge({ :file_private => params[:still_image][:file_private] }))
+
     @successful = @image_file.save
 
     if @successful
 
       @still_image = StillImage.new(params[:still_image])
+
+      # if we are allowing harvesting of embedded metadata from the image_file
+      # we need to grab it from the image_file's file path
+      @still_image.populate_attributes_from_embedded_in(@image_file.full_filename) if ENABLE_EMBEDDED_SUPPORT
+
       @successful = @still_image.save
 
       if @successful

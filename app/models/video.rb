@@ -49,4 +49,6 @@ class Video < ActiveRecord::Base
       errors.add attr_name, 'is not acceptable. It should be a .mov, .wmv, or other video file.' unless enum.nil? || enum.include?(send(attr_name))
     end
   end
+
+  include Embedded if ENABLE_EMBEDDED_SUPPORT
 end

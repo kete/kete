@@ -25,7 +25,7 @@ else
   AUDIO_CONTENT_TYPES = ['audio/mpeg']
   DOCUMENT_CONTENT_TYPES = ['text/html']
   ENABLE_CONVERTING_DOCUMENTS = false
-  EMBEDDED_SUPPORT_ENABLED = false
+  ENABLE_EMBEDDED_SUPPORT = false
   IMAGE_CONTENT_TYPES = [:image]
   VIDEO_CONTENT_TYPES = ['video/mpeg']
   SITE_URL = "kete.net.nz"

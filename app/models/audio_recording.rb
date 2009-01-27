@@ -17,17 +17,17 @@ class AudioRecording < ActiveRecord::Base
   :max_size => MAXIMUM_UPLOADED_FILE_SIZE
 
   validates_as_attachment
-  
+
   # Private Item mixin
   include ItemPrivacy::All
-  
+
   # acts as licensed but this is not versionable (cant change a license once it is applied)
   acts_as_licensed
-  
+
   # Do not version self.file_private
   self.non_versioned_columns << "file_private"
   self.non_versioned_columns << "private_version_serialized"
-  
+
   after_save :store_correct_versions_after_save
 
   # overriding full_filename to handle our customizations
@@ -52,4 +52,5 @@ class AudioRecording < ActiveRecord::Base
     end
   end
 
+  include Embedded if ENABLE_EMBEDDED_SUPPORT
 end
