@@ -25,7 +25,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
                                            :item => item,
                                            :zoom_class => zoom_class,
                                            :display_num => display_num,
-                                           :total_num => @public_items[zoom_class].size } -%>
+                                           :total_num => @public_item_counts[zoom_class] } -%>
           <% end -%>
         </li>
       <% end -%>
@@ -37,7 +37,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
                                          :item => item,
                                          :zoom_class => zoom_class,
                                          :display_num => display_num,
-                                         :total_num => @private_items[zoom_class].size,
+                                         :total_num => @private_item_counts[zoom_class],
                                          :privacy_type => 'private' } -%>
         </li>
       <% end -%>

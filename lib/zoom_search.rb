@@ -120,7 +120,7 @@ module ZoomSearch
     # By default, we only parse the first five records. If you need more, overwrite :end_record
     # in the options param.
     def parse_results(results, zoom_class, options={})
-      options = { :result_set => results, :start_record => 0, :end_record => 5 }
+      options = { :result_set => results, :start_record => 0, :end_record => 5 }.merge(options)
 
       @results = Array.new
       if results.size > 0
