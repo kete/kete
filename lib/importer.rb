@@ -39,11 +39,19 @@ module Importer
       end
     end
 
-    def importer_add_image_to(new_record, params, zoom_class)
+    def importer_add_image(params, zoom_class)
       # add the image file and then close it
       if zoom_class == 'StillImage'
         logger.info("what is params[:image_file]: " + params[:image_file].to_s)
         new_image_file = ImageFile.new(params[:image_file])
+        new_image_file.save
+        return new_image_file
+      end
+    end
+
+    def importer_add_still_image_to(new_image_file, new_record, zoom_class)
+      # add the image file and then close it
+      if zoom_class == 'StillImage'
         new_image_file.still_image_id = new_record.id
         new_image_file.save
         # attachment_fu doesn't insert our still_image_id into the thumbnails
@@ -658,13 +666,36 @@ module Importer
       replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(:item_key => zoom_class_for_params, :item_class => zoom_class, :params => params)
 
       new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
-      new_record_added = new_record.save
+
+      # we need new_image_file's file, for our embedded metadata (if enabled)
+      # thus we have to create it before the still image
+      new_image_file = nil
+      new_image_file = importer_add_image(params, zoom_class) unless params[:image_file].blank?
+
+      # only necessary for still images, because attachment is in a child model
+      # if we are allowing harvesting of embedded metadata from the image_file
+      # we need to grab it from the image_file's file path
+      if ENABLE_EMBEDDED_SUPPORT && !new_image_file.nil? && zoom_class == 'StillImage'
+        new_record.populate_attributes_from_embedded_in(new_image_file.full_filename)
+      end
+
+      # if still image and new_image failed, fail
+      new_record_added = false
+      unless zoom_class == 'StillImage'
+        new_record_added = new_record.save
+      else
+        new_record_added = new_record.save unless new_image_file.nil?
+      end
 
       if new_record_added
-        importer_add_image_to(new_record, params, zoom_class) unless params[:image_file].blank?
+        importer_add_still_image_to(new_image_file, new_record, zoom_class) unless new_image_file.nil?
+
         new_record.creator = @contributing_user
         logger.info("in topic creation made it past creator")
       else
+        # destroy images if the record wasn't added successfully
+        new_image_file.destroy unless new_image_file.nil?
+
         logger.info("what are errors on save of new record: " + new_record.errors.inspect)
       end
 

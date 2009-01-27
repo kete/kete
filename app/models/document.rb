@@ -68,4 +68,5 @@ class Document < ActiveRecord::Base
     true
   end
 
+  include Embedded if ENABLE_EMBEDDED_SUPPORT
 end

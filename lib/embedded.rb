@@ -9,19 +9,20 @@ require 'mini_exiftool'
 # and attachment_fu's workflow on uploaded files
 module Embedded
   unless included_modules.include? Embedded
-    # declare the virtual attribute that we can stuff the embedded metadata into
-    attr_accessor :embedded
+    def self.included(klass)
+      # declare the virtual attribute that we can stuff the embedded metadata into
+      klass.send :attr_accessor, :embedded
 
-    before_validation :harvest_embedded_metadata_to_attributes unless self.class.is_a?(StillImage)
+      klass.send :before_validation, :harvest_embedded_metadata_to_attributes unless klass.name == 'StillImage'
+    end
 
-    # note, this isn't meant for StillImage
-    # StillImage case where actually it is still_image's original ImageFile
-    # we need to grab the data from and then pass up to the still_image object
-    # THIS HANDLES SIMPLE CASE, for audio, video, documents where they DO NOT have a separate model
-    # of attachments
-    def harvest_embedded_metadata_to_attributes
+    # this does the bulk of the work
+    def populate_attributes_from_embedded_in(file_path)
       # read the metadata from the file and load it into embedded attribute
-      self.embedded = MiniExiftool.new(self.full_filename)
+      mini_exiftool = MiniExiftool.new(file_path)
+      embedded_hash = Hash.new
+      mini_exiftool.tags.collect { |tag_name| embedded_hash[tag_name] = mini_exiftool[tag_name] }
+      embedded = embedded_hash
 
       # look at the mappings between
       # either default fields (title, short_summary, tags, etc.)
@@ -41,7 +42,21 @@ module Embedded
       relevant_settings.each do |setting|
         # this will make the key the attribute name as a string
         # and the value corresponding array for synonyms
-        standard_attribute_synonyms[setting.name.gsub(' Synonyms', '').downcase.gsub(' ', '_')] = Object.const_get(setting.constant_name)
+        # we add the variants of the attribute name, too
+        # TODO: wrap this handling of name variants
+        # being added to import synonyms up for reuse in importers
+        raw_attribute_name = setting.name.gsub(' Synonyms', '')
+        attribute_name = raw_attribute_name.downcase.gsub(' ', '_')
+
+        name_variants = [attribute_name.upcase,
+                         attribute_name.humanize,
+                         attribute_name.camelize,
+                         attribute_name,
+                         raw_attribute_name]
+
+        attribute_synonyms = name_variants + Object.const_get(setting.constant_name).to_a
+
+        standard_attribute_synonyms[attribute_name] = attribute_synonyms
       end
 
       embedded.each do |key, value|
@@ -63,17 +78,28 @@ module Embedded
             else
               # will append any previous value for the field
               # to preserve the value that may have been added in the form
-              self.send("#{a_name}+=", value)
+              self.send("#{a_name}=", self.send(a_name) + value)
             end
           end
-          matching_extended_fields = ExtendedField.find(:all, :conditions => "import_synonyms like \'%#{key}%\'")
+        end
 
-          matching_extended_fields.each do |field|
-            self.send("#{field.label_to_param}+=", value)
-          end
+        matching_extended_fields = ExtendedField.find(:all, :conditions => "import_synonyms like \'%#{key}%\'")
+
+        matching_extended_fields.each do |field|
+          self.send("#{field.label_for_params}+=", value)
         end
       end
+    end
 
+    # note, this isn't meant for StillImage
+    # StillImage case where actually it is still_image's original ImageFile
+    # we need to grab the data from and then pass up to the still_image object
+    # THIS HANDLES SIMPLE CASE, for audio, video, documents where they DO NOT have a separate model
+    # of attachments
+    # we only want to do this once, otherwise each edit
+    # the metadata will be harvested and appended to existing records
+    def harvest_embedded_metadata_to_attributes
+      populate_attributes_from_embedded_in(self.temp_path) if new_record?
     end
 
     private :harvest_embedded_metadata_to_attributes
