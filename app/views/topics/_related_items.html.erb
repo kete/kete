@@ -1,7 +1,7 @@
 <%
 topics_only = defined?(topics_only) ? topics_only : false
 
-# These queries uses zoom and arn't caches
+# These queries uses zoom and aren't caches
 @public_item_counts = public_related_items_for(item, { :topics_only => topics_only, :count_only => true })
 @private_item_counts = private_related_items_for(item, { :topics_only => topics_only, :count_only => true })
 
@@ -34,6 +34,21 @@ end
 
   <h2 class="related-link">Related Items</h2>
 
+  <% if current_user_can_see_add_links? -%>
+    <% cache({ :part => 'related-tools' }) do -%>
+      <div id="related-items-tools">
+        <ul>
+          <%= header_add_links(:relate_to_topic => item, :link_text => 'Create', :class => 'first') -%>
+          <%= link_to_related_item_function(:link_text => 'Link Existing', :function => 'add', :relate_to_topic => item) -%>
+          <%= link_to_related_item_function(:link_text => 'Remove', :function => 'remove', :relate_to_topic => item) -%>
+          <%= link_to_related_item_function(:link_text => 'Restore', :function => 'restore', :relate_to_topic => item) -%>
+          <%= link_to_add_set_of_related_items(:link_text => 'Import Set', :relate_to_topic => item) -%>
+        </ul>
+      </div>
+      <div style="clear:both;"></div>
+    <% end -%>
+  <% end -%>
+
   <div id="detail-linked-toprow">
     <%= render(:partial => "topics/related_items_section",
                :locals => { :item => item, :zoom_class => 'StillImage' }) -%>
@@ -57,20 +72,6 @@ end
   </div>
 
   <div style="clear:both;"></div>
-
-  <% if current_user_can_see_add_links? -%>
-    <% cache({ :part => 'related-tools' }) do -%>
-      <div id="related-items-tools">
-        <ul>
-          <%= header_add_links(:relate_to_topic => item, :link_text => 'Add a New Related Item', :class => 'first') -%>
-          <%= link_to_related_item_function(:function => 'add', :relate_to_topic => item) -%>
-          <%= link_to_related_item_function(:function => 'remove', :relate_to_topic => item) -%>
-          <%= link_to_related_item_function(:function => 'restore', :relate_to_topic => item) -%>
-          <%= link_to_add_set_of_related_items(:relate_to_topic => item) -%>
-        </ul>
-      </div>
-    <% end -%>
-  <% end -%>
 
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 
