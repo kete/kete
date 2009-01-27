@@ -228,6 +228,7 @@ body.mceContentBody {
     background-image: url(../images/icon-history.gif);
 }
 .related-link{
+    display: inline;
     background-image: url(../images/icon-related.gif);
 }
 .discuss-link{
@@ -236,6 +237,8 @@ body.mceContentBody {
 
 /* #################################### item_class_choices #################################### */
 #related-items-tools ul, .item_class_choices {
+  display: inline;
+  float: right;
   list-style: none;
   padding: 0;
   margin: 0 0 50px 0;
