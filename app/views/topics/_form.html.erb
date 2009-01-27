@@ -78,6 +78,8 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
+    <%= embedded_enabled_message('<p class=\"help\"> * ', ' If you fill out fields here as well, the embedded metadata will be added to it at the end.</p>') if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing %>
+
     <% if params[@item_type] && params[@item_type][:private]; item_private = params[@item_type][:private] == 'true' ? true : false
        elsif @editing && !@item.private.nil?; item_private = @item.private?
        else; item_private = @basket.private_default_with_inheritance?; end -%>

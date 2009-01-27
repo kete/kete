@@ -588,7 +588,6 @@ module Importer
 
       logger.info("after fields")
 
-
       if !@import.description_beginning_template.blank?
         # append the citation to the description field
         if !params[zoom_class_for_params][:description].nil?
@@ -680,7 +679,13 @@ module Importer
       end
 
       # handle special case where title is derived from filename
-      new_record.title = record_hash['placeholder_title'] if new_record.title.blank?
+      if new_record.title.blank?
+        if ENABLE_EMBEDDED_SUPPORT && zoom_class != 'StillImage' && ATTACHABLE_CLASSES.include?(zoom_class)
+          new_record.title = '-replace-' + record_hash['placeholder_title']
+        else
+          new_record.title = record_hash['placeholder_title']
+        end
+      end
 
       # if still image and new_image failed, fail
       new_record_added = false

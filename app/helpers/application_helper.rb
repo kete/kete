@@ -863,14 +863,14 @@ module ApplicationHelper
         comment_string += "</div>" # comment-content
         comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
         comment_string += "</div>" # comment-wrapper
-        
+
         html_string += '<div class="comment-outer-wrapper">'
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
                                                         :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end
-      
+
       html_string += "<p>" + link_to("join this discussion",
                                      {:action => :new,
                                        :controller => 'comments',
@@ -1137,4 +1137,17 @@ module ApplicationHelper
     end
     string
   end
+
+  # when embedded metadata is set up to be harvested, give an explanation that it is enabled.
+  # oriented towards imports at this point, but maybe refined to be generally useful
+  def embedded_enabled_message(start_html, end_html)
+    html = String.new
+    if ENABLE_EMBEDDED_SUPPORT
+      html += start_html
+      html+= "Embedded metadata will be harvested from the item's binary file to fill out any fields that match the site's settings."
+      html += end_html
+    end
+    html
+  end
+
 end

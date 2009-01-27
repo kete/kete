@@ -76,9 +76,19 @@ module Embedded
 
               self.tag_list = all_tags.to_sentence
             else
-              # will append any previous value for the field
+              # if the current value is prefixed with "-replace-"
+              # we know it is a placeholder
+              # and we should overwrite it
+              # else we will append any previous value for the field
               # to preserve the value that may have been added in the form
-              self.send("#{a_name}=", self.send(a_name) + value)
+              current_value = self.send(a_name)
+
+              if current_value.blank? || current_value =~ /^-replace-/
+                self.send("#{a_name}=", value)
+              else
+                current_value += ' ' if current_value.is_a?(String)
+                self.send("#{a_name}=", current_value + value)
+              end
             end
           end
         end

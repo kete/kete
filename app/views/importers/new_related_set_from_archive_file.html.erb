@@ -18,7 +18,13 @@
   your <%= @zoom_class_plural_humanized -%> to be more reasonable
   sized to add to the site and recreate your archive file.</p></li>
 
-  <li><p>The title for the uploaded <%= @zoom_class_plural_humanized
+  <%= embedded_enabled_message('<li><p>', '</p></li>') %>
+
+  <li><% if ENABLE_EMBEDDED_SUPPORT -%><p>If the title is in an item's
+  embedded metadata it will be used as long as it is labeled "Title"
+  or one of the following:
+      <blockquote><%= TITLE_SYNONYMS.to_a.to_sentence -%></blockquote>
+  <strong>OR</strong></p><% end -%><p>The title for the uploaded <%= @zoom_class_plural_humanized
   -%> will be based on the file's name as it was before it was added
   to the compressed archive file.  If you want a different title for
   the <%= @zoom_class_humanized -%> you may to rename the file in

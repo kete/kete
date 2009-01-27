@@ -24,6 +24,10 @@
     fields" link in Administrator's Toolbox.  You'll also want to add
     these extended fields to the appropriate Topic Type or Content Type.</p></li>
 
+  <%= embedded_enabled_message('<li><p>The same goes for embedded
+  metadata if items have associated binary files (images, audio,
+  video, and documents). ', '</p></li>') %>
+
   <li><p>You have mapped the appropriate fields in the records.xml
     file to tags or the title, short summary, or description fields.  Click "reconfigure site" in Administrator's Toolbox, then
     "Advanced Options", then "Imports", and fill out form
@@ -138,7 +142,7 @@
       this is the Topic Type of new topic that is created.
     </div>
   </div>
-  
+
   <% if show_privacy_controls? %>
     <div class="form-element">
       <label>Default Privacy Setting</label>
