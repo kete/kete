@@ -527,13 +527,13 @@ module ApplicationHelper
     items.each_with_index do |related_item,index|
       li_class = index == 0 ? 'first' : ''
       if related_item.is_a?(Hash)
-        if !related_item[:still_image].blank?
-          display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item[:still_image], { :privacy_type => options[:privacy_type] })}</li>"
+        if related_item.is_a?(Hash) && !related_item[:thumbnail].blank?
+          display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
         else
           display_html += "<li class='#{li_class}'>#{link_to(related_item[:title], related_item[:url])}</li>"
         end
       elsif related_item.is_a?(StillImage)
-        display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, { :privacy_type => options[:privacy_type] })}</li>"
+        display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
       else
         display_html += "<li class='#{li_class}'>#{link_to_item(related_item)}</li>"
       end
@@ -552,17 +552,26 @@ module ApplicationHelper
   # Creates an image and wraps in within a link tag
   def related_image_link_for(still_image, options={})
     options = { :privacy_type => 'public' }.merge(options)
-    if !still_image.thumbnail_file.nil?
-      thumb_src_value = still_image.already_at_blank_version? ? '/images/pending.jpg' :
-                                                                still_image.thumbnail_file.public_filename
-      link_text = image_tag(thumb_src_value, { :size => still_image.thumbnail_file.image_size,
-                                               :alt => "#{still_image.title}. " })
+    if still_image.is_a?(StillImage)
+      if !still_image.thumbnail_file.nil?
+        thumb_src_value = still_image.already_at_blank_version? ? '/images/pending.jpg' :
+                                                                  still_image.thumbnail_file.public_filename
+        link_text = image_tag(thumb_src_value, { :size => still_image.thumbnail_file.image_size,
+                                                 :alt => "#{still_image.title}. " })
+      else
+        link_text = 'only available as original'
+      end
+      link_location = { :urlified_name => still_image.basket.urlified_name,
+                        :controller => 'images', :action => 'show', :id => still_image,
+                        :private => (options[:privacy_type] == 'private') }
     else
-      link_text = 'only available as original'
+      thumb_src_value = still_image[:thumbnail][:src].value
+      link_text = image_tag(thumb_src_value, { :width => still_image[:thumbnail][:width].value,
+                                               :height => still_image[:thumbnail][:height].value,
+                                               :alt => "#{still_image[:title]}. " })
+      link_location = still_image[:url]
     end
-    link_to(link_text, { :urlified_name => still_image.basket.urlified_name,
-                         :controller => 'images', :action => 'show', :id => still_image,
-                         :private => (options[:privacy_type] == 'private') })
+    link_to(link_text, link_location)
   end
 
   def link_to_related_item_function(options={})
