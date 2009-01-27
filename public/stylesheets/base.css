@@ -237,12 +237,10 @@ body.mceContentBody {
 
 /* #################################### item_class_choices #################################### */
 #related-items-tools ul, .item_class_choices {
-  display: inline;
   float: right;
   list-style: none;
   padding: 0;
-  margin: 0 0 50px 0;
-  clear: both;
+  margin: -15px 0 0 0;
 }
 #related-items-tools ul li, .item_class_choices li {
   float: left;
