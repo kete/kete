@@ -1,17 +1,21 @@
 <% @title = "#{@verb} related #{zoom_class_plural_humanize(zoom_class_controller(@related_class))}" -%>
 <% item_class = @related_class.tableize.humanize.downcase.pluralize -%>
 
-<p>
-  <strong><%= params[:function].capitalize %> a:</strong>
-  <ul class="item_class_choices">
-    <% ITEM_CLASSES.each_with_index do |item_class_name,index| -%>
-      <li class="<%= (index == 0 ? 'first' : '') -%>">
-        <%= link_to(item_class_name.tableize.humanize.singularize, params.merge({ :related_class => item_class_name })) -%>
-      </li>
-    <% end -%>
-  </ul>
-  <div style="clear:both;"></div>
-</p>
+<p><strong><%= params[:function].capitalize %> a:</strong></p>
+<ul class="item_class_choices">
+  <% ITEM_CLASSES.each_with_index do |item_class_name,index| -%>
+    <li class="<%= (index == 0 ? 'first' : '') -%>">
+      <%# link_to_unless_current is not working in this case so we use our own conditional -%>
+      <% humanized_item_class_name = item_class_name.tableize.humanize.singularize -%>
+      <% if @related_class == item_class_name -%>
+        <%= humanized_item_class_name -%>
+      <% else -%>
+        <%= link_to_unless_current(humanized_item_class_name, params.merge({ :related_class => item_class_name })) -%>
+      <% end -%>
+    </li>
+  <% end -%>
+</ul>
+<div style="clear:both;"></div>
 
 <fieldset>
 
