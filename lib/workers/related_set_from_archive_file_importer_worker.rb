@@ -80,7 +80,8 @@ class RelatedSetFromArchiveFileImporterWorker < BackgrounDRb::MetaWorker
     logger.info("starting record #{current_record}")
 
     title = File.basename(record, File.extname(record)).gsub('_', ' ')
-    record_hash = { 'title' => title, 'path_to_file' => record }
+    # placeholder title will only be used if there isn't an embedded title
+    record_hash = { 'placeholder_title' => title, 'path_to_file' => record }
     reason_skipped = nil
 
     new_record = nil

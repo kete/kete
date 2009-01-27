@@ -679,6 +679,9 @@ module Importer
         new_record.populate_attributes_from_embedded_in(new_image_file.full_filename)
       end
 
+      # handle special case where title is derived from filename
+      new_record.title = record_hash['placeholder_title'] if new_record.title.blank?
+
       # if still image and new_image failed, fail
       new_record_added = false
       unless zoom_class == 'StillImage'
