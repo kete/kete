@@ -565,9 +565,9 @@ module ApplicationHelper
                         :controller => 'images', :action => 'show', :id => still_image,
                         :private => (options[:privacy_type] == 'private') }
     else
-      thumb_src_value = still_image[:thumbnail][:src].value
-      link_text = image_tag(thumb_src_value, { :width => still_image[:thumbnail][:width].value,
-                                               :height => still_image[:thumbnail][:height].value,
+      thumb_src_value = still_image[:thumbnail][:src]
+      link_text = image_tag(thumb_src_value, { :width => still_image[:thumbnail][:width],
+                                               :height => still_image[:thumbnail][:height],
                                                :alt => "#{still_image[:title]}. " })
       link_location = still_image[:url]
     end

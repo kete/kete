@@ -168,6 +168,10 @@ class Topic < ActiveRecord::Base
   include FriendlyUrls
   alias :to_param :format_for_friendly_urls
 
+  def to_i
+    id
+  end
+
   # All available extended field mappings for this topic instance, including those from ancestors
   # of our TopicType.
   def all_field_mappings

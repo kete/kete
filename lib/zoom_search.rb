@@ -170,10 +170,16 @@ module ZoomSearch
       result_hash[:media_content] = nil
       if ATTACHABLE_CLASSES.include?(result_hash[:class])
         thumbnail_xml = zoom_record.root.at(".//xmlns:thumbnail", zoom_record.root.namespaces)
-        result_hash[:thumbnail] = thumbnail_xml.attributes.symbolize_keys unless thumbnail_xml.blank?
+        unless thumbnail_xml.blank?
+          result_hash[:thumbnail] = thumbnail_xml.attributes.symbolize_keys
+          result_hash[:thumbnail].each { |k, v| result_hash[:thumbnail][k] = v.value }
+        end
 
         media_content_xml = zoom_record.root.at(".//xmlns:media_content", zoom_record.root.namespaces)
-        result_hash[:media_content] = media_content_xml.attributes.symbolize_keys unless media_content_xml.blank?
+        unless media_content_xml.blank?
+          result_hash[:media_content] = media_content_xml.attributes.symbolize_keys
+          result_hash[:media_content].each { |k, v| result_hash[:media_content][k] = v.value }
+        end
       end
 
       # get the oai_dc element
