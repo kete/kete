@@ -522,7 +522,7 @@ system_settings_060:
   name: Enable Embedded Support
   technically_advanced: true
   required_to_be_configured: true
-  explanation: "If enabled, uploaded files for images, audio, video, and documents will have embedded metadate harvested for them. This is dependent on either default fields (Title, Description, Tags, etc.) or Extended Fields having their Import Synonyms mapped to embedded data fields.  IMPORTANT NOTE: that you must install the mini_exiftool ruby gem and its requied software (mainly EXIFTool) for this to work.  See Installation Guide for details."
+  explanation: "If enabled, uploaded files for images, audio, video, and documents will have embedded metadate harvested for them. This is dependent on either default fields (Title, Description, Tags, etc.) or Extended Fields having their Import Synonyms mapped to embedded data fields.  IMPORTANT NOTE: that you must install the mini_exiftool ruby gem and its required software (EXIFTool) for this to work.  See Installation Guide for details."
   id: "60"
   value: "false"
   section: System
