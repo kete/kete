@@ -70,7 +70,7 @@ class TopicsController < ApplicationController
     end
 
     where_to_redirect = 'show_self'
-    if params[:relate_to_topic] and @successful
+    if !params[:relate_to_topic].blank? and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic])
       ContentItemRelation.new_relation_to_topic(@new_related_topic, @topic)
 
