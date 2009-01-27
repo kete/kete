@@ -517,6 +517,23 @@ class ActionController::IntegrationTest
     super(locator, file_path, mime_type)
   end
 
+  # A quick way to attach the appropriate file when adding an item
+  def fill_in_needed_information_for(zoom_class)
+    case zoom_class
+    when 'StillImage'
+      attach_file "image_file_uploaded_data", "white.jpg"
+    when 'Video'
+      attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
+    when 'AudioRecording'
+      attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
+    when 'Document'
+      attach_file "document[uploaded_data]", "test.pdf"
+    when 'WebLink'
+      # Because web link needs to be unique, we add a random query param on the end
+      fill_in "web_link[url]", :with => "http://google.co.nz/?q=#{rand}"
+    end
+  end
+
   # When a test is finished, reset the constants, and remove all users/baskets created, ready for the next test
   # Make sure we also call the super (parent) teardown method so things continue to run properly
   def teardown

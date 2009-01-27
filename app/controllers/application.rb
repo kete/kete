@@ -501,6 +501,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+    related << 'public_query'
     related.each do |related_controller|
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,

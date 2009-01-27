@@ -6,7 +6,7 @@ topics_only = defined?(topics_only) ? topics_only : false
 @private_item_counts = private_related_items_for(item, { :topics_only => topics_only, :count_only => true })
 
 # The public query uses mysql and is cached
-cache({ :part => 'related_to_public_query' }) do
+cache({ :related => 'public_query', :id => @cache_id }) do
   @public_items = public_related_items_for(item, { :topics_only => topics_only })
   "(this just ensures queries don't run when unless needed - ignore this file)"
 end
