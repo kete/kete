@@ -177,9 +177,6 @@ module OaiDcHelpers
         host = request.host
       end
 
-      # public items shouldn't include relations listings of private only items
-      # se if item.private conditionals
-
       # in theory, direct comments might be added in as relations here
       # but since there url is the thing they are commenting on
       # then it's overkill
@@ -190,18 +187,9 @@ module OaiDcHelpers
         ZOOM_CLASSES.each do |zoom_class|
           related_items = String.new
           if zoom_class == 'Topic'
-            if item.private
-              related_items = item.related_topics
-            else
-              related_items = item.related_topics(true)
-            end
+            related_items = item.related_topics
           else
-            if item.private
-              related_items = item.send(zoom_class.tableize)
-            else
-              related_items = item.send(zoom_class.tableize).find(:all, :conditions => PUBLIC_CONDITIONS )
-            end
-
+            related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
             xml.tag!("dc:subject", related.title)
