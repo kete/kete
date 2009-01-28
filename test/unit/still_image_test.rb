@@ -81,21 +81,11 @@ class StillImageTest < Test::Unit::TestCase
     assert_kind_of ImageFile, original_of(still_image)
     assert_equal 4, thumbnails_of(still_image).size
 
-    # Check that thumbnails are public after create regardless of still_image.
+    # Check that original and thumbnails are private after create
     assert_equal true, still_image.file_private?
     assert_equal true, original_of(still_image).file_private?
     thumbnails_of(still_image).each do |image|
-      assert_equal false, image.file_private?
-    end
-    
-    # Update everything to private, and check it does not work
-    # for thumbnails.
-    still_image.update_attributes!({ :file_private => true })
-    still_image.reload
-    assert_equal true, still_image.file_private?
-    assert_equal true, original_of(still_image).file_private?
-    thumbnails_of(still_image).each do |image|
-      assert_equal false, image.file_private?
+      assert_equal true, image.file_private?
     end
     
     # Update everything to public
@@ -107,7 +97,7 @@ class StillImageTest < Test::Unit::TestCase
       assert_equal false, image.file_private?
     end
     
-    # Try and change everything to public again and check that it
+    # Try and change everything to private again and check that it
     # does not work for original or thumbnails.
     still_image.update_attributes!({ :file_private => true })
     still_image.reload

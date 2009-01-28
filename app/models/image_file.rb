@@ -62,8 +62,8 @@ class ImageFile < ActiveRecord::Base
         :temp_path                => temp_file,
         :thumbnail_resize_options => size,
         
-        # Also propagate file_private attribute (always false)
-        :file_private             => false
+        # Make sure thumbnails are also saved in the context of privacy
+        :file_private             => file_private
         
       }
       callback_with_args :before_thumbnail_saved, thumb
