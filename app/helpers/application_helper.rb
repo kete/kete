@@ -474,7 +474,7 @@ module ApplicationHelper
     item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
     item_classes.each do |item_class|
       if options[:count_only]
-        items = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil })
+        items = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => true })
         @items[item_class] = items.size
       else
         if item_class != 'Topic' || options[:topics_only]
@@ -495,7 +495,7 @@ module ApplicationHelper
     @items = Hash.new
     item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
     item_classes.each do |item_class|
-      items = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil })
+      items = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
       @items[item_class] = options[:count_only] ? items.size : items
     end
     @items
