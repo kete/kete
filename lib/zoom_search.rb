@@ -30,6 +30,9 @@ module ZoomSearch
     # We add a sort query of last_modified though technically it should be by position
     # in the acts_as_list setup, but that detail isn't stored in the zoom record at the moment
     def find_related_items_for(item, zoom_class, options={})
+      # searching related items, at least at this stage, is always site wide
+      # but you can limit it by passing a basket object in
+      options[:as_if_within_basket] = options[:as_if_within_basket].blank? ? @site_basket : options[:as_if_within_basket]
       make_search(zoom_class, options) do
         @search.pqf_query.kind_is(zoom_class, :operator => 'none')
         @search.pqf_query.relations_include(url_for_dc_identifier(item), :should_be_exact => true)
@@ -55,7 +58,10 @@ module ZoomSearch
       @search.zoom_db = zoom_database
       @zoom_connection = @search.zoom_db.open_connection
       yield if block_given?
-      return Array.new unless scoped_to_authorized_baskets # we'll likely always want to scope to baskets the user has permission to
+      # we usually want to scope to baskets the user has permission to
+      # the only exception is when your are in find_related... which acts as if you are in site basket
+      as_if_within_basket = options[:as_if_within_basket].nil? ? nil : options[:as_if_within_basket]
+      return Array.new unless scoped_to_authorized_baskets(as_if_within_basket)
       logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
       @zoom_results = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
       @search.pqf_query = PqfQuery.new
@@ -79,19 +85,21 @@ module ZoomSearch
     # When user is logged out:
     #    - dont return anything if making a private search
     #    - scope the search to the current basket when in a non-site basket
-    def scoped_to_authorized_baskets
+    def scoped_to_authorized_baskets(as_if_within_basket = nil)
+      # this allows us to do site wide searches (or search basket from outside of it)
+      basket = as_if_within_basket || @current_basket
       if logged_in?
-        if @current_basket != @site_basket
-          return false if is_a_private_search? && !@site_admin && !authorised_basket_names.include?(@current_basket.urlified_name)
-          @search.pqf_query.within(@current_basket.urlified_name)
+        if basket != @site_basket
+          return false if is_a_private_search? && !@site_admin && !authorised_basket_names.include?(basket.urlified_name)
+          @search.pqf_query.within(basket.urlified_name)
         elsif is_a_private_search? # private search in the site basket
           return if authorised_basket_names.blank?
           @search.pqf_query.within(authorised_basket_names) unless @site_admin
         end
       else
         return false if is_a_private_search?
-        if @current_basket != @site_basket
-          @search.pqf_query.within(@current_basket.urlified_name)
+        if basket != @site_basket
+          @search.pqf_query.within(basket.urlified_name)
         end
       end
       true
