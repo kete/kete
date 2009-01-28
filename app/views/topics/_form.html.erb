@@ -131,6 +131,12 @@ zoom_class = zoom_class_from_controller(controller)
       <% else -%>
         <%= form.hidden_field :file_private, :value => file_private -%>
       <% end -%>
+      <%# Most of the time, if someone chooses private item, they want private file as well.
+        Use JS to auto select it for them -%>
+      <%= javascript_tag "
+        $('#{@item_type.to_s}_private_true').observe('click', function(){ $('#{@item_type.to_s}_file_private_true').checked = true; });
+        $('#{@item_type.to_s}_private_false').observe('click', function(){ $('#{@item_type.to_s}_file_private_false').checked = true; });
+      " -%>
     <% end -%>
 
     <% if @item_type == :web_link && (show_privacy_controls_for?(@item) || !@editing) -%>
