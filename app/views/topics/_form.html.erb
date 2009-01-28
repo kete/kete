@@ -116,7 +116,7 @@ zoom_class = zoom_class_from_controller(controller)
       <% if params[@item_type] && params[@item_type][:file_private]; file_private = params[@item_type][:file_private] == 'true' ? true : false
          elsif @editing && !@item.file_private.nil?; file_private = @item.file_private?
          else; file_private = @basket.file_private_default_with_inheritance?; end -%>
-      <% if show_privacy_controls_for?(@item) %>
+      <% if show_privacy_controls_for?(@item, @basket) %>
         <%= form.radio_button :file_private,
                               [ ['Can be downloaded by everyone', false,
                                   { :label_for => "#{@item_type.to_s}_file_private_false",
