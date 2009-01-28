@@ -503,8 +503,7 @@ module ApplicationHelper
 
   # Link to the related items of a certain item
   def link_to_related_items_of(item, zoom_class, options={}, location={})
-    options = { :link_text => "View items related to #{item.title}",
-                :privacy_type => "private" }.merge(options)
+    options = { :link_text => "View items related to #{item.title}" }.merge(options)
     location = { :urlified_name => @site_basket.urlified_name,
                  :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
                  :source_controller_singular => zoom_class_controller(item.class.name).singularize,
