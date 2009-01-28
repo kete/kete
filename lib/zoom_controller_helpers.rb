@@ -3,7 +3,7 @@ module ZoomControllerHelpers
     # set up our helper methods
     def self.included(klass)
       if klass.name.scan("Worker").blank? && klass.name.scan("IntegrationTest").blank?
-        klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize
+        klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :zoom_class_humanize_after
       end
     end
 
@@ -116,6 +116,15 @@ module ZoomControllerHelpers
         plural_humanized = zoom_class.humanize.pluralize
       end
       return plural_humanized
+    end
+
+    def zoom_class_humanize_after(count, zoom_class)
+      humanized = count + ' '
+      if count.to_i != 1
+        humanized += zoom_class_plural_humanize(zoom_class)
+      else
+        humanized += zoom_class_humanize(zoom_class)
+      end
     end
 
     def prepare_zoom(item)

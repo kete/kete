@@ -43,7 +43,10 @@ module ImporterZoom
                 # for any associated binary files
                 # that can be used to derive the url for things like thumbnails
                 # or populate rss enclosure
-                oai_dc_xml_dc_description_for_file(xml,item,@import_request)
+                # we are using non-oai_dc namespaces for keeping informationn about
+                # binary files (except for dc:source) with the search record
+                # DEPRECIATED
+                # oai_dc_xml_dc_description_for_file(xml,item,@import_request)
 
                 # we do a dc:source element for the original binary file
                 oai_dc_xml_dc_source_for_file(xml, item, @import_request)
@@ -73,6 +76,17 @@ module ImporterZoom
                 # this is currently only used for topic type
                 oai_dc_xml_dc_coverage(xml,item)
               end
+            end
+            # this is meant to be a cache, outside of the oai_dc namespace
+            # of things like thumbnails to related images for a topic
+            # for non-topics
+            # it should store related topics
+            xml.kete do
+              xml_for_related_items(xml, item, @import_request)
+
+              xml_for_thumbnail_image_file(xml, item, @import_request)
+
+              xml_for_media_content_file(xml, item, @import_request)
             end
           end
         end

@@ -1150,4 +1150,17 @@ module ApplicationHelper
     html
   end
 
+
+  # if string ends with a period already, or a period and a space, don't add them
+  # otherwise, add them
+  # we also replace any ending punctuation with period for the purposes of alts
+  # including multiple instances
+  def altify(string)
+    return string if string =~ /\. $/
+    string = string.chomp(" ")
+    string = string.sub(/\W+$/, ".")
+    string += ". " if string =~ /[^\.]$/
+    string += " " if string =~ /\.$/
+    string
+  end
 end

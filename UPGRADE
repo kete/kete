@@ -41,6 +41,15 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 4.      Start your Kete server again (mongrels or mod_rails)
 5.      Restart backgroundrb
 
+== 2009/01/26 - Results with related counts and display of related images for topics, as well as, support for Podcasting and Media RSS
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      Clear your sites cache (rake tmp:cache:clear)
+4.      Start your Kete server again (mongrels or mod_rails)
+5.      Restart backgroundrb
+6.      Use Administrator's Toolbox > Rebuild search databases to update all your search records (sites with a lot of items may take a long time)
+
 == 2009/01/22 - Portrait UI refinements
 
 1.      Stop your Kete server (mongrels or mod_rails).
