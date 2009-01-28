@@ -80,7 +80,7 @@ class PqfQueryTest < ActiveSupport::TestCase
   def test_to_string_and_add_web_link_specific_query
     assert_equal "  ", @pqf_query.to_s
     @pqf_query.add_web_link_specific_query # is another test on its own that the method successfully sets a class variable
-    assert_equal "@or   #{@as['subjects']} ", @pqf_query.to_s
+    assert_equal "  @or @or #{@as['title']}#{@as['subjects']} ", @pqf_query.to_s
   end
 
   def test_correct_attribute_spec_methods_defined
