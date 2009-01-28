@@ -502,6 +502,9 @@ class ApplicationController < ActionController::Base
       end
     end
     related << 'public_query'
+    related << 'related-tools-create-or-link-or-remove'
+    related << 'related-tools-restore'
+    related << 'related-tools-import'
     related.each do |related_controller|
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,

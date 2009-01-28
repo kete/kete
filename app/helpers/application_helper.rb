@@ -577,8 +577,15 @@ module ApplicationHelper
   def link_to_related_item_function(options={})
     options = { :link_text => "#{options[:function].capitalize} an Existing Related Item" }.merge(options)
     link_text = options.delete(:link_text)
-    link = link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), 
-                              { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
+    disabled = false
+    disabled = true if options[:function] == 'remove' && @total_item_counts < 1
+    if options[:function] == 'restore'
+      restore_count = ContentItemRelation::Deleted.count(:conditions => { :topic_id => options[:relate_to_topic] })
+      disabled = true if restore_count < 1
+      link_text += " (#{restore_count})"
+    end
+    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), 
+                                                     { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
     content_tag('li', link)
   end
 

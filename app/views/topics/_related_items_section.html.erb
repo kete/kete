@@ -1,7 +1,12 @@
 <%
 pretty_class_plural = zoom_class_plural_humanize(zoom_class)
 controller = zoom_class_controller(zoom_class)
-total_items = (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
+if @total_item_counts > 0
+  total_items = (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
+  only_public_items = (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
+else
+  total_items = 0
+end
 are_still_images = (zoom_class == 'StillImage')
 display_num = are_still_images ? NUMBER_OF_RELATED_IMAGES_TO_DISPLAY : NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE
 display_heading = defined?(display_heading) && display_heading != false ? display_heading : nil
@@ -15,33 +20,34 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
     <h4><%= "#{pretty_class_plural} (#{total_items})" -%></h4>
   <% end -%>
   <% if total_items > 0 -%>
-    <ul>
+    <%= '<ul>' unless only_public_items -%>
       <% if @public_item_counts[zoom_class] > 0 -%>
-        <li>
-          <strong>Public</strong>
-          <% cache ({ :related => controller, :id => @cache_id }) do -%>
-            <%= related_items_display_of @public_items[zoom_class],
-                                         { :are_still_images => are_still_images,
-                                           :item => item,
-                                           :zoom_class => zoom_class,
-                                           :display_num => display_num,
-                                           :total_num => @public_item_counts[zoom_class] } -%>
-          <% end -%>
-        </li>
-      <% end -%>
-      <% if @private_item_counts[zoom_class] > 0 -%>
-        <li>
-          <strong>Private</strong>
-          <%= related_items_display_of @private_items[zoom_class],
+        <% unless only_public_items -%>
+          <li><strong>Public</strong>
+        <% end -%>
+        <% cache ({ :related => controller, :id => @cache_id }) do -%>
+          <%= related_items_display_of @public_items[zoom_class],
                                        { :are_still_images => are_still_images,
                                          :item => item,
                                          :zoom_class => zoom_class,
                                          :display_num => display_num,
-                                         :total_num => @private_item_counts[zoom_class],
-                                         :privacy_type => 'private' } -%>
-        </li>
+                                         :total_num => @public_item_counts[zoom_class] } -%>
+        <% end -%>
+        <%= '</li>' unless only_public_items -%>
       <% end -%>
-    </ul>
+      <% if @private_item_counts[zoom_class] > 0 -%>
+        <%= '<li>' unless only_public_items -%>
+        <strong>Private</strong>
+        <%= related_items_display_of @private_items[zoom_class],
+                                     { :are_still_images => are_still_images,
+                                       :item => item,
+                                       :zoom_class => zoom_class,
+                                       :display_num => display_num,
+                                       :total_num => @private_item_counts[zoom_class],
+                                       :privacy_type => 'private' } -%>
+        <%= '</li>' unless only_public_items -%>
+      <% end -%>
+    <%= '</ul>' unless only_public_items -%>
   <% elsif display_no_item_text -%>
     <h4>This <%= pretty_class_plural.singularize -%> is not related to any topics at this time.</h4>
   <% end -%>
