@@ -233,8 +233,6 @@ module ZoomSearch
         end
       end
 
-      logger.debug("what is result_hash: " + result_hash.inspect)
-
       return result_hash
     end
 
