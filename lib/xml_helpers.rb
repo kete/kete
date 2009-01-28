@@ -122,7 +122,16 @@ module XmlHelpers
           # in the future we may also have audio, video, too
           unless totals_hash[:still_images].blank?
             count = 1
-            item.still_images.each do |image|
+            # parsing massive amounts of relations is cumbersome on the search side
+            # and generating them also slows down the create/update actions for items
+            # limiting here, since we are likely to only want this many
+            # if the item is not private, don't allow private related still images
+            options = { :limit => NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE,
+              :conditions => PUBLIC_CONDITIONS}
+
+            options.delete(:conditions) if item.private
+
+            item.still_images.find(:all, options).each do |image|
               xml.still_image(:title => image.title, :id => image.id, :relation_order => count ) do
                 xml_for_thumbnail_image_file(xml, image, request)
               end
