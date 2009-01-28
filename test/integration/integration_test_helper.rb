@@ -241,7 +241,7 @@ class ActionController::IntegrationTest
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/topics/new?index_for_basket=#{basket.id}"
     elsif !relate_to.nil?
-      visit "/#{relate_to.basket.urlified_name}/topics/new?relate_to_topic=#{relate_to.to_param}"
+      visit "/#{relate_to.basket.urlified_name}/#{controller}/new?relate_to_topic=#{relate_to.to_param}"
     else
       visit new_path
     end

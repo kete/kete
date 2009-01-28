@@ -33,6 +33,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             # except for tableize, zoom_class_... helper methods were not being found
             @humanized_plural = zoom_class_plural_humanize(class_name)
             @item_type = zoom_class_humanize(class_name)
+            @item_controller = zoom_class_controller(class_name)
             @tableized = class_name.tableize
             @item_title = "Related #{@item_type}"
           end
@@ -42,7 +43,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
           end
 
           should "be able to create related #{class_name}" do
-            click_link "Add a New Related Item"
+            click_link "Create"
             select @item_type, :from => 'new_item_controller'
             click_button "Choose"
             click_button "Choose Type" if @item_type == 'Topic'
@@ -80,8 +81,8 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
             should "be able to link existing related #{class_name}" do
               visit "/site/topics/show/#{@topic.to_param}"
-              click_link 'Add an Existing Related Item'
-              click_link @tableized.humanize.singularize
+              click_link 'Link Existing'
+              click_link @tableized.humanize.singularize unless class_name == 'Topic' # Topic is already the default
 
               lower_case_name = @tableized.humanize.downcase.pluralize
               body_should_contain "Add related #{lower_case_name}"
@@ -119,24 +120,119 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               body_should_contain @topic.title
             end
 
-            # should_eventually "be able to unlink related #{class_name}"
-            # should_eventually "be able to restore unlinked related #{class_name}"
-            # should_eventually "be able to destroy related #{class_name} and have the item be dropped from the related #{class_name} list"
-            # should_eventually "be able to destroy topic that #{class_name} is related to and have the item's related topics list will be blank"
+          end
+
+          context "which has been added to a topic" do
+
+            setup do
+              @item_for_relating = send("new_#{@tableized.singularize}", :title => "Item for relating", :relate_to => @topic) do
+                fill_in_needed_information_for(class_name)
+              end
+            end
+
+            should "be able to unlink related #{class_name}" do
+              visit "/site/topics/show/#{@topic.to_param}"
+
+              body_should_contain "#{@humanized_plural} (1)"
+              body_should_contain @item_for_relating.title
+
+              click_link 'Remove'
+              click_link @tableized.humanize.singularize unless class_name == 'Topic' # Topic is already the default
+
+              lower_case_name = @tableized.humanize.downcase.pluralize
+              body_should_contain "Existing related #{lower_case_name}"
+              body_should_contain @item_for_relating.title
+
+              check "item_#{@item_for_relating.id.to_s}"
+              click_button "Remove"
+
+              body_should_contain 'Successfully removed item relationships.'
+
+              visit "/site/topics/show/#{@topic.to_param}"
+
+              body_should_contain "#{@humanized_plural} (0)"
+              body_should_not_contain @item_for_relating.title
+            end
+
+            context "and then removed from the item" do
+
+              setup do
+                ContentItemRelation.destroy_relation_to_topic(@topic, @item_for_relating)
+                Rake::Task['tmp:cache:clear'].execute(ENV)
+              end
+
+              should "be able to restore unlinked related #{class_name}" do
+                add_john_as_moderator_to(@@site_basket)
+
+                visit "/site/topics/show/#{@topic.to_param}"
+
+                body_should_contain "#{@humanized_plural} (0)"
+                body_should_not_contain @item_for_relating.title
+
+                click_link 'Restore (1)'
+                click_link @tableized.humanize.singularize unless class_name == 'Topic' # Topic is already the default
+
+                lower_case_name = @tableized.humanize.downcase.pluralize
+                body_should_contain "Restore related #{lower_case_name}"
+                body_should_contain @item_for_relating.title
+
+                check "item_#{@item_for_relating.id.to_s}"
+                click_button "Restore"
+
+                body_should_contain 'Successfully added item relationships'
+
+                visit "/site/topics/show/#{@topic.to_param}"
+
+                body_should_contain "#{@humanized_plural} (1)"
+                body_should_contain @item_for_relating.title
+              end
+
+            end
+
+            should "be dropped from the parent related #{class_name} list when the child item is destroyed" do
+              add_john_as_moderator_to(@@site_basket)
+
+              visit "/site/topics/show/#{@topic.to_param}"
+              body_should_contain "#{@humanized_plural} (1)"
+              body_should_contain @item_for_relating.title
+
+              visit "/site/#{@item_controller}/show/#{@item_for_relating.to_param}"
+              body_should_contain @topic.title
+
+              click_link 'Delete'
+
+              visit "/site/topics/show/#{@topic.to_param}"
+              body_should_contain "#{@humanized_plural} (0)"
+              body_should_not_contain @item_for_relating.title
+            end
+
+            should "be dropped from the child related #{class_name} list when the parent item is destroyed" do
+              add_john_as_moderator_to(@@site_basket)
+
+              visit "/site/#{@item_controller}/show/#{@item_for_relating.to_param}"
+              body_should_contain @topic.title
+
+              visit "/site/topics/show/#{@topic.to_param}"
+              body_should_contain "#{@humanized_plural} (1)"
+              body_should_contain @item_for_relating.title
+
+              click_link 'Delete'
+
+              visit "/site/#{@item_controller}/show/#{@item_for_relating.to_param}"
+              body_should_not_contain @topic.title
+            end
 
           end
 
-          if ATTACHABLE_CLASSES.include?(class_name)
-            # should_eventually "be able to upload a zip file of related #{@tableized}"
-          end
-
-          # should_eventually "not display links to items with no public version"
+          # if ATTACHABLE_CLASSES.include?(class_name)
+          #   # should_eventually "be able to upload a zip file of related #{@tableized}"
+          # end
 
         end
       end # End of item class iteration
     end # End of context "when a topic is added"
 
-    context "when a private related topic is added, it" do
+    context "when a private related topic is added" do
 
       setup do
         @@site_basket.update_attributes({ :show_privacy_controls => true })
