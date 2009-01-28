@@ -3,7 +3,9 @@ topics_only = defined?(topics_only) ? topics_only : false
 
 # These queries uses zoom and aren't cached
 @total_item_counts = 0
-@content_relations_count = ContentItemRelation.count(:conditions => { :topic_id => @cache_id })
+conditions = "content_item_relations.related_item_id = :cache_id"
+conditions = "content_item_relations.topic_id = :cache_id OR #{conditions}" if params[:controller] == 'topics'
+@content_relations_count = ContentItemRelation.count(:conditions => [conditions, { :cache_id => @cache_id }])
 if @content_relations_count > 0
   @public_item_counts = public_related_items_for(item, { :topics_only => topics_only, :count_only => true })
   @private_item_counts = private_related_items_for(item, { :topics_only => topics_only, :count_only => true })
@@ -42,18 +44,18 @@ end
   <% if current_user_can_see_add_links? -%>
     <div id="related-items-tools">
       <ul>
-        <% cache({ :part => 'related-tools-create-or-link-or-remove', :id => @cache_id }) do -%>
+        <% cache({ :related => 'related-tools-create-or-link-or-remove', :id => @cache_id }) do -%>
           <%= header_add_links(:relate_to_topic => item, :link_text => 'Create', :class => 'first') -%>
           <%= link_to_related_item_function(:link_text => 'Link Existing', :function => 'add', :relate_to_topic => item) -%>
           <%= link_to_related_item_function(:link_text => 'Remove', :function => 'remove', :relate_to_topic => item) -%>
         <% end -%>
         <% if @basket_moderator -%>
-          <% cache({ :part => 'related-tools-restore', :id => @cache_id }) do -%>
+          <% cache({ :related => 'related-tools-restore', :id => @cache_id }) do -%>
             <%= link_to_related_item_function(:link_text => 'Restore', :function => 'restore', :relate_to_topic => item) -%>
           <% end -%>
         <% end -%>
         <% if @site_admin -%>
-          <% cache({ :part => 'related-tools-import', :id => @cache_id }) do -%>
+          <% cache({ :related => 'related-tools-import', :id => @cache_id }) do -%>
             <%= link_to_add_set_of_related_items(:link_text => 'Import Set', :relate_to_topic => item) -%>
           <% end -%>
         <% end -%>
