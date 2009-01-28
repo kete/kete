@@ -17,7 +17,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
   <% if !display_heading.nil? -%>
     <%= display_heading -%>
   <% else -%>
-    <h4><%= "#{pretty_class_plural} (#{total_items})" -%></h4>
+    <h4><%= link_to_related_items_of(item, zoom_class, :link_text => "#{pretty_class_plural} (#{total_items})") -%></h4>
   <% end -%>
   <% if total_items > 0 -%>
     <%= '<ul>' unless only_public_items -%>

@@ -3,7 +3,7 @@ topics_only = defined?(topics_only) ? topics_only : false
 
 # These queries uses zoom and aren't cached
 @total_item_counts = 0
-conditions = "content_item_relations.related_item_id = :cache_id"
+conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{item.class.name}')"
 conditions = "content_item_relations.topic_id = :cache_id OR #{conditions}" if params[:controller] == 'topics'
 @content_relations_count = ContentItemRelation.count(:conditions => [conditions, { :cache_id => @cache_id }])
 if @content_relations_count > 0
@@ -39,7 +39,9 @@ end
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "related", :class_suffix => "-blue" }) -%>
 
-  <h2 class="related-link">Related Items (<%= @total_item_counts %>)</h2>
+  <h2 class="related-link">
+    <%= link_to_related_items_of(item, 'Topic', :link_text => "Related Items (#{@total_item_counts})") -%>
+  </h2>
 
   <% if current_user_can_see_add_links? -%>
     <div id="related-items-tools">
