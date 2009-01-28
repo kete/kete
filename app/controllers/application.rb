@@ -472,7 +472,7 @@ class ApplicationController < ActionController::Base
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment_for_all_versions(item, { :action => 'show', :id => item, :related => zoom_class_controller(zoom_class) })
+          expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :related => zoom_class_controller(zoom_class) })
           related_items = Array.new
           if zoom_class == 'Topic'
             related_items += item.related_topics
@@ -512,15 +512,6 @@ class ApplicationController < ActionController::Base
                                          :action => 'show',
                                          :id => item,
                                          :related => related_controller} )
-      # we have two more caches for controls for those that are privileged
-      ['restore', 'upload_archive'].each do |sub_part|
-        expire_fragment_for_all_versions(item,
-                                         { :urlified_name => item.basket.urlified_name,
-                                           :controller => zoom_class_controller(item.class.name),
-                                           :action => 'show',
-                                           :id => item,
-                                           :related => "#{related_controller}_#{sub_part}" })
-      end
     end
   end
 
