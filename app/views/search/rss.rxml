@@ -26,8 +26,11 @@ xml.rss(:version=>"2.0", "xmlns:media".to_sym => "http://search.yahoo.com/mrss")
           thumbnail_html = render(:partial => 'thumb_image_tag',
                              :locals => { :thumbnail => result[:thumbnail],
                                :title => result[:title] })
-          xml.tag!("media:thumbnail".to_sym, :url => result[:thumbnail][:src])
           short_summary = thumbnail_html + short_summary
+        end
+
+        unless result[:medium].blank?
+          xml.tag!("media:thumbnail".to_sym, :url => result[:medium][:src])
         end
 
         # include thumbnails of related images for topics
