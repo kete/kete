@@ -11,7 +11,23 @@ class ExtendedField < ActiveRecord::Base
   # When sufficient testing and conversion code as been added to handle all events relating to changing
   # these fields, this attributes can be made writeable again.
   attr_readonly :label, :ftype, :multiple
+
+  acts_as_configurable
+
+  after_save :set_base_url
+
+  def base_url
+    self.settings[:base_url]
+  end
   
+  def base_url=(value)
+    @@base_url = value
+  end
+
+  def set_base_url
+    self.settings[:base_url] = @@base_url
+  end
+
   def pseudo_choices
     choices.collect { |c| [c.label, c.id] }
   end

@@ -14,6 +14,10 @@ class ExtendedFieldsController < ApplicationController
     config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition]
     config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition]
     
+    config.columns << [:base_url]
+    config.columns[:base_url].label = "Base URL"
+    config.columns[:base_url].description = "Whatever the user inputs will be appended to this base url (e.g. http://site.com/~[user_input])"
+
     # CRUD for adding/removing choices
     config.columns << [:pseudo_choices]
     config.columns[:pseudo_choices].label = "Available choices"

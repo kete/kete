@@ -4,7 +4,12 @@ module ExtendedFieldsHelper
 
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
-  
+
+  def base_url_form_column(record, input_name)
+    value = record.id.nil? ? '' : record.base_url
+    text_field_tag(input_name, value)
+  end
+
   # Using YUI TreeView
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find_top_level
