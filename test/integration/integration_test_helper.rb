@@ -228,6 +228,7 @@ class ActionController::IntegrationTest
     new_path = fields.delete(:new_path)
     success_message = fields.delete(:success_message)
     relate_to = fields.delete(:relate_to)
+    go_to_related = fields.delete(:go_to_related)
     topic_type = fields.delete(:topic_type)
 
     unless relate_to.nil? || relate_to.is_a?(Topic)
@@ -240,7 +241,7 @@ class ActionController::IntegrationTest
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/topics/new?index_for_basket=#{basket.id}"
     elsif !relate_to.nil?
-      visit "/#{relate_to.basket.urlified_name}/topics/new?relate_to_topic=#{relate_to.to_param}"
+      visit "/#{relate_to.basket.urlified_name}/#{controller}/new?relate_to_topic=#{relate_to.to_param}"
     else
       visit new_path
     end
@@ -273,8 +274,16 @@ class ActionController::IntegrationTest
     elsif !relate_to.nil?
       body_should_contain "Related #{zoom_class_humanize(zoom_class)} was successfully created."
       body_should_contain "Topic: #{relate_to.title}"
-      body_should_contain "#{item.title}"
-      click_link "#{item.title}"
+      body_should_not_contain 'No Public Version Available'
+      if item.latest_version_is_private?
+        item.private_version!
+        body_should_contain "#{item.title}"
+        body_should_contain "/#{basket.urlified_name}/#{controller}/show/#{item.id}?private=true"
+      else
+        body_should_contain "#{item.title}"
+        body_should_contain "/#{basket.urlified_name}/#{controller}/show/#{item.id}"
+      end
+      click_link "#{item.title}" if go_to_related.nil? || go_to_related
     else
       body_should_contain success_message
     end
@@ -506,6 +515,23 @@ class ActionController::IntegrationTest
     file_path = File.join(RAILS_ROOT, "test/fixtures/files/#{filename}")
     mime_type = File.mime_type?(File.open(file_path)).split(';').first if mime_type.blank?
     super(locator, file_path, mime_type)
+  end
+
+  # A quick way to attach the appropriate file when adding an item
+  def fill_in_needed_information_for(zoom_class)
+    case zoom_class
+    when 'StillImage'
+      attach_file "image_file_uploaded_data", "white.jpg"
+    when 'Video'
+      attach_file "video[uploaded_data]", "teststrip.mpg", "video/mpeg"
+    when 'AudioRecording'
+      attach_file "audio_recording[uploaded_data]", "Sin1000Hz.mp3"
+    when 'Document'
+      attach_file "document[uploaded_data]", "test.pdf"
+    when 'WebLink'
+      # Because web link needs to be unique, we add a random query param on the end
+      fill_in "web_link[url]", :with => "http://google.co.nz/?q=#{rand}"
+    end
   end
 
   # When a test is finished, reset the constants, and remove all users/baskets created, ready for the next test

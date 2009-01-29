@@ -12,6 +12,9 @@ class TopicsController < ApplicationController
   def show
     prepare_item_variables_for('Topic')
     @topic = @item
+    # If we are serving a cached page, we still need
+    # some details in @topic, so lets make a dummy one
+    @topic = DummyModel.new({ :id => @cache_id, :basket => @current_basket }) if @topic.nil?
 
     respond_to do |format|
       format.html
@@ -70,7 +73,7 @@ class TopicsController < ApplicationController
     end
 
     where_to_redirect = 'show_self'
-    if params[:relate_to_topic] and @successful
+    if !params[:relate_to_topic].blank? and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic])
       ContentItemRelation.new_relation_to_topic(@new_related_topic, @topic)
 

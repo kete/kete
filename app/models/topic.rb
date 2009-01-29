@@ -141,8 +141,8 @@ class Topic < ActiveRecord::Base
 
   def related_topics(only_non_pending = false)
     if only_non_pending
-      parent_related_topics.find_all_non_pending +
-        child_related_topics.find_all_non_pending
+      parent_related_topics.find_all_public_non_pending +
+        child_related_topics.find_all_public_non_pending
     else
       parent_related_topics + child_related_topics
     end
@@ -167,6 +167,10 @@ class Topic < ActiveRecord::Base
   # turn pretty urls on or off here
   include FriendlyUrls
   alias :to_param :format_for_friendly_urls
+
+  def to_i
+    id
+  end
 
   # All available extended field mappings for this topic instance, including those from ancestors
   # of our TopicType.

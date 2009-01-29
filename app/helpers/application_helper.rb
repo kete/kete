@@ -141,14 +141,16 @@ module ApplicationHelper
                                                :trailing_slash => true}, {:tabindex => '2'} ) + current_basket_html + '</li>'
   end
 
-  def header_add_links
+  def header_add_links(options={})
     return unless current_user_can_see_add_links?
-
-    html = '<li>'
-    html += link_to_unless_current('Add Item',
+    options = { :link_text => 'Add Item' }.merge(options)
+    link_text = options.delete(:link_text)
+    li_class = options.delete(:class) || ''
+    html = "<li class='#{li_class}'>"
+    html += link_to_unless_current(link_text,
                                    { :controller => 'baskets',
                                      :action => 'choose_type',
-                                     :urlified_name => @current_basket.urlified_name },
+                                     :urlified_name => @current_basket.urlified_name }.merge(options),
                                    { :tabindex => '2' })
     html += '</li>'
   end
@@ -448,16 +450,6 @@ module ApplicationHelper
     link_to phrase, url_for_profile_of(user)
   end
 
-  def link_to_related_to_source(options={})
-    link_to(options[:phrase], { :controller => 'search',
-              :action => :all,
-              :trailing_slash => true,
-              :source_item => options[:source_item],
-              :source_controller_singular => zoom_class_controller(options[:source_item_class]).singularize,
-              :controller_name_for_zoom_class => zoom_class_controller(options[:related_class]),
-              :urlified_name => @site_basket.urlified_name }, { :class => 'small'})
-  end
-
   def link_to_add_item(options={})
     phrase = options[:phrase]
     item_class = options[:item_class]
@@ -471,130 +463,144 @@ module ApplicationHelper
     return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
   end
 
-  def link_to_add_related_item(options={})
-    phrase = options[:phrase]
-    item_class = options[:item_class]
-    return link_to("#{phrase}", :controller => zoom_class_controller(item_class), :action => :new, :relate_to_topic => options[:relate_to_topic])
+  #
+  # START RELATED ITEM HELPERS
+  #
+
+  # Public items need to be sorted based on the acts_as_list position in the database so
+  # we can't use zebra to find public items in this case, so pull it from the database
+  def public_related_items_for(item, options={})
+    @items = Hash.new
+    item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
+    item_classes.each do |item_class|
+      if options[:count_only]
+        items = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => true })
+        @items[item_class] = items.size
+      else
+        if item_class != 'Topic' || options[:topics_only]
+          items = item.send(item_class.tableize)
+          items = items.find_all_public_non_pending if items.size > 0
+        else
+          items = item.related_topics(:only_non_pending => true)
+        end
+        @items[item_class] = items
+      end
+    end
+    @items
+  end
+
+  # We use a method in lib/zoom_search.rb to find all private items the current user has access to
+  # (should be faster than a bunch of mysql queries - might be an interesting thing to benchmark)
+  def private_related_items_for(item, options={})
+    @items = Hash.new
+    item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
+    item_classes.each do |item_class|
+      items = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
+      @items[item_class] = options[:count_only] ? items.size : items
+    end
+    @items
+  end
+
+  # Link to the related items of a certain item
+  def link_to_related_items_of(item, zoom_class, options={}, location={})
+    options = { :link_text => "View items related to #{item.title}" }.merge(options)
+    location = { :urlified_name => @site_basket.urlified_name,
+                 :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
+                 :source_controller_singular => zoom_class_controller(item.class.name).singularize,
+                 :source_item => item }.merge(location)
+    related_item_url = (location[:privacy_type] == 'private') ? basket_all_private_related_to_path(location) :
+                                                                basket_all_related_to_path(location)
+    link_to options[:link_text], related_item_url, { :class => 'small' }
+  end
+
+  # Creates the item list for display
+  def related_items_display_of(items, options={})
+    return '' if items.blank?
+    unless options[:display_num].nil?
+      display_num = options[:display_num]
+      items = Array.new if display_num == 0
+      items = items[0..(display_num - 1)] if display_num > 0
+    end
+    display_html = String.new
+    display_html += options[:are_still_images] ? '<ul class="results-list images-list">' : '<ul>'
+    items.each_with_index do |related_item,index|
+      li_class = index == 0 ? 'first' : ''
+      if related_item.is_a?(Hash)
+        if related_item.is_a?(Hash) && !related_item[:thumbnail].blank?
+          display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
+        else
+          display_html += "<li class='#{li_class}'>#{link_to(related_item[:title], related_item[:url])}</li>"
+        end
+      elsif related_item.is_a?(StillImage)
+        display_html += "<li class='#{li_class}'>#{related_image_link_for(related_item, options)}</li>"
+      else
+        display_html += "<li class='#{li_class}'>#{link_to_item(related_item)}</li>"
+      end
+    end
+    if (options[:item] && options[:zoom_class] && options[:display_num] && options[:total_num]) &&
+          (options[:total_num] > options[:display_num])
+      display_html += "<li>"
+      more_num = options[:total_num] - options[:display_num]
+      display_html += link_to_related_items_of(options[:item], options[:zoom_class], { :link_text => "#{more_num.to_s} more like this &gt;&gt;" }, { :privacy_type => options[:privacy_type] })
+      display_html += "</li>"
+    end
+    display_html += "</ul>"
+    display_html
+  end
+
+  # Creates an image and wraps in within a link tag
+  def related_image_link_for(still_image, options={})
+    options = { :privacy_type => 'public' }.merge(options)
+    if still_image.is_a?(StillImage)
+      if !still_image.thumbnail_file.nil?
+        thumb_src_value = still_image.already_at_blank_version? ? '/images/pending.jpg' :
+                                                                  still_image.thumbnail_file.public_filename
+        link_text = image_tag(thumb_src_value, { :size => still_image.thumbnail_file.image_size,
+                                                 :alt => "#{still_image.title}. " })
+      else
+        link_text = 'only available as original'
+      end
+      link_location = { :urlified_name => still_image.basket.urlified_name,
+                        :controller => 'images', :action => 'show', :id => still_image,
+                        :private => (options[:privacy_type] == 'private') }
+    else
+      thumb_src_value = still_image[:thumbnail][:src]
+      link_text = image_tag(thumb_src_value, { :width => still_image[:thumbnail][:width],
+                                               :height => still_image[:thumbnail][:height],
+                                               :alt => "#{still_image[:title]}. " })
+      link_location = still_image[:url]
+    end
+    link_to(link_text, link_location)
+  end
+
+  def link_to_related_item_function(options={})
+    options = { :link_text => "#{options[:function].capitalize} an Existing Related Item" }.merge(options)
+    link_text = options.delete(:link_text)
+    disabled = false
+    disabled = true if options[:function] == 'remove' && @total_item_counts < 1
+    if options[:function] == 'restore'
+      restore_count = ContentItemRelation::Deleted.count(:conditions => { :topic_id => options[:relate_to_topic] })
+      disabled = true if restore_count < 1
+      link_text += " (#{restore_count})"
+    end
+    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), 
+                                                     { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
+    content_tag('li', link)
   end
 
   def link_to_add_set_of_related_items(options={})
-    return link_to(options[:phrase],
-                   :controller => 'importers',
-                   :action => 'new_related_set_from_archive_file',
-                   :zoom_class => options[:zoom_class],
-                   :relate_to_topic => options[:relate_to_topic])
+    options = { :link_text => "Import Set of Related Items" }.merge(options)
+    link_text = options.delete(:link_text)
+    link = link_to(link_text, { :controller => 'importers',
+                                :action => 'new_related_set_from_archive_file',
+                                :relate_to_topic => options[:relate_to_topic] })
+    content_tag('li', link)
   end
 
-  def link_to_link_related_item(options={})
-    link_to("link to existing #{zoom_class_humanize(options[:related_class]).downcase}", {
-                     :controller => 'search',
-                     :action => :find_related,
-                     :related_class => options[:related_class],
-                     :relate_to_topic => options[:relate_to_topic],
-                     :function => "add" },
-                     {:popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes']})
-  end
+  #
+  # END RELATED ITEM HELPERS
+  #
 
-  def link_to_unlink_related_item(options={})
-    link_to("Unlink #{zoom_class_humanize(options[:related_class]).downcase}", {
-                     :controller => 'search',
-                     :action => :find_related,
-                     :related_class => options[:related_class],
-                     :relate_to_topic => options[:relate_to_topic],
-                     :function => "remove" },
-                     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
-  end
-
-  def link_to_restore_related_item(options={})
-    link_to("Restore previously linked #{zoom_class_humanize(options[:related_class]).downcase}", {
-                     :controller => 'search',
-                     :action => :find_related,
-                     :related_class => options[:related_class],
-                     :relate_to_topic => options[:relate_to_topic],
-                     :function => "restore" },
-                     :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'])
-  end
-
-  def item_related_topics_wrapper(options={})
-    beginning_html = %q(
-                    <div id="detail-linked">)
-    if options[:topics].nil?
-      beginning_html += "
-                        <h3>This #{options[:class_phrase]} is not related to any topics at this time.</h3>"
-    else
-      beginning_html += "
-                        <div class=\"secondary-content-section-wrapper-blue\">
-                        <div id=\"related-link\" class=\"secondary-content-section\">
-                        <h3>Related Topics:</h3>"
-    end
-    beginning_html +=%q(
-                        <div id="related_topics">)
-
-    middle_html = String.new
-    if !options[:topics].blank?
-      middle_html = related_items_links(:source_item => options[:source_item], :related_class => 'Topic', :items => options[:topics], :pipe_list => :true )
-    end
-
-    end_html = %q(
-                        </div>
-                        <div class="cleaner">&nbsp;</div>
-                        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-                        </div>
-                        </div>
-                </div>)
-    return beginning_html + middle_html + end_html
-  end
-
-  def related_items_links(options={})
-    source_item = options[:source_item]
-    related_class = options[:related_class]
-
-    items = Array.new
-    if options[:items].nil?
-      if related_class != 'Topic'
-        items = source_item.send(related_class.tableize)
-        items = items.find_all_non_pending if items.size > 0
-      else
-        items = source_item.send('related_topics', :only_non_pending => true)
-      end
-    else
-      items = options[:items]
-    end
-
-    relate_to_topic = source_item.class.name == 'Topic' ? source_item : nil
-
-    last_item_n = 0
-    if related_class == 'StillImage'
-      last_item_n = NUMBER_OF_RELATED_IMAGES_TO_DISPLAY
-    else
-      last_item_n = NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE
-    end
-
-    end_range = last_item_n - 1
-
-    more_message = String.new
-    if items.size > last_item_n
-      more_items_n = items.size - last_item_n
-      more_message = "#{more_items_n.to_s} more like this &gt;&gt;"
-    end
-
-    # use a different template for images than text based links
-    if related_class == 'StillImage'
-      template_name = 'related_images_links'
-    else
-      template_name = 'related_items_links'
-    end
-
-    render :partial => "topics/#{template_name}",
-    :locals => { :related_class => related_class,
-      :items => items,
-      :end_range => end_range,
-      :more_message => more_message,
-      :source_item => source_item,
-      :last_item_n => last_item_n,
-      :pipe_list => options[:pipe_list],
-      :relate_to_topic => relate_to_topic }
-  end
 
   # tag related helpers
   def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
@@ -1058,10 +1064,11 @@ module ApplicationHelper
   end
 
   # Check whether to show privacy controls for an item
-  def show_privacy_controls_for?(item)
-    show_privacy_controls? &&
+  def show_privacy_controls_for?(item, basket=nil)
+    basket = (basket || item.basket)
+    show_privacy_controls_for_basket?(basket) &&
       ( item.new_record? ||
-        current_user_can_see_private_files_in_basket?(item.basket) ||
+        current_user_can_see_private_files_in_basket?(basket) ||
         @current_user == item.creator )
   end
 

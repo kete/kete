@@ -49,7 +49,8 @@ class ImportersController < ApplicationController
     @import.interval_between_records = 5
     @import.import_archive_file = ImportArchiveFile.new
     @related_topic = Topic.find(params[:relate_to_topic])
-    @zoom_class = only_valid_zoom_class(params[:zoom_class]).name || 'StillImage'
+    @zoom_class_name = (params[:zoom_class] || 'StillImage')
+    @zoom_class = only_valid_zoom_class(@zoom_class_name).name
   end
 
   def create

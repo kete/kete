@@ -13,7 +13,7 @@
   </div>
   <% unless post_summary.first_related_image.blank? %>
     <div class="image-result-thumb">
-      <%= render(:partial => "topics/related_images_links_tag", :locals => { :related_item => post_summary.first_related_image }) %>
+      <%= related_image_link_for(post_summary.first_related_image) %>
     </div>
   <% end %>
   <div class="generic-result-description"><%= prepare_short_summary(post_excerpt, 100) %>

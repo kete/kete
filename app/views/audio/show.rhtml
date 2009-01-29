@@ -15,14 +15,7 @@
 
 <%= render(:partial => "topics/flagging_contributor", :locals => { :item => @audio_recording }) if current_user_can_see_flagging? -%>
 
-<% if current_user_can_see_add_links? -%>
-  <% cache ({:related => 'topics', :id => @cache_id}) do -%>
-    <%= item_related_topics_wrapper(:class_phrase => 'web link',
-                                    :source_item => @audio_recording,
-                                    :source_item_class => 'WebLink',
-                                    :topics => @audio_recording.topics) -%>
-  <% end -%>
-<% end -%>
+<%= render(:partial => "topics/related_items", :locals => { :item => @audio_recording, :topics_only => true }) if current_user_can_see_add_links? -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @audio_recording }) if current_user_can_see_discussion? -%>
 

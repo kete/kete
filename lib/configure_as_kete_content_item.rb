@@ -85,5 +85,9 @@ module ConfigureAsKeteContentItem
     include FriendlyUrls
     alias :to_param :format_for_friendly_urls
     
+    def to_i
+      id
+    end
+
   end
 end

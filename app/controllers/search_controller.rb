@@ -353,111 +353,6 @@ class SearchController < ApplicationController
     @search.pqf_query = PqfQuery.new
   end
 
-  # grab the values we want from the zoom_record
-  # and return them as a hash
-  # zoom_record has been extended to be a nokogiri doc (http://nokogiri.rubyforge.org/nokogiri/)
-  # and contains a lot of convenience methods to grab parts of the record
-  # see vendor/plugins/acts_as_zoom/lib/record.rb
-  def parse_from_xml_in(zoom_record)
-    # work through record and grab the values
-    # there maybe multiples of the same element
-    # we only want the first by convention
-    result_hash = Hash.new
-
-    # we should be able to deduce the class
-    # whether the result is local
-    # and the object's id from the oai_identifier
-    oai_identifier = zoom_record.oai_identifier
-
-    local_re = Regexp.new("^#{ZoomDb.zoom_id_stub}")
-    class_id_re = Regexp.new("([^:]+):([0-9]+)$")
-
-    class_id_match = oai_identifier.match class_id_re
-    # index 0 is whole matching string
-    result_hash[:class] = class_id_match[1]
-    result_hash[:id] = class_id_match[2]
-
-    if oai_identifier =~ local_re
-      result_hash[:locally_hosted] = true
-    else
-      result_hash[:locally_hosted] = false
-    end
-
-    # make this nil by default
-    # overwrite for local results with actual thumbnail object
-    result_hash[:thumbnail] = nil
-    result_hash[:media_content] = nil
-    if ATTACHABLE_CLASSES.include?(result_hash[:class])
-      thumbnail_xml = zoom_record.root.at(".//xmlns:thumbnail", zoom_record.root.namespaces)
-      unless thumbnail_xml.blank?
-        result_hash[:thumbnail] = thumbnail_xml.attributes.symbolize_keys
-        result_hash[:thumbnail].each { |k, v| result_hash[:thumbnail][k] = v.value }
-      end
-
-      media_content_xml = zoom_record.root.at(".//xmlns:media_content", zoom_record.root.namespaces)
-      unless media_content_xml.blank?
-        result_hash[:media_content] = media_content_xml.attributes.symbolize_keys
-        result_hash[:media_content].each { |k, v| result_hash[:media_content][k] = v.value }
-      end
-    end
-
-    # get the oai_dc element
-    # which we can use xpath to search
-    # for all our standard dc element values
-    oai_dc = zoom_record.to_oai_dc
-
-    desired_fields = [['identifier', 'url'],
-                      ['title'],
-                      ['description', 'short_summary'],
-                      ['date']]
-
-    desired_fields.each do |field|
-      # make xpath request to get first instance of the desired field's value
-      # (dc elements may be used more than once)
-      field_value = oai_dc.xpath(".//dc:#{field[0]}", oai_dc.namespaces).first.content
-
-      # description may sometimes be nil so if it is, skip this element so we don't get 500 errors
-      next if field_value.nil?
-
-      field_name = String.new
-      if field[1].nil?
-        field_name = field[0]
-      else
-        field_name = field[1]
-      end
-
-      # may want to truncate short_summary
-      field_value = prepare_short_summary(field_value) if field_name == 'short_summary'
-
-      result_hash[field_name.to_sym] = field_value
-    end
-
-    related_items = zoom_record.root.at(".//xmlns:related_items", zoom_record.root.namespaces)
-    unless related_items.blank?
-      result_hash[:related] = Hash.new
-      result_hash[:related][:counts] = Hash.new
-      # we have to use the .value to retrieve the actual value, otherwise it is returned as a Nokogiri::XML:Attr object
-      related_items.attributes.each { |k, v| result_hash[:related][:counts][k.to_sym] = v.value }
-      result_hash[:related][:still_images] = Hash.new
-      zoom_record.root.xpath(".//xmlns:still_image", zoom_record.root.namespaces).each do |image_xml|
-        image_attributes = Hash.new
-        image_xml.attributes.each { |k, v| image_attributes[k.to_sym] = v.value }
-        key = image_attributes[:relation_order]
-        image_attributes.delete(:relation_order)
-        result_hash[:related][:still_images][key] = image_attributes
-        result_hash[:related][:still_images][key][:thumbnail] = Hash.new
-        image_xml.at(".//xmlns:thumbnail", zoom_record.root.namespaces).attributes.each do |k, v|
-          result_hash[:related][:still_images][key][:thumbnail][k.to_sym] = v.value
-        end
-      end
-    end
-
-    logger.debug("what is result_hash: " + result_hash.inspect)
-
-
-    return result_hash
-  end
-
   def redirect_to_default_all
     redirect_to basket_all_url(:controller_name_for_zoom_class => zoom_class_controller(DEFAULT_SEARCH_CLASS))
   end
@@ -803,9 +698,10 @@ class SearchController < ApplicationController
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_related
     @current_topic = Topic.find(params[:relate_to_topic])
-    related_class_is_topic = params[:related_class] == "Topic" ? true : false
+    @related_class = (params[:related_class] || "Topic")
+    related_class_is_topic = @related_class == "Topic" ? true : false
     # this will throw exception if passed in related_class isn't valid
-    related_class = only_valid_zoom_class(params[:related_class])
+    related_class = only_valid_zoom_class(@related_class)
     related_class_name = related_class.name
 
     # there is an instance variable for each zoom_class

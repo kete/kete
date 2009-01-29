@@ -8,6 +8,8 @@ zoom_class = zoom_class_from_controller(controller)
 # helps here. We have to pass in the intended basket via an instance variable (used in ajax add item forms)
 @basket = (Basket.find_by_urlified_name(@new_item_basket) || @current_basket)
 
+@relate_to_topic = (@relate_to_topic || params[:relate_to_topic])
+
 # @item is passed in from the ajax add item forms, so only set it if not already set
 @item ||= current_item
 
@@ -53,8 +55,8 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
-    <% unless params[:relate_to_topic].nil? -%>
-      <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] -%>
+    <% unless @relate_to_topic.nil? -%>
+      <%= hidden_field_tag "relate_to_topic", @relate_to_topic -%>
     <% end -%>
 
     <% if @item_type == :document && !params[:is_theme].nil? && @site_admin -%>
@@ -118,7 +120,7 @@ zoom_class = zoom_class_from_controller(controller)
       <% if params[@item_type] && params[@item_type][:file_private]; file_private = params[@item_type][:file_private] == 'true' ? true : false
          elsif @editing && !@item.file_private.nil?; file_private = @item.file_private?
          else; file_private = @basket.file_private_default_with_inheritance?; end -%>
-      <% if show_privacy_controls_for?(@item) %>
+      <% if show_privacy_controls_for?(@item, @basket) %>
         <%= form.radio_button :file_private,
                               [ ['Can be downloaded by everyone', false,
                                   { :label_for => "#{@item_type.to_s}_file_private_false",
@@ -133,6 +135,12 @@ zoom_class = zoom_class_from_controller(controller)
       <% else -%>
         <%= form.hidden_field :file_private, :value => file_private -%>
       <% end -%>
+      <%# Most of the time, if someone chooses private item, they want private file as well.
+        Use JS to auto select it for them -%>
+      <%= javascript_tag "
+        $('#{@item_type.to_s}_private_true').observe('click', function(){ $('#{@item_type.to_s}_file_private_true').checked = true; });
+        $('#{@item_type.to_s}_private_false').observe('click', function(){ $('#{@item_type.to_s}_file_private_false').checked = true; });
+      " -%>
     <% end -%>
 
     <% if @item_type == :web_link && (show_privacy_controls_for?(@item) || !@editing) -%>

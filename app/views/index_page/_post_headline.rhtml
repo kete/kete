@@ -7,7 +7,7 @@
 <div class="generic-result-wrapper" id="item_<%= post_headline.id %>_wrapper">
   <% unless post_headline.first_related_image.blank? %>
     <div class="image-result-thumb">
-      <%= render(:partial => "topics/related_images_links_tag", :locals => { :related_item => post_headline.first_related_image }) %>
+      <%= related_image_link_for(post_headline.first_related_image) %>
     </div>
   <% end %>
   <div class="generic-result-header">

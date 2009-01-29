@@ -2,13 +2,6 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
 
-  # these are commonly used across controllers
-  if Object.const_defined?(:BLANK_TITLE) && Object.const_defined?(:NO_PUBLIC_VERSION_TITLE)
-    PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
-  else
-    PUBLIC_CONDITIONS = "title IS NOT NULL"
-  end
-
   # See lib/ssl_helpers.rb
   include SslHelpers
 
@@ -19,6 +12,8 @@ class ApplicationController < ActionController::Base
   include FriendlyUrls
 
   include Utf8UrlFor
+
+  include ZoomSearch
 
   # for the remember me functionality
   before_filter :login_from_cookie
@@ -249,19 +244,19 @@ class ApplicationController < ActionController::Base
     if ZOOM_CLASSES.include?(item_class)
       if !params[item_class_for_param_key].nil? && @site_admin
         params[item_class_for_param_key][:do_not_moderate] = true
-        
+
       # James - Allow an item to be exempted from moderation - this allows for items that have been edited by a moderator prior to
       # acceptance or reversion to be passed through without needing a second moderation pass.
       # Only applicable usage can be found in lib/flagging_controller.rb line 93 (also see 2x methods below).
       elsif !params[item_class_for_param_key].nil? && exempt_from_moderation?(params[:id], item_class)
         params[item_class_for_param_key][:do_not_moderate] = true
-        
+
       elsif !params[item_class_for_param_key].nil? && !params[item_class_for_param_key][:do_not_moderate].nil?
         params[item_class_for_param_key][:do_not_moderate] = false
       end
     end
   end
-  
+
   # James - Allow us to flag a version as except from moderation
   def exempt_next_version_from_moderation!(item)
     session[:moderation_exempt_item] = {
@@ -269,18 +264,18 @@ class ApplicationController < ActionController::Base
       :item_id => item.id.to_s
     }
   end
-  
+
   # James - Find whether an item is exempt from moderation. Used in #set_do_not_moderate_if_site_admin_or_exempted
   # Note that this can only be used once, so when this is called, the exemption on the item is cleared and future versions will
   # be moderated if full moderation is turned on.
   def exempt_from_moderation?(item_id, item_class_name)
     key = session[:moderation_exempt_item]
     return false if key.blank?
-    
+
     result = ( item_class_name == key[:item_class_name] && item_id.to_s.split("-").first == key[:item_id] )
-      
+
     session[:moderation_exempt_item] = nil
-    
+
     return result
   end
 
@@ -477,7 +472,7 @@ class ApplicationController < ActionController::Base
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment_for_all_versions(item, { :action => 'show', :id => item, :related => zoom_class_controller(zoom_class) })
+          expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :related => zoom_class_controller(zoom_class) })
           related_items = Array.new
           if zoom_class == 'Topic'
             related_items += item.related_topics
@@ -506,6 +501,10 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+    related << 'public_query'
+    related << 'related-tools-create-or-link-or-remove'
+    related << 'related-tools-restore'
+    related << 'related-tools-import'
     related.each do |related_controller|
       expire_fragment_for_all_versions(item,
                                        { :urlified_name => item.basket.urlified_name,
@@ -513,15 +512,6 @@ class ApplicationController < ActionController::Base
                                          :action => 'show',
                                          :id => item,
                                          :related => related_controller} )
-      # we have two more caches for controls for those that are privileged
-      ['restore', 'upload_archive'].each do |sub_part|
-        expire_fragment_for_all_versions(item,
-                                         { :urlified_name => item.basket.urlified_name,
-                                           :controller => zoom_class_controller(item.class.name),
-                                           :action => 'show',
-                                           :id => item,
-                                           :related => "#{related_controller}_#{sub_part}" })
-      end
     end
   end
 
@@ -678,7 +668,7 @@ class ApplicationController < ActionController::Base
     where_to_redirect = 'show_self'
     if !commented_item.nil? and @successful
       where_to_redirect = 'commentable'
-    elsif params[:relate_to_topic] and @successful
+    elsif !params[:relate_to_topic].blank? and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic])
 
       add_relation_and_update_zoom_and_related_caches_for(item, @new_related_topic)
@@ -955,17 +945,17 @@ class ApplicationController < ActionController::Base
 
   def after_successful_zoom_item_update(item)
 
-    # James - 2008-12-21 
+    # James - 2008-12-21
     # Ensure the contribution is added against the latest version, not the current verrsion as it could
     # have been reverted automatically if full moderation is on for the basket.
     version = item.versions.find(:first, :order => 'version DESC').version
-    
+
     # add this to the user's empire of contributions
     # TODO: allow current_user whom is at least moderator to pick another user
     # as contributor
     # uses virtual attr as hack to pass version to << method
     item.add_as_contributor(current_user, version)
-    
+
     # if the basket has been changed, make sure comments are moved, too
     update_comments_basket_for(item, @current_basket)
 

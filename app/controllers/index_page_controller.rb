@@ -68,11 +68,6 @@ class IndexPageController < ApplicationController
             end
           end
 
-          if !@current_basket.index_page_archives_as.blank? and @current_basket.index_page_archives_as == 'by type'
-            # what are the stats on what's in the basket?
-            stats_by_type_for(@current_basket)
-          end
-
           # prepare blog list of most recent topics
           # replace limit with param from basket
           @recent_topics_limit = @current_basket.index_page_number_of_recent_topics

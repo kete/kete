@@ -318,12 +318,14 @@ class BasketsController < ApplicationController
 
     redirect_to :urlified_name => params[:new_item_basket],
                 :controller => params[:new_item_controller],
-                :action => 'new'
+                :action => 'new',
+                :relate_to_topic => params[:relate_to_topic]
   end
 
   def render_item_form
     @new_item_basket = params[:new_item_basket]
     @new_item_controller = params[:new_item_controller]
+    @relate_to_topic = params[:relate_to_topic]
     params[:topic] = Hash.new
     params[:topic][:topic_type_id] = params[:new_item_topic_type]
 

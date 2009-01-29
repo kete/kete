@@ -268,12 +268,14 @@ module ItemPrivacy
 
   module AttachmentFuOverload
 
+    attr_accessor :force_privacy
+
     def file_private=(*args)
 
       # File privacy can only go private => public as a public file cannot
       # be made private at a later time due to the need for previous
       # versions have file access.
-      unless self.file_private === false
+      unless !self.force_privacy && self.file_private === false
         @old_filename ||= full_filename unless !self.respond_to?(:filename) || filename.nil?
         super(*args)
       end

@@ -33,6 +33,15 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2009/01/29 - Fixing incorrect storage location of image thumbnails
+
+1.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
+2.      Run the following:
+           rake kete:repair:make_thumbnails_private
+3.      Restart your mongrels or mod_rails
+4.      Clear your sites cache
+           rake tmp:cache:clear
+
 == 2009/01/27 - Enable Harvesting of Embedded Metadata in Uploaded Files
 
 1.      Stop your Kete server (mongrels or mod_rails).

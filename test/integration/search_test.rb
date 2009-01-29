@@ -24,9 +24,9 @@ class SearchTest < ActionController::IntegrationTest
 
       should_eventually "show thumbnail for related image"
       # should "show thumbnail for related image" do
-#         browse_for(@topic)
-#         body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{@first_image.thumbnail_file.public_filename}\">")
-#       end
+      #         browse_for(@topic)
+      #         body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{@first_image.thumbnail_file.public_filename}\">")
+      #       end
 
       should "after the relationship with an image was unlinked should not have a thumbnail for image" do
         unlink_relation_between(@topic, 'StillImage', [@first_image.id])
@@ -37,24 +37,24 @@ class SearchTest < ActionController::IntegrationTest
 
     should_eventually "topic with more than 5 related images should only show first 5 image thumbnails"
     # should "topic with more than 5 related images should only show first 5 image thumbnails" do
-#       images = Array.new
-#       1.upto(6) do |i|
-#         images << new_still_image(:title => 'image ' + i.to_s) { attach_file "image_file_uploaded_data", "white.jpg"}
-#       end
-#       image_ids = images.collect { |image| image.id}
-#       add_relation_between(@topic, 'StillImage', image_ids)
+    #       images = Array.new
+    #       1.upto(6) do |i|
+    #         images << new_still_image(:title => 'image ' + i.to_s) { attach_file "image_file_uploaded_data", "white.jpg"}
+    #       end
+    #       image_ids = images.collect { |image| image.id}
+    #       add_relation_between(@topic, 'StillImage', image_ids)
 
-#       browse_for(@topic)
-#       images.each do |image|
-#         # index 5 is actually the six item, because we are dealing with array indexes, blah blah blah
-#         # so we don't want to see a match for the sixth image
-#         unless images.index(image) < 5
-#           body_should_not_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
-#         else
-#           body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
-#         end
-#       end
-    end
+    #       browse_for(@topic)
+    #       images.each do |image|
+    #         # index 5 is actually the six item, because we are dealing with array indexes, blah blah blah
+    #         # so we don't want to see a match for the sixth image
+    #         unless images.index(image) < 5
+    #           body_should_not_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
+    #         else
+    #           body_should_contain Regexp.new("<img (.+)src=\"#{SITE_URL}#{image.thumbnail_file.public_filename}\">")
+    #         end
+    #       end
+    # end
   end
 
   ['jane', 'īōūāē', 'a&b'].each do |login|
