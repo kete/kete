@@ -18,6 +18,10 @@ module Embedded
 
     # this does the bulk of the work
     def populate_attributes_from_embedded_in(file_path)
+      # if there is no file we just leave it up to validation
+      # to sort out what needs doing
+      return unless File.exist?(file_path)
+
       # read the metadata from the file and load it into embedded attribute
       mini_exiftool = MiniExiftool.new(file_path)
       embedded_hash = Hash.new
