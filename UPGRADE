@@ -39,6 +39,8 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 2.      Run the following:
            rake kete:repair:make_thumbnails_private
 3.      Restart your mongrels or mod_rails
+4.      Clear your sites cache
+           rake tmp:cache:clear
 
 == 2008/11/12 - Better handling of unicode characters in search records
 

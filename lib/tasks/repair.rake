@@ -203,23 +203,22 @@ namespace :kete do
     
     desc "Makes sure thumbnails are stored in the correct privacy for their still image"
     task :make_thumbnails_private => :environment do
-      puts "Getting all StillImages and their ImageFiles\n"
-      still_images = StillImage.find_all_by_file_private(false, :include => :image_files)
+      puts "Getting all private StillImages and their public ImageFiles\n"
+      still_images = StillImage.find_all_by_file_private(true)
       still_images.each do |still_image|
-        should_be_private = still_image.file_private?
         any_public_thumbnails = false
-        still_image.image_files.each do |image_file|
-          next if image_file.file_private?
+        still_image.image_files.find_all_by_file_private(false).each do |image_file|
           any_public_thumbnails = true
-          from = File.join(RAILS_ROOT, 'public', image_file.public_filename)
-          to = File.join(RAILS_ROOT, 'private', image_file.public_filename)
+          file_path = image_file.public_filename
+          from = File.join(RAILS_ROOT, 'public', file_path)
+          to = File.join(RAILS_ROOT, 'private', file_path)
           #puts "Moving #{from.gsub(RAILS_ROOT, "")} to #{to.gsub(RAILS_ROOT, "")}"
           FileUtils.mv(from, to)
           image_file.force_privacy = true
           image_file.file_private = true
           image_file.save!
         end
-        puts "Moving thumnails for still image #{still_image.id} to the private directory." if any_public_thumbnails
+        puts "Moving public thumnails for private still image #{still_image.id} to the private directory." if any_public_thumbnails
       end
     end
 
