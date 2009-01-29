@@ -6,7 +6,7 @@ namespace :kete do
   namespace :repair do
     
     # Run all tasks
-    task :all => ['kete:repair:fix_topic_versions', 'kete:repair:set_missing_contributors']
+    task :all => ['kete:repair:fix_topic_versions', 'kete:repair:set_missing_contributors', 'kete:repair:make_thumbnails_private']
     
     desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
     task :fix_topic_versions => :environment do
@@ -201,5 +201,26 @@ namespace :kete do
       end
     end
     
+    desc "Makes sure thumbnails are stored in the correct privacy for their still image"
+    task :make_thumbnails_private => :environment do
+      puts "Getting all private StillImages and their public ImageFiles\n"
+      still_images = StillImage.find_all_by_file_private(true)
+      still_images.each do |still_image|
+        any_public_thumbnails = false
+        still_image.image_files.find_all_by_file_private(false).each do |image_file|
+          any_public_thumbnails = true
+          file_path = image_file.public_filename
+          from = File.join(RAILS_ROOT, 'public', file_path)
+          to = File.join(RAILS_ROOT, 'private', file_path)
+          #puts "Moving #{from.gsub(RAILS_ROOT, "")} to #{to.gsub(RAILS_ROOT, "")}"
+          FileUtils.mv(from, to)
+          image_file.force_privacy = true
+          image_file.file_private = true
+          image_file.save!
+        end
+        puts "Moving public thumnails for private still image #{still_image.id} to the private directory." if any_public_thumbnails
+      end
+    end
+
   end
 end

@@ -1064,10 +1064,11 @@ module ApplicationHelper
   end
 
   # Check whether to show privacy controls for an item
-  def show_privacy_controls_for?(item)
-    show_privacy_controls? &&
+  def show_privacy_controls_for?(item, basket=nil)
+    basket = (basket || item.basket)
+    show_privacy_controls_for_basket?(basket) &&
       ( item.new_record? ||
-        current_user_can_see_private_files_in_basket?(item.basket) ||
+        current_user_can_see_private_files_in_basket?(basket) ||
         @current_user == item.creator )
   end
 
