@@ -557,7 +557,14 @@ class ApplicationController < ActionController::Base
   def has_fragment?(name = {})
     # strip out everything after id (title in friendly url)
     name[:id] = name[:id].to_i unless name[:id].blank?
-    File.exists?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache")
+    File.exist?("#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache")
+  end
+
+  # rss fragment caching
+  # is only one big fragment now
+  # so we can do a simple implementation
+  def has_all_rss_fragments?(cache_key_hash)
+    has_fragment?(cache_key_hash)
   end
 
   # used by show actions to determine whether to load item
@@ -609,14 +616,19 @@ class ApplicationController < ActionController::Base
       basket ||= @current_basket
     end
 
+    # we go with a regexp (WARNING, assumes fs caching)
+    # so we can clear 'all' and 'search' caches that might need to be expired
     # since site searches all other baskets, too
     # we need to expire it's cache, too
-    if @current_basket != @site_basket
-      expire_page(:controller => 'search', :action => 'rss', :urlified_name => @site_basket.urlified_name, :controller_name_for_zoom_class => params[:controller])
+    %w(all search).each do |pattern|
+      unless basket == @site_basket
+        r = /#{@site_basket.urlified_name}\/#{pattern}\/.+/
+        expire_fragment(r)
+      end
+
+      r = /#{basket.urlified_name}\/#{pattern}\/.+/
+      expire_fragment(r)
     end
-
-    expire_page(:controller => 'search', :action => 'rss', :urlified_name => basket.urlified_name, :controller_name_for_zoom_class => params[:controller])
-
   end
 
   def redirect_to_related_topic(topic_id)

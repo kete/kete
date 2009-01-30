@@ -1,61 +1,67 @@
-@title = title_setup_first_part(SITE_NAME + ' - Latest 50 Results in ') + last_part_of_title_for_rss_if_refinement_of
-xml.instruct! :xml, :version=>"1.0"
-xml.rss(:version=>"2.0", "xmlns:media".to_sym => "http://search.yahoo.com/mrss"){
-  xml.channel{
-    xml.title(@title)
-    xml.link(request.protocol + request.host + request.request_uri)
-    xml.description("Showing #{@start} - #{@end_record} results of #{@result_sets[@current_class].size}")
-    xml.language('en-nz')
-    for result in @results
-      xml.item do
-        xml.title(result[:title])
-        short_summary = strip_tags(result[:short_summary].to_s)
+cache (@cache_key_hash) do
+  blather = params[:page] && params[:page].to_i > 1 ? 'Next' : 'Latest'
+  @title = title_setup_first_part(SITE_NAME + " - #{blather} 50 Results in ") + last_part_of_title_for_rss_if_refinement_of
+  xml.instruct! :xml, :version=>"1.0"
+  xml.rss(:version=>"2.0",
+          "xmlns:media".to_sym => "http://search.yahoo.com/mrss",
+          "xmlns:atom".to_sym => "http://www.w3.org/2005/Atom"){
+    xml.channel{
+      will_paginate_atom(@results, xml)
+      xml.title(@title)
+      xml.link(request.protocol + request.host + request.request_uri)
+      xml.description("Showing #{@start} - #{@end_record} results of #{@result_sets[@current_class].size}")
+      xml.language('en-nz')
+      for result in @results
+        xml.item do
+          xml.title(result[:title])
+          short_summary = strip_tags(result[:short_summary].to_s)
 
-        # this enables things like cooliris (http://cooliris.com)
-        # note that it goes before short summary may have the thumbnail added
-        # so as not to include it in media:description
-        # also handles podcasts with inclusion of backwards compatible enclosure tag
-        unless result[:media_content].blank?
-          xml.tag!("media:content".to_sym, :url => result[:media_content][:src], :type => result[:media_content][:content_type])
-          xml.tag!("media:description".to_sym, short_summary)
+          # this enables things like cooliris (http://cooliris.com)
+          # note that it goes before short summary may have the thumbnail added
+          # so as not to include it in media:description
+          # also handles podcasts with inclusion of backwards compatible enclosure tag
+          unless result[:media_content].blank?
+            xml.tag!("media:content".to_sym, :url => result[:media_content][:src], :type => result[:media_content][:content_type])
+            xml.tag!("media:description".to_sym, short_summary)
 
-          xml.enclosure(:url => result[:media_content][:src], :type => result[:media_content][:content_type], :length => result[:media_content][:size])
-        end
-
-        unless result[:thumbnail].blank?
-          thumbnail_html = render(:partial => 'thumb_image_tag',
-                             :locals => { :thumbnail => result[:thumbnail],
-                               :title => result[:title] })
-          short_summary = thumbnail_html + short_summary
-        end
-
-        unless result[:medium].blank?
-          xml.tag!("media:thumbnail".to_sym, :url => result[:medium][:src])
-        end
-
-        # include thumbnails of related images for topics
-        # and totals of related items for everything
-        if result[:related]
-          related = result[:related]
-          related_string = '<p>Related: '
-          totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) }
-          related_string += totals_array.to_sentence + '</p>'
-
-          if !related[:still_images].blank?
-            related_string += "<p>"
-            related_string += topic_related_thumbs_from(related[:still_images])
-            related_string += "</p>"
+            xml.enclosure(:url => result[:media_content][:src], :type => result[:media_content][:content_type], :length => result[:media_content][:size])
           end
-          short_summary = short_summary + related_string
+
+          unless result[:thumbnail].blank?
+            thumbnail_html = render(:partial => 'thumb_image_tag',
+                                    :locals => { :thumbnail => result[:thumbnail],
+                                      :title => result[:title] })
+            short_summary = thumbnail_html + short_summary
+          end
+
+          unless result[:medium].blank?
+            xml.tag!("media:thumbnail".to_sym, :url => result[:medium][:src])
+          end
+
+          # include thumbnails of related images for topics
+          # and totals of related items for everything
+          if result[:related]
+            related = result[:related]
+            related_string = '<p>Related: '
+            totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) }
+            related_string += totals_array.to_sentence + '</p>'
+
+            if !related[:still_images].blank?
+              related_string += "<p>"
+              related_string += topic_related_thumbs_from(related[:still_images])
+              related_string += "</p>"
+            end
+            short_summary = short_summary + related_string
+          end
+
+          xml.description(short_summary)
+
+          # rfc822
+          xml.pubDate(result[:date])
+          xml.link(result[:url])
+          xml.guid(result[:url])
         end
-
-        xml.description(short_summary)
-
-        # rfc822
-        xml.pubDate(result[:date])
-        xml.link(result[:url])
-        xml.guid(result[:url])
       end
-    end
+    }
   }
-}
+end
