@@ -761,7 +761,9 @@ module ApplicationHelper
 
       value_output = value_output.to_s
 
-      # we prepend base_url to the value, for the extended_field if it is set
+      # we prepend base_url to the value here
+      # for the extended_field if it is set
+      # but only if it hasn't been done previously in other formatting
       base_url = field.base_url
       unless base_url.blank? || %w(map map_address choice autocompletion).include?(field.ftype)
         value_output = link_to(value_output, base_url + value_output)
@@ -785,6 +787,7 @@ module ApplicationHelper
 
   def formatted_value_from_xml(value, ef = nil, item = nil)
     if ef && %w(autocomplete choice).member?(ef.ftype)
+      base_url = ef.base_url
 
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
@@ -801,7 +804,14 @@ module ApplicationHelper
       end
 
       value.map do |v|
-        link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
+        # the extended field's base_url takes precedence over
+        # normal behavior creating a link to results
+        # limited to choice for an extended field (a.k.a category_url in method names)
+        unless base_url.blank?
+          link_to(v, base_url + v)
+        else
+          link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
+        end
       end.join(" &raquo; ")
 
     else
