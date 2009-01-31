@@ -583,7 +583,7 @@ module ApplicationHelper
       disabled = true if restore_count < 1
       link_text += " (#{restore_count})"
     end
-    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), 
+    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options),
                                                      { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
     content_tag('li', link)
   end
@@ -719,9 +719,6 @@ module ApplicationHelper
 
       value = formatted_extended_content_value(field, field_name, value, item)
 
-      base_url = field.base_url
-      value = base_url + value unless base_url.blank?
-
       if field.ftype == 'map' || field.ftype == 'map_address'
         td = content_tag("td", "#{field.label}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
       else
@@ -739,14 +736,50 @@ module ApplicationHelper
   end
 
   def formatted_extended_content_value(field, field_name, value, item)
-    if field.ftype == 'map'
-      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map', false, true, false)
-    elsif field.ftype == 'map_address'
-      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map_address', false, true, true)
-    elsif field.multiple?
-      value.collect { |v| formatted_value_from_xml(v, field, item) }.to_sentence
+    # handle if the field is multiple
+    values = Array.new
+    if field.multiple?
+      values = value
     else
-      formatted_value_from_xml(value, field, item)
+      values << value
+    end
+
+    # create an array of the result from processing each value
+    # that way, if we need to, we can join on a bit of html code
+    # or do "to_sentence" on the array
+    output_array = Array.new
+
+    values.each do |value_input|
+      value_output = \
+      if field.ftype == 'map'
+        extended_field_map_editor(field_name, value_input, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map', false, true, false)
+      elsif field.ftype == 'map_address'
+        extended_field_map_editor(field_name, value_input, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map_address', false, true, true)
+      else
+        formatted_value_from_xml(value_input, field, item)
+      end
+
+      value_output = value_output.to_s
+
+      # we prepend base_url to the value, for the extended_field if it is set
+      base_url = field.base_url
+      unless base_url.blank? || %w(map map_address choice autocompletion).include?(field.ftype)
+        value_output = link_to(value_output, base_url + value_output)
+      end
+
+      output_array << value_output
+    end
+
+    if output_array.size > 1
+      unless %w(map map_address).include?(field.ftype)
+        output_array.to_sentence
+      else
+        # TODO: look into how best to present multiple maps
+        # they may not need any extra formatting
+        output_array.join('<br\>')
+      end
+    else
+      output_array.first
     end
   end
 
@@ -774,7 +807,7 @@ module ApplicationHelper
     else
       case value
       when /^\w+:\/\/[^ ]+/
-        # this is a url protocal of somesort, make link
+        # this is a url protocal of some sort, make link
         link_to(value, value)
       when /^\w+[^ ]*\@\w+\.\w/
         mail_to(value, value, :encode => "hex")
