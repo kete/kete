@@ -15,6 +15,7 @@ namespace :kete do
                     'kete:upgrade:check_required_software',
                     'kete:upgrade:add_missing_mime_types',
                     'kete:upgrade:correct_basket_defaults',
+                    'kete:upgrade:expire_depreciated_rss_cache',
                     'kete:upgrade:set_default_join_and_memberlist_policies',
                     'kete:upgrade:make_baskets_approved_if_status_null',
                     'kete:upgrade:ignore_default_baskets_if_setting_not_set',
@@ -225,6 +226,49 @@ namespace :kete do
       content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
       content_mapping.destroy unless content_mapping.nil?
       p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
+    end
+
+    desc 'Expire old style page caching for RSS feeds, otherwise they will conflict with new RSS caching system.'
+    task :expire_depreciated_rss_cache => :environment do
+      # needed for zoom_class_controller method
+      include ZoomControllerHelpers
+
+      # this is overkill do fully every time upgrade
+      # so check if the basket has been previously cached under public
+      Basket.find(:all).each do |basket|
+        path = RAILS_ROOT + '/public/' + basket.urlified_name
+        if File.directory?(path)
+          ZOOM_CLASSES.each do |zoom_class|
+            # here's the hack way
+            # we know RSS feed caches live under "all" or "for" directories
+            # actually, just "all" most likely, but taking no chances
+            ['all', 'for'].each do |subdir|
+              full_path = path + '/'+ subdir + '/' + zoom_class_controller(zoom_class)
+              next unless File.directory?(full_path)
+              # empty the directory files and then delete it
+              Dir.glob("#{full_path}/*") do |file|
+                File.delete(file)
+              end
+              Dir.rmdir(full_path)
+            end
+
+            # and here's the right way to do it
+            # but i was getting this error:
+            # private method `chomp' called for #<Hash:0x3e4e744>
+            # /Users/walter/Development/apps/kete/vendor/rails/actionpack/lib/action_controller/caching/pages.rb:102:in `page_cache_file'
+            # ApplicationController.expire_page(:controller => 'search',
+            #                                               :action => 'rss',
+            #                                               :urlified_name => basket.urlified_name,
+            #                                               :controller_name_for_zoom_class => zoom_class_controller(zoom_class))
+          end
+          # finally delete the unneeded all and for directories
+          ['all', 'for'].each do |subdir|
+            full_path = path + '/' + subdir
+            next unless File.directory?(full_path)
+            Dir.rmdir(full_path)
+          end
+        end
+      end
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

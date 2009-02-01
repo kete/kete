@@ -51,9 +51,13 @@ class RssTest < ActionController::IntegrationTest
       @item = new_still_image { attach_file "image_file_uploaded_data", "white.jpg" }
       visit "/site/all/images/rss.xml"
       body_should_contain "Latest 50 Results in images"
-      image_tag = "<img alt=\"Image Title. \" height=\"50\" src=\"#{@item.small_sq_file.public_filename}"
+      # this test is failing because of newline in the body before src and no other reason
+      # TODO: fix
+      image_tag = "<img alt=\"Image Title. \" height=\"50\" src=\"http://example.com#{@item.small_sq_file.public_filename}"
+      logger = RAILS_DEFAULT_LOGGER
+      logger.info("what is body: " + response.body.inspect)
       body_should_contain image_tag, :escape_chars => true
-      body_should_not_contain image_tag # the source should'nt have the unescaped image_tag
+      body_should_not_contain image_tag # the source shouldn't have the unescaped image_tag
     end
 
   end
