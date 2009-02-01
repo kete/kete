@@ -2,7 +2,8 @@ module ZoomControllerHelpers
   unless included_modules.include? ZoomControllerHelpers
     # set up our helper methods
     def self.included(klass)
-      if klass.name.scan("Worker").blank? && klass.name.scan("IntegrationTest").blank?
+      # only intended to add helper methods in app/controllers/application.rb
+      if klass.name == 'ApplicationController'
         klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :zoom_class_humanize_after
       end
     end

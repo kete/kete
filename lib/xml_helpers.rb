@@ -54,6 +54,12 @@ module XmlHelpers
 
       thumb = item.thumbnail_file
       xml.thumbnail(:height  => thumb.height, :width => thumb.width, :size => thumb.size, :src => protocol + '://' + host + thumb.public_filename)
+
+      # http://cooliris.com/'s cooliris tool likes larger thumbnails for things to look good
+      # include the medium version here, so that we may use it in Media RSS media:thumbnail tag
+      # instead of the smaller thumbnail
+      medium = item.medium_file
+      xml.medium(:height  => medium.height, :width => medium.width, :size => medium.size, :src => protocol + '://' + host + medium.public_filename)
     end
 
     # output xml intended to give us all we need to know
