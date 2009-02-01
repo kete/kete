@@ -6,17 +6,17 @@
 <% has_children = choices.select { |c| c.value == single_value }.first && choices.select { |c| c.value == single_value }.first.children.select { |c| extended_field.choices.member?(c) }.size > 0 %>
 
 <div style="margin: 3px 0; padding: 0; margin-left: <%= indent %>px">
-  <%= " Sub-category: " if level > 1 %>
+  <%= " Sub-setting: " if level > 1 %>
   <%= extended_field_choice_autocomplete_editor(name, single_value, options, extended_field, choices, level) %>
 
   <% sub_content = single_value && has_children ? render(:partial => 'extended_fields/choice_autocomplete_editor', :locals => {
-    :name => name, 
-    :value => value, 
-    :options => options, 
+    :name => name,
+    :value => value,
+    :options => options,
     :extended_field => extended_field,
     :choices => choices.select { |c| c.value == single_value }.first.children.select { |c| extended_field.choices.member?(c) },
     :level => level + 1
   }) : nil %>
-  
+
   <%= content_tag("div", sub_content, :id => "#{id_for_extended_field(extended_field)}__level_#{level}", :style => "display: inline") %>
 </div>

@@ -583,7 +583,7 @@ module ApplicationHelper
       disabled = true if restore_count < 1
       link_text += " (#{restore_count})"
     end
-    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options), 
+    link = disabled ? link_text : link_to(link_text, { :controller => 'search', :action => 'find_related' }.merge(options),
                                                      { :popup => ['links', 'height=500,width=500,scrollbars=yes,top=100,left=100,resizable=yes'] })
     content_tag('li', link)
   end
@@ -676,10 +676,21 @@ module ApplicationHelper
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
 
-  #
+  # if extended_field is passed in, use that to limit choices
+  # else if @all_choices is true, we provide them all
   def limit_search_to_choice_control
-    options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
-      memo + option_for_choice_control(choice, :level => 0)
+    options_array = Array.new
+
+    if @extended_field
+      options_array = @extended_field.choices.find_top_level.inject([]) do |memo, choice|
+        memo + option_for_choice_control(choice, :level => 0)
+      end
+    elsif @all_choices
+      options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
+        memo + option_for_choice_control(choice, :level => 0)
+      end
+    else
+      return
     end
 
     html_options_for_select = ([['', '']] + options_array).map do |k, v|
@@ -736,25 +747,64 @@ module ApplicationHelper
   end
 
   def formatted_extended_content_value(field, field_name, value, item)
-    if field.ftype == 'map'
-      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map', false, true, false)
-    elsif field.ftype == 'map_address'
-      extended_field_map_editor(field_name, value, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map_address', false, true, true)
-    elsif field.multiple?
-      value.collect { |v| formatted_value_from_xml(v, field, item) }.to_sentence
+    # handle if the field is multiple
+    values = Array.new
+    if field.multiple?
+      values = value
     else
-      formatted_value_from_xml(value, field, item)
+      values << value
+    end
+
+    # create an array of the result from processing each value
+    # that way, if we need to, we can join on a bit of html code
+    # or do "to_sentence" on the array
+    output_array = Array.new
+
+    values.each do |value_input|
+      value_output = \
+      if field.ftype == 'map'
+        extended_field_map_editor(field_name, value_input, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map', false, true, false)
+      elsif field.ftype == 'map_address'
+        extended_field_map_editor(field_name, value_input, { :style => 'width:220px;' }, { :style => 'width:220px;' }, 'map_address', false, true, true)
+      else
+        formatted_value_from_xml(value_input, field, item)
+      end
+
+      value_output = value_output.to_s
+
+      # we prepend base_url to the value here
+      # for the extended_field if it is set
+      # but only if it hasn't been done previously in other formatting
+      base_url = field.base_url
+      unless base_url.blank? || %w(map map_address choice autocomplete).include?(field.ftype)
+        value_output = link_to(value_output, base_url + value_output)
+      end
+
+      output_array << value_output
+    end
+
+    if output_array.size > 1
+      unless %w(map map_address).include?(field.ftype)
+        output_array.to_sentence
+      else
+        # TODO: look into how best to present multiple maps
+        # they may not need any extra formatting
+        output_array.join('<br\>')
+      end
+    else
+      output_array.first
     end
   end
 
   def formatted_value_from_xml(value, ef = nil, item = nil)
     if ef && %w(autocomplete choice).member?(ef.ftype)
+      base_url = ef.base_url
 
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
         :controller => 'search',
-        :extended_field => ef.label.humanize
+        :extended_field => ef.label_for_params
       }
 
       if item.respond_to?(:private?) && item.private?
@@ -765,20 +815,46 @@ module ApplicationHelper
       end
 
       value.map do |v|
-        link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
+
+        # use passed label if present
+        # otherwise value is label
+        l = v
+        if v.is_a?(Hash) && v['label']
+          l = v['label']
+          v = v['value']
+        end
+
+        # the extended field's base_url takes precedence over
+        # normal behavior creating a link to results
+        # limited to choice for an extended field (a.k.a category_url in method names)
+        unless base_url.blank?
+          link_to(l, base_url + v)
+        else
+          link_to(l, send(method, url_hash.merge(:limit_to_choice => v)))
+        end
       end.join(" &raquo; ")
 
     else
+
       value = value.first if value.is_a?(Array)
+
+      label = value
+      # use passed label if present
+      # otherwise we use value as label
+      if value.is_a?(Hash) && value['label']
+        label = value['label']
+        value = value['value']
+      end
+
       case value
       when /^(.+)\((.+)\)$/
         # something (url)
         link_to($1, $2)
       when /^\w+:\/\/[^ ]+/
-        # this is a url protocal of somesort, make link
-        link_to(value, value)
+        # this is a url protocal of some sort, make link
+        link_to(label, value)
       when /^\w+[^ ]*\@\w+\.\w/
-        mail_to(value, value, :encode => "hex")
+        mail_to(label, value, :encode => "hex")
       else
         sanitize(value)
       end

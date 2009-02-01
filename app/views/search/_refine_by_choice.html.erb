@@ -1,2 +1,6 @@
-<% control = limit_search_to_choice_control %>
-<%= content_tag("label", "Limit to category:") + control unless control.blank? %>
+<% control = limit_search_to_choice_control -%>
+<% if @extended_field -%>
+<%= content_tag("label", @extended_field.label) + control unless control.blank? %>
+<% elsif @all_choices -%>
+<%= content_tag("label", "Limit it to category?") + control unless control.blank? %>
+<% end -%>

@@ -143,7 +143,7 @@ zoom_class = zoom_class_from_controller(controller)
       " -%>
     <% end -%>
 
-    <% if @item_type == :web_link && (show_privacy_controls_for?(@item) || !@editing) -%>
+    <% if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing) -%>
       <%= form.text_field :url, { :tabindex => '1', :label => 'URL' } -%>
     <% end -%>
 

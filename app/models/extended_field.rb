@@ -1,10 +1,14 @@
 class ExtendedField < ActiveRecord::Base
   include ExtendedFieldsHelpers
-  
+
   # Choices/enumerations
   has_many :choice_mappings, :as => :field
   has_many :choices, :through => :choice_mappings
-  
+
+  # find an extended field based on label_for_params
+  # TODO: not sure this is DB agnostic enough to work with PostgreSQL
+  named_scope :from_label_for_params, lambda { |label_for_params| { :conditions => ['UPPER(label) = ?', label_for_params.upcase.gsub('_', ' ')] } }
+
   # James - 2008-12-05
   # Ensure attributes that when changed could be potentially destructive on existing data cannot
   # be changed after the initial save.
@@ -21,17 +25,31 @@ class ExtendedField < ActiveRecord::Base
   end
 
   def topic_type=(value)
-    @@topic_type = value
+    @topic_type = value
   end
 
   def store_topic_type
-    self.settings[:topic_type] = @@topic_type unless @@topic_type.blank?
+    self.settings[:topic_type] = @topic_type unless @topic_type.blank?
+  end
+
+  after_save :set_base_url
+
+  def base_url
+    @base_url ||= self.settings[:base_url]
+  end
+
+  def base_url=(value)
+    @base_url = value
+  end
+
+  def set_base_url
+    self.settings[:base_url] = @base_url unless @base_url.blank?
   end
 
   def pseudo_choices
     choices.collect { |c| [c.label, c.id] }
   end
-  
+
   def pseudo_choices=(array_of_ids)
     logger.debug "ARRAY_OF_IDS = #{array_of_ids.inspect}"
     self.choices = []
@@ -88,7 +106,7 @@ class ExtendedField < ActiveRecord::Base
   def label_for_params
     self.label.downcase.gsub(/ /, '_')
   end
-  
+
   def is_a_choice?
     ['autocomplete', 'choice'].include?(ftype)
   end
