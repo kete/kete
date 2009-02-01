@@ -5,6 +5,13 @@ module ExtendedFieldsHelper
   # Override for ActiveScaffold extended field controller edit view
   # Refer to http://activescaffold.com/docs/form-overrides for details
   
+  def topic_type_form_column(record, input_name)
+    topic_types = TopicType.find(1).full_set
+    select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, {},
+                                          { :class=>"select", :tabindex => '1' })
+    content_tag('div', select, { :id => "hidden_choices_topic_type_select_#{record.id.to_s}", :style => 'display:none;' })
+  end
+  
   # Using YUI TreeView
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find_top_level
@@ -80,7 +87,8 @@ module ExtendedFieldsHelper
       ['Text', 'text'],
       ['Text box', 'textarea'],
       ['Choices (auto-completion)', 'autocomplete'],
-      ['Choices (drop-down)', 'choice']
+      ['Choices (drop-down)', 'choice'],
+      ['Choices (topic type)', 'topic_type']
     ]
 
     @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
@@ -90,7 +98,17 @@ module ExtendedFieldsHelper
     end
     
     if record.new_record?
-      select(:record, :ftype, options_for_select, {}, :name => input_name, :onchange => "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice' ) { $('hidden_choices_select_#{record.id.to_s}').show(); } else { $('hidden_choices_select_#{record.id.to_s}').hide(); }" )
+      onchange_js = "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice') {
+        $('hidden_choices_select_#{record.id.to_s}').show();
+      } else {
+        $('hidden_choices_select_#{record.id.to_s}').hide();
+      }
+      if ( Form.Element.getValue(this) == 'topic_type') {
+        $('hidden_choices_topic_type_select_#{record.id.to_s}').show();
+      } else {
+        $('hidden_choices_topic_type_select_#{record.id.to_s}').hide();
+      }"
+      select(:record, :ftype, options_for_select, {}, :name => input_name, :onchange => onchange_js )
     else
       "#{record.ftype} (cannot be changed)"
     end
@@ -206,6 +224,8 @@ module ExtendedFieldsHelper
     builder = "extended_field_#{extended_field.ftype}_editor".to_sym
     if %w(choice autocomplete).member?(extended_field.ftype)
       send(:extended_field_choice_editor, name, value, tag_options, extended_field)
+    elsif %w{topic_type}.member?(extended_field.ftype)
+      send(:extended_field_topic_type_editor, name, value, tag_options, extended_field)
     elsif respond_to?(builder)
       send(builder, name, value, tag_options)
     else
@@ -307,6 +327,26 @@ module ExtendedFieldsHelper
     # We know the field we expect should be something like topic[extended_content][someonething]..
     
     hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => id_for_extended_field(extended_field) + "_from_autocomplete")
+  end
+  
+  def extended_field_topic_type_editor(name, value, tag_options, extended_field)
+    id = "#{name.split(/\[/)[0]}_topic_types_auto_complete"
+    id = "#{id}_#{@field_multiple_id}" if extended_field.multiple?
+    spinner_id = "#{id}_spinner"
+    html = text_field_with_auto_complete(name.split(/\[/)[0], '',
+                                         { :id => id, :value => value, :tabindex => '1', :size => 50, :name => name },
+                                         { :indicator => spinner_id,
+                                           :update => "#{id}_results",
+                                           :url => {
+                                             :controller => 'extended_fields',
+                                             :action => 'fetch_topics_from_topic_type',
+                                             :extended_field_id => extended_field.id,
+                                             :extended_field_for => name.split(/\[/)[0],
+                                             :multiple_id => (extended_field.multiple? ? @field_multiple_id : nil)
+                                           }
+                                         })
+    html += "<img src='/images/indicator.gif' width='16' height='16' alt='Getting topics. ' id='#{spinner_id}' style='display:none;' />"
+    html
   end
   
   # Generates label XHTML

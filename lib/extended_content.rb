@@ -691,6 +691,30 @@ module ExtendedContent
       end
     end
 
+    def validate_extended_topic_type_field_content(extended_field_mapping, values)
+      return nil if values.blank?
+      
+      if values.is_a?(Array)
+        values.each do |value|
+          # 'anything here (url)'
+          return "is not in the format of 'text for link (url)'" unless value =~ /^(.*)\((.*)\)$/
+          return validate_extended_topic_type_field_content_local_url(extended_field_mapping, value)
+        end
+      else
+        # 'anything here (url)'
+        return "is not in the format of 'text for link (url)'" unless values =~ /^(.*)\((.*)\)$/
+        return validate_extended_topic_type_field_content_local_url(extended_field_mapping, values)
+      end
+    end
+
+    def validate_extended_topic_type_field_content_local_url(extended_field_mapping, value)
+      topic_id = value.split('/').last.split('-').first.to_i
+      parent_topic_type = TopicType.find(extended_field_mapping.extended_field.topic_type.to_i)
+      topic_type_ids = parent_topic_type.full_set.collect { |a| a.id }
+      topics = Topic.find(:all, :select => 'id', :conditions => ["topic_type_id IN (?)", topic_type_ids]).collect { |topic| topic.id }
+      return "is not a url of an item in the '#{parent_topic_type.name}' topic type of this site" unless topics.include?(topic_id)
+    end
+
     def validate_extended_map_field_content(extended_field_mapping, values)
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank?

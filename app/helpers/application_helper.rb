@@ -769,7 +769,11 @@ module ApplicationHelper
       end.join(" &raquo; ")
 
     else
+      value = value.first if value.is_a?(Array)
       case value
+      when /^(.+)\((.+)\)$/
+        # something (url)
+        link_to($1, $2)
       when /^\w+:\/\/[^ ]+/
         # this is a url protocal of somesort, make link
         link_to(value, value)

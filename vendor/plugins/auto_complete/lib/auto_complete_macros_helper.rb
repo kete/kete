@@ -59,7 +59,7 @@ module AutoCompleteMacrosHelper
     function =  "var #{field_id}_auto_completer = new Ajax.Autocompleter("
     function << "'#{field_id}', "
     function << "'" + (options[:update] || "#{field_id}_auto_complete") + "', "
-    function << "'#{url_for(options[:url])}'"
+    function << "'#{url_for(options[:url]).gsub('&amp;', '&')}'"
     
     js_options = {}
     js_options[:tokens] = array_or_string_for_javascript(options[:tokens]) if options[:tokens]
@@ -109,12 +109,13 @@ module AutoCompleteMacrosHelper
   # auto_complete_for to respond the AJAX calls,
   # 
   def text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
+    text_field_html = method.blank? ? text_field_tag(object, tag_options[:value], tag_options) : text_field(object, method, tag_options)
     div_id = completion_options[:update] || "#{object}_#{method}_auto_complete"
     field_id = tag_options[:id] || "#{object}_#{method}"
     (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
-    text_field(object, method, tag_options) +
+    text_field_html +
     content_tag("div", "", :id => div_id, :class => "auto_complete") +
-    auto_complete_field(field_id, { :url => { :action => "auto_complete_for_#{object}_#{method}" } }.update(completion_options))
+    auto_complete_field(field_id, { :url => { :action => "auto_complete_for_#{object}_#{method}" } }.merge(completion_options))
   end
 
   private

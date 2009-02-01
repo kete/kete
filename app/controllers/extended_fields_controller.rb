@@ -19,6 +19,10 @@ class ExtendedFieldsController < ApplicationController
     config.columns[:pseudo_choices].label = "Available choices"
     config.columns[:pseudo_choices].description = "Ftype must be a \"choices\" option for these options to be available to users."
     config.columns[:user_choice_addition].label = nil
+    
+    config.columns << [:topic_type]
+    config.columns[:topic_type].label = "Topic Type Choices"
+    config.columns[:topic_type].description = "Ftype must be a \"Choices (topic type)\" option for these options to be available to users."
   end
   
   def add_field_to_multiples
@@ -80,6 +84,40 @@ class ExtendedFieldsController < ApplicationController
           :locals => params[:options].merge(options)
       end
     end
+  end
+
+  def fetch_topics_from_topic_type
+    begin
+      extended_field = ExtendedField.find(params[:extended_field_id])
+      parent_topic_type = extended_field.topic_type.to_i
+      extended_field_key = @template.send(:id_for_extended_field, extended_field).gsub('_extended_content_values_', '').gsub(/_$/, '')
+      logger.debug("What is extended_field_key: #{extended_field_key}")
+      search_term = params[params[:extended_field_for]][:extended_content_values][extended_field_key]
+      if extended_field.multiple?
+        multiple_id = params[:multiple_id] || 1
+        search_term = search_term[multiple_id]
+      end
+    rescue
+      raise "Something went wrong getting the extended field, it's parent topic type or the users search term"
+    end
+
+    search_term = search_term.split(' (').first if search_term =~ /.+ \(.+\)/
+    logger.debug("What is search term: #{search_term}")
+
+    topic_type_ids = TopicType.find(parent_topic_type).full_set.collect { |a| a.id }
+
+    topics = Topic.find(:all, :conditions => ["title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids],
+                        :order => "title ASC", :limit => 10)
+    logger.debug("Topics are: #{topics.inspect}")
+
+    topics = topics.map { |entry|
+      @template.content_tag("li", "#{h(entry.title)} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
+                                                                          :controller => 'topics',
+                                                                          :action => 'show',
+                                                                          :id => entry,
+                                                                          :only_path => false)})")
+    }
+    render :inline => @template.content_tag("ul", topics.uniq)
   end
 
   private

@@ -11,7 +11,23 @@ class ExtendedField < ActiveRecord::Base
   # When sufficient testing and conversion code as been added to handle all events relating to changing
   # these fields, this attributes can be made writeable again.
   attr_readonly :label, :ftype, :multiple
-  
+
+  acts_as_configurable
+
+  after_save :store_topic_type
+
+  def topic_type
+    @topic_type ||= self.settings[:topic_type]
+  end
+
+  def topic_type=(value)
+    @@topic_type = value
+  end
+
+  def store_topic_type
+    self.settings[:topic_type] = @@topic_type unless @@topic_type.blank?
+  end
+
   def pseudo_choices
     choices.collect { |c| [c.label, c.id] }
   end
