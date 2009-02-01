@@ -11,7 +11,7 @@ require 'builder'
 # of Topics the relations are Topic -> TopicType -> TopicTypeToFieldMapping(s) -> ExtendedField. Refer to the individual classes
 # for more information.
 #
-# On the model, extended content can be accessed by the #extended_content_values accessor methods, and in the future by individual
+# On the model, extended content can be accessed by the #extended_content_values accessor methods, and by the less efficient individual
 # accessor methods for each field. Behind the scenes the data received as a Hash instance of values (or single value in the case
 # of accessor methods) is stored into a particular XML data structure in the #extended_content attribute, which is present as a
 # column in the item class's table.
@@ -36,6 +36,49 @@ require 'builder'
 # Choices with multiple hierarchical values AND multiple values (i.e. multiple different hierchical selections)
 # <field_label_multiple><1><field_label><1>Value</1><2>Child of value</2></field_label></1> ..
 #   <2><field_label><1>Value</1><2>Child of value</2></field_label></2></field_label_multiple>
+#
+# Label/Value variation:
+# Values are often what we want to match when we are doing searches, etc. They are meant to be precise and can conform to technical rules
+# (e.g. http://must_have_valid_protocol_and_domain/and/path/for/a_url/or/link/will/fail). However, they often NOT what we want to be human
+# facing.  This is where a corresponding label may come in.
+#
+# For example, if I want to have an extended field for "Father" on the "Person" Topic Type that links to a URL about the person's father,
+# I probably don't want to display "http://a_kete/site/topics/show/666-the-devil".  I probably want to display "The Devil!" and clicking
+# on that takes me to the appropriate topic, i.e. the URL.
+#
+# The same can be said of forms.  The user probably only wants to choose "The Devil!" and not have to remember the exact URL to input.
+# The Choice model, in conjunction with the ExtendedField model, handles this in "Choices (dropdown)" and "Choices (autocomplete)"
+# extended field ftypes.  A choice may have a label (that the user sees) that is different from the value (that the admin assigns
+# the choice, but end user doesn't see) that gets saved to extended_content.
+#
+# The problem is, how do you we get the label on the display side on an item's detail page when all that is submitted is the value?
+#
+# We would like label, if it is different from value, to travel with the value as it is used.
+#
+# 1. in forms, when value is different than label, we pass the form input value of "Label (Value)", unless otherwise handled (choices).
+# 2. when processing the form input in our model, via this module, we know to split label and value using this convention
+# 3. model.extended_content we store the corresponding xml like so:
+#
+# Items with single values are stored simply as follows:
+# <field_label label="Label">Value</field_label>
+#
+# Items with multiple values:
+# <field_label_multiple><1><field_label label="Label">Value</field_label></1><2><field_label label="Label">Value 2</field_label></2></field_label_multiple>
+#
+# Choices with single values:
+# <field_label><1 label="Label">Value</1></field_label>
+#
+# Choices with multiple hierarchical values:
+# <field_label><1 label="Label">Value</1><2 label="Label">Child of value</2></field_label>
+#
+# etc.
+#
+# NOTE: a label attribute isn't required for every value.  So something like this is valid:
+#
+# Choices with multiple hierarchical values:
+# <field_label><1 label="Label">Value</1><2>Child of value</2></field_label>
+#
+# 4. when converting our xml to a hash for dealing with, we'll have a :label key/value pair.
 #
 # General notes on XML schema:
 # XML element name for the OAI XML schema is stored in the xml_element_name attribute in the XML tag, for instance:
@@ -527,7 +570,7 @@ module ExtendedContent
       options = {
         "contentkey"  => "value",
         "forcearray"  => false,
-        "noattr"      => true
+        "noattr"      => false
       }
 
       XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", options).map do |key, value|
@@ -537,7 +580,7 @@ module ExtendedContent
 
     def recursively_convert_values(key, value = nil)
       if value.is_a?(Hash) && !value.empty?
-        [key, array_of_values(value)]
+        [key, array_of_values(value).reject { |questionable_value| questionable_value.nil? }]
       else
         [key, value.empty? ? nil : value.to_s]
       end
@@ -547,8 +590,15 @@ module ExtendedContent
 
     def array_of_values(hash)
       hash.map do |k, v|
+        # skip special keys
+        next if k == 'xml_element_name'
+
         if v.is_a?(Hash) && !v.empty?
-          v.size == 1 ? array_of_values(v).flatten : array_of_values(v)
+          if v.keys.include?('value') && v.keys.include?('label')
+            v
+          else
+            v.size == 1 ? array_of_values(v).flatten : array_of_values(v)
+          end
         else
           v.to_s
         end
@@ -620,6 +670,9 @@ module ExtendedContent
 
         # Delegate to specialized method..
         error_array = values.map do |v|
+          # if label is included, you get back a hash for value
+          v = v['value'] if v.is_a?(Hash) && v['value']
+
           send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
             extended_field_mapping, v.to_s)
         end
@@ -673,22 +726,29 @@ module ExtendedContent
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank?
 
-      if !values.is_a?(Array) && !extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(values)
-        "must be a valid choice"
-      elsif !values.reject { |v| v.blank? }.all? { |v| extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(v) }
+      valid_choice_values = extended_field_mapping.extended_field.choices.collect { |c| c.value }
+
+      # when labels are passed back, values may be a hash
+      # handle array of hashes below when we are dealing with multiples
+      values = values['value'] if values.is_a?(Hash) && values['value']
+
+      # make everything everything an array, so we can deal with it uniformly
+      # strip blank values, while we are at it
+      values_array = values.to_a.reject { |v| v.blank? }.collect do |v|
+        if v.is_a?(Hash)
+          v['value']
+        else
+          v
+        end
+      end
+
+      if !values_array.all? { |v| valid_choice_values.member?(v) }
         "must be a valid choice"
       end
     end
 
     def validate_extended_autocomplete_field_content(extended_field_mapping, values)
-      # Allow nil values. If this is required, the nil value will be caught earlier.
-      return nil if values.blank?
-
-      if !values.is_a?(Array) && !extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(values)
-        "must be a valid choice"
-      elsif !values.reject { |v| v.blank? }.all? { |v| extended_field_mapping.extended_field.choices.map { |c| c.value }.member?(v) }
-        "must be a valid choice"
-      end
+      validate_extended_choice_field_content(extended_field_mapping, values)
     end
 
     def validate_extended_map_field_content(extended_field_mapping, values)

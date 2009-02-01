@@ -6,33 +6,33 @@
 <% ef = extended_field_mapping.extended_field %>
 <% content = extended_item.extended_content_pairs %>
 <% @item_type_for_params = item_key %>
-  
+
 <div class="form-element">
   <%= extended_field_label(ef) %>
 
   <div style="float: left">
   <% if ef.multiple? %>
-    
+
     <div id="<%= qualified_name_for_field(ef) + "_multis"%>" class="extended_field_multiple_fields">
-  
+
     <%# Deal with multiple instances of fields %>
     <% existing_multiples = existing_multiples_in(ef, extended_item.xml_attributes_without_position) || ["1"] %>
     <% existing_multiples.sort.each do |n| %>
-    
+
     <%= render :partial => 'extended_fields/extended_field_editor', :locals => { :ef => ef, :content => extended_item.xml_attributes_without_position, :n => n, :multiple => true } %>
-    
+
     <% end %>
 
     <%= render :partial => 'extended_fields/additional_extended_field_control', :locals => { :n => existing_multiples.flatten.map { |i| i.to_i }.max.to_i + 1, :ef => ef, :content => extended_item.xml_attributes_without_position } %>
-    
+
     </div>
 
   <% else %>
-    
+
     <%# Print out a control for a single field instance %>
     <%= extended_field_editor(ef, field_value_from_hash(ef, content)) %>
     <div class="form-example"><%=h ef.example %></div>
   <% end %>
   </div>
 </div>
-  
+

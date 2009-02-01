@@ -676,10 +676,21 @@ module ApplicationHelper
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
 
-  #
+  # if extended_field is passed in, use that to limit choices
+  # else if @all_choices is true, we provide them all
   def limit_search_to_choice_control
-    options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
-      memo + option_for_choice_control(choice, :level => 0)
+    options_array = Array.new
+
+    if @extended_field
+      options_array = @extended_field.choices.find_top_level.inject([]) do |memo, choice|
+        memo + option_for_choice_control(choice, :level => 0)
+      end
+    elsif @all_choices
+      options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
+        memo + option_for_choice_control(choice, :level => 0)
+      end
+    else
+      return
     end
 
     html_options_for_select = ([['', '']] + options_array).map do |k, v|
@@ -765,7 +776,7 @@ module ApplicationHelper
       # for the extended_field if it is set
       # but only if it hasn't been done previously in other formatting
       base_url = field.base_url
-      unless base_url.blank? || %w(map map_address choice autocompletion).include?(field.ftype)
+      unless base_url.blank? || %w(map map_address choice autocomplete).include?(field.ftype)
         value_output = link_to(value_output, base_url + value_output)
       end
 
@@ -793,7 +804,7 @@ module ApplicationHelper
       url_hash = {
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
         :controller => 'search',
-        :extended_field => ef.label.humanize
+        :extended_field => ef.label_for_params
       }
 
       if item.respond_to?(:private?) && item.private?
@@ -804,23 +815,40 @@ module ApplicationHelper
       end
 
       value.map do |v|
+
+        # use passed label if present
+        # otherwise value is label
+        l = v
+        if v.is_a?(Hash) && v['label']
+          l = v['label']
+          v = v['value']
+        end
+
         # the extended field's base_url takes precedence over
         # normal behavior creating a link to results
         # limited to choice for an extended field (a.k.a category_url in method names)
         unless base_url.blank?
-          link_to(v, base_url + v)
+          link_to(l, base_url + v)
         else
-          link_to(v, send(method, url_hash.merge(:limit_to_choice => v)))
+          link_to(l, send(method, url_hash.merge(:limit_to_choice => v)))
         end
       end.join(" &raquo; ")
 
     else
+      label = value
+      # use passed label if present
+      # otherwise we use value as label
+      if value.is_a?(Hash) && value['label']
+        label = value['label']
+        value = value['value']
+      end
+
       case value
       when /^\w+:\/\/[^ ]+/
         # this is a url protocal of some sort, make link
-        link_to(value, value)
+        link_to(label, value)
       when /^\w+[^ ]*\@\w+\.\w/
-        mail_to(value, value, :encode => "hex")
+        mail_to(label, value, :encode => "hex")
       else
         sanitize(value)
       end

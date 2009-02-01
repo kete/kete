@@ -137,7 +137,9 @@ class SearchController < ApplicationController
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
 
     @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
-    @extended_field = ExtendedField.find_by_label(params[:extended_field])
+
+    @extended_field = ExtendedField.from_label_for_params(params[:extended_field]).first if params[:extended_field]
+    @all_choices = true unless @extended_field
 
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1

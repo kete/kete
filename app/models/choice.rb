@@ -48,9 +48,20 @@ class Choice < ActiveRecord::Base
       end
     end
 
+    # this may have a nil value passed in for label
+    # and handles a few cases
+    # that where label == value in choice object and nil has been passed in for label
+    # extended_field.ftype autocompletion:
+    # where label != value in choice object,
+    # but value passed in actually corresponds to label
+    # where label != value in choice object,
+    # but we have a match against choice.value
     def matching(label, value)
+      value = value[:value] if value.is_a?(Hash)
+      label = value[:label] if value.is_a?(Hash) && label.nil?
+
       label = label ? label : value
-      find_by_label(label) || find_by_valuel(value)
+      find_by_label(label) || find_by_value(value)
     end
   end
 
