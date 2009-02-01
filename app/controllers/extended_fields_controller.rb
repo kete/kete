@@ -54,10 +54,9 @@ class ExtendedFieldsController < ApplicationController
     extended_field = ExtendedField.find(params[:options][:extended_field_id])
 
     # Find the current choice
-    current_choice = params[:value].blank? ? \
-      Choice.find_by_label(params[:label]) : Choice.find_by_value(params[:value])
+    current_choice = extended_field.choices.matching(params[:label], params[:value])
 
-    choices = current_choice ? current_choice.children.select { |c| extended_field.choices.member?(c) } : []
+    choices = current_choice ? current_choice.children : []
 
     options = {
       :choices => choices,
