@@ -167,4 +167,14 @@ module SearchHelper
     image_tag_string += "</ul>" if options[:as_image_list]
     image_tag_string
   end
+
+  def will_paginate_atom(collection, xml)
+    total_pages = WillPaginate::ViewHelpers.total_pages_for_collection(collection)
+    xml.tag!("atom:link".to_sym, :rel => 'next', :href => derive_url_for_rss(:page => collection.current_page + 1)) unless collection.current_page.eql?(total_pages)
+    xml.tag!("atom:link".to_sym, :rel => 'prev', :href => derive_url_for_rss(:page => collection.current_page - 1)) unless collection.current_page.eql?(1)
+    xml.tag!("atom:link".to_sym, :rel => 'last', :href => derive_url_for_rss(:page => total_pages))
+  end
+
 end
+
+

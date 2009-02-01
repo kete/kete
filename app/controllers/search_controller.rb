@@ -20,14 +20,9 @@ class SearchController < ApplicationController
   before_filter :require_login_if_private_search, :only => [:rss, :for, :all]
   before_filter :private_search_authorisation, :only => [:rss, :for, :all]
 
-  # we mimic caches_page so we have more control
-  # note we specify extenstion .xml for rss url
-  # in order to get caching to work correctly
-  # i.e. served directly from webserver
-  # rss caching is limited to "all" rather than "for"
-  # i.e. no search_terms
-  after_filter :write_rss_cache, :only => [:rss]
-  # caches_page :rss
+  # RSS caching has now moved to fragement caching
+  # for finer grain caching (and to suit a larger number of cases)
+  # after_filter :write_rss_cache, :only => [:rss]
 
   # Reset slideshow object on new searches
   before_filter :reset_slideshow, :only => [:for, :all]
@@ -144,20 +139,26 @@ class SearchController < ApplicationController
     @next_page = @current_page + 1
     @previous_page = @current_page - 1
 
-    if params[:number_of_results_per_page].nil?
-      @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : DEFAULT_RECORDS_PER_PAGE
+    # rss is always is set at 50 per page
+    if is_rss?
+      @number_per_page = 50
     else
-      @number_per_page = params[:number_of_results_per_page].to_i
+      # otherwise we fallback to default constant
+      # unless user has specifically chosen a different number
+      if params[:number_of_results_per_page].blank?
+        @number_per_page = session[:number_of_results_per_page] ? session[:number_of_results_per_page].to_i : DEFAULT_RECORDS_PER_PAGE
+      else
+        @number_per_page = params[:number_of_results_per_page].to_i
+      end
     end
 
     # update session with user preference for number of results per page
-    store_number_of_results_per_page
+    store_number_of_results_per_page unless is_rss?
 
     # 0 is the first index, so it's valid for start
     @start_record = @number_per_page * @current_page - @number_per_page
     @start = @start_record + 1
     @end_record = @number_per_page * @current_page
-    # TODO: skipping multiple source (federated) search for now
 
     # James Stradling <james@katipo.co.nz> - 2008-05-02
     # Only allow private search if permitted
@@ -171,8 +172,14 @@ class SearchController < ApplicationController
 
     # iterate through all record types and build up a result set for each
     if params[:related_class].nil?
-      ZOOM_CLASSES.each do |zoom_class|
-        populate_result_sets_for(zoom_class)
+      # rss doesn't use :related_class
+      # but is limited to querying one class
+      if is_rss?
+        populate_result_sets_for(@current_class)
+      else
+        ZOOM_CLASSES.each do |zoom_class|
+          populate_result_sets_for(zoom_class)
+        end
       end
     else
       # populate_result_sets_for(relate_to_class)
@@ -180,51 +187,31 @@ class SearchController < ApplicationController
     end
   end
 
+  # search method now is smart enough to handle rss situation
+  # especially now that we have pagination in rss (ur, atom?)
   def rss
+    @search_terms = params[:search_terms]
 
-    @search = Search.new
-    # changed from @headers for Rails 2.0 compliance
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
 
-    @controller_name_for_zoom_class = params[:controller_name_for_zoom_class] || zoom_class_controller(DEFAULT_SEARCH_CLASS)
+    # set up the cache key, which handles our params beyond basket, action, and controller
+    @cache_key_hash = { :page => params[:page] || 1 }
 
-    @current_class = zoom_class_from_controller(@controller_name_for_zoom_class)
+    @cache_key_hash[:privacy] = "private" if is_a_private_search?
 
-    @source_controller_singular = params[:source_controller_singular]
-
-    # the max we want returned for rss is always the latest created or modified 50
-    # this will be be overwritten by the actual number of records that are available
-    # if less than 50
-    # see also sort_type
-    @end_record = 50
-
-    if !@source_controller_singular.nil?
-      @source_class = zoom_class_from_controller(@source_controller_singular.pluralize)
-      @source_item = Module.class_eval(@source_class).find(params[:source_item])
-    else
-      @source_class = nil
-      @source_item = nil
+    # set the following, if they exist in params
+    relevant_keys = %w( search_terms_slug search_terms tag contributor limit_to_choice source_controller_singular source_item )
+    relevant_keys.each do |key|
+      key = key.to_sym
+      @cache_key_hash[key] = params[key] unless params[key].blank?
     end
 
-    @search_terms = params[:search_terms] ? params[:search_terms] : nil
-
-    @tag = params[:tag] ? Tag.find(params[:tag]) : nil
-
-    @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
-
-    @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
-    @extended_field = ExtendedField.find_by_label(params[:extended_field])
-
-    # 0 is the first index, so it's valid for start
-    @start_record = 0
-    @start = 1
-
-    # TODO: skipping multiple source (federated) search for now
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_database)
-
-    @result_sets = Hash.new
-
-    populate_result_sets_for(@current_class)
+    # no need to hit zebra and parse records
+    # if we already have the cached rss
+    unless has_all_rss_fragments?(@cache_key_hash)
+      @search = Search.new
+      search
+    end
   end
 
   def load_results(from_result_set)
@@ -252,7 +239,7 @@ class SearchController < ApplicationController
     end
     @results = WillPaginate::Collection.new(@current_page,
                                             @number_per_page,
-                                            from_result_set.size).concat(@results) unless params[:action] == 'rss'
+                                            from_result_set.size).concat(@results)
   end
 
   def populate_result_sets_for(zoom_class)
@@ -606,6 +593,50 @@ class SearchController < ApplicationController
     end
   end
 
+  # this is useful for creating a rss version of the request
+  # or for replacing the page number in an existing rss url
+  def derive_url_for_rss(options = { })
+    page = !options.blank? && !options[:page].blank? ? options[:page] : nil
+
+    url = request.protocol
+    url += request.host_with_port
+
+    # split everything before the query string and the query string
+    url_parts = request.request_uri.split('?')
+
+    # now split the path up and add rss to it
+    path_elements = url_parts[0].split('/')
+
+    # query string to hash
+    query_parameters = request.query_parameters
+
+    # delete the parameters that are artifacts from normal search
+    %w( number_of_results_per_page tabindex sort_type sort_direction).each do |not_relevant|
+      query_parameters.delete(not_relevant)
+    end
+
+    # also delete page, but only if this isn't already an rss request
+    query_parameters.delete('page') unless path_elements.include?('rss.xml')
+
+    # escape spaces in search terms
+    query_parameters['search_terms'] = query_parameters['search_terms'].gsub(' ', '+') if query_parameters['search_terms']
+
+    # add rss.xml to it, if it doesn't already exist
+    path_elements << 'rss.xml' unless path_elements.include?('rss.xml')
+
+    new_path = path_elements.join('/')
+    url +=  new_path
+
+    query_parameters['page'] = page if page
+
+    # if there is a query string, tack it on the end
+    unless query_parameters.blank?
+      formatted = query_parameters.collect { |k,v| k.to_s + '=' + v.to_s }
+      url += '?' + formatted.join('&')
+    end
+    url
+  end
+
   def rss_tag(options = {:auto_detect => true})
     auto_detect = options[:auto_detect]
 
@@ -617,20 +648,8 @@ class SearchController < ApplicationController
       tag = "<a "
     end
 
-    tag += "href=\""+ request.protocol + request.host
-    # split everything before the query string and the query string
-    url = request.request_uri.split('?')
+    tag += "href=\"" + derive_url_for_rss
 
-    # now split the path up and add rss to it
-    path_elements = url[0].split('/')
-    path_elements << 'rss.xml'
-    new_path = path_elements.join('/')
-    tag +=  new_path
-    # if there is a query string, tack it on the end
-    if !url[1].nil?
-      logger.debug("what is query string: #{url[1].to_s}")
-      tag += "?#{url[1].to_s}"
-    end
     if auto_detect
       tag +=  "\" />"
     else
@@ -816,19 +835,6 @@ class SearchController < ApplicationController
 
   private
 
-  def write_rss_cache
-    # start of caching code, work in progress
-    request_string = request.request_uri
-    if request_string.split("?")[1].nil? &&
-       request_string.scan("contributed_by").blank? &&
-       request_string.scan("related_to").blank? &&
-       request_string.scan("tagged").blank?
-      # mimic page caching
-      # by writing the file to fs under public
-      cache_page(response.body,params)
-    end
-  end
-
   # James Stradling <james@katipo.co.nz> - 2008-05-02
   # Refactored to use acts_as_zoom#has_appropriate_records?
   #### DEPRECIATED?
@@ -966,4 +972,9 @@ class SearchController < ApplicationController
     request.format = :xml
   end
 
+  def is_rss?
+    params[:action] == 'rss'
+  end
+
+  helper_method :is_rss?, :derive_url_for_rss
 end

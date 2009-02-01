@@ -183,6 +183,12 @@ module ZoomSearch
           result_hash[:thumbnail].each { |k, v| result_hash[:thumbnail][k] = v.value }
         end
 
+        medium_xml = zoom_record.root.at(".//xmlns:medium", zoom_record.root.namespaces)
+        unless medium_xml.blank?
+          result_hash[:medium] = medium_xml.attributes.symbolize_keys
+          result_hash[:medium].each { |k, v| result_hash[:medium][k] = v.value }
+        end
+
         media_content_xml = zoom_record.root.at(".//xmlns:media_content", zoom_record.root.namespaces)
         unless media_content_xml.blank?
           result_hash[:media_content] = media_content_xml.attributes.symbolize_keys
