@@ -147,7 +147,7 @@ module ExtendedContentHelpers
         else
           # text and textarea, we intepret their values as not having
           # the special case where value and label are passed together
-          unless %w(text textarea).include?(extended_field.ftype)
+          unless %w(text textarea topic_type).include?(extended_field.ftype)
             # handle special case where we have a label embedded in the value
             # if our value looks like this
             # a label string (value)
