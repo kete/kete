@@ -229,7 +229,7 @@ module ExtendedFieldsHelper
     builder = "extended_field_#{extended_field.ftype}_editor".to_sym
     if %w(choice autocomplete).member?(extended_field.ftype)
       send(:extended_field_choice_editor, name, value, tag_options, extended_field)
-    elsif %w{topic_type}.member?(extended_field.ftype)
+    elsif extended_field.ftype == "topic_type"
       send(:extended_field_topic_type_editor, name, value, tag_options, extended_field)
     elsif respond_to?(builder)
       send(builder, name, value, tag_options)
