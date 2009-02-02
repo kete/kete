@@ -814,6 +814,11 @@ module ApplicationHelper
         method = 'basket_all_of_category_url'
       end
 
+      # make the hash nested in an array so the map command does the right thing
+      if value.is_a?(Hash) && value['label']
+        value = [value]
+      end
+
       value.map do |v|
 
         # use passed label if present
