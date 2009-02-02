@@ -14,7 +14,7 @@ module ExtendedFieldsHelper
 
   def base_url_form_column(record, input_name)
     value = record.id.nil? ? '' : record.base_url
-    text_field_tag(input_name, value)
+    text_field_tag(input_name, value, { :id => 'record_base_url' })
   end
 
   # Using YUI TreeView
@@ -103,17 +103,40 @@ module ExtendedFieldsHelper
     end
 
     if record.new_record?
-      onchange_js = "if ( Form.Element.getValue(this) == 'autocomplete' || Form.Element.getValue(this) == 'choice') {
-        $('hidden_choices_select_#{record.id.to_s}').show();
-      } else {
-        $('hidden_choices_select_#{record.id.to_s}').hide();
-      }
-      if ( Form.Element.getValue(this) == 'topic_type') {
-        $('hidden_choices_topic_type_select_#{record.id.to_s}').show();
-      } else {
-        $('hidden_choices_topic_type_select_#{record.id.to_s}').hide();
-      }"
-      select(:record, :ftype, options_for_select, {}, :name => input_name, :onchange => onchange_js )
+      select(:record, :ftype, options_for_select, {}, :name => input_name ) +
+      javascript_tag("
+        $('record_ftype').observe('change', function() {
+          value = $('record_ftype').value;
+          // hide the base_url text field if this ftype doesn't support it
+          if ( value == 'checkbox' || value == 'radio' || value == 'map' || value == 'map_address' || value == 'topic_type' ) {
+            $('record_base_url').value = '';
+            $('record_base_url').disabled = true;
+          } else {
+            $('record_base_url').value = '';
+            $('record_base_url').disabled = false;
+          }
+          // hide the multiple record field if this ftype doesn't support it
+          if ( value == 'checkbox' || value == 'radio' || value == 'map' || value == 'map_address' ) {
+            $('record_multiple').value = 'false';
+            $('record_multiple').disabled = true;
+          } else {
+            $('record_multiple').value = 'false';
+            $('record_multiple').disabled = false;
+          }
+          // show the choices section when ftype supports it
+          if ( value == 'autocomplete' || value == 'choice' ) {
+            $('hidden_choices_select_#{record.id.to_s}').show();
+          } else {
+            $('hidden_choices_select_#{record.id.to_s}').hide();
+          }
+          // show the topic type select when ftype is topic_type
+          if ( value == 'topic_type' ) {
+            $('hidden_choices_topic_type_select_#{record.id.to_s}').show();
+          } else {
+            $('hidden_choices_topic_type_select_#{record.id.to_s}').hide();
+          }
+        });
+      ")
     else
       "#{record.ftype} (cannot be changed)"
     end

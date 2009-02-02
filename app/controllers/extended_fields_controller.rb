@@ -26,7 +26,7 @@ class ExtendedFieldsController < ApplicationController
     
     config.columns << [:topic_type]
     config.columns[:topic_type].label = "Topic Type Choices"
-    config.columns[:topic_type].description = "Ftype must be a \"Choices (topic type)\" option for these options to be available to users."
+    config.columns[:topic_type].description = "Ftype must be a \"Pre-populated Choices (topic type)\" option for these options to be available to users."
   end
 
   def add_field_to_multiples
