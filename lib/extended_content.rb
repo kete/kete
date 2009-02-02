@@ -578,7 +578,6 @@ module ExtendedContent
         "noattr"      => false
       }
 
-      logger.debug("what is extended_content: " + extended_content.inspect)
       XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", options).map do |key, value|
         recursively_convert_values(key, value)
       end
@@ -774,6 +773,8 @@ module ExtendedContent
       if value.is_a?(Array)
         value_hash = value.first if value.size == 1
         value = value_hash['value'] if value_hash.is_a?(Hash) && value_hash['value']
+      elsif value.is_a?(Hash) && value['value']
+        value = value['value']
       end
 
       # this will tell us
