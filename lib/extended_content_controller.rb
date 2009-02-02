@@ -14,7 +14,7 @@ module ExtendedContentController
 
       if klass.name == 'CommentsController'
         klass.send :before_filter, :is_authorized?, :only => [ :new, :create, :edit, :update ]
-      else  
+      else
         klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket",
                             :only => [ :new, :create, :edit, :update, :convert ]
       end
@@ -66,6 +66,8 @@ module ExtendedContentController
         return unless !value.blank? && value =~ /^.+ \((.+)\)$/
 
         # Check if this extended content belongs to an extended field that is a topic type field type
+        # TODO: limit this to content_type or topic type
+        # add condition to match key in query
         @extended_fields ||= ExtendedField.find_all_by_ftype('topic_type')
         extended_field = @extended_fields.select { |extended_field| qualified_name_for_field(extended_field) == key }
         return if extended_field.nil?
@@ -73,14 +75,17 @@ module ExtendedContentController
         # Now we know this content is valid and meant for a topic type extended field,
         # make a relation if one doesn't already exist
         topic_id = $1.split('/').last.split('-').first.to_i
-        relation_already_exists = ContentItemRelation.count(:conditions => { :topic_id => topic_id,
-                                                                             :related_item_id => current_item }) > 0
-        unless relation_already_exists
-          logger.debug("Add relation for #{value}, with id of #{topic_id}")
-          topic = Topic.find(topic_id)
-          ContentItemRelation.new_relation_to_topic(topic, current_item)
-          prepare_and_save_to_zoom(topic)
-          expire_related_caches_for(topic, 'topics')
+
+        if topic_id && topic_id > 0
+          relation_already_exists = ContentItemRelation.count(:conditions => { :topic_id => topic_id,
+                                                                :related_item_id => current_item }) > 0
+          unless relation_already_exists
+            logger.debug("Add relation for #{value}, with id of #{topic_id}")
+            topic = Topic.find(topic_id)
+            ContentItemRelation.new_relation_to_topic(topic, current_item)
+            prepare_and_save_to_zoom(topic)
+            expire_related_caches_for(topic, 'topics')
+          end
         end
       end
 

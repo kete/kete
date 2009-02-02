@@ -367,8 +367,20 @@ module ExtendedFieldsHelper
 
     hidden_field_tag("#{name.split(/\[/).first}[extended_content][#{name.scan(/\[([a-z_]*)\]/).flatten.at(1)}_from_autocomplete]", "true", :id => id_for_extended_field(extended_field) + "_from_autocomplete")
   end
-  
+
   def extended_field_topic_type_editor(name, value, tag_options, extended_field)
+    if value.is_a?(Array)
+      value = value.collect do |v|
+        if v.is_a?(Hash) && v['value'] && v['label']
+          v = v['label'] + " (#{v['value']})"
+        else
+          v
+        end
+      end
+    else
+      value = value['label'] + " (#{value['value']})" if value.is_a?(Hash) && value['value'] && value['label']
+    end
+
     id = "#{name.split(/\[/)[0]}_topic_types_auto_complete"
     id = "#{id}_#{@field_multiple_id}" if extended_field.multiple?
     spinner_id = "#{id}_spinner"

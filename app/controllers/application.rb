@@ -972,6 +972,9 @@ class ApplicationController < ActionController::Base
     # if the basket has been changed, make sure comments are moved, too
     update_comments_basket_for(item, @current_basket)
 
+    # if changes to the item's extended content should add new relations
+    build_relations_from_topic_type_extended_field_choices
+
     # finally, sync up our search indexes
     prepare_and_save_to_zoom(item) if !item.already_at_blank_version?
   end

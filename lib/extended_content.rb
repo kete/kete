@@ -573,6 +573,7 @@ module ExtendedContent
         "noattr"      => false
       }
 
+      logger.debug("what is extended_content: " + extended_content.inspect)
       XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", options).map do |key, value|
         recursively_convert_values(key, value)
       end
@@ -589,6 +590,13 @@ module ExtendedContent
     end
 
     def array_of_values(hash)
+      # there is one instant where we just want to return the hash
+      # if it has a label, we want a hash of label and value
+      if hash.keys.include?('value') && hash.keys.include?('label')
+        hash.keys.each { |key| hash.delete(key) unless %w(value label).include?(key) }
+        return [hash]
+      end
+
       hash.map do |k, v|
         # skip special keys
         next if k == 'xml_element_name'
@@ -751,28 +759,32 @@ module ExtendedContent
       validate_extended_choice_field_content(extended_field_mapping, values)
     end
 
-    def validate_extended_topic_type_field_content(extended_field_mapping, values)
-      return nil if values.blank?
-      
-      if values.is_a?(Array)
-        values.each do |value|
-          # 'anything here (url)'
-          return "is not in the format of 'text for link (url)'" unless value =~ /^(.*)\((.*)\)$/
-          return validate_extended_topic_type_field_content_local_url(extended_field_mapping, value)
-        end
-      else
-        # 'anything here (url)'
-        return "is not in the format of 'text for link (url)'" unless values =~ /^(.*)\((.*)\)$/
-        return validate_extended_topic_type_field_content_local_url(extended_field_mapping, values)
-      end
-    end
+    def validate_extended_topic_type_field_content(extended_field_mapping, value)
+      # Allow nil values. If this is required, the nil value will be caught earlier.
+      return nil if value.blank?
 
-    def validate_extended_topic_type_field_content_local_url(extended_field_mapping, value)
-      topic_id = value.split('/').last.split('-').first.to_i
+      # when labels are passed back, values may be a hash wrapped in an array
+      if value.is_a?(Array)
+        value_hash = value.first if value.size == 1
+        value = value_hash['value'] if value_hash.is_a?(Hash) && value_hash['value']
+      end
+
+      # this will tell us
+      # whether there is a matching topic
+      # what the topic_type_id is so we can check if the topic type is valid
+      topic_type_id = Topic.find(value.split('/').last, :select => 'topic_type_id').topic_type_id
+
+      # if this is nil, we were unable to find a matching topic
+      unless topic_type_id
+        return "we were unable to find a matching topic on our site. Did you enter topic in the format of 'topic title (URL)?'"
+      end
+
       parent_topic_type = TopicType.find(extended_field_mapping.extended_field.topic_type.to_i)
-      topic_type_ids = parent_topic_type.full_set.collect { |a| a.id }
-      topics = Topic.find(:all, :select => 'id', :conditions => ["topic_type_id IN (?)", topic_type_ids]).collect { |topic| topic.id }
-      return "is not a url of an item in the '#{parent_topic_type.name}' topic type of this site" unless topics.include?(topic_id)
+      valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
+
+      unless valid_topic_type_ids.include?(topic_type_id)
+        "is not valid choice for a '#{parent_topic_type.name}'"
+      end
     end
 
     def validate_extended_map_field_content(extended_field_mapping, values)

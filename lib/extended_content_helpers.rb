@@ -112,7 +112,13 @@ module ExtendedContentHelpers
               # Handle the creation of new choices where the choice is not recognised.
               if !matching_choice && %w(choice autocomplete).member?(extended_field.ftype) && extended_field.user_choice_addition?
                 index = value.to_a.index([k, v])
-                parent = index >= 1 ? Choice.find_by_value(value.to_a.at(index - 1).last) : Choice.find(1)
+
+                to_check = v
+                if index && index >= 1
+                  to_check = value.to_a.at(index - 1).last
+                end
+
+                parent = Choice.find_by_value(to_check) || Choice.find(1)
 
                 begin
                   choice = Choice.create!(:value => v, :label => l)
@@ -147,7 +153,7 @@ module ExtendedContentHelpers
         else
           # text and textarea, we intepret their values as not having
           # the special case where value and label are passed together
-          unless %w(text textarea topic_type).include?(extended_field.ftype)
+          unless %w(text textarea).include?(extended_field.ftype)
             # handle special case where we have a label embedded in the value
             # if our value looks like this
             # a label string (value)
