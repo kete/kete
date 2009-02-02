@@ -23,7 +23,7 @@ class ExtendedFieldsController < ApplicationController
     config.columns[:pseudo_choices].label = "Available choices"
     config.columns[:pseudo_choices].description = "Ftype must be a \"choices\" option for these options to be available to users."
     config.columns[:user_choice_addition].label = nil
-    
+
     config.columns << [:topic_type]
     config.columns[:topic_type].label = "Topic Type Choices"
     config.columns[:topic_type].description = "Ftype must be a \"Choices (topic type)\" option for these options to be available to users."
@@ -114,7 +114,7 @@ class ExtendedFieldsController < ApplicationController
     logger.debug("Topics are: #{topics.inspect}")
 
     topics = topics.map { |entry|
-      @template.content_tag("li", "#{h(entry.title)} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
+      @template.content_tag("li", "#{sanitize(entry.title)} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
                                                                           :controller => 'topics',
                                                                           :action => 'show',
                                                                           :id => entry,
