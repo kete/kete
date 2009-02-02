@@ -257,12 +257,14 @@ class SearchController < ApplicationController
     @search.pqf_query.kind_is(zoom_class, :operator => 'none')
 
     # limit baskets searched within
-    unless searching_for_related_items?
+    if searching_for_related_items?
+      @search.pqf_query.within(authorised_basket_names) if is_a_private_search?
+    else
       @topics_outside_of_this_basket ||= true
       if @current_basket != @site_basket || !@topics_outside_of_this_basket
         @search.pqf_query.within(@current_basket.urlified_name)
       elsif is_a_private_search?
-        @search.pqf_query.within(@authorised_basket_names)
+        @search.pqf_query.within(authorised_basket_names)
       end
     end
 
@@ -924,17 +926,14 @@ class SearchController < ApplicationController
     # Allow all public searches
     return true unless is_a_private_search?
 
-    # We only want the names
-    @authorised_basket_names = @basket_access_hash.keys.collect { |key| key.to_s }
-
-    if @current_basket == @site_basket and !@authorised_basket_names.empty?
+    if @current_basket == @site_basket and !authorised_basket_names.empty?
 
       # In the case of the site basket, the only baskets that are searched privately are those
       # which the user is a member of (using the same logic as above).
       # For this reason, no unauthorised searching will take place, so it is safe to continue.
 
       true
-    elsif @authorised_basket_names.member?(@current_basket.urlified_name)
+    elsif authorised_basket_names.member?(@current_basket.urlified_name)
 
       # In the case of a specific, non-site basket, the search is limited to this basket, and
       # we're checking if they're a member here. So, it is safe to continue now.

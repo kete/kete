@@ -22,11 +22,17 @@
   <legend><%= @verb %> related <%= item_class -%></legend>
 
   <% if params[:function] == "add" %>
-    <%= form_tag(params) -%>
-      <%= content_tag "label", "Search for #{item_class}:", "for" => "search_terms" -%>
+    <% privacy = params[:privacy_type] || "public" -%>
+    <%= form_tag(params.merge(:search_terms => nil)) -%>
+      <%= content_tag "label", "Search for #{privacy} #{item_class}:", "for" => "search_terms" -%>
       <%= text_field_tag "search_terms", params[:search_terms] %>
       <%= submit_tag "Search" %>
     </form>
+    <% if privacy == 'private' -%>
+      (<%= link_to 'search public', params.merge(:privacy_type => 'public') -%>)
+    <% else -%>
+      (<%= link_to 'search private', params.merge(:privacy_type => 'private') -%>)
+    <% end -%>
   <% end -%>
 
   <% if @results.blank? && !params[:search_terms].blank? %>
@@ -46,6 +52,7 @@
     <% for item in @results %>
     <li>
       <%= check_box_tag "item[#{item.id}]", "true", related?(item), "id" => "item_#{item.id}", :disabled => related?(item) -%>
+      <% item.private_version! if item.latest_version_is_private? -%>
       <%= image_tag(item.thumbnail_file.public_filename, :size => item.thumbnail_file.image_size, :alt => "#{item.title}. ") if item.instance_of?(StillImage) && !item.thumbnail_file.nil? %>
       <%= link_to h(item.title), { :urlified_name => item.basket.urlified_name,
                                    :controller => zoom_class_controller(item.class.name),
