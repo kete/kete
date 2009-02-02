@@ -694,6 +694,7 @@ class ApplicationController < ActionController::Base
     end
 
     if @successful
+      build_relations_from_topic_type_extended_field_choices
       update_zoom_and_related_caches_for(item)
 
       case where_to_redirect

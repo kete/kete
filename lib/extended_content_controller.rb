@@ -47,6 +47,49 @@ module ExtendedContentController
       def load_content_type
         @content_type = ContentType.find_by_class_name(zoom_class_from_controller(params[:controller]))
       end
+
+      private
+
+      def build_relations_from_topic_type_extended_field_choices(extended_values=nil)
+        extended_values = (extended_values || params[params[:controller].singularize][:extended_content_values])
+        extended_values.each_pair do |key,value|
+          if value.is_a?(Hash)
+            build_relations_from_topic_type_extended_field_choices(value)
+          else
+            skip_or_add_relation_for(key, value)
+          end
+        end
+      end
+
+      def skip_or_add_relation_for(key, value)
+        # Check before any further queries are made that the field looks like a topic type string
+        return unless !value.blank? && value =~ /^.+ \((.+)\)$/
+
+        # Check if this extended content belongs to an extended field that is a topic type field type
+        @extended_fields ||= ExtendedField.find_all_by_ftype('topic_type')
+        extended_field = @extended_fields.select { |extended_field| qualified_name_for_field(extended_field) == key }
+        return if extended_field.nil?
+
+        # Now we know this content is valid and meant for a topic type extended field,
+        # make a relation if one doesn't already exist
+        topic_id = $1.split('/').last.split('-').first.to_i
+        relation_already_exists = ContentItemRelation.count(:conditions => { :topic_id => topic_id,
+                                                                             :related_item_id => current_item }) > 0
+        unless relation_already_exists
+          logger.debug("Add relation for #{value}, with id of #{topic_id}")
+          topic = Topic.find(topic_id)
+          ContentItemRelation.new_relation_to_topic(topic, current_item)
+          prepare_and_save_to_zoom(topic)
+          expire_related_caches_for(topic, 'topics')
+        end
+      end
+
+      # Taken from app/helpers/extended_fields_helper.rb
+      # We only need this though, so should we include the whole set of helpers?
+      def qualified_name_for_field(extended_field)
+        extended_field.label.downcase.gsub(/\s/, "_")
+      end
+
     end
   end
 end

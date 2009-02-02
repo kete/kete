@@ -92,6 +92,7 @@ class TopicsController < ApplicationController
     end
 
     if @successful
+      build_relations_from_topic_type_extended_field_choices
       prepare_and_save_to_zoom(@topic)
 
       @topic.do_notifications_if_pending(1, current_user)
