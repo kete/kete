@@ -21,7 +21,7 @@
 
   <legend><%= @verb %> related <%= item_class -%></legend>
 
-  <% if params[:function] == "add" %>
+  <% if params[:function] == "add" && show_privacy_search_controls? && permitted_to_view_private_items? -%>
     <% privacy = params[:privacy_type] || "public" -%>
     <%= form_tag(params.merge(:search_terms => nil)) -%>
       <%= content_tag "label", "Search for #{privacy} #{item_class}:", "for" => "search_terms" -%>
