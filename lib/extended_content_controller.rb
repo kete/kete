@@ -51,7 +51,12 @@ module ExtendedContentController
       private
 
       def build_relations_from_topic_type_extended_field_choices(extended_values=nil)
-        extended_values = (extended_values || params[params[:controller].singularize][:extended_content_values])
+        params_key = zoom_class_params_key_from(params[:controller])
+        extended_values = (extended_values || params[params_key][:extended_content_values])
+
+        # no extended_values, nothing to do
+        return if extended_values.blank?
+
         extended_values.each_pair do |key,value|
           if value.is_a?(Hash)
             build_relations_from_topic_type_extended_field_choices(value)
