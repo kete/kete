@@ -93,7 +93,7 @@ module ExtendedFieldsHelper
       ['Text box', 'textarea'],
       ['Choices (auto-completion)', 'autocomplete'],
       ['Choices (drop-down)', 'choice'],
-      ['Choices (topic type)', 'topic_type']
+      ['Pre-populated Choices (topic type)', 'topic_type']
     ]
 
     @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
