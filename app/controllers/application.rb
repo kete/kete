@@ -822,12 +822,16 @@ class ApplicationController < ActionController::Base
     redirect_to url_for(path_hash)
   end
 
-  def url_for_dc_identifier(item)
-    utf8_url_for(:controller => zoom_class_controller(item.class.name),
-                 :action => 'show',
-                 :id => item,
-                 :format => nil,
-                 :urlified_name => item.basket.urlified_name)
+  def url_for_dc_identifier(item, force_http = false)
+    options = { :controller => zoom_class_controller(item.class.name),
+      :action => 'show',
+      :id => item,
+      :format => nil,
+      :urlified_name => item.basket.urlified_name }
+
+    options[:protocol] = 'http' if force_http
+
+    utf8_url_for(options)
   end
 
   def render_oai_record_xml(options = {})
