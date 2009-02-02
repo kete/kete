@@ -326,7 +326,12 @@ module ExtendedContent
     # you would expect "parent choice -> child choice".
     def reader_for(extended_field_element_name, field = nil)
       values = structured_extended_content[extended_field_element_name]
-      values.size == 1 ? values.first.join(" -> ") : values.collect { |v| v.join(" -> ") }
+      if values.size == 1
+        values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+      else
+        values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
+      end
+      values
     end
 
     # Replace the value of an extended field's content.
@@ -581,9 +586,11 @@ module ExtendedContent
 
     def recursively_convert_values(key, value = nil)
       if value.is_a?(Hash) && !value.empty?
-        [key, array_of_values(value).reject { |questionable_value| questionable_value.nil? }]
+        value = array_of_values(value).reject { |questionable_value| questionable_value.nil? }
+        value = value.first if value.size == 1
+        [key, value.blank? ? nil : value]
       else
-        [key, value.empty? ? nil : value.to_s]
+        [key, value.blank? ? nil : value.to_s]
       end
     rescue
       raise "Error processing {#{key.inspect} => #{value.inspect}}"
@@ -605,7 +612,7 @@ module ExtendedContent
           if v.keys.include?('value') && v.keys.include?('label')
             v
           else
-            v.size == 1 ? array_of_values(v).flatten : array_of_values(v)
+            array_of_values(v).flatten.compact
           end
         else
           v.to_s

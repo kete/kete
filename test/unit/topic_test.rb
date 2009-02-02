@@ -558,7 +558,9 @@ class TopicTest < Test::Unit::TestCase
 
       t.send("marital_status+=", "Single")
       assert_equal ["Married", "Single"], t.marital_status
-      assert t.extended_content.include?("<1><marital_status xml_element_name=\"dc:description\"><1>Married</1></marital_status></1><2><marital_status xml_element_name=\"dc:description\"><1>Single</1></marital_status></2>"), "<1><marital_status xml_element_name=\"dc:description\">Married</marital_status></1><2><marital_status xml_element_name=\"dc:description\">Single</marital_status></2> expected but was #{t.extended_content}"
+      expected = "<1><marital_status xml_element_name=\"dc:description\">Married</marital_status></1>"
+      expected += "<2><marital_status xml_element_name=\"dc:description\">Single</marital_status></2>"
+      assert t.extended_content.include?(expected), "#{expected} should be in extended content, but isn't. #{t.extended_content}"
 
       t.send("first_names+=", " John")
       assert_equal "Joe John", t.first_names
