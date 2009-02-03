@@ -39,6 +39,14 @@ module GoogleMap
 
   module ExtendedFieldsHelper
     def extended_field_map_editor(name, value, options = {}, latlng_options = {}, field_type = 'map', generate_text_fields = true, display_coords = false, display_address = false)
+      # If we have passed in the extended_field, use it
+      if field_type.is_a?(ExtendedField)
+        extended_field = field_type
+        field_type = extended_field.ftype
+      else
+        extended_field = nil
+      end
+
       # Google maps are disabled by default, so make sure we enable them here
       # This method is called on all pages
       @using_google_maps = true
@@ -109,10 +117,20 @@ module GoogleMap
       # create the lat/lng display
       latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
       latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
+
+      if !extended_field.nil? && !extended_field.base_url.blank?
+        gma_config = YAML.load(IO.read(File.join(RAILS_ROOT, 'config/google_map_api.yml')))
+        latlng_param = gma_config[:google_map_api][:latlng_param] || 'll'
+        zoom_lvl_param = gma_config[:google_map_api][:zoom_lvl_param] || 'z'
+        coords_text = link_to(@current_coords, "#{extended_field.base_url}#{latlng_param}=#{@current_coords}&#{zoom_lvl_param}=#{@current_zoom_lvl}")
+      else
+        coords_text = @current_coords
+      end
+
       html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
                                   <small>Show Latitude/Longitude</small>
                                 </a><br />
-                                <em id='#{map_data[:coords_field]}_display'><span>Latitude and Longitude coordinates:</span> #{@current_coords}</em>",
+                                <em id='#{map_data[:coords_field]}_display'><span>Latitude and Longitude coordinates:</span> #{coords_text}</em>",
                                latlng_data) if display_coords
 
       # create the google map div

@@ -110,7 +110,7 @@ module ExtendedFieldsHelper
         $('record_ftype').observe('change', function() {
           value = $('record_ftype').value;
           // hide the base_url text field if this ftype doesn't support it
-          if ( value == 'checkbox' || value == 'radio' || value == 'map' || value == 'map_address' || value == 'topic_type' ) {
+          if ( value == 'checkbox' || value == 'radio' || value == 'topic_type' ) {
             $('record_base_url').value = '';
             $('record_base_url').disabled = true;
           } else {

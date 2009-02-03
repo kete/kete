@@ -3,3 +3,7 @@
   :default_latitude: -41.277806
   :default_longitude: 174.726563
   :default_zoom_lvl: 5
+  # The following are used when a base url is used with the google maps. The coords will be link
+  # and the latlng and zoom level passed in with these param names
+  :latlng_param: ll
+  :zoom_lvl_param: z
