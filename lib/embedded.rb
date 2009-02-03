@@ -23,7 +23,14 @@ module Embedded
       return unless File.exist?(file_path)
 
       # read the metadata from the file and load it into embedded attribute
-      mini_exiftool = MiniExiftool.new(file_path)
+      # mini_exiftool may not recognize all our acceptable file types, if it fails, log it, but return
+      # so that the calling process can continue its merry way
+      begin
+        mini_exiftool = MiniExiftool.new(file_path)
+      rescue
+        logger.info("Embedded metadata harvesting skipped.  Details are: " + $!.message)
+        return
+      end
       embedded_hash = Hash.new
       mini_exiftool.tags.collect { |tag_name| embedded_hash[tag_name] = mini_exiftool[tag_name] }
       embedded = embedded_hash
