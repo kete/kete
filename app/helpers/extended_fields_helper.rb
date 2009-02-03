@@ -34,7 +34,9 @@ module ExtendedFieldsHelper
       m = m + build_ul_for_choice(choice, record)
     end +
     '</ul></div>' +
-    "Allow user addition of choices? Yes " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " No " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
+    '<div id="allow_user_additions">' +
+      "Allow user addition of choices? Yes " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " No " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
+    '</div>' +
     '</div>' +
 
     # Javascript call to initialise YUI TreeView, and listens for expand/collapse links
@@ -128,6 +130,15 @@ module ExtendedFieldsHelper
             $('hidden_choices_select_#{record.id.to_s}').show();
           } else {
             $('hidden_choices_select_#{record.id.to_s}').hide();
+          }
+          // show the allow user choices section when ftype supports it
+          if ( value == 'autocomplete' ) {
+            $('allow_user_additions').disabled = false;
+            $('allow_user_additions').show();
+          } else {
+            $('allow_user_additions').hide();
+            $('allow_user_additions').selected = false;
+            $('allow_user_additions').disabled = true;
           }
           // show the topic type select when ftype is topic_type
           if ( value == 'topic_type' ) {

@@ -110,7 +110,7 @@ module ExtendedContentHelpers
               matching_choice = Choice.matching(l,v)
 
               # Handle the creation of new choices where the choice is not recognised.
-              if !matching_choice && %w(choice autocomplete).member?(extended_field.ftype) && extended_field.user_choice_addition?
+              if !matching_choice && extended_field.ftype == 'autocomplete' && extended_field.user_choice_addition?
                 index = value.to_a.index([k, v])
 
                 to_check = v
