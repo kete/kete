@@ -8,4 +8,5 @@ class DummyModel
   def initialize(options={})
     options.each { |k,v| send("#{k}=".to_sym, v) }
   end
+  def to_i; id; end
 end
