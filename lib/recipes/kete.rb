@@ -2,6 +2,10 @@
 
 namespace :deploy do
 
+  task :default do
+    puts "This task shouldn't be run. Use deploy:first_time or deploy:update"
+  end
+
   desc "Run the steps necessary to get Kete going for the first time.  May take awhile."
   task :first_time do
     deploy.setup
