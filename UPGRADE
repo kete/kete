@@ -33,15 +33,13 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
-== 2009/01/30 - Fixing incorrect storage location of image thumbnails
+== 2009/02/03 - Extra deployment task : Copy bootstrap.xml.erb
 
 1.      Update to the latest Kete version using Git (and Capistrano if you've chosen this deployment method)
-2.      Run the following:
-           rake kete:upgrade
-3.      Restart your mongrels or mod_rails
-4.      Clear your sites cache
-           rake tmp:cache:clear
-5.      Restart backgroundrb
+2.      Follow all other upgrade proceedures (db:migrate, kete:upgrade etc)
+3.      Run the following (change to suit deployment path)
+           cd /path/to/apps/your_app/shared && cp cached-copy/zebradb/bootstrap.xml.erb system/zebradb/bootstrap.xml.erb
+4.      Use Administrator's Toolbox > Rebuild search databases to update all your search records (sites with a lot of items may take a long time)
 
 == 2009/01/29 - Fixing incorrect storage location of image thumbnails
 
@@ -51,6 +49,7 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 3.      Restart your mongrels or mod_rails
 4.      Clear your sites cache
            rake tmp:cache:clear
+5.      Restart backgroundrb
 
 == 2009/01/27 - Enable Harvesting of Embedded Metadata in Uploaded Files
 
