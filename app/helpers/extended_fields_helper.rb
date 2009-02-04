@@ -341,12 +341,14 @@ module ExtendedFieldsHelper
     option_tags = options_for_select([['', '']] + choices.map { |c| [c.label, c.value] }, value)
 
     default_options = {
-      :onchange => remote_function(:url => {
-        :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level
-      }, :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'")
+      :onchange => remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
+                                   :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
+                                   :before => "Element.show('#{id_for_extended_field(extended_field)}_#{level}_spinner')",
+                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
     }
 
-    select_tag("#{name}[#{level}]", option_tags, default_options.merge(options))
+    select_tag("#{name}[#{level}]", option_tags, default_options.merge(options)) +
+    "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />"
   end
 
   def extended_field_choice_autocomplete_editor(name, value, options, extended_field, choices, level = 1)
@@ -359,11 +361,14 @@ module ExtendedFieldsHelper
     selected_choice = Choice.matching(nil, value)
     value = selected_choice && !value.blank? ? selected_choice.label : nil
 
-    remote_call = remote_function(:url => {
-        :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level
-      }, :with => "'label='+Form.Element.getValue(el)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'")
+    remote_call = remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
+                                  :with => "'label='+Form.Element.getValue(el)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'",
+                                  :before => "Element.show('#{id_for_extended_field(extended_field)}_#{level}_spinner')",
+                                  :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
-    text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off")) + tag("br") +
+    text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off")) +
+    "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
+    tag("br") +
     content_tag("div", nil,
       :class => "extended_field_autocomplete",
       :id => id_for_extended_field(extended_field) + "_autocomplete_#{level}",
@@ -371,7 +376,12 @@ module ExtendedFieldsHelper
     ) +
 
     # Javascript code to initialize the autocompleter
-    javascript_tag("new Autocompleter.Local('#{id_for_extended_field(extended_field)}_#{level}', '#{id_for_extended_field(extended_field)}_autocomplete_#{level}', #{array_or_string_for_javascript(choices)}, { afterUpdateElement:function(el, sel) { #{remote_call} } });") +
+    javascript_tag("new Autocompleter.Local(
+      '#{id_for_extended_field(extended_field)}_#{level}',
+      '#{id_for_extended_field(extended_field)}_autocomplete_#{level}',
+      #{array_or_string_for_javascript(choices)},
+      { afterUpdateElement:function(el, sel) { #{remote_call} } }
+    );") +
 
     # We need to let our controller know that we're using autocomplete for this field.
     # We know the field we expect should be something like topic[extended_content][someonething]..
