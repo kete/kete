@@ -731,6 +731,7 @@ module ApplicationHelper
       value = formatted_extended_content_value(field, field_name, value, item)
 
       if field.ftype == 'map' || field.ftype == 'map_address'
+        next if value.blank?
         td = content_tag("td", "#{field.label}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
       else
         td = content_tag("td", "#{field.label}:", :class => "detail-extended-field-label") +

@@ -64,11 +64,13 @@ module GoogleMap
         @current_coords = param_from_field_name(name)[:coords]
         @current_zoom_lvl = param_from_field_name(name)[:zoom_lvl]
         @current_address = param_from_field_name(name)[:address]
+        @do_not_use_map = param_from_field_name(name)[:no_map]
       elsif !value.blank?
         # these values are coming from an edited item
-        @current_coords = value[1]
-        @current_zoom_lvl = value[0]
-        @current_address = value[2]
+        @current_coords = value[1] || ''
+        @current_zoom_lvl = value[0] || ''
+        @current_address = value[3] || ''
+        @do_not_use_map = (value[2] == "1") || false
       end
 
       # create a safe name (letters and underscores only) from the field name
@@ -81,6 +83,7 @@ module GoogleMap
                    :longitude => @current_coords.split(',')[1],
                    :zoom_lvl => @current_zoom_lvl,
                    :address => @current_address,
+                   :no_map => @do_not_use_map,
                    :coords_field => "#{safe_name}_map_coords_value",
                    :zoom_lvl_field => "#{safe_name}_map_zoom_value",
                    :address_field => "#{safe_name}_map_address" }
@@ -89,53 +92,59 @@ module GoogleMap
       @google_maps_list << map_data
 
       html = String.new
-      if generate_text_fields
-        # if we're on the edit pages, we want these fields to be present
-        fields = String.new
-        if field_type == 'map_address'
-          fields += label_tag(map_data[:address_field], "Address:", :class => 'inline') +
-                    text_field_tag("#{name}[address]",
-                                    @current_address,
-                                   { :id => map_data[:address_field], :size => 45 }) + "<br />"
+      unless @google_map_on_index_or_show_page && @do_not_use_map
+        if generate_text_fields
+          # if we're on the edit pages, we want these fields to be present
+          fields = String.new
+          if field_type == 'map_address'
+            fields += label_tag(map_data[:address_field], "Address:", :class => 'inline') +
+                      text_field_tag("#{name}[address]",
+                                      @current_address,
+                                     { :id => map_data[:address_field], :size => 45 }) + "<br />"
+          end
+          fields += label_tag(map_data[:coords_field], "Latitude and Longitude coordinates:", :class => 'inline') +
+                    text_field_tag("#{name}[coords]",
+                                    @current_coords,
+                                   { :id => map_data[:coords_field] }) + "<br />"
+          fields += label_tag(map_data[:zoom_lvl_field], "Zoom level for map:", :class => 'inline') +
+                    text_field_tag("#{name}[zoom_lvl]",
+                                    @current_zoom_lvl,
+                                   { :id => map_data[:zoom_lvl_field], :size => 2 })
+          html += content_tag('div', fields, { :id => "#{map_data[:map_id]}_fields" })
+          html += content_tag('div', "This feature requires exact data to function properly.",
+                                     { :id => "#{map_data[:map_id]}_warning" })
         end
-        fields += label_tag(map_data[:coords_field], "Latitude and Longitude coordinates:", :class => 'inline') +
-                  text_field_tag("#{name}[coords]",
-                                  @current_coords,
-                                 { :id => map_data[:coords_field] }) + "<br />"
-        fields += label_tag(map_data[:zoom_lvl_field], "Zoom level for map:", :class => 'inline') +
-                  text_field_tag("#{name}[zoom_lvl]",
-                                  @current_zoom_lvl,
-                                 { :id => map_data[:zoom_lvl_field], :size => 2 })
-        html += content_tag('div', fields, { :id => "#{map_data[:map_id]}_fields" })
-        html += content_tag('div', "This feature requires exact data to function properly.",
-                                   { :id => "#{map_data[:map_id]}_warning" })
+        # If we're on the show pages, and the map type shows the address
+        # append a paragraph after the google map with the address value
+        html += content_tag('p', @current_address) if display_address
+
+        # create the lat/lng display
+        latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
+        latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
+
+        if !extended_field.nil? && !extended_field.base_url.blank?
+          gma_config = YAML.load(IO.read(File.join(RAILS_ROOT, 'config/google_map_api.yml')))
+          latlng_param = gma_config[:google_map_api][:latlng_param] || 'll'
+          zoom_lvl_param = gma_config[:google_map_api][:zoom_lvl_param] || 'z'
+          coords_text = link_to(@current_coords, "#{extended_field.base_url}#{latlng_param}=#{@current_coords}&#{zoom_lvl_param}=#{@current_zoom_lvl}")
+        else
+          coords_text = @current_coords
+        end
+
+        html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
+                                    <small>Show Latitude/Longitude</small>
+                                  </a><br />
+                                  <em id='#{map_data[:coords_field]}_display'><span>Latitude and Longitude coordinates:</span> #{coords_text}</em>",
+                                 latlng_data) if display_coords
+
+        # create the google map div
+        map_options = { :style => 'width:550px;' }.merge(options)
+        html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({:id => map_data[:map_id]}))
+        if generate_text_fields
+          html += "<small>#{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} Don't show a Google Map</small>"
+          html += hidden_field_tag("#{name}[no_map]", "0")
+        end
       end
-      # If we're on the show pages, and the map type shows the address
-      # append a paragraph after the google map with the address value
-      html += content_tag('p', @current_address) if display_address
-
-      # create the lat/lng display
-      latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
-      latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
-
-      if !extended_field.nil? && !extended_field.base_url.blank?
-        gma_config = YAML.load(IO.read(File.join(RAILS_ROOT, 'config/google_map_api.yml')))
-        latlng_param = gma_config[:google_map_api][:latlng_param] || 'll'
-        zoom_lvl_param = gma_config[:google_map_api][:zoom_lvl_param] || 'z'
-        coords_text = link_to(@current_coords, "#{extended_field.base_url}#{latlng_param}=#{@current_coords}&#{zoom_lvl_param}=#{@current_zoom_lvl}")
-      else
-        coords_text = @current_coords
-      end
-
-      html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
-                                  <small>Show Latitude/Longitude</small>
-                                </a><br />
-                                <em id='#{map_data[:coords_field]}_display'><span>Latitude and Longitude coordinates:</span> #{coords_text}</em>",
-                               latlng_data) if display_coords
-
-      # create the google map div
-      map_options = { :style => 'width:550px;' }.merge(options)
-      html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({:id => map_data[:map_id]}))
 
       html
     end
@@ -163,7 +172,7 @@ module GoogleMap
   module ExtendedContent
     def validate_extended_map_field_content(extended_field_mapping, values)
       # Allow nil values. If this is required, the nil value will be caught earlier.
-      return nil if values.blank?
+      return nil if values.blank? || (value[2] == "1")
       # the values passed in should form an array
       unless values.is_a?(Array)
         "is not an array of latitude and longitude. Why?"
@@ -182,6 +191,7 @@ module GoogleMap
       unless @google_maps_list.blank?
         @google_maps_initializers = String.new
         @google_maps_list.each do |google_map|
+          next if google_map[:no_map] && @google_map_on_index_or_show_page
           @google_maps_initializers += "initialize_google_map("
           @google_maps_initializers += "'#{google_map[:map_id]}'"
           @google_maps_initializers += ", '#{google_map[:map_type]}'"
@@ -212,6 +222,8 @@ module GoogleMap
 
         # Prepare the Google Maps needing to load
         @google_maps_initializers = google_map_initializers
+
+        return if @google_maps_initializers.blank?
 
         # Get the default latitude, longitude, and zoom level just in case we need them later
         unless @gma_config[:google_map_api][:default_latitude].blank? || @gma_config[:google_map_api][:default_longitude].blank?
