@@ -67,7 +67,9 @@
     <%= will_paginate @results, :params => params.reject { |k, v| k == :page } if @results.respond_to?(:total_entries) %>
   </div>
 
-  <%= submit_tag params[:function].capitalize %>
+  <%= submit_tag params[:function].capitalize, :id => 'submit', :onclick => "$('spinner').show();$('submit').hide();" -%>
+  <img src='/images/indicator.gif' width='16' height='16' alt='Executing <%= params[:function].capitalize -%> action. ' id='spinner' style='border:none;display:none;' />
+
 
   </form>
 
