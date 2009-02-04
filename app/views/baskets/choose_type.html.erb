@@ -1,5 +1,9 @@
 <% @title = "What would you like to add"
-   @title += " that relates to #{Topic.find(params[:relate_to_topic]).title}" if params[:relate_to_topic]
+   if params[:relate_to_topic]
+     topic = Topic.find(params[:relate_to_topic])
+     topic.private_version! if params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?
+     @title += " that relates to #{topic.title}"
+   end
    @title += "?"
    @title += " Where would you like to add it?" if @basket_list.size > 1
 -%>

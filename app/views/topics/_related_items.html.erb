@@ -47,7 +47,7 @@ end
     <div id="related-items-tools">
       <ul>
         <% cache({ :related => 'related-tools-create-or-link-or-remove', :id => @cache_id }) do -%>
-          <%= header_add_links(:relate_to_topic => item, :related_topic_private => params[:private], :link_text => 'Create', :class => 'first') -%>
+          <%= header_add_links(:relate_to_topic => item, :related_topic_private => (params[:private] && params[:private] == 'true'), :link_text => 'Create', :class => 'first') -%>
           <%= link_to_related_item_function(:link_text => 'Link Existing', :function => 'add', :relate_to_topic => item) -%>
           <%= link_to_related_item_function(:link_text => 'Remove', :function => 'remove', :relate_to_topic => item) -%>
         <% end -%>
