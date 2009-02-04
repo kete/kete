@@ -402,7 +402,7 @@ module ExtendedFieldsHelper
       value = value['label'] + " (#{value['value']})" if value.is_a?(Hash) && value['value'] && value['label']
     end
 
-    id = "#{name.split(/\[/)[0]}_topic_types_auto_complete"
+    id = "#{name.split(/\[/)[0]}_topic_types_auto_complete_#{extended_field.id}"
     id = "#{id}_#{@field_multiple_id}" if extended_field.multiple?
     spinner_id = "#{id}_spinner"
     html = text_field_with_auto_complete(name.split(/\[/)[0], '',
