@@ -15,7 +15,7 @@ namespace :deploy do
     deploy.kete.prepare.setup_private
     deploy.kete.prepare.setup_themes
     deploy.symlink
-    deploy.symlink.all
+    deploy.kete.symlink.all
     deploy.gems.install
     deploy.db.bootstrap
     deploy.restart
