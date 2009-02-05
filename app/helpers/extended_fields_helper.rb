@@ -265,6 +265,8 @@ module ExtendedFieldsHelper
       send(:extended_field_choice_editor, name, value, tag_options, extended_field)
     elsif extended_field.ftype == "topic_type"
       send(:extended_field_topic_type_editor, name, value, tag_options, extended_field)
+    elsif %w(map map_address).member?(extended_field.ftype)
+      send(builder, name, value, extended_field, tag_options)
     elsif respond_to?(builder)
       send(builder, name, value, tag_options)
     else

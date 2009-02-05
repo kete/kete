@@ -764,9 +764,9 @@ module ApplicationHelper
     values.each do |value_input|
       value_output = \
       if field.ftype == 'map'
-        extended_field_map_editor(field_name, value_input, { :style => 'width:220px;' }, { :style => 'width:220px;' }, field, false, true, false)
+        extended_field_map_editor(field_name, value_input, field, { :style => 'width:220px;' }, { :style => 'width:220px;' }, false, true, false)
       elsif field.ftype == 'map_address'
-        extended_field_map_editor(field_name, value_input, { :style => 'width:220px;' }, { :style => 'width:220px;' }, field, false, true, true)
+        extended_field_map_editor(field_name, value_input, field, { :style => 'width:220px;' }, { :style => 'width:220px;' }, false, true, true)
       else
         formatted_value_from_xml(value_input, field, item)
       end

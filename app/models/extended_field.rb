@@ -111,6 +111,17 @@ class ExtendedField < ActiveRecord::Base
     ['autocomplete', 'choice'].include?(ftype)
   end
 
+  def is_required?(controller, topic_type_id=nil)
+    raise "ERROR: You must specify a topic type id since controller is topics" if controller == 'topics' && topic_type_id.nil?
+    if controller == 'topics'
+      ef_mapping = TopicTypeToFieldMapping.find_by_topic_type_id_and_extended_field_id(topic_type_id, self)
+    else
+      content_type = ContentType.find_by_controller(controller)
+      ef_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type, self)
+    end
+    ef_mapping
+  end
+
   protected
 
     def validate

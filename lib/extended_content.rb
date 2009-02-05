@@ -652,8 +652,9 @@ module ExtendedContent
     # Generic validation methods
     def validate_extended_content_single_value(extended_field_mapping, value)
       # Handle required fields here..
-      if extended_field_mapping.required && value.blank? && \
-        extended_field_mapping.extended_field.ftype != "checkbox"
+      if extended_field_mapping.required &&
+         (value.blank? || (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value[2] == "1")) &&
+         extended_field_mapping.extended_field.ftype != "checkbox"
 
         errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank") unless \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params].nil? && \

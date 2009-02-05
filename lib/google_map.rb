@@ -38,14 +38,9 @@ module GoogleMap
   end
 
   module ExtendedFieldsHelper
-    def extended_field_map_editor(name, value, options = {}, latlng_options = {}, field_type = 'map', generate_text_fields = true, display_coords = false, display_address = false)
-      # If we have passed in the extended_field, use it
-      if field_type.is_a?(ExtendedField)
-        extended_field = field_type
-        field_type = extended_field.ftype
-      else
-        extended_field = nil
-      end
+    def extended_field_map_editor(name, value, extended_field, options = {}, latlng_options = {}, generate_text_fields = true, display_coords = false, display_address = false)
+      raise "ERROR: extended_field param should be of ExtendedField class, not #{extended_field.class.name}" unless extended_field.is_a?(ExtendedField)
+      field_type = extended_field.ftype
 
       # Google maps are disabled by default, so make sure we enable them here
       # This method is called on all pages
@@ -122,7 +117,7 @@ module GoogleMap
         latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
         latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
 
-        if !extended_field.nil? && !extended_field.base_url.blank?
+        if !extended_field.base_url.blank?
           gma_config = YAML.load(IO.read(File.join(RAILS_ROOT, 'config/google_map_api.yml')))
           latlng_param = gma_config[:google_map_api][:latlng_param] || 'll'
           zoom_lvl_param = gma_config[:google_map_api][:zoom_lvl_param] || 'z'
@@ -141,7 +136,11 @@ module GoogleMap
         map_options = { :style => 'width:550px;' }.merge(options)
         html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({:id => map_data[:map_id]}))
         if generate_text_fields
-          html += "OR #{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} <strong>don't record a location</strong>"
+          controller = (@new_item_controller || params[:controller])
+          topic_type_id = controller == 'topics' ? (params[:new_item_topic_type] || params[:topic][:topic_type_id]) : nil
+          unless extended_field.is_required?(controller, topic_type_id)
+            html += "OR #{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} <strong>don't record a location</strong>"
+          end
           html += hidden_field_tag("#{name}[no_map]", "0")
         end
       end
@@ -149,8 +148,9 @@ module GoogleMap
       html
     end
     # both the google map and google map with address options use the same code
-    def extended_field_map_address_editor(name, value, options = {}, latlng_options = {}, field_type = 'map_address', generate_text_fields = true, display_coords = false, display_address = false)
-      extended_field_map_editor(name, value, options, latlng_options, field_type, generate_text_fields, display_coords, display_address)
+    def extended_field_map_address_editor(name, value, extended_field, options = {}, latlng_options = {}, generate_text_fields = true, display_coords = false, display_address = false)
+      raise "ERROR: extended_field param should be of ExtendedField class, not #{extended_field.class.name}" unless extended_field.is_a?(ExtendedField)
+      extended_field_map_editor(name, value, extended_field, options, latlng_options, generate_text_fields, display_coords, display_address)
     end
 
     private
