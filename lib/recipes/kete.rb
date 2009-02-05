@@ -28,7 +28,7 @@ namespace :deploy do
     deploy.update_code
     deploy.symlink
     deploy.kete.symlink.all
-    deploy.gems.update
+    deploy.gems.update if (ENV['UPDATE_GEMS'] || false)
     deploy.migrate
     deploy.kete.upgrade
     deploy.backgroundrb.start

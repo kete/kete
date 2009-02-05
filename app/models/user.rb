@@ -287,7 +287,7 @@ class User < ActiveRecord::Base
   end
 
   def display_name_or_login
-    self.resolved_name = (self.display_name || self.login)
+    self.resolved_name = !self.display_name.blank? ? self.display_name : self.login
   end
 
   private

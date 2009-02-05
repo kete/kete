@@ -390,20 +390,18 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_topic_type_editor(name, value, tag_options, extended_field)
-    if value.is_a?(Array)
-      value = value.collect do |v|
-        if v.is_a?(Hash) && v['value'] && v['label']
-          v = v['label'] + " (#{v['value']})"
-        else
-          v
-        end
-      end
+    if value.blank?
+      value = ''
     else
-      value = value['label'] + " (#{value['value']})" if value.is_a?(Hash) && value['value'] && value['label']
+      value = { 'label' => value[1], 'value' => value[0] } if value.is_a?(Array)
+      unless value.is_a?(Hash) && value['value'] && value['label']
+        raise "ERROR: By this point we should have a hash with label and value keys. Instead, we have #{value.inspect}"
+      end
+      value = value['label'] + " (#{value['value']})"
     end
 
-    id = "#{name.split(/\[/)[0]}_topic_types_auto_complete"
-    id = "#{id}_#{@field_multiple_id}" if extended_field.multiple?
+    id = "#{name.split(/\[/)[0]}_topic_types_auto_complete_extfield_#{extended_field.id}"
+    id = "#{id}_multiple_#{@field_multiple_id}" if extended_field.multiple?
     spinner_id = "#{id}_spinner"
     html = text_field_with_auto_complete(name.split(/\[/)[0], '',
                                          { :id => id, :value => value, :tabindex => '1', :size => 50, :name => name },
