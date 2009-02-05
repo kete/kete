@@ -1,5 +1,9 @@
 <% @title = "What would you like to add"
-   @title += " that relates to #{Topic.find(params[:relate_to_topic]).title}" if params[:relate_to_topic]
+   if params[:relate_to_topic]
+     topic = Topic.find(params[:relate_to_topic])
+     topic.private_version! if params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?
+     @title += " that relates to #{topic.title}"
+   end
    @title += "?"
    @title += " Where would you like to add it?" if @basket_list.size > 1
 -%>
@@ -11,7 +15,8 @@
   <% form_tag do -%>
 
     <fieldset>
-      <%= hidden_field_tag 'relate_to_topic', params[:relate_to_topic] -%>
+      <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+      <%= hidden_field_tag "related_topic_private", params[:related_topic_private] %>
 
       <% if @basket_list.size > 1 -%>
         <div class="form-element">
@@ -59,7 +64,8 @@ function request_item_form(topic_type) {
       new_item_basket: $('new_item_basket').value,
       new_item_controller: $('new_item_controller').value,
       new_item_topic_type: topic_type,
-      relate_to_topic: $('relate_to_topic').value
+      relate_to_topic: $('relate_to_topic').value,
+      related_topic_private: $('related_topic_private').value
     },
     onLoading: function(loading) { $('data_spinner').show(); },
     onComplete: function(complete) { $('data_spinner').hide(); },

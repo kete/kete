@@ -1,5 +1,8 @@
   <% unless params[:relate_to_topic].nil? %>
     <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+    <% unless params[:related_topic_private].nil? %>
+      <%= hidden_field_tag "related_topic_private", params[:related_topic_private] %>
+    <% end %>
   <% end %>
 
   <% unless params[:index_for_basket].nil? %>

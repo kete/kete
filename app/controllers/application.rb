@@ -631,8 +631,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def redirect_to_related_topic(topic_id)
-    redirect_to_show_for(Topic.find(topic_id))
+  def redirect_to_related_topic(topic, options={})
+    topic = topic.is_a?(Topic) ? topic : Topic.find(topic)
+    redirect_to_show_for(topic, options)
   end
 
   def update_zoom_and_related_caches_for(item, controller = nil)
@@ -701,7 +702,7 @@ class ApplicationController < ActionController::Base
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "Related #{zoom_class_humanize(item.class.name)} was successfully created."
-        redirect_to_related_topic(@new_related_topic)
+        redirect_to_related_topic(@new_related_topic, { :private => params[:related_topic_private] })
       when 'commentable'
         redirect_to_show_for(commented_item, options)
       when 'appearance'

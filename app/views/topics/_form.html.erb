@@ -9,6 +9,7 @@ zoom_class = zoom_class_from_controller(controller)
 @basket = (Basket.find_by_urlified_name(@new_item_basket) || @current_basket)
 
 @relate_to_topic = (@relate_to_topic || params[:relate_to_topic])
+@related_topic_private = (@related_topic_private || params[:related_topic_private])
 
 # @item is passed in from the ajax add item forms, so only set it if not already set
 @item ||= current_item
@@ -57,6 +58,9 @@ zoom_class = zoom_class_from_controller(controller)
 
     <% unless @relate_to_topic.nil? -%>
       <%= hidden_field_tag "relate_to_topic", @relate_to_topic -%>
+      <% unless @related_topic_private.nil? -%>
+        <%= hidden_field_tag "related_topic_private", @related_topic_private -%>
+      <% end -%>
     <% end -%>
 
     <% if @item_type == :document && !params[:is_theme].nil? && @site_admin -%>
