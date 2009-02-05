@@ -223,8 +223,6 @@ module GoogleMap
         # Prepare the Google Maps needing to load
         @google_maps_initializers = google_map_initializers
 
-        return if @google_maps_initializers.blank?
-
         # Get the default latitude, longitude, and zoom level just in case we need them later
         unless @gma_config[:google_map_api][:default_latitude].blank? || @gma_config[:google_map_api][:default_longitude].blank?
           @default_latitude = @gma_config[:google_map_api][:default_latitude]
