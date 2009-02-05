@@ -141,7 +141,7 @@ module GoogleMap
         map_options = { :style => 'width:550px;' }.merge(options)
         html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({:id => map_data[:map_id]}))
         if generate_text_fields
-          html += "<small>#{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} Don't show a Google Map</small>"
+          html += "OR #{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} <strong>don't record a location</strong>"
           html += hidden_field_tag("#{name}[no_map]", "0")
         end
       end
