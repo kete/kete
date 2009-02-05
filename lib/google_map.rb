@@ -172,7 +172,7 @@ module GoogleMap
   module ExtendedContent
     def validate_extended_map_field_content(extended_field_mapping, values)
       # Allow nil values. If this is required, the nil value will be caught earlier.
-      return nil if values.blank? || (value[2] == "1")
+      return nil if values.blank? || (values[2] == "1")
       # the values passed in should form an array
       unless values.is_a?(Array)
         "is not an array of latitude and longitude. Why?"
