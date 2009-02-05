@@ -137,7 +137,7 @@ module GoogleMap
         html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({:id => map_data[:map_id]}))
         if generate_text_fields
           controller = (@new_item_controller || params[:controller])
-          topic_type_id = controller == 'topics' ? (params[:new_item_topic_type] || params[:topic][:topic_type_id]) : nil
+          topic_type_id = controller == 'topics' ? (params[:new_item_topic_type] || (params[:topic] && params[:topic][:topic_type_id]) || current_item.topic_type.id) : nil
           unless extended_field.is_required?(controller, topic_type_id)
             html += "OR #{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} <strong>don't record a location</strong>"
           end
@@ -174,11 +174,18 @@ module GoogleMap
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank? || (values[2] == "1")
       # the values passed in should form an array
-      unless values.is_a?(Array)
-        "is not an array of latitude and longitude. Why?"
+      return "is not an array of latitude and longitude. Why?" unless values.is_a?(Array)
+      # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
+      wrong_order = false
+      begin
+        wrong_order = true unless (values[0] == '0' || value[0].to_i > 0) &&
+                                  (value[1].split(',').size == 2) &&
+                                  (['0','1'].include?(value[2])) &&
+                                  (value[3].blank? || value[3].is_a?(String))
+      rescue
+        wrong_order = true
       end
-      # TODO: we should also check here that [0] is the zoom, [1] is the coords, and [2] is the address
-      # and if they arn't reverse them (since we assume that order later in the code)
+      return "is not in the right order ([zoom, coords, no_map, address]). Currenty #{values.inspect}. Why?" if wrong_order
     end
     # both the google map and google map with address options use the same code
     alias validate_extended_map_address_field_content validate_extended_map_field_content
