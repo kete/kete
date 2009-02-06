@@ -14,7 +14,7 @@
 
 <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @web_link }) if current_user_can_see_flagging? -%>
 
-<%= render(:partial => "topics/related_items", :locals => { :item => @web_link, :topics_only => true }) if current_user_can_see_add_links? -%>
+<%= render(:partial => "topics/related_items", :locals => { :item => @web_link, :topics_only => true }) -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @web_link }) if current_user_can_see_discussion? -%>
 

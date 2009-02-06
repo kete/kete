@@ -33,11 +33,11 @@
 
 <% cache_with_privacy(@still_image, {:part => 'details_second'}) do -%>
   <%= pending_review(@still_image) -%>
-<% end -%>   
+<% end -%>
 
 <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) if current_user_can_see_flagging? -%>
 
-<%= render(:partial => "topics/related_items", :locals => { :item => @still_image, :topics_only => true }) if current_user_can_see_add_links? -%>
+<%= render(:partial => "topics/related_items", :locals => { :item => @still_image, :topics_only => true }) -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @still_image }) if current_user_can_see_discussion? -%>
 

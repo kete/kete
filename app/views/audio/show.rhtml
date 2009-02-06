@@ -15,7 +15,7 @@
 
 <%= render(:partial => "topics/flagging_contributor", :locals => { :item => @audio_recording }) if current_user_can_see_flagging? -%>
 
-<%= render(:partial => "topics/related_items", :locals => { :item => @audio_recording, :topics_only => true }) if current_user_can_see_add_links? -%>
+<%= render(:partial => "topics/related_items", :locals => { :item => @audio_recording, :topics_only => true }) -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @audio_recording }) if current_user_can_see_discussion? -%>
 
