@@ -38,7 +38,7 @@ class Basket < ActiveRecord::Base
   # Store how many baskets have privacy controls enabled to determine
   # whether Site basket should keep its privacy browsing controls on
   # putting in the wrapper respond_to? logic so that upgrades of older Kete sites works
-  if Basket.respond_to?('show_privacy_controls')
+  if Basket.columns.collect { |c| c.name }.include?('show_privacy_controls')
     named_scope :should_show_privacy_controls, :conditions => { :show_privacy_controls => true }
     cattr_accessor :privacy_exists
     @@privacy_exists = (Basket.should_show_privacy_controls.count > 0)
