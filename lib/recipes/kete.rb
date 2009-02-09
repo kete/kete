@@ -103,8 +103,8 @@ namespace :deploy do
         run "mkdir -p #{shared_path}/system/#{dir}"
         # The keteaccess password file is rewritten later.
         # Let's just move it to make sure we can fall back to something if it goes wrong
-        run "mv #{shared_path}/system/zebradb/keteaccess #{shared_path}/system/zebradb/keteaccess.old" if dir == 'zebradb'
-        run "cp -rf #{current_path}/#{public_dir}#{dir} #{shared_path}/system/"
+        run "if [ -f #{shared_path}/system/zebradb/keteaccess ]; then mv #{shared_path}/system/zebradb/keteaccess #{shared_path}/system/zebradb/keteaccess.old; fi" if dir == 'zebradb'
+        run "if [ -d #{current_path}/#{public_dir}#{dir} ]; then cp -rf #{current_path}/#{public_dir}#{dir} #{shared_path}/system/; fi"
         run "rm -rf #{current_path}/#{public_dir}#{dir}"
         run "ln -nfs #{shared_path}/system/#{dir} #{current_path}/#{public_dir}#{dir}"
       end
