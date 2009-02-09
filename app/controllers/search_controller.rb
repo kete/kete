@@ -258,13 +258,13 @@ class SearchController < ApplicationController
 
     # limit baskets searched within
     if searching_for_related_items?
-      @search.pqf_query.within(authorised_basket_names) if is_a_private_search?
+      @search.pqf_query.within(authorised_basket_names) if is_a_private_search? && !@site_admin
     else
       @topics_outside_of_this_basket ||= true
       if @current_basket != @site_basket || !@topics_outside_of_this_basket
         @search.pqf_query.within(@current_basket.urlified_name)
-      elsif is_a_private_search?
-        @search.pqf_query.within(authorised_basket_names)
+      else
+        @search.pqf_query.within(authorised_basket_names) if is_a_private_search? && !@site_admin
       end
     end
 
