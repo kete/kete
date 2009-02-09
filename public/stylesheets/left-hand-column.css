@@ -51,3 +51,8 @@ div.basket-list-column {
 	width: 25%;
 	margin-left: 0;
 }
+
+/* Related Items */
+#related-items-tools ul {
+  margin: 0;
+}

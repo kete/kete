@@ -726,11 +726,11 @@ div#notice div, div#error div {
 }
 .profile_content_left {
   margin-left: 90px;
-  width: 380px;
+  width: 49%;
 }
 .profile_content_right {
   float: right;
-  width: 400px;
+  width: 49%;
 }
 #portrait_help_div {
   margin: 25px auto;
@@ -774,11 +774,11 @@ div#notice div, div#error div {
 }
 .created_link {
   float: left;
-  width: 290px;
+  width: 49%;
 }
 .last_edited_link {
   float: right;
-  width: 290px;
+  width: 49%;
 }
 .stylish_user_contribution_link_avatar {
   float: left;
@@ -808,6 +808,10 @@ div#notice div, div#error div {
 
 pre {
     overflow: auto;
+}
+
+.recent-topic-divider {
+  clear: both;
 }
 
 /* width of keyword search for basket homepage */
