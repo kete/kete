@@ -96,9 +96,15 @@ namespace :deploy do
         end
       end
 
+      # For each directory, setup a system folder, copy the repository files to it,
+      # remove the folder from the current directory and in it's place, put a symlink
       def symlink_system_directory(dir, is_public=true)
         public_dir = is_public ? 'public/' : ''
         run "mkdir -p #{shared_path}/system/#{dir}"
+        # The keteaccess password file is rewritten later.
+        # Let's just move it to make sure we can fall back to something if it goes wrong
+        run "mv #{shared_path}/system/zebradb/keteaccess #{shared_path}/system/zebradb/keteaccess.old" if dir == 'zebradb'
+        run "cp -rf #{current_path}/#{public_dir}#{dir} #{shared_path}/system/"
         run "rm -rf #{current_path}/#{public_dir}#{dir}"
         run "ln -nfs #{shared_path}/system/#{dir} #{current_path}/#{public_dir}#{dir}"
       end
