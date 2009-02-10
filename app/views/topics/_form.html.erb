@@ -142,8 +142,10 @@ zoom_class = zoom_class_from_controller(controller)
       <%# Most of the time, if someone chooses private item, they want private file as well.
         Use JS to auto select it for them -%>
       <%= javascript_tag "
-        $('#{@item_type.to_s}_private_true').observe('click', function(){ $('#{@item_type.to_s}_file_private_true').checked = true; });
-        $('#{@item_type.to_s}_private_false').observe('click', function(){ $('#{@item_type.to_s}_file_private_false').checked = true; });
+        if ($('#{@item_type.to_s}_private_true') && $('#{@item_type.to_s}_private_false')) {
+          $('#{@item_type.to_s}_private_true').observe('click', function(){ $('#{@item_type.to_s}_file_private_true').checked = true; });
+          $('#{@item_type.to_s}_private_false').observe('click', function(){ $('#{@item_type.to_s}_file_private_false').checked = true; });
+        }
       " -%>
     <% end -%>
 
