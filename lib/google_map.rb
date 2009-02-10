@@ -181,10 +181,10 @@ module GoogleMap
       # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
       wrong_order = false
       begin
-        wrong_order = true unless (values[0] == '0' || value[0].to_i > 0) &&
-                                  (value[1].split(',').size == 2) &&
-                                  (['0','1'].include?(value[2])) &&
-                                  (value[3].blank? || value[3].is_a?(String))
+        wrong_order = true unless (values[0] == '0' || values[0].to_i > 0) &&
+                                  (values[1].split(',').size == 2) &&
+                                  (['0','1'].include?(values[2])) &&
+                                  (values[3].blank? || values[3].is_a?(String))
       rescue
         wrong_order = true
       end
