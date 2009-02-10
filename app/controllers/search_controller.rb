@@ -568,7 +568,7 @@ class SearchController < ApplicationController
               done_message += " at #{status[:done_with_do_work_time]}."
               page.hide("spinner")
               page.replace_html 'done', done_message
-              page.replace_html 'exit', '<p>' + link_to('Browse records', :action => 'all') + '</p>'
+              page.replace_html 'exit', '<p>' + link_to('Browse records', { :action => 'all', :controller_name_for_zoom_class => 'topics' }) + '</p>'
             end
           end
         else
