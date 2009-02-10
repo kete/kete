@@ -271,7 +271,7 @@ class SearchController < ApplicationController
     # this looks in the dc_relation index in the z30.50 server
     # must be exact string
     # get the item
-    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item), :should_be_exact => true) if !@source_item.nil?
+    @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, true), :should_be_exact => true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
     @search.pqf_query.subjects_include("'#{@tag.name}'") if !@tag.nil?
