@@ -267,6 +267,8 @@ class AccountController < ApplicationController
       flash[:notice] = "A password reset link has been sent to your email address"
     elsif @users.size > 1
       flash[:notice] = "This email address belongs to more than one account. Please select the one you're trying to reset."
+    elsif !params[:user][:login].blank?
+      flash[:error] = "Could not find a user with that login"
     else
       flash[:error] = "Could not find a user with that email address"
     end
