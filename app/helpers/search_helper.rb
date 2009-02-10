@@ -32,7 +32,10 @@ module SearchHelper
       end_of_title_parts << contributor_string
     end
 
-    end_of_title_parts << " related to \"#{@source_item.title}\"" if !@source_item.nil?
+    unless @source_item.nil?
+      @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
+      end_of_title_parts << " related to \"#{@source_item.title}\""
+    end
 
     end_of_title_parts << " that are #{@privacy}" if !@privacy.nil?
 
