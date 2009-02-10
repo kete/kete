@@ -46,6 +46,7 @@ ActionController::Routing::Routes.draw do |map|
       search_rss.basket_all_contributed_by_rss ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
       search_rss.basket_all_private_contributed_by_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
       search_rss.basket_all_related_to_rss ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
+      search_rss.basket_all_private_related_to_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
       search_rss.basket_all_tagged_rss ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
       search_rss.basket_all_private_tagged_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
       search_rss.basket_all_of_category_rss ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
