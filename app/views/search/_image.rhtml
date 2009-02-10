@@ -1,53 +1,23 @@
 <% unless thumbnail.nil?
-   @thumb_src = thumbnail[:src]
-   thumbnail.delete(:src)
-   thumbnail.delete(:size)
-   @thumb_options = thumbnail
+     @thumb_src = thumbnail[:src]
+     thumbnail.delete(:src)
+     thumbnail.delete(:size)
+     @thumb_options = thumbnail
    end -%>
 
 <div class="image-result-wrapper" id="item_<%= result %>_wrapper">
-<% if params[:relate_to_topic] -%>
- <% if existing_relations.include?(result) -%>
-  <% title = 'Existng link: ' + title -%>
- <% else -%>
-  <%=
-check_box_tag("topic_#{result}",'yes',false,{:style => 'float:left',
-:onclick => "new Ajax.Updater('item_#{result}_wrapper',
-'/site/search/link_related?related_to_topic=#{params[:relate_to_topic]}&topic=#{result}&related_class=#{params[:related_class].singularize}&authenticity_token=#{params[:authenticity_token]}',
-{asynchronous:true, evalScripts:true}); return false;"}) %>
-  <% end %>
-
   <div class="image-result-thumb">
-    <% unless thumbnail.nil? -%>
-           <%= link_to(image_tag(@thumb_src, @thumb_options.merge(:alt => altify(title))), "#{source_url}", { :popup => true })  %>
-    <% else -%>
-    <%= link_to "View Image", "#{source_url}", { :popup => true }  %>
-    <% end -%>
+    <% link_text = thumbnail.nil? ? "View Image" :
+                                    image_tag(@thumb_src, @thumb_options.merge(:alt => altify(title))) -%>
+    <%= link_to link_text, source_url %>
   </div>
   <div class="image-result-header">
-    <h4><%= link_to h(title), "#{source_url}", { :popup => true }   %></h4>
+    <h4><%= link_to h(title), source_url, :tabindex => '1' %></h4>
   </div>
-  <div class="image-result-description"><%= strip_tags(short_summary) %>
+  <div class="image-result-description">
+    <%= strip_tags(short_summary) %>
     <div class="image-result-more">
-      <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}", :popup => true })%>
+      <%= link_to("more &gt;&gt;", source_url, { :title => "More information on #{title}", :tabindex => '1' }) %>
     </div>
   </div>
-  <% else %>
-  <div class="image-result-thumb">
-    <% unless thumbnail.nil? %>
-    <%= link_to(image_tag(@thumb_src, @thumb_options.merge(:alt => altify(title))), "#{source_url}")  %>
-    <% else %>
-    <%= link_to "View Image", "#{source_url}"  %>
-    <% end %>
-  </div>
-  <div class="image-result-header">
-    <h4><%= link_to h(title), "#{source_url}", :tabindex => '1'  %></h4>
-  </div>
-  <div class="image-result-description"><%= strip_tags(short_summary) %>
-    <div class="image-result-more">
-      <%= link_to("more &gt;&gt;", "#{source_url}", { :title => "More information on #{title}", :tabindex => '1' })%>
-    </div>
-  </div>
-  <% end %>
 </div>
-

@@ -1,15 +1,12 @@
 <% cache_with_privacy(item, {:part => "secondary_content_extended_fields"}) do -%>
-<% extended_fields_html = display_xml_attributes(item) -%>
-<% if !extended_fields_html.blank? %>
-<div class="secondary-content-section-wrapper">
-  <div id="extended-fields" class="secondary-content-section">
-
+  <% extended_fields_html = display_xml_attributes(item) -%>
+  <% if !extended_fields_html.blank? %>
+    <%= render(:partial => "topics/secondary_wrapper_start",
+               :locals => { :div_id => "extended-fields", :class_suffix => nil }) -%>
     <div id="detail-extended">
       <h4 id="detail-extended-heading"><%= h(item.title) %></h4><br />
       <%= extended_fields_html %>
     </div>
-    <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-  </div>
-</div>
-<% end %>
+    <%= render(:partial => "topics/secondary_wrapper_end") -%>
+  <% end %>
 <% end %>

@@ -677,9 +677,9 @@ class SearchController < ApplicationController
         search unless @search_terms.blank?
         unless @results.empty?
           if !@current_homepage.nil?
-            @results.reject! { |result| (result["id"].to_i == @current_homepage.id) }
+            @results.reject! { |result| (result[:id].to_i == @current_homepage.id) }
           end
-          @results.collect! { |result| Module.class_eval(result["class"]).find(result["id"]) }
+          @results.collect! { |result| Module.class_eval(result[:class]).find(result[:id]) }
         end
       when "change"
         @new_homepage_topic = Topic.find(params[:homepage_topic_id])

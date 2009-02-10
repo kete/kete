@@ -50,5 +50,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
     <%= '</ul>' unless only_public_items -%>
   <% elsif display_no_item_text -%>
     <h4>This <%= zoom_class_humanize(item.class.name) -%> is not related to any topics at this time.</h4>
+  <% else -%>
+    &nbsp;
   <% end -%>
 </div>

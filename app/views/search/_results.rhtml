@@ -1,32 +1,21 @@
 <%
   @existing_relations = Array.new
   @existing_relations = params[:existing_relations] if !params[:existing_relations].nil?
-
-  if !params[:relate_to_topic].nil? or !params[:index_for_basket].nil?
-    results_as_form = true
-  else
-    results_as_form = false
-  end
 -%>
 
 <div class="clear">&nbsp;</div>
 
 <div id="content-tabs">
-<ul class="nav-list">
-  <% ZOOM_CLASSES.each do |zoom_class| %>
-     <% if zoom_class == @current_class %>
-        <li class="selected">
-          <a href="#" id="current" tabindex="1"><%= zoom_class_plural_humanize(zoom_class) %> (<%= number_with_delimiter(@result_sets[zoom_class].size) %>)</a></li>
-     <% else %>
-        <% if !results_as_form %>
-           <li><%= link_to_zoom_class_results(zoom_class,@result_sets[zoom_class].size) -%></li>
-        <% end %>
-     <% end %>
-  <% end %>
-  <% if results_as_form %>
-     <li><a href="javascript:window.opener.location.reload();window.close();">Close</a></li>
-  <% end %>
-</ul>
+  <ul class="nav-list">
+    <% ZOOM_CLASSES.each do |zoom_class| -%>
+      <% if zoom_class == @current_class -%>
+        <li class="selected"><%= link_to_zoom_class_results(zoom_class, @result_sets[zoom_class].size, '#') -%></li>
+      <% else -%>
+        <li><%= link_to_zoom_class_results(zoom_class, @result_sets[zoom_class].size) -%></li>
+      <% end -%>
+    <% end -%>
+  </ul>
+  <div style="clear:both;"></div>
 </div><!-- /content-tabs -->
 
 <%= render(:partial => "topics/content_wrapper_start",
@@ -43,22 +32,17 @@
          <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
          <%# for now lets just get this up with one set of @results %>
          <% @results.each do |result|  %>
+            <% locals = { :title => result[:title],
+                          :source_url => result[:url],
+                          :short_summary => result[:short_summary],
+                          :existing_relations => @existing_relations,
+                          :related => result[:related],
+                          :result => result[:id]} -%>
             <% if result[:class] == 'StillImage' %>
-             <%= render(:partial => "image", :locals => {:title => result[:title],
-                                                         :source_url => result[:url],
-                                                         :locally_hosted => result[:locally_hosted],
-                                                         :thumbnail => result[:thumbnail],
-                                                         :existing_relations => @existing_relations,
-                                                         :short_summary => result[:short_summary],
-                                                         :related => result[:related],
-                                                         :result => result[:id]}) %>
+             <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],
+                                                                       :thumbnail => result[:thumbnail] })) %>
             <% else %>
-             <%= render(:partial => "generic", :locals => {:title => result[:title],
-                                                           :source_url => result[:url],
-                                                           :short_summary => result[:short_summary],
-                                                           :existing_relations => @existing_relations,
-                                                           :related => result[:related],
-                                                           :result => result[:id]}) %>
+             <%= render(:partial => "generic", :locals => locals) %>
              <% end %>
             <% end %>
          <% else %>
@@ -72,7 +56,7 @@
 
                         <div id="bottomlinks">
                                 <div id="addnew">
-                                <% if current_user_can_see_add_links? and !results_as_form and @current_class != 'Comment' %>
+                                <% if current_user_can_see_add_links? && @current_class != 'Comment' %>
                                         <%= link_to_add_item(:phrase => "Add a new ", :item_class => @current_class) -%>
                                 <% else -%>
                                         &nbsp;

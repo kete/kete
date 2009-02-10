@@ -978,7 +978,7 @@ class ApplicationController < ActionController::Base
     update_comments_basket_for(item, @current_basket)
 
     # if changes to the item's extended content should add new relations
-    build_relations_from_topic_type_extended_field_choices
+    build_relations_from_topic_type_extended_field_choices unless params[:controller] == 'search'
 
     # finally, sync up our search indexes
     prepare_and_save_to_zoom(item) if !item.already_at_blank_version?

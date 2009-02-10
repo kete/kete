@@ -257,7 +257,10 @@ body.mceContentBody {
 }
 .secondary-content-section{
     background-color: #ddd;
-    padding: 0.7em;
+    /*padding: 0.7em 0.7em 0 0.7em;*/
+}
+.secondary-content-section-content {
+  padding: 0.7em 0.7em 0 0.7em;
 }
 .secondary-content-section h2{
     margin: 0;
@@ -439,7 +442,7 @@ h3 b{
 }
 
 .content-tools{
-    margin: 2em 0 1em 0;
+    margin: 2em 0 0 0;
 }
 .content-tools ul li,
 .content-tools ul ul,
@@ -625,6 +628,12 @@ span.next-active {
     background-image: url(../images/icon_results_next.gif);
 }
 
+/*
+ * Container
+ */
+#container {
+  margin-bottom: -5px;
+}
 
 /*
  * FOOTER

@@ -129,7 +129,10 @@ module GoogleMap
         html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
                                     <small>Show Latitude/Longitude</small>
                                   </a><br />
-                                  <em id='#{map_data[:coords_field]}_display'><span>Latitude and Longitude coordinates:</span> #{coords_text}</em>",
+                                  <em id='#{map_data[:coords_field]}_display'>
+                                    <span id='#{map_data[:coords_field]}_display_label'>Latitude and Longitude coordinates:</span>
+                                    #{coords_text}
+                                  </em>",
                                  latlng_data) if display_coords
 
         # create the google map div
@@ -174,7 +177,7 @@ module GoogleMap
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank? || (values[2] == "1")
       # the values passed in should form an array
-      return "is not an array of latitude and longitude. Why?" unless values.is_a?(Array)
+      return "is not an array of latitude and longitude. Currently #{values.inspect}. Why?" unless values.is_a?(Array)
       # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
       wrong_order = false
       begin
@@ -261,7 +264,7 @@ module GoogleMap
             #{@google_map_on_index_or_show_page ? '$(map_id).setStyle({height: \'220px\'});
                                                    $(latlng_text_field + \'_display\').hide();
                                                    $(latlng_text_field + \'_display\').hidden_status = \'hidden\';
-                                                   $(latlng_text_field + \'_display\').firstChild.hide();
+                                                   $(latlng_text_field + \'_display_label\').hide();
                                                    $(latlng_text_field + \'_show_hide\').show();
                                                    $(latlng_text_field + \'_show_hide\').observe(\'click\', function(event) {
                                                      if ($(latlng_text_field + \'_display\').hidden_status == \'hidden\') {

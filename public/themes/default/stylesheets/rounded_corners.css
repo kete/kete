@@ -45,44 +45,57 @@
         background-repeat: no-repeat;
         background-position: 100% 0;
 }
-/* #################################### Secondary Content #################################### */
-.secondary-content-section-wrapper{
-        background: #dfdfdf url(/images/insetbox-1-tplf.gif) no-repeat top left;
+
+/*
+ * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (BLUE)
+ */
+.secondary-content-section-wrapper-blue {
+  background: #cddced url(/images/insetbox-2-tplf.gif) no-repeat top left;
+  width: auto;
 }
-#secondary-content-wrapper .secondary-content-section-wrapper{
-       margin-left: 15px;
+.secondary-content-section-wrapper-blue .secondary-content-section {
+  background: transparent url(/images/insetbox-2-tprt.gif) no-repeat top right;
+}
+.secondary-content-section-wrapper-blue .secondary-content-section-footer-wrapper {
+  background: transparent url(/images/insetbox-2-btlf.gif) no-repeat bottom left;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+.secondary-content-section-wrapper-blue .secondary-content-section-footer {
+  background: transparent url(/images/insetbox-2-btrt.gif) no-repeat bottom right;
+  width: auto; height: 13px; padding: 0; margin: 0;
 }
 
-.secondary-content-section{
-        background: transparent url(/images/insetbox-1-tprt.gif) no-repeat top right;
+/*
+ * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (GREY)
+ */
+.secondary-content-section-wrapper {
+  background: #dfdfdf url(/images/insetbox-1-tplf.gif) no-repeat top left;
+  width: auto;
 }
-.secondary-content-section-footer-wrapper{
-        background: transparent url(/images/insetbox-1-btlf.gif) no-repeat bottom left;
+.secondary-content-section-wrapper .secondary-content-section {
+  background: transparent url(/images/insetbox-1-tprt.gif) no-repeat top right;
 }
-.secondary-content-section-footer{
-        background: transparent url(/images/insetbox-1-btrt.gif) no-repeat bottom right;
+.secondary-content-section-wrapper .secondary-content-section-footer-wrapper {
+  background: transparent url(/images/insetbox-1-btlf.gif) no-repeat bottom left;
+  width: auto; height: 13px; padding: 0; margin: 0;
 }
-.secondary-content-section-wrapper-blue{
-        background: #cddced url(/images/insetbox-2-tplf.gif) no-repeat top left;
+.secondary-content-section-wrapper .secondary-content-section-footer {
+  background: transparent url(/images/insetbox-1-btrt.gif) no-repeat bottom right;
+  width: auto; height: 13px; padding: 0; margin: 0;
 }
-.secondary-content-section-wrapper-blue .secondary-content-section{
-        background: transparent url(/images/insetbox-2-tprt.gif) no-repeat top right;
-}
-.secondary-content-section-wrapper-blue .secondary-content-section-footer-wrapper{
-        background: transparent url(/images/insetbox-2-btlf.gif) no-repeat bottom left;
-}
-.secondary-content-section-wrapper-blue .secondary-content-section-footer{
-        background: transparent url(/images/insetbox-2-btrt.gif) no-repeat bottom right;
-}
-.comment-wrapper-header-wrapper {
+
+/*
+ * CONTENT WRAPPER FOR COMMENTS
+ */
+.comment-wrapper .comment-wrapper-header-wrapper {
         background: transparent url(/images/comment_tplf.gif) no-repeat top left;
 }
-.comment-wrapper-header {
+.comment-wrapper .comment-wrapper-header {
         background: transparent url(/images/comment_tprt.gif) no-repeat top right;
 }
-.comment-wrapper-footer-wrapper {
+.comment-wrapper .comment-wrapper-footer-wrapper {
         background: transparent url(/images/comment_btlf.gif) no-repeat bottom left;
 }
-.comment-wrapper-footer {
+.comment-wrapper .comment-wrapper-footer {
         background: transparent url(/images/comment_btrt.gif) no-repeat bottom right;
 }

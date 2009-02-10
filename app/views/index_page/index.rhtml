@@ -12,10 +12,13 @@
   <% cache_with_privacy(@topic, {:part => 'extended_fields'}) do -%>
     <% extended_fields_html = display_xml_attributes(@topic) -%>
     <% if !extended_fields_html.blank? -%>
-      <div id="detail-extended">
-        <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
-        <%= extended_fields_html -%>
-      </div>
+      <%= render(:partial => "topics/secondary_wrapper_start",
+                 :locals => { :div_id => "detail-extended-box", :class_suffix => '-blue' }) -%>
+        <div id="detail-extended">
+          <h4 id="detail-extended-heading"><%= h(@topic.title) %></h4><br />
+          <%= extended_fields_html -%>
+        </div>
+      <%= render(:partial => "topics/secondary_wrapper_end") -%>
     <% end -%>
   <% end -%>
 
@@ -59,174 +62,149 @@
 
 <% cache({:part => 'search'}) do -%>
   <% if @current_basket.index_page_basket_search -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="search-box" class="secondary-content-section">
-        <div id="right-search-box">
-          <% @headline = 'Keyword Search'
-             @headline += (' ' + @title) if @current_basket != @site_basket -%>
-          <%= render :partial => '/search/form',
-                     :locals => { :headline => @headline,
-                                  :search_terms => nil,
-                                  :simple_layout => true } -%>
-        </div>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+    <%= render(:partial => "topics/secondary_wrapper_start",
+               :locals => { :div_id => "search-box", :class_suffix => nil }) -%>
+      <div id="right-search-box">
+        <% @headline = 'Keyword Search'
+           @headline += (' ' + @title) if @current_basket != @site_basket -%>
+        <%= render :partial => '/search/form',
+                   :locals => { :headline => @headline,
+                                :search_terms => nil,
+                                :simple_layout => true } -%>
       </div>
-    </div>
+    <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
 <% end -%>
 
 <% if logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
   <% if !@topic.nil? -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="moderator-tools" class="secondary-content-section">
-        <ul>
-          <% if permitted_to_edit_current_item? -%>
-            <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
-              <%= li_with_correct_class(tool_count) + 
-                  link_to("Edit", :action => 'edit',
-                                  :urlified_name => @topic.basket.urlified_name,
-                                  :controller => 'topics',
-                                  :id => @topic,
-                                  :private => @topic.private? ) %></li>
-              <% tool_count += 1 -%>
-              <li><%= link_to "History", :action => 'history',
-                                         :urlified_name => @topic.basket.urlified_name,
-                                         :controller => 'topics',
-                                         :id => @topic,
-                                         :private => @topic.private? %></li>
-            <% end -%>
+    <%= render(:partial => "topics/secondary_wrapper_start",
+               :locals => { :div_id => "moderator-tools", :class_suffix => nil }) -%>
+      <ul>
+        <% if permitted_to_edit_current_item? -%>
+          <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
+            <%= li_with_correct_class(tool_count) + 
+                link_to("Edit", :action => 'edit',
+                                :urlified_name => @topic.basket.urlified_name,
+                                :controller => 'topics',
+                                :id => @topic,
+                                :private => @topic.private? ) %></li>
+            <% tool_count += 1 -%>
+            <li><%= link_to "History", :action => 'history',
+                                       :urlified_name => @topic.basket.urlified_name,
+                                       :controller => 'topics',
+                                       :id => @topic,
+                                       :private => @topic.private? %></li>
           <% end -%>
-          <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
-            <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
-          <% end -%>
-        </ul>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-      </div>
-    </div>
+        <% end -%>
+        <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? %>
+          <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
+        <% end -%>
+      </ul>
+    <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
 <% end -%>
 
 <% if @current_basket.allows_contact_with_inheritance? -%>
   <% cache({:part => 'contact'}) do -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="moderator-tools" class="secondary-content-section">
-        <ul>
-          <li><%= link_to_basket_contact_for(@current_basket) %></li>
-        </ul>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-      </div>
-    </div>
+    <%= render(:partial => "topics/secondary_wrapper_start",
+               :locals => { :div_id => "basket-contact", :class_suffix => nil }) -%>
+      <ul><li><%= link_to_basket_contact_for(@current_basket) %></li></ul>
+    <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
 <% end -%>
 
 <% links = link_to_membership_request_of(@current_basket) -%>
 <% links += link_to_members_of(@current_basket) -%>
 <% unless links.blank? -%>
-  <div class="secondary-content-section-wrapper">
-    <div id="moderator-tools" class="secondary-content-section">
-      <ul>
-        <%= links %>
-      </ul>
-      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-    </div>
-  </div>
+  <%= render(:partial => "topics/secondary_wrapper_start",
+             :locals => { :div_id => "basket-options", :class_suffix => nil }) -%>
+    <ul><%= links %></ul>
+  <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 
 <% cache({:part => 'extra_side_bar_html'}) do -%>
   <% if !@current_basket.index_page_extra_side_bar_html.blank? -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="homepage-extra" class="secondary-content-section">
-        <%= @current_basket.index_page_extra_side_bar_html -%>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-      </div>
-    </div>
+    <%= render(:partial => "topics/secondary_wrapper_start",
+               :locals => { :div_id => "homepage-extra", :class_suffix => nil }) -%>
+      <%= @current_basket.index_page_extra_side_bar_html -%>
+    <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
 <% end -%>
 
 <% if !@current_basket.index_page_archives_as.blank? && @current_basket.index_page_archives_as == 'by type' %>
-  <div class="secondary-content-section-wrapper">
-    <div id="contents-by-type" class="secondary-content-section">
-      <h3>Contents by type</h3>
-      <%= render :partial => 'archive_by_type' -%>
-      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-    </div>
-  </div>
+  <%= render(:partial => "topics/secondary_wrapper_start",
+             :locals => { :div_id => "contents-by-type", :class_suffix => nil }) -%>
+    <h3>Contents by type</h3>
+    <%= render :partial => 'archive_by_type' -%>
+  <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 
 <% if @current_basket.feeds.size > 0 %>
-  <div class="secondary-content-section-wrapper">
-    <div id="contents-by-type" class="secondary-content-section">
-      <% @current_basket.feeds.each do |feed| -%>
-        <% cache({ :part => "#{feed.title}_feed" }) do -%>
-          <h4><%=h feed.title %></h4>
-          <ul>
-            <% feed.entries.each do |entry| -%>
-              <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
-            <% end -%>
-          </ul>
-        <% end -%>
+  <%= render(:partial => "topics/secondary_wrapper_start",
+             :locals => { :div_id => "homepage-rss-feeds", :class_suffix => nil }) -%>
+    <% @current_basket.feeds.each do |feed| -%>
+      <% cache({ :part => "#{feed.title}_feed" }) do -%>
+        <h4><%=h feed.title %></h4>
+        <ul>
+          <% feed.entries.each do |entry| -%>
+            <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+          <% end -%>
+        </ul>
       <% end -%>
-      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-    </div>
-  </div>
+    <% end -%>
+  <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 
 <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil? -%>
-  <div class="secondary-content-section-wrapper">
-    <div id="contents-by-type" class="secondary-content-section">
-      <div id="selected-image-headline"><h3><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h3></div>
-      <div id="selected-image-display">
-        <%= render :partial =>'selected_image',
-                   :locals => { :selected_image_file => @selected_image_file,
-                                :previous_url => @previous_url,
-                                :next_url => @next_url,
-                                :selected_still_image => @selected_still_image } -%>
-      </div>
-      <%= periodically_call_remote :update => 'selected-image-display',
-                                   :url => { :action => 'selected_image' },
-                                   :frequency => 15 -%>
-      <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
+  <%= render(:partial => "topics/secondary_wrapper_start",
+             :locals => { :div_id => "selected-image-box", :class_suffix => nil }) -%>
+    <div id="selected-image-headline"><h3><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h3></div>
+    <div id="selected-image-display">
+      <%= render :partial =>'selected_image',
+                 :locals => { :selected_image_file => @selected_image_file,
+                              :previous_url => @previous_url,
+                              :next_url => @next_url,
+                              :selected_still_image => @selected_still_image } -%>
     </div>
-  </div>
+    <%= periodically_call_remote :update => 'selected-image-display',
+                                 :url => { :action => 'selected_image' },
+                                 :frequency => 15 -%>
+  <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 
 <% cache({:part => "tags_#{@privacy_type}"}) do -%>
   <% if @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0 -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="tags-box" class="secondary-content-section">
-        <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
-                         "( showing #{@tag_counts_array.size} of #{@tag_counts_size} | " +
-                          link_to("all",
-                                  :controller => 'tags',
-                                  :action => 'index') + " )" : '' -%>
-        <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
-          <div id="tags-headline">
-            <h3 style="display:inline;">Tags</h3>
-            <span><%= tag_counts -%></span>
-          </div>
-          <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array } -%>
-        <% else -%>
-          <div id="tags-headline">
-            <h3 style="display:inline;">Categories</h3>
-            <span><%= tag_counts -%></span>
-          </div>
-          <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array } -%>
-        <% end -%>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-     </div>
-   </div>
+    <%= render(:partial => "topics/secondary_wrapper_start",
+               :locals => { :div_id => "tags-box", :class_suffix => nil }) -%>
+      <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
+                       "( showing #{@tag_counts_array.size} of #{@tag_counts_size} | " +
+                        link_to("all",
+                                :controller => 'tags',
+                                :action => 'index') + " )" : '' -%>
+      <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
+        <div id="tags-headline">
+          <h3 style="display:inline;">Tags</h3>
+          <span><%= tag_counts -%></span>
+        </div>
+        <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array } -%>
+      <% else -%>
+        <div id="tags-headline">
+          <h3 style="display:inline;">Categories</h3>
+          <span><%= tag_counts -%></span>
+        </div>
+        <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array } -%>
+      <% end -%>
+    <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
 <% end -%>
 
 <% cache_with_privacy(@topic, {:part => 'license'}) do -%>
   <% unless @topic.nil? || @topic.license_metadata.nil? -%>
-    <div class="secondary-content-section-wrapper">
-      <div id="license-box" class="secondary-content-section">
-        <div class="license"><%= @topic.license_metadata %></div>
-        <div style="clear:both;"></div>
-        <div class="secondary-content-section-footer-wrapper"><div class="secondary-content-section-footer">&nbsp;</div></div>
-      </div>
-    </div>
+    <%= render(:partial => "topics/secondary_wrapper_start",
+               :locals => { :div_id => "license-box", :class_suffix => nil }) -%>
+      <div class="license"><%= @topic.license_metadata %></div>
+    <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
 <% end -%>
 
