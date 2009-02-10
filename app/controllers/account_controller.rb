@@ -257,13 +257,18 @@ class AccountController < ApplicationController
   # supporting password reset
   def forgot_password
     return unless request.post?
-    if @user = User.find_by_email(params[:user][:email])
-      @user.forgot_password
-      @user.save
+    @users = !params[:user][:login].blank? ? User.find_all_by_email_and_login(params[:user][:email], params[:user][:login]) :
+                                             User.find_all_by_email(params[:user][:email])
+    if @users.size == 1
+      user = @users.first
+      user.forgot_password
+      user.save
       redirect_back_or_default(:controller => '/account', :action => 'index')
       flash[:notice] = "A password reset link has been sent to your email address"
+    elsif @users.size > 1
+      flash[:notice] = "This email address belongs to more than one account. Please select the one you're trying to reset."
     else
-      flash[:notice] = "Could not find a user with that email address"
+      flash[:error] = "Could not find a user with that email address"
     end
   end
 
