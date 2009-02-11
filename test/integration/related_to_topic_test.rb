@@ -86,7 +86,7 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
               lower_case_name = @tableized.humanize.downcase.pluralize
               body_should_contain "Add related #{lower_case_name}"
-              body_should_contain "Search for #{lower_case_name}"
+              body_should_contain "Search for public #{lower_case_name}"
 
               fill_in "search_terms", :with => @item_for_relating.title
               click_button "Search"
