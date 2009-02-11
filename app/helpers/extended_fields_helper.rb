@@ -132,7 +132,7 @@ module ExtendedFieldsHelper
             $('hidden_choices_select_#{record.id.to_s}').hide();
           }
           // show the allow user choices section when ftype supports it
-          if ( value == 'autocomplete' ) {
+          if ( value == 'autocomplete' || value == 'choice' ) {
             $('allow_user_additions').disabled = false;
             $('allow_user_additions').show();
           } else {
