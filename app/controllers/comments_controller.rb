@@ -75,7 +75,11 @@ class CommentsController < ApplicationController
 
     version_after_update = @comment.max_version + 1
 
-    if @comment.update_attributes(params[:comment])
+    @successful = ensure_no_new_insecure_elements_in('comment')
+    @comment.attributes = params[:comment]
+    @successful = @comment.save if @successful
+
+    if @successful
 
       @comment.add_as_contributor(current_user)
 

@@ -49,7 +49,11 @@ class VideoController < ApplicationController
 
     version_after_update = @video.max_version + 1
 
-    if @video.update_attributes(params[:video])
+    @successful = ensure_no_new_insecure_elements_in('video')
+    @video.attributes = params[:video]
+    @successful = @video.save if @successful
+
+    if @successful
 
       after_successful_zoom_item_update(@video)
 
