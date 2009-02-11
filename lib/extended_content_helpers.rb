@@ -159,7 +159,9 @@ module ExtendedContentHelpers
             # a label string (value)
             # then we reassign value to what is between the ()
             # and push the beginning string to a label attribute
-            parts = value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
+            parts = Array.new
+            # rescue incase value is something that can't have .match run on it (like integers/floats/fixnum etc)
+            begin; parts = value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a; rescue; end
             unless parts.blank?
               options.merge!(:label => parts[1].chomp(' '))
               value = parts[2]
