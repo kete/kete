@@ -9,7 +9,7 @@ module GoogleMap
         when 'IndexPageController'
           klass.send :before_filter, :prepare_google_map, :only => ['index']
         else
-          klass.send :before_filter, :prepare_google_map, :only => ['show', 'new', 'create', 'edit', 'update']
+          klass.send :before_filter, :prepare_google_map, :only => ['show', 'new', 'create', 'edit', 'update', 'preview']
         end
         klass.helper GoogleMap::ViewHelpers
       end
@@ -32,7 +32,7 @@ module GoogleMap
         @using_google_maps = false
 
         # we dont want the local search field o draggable markers on the index page or item show page, only new/edit pages
-        @google_map_on_index_or_show_page = true if ['index', 'show'].include?(params[:action])
+        @google_map_on_index_or_show_page = true if ['index', 'show', 'preview'].include?(params[:action])
       end
     end
   end
