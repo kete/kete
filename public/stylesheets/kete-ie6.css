@@ -1,3 +1,0 @@
-/* hacks for msie 6 */
-body {width:expression(documentElement.clientWidth < 770 ? "770px" : "auto" )}
-
