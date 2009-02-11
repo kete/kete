@@ -52,6 +52,10 @@ module ExtendedContentController
 
       private
 
+      # By default, only site admins are allowed to not sanitize content, however if a user wants to edit an item
+      # with insecure content, we should let them change stuff around it, and to do that, if the current elements
+      # is an exact match with the submitted elements, then we can set do_not_sanitize to true here. A non site admin
+      # still can't choose to no sanotize content though (so any new elements must be added by a site admin)
       def ensure_no_new_insecure_elements_in(item_type)
         return true if @site_admin && params[item_type.to_sym][:do_not_sanitize] == '1'
 
