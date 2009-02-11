@@ -62,7 +62,7 @@ module ConfigureAsKeteContentItem
 
       klass.send :validates_presence_of, :title
 
-      klass.send :validates_as_sanitized_html, [:extended_content]
+      klass.send :validates_as_sanitized_html, [:description, :extended_content]
 
       # TODO: globalize stuff, uncomment later
       # translates :title, :description
