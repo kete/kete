@@ -385,15 +385,16 @@ module ExtendedContent
       raise "Cannot add a new multiple value on #{extended_field_element_name} as it is not a multiple value field." \
         unless field.nil? || field.multiple?
 
-      current_values = structured_extended_content[extended_field_element_name]
+      # to_a allows for current_values to be an empty array (and thus work with + operator)
+      # rather than nil
+      current_values = structured_extended_content[extended_field_element_name].to_a
       additional_value = [[additional_value]]
 
       unless additional_value.blank?
         replace_value_for(extended_field_element_name, current_values + additional_value, field)
+        # Confirm new values
+        reader_for(extended_field_element_name)
       end
-
-      # Confirm new values
-      reader_for(extended_field_element_name)
     end
 
     private
