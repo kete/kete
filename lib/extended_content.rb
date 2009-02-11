@@ -370,7 +370,9 @@ module ExtendedContent
       raise "Cannot concatenate a value as #{extended_field_element_name} already has multiple values." if \
         current_value.size > 1
 
-      replace_value_for(extended_field_element_name, current_value.to_s + additional_value, field)
+      unless additional_value.blank?
+        replace_value_for(extended_field_element_name, current_value.to_s + additional_value.to_s, field)
+      end
 
       # Confirm new values
       reader_for(extended_field_element_name)
@@ -383,13 +385,16 @@ module ExtendedContent
       raise "Cannot add a new multiple value on #{extended_field_element_name} as it is not a multiple value field." \
         unless field.nil? || field.multiple?
 
-      current_values = structured_extended_content[extended_field_element_name]
+      # to_a allows for current_values to be an empty array (and thus work with + operator)
+      # rather than nil
+      current_values = structured_extended_content[extended_field_element_name].to_a
       additional_value = [[additional_value]]
 
-      replace_value_for(extended_field_element_name, current_values + additional_value, field)
-
-      # Confirm new values
-      reader_for(extended_field_element_name)
+      unless additional_value.blank?
+        replace_value_for(extended_field_element_name, current_values + additional_value, field)
+        # Confirm new values
+        reader_for(extended_field_element_name)
+      end
     end
 
     private
