@@ -67,7 +67,7 @@ module ExtendedContentController
           new_doc.search("//#{field_key.to_s}").each { |element| current_elements << element.to_s.strip } unless params[item_type.to_sym][:description].blank?
         end
 
-        @item.do_not_sanitize = '1'
+        params[item_type.to_sym][:do_not_sanitize] = true
         new_elements = Array.new
         current_elements.each do |element|
           if existing_elements.include?(element)
@@ -75,7 +75,7 @@ module ExtendedContentController
             existing_elements.delete_at(existing_elements.index(element))
           else
             new_elements << element
-            @item.do_not_sanitize = '0'
+            params[item_type.to_sym][:do_not_sanitize] = false
           end
         end
 
