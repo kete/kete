@@ -50,7 +50,11 @@ class AudioController < ApplicationController
 
     version_after_update = @audio_recording.max_version + 1
 
-    if @audio_recording.update_attributes(params[:audio_recording])
+    @successful = ensure_no_new_insecure_elements_in('audio_recording')
+    @audio_recording.attributes = params[:audio_recording]
+    @successful = @audio_recording.save if @successful
+
+    if @successful
 
       after_successful_zoom_item_update(@audio_recording)
 

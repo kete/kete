@@ -111,13 +111,13 @@ zoom_class = zoom_class_from_controller(controller)
 
     <%= form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
                                        :label => 'Description', :label_class => 'cleared-right',
-                                       :example => "Note: forms and javascript are not allowed for security reasons
+                                       :example => "Note: new forms and javascript are not allowed for security reasons
                                                     #{", unless you check the box below" if @site_admin}." } -%>
 
     <% if @site_admin -%>
       <%= form.check_box :do_not_sanitize, { :tabindex => '1',
-                                             :label => 'Allow forms and other possible insecure elements
-                                                        and attributes in the HTML?' } -%>
+                                             :label => "Allow new forms and other possible insecure elements
+                                                        and attributes in the HTML?" } -%>
     <% end -%>
 
     <% unless [:topic, :web_link].include?(@item_type) -%>

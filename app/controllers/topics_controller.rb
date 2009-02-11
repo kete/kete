@@ -125,7 +125,9 @@ class TopicsController < ApplicationController
 
         version_after_update = @topic.max_version + 1
 
-        @successful = @topic.update_attributes(params[:topic])
+        @successful = ensure_no_new_insecure_elements_in('topic')
+        @topic.attributes = params[:topic]
+        @successful = @topic.save if @successful
       else
         # they don't have permission
         # this will redirect them to edit
