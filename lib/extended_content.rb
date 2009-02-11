@@ -370,7 +370,7 @@ module ExtendedContent
       raise "Cannot concatenate a value as #{extended_field_element_name} already has multiple values." if \
         current_value.size > 1
 
-      replace_value_for(extended_field_element_name, current_value.to_s + additional_value, field)
+      replace_value_for(extended_field_element_name, current_value.to_s + additional_value.to_s, field)
 
       # Confirm new values
       reader_for(extended_field_element_name)
