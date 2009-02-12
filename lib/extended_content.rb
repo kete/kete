@@ -281,6 +281,9 @@ module ExtendedContent
         # Remove the extra level of nesting left after removing the first of two elements
         field = field.first
 
+        # in some cases, field may be nil, but needs to be nil wrapped in an array
+        field = [nil] if field.nil?
+
         if field.size > 1
 
           # We're dealing with a multiple field value.
