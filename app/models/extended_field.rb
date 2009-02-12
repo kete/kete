@@ -119,7 +119,7 @@ class ExtendedField < ActiveRecord::Base
       content_type = ContentType.find_by_controller(controller)
       ef_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type, self)
     end
-    ef_mapping
+    ef_mapping.required?
   end
 
   protected
