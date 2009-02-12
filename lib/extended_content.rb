@@ -350,6 +350,49 @@ module ExtendedContent
         value = [value]
       end
 
+      # if field is a choice and users may add new choices
+      # and value contains something that isn't current found as a choice, create a corresponding choice
+      if field.is_a_choice?
+        # peel off the array nesting
+        # to get to nested values
+        value.flatten.each do |v|
+
+          # TODO: this has been copied and modified from extended_content_helpers, DRY up
+          # one difference is that this assumes no parent
+          # since we flatten
+
+          # splits a value into label and value
+          # if it has a pattern of "label (value)"
+          # useful for auto populated pseudo choices (all topic types available as choices)
+          # where label may not be unique
+          # and case where user may contribute a new choice
+          parts = v.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
+          # l is label for this particular value
+          l = nil
+          unless parts.blank?
+            l = parts[1].chomp(' ')
+            v = parts[2]
+          end
+
+          matching_choice = Choice.matching(l,v)
+
+          # Handle the creation of new choices where the choice is not recognised.
+          if !matching_choice && %w(autocomplete choice).include?(field.ftype) && field.user_choice_addition?
+            parent = Choice.find(1)
+
+            begin
+              choice = Choice.create!(:value => v, :label => l)
+              choice.move_to_child_of(parent)
+              choice.save!
+              field.choices << choice
+              field.save!
+            rescue
+              next
+            end
+          end
+        end
+      end
+
       sandpit_data[extended_field_element_name] = value
 
       # Write the data back to XML
