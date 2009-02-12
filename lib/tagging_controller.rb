@@ -2,18 +2,26 @@ module TaggingController
   unless included_modules.include? TaggingController
     def self.included(klass)
       controller = klass.name.gsub("Controller", "")
-      # the following code is basicly a copy of zoom_class_from_controller in ZoomControllerHelpers
-      # find a way to get that method in here without all the errors is brings with it
-      case controller
-      when "Images"
-        zoom_class = 'StillImage'
-      when "Audio"
-        zoom_class = 'AudioRecording'
+      # If we're in the Baskets controller, we have to make all zoom class tag completion methods on load
+      if controller == 'Baskets'
+        ZOOM_CLASSES.each do |zoom_class|
+          item_key = zoom_class.underscore.downcase.to_sym
+          klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
+        end
       else
-        zoom_class = controller.singularize
+        # the following code is basicly a copy of zoom_class_from_controller in ZoomControllerHelpers
+        # find a way to get that method in here without all the errors is brings with it
+        case controller
+        when "Images"
+          zoom_class = 'StillImage'
+        when "Audio"
+          zoom_class = 'AudioRecording'
+        else
+          zoom_class = controller.singularize
+        end
+        item_key = zoom_class.underscore.downcase.to_sym
+        klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
       end
-      item_key = zoom_class.underscore.downcase.to_sym
-      klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
       klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket", :only => [ :add_tags ]
     end
 

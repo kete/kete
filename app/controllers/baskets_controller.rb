@@ -24,6 +24,8 @@ class BasketsController < ApplicationController
   # Instantiation of Google Map code for location settings
   include GoogleMap::Mapper
 
+  include TaggingController
+
   def index
     list
     render :action => 'list'
