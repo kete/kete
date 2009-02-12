@@ -188,7 +188,7 @@ class ModerationTest < ActionController::IntegrationTest
 
       @topic.reload
       latest_version_should_be_live(@topic)
-      should_appear_once_in_search_results(@topic, :title => "Test moderated topic")
+      should_appear_once_in_search_results(@topic, :title => @topic.title)
     end
 
     def create_a_new_topic_with_several_approved_versions
@@ -201,7 +201,6 @@ class ModerationTest < ActionController::IntegrationTest
       should_appear_once_in_search_results(@topic, :title => @topic.versions.find_by_version(1).title)
 
       login_as('sarah')
-
       moderate_restore(@topic, :version => 4)
 
       @topic.reload

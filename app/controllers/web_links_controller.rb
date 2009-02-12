@@ -48,7 +48,11 @@ class WebLinksController < ApplicationController
 
     version_after_update = @web_link.max_version + 1
 
-    if @web_link.update_attributes(params[:web_link])
+    @successful = ensure_no_new_insecure_elements_in('web_link')
+    @web_link.attributes = params[:web_link]
+    @successful = @web_link.save if @successful
+
+    if @successful
 
       after_successful_zoom_item_update(@web_link)
 

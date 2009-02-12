@@ -160,6 +160,7 @@ class AccountTest < ActionController::IntegrationTest
         @item = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         add_paul_as_regular_user
         login_as('paul')
+        @item2 = new_still_image({ :selected_portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         @item = update_item(@item)
       end
 
@@ -170,7 +171,7 @@ class AccountTest < ActionController::IntegrationTest
 
       should "have that image show up for item editors" do
         visit "/site/images/show/#{@item.to_param}"
-        body_should_contain Regexp.new("<img(.+)#{@item.thumbnail_file.public_filename}(.+)>(.+)<a(.+)contributed_by/user/#{@paul.to_param}(.+)>#{@paul.user_name}</a>")
+        body_should_contain Regexp.new("<img(.+)#{@item2.thumbnail_file.public_filename}(.+)>(.+)<a(.+)contributed_by/user/#{@paul.to_param}(.+)>#{@paul.user_name}</a>")
       end
 
       should "have that image show up for item history" do

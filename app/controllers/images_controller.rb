@@ -90,7 +90,11 @@ class ImagesController < ApplicationController
 
     version_after_update = @still_image.max_version + 1
 
-    if @still_image.update_attributes(params[:still_image])
+    @successful = ensure_no_new_insecure_elements_in('still_image')
+    @still_image.attributes = params[:still_image]
+    @successful = @still_image.save if @successful
+
+    if @successful
 
       if !params[:image_file][:uploaded_data].blank?
         # if they have uploaded something new, insert it

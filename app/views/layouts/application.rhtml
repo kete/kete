@@ -93,12 +93,15 @@
       <%= active_scaffold_includes %>
     <% end -%>
   <% end -%>
-  
-  <%# bundle :name => "yui" do -%>
-    <%= javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min" %>
-  <%# end -%>
 
-  <%= stylesheet_link_tag 'yui/treeview'%>
+  <% if ['extended_fields', 'choices'].include?(params[:controller]) -%>
+    <% bundle :name => "yui_js" do -%>
+      <%= javascript_include_tag "yui/yahoo/yahoo", "yui/event/event-min", "yui/animation/animation-min", "yui/dom/dom-min", "yui/treeview/treeview-min" %>
+    <% end %>
+    <% bundle :name => "yui_css" do -%>
+      <%= stylesheet_link_tag 'yui/treeview'%>
+    <% end -%>
+  <% end -%>
 
   <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) and params[:action] == "show") %>
     <% cache_with_privacy(current_item, {:part => 'google_map_api'}) do -%>

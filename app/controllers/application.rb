@@ -77,6 +77,8 @@ class ApplicationController < ActionController::Base
   before_filter :load_array_of_baskets, :only => [ :edit, :update, :restore ]
 
   # only site_admin can set item.do_not_sanitize to true
+  # however, non site admins can edit content with insecure elements so the the do_not_sanitize
+  # param is changed later on. See lib/extended_content_controller.rb#ensure_no_new_insecure_elements_in
   before_filter :security_check_of_do_not_sanitize, :only => [ :create, :update ]
 
   # don't allow forms to set do_not_moderate

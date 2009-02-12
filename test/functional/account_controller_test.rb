@@ -152,7 +152,7 @@ class AccountControllerTest < ActionController::TestCase
   def test_should_forget_password
     post :forgot_password, :urlified_name => @urlified_name, :user => { :email => 'admin@changeme.com' }
     assert_response :redirect
-    assert flash.has_key?(:notice), "Flash should contain notice message."
+    assert_equal "A password reset link has been sent to your email address", flash[:notice]
     assert_equal 1, @emails.length
     assert(@emails.first.subject =~ /Request to change your password/)
   end
@@ -160,7 +160,7 @@ class AccountControllerTest < ActionController::TestCase
   def test_should_not_forget_password
     post :forgot_password, :urlified_name => @urlified_name, :user => { :email => 'invalid@email' }
     assert_response :success
-    assert flash.has_key?(:notice), "Flash should contain notice message."
+    assert_equal "Could not find a user with that email address", flash[:error]
     assert_equal 0, @emails.length
   end
 
