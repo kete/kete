@@ -1,11 +1,11 @@
 <div class="generic-result-wrapper" id="item_<%= result %>_wrapper">
   <div class="generic-result-header">
-    <h4><%= link_to h(title), source_url, :tabindex => '1' %></h4>
+    <h4><%= link_to h(title), append_friendly_if_public(source_url, title), :tabindex => '1' %></h4>
   </div>
   <div class="generic-result-description">
     <%= strip_tags(short_summary) %>
     <div class="generic-result-more">
-      <%= link_to("more &gt;&gt;", source_url, { :title => "More information on #{title}", :tabindex => '1' }) %>
+      <%= link_to("more &gt;&gt;", append_friendly_if_public(source_url, title), { :title => "More information on #{title}", :tabindex => '1' }) %>
     </div>
   </div>
   <% if related -%>
@@ -16,7 +16,7 @@
       <% if related && !related[:still_images].blank? -%>
         <div class="topic-result-related-images">
           <%= topic_related_thumbs_from(related[:still_images],
-                                        :link_to => source_url,
+                                        :link_to => append_friendly_if_public(source_url, title),
                                         :title => "More information on #{title}",
                                         :tabindex => '1' ) -%>
         </div>

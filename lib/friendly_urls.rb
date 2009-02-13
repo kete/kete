@@ -1,5 +1,10 @@
 module FriendlyUrls
   unless included_modules.include? FriendlyUrls
+    def append_friendly_if_public(url, string)
+     url = (url + format_friendly_for(string)) unless url.match(/\?private=true$/)
+     url
+    end
+
     # eventually we will want to depreciate the use of normalize_KD transliteration
     # and just stick unicode in the URL
     # needs testing against IE6 to see if it works
