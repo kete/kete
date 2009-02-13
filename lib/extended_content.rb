@@ -232,6 +232,9 @@ module ExtendedContent
 
         field_name = field.delete(field.first)
 
+        # Grab the extended field for this field name
+        extended_field = all_fields.find { |ef| field_name == ef.label_for_params }
+
         # We need to handle singular and multiple field values separate as they come out in different formats.
         if field_name.include?("_multiple")
 
@@ -244,6 +247,8 @@ module ExtendedContent
           values = field.first
 
           field_name = field_name.gsub("_multiple", "")
+        elsif ['map', 'map_address'].member?(extended_field.ftype)
+          values = field.first # pull the hash out of the array it's been put into
         else
 
           # For singular values we expect something like:
@@ -284,17 +289,20 @@ module ExtendedContent
         # in some cases, field may be nil, but needs to be nil wrapped in an array
         field = [nil] if field.nil?
 
-        if field.size > 1
-
-          # We're dealing with a multiple field value.
-          result[field_param_name] = field.inject(Hash.new) do |multiple, value|
-            multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
-            multiple
-          end
-
-        else
+        if ['map', 'map_address'].member?(extended_field.ftype)
           result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+        else
+          if field.size > 1
+            # We're dealing with a multiple field value.
+            result[field_param_name] = field.inject(Hash.new) do |multiple, value|
+              multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
+              multiple
+            end
+          else
+            result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+          end
         end
+
         result
       end
 
@@ -306,6 +314,7 @@ module ExtendedContent
     # into the necessary indexed key structure, i.e.
     # convert_value_from_structured_hash(['value']) # => 'value'
     # convert_value_from_structured_hash(['value', 'child of value']) # => { "1" => "value", "2" => "child of value" }
+    # convert_value_from_structured_hash({ :coords => '123,123' }) # => { :coords => '123,123' }
     def convert_value_from_structured_hash(value_array, extended_field)
 
       # If the extended field is a choice, make sure it's values properly indexed in XML.
@@ -315,6 +324,8 @@ module ExtendedContent
           hash[(value_array.index(value) + 1).to_s] = value.to_s
           hash
         end
+      elsif ['map', 'map_address'].member?(extended_field.ftype)
+        value_array
       else
         value_array.to_s
       end
@@ -653,6 +664,8 @@ module ExtendedContent
         hash.keys.each { |key| hash.delete(key) unless %w(value label).include?(key) }
         return [hash]
       end
+
+      return [hash] if hash.keys.include?('coords') # map or map_address
 
       hash.map do |k, v|
         # skip special keys

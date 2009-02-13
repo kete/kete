@@ -54,18 +54,19 @@ module GoogleMap
       @current_coords = ''
       @current_zoom_lvl = ''
       @current_address = ''
+      @do_not_use_map = false
       if !param_from_field_name(name).blank?
         # these values are coming from a submitted new/edit form
-        @current_coords = param_from_field_name(name)[:coords]
-        @current_zoom_lvl = param_from_field_name(name)[:zoom_lvl]
-        @current_address = param_from_field_name(name)[:address]
-        @do_not_use_map = param_from_field_name(name)[:no_map]
+        @current_coords = param_from_field_name(name)[:coords] || ''
+        @current_zoom_lvl = param_from_field_name(name)[:zoom_lvl] || ''
+        @current_address = param_from_field_name(name)[:address] || ''
+        @do_not_use_map = (param_from_field_name(name)[:no_map] == "1") || false
       elsif !value.blank?
         # these values are coming from an edited item
-        @current_coords = value[1] || ''
-        @current_zoom_lvl = value[0] || ''
-        @current_address = value[3] || ''
-        @do_not_use_map = (value[2] == "1") || false
+        @current_coords = value['coords'] || ''
+        @current_zoom_lvl = value['zoom_lvl'] || ''
+        @current_address = value['address'] || ''
+        @do_not_use_map = (value['no_map'] == "1") || false
       end
 
       # create a safe name (letters and underscores only) from the field name
@@ -175,20 +176,20 @@ module GoogleMap
   module ExtendedContent
     def validate_extended_map_field_content(extended_field_mapping, values)
       # Allow nil values. If this is required, the nil value will be caught earlier.
-      return nil if values.blank? || (values[2] == "1")
+      return nil if values.blank? || (values['no_map'] == "1")
       # the values passed in should form an array
-      return "is not an array of latitude and longitude. Currently #{values.inspect}. Why?" unless values.is_a?(Array)
+      return "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently #{values.inspect}. Why?" unless values.is_a?(Hash)
       # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
-      wrong_order = false
+      wrong_format = false
       begin
-        wrong_order = true unless (values[0] == '0' || values[0].to_i > 0) &&
-                                  (values[1].split(',').size == 2) &&
-                                  (['0','1'].include?(values[2])) &&
-                                  (values[3].blank? || values[3].is_a?(String))
+        wrong_format = true unless (values['zoom_lvl'] == '0' || values['zoom_lvl'].to_i > 0) &&
+                                  (values['coords'].split(',').size == 2) &&
+                                  (['0','1'].include?(values['no_map'])) &&
+                                  (values['address'].blank? || values['address'].is_a?(String))
       rescue
-        wrong_order = true
+        wrong_format = true
       end
-      return "is not in the right order ([zoom, coords, no_map, address]). Currenty #{values.inspect}. Why?" if wrong_order
+      return "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currenty #{values.inspect}. Why?" if wrong_format
     end
     # both the google map and google map with address options use the same code
     alias validate_extended_map_address_field_content validate_extended_map_field_content
