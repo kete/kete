@@ -36,3 +36,11 @@
   </div>
 </div>
 
+<%
+# Kieran Pilkington, 2008/11/19
+# The browser is sometimes sending XML when the above operations are called, and while most browsers
+# know how to handle it, Internet Explorer outputs it as literal XML, instead of rendering it as a
+# site, so to fix this, we have to send the text/html header instead of the application/xml is
+# normally sends. It also mucks up javascript, and we can't have that happening
+response.headers["Content-Type"] = "text/html; charset=utf-8"
+%>
