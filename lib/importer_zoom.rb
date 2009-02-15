@@ -68,7 +68,7 @@ module ImporterZoom
                 oai_dc_xml_tags_to_dc_subjects(xml,item)
 
                 # if there is a license, put it under dc:rights
-                oai_dc_xml_dc_rights(xml, item)
+                importer_oai_dc_xml_dc_rights(xml, item, @import_request)
 
                 # this is mime type
                 oai_dc_xml_dc_format(xml,item)
@@ -114,7 +114,7 @@ module ImporterZoom
       item.zoom_save
     end
 
-    def importer_item_url(options = {})
+    def importer_item_url(options = {}, is_relation=false)
       host = options[:host]
       item = options[:item]
       controller = options[:controller]
@@ -131,13 +131,16 @@ module ImporterZoom
           url += "#{commented_on_item.to_param}"
         end
         url += "#comment-#{item.id}"
+      elsif is_relation
+        # dc:relation fields should not have titles, or ?private=true in them
+        url += "#{controller}/show/#{item.id}"
+      elsif options[:id]
+        url += "#{controller}/show/#{options[:id]}"
       else
         if item.respond_to?(:private) && item.private?
           url += "#{controller}/show/#{item.id.to_s}?private=true"
         else
-          # Make sure id just the integer, and not the value of to_param (because changing
-          # titles or private versions of items seemed to lose related items because of this)
-          url += "#{controller}/show/#{item.id.to_s}"
+          url += "#{controller}/show/#{item.to_param}"
         end
       end
       url
@@ -150,7 +153,7 @@ module ImporterZoom
         host = request.host
       end
       # HACK, brittle, but can't use url_for here
-      xml.tag!("dc:identifier", importer_item_url(:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name))
+      xml.tag!("dc:identifier", importer_item_url({:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name}))
     end
 
     def importer_oai_dc_xml_dc_relations_and_subjects(xml,item,passed_request = nil)
@@ -170,21 +173,38 @@ module ImporterZoom
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.tag!("dc:subject", related.title.gsub("& ", "&amp;"))
-            xml.tag!("dc:relation", importer_item_url(:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name))
+            xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name}, true))
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:subject", commented_on_item.title.gsub("& ", "&amp;"))
-        xml.tag!("dc:relation", importer_item_url(:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name))
+        xml.tag!("dc:subject", commented_on_item.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
+        xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name}, true))
       else
         item.topics.each do |related|
-          xml.tag!("dc:subject", related.title.gsub("& ", "&amp;"))
-          xml.tag!("dc:relation", importer_item_url(:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name))
+          xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+          xml.tag!("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name}, true))
         end
       end
     end
+
+    def importer_oai_dc_xml_dc_rights(xml,item,passed_request = nil)
+      if !passed_request.nil?
+        host = passed_request[:host]
+      else
+        host = request.host
+      end
+
+      if item.respond_to?(:license) && !item.license.blank?
+        rights = item.license.url
+      else
+        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(ABOUT_BASKET).urlified_name, :id => 4})
+      end
+
+      xml.tag!("dc:rights", rights)
+    end
+
   end
 end

@@ -35,7 +35,7 @@ module ZoomSearch
       options[:as_if_within_basket] = options[:as_if_within_basket].blank? ? @site_basket : options[:as_if_within_basket]
       make_search(zoom_class, options) do
         @search.pqf_query.kind_is(zoom_class, :operator => 'none')
-        @search.pqf_query.relations_include(url_for_dc_identifier(item, true), :should_be_exact => true)
+        @search.pqf_query.relations_include(url_for_dc_identifier(item, { :force_http => true, :minimal => true }), :should_be_exact => true)
         @search.add_sort_to_query_if_needed(:user_specified => 'last_modified', :direction => nil)
       end
     end

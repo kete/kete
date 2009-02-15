@@ -825,16 +825,18 @@ class ApplicationController < ActionController::Base
     redirect_to url_for(path_hash)
   end
 
-  def url_for_dc_identifier(item, force_http = false)
-    options = { :controller => zoom_class_controller(item.class.name),
-      :action => 'show',
-      :id => item,
-      :format => nil,
-      :urlified_name => item.basket.urlified_name }
+  def url_for_dc_identifier(item, options={})
+    location = { :controller => zoom_class_controller(item.class.name),
+                 :action => 'show',
+                 :id => item,
+                 :format => nil,
+                 :urlified_name => item.basket.urlified_name }
 
-    options[:protocol] = 'http' if force_http
+    location[:protocol] = 'http' if options[:force_http]
 
-    utf8_url_for(options)
+    location.merge!({ :id => item.id, :private => nil }) if options[:minimal]
+
+    utf8_url_for(location)
   end
 
   def render_oai_record_xml(options = {})
@@ -1191,7 +1193,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :append_friendly_if_public
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier
 
   protected
 
