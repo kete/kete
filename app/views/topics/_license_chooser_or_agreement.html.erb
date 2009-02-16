@@ -14,7 +14,10 @@
 <% if licenses_are_available? %>
 <ul class="option-list">
    <% available_licenses do |license| %>
-   <li><%=  radio_button_for_license_selection((!@item.blank? ? 'item' : item.class.table_name.singularize), license, { :tabindex => '1' }) %></li>
+   <li><%= radio_button_for_license_selection(item.class.table_name.singularize,
+                                              license,
+                                              { :checked => (license.id == item.license_id),
+                                                :tabindex => '1' }) %></li>
    <% end -%>
 </ul>
 <% if params[:controller] != 'account' -%>
