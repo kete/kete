@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: ff1012640d104d17b887d46d519fb28b7a853b59
-  branch: HEAD
-lock: 
-repository_url: git://github.com/lightningdb/activescaffold.git
-repository_class: Piston::Git::Repository
