@@ -38,7 +38,7 @@ end
 # Test::Unit::TestCase.send(:include, Test::Unit::ActsAsDeleted)
 module Test
   module Unit
-    module TestCase
+    class TestCase
       include Test::Unit::ActsAsDeleted
     end
   end
