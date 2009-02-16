@@ -4,6 +4,11 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
+  # Sets the host for all url_for calls
+  def default_url_options(options)
+    { :host => SITE_NAME }
+  end
+
   # See lib/ssl_helpers.rb
   include SslHelpers
 
