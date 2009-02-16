@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 3cb94233ef786a51454cea0de8b318d9c9b4abcb
+  branch: master
+repository_url: git://github.com/joshmh/globalize2.git
+lock: 
+repository_class: Piston::Git::Repository
