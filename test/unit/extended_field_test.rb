@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ExtendedFieldTest < Test::Unit::TestCase
+class ExtendedFieldTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def test_invalid_with_empty_label

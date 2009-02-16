@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AudioRecordingTest < Test::Unit::TestCase
+class AudioRecordingTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup

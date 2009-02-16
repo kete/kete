@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 # see search.rb comments at top
 # not an ActiveRecord descendent
-class SearchTest < Test::Unit::TestCase
+class SearchTest < ActiveSupport::TestCase
   def setup
     # hash of params to use as the basis for tests
     # handling simple case first, all action

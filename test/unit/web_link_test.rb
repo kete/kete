@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class WebLinkTest < Test::Unit::TestCase
+class WebLinkTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContentTypeToFieldMappingTest < Test::Unit::TestCase
+class ContentTypeToFieldMappingTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   # nothing to test that isn't already tested by ActiveRecord and PiggyBack plugin

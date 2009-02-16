@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class StillImageTest < Test::Unit::TestCase
+class StillImageTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup

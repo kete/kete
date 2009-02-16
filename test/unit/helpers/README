@@ -1,0 +1,11 @@
+We can finally do helper tests. Place them in
+this folder and they should be tested with:
+
+rake test:units
+
+-----------------------------------
+
+require File.dirname(__FILE__) + '/../../test_helper'
+
+class ApplicationHelperTest < ActionView::TestCase
+end

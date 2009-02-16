@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContentRelationTest < Test::Unit::TestCase
+class ContentRelationTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   # TODO: new_relation_to_topic

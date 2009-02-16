@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ImageFilesTest < Test::Unit::TestCase
+class ImageFilesTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   # skipping, almost exclusively declaritive

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContributionTest < Test::Unit::TestCase
+class ContributionTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   # join model

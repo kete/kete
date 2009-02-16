@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class VideoTest < Test::Unit::TestCase
+class VideoTest < ActiveSupport::TestCase
   # fixtures preloaded
   def setup
     @base_class = "Video"

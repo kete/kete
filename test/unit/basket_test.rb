@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BasketTest < Test::Unit::TestCase
+class BasketTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup
