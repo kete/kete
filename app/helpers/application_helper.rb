@@ -155,7 +155,7 @@ module ApplicationHelper
     html += '</li>'
   end
 
-  def users_baskets_list(user=current_user, show_roles=false)
+  def users_baskets_list(user=current_user, options ={})
     # if the user is the current user, use the basket_access_hash instead of fetching them again
     @baskets = (user == current_user) ? @basket_access_hash : user.basket_permissions
 
@@ -168,8 +168,10 @@ module ApplicationHelper
       basket = Basket.find_by_urlified_name(basket_name.to_s)
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
       link = link_to(basket.name, basket_index_url(:urlified_name => basket_name))
-      link += " - #{role[:role_name].humanize}" if show_roles
-      html += content_tag('li', link, :class => css_class)
+      link += " - #{role[:role_name].humanize}" if options[:show_roles]
+      basket_options = options[:show_options] ? link_to_actions_available_for(basket, options) : ''
+      basket_options = ' [<ul>' + basket_options + '</ul>]' unless basket_options.blank?
+      html += content_tag('li', link + basket_options, :class => css_class)
       css_class = css_class == row1 ? row2 : row1
     end
     html
@@ -334,12 +336,13 @@ module ApplicationHelper
                 :current_role => "You're a |role|.",
                 :leave_text => "Leave" }.merge(options)
 
+    show_roles = options[:show_roles].nil? ? true : options[:show_roles]
+
     location_hash = { :urlified_name => basket.urlified_name,
                       :controller => 'members',
                       :action => 'join' }
 
     html = String.new
-    html += "<li>" if options[:as_list_element]
 
     if @basket_access_hash[basket.urlified_name.to_sym].blank?
       case basket.join_policy_with_inheritance
@@ -359,7 +362,7 @@ module ApplicationHelper
       when "Membership rejected"
         html += options[:rejected_text]
       else
-        html += options[:current_role].gsub('|role|', role)
+        html += options[:current_role].gsub('|role|', role) if show_roles
         # no one can remove themselves from the site basket
         # and there needs to be at least one basket admin remaining if the user removed him/herself
         if basket != @site_basket && @current_basket.more_than_one_basket_admin?
@@ -367,7 +370,8 @@ module ApplicationHelper
         end
       end
     end
-    html += "</li>" if options[:as_list_element]
+
+    html = "<li>#{html}</li>" if !html.blank? && options[:as_list_element]
     html += options[:plus_divider]
   end
 
@@ -377,9 +381,9 @@ module ApplicationHelper
     link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
   end
 
-  def link_to_actions_available_for(basket)
+  def link_to_actions_available_for(basket, options={})
     html = ''
-    html += link_to_membership_request_of(basket)
+    html += link_to_membership_request_of(basket, options)
     html += link_to_members_of(basket)
     html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>"
   end
