@@ -170,8 +170,8 @@ module ApplicationHelper
       link = link_to(basket.name, basket_index_url(:urlified_name => basket_name))
       link += " - #{role[:role_name].humanize}" if options[:show_roles]
       basket_options = options[:show_options] ? link_to_actions_available_for(basket, options) : ''
-      basket_options = ' [<ul>' + basket_options + '</ul>]' unless basket_options.blank?
-      html += content_tag('li', link + basket_options, :class => css_class)
+      basket_options = '<div class="profile_basket_options">[<ul>' + basket_options + '</ul>]</div>' unless basket_options.blank?
+      html += content_tag('li', basket_options + link, :class => css_class)
       css_class = css_class == row1 ? row2 : row1
     end
     html
@@ -308,16 +308,18 @@ module ApplicationHelper
     end
   end
 
-  def link_to_members_of(basket, viewable_text="Members", unavailable_text="")
+  def link_to_members_of(basket, options={})
+    options = { :viewable_text => "Members",
+                :unavailable_text => "" }.merge(options)
     if current_user_can_see_memberlist_for?(basket)
-      content_tag("li", link_to(viewable_text,
+      content_tag("li", link_to(options[:viewable_text],
                                 :urlified_name => basket.urlified_name,
                                 :controller => 'members',
                                 :action => 'list'),
-                        :class => 'first' )
+                        :class => options[:class] )
     elsif !unavailable_text.blank?
-      content_tag("li", unavailable_text,
-                        :class => 'first')
+      content_tag("li", options[:unavailable_text],
+                        :class => options[:class])
     else
       ''
     end
@@ -382,9 +384,11 @@ module ApplicationHelper
   end
 
   def link_to_actions_available_for(basket, options={})
+    options[:class] = 'first'
     html = ''
     html += link_to_membership_request_of(basket, options)
-    html += link_to_members_of(basket)
+    options[:class] = nil unless html.blank?
+    html += link_to_members_of(basket, options)
     html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>"
   end
 

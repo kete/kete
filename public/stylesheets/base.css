@@ -794,6 +794,11 @@ div#notice div, div#error div {
   padding: 5px;
   border-left: 2px solid gray;
 }
+.profile_basket_options {
+  float: right;
+  margin-right: 15px;
+  font-size: 0.8em;
+}
 #user_profile_baskets_list li ul {
   display: inline;
   padding: 0;
