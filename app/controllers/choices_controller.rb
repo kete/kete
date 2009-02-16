@@ -1,7 +1,9 @@
 class ChoicesController < ApplicationController
   
   before_filter :login_required, :only => [ :list, :index ]
-  
+
+  before_filter :set_page_title
+
   permit "site_admin"
   
   active_scaffold :choices do |config|
@@ -22,6 +24,10 @@ class ChoicesController < ApplicationController
   def conditions_for_collection
     ['label != ?', 'ROOT']
   end
-  
-  
+
+  private
+
+  def set_page_title
+    @title = 'Choices'
+  end
 end
