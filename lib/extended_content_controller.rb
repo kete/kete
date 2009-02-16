@@ -29,10 +29,6 @@ module ExtendedContentController
                           :only => [ :destroy, :create, :update ],
                           :redirect_to => { :action => :list }
 
-      # override the site wide protect_from_forgery to exclude
-      # things that you must be logged in to do anyway or at least a moderator
-      klass.send :protect_from_forgery, :secret => KETE_SECRET, :except => ['new', 'destroy']
-
       unless klass.name == 'TopicsController'
         # used to determined appropriate extended fields for the model you are operating on
         klass.send :before_filter, :load_content_type,
