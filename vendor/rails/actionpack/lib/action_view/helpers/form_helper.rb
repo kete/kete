@@ -76,7 +76,7 @@ module ActionView
       # Creates a form and a scope around a specific model object that is used as
       # a base for questioning about values for the fields.
       #
-      # Rails provides succint resource-oriented form generation with +form_for+
+      # Rails provides succinct resource-oriented form generation with +form_for+
       # like this:
       #
       #   <% form_for @offer do |f| %>
@@ -249,9 +249,9 @@ module ActionView
           args.unshift object
         end
 
-        concat(form_tag(options.delete(:url) || {}, options.delete(:html) || {}), proc.binding)
+        concat(form_tag(options.delete(:url) || {}, options.delete(:html) || {}))
         fields_for(object_name, *(args << options), &proc)
-        concat('</form>', proc.binding)
+        concat('</form>')
       end
 
       def apply_form_for_options!(object_or_array, options) #:nodoc:
@@ -269,10 +269,12 @@ module ActionView
         options[:url] ||= polymorphic_path(object_or_array)
       end
 
-      # Creates a scope around a specific model object like form_for, but doesn't create the form tags themselves. This makes
-      # fields_for suitable for specifying additional model objects in the same form:
+      # Creates a scope around a specific model object like form_for, but
+      # doesn't create the form tags themselves. This makes fields_for suitable
+      # for specifying additional model objects in the same form.
       #
-      # ==== Examples
+      # === Generic Examples
+      #
       #   <% form_for @person, :url => { :action => "update" } do |person_form| %>
       #     First name: <%= person_form.text_field :first_name %>
       #     Last name : <%= person_form.text_field :last_name %>
@@ -282,20 +284,166 @@ module ActionView
       #     <% end %>
       #   <% end %>
       #
-      # ...or if you have an object that needs to be represented as a different parameter, like a Client that acts as a Person:
+      # ...or if you have an object that needs to be represented as a different
+      # parameter, like a Client that acts as a Person:
       #
       #   <% fields_for :person, @client do |permission_fields| %>
       #     Admin?: <%= permission_fields.check_box :admin %>
       #   <% end %>
       #
-      # ...or if you don't have an object, just a name of the parameter
+      # ...or if you don't have an object, just a name of the parameter:
       #
       #   <% fields_for :person do |permission_fields| %>
       #     Admin?: <%= permission_fields.check_box :admin %>
       #   <% end %>
       #
-      # Note: This also works for the methods in FormOptionHelper and DateHelper that are designed to work with an object as base,
-      # like FormOptionHelper#collection_select and DateHelper#datetime_select.
+      # Note: This also works for the methods in FormOptionHelper and
+      # DateHelper that are designed to work with an object as base, like
+      # FormOptionHelper#collection_select and DateHelper#datetime_select.
+      #
+      # === Nested Attributes Examples
+      #
+      # When the object belonging to the current scope has a nested attribute
+      # writer for a certain attribute, fields_for will yield a new scope
+      # for that attribute. This allows you to create forms that set or change
+      # the attributes of a parent object and its associations in one go.
+      #
+      # Nested attribute writers are normal setter methods named after an
+      # association. The most common way of defining these writers is either
+      # with +accepts_nested_attributes_for+ in a model definition or by
+      # defining a method with the proper name. For example: the attribute
+      # writer for the association <tt>:address</tt> is called
+      # <tt>address_attributes=</tt>.
+      #
+      # Whether a one-to-one or one-to-many style form builder will be yielded
+      # depends on whether the normal reader method returns a _single_ object
+      # or an _array_ of objects.
+      #
+      # ==== One-to-one
+      #
+      # Consider a Person class which returns a _single_ Address from the
+      # <tt>address</tt> reader method and responds to the
+      # <tt>address_attributes=</tt> writer method:
+      #
+      #   class Person
+      #     def address
+      #       @address
+      #     end
+      #
+      #     def address_attributes=(attributes)
+      #       # Process the attributes hash
+      #     end
+      #   end
+      #
+      # This model can now be used with a nested fields_for, like so:
+      #
+      #   <% form_for @person, :url => { :action => "update" } do |person_form| %>
+      #     ...
+      #     <% person_form.fields_for :address do |address_fields| %>
+      #       Street  : <%= address_fields.text_field :street %>
+      #       Zip code: <%= address_fields.text_field :zip_code %>
+      #     <% end %>
+      #   <% end %>
+      #
+      # When address is already an association on a Person you can use
+      # +accepts_nested_attributes_for+ to define the writer method for you:
+      #
+      #   class Person < ActiveRecord::Base
+      #     has_one :address
+      #     accepts_nested_attributes_for :address
+      #   end
+      #
+      # If you want to destroy the associated model through the form, you have
+      # to enable it first using the <tt>:allow_destroy</tt> option for
+      # +accepts_nested_attributes_for+:
+      #
+      #   class Person < ActiveRecord::Base
+      #     has_one :address
+      #     accepts_nested_attributes_for :address, :allow_destroy => true
+      #   end
+      #
+      # Now, when you use a form element with the <tt>_delete</tt> parameter,
+      # with a value that evaluates to +true+, you will destroy the associated
+      # model (eg. 1, '1', true, or 'true'):
+      #
+      #   <% form_for @person, :url => { :action => "update" } do |person_form| %>
+      #     ...
+      #     <% person_form.fields_for :address do |address_fields| %>
+      #       ...
+      #       Delete: <%= address_fields.check_box :_delete %>
+      #     <% end %>
+      #   <% end %>
+      #
+      # ==== One-to-many
+      #
+      # Consider a Person class which returns an _array_ of Project instances
+      # from the <tt>projects</tt> reader method and responds to the
+      # <tt>projects_attributes=</tt> writer method:
+      #
+      #   class Person
+      #     def projects
+      #       [@project1, @project2]
+      #     end
+      #
+      #     def projects_attributes=(attributes)
+      #       # Process the attributes hash
+      #     end
+      #   end
+      #
+      # This model can now be used with a nested fields_for. The block given to
+      # the nested fields_for call will be repeated for each instance in the
+      # collection:
+      #
+      #   <% form_for @person, :url => { :action => "update" } do |person_form| %>
+      #     ...
+      #     <% person_form.fields_for :projects do |project_fields| %>
+      #       <% if project_fields.object.active? %>
+      #         Name: <%= project_fields.text_field :name %>
+      #       <% end %>
+      #     <% end %>
+      #   <% end %>
+      #
+      # It's also possible to specify the instance to be used:
+      #
+      #   <% form_for @person, :url => { :action => "update" } do |person_form| %>
+      #     ...
+      #     <% @person.projects.each do |project| %>
+      #       <% if project.active? %>
+      #         <% person_form.fields_for :projects, project do |project_fields| %>
+      #           Name: <%= project_fields.text_field :name %>
+      #         <% end %>
+      #       <% end %>
+      #     <% end %>
+      #   <% end %>
+      #
+      # When projects is already an association on Person you can use
+      # +accepts_nested_attributes_for+ to define the writer method for you:
+      #
+      #   class Person < ActiveRecord::Base
+      #     has_many :projects
+      #     accepts_nested_attributes_for :projects
+      #   end
+      #
+      # If you want to destroy any of the associated models through the
+      # form, you have to enable it first using the <tt>:allow_destroy</tt>
+      # option for +accepts_nested_attributes_for+:
+      #
+      #   class Person < ActiveRecord::Base
+      #     has_many :projects
+      #     accepts_nested_attributes_for :projects, :allow_destroy => true
+      #   end
+      #
+      # This will allow you to specify which models to destroy in the
+      # attributes hash by adding a form element for the <tt>_delete</tt>
+      # parameter with a value that evaluates to +true+
+      # (eg. 1, '1', true, or 'true'):
+      #
+      #   <% form_for @person, :url => { :action => "update" } do |person_form| %>
+      #     ...
+      #     <% person_form.fields_for :projects do |project_fields| %>
+      #       Delete: <%= project_fields.check_box :_delete %>
+      #     <% end %>
+      #   <% end %>
       def fields_for(record_or_name_or_array, *args, &block)
         raise ArgumentError, "Missing block" unless block_given?
         options = args.extract_options!
@@ -304,10 +452,6 @@ module ActionView
         when String, Symbol
           object_name = record_or_name_or_array
           object = args.first
-        when Array
-          object = record_or_name_or_array.last
-          object_name = ActionController::RecordIdentifier.singular_class_name(object)
-          apply_form_for_options!(record_or_name_or_array, options)
         else
           object = record_or_name_or_array
           object_name = ActionController::RecordIdentifier.singular_class_name(object)
@@ -333,7 +477,7 @@ module ActionView
       #   # => <label for="post_title" class="title_label">A short title</label>
       #
       def label(object_name, method, text = nil, options = {})
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_label_tag(text, options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_label_tag(text, options)
       end
 
       # Returns an input tag of the "text" type tailored for accessing a specified attribute (identified by +method+) on an object
@@ -355,7 +499,7 @@ module ActionView
       #   # => <input type="text" id="snippet_code" name="snippet[code]" size="20" value="#{@snippet.code}" class="code_input" />
       #
       def text_field(object_name, method, options = {})
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_input_field_tag("text", options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_input_field_tag("text", options)
       end
 
       # Returns an input tag of the "password" type tailored for accessing a specified attribute (identified by +method+) on an object
@@ -377,7 +521,7 @@ module ActionView
       #   # => <input type="text" id="account_pin" name="account[pin]" size="20" value="#{@account.pin}" class="form_input" />
       #
       def password_field(object_name, method, options = {})
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_input_field_tag("password", options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_input_field_tag("password", options)
       end
 
       # Returns a hidden input tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -395,7 +539,7 @@ module ActionView
       #   hidden_field(:user, :token)
       #   # => <input type="hidden" id="user_token" name="user[token]" value="#{@user.token}" />
       def hidden_field(object_name, method, options = {})
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_input_field_tag("hidden", options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_input_field_tag("hidden", options)
       end
 
       # Returns an file upload input tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -414,7 +558,7 @@ module ActionView
       #   # => <input type="file" id="attachment_file" name="attachment[file]" class="file_input" />
       #
       def file_field(object_name, method, options = {})
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_input_field_tag("file", options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_input_field_tag("file", options)
       end
 
       # Returns a textarea opening and closing tag set tailored for accessing a specified attribute (identified by +method+)
@@ -442,15 +586,44 @@ module ActionView
       #   #      #{@entry.body}
       #   #    </textarea>
       def text_area(object_name, method, options = {})
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_text_area_tag(options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_text_area_tag(options)
       end
 
       # Returns a checkbox tag tailored for accessing a specified attribute (identified by +method+) on an object
-      # assigned to the template (identified by +object+). It's intended that +method+ returns an integer and if that
-      # integer is above zero, then the checkbox is checked. Additional options on the input tag can be passed as a
-      # hash with +options+. The +checked_value+ defaults to 1 while the default +unchecked_value+
-      # is set to 0 which is convenient for boolean values. Since HTTP standards say that unchecked checkboxes don't post anything,
-      # we add a hidden value with the same name as the checkbox as a work around.
+      # assigned to the template (identified by +object+). This object must be an instance object (@object) and not a local object.
+      # It's intended that +method+ returns an integer and if that integer is above zero, then the checkbox is checked. 
+      # Additional options on the input tag can be passed as a hash with +options+. The +checked_value+ defaults to 1 
+      # while the default +unchecked_value+ is set to 0 which is convenient for boolean values.
+      #
+      # ==== Gotcha
+      #
+      # The HTML specification says unchecked check boxes are not successful, and
+      # thus web browsers do not send them. Unfortunately this introduces a gotcha:
+      # if an Invoice model has a +paid+ flag, and in the form that edits a paid
+      # invoice the user unchecks its check box, no +paid+ parameter is sent. So,
+      # any mass-assignment idiom like
+      #
+      #   @invoice.update_attributes(params[:invoice])
+      #
+      # wouldn't update the flag.
+      #
+      # To prevent this the helper generates a hidden field with the same name as
+      # the checkbox after the very check box. So, the client either sends only the
+      # hidden field (representing the check box is unchecked), or both fields.
+      # Since the HTML specification says key/value pairs have to be sent in the
+      # same order they appear in the form and Rails parameters extraction always
+      # gets the first occurrence of any given key, that works in ordinary forms.
+      #
+      # Unfortunately that workaround does not work when the check box goes
+      # within an array-like parameter, as in
+      #
+      #   <% fields_for "project[invoice_attributes][]", invoice, :index => nil do |form| %>
+      #     <%= form.check_box :paid %>
+      #     ...
+      #   <% end %>
+      #
+      # because parameter name repetition is precisely what Rails seeks to distinguish
+      # the elements of the array.
       #
       # ==== Examples
       #   # Let's say that @post.validated? is 1:
@@ -468,7 +641,7 @@ module ActionView
       #   #    <input name="eula[accepted]" type="hidden" value="no" />
       #
       def check_box(object_name, method, options = {}, checked_value = "1", unchecked_value = "0")
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_check_box_tag(options, checked_value, unchecked_value)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_check_box_tag(options, checked_value, unchecked_value)
       end
 
       # Returns a radio button tag for accessing a specified attribute (identified by +method+) on an object
@@ -488,7 +661,7 @@ module ActionView
       #   # => <input type="radio" id="user_receive_newsletter_yes" name="user[receive_newsletter]" value="yes" />
       #   #    <input type="radio" id="user_receive_newsletter_no" name="user[receive_newsletter]" value="no" checked="checked" />
       def radio_button(object_name, method, tag_value, options = {})
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_radio_button_tag(tag_value, options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_radio_button_tag(tag_value, options)
       end
     end
 
@@ -501,12 +674,12 @@ module ActionView
       DEFAULT_RADIO_OPTIONS     = { }.freeze unless const_defined?(:DEFAULT_RADIO_OPTIONS)
       DEFAULT_TEXT_AREA_OPTIONS = { "cols" => 40, "rows" => 20 }.freeze unless const_defined?(:DEFAULT_TEXT_AREA_OPTIONS)
 
-      def initialize(object_name, method_name, template_object, local_binding = nil, object = nil)
+      def initialize(object_name, method_name, template_object, object = nil)
         @object_name, @method_name = object_name.to_s.dup, method_name.to_s.dup
-        @template_object, @local_binding = template_object, local_binding
+        @template_object = template_object
         @object = object
-        if @object_name.sub!(/\[\]$/,"")
-          if object ||= @template_object.instance_variable_get("@#{Regexp.last_match.pre_match}") and object.respond_to?(:to_param)
+        if @object_name.sub!(/\[\]$/,"") || @object_name.sub!(/\[\]\]$/,"]")
+          if (object ||= @template_object.instance_variable_get("@#{Regexp.last_match.pre_match}")) && object.respond_to?(:to_param)
             @auto_index = object.to_param
           else
             raise ArgumentError, "object[] naming but object param and @object var don't exist or don't respond to to_param: #{object.inspect}"
@@ -601,7 +774,11 @@ module ActionView
       end
 
       def object
-        @object || (@template_object.instance_variable_get("@#{@object_name}") rescue nil)
+        @object || @template_object.instance_variable_get("@#{@object_name}")
+      rescue NameError
+        # As @object_name may contain the nested syntax (item[subobject]) we
+        # need to fallback to nil.
+        nil
       end
 
       def value(object)
@@ -679,7 +856,7 @@ module ActionView
         end
 
         def sanitized_object_name
-          @sanitized_object_name ||= @object_name.gsub(/[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
+          @sanitized_object_name ||= @object_name.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
         end
 
         def sanitized_method_name
@@ -697,28 +874,52 @@ module ActionView
       def initialize(object_name, object, template, options, proc)
         @object_name, @object, @template, @options, @proc = object_name, object, template, options, proc
         @default_options = @options ? @options.slice(:index) : {}
+        if @object_name.to_s.match(/\[\]$/)
+          if object ||= @template.instance_variable_get("@#{Regexp.last_match.pre_match}") and object.respond_to?(:to_param)
+            @auto_index = object.to_param
+          else
+            raise ArgumentError, "object[] naming but object param and @object var don't exist or don't respond to to_param: #{object.inspect}"
+          end
+        end
       end
 
       (field_helpers - %w(label check_box radio_button fields_for)).each do |selector|
         src = <<-end_src
-          def #{selector}(method, options = {})
-            @template.send(#{selector.inspect}, @object_name, method, objectify_options(options))
-          end
+          def #{selector}(method, options = {})  # def text_field(method, options = {})
+            @template.send(                      #   @template.send(
+              #{selector.inspect},               #     "text_field",
+              @object_name,                      #     @object_name,
+              method,                            #     method,
+              objectify_options(options))        #     objectify_options(options))
+          end                                    # end
         end_src
         class_eval src, __FILE__, __LINE__
       end
 
       def fields_for(record_or_name_or_array, *args, &block)
+        if options.has_key?(:index)
+          index = "[#{options[:index]}]"
+        elsif defined?(@auto_index)
+          self.object_name = @object_name.to_s.sub(/\[\]$/,"")
+          index = "[#{@auto_index}]"
+        else
+          index = ""
+        end
+
         case record_or_name_or_array
         when String, Symbol
-          name = "#{object_name}[#{record_or_name_or_array}]"
+          if nested_attributes_association?(record_or_name_or_array)
+            return fields_for_with_nested_attributes(record_or_name_or_array, args, block)
+          else
+            name = "#{object_name}#{index}[#{record_or_name_or_array}]"
+          end
         when Array
           object = record_or_name_or_array.last
-          name = "#{object_name}[#{ActionController::RecordIdentifier.singular_class_name(object)}]"
+          name = "#{object_name}#{index}[#{ActionController::RecordIdentifier.singular_class_name(object)}]"
           args.unshift(object)
         else
           object = record_or_name_or_array
-          name = "#{object_name}[#{ActionController::RecordIdentifier.singular_class_name(object)}]"
+          name = "#{object_name}#{index}[#{ActionController::RecordIdentifier.singular_class_name(object)}]"
           args.unshift(object)
         end
 
@@ -737,8 +938,8 @@ module ActionView
         @template.radio_button(@object_name, method, tag_value, objectify_options(options))
       end
 
-      def error_message_on(method, prepend_text = "", append_text = "", css_class = "formError")
-        @template.error_message_on(@object, method, prepend_text, append_text, css_class)
+      def error_message_on(method, *args)
+        @template.error_message_on(@object, method, *args)
       end
 
       def error_messages(options = {})
@@ -752,6 +953,32 @@ module ActionView
       private
         def objectify_options(options)
           @default_options.merge(options.merge(:object => @object))
+        end
+
+        def nested_attributes_association?(association_name)
+          @object.respond_to?("#{association_name}_attributes=")
+        end
+
+        def fields_for_with_nested_attributes(association_name, args, block)
+          name = "#{object_name}[#{association_name}_attributes]"
+          association = @object.send(association_name)
+
+          if association.is_a?(Array)
+            children = args.first.respond_to?(:new_record?) ? [args.first] : association
+
+            children.map do |child|
+              child_name = "#{name}[#{ child.new_record? ? new_child_id : child.id }]"
+              @template.fields_for(child_name, child, *args, &block)
+            end.join
+          else
+            @template.fields_for(name, association, *args, &block)
+          end
+        end
+
+        def new_child_id
+          value = (@child_counter ||= 1)
+          @child_counter += 1
+          "new_#{value}"
         end
     end
   end
