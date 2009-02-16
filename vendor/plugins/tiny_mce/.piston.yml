@@ -1,8 +1,8 @@
 --- 
 format: 1
 handler: 
-  commit: c86c306220dae4fd2b45adc1828534e8e3f98347
-  branch: HEAD
+  commit: 5a33fe4b6224cdf54c25a67ef6dc3e64b4e3b051
+  branch: master
 lock: false
 repository_url: git://github.com/kete/tiny_mce.git
 repository_class: Piston::Git::Repository
