@@ -860,14 +860,5 @@ module ExtendedContent
       end
     end
 
-    def validate_extended_map_field_content(extended_field_mapping, values)
-      # Allow nil values. If this is required, the nil value will be caught earlier.
-      return nil if values.blank?
-
-      unless values.is_a?(Array)
-        "is not an array of latitude and longitude. Why?"
-      end
-    end
-
   end
 end
