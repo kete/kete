@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   # Sets the host for all url_for calls
   def default_url_options(options = nil)
-    { :host => SITE_NAME }
+    { :host => SITE_NAME } if defined?(SITE_NAME)
   end
 
   # See lib/ssl_helpers.rb

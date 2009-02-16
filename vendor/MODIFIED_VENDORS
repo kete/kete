@@ -7,6 +7,7 @@ which files here so we don't overwrite the changes during a Rails upgrade.
 
 In the file itself, above the changes you made, should be in this format:
 
+# CUSTOM EDIT
 # Name - YYYY/MM/DD
 # Reason for change(s)
 # Summary of change(s)
@@ -27,3 +28,7 @@ plugins/
       unit_test_helper.rb
 
 rails/
+  actionpack/
+    lib/
+      action_controller/
+        base.rb

@@ -1072,7 +1072,10 @@ module ActionController #:nodoc:
         end
 
         response.redirected_to = options
-        logger.info("Redirected to #{options}") if logger && logger.info?
+        # CUSTOM EDIT
+        # Kieran Pilkington - 2009/02/16
+        # The hash was being printed as a string which wasn't readable
+        logger.info("Redirected to #{options.inspect}") if logger && logger.info?
 
         case options
           # The scheme name consist of a letter followed by any combination of
