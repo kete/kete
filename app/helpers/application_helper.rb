@@ -373,7 +373,7 @@ module ApplicationHelper
       end
     end
 
-    html = "<li>#{html}</li>" if !html.blank? && options[:as_list_element]
+    html = "<li class='#{options[:class]}'>#{html}</li>" if !html.blank? && options[:as_list_element]
     html += options[:plus_divider]
   end
 
