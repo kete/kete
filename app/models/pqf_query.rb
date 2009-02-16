@@ -30,7 +30,7 @@ class PqfQuery
     'ge' => "@attr 2=4 ",
     'gt' => "@attr 2=5 ",
     'sort_stub' => "@attr 7="
-  }
+  } unless defined?(QUALIFYING_ATTRIBUTE_SPECS)
 
   ATTRIBUTE_SPECS = {
     'oai_identifier' => "@attr 1=12 ",
@@ -47,25 +47,25 @@ class PqfQuery
     'date' => "@attr 1=30 #{QUALIFYING_ATTRIBUTE_SPECS['datetime']}",
     'last_modified_sort' => "@attr 1=1012 ",
     'date_sort' => "@attr 1=30 "
-  }
+  } unless defined?(ATTRIBUTE_SPECS)
 
   # TODO: my hash_fu is failing me, DRY this up
   DATETIME_SPECS = { 'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
     'last_modified' => ATTRIBUTE_SPECS['last_modified'],
     'date' => ATTRIBUTE_SPECS['date']
-  }
+  } unless defined?(DATETIME_SPECS)
 
   DATETIME_COMPARISON_SPECS = { 'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
     'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
     'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
     'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
     'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
-  }
+  } unless defined?(DATETIME_COMPARISON_SPECS)
 
   # all ATTRIBUTE_SPECS wll have ..._include method created for them
   # except what is specified here
   # any spec with sort in its key is skipped
-  DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR = ATTRIBUTE_SPECS.keys.select { |key| key.include?('sort') }
+  DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR = ATTRIBUTE_SPECS.keys.select { |key| key.include?('sort') } unless defined?(DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR)
 
   attr_accessor :query_parts, :operators,
   :title_or_any_text_query_string, :title_or_any_text_operators_string,
