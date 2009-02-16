@@ -62,6 +62,9 @@ gems:
   feed-normalizer:
   avatar:
   htmlentities:
+  xml-simple:
+    gem_name: xml-simple
+    lib_name: xmlsimple
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems

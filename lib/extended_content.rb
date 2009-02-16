@@ -1,6 +1,7 @@
 # Requirements for XML conversion of extended fields
 require "rexml/document"
 require 'builder'
+require 'xmlsimple'
 
 # ExtendedContent provides a way to access additional, extended content directly on a model. (ExtendedContent is included in all
 # Kete content types.)
