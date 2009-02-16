@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   # Sets the host for all url_for calls
-  def default_url_options(options)
+  def default_url_options(options = nil)
     { :host => SITE_NAME }
   end
 
