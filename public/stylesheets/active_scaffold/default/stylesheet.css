@@ -87,6 +87,10 @@ background-position: 1px 50%;
 background-repeat: no-repeat;
 }
 
+.view .active-scaffold-header div.actions a {
+float: left;
+}
+
 .blue-theme .active-scaffold-header div.actions a {
 color: #fff;
 }
@@ -394,7 +398,7 @@ margin: 0 7px;
 border: none;
 }
 
-.active-scaffold .empty-message {
+.active-scaffold .empty-message, .active-scaffold .filtered-message {
 background-color: #e8e8e8;
 padding: 4px;
 text-align: center;
@@ -597,6 +601,11 @@ padding: 6px 0;
 float: left;
 }
 
+.active-scaffold .form dd {
+margin: 0;
+}
+
+
 .active-scaffold .description {
 color: #999;
 font-size: 10px;
@@ -643,11 +652,14 @@ background-color: #ffc;
 }
 
 .active-scaffold textarea {
-height: 65px;
 font-family: Arial, sans-serif;
 font-size: 12px;
 padding: 1px;
 border: solid 1px #1F7F00;
+}
+
+.active-scaffold .checkbox-list {
+padding-left: 0px;
 }
 
 .active-scaffold .checkbox-list li {
@@ -657,6 +669,32 @@ display: inline;
 
 .active-scaffold .checkbox-list li label {
 padding: 0 0 0 2px;
+}
+
+.active-scaffold .draggable-list {
+float: left;
+width: 300px;
+margin-right: 15px;
+min-height: 30px;
+max-height: 100px;
+overflow: auto;
+background-color: #FFFF88;
+}
+
+.active-scaffold .draggable-list.hover {
+opacity: 0.5;
+}
+
+.active-scaffold .draggable-list.selected {
+background-color: #7FCF00;
+}
+
+.active-scaffold .draggable-list li {
+display: block;
+}
+
+.active-scaffold .draggable-list input {
+display: none;
 }
 
 /* Form :: Sub-Sections
@@ -710,7 +748,7 @@ display: block;
 
 .active-scaffold .sub-form table td {
 border: none;
-background-color: none;
+background-color: transparent;
 padding: 1px;
 vertical-align: top;
 color: #999;
