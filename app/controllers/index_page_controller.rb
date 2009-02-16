@@ -231,7 +231,7 @@ class IndexPageController < ApplicationController
     if @current_basket != @site_basket
       still_image = @current_basket.still_images.find(id)
     else
-      still_image = StillImage.find(id)
+      still_image = StillImage.find_by_id(id)
     end
     still_image
   end
