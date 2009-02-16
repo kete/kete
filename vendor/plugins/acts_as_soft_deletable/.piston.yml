@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 6636266b3bd18bdda6f9184299eb4922b358ca23
+  branch: master
+repository_url: git://github.com/ajh/acts_as_soft_deletable.git
+lock: 
+repository_class: Piston::Git::Repository
