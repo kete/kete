@@ -1,8 +1,8 @@
 --- 
 format: 1
 handler: 
-  commit: 886d1a0102378450b6ed4c28f9dd62c60d1bd671
-  branch: HEAD
-lock: 
+  commit: d7c0da03e62d0fbc478678f8f0f5ddd3511c9026
+  branch: master
+lock: false
 repository_url: git://github.com/technoweenie/acts_as_versioned.git
 repository_class: Piston::Git::Repository
