@@ -27,14 +27,14 @@ class LicensesControllerTest < ActionController::TestCase
 
   def test_index
     get :index, index_path
-    assert_viewing_template 'licenses/list'
+    assert_viewing_template 'list'
     assert_var_assigned true
     assert_equal 4, assigns(:records).size
   end
 
   def test_show
     get :show, show_path({ :id => licenses(:one).id })
-    assert_viewing_template 'licenses/show'
+    assert_viewing_template 'show'
     assert_var_assigned
   end
 
@@ -48,7 +48,7 @@ class LicensesControllerTest < ActionController::TestCase
 
   def test_new
     get :new, new_path
-    assert_viewing_template 'licenses/create_form'
+    assert_viewing_template 'create_form'
     assert_var_assigned
   end
 
@@ -61,7 +61,7 @@ class LicensesControllerTest < ActionController::TestCase
 
   def test_edit
     get :edit, edit_path({ :id => licenses(:one).id })
-    assert_viewing_template 'licenses/update_form'
+    assert_viewing_template 'update_form'
     assert_var_assigned
   end
 
@@ -69,11 +69,11 @@ class LicensesControllerTest < ActionController::TestCase
     update_record( {}, { :id => licenses(:one).id } )
     assert_var_assigned
     assert_attributes_same_as @updated_model
-    assert_redirect_to( index_path )
+    assert_redirect_to( index_path.merge(:action => 'index', :id => licenses(:one).id) )
   end
 
   def test_destroy
     destroy_record({ :id => licenses(:one).id })
-    assert_redirect_to( index_path )
+    assert_redirect_to( index_path.merge(:action => 'index', :id => licenses(:one).id) )
   end
 end

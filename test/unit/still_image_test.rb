@@ -56,8 +56,8 @@ class StillImageTest < ActiveSupport::TestCase
     still_image.reload
 
     # Check the scenario is in place
-    assert_valid still_image
-    still_image.image_files.each { |i| assert_valid i }
+    assert still_image.valid?
+    still_image.image_files.each { |i| assert i.valid? }
     assert_equal 5, still_image.image_files.size
     assert_kind_of ImageFile, original_of(still_image)
     assert_equal 4, thumbnails_of(still_image).size
@@ -77,8 +77,8 @@ class StillImageTest < ActiveSupport::TestCase
     still_image.reload
 
     # Check the scenario is in place
-    assert_valid still_image
-    still_image.image_files.each { |i| assert_valid i }
+    assert still_image.valid?
+    still_image.image_files.each { |i| assert i.valid? }
     assert_equal 5, still_image.image_files.size
     assert_kind_of ImageFile, original_of(still_image)
     assert_equal 4, thumbnails_of(still_image).size

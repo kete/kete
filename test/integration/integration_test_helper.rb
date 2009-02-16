@@ -84,7 +84,7 @@ class ActionController::IntegrationTest
     fill_in "password", :with => password
     click_button "Log in"
 
-    body_should_contain("Logged in successfully") unless options[:should_fail_login]
+    body_should_contain("Logged in successfully", :dump_response => true) unless options[:should_fail_login]
   end
 
   # Asserts whether the supplied text is within the response body returned from a visit request.
