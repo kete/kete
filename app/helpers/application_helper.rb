@@ -317,7 +317,7 @@ module ApplicationHelper
                                 :controller => 'members',
                                 :action => 'list'),
                         :class => options[:class] )
-    elsif !unavailable_text.blank?
+    elsif !options[:unavailable_text].blank?
       content_tag("li", options[:unavailable_text],
                         :class => options[:class])
     else
