@@ -666,7 +666,9 @@ module ExtendedContent
         return [hash]
       end
 
-      return [hash] if hash.keys.include?('coords') # map or map_address
+      # we have to use the no_map key here because its the only constant one (0|1)
+      # the rest can be left out which causes problems when saving items
+      return [hash] if hash.keys.include?('no_map') # map or map_address
 
       hash.map do |k, v|
         # skip special keys

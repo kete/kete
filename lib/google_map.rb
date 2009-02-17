@@ -179,6 +179,14 @@ module GoogleMap
       return nil if values.blank? || (values['no_map'] == "1")
       # the values passed in should form an array
       return "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently #{values.class.name} #{values.inspect}. Why?" unless values.is_a?(Hash)
+      # check if this field is required and not set
+      if values[:coords].nil? || values[:zoom_lvl].nil?
+        if extended_field_mapping.required
+          return "is not present. This field is required so you must enter something before saving."
+        else
+          return "is not present. If you don't want to include one, select 'don't record a location'."
+        end
+      end
       # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
       wrong_format = false
       begin
