@@ -9,6 +9,13 @@ class ApplicationController < ActionController::Base
     { :host => SITE_NAME } if defined?(SITE_NAME)
   end
 
+  before_filter :set_locale
+  def set_locale
+    # if this is nil then I18n.default_locale will be used
+    # Eventually we'll change the local based on the users chosen setting
+    I18n.locale = params[:locale]
+  end
+
   # See lib/ssl_helpers.rb
   include SslHelpers
 
