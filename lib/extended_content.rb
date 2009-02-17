@@ -718,7 +718,7 @@ module ExtendedContent
     def validate_extended_content_single_value(extended_field_mapping, value)
       # Handle required fields here..
       if extended_field_mapping.required &&
-         (value.blank? || (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value[2] == "1")) &&
+         (value.blank? || (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value['no_map'] == "1")) &&
          extended_field_mapping.extended_field.ftype != "checkbox"
 
         errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank") unless \
@@ -858,15 +858,6 @@ module ExtendedContent
 
       unless valid_topic_type_ids.include?(topic_type_id)
         "is not valid choice for a '#{parent_topic_type.name}'"
-      end
-    end
-
-    def validate_extended_map_field_content(extended_field_mapping, values)
-      # Allow nil values. If this is required, the nil value will be caught earlier.
-      return nil if values.blank?
-
-      unless values.is_a?(Array)
-        "is not an array of latitude and longitude. Why?"
       end
     end
 

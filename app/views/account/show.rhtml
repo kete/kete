@@ -68,7 +68,7 @@
 
   <br />
 
-  <% user_baskets = users_baskets_list(@user) -%>
+  <% user_baskets = users_baskets_list(@user, { :show_options => true, :show_roles => false }) -%>
   <% unless user_baskets.blank? -%>
   <div>
     <div>
@@ -76,9 +76,7 @@
       <%= "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user && !header_add_basket_link.blank?-%>
     </div>
     <div>
-      <ul>
-        <%= users_baskets_list(@user) -%>
-      </ul>
+      <ul id="user_profile_baskets_list"><%= user_baskets -%></ul>
     </div>
   </div>
   <% end -%>

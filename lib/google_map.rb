@@ -178,7 +178,7 @@ module GoogleMap
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank? || (values['no_map'] == "1")
       # the values passed in should form an array
-      return "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently #{values.inspect}. Why?" unless values.is_a?(Hash)
+      return "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently #{values.class.name} #{values.inspect}. Why?" unless values.is_a?(Hash)
       # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
       wrong_format = false
       begin
@@ -189,7 +189,7 @@ module GoogleMap
       rescue
         wrong_format = true
       end
-      return "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currenty #{values.inspect}. Why?" if wrong_format
+      return "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currenty #{values.class.name} #{values.inspect}. Why?" if wrong_format
     end
     # both the google map and google map with address options use the same code
     alias validate_extended_map_address_field_content validate_extended_map_field_content
