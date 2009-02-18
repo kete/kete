@@ -1,4 +1,4 @@
-<% @title = 'Registration'  -%>
+<% @title = t('account.signup.title') -%>
 
 <h2><%= h(@title) -%></h2>
 
@@ -8,26 +8,31 @@
 <%= error_messages_for :user %>
 
 <div class="form-element">
-<label for="user_login">Login:</label> <%= f.text_field :login, :tabindex => '1' %>
-<div class="form_example">Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.</div>
+  <label for="user_login"><%=t 'account.signup.login' %></label>
+  <%= f.text_field :login, :tabindex => '1' %>
+  <div class="form_example"><%=t 'account.signup.login_example' %></div>
 </div>
 
 <div class="form-element">
-  <label for="user_email">Email:</label>
+  <label for="user_email"><%=t 'account.signup.email' %></label>
   <%= f.text_field :email, :tabindex => '1', :style => 'float:left;' %>
   <%= render :partial => 'avatar_updater' -%>
 </div>
 
 <div class="form-element">
-<label for="user_password">Password:</label> <%= f.password_field :password, :tabindex => '1' %>
-</div>
-<div class="form-element">
-<label for="user_password_confirmation">Confirm Password:</label> <%= f.password_field :password_confirmation, :tabindex => '1' %>
+  <label for="user_password"><%=t 'account.signup.password'%></label>
+  <%= f.password_field :password, :tabindex => '1' %>
 </div>
 
 <div class="form-element">
-<label for="user_display_name">User Name:</label> <%= f.text_field :display_name, :tabindex => '1' %>
-<div class="form_example">This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".</div>
+  <label for="user_password_confirmation"><%=t 'account.signup.confirm_password' %></label>
+  <%= f.password_field :password_confirmation, :tabindex => '1' %>
+</div>
+
+<div class="form-element">
+  <label for="user_display_name"><%=t 'account.signup.user_name' %></label>
+  <%= f.text_field :display_name, :tabindex => '1' %>
+  <div class="form_example"><%=t 'account.signup.user_name_example' %></div>
 </div>
 
 <% form_fields = @content_type.content_type_to_field_mappings -%>
@@ -41,7 +46,7 @@
 
 
 <div class="form-element">
-  <label>Prefered License:</label>
+  <label><%=t 'account.signup.prefered_license' %></label>
   <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user} %>
 </div>
 
@@ -49,15 +54,18 @@
 
 <div class="form-element">
 <% if @captcha_type == 'image' -%>
-  <label for="user_security_code">Security Code: Please enter the text from the image to the right</label>
+  <label for="user_security_code"><%=t 'account.signup.security_code' %></label>
   <div style="float: left"><%= f.text_field :security_code, {:size => '8', :tabindex => '1'} %></div>
   <% id = generate_captcha() -%>
   <% session[:captcha_id] = id -%>
   <img src="<%= captcha_url(id) %>" alt="Security image. " />
   <div class="form_example">
-    Text is case sensitive
+    <%=t 'account.signup.case_sensitive' %>
     <% if CAPTCHA_TYPE == 'all' -%>
-      <p>or use a <%= link_to 'non-image security question', {:captcha_type => 'question'}, :tabindex => '1' -%></p>
+      <p><%=t 'account.signup.text_captcha',
+              :text_captcha_link => link_to(t('account.signup.text_captcha_link'),
+                                            {:captcha_type => 'question'},
+                                            :tabindex => '1') -%></p>
     <% end -%>
   </div>
 <% elsif @captcha_type == 'question' -%>
@@ -66,22 +74,29 @@
 </div>
 
 <div class="form-element">
-<%= f.check_box :agree_to_terms, :tabindex => '1' %> I agree that I have read and accept the
-<%= link_to_remote("Terms and conditions", { :url => { :action => 'disclaimer', :id => 4 } },
-                                           { :href => url_for({ :action => 'disclaimer', :id => 4 }),
-                                             :tabindex => '1' }) %>,
-<%= link_to_remote("Privacy policy", { :url => { :action => 'disclaimer', :id => 5 } },
-                                     { :href => url_for({ :action => 'disclaimer', :id => 5 }),
-                                       :tabindex => '1' }) %>, and
-<%= link_to_remote("House Rules", { :url => { :action => 'disclaimer', :id => 2 } },
-                                  { :href => url_for({ :action => 'disclaimer', :id => 2 }),
-                                    :tabindex => '1' }) %>.
+<%= f.check_box :agree_to_terms, :tabindex => '1' %>
+<% terms_and_conditions_link = link_to_remote(t('account.signup.terms_and_conditions_link'),
+                                              { :url => { :action => 'disclaimer', :id => 4 } },
+                                              { :href => url_for({ :action => 'disclaimer', :id => 4 }),
+                                              :tabindex => '1' }) %>
+<% privacy_policy_link = link_to_remote(t('account.signup.privacy_policy_link'),
+                                        { :url => { :action => 'disclaimer', :id => 5 } },
+                                        { :href => url_for({ :action => 'disclaimer', :id => 5 }),
+                                        :tabindex => '1' }) %>
+<% house_rules_link = link_to_remote(t('account.signup.house_rules_link'),
+                                     { :url => { :action => 'disclaimer', :id => 2 } },
+                                     { :href => url_for({ :action => 'disclaimer', :id => 2 }),
+                                     :tabindex => '1' }) %>
+<%=t 'account.signup.agree_to',
+     :terms_and_conditions_link => terms_and_conditions_link,
+     :privacy_policy_link => privacy_policy_link,
+     :house_rules_link => house_rules_link -%>
 </div>
 <div id="disclaimer"></div>
 
 </fieldset>
 
-<div style="margin:0;style:0"><%= submit_tag 'Sign up', {:class => "save-button", :tabindex => '1'} %></div>
+<div style="margin:0;style:0"><%= submit_tag t('account.signup.button'), {:class => "save-button", :tabindex => '1'} %></div>
 
 <% end -%>
 

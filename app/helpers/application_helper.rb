@@ -85,7 +85,7 @@ module ApplicationHelper
     end
 
     if baskets_limit < total_baskets_count
-      html += '<li>' + link_to_unless_current('more...',
+      html += '<li>' + link_to_unless_current(t('application.header.more_baskets'),
                                               url_for(:urlified_name => @site_basket.urlified_name,
                                                       :controller => 'baskets' ), {:tabindex => '2'}) + '</li>'
     end
@@ -100,7 +100,7 @@ module ApplicationHelper
 
   def header_link_to_current_basket
     html = String.new
-    html += ': ' + link_to_index_for(@current_basket, { :class => 'basket', :tabindex => '2' }) if @current_basket != @site_basket
+    html += t('application.header.separator') + link_to_index_for(@current_basket, { :class => 'basket', :tabindex => '2' }) if @current_basket != @site_basket
   end
 
   def search_link_to_searched_basket
@@ -119,10 +119,10 @@ module ApplicationHelper
     site_link_text = String.new
     current_basket_html = String.new
     if @current_basket != @site_basket
-      pre_text = 'Browse: '
+      pre_text = "#{t('application.links.browse')}: "
       site_link_text = @site_basket.name
       privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
-      current_basket_html = " or " + link_to_unless_current( @current_basket.name,
+      current_basket_html = " #{t('application.links.browse_or')} " + link_to_unless_current( @current_basket.name,
                                                             {:controller => 'search',
                                                             :action => 'all',
                                                             :urlified_name => @current_basket.urlified_name,
@@ -130,7 +130,7 @@ module ApplicationHelper
                                                             :trailing_slash => true,
                                                             :privacy_type => privacy_type}, {:tabindex => '2'} )
     else
-      site_link_text = 'Browse'
+      site_link_text = t('application.links.browse')
     end
 
     html += pre_text + link_to_unless_current( site_link_text,
@@ -143,7 +143,7 @@ module ApplicationHelper
 
   def header_add_links(options={})
     return unless current_user_can_see_add_links?
-    options = { :link_text => 'Add Item' }.merge(options)
+    options = { :link_text => t('application.links.add_item') }.merge(options)
     link_text = options.delete(:link_text)
     li_class = options.delete(:class) || ''
     html = "<li class='#{li_class}'>"
@@ -181,9 +181,9 @@ module ApplicationHelper
     return unless current_user_can_add_or_request_basket?
 
     if basket_policy_request_with_permissions?
-      basket_text = 'Request basket'
+      basket_text = t('application.links.request_basket')
     else
-      basket_text = 'Add basket'
+      basket_text = t('application.links.add_basket')
     end
 
     link_to_unless_current( basket_text,

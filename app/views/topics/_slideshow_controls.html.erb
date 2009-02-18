@@ -7,7 +7,9 @@
       <strong><%= link_to_next_in_slideshow %></strong>&nbsp;
     </div>
     <div id="slideshow-middle">
-      Viewing: <%= slideshow.number_of_total(url_without_extras(request.url)) %> of <%= slideshow.total %><br />
+      <%=t 'application.slideshow.current',
+           :slideshow_total => slideshow.number_of_total(url_without_extras(request.url)),
+           :total => slideshow.total %><br />
       <%= link_to_stop_slideshow %> | <%= link_to_results %>
     </div>
   </div>
