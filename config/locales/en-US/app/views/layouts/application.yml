@@ -1,8 +1,5 @@
 en:
   application:
-    header:
-      separator: ':'
-      more_baskets: 'more...'
     search:
       label: Search
       button: Go
@@ -12,22 +9,11 @@ en:
       all_baskets: all baskets
       logout: Logout
       home: Home
-      browse: Browse
-      browse_or: or
-      add_item: Add Item
-      request_basket: Request basket
-      add_basket: Add basket
       contact: Contact
       rss: RSS feed for these items
       accessibility: Accessibility
       sitemap: Sitemap
       to_content: Back to Content
-    slideshow:
-      previous: '&laquo; Previous'
-      next: 'Next &raquo;'
-      current: 'Viewing: {{slideshow_total}} of {{total}}'
-      stop: Stop results slideshow
-      all_results: Back to results
     basket:
       label: 'Tools for basket: {{basket}}'
       preferences: basket preferences

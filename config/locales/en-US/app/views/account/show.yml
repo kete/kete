@@ -1,0 +1,33 @@
+en:
+  account:
+    show:
+      title: 'Profile of {{user_name}}'
+      edit: edit
+      change_password: change password
+      portrait_description: "Portraits are a set of images you display on your profile page to users who view it. It can be your own artwork uploaded to the site, or your favorite images. The first portrait added (which can be reordered later) becomes your 'selected' portrait, that is, the one you wish to use as an avatar around the site. It will be displayed on your profile page and next to any comments you post."
+      portrait_new: "You can create a {{new_portrait_link}} by uploading a new image. Alternatively, you can go to an image you've {{uploaded_link}}, and select 'Add image to portraits' in the right sidebar."
+      new_portrait_link: new portrait
+      uploaded_link: uploaded before
+      change_portrait: 'To change your selected portrait:'
+      drag_portraits: 'Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).'
+      shift_portraits: 'Use the arrow buttons to shift them around (when Javascript is off).'
+      gravatar: 'Add an avatar to your account by registering a global portrait with {{gravatar_link}}.'
+      gravatar_link: 'gravatar.com'
+      portrait_or_gravatar: 'Alternatively, you can add a user portrait using the instructions above.'
+      close_portrait_help: 'Close X'
+      other_portrait: Other Portraits
+      baskets: Baskets
+      editing_portraits: 'Editing portraits. '
+      selected_portrait: 'Selected<br />Portrait'
+      whats_portraits: "what's this?"
+      new_portrait: new portrait
+      user_name: 'User name:'
+      email: 'Email:'
+      contact_user: Contact this user
+      created: 'Created:'
+      current_license: Current default license
+      set_license: Click the edit link above to set your default license.
+      license_thumbnail: 'License thumbnail. '
+      view_license: '(View license)'
+      contributions: Contributions
+      contributions_link: 'Items created by or contributed to by {{user_link}}'

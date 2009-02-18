@@ -1,0 +1,4 @@
+en:
+  topics:
+    slideshow_controls:
+      current: 'Viewing: {{slideshow_total}} of {{total}}'

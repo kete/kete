@@ -1,0 +1,11 @@
+en:
+  baskets:
+    actions_menu:
+      edit: Edit
+      appearance: Appearance
+      homepage_options: Homepage Options
+      members: Members
+      moderate: Moderate
+      importers: Importers
+      delete: Delete
+      delete_confirmation: 'Are you sure? All items in this basket will be deleted forever!'

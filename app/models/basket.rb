@@ -313,8 +313,8 @@ class Basket < ActiveRecord::Base
 
   def moderation_select_options
     select_options = String.new
-    [['moderator views before item approved', true],
-     ['moderation upon being flagged', false]].each do |option|
+    [[I18n.translate('basket_model.moderate_before_approved'), true],
+     [I18n.translate('basket_model.moderate_on_flagged'), false]].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""

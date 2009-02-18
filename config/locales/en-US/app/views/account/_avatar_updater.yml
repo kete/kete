@@ -1,0 +1,9 @@
+en:
+  account:
+    avatar_updater:
+      fetching_avatar: 'Fetching Avatar. '
+      your_avatar: 'Your Gravatar. '
+      add_avatar: 'You may designate a picture you have uploaded to the site as your portrait from {{profile_link}}.'
+      profile_link: your profile page
+      add_avatar_after_signup: 'You may designate a picture you have uploaded to the site as your portrait after you signup.'
+      gravatar_link: 'This site supports {{gravatar_link}}'

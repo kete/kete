@@ -1,0 +1,13 @@
+en:
+  account:
+    edit:
+      title: Edit your details
+      login: 'Login:'
+      login_example: 'Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.'
+      email: 'Email:'
+      user_name: 'User Name:'
+      user_name_example: 'This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".'
+      allow_emails: 'Allow Emails from other users:'
+      prefered_license: 'Prefered License:'
+      save: Save
+      change_password: Change Password

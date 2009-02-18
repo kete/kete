@@ -1,0 +1,6 @@
+en:
+  account:
+    activate:
+      title: Enter your activation code
+      label: Activation Code
+      button: Activate

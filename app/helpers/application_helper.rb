@@ -85,7 +85,7 @@ module ApplicationHelper
     end
 
     if baskets_limit < total_baskets_count
-      html += '<li>' + link_to_unless_current(t('application.header.more_baskets'),
+      html += '<li>' + link_to_unless_current(t('application_helper.header_links_to_baskets.more_baskets'),
                                               url_for(:urlified_name => @site_basket.urlified_name,
                                                       :controller => 'baskets' ), {:tabindex => '2'}) + '</li>'
     end
@@ -100,7 +100,10 @@ module ApplicationHelper
 
   def header_link_to_current_basket
     html = String.new
-    html += t('application.header.separator') + link_to_index_for(@current_basket, { :class => 'basket', :tabindex => '2' }) if @current_basket != @site_basket
+    if @current_basket != @site_basket
+      html += t('application_helper.header_link_to_current_basket.separator')
+      html += link_to_index_for(@current_basket, { :class => 'basket', :tabindex => '2' })
+    end
   end
 
   def search_link_to_searched_basket
@@ -119,18 +122,20 @@ module ApplicationHelper
     site_link_text = String.new
     current_basket_html = String.new
     if @current_basket != @site_basket
-      pre_text = "#{t('application.links.browse')}: "
+      pre_text = "#{t('application_helper.header_browse_links.browse')}: "
       site_link_text = @site_basket.name
       privacy_type = (@current_basket.private_default_with_inheritance? && permitted_to_view_private_items?) ? 'private' : nil
-      current_basket_html = " #{t('application.links.browse_or')} " + link_to_unless_current( @current_basket.name,
-                                                            {:controller => 'search',
-                                                            :action => 'all',
-                                                            :urlified_name => @current_basket.urlified_name,
-                                                            :controller_name_for_zoom_class => 'topics',
-                                                            :trailing_slash => true,
-                                                            :privacy_type => privacy_type}, {:tabindex => '2'} )
+      current_basket_html = " #{t('application_helper.header_browse_links.browse_or')} "
+      current_basket_html += link_to_unless_current( @current_basket.name,
+                                                     { :controller => 'search',
+                                                       :action => 'all',
+                                                       :urlified_name => @current_basket.urlified_name,
+                                                       :controller_name_for_zoom_class => 'topics',
+                                                       :trailing_slash => true,
+                                                       :privacy_type => privacy_type },
+                                                     { :tabindex => '2' } )
     else
-      site_link_text = t('application.links.browse')
+      site_link_text = t('application_helper.header_browse_links.browse')
     end
 
     html += pre_text + link_to_unless_current( site_link_text,
@@ -143,7 +148,7 @@ module ApplicationHelper
 
   def header_add_links(options={})
     return unless current_user_can_see_add_links?
-    options = { :link_text => t('application.links.add_item') }.merge(options)
+    options = { :link_text => t('application_helper.header_add_links.add_item') }.merge(options)
     link_text = options.delete(:link_text)
     li_class = options.delete(:class) || ''
     html = "<li class='#{li_class}'>"
@@ -181,9 +186,9 @@ module ApplicationHelper
     return unless current_user_can_add_or_request_basket?
 
     if basket_policy_request_with_permissions?
-      basket_text = t('application.links.request_basket')
+      basket_text = t('application_helper.header_add_basket_link.request_basket')
     else
-      basket_text = t('application.links.add_basket')
+      basket_text = t('application_helper.header_add_basket_link.add_basket')
     end
 
     link_to_unless_current( basket_text,

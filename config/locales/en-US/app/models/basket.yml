@@ -1,0 +1,4 @@
+en:
+  basket_model:
+    moderate_before_approved: moderator views before item approved
+    moderate_on_flagged: moderation upon being flagged
