@@ -1,4 +1,4 @@
-<% @title = @current_basket.name + ' Appearance' -%>
+<% @title = t('baskets.appearance.title', :basket_name => @current_basket.name) -%>
 
 <%= render(:partial => "actions_menu",
            :locals => { :item => @basket }) %>
@@ -12,23 +12,23 @@
 <fieldset>
 
   <div class="form-element">
-    <label for="settings_theme_font_family">Font Family:</label>
+    <label for="settings_theme_font_family"><%=t 'baskets.appearance.font_family' %></label>
     <%= select_tag 'settings[theme_font_family]', @basket.font_family_select_options, {"id" => "settings_theme_font_family", :tabindex => '1'} %>
   </div>
 
   <div class="form-element">
-    <%= image_tag(@basket.settings[:header_image], :alt => "Current Basket Header Image. ") + "<br />" if !@basket.settings[:header_image].blank? -%>
-    <label for="settings_header_image">URL for background image for the top of each page:</label>
+    <%= image_tag(@basket.settings[:header_image], :alt => t('baskets.appearance.current_header')) + "<br />" if !@basket.settings[:header_image].blank? -%>
+    <label for="settings_header_image"><%=t 'baskets.appearance.header_example' %></label>
     <%= text_field 'settings', 'header_image', { "id" => "settings_header_image", :tabindex => '1', :value => @basket.settings[:header_image] } %>
   </div>
 
   <div class="form-element">
-    <label for="settings_theme">Theme:</label>
+    <label for="settings_theme"><%=t 'baskets.appearance.theme' %></label>
     <fieldset>
       <% if @basket.possible_themes.size > 0 -%>
       <% @basket.possible_themes.each do |theme| -%>
       <div class="theme-choice-wrapper">
-        <%= image_tag "/themes/#{theme}/images/sample.jpg", :alt => "Screenshot of #{theme} theme. " -%>
+        <%= image_tag "/themes/#{theme}/images/sample.jpg", :alt => t('baskets.appearance.screenshot_of', :theme => theme) -%>
         <div class="theme-choice-text">
           <%= radio_button_tag 'settings[theme]', theme, (@basket.settings[:theme] == theme), {"id" => "settings_theme", :tabindex => '1'} %>
           <%= theme.humanize %>
@@ -37,13 +37,13 @@
       &nbsp;
       <% end -%>
       <% else -%>
-      <p>No themes beyond the default are available right now.</p>
+      <p><%=t 'baskets.appearance.no_themes' %></p>
       <% end -%>
 
       <% if @site_admin -%>
       <div>
         <ul>
-          <li><%= link_to "Add new theme", {:action => 'new', :controller => 'documents', :is_theme => true}, :tabindex => '1' -%></li>
+          <li><%= link_to t('baskets.appearance.new_theme'), {:action => 'new', :controller => 'documents', :is_theme => true}, :tabindex => '1' -%></li>
         </ul>
       </div>
       <% end -%>
@@ -52,59 +52,58 @@
   </div>
 
   <div class="form-element">
-    <label>Show/Hide Controls:</label>
+    <label><%=t 'baskets.appearance.controls' %></label>
 
     <fieldset>
 
       <div class="form-element">
-        <label for="settings_show_action_menu">Show Action Menu to:</label>
+        <label for="settings_show_action_menu"><%=t 'baskets.appearance.show_actions_to' %></label>
         <%= select_tag 'settings[show_action_menu]', @basket.show_action_menu_as_options(@site_basket), {"id" => "settings_show_action_menu", :tabindex => '1'} %><br />
-        (who can see the view, edit, history and other links)
+        <%=t 'baskets.appearance.show_actions_to_example' %>
       </div>
 
 
       <div class="form-element">
-        <label for="settings_show_discussion">Show Comments to:</label>
+        <label for="settings_show_discussion"><%=t 'baskets.appearance.show_comments_to' %></label>
         <%= select_tag 'settings[show_discussion]', @basket.show_discussion_as_options(@site_basket), {"id" => "settings_show_discussion", :tabindex => '1'} %><br />
-        (who can see and add comments)
+        <%=t 'baskets.appearance.show_comments_to_example' %>
       </div>
 
       <div class="form-element">
-        <label for="settings_show_flagging">Show Flagging to:</label>
+        <label for="settings_show_flagging"><%=t 'baskets.appearance.show_flagging_to' %></label>
         <%= select_tag 'settings[show_flagging]', @basket.show_flagging_as_options(@site_basket), {"id" => "settings_show_flagging", :tabindex => '1'} %><br />
-        (who can flag items)
+        <%=t 'baskets.appearance.show_flagging_to_example' %>
       </div>
 
       <div class="form-element">
-        <label for="settings_show_add_links">Show Add Links to:</label>
+        <label for="settings_show_add_links"><%=t 'baskets.appearance.show_add_links_to' %></label>
         <%= select_tag 'settings[show_add_links]', @basket.show_add_links_as_options(@site_basket), {"id" => "settings_show_add_links", :tabindex => '1'} %><br />
-        (who can relate or link items together)
+        <%=t 'baskets.appearance.show_add_links_to_example' %>
       </div>
     </fieldset>
   </div>
 
   <% if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE -%>
   <div class="form-element">
-    <label>Basket List Menu Options:</label>
+    <label><%=t 'baskets.appearance.basket_list_options' %></label>
 
     <fieldset>
 
-      <p>These settings only take effect if the basket list navigation menu is on in your template.</p>
+      <p><%=t 'baskets.appearance.basket_list_options_example' %></p>
 
       <div class="form-element">
-        <label for="settings_side_menu_number_of_topics">Number of
-        topics to show when in this basket?:</label>
+        <label for="settings_side_menu_number_of_topics"><%=t 'baskets.appearance.basket_list_options_topic_number' %></label>
         <%= text_field_tag 'settings[side_menu_number_of_topics]', @basket.settings[:side_menu_number_of_topics], {:size => 3, "id" => "settings_side_menu_number_of_topics", :tabindex => '1'} %>
       </div>
 
       <div class="form-element">
-        <label for="settings_side_menu_ordering_of_topics" style="width: 100%;">Sort by:</label>
+        <label for="settings_side_menu_ordering_of_topics" style="width: 100%;"><%=t 'baskets.appearance.basket_list_options_sort_by' %></label>
         <div style="clear: left;"><%= select_tag 'settings[side_menu_ordering_of_topics]', @basket.side_menu_ordering_of_topics_as_options(@site_basket), {"id" => "side_menu_ordering_of_topics", :tabindex => '1'} %></div>
       </div>
 
       <div class="form-element">
         <%= check_box 'settings', 'side_menu_direction_of_topics', {:checked => (@basket.settings[:side_menu_direction_of_topics] == 'reverse'), :tabindex => '1'}, 'reverse', '' %>
-        <label for="settings_side_menu_direction_of_topics" class="inline">in reverse?</label>
+        <label for="settings_side_menu_direction_of_topics" class="inline"><%=t 'baskets.appearance.basket_list_options_in_reverse' %></label>
       </div>
 
     </fieldset>
@@ -112,32 +111,25 @@
   <% end -%>
 
   <div class="form-element">
-    <label>Additional Footer Content:</label>
+    <label><%=t 'baskets.appearance.additional_footer_content' %></label>
     <fieldset>
       <div class="form-element">
         <%= text_area 'settings', 'additional_footer_content', :rows => 7, :cols => 30, :class => 'mceEditor', :value => @basket.settings[:additional_footer_content] -%>
       </div>
       <div class="form_example">
-        Note: forms and javascript are not allowed for security reasons.
-        <% if @site_admin -%>Unless you check the box below.<% end -%>
+        <%=t 'baskets.appearance.additional_footer_content_security' %>
+        <%=t 'baskets.appearance.additional_footer_content_security_admin' if @site_admin %>
       </div>
       <% if @site_admin -%>
       <div class="form-element">
         <%= check_box 'settings', 'do_not_sanitize_footer_content', {:checked => (@basket.settings[:do_not_sanitize_footer_content] == true), :tabindex => '1'}, 'true', 'false' %>
-        <label for="settings_do_not_sanitize_footer_content" class="inline">Allow
-          forms and other possible insecure elements and attributes in
-          the HTML?</label><br />
+        <label for="settings_do_not_sanitize_footer_content" class="inline"><%=t 'baskets.appearance.additional_footer_content_exception' %></label><br />
       </div>
       <% end -%>
       <div class="form-element">
         <%= check_box 'settings', 'replace_existing_footer', {:checked => (@basket.settings[:replace_existing_footer] == true), :tabindex => '1'}, 'true', 'false' -%>
-        <label for="settings_replace_existing_footer" class="inline">replace existing footer with above content?</label>
-          <div class="form_example">
-            If checked, the above footer will totally replace the
-            bottom of each page.  If you would rather it appear above
-            the "Accessibility | Sitemap | Back to Content" links,
-            rather than replace them, leave this unchecked.
-          </div>
+        <label for="settings_replace_existing_footer" class="inline"><%=t 'baskets.appearance.additional_footer_content_replace' %></label>
+        <div class="form_example"><%=t 'baskets.appearance.additional_footer_content_replace_example' %></div>
       </div>
     </fieldset>
   </div>
@@ -146,7 +138,7 @@
 
 </fieldset>
 
-<div style="margin:0;padding:0"><%= submit_tag 'Save' , {:class => "save-button", :tabindex => '1'} %></div>
+<div style="margin:0;padding:0"><%= submit_tag t('baskets.appearance.button') , {:class => "save-button", :tabindex => '1'} %></div>
 <% end %>
 
 

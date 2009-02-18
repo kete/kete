@@ -12,3 +12,5 @@ en:
     header_add_basket_link:
       request_basket: Request basket
       add_basket: Add basket
+    link_to_cancel:
+      cancel: Cancel

@@ -1,0 +1,8 @@
+en:
+  baskets:
+    edit:
+      title: '{{basket_name}} Edit'
+      accept: Accept Basket
+      reject: Reject Basket
+      currently_rejected: '(currently rejected)'
+      update: Update

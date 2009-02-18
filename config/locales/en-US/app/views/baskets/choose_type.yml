@@ -1,0 +1,11 @@
+en:
+  baskets:
+    choose_type:
+      what_to_add: What would you like to add
+      that_relates_to: 'that relates to {{topic_title}}'
+      where_to_add: 'Where would you like to add it?'
+      add_in: 'Add in?'
+      add_a: 'Add a?'
+      choose_type: choose item type
+      button: Choose
+      spinner_working: 'Working.. '

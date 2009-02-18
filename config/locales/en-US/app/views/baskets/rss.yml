@@ -1,0 +1,5 @@
+en:
+  baskets:
+    rss:
+      title: '{{site_name}} - Latest {{amount}} Baskets'
+      description: Latest Baskets

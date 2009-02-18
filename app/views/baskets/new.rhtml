@@ -1,13 +1,13 @@
-<% @title = 'New basket' -%>
+<% @title = t('baskets.new.title') -%>
 
 <h2><%= h(@title) -%></h2>
 
 <% form_for :basket, :url => {:action => 'create'} do |form| %>
   <%= render :partial => 'form', :object => form %>
   <% if basket_policy_request_with_permissions? -%>
-    <div class="wrap"><%= submit_tag "Request", {:class => "save-button", :tabindex => '1'} %></div>
+    <div class="wrap"><%= submit_tag t('baskets.new.request'), {:class => "save-button", :tabindex => '1'} %></div>
   <% else -%>
-    <div class="wrap"><%= submit_tag "Create", {:class => "save-button", :tabindex => '1'} %></div>
+    <div class="wrap"><%= submit_tag t('baskets.new.create'), {:class => "save-button", :tabindex => '1'} %></div>
   <% end -%>
 <% end %>
 

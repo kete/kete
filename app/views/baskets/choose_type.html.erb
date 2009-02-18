@@ -1,11 +1,11 @@
-<% @title = "What would you like to add"
+<% @title = t('baskets.choose_type.what_to_add')
    if params[:relate_to_topic]
      topic = Topic.find(params[:relate_to_topic])
      topic.private_version! if params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?
-     @title += " that relates to #{topic.title}"
+     @title += t('baskets.choose_type.that_relates_to', :topic_title => topic.title)
    end
    @title += "?"
-   @title += " Where would you like to add it?" if @basket_list.size > 1
+   @title += t('baskets.choose_type.where_to_add') if @basket_list.size > 1
 -%>
 
 <div id="add_item_form">
@@ -20,7 +20,7 @@
 
       <% if @basket_list.size > 1 -%>
         <div class="form-element">
-          <label for="new_item_basket">Add in?</label>
+          <label for="new_item_basket"><%=t 'baskets.choose_type.add_in' %></label>
           <%= select_tag 'new_item_basket', options_for_select(@basket_list, @current_basket.urlified_name), :id => 'new_item_basket', :tabindex => '1' -%>
         </div>
       <% else %>
@@ -28,8 +28,8 @@
       <% end %>
 
       <div class="form-element">
-        <label for="new_item_controller">Add a?</label>
-        <%= select_tag 'new_item_controller', options_for_select([['choose item type', '']] + @item_types), :id => 'new_item_controller', :tabindex => '1' -%>
+        <label for="new_item_controller"><%=t 'baskets.choose_type.add_a' %></label>
+        <%= select_tag 'new_item_controller', options_for_select([[t('baskets.choose_type.choose_type'), '']] + @item_types), :id => 'new_item_controller', :tabindex => '1' -%>
       </div>
 
       <div id="topic_type_form" style="display:none;">
@@ -41,13 +41,13 @@
 
     <noscript>
       <span id="submit_button">
-        <%= submit_tag "Choose", { :class => "save-button", :tabindex => '1' } -%>
+        <%= submit_tag t('baskets.choose_type.button'), { :class => "save-button", :tabindex => '1' } -%>
       </span>
     </noscript>
 
   <% end %>
 
-  <img src='/images/indicator.gif' width='16' height='16' alt='Working.. ' id='data_spinner' style='display:none;' />
+  <img src='/images/indicator.gif' width='16' height='16' alt='<%=t 'baskets.choose_type.spinner_working' %>' id='data_spinner' style='display:none;' />
 
   <%= link_to_cancel("choose") -%>
 

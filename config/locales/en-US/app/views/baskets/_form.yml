@@ -54,4 +54,3 @@ en:
       admin_contact_enabled_example: 'A link will be provided that allows users to send a message to administrators.'
       admin_contact_disabled_example: 'Users will not be able to contact administrators.'
       admin_contain_current_inheritance: 'The Site has <strong>{{current_inheritance}}</strong> use of the administrator contact form.'
-      inheritance_notice: 'These settings will be inherited by all other baskets unless they individually specify their own policy.'

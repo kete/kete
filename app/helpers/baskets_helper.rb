@@ -69,7 +69,7 @@ module BasketsHelper
     #  @inheritance_message += "Unspecified settings will be inherited
     #                        from the settings of the Site."
     #else
-      @inheritance_message += t('baskets.form.inheritance_notice')
+      @inheritance_message += t('baskets_helper.basket_preferences_inheritance_message.inheritance_notice')
     #end
 
     @inheritance_message += "</p>"

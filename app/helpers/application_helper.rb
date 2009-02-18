@@ -400,9 +400,9 @@ module ApplicationHelper
   def link_to_cancel(from_form = "")
     html = "<div id=\"cancel#{from_form}\" style=\"display:inline\">"
     if session[:return_to].blank?
-      html += link_to("Cancel", :action => 'list', :tabindex => '1')
+      html += link_to(t('application_helper.link_to_cancel.cancel'), :action => 'list', :tabindex => '1')
     else
-      html += link_to("Cancel", url_for(session[:return_to]), :tabindex => '1')
+      html += link_to(t('application_helper.link_to_cancel.cancel'), url_for(session[:return_to]), :tabindex => '1')
     end
     html += "</div>"
   end

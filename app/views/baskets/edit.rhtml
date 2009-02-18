@@ -1,4 +1,4 @@
-<% @title = @current_basket.name + ' Edit' -%>
+<% @title = t('baskets.edit.title', :basket_name => @current_basket.name) -%>
 
 <%= render(:partial => "actions_menu",
            :locals => { :item => @basket }) %>
@@ -11,16 +11,16 @@
   <%= render :partial => 'form', :object => form %>
   <% if @basket.status == 'requested' -%>
     <div class="wrap">
-      <%= submit_tag 'Accept Basket', {:id => "accept_basket", :name => "accept_basket", :class => "save-button", :tabindex => '1'} %>
-      <%= submit_tag 'Reject Basket', {:id => "reject_basket", :name => "reject_basket", :class => "save-button", :tabindex => '1'} %>
+      <%= submit_tag t('baskets.edit.accept'), {:id => "accept_basket", :name => "accept_basket", :class => "save-button", :tabindex => '1'} %>
+      <%= submit_tag t('baskets.edit.reject'), {:id => "reject_basket", :name => "reject_basket", :class => "save-button", :tabindex => '1'} %>
     </div>
   <% elsif @basket.status == 'rejected' -%>
     <div class="wrap">
-      <%= submit_tag 'Accept Basket', {:id => "accept_basket", :name => "accept_basket", :class => "save-button", :tabindex => '1'} %>
-      (currently rejected)
+      <%= submit_tag t('baskets.edit.accept'), {:id => "accept_basket", :name => "accept_basket", :class => "save-button", :tabindex => '1'} %>
+      <%=t 'baskets.edit.currently_rejected' %>
     </div>
   <% else -%>
-    <div class="wrap"><%= submit_tag 'Update', {:class => "save-button", :tabindex => '1'} %></div>
+    <div class="wrap"><%= submit_tag t('baskets.edit.update'), {:class => "save-button", :tabindex => '1'} %></div>
   <% end -%>
 <% end %>
 <%= link_to_cancel %>

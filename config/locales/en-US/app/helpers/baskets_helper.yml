@@ -1,0 +1,4 @@
+en:
+  baskets_helper:
+    basket_preferences_inheritance_message:
+      inheritance_notice: 'These settings will be inherited by all other baskets unless they individually specify their own policy.'
