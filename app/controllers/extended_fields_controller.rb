@@ -15,18 +15,18 @@ class ExtendedFieldsController < ApplicationController
     config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition]
 
     config.columns << [:base_url]
-    config.columns[:base_url].label = t('extended_fields_controller.base_url')
-    config.columns[:base_url].description = t('extended_fields_controller.base_url_description')
+    config.columns[:base_url].label = I18n.t('extended_fields_controller.base_url')
+    config.columns[:base_url].description = I18n.t('extended_fields_controller.base_url_description')
 
     # CRUD for adding/removing choices
     config.columns << [:pseudo_choices]
-    config.columns[:pseudo_choices].label = t('extended_fields_controller.available_choices')
-    config.columns[:pseudo_choices].description = t('extended_fields_controller.available_choices_description')
+    config.columns[:pseudo_choices].label = I18n.t('extended_fields_controller.available_choices')
+    config.columns[:pseudo_choices].description = I18n.t('extended_fields_controller.available_choices_description')
     config.columns[:user_choice_addition].label = nil
 
     config.columns << [:topic_type]
-    config.columns[:topic_type].label = t('extended_fields_controller.topic_type_choices')
-    config.columns[:topic_type].description = t('extended_fields_controller.topic_type_choices_description')
+    config.columns[:topic_type].label = I18n.t('extended_fields_controller.topic_type_choices')
+    config.columns[:topic_type].description = I18n.t('extended_fields_controller.topic_type_choices_description')
   end
 
   def add_field_to_multiples
