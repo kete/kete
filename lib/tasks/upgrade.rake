@@ -273,6 +273,7 @@ namespace :kete do
 
     desc 'Checks for mimetypes an adds them if needed.'
     task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
+                                     'kete:upgrade:add_excel_variants_to_documents',
                                      'kete:upgrade:add_aiff_to_audio_recordings',
                                      'kete:upgrade:add_tar_to_documents',
                                      'kete:upgrade:add_open_office_document_types',
@@ -280,6 +281,16 @@ namespace :kete do
                                      'kete:upgrade:add_bmp_to_images',
                                      'kete:upgrade:add_eps_to_images',
                                      'kete:upgrade:add_file_mime_type_variants']
+
+    desc 'Adds excel variants if needed'
+    task :add_excel_variants_to_documents => :environment do
+      setting = SystemSetting.find_by_name('Document Content Types')
+      ['application/excel', 'application/x-excel', 'application/x-msexcel'].each do |new_type|
+        if setting.push(new_type)
+          p "added #{new_type} mime type to " + setting.name
+        end
+      end
+    end
 
     desc 'Adds application/octet-stream and application/word if needed'
     task :add_octet_stream_and_word_types => :environment do
