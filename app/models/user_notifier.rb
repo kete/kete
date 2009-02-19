@@ -6,30 +6,30 @@ class UserNotifier < ActionMailer::Base
 
   def forgot_password(user)
     setup_email(user)
-    @subject    += 'Request to change your password'
+    @subject    += I18n.t('user_notifier_model.password_change')
     @body[:url]  = "#{SITE_URL}site/account/reset_password/#{ user.password_reset_code}"
   end
 
   def reset_password(user)
     setup_email(user)
-    @subject    += 'Your password has been reset'
+    @subject    += I18n.t('user_notifier_model.password_reset')
   end
 
   def signup_notification(user)
     setup_email(user)
-    @subject    += 'Please activate your new account'
+    @subject    += I18n.t('user_notifier_model.activate_account')
     @body[:url]  = "#{SITE_URL}site/account/activate/#{user.activation_code}"
   end
 
   def activation(user)
     setup_email(user)
-    @subject    += 'Your account has been activated!'
+    @subject    += I18n.t('user_notifier_model.account_activated')
     @body[:url]  = "#{SITE_URL}"
   end
 
   def banned(user)
     setup_email(user)
-    @subject    += 'Your account has been banned!'
+    @subject    += I18n.t('user_notifier_model.account_banned')
     @body[:url]  = "#{SITE_URL}"
   end
 
@@ -37,7 +37,7 @@ class UserNotifier < ActionMailer::Base
     setup_email(sender)
     @recipients = recipient.email
     @reply_to = sender.email
-    @subject += "#{sender.user_name} has sent you a message."
+    @subject += I18n.t('user_notifier_model.user_sent_message', :user_name => sender.user_name)
     @body[:recipient] = recipient
     @body[:subject] = subject
     @body[:message] = message
@@ -52,16 +52,18 @@ class UserNotifier < ActionMailer::Base
 
     case type
     when 'joined'
-      @subject += "#{sender.user_name} has joined the #{basket.urlified_name} basket"
+      @subject += I18n.t('user_notifier_model.user_joined',
+                         :user_name => sender.user_name, :basket_name => basket.name)
       @template = 'user_notifier/join_policy/member'
     when 'request'
-      @subject += "#{sender.user_name} has requested membership in #{basket.urlified_name} basket"
+      @subject += I18n.t('user_notifier_model.user_requested',
+                         :user_name => sender.user_name, :basket_name => basket.name)
       @template = 'user_notifier/join_policy/request'
     when 'approved'
-      @subject += "Membership to #{basket.urlified_name} accepted"
+      @subject += I18n.t('user_notifier_model.membership_accepted', :basket_name => basket.name)
       @template = 'user_notifier/join_policy/accepted'
     when 'rejected'
-      @subject += "Membership to #{basket.urlified_name} rejected"
+      @subject += I18n.t('user_notifier_model.membership_rejected', :basket_name => basket.name)
       @template = 'user_notifier/join_policy/rejected'
     else
       raise "Invalid membership notification type. joined, request, approved and rejected only."
@@ -71,7 +73,7 @@ class UserNotifier < ActionMailer::Base
   # notifications for flagging/moderation
   def item_flagged_for(moderator, flag, url, flagging_user, submitter, revision, message)
     setup_email(moderator)
-    @subject += "Item flagged #{flag} for moderation."
+    @subject += I18n.t('user_notifier_model.item_flagged_with', :flag => flag)
     setup_body_with(revision, url, message, submitter)
     @body[:flagging_user]  = flagging_user
     @body[:flag] = flag
@@ -79,26 +81,26 @@ class UserNotifier < ActionMailer::Base
 
   def pending_review_for(revision, submitter)
     setup_email(submitter)
-    @subject += "Your submission is #{PENDING_FLAG} moderation."
+    @subject += I18n.t('user_notifier_model.pending_moderation', :flag => PENDING_FLAG)
     @body[:revision] = revision
   end
 
   def review_flagged_for(basket, moderator)
     setup_email(moderator)
-    @subject += "User contributions waiting review in #{basket.name}."
+    @subject += I18n.t('user_notifier_model.awaiting_review', :basket_name => basket.name)
     @body[:basket] = basket
     @body[:disputed_revisions] = basket.all_disputed_revisions
   end
 
   def rejection_of(revision, url, submitter, rejection_message)
     setup_email(submitter)
-    @subject += "A moderator has #{REJECTED_FLAG} your submission."
+    @subject += I18n.t('user_notifier_model.rejected_submission', :flag => REJECTED_FLAG)
     setup_body_with(revision, url, rejection_message)
   end
 
   def approval_of(revision, url, submitter, approval_message)
     setup_email(submitter)
-    @subject    += "A moderator has made your submission the live revision."
+    @subject    += I18n.t('user_notifier_model.revision_live')
     setup_body_with(revision, url, approval_message)
   end
 
@@ -110,18 +112,20 @@ class UserNotifier < ActionMailer::Base
 
     case type
     when 'created'
-      @subject += "#{sender.user_name} has created the #{basket.urlified_name} basket"
+      @subject += I18n.t('user_notifier_model.basket_created',
+                         :user_name => sender.user_name, :basket_name => basket.name)
       @body[:needs_approval] = false
       @template = 'user_notifier/basket_create_policy/created'
     when 'request'
-      @subject += "#{sender.user_name} has requested creation of the #{basket.urlified_name} basket"
+      @subject += I18n.t('user_notifier_model.basket_requested',
+                         :user_name => sender.user_name, :basket_name => basket.name)
       @body[:needs_approval] = true
       @template = 'user_notifier/basket_create_policy/created'
     when 'approved'
-      @subject += "#{basket.urlified_name} basket creation has been approved"
+      @subject += I18n.t('user_notifier_model.basket_approved', :basket_name => basket.name)
       @template = 'user_notifier/basket_create_policy/approved'
     when 'rejected'
-      @subject += "#{basket.urlified_name} basket creation has been rejected"
+      @subject += I18n.t('user_notifier_model.basket_rejected', :basket_name => basket.name)
       @template = 'user_notifier/basket_create_policy/rejected'
     else
       raise "Invalid basket notification type. created, request, approved and rejected only."

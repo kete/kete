@@ -3,14 +3,14 @@
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
   # we use these for who can see what
-  MEMBER_LEVEL_OPTIONS = [['Basket member', 'at least member'],
-                          ['Basket moderator', 'at least moderator'],
-                          ['Basket admin', 'at least admin'],
-                          ['Site admin', 'at least site admin']]
+  MEMBER_LEVEL_OPTIONS = [[I18n.t('basket_model.basket_member'), 'at least member'],
+                          [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
+                          [I18n.t('basket_model.basket_admin'), 'at least admin'],
+                          [I18n.t('basket_model.site_admin'), 'at least site admin']]
 
-  USER_LEVEL_OPTIONS = [['All users', 'all users']] + MEMBER_LEVEL_OPTIONS
+  USER_LEVEL_OPTIONS = [[I18n.t('basket_model.all_users'), 'all users']] + MEMBER_LEVEL_OPTIONS
 
-  ALL_LEVEL_OPTIONS = [['All users', 'all users']] + [['Logged in user', 'logged in']] + MEMBER_LEVEL_OPTIONS
+  ALL_LEVEL_OPTIONS = [[I18n.t('basket_model.all_users'), 'all users']] + [[I18n.t('basket_model.logged_in'), 'logged in']] + MEMBER_LEVEL_OPTIONS
 
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
@@ -264,7 +264,7 @@ class Basket < ActiveRecord::Base
     options_array.each do |option|
       label = option[0]
       value = option[1]
-      next if label == "Site admin" && !site_admin
+      next if label == I18n.t('basket_model.site_admin') && !site_admin
       select_options += "<option value=\"#{value}\""
       if default_value == value
         select_options += " selected=\"selected\""
@@ -276,45 +276,45 @@ class Basket < ActiveRecord::Base
 
   # attribute options methods
   def self.link_to_index_topic_as_options
-    [['Full details and comments', 'full topic and comments'],
-     ['Only full details', 'full topic'],
-     ['Only comments', 'comments'],
-     ['Don\'t link', '']]
+    [[I18n.t('basket_model.details_and_comments'), 'full topic and comments'],
+     [I18n.t('basket_model.only_details'), 'full topic'],
+     [I18n.t('basket_model.only_comments'), 'comments'],
+     [I18n.t('basket_model.dont_link'), '']]
   end
 
   def self.recent_topics_as_options
-    [['Don\'t show them', ''],
-     ['Summaries (blog style)', 'summaries'],
-     ['Headlines (news style)', 'headlines']]
+    [[I18n.t('basket_model.recent_dont_show'), ''],
+     [I18n.t('basket_model.recent_as_summaries'), 'summaries'],
+     [I18n.t('basket_model.recent_as_headlines'), 'headlines']]
   end
 
   def self.archives_as_options
-    [['Don\'t show them', ''],
-     ['By type', 'by type']]
+    [[I18n.t('basket_model.archives_dont_show'), ''],
+     [I18n.t('basket_model.archives_by_type'), 'by type']]
   end
 
   def self.image_as_options
-    [['No image', ''],
-     ['Latest', 'latest'],
-     ['Random', 'random']]
+    [[I18n.t('basket_model.image_dont_show'), ''],
+     [I18n.t('basket_model.image_latest'), 'latest'],
+     [I18n.t('basket_model.image_random'), 'random']]
   end
 
   def self.order_tags_by_options
-    [['Most Popular', 'number'],
-     ['By Name', 'alphabetical'],
-     ['Latest', 'latest'],
-     ['Random', 'random']]
+    [[I18n.t('basket_model.tags_ordered_most_popular'), 'number'],
+     [I18n.t('basket_model.tags_ordered_by_name'), 'alphabetical'],
+     [I18n.t('basket_model.tags_ordered_latest'), 'latest'],
+     [I18n.t('basket_model.tags_ordered_random'), 'random']]
   end
 
   def self.tags_as_options
-    [['Categories', 'categories'],
-     ['Tag Cloud', 'tag cloud']]
+    [[I18n.t('basket_model.tags_as_categories'), 'categories'],
+     [I18n.t('basket_model.tags_as_tag_cloud'), 'tag cloud']]
   end
 
   def moderation_select_options
     select_options = String.new
-    [[I18n.translate('basket_model.moderate_before_approved'), true],
-     [I18n.translate('basket_model.moderate_on_flagged'), false]].each do |option|
+    [[I18n.t('basket_model.moderate_before_approved'), true],
+     [I18n.t('basket_model.moderate_on_flagged'), false]].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
@@ -380,9 +380,9 @@ class Basket < ActiveRecord::Base
 
   def font_family_select_options
     select_options = String.new
-    [['Use theme default', ''],
-     ['Sans Serif (Arial, Helvetica, and the like)', 'sans-serif'],
-     ['Serif (Times New Roman, etc.)', 'serif']].each do |option|
+    [[I18n.t('basket_model.font_use_theme_default'), ''],
+     [I18n.t('basket_model.font_sans_serif'), 'sans-serif'],
+     [I18n.t('basket_model.font_serif'), 'serif']].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
@@ -467,7 +467,7 @@ class Basket < ActiveRecord::Base
       versions = Module.class_eval(zoom_class + '::Version').find_all_by_basket_id(self)
       versions.each do |version|
         new_version_comment = version.version_comment.nil? ? String.new : version.version_comment + '. '
-        new_version_comment += "This version was in #{self.name} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket."
+        new_version_comment += I18n.t('basket_model.now_in_site_basket', :basket_name => self.name)
 
         version.update_attributes(:basket_id => 1, :version_comment => new_version_comment )
       end
@@ -515,7 +515,7 @@ class Basket < ActiveRecord::Base
 
   def prevent_site_basket_destruction
     if self == @@site_basket
-      raise "Error: Cannot delete site basket!"
+      raise I18n.t('basket_model.cannot_delete_site')
       false
     else
       true

@@ -1,0 +1,3 @@
+en:
+  document_model:
+    not_acceptable: 'is not acceptable. It should be a .pdf, .doc, or other document file.'

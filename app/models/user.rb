@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password,                   :if => :password_required?
   # Walter McGinnis, 2008-03-16
   # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
-  validates_confirmation_of :security_code,              :if => :new_record?, :message => ': Your security question answer failed - please try again.'
+  validates_confirmation_of :security_code,              :if => :new_record?, :message => I18n.t('user_model.failed_security_answer')
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_format_of       :login, :with => /^[^\s]+$/

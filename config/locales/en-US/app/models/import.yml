@@ -1,0 +1,4 @@
+en:
+  import_model:
+    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
+    must_be_seconds: the interval must be in seconds

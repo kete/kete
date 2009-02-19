@@ -53,7 +53,7 @@ class ImageFile < ActiveRecord::Base
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|
       enum = attachment_options[attr_name]
-      errors.add attr_name, 'is not acceptable. It should be a .jpg, .gif, or other image file.' unless enum.nil? || enum.include?(send(attr_name))
+      errors.add attr_name, I18n.t('image_file_model.not_acceptable') unless enum.nil? || enum.include?(send(attr_name))
     end
   end
 

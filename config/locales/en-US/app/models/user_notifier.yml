@@ -1,0 +1,21 @@
+en:
+  user_notifier_model:
+    password_change: Request to change your password
+    password_reset: Your password has been reset
+    activate_account: Please activate your new account
+    account_activated: 'Your account has been activated!'
+    account_banned: 'Your account has been banned!'
+    user_sent_message: '{{user_name}} has sent you a message.'
+    user_joined: '{{user_name}} has joined the {{basket_name}} basket'
+    user_requested: '{{user_name}} has requested membership in {{basket_name}} basket'
+    membership_accepted: 'Membership to {{basket_name}} accepted'
+    membership_rejected: 'Membership to {{basket_name}} rejected'
+    item_flagged_with: 'Item flagged {{flag}} for moderation.'
+    pending_moderation: 'Your submission is {{flag}} moderation.'
+    awaiting_review: 'User contributions waiting review in {{basket_name}}.'
+    rejected_submission: 'A moderator has {{flag}} your submission.'
+    revision_live: 'A moderator has made your submission the live revision.'
+    basket_created: '{{user_name}} has created the {{basket_name}} basket'
+    basket_requested: '{{user_name}} has requested creation of the {{basket_name}} basket'
+    basket_approved: '{{basket_name}} basket creation has been approved'
+    basket_rejected: '{{basket_name}} basket creation has been rejected'

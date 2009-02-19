@@ -48,7 +48,7 @@ class AudioRecording < ActiveRecord::Base
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|
       enum = attachment_options[attr_name]
-      errors.add attr_name, 'is not acceptable. It should be a .mp3, .m4a, or other sound file.' unless enum.nil? || enum.include?(send(attr_name))
+      errors.add attr_name, I18n.t('audio_recording_model.not_acceptable') unless enum.nil? || enum.include?(send(attr_name))
     end
   end
 

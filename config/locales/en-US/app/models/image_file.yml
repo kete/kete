@@ -1,0 +1,3 @@
+en:
+  image_file_model:
+    not_acceptable: 'is not acceptable. It should be a .jpg, .gif, or other image file.'

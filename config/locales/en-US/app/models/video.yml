@@ -1,0 +1,3 @@
+en:
+  video_model:
+    not_acceptable: 'is not acceptable. It should be a .mov, .wmv, or other video file.'

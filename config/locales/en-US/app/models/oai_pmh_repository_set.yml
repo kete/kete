@@ -1,0 +1,3 @@
+en:
+  oai_pmh_repository_set_model:
+    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"

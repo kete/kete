@@ -32,8 +32,8 @@ class Choice < ActiveRecord::Base
   validates_presence_of :value
 
   # Label and value must be unique (for lookup reasons)
-  validates_uniqueness_of :label, :message => "must be unique"
-  validates_uniqueness_of :value, :message => "must be unique"
+  validates_uniqueness_of :label, :message => I18n.t('choice_model.must_be_unique')
+  validates_uniqueness_of :value, :message => I18n.t('choice_model.must_be_unique')
 
   # class methods
   class << self
@@ -96,7 +96,7 @@ class Choice < ActiveRecord::Base
 
   # Ensure things make sense to end users
   def label
-    self == ROOT ? "(Top level)" : read_attribute(:label)
+    self == ROOT ? I18n.t('choice_model.top_level') : read_attribute(:label)
   end
 
   # Find whether the choice has been mapped to something

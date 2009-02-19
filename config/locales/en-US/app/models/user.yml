@@ -1,0 +1,3 @@
+en:
+  user_model:
+    failed_security_answer: ': Your security question answer failed - please try again.'

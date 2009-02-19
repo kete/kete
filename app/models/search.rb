@@ -40,7 +40,7 @@ class Search
         sort_type_options += "<option value=\"#{type}\""
       end
       sort_type_options += " selected=\"selected\"" if !sort_type.nil? && type == sort_type
-      sort_type_options += ">" + type.humanize + "</option>"
+      sort_type_options += ">" + I18n.t("search_model.#{type}") + "</option>"
     end
     sort_type_options
   end
