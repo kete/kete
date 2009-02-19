@@ -880,7 +880,7 @@ class SearchController < ApplicationController
     # to stop here if thats the case, or we get a 500 error calling .size below
     return if @result_sets.nil? || @result_sets[@current_class].nil? || @displaying_error
 
-    results = @results.map{ |r| r['url'] }
+    results = @results.map{ |r| r[:url] }
 
     total_results = @result_sets[@current_class].size
 
