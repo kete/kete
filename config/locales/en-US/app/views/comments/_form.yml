@@ -1,0 +1,11 @@
+en:
+  comments:
+    form:
+      title: 'Title:'
+      description: 'Description:'
+      security_warning: 'Note: forms and javascript are not allowed for security reasons.'
+      security_warning_admin: 'Unless you check the box below.'
+      security_warning_exception: 'Allow forms and other possible insecure elements and attributes in the HTML?'
+      tags: 'Tags (separated by commas)'
+      tags_spinner: 'Getting tags. '
+      edit_comment: 'Comment on this edit:'

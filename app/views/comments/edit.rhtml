@@ -1,4 +1,4 @@
-      <% @title = 'Editing comment' -%>
+      <% @title = t('comments.edit.title') -%>
 
       <h2><%= h(@title) -%></h2>
 
@@ -7,7 +7,7 @@
          :id => @comment },
          :html => { :multipart => true } do |form| %>
       <%= render :partial => 'form', :object => form %>
-      <div class="wrap"><%= submit_tag 'Save', {:class => "save-button", :tabindex => '1'} %></div>
+      <div class="wrap"><%= submit_tag t('comments.edit.button'), {:class => "save-button", :tabindex => '1'} %></div>
       <% end %>
 
       <%= link_to_cancel %>
