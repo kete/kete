@@ -24,7 +24,7 @@ class ContentTypesController < ApplicationController
     @content_type = ContentType.new(params[:content_type])
     if @content_type.save
       # TODO: globalize translate
-      flash[:notice] = 'Content type was successfully created.'
+      flash[:notice] = t('content_types_controller.create.created')
       redirect_to :action => 'edit', :id => @content_type
     else
       render :action => 'new'
@@ -39,7 +39,7 @@ class ContentTypesController < ApplicationController
     @content_type = ContentType.find(params[:id])
     if @content_type.update_attributes(params[:content_type])
       # TODO: globalize translate
-      flash[:notice] = 'Content type was successfully updated.'
+      flash[:notice] = t('content_types_controller.update.updated')
       redirect_to :action => 'edit', :id => @content_type
     else
       render :action => 'edit'

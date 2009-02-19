@@ -1,0 +1,9 @@
+en:
+  topics_controller:
+    edit:
+      not_authorized: "You don't have permission to edit this topic."
+    create:
+      created_related: 'Related Topic was successfully created.'
+      created: 'Topic was successfully created.'
+    update:
+      updated: 'Topic was successfully updated.'

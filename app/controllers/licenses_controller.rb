@@ -12,6 +12,6 @@ class LicensesController < ApplicationController
   private
 
   def set_page_title
-    @title = 'Licenses'
+    @title = t('licenses_controller.title')
   end
 end

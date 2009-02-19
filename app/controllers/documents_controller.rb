@@ -60,7 +60,7 @@ class DocumentsController < ApplicationController
       @document.do_notifications_if_pending(version_after_update, current_user) if
         @document.versions.exists?(:version => version_after_update)
 
-      flash[:notice] = 'Document was successfully updated.'
+      flash[:notice] = t('documents_controller.update.updated')
 
       redirect_to_show_for(@document, :private => (params[:document][:private] == "true"))
     else
@@ -73,9 +73,9 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     if @document.do_conversion
       after_successful_zoom_item_update(@document)
-      flash[:notice] = 'Document description was successfully updated with text of uploaded document.'
+      flash[:notice] = t('documents_controller.convert.converted')
     else
-      flash[:notice] = 'There were problems converting the text of the uploaded document to the document\'s description.  Please edit the description manually.'
+      flash[:notice] = t('documents_controller.convert.not_converted')
     end
     redirect_to_show_for(@document)
   end
@@ -83,7 +83,7 @@ class DocumentsController < ApplicationController
   def make_theme
     @document = Document.find(params[:id])
     @document.decompress_as_theme
-    flash[:notice] = 'Document expanded to be new theme.'
+    flash[:notice] = t('documents_controller.make_theme.made_theme')
     redirect_to :action => :appearance, :controller => 'baskets'
   end
 

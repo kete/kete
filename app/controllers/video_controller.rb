@@ -60,7 +60,7 @@ class VideoController < ApplicationController
       @video.do_notifications_if_pending(version_after_update, current_user) if
         @video.versions.exists?(:version => version_after_update)
 
-      flash[:notice] = 'Video was successfully updated.'
+      flash[:notice] = t('video_controller.update.updated')
 
       redirect_to_show_for(@video, :private => (params[:video][:private] == "true"))
     else

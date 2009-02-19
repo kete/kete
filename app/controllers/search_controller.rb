@@ -89,7 +89,7 @@ class SearchController < ApplicationController
     @search_terms = params[:search_terms]
     if @search_terms.nil?
       # TODO: have this message be derived from globalize
-      flash[:notice] = "You haven't entered any search terms."
+      flash[:notice] = t('search_controller.for.no_search_terms')
     else
       @rss_tag_auto = rss_tag
       @rss_tag_link = rss_tag(:auto_detect => false)
@@ -471,7 +471,7 @@ class SearchController < ApplicationController
         end
         items_count += 1
       end
-      flash[:notice] = "ZOOM indexes rebuilt"
+      flash[:notice] = t('search_controller.rebuild_zoom_for_item.zoom_rebuilt')
       # first item in list should be self
       redirect_to_show_for(first_item)
     end
@@ -514,7 +514,7 @@ class SearchController < ApplicationController
                                                                          :import_request => import_request } )
       @worker_running = true
     else
-      flash[:notice] = 'There is another search record rebuild running at this time.  Please try again later.'
+      flash[:notice] = t('search_controller.rebuild_zoom_index.already_running')
     end
   end
 
@@ -523,7 +523,7 @@ class SearchController < ApplicationController
   # with the search record rebuild
   def check_rebuild_status
     if !request.xhr?
-      flash[:notice] = 'You need javascript enabled for this feature.'
+      flash[:notice] = t('search_controller.check_rebuild_status.need_js')
       redirect_to 'setup_rebuild'
     else
       @worker_type = 'zoom_index_rebuild_worker'
@@ -537,61 +537,60 @@ class SearchController < ApplicationController
 
           render :update do |page|
 
-            page.replace_html 'time_started', "<p>Started at #{status[:do_work_time]}</p>"
+            page.replace_html 'time_started', "<p>#{t('search_controller.check_rebuild_status.started_at', :start_time => status[:do_work_time])}</p>"
 
-            page.replace_html 'processing_zoom_class', "<p>Working on #{zoom_class_plural_humanize(current_zoom_class)}</p>"
+            page.replace_html 'processing_zoom_class', "<p>#{t('search_controller.check_rebuild_status.working_on', :zoom_class => zoom_class_plural_humanize(current_zoom_class))}</p>"
 
             if records_processed > 0
-              page.replace_html 'report_records_processed', "<p>#{records_processed} records processed</p>"
+              page.replace_html 'report_records_processed', "<p>#{t('search_controller.check_rebuild_status.amount_processed', :amount => records_processed)}</p>"
             end
 
             if records_failed > 0
-              failed_message = "<p>#{records_failed} records failed</p>"
-              failed_message += "<p>These maybe private or pending moderation records, depending on the case.
-                                  See log/backgroundrb... for details.</p>"
+              failed_message = "<p>#{t('search_controller.check_rebuild_status.records_failed', :amount => records_failed)}</p>"
+              failed_message += "<p>#{t('search_controller.check_rebuild_status.failed_reason')}</p>"
               page.replace_html 'report_records_failed', failed_message
             end
 
             if records_skipped > 0
-              page.replace_html 'report_records_skipped', "<p>#{records_skipped} records skipped</p>"
+              page.replace_html 'report_records_skipped', "<p>#{t('search_controller.check_rebuild_status.records_skipped', :amount => records_skipped)}</p>"
             end
 
             logger.info("after record reports")
             if status[:done_with_do_work] == true or !status[:error].blank?
               logger.info("inside done")
-              done_message = "All records processed "
+              done_message = t('search_controller.check_rebuild_status.all_processed')
 
               if !status[:error].blank?
                 logger.info("error not blank")
-                done_message = "There was a problem with the rebuild: #{status[:error]}<p><b>The rebuild has been stopped</b></p>"
+                done_message = t('search_controller.check_rebuild_status.rebuild_error', :error => status[:error])
               end
-              done_message += " at #{status[:done_with_do_work_time]}."
+              done_message += t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time])
               page.hide("spinner")
               page.replace_html 'done', done_message
-              page.replace_html 'exit', '<p>' + link_to('Browse records', { :action => 'all', :controller_name_for_zoom_class => 'topics' }) + '</p>'
+              page.replace_html 'exit', '<p>' + link_to(t('search_controller.check_rebuild_status.browse'), { :action => 'all', :controller_name_for_zoom_class => 'topics' }) + '</p>'
             end
           end
         else
-          message = "Rebuild failed "
-          message +=  "at #{status[:done_with_do_work_time]}." unless status[:done_with_do_work_time].blank?
+          message = t('search_controller.check_rebuild_status.rebuild_failed')
+          message +=  t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time]) unless status[:done_with_do_work_time].blank?
           flash[:notice] = message
           render :update do |page|
             page.hide("spinner")
-            page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
+            page.replace_html 'done', '<p>' + message + ' ' + link_to(t('search_controller.check_rebuild_status.return_to_rebuild'), :action => 'setup_rebuild') + '</p>'
           end
         end
       rescue
         # we aren't getting to this point, might be nested begin/rescue
         # check background logs for error
-        rebuild_error = !status.blank? ? status[:error] : "rebuild worker not running anymore?"
+        rebuild_error = !status.blank? ? status[:error] : t('search_controller.check_rebuild_status.not_running')
         logger.info(rebuild_error)
-        message = "Rebuild failed. #{rebuild_error}"
+        message = t('search_controller.check_rebuild_status.rebuild_failed', :error => rebuild_error)
         message += " - #{$!}" unless $!.blank?
-        message +=  " at #{status[:done_with_do_work_time]}." unless status.nil? || status[:done_with_do_work_time].blank?
+        message +=  t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time]) unless status.nil? || status[:done_with_do_work_time].blank?
         flash[:notice] = message
         render :update do |page|
           page.hide("spinner")
-          page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
+          page.replace_html 'done', '<p>' + message + ' ' + link_to(t('search_controller.check_rebuild_status.return_to_rebuild'), :action => 'setup_rebuild') + '</p>'
         end
       end
     end
@@ -706,12 +705,12 @@ class SearchController < ApplicationController
           @successful = true
         end
         if @successful
-          flash[:notice] = "Homepage topic changed successfully"
+          flash[:notice] = t('search_controller.find_index.changed')
           # we assign the current_homepage instance var to the new homepage,
           # because its used in the template we populate the search fields and links
           @current_homepage = @new_homepage_topic
         else
-          flash[:error] = "Problem changing Homepage topic"
+          flash[:error] = t('search_controller.find_index.failed')
         end
     end
     render :action => 'homepage_topic_form', :layout => "popup_dialog"
@@ -949,7 +948,7 @@ class SearchController < ApplicationController
           redirect_to DEFAULT_REDIRECTION_HASH
         end
         format.xml do
-          render :text => "<error>Error 403: Forbidden</error>", :status => 403
+          render :text => "<error>#{t('search_controller.private_search_authorisation.forbidden')}</error>", :status => 403
         end
       end
 

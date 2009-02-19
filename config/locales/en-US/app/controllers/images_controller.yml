@@ -1,0 +1,4 @@
+en:
+  images_controller:
+    update:
+      updated: 'Image was successfully updated.'

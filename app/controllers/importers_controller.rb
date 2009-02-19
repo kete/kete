@@ -110,7 +110,7 @@ class ImportersController < ApplicationController
         # fixing failure due to unnecessary loading of tiny_mce
         @do_not_use_tiny_mce = true
       else
-        flash[:notice] = 'There is another import of this type running at this time.  Please try again later.'
+        flash[:notice] = t('importers_controller.create.already_running')
         if !params[:related_topic].blank?
           redirect_to_show_for(@related_topic)
         else
@@ -132,7 +132,7 @@ class ImportersController < ApplicationController
 
   def get_progress
     if !request.xhr?
-      flash[:notice] = 'Import failed. You need javascript enabled for this feature.'
+      flash[:notice] = t('importers_controller.get_progress.import_failed')
       redirect_to :action => 'list'
     else
       @worker_type = params[:worker_type].to_sym
@@ -145,60 +145,61 @@ class ImportersController < ApplicationController
           render :update do |page|
 
             if records_processed > 0
-              page.replace_html 'report_records_processed', "#{records_processed} records processed"
+              page.replace_html 'report_records_processed', t('importers_controller.get_progress.amount_processed',
+                                                              :records_processed => records_processed)
             end
 
             if status[:done_with_do_work] == true or !status[:error].blank?
-              done_message = "All records processed."
+              done_message = t('importers_controller.get_progress.all_processed')
 
               if !status[:error].blank?
-                done_message = "There was a problem with the import: #{status[:error]}<p><b>The import has been stopped</b></p>"
+                done_message = t('importers_controller.get_progress.error_message', :error => status[:error])
               end
               page.hide("spinner")
               page.replace_html 'done', done_message
               unless params[:related_topic].blank?
-                page.replace_html('exit', '<p>' + link_to("Back to #{related_topic.title}",
+                page.replace_html('exit', '<p>' + link_to(t('importers_controller.get_progress.back_to', :item_title => related_topic.title),
                                                           :action => 'show',
                                                           :controller => 'topics',
                                                           :id => related_topic) + '</p>')
               else
-                page.replace_html 'exit', '<p>' + link_to('Back to Imports', :action => 'list') + '</p>'
+                page.replace_html 'exit', '<p>' + link_to(t('importers_controller.get_progress.to_imports'), :action => 'list') + '</p>'
               end
             end
           end
           expire_related_caches_for(related_topic) if !params[:related_topic].blank? && (status[:done_with_do_work] == true or !status[:error].blank?)
         else
-          message = "Import failed."
+          message = t('importers_controller.get_progress.import_failed')
           flash[:notice] = message
           render :update do |page|
             page.hide("spinner")
             unless params[:related_topic].blank?
-              page.replace_html 'done', '<p>' + message + ' ' + link_to("Return to related topic.",
+              page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_related_topics'),
                                                                         :action => 'show',
                                                                         :controller => 'topics',
                                                                         :id => params[:related_topic]) + '</p>'
             else
-              page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Imports', :action => 'list') + '</p>'
+              page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_imports'), :action => 'list') + '</p>'
             end
           end
         end
       rescue
         # we aren't getting to this point, might be nested begin/rescue
         # check background logs for error
-        import_error = !status.blank? ? status[:error] : "import worker not running anymore?"
+        import_error = !status.blank? ? status[:error] : t('importers_controller.get_progress.not_running')
         logger.info(import_error)
-        message = "Import failed. #{import_error}"
+        message = t('importers_controller.get_progress.import_failed', :error => import_error)
         message += " - #{$!}" unless $!.blank?
         flash[:notice] = message
         render :update do |page|
           page.hide("spinner")
           unless params[:related_topic].blank?
-            page.replace_html 'done', '<p>' + message + ' ' + link_to("Return to related topic.",
+            page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_related_topics'),
                                                                       :action => 'show',
                                                                       :controller => 'topics',
                                                                       :id => params[:related_topic])  + '</p>'
           else
-            page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Imports', :action => 'list') + '</p>'
+            page.replace_html 'done', '<p>' + message + ' ' + link_to(t('importers_controller.get_progress.to_imports'), :action => 'list') + '</p>'
           end
         end
       end
@@ -211,7 +212,7 @@ class ImportersController < ApplicationController
 
     Import.find(params[:id]).update_attributes(:status => 'stopped')
 
-    flash[:notice] = 'Import stopped.'
+    flash[:notice] = t('importers_controller.stop.import_stopped')
     redirect_to :action => 'list'
   end
 end

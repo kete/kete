@@ -31,7 +31,7 @@ class TopicTypesController < ApplicationController
       set_ancestory(@topic_type)
 
       # TODO: globalize translate
-      flash[:notice] = 'TopicType was successfully created.'
+      flash[:notice] = t('topic_types_controller.create.created')
       redirect_to :urlified_name => 'site', :action => 'edit', :id => @topic_type
     else
       render :action => 'new'
@@ -55,7 +55,7 @@ class TopicTypesController < ApplicationController
       end
 
       # TODO: globalize translate
-      flash[:notice] = 'TopicType was successfully updated.'
+      flash[:notice] = t('topic_types_controller.update.updated')
       redirect_to :urlified_name => 'site', :action => 'edit', :id => @topic_type
     else
       render :action => 'edit'
@@ -66,7 +66,7 @@ class TopicTypesController < ApplicationController
     @topic_type = TopicType.find(params[:id])
     @successful = @topic_type.destroy
     if @successful
-      flash[:notice] = 'TopicType was successfully deleted.'
+      flash[:notice] = t('topic_types_controller.destroy.destroyed')
       redirect_to :urlified_name => 'site', :action => 'list'
     end
   end

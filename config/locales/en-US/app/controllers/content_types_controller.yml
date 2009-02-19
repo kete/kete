@@ -1,0 +1,6 @@
+en:
+  content_types_controller:
+    create:
+      created: 'Content type was successfully created.'
+    update:
+      updated: 'Content type was successfully updated.'

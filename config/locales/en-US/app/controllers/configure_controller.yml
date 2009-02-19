@@ -1,0 +1,13 @@
+en:
+  configure_controller:
+    done_with_settings:
+      not_yet_completed: 'Not yet completed.'
+    start_zebra:
+      stopping_zebra: 'Search Engine started.  Stopping must be done by system administrator from command line.'
+    prime_zebra:
+      primed_zebra: 'Search Engine has been primed.'
+    send_information:
+      already_running: 'There is already a site registration worker active. Wierd! Try refreshing the page.'
+    get_site_linking_progress:
+      site_registered: "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
+      incorrect_fields: 'Some fields were incorrect:'

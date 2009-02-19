@@ -717,7 +717,7 @@ class ApplicationController < ActionController::Base
       case where_to_redirect
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
-        flash[:notice] = "Related #{zoom_class_humanize(item.class.name)} was successfully created."
+        flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.related_item', :zoom_class => zoom_class_humanize(item.class.name))
         redirect_to_related_topic(@new_related_topic, { :private => params[:related_topic_private] })
       when 'commentable'
         redirect_to_show_for(commented_item, options)
@@ -725,15 +725,14 @@ class ApplicationController < ActionController::Base
         redirect_to :action => :appearance, :controller => 'baskets'
       when 'user_account'
         if params[:portrait] && params[:selected_portrait]
-          flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created as your selected portrait."
+          flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.selected_portrait', :zoom_class => zoom_class_humanize(item.class.name))
         elsif params[:portrait]
-          flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created as a portrait."
+          flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.portrait', :zoom_class => zoom_class_humanize(item.class.name))
         end
         redirect_to :action => :show, :controller => 'account', :id => @current_user
       else
         # TODO: replace with translation stuff when we get globalize going
-        flash[:notice] = "#{zoom_class_humanize(item.class.name)} was successfully created."
-
+        flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.created', :zoom_class => zoom_class_humanize(item.class.name))
         redirect_to_show_for(item, options)
       end
     else
@@ -761,7 +760,7 @@ class ApplicationController < ActionController::Base
             # in this context, the item being related needs updating, too
             update_zoom_and_related_caches_for(item)
 
-            flash[:notice] = "Successfully added item relationships"
+            flash[:notice] = t('application_controller.link_related.added_relation')
           end
         end
       end
@@ -780,7 +779,7 @@ class ApplicationController < ActionController::Base
         remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
 
         update_zoom_and_related_caches_for(item)
-        flash[:notice] = "Successfully removed item relationships."
+        flash[:notice] = t('application_controller.unlink_related.unlinked_relation')
 
       end
     end
@@ -1180,13 +1179,13 @@ class ApplicationController < ActionController::Base
 
   def rescue_404
     @displaying_error = true
-    @title = "404 Not Found"
+    @title = t('application_controller.rescue_404.title')
     render :template => "errors/error404", :layout => "application", :status => "404"
   end
 
   def rescue_500(template)
     @displaying_error = true
-    @title = "500 Internal Server Error"
+    @title = t('application_controller.rescue_500.title')
     render :template => "errors/#{template}", :layout => "application", :status => "500"
   end
 
@@ -1288,7 +1287,8 @@ class ApplicationController < ActionController::Base
 
   def redirect_if_current_basket_isnt_approved_for_public_viewing
     if @current_basket.status != 'approved' && !@site_admin && !@basket_admin
-      flash[:error] = "The basket #{@current_basket.name} is not approved for public viewing"
+      flash[:error] = t('application_controller.redirect_if_current_basket_isnt_approved_for_public_viewing.not_available',
+                        :basket_name => @current_basket.name)
       redirect_to "/#{@site_basket.urlified_name}"
     end
   end

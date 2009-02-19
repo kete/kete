@@ -94,7 +94,7 @@ class CommentsController < ApplicationController
 
       prepare_and_save_to_zoom(commented_item)
       
-      flash[:notice] = 'Comment was successfully updated.'
+      flash[:notice] = t('comments_controller.update.updated')
       redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
                           :action => 'show',
                           :id => commented_item,
@@ -120,7 +120,7 @@ class CommentsController < ApplicationController
       expire_caches_after_comments(commented_item, commented_privacy)
       prepare_and_save_to_zoom(commented_item)
 
-      flash[:notice] = 'Comment was successfully deleted.'
+      flash[:notice] = t('comment_controller.destroy.detroyed')
 
       redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
                           :action => 'show',
@@ -140,7 +140,7 @@ class CommentsController < ApplicationController
       end
       
       unless permitted
-        flash[:notice] = "Sorry, you need to be a member to leave a comment in this basket."
+        flash[:notice] = t('comment_controller.is_authorized.not_a_member')
         redirect_to DEFAULT_REDIRECTION_HASH
         false
       end

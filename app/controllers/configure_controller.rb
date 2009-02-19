@@ -91,7 +91,7 @@ class ConfigureController < ApplicationController
       render :update do |page|
         page.hide("settings")
         page.show("zoom")
-        page.replace_html("completed-message", "<h3>Not yet completed.</h3>")
+        page.replace_html("completed-message", "<h3>#{t('configure_controller.done_with_settings.not_yet_completed')}</h3>")
       end
     end
   end
@@ -165,7 +165,7 @@ class ConfigureController < ApplicationController
     else
       render :update do |page|
         page.show('start-zebra-check')
-        page.replace_html("start-zebra-message", "Search Engine started.  Stopping must be done by system administrator from command line.")
+        page.replace_html("start-zebra-message", t('configure_controller.start_zebra.stopping_zebra'))
         page.hide('completed-message')
         page.show('finish')
       end
@@ -207,7 +207,7 @@ class ConfigureController < ApplicationController
 
       render :update do |page|
         page.show('prime-zebra-check')
-        page.replace_html("prime-zebra-message", "Search Engine has been primed.")
+        page.replace_html("prime-zebra-message", t('configure_controller.prime_zebra.primed_zebra'))
         page.show('reload-site-index')
         page.hide('restart-before-continue-message')
       end
@@ -246,7 +246,7 @@ class ConfigureController < ApplicationController
           end
         else
           render :update do |page|
-            page.replace_html("top_message", "There is already a site registration worker active. Wierd! Try refreshing the page.")
+            page.replace_html("top_message", t('configure_controller.send_information.already_running'))
             page.hide('spinner')
           end
         end
@@ -270,13 +270,14 @@ class ConfigureController < ApplicationController
           MiddleMan.worker(@worker_type, @worker_type.to_s).delete
 
           if status[:linking_success] == true
-            top_message = "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='#{@kete_sites}'>#{@kete_sites}</a>."
+            top_message = t('configure_controller.get_site_linking_progress.site_registered',
+                            :kete_sites_link => @kete_sites)
             render :update do |page|
               page.hide('spinner')
               page.replace_html("top_message", top_message)
             end
           elsif !status[:linking_validation_errors].blank?
-            linking_errors = "<strong>Some fields were incorrect:</strong><br />"
+            linking_errors = "<strong>#{t('configure_controller.get_site_linking_progress.incorrect_fields')}</strong><br />"
             status[:linking_validation_errors].each do |field, error|
               linking_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
             end

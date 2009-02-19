@@ -92,7 +92,7 @@ class BasketsController < ApplicationController
         @site_basket.administrators.each do |administrator|
           UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'request')
         end
-        flash[:notice] = 'Basket will now be reviewed, and you\'ll be notified of the outcome.'
+        flash[:notice] = t('baskets_controller.create.to_be_reviewed')
         redirect_to "/#{@site_basket.urlified_name}"
       else
         if !@site_admin
@@ -100,7 +100,7 @@ class BasketsController < ApplicationController
             UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'created')
           end
         end
-        flash[:notice] = 'Basket was successfully created.'
+        flash[:notice] = t('baskets_controller.create.created')
         redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
       end
     else
@@ -184,7 +184,7 @@ class BasketsController < ApplicationController
       rescue
         # if there is a problem adding feeds, raise an error the user
         # chances are that they didn't format things correctly
-        @basket.errors.add('Feeds', "there was a problem adding your feeds. Is the format you entered correct and you haven\'t entered a feed twice?")
+        @basket.errors.add('Feeds', t('baskets_controller.update.feed_problem'))
         @feeds_successful = false
       end
     end
@@ -229,7 +229,7 @@ class BasketsController < ApplicationController
         MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed.to_worker_key, :data => feed.id )
       end
 
-      flash[:notice] = 'Basket was successfully updated.'
+      flash[:notice] = t('baskets_controller.update.updated')
       redirect_to "/#{@basket.urlified_name}/"
     else
       render :action => params[:source_form]
@@ -268,7 +268,7 @@ class BasketsController < ApplicationController
     end
 
     if @successful
-      flash[:notice] = 'Basket was successfully deleted.'
+      flash[:notice] = t('baskets_controller.destroy.destroyed')
       redirect_to '/'
     end
   end
@@ -280,7 +280,7 @@ class BasketsController < ApplicationController
       # this action saves a new version of the topic
       # add this as a contribution
       @topic.add_as_contributor(current_user)
-      flash[:notice] = 'Basket homepage was successfully created.'
+      flash[:notice] = t('baskets_controller.add_index_topic.created')
       redirect_to :action => 'homepage_options', :controller => 'baskets', :id => params[:index_for_basket]
     end
   end
@@ -299,9 +299,9 @@ class BasketsController < ApplicationController
       params[:settings][:additional_footer_content] = sanitized_html
     end
     set_settings
-    flash[:notice] = 'Basket appearance was updated.'
+    flash[:notice] = t('baskets_controller.update_appearance.updated')
     logger.debug("sanitized yes") if original_html != sanitized_html
-    flash[:notice] += ' Your submitted footer content was changed for security reasons.' if original_html != sanitized_html
+    flash[:notice] += t('baskets_controller.update_appearance.sanitized') if original_html != sanitized_html
     redirect_to :action => :appearance
   end
 
@@ -435,7 +435,7 @@ class BasketsController < ApplicationController
   # redirect to permission denied if current user cant add/request baskets
   def redirect_if_current_user_cant_add_or_request_basket
     unless current_user_can_add_or_request_basket?
-      flash[:error] = "You need to have the right permissions to add or request a basket"
+      flash[:error] = t('baskets_controller.redirect_if_current_user_cant_add_or_request_basket.not_authorized')
       redirect_to DEFAULT_REDIRECTION_HASH
     end
   end

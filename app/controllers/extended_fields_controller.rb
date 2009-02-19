@@ -15,18 +15,18 @@ class ExtendedFieldsController < ApplicationController
     config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition]
 
     config.columns << [:base_url]
-    config.columns[:base_url].label = "Base URL"
-    config.columns[:base_url].description = "Whatever the user inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the choice ftypes, Base URL + value will take over from normal linking to all results that match the value for the choice for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
+    config.columns[:base_url].label = t('extended_fields_controller.base_url')
+    config.columns[:base_url].description = t('extended_fields_controller.base_url_description')
 
     # CRUD for adding/removing choices
     config.columns << [:pseudo_choices]
-    config.columns[:pseudo_choices].label = "Available choices"
-    config.columns[:pseudo_choices].description = "Ftype must be a \"choices\" option for these options to be available to users."
+    config.columns[:pseudo_choices].label = t('extended_fields_controller.available_choices')
+    config.columns[:pseudo_choices].description = t('extended_fields_controller.available_choices_description')
     config.columns[:user_choice_addition].label = nil
 
     config.columns << [:topic_type]
-    config.columns[:topic_type].label = "Topic Type Choices"
-    config.columns[:topic_type].description = "Ftype must be a \"Pre-populated Choices (topic type)\" option for these options to be available to users."
+    config.columns[:topic_type].label = t('extended_fields_controller.topic_type_choices')
+    config.columns[:topic_type].description = t('extended_fields_controller.topic_type_choices_description')
   end
 
   def add_field_to_multiples
@@ -126,6 +126,6 @@ class ExtendedFieldsController < ApplicationController
   private
 
   def set_page_title
-    @title = 'Extended Fields'
+    @title = t('extended_fields_controller.title')
   end
 end

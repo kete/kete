@@ -22,7 +22,7 @@ class ZoomDbsController < ApplicationController
     end
 
     def set_page_title
-      @title = 'Zoom Dbs'
+      @title = t('zoom_dbs_controller.title')
     end
     
 end

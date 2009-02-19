@@ -1,0 +1,4 @@
+en:
+  audio_controller:
+    update:
+      updated: 'Audio was successfully updated.'

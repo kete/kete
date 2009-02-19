@@ -106,7 +106,7 @@ class ImagesController < ApplicationController
       @still_image.do_notifications_if_pending(version_after_update, current_user) if
         @still_image.versions.exists?(:version => version_after_update)
 
-      flash[:notice] = 'Image was successfully updated.'
+      flash[:notice] = t('images_controller.update.updated')
 
       redirect_to_show_for(@still_image, :private => (params[:still_image][:private] == "true"))
     else

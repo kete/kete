@@ -1,0 +1,28 @@
+en:
+  search_controller:
+    for:
+      no_search_terms: "You haven't entered any search terms."
+    rebuild_zoom_for_items:
+      zoom_rebuilt: ZOOM indexes rebuilt
+    rebuild_zoom_index:
+      already_running: 'There is another search record rebuild running at this time.  Please try again later.'
+    check_rebuild_status:
+      need_js: 'You need javascript enabled for this feature.'
+      started_at: 'Started at {{start_time}}'
+      working_on: 'Working on {{zoom_class}}'
+      amount_processed: '{{amount}} records processed'
+      records_failed: '{{amount}} records failed'
+      failed_reason: 'These maybe private or pending moderation records, depending on the case. See log/backgroundrb... for details.'
+      records_skipped: '{{amount}} records skipped'
+      all_processed: All records processed
+      rebuild_error: 'There was a problem with the rebuild: {{error}}<p><b>The rebuild has been stopped</b></p>'
+      finished_at: 'at {{end_time}}'
+      browse: Browse records
+      rebuild_failed: 'Rebuild failed. {{error}}'
+      return_to_rebuild: Return to Rebuild Set up
+      not_running: 'rebuild worker not running anymore?'
+    find_index:
+      changed: 'Homepage topic changed successfully'
+      failed: 'Problem changing Homepage topic'
+    private_search_authorisation:
+      forbidden: 'Error 403: Forbidden'

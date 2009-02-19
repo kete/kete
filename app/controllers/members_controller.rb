@@ -55,21 +55,21 @@ class MembersController < ApplicationController
 
   def list_members_in(role_name, order='users.login asc')
     @non_member_roles_plural = Hash.new
-    @possible_roles = {'admin' => 'Admin',
-      'moderator' => 'Moderator',
-      'member' => 'Member'
+    @possible_roles = {'admin' => t('members_controller.list_members_in.admin'),
+      'moderator' => t('members_controller.list_members_in.moderator'),
+      'member' => t('members_controller.list_members_in.member')
     }
 
     @admin_actions = Hash.new
 
     if @current_basket == @site_basket and site_admin?
-      @possible_roles['tech_admin'] = 'Tech Admin'
-      @possible_roles['site_admin'] = 'Site Admin'
-      @admin_actions['become_user'] = 'Login as user'
-      @admin_actions['destroy'] = 'Delete'
-      @admin_actions['ban'] = 'Ban'
+      @possible_roles['tech_admin'] = t('members_controller.list_members_in.tech_admin')
+      @possible_roles['site_admin'] = t('members_controller.list_members_in.site_admin')
+      @admin_actions['become_user'] = t('members_controller.list_members_in.login_as')
+      @admin_actions['destroy'] = t('members_controller.list_members_in.delete')
+      @admin_actions['ban'] = t('members_controller.list_members_in.ban')
     else
-      @admin_actions['remove'] = 'Remove from Basket'
+      @admin_actions['remove'] = t('members_controller.list_members_in.remove')
     end
 
     # members are paginated
@@ -117,7 +117,7 @@ class MembersController < ApplicationController
 
   def join
     if !@basket_access_hash[@current_basket.urlified_name.to_sym].blank?
-      flash[:error] = "You already have a role in this basket or you have already applied to join."
+      flash[:error] = t('members_controller.join.already_joined')
     else
       case @current_basket.join_policy_with_inheritance
       when 'open'
@@ -125,15 +125,15 @@ class MembersController < ApplicationController
         @current_basket.administrators.each do |admin|
           UserNotifier.deliver_join_notification_to(admin, current_user, @current_basket, 'joined')
         end
-        flash[:notice] = "You have joined the #{@current_basket.urlified_name} basket."
+        flash[:notice] = t('members_controller.join.joined', :basket_name => @current_basket.name)
       when 'request'
         current_user.has_role('membership_requested', @current_basket)
         @current_basket.administrators.each do |admin|
           UserNotifier.deliver_join_notification_to(admin, current_user, @current_basket, 'request')
         end
-        flash[:notice] = "A basket membership request has been sent. You will get an email when it is approved."
+        flash[:notice] = t('members_controller.join.requested')
       else
-        flash[:error] = "This basket isn't currently accepting join requests."
+        flash[:error] = t('members_controller.join.not_open')
       end
     end
     redirect_to "/#{@current_basket.urlified_name}/"
@@ -160,9 +160,9 @@ class MembersController < ApplicationController
       if membership_type == 'tech_admin'
         if @current_basket == @site_basket and @user.has_role?('site_admin')
           clear_roles = false
-          flash[:notice] = 'User has been made tech admin.'
+          flash[:notice] = t('members_controller.change_membership_type.made_tech_admin')
         else
-          flash[:notice] = 'User is not eligable to be tech admin. The need to be a site admin, too.'
+          flash[:notice] = t('members_controller.change_membership_type.cannot_be_tech_admin')
           can_change = false
         end
       end
@@ -172,11 +172,11 @@ class MembersController < ApplicationController
         end
         @user.has_role(membership_type, @current_basket)
         if flash[:notice].blank?
-          flash[:notice] = 'User successfully changed role.'
+          flash[:notice] = t('members_controller.change_membership_type.changed_role')
         end
       end
     else
-      flash[:notice] = "Unable to have no site administrators."
+      flash[:notice] = t('members_controller.change_membership_type.need_site_admin')
     end
     redirect_to :action => 'list'
   end
@@ -195,7 +195,7 @@ class MembersController < ApplicationController
     self.current_user = User.find(params[:id])
     if logged_in?
       redirect_back_or_default(:controller => '/account', :action => 'index')
-      flash[:notice] = "Logged in successfully"
+      flash[:notice] = t('members_controller.become_user.logged_in')
     end
   end
 
@@ -203,7 +203,7 @@ class MembersController < ApplicationController
     @user = User.find(params[:id])
     @user.banned_at = Time.now
     if @user.save
-      flash[:notice] = "Successfully banned user."
+      flash[:notice] = t('members_controller.ban.banned')
       redirect_to :action => 'list'
     end
   end
@@ -212,7 +212,7 @@ class MembersController < ApplicationController
     @user = User.find(params[:id])
     @user.banned_at = nil
     if @user.save
-      flash[:notice] = "Successfully removed ban on user."
+      flash[:notice] = t('members_controller.unban.unbanned')
       redirect_to :action => 'list'
     end
   end
@@ -230,12 +230,10 @@ class MembersController < ApplicationController
       end
     end
 
-    flash[:notice] = "Successfully added new "
-
     if params[:user].size > 1
-      flash[:notice] += "members."
+      flash[:notice] = t('members_controller.add_members.added_plural')
     else
-      flash[:notice] += "member."
+      flash[:notice] = t('members_controller.add_members.added_singular')
     end
 
     redirect_to :action => 'list'
@@ -247,13 +245,13 @@ class MembersController < ApplicationController
   def remove
     # make sure we arn't trying to remove from site basket (destroy is the correct action for that)
     if @current_basket == @site_basket
-      flash[:error] = "You cannot remove yourself from the Site basket."
+      flash[:error] = t('members_controller.remove.cant_remove_self')
     elsif !@current_basket.more_than_one_basket_admin?
-      flash[:error] = "Unable to have no basket administrators."
+      flash[:error] = t('members_controller.remove.need_site_admin')
     else
       @user ||= User.find(params[:id]) # will already be set by before filter 'permitted_to_remove_basket_members'
       @current_basket.delete_roles_for(@user)
-      flash[:notice] = "Successfully removed user from #{@current_basket.name}."
+      flash[:notice] = t('members_controller.remove.need_site_admin', :basket_name => @current_basket.name)
     end
 
     if current_user_can_see_memberlist_for?(@current_basket)
@@ -271,12 +269,12 @@ class MembersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     if @user.contributions.size > 0
-      flash[:error] = "#{@user.user_name} has contributions and cannot be deleted from the site. Perhaps a ban instead?"
+      flash[:error] = t('members_controller.destroy.has_contributions', :user_name => @user.user_name)
     elsif !@site_basket.more_than_one_site_admin?
-      flash[:error] = "Unable to have no site administrators."
+      flash[:error] = t('members_controller.destroy.need_site_admin')
     else
       @user.destroy
-      flash[:notice] = "#{@user.user_name} has been deleted from the site."
+      flash[:notice] = t('members_controller.destroy.destroyed', :user_name => @user.user_name)
     end
     redirect_to :action => 'list'
   end
@@ -288,10 +286,10 @@ class MembersController < ApplicationController
     approved = (params[:status] && params[:status] == 'approved')
     if approved
       @user.has_role('member', @current_basket)
-      flash[:notice] = "#{@user.user_name}'s membership request has been accepted."
+      flash[:notice] = t('members_controller.change_request_status.accepted', :user_name => @user.user_name)
     else
       @user.has_role('membership_rejected', @current_basket)
-      flash[:notice] = "#{@user.user_name}'s membership request has been rejected."
+      flash[:notice] = t('members_controller.change_request_status.rejected', :user_name => @user.user_name)
     end
 
     UserNotifier.deliver_join_notification_to(@user, current_user, @current_basket, params[:status])
@@ -313,7 +311,7 @@ class MembersController < ApplicationController
 
   def permitted_to_view_memberlist
     unless current_user_can_see_memberlist_for?(@current_basket)
-      flash[:error] = "You need to have the right permissions to access this baskets member list"
+      flash[:error] = t('members_controller.permitted_to_view_memberlist.not_authorized')
       redirect_to DEFAULT_REDIRECTION_HASH
     end
   end
@@ -321,7 +319,7 @@ class MembersController < ApplicationController
   def permitted_to_remove_basket_members
     @user = User.find(params[:id])
     unless logged_in? && (permit?("site_admin or admin of :current_basket") || @current_user == @user)
-      flash[:error] = "You need to have the right permissions to remove basket members"
+      flash[:error] = t('members_controller.permitted_to_view_memberlist.cant_remove')
       redirect_to DEFAULT_REDIRECTION_HASH
     end
   end

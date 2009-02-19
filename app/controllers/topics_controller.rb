@@ -40,7 +40,7 @@ class TopicsController < ApplicationController
       @topic_types = @topic.topic_type.full_set
     else
       # this is the site's index page, but they don't have permission to edit
-      flash[:notice] = 'You don\'t have permission to edit this topic.'
+      flash[:notice] = t('topics_controller.edit.not_authorized')
       redirect_to :action => 'show', :id => params[:id]
     end
   end
@@ -99,7 +99,7 @@ class TopicsController < ApplicationController
 
       case where_to_redirect
       when 'show_related'
-        flash[:notice] = 'Related Topic was successfully created.'
+        flash[:notice] = t('topics_controller.create.created_related')
         redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
         redirect_to :action => 'add_index_topic',
@@ -107,7 +107,7 @@ class TopicsController < ApplicationController
         :index_for_basket => params[:index_for_basket],
         :topic => @topic
       else
-        flash[:notice] = 'Topic was successfully created.'
+        flash[:notice] = t('topics_controller.create.created')
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
@@ -145,8 +145,7 @@ class TopicsController < ApplicationController
       @topic.do_notifications_if_pending(version_after_update, current_user) if
         @topic.versions.exists?(:version => version_after_update)
 
-      # TODO: replace with translation stuff when we get globalize going
-      flash[:notice] = 'Topic was successfully updated.'
+      flash[:notice] = t('topics_controller.update.updated')
 
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
     else

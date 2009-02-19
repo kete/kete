@@ -1,0 +1,8 @@
+en:
+  topic_types_controller:
+    create:
+      created: 'Topic Type was successfully created.'
+    update:
+      updated: 'Topic Type was successfully updated.'
+    destroy:
+      destroyed: 'Topic Type was successfully deleted.'
