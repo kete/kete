@@ -3,7 +3,7 @@
 <h2><%= h(@title) -%></h2>
 
 <ul>
-  <%= users_baskets_list(current_user, { :show_options => true }) -%>
+  <%= users_baskets_list(current_user) -%>
 </ul>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>
