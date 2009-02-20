@@ -625,6 +625,7 @@ module Importer
       end
 
       params[zoom_class_for_params][:tag_list] = tag_list_array.join(",")
+      params[zoom_class_for_params][:raw_tag_list] = params[zoom_class_for_params][:tag_list]
 
       # set the chosen privacy
       private_setting = @import.private
