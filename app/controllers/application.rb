@@ -232,7 +232,7 @@ class ApplicationController < ActionController::Base
 
   # Test for memberlist visibility in a given basket
   def current_user_can_see_memberlist_for?(basket)
-    current_user_is?(basket.settings[:memberlist_policy], basket)
+    current_user_is?(basket.memberlist_policy_with_inheritance, basket)
   end
 
   # Walter McGinnis, 2006-04-03
