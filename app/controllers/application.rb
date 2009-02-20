@@ -168,7 +168,16 @@ class ApplicationController < ActionController::Base
   # and load up an array of the web paths
   # to the css files
   def load_theme_related
-    @theme = @current_basket.settings[:theme] || @site_basket.settings[:theme] || 'default'
+    # For some reason, (a || b || c)  syntax is not working properly when using settings
+    # (it doesn't interpret NilClass as nil - hopefully a future version of acts_as_configurable
+    # will fix this issue so we don't have to keep doing this here, in basket edits, and in rake tasks)
+    @theme = if @current_basket.settings[:theme].class != NilClass
+      @current_basket.settings[:theme]
+    elsif @site_basket.settings[:theme].class != NilClass
+      @site_basket.settings[:theme]
+    else
+      'default'
+    end
     @theme_font_family = @current_basket.settings[:theme_font_family] || @site_basket.settings[:theme_font_family] || 'sans-serif'
     @header_image = @current_basket.settings[:header_image] || @site_basket.settings[:header_image] || nil
   end
