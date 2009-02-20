@@ -68,7 +68,11 @@
 
   <br />
 
-  <% user_baskets = users_baskets_list(@user, { :show_options => true, :show_roles => false }) -%>
+  <% user_baskets = users_baskets_list(@user, { :show_options => true,
+                                                :show_roles => false,
+                                                :request_text => 'Request',
+                                                :pending_text => 'Pending',
+                                                :rejected_text => 'Rejected' }) -%>
   <% unless user_baskets.blank? -%>
   <div>
     <div>
