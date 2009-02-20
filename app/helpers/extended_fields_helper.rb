@@ -424,8 +424,9 @@ module ExtendedFieldsHelper
   # Generates label XHTML
   def extended_field_label(extended_field, required = false)
     options = required ? { :class => "required" } : Hash.new
+    required_icon = required ? ' <em>*</em>' : ''
 
-    label_tag(id_for_extended_field(extended_field), extended_field.label, options)
+    label_tag(id_for_extended_field(extended_field), extended_field.label + required_icon, options)
   end
 
   def additional_extended_field_control(extended_field, n)

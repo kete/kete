@@ -740,6 +740,8 @@ div#notice div, div#error div {
 .profile_content_right {
   float: right;
   width: 49%;
+  margin-left: 30px;
+  min-height: 150px;
 }
 #portrait_help_div {
   margin: 25px auto;
@@ -839,6 +841,10 @@ pre {
 
 .recent-topic-divider {
   clear: both;
+}
+
+.required em {
+  color: red;
 }
 
 /* width of keyword search for basket homepage */

@@ -7,7 +7,13 @@ class FormHelper < ActionView::Helpers::FormBuilder
   helpers.each do |name|
     define_method(name) do |field, *args|
       options = args.extract_options!
-      label = label(field, options.delete(:label), :class => options.delete(:label_class))
+
+      required = options.delete(:required) || false
+      classes = options.delete(:label_class) || ''
+      classes = "required #{classes}" if required
+      required_icon = required ? ' <em>*</em>' : ''
+
+      label = label(field, options.delete(:label) + required_icon, :class => classes)
       field_example = options[:example].nil? ? '' : @template.content_tag(:div, options.delete(:example), :class => 'form-example')
 
       fields = ''
