@@ -63,10 +63,13 @@ module GoogleMap
         @do_not_use_map = (param_from_field_name(name)[:no_map] == "1") || false
       elsif !value.blank?
         # these values are coming from an edited item
-        @current_coords = value['coords'] || ''
-        @current_zoom_lvl = value['zoom_lvl'] || ''
-        @current_address = value['address'] || ''
-        @do_not_use_map = (value['no_map'] == "1") || false
+        begin
+          @current_coords = value['coords'] || ''
+          @current_zoom_lvl = value['zoom_lvl'] || ''
+          @current_address = value['address'] || ''
+          @do_not_use_map = (value['no_map'] == "1") || false
+        rescue
+        end
       end
 
       # create a safe name (letters and underscores only) from the field name
