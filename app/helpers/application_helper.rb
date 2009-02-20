@@ -163,7 +163,7 @@ module ApplicationHelper
     row2 = 'user_basket_list_row2'
     css_class = row1
 
-    if user == current_user || site_admin
+    if user == current_user || @site_admin
       Basket.find_all_by_status_and_creator_id('requested', user).each do |basket|
         @baskets << [basket.urlified_name, nil] if @baskets[basket.urlified_name.to_sym].blank?
       end
