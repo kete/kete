@@ -157,6 +157,10 @@ class BasketsController < ApplicationController
       end
     end
 
+    # Because we dont edit the basket content on edit form, skip sanitizing the content
+    # to prevent changes in edit from being locked out
+    params[:basket][:do_not_sanitize] = true if params[:source_form] == 'edit'
+
     @feeds_successful = true
     # it is important this is not nil, rather than not blank
     # empty feeds_url_list may mean to delete all existing feeds
