@@ -1,4 +1,5 @@
 <p><%= image_tag image_file.public_filename, :size => image_file.image_size, :alt => "#{title}. " %></p>
+<% unless defined?(without_controls) && without_controls == true %>
 <div class="pipe-list">
   <ul>
     <% sizes_count = 1 -%>
@@ -15,3 +16,4 @@
     <% end -%>
   </ul>
 </div>
+<% end %>

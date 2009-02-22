@@ -1,4 +1,5 @@
 ---
+# Turn off site recent topics display for the about, help, and documentation baskets
 configurable_settings_001:
   id: "1"
   configurable_id: 2
@@ -20,3 +21,61 @@ configurable_settings_003:
   name: disable_site_recent_topics_display
   value_type: TrueClass
   value: "--- true\n"
+# Make basket join policy closed for new Kete installations
+configurable_settings_004:
+  id: "4"
+  configurable_id: 1
+  configurable_type: Basket
+  name: basket_join_policy
+  value_type: String
+  value: "--- closed\n"
+configurable_settings_005:
+  id: "5"
+  configurable_id: 2
+  configurable_type: Basket
+  name: basket_join_policy
+  value_type: String
+  value: "--- closed\n"
+configurable_settings_006:
+  id: "6"
+  configurable_id: 3
+  configurable_type: Basket
+  name: basket_join_policy
+  value_type: String
+  value: "--- closed\n"
+configurable_settings_007:
+  id: "7"
+  configurable_id: 4
+  configurable_type: Basket
+  name: basket_join_policy
+  value_type: String
+  value: "--- closed\n"
+# Make basket memberlist policy at least admin for new Kete installations
+configurable_settings_008:
+  id: "8"
+  configurable_id: 1
+  configurable_type: Basket
+  name: memberlist_policy
+  value_type: String
+  value: "--- at least admin\n"
+configurable_settings_009:
+  id: "9"
+  configurable_id: 2
+  configurable_type: Basket
+  name: memberlist_policy
+  value_type: String
+  value: "--- at least admin\n"
+configurable_settings_010:
+  id: "10"
+  configurable_id: 3
+  configurable_type: Basket
+  name: memberlist_policy
+  value_type: String
+  value: "--- at least admin\n"
+configurable_settings_011:
+  id: "11"
+  configurable_id: 4
+  configurable_type: Basket
+  name: memberlist_policy
+  value_type: String
+  value: "--- at least admin\n"

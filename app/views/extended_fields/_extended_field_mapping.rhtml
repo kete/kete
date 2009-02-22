@@ -8,7 +8,7 @@
 <% @item_type_for_params = item_key %>
 
 <div class="form-element">
-  <%= extended_field_label(ef) %>
+  <%= extended_field_label(ef, extended_field_mapping.required) %>
 
   <div style="float: left">
   <% if ef.multiple? %>

@@ -30,12 +30,26 @@
       <div class="theme-choice-wrapper">
         <%= image_tag "/themes/#{theme}/images/sample.jpg", :alt => t('baskets.appearance.screenshot_of', :theme => theme) -%>
         <div class="theme-choice-text">
-          <%= radio_button_tag 'settings[theme]', theme, (@basket.settings[:theme] == theme), {"id" => "settings_theme", :tabindex => '1'} %>
+          <% selected = (@basket.settings[:theme] == theme) ||
+                          (@site_basket == @basket && @basket.settings[:theme].class == NilClass && theme == 'default') %>
+          <%= radio_button_tag 'settings[theme]', theme, selected, {"id" => "settings_theme", :tabindex => '1'} %>
           <%= theme.humanize %>
         </div>
       </div>
       &nbsp;
       <% end -%>
+      <% if @site_basket != @basket %>
+        <div class="theme-choice-wrapper">
+          <div class="theme-choice-text">
+            <%= radio_button_tag 'settings[theme]', 'nil', @basket.settings[:theme].class == NilClass %>
+            <%=t 'baskets.appearance.inherit' %>
+          </div>
+          <div class="theme-choice-text">
+            <%=t 'baskets.appearance.inherit_example' %><br />
+            <%= t('baskets.appearance.current_inheritance', :theme_name => (@basket.settings[:theme] || 'default')) %>
+          </div>
+        </div>
+      <% end %>
       <% else -%>
       <p><%=t 'baskets.appearance.no_themes' %></p>
       <% end -%>

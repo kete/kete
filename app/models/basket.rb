@@ -259,6 +259,16 @@ class Basket < ActiveRecord::Base
     select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
   end
 
+  def memberlist_policy_with_inheritance
+    if !self.settings[:memberlist_policy].blank?
+      self.settings[:memberlist_policy]
+    elsif !self.site_basket.settings[:memberlist_policy].blank?
+      self.site_basket.settings[:memberlist_policy]
+    else
+      'at least admin'
+    end
+  end
+
   def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
     select_options = String.new
     options_array.each do |option|

@@ -172,9 +172,14 @@ namespace :kete do
 
     desc 'Make Site basket have membership requests closed, and member list visibility at least admin.'
     task :set_default_join_and_memberlist_policies => :environment do
+      # set some defaults in the site basket
       site_basket = Basket.first # site
       site_basket.settings[:basket_join_policy] = 'closed' if site_basket.settings[:basket_join_policy].class == NilClass
       site_basket.settings[:memberlist_policy] = 'at least admin' if site_basket.settings[:memberlist_policy].class == NilClass
+      # if the about, help, or documentation baskets are nil, fill in the same value as the site basket
+      Basket.about_basket.settings[:basket_join_policy] = site_basket.settings[:basket_join_policy] if Basket.about_basket.settings[:basket_join_policy].class == NilClass
+      Basket.help_basket.settings[:basket_join_policy] = site_basket.settings[:basket_join_policy] if Basket.help_basket.settings[:basket_join_policy].class == NilClass
+      Basket.documentation_basket.settings[:basket_join_policy] = site_basket.settings[:basket_join_policy] if Basket.documentation_basket.settings[:basket_join_policy].class == NilClass
     end
 
     desc 'Make all baskets with the status of NULL set to approved'

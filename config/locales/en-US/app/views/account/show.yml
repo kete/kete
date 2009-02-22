@@ -16,6 +16,9 @@ en:
       portrait_or_gravatar: 'Alternatively, you can add a user portrait using the instructions above.'
       close_portrait_help: 'Close X'
       other_portrait: Other Portraits
+      request: Request
+      pending: Pending
+      rejected: Rejected
       baskets: Baskets
       editing_portraits: 'Editing portraits. '
       selected_portrait: 'Selected<br />Portrait'

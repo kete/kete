@@ -7,6 +7,9 @@ en:
       header_example: 'URL for background image for the top of each page:'
       theme: 'Theme:'
       screenshot_of: 'Screenshot of {{theme}} theme. '
+      inherit: Inherit
+      inherit_example: 'Inherit this setting from the Site basket.'
+      current_inheritance: 'The Site uses the <strong>{{theme_name}}</strong> theme.'
       no_themes: 'No themes beyond the default are available right now.'
       new_theme: Add new theme
       controls: 'Show/Hide Controls:'

@@ -6,6 +6,7 @@ en:
     links:
       register: Register
       login: Login
+      my_baskets: my baskets
       all_baskets: all baskets
       logout: Logout
       home: Home

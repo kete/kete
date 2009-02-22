@@ -168,12 +168,19 @@ module ApplicationHelper
     row2 = 'user_basket_list_row2'
     css_class = row1
 
+    if user == current_user || @site_admin
+      Basket.find_all_by_status_and_creator_id('requested', user).each do |basket|
+        @baskets << [basket.urlified_name, nil] if @baskets[basket.urlified_name.to_sym].blank?
+      end
+    end
+
     html = String.new
     @baskets.each do |basket_name, role|
       basket = Basket.find_by_urlified_name(basket_name.to_s)
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
-      link = link_to(basket.name, basket_index_url(:urlified_name => basket_name))
-      link += " - #{role[:role_name].humanize}" if options[:show_roles]
+      pending = (basket.status == 'requested') ? " (pending)" : ''
+      link = link_to(basket.name + pending, basket_index_url(:urlified_name => basket_name))
+      link += " - #{role[:role_name].humanize}" if options[:show_roles] && !role.blank?
       basket_options = options[:show_options] ? link_to_actions_available_for(basket, options) : ''
       basket_options = '<div class="profile_basket_options">[<ul>' + basket_options + '</ul>]</div>' unless basket_options.blank?
       html += content_tag('li', basket_options + link, :class => css_class)
@@ -394,7 +401,8 @@ module ApplicationHelper
     html += link_to_membership_request_of(basket, options)
     options[:class] = nil unless html.blank?
     html += link_to_members_of(basket, options)
-    html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>"
+    html += "<li>" + link_to_basket_contact_for(basket, false) + "</li>" if @current_basket.allows_contact_with_inheritance?
+    html
   end
 
   def link_to_cancel(from_form = "")

@@ -43,10 +43,20 @@ zoom_class = zoom_class_from_controller(controller)
 
     <%= form.error_messages -%>
 
+    <p class="required"><em>* denotes a required field</em></p>
+
     <% if @item_type == :still_image -%>
       <%= error_messages_for 'image_file' -%>
       <% if @editing -%>
         <%= hidden_field_tag 'image_file[still_image_id]', @item.id, :id => "image_file_still_image_id" -%>
+        <% @image_file = ImageFile.find_by_thumbnail_and_still_image_id("medium", @item.id) %>
+        <div class="form-element">
+          <label>Current Image:</label>
+          <%= render(:partial => "images/image_file",
+                     :locals => { :image_file => @image_file,
+                                  :title => @item.title,
+                                  :without_controls => true }) -%>
+        </div>
       <% end -%>
       <% if params[:portrait] || params[:selected_portrait] -%>
         <%= hidden_field_tag 'portrait', (params[:portrait] || params[:selected_portrait]) -%>
@@ -84,7 +94,7 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
-    <%= embedded_enabled_message('<p class=\"help\"> * ', ' If you fill out fields here as well, the embedded metadata will be added to it at the end.</p>') if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing %>
+    <%= embedded_enabled_message('<p class=\"help\">Note: ', ' If you fill out fields here as well, the embedded metadata will be added to it at the end.</p>') if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing %>
 
     <% if params[@item_type] && params[@item_type][:private]; item_private = params[@item_type][:private] == 'true' ? true : false
        elsif @editing && !@item.private.nil?; item_private = @item.private?
@@ -102,7 +112,7 @@ zoom_class = zoom_class_from_controller(controller)
       <%= form.hidden_field :private, :value => item_private -%>
     <% end %>
 
-    <%= form.text_field :title, { :tabindex => '1', :label => 'Title' } -%>
+    <%= form.text_field :title, { :tabindex => '1', :label => 'Title', :required => true } -%>
 
     <% if [:document, :topic].include?(@item_type) -%>
       <%= form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1',
@@ -150,7 +160,7 @@ zoom_class = zoom_class_from_controller(controller)
     <% end -%>
 
     <% if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing) -%>
-      <%= form.text_field :url, { :tabindex => '1', :label => 'URL' } -%>
+      <%= form.text_field :url, { :tabindex => '1', :label => 'URL', :required => true } -%>
     <% end -%>
 
     <div class="form-element">
@@ -166,11 +176,11 @@ zoom_class = zoom_class_from_controller(controller)
     <% unless [:topic, :web_link].include?(@item_type) || @editing -%>
       <% if @item_type == :still_image -%>
         <div class="form-element">
-          <label for="image_file_uploaded_data">Upload image</label>
+          <label for="image_file_uploaded_data" class="required">Upload image <em>*</em></label>
           <%= file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' } -%>
         </div>
       <% else -%>
-        <%= form.file_field :uploaded_data, { :tabindex => '1', :label => "Upload #{@item_name}" } -%>
+        <%= form.file_field :uploaded_data, { :tabindex => '1', :label => "Upload #{@item_name}", :required => true } -%>
       <% end -%>
     <% end -%>
 
