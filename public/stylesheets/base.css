@@ -847,6 +847,27 @@ pre {
   color: red;
 }
 
+.topic_menu {
+}
+
+.topic_menu_structured {
+  width: 400px;
+  margin: 0 auto;
+  list-style: none;
+}
+.topic_menu_structured li {
+  float: left;
+  width: 130px;
+  height: 50px;
+}
+.topic_menu_structured li a {
+  display: block;
+  padding: 15px 0;
+  margin: 5px;
+  text-align: center;
+  background-color: #D6E5C1;
+}
+
 /* width of keyword search for basket homepage */
 input.searchheader-search {
     width: 12em;
