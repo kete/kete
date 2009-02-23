@@ -1,5 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
 
+  Translate::Routes.translation_ui(map) if RAILS_ENV != "production"
+
   map.oai '/oai_pmh_repository', :controller => 'oai_pmh_repository', :action => 'index'
 
   ### monitoring tools

@@ -383,7 +383,7 @@ en:
     date: Date
   # app/models/user.rb
   user_model:
-    failed_security_answer: ': Your security question answer failed - please try again.
+    failed_security_answer: ': Your security question answer failed - please try again.'
   # app/models/user_notifier.rb
   user_notifier_model:
     password_change: Request to change your password
