@@ -1,8 +1,0 @@
-en:
-  comments_controller:
-    update:
-      updated: 'Comment was successfully updated.'
-    destroy:
-      destroyed: 'Comment was successfully deleted.'
-    is_authorized:
-      not_a_member: 'Sorry, you need to be a member to leave a comment in this basket.'

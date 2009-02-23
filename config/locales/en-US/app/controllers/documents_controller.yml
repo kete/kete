@@ -1,9 +1,0 @@
-en:
-  documents_controller:
-    update:
-      updated: 'Document was successfully updated.'
-    convert:
-      converted: 'Document description was successfully updated with text of uploaded document.'
-      not_converted: "There were problems converting the text of the uploaded document to the document's description.  Please edit the description manually."
-    make_theme:
-      made_theme: 'Document expanded to be new theme.'

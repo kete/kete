@@ -1,8 +1,0 @@
-en:
-  baskets:
-    homepage_options:
-      title: '{{basket_name}} Homepage Options'
-      current_homepage: 'Current homepage topic:'
-      new_homepage: Add new basket homepage topic
-      link_homepage: Link to new basket homepage topic
-      button: Save

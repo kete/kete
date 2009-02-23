@@ -1,5 +1,0 @@
-en:
-  private_files_controller:
-    not_found: 'Error 404: File Not Found'
-    bad_request: 'Error 400: Bad Request'
-    unauthorized: 'Error 401: Unauthorized'

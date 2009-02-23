@@ -1,7 +1,0 @@
-en:
-  account:
-    portrait_controls:
-      selected: 'Make Selected. '
-      higher: 'Move Higher. '
-      lower: 'Move Lower. '
-      remove: 'Remove Portrait. '

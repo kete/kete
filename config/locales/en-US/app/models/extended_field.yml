@@ -1,6 +1,0 @@
-en:
-  extended_field_model:
-    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
-    no_spaces: ": spaces aren't allowed"
-    already_used: ": labels of {{invalid_label_names}} aren't allowed because they already used be default"
-    label_cant_have: "cannot contain Form, Script, or Input because they are reserved starting words"

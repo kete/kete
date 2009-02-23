@@ -1,8 +1,0 @@
-en:
-  audio:
-    details:
-      filename: 'Filename:'
-      size: 'Size:'
-      type: 'Recording type:'
-      listen: listen
-      not_available: not available for download
