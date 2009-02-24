@@ -1,7 +1,7 @@
 --- 
 format: 1
 handler: 
-  commit: 034ff2526e9e5b00ed62b252e28abc70540ef310
+  commit: bc5848812e48bba36b251aa4672c8fa8c1255e11
   branch: master
 repository_url: git://github.com/newsdesk/translate.git
 lock: false
