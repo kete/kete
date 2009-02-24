@@ -471,7 +471,7 @@ class SearchController < ApplicationController
         end
         items_count += 1
       end
-      flash[:notice] = t('search_controller.rebuild_zoom_for_item.zoom_rebuilt')
+      flash[:notice] = t('search_controller.rebuild_zoom_for_items.zoom_rebuilt')
       # first item in list should be self
       redirect_to_show_for(first_item)
     end

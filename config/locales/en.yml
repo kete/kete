@@ -490,7 +490,7 @@ en:
       gravatar_link: 'gravatar.com'
       portrait_or_gravatar: 'Alternatively, you can add a user portrait using the instructions above.'
       close_portrait_help: 'Close X'
-      other_portrait: Other Portraits
+      other_portraits: Other Portraits
       request: Request
       pending: Pending
       rejected: Rejected
@@ -715,7 +715,7 @@ en:
       description: Latest Baskets
     show:
       edit: Edit
-      bask: Back
+      back: Back
   # app/views/comments/
   comments:
     form:
