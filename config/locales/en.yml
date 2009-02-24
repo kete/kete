@@ -1,787 +1,905 @@
-en:
-  #
-  # CONTROLLERS
-  #
-
-  # app/controllers/account_controller.rb
-  account_controller:
-    login:
-      logged_in: Logged in successfully
-      failed_login: 'Your password or login do not match our records. Please try again.'
-    signup:
-      signed_up: 'Thanks for signing up!'
-      signed_up_with_email: 'Thanks for signing up! Expect an email with a code shortly to activate your account.'
-    fetch_gravatar:
-      your_gravatar: 'Your Gravatar. '
-    logout:
-      logged_out: 'You have been logged out.'
-    show:
-      please_login: 'You must be logged in to view user profiles.'
-    update:
-      user_updated: 'User was successfully updated.'
-    change_password:
-      password_changed: Password changed
-      password_not_changed: Password not changed
-      password_mismatch: Password mismatch
-      wrong_password: Wrong password
-    activate:
-      activated: 'Your account has been activated.  Please login.'
-      not_activated: 'Unable to activate the account.  Please check or enter manually.'
-    forgot_password:
-      email_sent: A password reset link has been sent to your email address
-      more_than_one_account: "This email address belongs to more than one account. Please select the one you're trying to reset."
-      no_such_login: Could not find a user with that login
-      no_such_email: Could not find a user with that email address
-    reset_password:
-      password_reset: Password reset
-      password_not_reset: Password not reset
-      password_mismatch: Password mismatch
-      invalid_reset: 'Sorry - That is an invalid password reset code. Please check your code and try again. (Perhaps your email client inserted a carriage return?)'
-    add_portrait:
-      added_portrait: "'{{portrait_title}}' has been added to your portraits."
-      failed_portrait: "'{{portrait_title}}' failed to add to your portraits."
-    remove_portrait:
-      removed_portrait: "'{{portrait_title}}' has been removed from your portraits."
-      failed_portrait: "'{{portrait_title}}' failed to remove from your portraits."
-    make_selected_portrait:
-      made_selected: "'{{portrait_title}}' has been made your selected portrait."
-      failed_portrait: "'{{portrait_title}}' failed to become your selected portrait."
-    move_portrait_higher:
-      moved_higher: "'{{portrait_title}}' has been moved closer to the front of your portraits."
-      failed_portrait: "'{{portrait_title}}' failed to move closer to the front of your portraits."
-    move_portrait_lower:
-      moved_lower: "'{{portrait_title}}' has been moved closer to the end of your portraits."
-      failed_portrait: "'{{portrait_title}}' failed to move closer to the end of your portraits."
-    update_portraits:
-      reordered: 'Your portraits have been successfully reordered.'
-      not_reordered: 'The portraits were not reordered permanently. You may only reorder portraits if they are yours.  If they are, please try again.'
-    redirect_if_user_portraits_arnt_enabled:
-      not_enabled: 'User portraits are not enabled so you cannot use this feature.'
-  # app/controllers/application_controller.rb
-  application_controller:
-    setup_related_topic_and_zoom_and_redirect:
-      related_item: 'Related {{zoom_class}} was successfully created.'
-      selected_portrait: '{{zoom_class}} was successfully created as your selected portrait.'
-      portrait: '{{zoom_class}} was successfully created as a portrait.'
-      created: '{{zoom_class}} was successfully created.'
-    link_related:
-      added_relation: Successfully added item relationships
-    unlink_related:
-      unlinked_relation: Successfully removed item relationships
-    rescue_404:
-      title: '404 Not Found'
-    rescue_500:
-      title: '500 Internal Server Error'
-    redirect_if_current_basket_isnt_approved_for_public_viewing:
-      not_available: 'The basket {{basket_name}} is not approved for public viewing'
-  # app/controllers/audio_controller.rb
-  audio_controller:
-    update:
-      updated: 'Audio was successfully updated.'
-  # app/controllers/baskets_controller.rb
-  baskets_controller:
-    create:
-      to_be_reviewed: "Basket will now be reviewed, and you'll be notified of the outcome."
-      created: 'Basket was successfully created.'
-    update:
-      feed_problem: "there was a problem adding your feeds. Is the format you entered correct and you haven't entered a feed twice?"
-      updated: 'Basket was successfully updated.'
-    destroy:
-      destroyed: 'Basket was successfully deleted.'
-    add_index_topic:
-      created: 'Basket homepage was successfully created.'
-    update_appearance:
-      updated: 'Basket appearance was updated.'
-      sanitized: 'Your submitted footer content was changed for security reasons.'
-    redirect_if_current_user_cant_add_or_request_basket:
-      not_authorized: 'You need to have the right permissions to add or request a basket'
-  # app/controllers/choices_controller.rb
-  choices_controller:
-    title: Choices
-    label_example: 'Label will be used as value if left blank.'
-  # app/controllers/comments_controller.rb
-  comments_controller:
-    update:
-      updated: 'Comment was successfully updated.'
-    destroy:
-      destroyed: 'Comment was successfully deleted.'
-    is_authorized:
-      not_a_member: 'Sorry, you need to be a member to leave a comment in this basket.'
-  # app/controllers/configure_controller.rb
-  configure_controller:
-    done_with_settings:
-      not_yet_completed: 'Not yet completed.'
-    start_zebra:
-      stopping_zebra: 'Search Engine started.  Stopping must be done by system administrator from command line.'
-    prime_zebra:
-      primed_zebra: 'Search Engine has been primed.'
-    send_information:
-      already_running: 'There is already a site registration worker active. Wierd! Try refreshing the page.'
-    get_site_linking_progress:
-      site_registered: "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
-      incorrect_fields: 'Some fields were incorrect:'
-  # app/controllers/content_types_controller.rb
-  content_types_controller:
-    create:
-      created: 'Content type was successfully created.'
-    update:
-      updated: 'Content type was successfully updated.'
-  # app/controllers/documents_controller.rb
-  documents_controller:
-    update:
-      updated: 'Document was successfully updated.'
-    convert:
-      converted: 'Document description was successfully updated with text of uploaded document.'
-      not_converted: "There were problems converting the text of the uploaded document to the document's description.  Please edit the description manually."
-    make_theme:
-      made_theme: 'Document expanded to be new theme.'
-  # app/controllers/extended_fields_controller.rb
-  extended_fields_controller:
-    title: Extended Fields
-    base_url: Base URL
-    base_url_description: 'Whatever the user inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the choice ftypes, Base URL + value will take over from normal linking to all results that match the value for the choice for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)'
-    available_choices: Available choices
-    available_choices_description: 'Ftype must be a "choices" option for these options to be available to users.'
-    topic_type_choices: Topic Type Choices
-    topic_type_choices_description: 'Ftype must be a "Pre-populated Choices (topic type)" option for these options to be available to users.'
-  # app/controllers/images_controller.rb
-  images_controller:
-    update:
-      updated: 'Image was successfully updated.'
-  # app/controllers/importers_controller.rb
-  importers_controller:
-    create:
-      already_running: 'There is another import of this type running at this time.  Please try again later.'
-    get_progress:
-      import_failed: 'Import failed. You need javascript enabled for this feature.'
-      amount_processed: '{{records_processed}} records processed'
-      all_processed: 'All records processed.'
-      error_message: 'There was a problem with the import: {{error}}<p><b>The import has been stopped</b></p>'
-      back_to: 'Back to {{item_title}}'
-      to_imports: 'Back to Imports'
-      import_failed: 'Import failed. {{error}}'
-      to_related_topics: 'Return to related topic.'
-      not_running: 'import worker not running anymore?'
-    stop:
-      import_stopped: 'Import stopped.'
-  # app/controllers/licenses_controller.rb
-  licenses_controller:
-    title: Licenses
-  # app/controllers/members_controller.rb
-  members_controller:
-    list_members_in:
-      admin: Admin
-      moderator: Moderator
-      member: Member
-      tech_admin: Tech Admin
-      site_admin: Site Admin
-      login_as: Login as user
-      delete: Delete
-      ban: Ban
-      remove: Remove from Basket
-    join:
-      already_joined: 'You already have a role in this basket or you have already applied to join.'
-      joined: 'You have joined the {{basket_name}} basket.'
-      requested: 'A basket membership request has been sent. You will get an email when it is approved.'
-      not_open: "This basket isn't currently accepting join requests."
-    change_membership_type:
-      made_tech_admin: 'User has been made tech admin.'
-      cannot_be_tech_admin: 'User is not eligable to be tech admin. The need to be a site admin, too.'
-      changed_role: 'User successfully changed role.'
-      need_site_admin: 'Unable to have no site administrators.'
-    become_user:
-      logged_in: 'Logged in successfully'
-    ban:
-      banned: 'Successfully banned user.'
-    unban:
-      unbanned: 'Successfully removed ban on user.'
-    add_members:
-      added_singular: 'Successfully added new member.'
-      added_plural: 'Successfully added new members.'
-    remove:
-      cant_remove_self: 'You cannot remove yourself from the Site basket.'
-      need_site_admin: 'Unable to have no basket administrators.'
-      removed: 'Successfully removed user from {{basket_name}}.'
-    destroy:
-      has_contributions: '{{user_name}} has contributions and cannot be deleted from the site. Perhaps a ban instead?'
-      need_site_admin: 'Unable to have no site administrators.'
-      destroyed: '{{user_name}} has been deleted from the site.'
-    change_request_status:
-      accepted: "{{user_name}}'s membership request has been accepted."
-      rejected: "{{user_name}}'s membership request has been rejected."
-    permitted_to_view_memberlist:
-      not_authorized: 'You need to have the right permissions to access this baskets member list'
-      cant_remove: 'You need to have the right permissions to remove basket members'
-  # app/controllers/oai_pmh_repository_controller.rb
-  oai_pmh_repository_controller:
-    title: Oai Pmh Repository
-    not_available: 'OAI PMH Repository not available at this time.'
-  # app/controllers/oai_pmh_repository_sets_controller.rb
-  oai_pmh_repository_sets_controller:
-    title: Oai Pmh Repository Sets
-  # app/controllers/private_files_controller.rb
-  private_files_controller:
-    not_found: 'Error 404: File Not Found'
-    bad_request: 'Error 400: Bad Request'
-    unauthorized: 'Error 401: Unauthorized'
-  # app/controllers/search_controller.rb
-  search_controller:
-    for:
-      no_search_terms: "You haven't entered any search terms."
-    rebuild_zoom_for_items:
-      zoom_rebuilt: ZOOM indexes rebuilt
-    rebuild_zoom_index:
-      already_running: 'There is another search record rebuild running at this time.  Please try again later.'
-    check_rebuild_status:
-      need_js: 'You need javascript enabled for this feature.'
-      started_at: 'Started at {{start_time}}'
-      working_on: 'Working on {{zoom_class}}'
-      amount_processed: '{{amount}} records processed'
-      records_failed: '{{amount}} records failed'
-      failed_reason: 'These maybe private or pending moderation records, depending on the case. See log/backgroundrb... for details.'
-      records_skipped: '{{amount}} records skipped'
-      all_processed: All records processed
-      rebuild_error: 'There was a problem with the rebuild: {{error}}<p><b>The rebuild has been stopped</b></p>'
-      finished_at: 'at {{end_time}}'
-      browse: Browse records
-      rebuild_failed: 'Rebuild failed. {{error}}'
-      return_to_rebuild: Return to Rebuild Set up
-      not_running: 'rebuild worker not running anymore?'
-    find_index:
-      changed: 'Homepage topic changed successfully'
-      failed: 'Problem changing Homepage topic'
-    private_search_authorisation:
-      forbidden: 'Error 403: Forbidden'
-  # app/controllers/topic_types_controller.rb
-  topic_types_controller:
-    create:
-      created: 'Topic Type was successfully created.'
-    update:
-      updated: 'Topic Type was successfully updated.'
-    destroy:
-      destroyed: 'Topic Type was successfully deleted.'
-  # app/controllers/topics_controller.rb
-  topics_controller:
-    edit:
-      not_authorized: "You don't have permission to edit this topic."
-    create:
-      created_related: 'Related Topic was successfully created.'
-      created: 'Topic was successfully created.'
-    update:
-      updated: 'Topic was successfully updated.'
-  # app/controllers/video_controller.rb
-  video_controller:
-    update:
-      updated: 'Video was successfully updated.'
-  # app/controllers/web_links_controller.rb
-  web_links_controller:
-    update:
-      updated: 'Web Link was successfully updated.'
-  # app/controllers/zoom_dbs_controller.rb
-  zoom_dbs_controller:
-    title: Zoom Dbs
-  
-  #
-  # HELPERS
-  #
-  
-  # app/helpers/application_helper.rb
-  application_helper:
-    header_links_to_baskets:
-      more_baskets: 'more...'
-    header_link_to_current_basket:
-      separator: ':'
-    header_browse_links:
-      browse: Browse
-      browse_or: or
-    header_add_links:
+--- 
+en: 
+  application_helper: 
+    header_add_links: 
       add_item: Add Item
-    header_add_basket_link:
+    header_add_basket_link: 
       request_basket: Request basket
       add_basket: Add basket
-    link_to_cancel:
+    header_browse_links: 
+      browse_or: or
+      browse: Browse
+    header_links_to_baskets: 
+      more_baskets: more...
+    header_link_to_current_basket: 
+      separator: ":"
+    link_to_cancel: 
       cancel: Cancel
-  # app/helpers/baskets_helper.rb
-  baskets_helper:
-    basket_preferences_inheritance_message:
-      inheritance_notice: 'These settings will be inherited by all other baskets unless they individually specify their own policy.'
-  # app/helpers/slideshows_helper.rb
-  slideshows_helper:
-    previous: '&laquo; Previous'
-    next: 'Next &raquo;'
-    stop: Stop results slideshow
-    all_results: Back to results
-  
-  #
-  # MODELS
-  #
-  
-  # app/models/audio_recording.rb
-  audio_recording_model:
-    not_acceptable: 'is not acceptable. It should be a .mp3, .m4a, or other sound file.'
-  # app/models/basket.rb
-  basket_model:
-    basket_member: Basket member
-    basket_moderator: Basket moderator
-    basket_admin: Basket admin
-    site_admin: Site admin
-    all_users: All users
-    logged_in: Logged in user
-    details_and_comments: Full details and comments
-    only_details: Only full details
-    only_comments: Only comments
-    dont_link: "Don't link"
-    recent_dont_show: "Don't show them"
-    recent_as_summaries: 'Summaries (blog style)'
-    recent_as_headlines: 'Headlines (news style)'
-    archives_dont_show: "Don't show them"
-    archives_by_type: By type
-    image_dont_show: No image
-    image_latest: Latest
-    image_random: Random
-    tags_ordered_most_popular: Most Popular
-    tags_ordered_by_name: By Name
-    tags_ordered_latest: Latest
-    tags_ordered_random: Random
-    tags_as_categories: Categories
-    tags_as_tag_cloud: Tag Cloud
-    moderate_before_approved: moderator views before item approved
-    moderate_on_flagged: moderation upon being flagged
-    font_use_theme_default: Use theme default
-    font_sans_serif: 'Sans Serif (Arial, Helvetica, and the like)'
-    font_serif: 'Serif (Times New Roman, etc.)'
-    now_in_site_basket: 'This version was in {{basket_name}} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket.'
-    cannot_delete_site: 'Error: Cannot delete site basket!'
-  # app/models/choice.rb
-  choice_model:
+  audio: 
+    details: 
+      not_available: not available for download
+      size: "Size:"
+      type: "Recording type:"
+      filename: "Filename:"
+      listen: listen
+    edit: 
+      not_allowed: Sorry - editing on this section of the site has been disallowed
+  baskets_helper: 
+    basket_preferences_inheritance_message: 
+      inheritance_notice: These settings will be inherited by all other baskets unless they individually specify their own policy.
+  private_files_controller: 
+    not_found: "Error 404: File Not Found"
+    unauthorized: "Error 401: Unauthorized"
+    bad_request: "Error 400: Bad Request"
+  topic_types_controller: 
+    destroy: 
+      destroyed: Topic Type was successfully deleted.
+    create: 
+      created: Topic Type was successfully created.
+    update: 
+      updated: Topic Type was successfully updated.
+  application_controller: 
+    setup_related_topic_and_zoom_and_redirect: 
+      related_item: Related {{zoom_class}} was successfully created.
+      selected_portrait: "{{zoom_class}} was successfully created as your selected portrait."
+      created: "{{zoom_class}} was successfully created."
+      portrait: "{{zoom_class}} was successfully created as a portrait."
+    rescue_500: 
+      title: 500 Internal Server Error
+    redirect_if_current_basket_isnt_approved_for_public_viewing: 
+      not_available: The basket {{basket_name}} is not approved for public viewing
+    rescue_404: 
+      title: 404 Not Found
+    link_related: 
+      added_relation: Successfully added item relationships
+    unlink_related: 
+      unlinked_relation: Successfully removed item relationships
+  comments_controller: 
+    destroy: 
+      destroyed: Comment was successfully deleted.
+    is_authorized: 
+      not_a_member: Sorry, you need to be a member to leave a comment in this basket.
+    update: 
+      updated: Comment was successfully updated.
+  choice_model: 
     must_be_unique: must be unique
-    top_level: '(Top level)'
-  # app/models/document.rb
-  document_model:
-    not_acceptable: 'is not acceptable. It should be a .pdf, .doc, or other document file.'
-  # app/models/extended_field.rb
-  extended_field_model:
-    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
+    top_level: (Top level)
+  extended_field_model: 
     no_spaces: ": spaces aren't allowed"
     already_used: ": labels of {{invalid_label_names}} aren't allowed because they already used be default"
-    label_cant_have: "cannot contain Form, Script, or Input because they are reserved starting words"
-  # app/models/image_file.rb
-  image_file_model:
-    not_acceptable: 'is not acceptable. It should be a .jpg, .gif, or other image file.'
-  # app/models/import.rb
-  import_model:
+    label_cant_have: cannot contain Form, Script, or Input because they are reserved starting words
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
-    must_be_seconds: the interval must be in seconds
-  # app/models/oai_pmh_repository_set.rb
-  oai_pmh_repository_set_model:
+  topics_controller: 
+    edit: 
+      not_authorized: You don't have permission to edit this topic.
+    create: 
+      created_related: Related Topic was successfully created.
+      created: Topic was successfully created.
+    update: 
+      updated: Topic was successfully updated.
+  activerecord: 
+    errors: 
+      messages: 
+        taken: has already been taken
+        accepted: must be accepted
+        not_a_number: is not a number
+        greater_than_or_equal_to: must be greater than or equal to {{count}}
+        blank: can't be blank
+        confirmation: doesn't match confirmation
+        exclusion: is reserved
+        less_than_or_equal_to: must be less than or equal to {{count}}
+        odd: must be odd
+        invalid: is invalid
+        too_short: is too short (minimum is {{count}} characters)
+        wrong_length: is the wrong length (should be {{count}} characters)
+        empty: can't be empty
+        too_long: is too long (maximum is {{count}} characters)
+        less_than: must be less than {{count}}
+        even: must be even
+        inclusion: is not included in the list
+        equal_to: must be equal to {{count}}
+        greater_than: must be greater than {{count}}
+      template: 
+        body: "There were problems with the following fields:"
+        header: 
+          one: 1 error prohibited this {{model}} from being saved
+          other: "{{count}} errors prohibited this {{model}} from being saved"
+  oai_pmh_repository_set_model: 
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
-  # app/models/search.rb
-  search_model:
-    last_modified: Last Modified
-    title: Title
-    relevance: Relevance
-    date: Date
-  # app/models/user.rb
-  user_model:
-    failed_security_answer: ': Your security question answer failed - please try again.'
-  # app/models/user_notifier.rb
-  user_notifier_model:
-    password_change: Request to change your password
-    password_reset: Your password has been reset
-    activate_account: Please activate your new account
-    account_activated: 'Your account has been activated!'
-    account_banned: 'Your account has been banned!'
-    user_sent_message: '{{user_name}} has sent you a message.'
-    user_joined: '{{user_name}} has joined the {{basket_name}} basket'
-    user_requested: '{{user_name}} has requested membership in {{basket_name}} basket'
-    membership_accepted: 'Membership to {{basket_name}} accepted'
-    membership_rejected: 'Membership to {{basket_name}} rejected'
-    item_flagged_with: 'Item flagged {{flag}} for moderation.'
-    pending_moderation: 'Your submission is {{flag}} moderation.'
-    awaiting_review: 'User contributions waiting review in {{basket_name}}.'
-    rejected_submission: 'A moderator has {{flag}} your submission.'
-    revision_live: 'A moderator has made your submission the live revision.'
-    basket_created: '{{user_name}} has created the {{basket_name}} basket'
-    basket_requested: '{{user_name}} has requested creation of the {{basket_name}} basket'
-    basket_approved: '{{basket_name}} basket creation has been approved'
-    basket_rejected: '{{basket_name}} basket creation has been rejected'
-  # app/models/video.rb
-  video_model:
-    not_acceptable: 'is not acceptable. It should be a .mov, .wmv, or other video file.'
-  
-  #
-  # VIEWS
-  #
-  
-  # app/views/account/
-  account:
-    avatar_updater:
-      fetching_avatar: 'Fetching Avatar. '
-      your_avatar: 'Your Gravatar. '
-      add_avatar: 'You may designate a picture you have uploaded to the site as your portrait from {{profile_link}}.'
+  search_controller: 
+    find_index: 
+      failed: Problem changing Homepage topic
+      changed: Homepage topic changed successfully
+    rebuild_zoom_index: 
+      already_running: There is another search record rebuild running at this time.  Please try again later.
+    rebuild_zoom_for_items: 
+      zoom_rebuilt: ZOOM indexes rebuilt
+    check_rebuild_status: 
+      need_js: You need javascript enabled for this feature.
+      rebuild_failed: Rebuild failed. {{error}}
+      working_on: Working on {{zoom_class}}
+      finished_at: at {{end_time}}
+      records_failed: "{{amount}} records failed"
+      all_processed: All records processed
+      failed_reason: These maybe private or pending moderation records, depending on the case. See log/backgroundrb... for details.
+      amount_processed: "{{amount}} records processed"
+      records_skipped: "{{amount}} records skipped"
+      rebuild_error: "There was a problem with the rebuild: {{error}}<p><b>The rebuild has been stopped</b></p>"
+      not_running: rebuild worker not running anymore?
+      browse: Browse records
+      started_at: Started at {{start_time}}
+      return_to_rebuild: Return to Rebuild Set up
+    private_search_authorisation: 
+      forbidden: "Error 403: Forbidden"
+    for: 
+      no_search_terms: You haven't entered any search terms.
+  slideshows_helper: 
+    previous: "&laquo; Previous"
+    all_results: Back to results
+    stop: Stop results slideshow
+    next: Next &raquo;
+  choices_controller: 
+    title: Choices
+    label_example: Label will be used as value if left blank.
+  number: 
+    format: 
+      separator: .
+      delimiter: ","
+      precision: 3
+    human: 
+      format: 
+        delimiter: ""
+        precision: 1
+      storage_units: 
+        format: "%n %u"
+        units: 
+          kb: KB
+          tb: TB
+          gb: GB
+          byte: 
+            one: Byte
+            other: Bytes
+          mb: MB
+    precision: 
+      format: 
+        delimiter: ""
+    percentage: 
+      format: 
+        delimiter: ""
+    currency: 
+      format: 
+        format: "%u%n"
+        unit: $
+        separator: .
+        delimiter: ","
+        precision: 2
+  web_links_controller: 
+    update: 
+      updated: Web Link was successfully updated.
+  comments: 
+    new: 
+      button: Save
+      title: New discussion
+    edit: 
+      button: Save
+      title: Editing comment
+    form: 
+      title: "Title:"
+      security_warning_admin: Unless you check the box below.
+      security_warning_exception: Allow forms and other possible insecure elements and attributes in the HTML?
+      edit_comment: "Comment on this edit:"
+      tags: Tags (separated by commas)
+      description: "Description:"
+      security_warning: "Note: forms and javascript are not allowed for security reasons."
+      tags_spinner: "Getting tags. "
+  time: 
+    am: am
+    formats: 
+      default: "%a, %d %b %Y %H:%M:%S %z"
+      long: "%B %d, %Y %H:%M"
+      short: "%d %b %H:%M"
+    pm: pm
+  account: 
+    forgot_password: 
+      button: Request Password
+      title: Request password
+      login: What is the login of your account?
+      email: What is the email address used to create your account?
+    edit: 
+      title: Edit your details
+      login_example: Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.
+      allow_emails: "Allow Emails from other users:"
+      save: Save
+      login: "Login:"
+      user_name: "User Name:"
+      change_password: Change Password
+      email: "Email:"
+      user_name_example: This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".
+      prefered_license: "Prefered License:"
+    reset_password: 
+      button: Reset Your Password
+      title: Reset password
+      confirm_pass: "Confirm Password:"
+      new_pass: "Password:"
+    baskets: 
+      title: Your Baskets
+    signup: 
+      button: Sign up
+      text_captcha: or use a {{text_captcha_link}}
+      title: Registration
+      login_example: Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.
+      agree_to: I agree that I have read and accept the {{terms_and_conditions_link}}, {{privacy_policy_link}}, and {{house_rules_link}}.
+      confirm_password: "Confirm Password:"
+      security_code: "Security Code: Please enter the text from the image to the right"
+      terms_and_conditions_link: Terms and conditions
+      house_rules_link: House Rules
+      text_captcha_link: non-image security question
+      case_sensitive: Text is case sensitive
+      login: "Login:"
+      user_name: "User Name:"
+      password: "Password:"
+      privacy_policy_link: Privacy policy
+      email: "Email:"
+      user_name_example: This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".
+      prefered_license: "Prefered License:"
+    avatar_updater: 
+      add_avatar: You may designate a picture you have uploaded to the site as your portrait from {{profile_link}}.
+      gravatar_link: This site supports {{gravatar_link}}
       profile_link: your profile page
-      add_avatar_after_signup: 'You may designate a picture you have uploaded to the site as your portrait after you signup.'
-      gravatar_link: 'This site supports {{gravatar_link}}'
-    portrait:
-      title: Drag and Drop portraits within the 'Other Portraits' section to reorder them or place on top of the current portrait to change it.
-    portrait_controls:
-      selected: 'Make Selected. '
-      higher: 'Move Higher. '
-      lower: 'Move Lower. '
-      remove: 'Remove Portrait. '
-    activate:
+      add_avatar_after_signup: You may designate a picture you have uploaded to the site as your portrait after you signup.
+      fetching_avatar: "Fetching Avatar. "
+      your_avatar: "Your Gravatar. "
+    show: 
+      contributions_link: Items created by or contributed to by {{user_link}}
+      pending: Pending
+      whats_portraits: what's this?
+      title: Profile of {{user_name}}
+      selected_portrait: Selected<br />Portrait
+      portrait_description: Portraits are a set of images you display on your profile page to users who view it. It can be your own artwork uploaded to the site, or your favorite images. The first portrait added (which can be reordered later) becomes your 'selected' portrait, that is, the one you wish to use as an avatar around the site. It will be displayed on your profile page and next to any comments you post.
+      new_portrait_link: new portrait
+      drag_portraits: Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).
+      license_thumbnail: "License thumbnail. "
+      contributions: Contributions
+      uploaded_link: uploaded before
+      gravatar_link: gravatar.com
+      contact_user: Contact this user
+      edit: edit
+      baskets: Baskets
+      view_license: (View license)
+      set_license: Click the edit link above to set your default license.
+      gravatar: Add an avatar to your account by registering a global portrait with {{gravatar_link}}.
+      close_portrait_help: Close X
+      rejected: Rejected
+      request: Request
+      created: "Created:"
+      new_portrait: new portrait
+      other_portraits: Other Portraits
+      current_license: Current default license
+      user_name: "User name:"
+      shift_portraits: Use the arrow buttons to shift them around (when Javascript is off).
+      change_password: change password
+      email: "Email:"
+      portrait_new: You can create a {{new_portrait_link}} by uploading a new image. Alternatively, you can go to an image you've {{uploaded_link}}, and select 'Add image to portraits' in the right sidebar.
+      change_portrait: "To change your selected portrait:"
+      portrait_or_gravatar: Alternatively, you can add a user portrait using the instructions above.
+      editing_portraits: "Editing portraits. "
+    portrait_controls: 
+      lower: "Move Lower. "
+      selected: "Make Selected. "
+      remove: "Remove Portrait. "
+      higher: "Move Higher. "
+    activate: 
+      button: Activate
       title: Enter your activation code
       label: Activation Code
-      button: Activate
-    baskets:
-      title: Your Baskets
-    change_password:
-      title: Change password
-      old_pass: Old Password
-      new_pass: Password
-      confirm_pass: Confirm Password
-      button: Change password
-    edit:
-      title: Edit your details
-      login: 'Login:'
-      login_example: 'Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.'
-      email: 'Email:'
-      user_name: 'User Name:'
-      user_name_example: 'This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".'
-      allow_emails: 'Allow Emails from other users:'
-      prefered_license: 'Prefered License:'
-      save: Save
-      change_password: Change Password
-    forgot_password:
-      title: Request password
-      email: What is the email address used to create your account?
-      login: What is the login of your account?
-      button: Request Password
-    login:
-      title: 'Login to {{site_name}}'
-      missing_software: 'Missing Software!'
-      missing_explaination: Kete requires you to install the following software and restart your server.
-      register: 'Are you registered? You will need to {{register_link}} first before you can login.'
+    login: 
       register_link: register
-      admin_details: Please enter the default administrator account login and password to continue to configuration of the site.
-      login: 'Login:'
-      password: 'Password:'
-      remember_me: 'Remember me:'
-      forgot_password: 'Forgot your password? {{forgot_password_link}}'
-      forgot_password_link: Click here
       button: Log in
-    reset_password:
-      title: Reset password
-      new_pass: 'Password:'
-      confirm_pass: 'Confirm Password:'
-      button: Reset Your Password
-    show:
-      title: 'Profile of {{user_name}}'
-      edit: edit
-      change_password: change password
-      portrait_description: "Portraits are a set of images you display on your profile page to users who view it. It can be your own artwork uploaded to the site, or your favorite images. The first portrait added (which can be reordered later) becomes your 'selected' portrait, that is, the one you wish to use as an avatar around the site. It will be displayed on your profile page and next to any comments you post."
-      portrait_new: "You can create a {{new_portrait_link}} by uploading a new image. Alternatively, you can go to an image you've {{uploaded_link}}, and select 'Add image to portraits' in the right sidebar."
-      new_portrait_link: new portrait
-      uploaded_link: uploaded before
-      change_portrait: 'To change your selected portrait:'
-      drag_portraits: 'Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).'
-      shift_portraits: 'Use the arrow buttons to shift them around (when Javascript is off).'
-      gravatar: 'Add an avatar to your account by registering a global portrait with {{gravatar_link}}.'
-      gravatar_link: 'gravatar.com'
-      portrait_or_gravatar: 'Alternatively, you can add a user portrait using the instructions above.'
-      close_portrait_help: 'Close X'
-      other_portraits: Other Portraits
-      request: Request
-      pending: Pending
-      rejected: Rejected
-      baskets: Baskets
-      editing_portraits: 'Editing portraits. '
-      selected_portrait: 'Selected<br />Portrait'
-      whats_portraits: "what's this?"
-      new_portrait: new portrait
-      user_name: 'User name:'
-      email: 'Email:'
-      contact_user: Contact this user
-      created: 'Created:'
-      current_license: Current default license
-      set_license: Click the edit link above to set your default license.
-      license_thumbnail: 'License thumbnail. '
-      view_license: '(View license)'
-      contributions: Contributions
-      contributions_link: 'Items created by or contributed to by {{user_link}}'
-    signup:
-      title: Registration
-      login: 'Login:'
-      login_example: 'Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.'
-      email: 'Email:'
-      password: 'Password:'
-      confirm_password: 'Confirm Password:'
-      user_name: 'User Name:'
-      user_name_example: 'This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".'
-      prefered_license: 'Prefered License:'
-      security_code: 'Security Code: Please enter the text from the image to the right'
-      case_sensitive: 'Text is case sensitive'
-      text_captcha: 'or use a {{text_captcha_link}}'
-      text_captcha_link: non-image security question
-      agree_to: 'I agree that I have read and accept the {{terms_and_conditions_link}}, {{privacy_policy_link}}, and {{house_rules_link}}.'
-      terms_and_conditions_link: Terms and conditions
-      privacy_policy_link: Privacy policy
-      house_rules_link: House Rules
-      button: Sign up
-  # app/views/audio/
-  audio:
-    details:
-      filename: 'Filename:'
-      size: 'Size:'
-      type: 'Recording type:'
-      listen: listen
-      not_available: not available for download
-    edit:
-      not_allowed: 'Sorry - editing on this section of the site has been disallowed'
-  # app/views/baskets/
-  baskets:
-    actions_menu:
-      edit: Edit
-      appearance: Appearance
-      homepage_options: Homepage Options
-      members: Members
-      moderate: Moderate
-      importers: Importers
-      delete: Delete
-      delete_confirmation: 'Are you sure? All items in this basket will be deleted forever!'
-    form:
-      name: 'Name:'
-      enabled: Enabled
-      disabled: Disabled
-      inherit: Inherit
-      inherit_example: 'Inherit this setting from the Site basket.'
-      isnt_inherited: '(this setting is not inherited from site basket)'
-      doesnt_inherit: '(this setting does not inherit to other baskets)'
-      public: Public
-      private: Private
-      moderation: 'Moderation Policy:'
-      moderate_except: 'Moderator views items before approved EXCEPT:'
-      privacy_controls: 'Privacy Controls:'
-      privacy_controls_enabled_example: 'Enable Privacy Controls if members of this basket can have both items that are readable by the public at large AND items that are only readable by themselves.'
-      privacy_controls_disabled_example: 'Disable Privacy Controls if members can only create publicly readable items.'
-      privacy_controls_site_basket: 'This baskets browsing controls are left enabled if any other baskets have privacy controls turned on (for site-wide private search)'
-      privacy_controls_current_inheritance: 'The Site has <strong>{{current_inheritance}}</strong> Privacy Controls'
-      item_privacy: 'Default Item Privacy:'
-      item_privacy_public_example: Can be viewed by everyone
-      item_privacy_private_example: Can be viewed only by basket members
-      item_privacy_current_inheritance: 'The Site has items <strong>{{current_inheritance}}</strong> by default'
-      file_privacy: 'Default Original File Privacy:'
-      file_privacy_public_example: Can be downloaded by everyone
-      file_privacy_private_example: Can be downloaded only by authorized basket members
-      file_privacy_current_inheritance: 'The Site has files <strong>{{current_inheritance}}</strong> by default'
-      file_privacy_example: "You may use this to restrict the download of an item's original file.  For example, you may set a document to be 'Public' and show the information about it, but limit downloading the actual document file to basket members.  Note this applies across all versions of an item."
-      file_visibility: 'Private Original Files Visibility:'
-      file_visibility_example: 'To view private attached files you must be at least a:'
-      comment_control: 'Who can add, edit and update comments on items?:'
-      comment_control_anyone: 'Anyone logged in'
-      comment_control_members: 'Only basket members'
-      comment_control_current_inheritance: 'The Site <strong>{{current_inheritance}}</strong> non basket members to post comments'
-      comment_control_allows: allows
-      comment_control_not_allows: "doesn't allow"
-      browse_order: 'Default Browse Results Order:'
-      browse_order_sort_by: 'Sort by:'
-      browse_order_default: 'use software default'
-      browse_order_in_reverse: 'in reverse?'
-      recent_topics: 'Disable Site Recent Topics Display:'
-      recent_topics_example: 'Do not show new/edited topics in recent results on the Site basket?'
-      join_policy: 'Join Policy:'
-      join_policy_open: Open Membership
-      join_policy_open_example: 'Enable Open Basket Membership. Anyone can join this basket with one click.'
-      join_policy_request: Request Membership
-      join_policy_request_example: 'Enable Requested Basket Membership. Basket Administrators have to approve or reject each application.'
-      join_policy_closed: Closed Membership
-      join_policy_closed_example: 'Closed Basket Membership. Members have to be added by Basket Administrators manually.'
-      join_policy_current_inheritance: 'The Site has basket membership <strong>{{current_inheritance}}</strong> by default'
-      member_list_policy: 'Member List Policy:'
-      member_list_policy_example: 'To view the member list you must be at least a:'
-      admin_contact: 'Administrator contact?'
-      admin_contact_enabled_example: 'A link will be provided that allows users to send a message to administrators.'
-      admin_contact_disabled_example: 'Users will not be able to contact administrators.'
-      admin_contain_current_inheritance: 'The Site has <strong>{{current_inheritance}}</strong> use of the administrator contact form.'
-    homepage_form:
-      go_to_browse: 'Go directly to "browse" options'
-      redirect_to: 'Redirect to results of?'
-      dont_redirect: "Don't redirect"
-      homepage_topic: Homepage Topic
-      only_homepage: 'Show only homepage topic?'
-      homepage_link: "A link to the homepage topic's?"
-      recent_topics: Recent Topics
-      recent_topics_example: 'Including a rolling list of recent topics is an excellent way to present this basket as a blog or a news site.'
-      recent_topics_amount: 'List how many recent topics?'
-      recent_topics_type: "List basket's topics as?"
-      search: Search
-      include_search: 'Include basket search form?'
-      sidebar_content: 'Sidebar content after search'
-      security_warning: 'Note: forms and javascript are not allowed for security reasons.'
-      security_warning_admin: 'Unless you check the box below.'
-      security_exception_example: 'Allow forms and other possible insecure elements and attributes in the HTML?'
-      selected_image: Selected Image
-      selected_image_show: Show image from basket?
-      archives: Archives
-      archives_as: "List basket's archive contents as?"
-      tags: Tags
-      tags_amount: 'List how many tags?'
-      tags_as: "List basket's tags as?"
-      tags_ordered_by: "Order tags by?"
-      rss_feeds: RSS or Atom Feeds
-      rss_feeds_example1: 'A new-line separated list of URLs in the following format per line:'
-      rss_feeds_example2: 'Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in minutes - optional)'
-    appearance:
-      title: '{{basket_name}} Appearance'
-      font_family: 'Font Family:'
-      current_header: 'Current Basket Header Image. '
-      header_example: 'URL for background image for the top of each page:'
-      theme: 'Theme:'
-      screenshot_of: 'Screenshot of {{theme}} theme. '
-      inherit: Inherit
-      inherit_example: 'Inherit this setting from the Site basket.'
-      current_inheritance: 'The Site uses the <strong>{{theme_name}}</strong> theme.'
-      no_themes: 'No themes beyond the default are available right now.'
-      new_theme: Add new theme
-      controls: 'Show/Hide Controls:'
-      show_actions_to: 'Show Action Menu to:'
-      show_actions_to_example: '(who can see the view, edit, history and other links)'
-      show_comments_to: 'Show Comments to:'
-      show_comments_to_example: '(who can see and add comments)'
-      show_flagging_to: 'Show Flagging to:'
-      show_flagging_to_example: '(who can flag items)'
-      show_add_links_to: 'Show Add Links to:'
-      show_add_links_to_example: '(who can relate or link items together)'
-      basket_list_options: 'Basket List Menu Options:'
-      basket_list_options_example: 'These settings only take effect if the basket list navigation menu is on in your template.'
-      basket_list_options_topic_number: 'Number of topics to show when in this basket?:'
-      basket_list_options_sort_by: 'Sort by:'
-      basket_list_options_in_reverse: 'in reverse?'
-      additional_footer_content: 'Additional Footer Content:'
-      additional_footer_content_security: 'Note: forms and javascript are not allowed for security reasons.'
-      additional_footer_content_security_admin: 'Unless you check the box below.'
-      additional_footer_content_exception: 'Allow forms and other possible insecure elements and attributes in the HTML?'
-      additional_footer_content_replace: 'replace existing footer with above content?'
-      additional_footer_content_replace_example: 'If checked, the above footer will totally replace the bottom of each page.  If you would rather it appear above the "Accessibility | Sitemap | Back to Content" links, rather than replace them, leave this unchecked.'
-      button: Save
-    choose_type:
-      what_to_add: What would you like to add
-      that_relates_to: 'that relates to {{topic_title}}'
-      where_to_add: 'Where would you like to add it?'
-      add_in: 'Add in?'
-      add_a: 'Add a?'
-      choose_type: choose item type
-      button: Choose
-      spinner_working: 'Working.. '
-    edit:
-      title: '{{basket_name}} Edit'
-      accept: Accept Basket
-      reject: Reject Basket
-      currently_rejected: '(currently rejected)'
-      update: Update
-    homepage_options:
-      title: '{{basket_name}} Homepage Options'
-      current_homepage: 'Current homepage topic:'
-      new_homepage: Add new basket homepage topic
-      link_homepage: Link to new basket homepage topic
-      button: Save
-    list:
-      title: Baskets
-      all: all
-      requests: '{{request_num}} requests'
-      rejected: '{{rejected_num}} rejected'
-      sort_by_name: Name
-      sort_by_created_at: Created
-      options: Options
-    new:
-      title: New basket
-      request: Request
-      create: Create
-    permission_denied:
-      title: Permission Denied
-      part1: "We're sorry, but access to the page your requested is restricted. Here are some possible ways you may proceed:"
-      part2: "If you are using a shared computer, make sure you're logged in with the account that has access to this area. Try {{login_link}} again before revisiting the page."
-      login_link: logging in
-      part3: "You can join, or apply to join, the basket by visiting the {{basket_join_link}}. If joins need to be approved, you'll receive an email when you're let in. Otherwise, you should be able to access the basket content instantly."
-      basket_join_link: basket join form
-      part4: "If you should have permission to access this part of the site, you can try {{basket_contact_link}}"
-      basket_contact_link: contact this baskets administrators
-      part5: "Use {{email_link}} to email a site administrator to report the issue. Please specify that what page you tried to access in the email."
-      email_link: this Contact link
-      part6: Or simply proceed on to another page via the Browse or Search functions at the top of this page.
-      thank_you: 'Thank you,'
-    rss:
-      title: '{{site_name}} - Latest {{amount}} Baskets'
-      description: Latest Baskets
-    show:
-      edit: Edit
-      back: Back
-  # app/views/comments/
-  comments:
-    form:
-      title: 'Title:'
-      description: 'Description:'
-      security_warning: 'Note: forms and javascript are not allowed for security reasons.'
-      security_warning_admin: 'Unless you check the box below.'
-      security_warning_exception: 'Allow forms and other possible insecure elements and attributes in the HTML?'
-      tags: 'Tags (separated by commas)'
-      tags_spinner: 'Getting tags. '
-      edit_comment: 'Comment on this edit:'
-    edit:
-      title: Editing comment
-      button: Save
-    new:
-      title: New discussion
-      button: Save
-  # app/views/layouts/
-  application:
-    search:
-      label: Search
+      missing_software: Missing Software!
+      forgot_password: Forgot your password? {{forgot_password_link}}
+      title: Login to {{site_name}}
+      forgot_password_link: Click here
+      register: Are you registered? You will need to {{register_link}} first before you can login.
+      missing_explaination: Kete requires you to install the following software and restart your server.
+      admin_details: Please enter the default administrator account login and password to continue to configuration of the site.
+      login: "Login:"
+      password: "Password:"
+      remember_me: "Remember me:"
+    portrait: 
+      title: Drag and Drop portraits within the 'Other Portraits' section to reorder them or place on top of the current portrait to change it.
+    change_password: 
+      button: Change password
+      title: Change password
+      confirm_pass: Confirm Password
+      new_pass: Password
+      old_pass: Old Password
+  documents_controller: 
+    make_theme: 
+      made_theme: Document expanded to be new theme.
+    convert: 
+      not_converted: There were problems converting the text of the uploaded document to the document's description.  Please edit the description manually.
+      converted: Document description was successfully updated with text of uploaded document.
+    update: 
+      updated: Document was successfully updated.
+  date: 
+    order: 
+    - :year
+    - :month
+    - :day
+    abbr_day_names: 
+    - Sun
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
+    formats: 
+      default: "%Y-%m-%d"
+      long: "%B %d, %Y"
+      short: "%b %d"
+    month_names: 
+    - 
+    - January
+    - February
+    - March
+    - April
+    - May
+    - June
+    - July
+    - August
+    - September
+    - October
+    - November
+    - December
+    day_names: 
+    - Sunday
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    abbr_month_names: 
+    - 
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - May
+    - Jun
+    - Jul
+    - Aug
+    - Sep
+    - Oct
+    - Nov
+    - Dec
+  extended_content_lib: 
+    validate_extended_checkbox_field_content: 
+      must_be_valid: "{{label}} must be a valid checkbox value (Yes or No)"
+    validate_extended_content_multiple_values: 
+      need_at_least_one: "{{label}} must have at least one value"
+    validate_extended_date_field_content: 
+      must_be_valid: "{{label}} must be in the standard date format (YYYY-MM-DD)"
+    validate_extended_topic_type_field_content: 
+      must_be_valid: "{{label}} is not valid choice for a '{{topic_type}}'"
+      no_such_topic: we were unable to find a matching topic on our site. Did you enter topic in the format of 'topic title (URL)?'
+    validate_extended_content_single_value: 
+      cannot_be_blank: "{{label}} cannot be blank"
+    validate_extended_choice_field_content: 
+      must_be_valid: "{{label}} must be a valid choice"
+  account_controller: 
+    remove_portrait: 
+      failed_portrait: "'{{portrait_title}}' failed to remove from your portraits."
+      removed_portrait: "'{{portrait_title}}' has been removed from your portraits."
+    move_portrait_lower: 
+      failed_portrait: "'{{portrait_title}}' failed to move closer to the end of your portraits."
+      moved_lower: "'{{portrait_title}}' has been moved closer to the end of your portraits."
+    forgot_password: 
+      no_such_login: Could not find a user with that login
+      more_than_one_account: This email address belongs to more than one account. Please select the one you're trying to reset.
+      email_sent: A password reset link has been sent to your email address
+      no_such_email: Could not find a user with that email address
+    fetch_gravatar: 
+      your_gravatar: "Your Gravatar. "
+    update_portraits: 
+      not_reordered: The portraits were not reordered permanently. You may only reorder portraits if they are yours.  If they are, please try again.
+      reordered: Your portraits have been successfully reordered.
+    logout: 
+      logged_out: You have been logged out.
+    redirect_if_user_portraits_arnt_enabled: 
+      not_enabled: User portraits are not enabled so you cannot use this feature.
+    add_portrait: 
+      failed_portrait: "'{{portrait_title}}' failed to add to your portraits."
+      added_portrait: "'{{portrait_title}}' has been added to your portraits."
+    make_selected_portrait: 
+      failed_portrait: "'{{portrait_title}}' failed to become your selected portrait."
+      made_selected: "'{{portrait_title}}' has been made your selected portrait."
+    reset_password: 
+      invalid_reset: Sorry - That is an invalid password reset code. Please check your code and try again. (Perhaps your email client inserted a carriage return?)
+      password_not_reset: Password not reset
+      password_reset: Password reset
+      password_mismatch: Password mismatch
+    move_portrait_higher: 
+      failed_portrait: "'{{portrait_title}}' failed to move closer to the front of your portraits."
+      moved_higher: "'{{portrait_title}}' has been moved closer to the front of your portraits."
+    signup: 
+      signed_up: Thanks for signing up!
+      signed_up_with_email: Thanks for signing up! Expect an email with a code shortly to activate your account.
+    show: 
+      please_login: You must be logged in to view user profiles.
+    activate: 
+      not_activated: Unable to activate the account.  Please check or enter manually.
+      activated: Your account has been activated.  Please login.
+    login: 
+      logged_in: Logged in successfully
+      failed_login: Your password or login do not match our records. Please try again.
+    update: 
+      user_updated: User was successfully updated.
+    change_password: 
+      password_changed: Password changed
+      wrong_password: Wrong password
+      password_mismatch: Password mismatch
+      password_not_changed: Password not changed
+  oai_pmh_repository_controller: 
+    not_available: OAI PMH Repository not available at this time.
+    title: Oai Pmh Repository
+  import_model: 
+    must_be_seconds: the interval must be in seconds
+    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
+  topics: 
+    slideshow_controls: 
+      current: "Viewing: {{slideshow_total}} of {{total}}"
+  video_controller: 
+    update: 
+      updated: Video was successfully updated.
+  authenticated_system_lib: 
+    login_from_cookie: 
+      logged_in: Logged in successfully
+  application: 
+    search: 
       button: Go
-    links:
-      register: Register
-      login: Login
-      my_baskets: my baskets
-      all_baskets: all baskets
-      logout: Logout
-      home: Home
-      contact: Contact
-      rss: RSS feed for these items
-      accessibility: Accessibility
-      sitemap: Sitemap
-      to_content: Back to Content
-    basket:
-      label: 'Tools for basket: {{basket}}'
+      label: Search
+    toolbox: 
+      choices: choices for extended fields
+      controls: "Controls:"
+      content_types: content types
+      topic_types: topic types
+      add_link: List site on Kete.net.nz
+      zoom_dbs: Z39.50 search databases
+      new_basket: add basket
+      configure: reconfigure site
+      licenses: administer licenses
+      members: site members
+      oai_pmh: OAI PMH Sets
+      documentation: documentation
+      support: "Support:"
+      extended_fields: extended fields
+      rebuild: Rebuild search databases
+      label: Administrator's Toolbox
+    basket: 
+      delete: delete this basket
       preferences: basket preferences
+      delete_confirmation: Are you sure? All items in this basket will be deleted forever!
       moderate: moderate basket contents
       members: basket members
       import: import content into basket
-      delete: delete this basket
+      label: "Tools for basket: {{basket}}"
+    links: 
+      accessibility: Accessibility
+      logout: Logout
+      sitemap: Sitemap
+      register: Register
+      my_baskets: my baskets
+      contact: Contact
+      rss: RSS feed for these items
+      all_baskets: all baskets
+      login: Login
+      home: Home
+      to_content: Back to Content
+  audio_controller: 
+    update: 
+      updated: Audio was successfully updated.
+  video_model: 
+    not_acceptable: is not acceptable. It should be a .mov, .wmv, or other video file.
+  baskets: 
+    new: 
+      title: New basket
+      create: Create
+      request: Request
+    list: 
+      options: Options
+      all: all
+      title: Baskets
+      sort_by_name: Name
+      requests: "{{request_num}} requests"
+      rejected: "{{rejected_num}} rejected"
+      sort_by_created_at: Created
+    actions_menu: 
+      delete: Delete
+      homepage_options: Homepage Options
       delete_confirmation: Are you sure? All items in this basket will be deleted forever!
-    toolbox:
-      label: Administrator's Toolbox
-      controls: 'Controls:'
-      new_basket: add basket
-      topic_types: topic types
-      content_types: content types
-      extended_fields: extended fields
-      choices: choices for extended fields
-      members: site members
-      licenses: administer licenses
-      add_link: List site on Kete.net.nz
-      configure: reconfigure site
-      oai_pmh: OAI PMH Sets
-      zoom_dbs: Z39.50 search databases
-      rebuild: Rebuild search databases
-      support: 'Support:'
-      documentation: documentation
-  # app/views/topics/
-  topics:
-    slideshow_controls:
-      current: 'Viewing: {{slideshow_total}} of {{total}}'
-
-  #
-  # LIBS
-  #
-  
-  
+      edit: Edit
+      importers: Importers
+      moderate: Moderate
+      members: Members
+      appearance: Appearance
+    homepage_options: 
+      button: Save
+      title: "{{basket_name}} Homepage Options"
+      current_homepage: "Current homepage topic:"
+      new_homepage: Add new basket homepage topic
+      link_homepage: Link to new basket homepage topic
+    choose_type: 
+      button: Choose
+      what_to_add: What would you like to add
+      choose_type: choose item type
+      where_to_add: Where would you like to add it?
+      add_in: Add in?
+      add_a: Add a?
+      spinner_working: "Working.. "
+      that_relates_to: that relates to {{topic_title}}
+    edit: 
+      accept: Accept Basket
+      title: "{{basket_name}} Edit"
+      currently_rejected: (currently rejected)
+      update: Update
+      reject: Reject Basket
+    permission_denied: 
+      email_link: this Contact link
+      part1: "We're sorry, but access to the page your requested is restricted. Here are some possible ways you may proceed:"
+      part2: If you are using a shared computer, make sure you're logged in with the account that has access to this area. Try {{login_link}} again before revisiting the page.
+      title: Permission Denied
+      part3: You can join, or apply to join, the basket by visiting the {{basket_join_link}}. If joins need to be approved, you'll receive an email when you're let in. Otherwise, you should be able to access the basket content instantly.
+      basket_join_link: basket join form
+      login_link: logging in
+      part4: If you should have permission to access this part of the site, you can try {{basket_contact_link}}
+      part5: Use {{email_link}} to email a site administrator to report the issue. Please specify that what page you tried to access in the email.
+      part6: Or simply proceed on to another page via the Browse or Search functions at the top of this page.
+      basket_contact_link: contact this baskets administrators
+      thank_you: Thank you,
+    show: 
+      back: Back
+      edit: Edit
+    rss: 
+      title: "{{site_name}} - Latest {{amount}} Baskets"
+      description: Latest Baskets
+    form: 
+      file_visibility_example: "To view private attached files you must be at least a:"
+      browse_order_sort_by: "Sort by:"
+      name: "Name:"
+      privacy_controls_current_inheritance: The Site has <strong>{{current_inheritance}}</strong> Privacy Controls
+      item_privacy_private_example: Can be viewed only by basket members
+      recent_topics_example: Do not show new/edited topics in recent results on the Site basket?
+      join_policy_request: Request Membership
+      privacy_controls_site_basket: This baskets browsing controls are left enabled if any other baskets have privacy controls turned on (for site-wide private search)
+      join_policy_current_inheritance: The Site has basket membership <strong>{{current_inheritance}}</strong> by default
+      item_privacy_public_example: Can be viewed by everyone
+      comment_control_members: Only basket members
+      comment_control_allows: allows
+      join_policy_request_example: Enable Requested Basket Membership. Basket Administrators have to approve or reject each application.
+      privacy_controls: "Privacy Controls:"
+      admin_contain_current_inheritance: The Site has <strong>{{current_inheritance}}</strong> use of the administrator contact form.
+      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non basket members to post comments
+      comment_control_not_allows: doesn't allow
+      join_policy_open: Open Membership
+      public: Public
+      join_policy_open_example: Enable Open Basket Membership. Anyone can join this basket with one click.
+      private: Private
+      privacy_controls_disabled_example: Disable Privacy Controls if members can only create publicly readable items.
+      browse_order: "Default Browse Results Order:"
+      member_list_policy_example: "To view the member list you must be at least a:"
+      privacy_controls_enabled_example: Enable Privacy Controls if members of this basket can have both items that are readable by the public at large AND items that are only readable by themselves.
+      join_policy_closed: Closed Membership
+      admin_contact_disabled_example: Users will not be able to contact administrators.
+      isnt_inherited: (this setting is not inherited from site basket)
+      item_privacy_current_inheritance: The Site has items <strong>{{current_inheritance}}</strong> by default
+      file_privacy_example: You may use this to restrict the download of an item's original file.  For example, you may set a document to be 'Public' and show the information about it, but limit downloading the actual document file to basket members.  Note this applies across all versions of an item.
+      admin_contact: Administrator contact?
+      enabled: Enabled
+      comment_control_anyone: Anyone logged in
+      moderation: "Moderation Policy:"
+      item_privacy: "Default Item Privacy:"
+      disabled: Disabled
+      browse_order_in_reverse: in reverse?
+      join_policy: "Join Policy:"
+      member_list_policy: "Member List Policy:"
+      admin_contact_enabled_example: A link will be provided that allows users to send a message to administrators.
+      file_privacy_public_example: Can be downloaded by everyone
+      comment_control: "Who can add, edit and update comments on items?:"
+      recent_topics: "Disable Site Recent Topics Display:"
+      join_policy_closed_example: Closed Basket Membership. Members have to be added by Basket Administrators manually.
+      browse_order_default: use software default
+      inherit: Inherit
+      doesnt_inherit: (this setting does not inherit to other baskets)
+      file_privacy: "Default Original File Privacy:"
+      file_privacy_private_example: Can be downloaded only by authorized basket members
+      moderate_except: "Moderator views items before approved EXCEPT:"
+      file_privacy_current_inheritance: The Site has files <strong>{{current_inheritance}}</strong> by default
+      file_visibility: "Private Original Files Visibility:"
+      inherit_example: Inherit this setting from the Site basket.
+    appearance: 
+      basket_list_options: "Basket List Menu Options:"
+      additional_footer_content_security: "Note: forms and javascript are not allowed for security reasons."
+      button: Save
+      controls: "Show/Hide Controls:"
+      current_header: "Current Basket Header Image. "
+      show_add_links_to_example: (who can relate or link items together)
+      title: "{{basket_name}} Appearance"
+      header_example: "URL for background image for the top of each page:"
+      additional_footer_content_security_admin: Unless you check the box below.
+      additional_footer_content_replace: replace existing footer with above content?
+      theme: "Theme:"
+      show_actions_to_example: (who can see the view, edit, history and other links)
+      new_theme: Add new theme
+      show_add_links_to: "Show Add Links to:"
+      basket_list_options_example: These settings only take effect if the basket list navigation menu is on in your template.
+      additional_footer_content: "Additional Footer Content:"
+      additional_footer_content_replace_example: If checked, the above footer will totally replace the bottom of each page.  If you would rather it appear above the "Accessibility | Sitemap | Back to Content" links, rather than replace them, leave this unchecked.
+      show_flagging_to_example: (who can flag items)
+      basket_list_options_topic_number: "Number of topics to show when in this basket?:"
+      basket_list_options_in_reverse: in reverse?
+      additional_footer_content_exception: Allow forms and other possible insecure elements and attributes in the HTML?
+      show_comments_to_example: (who can see and add comments)
+      basket_list_options_sort_by: "Sort by:"
+      current_inheritance: The Site uses the <strong>{{theme_name}}</strong> theme.
+      no_themes: No themes beyond the default are available right now.
+      show_comments_to: "Show Comments to:"
+      inherit: Inherit
+      show_actions_to: "Show Action Menu to:"
+      font_family: "Font Family:"
+      screenshot_of: "Screenshot of {{theme}} theme. "
+      inherit_example: Inherit this setting from the Site basket.
+      show_flagging_to: "Show Flagging to:"
+    homepage_form: 
+      sidebar_content: Sidebar content after search
+      recent_topics_example: Including a rolling list of recent topics is an excellent way to present this basket as a blog or a news site.
+      selected_image: Selected Image
+      search: Search
+      rss_feeds_example1: "A new-line separated list of URLs in the following format per line:"
+      redirect_to: Redirect to results of?
+      rss_feeds_example2: Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in minutes - optional)
+      security_warning_admin: Unless you check the box below.
+      dont_redirect: Don't redirect
+      tags: Tags
+      homepage_link: A link to the homepage topic's?
+      archives_as: List basket's archive contents as?
+      tags_ordered_by: Order tags by?
+      only_homepage: Show only homepage topic?
+      security_exception_example: Allow forms and other possible insecure elements and attributes in the HTML?
+      selected_image_show: Show image from basket?
+      go_to_browse: Go directly to "browse" options
+      recent_topics_type: List basket's topics as?
+      tags_as: List basket's tags as?
+      security_warning: "Note: forms and javascript are not allowed for security reasons."
+      tags_amount: List how many tags?
+      rss_feeds: RSS or Atom Feeds
+      recent_topics: Recent Topics
+      homepage_topic: Homepage Topic
+      recent_topics_amount: List how many recent topics?
+      include_search: Include basket search form?
+      archives: Archives
+  members_controller: 
+    unban: 
+      unbanned: Successfully removed ban on user.
+    list_members_in: 
+      delete: Delete
+      login_as: Login as user
+      admin: Admin
+      ban: Ban
+      member: Member
+      site_admin: Site Admin
+      moderator: Moderator
+      tech_admin: Tech Admin
+      remove: Remove from Basket
+    change_membership_type: 
+      need_site_admin: Unable to have no site administrators.
+      changed_role: User successfully changed role.
+      cannot_be_tech_admin: User is not eligable to be tech admin. The need to be a site admin, too.
+      made_tech_admin: User has been made tech admin.
+    become_user: 
+      logged_in: Logged in successfully
+    permitted_to_view_memberlist: 
+      not_authorized: You need to have the right permissions to access this baskets member list
+      cant_remove: You need to have the right permissions to remove basket members
+    destroy: 
+      has_contributions: "{{user_name}} has contributions and cannot be deleted from the site. Perhaps a ban instead?"
+      need_site_admin: Unable to have no site administrators.
+      destroyed: "{{user_name}} has been deleted from the site."
+    ban: 
+      banned: Successfully banned user.
+    remove: 
+      removed: Successfully removed user from {{basket_name}}.
+      cant_remove_self: You cannot remove yourself from the Site basket.
+      need_site_admin: Unable to have no basket administrators.
+    add_members: 
+      added_singular: Successfully added new member.
+      added_plural: Successfully added new members.
+    join: 
+      joined: You have joined the {{basket_name}} basket.
+      not_open: This basket isn't currently accepting join requests.
+      already_joined: You already have a role in this basket or you have already applied to join.
+      requested: A basket membership request has been sent. You will get an email when it is approved.
+    change_request_status: 
+      accepted: "{{user_name}}'s membership request has been accepted."
+      rejected: "{{user_name}}'s membership request has been rejected."
+  images_controller: 
+    update: 
+      updated: Image was successfully updated.
+  zoom_dbs_controller: 
+    title: Zoom Dbs
+  audio_recording_model: 
+    not_acceptable: is not acceptable. It should be a .mp3, .m4a, or other sound file.
+  search_model: 
+    last_modified: Last Modified
+    title: Title
+    date: Date
+    relevance: Relevance
+  baskets_controller: 
+    destroy: 
+      destroyed: Basket was successfully deleted.
+    create: 
+      created: Basket was successfully created.
+      to_be_reviewed: Basket will now be reviewed, and you'll be notified of the outcome.
+    add_index_topic: 
+      created: Basket homepage was successfully created.
+    update_appearance: 
+      sanitized: Your submitted footer content was changed for security reasons.
+      updated: Basket appearance was updated.
+    redirect_if_current_user_cant_add_or_request_basket: 
+      not_authorized: You need to have the right permissions to add or request a basket
+    update: 
+      feed_problem: there was a problem adding your feeds. Is the format you entered correct and you haven't entered a feed twice?
+      updated: Basket was successfully updated.
+  importers_controller: 
+    get_progress: 
+      import_failed: Import failed. {{error}}
+      to_imports: Back to Imports
+      all_processed: All records processed.
+      error_message: "There was a problem with the import: {{error}}<p><b>The import has been stopped</b></p>"
+      to_related_topics: Return to related topic.
+      amount_processed: "{{records_processed}} records processed"
+      not_running: import worker not running anymore?
+      back_to: Back to {{item_title}}
+    stop: 
+      import_stopped: Import stopped.
+    create: 
+      already_running: There is another import of this type running at this time.  Please try again later.
+  user_notifier_model: 
+    user_joined: "{{user_name}} has joined the {{basket_name}} basket"
+    awaiting_review: User contributions waiting review in {{basket_name}}.
+    activate_account: Please activate your new account
+    basket_rejected: "{{basket_name}} basket creation has been rejected"
+    user_sent_message: "{{user_name}} has sent you a message."
+    rejected_submission: A moderator has {{flag}} your submission.
+    password_reset: Your password has been reset
+    membership_accepted: Membership to {{basket_name}} accepted
+    item_flagged_with: Item flagged {{flag}} for moderation.
+    revision_live: A moderator has made your submission the live revision.
+    membership_rejected: Membership to {{basket_name}} rejected
+    pending_moderation: Your submission is {{flag}} moderation.
+    user_requested: "{{user_name}} has requested membership in {{basket_name}} basket"
+    basket_created: "{{user_name}} has created the {{basket_name}} basket"
+    account_banned: Your account has been banned!
+    basket_approved: "{{basket_name}} basket creation has been approved"
+    password_change: Request to change your password
+    account_activated: Your account has been activated!
+    basket_requested: "{{user_name}} has requested creation of the {{basket_name}} basket"
+  support: 
+    array: 
+      last_word_connector: ", and "
+      words_connector: ", "
+      two_words_connector: " and "
+  content_types_controller: 
+    create: 
+      created: Content type was successfully created.
+    update: 
+      updated: Content type was successfully updated.
+  licenses_controller: 
+    title: Licenses
+  basket_model: 
+    image_latest: Latest
+    image_random: Random
+    moderate_on_flagged: moderation upon being flagged
+    only_comments: Only comments
+    archives_dont_show: Don't show them
+    basket_moderator: Basket moderator
+    archives_by_type: By type
+    now_in_site_basket: This version was in {{basket_name}} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket.
+    logged_in: Logged in user
+    font_use_theme_default: Use theme default
+    all_users: All users
+    details_and_comments: Full details and comments
+    tags_as_categories: Categories
+    basket_admin: Basket admin
+    recent_as_headlines: Headlines (news style)
+    site_admin: Site admin
+    recent_as_summaries: Summaries (blog style)
+    tags_ordered_random: Random
+    moderate_before_approved: moderator views before item approved
+    font_sans_serif: Sans Serif (Arial, Helvetica, and the like)
+    font_serif: Serif (Times New Roman, etc.)
+    image_dont_show: No image
+    recent_dont_show: Don't show them
+    basket_member: Basket member
+    only_details: Only full details
+    dont_link: Don't link
+    cannot_delete_site: "Error: Cannot delete site basket!"
+    tags_ordered_by_name: By Name
+    tags_ordered_latest: Latest
+    tags_as_tag_cloud: Tag Cloud
+    tags_ordered_most_popular: Most Popular
+  email_controller_lib: 
+    redirect_if_contact_form_disabled: 
+      not_enabled: This contact form is not currently enabled.
+    send_email: 
+      need_subject_and_message: Both subject and message must be filled in. Please try again.
+      email_sent: Your email has been sent. You will receive the reply in your email box.
+  document_model: 
+    not_acceptable: is not acceptable. It should be a .pdf, .doc, or other document file.
+  datetime: 
+    distance_in_words: 
+      less_than_x_minutes: 
+        one: less than a minute
+        other: less than {{count}} minutes
+      x_days: 
+        one: 1 day
+        other: "{{count}} days"
+      x_seconds: 
+        one: 1 second
+        other: "{{count}} seconds"
+      x_minutes: 
+        one: 1 minute
+        other: "{{count}} minutes"
+      less_than_x_seconds: 
+        one: less than 1 second
+        other: less than {{count}} seconds
+      x_months: 
+        one: 1 month
+        other: "{{count}} months"
+      about_x_hours: 
+        one: about 1 hour
+        other: about {{count}} hours
+      about_x_months: 
+        one: about 1 month
+        other: about {{count}} months
+      about_x_years: 
+        one: about 1 year
+        other: about {{count}} years
+      half_a_minute: half a minute
+      over_x_years: 
+        one: over 1 year
+        other: over {{count}} years
+    prompts: 
+      month: Month
+      minute: Minute
+      second: Seconds
+      hour: Hour
+      day: Day
+      year: Year
+  configure_controller: 
+    done_with_settings: 
+      not_yet_completed: Not yet completed.
+    get_site_linking_progress: 
+      incorrect_fields: "Some fields were incorrect:"
+      site_registered: Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>.
+    start_zebra: 
+      stopping_zebra: Search Engine started.  Stopping must be done by system administrator from command line.
+    prime_zebra: 
+      primed_zebra: Search Engine has been primed.
+    send_information: 
+      already_running: There is already a site registration worker active. Wierd! Try refreshing the page.
+  extended_fields_controller: 
+    topic_type_choices: Topic Type Choices
+    title: Extended Fields
+    available_choices_description: Ftype must be a "choices" option for these options to be available to users.
+    base_url: Base URL
+    base_url_description: Whatever the user inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the choice ftypes, Base URL + value will take over from normal linking to all results that match the value for the choice for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)
+    topic_type_choices_description: Ftype must be a "Pre-populated Choices (topic type)" option for these options to be available to users.
+    available_choices: Available choices
+  oai_pmh_repository_sets_controller: 
+    title: Oai Pmh Repository Sets
+  image_file_model: 
+    not_acceptable: is not acceptable. It should be a .jpg, .gif, or other image file.
+  user_model: 
+    failed_security_answer: ": Your security question answer failed - please try again."

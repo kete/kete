@@ -131,7 +131,7 @@ module AuthenticatedSystem
         user.remember_me
         self.current_user = user
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-        flash[:notice] = "Logged in successfully"
+        flash[:notice] = I18n.t('authenticated_system_lib.login_from_cookie.logged_in')
       end
     end
 
