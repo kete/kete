@@ -252,6 +252,13 @@ en:
     unlink_related: 
       unlinked_relation: Successfully removed item relationships
   application_helper: 
+    avatar_for: 
+      users_avatar: "{{user_name}}'s Avatar. "
+    embedded_enabled_message: 
+      harvesting: Embedded metadata will be harvested from the item's binary file to fill out any fields that match the site's settings.
+    flagging_links_for: 
+      can_you_edit: Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?
+      flag_as: "Flag as:"
     header_add_basket_link: 
       add_basket: Add basket
       request_basket: Request basket
@@ -264,8 +271,63 @@ en:
       separator: ":"
     header_links_to_baskets: 
       more_baskets: more...
+    kete_time_ago_in_words: 
+      longer_than_a_week: on {{date}}
+      within_a_week: "{{time}} ago"
+    link_to_add_item: 
+      in_basket: " in {{basket_name}}"
+    link_to_add_set_of_related_items: 
+      link_text: Import Set of Related Items
+    link_to_basket_contact_for: 
+      contact: Contact
     link_to_cancel: 
       cancel: Cancel
+    link_to_last_stored_location: 
+      back_to_kete_home: "&lt;&lt; Back to Kete Home"
+      back_to_stored_location: "&lt;&lt; Back to '{{stored_location}}'"
+    link_to_members_of: 
+      members_link_text: Members
+    link_to_membership_request_of: 
+      current_role: You're a |role|.
+      join: Join
+      leave: Leave
+      pending: Membership pending
+      rejected: Membership rejected
+      request: Request membership
+    link_to_preview_of: 
+      not_available: not available
+    link_to_related_item_function: 
+      link_text: "{{function}} an Existing Related Item"
+    link_to_related_items_of: 
+      link_text: View items related to {{item_title}}
+    pending_review: 
+      no_safe_version: currently no non-disputed {{privacy_type}} versions of this item. Details of the {{privacy_type}} version of this item are not being displayed at this time.
+      pending: "Review Pending:"
+      reverted: "currently reverted to non-disputed {{privacy_type}} version # {{item_version}}"
+    privacy_image: 
+      private: "private: "
+    related_image_link_for: 
+      only_original: only available as original
+    render_baskets_as_menu: 
+      more: More..
+    search_sorting_controls_for: 
+      ascending: "Ascending. "
+      descending: "Descending. "
+    show_comments_for: 
+      comment_count: There are {{count}} comments in this discussion.
+      confirm_delete: Are you sure?
+      delete: Delete
+      edit: Edit
+      history: History
+      join_discussion: join this discussion
+      read_and: "Read and "
+      said: said
+    tags_for: 
+      tags: "Tags:"
+    tags_input_field: 
+      tags: "Tags (separated by commas):"
+    users_baskets_list: 
+      basket_pending: " (pending)"
   audio: 
     details: 
       filename: "Filename:"

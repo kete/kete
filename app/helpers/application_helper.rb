@@ -15,7 +15,10 @@ module ApplicationHelper
   include Avatar::View::ActionViewSupport
   def avatar_for(user, options = {})
     image_dimension = IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i
-    default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
+    default_options = { :width => image_dimension,
+                        :height => image_dimension,
+                        :alt => t('application_helper.avatar_for.users_avatar',
+                                  :user_name => user.user_name) }
     options = default_options.merge(options)
 
     return nil if options[:return_portrait] && (!ENABLE_USER_PORTRAITS || user.portraits.empty?)
@@ -178,7 +181,7 @@ module ApplicationHelper
     @baskets.each do |basket_name, role|
       basket = Basket.find_by_urlified_name(basket_name.to_s)
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
-      pending = (basket.status == 'requested') ? " (pending)" : ''
+      pending = (basket.status == 'requested') ? t('application_helper.users_baskets_list.basket_pending') : ''
       link = link_to(basket.name + pending, basket_index_url(:urlified_name => basket_name))
       link += " - #{role[:role_name].humanize}" if options[:show_roles] && !role.blank?
       basket_options = options[:show_options] ? link_to_actions_available_for(basket, options) : ''
@@ -256,7 +259,7 @@ module ApplicationHelper
         end
 
         if basket.topics.count > basket_topic_count && basket_topic_count > 0
-          html += content_tag("li", link_to("More..",
+          html += content_tag("li", link_to(t('application_helper.render_baskets_as_menu.more'),
                                             {:controller => 'search',
                                             :action => 'all',
                                             :urlified_name => basket.urlified_name,
@@ -314,14 +317,16 @@ module ApplicationHelper
   # TODO: may want to replace this with better history plugin
   def link_to_last_stored_location
     if session[:return_to_title].blank?
-      return link_to("&lt;&lt; Back to Kete Home", '/')
+      return link_to(t('application_helper.link_to_last_stored_location.back_to_kete_home'), '/')
     else
-      return link_to("&lt;&lt; Back to \"#{session[:return_to_title]}\"", session[:return_to])
+      return link_to(t('application_helper.link_to_last_stored_location.back_to_stored_location',
+                       :stored_location => session[:return_to_title]),
+                     session[:return_to])
     end
   end
 
   def link_to_members_of(basket, options={})
-    options = { :viewable_text => "Members",
+    options = { :viewable_text => t('application_helper.link_to_members_of.members_link_text'),
                 :unavailable_text => "" }.merge(options)
     if current_user_can_see_memberlist_for?(basket)
       content_tag("li", link_to(options[:viewable_text],
@@ -340,15 +345,15 @@ module ApplicationHelper
   def link_to_membership_request_of(basket, options={})
     return '' unless logged_in?
 
-    options = { :join_text => "Join",
-                :request_text => "Request membership",
+    options = { :join_text => t('application_helper.link_to_membership_request_of.join'),
+                :request_text => t('application_helper.link_to_membership_request_of.request'),
                 :closed_text => "",
                 :as_list_element => true,
                 :plus_divider => "",
-                :pending_text => "Membership pending",
-                :rejected_text => "Membership rejected",
-                :current_role => "You're a |role|.",
-                :leave_text => "Leave" }.merge(options)
+                :pending_text => t('application_helper.link_to_membership_request_of.pending'),
+                :rejected_text => t('application_helper.link_to_membership_request_of.rejected'),
+                :current_role => t('application_helper.link_to_membership_request_of.current_role'),
+                :leave_text => t('application_helper.link_to_membership_request_of.leave') }.merge(options)
 
     show_roles = options[:show_roles].nil? ? true : options[:show_roles]
 
@@ -390,7 +395,7 @@ module ApplicationHelper
   end
 
   def link_to_basket_contact_for(basket, include_name = true)
-    link_text = 'Contact'
+    link_text = t('application_helper.link_to_basket_contact_for.contact')
     link_text += ' ' + basket.name if include_name
     link_to link_text, basket_contact_path(:urlified_name => basket.urlified_name)
   end
@@ -478,7 +483,8 @@ module ApplicationHelper
     phrase += ' ' + zoom_class_humanize(item_class)
 
     if @current_basket != @site_basket
-      phrase += ' in ' + @current_basket.name
+      phrase += t('application_helper.link_to_add_item.in_basket',
+                  :basket_name => @current_basket.name)
     end
 
     return link_to(phrase, {:controller => zoom_class_controller(item_class), :action => :new}, :tabindex => '1')
@@ -524,7 +530,8 @@ module ApplicationHelper
 
   # Link to the related items of a certain item
   def link_to_related_items_of(item, zoom_class, options={}, location={})
-    options = { :link_text => "View items related to #{item.title}" }.merge(options)
+    options = { :link_text => t('application_helper.link_to_related_items_of.link_text',
+                                :item_title => item.title) }.merge(options)
     location = { :urlified_name => @site_basket.urlified_name,
                  :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
                  :source_controller_singular => zoom_class_controller(item.class.name).singularize,
@@ -579,7 +586,7 @@ module ApplicationHelper
         link_text = image_tag(thumb_src_value, { :size => still_image.thumbnail_file.image_size,
                                                  :alt => "#{still_image.title}. " })
       else
-        link_text = 'only available as original'
+        link_text = t('application_helper.related_image_link_for.only_original')
       end
       link_location = { :urlified_name => still_image.basket.urlified_name,
                         :controller => 'images', :action => 'show', :id => still_image,
@@ -595,7 +602,8 @@ module ApplicationHelper
   end
 
   def link_to_related_item_function(options={})
-    options = { :link_text => "#{options[:function].capitalize} an Existing Related Item" }.merge(options)
+    options = { :link_text => t('application_helper.link_to_related_item_function.link_text',
+                                :function => options[:function].capitalize) }.merge(options)
     link_text = options.delete(:link_text)
     disabled = false
     disabled = true if options[:function] == 'remove' && @total_item_counts < 1
@@ -610,7 +618,7 @@ module ApplicationHelper
   end
 
   def link_to_add_set_of_related_items(options={})
-    options = { :link_text => "Import Set of Related Items" }.merge(options)
+    options = { :link_text => t('application_helper.link_to_add_set_of_related_items.link_text') }.merge(options)
     link_text = options.delete(:link_text)
     link = link_to(link_text, { :controller => 'importers',
                                 :action => 'new_related_set_from_archive_file',
@@ -681,7 +689,7 @@ module ApplicationHelper
       # use compact to remove any nil objects, and flatten to convert it to [tag, tag, tag]
       tags = tags.compact.flatten
 
-      html_string = "<p>Tags: "
+      html_string = "<p>#{t('application_helper.tags_for.tags')} "
       tags.each_with_index do |tag,index|
         html_string += link_to_tagged(tag, item.class.name)
         html_string += ", " unless tags.size == (index + 1)
@@ -693,7 +701,7 @@ module ApplicationHelper
   end
 
   def tags_input_field(form,label_for)
-    "<div class=\"form-element\"><label for=\"#{label_for}\">Tags (separated by commas):</label>
+    "<div class=\"form-element\"><label for=\"#{label_for}\">#{t('application_helper.tags_input_field.tags')}</label>
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
 
@@ -924,14 +932,15 @@ module ApplicationHelper
 
   # related to comments
   def show_comments_for(item)
-    html_string = "<p>There are #{@comments.size} comments in this discussion.</p>\n<p>"
+    html_string = "<p>#{t('application_helper.show_comments_for.comment_count',
+                          :count => @comments.size)}</p>\n<p>"
 
     logger.debug("what are comments: " + @comments.inspect)
     if @comments.size > 0
-      html_string += "Read and "
+      html_string += t('application_helper.show_comments_for.read_and')
     end
 
-    html_string += link_to("join this discussion",
+    html_string += link_to(t('application_helper.show_comments_for.join_discussion'),
                            {:action => :new,
                              :controller => 'comments',
                              :commentable_id => item,
@@ -955,21 +964,21 @@ module ApplicationHelper
         comment_string += flagging_links_for(comment,true,'comments')
         if logged_in? and @at_least_a_moderator
           comment_string += "<ul>"
-          comment_string += "<li class='first'>" + link_to("Edit",
+          comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.edit'),
                                              :controller => 'comments',
                                              :action => :edit,
                                              :id => comment) + "</li>\n"
-          comment_string += "<li>" + link_to("History",
+          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
                                              :controller => 'comments',
                                              :action => :history,
                                              :id => comment) + "</li>\n"
-          comment_string += "<li>" + link_to("Delete",
+          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
                                              {:action => :destroy,
                                                :controller => 'comments',
                                                :id => comment,
                                                :authenticity_token => form_authenticity_token},
                                              :method => :post,
-                                             :confirm => 'Are you sure?') + "</li>\n"
+                                             :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
           comment_string += "</ul>\n"
         end
         comment_string += "</div>" # comment-tools
@@ -979,12 +988,12 @@ module ApplicationHelper
 
         html_string += '<div class="comment-outer-wrapper">'
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
-                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;said <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
+                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end
 
-      html_string += "<p>" + link_to("join this discussion",
+      html_string += "<p>" + link_to(t('application_helper.show_comments_for.join_discussion'),
                                      {:action => :new,
                                        :controller => 'comments',
                                        :commentable_id => item,
@@ -1002,9 +1011,9 @@ module ApplicationHelper
     html_string = String.new
     if FLAGGING_TAGS.size > 0 and !item.already_at_blank_version?
       if first
-        html_string = "                                        <ul><li class=\"first flag\">Flag as:</li>\n"
+        html_string = "<ul><li class=\"first flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       else
-        html_string = "                                         <ul><li class=\"flag\">Flag as:</li>\n"
+        html_string = "<ul><li class=\"flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       end
       html_string += "<li><ul>\n"
       flag_count = 1
@@ -1021,14 +1030,14 @@ module ApplicationHelper
                                    :flag => flag,
                                    :id => item,
                                    :version => item.version },
-                                 :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
+                                 :confirm => t('application_helper.flagging_links_for.can_you_edit')) + "</li>\n"
         else
           html_string += link_to(flag,
                                  { :action => 'flag_form',
                                    :flag => flag,
                                    :id => item,
                                    :version => item.version },
-                                 :confirm => 'Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?') + "</li>\n"
+                                 :confirm => t('application_helper.flagging_links_for.can_you_edit')) + "</li>\n"
         end
 
         flag_count += 1
@@ -1041,12 +1050,15 @@ module ApplicationHelper
   def pending_review(item)
     html_string = String.new
     if item.disputed?
-      html_string = "<h4>Review Pending: "
+      html_string = "<h4>#{t('application_helper.pending_review.pending')} "
       privacy_type = item.respond_to?(:private) && item.private? ? "private" : "public"
       if !item.already_at_blank_version?
-        html_string += "currently reverted to non-disputed #{privacy_type} version \# #{item.version}"
+        html_string += t('application_helper.pending_review.reverted',
+                         :privacy_type => privacy_type,
+                         :item_version => item.version)
       elsif
-        html_string += "currently no non-disputed #{privacy_type} versions of this item. Details of the #{privacy_type} version of this item are not being displayed at this time."
+        html_string += t('application_helper.pending_review.no_safe_version',
+                         :privacy_type => privacy_type)
       end
       html_string += "</h4>"
     end
@@ -1066,7 +1078,7 @@ module ApplicationHelper
     if check_permission == false or can_preview?(:item => item, :version_number => version_number)
       link_to link_text, url_for_preview_of(item, version_number)
     else
-      'not available'
+      t('application_helper.link_to_preview_of.not_available')
     end
   end
 
@@ -1187,10 +1199,10 @@ module ApplicationHelper
 
     # using the current sort direction, create the image we'll use display
     if direction == 'desc'
-      direction_image = image_tag('arrow_down.gif', :alt => 'Descending. ', :class => 'sorting_control', :width => 16, :height => 7)
+      direction_image = image_tag('arrow_down.gif', :alt => t('application_helper.search_sorting_controls_for.descending'), :class => 'sorting_control', :width => 16, :height => 7)
     else
       direction == 'asc' # if direction is something else, we set it right here
-      direction_image = image_tag('arrow_up.gif', :alt => 'Ascending. ', :class => 'sorting_control', :width => 16, :height => 7)
+      direction_image = image_tag('arrow_up.gif', :alt => t('application_helper.search_sorting_controls_for.ascending'), :class => 'sorting_control', :width => 16, :height => 7)
     end
 
     # create the link based on sort type and direction (user provided or default)
@@ -1234,7 +1246,7 @@ module ApplicationHelper
     # not happy with this icon, just say private: for now
     # TODO: replace with better icon
     # image_tag 'privacy_icon.gif', :width => 16, :height => 15, :alt => "This item is private. ", :class => 'privacy_icon'
-      "private: "
+      t('application_helper.privacy_image.private')
   end
 
   def privacy_image_for(item)
@@ -1246,9 +1258,11 @@ module ApplicationHelper
   def kete_time_ago_in_words(from_time)
     string = String.new
     if from_time < Time.now - 1.week
-      string = "on " + from_time.to_s(:euro_date_time)
+      string = t('application_helper.kete_time_ago_in_words.longer_than_a_week',
+                 :date => from_time.to_s(:euro_date_time))
     else
-      string = time_ago_in_words(from_time) + " ago"
+      string = t('application_helper.kete_time_ago_in_words.within_a_week',
+                 :time => time_ago_in_words(from_time))
     end
     string
   end
@@ -1259,7 +1273,7 @@ module ApplicationHelper
     html = String.new
     if ENABLE_EMBEDDED_SUPPORT
       html += start_html
-      html+= "Embedded metadata will be harvested from the item's binary file to fill out any fields that match the site's settings."
+      html += t('application_helper.embedded_enabled_message.harvesting')
       html += end_html
     end
     html
