@@ -96,21 +96,21 @@ module GoogleMap
           # if we're on the edit pages, we want these fields to be present
           fields = String.new
           if field_type == 'map_address'
-            fields += label_tag(map_data[:address_field], "Address:", :class => 'inline') +
+            fields += label_tag(map_data[:address_field], I18n.t('google_map_lib.extended_field_map_editor.address'), :class => 'inline') +
                       text_field_tag("#{name}[address]",
                                       @current_address,
                                      { :id => map_data[:address_field], :size => 45 }) + "<br />"
           end
-          fields += label_tag(map_data[:coords_field], "Latitude and Longitude coordinates:", :class => 'inline') +
+          fields += label_tag(map_data[:coords_field], I18n.t('google_map_lib.extended_field_map_editor.lat_lng'), :class => 'inline') +
                     text_field_tag("#{name}[coords]",
                                     @current_coords,
                                    { :id => map_data[:coords_field] }) + "<br />"
-          fields += label_tag(map_data[:zoom_lvl_field], "Zoom level for map:", :class => 'inline') +
+          fields += label_tag(map_data[:zoom_lvl_field], I18n.t('google_map_lib.extended_field_map_editor.zoom_lvl'), :class => 'inline') +
                     text_field_tag("#{name}[zoom_lvl]",
                                     @current_zoom_lvl,
                                    { :id => map_data[:zoom_lvl_field], :size => 2 })
           html += content_tag('div', fields, { :id => "#{map_data[:map_id]}_fields" })
-          html += content_tag('div', "This feature requires exact data to function properly.",
+          html += content_tag('div', I18n.t('google_map_lib.extended_field_map_editor.need_exact_data'),
                                      { :id => "#{map_data[:map_id]}_warning" })
         end
         # If we're on the show pages, and the map type shows the address
@@ -131,22 +131,22 @@ module GoogleMap
         end
 
         html += content_tag('p', "<a href='#' id='#{map_data[:coords_field]}_show_hide' style='display:none;'>
-                                    <small>Show Latitude/Longitude</small>
+                                    <small>#{I18n.t('google_map_lib.extended_field_map_editor.show_lat_lng')}</small>
                                   </a><br />
                                   <em id='#{map_data[:coords_field]}_display'>
-                                    <span id='#{map_data[:coords_field]}_display_label'>Latitude and Longitude coordinates:</span>
+                                    <span id='#{map_data[:coords_field]}_display_label'>#{I18n.t('google_map_lib.extended_field_map_editor.lat_lng')}</span>
                                     #{coords_text}
                                   </em>",
                                  latlng_data) if display_coords
 
         # create the google map div
         map_options = { :style => 'width:550px;' }.merge(options)
-        html += content_tag('div', "<small>(javascript needs to be on to use Google Maps)</small>", map_options.merge({:id => map_data[:map_id]}))
+        html += content_tag('div', "<small>(#{I18n.t('google_map_lib.extended_field_map_editor.need_javascript')})</small>", map_options.merge({:id => map_data[:map_id]}))
         if generate_text_fields
           controller = (@new_item_controller || params[:controller])
           topic_type_id = controller == 'topics' ? (params[:new_item_topic_type] || (params[:topic] && params[:topic][:topic_type_id]) || current_item.topic_type.id) : nil
           unless extended_field.is_required?(controller, topic_type_id)
-            html += "OR #{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} <strong>don't record a location</strong>"
+            html += "OR #{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} <strong>#{I18n.t('google_map_lib.extended_field_map_editor.no_location')}</strong>"
           end
           html += hidden_field_tag("#{name}[no_map]", "0")
         end
@@ -181,13 +181,15 @@ module GoogleMap
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank? || (values['no_map'] == "1")
       # the values passed in should form an array
-      return "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently #{values.class.name} #{values.inspect}. Why?" unless values.is_a?(Hash)
+      return I18n.t('google_map_lib.validate_extended_map_field_content.not_a_hash',
+                    :class => values.class.name,
+                    :value => values.inspect) unless values.is_a?(Hash)
       # check if this field is required and not set
       if values[:coords].nil? || values[:zoom_lvl].nil?
         if extended_field_mapping.required
-          return "is not present. This field is required so you must enter something before saving."
+          return I18n.t('google_map_lib.validate_extended_map_field_content.not_present_required')
         else
-          return "is not present. If you don't want to include one, select 'don't record a location'."
+          return I18n.t('google_map_lib.validate_extended_map_field_content.not_present_optional')
         end
       end
       # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
@@ -200,7 +202,9 @@ module GoogleMap
       rescue
         wrong_format = true
       end
-      return "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currenty #{values.class.name} #{values.inspect}. Why?" if wrong_format
+      return I18n.t('google_map_lib.validate_extended_map_field_content.wrong_format',
+                    :class => values.class.name,
+                    :value => values.inspect) if wrong_format
     end
     # both the google map and google map with address options use the same code
     alias validate_extended_map_address_field_content validate_extended_map_field_content
@@ -265,11 +269,11 @@ module GoogleMap
           function initialize_google_map(map_id, map_type, latitude, longitude, zoom_lvl, latlng_text_field, zoom_text_field, address_text_field) {
             // make sure we don't do any google map code unless the browser supports it
             if (!google.maps.BrowserIsCompatible()) {
-              alert('Google Maps is not compatible with this browser. Try using Firefox 3, Internet Explorer 7, or Safari 3.'); return;
+              alert('#{I18n.t('google_map_lib.load_google_map_api.not_compatible')}'); return;
             }
             // check the google map div is present on the page before continuing
             if (!$(map_id)) {
-              alert('You are trying to initiate the google map api on a non-existant div (' + map_id + '). Debug this!'); return;
+              alert('#{I18n.t('google_map_lib.load_google_map_api.non_existant_div')} - ' + map_id); return;
             }
             // clear/resize the div on both displays, and replace the warning/hide the fields
             $(map_id).value = '';
@@ -282,11 +286,11 @@ module GoogleMap
                                                      if ($(latlng_text_field + \'_display\').hidden_status == \'hidden\') {
                                                        $(latlng_text_field + \'_display\').show();
                                                        $(latlng_text_field + \'_display\').hidden_status = \'showing\';
-                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>Hide Latitude/Longitude</small>\');
+                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>' + I18n.t('google_map_lib.load_google_map_api.hide_lat_lng') + '</small>\');
                                                      } else {
                                                        $(latlng_text_field + \'_display\').hide();
                                                        $(latlng_text_field + \'_display\').hidden_status = \'hidden\';
-                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>Show Latitude/Longitude</small>\');
+                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>' +  I18n.t('google_map_lib.load_google_map_api.show_lat_lng') + '</small>\');
                                                      }
                                                      event.stop();
                                                    });' :
@@ -359,7 +363,7 @@ module GoogleMap
             if (map.zoom_lvl_value == '') { map.zoom_lvl_value = #{@default_zoom_lvl}; }
             // If the values arn't populated by now (after 4 different sources), something went wrong.
             if (map.latitude_value == '' || map.longitude_value == '' || map.zoom_lvl_value == '') {
-              alert('ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!'); return false;
+              alert('#{I18n.t('google_map_lib.load_google_map_api.lat_lng_not_set')}'); return false;
             }
             if ($(map.latlng_text_field) && $(map.latlng_text_field).value == '') {
               $(map.latlng_text_field).value = map.latitude_value + ',' + map.longitude_value;
@@ -400,7 +404,7 @@ module GoogleMap
             map.geocoder_obj.getLocations(latlng_obj, function(response) {
               if (!response || response.Status.code != 200) {
                 // if something went wrong, give the status code. This should rarely happen.
-                alert('Status Code:' + response.Status.code);
+                alert('#{I18n.t('google_map_lib.load_google_map_api.status_code')}' + response.Status.code);
               } else {
                 // get the place
                 place = response.Placemark[0];
@@ -408,9 +412,9 @@ module GoogleMap
                 // if it isn't, we end up clicking and getting sent half way across the country
                 if (place.AddressDetails.Accuracy > 5) {
                   // create the text used in a bubble soon
-                  text = '<b>Address:</b>' + place.address + '<br>' +
-                         '<b>Accuracy:</b>' + place.AddressDetails.Accuracy + '<br>' +
-                         '<b>Country code:</b> ' + place.AddressDetails.Country.CountryNameCode;
+                  text = '<b>#{I18n.t('google_map_lib.load_google_map_api.address')}</b>' + place.address + '<br>' +
+                         '<b>#{I18n.t('google_map_lib.load_google_map_api.accuracy')}</b>' + place.AddressDetails.Accuracy + '<br>' +
+                         '<b>#{I18n.t('google_map_lib.load_google_map_api.country_code')}</b> ' + place.AddressDetails.Country.CountryNameCode;
                   // remove the marker set earlier and reposition it to the results location
                   remove_all_markers_and_add_one_to(map, place.Point.coordinates[1], place.Point.coordinates[0], true, text);
                   // Form a a string like   -45.861836,127.398373  (which is the format we use)

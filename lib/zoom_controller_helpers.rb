@@ -48,7 +48,8 @@ module ZoomControllerHelpers
       end
 
       if @successful
-        flash[:notice] = "#{pretty_zoom_class} was successfully deleted."
+        flash[:notice] = I18n.t('zoom_controller_helpers_lib.zoom_destroy_and_redirect.destroyed',
+                                :pretty_zoom_class => pretty_zoom_class)
       end
       redirect_to :action => 'list'
     end

@@ -81,10 +81,12 @@ module ExtendedContentController
 
         if new_elements.size > 0
           if @site_admin
-            @item.errors.add('Description', "contains #{new_elements.size} new insecure elements and you forgot to check the 'do not sanitize' checkbox.")
+            @item.errors.add('Description', I18n.t('extended_content_controller_lib.ensure_no_new_insecure_elements_in.contains_new_elements_admin',
+                                                   :count => new_elements.size))
             false
           else
-            @item.errors.add('Description', "contains #{new_elements.size} new insecure elements but you're not authorized to add them.")
+            @item.errors.add('Description', I18n.t('extended_content_controller_lib.ensure_no_new_insecure_elements_in.contains_new_elements',
+                                                   :count => new_elements.size))
             logger.warn "WARNING: #{current_user.login} tried to add the following new elements to #{item_type} #{@item.id}"
             new_elements.each { |element| logger.warn element.inspect }
             false

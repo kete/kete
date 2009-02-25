@@ -666,6 +666,10 @@ en:
     send_email: 
       email_sent: Your email has been sent. You will receive the reply in your email box.
       need_subject_and_message: Both subject and message must be filled in. Please try again.
+  extended_content_controller_lib: 
+    ensure_no_new_insecure_elements_in: 
+      contains_new_elements: contains {{count}} new insecure elements but you're not authorized to add them.
+      contains_new_elements_admin: contains {{count}} new insecure elements and you forgot to check the 'do not sanitize' checkbox.
   extended_content_lib: 
     validate_extended_checkbox_field_content: 
       must_be_valid: "{{label}} must be a valid checkbox value (Yes or No)"
@@ -693,6 +697,46 @@ en:
     title: Extended Fields
     topic_type_choices: Topic Type Choices
     topic_type_choices_description: Ftype must be a "Pre-populated Choices (topic type)" option for these options to be available to users.
+  flagging_controller_lib: 
+    flag_version: 
+      item_flagged: Thank you for your input.  A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being.
+    preview: 
+      no_public: There is currently no public version of this {{controller}} available.
+    reject: 
+      rejected: This version of this {{zoom_class}} has been rejected.  The user who submitted the revision will be notified by email.
+    restore: 
+      approved: The content of this {{zoom_class}} has been approved from the selected revision.
+      made_live: Your contribution to {{site_name}} in {{basket_name}} has been made the live version.
+      missing_details: The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information.
+      version_comment: "Content from revision # {{version}}."
+  google_map_lib: 
+    extended_field_map_editor: 
+      address: "Address:"
+      lat_lng: "Latitude and Longitude coordinates:"
+      need_exact_data: This feature requires exact data to function properly.
+      need_javascript: javascript needs to be on to use Google Maps
+      no_location: don't record a location
+      show_lat_lng: Show Latitude/Longitude
+      zoom_lvl: "Zoom level for map:"
+    load_google_map_api: 
+      accuracy: "Accuracy:"
+      address: "Address:"
+      country_code: "Country code:"
+      hide_lat_lng: Hide Latitude/Longitude
+      lat_lng_not_set: "ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!"
+      non_existant_div: You are trying to initiate the google map api on a non-existant div. Debug this!
+      not_compatible: Google Maps is not compatible with this browser. Try using Firefox 3, Internet Explorer 7, or Safari 3.
+      show_lat_lng: Show Latitude/Longitude
+      status_code: "Status Code:"
+    validate_extended_map_field_content: 
+      not_a_hash: is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently {{class}} {{value}}. Why?
+      not_present_optional: is not present. If you don't want to include one, select 'don't record a location'.
+      not_present_required: is not present. This field is required so you must enter something before saving.
+      wrong_format: is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currently {{class}} {{value}}. Why?
+  has_contributors_lib: 
+    submitter_of: 
+      data_corruption: Possible data corruption. You should consider running rake kete:repair.
+      no_contributor: It looks like there is no contributor associated with version {{version}} of {{item_class}} {{item_id}}.
   image_file_model: 
     not_acceptable: is not acceptable. It should be a .jpg, .gif, or other image file.
   images_controller: 
@@ -701,6 +745,19 @@ en:
   import_model: 
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
     must_be_seconds: the interval must be in seconds
+  importer_lib: 
+    do_work: 
+      in_progress: in progress
+    importer_prepare_extended_field: 
+      not_available: not available
+    importer_process: 
+      already_have_record: kete already has a copy of this record
+    importer_update_processing_vars_at_end: 
+      failed_status: failed
+      import_failed: "Import failed. "
+      import_successful: Import was successful.
+    importer_update_processing_vars_if_rescue: 
+      failed_status: failed
   importers_controller: 
     create: 
       already_running: There is another import of this type running at this time.  Please try again later.
@@ -836,6 +893,11 @@ en:
     last_modified: Last Modified
     relevance: Relevance
     title: Title
+  site_linking_lib: 
+    error_linking_site: 
+      appears_listed: However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>.
+      error_occured: "There was an error linking to your site. "
+      manual_linking: You can do it manually at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>.
   slideshows_helper: 
     all_results: Back to results
     next: Next &raquo;
@@ -846,6 +908,12 @@ en:
       last_word_connector: ", and "
       two_words_connector: " and "
       words_connector: ", "
+  tagging_controller_lib: 
+    add_tags: 
+      error_adding_tags: "There was an error adding the new tags to {{item_title}}: Tags {{errors}}"
+      no_tags_entered: "There was an error adding the new tags to {{item_title}}: No tags were entered."
+      tags_added: The new tag(s) have been added to {{item_title}}
+      version_comment: "Only tags added: {{tags_list}}"
   time: 
     am: am
     formats: 
@@ -901,5 +969,8 @@ en:
   web_links_controller: 
     update: 
       updated: Web Link was successfully updated.
+  zoom_controller_helpers_lib: 
+    zoom_destroy_and_redirect: 
+      destroyed: "{{pretty_zoom_class}} was successfully deleted."
   zoom_dbs_controller: 
     title: Zoom Dbs

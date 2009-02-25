@@ -30,12 +30,14 @@ module SiteLinking
 
     def error_linking_site
       set_kete_net_urls
-      top_message = "There was an error linking to your site. "
+      top_message = I18n.t('site_linking_lib.error_linking_site.error_occured')
       site_listing
       if @site_listing.blank?
-        top_message += "You can do it manually at <a href='#{@new_kete_site}'>#{@new_kete_site}</a>."
+        top_message += I18n.t('site_linking_lib.error_linking_site.manual_linking',
+                              :new_kete_site => @new_kete_site)
       else
-        top_message += "However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='#{@site_listing}'>#{@site_listing}</a>."
+        top_message += I18n.t('site_linking_lib.error_linking_site.appears_listed',
+                              :new_kete_site => @new_kete_site)
       end
       render :update do |page|
         page.hide('spinner')
