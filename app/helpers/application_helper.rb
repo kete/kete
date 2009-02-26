@@ -637,7 +637,7 @@ module ApplicationHelper
     logger.info("using this")
     max, min = 0, 0
     tags.each { |t|
-      t_count = t[:taggings_count].to_i
+      t_count = t[:total_taggings_count].to_i
       max = t_count if t_count > max
       min = t_count if t_count < min
     }
@@ -645,7 +645,7 @@ module ApplicationHelper
     divisor = ((max - min) / classes.size) + 1
 
     tags.each { |t|
-      t_count = t[:taggings_count].to_i
+      t_count = t[:total_taggings_count].to_i
       yield t[:id], t[:name], classes[(t_count - min) / divisor]
     }
   end
