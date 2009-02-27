@@ -84,33 +84,57 @@ class IndexPageController < ApplicationController
             disabled_recent_topics_baskets = nil unless disabled_recent_topics_baskets.size > 0
 
             # form our find arguments
-            args = { :limit => @recent_topics_limit, :include => :versions }
+            args = { :offset => 0, :limit => @recent_topics_limit, :include => :versions }
             args[:conditions] = ["basket_id NOT IN (?) AND id != ?", (disabled_recent_topics_baskets || 0), (@topic || 0)]
 
-            # Make the find query based on current basket and privacy level
-            @recent_topics_items = nil
-            if @current_basket == @site_basket
-              @recent_topics_items = @allow_private ? Topic.recent(args) : Topic.recent(args).public
-            else
-              @recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
-            end
+            @recent_topics_items = Array.new
+            @total_items = Topic.count
 
-            # Cycle through the 5 recent topics, and get the latest unflagged
-            # version with the privacy that the current user is able to see
-            @recent_topics_items.collect! do |topic|
-              if @allow_private && topic.latest_version_is_private?
-                topic.latest_unflagged_version_with_condition { |v| v.private? }
+            # We need to loop over all topics until we have a complete array. If for example the
+            # first 5 topics have all versions disputed, then we end up with nothing being displayed
+            # on the homepage. By using a while, we can resolve this issue
+            while @recent_topics_items.size < @recent_topics_limit && args[:offset] <= @total_items
+              # Make the find query based on current basket and privacy level
+              if @current_basket == @site_basket
+                recent_topics_items = @allow_private ? Topic.recent(args) : Topic.recent(args).public
               else
-                topic.latest_unflagged_version_with_condition { |v| !v.private? }
+                recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
               end
+
+              # Cycle through the 5 recent topics, and get the latest unflagged
+              # version with the privacy that the current user is able to see
+              recent_topics_items.collect! do |topic|
+                if @allow_private && topic.latest_version_is_private?
+                  topic.latest_unflagged_version_with_condition { |v| v.private? }
+                else
+                  topic.latest_unflagged_version_with_condition { |v| !v.private? }
+                end
+              end
+
+              logger.debug("recent_topics_items after reverse recursive selection: " + recent_topics_items.inspect)
+
+              # If the version we have isn't available, remove it
+              recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
+
+              logger.debug("recent_topics_items after rejection: " + recent_topics_items.inspect)
+
+              # Add to the recent_topics_items array the amount we need to complete it
+              unless recent_topics_items.blank?
+                amount_left = (@recent_topics_limit - @recent_topics_items.size)
+                @recent_topics_items << recent_topics_items[0..(amount_left - 1)]
+
+                # We end up with [[<Topic>, <Topic>], [<Topic>], [<Topic>]] at this point,
+                # lets make it [<Topic>, <Topic>, <Topic>, <Topic>] for the next loop
+                @recent_topics_items = @recent_topics_items.flatten.compact
+              end
+
+              # incase we don't have enough yet, loop over the next set
+              # increase the offset by @recent_topics_limit amount
+              args[:offset] += @recent_topics_limit
             end
 
-            logger.debug("recent_topics_items after reverse recursive selection: " + @recent_topics_items.inspect)
-
-            # If the version we have isn't available, remove it
-            @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }
-
-            # with the final topic, sort by the revisions created_at, rather than the public topics created_at
+            # with the final topic, sort by the versions created_at,
+            # rather than the public topics created_at
             @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
           end
 
