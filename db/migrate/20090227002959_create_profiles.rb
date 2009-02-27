@@ -1,8 +1,7 @@
 class CreateProfiles < ActiveRecord::Migration
   def self.up
     create_table :profiles do |t|
-      t.string :name
-      t.string :type
+      t.string :name, :type
       t.text :rules
 
       t.timestamps
