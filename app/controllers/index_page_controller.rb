@@ -95,11 +95,17 @@ class IndexPageController < ApplicationController
               @recent_topics_items = @allow_private ? @current_basket.topics.recent(args) : @current_basket.topics.recent(args).public
             end
 
-            # If the current user is allowed to see private items, and a private item is the most recent version
-            # collect either the private version or the public one
-            @recent_topics_items.collect! { |topic| topic.latest_version_is_private? ? topic.private_version! : topic } if @allow_private
+            # Cycle through the 5 recent topics, and get the latest unflagged
+            # version with the privacy that the current user is able to see
+            @recent_topics_items.collect! do |topic|
+              if @allow_private && topic.latest_version_is_private?
+                topic.latest_unflagged_version_with_condition { |v| v.private? }
+              else
+                topic.latest_unflagged_version_with_condition { |v| !v.private? }
+              end
+            end
 
-            logger.debug("recent_topics_items after latest version: " + @recent_topics_items.inspect)
+            logger.debug("recent_topics_items after reverse recursive selection: " + @recent_topics_items.inspect)
 
             # If the version we have isn't available, remove it
             @recent_topics_items.reject! { |topic| topic.disputed_or_not_available? }

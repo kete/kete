@@ -55,6 +55,14 @@ module ConfigureAsKeteContentItem
         alias_method :tag_list, :flag_list
         alias_method :tag_list=, :flag_list=
         alias_method :tag_counts, :flag_counts
+        def basket
+          @latest_version ||= #{klass.name}.find_by_id(self.#{klass.name.tableize.singularize}_id)
+          @latest_version.basket
+        end
+        def first_related_image
+          @latest_version ||= #{klass.name}.find_by_id(self.#{klass.name.tableize.singularize}_id)
+          @latest_version.first_related_image
+        end
       RUBY
 
       # methods and declarations related to moderation and flagging

@@ -1233,7 +1233,7 @@ module ApplicationHelper
   end
 
   def privacy_image_for(item)
-    if item.is_private?
+    if item.private?
       privacy_image
     end
   end
