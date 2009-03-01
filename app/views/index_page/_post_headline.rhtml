@@ -1,8 +1,8 @@
 <% post_url = url_for(:urlified_name => post_headline.basket.urlified_name,
                       :controller => 'topics',
                       :action => 'show',
-                      :id => post_headline,
-                      :private => (post_headline.is_private?) ? 'true' : nil)
+                      :id => (post_headline.respond_to?('topic_id') ? post_headline.topic_id : post_headline),
+                      :private => (post_headline.private?) ? 'true' : nil)
    post_excerpt = !post_headline.short_summary.blank? ? strip_tags(post_headline.short_summary) : strip_tags(post_headline.description) -%>
 <div class="generic-result-wrapper" id="item_<%= post_headline.id %>_wrapper">
   <% unless post_headline.first_related_image.blank? %>
