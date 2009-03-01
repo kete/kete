@@ -179,7 +179,7 @@ en:
         exclusion: is reserved
         greater_than: must be greater than {{count}}
         greater_than_or_equal_to: must be greater than or equal to {{count}}
-        inclusion: 'is not included in the list. Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.'
+        inclusion: is not included in the list. Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.
         invalid: is invalid
         less_than: must be less than {{count}}
         less_than_or_equal_to: must be less than or equal to {{count}}
@@ -345,6 +345,8 @@ en:
   authenticated_system_lib: 
     login_from_cookie: 
       logged_in: Logged in successfully
+  authorization_initializer: 
+    permission_denied: Permission denied. Your account cannot access the requested page.
   basket_model: 
     all_users: All users
     archives_by_type: By type
