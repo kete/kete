@@ -179,7 +179,7 @@ en:
         exclusion: is reserved
         greater_than: must be greater than {{count}}
         greater_than_or_equal_to: must be greater than or equal to {{count}}
-        inclusion: is not included in the list
+        inclusion: 'is not included in the list. Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.'
         invalid: is invalid
         less_than: must be less than {{count}}
         less_than_or_equal_to: must be less than or equal to {{count}}
