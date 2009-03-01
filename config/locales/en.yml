@@ -759,6 +759,47 @@ en:
     title: Extended Fields
     topic_type_choices: Topic Type Choices
     topic_type_choices_description: Ftype must be a "Pre-populated Choices (topic type)" option for these options to be available to users.
+  extended_fields_helper: 
+    additional_extended_field_control: 
+      add_value: Add another value
+    children_form_column: 
+      add_more_sub_choices: Add more sub-choices
+      existing_sub_choices: Existing sub-choices
+      need_choice_for_children: You cannot select child choices until the choice has been created.
+    extended_field_choice_autocomplete_editor: 
+      getting_choices: "Getting choices. "
+    extended_field_choice_select_editor: 
+      getting_choices: "Getting choices. "
+    extended_field_radio_editor: 
+      "no": "No"
+      no_value: No value
+      "yes": "Yes"
+    extended_field_topic_type_editor: 
+      getting_topics: "Getting topics. "
+    ftype_form_column: 
+      cannot_be_changed: (cannot be changed)
+      check_box: Check box
+      choices_auto_complete: Choices (auto-completion)
+      choices_drop_down: Choices (drop-down)
+      choices_topic_type: Pre-populated Choices (topic type)
+      date: Date
+      location_map: Location on map (lat/lng coordinates)
+      location_map_address: Location on map with address
+      radio_button: Radio buttons
+      text: Text
+      text_box: Text box
+    label_form_column: 
+      cannot_be_changed: (cannot be changed)
+    multiple_form_column: 
+      cannot_be_changed: (cannot be changed)
+    parent_form_column: 
+      need_choice_for_parent: You cannot select a parent choice until the choice has been created.
+    pseudo_choices_form_column: 
+      allow_user_choices: Allow user addition of choices?
+      allow_user_choices_no: "No"
+      allow_user_choices_yes: "Yes"
+      collapse_all: Collapse all
+      expand_all: Expand all
   flagging_controller_lib: 
     flag_version: 
       item_flagged: Thank you for your input.  A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being.
@@ -880,6 +921,13 @@ en:
       removed: Successfully removed user from {{basket_name}}.
     unban: 
       unbanned: Successfully removed ban on user.
+  members_helper: 
+    admin_actions_correct_list_item: 
+      are_you_sure: Are you sure?
+      banned: "Banned "
+      undo: (undo)
+    get_user_role_creation_date_for: 
+      unknown: unknown
   number: 
     currency: 
       format: 
@@ -919,6 +967,9 @@ en:
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
   oai_pmh_repository_sets_controller: 
     title: Oai Pmh Repository Sets
+  privacy_controls_helper: 
+    privacy_controls_description: 
+      public_vs_private: "Note: Individual versions of this item can be public or private. The latest public version will be shown to non-basket members if available.  Otherwise, this item is completely private."
   private_files_controller: 
     bad_request: "Error 400: Bad Request"
     not_found: "Error 404: File Not Found"
@@ -950,6 +1001,15 @@ en:
       zoom_rebuilt: ZOOM indexes rebuilt
     rebuild_zoom_index: 
       already_running: There is another search record rebuild running at this time.  Please try again later.
+  search_helper: 
+    last_part_of_title_if_refinement_of: 
+      and: " and"
+      contributed_by: " contributed by {{contributor}}"
+      privacy_type: " that are {{privacy}}"
+      related_to: " related to {{source_item}}"
+      tagged_as: " tagged as {{tag_name}}"
+    pagination_links: 
+      depreciated: depreciated, we now use will_paginate plugin
   search_model: 
     date: Date
     last_modified: Last Modified
@@ -1032,7 +1092,26 @@ en:
     update: 
       updated: Web Link was successfully updated.
   zoom_controller_helpers_lib: 
+    zoom_class_humanize: 
+      audio_recording: Audio
+      comment: Discussion
+      document: Document
+      still_image: Image
+      topic: Topic
+      video: Video
+      web_link: Web Link
+    zoom_class_plural_humanize: 
+      audio_recording: Audio
+      comment: Discussion
+      document: Documents
+      still_image: Images
+      topic: Topics
+      video: Video
+      web_link: Web Links
     zoom_destroy_and_redirect: 
       destroyed: "{{pretty_zoom_class}} was successfully deleted."
   zoom_dbs_controller: 
     title: Zoom Dbs
+  zoom_helpers_lib: 
+    zoom_controllers_as_options: 
+      all: All {{zoom_class}}

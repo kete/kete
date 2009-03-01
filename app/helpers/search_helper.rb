@@ -23,23 +23,23 @@ module SearchHelper
   def last_part_of_title_if_refinement_of(add_links = true)
     end_of_title_parts = Array.new
 
-    end_of_title_parts << " tagged as \"#{@tag.name}\"" if !@tag.nil?
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.tagged_as', :tag_name => @tag.name) if !@tag.nil?
 
     if !@contributor.nil?
       contributor = add_links ? link_to_profile_for(@contributor) : @contributor.user_name
-      contributor_string = " contributed by \"#{contributor}\""
+      contributor_string = t('search_helper.last_part_of_title_if_refinement_of.contributed_by', :contributor => contributor)
       contributor_string += ' ' + avatar_for(@contributor) if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT
       end_of_title_parts << contributor_string
     end
 
     unless @source_item.nil?
       @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
-      end_of_title_parts << " related to \"#{@source_item.title}\""
+      end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.related_to', :source_item => @source_item.title)
     end
 
-    end_of_title_parts << " that are #{@privacy}" if !@privacy.nil?
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.privacy_type', :privacy => @privacy) if !@privacy.nil?
 
-    end_of_title = end_of_title_parts.join(" and")
+    end_of_title = end_of_title_parts.join(t('search_helper.last_part_of_title_if_refinement_of.and'))
   end
 
   # We have to turn off linking to the contributor
@@ -49,7 +49,7 @@ module SearchHelper
 
   # depreciated, now use will_paginate
   def pagination_links(options = { })
-    html_string = "depreciated, we now use will_paginate plugin"
+    html_string = t('search_helper.pagination_links.depreciated')
   end
 
   def title_setup_first_part(title_so_far)
