@@ -737,11 +737,11 @@ class SearchController < ApplicationController
 
     case params[:function]
     when "remove"
-      @verb = "Existing"
+      @verb = t('search_controller.find_related.existing')
       @next_action = "unlink"
       @results = existing
     when "restore"
-      @verb = "Restore"
+      @verb = t('search_controller.find_related.restore')
       @next_action = "link"
 
       # Find resulting items through deleted relationships
@@ -752,7 +752,7 @@ class SearchController < ApplicationController
                                                 .collect { |r| Topic.find(r.topic_id) }
       end
     when "add"
-      @verb = "Add"
+      @verb = t('search_controller.find_related.add')
       @next_action = "link"
       @results = Array.new
 

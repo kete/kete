@@ -1,10 +1,10 @@
-@title = SITE_NAME + ' - ' + @current_basket.name + ' - Latest ' + @number_per_page.to_s + ' Tags'
+@title = t('tags.rss.title', :site_name => SITE_NAME, :basket_name => @current_basket.name, :count => @number_per_page.to_s)
 xml.instruct! :xml, :version=>"1.0"
 xml.rss(:version=>"2.0"){
   xml.channel{
     xml.title(@title)
     xml.link(request.protocol + request.host + request.request_uri)
-    xml.description("Tags in #{@current_basket.name}")
+    xml.description(t('tags.rss.description', :basket_name => @current_basket.name))
     xml.language('en-nz')
     for tag in @tags
       xml.item do

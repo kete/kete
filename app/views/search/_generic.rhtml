@@ -5,19 +5,19 @@
   <div class="generic-result-description">
     <%= strip_tags(short_summary) %>
     <div class="generic-result-more">
-      <%= link_to("more &gt;&gt;", source_url, { :title => "More information on #{title}", :tabindex => '1' }) %>
+      <%= link_to(t('search.generic.more'), source_url, { :title => t('search.generic.more_on', :title => title), :tabindex => '1' }) %>
     </div>
   </div>
   <% if related -%>
     <div class="generic-result-related">
-      Related:
+      <%=t 'search.generic.related' %>
       <% totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) } -%>
       <%= totals_array.to_sentence %>
       <% if related && !related[:still_images].blank? -%>
         <div class="topic-result-related-images">
           <%= topic_related_thumbs_from(related[:still_images],
                                         :link_to => source_url,
-                                        :title => "More information on #{title}",
+                                        :title => t('search.generic.more_on', :title => title),
                                         :tabindex => '1' ) -%>
         </div>
       <% end %>

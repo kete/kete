@@ -1,7 +1,7 @@
-<% @title = "#{@verb} related #{zoom_class_plural_humanize(zoom_class_controller(@related_class))}" -%>
+<% @title = t('search.related_form.title', :action => @verb, :zoom_class_plural => zoom_class_plural_humanize(zoom_class_controller(@related_class))) -%>
 <% item_class = @related_class.tableize.humanize.downcase.pluralize -%>
 
-<p><strong><%= params[:function].capitalize %> a:</strong></p>
+<p><strong><%=t 'search.related_form.function_a', :action => @verb %></strong></p>
 <ul class="item_class_choices">
   <% ITEM_CLASSES.each_with_index do |item_class_name,index| -%>
     <li class="<%= (index == 0 ? 'first' : '') -%>">
@@ -19,28 +19,28 @@
 
 <fieldset>
 
-  <legend><%= @verb %> related <%= item_class -%></legend>
+  <legend><%= @title -%></legend>
 
   <% if params[:function] == "add" -%>
     <% privacy = params[:privacy_type] || "public" -%>
     <%= form_tag(params.merge(:search_terms => nil)) -%>
-      <%= content_tag "label", "Search for #{privacy} #{item_class}:", "for" => "search_terms" -%>
+      <%= content_tag "label", t('search.related_form.search_for', :privacy => privacy, :item_class => item_class), "for" => "search_terms" -%>
       <%= text_field_tag "search_terms", params[:search_terms] %>
-      <%= submit_tag "Search" %>
+      <%= submit_tag t('search.related_form.search') %>
     </form>
     <% if show_privacy_search_controls? && permitted_to_view_private_items? -%>
       <% if privacy == 'private' -%>
-        (<%= link_to 'search public', params.merge(:privacy_type => 'public') -%>)
+        (<%= link_to t('search.related_form.search_public'), params.merge(:privacy_type => 'public') -%>)
       <% else -%>
-        (<%= link_to 'search private', params.merge(:privacy_type => 'private') -%>)
+        (<%= link_to t('search.related_form.search_private'), params.merge(:privacy_type => 'private') -%>)
       <% end -%>
     <% end -%>
   <% end -%>
 
   <% if @results.blank? && !params[:search_terms].blank? %>
-  <p class="alone"><strong>No <%= item_class %> found</strong></p>
+  <p class="alone"><strong><%=t 'search.related_form.no_items_found', :item_class => item_class %></strong></p>
   <% elsif !@results.blank? %>
-  <p class="alone">Select which <%= item_class %> to <%= params[:function] %>, then click "<%= params[:function] %>".</p>
+  <p class="alone"><%=t 'search.related_form.select_items', :item_class => item_class, :action => @verb %></p>
 
   <%= form_tag(
     :controller => 'search',
@@ -69,8 +69,8 @@
     <%= will_paginate @results, :params => params.reject { |k, v| k == :page } if @results.respond_to?(:total_entries) %>
   </div>
 
-  <%= submit_tag params[:function].capitalize, :id => 'submit', :onclick => "$('spinner').show();$('submit').hide();" -%>
-  <img src='/images/indicator.gif' width='16' height='16' alt='Executing <%= params[:function].capitalize -%> action. ' id='spinner' style='border:none;display:none;' />
+  <%= submit_tag @verb, :id => 'submit', :onclick => "$('spinner').show();$('submit').hide();" -%>
+  <img src='/images/indicator.gif' width='16' height='16' alt='<%=t 'search.related_form.executing_action', :action => @verb %>' id='spinner' style='border:none;display:none;' />
 
 
   </form>
@@ -80,4 +80,4 @@
 </fieldset>
 
 <!-- <a href="#" onclick="javascript:window.close()">Cancel</a> -->
-<%= link_to_function "Close", "opener.location.reload();window.close()" -%>
+<%= link_to_function t('search.related_form.close'), "opener.location.reload();window.close()" -%>

@@ -1,10 +1,10 @@
-<% @title = 'Editing topic type' -%>
+<% @title = t('topic_types.edit.title') -%>
 
 <h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'update', :id => @topic_type do %>
   <%= render :partial => 'form' %>
-  <div class="wrap"><%= submit_tag 'Edit' %></div>
+  <div class="wrap"><%= submit_tag t('topic_types.edit.edit_button') %></div>
 <% end %>
 
 <table>
@@ -16,6 +16,6 @@
 <% end %>
 </table>
 
-<%= link_to 'Return to topic types', :action => 'list' %>
+<%= link_to t('topic_types.edit.return_to_topic_types'), :action => 'list' %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

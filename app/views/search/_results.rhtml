@@ -25,8 +25,10 @@
       <div class="prev-next"><%= will_paginate @results %></div>
       <div id="result-show">
          <% if @results.size > 0 %>
-            Showing <%= @start -%>-<%= @end_record -%>
-            results of <%= @result_sets[@current_class].size %>
+            <%=t 'search.results.showing_x-y_of_z',
+                 :start => @start,
+                 :finish => @end_record,
+                 :total => @result_sets[@current_class].size %>
       </div>
          <%# we will have result sets for each type of record we are returning %>
          <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
@@ -46,7 +48,7 @@
              <% end %>
             <% end %>
          <% else %>
-            No results found.
+            <%=t 'search.results.no_results_found' %>
       </div>
     <% end %>
 
@@ -57,14 +59,14 @@
                         <div id="bottomlinks">
                                 <div id="addnew">
                                 <% if current_user_can_see_add_links? && @current_class != 'Comment' %>
-                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => @current_class) -%>
+                                        <%= link_to_add_item(:phrase => t('search.results.add_a_new'), :item_class => @current_class) -%>
                                 <% else -%>
                                         &nbsp;
                                 <% end -%><br />&nbsp;
                                 </div>
 
                                 <div id="showlinks">
-                                        Show
+                                        <%=t 'search.results.show' %>
                                         <% # TODO: a helper? %>
                                         <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
                                                 <% if @number_per_page != choice %>
@@ -73,7 +75,7 @@
                                                         <a href="#" id="thisnumber"><%= choice %></a>
                                                 <% end %>
                                         <% end %>
-                                        results on this page
+                                        <%=t 'search.results.results_on_this_page' %>
                                 </div>
                         </div>
 

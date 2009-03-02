@@ -1,9 +1,9 @@
 <tr>
   <td>
-        <h4>Inherited Form Fields</h4>
+        <h4><%=t 'topic_types.inherited_fields.title' %></h4>
                 <% local_id = parent_id unless !local_id.nil? -%>
                 <% if local_id == 1 -%>
-                        <p>You cannot add any additional fields to this topic type.</p>
+                        <p><%=t 'topic_types.inherited_fields.no_more_allowed' %></p>
                 <% else -%>
                         <% # display ancestor fields in order of position -%>
 
@@ -29,11 +29,11 @@
                                                                         (<%= h(mapping.extended_field_xml_element_name) %>)
                                                                 <% end -%>
                                                 <% end -%>
-                                                <%= "(multiple)" if mapping.extended_field_multiple -%>
+                                                <%= t('topic_types.inherited_fields.multiple') if mapping.extended_field_multiple -%>
                                                 <% if mapping.required -%>
-                                                    (required)
+                                                    <%=t 'topic_types.inherited_fields.required' %>
                                                 <% else -%>
-                                                    (optional)
+                                                    <%=t 'topic_types.inherited_fields.optional' %>
                                                 <% end -%>
                                             </p>
                                         <% end -%>
@@ -51,15 +51,15 @@
                                                     (<%= h(mapping.extended_field_xml_element_name) -%>)
                                                 <% end -%>
                                                 <% if mapping.required -%>
-                                                    (required)
+                                                    <%=t 'topic_types.inherited_fields.required' %>
                                                 <% else -%>
-                                                    (optional)
+                                                    <%=t 'topic_types.inherited_fields.optional' %>
                                                 <% end -%>
                                             </p>
                                         <% end -%>
                                     <% end -%>
                                 <% else -%>
-                                        <p>No inherited form fields.</p>
+                                        <p><%=t 'topic_types.inherited_fields.no_inherited_form_fields' %></p>
                                 <% end -%>
                         <% end -%>
                 <% end -%>

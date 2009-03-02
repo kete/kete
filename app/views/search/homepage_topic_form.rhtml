@@ -1,8 +1,8 @@
-<% @title = "Change Homepage Topic" -%>
+<% @title = t('search.homepage_topic_form.title') -%>
 
 <fieldset>
 
-  <legend>Search for Topic</legend>
+  <legend><%=t 'search.homepage_topic_form.search_for_topic' %></legend>
 
   <%= form_tag(
       :controller => 'search',
@@ -12,17 +12,17 @@
       :function => 'find'
       ) %>
 
-    <%= content_tag "label", "Search for Topics:", "for" => "search_terms" -%>
+    <%= content_tag "label", t('search.homepage_topic_form.search_for_topics'), "for" => "search_terms" -%>
     <%= text_field_tag "search_terms", params[:search_terms] %>
-    <%= submit_tag "Search for Topics" %>
+    <%= submit_tag t('search.homepage_topic_form.search_for_topics') %>
 
   </form>
   <!-- End search form -->
 
   <% if @results.blank? && !params[:search_terms].blank? %>
-    <p class="alone"><strong>No Topics found</strong></p>
+    <p class="alone"><strong><%=t 'search.homepage_topic_form.no_topics_found' %></strong></p>
   <% elsif !@results.blank? %>
-    <p class="alone">Select which Topic to mark as Homepage, then click 'Change'.</p>
+    <p class="alone"><%=t 'search.homepage_topic_form.select_homepage_topic' %></p>
 
     <%= form_tag(
         :controller => 'search',
@@ -41,7 +41,7 @@
                                                             :action => 'show',
                                                             :id => @current_homepage },
                                                           :target => '_blank' %></strong>
-          (current homepage topic)
+          <%=t 'search.homepage_topic_form.current_homepage_topic' %>
         </li>
         <% end %>
         <% for item in @results %>
@@ -56,7 +56,7 @@
         <% end %>
       </ul>
 
-      <%= submit_tag 'Change Homepage Topic' %>
+      <%= submit_tag t('search.homepage_topic_form.change_homepage_topic') %>
     </form>
   <% end %>
 
@@ -71,4 +71,4 @@
   }
 }" %>
 
-<%= link_to_function "Close", "updateOpener();window.close()" -%>
+<%= link_to_function t('search.homepage_topic_form.close'), "updateOpener();window.close()" -%>

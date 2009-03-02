@@ -1373,6 +1373,90 @@ en:
     bad_request: "Error 400: Bad Request"
     not_found: "Error 404: File Not Found"
     unauthorized: "Error 401: Unauthorized"
+  search: 
+    all: 
+      results_in: "Results in "
+    for: 
+      current_search: " for your search '{{search_terms}}'"
+      refine_search: Refine your search for '{{search_terms}}' searching in {{basket_link}}
+      refinements: " and {{refinements}}"
+      results_in: "Results in "
+      whole_site: " whole site"
+    form: 
+      in_reverse: In reverse?
+      options: Options
+      privacy_type: "That are:"
+      private: Private
+      public: Public
+      search: Search
+      sort_by: "Sort by:"
+      update_results: update
+    generic: 
+      more: more &gt;&gt;
+      more_on: More information on {{title}}
+      related: "Related:"
+    homepage_topic_form: 
+      change_homepage_topic: Change Homepage Topic
+      close: Close
+      current_homepage_topic: (current homepage topic)
+      no_topics_found: No Topics found
+      search_for_topic: Search for Topic
+      search_for_topics: Search for Topics
+      select_homepage_topic: Select which Topic to mark as Homepage, then click 'Change'.
+      title: Change Homepage Topic
+    image: 
+      more: more &gt;&gt;
+      more_on: More information on {{title}}
+      view_image: View Image
+    index: 
+      title: Search {{basket_name}}
+    link_related: 
+      linked: Linked successfully
+    rebuild_zoom_index: 
+      completed: "Completed. "
+      in_progress: ...in progress.
+      starting: Starting rebuild...
+      title: Zoom Index Rebuild from {{start}} to {{end}}
+    refine_by_choice: 
+      limit_to_category: Limit it to category?
+    related_form: 
+      close: Close
+      executing_action: "Executing {{action}} action. "
+      function_a: "{{action}} a:"
+      no_items_found: No {{item_class}} found
+      search: Search
+      search_for: "Search for {{privacy}} {{item_class}}:"
+      search_private: search private
+      search_public: search public
+      select_items: Select which {{item_class}} to {{action}}, then click '{{action}}'.
+      title: "{{action}} related {{zoom_class_plural}}"
+    results: 
+      add_a_new: "Add a new "
+      no_results_found: No results found.
+      results_on_this_page: results on this page
+      show: Show
+      showing_x-y_of_z: Showing {{start}}-{{finish}} results of {{total}}
+    rss: 
+      latest: Latest
+      next: Next
+      related: "Related:"
+      results_in: 50 Results in
+      showing_x-y_of_z: Showing {{start}} - {{end}} results of {{total}}
+    setup_rebuild: 
+      all_types: all types
+      clear_search_engine: Clear and restart search engine first?
+      clear_search_engine_description: This will "erase" your existing search records and start from scratch.  Use this if starting from the first record and ending with the last.  This involves some steps that don't work on all platforms (e.g. Solaris 10), uncheck if will be doing these steps by hand from the command line on the server.
+      end_rebuild_at: Record id to finish rebuilding process at?
+      end_rebuild_at_description: You must choose a specific type to rebuild rather than "all types" to use anything but 'last'. If you choose a specific type, you may specify the id number in the Kete database to finishing rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the last topic to be added to the search engine.
+      skip_existing_records: Should we skip records that are already in the search engine?
+      skip_existing_records_description: In most cases you will want to leave this unchecked for a faster rebuild.  However it is useful when you are rebuilding only missing records that didn't make it into the search engine.
+      skip_private_records: Should we skip private records?
+      skip_private_records_description: In most cases you will want to leave this unchecked for a complete rebuild.  However, if you don't have any existing private records (perhaps you are upgrading from Kete 1.0 to 1.1, for example), you can use this to speed up the rebuild process.
+      start_rebuild: Rebuild Search Records
+      start_rebuild_at: Record id to start rebuilding process at?
+      start_rebuild_at_description: You must choose a specific type to rebuild rather than "all types" to use anything but 'first'. If you choose a specific type, you may specify the id number in the Kete database to start rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the first topic to be added to the search engine.
+      title: Set up a rebuild of your search records
+      type_to_rebuild: "Type to rebuild:"
   search_controller: 
     check_rebuild_status: 
       all_processed: All records processed
@@ -1392,6 +1476,10 @@ en:
     find_index: 
       changed: Homepage topic changed successfully
       failed: Problem changing Homepage topic
+    find_related: 
+      add: Add
+      existing: Existing
+      restore: Restore
     for: 
       no_search_terms: You haven't entered any search terms.
     private_search_authorisation: 
@@ -1435,6 +1523,15 @@ en:
       no_tags_entered: "There was an error adding the new tags to {{item_title}}: No tags were entered."
       tags_added: The new tag(s) have been added to {{item_title}}
       version_comment: "Only tags added: {{tags_list}}"
+  tags: 
+    index: 
+      retrieving_tags: "Retrieving tags. "
+      title: Tags
+    rss: 
+      description: Tags in {{basket_name}}
+      title: "{{site_name}} - {{basket_name}} - Latest {{count}} Tags"
+    tags_list: 
+      no_tags: No tags to display.
   time: 
     am: am
     formats: 
@@ -1442,6 +1539,64 @@ en:
       long: "%B %d, %Y %H:%M"
       short: "%d %b %H:%M"
     pm: pm
+  topic_types: 
+    available_fields_form: 
+      add: Add to Topic Type
+      multiple: (multiple)
+      no_fields_available: No form fields are available.
+      no_more_allowed: You cannot add any additional fields to this topic type, see above.
+      optional: (optional)
+      required: (required)
+      title: Available Form Fields
+    current_fields: 
+      multiple: (multiple)
+      no_fields_mapped: No form fields currently mapped to this topic type.
+      no_more_allowed: You cannot add any additional fields to this topic type, see above.
+      optional: (optional)
+      reorder: Reorder Topic Type Form
+      required: (required)
+      title: Current Form Fields
+    edit: 
+      edit_button: Edit
+      return_to_topic_types: Return to topic types
+      title: Editing topic type
+    form: 
+      description: Description
+      name: Name
+    generic_topic_fields: 
+      description_field: "Description: Describe the topic.  This where we store the history of the topic we are writing about. TODO: flesh out description of this attribute."
+      note: "All topic types are descended from the generic \"Topic\" which can not have it form fields changed.  They are the following:"
+      present_in_all: These form fields will be present in all other topics, no matter what topic type they fall under.
+      short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
+      title: Generic Topic Fields
+      title_field: "Title: What shoule we this topic?  This will also be used to generate a URL for this topic."
+    inherited_fields: 
+      multiple: (multiple)
+      no_inherited_form_fields: No inherited form fields.
+      no_more_allowed: You cannot add any additional fields to this topic type.
+      optional: (optional)
+      required: (required)
+      title: Inherited Form Fields
+    list: 
+      add_sub_topic: Add sub-type
+      cannot_delete: Can't Delete This type.
+      created_at: Created at
+      delete: Delete
+      delete_confirm: Are you sure?
+      description: Description
+      edit: Edit
+      has_topics: Has topics.
+      name: Name
+      options: Options
+      title: Listing topic types
+      updated_at: Updated at
+    new: 
+      cancel: Cancel
+      create_button: Create
+      title: New topic type
+    show: 
+      back: Back
+      edit: Edit
   topic_types_controller: 
     create: 
       created: Topic Type was successfully created.
