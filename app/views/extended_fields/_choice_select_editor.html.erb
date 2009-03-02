@@ -6,7 +6,7 @@
 <% has_children = choices.select { |c| c.value == single_value }.first && choices.select { |c| c.value == single_value }.first.children_count > 0 %>
 
 <div style="margin: 3px 0; padding: 0; margin-left: <%= indent %>px">
-  <%= " Sub-setting " if level > 1 %>
+  <%= t('extended_fields.choice_select_editor.sub_setting') if level > 1 %>
   <%= extended_field_choice_select_editor(name, single_value, options, extended_field, choices, level) %>
 
   <% sub_content = single_value && has_children ? render(:partial => 'extended_fields/choice_select_editor', :locals => {

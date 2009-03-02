@@ -1098,7 +1098,7 @@ module ApplicationHelper
     html_string += ">"
   end
 
-  def link_to_original_of(item, phrase='view', skip_warning=false)
+  def link_to_original_of(item, phrase=t('application_helper.link_to_original_of.phrase'), skip_warning=false)
     item_file_url = item.is_a?(StillImage) ? item.original_file.public_filename : item.public_filename
     if DOWNLOAD_WARNING.blank? || skip_warning
       link_to phrase, item_file_url

@@ -20,13 +20,13 @@
                               :title => @still_image.title }) -%>
     <% end -%>
   <% else -%>
-    <p>Only available as original.</p>
+    <p><%=t 'images.show.only_original_available' %></p>
   <% end -%>
 <% end -%>
 
 <% cache_with_privacy(@still_image, {:part => 'caption'}) do -%>
   <% if !@still_image.already_at_blank_version? -%>
-    <h4>Caption</h4>
+    <h4><%=t 'images.show.caption' %></h4>
     <p><%= @still_image.description %></p>
   <% end -%>
 <% end -%>

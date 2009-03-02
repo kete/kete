@@ -1,6 +1,6 @@
 <tr>
   <td>
-        <h4>Current Form Fields</h4>
+        <h4><%=t 'content_types.current_fields.title' %></h4>
                         <% # required, position, and acts_as_list functionality are in mappings
                            # but we also need field label attribute from extended_fields
                            # we use piggy_back plugin to get the label attribute, see model
@@ -22,18 +22,18 @@
                                                                         (<%= h(@mapping.extended_field_xml_element_name) %>)
                                                                 <% end -%>
                                                         <% end -%>
-                                                        <%= "(multiple)" if @mapping.extended_field_multiple -%>
+                                                        <%= t('content_types.current_fields.multiple') if @mapping.extended_field_multiple -%>
                                                         <% if @mapping.required %>
-                                                                (required)
+                                                                <%=t 'content_types.current_fields.required' %>
                                                         <% else %>
-                                                                (optional)
+                                                                <%=t 'content_types.current_fields.optional' %>
                                                         <% end %>
                                                 </p>
                                         <% end %>
-                                        <div class="wrap"><%= submit_tag "Reorder Content Type Form" %></div>
+                                        <div class="wrap"><%= submit_tag t('content_types.current_fields.reorder_button') %></div>
                                 <% end %>
                         <% else %>
-                                <p>No form fields currently mapped to this content type.</p>
+                                <p><%=t 'content_types.current_fields.none_mapped' %></p>
                         <% end %>
   </td>
 </tr>

@@ -1,4 +1,4 @@
-<% @title = 'Choose Contributing User' -%>
+<% @title = t('importers.choose_contributing_user.title') -%>
 
 <h4><%= @title -%></h4>
 
@@ -9,10 +9,10 @@
 <%= hidden_field_tag('zoom_class', params[:zoom_class]) unless params[:zoom_class].blank?%>
 
 <%= select_tag('contributing_user', options_for_select(@user_options)) %>
-<%= submit_tag "Choose" %>
+<%= submit_tag t('importers.choose_contributing_user.choose') %>
 <% end -%>
 <% else %>
-<p>No potential contributing user found.</p>
+<p><%=t 'importers.choose_contributing_user.no_user_found' %></p>
 <% end %>
 
 <%= link_to_cancel %>

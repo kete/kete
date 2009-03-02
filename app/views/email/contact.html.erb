@@ -1,11 +1,11 @@
-<% @title = 'Contact ' + @recipient_name -%>
+<% @title = t('email.contact.title', :recipient => @recipient_name) -%>
 
 <h2><%= @title -%></h2>
 
 <% form_tag :action => 'send_email', :id => (!@user.nil? ? @user : nil) do -%>
   <%= render :partial => 'email/contact_form' -%>
   <div style="margin:0; padding:0;">
-    <%= submit_tag 'Send', :class => "save-button" %>
+    <%= submit_tag t('email.contact.send'), :class => "save-button" %>
   </div>
 <% end %>
 
