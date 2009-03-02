@@ -1,10 +1,10 @@
-@title = SITE_NAME + ' - ' + @current_basket.name + ' - Latest 50 Members'
+@title = t('members.rss.title', :site_name => SITE_NAME, :basket_name => @current_basket.name)
 xml.instruct! :xml, :version=>"1.0"
 xml.rss(:version=>"2.0"){
   xml.channel{
     xml.title(@title)
     xml.link(request.protocol + request.host + request.request_uri)
-    xml.description("Members of #{@current_basket.name}")
+    xml.description(t('members.rss.description', :basket_name => @current_basket.name))
     xml.language('en-nz')
     for member in @members
       xml.item do

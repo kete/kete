@@ -1,10 +1,10 @@
-@title = SITE_NAME + ' - ' + @current_basket.name + ' - Moderate'
+@title = t('moderate.rss.title', :site_name => SITE_NAME, :basket_name => @current_basket.name)
 xml.instruct! :xml, :version=>"1.0"
 xml.rss(:version=>"2.0"){
   xml.channel{
     xml.title(@title)
     xml.link(request.protocol + request.host + request.request_uri)
-    xml.description("Items needing moderation")
+    xml.description(t('moderate.rss.description'))
     xml.language('en-nz')
     for item in @items
       xml.item do

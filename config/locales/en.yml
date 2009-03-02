@@ -1161,6 +1161,34 @@ en:
       to_related_topics: Return to related topic.
     stop: 
       import_stopped: Import stopped.
+  index_page: 
+    index: 
+      all_tags: all
+      categories_title: Categories
+      comments: "{{count}} comments"
+      contents_by_type: Contents by type
+      continue_to_topic: Click here to continue to topic and its links
+      edit: Edit
+      history: History
+      image_from_archive: Image from the Archive
+      keyword_search: Keyword Search
+      latest: Latest
+      show_x_of_x: showing
+      tags_title: Tags
+      view: "View "
+    post_headline: 
+      read_more: read more &gt;&gt;
+      read_more_about: Read More about {{post_title}}
+    post_summary: 
+      read_more: read more &gt;&gt;
+      read_more_about: Read More about {{post_title}}
+    selected_image: 
+      next: Next &raquo;
+      previous: "&laquo; Previous"
+      slideshow: "Slideshow:"
+    topic_as_full_page: 
+      edit: Edit
+      history: History
   layouts: 
     application: 
       accessibility: Accessibility
@@ -1171,9 +1199,9 @@ en:
       configure: reconfigure site
       contact: Contact
       content_types: content types
-      documentation: documentation
       delete: delete this basket
       delete_confirmation: Are you sure? All items in this basket will be deleted forever!
+      documentation: documentation
       extended_fields: extended fields
       home: Home
       import: import content into basket
@@ -1189,10 +1217,10 @@ en:
       rebuild: Rebuild search databases
       register: Register
       rss: RSS feed for these items
-      search_label: Search
       search_button: Go
-      sitemap: Sitemap
+      search_label: Search
       site_members: site members
+      sitemap: Sitemap
       support: "Support:"
       to_content: Back to Content
       toolbox_controls: "Controls:"
@@ -1201,6 +1229,39 @@ en:
       zoom_dbs: Z39.50 search databases
   licenses_controller: 
     title: Licenses
+  members: 
+    admin_actions: 
+      accept_membership: Accept Membership
+      currently_no_members: Currently no members
+      members_title: Members
+      reject_membership: Reject Membership
+      search_button: Search
+      search_for_members: Search for new members
+    list: 
+      admin: administrator
+      admin_actions: Administrative Actions
+      change_to: Change to
+      email: Email
+      joined: Joined
+      login: Login
+      member: member
+      moderator: moderator
+      or: or
+      rejected: "{{count}} rejected"
+      request: request
+      site_admin: site administrator
+      tech_admin: technical administrator
+      title: "{{basket_name}} Members"
+      user_name: User name
+    list_members_in: 
+      current_no_users_of_type: Currently no {{listing_type}}
+    potential_new_members: 
+      add_members: Add members
+      no_members: No potential members are available.
+      title: Potential New Members
+    rss: 
+      description: Members of {{basket_name}}
+      title: "{{site_name}} - {{basket_name}} - Latest 50 Members"
   members_controller: 
     add_members: 
       added_plural: Successfully added new members.
@@ -1252,6 +1313,20 @@ en:
       undo: (undo)
     get_user_role_creation_date_for: 
       unknown: unknown
+  moderate: 
+    list: 
+      flagged_at: flagged at
+      flagged_with: flagged with
+      full_history: item's full history
+      no_items_needing_moderation: Currently no items needing moderation.
+      privacy: privacy
+      private: private
+      public: public
+      revision: Revision
+      title: Moderate
+    rss: 
+      description: Items needing moderation
+      title: "{{site_name}} - {{basket_name}} - Moderate"
   number: 
     currency: 
       format: 

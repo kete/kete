@@ -1,4 +1,4 @@
-<% @title = @current_basket.name + " Members" -%>
+<% @title = t('members.list.title', :basket_name => @current_basket.name) -%>
 
 <%= render(:partial => "baskets/actions_menu",
            :locals => { :item => @current_basket }) if @basket_admin %>
@@ -9,23 +9,23 @@
 <p>
   <h2 style="display:inline;"><%= @title %></h2>
   [ <%= link_to_membership_request_of(@current_basket, :plus_divider => ' | ', :as_list_element => false) -%>
-  <%= link_to_unless_current pluralize(@members_count, 'member'), :type => nil %>
+  <%= link_to_unless_current pluralize(@members_count, t('members.list.member')), :type => nil %>
   <% if @admins_count && @admins_count > 0 -%>
-    | <%= link_to_unless_current pluralize(@admins_count, 'administrator'), :type => 'admin' %>
+    | <%= link_to_unless_current pluralize(@admins_count, t('members.list.admin')), :type => 'admin' %>
   <% end -%>
   <% if @moderators_count && @moderators_count > 0 -%>
-    | <%= link_to_unless_current pluralize(@moderators_count, 'moderator'), :type => 'moderator' %>
+    | <%= link_to_unless_current pluralize(@moderators_count, t('members.list.moderator')), :type => 'moderator' %>
   <% end -%>
   <% if @site_admin && @current_basket == @site_basket -%>
     <%# there should always be at least one site admin and one tech admins -%>
-    | <%= link_to_unless_current pluralize(@site_admins_count, 'site administrator'), :type => 'site_admin' %>
-    | <%= link_to_unless_current pluralize(@tech_admins_count, 'technical administrator'), :type => 'tech_admin' %>
+    | <%= link_to_unless_current pluralize(@site_admins_count, t('members.list.site_admin')), :type => 'site_admin' %>
+    | <%= link_to_unless_current pluralize(@tech_admins_count, t('members.list.tech_admin')), :type => 'tech_admin' %>
   <% end -%>
   <% if @basket_admin && @membership_requesteds_count && @membership_requesteds_count > 0 -%>
-    | <%= link_to_unless_current pluralize(@membership_requesteds_count, 'request'), :type => 'membership_requested' %>
+    | <%= link_to_unless_current pluralize(@membership_requesteds_count, t('members.list.request')), :type => 'membership_requested' %>
   <% end -%>
   <% if @basket_admin && @membership_rejecteds_count && @membership_rejecteds_count > 0 -%>
-    | <%= link_to_unless_current "#{@membership_rejecteds_count} rejected", :type => 'membership_rejected' %>
+    | <%= link_to_unless_current t('members.list.rejected', :count => @membership_rejecteds_count), :type => 'membership_rejected' %>
   <% end -%>
       </ul>
     ]
@@ -35,21 +35,21 @@
   <table class="members-list-table">
     <tr valign="top">
       <th colspan="2" abbr="Login" class="member_login">
-        <%= search_sorting_controls_for('User name', 'users.resolved_name', false) -%>
+        <%= search_sorting_controls_for(t('members.list.user_name'), 'users.resolved_name', false) -%>
         <% if @site_admin -%>
-          or <%= search_sorting_controls_for('Login', 'users.login', false) -%>
+          <%=t 'members.list.or' %> <%= search_sorting_controls_for(t('members.list.login'), 'users.login', false) -%>
         <% end -%>
       </th>
-      <th abbr="Joined" class="member_joined"><%= search_sorting_controls_for('Joined', 'roles_users.created_at', true, 'desc') -%></th>
+      <th abbr="Joined" class="member_joined"><%= search_sorting_controls_for(t('members.list.joined'), 'roles_users.created_at', true, 'desc') -%></th>
 
       <% if @site_admin -%>
-        <th abbr="Email" class="member_email"><%= search_sorting_controls_for('Email', 'users.email', false, 'asc') -%></th>
+        <th abbr="Email" class="member_email"><%= search_sorting_controls_for(t('members.list.email'), 'users.email', false, 'asc') -%></th>
       <% end -%>
 
       <% if @basket_admin -%>
-        <th abbr="Switch" class="member_change_to">Change to</th>
+        <th abbr="Switch" class="member_change_to"><%=t 'members.list.change_to' %></th>
         <% if !@admin_actions.blank? -%>
-          <th abbr="Administrate" class="member_administrate">Administrative Actions</th>
+          <th abbr="Administrate" class="member_administrate"><%=t 'members.list.admin_actions' %></th>
         <% end -%>
       <% end -%>
     </tr>

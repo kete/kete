@@ -8,11 +8,11 @@
    -%></p>
 
 <% unless previous_url.blank? && next_url.blank? -%>
-<p>Slideshow:
+<p><%=t 'index_page.selected_image.slideshow' %>
 <% end -%>
 
 <% unless previous_url.blank? -%>
-<%= link_to_remote ("&laquo; Previous", :update => 'selected-image-display',
+<%= link_to_remote (t('index_page.selected_image.previous'), :update => 'selected-image-display',
                                 :url => previous_url,
                                 :href => url_for(:action => 'index'))
 -%>
@@ -20,7 +20,7 @@
 <% end -%>
 
 <% unless next_url.blank? -%>
-<%= link_to_remote("Next &raquo;", :update => 'selected-image-display',
+<%= link_to_remote(t('index_page.selected_image.next'), :update => 'selected-image-display',
                            :url => next_url,
                            :href => url_for(:action => 'index')) -%>
 <% end -%>

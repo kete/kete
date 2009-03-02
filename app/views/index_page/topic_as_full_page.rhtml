@@ -26,14 +26,14 @@
     <% if permitted_to_edit_current_item? -%>
       <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
         <li class="first">
-          <%= link_to "Edit", :action => 'edit',
+          <%= link_to t('index_page.topic_as_full_page.edit'), :action => 'edit',
                               :urlified_name => @topic.basket.urlified_name,
                               :controller => 'topics',
                               :id => @topic,
                               :private => params[:private] -%>
         </li>
         <li>
-          <%= link_to "History", :action => 'history',
+          <%= link_to t('index_page.topic_as_full_page.history'), :action => 'history',
                                  :urlified_name => @topic.basket.urlified_name,
                                  :controller => 'topics',
                                  :id => @topic,
