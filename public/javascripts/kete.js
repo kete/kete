@@ -69,6 +69,26 @@ function enablePortraitDragAndDrop() {
   }
 }
 
+function enableCategoryListUpdater(controller_name) {
+  $$('.category_list a').each(function(link) {
+    link.observe('click', function(evt) {
+      Event.stop(evt)
+      new Ajax.Updater('category_selections', '/site/choices/categories_list', {
+        method: 'get',
+        parameters: {
+          controller_name_for_zoom_class: controller_name,
+          limit_to_choice: link.title
+        },
+        onLoading: function(loading) { $('categories_spinner').show(); },
+        onComplete: function(complete) {
+          $('categories_spinner').hide();
+          enableCategoryListUpdater(controller_name);
+        }
+      });
+    });
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }

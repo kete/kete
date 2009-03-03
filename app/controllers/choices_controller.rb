@@ -22,6 +22,8 @@ class ChoicesController < ApplicationController
   def conditions_for_collection
     ['label != ?', 'ROOT']
   end
-  
-  
+
+  def categories_list
+  end
+
 end

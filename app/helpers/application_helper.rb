@@ -1273,4 +1273,65 @@ module ApplicationHelper
     string += " " if string =~ /\.$/
     string
   end
+
+  def browse_by_category_columns
+    # Do we have a categories extended field to work from?
+    categories = ExtendedField.find_by_label('categories')
+    # If not, return blank so nothing is displayed
+    return '' if categories.nil? || !categories.is_a_choice?
+
+    # Get the current choice from params (limit_to_choice is special because it also controls search results)
+    current_choice = Choice.find_by_value(params[:limit_to_choice])
+    parent_choices = Array.new
+    # Now we have the current choice, recursively go back until we reach the top level
+    # (adding each parent to the end of the parent_choices array)
+    unless current_choice.nil?
+      parent_choices = [current_choice]
+      still_child_element = true
+      while still_child_element
+        current_choice = current_choice.parent
+        if current_choice.nil?
+          still_child_element = false
+        else
+          parent_choices << current_choice unless current_choice.id == 1
+        end
+      end
+    end
+    # Finally, add the root category extended field to array
+    parent_choices << categories
+
+    html = String.new
+
+    # For each level in the parent choices
+    parent_choices.size.times do |time|
+      # pop the first parent off the end of the parent_choices array
+      current_choice = parent_choices.pop
+
+      # Skip this choice if it doesn't have any choices
+      next if current_choice.choices.size < 1
+
+      html += "<div id='category_level_#{time}' class='category_list'>"
+      html += "<ul>"
+      # For every choice in the current choice, lets add a list item
+      current_choice.choices.each do |choice|
+        # if this choice exists in the parent_choices, then mark it as current parent/choice
+        html += parent_choices.include?(choice) ? "<li class='current'>" : "<li>"
+        html += link_to(choice.label,
+                        basket_all_path(:urlified_name => params[:urlified_name],
+                                        :controller_name_for_zoom_class => params[:controller_name_for_zoom_class],
+                                        :limit_to_choice => choice.value),
+                        :title => choice.value)
+        html += "</li>"
+      end
+      html += '</ul>'
+      html += '</div>'
+    end
+
+    html += "<div style='clear:both;'></div>"
+    #html += javascript_tag("enableCategoryListUpdater('#{params[:controller_name_for_zoom_class]}');")
+
+    html
+
+  end
+
 end

@@ -71,6 +71,9 @@ class Choice < ActiveRecord::Base
     end
   end
 
+  # An alias so we dont have to run checks between ExtendedFields and choices
+  alias :choices :children
+
   def children=(array_of_choice_ids)
 
     # Remove existing children

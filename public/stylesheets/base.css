@@ -1031,6 +1031,22 @@ div.extended_field_autocomplete ul li {
                           cursor: pointer;
 }
 
+/*
+ * Category List
+ */
+.category_list {
+  width: 150px;
+  border: 1px solid #CCCCFF;
+  background-color: #EEFFFF;
+  float: left;
+  margin-right: 10px;
+}
+.category_list ul {
+  list-style: url(/images/icon_results_next.gif) circle;
+}
+.category_list li.current a {
+  color: #000;
+}
 
 /*
  * Google Map CSS

@@ -5,6 +5,18 @@
    end
    simple_layout ||= false -%>
 
+<% category_columns = browse_by_category_columns -%>
+<% unless category_columns.blank? %>
+  <h3>
+    Browse by category
+    <img src='/images/indicator.gif' width='16' height='16' alt='Getting Categories. ' id='categories_spinner' style='display:none;' />
+  </h3>
+  <div id='category_selections'><%= category_columns %></div>
+  <%= render(:partial => "topics/content_wrapper_end" ) %>&nbsp;
+  <%= render(:partial => "topics/content_wrapper_start",
+             :locals => { :style_classes => "full-width notabs" }) -%>
+<% end -%>
+
 <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
   :controller => 'search',
   :page => nil,
