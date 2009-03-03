@@ -23,7 +23,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
     <%= '<ul>' unless only_public_items -%>
       <% if @public_item_counts[zoom_class] > 0 -%>
         <% unless only_public_items -%>
-          <li><strong><%= link_to_related_items_of(item, zoom_class, :link_text => "Public") -%></strong>
+          <li><strong><%= link_to_related_items_of(item, zoom_class, :link_text => t('topics.related_items_section.public')) -%></strong>
         <% end -%>
         <% cache ({ :related => controller, :id => @cache_id }) do -%>
           <%= related_items_display_of @public_items[zoom_class],
@@ -37,7 +37,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
       <% end -%>
       <% if @private_item_counts[zoom_class] > 0 -%>
         <%= '<li>' unless only_public_items -%>
-        <strong><%= link_to_related_items_of(item, zoom_class, { :link_text => "Private" }, { :privacy_type => 'private' }) -%></strong>
+        <strong><%= link_to_related_items_of(item, zoom_class, { :link_text => t('topics.related_items_section.private') }, { :privacy_type => 'private' }) -%></strong>
         <%= related_items_display_of @private_items[zoom_class],
                                      { :are_still_images => are_still_images,
                                        :item => item,
@@ -49,7 +49,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
       <% end -%>
     <%= '</ul>' unless only_public_items -%>
   <% elsif display_no_item_text -%>
-    <h4>This <%= zoom_class_humanize(item.class.name) -%> is not related to any topics at this time.</h4>
+    <h4><%=t 'topics.related_items_section.not_related', :item_type => zoom_class_humanize(item.class.name) %></h4>
   <% else -%>
     &nbsp;
   <% end -%>

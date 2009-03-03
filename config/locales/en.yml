@@ -1249,7 +1249,7 @@ en:
       tech_admin: technical administrator
       title: "{{basket_name}} Members"
       user_name: User name
-    list_members:  
+    list_members: 
       currently_no_members: Currently no members
       members_title: Members
       search_button: Search
@@ -1608,8 +1608,131 @@ en:
     update: 
       updated: Topic Type was successfully updated.
   topics: 
+    actions_menu: 
+      delete: Delete
+      delete_confirm: Are you sure?
+      discuss: Discuss
+      edit: Edit
+      history: History
+      make_theme: Make theme
+      view_this_item: View this Item
+      zoom_update: Zoom Update item (+related)
+      zoom_update_confirm: Are you sure you want to update?
+    content_wrapper_start: 
+      baskets: Baskets
+    discussion: 
+      discuss_this_topic: Discuss This Topic
+    edit: 
+      not_authorized: Sorry - editing on this section of the site has been disallowed
+    flag_form: 
+      comments: Comments
+      contributor: Contributor
+      flag_button: Flag
+      flag_instructions: Please give details that might be helpful for the moderator reviewing this item.  For example, if flagging as a duplicate, the URL for the item this content duplicates.
+      flag_item_title: Flag this item
+      flags: Flags
+      message_for: Message for
+      not_authorized: Sorry flagging has been disabled on this section of the site
+      number: Number
+      privacy: Privacy
+      reject_button: Reject
+      reject_instructions: Please add a message to the user telling the why you have passed over their submitted revision.
+      reject_revision_title: Reject this revision
+      updated: Updated
+    flagging_contributor: 
+      at: at
+      created: created
+      last_to_edit: was the last to edit
+    form: 
+      allow_insecure_elements: Allow new forms and other possible insecure elements and attributes in the HTML?
+      comment_on_edit: Comment on this edit
+      create: Create
+      current_image: "Current Image:"
+      description: Description
+      description_example: "Note: new forms and javascript are not allowed for security reasons"
+      description_example_exception: ", unless you check the box below"
+      downloaded_by_everyone: Can be downloaded by everyone
+      downloaded_by_role: Can only be downloaded by people who have {{role_name}} access.
+      editing: Editing
+      embedded_note: If you fill out fields here as well, the embedded metadata will be added to it at the end.
+      file_privacy: Attached file privacy
+      file_privacy_example: Please note that once public, an attached file cannot be made private.
+      getting_tags: "Getting tags. "
+      help: help
+      move_baskets: Move to another basket?
+      new: New
+      note: "Note:"
+      privacy: Privacy
+      private: Private
+      private_description: (Can be viewed only by basket members)
+      public: Public
+      public_description: (Can be viewed by everyone)
+      required_fields: "* denotes a required field"
+      short_summary: Short Summary
+      tags: Tags (separated by commas)
+      title: Title
+      update: Update
+      upload: Upload
+      upload_image: Upload image
+      url: URL
+    history: 
+      back_to_live: Back to live
+      has_private_version: This item has private versions. {{login}} as a basket member to view these.
+      login_link: Login
+      private: Private
+      public: Public
+      revision_history: "Revision History:"
+    license_chooser_or_agreement: 
+      how_to_set_license: You can change or set your default licence by editing your profile
+      license_description: This {{item_type}} is licensed under the {{license_title}}. By editing it you agree that your changes will fall under this license.
+      see_terms: Please see the {{tac_link}} for information on how contributions are licensed.
+      tac_link: site terms and conditions
+      title: License
+      view_license: view license
+    new: 
+      choose_type: Choose Type
+      what_is_topic_about: What is the topic about?
+    preview: 
+      flagged: Flagged
+      not_authorized: You aren't allowed to view this revision of this item at the current time.
+      permission_denied: Permission Denied
+      preview_revision: Preview revision
+      reasons_flagged: "Reasons flagged:"
+      topic_type: "Topic Type:"
+    preview_actions: 
+      history: History
+      make_live: Make this revision live
+      make_live_confirm: Are you sure?
+      reject: reject
+      reject_confirm: Are you sure?
+      title: "Actions:"
+    privacy_chooser: 
+      private_version: Private version
+      public_version: Public version (live)
+    related_items: 
+      create: Create
+      import_set: Import Set
+      link_existing: Link Existing
+      related_items: Related Items
+      related_topics: "Related Topics:"
+      remove: Remove
+      restore: Restore
+    related_items_section: 
+      not_related: This {{item_type}} is not related to any topics at this time.
+      private: Private
+      public: Public
+    show: 
+      topic: "Topic:"
+      topic_type: "Topic Type:"
     slideshow_controls: 
       current: "Viewing: {{slideshow_total}} of {{total}}"
+    tags: 
+      click_to_add: click to add tag(s)
+      getting_tags: "Getting tags. "
+      sending_tags: "Sending tags. "
+      title: Tags
+    topic_types: 
+      about_a: About a?
   topics_controller: 
     create: 
       created: Topic was successfully created.

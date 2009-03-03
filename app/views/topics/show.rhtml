@@ -3,8 +3,8 @@
 <%= render(:partial => "content_wrapper_start") -%>
 
 <% cache_with_privacy(@topic, {:part => 'details_first'}) do -%>
-  <h2>Topic: <%= h(@topic.title) %></h2>
-  <h4>Topic Type: <%= h(@topic.topic_type.name) %></h4>
+  <h2><%=t 'topics.show.topic' %> <%= h(@topic.title) %></h2>
+  <h4><%=t 'topics.show.topic_type' %> <%= h(@topic.topic_type.name) %></h4>
   <p><b><%= @topic.short_summary %></b></p>
   <%= @topic.description %>
 <% end -%>

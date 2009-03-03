@@ -1,31 +1,30 @@
 <div id="content-tabs">
   <ul class="nav-list">
-    <li class="first selected"><a href="#" tabindex="1"><span class="view-link">View
-          this Item</span></a></li>
+    <li class="first selected"><a href="#" tabindex="1"><span class="view-link"><%=t 'topics.actions_menu.view_this_item' %></span></a></li>
     <% cache_with_privacy(item, {:part => 'edit'}) do -%>
-    <li><%= link_to "<span class=\"edit-link\">Edit</span>",
+    <li><%= link_to "<span class=\"edit-link\">#{t('topics.actions_menu.edit')}</span>",
             {:action => :edit,
       :id => item, :private => params[:private]}, :tabindex => '1' %></li>
     <% end %>
     <% cache_with_privacy(item, {:part => 'history'}) do -%>
-    <li><%= link_to "<span class=\"history-link\">History</span>",
+    <li><%= link_to "<span class=\"history-link\">#{t('topics.actions_menu.history')}</span>",
             {:action => :history,
       :id => item}, :tabindex => '1' %></li>
     <% end %>
-    <li><a href="#comments" tabindex="1"><span class="discuss-link">Discuss</span></a></li>
+    <li><a href="#comments" tabindex="1"><span class="discuss-link"><%=t 'topics.actions_menu.discuss' %></span></a></li>
 
     <% if logged_in? and @site_admin -%>
        <% cache({:part => 'zoom_reindex', :id => @cache_id}) do -%>
-          <li><%= link_to "Zoom Update item (+related)",
+          <li><%= link_to t('topics.actions_menu.zoom_update'),
             {:action => :rebuild_zoom_for_items,
              :controller => 'search',
              :items_to_rebuild => items_to_rebuild(item),
              :authenticity_token => form_authenticity_token},
              :method => :post,
-             :confirm => 'Are you sure you want to update?', :tabindex => '1' %></li>
+             :confirm => t('topics.actions_menu.zoom_update_confirm'), :tabindex => '1' %></li>
            <% if !@document.nil? -%>
               <% if @document.could_be_new_theme? -%>
-                 <li><%= link_to 'Make theme', {:action => 'make_theme', :id => @document}, :tabindex => '1' -%></li>
+                 <li><%= link_to t('topics.actions_menu.make_theme'), {:action => 'make_theme', :id => @document}, :tabindex => '1' -%></li>
               <% end -%>
            <% end -%>
        <% end -%>
@@ -33,11 +32,11 @@
 
     <% if logged_in? and @at_least_a_moderator -%>
     <% cache({:part => 'delete', :id => @cache_id}) do -%>
-    <li><%= link_to "Delete",
+    <li><%= link_to t('topics.actions_menu.delete'),
             {:action => :destroy,
              :id => item},
       :method => :post,
-      :confirm => 'Are you sure?', :tabindex => '1' %></li>
+      :confirm => t('topics.actions_menu.delete_confirm'), :tabindex => '1' %></li>
     <% end %>
     <% end -%>
                 <%= render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser -%>

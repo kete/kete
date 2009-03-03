@@ -4,9 +4,9 @@
 <% cache_with_privacy(item, {:part => 'privacy_chooser'}) do -%>
   <% if item.respond_to?(:private?) -%>
     <% if item.private? -%>
-      <li><%= link_to "Public version (live)", location_hash.merge({:private=>"false"}), :tabindex => '1' %></li>
+      <li><%= link_to t('topics.privacy_chooser.public_version'), location_hash.merge({:private=>"false"}), :tabindex => '1' %></li>
     <% elsif !item.private? && item.has_private_version? -%>
-      <li><%= link_to "Private version", location_hash.merge({:private=>"true", :only_path => false}), :tabindex => '1' %></li>
+      <li><%= link_to t('topics.privacy_chooser.private_version'), location_hash.merge({:private=>"true", :only_path => false}), :tabindex => '1' %></li>
     <% end -%>
   <% end -%>
 <% end -%>
