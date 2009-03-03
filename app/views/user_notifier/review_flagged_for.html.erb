@@ -1,6 +1,6 @@
 <%= @user.user_name %>,
 
-Please review the submitted content in <%= @basket.name -%> and take the appropriate action.
+<%=t 'user_notifier.review_flagged_for.please_review', :basket_name => @basket.name %>
 
 
 <% for item in @disputed_revisions -%>
@@ -8,9 +8,11 @@ Please review the submitted content in <%= @basket.name -%> and take the appropr
 
 # <%= item.version %>: <%= h(item.title) %>
 
-Marked as <%= h(item.flag) %> at <%= item.flagged_at %>
+<%=t 'user_notifier.review_flagged_for.marked_as',
+     :flag => h(item.flag),
+     :time => item.flagged_at %>
 
-Review this version:
+<%=t 'user_notifier.review_flagged_for.review_version' %>
 <% zoom_class_controller = item.class.name.tableize
    case item.class.name
    when "StillImage"
@@ -38,9 +40,9 @@ Review this version:
 
 <%= preview_url %>
 
-or
+<%=t 'user_notifier.review_flagged_for.or' %>
 
-the full item's history:
+<%=t 'user_notifier.review_flagged_for.view_item_history' %>
 
 <%= url_for_history %>
 
@@ -48,6 +50,6 @@ the full item's history:
 
 <% end -%>
 
-Thank you,
+<%=t 'user_notifier.review_flagged_for.thanks' %>
 <%= PRETTY_SITE_NAME %>
 <%= SITE_URL %>

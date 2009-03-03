@@ -1,12 +1,12 @@
-Your account has been created.
+<%=t 'user_notifier.signup.created' %>
 
-  Username: <%= @user.login %>
-  Password: <%= @user.password %>
+  <%=t 'user_notifier.signup.username' %> <%= @user.login %>
+  <%=t 'user_notifier.signup.password' %> <%= @user.password %>
 
-Visit this url to activate your account:
+<%=t 'user_notifier.signup.activate_account' %>
 
   <%= @url %>
 
-If you aren't automatically activated, please enter this code:
+<%=t 'user_notifier.signup.enter_this_code' %>
 
-  Code: <%= @user.activation_code %>
+  <%=t 'user_notifier.signup.code' %> <%= @user.activation_code %>

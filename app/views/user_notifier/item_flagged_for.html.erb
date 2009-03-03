@@ -1,19 +1,18 @@
 <%= @user.user_name %>,
 
-<%= @flagging_user.user_name %> (<%= @flagging_user.email %>) has flagged Revision # <%= @revision -%> of this item as <%= @flag %>.  This revision was originally submitted by <%= @submitter.user_name -%>.
+<%=t 'user_notifier.item_flagged_for.description', :flagging_user_name => @flagging_user.user_name, :email => @flagging_user.email, :revision => @revision, :flag => @flag, :submitted_user_name => @submitter.user_name %>
 
-
-Please review the item's history and take appropriate action:
+<%=t 'user_notifier.item_flagged_for.review' %>
 
   <%= @url %>
 
-This will tell what versions have been flagged and with what.  You can then preview each version.  There is a "Make this revision" option on the preview page for the version, as well as a "Reject" link, too.
+<%=t 'user_notifier.item_flagged_for.note_about_reviewing' %>
 
 <% if !@message.blank? -%>
-The user has also provided these details about the flagging:
+  <%=t 'user_notifier.item_flagged_for.user_provided_details' %>
   <%= @message %>
 <% end -%>
 
-Thank you,
+<%=t 'user_notifier.item_flagged_for.thanks' %>
 <%= PRETTY_SITE_NAME %>
 <%= SITE_URL %>

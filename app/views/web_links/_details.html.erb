@@ -1,5 +1,5 @@
 <% if !item.file_private? || current_user_can_see_private_files_for?(item) -%>
-	<p>url: <%= link_to h(item.url), url_for(item.url) %></p>
+	<p><%=t 'web_links.details.url' %> <%= link_to h(item.url), url_for(item.url) %></p>
 <% else -%>
-	<p>url: ( no public version of this link available )</p>
+	<p><%=t 'web_links.details.url' %> ( <%=t 'web_links.details.not_available' %> )</p>
 <% end -%>
