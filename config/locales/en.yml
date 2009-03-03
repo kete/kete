@@ -1232,11 +1232,7 @@ en:
   members: 
     admin_actions: 
       accept_membership: Accept Membership
-      currently_no_members: Currently no members
-      members_title: Members
       reject_membership: Reject Membership
-      search_button: Search
-      search_for_members: Search for new members
     list: 
       admin: administrator
       admin_actions: Administrative Actions
@@ -1253,8 +1249,15 @@ en:
       tech_admin: technical administrator
       title: "{{basket_name}} Members"
       user_name: User name
+    list_members:  
+      currently_no_members: Currently no members
+      members_title: Members
+      search_button: Search
+      search_for_members: Search for new members
     list_members_in: 
       current_no_users_of_type: Currently no {{listing_type}}
+      search_button: Search
+      search_for_members: Search for new members
     potential_new_members: 
       add_members: Add members
       no_members: No potential members are available.

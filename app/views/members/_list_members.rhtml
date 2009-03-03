@@ -1,9 +1,9 @@
   <tr>
-    <th colspan="6"><h4><%=t 'members.admin_actions.members_title' %></h4></th>
+    <th colspan="6"><h4><%=t 'members.list_members.members_title' %></h4></th>
   </tr>
   <% if members.blank? -%>
     <tr>
-      <td colspan="6"><%=t 'members.admin_actions.currently_no_members' %></td>
+      <td colspan="6"><%=t 'members.list_members.currently_no_members' %></td>
     </tr>
   <% else %>
     <% for user in members -%>
@@ -39,9 +39,9 @@
       <% if @current_basket.urlified_name != 'site' && @basket_admin -%>
         <% form_tag :action => 'potential_new_members' do -%>
           <div id="searchheader">
-            <h4><%=t 'members.admin_actions.search_for_members' %></h4>
+            <h4><%=t 'members.list_members.search_for_members' %></h4>
             <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' -%>
-            <%= submit_tag t('members.admin_actions.search_button'), :class => 'searchbutton' -%>
+            <%= submit_tag t('members.list_members.search_button'), :class => 'searchbutton' -%>
           </div>
         <% end -%>
       <% end -%>
