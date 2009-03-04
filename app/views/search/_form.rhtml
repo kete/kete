@@ -46,7 +46,7 @@
       <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
       <label for="privacy_type">That are:</label>
       <%= select_tag 'privacy_type', options_for_select({ 'Private' => 'private', 'Public' => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1' %>
-      <% end -%><br />
+      <% end -%>
       <%= render :partial => 'search/refine_by_choice' %>
     <input type="submit" name="update" id="update" value="update" tabindex="1" />
 
