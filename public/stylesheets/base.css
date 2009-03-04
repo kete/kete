@@ -1042,6 +1042,9 @@ div.extended_field_autocomplete ul li {
   margin-right: 10px;
 }
 .category_list ul {
+  list-style: none;
+}
+.category_list li.current {
   list-style: url(/images/icon_results_next.gif) circle;
 }
 .category_list li.current a {

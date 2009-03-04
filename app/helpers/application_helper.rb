@@ -1281,13 +1281,12 @@ module ApplicationHelper
     return '' if categories.nil? || !categories.is_a_choice?
 
     # Get the current choice from params (limit_to_choice is special because it also controls search results)
-    current_choice = Choice.find_by_value(params[:limit_to_choice])
+    current_choice = categories.choices.select { |c| c.value == params[:limit_to_choice] }.first
     parent_choices = Array.new
-    unless current_choice.nil?
+    unless current_choice.blank?
       # Get all the ancestors and push them onto the parent_choices array
       # reject the ROOT choice (not needed)
-      current_choice.ancestors.reject { |a| a.id == 1 }.each { |a| parent_choices << a }
-      parent_choices << current_choice # we also have to push the current choice
+      current_choice.self_and_ancestors.reject { |a| a.id == 1 }.each { |a| parent_choices << a }
     end
     # Add the category extended field at the start of the parent_choices array
     parent_choices = [categories] + parent_choices
@@ -1299,13 +1298,19 @@ module ApplicationHelper
       # pop the first parent off the end of the parent_choices array
       current_choice = parent_choices.shift
 
+      choices = if current_choice.is_a?(ExtendedField)
+        current_choice.choices.find_top_level.reject { |c| !categories.choices.member?(c) }
+      else
+        current_choice.choices.reject { |c| !categories.choices.member?(c) }
+      end
+
       # Skip this choice if it doesn't have any choices
-      next if current_choice.choices.size < 1
+      next if choices.size < 1
 
       html += "<div id='category_level_#{time}' class='category_list'>"
       html += "<ul>"
       # For every choice in the current choice, lets add a list item
-      current_choice.choices.each do |choice|
+      choices.each do |choice|
         html += list_item_for_choice(choice, { :current => parent_choices.include?(choice), :include_children => false },
                                              { :extended_field => categories })
       end

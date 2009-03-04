@@ -507,7 +507,7 @@ module ExtendedFieldsHelper
     }.merge(url_hash)
 
     url_hash[:extended_field] = url_hash[:extended_field].is_a?(ExtendedField) ? \
-                                  qualified_name_for_field(url_hash[:extended_field]) : \
+                                  url_hash[:extended_field].label_for_params : \
                                   url_hash[:extended_field]
 
     if params[:privacy_type].blank?
