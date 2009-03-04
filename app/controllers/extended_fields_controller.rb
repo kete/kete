@@ -62,6 +62,8 @@ class ExtendedFieldsController < ApplicationController
 
     choices = current_choice ? current_choice.children : []
 
+    choices = choices.reject { |c| !extended_field.choices.member?(c) }
+
     options = {
       :choices => choices,
       :level => params[:for_level].to_i + 1,

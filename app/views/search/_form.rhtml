@@ -1,80 +1,85 @@
-<% if params[:action] == 'find_related'
-     urlified_name = 'site'
-   else
-     urlified_name = @current_basket.urlified_name
-   end
-   simple_layout ||= false -%>
+<% simple_layout ||= false -%>
 
-<% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
-  :controller => 'search',
-  :page => nil,
-  :sort_type => nil,
-  :sort_direction => nil,
-  :urlified_name => urlified_name,
-  :search_terms => nil,
-  :privacy_type => nil,
-  :limit_to_choice => nil } do %>
+<% if params[:with_categories] %>
 
-<% if !simple_layout -%>
-<% if !@search.nil? -%>
+  <% category_columns = browse_by_category_columns -%>
+  <% unless category_columns.blank? %>
+    <h3>
+      <%=t 'search.form.browse_by_category' %>
+      <img src='/images/indicator.gif' width='16' height='16' alt='<%=t 'search.form.getting_categories' %>' id='categories_spinner' style='display:none;' />
+    </h3>
+    <div id='category_selections'><%= category_columns %></div>
+  <% end -%>
 
-<div id="search-options-wrapper">
-    <h4><%=t 'search.form.options' %></h4>
-    <label for="sort_type"><%=t 'search.form.sort_by' %></label>
-    <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
-    <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'  %>
-    <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
-      <label for="sort_direction"><%=t 'search.form.in_reverse' %></label>
-      <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
-      <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
-      <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
+<% else %>
+
+  <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
+    :controller => 'search', :urlified_name => @current_basket.urlified_name,
+    :page => nil, :sort_type => nil, :sort_direction => nil,
+    :search_terms => nil, :privacy_type => nil, :limit_to_choice => nil } do %>
+
+    <% if !simple_layout && !@search.nil? -%>
+
+      <div id="search-options-wrapper">
+        <h4><%=t 'search.form.options' %></h4>
+        <label for="sort_type"><%=t 'search.form.sort_by' %></label>
+        <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
+        <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'  %>
+        <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
+          <label for="sort_direction"><%=t 'search.form.in_reverse' %></label>
+          <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
+          <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
+          <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
+        </div>
+        <% # Only show private search control if allowed and we aren't relating something to a topic. %>
+        <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
+          <label for="privacy_type"><%=t 'search.form.privacy_type' %></label>
+          <%= select_tag 'privacy_type', options_for_select({ t('search.form.private') => 'private', t('search.form.public') => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1' %>
+        <% end -%>
+        <%= render :partial => 'search/refine_by_choice' %>
+        <input type="submit" name="update" id="update" value="<%=t 'search.form.update_results' %>" tabindex="1" />
+      </div>
+
+      <%= toggle_in_reverse_field_js_helper if params[:action] == 'for' -%>
+
+    <% end -%>
+
+    <% if !simple_layout %>
+      <div id="searchheader">
+        <div id="searchheader-results">
+          <h3><%= headline -%></h3>
+        </div>
+    <% else -%>
+      <h3><%= headline -%></h3>
+    <% end -%>
+
+    <div class="wrap">
+      <%= text_field_tag 'search_terms', h(@search_terms.to_s), {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
+      <% if !params[:relate_to_topic].nil? or (!params[:related_class].nil? and params[:related_class] == 'Topic')-%>
+        <% if !params[:relate_to_topic].nil? -%>
+          <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
+        <% end -%>
+        <%= hidden_field_tag "controller_name_for_zoom_class", zoom_class_controller(params[:related_class]) %>
+        <% # not sure why this extra check is necessary, but fixes bug -%>
+        <% if !params['existing_relations'].blank? -%>
+          <% params['existing_relations'].each do |relation| -%>
+            <%= hidden_field_tag 'existing_relations[]', relation %>
+          <% end -%>
+        <% else -%>
+          <%= hidden_field_tag 'existing_relations', '' %>
+        <% end -%>
+      <% elsif !params[:index_for_basket].nil? -%>
+        <%= hidden_field_tag 'index_for_basket', params[:index_for_basket] %>
+      <% end -%>
+      <%= submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'} %>
     </div>
-    <% # Only show private search control if allowed and we aren't relating something to a topic. %>
-    <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
-    <label for="privacy_type"><%=t 'search.form.privacy_type' %></label>
-    <%= select_tag 'privacy_type', options_for_select({ t('search.form.private') => 'private', t('search.form.public') => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1' %>
-    <% end -%><br />
-    <%= render :partial => 'search/refine_by_choice' %>
-  <input type="submit" name="update" id="update" value="<%=t 'search.form.update_results' %>" tabindex="1" />
 
-</div>
-
-<%= toggle_in_reverse_field_js_helper if params[:action] == 'for' -%>
+    <% if !simple_layout -%>
+      </div>
+    <% end -%>
+  
+  <% end -%>
 
 <% end -%>
-
-<div id="searchheader">
-  <div id="searchheader-results">
-    <h3><%= headline -%></h3>
-  </div>
-  <% else -%>
-  <h3><%= headline -%></h3>
-  <% end -%>
-  <div class="wrap">
-  <%= text_field_tag 'search_terms', h(@search_terms.to_s), {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
-  <% if !params[:relate_to_topic].nil? or (!params[:related_class].nil? and params[:related_class] == 'Topic')-%>
-  <% if !params[:relate_to_topic].nil? -%>
-  <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-  <% end -%>
-  <%= hidden_field_tag "controller_name_for_zoom_class", zoom_class_controller(params[:related_class]) %>
-  <% # not sure why this extra check is necessary, but fixes bug -%>
-  <% if !params['existing_relations'].blank? -%>
-  <% params['existing_relations'].each do |relation| -%>
-  <%= hidden_field_tag 'existing_relations[]', relation %>
-  <% end -%>
-  <% else -%>
-  <%= hidden_field_tag 'existing_relations', '' %>
-  <% end -%>
-  <% elsif !params[:index_for_basket].nil? -%>
-  <%= hidden_field_tag 'index_for_basket', params[:index_for_basket] %>
-  <% end -%>
-
-
-  <%= submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'} %>
-  </div>
-  <% if !simple_layout -%>
-</div>
-<% end -%>
-<% end %>
 
 <div class="main-content-footer-wrapper"><div class="main-content-footer">&nbsp;</div></div>

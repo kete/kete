@@ -25,6 +25,9 @@ class ChoicesController < ApplicationController
     ['label != ?', 'ROOT']
   end
 
+  def categories_list
+  end
+
   private
 
   def set_page_title

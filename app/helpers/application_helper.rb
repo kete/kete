@@ -714,8 +714,8 @@ module ApplicationHelper
       options_array = @extended_field.choices.find_top_level.inject([]) do |memo, choice|
         memo + option_for_choice_control(choice, :level => 0)
       end
-    elsif @all_choices
-      options_array = Choice.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
+    elsif @all_choices && categories_field
+      options_array = categories_field.choices.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
         memo + option_for_choice_control(choice, :level => 0)
       end
     else
@@ -1292,4 +1292,58 @@ module ApplicationHelper
     string += " " if string =~ /\.$/
     string
   end
+
+  def categories_field
+    @categories ||= ExtendedField.find_by_label('categories')
+  end
+
+  def browse_by_category_columns
+    # If not, return blank so nothing is displayed
+    return '' if categories_field.nil? || !categories_field.is_a_choice?
+
+    # Get the current choice from params (limit_to_choice is special because it also controls search results)
+    current_choice = categories_field.choices.select { |c| c.value == params[:limit_to_choice] }.first
+    parent_choices = Array.new
+    unless current_choice.blank?
+      # Get all the ancestors and push them onto the parent_choices array
+      # reject the ROOT choice (not needed)
+      current_choice.self_and_ancestors.reject { |a| a.id == 1 }.each { |a| parent_choices << a }
+    end
+    # Add the category extended field at the start of the parent_choices array
+    parent_choices = [categories_field] + parent_choices
+
+    html = String.new
+
+    # For each level in the parent choices
+    parent_choices.size.times do |time|
+      # pop the first parent off the end of the parent_choices array
+      current_choice = parent_choices.shift
+
+      choices = if current_choice.is_a?(ExtendedField)
+        current_choice.choices.find_top_level.reject { |c| !categories_field.choices.member?(c) }
+      else
+        current_choice.choices.reject { |c| !categories_field.choices.member?(c) }
+      end
+
+      # Skip this choice if it doesn't have any choices
+      next if choices.size < 1
+
+      html += "<div id='category_level_#{time}' class='category_list'>"
+      html += "<ul>"
+      # For every choice in the current choice, lets add a list item
+      choices.each do |choice|
+        html += list_item_for_choice(choice, { :current => parent_choices.include?(choice), :include_children => false },
+                                             { :with_categories => true })
+      end
+      html += '</ul>'
+      html += '</div>'
+    end
+
+    html += "<div style='clear:both;'></div>"
+    #html += javascript_tag("enableCategoryListUpdater('#{params[:controller_name_for_zoom_class]}');")
+
+    html
+
+  end
+
 end

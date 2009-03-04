@@ -1,6 +1,6 @@
 <% control = limit_search_to_choice_control -%>
 <% if @extended_field -%>
-<%= content_tag("label", @extended_field.label) + control unless control.blank? %>
-<% elsif @all_choices -%>
-<%= content_tag("label", t('search.refine_by_choice.limit_to_category')) + control unless control.blank? %>
+<br /><%= content_tag("label", @extended_field.label) + control unless control.blank? %>
+<% elsif @all_choices && categories_field -%>
+<br /><%= content_tag("label", t('search.refine_by_choice.limit_to_category')) + control unless control.blank? %>
 <% end -%>
