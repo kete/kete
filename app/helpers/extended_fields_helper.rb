@@ -501,19 +501,14 @@ module ExtendedFieldsHelper
     }.merge(options)
 
     url_hash = {
+      :urlified_name => params[:urlified_name] || 'site',
       :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
-      :controller => 'search',
-      :extended_field => 'extended_field'
     }.merge(url_hash)
 
-    url_hash[:extended_field] = url_hash[:extended_field].is_a?(ExtendedField) ? \
-                                  url_hash[:extended_field].label_for_params : \
-                                  url_hash[:extended_field]
-
     if params[:privacy_type].blank?
-      method = 'basket_all_of_category_url'
+      method = 'basket_all_url'
     else
-      method = 'basket_all_private_of_category_url'
+      method = 'basket_all_private_url'
       url_hash.merge!(:privacy_type => params[:privacy_type])
     end
 
