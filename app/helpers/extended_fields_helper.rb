@@ -494,12 +494,21 @@ module ExtendedFieldsHelper
     end
   end
 
-  def list_item_for_choice(choice)
+  def list_item_for_choice(choice, options={}, url_hash={})
+    options = {
+      :include_children => true,
+      :current => false,
+    }.merge(options)
+
     url_hash = {
       :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
       :controller => 'search',
-      :for => 'all'
-    }
+      :extended_field => 'extended_field'
+    }.merge(url_hash)
+
+    url_hash[:extended_field] = url_hash[:extended_field].is_a?(ExtendedField) ? \
+                                  qualified_name_for_field(url_hash[:extended_field]) : \
+                                  url_hash[:extended_field]
 
     if params[:privacy_type].blank?
       method = 'basket_all_of_category_url'
@@ -508,9 +517,14 @@ module ExtendedFieldsHelper
       url_hash.merge!(:privacy_type => params[:privacy_type])
     end
 
-    base = content_tag("li", link_to(choice.label, send(method, url_hash.merge(:limit_to_choice => choice.value))))
+    base = content_tag("li", link_to(choice.label, send(method, url_hash.merge(:limit_to_choice => choice.value)),
+                                                                { :title => choice.value }),
+                             { :class => (options[:current] ? 'current' : '') })
 
-    children = choice.children.inject("") { |memo, child| list_item_for_choice(child) }
+    children = ''
+    if options[:include_children]
+      children = choice.children.inject("") { |memo, child| list_item_for_choice(child) }
+    end
 
     children.blank? ? base : base + content_tag("ul", children.to_s)
   end
