@@ -26,6 +26,16 @@
   <div class="form_example"><%=t 'account.edit.user_name_example' %></div>
 </div>
 
+<% if languages.keys.size > 1 %>
+<div class="form-element">
+  <label><%=t 'account.edit.language' %></label>
+  <%= locale_dropdown(f) -%>
+  <div class="form_example"><%=t 'account.edit.language_example' %></div>
+</div>
+<% else %>
+  <%= f.hidden_field :language, :value => languages.keys.first %>
+<% end %>
+
 <div class="form-element">
   <label for="allow_emails"><%=t 'account.edit.allow_emails' %></label>
   <%= f.check_box :allow_emails, :tabindex => '1' %>

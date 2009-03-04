@@ -1346,4 +1346,20 @@ module ApplicationHelper
 
   end
 
+  def languages
+    @locales ||= YAML.load(IO.read(File.join(RAILS_ROOT, 'config/locales/list.yml')))
+  end
+
+  def locale_dropdown(form)
+    default = if params[:user]
+      params[:user][:locale]
+    elsif current_user != :false
+      current_user.locale
+    else
+      'en'
+    end
+    locales = languages.collect { |key,value| [value,key] }
+    form.select :locale, locales, :selected => default
+  end
+
 end

@@ -12,8 +12,17 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
   def set_locale
     # if this is nil then I18n.default_locale will be used
-    # Eventually we'll change the local based on the users chosen setting
-    I18n.locale = params[:locale]
+    # url always comes before session, which comes before user, which comes before default
+    if params[:locale]
+      session[:locale] = params[:locale]
+      I18n.locale = params[:locale]
+    elsif session[:locale]
+      I18n.locale = session[:locale]
+    elsif current_user != :false
+      I18n.locale = current_user.locale
+    else
+      I18n.locale = nil
+    end
   end
 
   # See lib/ssl_helpers.rb

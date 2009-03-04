@@ -24,6 +24,8 @@ en:
       allow_emails: "Allow Emails from other users:"
       change_password: Change Password
       email: "Email:"
+      language: "Language:"
+      language_example: Which language would you like to view the site in?
       login: "Login:"
       login_example: Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.
       prefered_license: "Prefered License:"
@@ -102,6 +104,8 @@ en:
       confirm_password: "Confirm Password:"
       email: "Email:"
       house_rules_link: House Rules
+      language: "Language:"
+      language_example: Which language would you like to view the site in?
       login: "Login:"
       login_example: Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.
       password: "Password:"
@@ -1386,6 +1390,8 @@ en:
       results_in: "Results in "
       whole_site: " whole site"
     form: 
+      browse_by_category: Browse by category
+      getting_categories: "Getting Categories. "
       in_reverse: In reverse?
       options: Options
       privacy_type: "That are:"

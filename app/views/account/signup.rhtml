@@ -44,6 +44,15 @@
                                         :item_key => 'user'}) %>
 <% end -%>
 
+<% if languages.keys.size > 1 %>
+<div class="form-element">
+  <label><%=t 'account.signup.language' %></label>
+  <%= locale_dropdown(f) -%>
+  <div class="form_example"><%=t 'account.signup.language_example' %></div>
+</div>
+<% else %>
+  <%= f.hidden_field :language, :value => languages.keys.first %>
+<% end %>
 
 <div class="form-element">
   <label><%=t 'account.signup.prefered_license' %></label>

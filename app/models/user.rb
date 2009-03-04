@@ -92,6 +92,7 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_format_of       :login, :with => /^[^\s]+$/
+  validates_format_of       :locale, :with => /^[a-z]{2}$/
   validates_uniqueness_of   :login, :case_sensitive => false
 
   before_save :encrypt_password
