@@ -33,7 +33,10 @@ class AccountController < ApplicationController
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
-        redirect_back_or_default(:controller => '/account', :action => 'index')
+        redirect_back_or_default({ :locale => current_user.locale,
+                                   :urlified_name => 'site',
+                                   :controller => 'account',
+                                   :action => 'index' }, current_user.locale)
         flash[:notice] = t('account_controller.login.logged_in')
       else
         flash[:notice] = t('account_controller.login.failed_login')
@@ -106,7 +109,10 @@ class AccountController < ApplicationController
       flash[:notice] = t('account_controller.signup.signed_up_with_email')
     end
 
-    redirect_back_or_default(:controller => '/account', :action => 'index')
+    redirect_back_or_default({ :locale => params[:user][:locale],
+                               :urlified_name => 'site',
+                               :controller => 'account',
+                               :action => 'index' })
   rescue ActiveRecord::RecordInvalid
     render :action => 'signup'
   end
@@ -189,7 +195,11 @@ class AccountController < ApplicationController
       expire_contributions_caches_for(@user) if original_user_name != @user.user_name
 
       flash[:notice] = t('account_controller.update.user_updated')
-      redirect_to :action => 'show', :id => @user
+      redirect_to({ :locale => params[:user][:locale],
+                    :urlified_name => 'site',
+                    :controller => 'account',
+                    :action => 'show',
+                    :id => @user })
     else
       logger.debug("what is problem")
       render :action => 'edit'

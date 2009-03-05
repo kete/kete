@@ -111,8 +111,8 @@ module AuthenticatedSystem
 
     # Redirect to the URI stored by the most recent store_location call or
     # to the passed default.
-    def redirect_back_or_default(default)
-      session[:return_to] ? redirect_to(session[:return_to]) : redirect_to(default)
+    def redirect_back_or_default(default, lang=I18n.default_locale)
+      session[:return_to] ? redirect_to(session[:return_to].gsub(/^\/[a-z\-]+\//i, "/#{lang}/")) : redirect_to(default)
       session[:return_to] = nil
     end
 

@@ -92,8 +92,11 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_format_of       :login, :with => /^[^\s]+$/
-  validates_format_of       :locale, :with => /^[a-z]{2}$/
   validates_uniqueness_of   :login, :case_sensitive => false
+
+  cattr_accessor :language_choices
+  @@language_choices ||= YAML.load(IO.read(File.join(RAILS_ROOT, 'config/locales/list.yml')))
+  validates_inclusion_of :locale, :in => @@language_choices.keys, :message => I18n.t('user_model.locale_incorrect', :locales => @@language_choices.keys.join(', '))
 
   before_save :encrypt_password
 

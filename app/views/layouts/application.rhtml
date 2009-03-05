@@ -126,7 +126,9 @@
           <div id="header">
             <!-- this would be a good place for your logo -->
             <h1>
-              <%= link_to PRETTY_SITE_NAME, '/', :tabindex => '2' %>
+              <%= link_to PRETTY_SITE_NAME,
+                          basket_index_url({ :urlified_name => 'site' }),
+                          :tabindex => '2' %>
               <%= header_link_to_current_basket %>
             </h1>
             <div id="head-search-wrapper">
@@ -182,7 +184,11 @@
           </ul>
 
           <ul id="main-nav" class="nav-list">
-            <li class="first"><a href="/" accesskey="1" tabindex="2"><%=t 'layouts.application.home' %></a></li>
+            <li class="first">
+              <%= link_to t('layouts.application.home'),
+                          basket_index_url({ :urlified_name => 'site' }),
+                          :tabindex => '2', :accesskey => '1' %>
+            </li>
             <%= header_browse_links %>
             <li>
               <%= link_to_unless_current h(@about_basket.name),

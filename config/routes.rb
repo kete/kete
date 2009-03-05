@@ -20,74 +20,74 @@ ActionController::Routing::Routes.draw do |map|
 
   # Various RSS feeds not associated with search
   map.with_options :action => "rss" do |rss|
-    rss.basket_list_rss ':urlified_name/baskets/rss.:format', :controller => "baskets"
-    rss.tags_list_rss ':urlified_name/tags/rss.:format', :controller => "tags"
-    rss.basket_moderate_rss ':urlified_name/moderate/rss.:format', :controller => "moderate"
-    rss.basket_moderate_rss ':urlified_name/members/rss.:format', :controller => "members"
+    rss.basket_list_rss ':locale/:urlified_name/baskets/rss.:format', :controller => "baskets"
+    rss.tags_list_rss ':locale/:urlified_name/tags/rss.:format', :controller => "tags"
+    rss.basket_moderate_rss ':locale/:urlified_name/moderate/rss.:format', :controller => "moderate"
+    rss.basket_moderate_rss ':locale/:urlified_name/members/rss.:format', :controller => "members"
   end
 
   # All search related routes (all, rss, for)
   map.with_options :controller => 'search' do |search|
 
     search.with_options :action => 'all' do |search_all|
-      search_all.basket_all ':urlified_name/all/:controller_name_for_zoom_class/'
-      search_all.basket_all_private ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/'
-      search_all.basket_all_contributed_by ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
-      search_all.basket_all_private_contributed_by ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
-      search_all.basket_all_of_category ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice'
-      search_all.basket_all_private_of_category ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice'
-      search_all.basket_all_related_to ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/'
-      search_all.basket_all_private_related_to ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/'
-      search_all.basket_all_tagged ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/'
-      search_all.basket_all_private_tagged ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/'
+      search_all.basket_all ':locale/:urlified_name/all/:controller_name_for_zoom_class/'
+      search_all.basket_all_private ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/'
+      search_all.basket_all_contributed_by ':locale/:urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
+      search_all.basket_all_private_contributed_by ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
+      search_all.basket_all_of_category ':locale/:urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice'
+      search_all.basket_all_private_of_category ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice'
+      search_all.basket_all_related_to ':locale/:urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/'
+      search_all.basket_all_private_related_to ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/'
+      search_all.basket_all_tagged ':locale/:urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/'
+      search_all.basket_all_private_tagged ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/'
     end
 
     search.with_options :action => 'rss' do |search_rss|
-      search_rss.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss.xml'
-      search_rss.basket_all_private_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/rss.xml'
-      search_rss.basket_all_contributed_by_rss ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
-      search_rss.basket_all_private_contributed_by_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
-      search_rss.basket_all_related_to_rss ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
-      search_rss.basket_all_private_related_to_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
-      search_rss.basket_all_tagged_rss ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
-      search_rss.basket_all_private_tagged_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
-      search_rss.basket_all_of_category_rss ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
-      search_rss.basket_all_private_of_category_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
-      search_rss.basket_search_contributed_by_rss ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_contributed_by_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_related_to_rss ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_related_to_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_tagged_rss ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_tagged_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_rss ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_of_category_rss ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
-      search_rss.basket_search_private_of_category_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
+      search_rss.basket_all_rss ':locale/:urlified_name/all/:controller_name_for_zoom_class/rss.xml'
+      search_rss.basket_all_private_rss ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/rss.xml'
+      search_rss.basket_all_contributed_by_rss ':locale/:urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
+      search_rss.basket_all_private_contributed_by_rss ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
+      search_rss.basket_all_related_to_rss ':locale/:urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
+      search_rss.basket_all_private_related_to_rss ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
+      search_rss.basket_all_tagged_rss ':locale/:urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
+      search_rss.basket_all_private_tagged_rss ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
+      search_rss.basket_all_of_category_rss ':locale/:urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
+      search_rss.basket_all_private_of_category_rss ':locale/:urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
+      search_rss.basket_search_contributed_by_rss ':locale/:urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_contributed_by_rss ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_related_to_rss ':locale/:urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_related_to_rss ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_tagged_rss ':locale/:urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_tagged_rss ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_rss ':locale/:urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_rss ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_of_category_rss ':locale/:urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_of_category_rss ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
     end
 
     search.with_options :action => 'for' do |search_for|
-      search_for.basket_search_contributed_by ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-      search_for.basket_search_private_contributed_by ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-      search_for.basket_search_related_to ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug'
-      search_for.basket_search_private_related_to ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug'
-      search_for.basket_search_tagged ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug'
-      search_for.basket_search_private_tagged ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug'
-      search_for.basket_search ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug'
-      search_for.basket_search_private ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug'
-      search_for.basket_search_of_category ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
-      search_for.basket_search_private_of_category ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
+      search_for.basket_search_contributed_by ':locale/:urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
+      search_for.basket_search_private_contributed_by ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
+      search_for.basket_search_related_to ':locale/:urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug'
+      search_for.basket_search_private_related_to ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug'
+      search_for.basket_search_tagged ':locale/:urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug'
+      search_for.basket_search_private_tagged ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug'
+      search_for.basket_search ':locale/:urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug'
+      search_for.basket_search_private ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug'
+      search_for.basket_search_of_category ':locale/:urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
+      search_for.basket_search_private_of_category ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
 
       search_for.with_options :search_terms => nil do |nil_search_terms|
-        nil_search_terms.basket_search_contributed_by_empty ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-        nil_search_terms.basket_search_private_contributed_by_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
-        nil_search_terms.basket_search_related_to_empty ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for'
-        nil_search_terms.basket_search_private_related_to_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for'
-        nil_search_terms.basket_search_tagged_empty ':urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for'
-        nil_search_terms.basket_search_private_tagged_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for'
-        nil_search_terms.basket_search_empty ':urlified_name/search/:controller_name_for_zoom_class/for'
-        nil_search_terms.basket_search_private_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for'
-        nil_search_terms.basket_search_of_category_empty ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
-        nil_search_terms.basket_search_private_of_category_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
+        nil_search_terms.basket_search_contributed_by_empty ':locale/:urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
+        nil_search_terms.basket_search_private_contributed_by_empty ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
+        nil_search_terms.basket_search_related_to_empty ':locale/:urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for'
+        nil_search_terms.basket_search_private_related_to_empty ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for'
+        nil_search_terms.basket_search_tagged_empty ':locale/:urlified_name/search/:controller_name_for_zoom_class/tagged/:tag/for'
+        nil_search_terms.basket_search_private_tagged_empty ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for'
+        nil_search_terms.basket_search_empty ':locale/:urlified_name/search/:controller_name_for_zoom_class/for'
+        nil_search_terms.basket_search_private_empty ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for'
+        nil_search_terms.basket_search_of_category_empty ':locale/:urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
+        nil_search_terms.basket_search_private_of_category_empty ':locale/:urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
       end
     end
 
@@ -98,8 +98,8 @@ ActionController::Routing::Routes.draw do |map|
     map.resources as_controller.to_sym, :active_scaffold => true
   end
 
-  map.basket_index ':urlified_name', :controller => "index_page", :action => 'index'
-  map.basket_contact ':urlified_name/contact', :controller => "baskets", :action => 'contact'
+  map.basket_index ':locale/:urlified_name', :controller => "index_page", :action => 'index'
+  map.basket_contact ':locale/:urlified_name/contact', :controller => "baskets", :action => 'contact'
 
   # James Stradling <james@katipo.co.nz>, 2008-04-15
   # Map private files to the PrivateFilesController
@@ -107,8 +107,8 @@ ActionController::Routing::Routes.draw do |map|
   map.private_file '/:type/:a/:b/:c/:filename.*formats', :controller => "private_files", :action => 'show'
 
   # Catch everything else
-  map.basket_with_format ':urlified_name/:controller/:action/:id.:format'
-  map.basket ':urlified_name/:controller/:action/:id'
+  map.basket_with_format ':locale/:urlified_name/:controller/:action/:id.:format'
+  map.basket ':locale/:urlified_name/:controller/:action/:id'
 
   # Walter McGinnis, 2007-07-13
   # if the site isn't configured, we don't setup our full routes
@@ -124,10 +124,11 @@ ActionController::Routing::Routes.draw do |map|
     # comment this line and uncomment the next after initial migration
     site_basket = Basket.find(1) unless skip_configuration # we skip a query here if running integration tests
     site_urlified_name = !site_basket.nil? ? site_basket.urlified_name : 'site'
-    map.connect '', :controller => "index_page", :urlified_name => site_urlified_name
+    map.connect ':locale', :controller => "index_page", :urlified_name => site_urlified_name
+    map.connect '', :controller => "index_page", :urlified_name => site_urlified_name, :locale => I18n.default_locale
   else
     # not configured, redirect to homepage which is configuration page
-    map.connect '', :controller => "configure", :urlified_name => 'site'
+    map.connect '', :controller => "configure", :urlified_name => 'site', :locale => I18n.default_locale
   end
 
   map.connect '*path', :controller => 'application', :action => 'rescue_404' unless ActionController::Base.consider_all_requests_local

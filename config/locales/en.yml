@@ -1749,6 +1749,7 @@ en:
       updated: Topic was successfully updated.
   user_model: 
     failed_security_answer: ": Your security question answer failed - please try again."
+    locale_incorrect: ": Unrecognised language. Must be one of the following: {{locales}}"
   user_notifier: 
     activation: 
       activated: "{{user_name}}, your account has been activated."

@@ -115,7 +115,7 @@ module ApplicationHelper
   end
 
   def link_to_index_for(basket, options = { })
-    link_to basket.name, basket_index_url(basket.urlified_name), options
+    link_to basket.name, basket_index_url({ :urlified_name => basket.urlified_name }), options
   end
 
   def header_browse_links
@@ -1346,19 +1346,15 @@ module ApplicationHelper
 
   end
 
-  def languages
-    @locales ||= YAML.load(IO.read(File.join(RAILS_ROOT, 'config/locales/list.yml')))
-  end
-
   def locale_dropdown(form)
     default = if params[:user]
       params[:user][:locale]
     elsif current_user != :false
       current_user.locale
     else
-      'en'
+      config.i18n.default_locale
     end
-    locales = languages.collect { |key,value| [value,key] }
+    locales = User.language_choices.collect { |key,value| [value,key] }
     form.select :locale, locales, :selected => default
   end
 

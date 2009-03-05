@@ -26,14 +26,14 @@
   <div class="form_example"><%=t 'account.edit.user_name_example' %></div>
 </div>
 
-<% if languages.keys.size > 1 %>
+<% if User.language_choices.keys.size > 1 %>
 <div class="form-element">
   <label><%=t 'account.edit.language' %></label>
   <%= locale_dropdown(f) -%>
   <div class="form_example"><%=t 'account.edit.language_example' %></div>
 </div>
 <% else %>
-  <%= f.hidden_field :language, :value => languages.keys.first %>
+  <%= f.hidden_field :language, :value => I18n.default_locale %>
 <% end %>
 
 <div class="form-element">
