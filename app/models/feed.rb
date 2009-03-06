@@ -24,9 +24,10 @@ class Feed < ActiveRecord::Base
       entries.push(*feed.entries)
 
       if self.serialized_feed != entries # is there something different
-        self.serialized_feed = entries
-        self.last_downloaded = Time.now.utc.to_s :db
-        self.save
+        self.update_attributes({ :serialized_feed => entries,
+                                 :last_downloaded => Time.now.utc.to_s(:db) })
+        file_path = "#{Rails.root}/tmp/cache/views/feeds/#{self.basket.urlified_name}/feed_#{self.id}.cache"
+        File.delete(file_path) if File.exists?(file_path)
       end
     rescue
       # fail silently - make sure nothing causes errors to output
