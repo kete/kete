@@ -505,10 +505,14 @@ module ExtendedFieldsHelper
       :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
     }.merge(url_hash)
 
+    url_hash[:extended_field] = url_hash[:extended_field].is_a?(ExtendedField) ? \
+                                  url_hash[:extended_field].label_for_params : \
+                                  url_hash[:extended_field]
+
     if params[:privacy_type].blank?
-      method = 'basket_all_url'
+      method = 'basket_all_of_category_url'
     else
-      method = 'basket_all_private_url'
+      method = 'basket_all_private_of_category_url'
       url_hash.merge!(:privacy_type => params[:privacy_type])
     end
 

@@ -1314,7 +1314,7 @@ module ApplicationHelper
       # For every choice in the current choice, lets add a list item
       choices.each do |choice|
         html += list_item_for_choice(choice, { :current => parent_choices.include?(choice), :include_children => false },
-                                             { :with_categories => true })
+                                             { :extended_field => categories_field, :browse_by => 'choice_hierarchy' })
       end
       html += '</ul>'
       html += '</div>'
