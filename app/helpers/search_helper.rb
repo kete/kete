@@ -32,6 +32,10 @@ module SearchHelper
       end_of_title_parts << contributor_string
     end
 
+    unless params[:limit_to_choice].blank?
+      end_of_title_parts << " with category #{h(params[:limit_to_choice])}"
+    end
+
     unless @source_item.nil?
       @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
       end_of_title_parts << " related to \"#{@source_item.title}\""
