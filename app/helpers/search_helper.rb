@@ -33,7 +33,7 @@ module SearchHelper
     end
 
     unless params[:limit_to_choice].blank?
-      end_of_title_parts << " with category #{h(params[:limit_to_choice])}"
+      end_of_title_parts << " with #{h(params[:limit_to_choice])}"
     end
 
     unless @source_item.nil?
