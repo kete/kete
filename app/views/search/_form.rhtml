@@ -1,6 +1,6 @@
 <% simple_layout ||= false -%>
 
-<% if params[:with_categories] %>
+<% if params[:browse_by] && params[:browse_by] == 'choice_hierarchy' %>
 
   <% category_columns = browse_by_category_columns -%>
   <% unless category_columns.blank? %>

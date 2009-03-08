@@ -14,8 +14,13 @@ class FeedsWorker < BackgrounDRb::MetaWorker
   end
 
   def update(feed_id)
-    feed = Feed.find_by_id(feed_id)
-    feed.update_feed if feed
+    begin
+      feed = Feed.find_by_id(feed_id)
+      feed.update_feed if feed
+    rescue
+      # if the update above fails for any reason, we dont want the worker stopping completely
+      # so rescue from it and make sure it doesn't execute a raise!
+    end
   end
 
 end

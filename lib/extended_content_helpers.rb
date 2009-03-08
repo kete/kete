@@ -24,7 +24,7 @@ module ExtendedContentHelpers
       # Build the anonymous fields that have no dc:* attributes.
       @builder_instance.tag!("dc:description") do |nested|
         @anonymous_fields.each do |k, v|
-          nested.tag!(k, encode_ampersands(v))
+          nested.tag!(k, v)
         end
       end
 
@@ -44,22 +44,24 @@ module ExtendedContentHelpers
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, data["value"]]
         else
-          @builder_instance.tag!(data["xml_element_name"], encode_ampersands(data["value"]))
+          @builder_instance.tag!(data["xml_element_name"], data["value"])
         end
       else
+
+        # Example of what we might have in data at this point
+        # {"xml_element_name"=>"dc:subject",
+        #  "1"=>{"value"=>"Recreation", "label"=>"Sports & Recreation"},
+        #  "2"=>"Festivals",
+        #  "3"=>"New Year"}
 
         # This means we're dealing with a second set of nested values, to build these now.
         data_for_values = data.reject { |k, v| k == 'xml_element_name' || k == 'label' }.map { |k, v| v }
 
-        # we may still need to go down one more level
-        # this assumes if the first element in the array is a hash, we have to go one more level deeper
-        if data_for_values.first.is_a?(Hash)
-          new_data_for_values = Array.new
-          data_for_values.each do |subhash|
-            new_data_for_values += subhash.reject { |k, v| k == 'xml_element_name' || k == 'label' }.map { |k, v| v }
-          end
-          data_for_values = new_data_for_values
-        end
+        # By this stage, we may have either of the following:
+        # [{:label => 'Something', :value => 'This'}, {:label => 'Another', :value => 'That'}]
+        # ['This', 'That']
+        # (or a combination of both). So in this case, lets collect the correct values before continuing
+        data_for_values.collect! { |v| (v.is_a?(Hash) && v['value']) ? v['value'] : v }.flatten.compact
 
         return nil if data_for_values.empty?
 
@@ -175,11 +177,6 @@ module ExtendedContentHelpers
         logger.error("failed to format xml: #{$!.to_s}")
       end
     end
-
-    def encode_ampersands(value)
-      value.gsub("&", "&amp;")
-    end
-
 
   end
 end

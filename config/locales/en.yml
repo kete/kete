@@ -1501,6 +1501,7 @@ en:
     last_part_of_title_if_refinement_of: 
       and: " and"
       contributed_by: " contributed by {{contributor}}"
+      limit_to_choice: " with {{choice}}"
       privacy_type: " that are {{privacy}}"
       related_to: " related to {{source_item}}"
       tagged_as: " tagged as {{tag_name}}"
