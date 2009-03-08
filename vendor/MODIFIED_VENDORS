@@ -26,6 +26,11 @@ plugins/
   acts_as_soft_deletable/
     lib/
       unit_test_helper.rb
+  routing-filter/
+    lib/
+      routing_filter.rb
+      routing_filter/
+        locale.rb
 
 rails/
   actionpack/

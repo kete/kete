@@ -10,22 +10,14 @@ class ApplicationController < ActionController::Base
 
   # Sets the host for all url_for calls
   def default_url_options(options = nil)
-    { :host => SITE_NAME,
-      :locale => I18n.locale,
-      :urlified_name => params[:urlified_name] } if defined?(SITE_NAME)
+    { :host => SITE_NAME } if defined?(SITE_NAME)
   end
 
   before_filter :set_locale
   def set_locale
-    if current_user != :false
-      locale = current_user.locale
-      if params[:locale] != locale && params[:locale] != I18n.default_locale
-        locale = params[:locale]
-      end
-    else
-      locale = params[:locale]
-    end
-    I18n.locale = locale.nil? ? I18n.default_locale : locale
+    I18n.locale = nil
+    I18n.locale = current_user.locale if current_user != :false && User.language_choices.include?(current_user.locale)
+    I18n.locale = params[:locale] if params[:locale] && User.language_choices.include?(current_user.locale)
   end
 
   # See lib/ssl_helpers.rb

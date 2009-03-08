@@ -51,7 +51,7 @@
   <div class="form_example"><%=t 'account.signup.language_example' %></div>
 </div>
 <% else %>
-  <%= f.hidden_field :language, :value => I18n.default_locale %>
+  <%= f.hidden_field :locale, :value => I18n.default_locale %>
 <% end %>
 
 <div class="form-element">

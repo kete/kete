@@ -1632,20 +1632,14 @@ en:
     edit: 
       not_authorized: Sorry - editing on this section of the site has been disallowed
     flag_form: 
-      comments: Comments
-      contributor: Contributor
       flag_button: Flag
       flag_instructions: Please give details that might be helpful for the moderator reviewing this item.  For example, if flagging as a duplicate, the URL for the item this content duplicates.
       flag_item_title: Flag this item
-      flags: Flags
       message_for: Message for
       not_authorized: Sorry flagging has been disabled on this section of the site
-      number: Number
-      privacy: Privacy
       reject_button: Reject
       reject_instructions: Please add a message to the user telling the why you have passed over their submitted revision.
       reject_revision_title: Reject this revision
-      updated: Updated
     flagging_contributor: 
       at: at
       created: created
@@ -1684,11 +1678,17 @@ en:
       url: URL
     history: 
       back_to_live: Back to live
+      comments: Comments
+      contributor: Contributor
+      flags: Flags
       has_private_version: This item has private versions. {{login}} as a basket member to view these.
       login_link: Login
+      number: Number
+      privacy: Privacy
       private: Private
       public: Public
       revision_history: "Revision History:"
+      updated: Updated
     license_chooser_or_agreement: 
       how_to_set_license: You can change or set your default licence by editing your profile
       license_description: This {{item_type}} is licensed under the {{license_title}}. By editing it you agree that your changes will fall under this license.
