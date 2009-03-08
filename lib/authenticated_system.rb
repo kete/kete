@@ -113,7 +113,7 @@ module AuthenticatedSystem
     # to the passed default.
     def redirect_back_or_default(default, lang=I18n.locale)
       locale_match = %r(^/(#{I18n.available_locales.map{|l|l.to_s}.join('|')})(?=/|$))
-      session[:return_to] ? redirect_to(session[:return_to].gsub(locale_match, "/#{lang}/")) : redirect_to(default)
+      session[:return_to] ? redirect_to(session[:return_to].gsub(locale_match, "/#{lang}")) : redirect_to(default)
       session[:return_to] = nil
     end
 
