@@ -349,8 +349,14 @@ module ExtendedFieldsHelper
                                    :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
     }
 
-    select_tag("#{name}[#{level}]", option_tags, default_options.merge(options)) +
-    "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />"
+    html = select_tag("#{name}[#{level}][preset]", option_tags, default_options.merge(options))
+    html += "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />"
+    if extended_field.user_choice_addition?
+      user_supplied_id = "#{id_for_extended_field(extended_field)}_custom"
+      html += ' OR add your own '
+      html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id)
+    end
+    html
   end
 
   def extended_field_choice_autocomplete_editor(name, value, options, extended_field, choices, level = 1)
