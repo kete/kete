@@ -567,7 +567,7 @@ module ApplicationHelper
     end
     if (options[:item] && options[:zoom_class] && options[:display_num] && options[:total_num]) &&
           (options[:total_num] > options[:display_num])
-      display_html += "<li>"
+      display_html += "<li class='more'>"
       more_num = options[:total_num] - options[:display_num]
       display_html += link_to_related_items_of(options[:item], options[:zoom_class], { :link_text => "#{more_num.to_s} more like this &gt;&gt;" }, { :privacy_type => options[:privacy_type] })
       display_html += "</li>"

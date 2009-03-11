@@ -251,6 +251,57 @@ body.mceContentBody {
   border-left: none;
 }
 
+/* #################################### Related Items #################################### */
+#related_items.inset {
+  float: right;
+  width: 200px;
+}
+#related_items.inset .two-col {
+    width: 100%;
+    padding-right: 0;
+    float: none;
+}
+#related_items.inset #related-items-tools {
+  padding-top: 20px;
+  font-size: .8em;
+  text-align: center;
+}
+#related_items.inset #related-items-tools li {
+  padding: 0 5px;
+  margin: 0;
+  width: 50px;
+  text-align: center;
+  float: none;
+  display: inline;
+}
+#related_items.inset .no-items {
+  display: none;
+}
+#related_items.inset ul {
+  list-style: none;
+}
+#related_items.inset #detail-linked-toprow ul,
+#related_items.inset .two-col ul {
+  padding-left: 5px;
+  margin: 1px;
+}
+#related_items.inset #detail-linked-toprow ul ul,
+#related_items.inset .two-col ul ul {
+  padding-left: 10px;
+}
+#related_items.inset .results-list {
+  margin: 0;
+  padding: 0;
+}
+#related_items.inset .results-list img {
+  width: 30px;
+  height: 30px;
+  margin-right: 3px;
+}
+#related_items.inset .more {
+  display: block;
+}
+
 /* #################################### Secondary Content #################################### */
 .secondary-content-section-wrapper{
     margin: 1em 1em 1em 0em;

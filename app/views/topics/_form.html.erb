@@ -214,6 +214,11 @@ zoom_class = zoom_class_from_controller(controller)
     <%= render :partial => 'topics/license_chooser_or_agreement',
                :locals => { :item => @item } -%>
 
+    <% if @item_type == :topic %>
+      <%= form.check_box :related_items_inset, { :tabindex => '1',
+                                                 :label => t('topics.form.related_items_as_inset') } %>
+    <% end -%>
+
   </fieldset>
 
   <div class="wrap">

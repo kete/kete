@@ -208,8 +208,8 @@
         </div><!-- /top-menu -->
 
         <div class="clear" style="height:1px;"><a name="content">&nbsp;</a></div>
-        <div id="notice" <%= flash[:notice].blank? ? "style='display:none;'" : '' -%>><div><%= flash[:notice] %></div></div>
-        <div id="error" <%= flash[:error].blank? ? "style='display:none;'" : '' -%>><div><%= flash[:error] %></div></div>
+        <div id="notice" <%= flash[:notice].blank? ? "style='display:none;'" : '' -%>><div><%=h flash[:notice] %></div></div>
+        <div id="error" <%= flash[:error].blank? ? "style='display:none;'" : '' -%>><div><%=h flash[:error] %></div></div>
 
         <div id="container">
           <%= render(:partial => "topics/slideshow_controls") if show_slideshow_controls? -%>

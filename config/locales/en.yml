@@ -1668,6 +1668,7 @@ en:
       private_description: (Can be viewed only by basket members)
       public: Public
       public_description: (Can be viewed by everyone)
+      related_items_as_inset: Insert Related Items content into Topic body?
       required_fields: "* denotes a required field"
       short_summary: Short Summary
       tags: Tags (separated by commas)
