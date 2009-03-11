@@ -1,7 +1,7 @@
 --- 
 format: 1
 handler: 
-  commit: 06ef3fcaa44f3cf6994986780b1f824244600ef0
+  commit: b75d6a2d3b7aaa3258c7980f957989662a40c208
   branch: master
 repository_url: git://github.com/activescaffold/active_scaffold.git
 lock: false
