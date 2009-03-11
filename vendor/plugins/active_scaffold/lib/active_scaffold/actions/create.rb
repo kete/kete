@@ -2,6 +2,7 @@ module ActiveScaffold::Actions
   module Create
     def self.included(base)
       base.before_filter :create_authorized?, :only => [:new, :create]
+      base.prepend_before_filter :constraints_for_nested_create, :only => [:new, :create]
       base.verify :method => :post,
                   :only => :create,
                   :redirect_to => { :action => :index }
@@ -13,13 +14,13 @@ module ActiveScaffold::Actions
       respond_to do |type|
         type.html do
           if successful?
-            render(:action => 'create_form')
+            render(:action => 'create', :layout => true)
           else
             return_to_main
           end
         end
         type.js do
-          render(:partial => 'create_form', :layout => false)
+          render(:partial => 'create_form.rhtml', :layout => false)
         end
       end
     end
@@ -33,14 +34,14 @@ module ActiveScaffold::Actions
           if params[:iframe]=='true' # was this an iframe post ?
             responds_to_parent do
               if successful?
-                render :action => 'create.rjs', :layout => false
+                render :action => 'on_create', :layout => false
               else
                 render :action => 'form_messages.rjs', :layout => false
               end
             end
           else
             if successful?
-              flash[:info] = as_('Created %s', @record.to_label)
+              flash[:info] = as_(:created_model, :model => @record.to_label)
               if active_scaffold_config.create.edit_after_create
                 redirect_to params.merge(:action => "edit", :id => @record.id)
               else
@@ -51,13 +52,13 @@ module ActiveScaffold::Actions
                 do_list
                 render(:action => 'list')
               else
-                render(:action => 'create_form')
+                render(:action => 'create', :layout => true)
               end
             end
           end
         end
         type.js do
-          render :action => 'create.rjs', :layout => false
+          render :action => 'on_create', :layout => false
         end
         type.xml { render :xml => response_object.to_xml, :content_type => Mime::XML, :status => response_status }
         type.json { render :text => response_object.to_json, :content_type => Mime::JSON, :status => response_status }
@@ -66,12 +67,22 @@ module ActiveScaffold::Actions
     end
 
     protected
+    def constraints_for_nested_create
+      if params[:parent_column] && params[:parent_id]
+        @old_eid = params[:eid]
+        @remove_eid = true
+        constraints = {params[:parent_column].to_sym => params[:parent_id]}
+        params[:eid] = Digest::MD5.hexdigest(params[:parent_controller] + params[:controller].to_s + constraints.to_s)
+        session["as:#{params[:eid]}"] = {:constraints => constraints}
+      end
+    end
 
     # A simple method to find and prepare an example new record for the form
     # May be overridden to customize the behavior (add default values, for instance)
     def do_new
       @record = active_scaffold_config.model.new
       apply_constraints_to_record(@record)
+      params[:eid] = @old_eid if @remove_eid
       @record
     end
 
@@ -82,6 +93,7 @@ module ActiveScaffold::Actions
         active_scaffold_config.model.transaction do
           @record = update_record_from_params(active_scaffold_config.model.new, active_scaffold_config.create.columns, params[:record])
           apply_constraints_to_record(@record, :allow_autosave => true)
+          params[:eid] = @old_eid if @remove_eid
           before_create_save(@record)
           self.successful = [@record.valid?, @record.associated_valid?].all? {|v| v == true} # this syntax avoids a short-circuit
           if successful?

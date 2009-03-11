@@ -53,7 +53,7 @@ module ActiveScaffold
 
         # Fix for keeping unique IDs in subform
         id_control = "record_#{column.name}_#{[params[:eid], params[:id]].compact.join '_'}"
-        id_control += scope.gsub (/(\[|\])/, '_').gsub('__', '_').gsub(/_$/, '') if scope
+        id_control += scope.gsub(/(\[|\])/, '_').gsub('__', '_').gsub(/_$/, '') if scope
 
         { :name => name, :class => "#{column.name}-input", :id => id_control}
       end
@@ -71,7 +71,7 @@ module ActiveScaffold
         selected = associated.nil? ? nil : associated.id
         method = column.association.macro == :belongs_to ? column.association.primary_key_name : column.name
         options[:name] += '[id]'
-        select(:record, method, select_options.uniq, {:selected => selected, :include_blank => as_('- select -')}, options)
+        select(:record, method, select_options.uniq, {:selected => selected, :include_blank => as_(:_select_)}, options)
       end
 
       def active_scaffold_input_plural_association(column, options)
@@ -118,12 +118,8 @@ module ActiveScaffold
         end
         remote_controller = active_scaffold_controller_for(column.association.klass).controller_path
 
-        # if the opposite association is a :belongs_to, then only show records that have not been associated yet
-        params = {:parent_id => @record.id, :parent_model => @record.class}
-        
-        # if the opposite association is a :belongs_to, then only show records that have not been associated yet
-        # robd 2008-06-29: is this code doing the right thing? doesn't seem to check :belongs_to...
-        # in any case, could we encapsulate this code on column in a method like .singular_association?
+        # if the opposite association is a :belongs_to (in that case association in this class must be has_one or has_many)
+        # then only show records that have not been associated yet
         if [:has_one, :has_many].include?(column.association.macro)
           params.merge!({column.association.primary_key_name => ''})
         end
@@ -143,28 +139,12 @@ module ActiveScaffold
         check_box(:record, column.name, options)
       end
 
-      def active_scaffold_input_country(column, options)
-        priority = ["United States"]
-        select_options = {:prompt => as_('- select -')}
-        select_options.merge!(options)
-        country_select(:record, column.name, column.options[:priority] || priority, select_options, column.options)
-      end
-
       def active_scaffold_input_password(column, options)
         password_field :record, column.name, active_scaffold_input_text_options(options)
       end
 
       def active_scaffold_input_textarea(column, options)
         text_area(:record, column.name, options.merge(:cols => column.options[:cols], :rows => column.options[:rows]))
-      end
-
-      def active_scaffold_input_usa_state(column, options)
-        select_options = {:prompt => as_('- select -')}
-        select_options.merge!(options)
-        select_options.delete(:size)
-        options.delete(:prompt)
-        options.delete(:priority)
-        usa_state_select(:record, column.name, column.options[:priority], select_options, column.options.merge!(options))
       end
 
       def active_scaffold_input_virtual(column, options)
@@ -177,9 +157,9 @@ module ActiveScaffold
 
       def active_scaffold_input_boolean(column, options)
         select_options = []
-        select_options << [as_('- select -'), nil] if column.column.null
-        select_options << [as_('True'), true]
-        select_options << [as_('False'), false]
+        select_options << [as_(:_select_), nil] if column.column.null
+        select_options << [as_(:true), true]
+        select_options << [as_(:false), false]
 
         select_tag(options[:name], options_for_select(select_options, @record.send(column.name)))
       end
