@@ -15,7 +15,7 @@ display_heading = defined?(display_heading) && display_heading != false ? displa
 display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : false
 -%>
 
-<div id="detail-linked-<%= controller -%>"<%= " class='no-items'" if total_items < 1 -%>>
+<div id="detail-linked-<%= controller -%>"<%= (total_items < 1) ? " class='no-items'" : " class='related-items-section'" -%>>
   <% if !display_heading.nil? -%>
     <%= display_heading -%>
   <% else -%>

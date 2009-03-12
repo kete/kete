@@ -89,6 +89,28 @@ function enableCategoryListUpdater(controller_name) {
   });
 }
 
+function setupRelatedCollapsableSections() {
+  // For each related items section, hide it, and add an hover event
+  $$('.related-items-section').each(function(section) {
+    $(section).down('ul').hide();
+    $(section).observe('mouseover', function(event) {
+      // hide all open sections, then show the one hovered over
+      hideAllRelatedSections();
+      $(section).down('ul').show();
+      // stop anything the hover might have triggered
+      event.stop();
+    });
+  });
+  // Show the contents of the first section in the related items inset
+  $$('.related-items-section')[0].down('ul').show();
+}
+
+function hideAllRelatedSections() {
+  $$('.related-items-section').each(function(section) {
+    $(section).down('ul').hide();
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
@@ -105,4 +127,6 @@ document.observe('dom:loaded', function() {
       event.stop();
     })
   }
+
+  if ($$('#related_items.inset').size() > 0) { setupRelatedCollapsableSections(); }
 });
