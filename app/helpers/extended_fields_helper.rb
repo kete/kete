@@ -340,21 +340,24 @@ module ExtendedFieldsHelper
   def extended_field_choice_select_editor(name, value, options, extended_field, choices, level = 1)
 
     # Build OPTION tags
-    option_tags = options_for_select([['', '']] + choices.map { |c| [c.label, c.value] }, value)
+    option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']] + choices.map { |c| [c.label, c.value] }, value)
 
     default_options = {
+      :id => "#{id_for_extended_field(extended_field)}_level_#{level}_preset",
+      :class => "#{extended_field.label_for_params}_choice_dropdown",
       :onchange => remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
                                    :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
-                                   :before => "Element.show('#{id_for_extended_field(extended_field)}_#{level}_spinner')",
-                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
+                                   :before => "Element.show('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')",
+                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')")
     }
 
-    html = select_tag("#{name}[#{level}][preset]", option_tags, default_options.merge(options))
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />"
+    html = select_tag("#{name}[#{level}][preset]", option_tags, options.merge(default_options))
+    html += "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
     if extended_field.user_choice_addition?
-      user_supplied_id = "#{id_for_extended_field(extended_field)}_custom"
+      user_supplied_id = "#{id_for_extended_field(extended_field)}_level_#{level}_custom"
       html += ' OR add your own '
-      html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id)
+      html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id, :class => "#{extended_field.label_for_params}_choice_custom")
+      html += javascript_tag("clearCorrespondingFieldWhenEdited('#{user_supplied_id}', '#{extended_field.label_for_params}_choice_custom', '#{default_options[:id]}', '#{default_options[:class]}');")
     end
     html
   end

@@ -89,6 +89,29 @@ function enableCategoryListUpdater(controller_name) {
   });
 }
 
+function clearCorrespondingFieldWhenEdited(field_id, field_class, select_id, select_class) {
+  $(select_id).observe('change', function(evt) {
+    $(field_id).clear();
+  });
+  $(field_id).observe('change', function(evt) {
+    first_sub_choice = null;
+    reached_custom_choice = false;
+    $$('select.'+select_class).each(function(select) {
+      if (select.id == select_id) {
+        reached_custom_choice = true;
+        select.selectedIndex = 0;
+      } else if (reached_custom_choice) {
+        if (first_sub_choice == null) { first_sub_choice = select; }
+        select.selectedIndex = 0;
+        select.next('.'+field_class).clear();
+      }
+    });
+    if (first_sub_choice != null) {
+      first_sub_choice.up('div', 1).hide();
+    }
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }

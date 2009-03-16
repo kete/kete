@@ -6,7 +6,7 @@
 <% has_children = choices.select { |c| c.value == single_value }.first && choices.select { |c| c.value == single_value }.first.children.select { |c| extended_field.choices.member?(c) }.size > 0 %>
 
 <div style="margin: 3px 0; padding: 0; margin-left: <%= indent %>px">
-  <%= " Sub-setting: " if level > 1 %>
+  <%= " Sub-#{extended_field.label.sigularize.downcase}: " if level > 1 %>
   <%= extended_field_choice_autocomplete_editor(name, single_value, options, extended_field, choices, level) %>
 
   <% sub_content = single_value && has_children ? render(:partial => 'extended_fields/choice_autocomplete_editor', :locals => {
