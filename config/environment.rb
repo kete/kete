@@ -1,7 +1,7 @@
 # Be sure to restart your web server when you modify this file.
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.1' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
