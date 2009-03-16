@@ -36,12 +36,13 @@ body {
 }
 #header h1 a{
     color: white;
+    font-size: 1em;
 }
 #header h1 a.basket{
     color: white;
     font-weight: normal;
     font-style: italic;
-    font-size: 1em;
+    font-size: .8em;
 }
 #header p {
     text-align: right;
@@ -97,7 +98,7 @@ ul.nav-list a img {
 }
 ul#main-nav {
                 float: left;
-                width: 70%;
+                width: 75%;
                 padding-left: 15px;
 }
 #basket-list{

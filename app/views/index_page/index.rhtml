@@ -148,7 +148,12 @@
         <h4><%=h feed.title %></h4>
         <ul>
           <% feed.entries.each do |entry| -%>
-            <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+            <% begin %>
+              <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+            <% rescue %>
+              <% logger.info("ERROR: This feed entry is invalid. Probably because an error occurred in the deserialization of the feed.")
+                 logger.info("Check the source feed and make sure it is serializes/deserializes correctly.") %>
+            <% end %>
           <% end -%>
         </ul>
       <% end -%>

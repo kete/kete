@@ -26,3 +26,12 @@ body {
         margin-right: -.5em;
         background-color: white;
 }
+#header h1 a{
+  font-size: .8em;
+}
+#header h1 a.basket {
+  font-size: .6em;
+}
+#right-search-box h3 {
+  font-size: 1.2em;
+}
