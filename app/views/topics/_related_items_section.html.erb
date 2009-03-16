@@ -19,10 +19,9 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
   <% if !display_heading.nil? -%>
     <%= display_heading -%>
   <% else -%>
-    <%= "<hr />" if inset -%>
     <h4>
-      <%= link_to_related_items_of(item, zoom_class, :link_text => "#{pretty_class_plural} (#{total_items})") -%>
-      <%= image_tag('related_items_collapsed.gif', :class => 'expand_collapse_image') if inset %>
+      <% inset_img = inset ? image_tag('related_items_collapsed.gif', :class => 'expand_collapse_image') : '' %>
+      <%= link_to_related_items_of(item, zoom_class, :link_text => "#{pretty_class_plural} (#{total_items}) #{inset_img}") -%>
     </h4>
     <%= "<hr />" if inset -%>
   <% end -%>

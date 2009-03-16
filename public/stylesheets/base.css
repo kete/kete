@@ -265,6 +265,13 @@ body.mceContentBody {
   padding: 0;
   margin: 1px 0 5px 0;
 }
+#related_items.inset h4 img {
+  border: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  top: 3px;
+}
 #related_items.inset .related-items-section {
   margin-top: 10px;
 }

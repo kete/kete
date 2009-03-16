@@ -93,11 +93,14 @@ function setupRelatedCollapsableSections() {
   hideAllRelatedSections();
   // For each related items section, hide it, and add an hover event
   $$('.related-items-section').each(function(section) {
-    $(section).observe('mouseover', function(event) {
-      // hide all open sections, then show the one hovered over
-      hideAllRelatedSections();
-      $(section).down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
-      $(section).down('ul').show();
+    $(section).down('a').observe('click', function(event) {
+      console.log($(section).down('img.expand_collapse_image').src);
+      if ($(section).down('img.expand_collapse_image').src.match('/images/related_items_expanded.gif')) {
+        $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
+      } else {
+        $(section).down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+      }
+      $(section).down('ul').toggle();
       // stop anything the hover might have triggered
       event.stop();
     });
