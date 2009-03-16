@@ -1,8 +1,8 @@
 --- 
 format: 1
 handler: 
-  commit: df42582bde7c6c8ea2fd08ed532876909fb06500
+  commit: 8888651be8d6656bdf2378731d91a8badbaa2556
   branch: master
 repository_url: git://github.com/mislav/will_paginate.git
-lock: 
+lock: false
 repository_class: Piston::Git::Repository
