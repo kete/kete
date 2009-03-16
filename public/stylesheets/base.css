@@ -255,6 +255,18 @@ body.mceContentBody {
 #related_items.inset {
   float: right;
   width: 200px;
+  margin-top: -12px;
+}
+#related_items.inset hr {
+  padding: 0;
+  margin: 0;
+}
+#related_items.inset h4 {
+  padding: 0;
+  margin: 1px 0 5px 0;
+}
+#related_items.inset .related-items-section {
+  margin-top: 10px;
 }
 #related_items.inset .two-col {
     width: 100%;
@@ -262,7 +274,7 @@ body.mceContentBody {
     float: none;
 }
 #related_items.inset #related-items-tools {
-  padding-top: 20px;
+  margin-top: 30px;
   font-size: .8em;
   text-align: center;
 }
@@ -283,7 +295,7 @@ body.mceContentBody {
 #related_items.inset #detail-linked-toprow ul,
 #related_items.inset .two-col ul {
   padding-left: 5px;
-  margin: 1px;
+  margin: 10px 1px 1px 1px;
 }
 #related_items.inset #detail-linked-toprow ul ul,
 #related_items.inset .two-col ul ul {
