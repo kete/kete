@@ -26,3 +26,6 @@ body {
         margin-right: -.5em;
         background-color: white;
 }
+#header h1 a.basket {
+  font-size: .6em;
+}
