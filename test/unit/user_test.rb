@@ -18,10 +18,11 @@ class UserTest < ActiveSupport::TestCase
       :password_confirmation => 'quire',
       :agree_to_terms => true,
       :security_code => 'test',
-      :security_code_confirmation => 'test' }
+      :security_code_confirmation => 'test',
+      :locale => 'en' }
 
     # name of fields that must be present, e.g. %(name description)
-    @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation)
+    @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation locale)
     # name of fields that cannot be a duplicate, e.g. %(name description)
     @duplicate_attr_names = %w(login)
 

@@ -38,12 +38,12 @@ class SearchTest < ActiveSupport::TestCase
   end
 
   def test_sort_type_options_for_default_all
-    result_string = '<option value="title">Title</option><option value="last_modified" selected="selected">Last modified</option><option value="date">Date</option>'
+    result_string = '<option value="title">Title</option><option value="last_modified" selected="selected">Last Modified</option><option value="date">Date</option>'
     assert_equal result_string, Search.new.sort_type_options_for(nil, 'all')
   end
 
   def test_sort_type_options_for_default_for
-    result_string = '<option value="none">Relevance</option><option value="title">Title</option><option value="last_modified">Last modified</option><option value="date">Date</option>'
+    result_string = '<option value="none">Relevance</option><option value="title">Title</option><option value="last_modified">Last Modified</option><option value="date">Date</option>'
     assert_equal result_string, Search.new.sort_type_options_for(nil, 'for')
   end
 
