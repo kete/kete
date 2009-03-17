@@ -1,7 +1,7 @@
 <% post_url = url_for(:urlified_name => post_summary.basket.urlified_name,
                       :controller => 'topics',
                       :action => 'show',
-                      :id => (post_summary.respond_to?('topic_id') ? post_summary.topic_id : post_summary),
+                      :id => post_summary,
                       :private => (post_summary.private?) ? 'true' : nil)
    post_excerpt = !post_summary.description.blank? ? post_summary.description : post_summary.short_summary -%>
 <div class="generic-result-wrapper" id="item_<%= post_summary.id %>_wrapper">

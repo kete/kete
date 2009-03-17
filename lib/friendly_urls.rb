@@ -39,7 +39,7 @@ module FriendlyUrls
     # i.e. /id-title/
     # rails strips the non integers after the id
     # has to be in a model
-    def format_for_friendly_urls
+    def format_for_friendly_urls(topic_version=false)
       skip_titles = [NO_PUBLIC_VERSION_TITLE, BLANK_TITLE]
 
       string = String.new
@@ -50,7 +50,7 @@ module FriendlyUrls
         string = self.title
       end
 
-      id_for_url = id.to_s
+      id_for_url = topic_version ? topic_id.to_s : id.to_s
       # eventually replace with unicode version
       # id_for_url += format_friendly_unicode_for(string) unless skip_titles.include?(string)
       id_for_url += format_friendly_for(string) unless skip_titles.include?(string)

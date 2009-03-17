@@ -66,6 +66,8 @@ module ConfigureAsKeteContentItem
         def disputed_or_not_available?
           (title == NO_PUBLIC_VERSION_TITLE) || (title == BLANK_TITLE)
         end
+        include FriendlyUrls
+        def to_param; format_for_friendly_urls(true); end
       RUBY
 
       # methods and declarations related to moderation and flagging
