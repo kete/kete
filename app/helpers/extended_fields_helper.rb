@@ -340,7 +340,12 @@ module ExtendedFieldsHelper
   def extended_field_choice_select_editor(name, value, options, extended_field, choices, level = 1)
 
     # Build OPTION tags
-    option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']] + choices.map { |c| [c.label, c.value] }, value)
+    if choices.size > 0
+      option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']] +
+                                       choices.map { |c| c.is_a?(String) ? [c, nil] : [c.label, c.value] }, value)
+    else
+      option_tags = options_for_select([["- no #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']])
+    end
 
     default_options = {
       :id => "#{id_for_extended_field(extended_field)}_level_#{level}_preset",
@@ -468,7 +473,7 @@ module ExtendedFieldsHelper
     field_values = field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
 
     if field_values.is_a?(Hash)
-      field_values.reject { |k, v| k == "xml_element_name" }.values || []
+      field_values.reject { |k, v| k == "xml_element_name" }.sort.collect { |v| v.last } || []
     else
       field_values
     end

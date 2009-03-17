@@ -60,6 +60,8 @@ class ExtendedFieldsController < ApplicationController
     # Find the current choice
     current_choice = extended_field.choices.matching(params[:label], params[:value])
 
+    blank_value = params[:label].blank? && params[:value].blank?
+
     choices = current_choice ? current_choice.children : []
 
     choices = choices.reject { |c| !extended_field.choices.member?(c) }
@@ -81,7 +83,7 @@ class ExtendedFieldsController < ApplicationController
       # Generate the DOM ID
       dom_id = "#{id_for_extended_field(options[:extended_field])}__level_#{params[:for_level]}"
 
-      if options[:choices].empty?
+      if blank_value || (options[:choices].blank? && !extended_field.user_choice_addition?)
         page.replace_html dom_id, ""
       else
         page.replace_html dom_id,

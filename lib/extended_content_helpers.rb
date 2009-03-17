@@ -125,11 +125,12 @@ module ExtendedContentHelpers
 
               # Handle the creation of new choices where the choice is not recognised.
               if !matching_choice && %w(autocomplete choice).include?(extended_field.ftype) && extended_field.user_choice_addition?
-                index = value.to_a.index([k, v])
+                sorted_values = value.dup.sort
+                index = sorted_values.index([k, v])
 
                 to_check = v
                 if index && index >= 1
-                  to_check = value.to_a.at(index - 1).last
+                  to_check = sorted_values.at(index - 1).last
                 end
 
                 parent = Choice.find_by_value(to_check) || Choice.find(1)
