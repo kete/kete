@@ -349,7 +349,7 @@ module ExtendedFieldsHelper
 
     default_options = {
       :id => "#{id_for_extended_field(extended_field)}_level_#{level}_preset",
-      :class => "#{extended_field.label_for_params}_choice_dropdown",
+      :class => "#{id_for_extended_field(extended_field)}_choice_dropdown",
       :onchange => remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
                                    :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
                                    :before => "Element.show('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')",
