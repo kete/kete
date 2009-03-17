@@ -342,7 +342,7 @@ module ExtendedFieldsHelper
     # Build OPTION tags
     if choices.size > 0
       option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']] +
-                                       choices.map { |c| c.is_a?(String) ? [c, nil] : [c.label, c.value] }, value)
+                                       choices.map { |c| [c.label, c.value] }, value)
     else
       option_tags = options_for_select([["- no #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']])
     end
@@ -352,7 +352,7 @@ module ExtendedFieldsHelper
       :class => "#{id_for_extended_field(extended_field)}_choice_dropdown",
       :tabindex => 1,
       :onchange => remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
-                                   :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
+                                   :with => "'value='+escape(Form.Element.getValue(this))+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
                                    :before => "Element.show('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')",
                                    :complete => "Element.hide('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')")
     }
@@ -379,7 +379,7 @@ module ExtendedFieldsHelper
     value = selected_choice && !value.blank? ? selected_choice.label : nil
 
     remote_call = remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
-                                  :with => "'label='+Form.Element.getValue(el)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'",
+                                  :with => "'label='+escape(Form.Element.getValue(el))+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'",
                                   :before => "Element.show('#{id_for_extended_field(extended_field)}_#{level}_spinner')",
                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
