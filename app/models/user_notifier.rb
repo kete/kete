@@ -128,6 +128,11 @@ class UserNotifier < ActionMailer::Base
     end
   end
 
+  def login_changed(user)
+    setup_email(user)
+    @subject    += "Your login has been altered in an upgrade."
+  end
+
   protected
 
   def setup_email(user)
