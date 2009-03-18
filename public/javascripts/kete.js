@@ -94,7 +94,6 @@ function setupRelatedCollapsableSections() {
   // For each related items section, hide it, and add an hover event
   $$('.related-items-section').each(function(section) {
     $(section).down('a').observe('click', function(event) {
-      console.log($(section).down('img.expand_collapse_image').src);
       if ($(section).down('img.expand_collapse_image').src.match('/images/related_items_expanded.gif')) {
         $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
       } else {
