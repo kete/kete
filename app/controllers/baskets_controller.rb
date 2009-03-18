@@ -4,8 +4,9 @@ class BasketsController < ApplicationController
                 :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
-  permit "site_admin or admin of :current_basket", :except => [:index, :list, :rss, :show, :new, :create, :choose_type, :render_item_form,
-                                                               :permission_denied, :contact, :send_email]
+  permit "site_admin or admin of :current_basket", :only => [:edit, :update, :homepage_options, :destroy,
+                                                             :add_index_topic, :appearance, :update_appearance,
+                                                             :set_settings]
 
   before_filter :redirect_if_current_user_cant_add_or_request_basket, :only => [:new, :create]
 
