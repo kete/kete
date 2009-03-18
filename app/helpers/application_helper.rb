@@ -14,7 +14,10 @@ module ApplicationHelper
   # Controls needed for Gravatar support throughout the site
   include Avatar::View::ActionViewSupport
   def avatar_for(user, options = {})
-    image_dimension = IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i
+    # New installs use strings for the small_sq value, but we have to handle legacy settings containing arrays
+    image_dimension = IMAGE_SIZES[:small_sq].is_a?(String) ? \
+                        IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
+                        IMAGE_SIZES[:small_sq].first
     default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
     options = default_options.merge(options)
 

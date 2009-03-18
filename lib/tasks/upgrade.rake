@@ -23,8 +23,7 @@ namespace :kete do
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt',
                     'kete:upgrade:ensure_logins_all_valid',
-                    'kete:upgrade:move_user_name_to_display_and_resolved_name',
-                    'kete:upgrade:fix_legacy_image_size_system_setting']
+                    'kete:upgrade:move_user_name_to_display_and_resolved_name']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -289,23 +288,6 @@ namespace :kete do
           end
         end
       end
-    end
-
-    desc 'In older versions of Kete, image size constant might contain arrays as values. We now require strings'
-    task :fix_legacy_image_size_system_setting => :environment do
-      image_sizes = SystemSetting.find_by_name('Image Sizes')
-      value = eval(image_sizes.value)
-      value.each do |k,v|
-        if v.is_a?(Array)
-          v = v.join('x')
-          v = "#{v}!" if k == :small_sq # force it, no scaling
-          v = "#{v}>" if [:medium, :large].include?(k) # Allow it to expand somewhat
-          value[k] = v
-        end
-      end
-      # inspect turns it to a string (to_s doesn't work properly till Ruby 1.9)
-      image_sizes.value = value.inspect
-      image_sizes.save!
     end
 
     desc 'Checks for mimetypes an adds them if needed.'
