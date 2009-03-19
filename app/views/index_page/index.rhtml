@@ -159,17 +159,10 @@
 <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil? -%>
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "selected-image-box", :class_suffix => nil }) -%>
-    <div id="selected-image-headline"><h3><%= @current_basket.index_page_image_as.capitalize -%> <%=t 'index_page.index.image_from_archive' %></h3></div>
-    <div id="selected-image-display">
-      <%= render :partial =>'selected_image',
-                 :locals => { :selected_image_file => @selected_image_file,
-                              :previous_url => @previous_url,
-                              :next_url => @next_url,
-                              :selected_still_image => @selected_still_image } -%>
+    <div id="selected-image-headline">
+      <h3><%= @current_basket.index_page_image_as.capitalize -%> <%=t 'index_page.index.image_from_archive' %></h3>
     </div>
-    <%= periodically_call_remote :update => 'selected-image-display',
-                                 :url => { :action => 'selected_image' },
-                                 :frequency => 15 -%>
+    <%= slideshow_div %>
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 

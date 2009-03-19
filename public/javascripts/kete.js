@@ -116,6 +116,31 @@ function hideAllRelatedSections() {
   });
 }
 
+function setupRelatedImagesSlideshow(url) {
+  $('related_items_slideshow_controls').show();
+  $('stop_slideshow').hide();
+
+  $('stop_slideshow').observe('click', function(event) {
+    $('selected-image-display').innerHTML = '';
+    $('stop_slideshow').hide();
+    $('play_slideshow').show();
+    $('related_still_image_container').show();
+    event.stop();
+  });
+
+  $('play_slideshow').observe('click', function(event) {
+    new Ajax.Updater('selected-image-display', url, {
+      method: 'get',
+      onComplete: function(complete) {
+        $('play_slideshow').hide();
+        $('related_still_image_container').hide();
+        $('stop_slideshow').show();
+      }
+    });
+    event.stop();
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }

@@ -1,0 +1,30 @@
+<p>
+  <%= link_to image_tag(selected_image_file.public_filename,
+                        :size => selected_image_file.image_size,
+                        :alt => "#{selected_still_image.title}. "),
+              :action => 'show',
+              :urlified_name => selected_still_image.basket.urlified_name,
+              :controller => 'images',
+              :id => selected_still_image  -%>
+</p>
+
+<% unless previous_url.blank? && next_url.blank? -%>
+  <p>
+    <%=t 'index_page.selected_image.slideshow' unless params[:controller] == 'topics' %>
+    <% unless previous_url.blank? -%>
+      <%= link_to_remote(t('index_page.selected_image.previous'),
+                         :update => 'selected-image-display',
+                         :url => previous_url,
+                         :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>
+    <% end -%>
+
+    <%= "&nbsp;|&nbsp;" if !previous_url.blank? && !next_url.blank? -%>
+
+    <% unless next_url.blank? -%>
+      <%= link_to_remote(t('index_page.selected_image.next'),
+                         :update => 'selected-image-display',
+                         :url => next_url,
+                         :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>
+    <% end -%>
+  </p>
+<% end -%>

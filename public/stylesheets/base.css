@@ -272,6 +272,16 @@ body.mceContentBody {
   position: relative;
   top: 3px;
 }
+#related_items.inset #selected-image-display {
+  text-align: center;
+}
+#related_items.inset #selected-image-display img {
+  border: none;
+}
+#related_items.inset #related_items_slideshow_controls {
+  text-align: center;
+  margin-top: 5px;
+}
 #related_items.inset .related-items-section {
   margin-top: 10px;
 }

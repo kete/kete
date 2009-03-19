@@ -26,6 +26,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
     <%= "<hr />" if inset -%>
   <% end -%>
   <% if total_items > 0 -%>
+    <%= "<div id='related_still_image_container'>" if are_still_images %>
     <%= '<ul>' unless only_public_items -%>
       <% if @public_item_counts[zoom_class] > 0 -%>
         <% unless only_public_items -%>
@@ -54,6 +55,15 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
         <%= '</li>' unless only_public_items -%>
       <% end -%>
     <%= '</ul>' unless only_public_items -%>
+    <%= "</div>" if are_still_images %>
+    <% if are_still_images %>
+      <div id="selected-image-display"></div>
+      <div id="related_items_slideshow_controls" style="display: none;">
+        <a id="play_slideshow" href="">Play Slideshow</a>
+        <a id="stop_slideshow" href="">Stop Slideshow</a>
+      </div>
+      <%= javascript_tag "setupRelatedImagesSlideshow('#{url_for(:action => 'topics_slideshow_div_update')}');" %>
+    <% end -%>
   <% elsif display_no_item_text -%>
     <h4><%=t 'topics.related_items_section.not_related', :item_type => zoom_class_humanize(item.class.name) %></h4>
   <% else -%>

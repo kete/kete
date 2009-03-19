@@ -1,6 +1,8 @@
 class TopicsController < ApplicationController
   include ExtendedContentController
 
+  include ImageSlideshow
+
   def index
     redirect_to_search_for('Topic')
   end
