@@ -100,7 +100,9 @@ module ExtendedContentController
 
       def build_relations_from_topic_type_extended_field_choices(extended_values=nil)
         params_key = zoom_class_params_key_from(params[:controller])
-        extended_values = (extended_values || params[params_key][:extended_content_values])
+        unless extended_values.blank?
+          extended_values = params[params_key][:extended_content_values] if !params[params_key].blank? && !params[params_key][:extended_content_values].blank?
+        end
 
         # no extended_values, nothing to do
         return if extended_values.blank?
