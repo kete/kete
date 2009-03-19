@@ -526,3 +526,11 @@ system_settings_060:
   id: "60"
   value: "false"
   section: System
+system_settings_061:
+  name: Image Slideshow Size
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "The size of images in the slideshows on both the homepage and inset related items sections. Can be one of the following: small_sq, small, medium, large"
+  id: "61"
+  value: "medium"
+  section: Images

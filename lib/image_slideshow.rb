@@ -1,153 +1,191 @@
 module ImageSlideshow
   unless included_modules.include? ImageSlideshow
     def self.included(klass)
-      Rails.logger.info klass.name
       if klass.name == 'TopicsController'
-        klass.send :before_filter, :selected_image, :only => ['show', 'topics_slideshow_div_update']
+        klass.send :before_filter, :prepare_slideshow, :only => ['show', 'selected_image']
       else
-        klass.send :before_filter, :selected_image, :only => ['index']
+        klass.send :before_filter, :prepare_slideshow, :only => ['index', 'selected_image']
       end
-      klass.helper_method :slideshow_div
+      klass.helper_method :slideshow_div, :slideshow_updater
     end
 
-    def topics_slideshow_div_update
-      render :text => slideshow_div
-    end
-
+    # Containing selected-image-display div, with slideshow_updater unless in topic slideshow
+    # We have to use @template.content_tag in this case because we don't have direct access to
+    # view helpers in this scope
     def slideshow_div
       html = @template.content_tag('div', render_selected_image, { :id => "selected-image-display" })
-      html += @template.periodically_call_remote(:update => 'selected-image-display',
-                                                 :url => { :action => 'selected_image', :id => (params[:controller] == 'topics') ? params[:id] : nil },
-                                                 :frequency => 15)
+      html += slideshow_updater unless topic_slideshow?
       html
     end
 
-    def selected_image
-      slideshow.reset! if params[:action] == 'topics_slideshow_div_update'
-
-      # get next url from slideshow, if slideshow exists,
-      # or this url is the last url in results
-      # otherwise, create a new slide show based on basket settings
-
-      # reformat into a standard_url, for results comparison in slideshow
-      if params[:controller] == 'topics'
-        url_hash = { :controller => 'topics', :action => 'selected_image' }
-      else
-        url_hash = { :controller => 'index_page', :action => 'selected_image' }
-      end
-      @current_url = url_for(url_hash.merge(:id => params[:id]))
-
-      # hash keys have to be strings
-      # so as not to trip up later comparisons
-      slideshow_key = { "basket" => @current_basket.id,
-        "order" => @current_basket.index_page_image_as,
-        "zoom_class" => 'StillImage' }
-
-      if !session[:slideshow].blank? && slideshow.key == slideshow_key && !slideshow.in_set?(@current_url) && !slideshow.last_requested.blank?
-        @current_url = slideshow.after(slideshow.last_requested)
-      end
-
-      id_string = @current_url.split("/").last
-      if id_string =~ /([0-9]+)/
-        @current_id = $1
-      else
-        @current_id = nil
-      end
-
-      @selected_still_image = nil
-
-      if !session[:slideshow].blank? && slideshow.in_set?(@current_url) && slideshow.key == slideshow_key
-        @selected_still_image = still_image_from_slideshow
-      else
-        # put together results
-        # normally results are paged
-        # and when you hit the last result in a page
-        # the next page of results is built or something like that
-        # and they are derived by hitting search controller
-
-        @still_image_ids = params[:controller] == 'topics' ? find_related_images : find_basket_images
-
-        session[:slideshow] = nil
-        if !@still_image_ids.blank?
-          total_images = @still_image_ids.size
-          slideshow.key = slideshow_key
-          slideshow.results = @still_image_ids.collect { |id| url_for(url_hash.merge(:id => id)) }
-          slideshow.total = total_images
-          slideshow.total_pages = 1
-          slideshow.current_page = 1
-          slideshow.number_per_page = total_images
-          @current_id = @still_image_ids.first
-          @selected_still_image = StillImage.find(@current_id)
-          @current_url = url_for(url_hash.merge(:id => @current_id))
-        end
-      end
-
-      @selected_image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @selected_still_image ) if !@selected_still_image.nil?
-
-      if !session[:slideshow].blank? && !slideshow.results.nil?
-        @previous_url = slideshow.in_set?(@current_url) ? slideshow.before(@current_url) : nil
-        @next_url = slideshow.in_set?(@current_url) ? slideshow.after(@current_url) : nil
-
-        # keep track of where we are in the results
-        slideshow.last_requested = !slideshow.last?(@current_url) ? @current_url : nil
-      else
-        @previous_url = nil
-        @next_url = nil
-      end
-
-      # get still image and image_file
-      if request.xhr?
-        render_selected_image
-      else
-        if params[:action] == 'selected_image'
-          redirect_to params.merge(:action => (params[:controller] == 'topics') ? 'show' : 'index')
-        end
-      end
+    # Javascript tag that updates selected-image-display every 15 seconds
+    # We have to use @template.periodically... in this case because we don't
+    # have direct access to view helpers in this scope
+    def slideshow_updater
+      @template.periodically_call_remote(:update => 'selected-image-display',
+                                         :url => { :action => 'selected_image', :id => (params[:controller] == 'topics') ? params[:id] : nil },
+                                         :frequency => 15, :before => "if (!$('selected-image-display')) { return false; }")
     end
 
-    def still_image_from_slideshow
-      still_image_collection.find_by_id((@current_id || params[:id]))
+    # The action slideshow_updater requests. Returns either the next image display,
+    # or redirect if they are viewing the image directly (which normally shouldn't happen)
+    def selected_image
+      if request.xhr?
+        render :text => (topic_slideshow? ? slideshow_div : render_selected_image)
+      else
+        redirect_to params.merge(:action => topic_slideshow? ? 'show' : 'index')
+      end
     end
 
     private
 
+    # Render the selected image partial, passing in various params
+    # We have to use @template.render in this case because we don't
+    # have direct access to view helpers in this scope (and because
+    # render in a template will stop the page processing, instead
+    # of parsing and returning a string)
+    def render_selected_image
+      begin
+        @template.render 'index_page/selected_image',
+                         :selected_image_file => @selected_image_file,
+                         :previous_url => @previous_url,
+                         :next_url => @next_url,
+                         :selected_still_image => @selected_still_image
+      rescue
+        "Invalid Image File" # If this happens, it was likely a conflict with another slideshow
+      end
+    end
+
+    def topic_slideshow?
+      (params[:controller] == 'topics')
+    end
+
+    def url_hash
+      controller = topic_slideshow? ? 'topics' : 'index_page'
+      { :controller => controller, :action => 'selected_image' }
+    end
+
+    # Helps make sure conflicts between different slideshows don't occur
+    # hash keys have to be strings so as not to trip up later comparisons
+    def slideshow_key
+      { "basket" => @current_basket.id,
+        "order" => @current_basket.index_page_image_as,
+        "zoom_class" => 'StillImage',
+        "topic_slideshow" => topic_slideshow? }
+    end
+
+    def slideshow_has_results?
+      (!session[:slideshow].blank? && !slideshow.results.nil?)
+    end
+
+    # Does this slideshow key match that of the previous slideshow in our session
+    # If it doesn't, it'll be repopulated later on
+    def slideshow_key_valid?
+      slideshow.key == slideshow_key
+    end
+
+    # Prepare the slideshow. Before filter on index_page index, topic show, and selected_image action calls.
+    # We have to account for the different URL's that request this method.
+    # Auto updated (slideshow) requests only this method (no id passed in). So we have to get the next result ourselved
+    # Previous/next links however do pass in an id to this method, which means we should respect that and not overwrite it
+    def prepare_slideshow
+      # Reset a few instance vars
+      @current_id = @selected_still_image = @previous_url = @next_url = nil
+
+      # create a url based on the current request. It only contains an id when the user has
+      # clicked on either the next or previous buttons. The rest of the time, no id
+      @current_url = url_for(url_hash.merge(:id => params[:id]))
+
+      # If slideshow has results already, and it matches the last viewed slideshow
+      if slideshow_has_results? && slideshow_key_valid?
+        # Check if the current url is not in the slideshow (i.e. when no id is passed in, it won't be), and when
+        # the last requested image is not blank, update the current_url to the next image in the slideshow
+        @current_url = slideshow.next if !slideshow.in_set?(@current_url) && !slideshow.last_requested.blank?
+        # Now that we have a @current_url from whatever url requested it (auto update, next,
+        # previous links etc), check to see if that url is in the results
+        if slideshow.in_set?(@current_url)
+          # Extract the id of that image from the @current_url
+          @current_id = $1 if @current_url.split("/").last =~ /([0-9]+)(.*)/
+        else
+          # The current_url is not in the results (possible corrupt data)
+          # so lets populate new data
+          populate_slideshow
+        end
+      else
+        # no previous valid results, populate new ones
+        populate_slideshow
+      end
+
+      # We have populated results by now hopefully
+      if slideshow_has_results?
+        # Get the current still image
+        @selected_still_image = still_image_collection.find_by_id(@current_id)
+        # At this point, we have a valid still image we should be displaying. Get the ImageFile for it
+        @selected_image_file = ImageFile.find_by_thumbnail_and_still_image_id(IMAGE_SLIDESHOW_SIZE, @selected_still_image) if !@selected_still_image.nil?
+        # Setup the previous and next url links the user can use
+        @previous_url = slideshow.previous(@current_url)
+        @next_url = slideshow.next(@current_url)
+        # Keep track of where we are in the results
+        slideshow.last_requested = !slideshow.last?(@current_url) ? @current_url : nil
+      end
+    end
+
+    # Put together results and populate the slideshow.
+    def populate_slideshow
+      # Get either this baskets images, or the related images if we're in a topic
+      @still_image_ids = topic_slideshow? ? find_related_images : find_basket_images
+      session[:slideshow] = nil
+      if !@still_image_ids.blank?
+        total_images = @still_image_ids.size
+        slideshow.key = slideshow_key
+        slideshow.results = @still_image_ids.collect { |id| url_for(url_hash.merge(:id => id)) }
+        slideshow.total = total_images
+        slideshow.total_pages = 1
+        slideshow.current_page = 1
+        slideshow.number_per_page = total_images
+        # Set the current id to the first still image result
+        @current_id = @still_image_ids.first
+        @current_url = url_for(url_hash.merge(:id => @current_id))
+      end
+    end
+
+    # If we're in the site basket, return all images on the site,
+    # otherwise, scope results to the current basket
     def still_image_collection
       @still_image_collection ||= @current_basket != @site_basket ? @current_basket.still_images : StillImage
     end
 
-    def find_basket_images(limit=20)
-      find_args_hash = { :select => 'id, title, created_at', :limit => limit }
-      # We have to make sure the image is public on the site basket, or if they dont have permission to view it
-      # there is no way to get all private from the site basket and public from others without another query
-      find_args_hash.merge!(:conditions => ["(#{PUBLIC_CONDITIONS}) AND (file_private = :file_private OR file_private is null)",
-                                            { :file_private => false }]) unless display_private_items?
-      # Order results acording to the basket setting
-      find_args_hash[:order] = @current_basket.index_page_image_as == 'random' ? :random : 'created_at desc'
-      # Execute the find
-      still_image_collection.find(:all, find_args_hash)
-    end
-
-    def find_related_images(limit=20)
-      find_args_hash = { :select => 'still_images.id, still_images.title, still_images.created_at', :limit => limit }
-      # We have to make sure the image is public on the site basket, or if they dont have permission to view it
-      # there is no way to get all private from the site basket and public from others without another query
-      find_args_hash.merge!(:conditions => ["(#{PUBLIC_CONDITIONS}) AND (file_private = :file_private OR file_private is null)",
-                                            { :file_private => false }]) unless display_private_items?
-      # Execute the find
-      Topic.find_by_id(params[:id]).still_images.find(:all, find_args_hash)
-    end
-
-    def render_selected_image
-      render :partial =>'index_page/selected_image',
-             :locals => { :selected_image_file => @selected_image_file,
-                          :previous_url => @previous_url,
-                          :next_url => @next_url,
-                          :selected_still_image => @selected_still_image }
-    end
-
+    # Should we display private images to the user? Only if privacy
+    # controls are enabled and the current user is able to view them
     def display_private_items?
       @display_private_items ||= @current_basket.show_privacy_controls_with_inheritance? && \
                                     permitted_to_view_private_items?
+    end
+
+    # We have to make sure the image is public on the site basket, or if they dont have permission to view it
+    # there is no way to get all private from the site basket and public from others without another query
+    def public_conditions
+      { :conditions => ["(#{PUBLIC_CONDITIONS}) AND (file_private = :file_private OR file_private is null)",
+                        { :file_private => false }] }
+    end
+
+    # Finds all basket images scoped to the correct still image collection
+    def find_basket_images(limit=20)
+      find_args_hash = { :select => 'id, title, created_at', :limit => limit }
+      find_args_hash.merge!(public_conditions) unless display_private_items?
+      # Order results acording to the basket setting
+      find_args_hash[:order] = @current_basket.index_page_image_as == 'random' ? :random : 'created_at desc'
+      # Execute the find in a collection of still images depending on current basket
+      still_image_collection.find(:all, find_args_hash)
+    end
+
+    # Finds all basket images scoped to the current topic
+    def find_related_images(limit=20)
+      find_args_hash = { :select => 'still_images.id, still_images.title, still_images.created_at', :limit => limit }
+      find_args_hash.merge!(public_conditions) unless display_private_items?
+      find_args_hash[:order] = 'still_images.created_at desc'
+      # Execute the find on the current topics still images
+      Topic.find_by_id(params[:id]).still_images.find(:all, find_args_hash)
     end
 
   end

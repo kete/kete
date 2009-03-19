@@ -121,7 +121,7 @@ function setupRelatedImagesSlideshow(url) {
   $('stop_slideshow').hide();
 
   $('stop_slideshow').observe('click', function(event) {
-    $('selected-image-display').innerHTML = '';
+    $('related_items_slideshow').innerHTML = '';
     $('stop_slideshow').hide();
     $('play_slideshow').show();
     $('related_still_image_container').show();
@@ -129,7 +129,7 @@ function setupRelatedImagesSlideshow(url) {
   });
 
   $('play_slideshow').observe('click', function(event) {
-    new Ajax.Updater('selected-image-display', url, {
+    new Ajax.Updater('related_items_slideshow', url, {
       method: 'get',
       onComplete: function(complete) {
         $('play_slideshow').hide();
