@@ -104,7 +104,8 @@ module Embedded
           end
         end
 
-        matching_extended_fields = ExtendedField.find(:all, :conditions => "import_synonyms like \'%#{key}%\'")
+        # limit scope to only those extended fields mapped to the item's content type
+        matching_extended_fields = ContentType.find_by_class_name(self.class.name).form_fields.find(:all, :conditions => "import_synonyms like \'%#{key}%\'")
 
         matching_extended_fields.each do |field|
           self.send("#{field.label_for_params}+=", value)
