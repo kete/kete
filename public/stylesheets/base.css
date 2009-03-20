@@ -275,7 +275,8 @@ body.mceContentBody {
 #related_items.inset #selected-image-display {
   text-align: center;
 }
-#related_items.inset #selected-image-display img {
+#related_items.inset #selected-image-display img,
+#related_items.inset #related_items_slideshow_controls img {
   border: none;
 }
 #related_items.inset #related_items_slideshow_controls {
