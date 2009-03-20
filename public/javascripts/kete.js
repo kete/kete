@@ -100,6 +100,9 @@ function setupRelatedCollapsableSections() {
         $(section).down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
       }
       $(section).down('ul').toggle();
+      $$('.slideshow_div').each(function(div) {
+        $(div).toggle();
+      });
       // stop anything the hover might have triggered
       event.stop();
     });

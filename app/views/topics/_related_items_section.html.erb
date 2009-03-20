@@ -57,9 +57,9 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
     <%= '</ul>' unless only_public_items -%>
     <%= "</div>" if are_still_images %>
     <% if are_still_images %>
-      <div id="related_items_slideshow"></div>
+      <div id="related_items_slideshow" class="slideshow_div"></div>
       <%= slideshow_updater %>
-      <div id="related_items_slideshow_controls" style="display: none;">
+      <div id="related_items_slideshow_controls" class="slideshow_div" style="display: none;">
         <a id="play_slideshow" href="">
           <%= image_tag 'slideshow_play.gif', :title => 'Play Slideshow. ', :alt => 'Play Slideshow. ' %>
         </a>
