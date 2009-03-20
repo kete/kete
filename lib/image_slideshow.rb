@@ -121,7 +121,7 @@ module ImageSlideshow
         # Get the current still image
         @selected_still_image = still_image_collection.find_by_id(@current_id)
         # At this point, we have a valid still image we should be displaying. Get the ImageFile for it
-        @selected_image_file = ImageFile.find_by_thumbnail_and_still_image_id(IMAGE_SLIDESHOW_SIZE, @selected_still_image) if !@selected_still_image.nil?
+        @selected_image_file = @selected_still_image.send("#{IMAGE_SLIDESHOW_SIZE.to_s}_file") if !@selected_still_image.nil?
         # Setup the previous and next url links the user can use
         @previous_url = slideshow.previous(@current_url)
         @next_url = slideshow.next(@current_url)
@@ -162,11 +162,11 @@ module ImageSlideshow
                                     permitted_to_view_private_items?
     end
 
-    # We have to make sure the image is public on the site basket, or if they dont have permission to view it
-    # there is no way to get all private from the site basket and public from others without another query
+    # We have to make sure the images we get are either in baskets we have access to, or publicly viewable images
     def public_conditions
-      { :conditions => ["(#{PUBLIC_CONDITIONS}) AND (file_private = :file_private OR file_private is null)",
-                        { :file_private => false }] }
+      prefix = topic_slideshow? ? 'still_images.' : ''
+      { :conditions => ["((#{prefix}basket_id IN (:basket_ids)) OR ((#{PUBLIC_CONDITIONS}) AND (#{prefix}file_private = :file_private OR #{prefix}file_private is null)))",
+                        { :basket_ids => @basket_access_hash.collect { |b| b[1][:id] }, :file_private => false }] }
     end
 
     # Finds all basket images scoped to the correct still image collection
