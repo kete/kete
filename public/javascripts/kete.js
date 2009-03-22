@@ -119,27 +119,26 @@ function hideAllRelatedSections() {
   });
 }
 
-function setupRelatedImagesSlideshow(url) {
+function setupRelatedImagesSlideshowPlayButton(url) {
   $('related_items_slideshow_controls').show();
-  $('stop_slideshow').hide();
-
-  $('stop_slideshow').observe('click', function(event) {
-    $('related_items_slideshow').innerHTML = '';
-    $('stop_slideshow').hide();
-    $('play_slideshow').show();
-    $('related_still_image_container').show();
-    event.stop();
-  });
-
   $('play_slideshow').observe('click', function(event) {
     new Ajax.Updater('related_items_slideshow', url, {
       method: 'get',
+      evalScripts: true,
       onComplete: function(complete) {
         $('play_slideshow').hide();
         $('related_still_image_container').hide();
-        $('stop_slideshow').show();
       }
     });
+    event.stop();
+  });
+}
+
+function setupRelatedImagesSlideshowStopButton() {
+  $('stop_slideshow').observe('click', function(event) {
+    $('play_slideshow').show();
+    $('related_still_image_container').show();
+    $('related_items_slideshow').innerHTML = '';
     event.stop();
   });
 }

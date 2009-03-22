@@ -280,6 +280,9 @@ body.mceContentBody {
   position: relative;
   top: 3px;
 }
+#related_items.inset #related_still_image_container {
+  text-align: center;
+}
 #related_items.inset #related_items_slideshow_controls img {
   border: none;
 }
@@ -296,7 +299,7 @@ body.mceContentBody {
     float: none;
 }
 #related_items.inset #related-items-tools {
-  margin-top: 30px;
+  margin: 30px auto 0 auto;
   font-size: .8em;
   text-align: center;
 }
@@ -328,8 +331,6 @@ body.mceContentBody {
   padding: 0;
 }
 #related_items.inset .results-list img {
-  width: 30px;
-  height: 30px;
   margin-right: 3px;
 }
 #related_items.inset .more {

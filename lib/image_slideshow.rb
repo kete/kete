@@ -22,9 +22,13 @@ module ImageSlideshow
     # We have to use @template.periodically... in this case because we don't
     # have direct access to view helpers in this scope
     def slideshow_updater
-      @template.periodically_call_remote(:update => 'selected-image-display',
-                                         :url => { :action => 'selected_image', :id => (params[:controller] == 'topics') ? params[:id] : nil },
-                                         :frequency => 15, :before => "if (!$('selected-image-display')) { return false; }")
+      update_id = (topic_slideshow? ? 'related_items_slideshow' : 'selected-image-display')
+      @template.periodically_call_remote(:update => update_id,
+                                         :url => { :action => 'selected_image',
+                                                   :id => (params[:controller] == 'topics') ? params[:id] : nil },
+                                         :frequency => 15,
+                                         :method => 'get',
+                                         :before => "if (!$('selected-image-display')) { return false; }")
     end
 
     # The action slideshow_updater requests. Returns either the next image display,

@@ -715,6 +715,9 @@ class ApplicationController < ActionController::Base
 
       add_relation_and_update_zoom_and_related_caches_for(item, @new_related_topic)
 
+      # reset the related images slideshow if realted image was added
+      session[:image_slideshow] = nil if item.is_a?(StillImage)
+
       where_to_redirect = 'show_related'
     elsif params[:is_theme] and item.class.name == 'Document' and @successful
       item.decompress_as_theme
