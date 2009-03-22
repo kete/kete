@@ -251,10 +251,18 @@ body.mceContentBody {
   border-left: none;
 }
 
+/* #################################### Image Slideshow #################################### */
+#selected-image-display {
+  text-align: center;
+  overflow: auto;
+}
+#selected-image-display img {
+  border: none;
+}
+
 /* #################################### Related Items #################################### */
 #related_items.inset {
   float: right;
-  width: 200px;
   margin-top: -12px;
 }
 #related_items.inset hr {
@@ -272,11 +280,6 @@ body.mceContentBody {
   position: relative;
   top: 3px;
 }
-#related_items.inset #selected-image-display {
-  text-align: center;
-  overflow: auto;
-}
-#related_items.inset #selected-image-display img,
 #related_items.inset #related_items_slideshow_controls img {
   border: none;
 }

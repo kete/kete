@@ -1187,9 +1187,8 @@ en:
       read_more: read more &gt;&gt;
       read_more_about: Read More about {{post_title}}
     selected_image: 
-      next: Next &raquo;
-      previous: "&laquo; Previous"
-      slideshow: "Slideshow:"
+      next_image: "Next Image. "
+      previous_image: "Previous Image. "
     topic_as_full_page: 
       edit: Edit
       history: History
@@ -1727,8 +1726,10 @@ en:
       restore: Restore
     related_items_section: 
       not_related: This {{item_type}} is not related to any topics at this time.
+      play_slideshow: "Play Slideshow. "
       private: Private
       public: Public
+      stop_slideshow: "Stop Slideshow. "
     show: 
       topic: "Topic:"
       topic_type: "Topic Type:"

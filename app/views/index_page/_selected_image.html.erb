@@ -10,28 +10,19 @@
 
 <% unless previous_url.blank? && next_url.blank? -%>
   <p>
-    <%=t 'index_page.selected_image.slideshow' unless params[:controller] == 'topics' %>
     <% unless previous_url.blank? -%>
-      <% previous_link = params[:controller] == 'topics' ? \
-                           image_tag('icon_results_previous_off.gif',
-                                     :title => 'Previous Image. ',
-                                     :alt => 'Previous Image. ') : \
-                           t('index_page.selected_image.previous') -%>
-      <%= link_to_remote(previous_link,
+      <%= link_to_remote(image_tag('icon_results_previous_off.gif',
+                                   :title => t('index_page.selected_image.previous_image'),
+                                   :alt => t('index_page.selected_image.previous_image')),
                          :update => 'selected-image-display',
                          :url => previous_url,
                          :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>
     <% end -%>
 
-    <%= "&nbsp;|&nbsp;" if !previous_url.blank? && !next_url.blank? && params[:controller] != 'topics' -%>
-
     <% unless next_url.blank? -%>
-      <% next_link = params[:controller] == 'topics' ? \
-                       image_tag('icon_results_next_off.gif',
-                                 :title => 'Next Image. ',
-                                 :alt => 'Next Image. ') : \
-                       t('index_page.selected_image.next') -%>
-      <%= link_to_remote(next_link,
+      <%= link_to_remote(image_tag('icon_results_next_off.gif',
+                                   :title => t('index_page.selected_image.next_image'),
+                                   :alt => t('index_page.selected_image.next_image')),
                          :update => 'selected-image-display',
                          :url => next_url,
                          :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>

@@ -11,6 +11,14 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  # Get the integer of any given image size
+  def image_size_of(string)
+    size = IMAGE_SIZES[string.to_sym].is_a?(String) ? \
+             IMAGE_SIZES[string.to_sym].split('x').first : \
+             IMAGE_SIZES[string.to_sym].first
+    size.gsub(/(!|>|<)/, '').to_i
+  end
+
   # Controls needed for Gravatar support throughout the site
   include Avatar::View::ActionViewSupport
   def avatar_for(user, options = {})

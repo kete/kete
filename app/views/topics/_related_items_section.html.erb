@@ -61,10 +61,14 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
       <%= slideshow_updater %>
       <div id="related_items_slideshow_controls" class="slideshow_div" style="display: none;">
         <a id="play_slideshow" href="">
-          <%= image_tag 'slideshow_play.gif', :title => 'Play Slideshow. ', :alt => 'Play Slideshow. ' %>
+          <%= image_tag 'slideshow_play.gif',
+                        :title => t('topics.related_items_section.play_slideshow'),
+                        :alt => t('topics.related_items_section.play_slideshow') %>
         </a>
         <a id="stop_slideshow" href="">
-          <%= image_tag 'slideshow_stop.png', :title => 'Stop Slideshow. ', :alt => 'Stop Slideshow. ' %>
+          <%= image_tag 'slideshow_stop.png',
+                        :title => t('topics.related_items_section.stop_slideshow'),
+                        :alt => t('topics.related_items_section.stop_slideshow') %>
         </a>
       </div>
       <%= javascript_tag "setupRelatedImagesSlideshow('#{url_for(params.merge(:action => 'selected_image'))}');" %>
