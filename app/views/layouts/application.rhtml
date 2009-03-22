@@ -212,7 +212,6 @@
         <div id="error" <%= flash[:error].blank? ? "style='display:none;'" : '' -%>><div><%=h flash[:error] %></div></div>
 
         <div id="container">
-          <%= show_slideshow_controls? %>
           <%= render(:partial => "topics/slideshow_controls") if show_slideshow_controls? -%>
 
           <%= render(:partial => "topics/content_wrapper_start",
