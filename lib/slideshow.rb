@@ -76,11 +76,11 @@ class Slideshow
   end
 
   def navigable?
-    results.size > 0
+    results && results.size > 0
   end
 
   def in_set?(url)
-    results.include?(url)
+    results && results.include?(url)
   end
 
   def last_result?(url)

@@ -1136,10 +1136,14 @@ class ApplicationController < ActionController::Base
     item.respond_to?(:private) && item.private? ? "true" : "false"
   end
 
-  def slideshow
+  def slideshow(key='slideshow')
     # Instantiate a new slideshow object on the slideshow session key
-    session[:slideshow] ||= HashWithIndifferentAccess.new
-    Slideshow.new(session[:slideshow])
+    session[key.to_sym] ||= HashWithIndifferentAccess.new
+    Slideshow.new(session[key.to_sym])
+  end
+
+  def image_slideshow
+    slideshow('image_slideshow')
   end
 
   # Append a query string to a URL.

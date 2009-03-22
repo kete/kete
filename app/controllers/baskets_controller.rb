@@ -205,6 +205,7 @@ class BasketsController < ApplicationController
       # clear slideshow in session
       # in case the user user changes how images should be ordered
       session[:slideshow] = nil
+      session[:image_slideshow] = nil
 
       # @basket.name has changed
       if original_name != @basket.name

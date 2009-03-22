@@ -75,13 +75,13 @@ module ImageSlideshow
     end
 
     def slideshow_has_results?
-      (!session[:slideshow].blank? && !slideshow.results.nil?)
+      (!session[:image_slideshow].blank? && !image_slideshow.results.nil?)
     end
 
     # Does this slideshow key match that of the previous slideshow in our session
     # If it doesn't, it'll be repopulated later on
     def slideshow_key_valid?
-      slideshow.key == slideshow_key
+      image_slideshow.key == slideshow_key
     end
 
     # Prepare the slideshow. Before filter on index_page index, topic show, and selected_image action calls.
@@ -100,10 +100,10 @@ module ImageSlideshow
       if slideshow_has_results? && slideshow_key_valid?
         # Check if the current url is not in the slideshow (i.e. when no id is passed in, it won't be), and when
         # the last requested image is not blank, update the current_url to the next image in the slideshow
-        @current_url = slideshow.next if !slideshow.in_set?(@current_url) && !slideshow.last_requested.blank?
+        @current_url = image_slideshow.next if !image_slideshow.in_set?(@current_url) && !image_slideshow.last_requested.blank?
         # Now that we have a @current_url from whatever url requested it (auto update, next,
         # previous links etc), check to see if that url is in the results
-        if slideshow.in_set?(@current_url)
+        if image_slideshow.in_set?(@current_url)
           # Extract the id of that image from the @current_url
           @current_id = $1 if @current_url.split("/").last =~ /([0-9]+)(.*)/
         else
@@ -123,10 +123,10 @@ module ImageSlideshow
         # At this point, we have a valid still image we should be displaying. Get the ImageFile for it
         @selected_image_file = @selected_still_image.send("#{IMAGE_SLIDESHOW_SIZE.to_s}_file") if !@selected_still_image.nil?
         # Setup the previous and next url links the user can use
-        @previous_url = slideshow.previous(@current_url)
-        @next_url = slideshow.next(@current_url)
+        @previous_url = image_slideshow.previous(@current_url)
+        @next_url = image_slideshow.next(@current_url)
         # Keep track of where we are in the results
-        slideshow.last_requested = !slideshow.last?(@current_url) ? @current_url : nil
+        image_slideshow.last_requested = !image_slideshow.last?(@current_url) ? @current_url : nil
       end
     end
 
@@ -134,15 +134,15 @@ module ImageSlideshow
     def populate_slideshow
       # Get either this baskets images, or the related images if we're in a topic
       @still_image_ids = topic_slideshow? ? find_related_images : find_basket_images
-      session[:slideshow] = nil
+      session[:image_slideshow] = nil
       if !@still_image_ids.blank?
         total_images = @still_image_ids.size
-        slideshow.key = slideshow_key
-        slideshow.results = @still_image_ids.collect { |id| url_for(url_hash.merge(:id => id)) }
-        slideshow.total = total_images
-        slideshow.total_pages = 1
-        slideshow.current_page = 1
-        slideshow.number_per_page = total_images
+        image_slideshow.key = slideshow_key
+        image_slideshow.results = @still_image_ids.collect { |id| url_for(url_hash.merge(:id => id)) }
+        image_slideshow.total = total_images
+        image_slideshow.total_pages = 1
+        image_slideshow.current_page = 1
+        image_slideshow.number_per_page = total_images
         # Set the current id to the first still image result
         @current_id = @still_image_ids.first
         @current_url = url_for(url_hash.merge(:id => @current_id))
