@@ -28,7 +28,7 @@ module ImageSlideshow
                                                    :id => (params[:controller] == 'topics') ? params[:id] : nil },
                                          :frequency => 15,
                                          :method => 'get',
-                                         :before => "if (!$('selected-image-display')) { return false; }")
+                                         :before => "if (!$('selected-image-display') || $('selected-image-display-paused')) { return false; }")
     end
 
     # The action slideshow_updater requests. Returns either the next image display,

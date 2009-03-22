@@ -143,6 +143,19 @@ function setupRelatedImagesSlideshowStopButton() {
   });
 }
 
+function setupRelatedImagesSlideshowPauseButton() {
+  $('play_pause_slideshow').observe('click', function(event) {
+    if ($('selected-image-display-paused')) {
+      $('selected-image-display-paused').remove();
+      $('play_pause_slideshow').down('img').src = '/images/related_items_expanded.gif';
+    } else {
+      document.body.insert("<div id='selected-image-display-paused'></div>");
+      $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+    }
+    event.stop();
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }

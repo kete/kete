@@ -23,11 +23,18 @@
     <% if params[:controller] == 'topics' %>
       <a id="stop_slideshow" href="">
         <%= image_tag 'slideshow_stop.png',
-                      :title => t('topics.related_items_section.stop_slideshow'),
-                      :alt => t('topics.related_items_section.stop_slideshow') %>
+                      :title => t('topics.selected_image.stop_slideshow'),
+                      :alt => t('topics.selected_image.stop_slideshow') %>
       </a>
       <%= javascript_tag("setupRelatedImagesSlideshowStopButton();") %>
     <% end -%>
+
+    <a id="play_pause_slideshow" href="">
+      <%= image_tag('related_items_expanded.gif',
+                    :alt => t('index_page.selected_image.play_pause_slideshow'),
+                    :title => t('index_page.selected_image.play_pause_slideshow')) %>
+    </a>
+    <%= javascript_tag("setupRelatedImagesSlideshowPauseButton();") %>
 
     <% unless next_url.blank? -%>
       <%= link_to_remote(image_tag('icon_results_next_off.gif',

@@ -1188,7 +1188,9 @@ en:
       read_more_about: Read More about {{post_title}}
     selected_image: 
       next_image: "Next Image. "
+      play_pause_slideshow: "Play/Pause Slideshow. "
       previous_image: "Previous Image. "
+      stop_slideshow: "Stop Slideshow. "
     topic_as_full_page: 
       edit: Edit
       history: History
@@ -1729,7 +1731,6 @@ en:
       play_slideshow: "Play Slideshow. "
       private: Private
       public: Public
-      stop_slideshow: "Stop Slideshow. "
     show: 
       topic: "Topic:"
       topic_type: "Topic Type:"
