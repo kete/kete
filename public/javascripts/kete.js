@@ -144,6 +144,9 @@ function setupRelatedImagesSlideshowStopButton() {
 }
 
 function setupRelatedImagesSlideshowPauseButton() {
+  if ($('selected-image-display-paused')) {
+    $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+  }
   $('play_pause_slideshow').observe('click', function(event) {
     if ($('selected-image-display-paused')) {
       $('selected-image-display-paused').remove();
