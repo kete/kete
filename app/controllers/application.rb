@@ -1043,7 +1043,7 @@ class ApplicationController < ActionController::Base
       return false
     elsif params[:controller] == 'baskets' and ['edit', 'update', 'homepage_options', 'appearance'].include?(params[:action])
       return false
-    elsif ['moderate', 'members', 'importers'].include?(params[:controller]) and ['list', 'create', 'new', 'potential_new_members'].include?(params[:action])
+    elsif ['moderate', 'members', 'importers'].include?(params[:controller]) && ['list', 'create', 'new', 'new_related_set_from_archive_file', 'potential_new_members'].include?(params[:action])
       return false
     elsif params[:controller] == 'index_page' and params[:action] == 'index'
       return false
