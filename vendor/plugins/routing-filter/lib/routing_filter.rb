@@ -8,8 +8,6 @@ module RoutingFilter
       super
     end
   
-    # Kieran Pilkington - 2009/03/09
-    # Added !last.nil?  to fix nil.run errors
     def run(method, *args, &final)
       RoutingFilter.active && !last.nil? ? last.run(method, *args, &final) : final.call
     end

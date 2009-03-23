@@ -109,11 +109,24 @@ module AuthenticatedSystem
       session[:return_to] = request.request_uri
     end
 
+    # Strip the locale out of the URL
+    # If a hash, sets locale to false
+    # If a string, gsubs it out
+    def strip_locale(hash_or_url)
+      if hash_or_url.is_a?(Hash)
+        hash_or_url[:locale] = false
+      elsif hash_or_url.is_a?(String)
+        locale_match = %r(^/(#{I18n.available_locales.map{|l|l.to_s}.join('|')})(?=/|$))
+        hash_or_url.gsub(locale_match, "/")
+      else
+        raise "ERROR: Don't know how to strip locale from #{hash_or_url.class.name}"
+      end
+    end
+
     # Redirect to the URI stored by the most recent store_location call or
     # to the passed default.
     def redirect_back_or_default(default, lang=I18n.locale)
-      locale_match = %r(^/(#{I18n.available_locales.map{|l|l.to_s}.join('|')})(?=/|$))
-      session[:return_to] ? redirect_to(session[:return_to].gsub(locale_match, "/#{lang}")) : redirect_to(default)
+      session[:return_to] ? redirect_to(strip_locale(session[:return_to])) : redirect_to(default)
       session[:return_to] = nil
     end
 

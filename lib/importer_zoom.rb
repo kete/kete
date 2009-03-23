@@ -153,7 +153,7 @@ module ImporterZoom
         host = request.host
       end
       # HACK, brittle, but can't use url_for here
-      xml.tag!("dc:identifier", importer_item_url({:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name}))
+      xml.tag!("dc:identifier", importer_item_url({:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name, :locale => false}))
     end
 
     def importer_oai_dc_xml_dc_relations_and_subjects(xml,item,passed_request = nil)
@@ -174,18 +174,18 @@ module ImporterZoom
           end
           related_items.each do |related|
             xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name}, true))
+            xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
         xml.tag!("dc:subject", commented_on_item.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name}, true))
+        xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name, :locale => false}, true))
       else
         item.topics.each do |related|
           xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.tag!("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name}, true))
+          xml.tag!("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
         end
       end
     end
@@ -200,7 +200,7 @@ module ImporterZoom
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(ABOUT_BASKET).urlified_name, :id => 4})
+        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(ABOUT_BASKET).urlified_name, :id => 4, :locale => false})
       end
 
       xml.tag!("dc:rights", rights)

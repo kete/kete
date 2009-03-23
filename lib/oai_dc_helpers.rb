@@ -117,7 +117,7 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(item)
 
-      xml.tag!("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true))}")
+      xml.tag!("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true, :locale => false))}")
     end
 
     def oai_dc_xml_dc_title(xml, item)
@@ -193,18 +193,18 @@ module OaiDcHelpers
           end
           related_items.each do |related|
             xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+            xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name, :locale => false)}")
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
         xml.tag!("dc:subject", commented_on_item.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
+        xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name, :locale => false)}")
       else
         item.topics.each do |related|
           xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name, :locale => false)}")
         end
       end
     end
@@ -269,7 +269,8 @@ module OaiDcHelpers
           :urlified_name => Basket.find(ABOUT_BASKET).urlified_name,
           :action => 'show',
           :controller => 'topics',
-          :escape => false
+          :escape => false,
+          :locale => false
         )
       end
 

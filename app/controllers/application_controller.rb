@@ -859,7 +859,8 @@ class ApplicationController < ActionController::Base
                  :action => 'show',
                  :id => item,
                  :format => nil,
-                 :urlified_name => item.basket.urlified_name }
+                 :urlified_name => item.basket.urlified_name,
+                 :locale => false }
 
     location[:protocol] = 'http' if options[:force_http]
 
