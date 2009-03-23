@@ -100,9 +100,11 @@ function setupRelatedCollapsableSections() {
         $(section).down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
       }
       $(section).down('ul').toggle();
-      $$('.slideshow_div').each(function(div) {
-        $(div).toggle();
-      });
+      if ($(section).id == 'detail-linked-images') {
+        $$('.slideshow_div').each(function(div) {
+          $(div).toggle();
+        });
+      }
       // stop anything the hover might have triggered
       event.stop();
     });
@@ -152,7 +154,7 @@ function setupRelatedImagesSlideshowPauseButton() {
       $('selected-image-display-paused').remove();
       $('play_pause_slideshow').down('img').src = '/images/related_items_expanded.gif';
     } else {
-      document.body.insert("<div id='selected-image-display-paused'></div>");
+      $('body-outer-wrapper').insert("<div id='selected-image-display-paused'></div>");
       $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
     }
     event.stop();

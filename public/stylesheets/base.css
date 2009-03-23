@@ -259,6 +259,13 @@ body.mceContentBody {
 #selected-image-display img {
   border: none;
 }
+#related_items_slideshow_controls img {
+  border: none;
+}
+#related_items_slideshow_controls {
+  text-align: center;
+  margin-top: 5px;
+}
 
 /* #################################### Related Items #################################### */
 #related_items.inset {
@@ -282,13 +289,6 @@ body.mceContentBody {
 }
 #related_items.inset #related_still_image_container {
   text-align: center;
-}
-#related_items.inset #related_items_slideshow_controls img {
-  border: none;
-}
-#related_items.inset #related_items_slideshow_controls {
-  text-align: center;
-  margin-top: 5px;
 }
 #related_items.inset .related-items-section {
   margin-top: 10px;
