@@ -113,6 +113,11 @@ class String
     # escape xml special chars &, <, and >
     CGI::escapeHTML(entities.decode(self))
   end
+  # In Rails 2.3, strip_tags is not accessible in it's short form outside of
+  # helpers and view, so lets add a method on String that we can call
+  def strip_tags
+    ActionController::Base.helpers.strip_tags(self)
+  end
 end
 
 module Builder

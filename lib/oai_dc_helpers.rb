@@ -1,5 +1,5 @@
 include Utf8UrlFor
-include ActionView::Helpers::SanitizeHelper
+
 # oai dublin core xml helpers
 # TODO: evaluate whether we can simply go with SITE_URL
 # rather than request hacking
@@ -138,8 +138,7 @@ module OaiDcHelpers
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
-        description = strip_tags(description)
-        xml.tag!("dc:description", description)
+        xml.tag!("dc:description", description.strip_tags)
       end
     end
 
