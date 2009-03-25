@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: f667dd44752711a87d2991973fe3fe28b9c82c67
+  branch: master
+repository_url: git://github.com/newsdesk/translate.git
+lock: false
+repository_class: Piston::Git::Repository
