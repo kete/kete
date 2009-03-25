@@ -34,7 +34,7 @@ module SearchHelper
 
     unless params[:limit_to_choice].blank?
       end_of_title_parts << "#{@extended_field ? t('search_helper.last_part_of_title_if_refinement_of.extended_field', :field_name => @extended_field.label.singularize.downcase) : ''}
-                                                 #{t('search_helper.last_part_of_title_if_refinement_of.limit_to_choice', :choice => h(params[:limit_to_choice])}"
+                                                 #{t('search_helper.last_part_of_title_if_refinement_of.limit_to_choice', :choice => h(params[:limit_to_choice]))}"
     end
 
     unless @source_item.nil?
