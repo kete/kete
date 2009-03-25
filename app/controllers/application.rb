@@ -109,7 +109,7 @@ class ApplicationController < ActionController::Base
 
   # if anything is added, edited, or deleted
   # we need to rebuild our rss caches
-  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy]
+  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy, :add_tags ]
 
   # if anything is added, edited, or deleted in a basket
   # we need toss our basket index page fragments
@@ -620,26 +620,37 @@ class ApplicationController < ActionController::Base
     # only applicable to zoom classes
     return unless ZOOM_CLASSES.include?(zoom_class_from_controller(params[:controller]))
 
-    basket ||= @current_basket
+    unless params[:action] == 'add_tags'
 
-    if @current_basket.nil?
-      load_basket
       basket ||= @current_basket
-    end
 
-    # we go with a regexp (WARNING, assumes fs caching)
-    # so we can clear 'all' and 'search' caches that might need to be expired
-    # since site searches all other baskets, too
-    # we need to expire it's cache, too
-    %w(all search).each do |pattern|
-      unless basket == @site_basket
-        r = /#{@site_basket.urlified_name}\/#{pattern}\/.+/
+      if @current_basket.nil?
+        load_basket
+        basket ||= @current_basket
+      end
+
+      # we go with a regexp (WARNING, assumes fs caching)
+      # so we can clear 'all' and 'search' caches that might need to be expired
+      # since site searches all other baskets, too
+      # we need to expire it's cache, too
+      %w(all search).each do |pattern|
+        unless basket == @site_basket
+          r = /#{@site_basket.urlified_name}\/#{pattern}\/.+/
+          expire_fragment(r)
+        end
+
+        r = /#{basket.urlified_name}\/#{pattern}\/.+/
         expire_fragment(r)
       end
 
-      r = /#{basket.urlified_name}\/#{pattern}\/.+/
+    end
+
+    # clear all tag rss feeds
+    Basket.all.each do |basket|
+      r = /#{basket.urlified_name}\/tags\/.+/
       expire_fragment(r)
     end
+
   end
 
   def redirect_to_related_topic(topic, options={})
