@@ -68,7 +68,7 @@ class ImportersController < ApplicationController
       @import.topic_type = @related_topic.topic_type
       @zoom_class = only_valid_zoom_class(params[:zoom_class]).name
     else
-      params[:related_topic] = nil
+      params[:related_topic] ||= nil
     end
 
     if @import.save
@@ -119,6 +119,9 @@ class ImportersController < ApplicationController
       end
     else
       if !params[:related_topic].blank?
+        @related_topic = Topic.find(params[:related_topic])
+        @zoom_class_name = (params[:zoom_class] || 'StillImage')
+        @zoom_class = only_valid_zoom_class(@zoom_class_name).name
         render(:action => 'new_related_set_from_archive_file',
                :contributing_user => params[:import][:user_id],
                :related_topic => params[:related_topic],

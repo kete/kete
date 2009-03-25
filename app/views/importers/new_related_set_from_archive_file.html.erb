@@ -1,14 +1,14 @@
-<% @zoom_class_plural_humanized = zoom_class_plural_humanize(@zoom_class)
-   @zoom_class_humanized = zoom_class_humanize(@zoom_class)
-   @title = t('importers.new_related_set_from_archive_file.title', :zoom_class_plural => @zoom_class_plural_humanized, :related_topic_title => @related_topic.title) -%>
+<% @title = t('importers.new_related_set_from_archive_file.title', :related_topic_title => @related_topic.title) -%>
+
+<%= render :partial => "topics/content_wrapper_start", :locals => { :style_classes => "notabs" } %>
 
 <h2><%= h(@title) -%></h2>
 
-<h3><%=t 'importers.new_related_set_from_archive_file.uploading_note', :zoom_class_plural => @zoom_class_plural_humanized %></h3>
+<h3><%=t 'importers.new_related_set_from_archive_file.uploading_note' %></h3>
 
 <ul>
   <li><p><%=t 'importers.new_related_set_from_archive_file.folder_containing_items' %></p></li>
-  <li><p><%=t 'importers.new_related_set_from_archive_file.archive_limit', :size => number_to_human_size(MAXIMUM_UPLOADED_FILE_SIZE), :zoom_class_plural => @zoom_class_plural_humanized %></p></li>
+  <li><p><%=t 'importers.new_related_set_from_archive_file.archive_limit', :size => number_to_human_size(MAXIMUM_UPLOADED_FILE_SIZE) %></p></li>
   <%= embedded_enabled_message('<li><p>', '</p></li>') %>
   <li>
     <% if ENABLE_EMBEDDED_SUPPORT -%>
@@ -18,10 +18,10 @@
       <strong><%=t 'importers.new_related_set_from_archive_file.title_from_metadata_or' %></strong>
     </p>
     <% end -%>
-    <p><%=t 'importers.new_related_set_from_archive_file.title_from_filename', :zoom_class_plural => @zoom_class_plural_humanized, :zoom_class_singular => @zoom_class_humanized %></p>
+    <p><%=t 'importers.new_related_set_from_archive_file.title_from_filename' %></p>
     <p><strong><%=t 'importers.new_related_set_from_archive_file.no_spaces_in_filenames' %></strong></p>
     <p><strong><%=t 'importers.new_related_set_from_archive_file.no_ampersands_in_filenames' %></strong></p>
-    <p><%=t 'importers.new_related_set_from_archive_file.edit_after_import', :zoom_class_singular => @zoom_class_humanized %></p>
+    <p><%=t 'importers.new_related_set_from_archive_file.edit_after_import' %></p>
   </li>
 </ul>
 
@@ -51,7 +51,7 @@
     <% options = Array.new
     ATTACHABLE_CLASSES.each do |item_class_name|
       selected = (@zoom_class_name == item_class_name) ? " selected='selected'" : ''
-      options << "<option value='#{item_class_name}'#{selected}>#{item_class_name.tableize.humanize.singularize}</option>"
+      options << "<option value='#{item_class_name}'#{selected}>#{zoom_class_plural_humanize(item_class_name)}</option>"
     end -%>
     <%= select_tag 'zoom_class', options.join('') -%>
   </div>
@@ -65,7 +65,7 @@
   <div class="form-element">
     <label for="import_default_description_end_template"><%=t 'importers.new_related_set_from_archive_file.description_template' %></label>
     <%= form.text_area :default_description_end_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
-    <div class="form_example"><%=t 'importers.new_related_set_from_archive_file.description_template_example', :zoom_class_singular => @zoom_class_humanized %></div>
+    <div class="form_example"><%=t 'importers.new_related_set_from_archive_file.description_template_example' %></div>
   </div>
 
   <% if licenses_are_available? -%>
@@ -77,13 +77,15 @@
   <div class="form-element">
     <label for="import_archive_file_uploaded_data"><%=t 'importers.new_related_set_from_archive_file.upload' %></label><br />
     <%= archive_file.file_field :uploaded_data %>
+  </div>
   <% end %>
 
-  <div class="form_example"><%=t 'importers.new_related_set_from_archive_file.upload_description', :zoom_class_singular => @zoom_class_plural_humanized -%>.</div>
+  <div class="form_example">
+    <%=t 'importers.new_related_set_from_archive_file.upload_description' -%>
   </div>
 
   <div class="form-element">
-    <%= submit_tag t('importers.new_related_set_from_archive_file.add_related', :zoom_class_plural => @zoom_class_plural_humanized) %>
+    <%= submit_tag t('importers.new_related_set_from_archive_file.add_related') %>
   </div>
 
 </fieldset>

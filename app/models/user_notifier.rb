@@ -132,6 +132,11 @@ class UserNotifier < ActionMailer::Base
     end
   end
 
+  def login_changed(user)
+    setup_email(user)
+    @subject    +=  I18n.t('user_notifier_model.login_changed')
+  end
+
   protected
 
   def setup_email(user)

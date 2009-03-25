@@ -3,18 +3,27 @@
 <% indent = level > 1 ? level * 10 : 0 %>
 <% value = value.reject { |v| v.blank? } rescue [] %>
 <% single_value = value.is_a?(Array) ? value.at(level - 1) : nil %>
-<% has_children = choices.select { |c| c.value == single_value }.first && choices.select { |c| c.value == single_value }.first.children_count > 0 %>
+<%
+children = []
+has_children = false
+if choices && choices.select { |c| c.value == single_value }.first
+  children = choices.select { |c| c.value == single_value }.first.children.select { |c| extended_field.choices.member?(c) }
+  has_children = (children.size > 0)
+end
+%>
 
-<div style="margin: 3px 0; padding: 0; margin-left: <%= indent %>px">
-  <%= t('extended_fields.choice_select_editor.sub_setting') if level > 1 %>
+<div style="margin: 3px 0; padding: 0; margin-left: <%=level > 1 ? "15" : "0"-%>px;">
   <%= extended_field_choice_select_editor(name, single_value, options, extended_field, choices, level) %>
 
-  <% sub_content = single_value && has_children ? render(:partial => 'extended_fields/choice_select_editor', :locals => {
+  <% sub_content = ((single_value && has_children) ||
+                    (single_value && !has_children && extended_field.user_choice_addition?)) ? \
+    render(:partial => 'extended_fields/choice_select_editor',
+    :locals => {
     :name => name,
     :value => value,
     :options => options,
     :extended_field => extended_field,
-    :choices => choices.select { |c| c.value == single_value }.first.children.select { |c| extended_field.choices.member?(c) },
+    :choices => children,
     :level => level + 1
   }) : nil %>
   <%= content_tag("div", sub_content, :id => "#{id_for_extended_field(extended_field)}__level_#{level}", :style => "display: inline") %>

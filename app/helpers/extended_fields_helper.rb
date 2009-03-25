@@ -340,17 +340,32 @@ module ExtendedFieldsHelper
   def extended_field_choice_select_editor(name, value, options, extended_field, choices, level = 1)
 
     # Build OPTION tags
-    option_tags = options_for_select([['', '']] + choices.map { |c| [c.label, c.value] }, value)
+    if choices.size > 0
+      option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']] +
+                                       choices.map { |c| [c.label, c.value] }, value)
+    else
+      option_tags = options_for_select([["- no #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']])
+    end
 
     default_options = {
+      :id => "#{id_for_extended_field(extended_field)}_level_#{level}_preset",
+      :class => "#{id_for_extended_field(extended_field)}_choice_dropdown",
+      :tabindex => 1,
       :onchange => remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
-                                   :with => "'value='+Form.Element.getValue(this)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
-                                   :before => "Element.show('#{id_for_extended_field(extended_field)}_#{level}_spinner')",
-                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
+                                   :with => "'value='+escape(Form.Element.getValue(this))+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=select'",
+                                   :before => "Element.show('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')",
+                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_level_#{level}_spinner')")
     }
 
-    select_tag("#{name}[#{level}]", option_tags, default_options.merge(options)) +
-    "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />"
+    html = select_tag("#{name}[#{level}][preset]", option_tags, options.merge(default_options))
+    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
+    if extended_field.user_choice_addition?
+      user_supplied_id = "#{id_for_extended_field(extended_field)}_level_#{level}_custom"
+      html += " #{t('extended_fields_helper.extended_field_choice_select_editor.add_your_own')} "
+      html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id, :class => "#{extended_field.label_for_params}_choice_custom", :tabindex => 1)
+      html += javascript_tag("clearCorrespondingFieldWhenEdited('#{user_supplied_id}', '#{extended_field.label_for_params}_choice_custom', '#{default_options[:id]}', '#{default_options[:class]}');")
+    end
+    html
   end
 
   def extended_field_choice_autocomplete_editor(name, value, options, extended_field, choices, level = 1)
@@ -364,11 +379,11 @@ module ExtendedFieldsHelper
     value = selected_choice && !value.blank? ? selected_choice.label : nil
 
     remote_call = remote_function(:url => { :controller => 'extended_fields', :action => 'fetch_subchoices', :for_level => level },
-                                  :with => "'label='+Form.Element.getValue(el)+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'",
+                                  :with => "'label='+escape(Form.Element.getValue(el))+'&options[name]=#{name}&options[value]=#{value}&options[extended_field_id]=#{extended_field.id}&item_type_for_params=#{@item_type_for_params}&field_multiple_id=#{@field_multiple_id}&editor=autocomplete'",
                                   :before => "Element.show('#{id_for_extended_field(extended_field)}_#{level}_spinner')",
                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
-    text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off")) +
+    text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off", :tabindex => 1)) +
     "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
     tag("br") +
     content_tag("div", nil,
@@ -383,7 +398,8 @@ module ExtendedFieldsHelper
       '#{id_for_extended_field(extended_field)}_autocomplete_#{level}',
       #{array_or_string_for_javascript(choices)},
       { afterUpdateElement:function(el, sel) { #{remote_call} } }
-    );") +
+    );
+    $('#{id_for_extended_field(extended_field)}_#{level}').focus();") +
 
     # We need to let our controller know that we're using autocomplete for this field.
     # We know the field we expect should be something like topic[extended_content][someonething]..
@@ -459,7 +475,7 @@ module ExtendedFieldsHelper
     field_values = field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
 
     if field_values.is_a?(Hash)
-      field_values.reject { |k, v| k == "xml_element_name" }.values || []
+      field_values.reject { |k, v| k == "xml_element_name" }.sort.collect { |v| v.last } || []
     else
       field_values
     end

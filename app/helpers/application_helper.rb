@@ -22,7 +22,10 @@ module ApplicationHelper
   # Controls needed for Gravatar support throughout the site
   include Avatar::View::ActionViewSupport
   def avatar_for(user, options = {})
-    image_dimension = IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i
+    # New installs use strings for the small_sq value, but we have to handle legacy settings containing arrays
+    image_dimension = IMAGE_SIZES[:small_sq].is_a?(String) ? \
+                        IMAGE_SIZES[:small_sq].gsub(/(!|>|<)/, '').split('x').first.to_i : \
+                        IMAGE_SIZES[:small_sq].first
     default_options = { :width => image_dimension,
                         :height => image_dimension,
                         :alt => t('application_helper.avatar_for.users_avatar',
@@ -1338,6 +1341,11 @@ module ApplicationHelper
 
       html += "<div id='category_level_#{time}' class='category_list'>"
       html += "<ul>"
+      # If we're in the first column, provide a link to go back to all results
+      html += content_tag('li', link_to(t('application_helper.browse_by_category_columns.all_items',
+                                          :item_type => @controller_name_for_zoom_class.gsub(/_/, " ")),
+                                        {:browse_by => 'choice_hierarchy'}),
+                                {:class => (params[:limit_to_choice] ? '' : 'current' )}) if time == 0
       # For every choice in the current choice, lets add a list item
       choices.each do |choice|
         html += list_item_for_choice(choice, { :current => parent_choices.include?(choice), :include_children => false },

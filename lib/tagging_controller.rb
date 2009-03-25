@@ -2,11 +2,13 @@ module TaggingController
   unless included_modules.include? TaggingController
     def self.included(klass)
       controller = klass.name.gsub("Controller", "")
+      auto_complete_methods = Array.new
       # If we're in the Baskets controller, we have to make all zoom class tag completion methods on load
       if controller == 'Baskets'
         ZOOM_CLASSES.each do |zoom_class|
           item_key = zoom_class.underscore.downcase.to_sym
           klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
+          auto_complete_methods << "auto_complete_for_#{item_key}_tag_list".to_sym
         end
       else
         # the following code is basicly a copy of zoom_class_from_controller in ZoomControllerHelpers
@@ -21,8 +23,10 @@ module TaggingController
         end
         item_key = zoom_class.underscore.downcase.to_sym
         klass.send :auto_complete_for, item_key, :tag_list, {}, { :through => { :object => 'tag', :method => 'name' } }
+        auto_complete_methods << "auto_complete_for_#{item_key}_tag_list".to_sym
       end
-      klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket", :only => [ :add_tags ]
+      auto_complete_methods = ([ :add_tags ] + auto_complete_methods).flatten.compact
+      klass.send :permit, "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket", :only => auto_complete_methods
     end
 
     # Kieran Pilkington, 2008/10/23

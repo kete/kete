@@ -85,6 +85,18 @@ module ExtendedContentHelpers
         xsi_type = options[:xsi_type] || nil
         extended_field = options[:extended_field] || nil
 
+        # With choices from a dropdown, we can have preset dropdown and custom text field
+        # So before we go any further, make sure we convert the values from Hash to either
+        # the preset or custom value depending on which one is filled in
+        if extended_field.ftype == 'choice'
+          value.each do |key,choice_value|
+            next unless choice_value.is_a?(Hash)
+            choice = choice_value['preset'] # Preset values come from the dropdown
+            choice = choice_value['custom'] unless choice_value['custom'].blank? # Custom values come from a text field
+            value[key] = choice
+          end
+        end
+
         options = {}
         options.merge!(:xml_element_name => xml_element_name) unless xml_element_name.blank?
         options.merge!(:xsi_type => xsi_type) unless xsi_type.blank?
@@ -112,12 +124,13 @@ module ExtendedContentHelpers
               matching_choice = Choice.matching(l,v)
 
               # Handle the creation of new choices where the choice is not recognised.
-              if !matching_choice && extended_field.ftype == 'autocomplete' && extended_field.user_choice_addition?
-                index = value.to_a.index([k, v])
+              if !matching_choice && %w(autocomplete choice).include?(extended_field.ftype) && extended_field.user_choice_addition?
+                sorted_values = value.dup.sort
+                index = sorted_values.index([k, v])
 
                 to_check = v
                 if index && index >= 1
-                  to_check = value.to_a.at(index - 1).last
+                  to_check = sorted_values.at(index - 1).last
                 end
 
                 parent = Choice.find_by_value(to_check) || Choice.find(1)

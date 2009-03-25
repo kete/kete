@@ -1,0 +1,11 @@
+<%= @user.user_name %>,
+
+<%=t 'user_notifier.login_changed.description', :site_name => PRETTY_SITE_NAME %>
+
+<%=t 'user_notifier.login_changed.login_using' %>
+
+<%= @user.login %>
+
+<%=t 'user_notifier.login_changed.thanks' %>
+<%= PRETTY_SITE_NAME %>
+<%= SITE_URL %>

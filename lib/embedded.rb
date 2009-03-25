@@ -71,6 +71,11 @@ module Embedded
       end
 
       embedded.each do |key, value|
+        # get rid of any extra white space at beginning or end of value
+        value = value.strip if value.is_a?(String)
+        # get rid of nil, empty, or whitespace only items in array
+        value = value.reject { |i| i.blank? } if value.is_a?(Array)
+
         standard_attribute_synonyms.each do |a_name, synonyms|
           # if the embedded key in the list of the attribute's synonyms
           # we have a match and should assign the value of the embedded key's value
@@ -85,7 +90,13 @@ module Embedded
               all_tags = self.tag_list.split(',')
               all_tags = all_tags + value.to_a
 
-              self.tag_list = all_tags.to_sentence
+              all_tags = all_tags.reject { |i| i.blank? }
+
+              self.tag_list = all_tags.join(',')
+              # since embedded harvesting happens after the controller before filter
+              # on create and update
+              # we have to do this by hand here
+              self.raw_tag_list = all_tags.join(',')
             else
               # if the current value is prefixed with "-replace-"
               # we know it is a placeholder
@@ -104,7 +115,8 @@ module Embedded
           end
         end
 
-        matching_extended_fields = ExtendedField.find(:all, :conditions => "import_synonyms like \'%#{key}%\'")
+        # limit scope to only those extended fields mapped to the item's content type
+        matching_extended_fields = ContentType.find_by_class_name(self.class.name).form_fields.find(:all, :conditions => "import_synonyms like \'%#{key}%\'")
 
         matching_extended_fields.each do |field|
           self.send("#{field.label_for_params}+=", value)

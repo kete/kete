@@ -21,7 +21,7 @@ else
   # since otherwise things like migrations will fail, before we bootstrap the db
   # these will be set up with system settings after rake db:bootstrap
   MAXIMUM_UPLOADED_FILE_SIZE = 50.megabyte
-  IMAGE_SIZES = {:small_sq => [50, 50], :small => '50', :medium => '200>', :large => '400>'}
+  IMAGE_SIZES = {:small_sq => '50x50!', :small => '50', :medium => '200>', :large => '400>'}
   AUDIO_CONTENT_TYPES = ['audio/mpeg']
   DOCUMENT_CONTENT_TYPES = ['text/html']
   ENABLE_CONVERTING_DOCUMENTS = false

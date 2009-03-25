@@ -22,6 +22,7 @@ namespace :kete do
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt',
+                    'kete:upgrade:ensure_logins_all_valid',
                     'kete:upgrade:move_user_name_to_display_and_resolved_name',
                     'kete:upgrade:set_default_locale_for_existing_users']
   namespace :upgrade do
@@ -88,7 +89,7 @@ namespace :kete do
         if !Topic.find_by_title_and_basket_id(topic_hash['title'], topic_hash['basket_id'])
           topic = Topic.create!(topic_hash)
           topic.creator = User.first
-          topic.save
+          topic.save!
           p "added topic: " + topic_hash['title']
         end
       end
@@ -166,7 +167,9 @@ namespace :kete do
         correctable_fields.each_with_index do |field, index|
           basket.send(field+"=", standard_basket_defaults[index])
         end
-        basket.save
+        # make sure we set 'do_not_sanitize' to true or save will fail if the basket has html
+        basket.do_not_sanitize = true
+        basket.save!
         p "Corrected settings of #{basket.name} basket"
       end
     end
@@ -186,11 +189,10 @@ namespace :kete do
     desc 'Make all baskets with the status of NULL set to approved'
     task :make_baskets_approved_if_status_null => :environment do
       Basket.all.each do |basket|
-        if basket.status.nil?
-          basket.status = 'approved'
-          basket.creator_id = 1
-          basket.save
-        end
+        # make sure we set 'do_not_sanitize' to true or update will fail if the basket has html
+        basket.update_attributes!({ :status => 'approved',
+                                    :creator_id => 1,
+                                    :do_not_sanitize => true }) if basket.status.blank?
       end
     end
 
@@ -200,6 +202,18 @@ namespace :kete do
         if basket.settings[:disable_site_recent_topics_display].class == NilClass
           basket.settings[:disable_site_recent_topics_display] = true
         end
+      end
+    end
+
+    desc 'Ensure logins are valid before continuing (1.1 allowed spaces, 1.2 onwards does not).'
+    task :ensure_logins_all_valid => :environment do
+      users = User.all.collect { |user| (user.login =~ /\s/) ? user : nil }.compact.flatten
+      users.each do |user|
+        user.update_attributes!({ :login => user.login.gsub(/\s/, '_') })
+        UserNotifier.deliver_login_changed(user)
+        p "Altered login of #{user.user_name}#{" (#{user.login})" if user.login != user.user_name}."
+        # we should clear the contribution caches but we don't have access to this method here
+        #   expire_contributions_caches_for(user)
       end
     end
 
