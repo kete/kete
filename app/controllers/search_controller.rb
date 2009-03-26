@@ -212,6 +212,10 @@ class SearchController < ApplicationController
       @search = Search.new
       search
     end
+
+    respond_to do |format|
+      format.xml
+    end
   end
 
   def load_results(from_result_set)

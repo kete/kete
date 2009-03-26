@@ -52,6 +52,9 @@ class BasketsController < ApplicationController
     unless has_all_rss_fragments?(@cache_key_hash)
       @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
     end
+    respond_to do |format|
+      format.xml
+    end
   end
 
   def show

@@ -37,6 +37,9 @@ class TagsController < ApplicationController
     unless has_all_rss_fragments?(@cache_key_hash)
       @tags = @current_basket.tag_counts_array({ :limit => @number_per_page, :order => 'latest', :direction => 'desc' }, (@privacy_type == 'private'))
     end
+    respond_to do |format|
+      format.xml
+    end
   end
 
 end

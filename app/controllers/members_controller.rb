@@ -303,6 +303,9 @@ class MembersController < ApplicationController
     unless has_all_rss_fragments?(@cache_key_hash)
       list_members_in('member')
     end
+    respond_to do |format|
+      format.xml
+    end
   end
 
   private

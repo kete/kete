@@ -26,5 +26,8 @@ class ModerateController < ApplicationController
     unless has_all_rss_fragments?(@cache_key_hash)
       @items = @current_basket.all_disputed_revisions
     end
+    respond_to do |format|
+      format.xml
+    end
   end
 end
