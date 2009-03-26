@@ -1,6 +1,4 @@
 class ModerateController < ApplicationController
-  layout "application" , :except => [:rss]
-
   # everything else is handled by application.rb
   before_filter :login_required, :only => [:list, :index, :rss]
 
@@ -24,13 +22,9 @@ class ModerateController < ApplicationController
   end
 
   def rss
-    # changed from @headers for Rails 2.0 compliance
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
-
-    list
-
-    respond_to do |format|
-      format.xml
+    @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_moderate_list" }
+    unless has_all_rss_fragments?(@cache_key_hash)
+      @items = @current_basket.all_disputed_revisions
     end
   end
 end

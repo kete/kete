@@ -109,7 +109,7 @@ class ApplicationController < ActionController::Base
 
   # if anything is added, edited, or deleted
   # we need to rebuild our rss caches
-  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy, :add_tags ]
+  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy ]
 
   # if anything is added, edited, or deleted in a basket
   # we need toss our basket index page fragments
@@ -118,6 +118,12 @@ class ApplicationController < ActionController::Base
                                                        :destroy,
                                                        :add_index_topic, :find_index,
                                                        :add_tags ]
+
+  before_filter :adjust_http_headers_for_rss, :only => [ :rss ]
+
+  def adjust_http_headers_for_rss
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+  end
 
   helper :slideshows
   helper :extended_fields
@@ -620,34 +626,24 @@ class ApplicationController < ActionController::Base
     # only applicable to zoom classes
     return unless ZOOM_CLASSES.include?(zoom_class_from_controller(params[:controller]))
 
-    unless params[:action] == 'add_tags'
+    basket ||= @current_basket
 
+    if @current_basket.nil?
+      load_basket
       basket ||= @current_basket
+    end
 
-      if @current_basket.nil?
-        load_basket
-        basket ||= @current_basket
-      end
-
-      # we go with a regexp (WARNING, assumes fs caching)
-      # so we can clear 'all' and 'search' caches that might need to be expired
-      # since site searches all other baskets, too
-      # we need to expire it's cache, too
-      %w(all search).each do |pattern|
-        unless basket == @site_basket
-          r = /#{@site_basket.urlified_name}\/#{pattern}\/.+/
-          expire_fragment(r)
-        end
-
-        r = /#{basket.urlified_name}\/#{pattern}\/.+/
+    # we go with a regexp (WARNING, assumes fs caching)
+    # so we can clear 'all' and 'search' caches that might need to be expired
+    # since site searches all other baskets, too
+    # we need to expire it's cache, too
+    %w(all search).each do |pattern|
+      unless basket == @site_basket
+        r = /#{@site_basket.urlified_name}\/#{pattern}\/.+/
         expire_fragment(r)
       end
 
-    end
-
-    # clear all tag rss feeds
-    Basket.all.each do |basket|
-      r = /#{basket.urlified_name}\/tags\/.+/
+      r = /#{basket.urlified_name}\/#{pattern}\/.+/
       expire_fragment(r)
     end
 

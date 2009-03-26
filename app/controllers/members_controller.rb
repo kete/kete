@@ -299,13 +299,9 @@ class MembersController < ApplicationController
   end
 
   def rss
-    # changed from @headers for Rails 2.0 compliance
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
-
-    list_members_in('member')
-
-    respond_to do |format|
-      format.xml
+    @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_members_list" }
+    unless has_all_rss_fragments?(@cache_key_hash)
+      list_members_in('member')
     end
   end
 

@@ -30,21 +30,12 @@ class TagsController < ApplicationController
   end
 
   def rss
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
-
-    @number_per_page = 50
-
+    @number_per_page = 100
     # this doesn't work with http auth from and IRC client
     @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
-
     @cache_key_hash = { :rss => "#{@privacy_type}_tags_list" }
-
     unless has_all_rss_fragments?(@cache_key_hash)
       @tags = @current_basket.tag_counts_array({ :limit => @number_per_page, :order => 'latest', :direction => 'desc' }, (@privacy_type == 'private'))
-    end
-
-    respond_to do |format|
-      format.xml
     end
   end
 

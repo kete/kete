@@ -47,13 +47,10 @@ class BasketsController < ApplicationController
   end
 
   def rss
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
-
     @number_per_page = 100
-    list_baskets(@number_per_page)
-
-    respond_to do |format|
-      format.xml
+    @cache_key_hash = { :rss => "basket_list" }
+    unless has_all_rss_fragments?(@cache_key_hash)
+      @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
     end
   end
 
