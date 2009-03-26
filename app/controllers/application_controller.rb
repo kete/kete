@@ -127,7 +127,7 @@ class ApplicationController < ActionController::Base
 
   # if anything is added, edited, or deleted
   # we need to rebuild our rss caches
-  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy]
+  after_filter :expire_rss_caches, :only => [ :create, :update, :destroy ]
 
   # if anything is added, edited, or deleted in a basket
   # we need toss our basket index page fragments
@@ -136,6 +136,12 @@ class ApplicationController < ActionController::Base
                                                        :destroy,
                                                        :add_index_topic, :find_index,
                                                        :add_tags ]
+
+  before_filter :adjust_http_headers_for_rss, :only => [ :rss ]
+
+  def adjust_http_headers_for_rss
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+  end
 
   helper :slideshows
   helper :extended_fields
@@ -658,6 +664,7 @@ class ApplicationController < ActionController::Base
       r = /#{basket.urlified_name}\/#{pattern}\/.+/
       expire_fragment(r)
     end
+
   end
 
   def redirect_to_related_topic(topic, options={})

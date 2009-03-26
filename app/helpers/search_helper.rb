@@ -172,9 +172,9 @@ module SearchHelper
 
   def will_paginate_atom(collection, xml)
     total_pages = WillPaginate::ViewHelpers.total_pages_for_collection(collection)
-    xml.tag!("atom:link".to_sym, :rel => 'next', :href => derive_url_for_rss(:page => collection.current_page + 1)) unless collection.current_page.eql?(total_pages)
-    xml.tag!("atom:link".to_sym, :rel => 'prev', :href => derive_url_for_rss(:page => collection.current_page - 1)) unless collection.current_page.eql?(1)
-    xml.tag!("atom:link".to_sym, :rel => 'last', :href => derive_url_for_rss(:page => total_pages))
+    xml.send("atom:link", :rel => 'next', :href => derive_url_for_rss(:page => collection.current_page + 1)) unless collection.current_page.eql?(total_pages)
+    xml.send("atom:link", :rel => 'prev', :href => derive_url_for_rss(:page => collection.current_page - 1)) unless collection.current_page.eql?(1)
+    xml.send("atom:link", :rel => 'last', :href => derive_url_for_rss(:page => total_pages))
   end
 
 end

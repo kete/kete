@@ -41,8 +41,7 @@ class RssTest < ActionController::IntegrationTest
       @item = new_topic({:title => 'This <or> That', :short_summary => 'This <and> that'})
       visit "/site/all/topics/rss.xml"
       body_should_contain "Latest 50 Results in topics"
-      body_should_contain @item.title, :escape_chars => true
-      body_should_not_contain @item.title # the source shouldn't have the unescaped title
+      body_should_contain @item.title
       body_should_contain 'This that'
       body_should_not_contain 'This <and> that' # the source shouldn't have the uncleaned short_summary
     end
@@ -56,8 +55,7 @@ class RssTest < ActionController::IntegrationTest
       image_tag = "<img alt=\"Image Title. \" height=\"50\" src=\"http://www.example.com#{@item.small_sq_file.public_filename}"
       logger = RAILS_DEFAULT_LOGGER
       logger.info("what is body: " + response.body.inspect)
-      body_should_contain image_tag, :escape_chars => true
-      body_should_not_contain image_tag # the source shouldn't have the unescaped image_tag
+      body_should_contain image_tag
     end
 
   end

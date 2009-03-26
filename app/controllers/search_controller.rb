@@ -194,8 +194,6 @@ class SearchController < ApplicationController
   def rss
     @search_terms = params[:search_terms]
 
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
-
     # set up the cache key, which handles our params beyond basket, action, and controller
     @cache_key_hash = { :page => params[:page] || 1 }
 
@@ -213,6 +211,10 @@ class SearchController < ApplicationController
     unless has_all_rss_fragments?(@cache_key_hash)
       @search = Search.new
       search
+    end
+
+    respond_to do |format|
+      format.xml
     end
   end
 
