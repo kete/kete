@@ -1180,7 +1180,7 @@ en:
       image_from_archive: Image from the Archive
       keyword_search: Keyword Search
       latest: Latest
-      show_x_of_x: showing
+      show_x_of_x: "showing {{count}} of {{total}}"
       tags_title: Tags
       view: "View "
     post_headline: 
