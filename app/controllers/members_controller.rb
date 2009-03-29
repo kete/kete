@@ -41,7 +41,7 @@ class MembersController < ApplicationController
 
     @default_sorting = {:order => 'roles_users.created_at', :direction => 'desc'}
     acceptable_sort_types = ['users.resolved_name', 'roles_users.created_at', 'users.email']
-    acceptable_sort_types << ['users.login'] if @site_admin
+    acceptable_sort_types << 'users.login' if @site_admin
     paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], acceptable_sort_types)
 
     # this sets up all instance variables
@@ -83,11 +83,13 @@ class MembersController < ApplicationController
       if params[:action] == 'rss'
         @members = @role.users.find(:all, { :order => 'roles_users.created_at desc', :limit => 50 })
       else
-        @members = @role.users.paginate(:include => :contributions,
-                                        :order => order,
-                                        :page => params[:page],
-                                        :per_page => 20)
-
+        @members = @role.users.paginate(:include => :contributions, :order => order,
+                                        :page => params[:page], :per_page => 20)
+      end
+      @all_roles = UserRole.all(:conditions => ["role_id = ? AND user_id IN (?)", @role, @members])
+      @role_creations = Hash.new
+      @members.each do |member|
+        @role_creations[member.id] = @all_roles.reject { |r| r.user_id != member.id }.first.created_at
       end
     end
 

@@ -44,12 +44,4 @@ module MembersHelper
 
     end
   end
-
-  def get_user_role_creation_date_for(user, role_type, basket)
-    begin
-      Role.user_role_for(user, role_type, basket).created_at.to_s(:long)
-    rescue
-      "unknown"
-    end
-  end
 end
