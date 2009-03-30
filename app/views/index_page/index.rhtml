@@ -179,7 +179,7 @@
                        "( #{t('index_page.index.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_size)} | " +
                         link_to(t('index_page.index.all_tags'),
                                 :controller => 'tags',
-                                :action => 'index') + " )" : '' -%>
+                                :action => 'list') + " )" : '' -%>
       <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
         <div id="tags-headline">
           <h3 style="display:inline;"><%=t 'index_page.index.tags_title' %></h3>

@@ -1,5 +1,5 @@
 <% if @type != 'categories'
-     @title = t('tags.index.title')
+     @title = t('tags.list.title')
    else
      @title = @type.capitalize
    end
@@ -13,7 +13,7 @@
 
 <h2>
   <%= @title -%>
-  <img src="/images/indicator.gif" width="16" height="16" alt="<%=t 'tags.index.retrieving_tags' %>" id="data_spinner" style="display:none;" />
+  <img src="/images/indicator.gif" width="16" height="16" alt="<%=t 'tags.list.retrieving_tags' %>" id="data_spinner" style="display:none;" />
 </h2>
 
 <div id="tags_list">

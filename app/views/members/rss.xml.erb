@@ -11,7 +11,7 @@
             xml.title {
               xml.cdata member.user_name
             }
-            xml.pubDate member.created_at.to_s
+            xml.pubDate @role_creations[member.id]
             xml.link url_for_contributions_of(member, 'Topic')
             xml.guid url_for_profile_of(member)
           }

@@ -1,5 +1,9 @@
 class TagsController < ApplicationController
   def index
+    redirect_to :action => 'list'
+  end
+  
+  def list
     @type = @current_basket.index_page_tags_as || 'categories'
     @default_order = @current_basket.index_page_order_tags_by || 'latest'
     @order = params[:order] || @default_order
@@ -16,17 +20,13 @@ class TagsController < ApplicationController
     @results = WillPaginate::Collection.new(@current_page, @number_per_page, @tag_counts_array.size)
     @tags = @tag_counts_array[(@results.offset)..(@results.offset + (@number_per_page - 1))]
 
-    @rss_tag_auto = rss_tag
-    @rss_tag_link = rss_tag(:auto_detect => false)
+    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
+    @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
 
     respond_to do |format|
       format.html
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/tags/tags_list.js.rjs') }
     end
-  end
-
-  def list
-    index
   end
 
   def rss

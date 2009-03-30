@@ -11,7 +11,7 @@
         <%= "<br />(#{user.login})" if @site_admin && user.user_name != user.login -%>
       </td>
       <td class="member_joined">
-        <%= get_user_role_creation_date_for(user, @listing_type, @current_basket) -%>
+        <%= @role_creations[user.id].to_s(:long) -%>
       </td>
       <% if @site_admin -%>
       <td><%= mail_to h(user.email) -%></td>

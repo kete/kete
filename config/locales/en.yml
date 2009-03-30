@@ -1257,11 +1257,6 @@ en:
       tech_admin: technical administrator
       title: "{{basket_name}} Members"
       user_name: User name
-    list_members: 
-      currently_no_members: Currently no members
-      members_title: Members
-      search_button: Search
-      search_for_members: Search for new members
     list_members_in: 
       current_no_users_of_type: Currently no {{listing_type}}
       search_button: Search
@@ -1322,8 +1317,6 @@ en:
       are_you_sure: Are you sure?
       banned: "Banned "
       undo: (undo)
-    get_user_role_creation_date_for: 
-      unknown: unknown
   moderate: 
     list: 
       flagged_at: flagged at
@@ -1540,7 +1533,7 @@ en:
       tags_added: The new tag(s) have been added to {{item_title}}
       version_comment: "Only tags added: {{tags_list}}"
   tags: 
-    index: 
+    list: 
       retrieving_tags: "Retrieving tags. "
       title: Tags
     rss: 

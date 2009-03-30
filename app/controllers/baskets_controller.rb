@@ -28,8 +28,7 @@ class BasketsController < ApplicationController
   include TaggingController
 
   def index
-    list
-    render :action => 'list'
+    redirect_to :action => 'list'
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -39,8 +38,8 @@ class BasketsController < ApplicationController
   def list
     list_baskets
 
-    @rss_tag_auto = rss_tag
-    @rss_tag_link = rss_tag(:auto_detect => false)
+    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
+    @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
 
     @requested_count = Basket.count(:conditions => "status = 'requested'")
     @rejected_count = Basket.count(:conditions => "status = 'rejected'")
