@@ -599,70 +599,6 @@ class SearchController < ApplicationController
     end
   end
 
-  # this is useful for creating a rss version of the request
-  # or for replacing the page number in an existing rss url
-  def derive_url_for_rss(options = { })
-    page = !options.blank? && !options[:page].blank? ? options[:page] : nil
-
-    url = request.protocol
-    url += request.host_with_port
-
-    # split everything before the query string and the query string
-    url_parts = request.request_uri.split('?')
-
-    # now split the path up and add rss to it
-    path_elements = url_parts[0].split('/')
-
-    # query string to hash
-    query_parameters = request.query_parameters
-
-    # delete the parameters that are artifacts from normal search
-    %w( number_of_results_per_page tabindex sort_type sort_direction).each do |not_relevant|
-      query_parameters.delete(not_relevant)
-    end
-
-    # also delete page, but only if this isn't already an rss request
-    query_parameters.delete('page') unless path_elements.include?('rss.xml')
-
-    # escape spaces in search terms
-    query_parameters['search_terms'] = query_parameters['search_terms'].gsub(' ', '+') if query_parameters['search_terms']
-
-    # add rss.xml to it, if it doesn't already exist
-    path_elements << 'rss.xml' unless path_elements.include?('rss.xml')
-
-    new_path = path_elements.join('/')
-    url +=  new_path
-
-    query_parameters['page'] = page if page
-
-    # if there is a query string, tack it on the end
-    unless query_parameters.blank?
-      formatted = query_parameters.collect { |k,v| k.to_s + '=' + v.to_s }
-      url += '?' + formatted.join('&')
-    end
-    url
-  end
-
-  def rss_tag(options = {:auto_detect => true})
-    auto_detect = options[:auto_detect]
-
-    tag = String.new
-
-    if auto_detect
-      tag = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" "
-    else
-      tag = "<a "
-    end
-
-    tag += "href=\"" + derive_url_for_rss
-
-    if auto_detect
-      tag +=  "\" />"
-    else
-      tag += "\">" # A tag has a closing </a>
-    end
-  end
-
   # used to choose a topic as homepage for a basket
   # Kieran - 2008-07-07
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
@@ -979,5 +915,5 @@ class SearchController < ApplicationController
     params[:action] == 'rss'
   end
 
-  helper_method :is_rss?, :derive_url_for_rss
+  helper_method :is_rss?
 end

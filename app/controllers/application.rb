@@ -1008,41 +1008,63 @@ class ApplicationController < ActionController::Base
     url_for :controller => zoom_class_controller(item.class.name), :action => :history, :id => item
   end
 
-  def rss_tag(options = { })
-    auto_detect = !options[:auto_detect].nil? ? options[:auto_detect] : true
+  # this is useful for creating a rss version of the request
+  # or for replacing the page number in an existing rss url
+  def derive_url_for_rss(options = { })
     replace_page_with_rss = !options[:replace_page_with_rss].nil? ? options[:replace_page_with_rss] : false
 
-    tag = String.new
+    page = !options.blank? && !options[:page].blank? ? options[:page] : nil
 
-    if auto_detect
-      tag = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" "
-    else
-      logger.debug("wtf?")
-      tag = "<a "
-    end
+    url = request.protocol
+    url += request.host_with_port
 
-    tag += "href=\""+ request.protocol + request.host
     # split everything before the query string and the query string
-    url = request.request_uri.split('?')
+    url_parts = request.request_uri.split('?')
 
     # now split the path up and add rss to it
-    path_elements = url[0].split('/')
+    path_elements = url_parts[0].split('/')
 
+    # query string to hash
+    query_parameters = request.query_parameters
+
+    # delete the parameters that are artifacts from normal search
+    %w( number_of_results_per_page tabindex sort_type sort_direction).each do |not_relevant|
+      query_parameters.delete(not_relevant)
+    end
+
+    # also delete page, but only if this isn't already an rss request
+    query_parameters.delete('page') unless path_elements.include?('rss.xml')
+
+    # escape spaces in search terms
+    query_parameters['search_terms'] = query_parameters['search_terms'].gsub(' ', '+') if query_parameters['search_terms']
+
+    # if we need to take off index/list actions, do that here
     path_elements.pop if replace_page_with_rss
 
-    path_elements << 'rss.xml'
+    # add rss.xml to it, if it doesn't already exist
+    path_elements << 'rss.xml' unless path_elements.include?('rss.xml')
+
     new_path = path_elements.join('/')
-    tag +=  new_path
+    url +=  new_path
+
+    query_parameters['page'] = page if page
+
     # if there is a query string, tack it on the end
-    if !url[1].nil?
-      logger.debug("what is query string: #{url[1].to_s}")
-      tag += "?#{url[1].to_s}"
+    unless query_parameters.blank?
+      formatted = query_parameters.collect { |k,v| k.to_s + '=' + v.to_s }
+      url += '?' + formatted.join('&')
     end
-    if auto_detect
-      tag +=  "\" />"
-    else
-      tag += "\" tabindex='1'>" # A tag has a closing </a>
-    end
+    url
+  end
+
+  def rss_tag(options = { })
+    auto_detect = !options[:auto_detect].nil? ? options[:auto_detect] : true
+
+    tag = String.new
+    tag += auto_detect ? "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" " : "<a "
+    tag += "href=\"" + derive_url_for_rss(options)
+    tag +=  auto_detect ? "\" />" : "\" tabindex='1'>" # A tag has a closing </a> in application layout
+    tag
   end
 
   def render_full_width_content_wrapper?
@@ -1209,7 +1231,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss
 
   protected
 
