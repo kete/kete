@@ -231,9 +231,26 @@ module ItemPrivacy
     module InstanceMethods
 
       # Transparently map tags for the current item to the tags of the correct
-      # privacy.
+      # privacy, and sort them according to raw_tag_list
       def tags
-        private? ? private_tags : public_tags
+        tags_out_of_order = private? ? private_tags : public_tags
+
+        return tags_out_of_order if raw_tag_list.blank?
+
+        # Get the raw tag list, split, squish (removed whitespace), and add each to raw_tag_array
+        # Make sure we skip if the array already has that tag name (remove any duplicates that occur)
+        raw_tag_array = Array.new
+        raw_tag_list.split(',').each do |raw_tag|
+          next if raw_tag_array.include?(raw_tag.squish)
+          raw_tag_array << raw_tag.squish
+        end
+
+        tags = Array.new
+        if tags_out_of_order.size > 0
+          # resort them to match raw_tag_list order
+          tags = tags_out_of_order.sort { |a, b| raw_tag_array.index(a.name).to_i <=> raw_tag_array.index(b.name).to_i }
+        end
+        tags
       end
 
       def tag_list

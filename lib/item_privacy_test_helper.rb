@@ -589,7 +589,7 @@ module ItemPrivacyTestHelper
       end
       
       def test_tags_are_preserved_on_public_items
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
         
         assert_equal 1, d.versions.size
@@ -601,7 +601,7 @@ module ItemPrivacyTestHelper
       end
       
       def test_tags_are_preserved_on_private_items
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         
         assert_equal 0, d.tags.size
         
@@ -616,7 +616,7 @@ module ItemPrivacyTestHelper
       end
       
       def test_tags_on_private_items_are_kept_private
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
         
         # Check there are no tags on public version
@@ -650,7 +650,7 @@ module ItemPrivacyTestHelper
       end
       
       def test_tags_on_private_items_are_kept_private_on_re_find
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         
         d = eval(@base_class).find(d.id)
         
@@ -680,11 +680,11 @@ module ItemPrivacyTestHelper
       def test_tags_are_preserved_separately_by_privacy_setting
         
         # Create a private version
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
         
         # Create a public version with different tags
-        d.update_attributes!(:private => false, :title => "A public version", :description => "Version 3", :tag_list => "four, five, six")
+        d.update_attributes!(:private => false, :title => "A public version", :description => "Version 3", :tag_list => "four, five, six", :raw_tag_list => "four, five, six")
         
         # Create a second private version without tags
         d.private_version!
@@ -712,7 +712,7 @@ module ItemPrivacyTestHelper
       end
       
       def test_tags_on_private_items_are_of_private_context
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
         
         d.private_version!
@@ -725,7 +725,7 @@ module ItemPrivacyTestHelper
       end
       
       def test_tags_on_public_items_are_of_public_context
-        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three" }))
+        d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
         
         assert_equal false, d.private?
