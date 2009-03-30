@@ -50,7 +50,7 @@ class MembersController < ApplicationController
 
     # turn on rss
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
-    @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
+    @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
   end
 
   def list_members_in(role_name, order='users.login asc')
