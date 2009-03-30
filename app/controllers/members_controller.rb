@@ -92,18 +92,8 @@ class MembersController < ApplicationController
         @role_creations[member.id] = @all_roles.reject { |r| r.user_id != member.id }.first.created_at
       end
     end
-
-    if request.xhr?
-      render :partial =>'list_members_in',
-      :locals => { :members => @members,
-        :possible_roles => @possible_roles,
-        :admin_actions => @admin_actions }
-    else
-      if params[:action] == 'list_members_in'
-        redirect_to params.merge(:action => 'list')
-      end
-    end
   end
+  private :list_members_in
 
   def potential_new_members
     @existing_users = User.find(:all,
