@@ -8,42 +8,36 @@
               :id => selected_still_image  -%>
 </p>
 
-<% unless previous_url.blank? && next_url.blank? -%>
-  <p>
-    <% unless previous_url.blank? -%>
-      <%= link_to_remote(image_tag('icon_results_previous_off.gif',
-                                   :title => t('index_page.selected_image.previous_image'),
-                                   :alt => t('index_page.selected_image.previous_image')),
-                         :update => 'selected-image-display',
-                         :method => 'get',
-                         :url => previous_url,
-                         :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>
-    <% end -%>
+<p class="buttons">
+  <% unless previous_url.blank? -%>
+    <%= link_to_remote(image_tag('slideshow_previous.gif',
+                                 :title => t('index_page.selected_image.previous_image'),
+                                 :alt => t('index_page.selected_image.previous_image')),
+                       :update => 'selected-image-display', :method => 'get', :url => previous_url,
+                       :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>
+  <% end -%>
 
-    <% if params[:controller] == 'topics' %>
-      <a id="stop_slideshow" href="">
-        <%= image_tag 'slideshow_stop.png',
-                      :title => t('topics.selected_image.stop_slideshow'),
-                      :alt => t('topics.selected_image.stop_slideshow') %>
-      </a>
-      <%= javascript_tag("setupRelatedImagesSlideshowStopButton();") %>
-    <% end -%>
+  <% if params[:controller] == 'topics' %>
+    <%= content_tag('a', image_tag('slideshow_grid.gif',
+                                   :title => t('index_page.selected_image.return_to_grid'),
+                                   :alt => t('index_page.selected_image.return_to_grid')),
+                    :id => 'stop_slideshow', :href => '') -%>
+    <%= javascript_tag("setupRelatedImagesSlideshowStopButton();") -%>
+  <% end -%>
 
-    <a id="play_pause_slideshow" href="">
-      <%= image_tag('related_items_expanded.gif',
-                    :alt => t('index_page.selected_image.play_pause_slideshow'),
-                    :title => t('index_page.selected_image.play_pause_slideshow')) %>
-    </a>
-    <%= javascript_tag("setupRelatedImagesSlideshowPauseButton();") %>
+  <%= content_tag('a', image_tag('slideshow_pause.gif',
+                                 :alt => t('index_page.selected_image.play_pause_slideshow'),
+                                 :title => t('index_page.selected_image.play_pause_slideshow')),
+                  :id => 'play_pause_slideshow', :href => '') -%>
+  <%= javascript_tag("setupRelatedImagesSlideshowPauseButton();") -%>
 
-    <% unless next_url.blank? -%>
-      <%= link_to_remote(image_tag('icon_results_next_off.gif',
-                                   :title => t('index_page.selected_image.next_image'),
-                                   :alt => t('index_page.selected_image.next_image')),
-                         :update => 'selected-image-display',
-                         :method => 'get',
-                         :url => next_url,
-                         :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>
-    <% end -%>
-  </p>
-<% end -%>
+  <% unless next_url.blank? -%>
+    <%= link_to_remote(image_tag('slideshow_next.gif',
+                               :title => t('index_page.selected_image.next_image'),
+                               :alt => t('index_page.selected_image.next_image')),
+                     :update => 'selected-image-display',
+                     :method => 'get',
+                     :url => next_url,
+                     :href => url_for(:action => ((params[:controller] == 'topics') ? 'show' : 'index'))) -%>
+  <% end -%>
+</p>

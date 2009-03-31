@@ -1193,7 +1193,7 @@ en:
       next_image: "Next Image. "
       play_pause_slideshow: "Play/Pause Slideshow. "
       previous_image: "Previous Image. "
-      stop_slideshow: "Stop Slideshow. "
+      return_to_grid: "Return to Grid. "
     topic_as_full_page: 
       edit: Edit
       history: History

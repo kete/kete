@@ -152,7 +152,7 @@ function setupRelatedImagesSlideshowPauseButton() {
   $('play_pause_slideshow').observe('click', function(event) {
     if ($('selected-image-display-paused')) {
       $('selected-image-display-paused').remove();
-      $('play_pause_slideshow').down('img').src = '/images/related_items_expanded.gif';
+      $('play_pause_slideshow').down('img').src = '/images/slideshow_pause.gif';
     } else {
       $('body-outer-wrapper').insert("<div id='selected-image-display-paused'></div>");
       $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';

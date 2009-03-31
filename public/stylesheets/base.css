@@ -1144,3 +1144,17 @@ div.extended_field_autocomplete ul li {
 div.gmnoprint {
   white-space: normal !important;
 }
+
+/*
+ * Slideshow controls
+ */
+.buttons {
+  border: 1px solid #555;
+  background-color: #eee;
+  width: 85px;
+  margin: 0 auto;
+  -moz-border-radius-bottomleft:.6em;
+  -moz-border-radius-bottomright:.6em;
+  -moz-border-radius-topleft:.6em;
+  -moz-border-radius-topright:.6em;
+}
