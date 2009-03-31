@@ -131,7 +131,7 @@ class SearchController < ApplicationController
 
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
 
-    @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice]
+    @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice].decode_from_url
 
     @extended_field = ExtendedField.from_label_for_params(params[:extended_field]).first if params[:extended_field]
     @all_choices = true unless @extended_field
