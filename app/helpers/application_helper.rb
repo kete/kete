@@ -1347,7 +1347,7 @@ module ApplicationHelper
     elsif current_user != :false
       current_user.locale
     else
-      config.i18n.default_locale
+      I18n.default_locale
     end
     locales = User.language_choices.collect { |key,value| [value,key] }
     form.select :locale, locales, :selected => default
