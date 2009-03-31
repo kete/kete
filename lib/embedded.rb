@@ -73,6 +73,13 @@ module Embedded
       embedded.each do |key, value|
         # get rid of any extra white space at beginning or end of value
         value = value.strip if value.is_a?(String)
+
+        # accept ; as demarkation of separate values
+        # Adobe's Bridge software doesn't use commas
+        if value.is_a?(String) && key.downcase == 'subject'
+          value = value.split(";").collect { |i| i.strip }
+        end
+
         # get rid of nil, empty, or whitespace only items in array
         value = value.reject { |i| i.blank? } if value.is_a?(Array)
 
