@@ -12,6 +12,29 @@ namespace :kete do
       File.delete(path) if File.exist?(path)
     end
 
+    desc 'Copy config/locales.yml.example to config/locales.yml'
+    task :set_locales do
+      path = "#{RAILS_ROOT}/config/locales.yml"
+      if File.exist?(path)
+        puts "ERROR: Locales file already exists. Delete it first or run 'rake kete:tools:set_locales_to_default'"
+        exit
+      end
+      require 'ftools'
+      File.cp("#{RAILS_ROOT}/config/locales.yml.example", path)
+      puts "config/locales.yml.example copied to config/locales.yml"
+    end
+
+    desc 'Overwrite existing locales by copying config/locales.yml.example to config/locales.yml'
+    task :set_locales_to_default do
+      puts "\n/!\\ WARNING /!\\\n\n"
+      puts "This task will replace the existing config/locales.yml file with Kete's default\n"
+      puts "Press any key to continue, or Ctrl+C to abort..\n"
+      STDIN.gets
+      path = "#{RAILS_ROOT}/config/locales.yml"
+      File.delete(path) if File.exist?(path)
+      Rake::Task["kete:tools:set_locales"].invoke
+    end
+
     desc 'Resets the database and zebra to their preconfigured state.'
     task :reset => ['kete:tools:reset:zebra', 'db:bootstrap']
     namespace :reset do
