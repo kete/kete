@@ -138,6 +138,12 @@ class String
     # escape xml special chars &, <, and >
     CGI::escapeHTML(entities.decode(self))
   end
+  def escape_for_url
+    URI.escape(self, /\W/)
+  end
+  def decode_from_url
+    URI.decode(self)
+  end
 end
 
 module Builder

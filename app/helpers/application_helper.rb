@@ -693,7 +693,7 @@ module ApplicationHelper
 
     html_options_for_select = ([['', '']] + options_array).map do |k, v|
       attrs = { :value => v }
-      attrs.merge!(:selected => "selected") if params[:limit_to_choice] == v
+      attrs.merge!(:selected => "selected") if @limit_to_choice && @limit_to_choice == v
       content_tag("option", k, attrs)
     end.join
 
@@ -834,7 +834,7 @@ module ApplicationHelper
         unless base_url.blank?
           link_to(l, base_url + v)
         else
-          link_to(l, send(method, url_hash.merge(:limit_to_choice => v)))
+          link_to(l, send(method, url_hash.merge(:limit_to_choice => v.escape_for_url)))
         end
       end.join(" &raquo; ")
 

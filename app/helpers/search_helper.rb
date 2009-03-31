@@ -32,9 +32,9 @@ module SearchHelper
       end_of_title_parts << contributor_string
     end
 
-    unless params[:limit_to_choice].blank?
+    unless @limit_to_choice.nil?
       end_of_title_parts << "#{@extended_field ? " with #{@extended_field.label.singularize.downcase}" : ''}
-                                                   of #{h(params[:limit_to_choice])}"
+                                                   of #{h(@limit_to_choice)}"
     end
 
     unless @source_item.nil?
