@@ -1149,12 +1149,23 @@ div.gmnoprint {
  * Slideshow controls
  */
 .buttons {
-  border: 1px solid #555;
-  background-color: #eee;
-  width: 85px;
+  border: 1px solid #444;
+  background-color: #ccc;
+  padding: 3px 8px 0 8px;
+  width: 80px;
   margin: 0 auto;
-  -moz-border-radius-bottomleft:.6em;
-  -moz-border-radius-bottomright:.6em;
-  -moz-border-radius-topleft:.6em;
-  -moz-border-radius-topright:.6em;
+  -moz-border-radius: .6em;
+  -webkit-border-radius: .6em;
+}
+.one_button {
+  width: 32px;
+}
+#selected-image-display .slideshow_previous {
+  border-right: 1px solid #444;
+}
+#selected-image-display .slideshow_grid {
+  border-right: 1px solid #444;
+}
+#selected-image-display .slideshow_next {
+  border-left: 1px solid #444;
 }

@@ -128,7 +128,7 @@ function setupRelatedImagesSlideshowPlayButton(url) {
       method: 'get',
       evalScripts: true,
       onComplete: function(complete) {
-        $('play_slideshow').hide();
+        $('play_slideshow').up('.buttons').hide();
         $('related_still_image_container').hide();
       }
     });
@@ -138,7 +138,7 @@ function setupRelatedImagesSlideshowPlayButton(url) {
 
 function setupRelatedImagesSlideshowStopButton() {
   $('stop_slideshow').observe('click', function(event) {
-    $('play_slideshow').show();
+    $('play_slideshow').up('.buttons').show();
     $('related_still_image_container').show();
     $('related_items_slideshow').innerHTML = '';
     event.stop();
