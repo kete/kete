@@ -116,8 +116,9 @@ module AuthenticatedSystem
       if hash_or_url.is_a?(Hash)
         hash_or_url[:locale] = false
       elsif hash_or_url.is_a?(String)
-        locale_match = %r(^/(#{I18n.available_locales.map{|l|l.to_s}.join('|')})(?=/|$))
-        hash_or_url.gsub(locale_match, "/")
+        locale_match = %r(^/(#{User.language_choices.keys.map{|l|l.to_s}.join('|')}))
+        hash_or_url = hash_or_url.gsub(locale_match, '')
+        hash_or_url
       else
         raise "ERROR: Don't know how to strip locale from #{hash_or_url.class.name}"
       end
