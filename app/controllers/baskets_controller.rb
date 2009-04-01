@@ -312,9 +312,17 @@ class BasketsController < ApplicationController
   def choose_type
     # give the user the option to add the item to any place the have access to
     @basket_list = Array.new
-    @basket_list = @site_admin ?
-                     Basket.all(:select => 'name,urlified_name').collect { |basket| [basket.name, basket.urlified_name] } :
-                     @basket_access_hash.collect { |basket_urlified_name, basket_hash| [basket_hash[:basket_name], basket_urlified_name.to_s] }
+    if @site_admin
+      @basket_list = Basket.all(:select => 'name,urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
+    else
+      all_baskets_hash = Hash.new
+      Basket.all.each { |b| all_baskets_hash[b.urlified_name.to_sym] = { :basket => b, :privacy => b.settings[:show_add_links] } }
+      @basket_list = @basket_access_hash.collect do |basket_urlified_name, basket_hash|
+        current_user_is?(all_baskets_hash[basket_urlified_name.to_sym][:privacy], all_baskets_hash[basket_urlified_name.to_sym][:basket]) \
+          ? [basket_hash[:basket_name], basket_urlified_name.to_s] \
+          : nil
+      end.compact
+    end
 
     @item_types = Array.new
     ZOOM_CLASSES.each { |zoom_class| @item_types << [zoom_class_humanize(zoom_class),
