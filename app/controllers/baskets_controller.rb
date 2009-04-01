@@ -316,7 +316,11 @@ class BasketsController < ApplicationController
       @basket_list = Basket.all(:select => 'name,urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
     else
       all_baskets_hash = Hash.new
-      Basket.all.each { |b| all_baskets_hash[b.urlified_name.to_sym] = { :basket => b, :privacy => b.settings[:show_add_links] } }
+      # get the add item setting for each of the baskets the user has access to
+      Basket.find_all_by_urlified_name(@basket_access_hash.stringify_keys.keys).each do |b|
+        all_baskets_hash[b.urlified_name.to_sym] = { :basket => b, :privacy => b.settings[:show_add_links] }
+      end
+      # collect baskets that they can see add item controls for
       @basket_list = @basket_access_hash.collect do |basket_urlified_name, basket_hash|
         current_user_is?(all_baskets_hash[basket_urlified_name.to_sym][:privacy], all_baskets_hash[basket_urlified_name.to_sym][:basket]) \
           ? [basket_hash[:basket_name], basket_urlified_name.to_s] \
