@@ -949,11 +949,12 @@ en:
       add_more_sub_choices: Add more sub-choices
       existing_sub_choices: Existing sub-choices
       need_choice_for_children: You cannot select child choices until the choice has been created.
-    extended_field_choice_autocomplete_editor:   
-      add_your_own: "OR add your own"
+    extended_field_choice_autocomplete_editor:  
+      add_your_own: "OR add your own"  
       getting_choices: "Getting choices. "
-    extended_field_choice_select_editor: 
-      getting_choices: "Getting choices. "
+    extended_field_choice_select_editor:  
+      add_your_own: "OR add your own"  
+      getting_choices: "Getting choices. "  
     extended_field_radio_editor: 
       "no": "No"
       no_value: No value
