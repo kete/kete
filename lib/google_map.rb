@@ -185,7 +185,7 @@ module GoogleMap
                     :class => values.class.name,
                     :value => values.inspect) unless values.is_a?(Hash)
       # check if this field is required and not set
-      if values[:coords].nil? || values[:zoom_lvl].nil?
+      if values['coords'].nil? || values['zoom_lvl'].nil?
         if extended_field_mapping.required
           return I18n.t('google_map_lib.validate_extended_map_field_content.not_present_required')
         else

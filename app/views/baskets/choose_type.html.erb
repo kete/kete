@@ -1,3 +1,5 @@
+<% if @basket_list.size > 0 %>
+
 <% @title = t('baskets.choose_type.what_to_add')
    if params[:relate_to_topic]
      topic = Topic.find(params[:relate_to_topic])
@@ -99,5 +101,14 @@ $('new_item_basket').observe('change', function(event) {
 });
 //]]>
 </script>
+
+<% else -%>
+
+  <% @title = t('baskets.choose_type.no_baskets_available') -%>
+  <h2><%= @title %></h2>
+  <p><%= t('baskets.choose_type.no_baskets_available_description') %></p>
+  <p><%= t('baskets.choose_type.no_baskets_available_try_later') %></p>
+
+<% end -%>
 
 <%= render :partial => "topics/content_wrapper_end" -%>

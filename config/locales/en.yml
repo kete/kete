@@ -394,6 +394,9 @@ en:
       add_in: Add in?
       button: Choose
       choose_type: choose item type
+      no_baskets_available: No Baskets Available
+      no_baskets_available_description: There are no baskets that you have access to add items to.
+      no_baskets_available_try_later: "Find a basket to join, or please try again later."
       spinner_working: "Working.. "
       that_relates_to: that relates to {{topic_title}}
       what_to_add: What would you like to add
