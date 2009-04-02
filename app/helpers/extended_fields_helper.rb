@@ -12,11 +12,6 @@ module ExtendedFieldsHelper
     content_tag('div', select, { :id => "hidden_choices_topic_type_select_#{record.id.to_s}", :style => 'display:none;' })
   end
 
-  def base_url_form_column(record, input_name)
-    value = record.id.nil? ? '' : record.base_url
-    text_field_tag(input_name, value, { :id => 'record_base_url' })
-  end
-
   # Using YUI TreeView
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find_top_level

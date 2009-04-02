@@ -17,12 +17,16 @@ class Feed < ActiveRecord::Base
     self.serialized_feed[0..(feed_limit - 1)]
   end
 
+  def self.fetch_entries(url)
+    entries = Array.new
+    feed = FeedNormalizer::FeedNormalizer.parse open(url)
+    entries.push(*feed.entries)
+    entries
+  end
+
   def update_feed
     begin
-      entries = []
-      feed = FeedNormalizer::FeedNormalizer.parse open(self.url)
-      entries.push(*feed.entries)
-
+      entries = Feed.fetch_entries(self.url)
       if self.serialized_feed != entries # is there something different
         self.update_attributes({ :serialized_feed => entries,
                                  :last_downloaded => Time.now.utc.to_s(:db) })

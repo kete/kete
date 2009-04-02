@@ -311,6 +311,12 @@
                                              :action => 'list'},
                                            :tabindex => '2' %>
                 |
+                <%= link_to_unless_current t('layouts.application.search_sources'),
+                                           { :urlified_name => @site_basket.urlified_name,
+                                             :controller => 'search_sources',
+                                             :action => 'list'},
+                                           :tabindex => '2' %>
+                |
                 <%= link_to_unless_current t('layouts.application.site_members'),
                                            { :urlified_name => @site_basket.urlified_name,
                                              :controller => 'members',

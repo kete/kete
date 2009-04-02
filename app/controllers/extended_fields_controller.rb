@@ -129,6 +129,12 @@ class ExtendedFieldsController < ApplicationController
 
   private
 
+  def base_url_form_column(record, input_name)
+    value = record.id.nil? ? '' : record.base_url
+    @template.text_field_tag(input_name, value, { :id => 'record_base_url' })
+  end
+  helper_method :base_url_form_column
+
   def set_page_title
     @title = t('extended_fields_controller.title')
   end

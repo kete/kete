@@ -23,6 +23,8 @@
 
 <%= render(:partial => "discussion" , :locals => { :item => @topic }) if current_user_can_see_discussion? -%>
 
+<%= display_search_sources %>
+
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">

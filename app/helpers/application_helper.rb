@@ -1353,4 +1353,20 @@ module ApplicationHelper
     form.select :locale, locales, :selected => default
   end
 
+  def display_search_sources
+    html = String.new
+    html += render("topics/secondary_wrapper_start", :div_id => "search_sources", :class_suffix => nil)
+    SearchSource.all.each do |source|
+      entries = Feed.fetch_entries(source.base_url + @item.title.escape_for_url)[0..(source.limit - 1)]
+      html += content_tag('h2', h(source.title))
+      html += '<ul>'
+      entries.each do |entry|
+        html += "<li>" + link_to(h(entry.title), h(entry.urls.first)) + "</li>"
+      end
+      html += '</ul>'
+    end
+    html += render("topics/secondary_wrapper_end")
+    html
+  end
+
 end
