@@ -1169,3 +1169,24 @@ div.gmnoprint {
 #selected-image-display .slideshow_next {
   border-left: 1px solid #444;
 }
+
+/*
+ * Search Sources
+ */
+#search_sources {
+  margin: 0 15px;
+}
+#search_sources .search_source_more {
+  margin-left: 10px;
+}
+#search_sources .images {
+  margin: 0 25px;
+}
+#search_sources .images .image {
+  margin-top: 5px;
+}
+#search_sources .images .image img {
+  float: left;
+  margin-right: 5px;
+  border: none;
+}

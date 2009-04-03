@@ -23,13 +23,12 @@
 
 <%= render(:partial => "discussion" , :locals => { :item => @topic }) if current_user_can_see_discussion? -%>
 
-<%= display_search_sources %>
-
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
     <%= render(:partial => "tags_div", :locals => { :item => @topic }) -%>
     <%= render(:partial => "extended_fields", :locals => { :item => @topic }) -%>
+    <%= display_search_sources %>
     <%= render(:partial => "license", :locals => { :item => @topic }) -%>
   </div> <!-- /secondary-content-wrapper -->
 </div><!-- /content-wrapper -->

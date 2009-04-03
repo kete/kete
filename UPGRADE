@@ -33,6 +33,17 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2009/04/03 - Switching RSS Feed parsing from feed-normalizer to Feedzirra
+
+1.      Stop your Kete server (mongrel or mod_rails).
+2.      Upgrade your code base
+3.      Install the Feedzirra gem.
+            sudo gem install kete-feedzirra -s http://gems.github.com
+4.      (note) We no longer use feed-normalizer and it can be uninstalled if no other Kete instances need it
+            sudo gem uninstall feed-normalizer
+5.      Start you Kete server again (mongrels or mod_rails)
+6.      Restart backgroundrb
+
 == 2009/03/26 - Switched RSS Feed generation to Nokogiri for big speed boosts
 
 1.      Stop your Kete server (mongrel or mod_rails).

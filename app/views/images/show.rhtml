@@ -41,14 +41,13 @@
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @still_image }) if current_user_can_see_discussion? -%>
 
-<%= display_search_sources %>
-
     </div><!-- /main-content-container -->
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div", :locals => { :item => @still_image }) %>
     <%= render(:partial => "topics/extended_fields", :locals => { :item => @still_image }) %>
     <%= render(:partial => "portrait_controls", :locals => { :item => @still_image }) %>
+    <%= display_search_sources %>
     <%= render(:partial => "topics/license" , :locals => { :item => @still_image }) -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

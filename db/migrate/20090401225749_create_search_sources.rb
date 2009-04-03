@@ -1,9 +1,7 @@
 class CreateSearchSources < ActiveRecord::Migration
   def self.up
     create_table :search_sources do |t|
-      t.string :title
-      t.string :source_type
-      t.string :base_url
+      t.string :title, :source_type, :base_url
       t.integer :limit
 
       t.timestamps

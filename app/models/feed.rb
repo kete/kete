@@ -1,5 +1,5 @@
 require 'open-uri'
-require 'feed-normalizer'
+require 'feedzirra'
 
 class Feed < ActiveRecord::Base
 
@@ -18,10 +18,8 @@ class Feed < ActiveRecord::Base
   end
 
   def self.fetch_entries(url)
-    entries = Array.new
-    feed = FeedNormalizer::FeedNormalizer.parse open(url)
-    entries.push(*feed.entries)
-    entries
+    feed = Feedzirra::Feed.fetch_and_parse(url)
+    feed.entries
   end
 
   def update_feed
