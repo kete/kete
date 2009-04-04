@@ -24,6 +24,7 @@ class PqfQuery
     'relevance' => "@attr 2=102 @attr 5=3 @attr 5=103 ",
     'exact' => "@attr 4=3 ",
     'datetime' => "@attr 4=5 ",
+    'exact_url' => "@attr 4=104 ",
     'lt' => "@attr 2=1 ",
     'le' => "@attr 2=2 ",
     'eq' => "@attr 2=3 ",
@@ -121,7 +122,7 @@ class PqfQuery
       full_query += full_query_parts[0] unless full_query_parts[0].nil?
       full_query += "@or " + prepend_at_pattern
       full_query += full_query_parts[1] unless full_query_parts[1].nil?
-      full_query += ATTRIBUTE_SPECS['subjects'] +
+      full_query += QUALIFYING_ATTRIBUTE_SPECS['exact_url'] + ' ' + ATTRIBUTE_SPECS['subjects'] +
                     @title_or_any_text_operators_string +
                     @title_or_any_text_query_string + ' '
       full_query
