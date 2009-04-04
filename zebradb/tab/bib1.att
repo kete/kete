@@ -106,8 +106,8 @@ att 1012            oai_datestamp
 att 1013            Authority/format-id
 att 1014            Concept-text
 att 1015            Concept-reference
-# att 1016            Any
-att 1016            dc_all
+att 1016            Any
+# att 1016            dc_all
 att 1017            Server-choice
 # att 1018            Publisher
 att 1018            dc_publisher
