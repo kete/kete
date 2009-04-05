@@ -19,18 +19,16 @@ module Globalize
 
             # Only set up once per class
             unless included_modules.include? InstanceMethods
-              class_inheritable_accessor :globalize_options
+              class_inheritable_accessor :globalize_options, :globalize_proxy
+              
               include InstanceMethods
               extend  ClassMethods
+              alias_method_chain :reload, :globalize
               
-              proxy_class = Globalize::Model::ActiveRecord.create_proxy_class(self)
-              has_many :globalize_translations, :class_name => proxy_class.name, :extend => Extensions
+              self.globalize_proxy = Globalize::Model::ActiveRecord.create_proxy_class(self)
+              has_many :globalize_translations, :class_name => globalize_proxy.name, :extend => Extensions
 
-              after_save :update_globalize_record
-              
-              def i18n_attr(attribute_name)
-                self.name.underscore + "_translations.#{attribute_name}"
-              end
+              after_save :update_globalize_record              
             end
 
             self.globalize_options = options
@@ -41,6 +39,14 @@ module Globalize
             extend Callbacks
             Callbacks.instance_methods.each {|cb| send cb }
           end
+
+          def locale=(locale)
+            @@locale = locale
+          end
+          
+          def locale
+            (defined?(@@locale) && @@locale) || I18n.locale
+          end          
         end
 
         # Dummy Callbacks module. Extensions to Globalize2 can insert methods into here
@@ -59,13 +65,13 @@ module Globalize
           def method_missing(method, *args)
             if method.to_s =~ /^find_by_(\w+)$/ && globalize_options[:translated_attributes].include?($1.to_sym)
               find(:first, :joins => :globalize_translations,
-                   :conditions => [i18n_attr($1)+" = ? AND "+i18n_attr('locale')+" IN (?)",
+                   :conditions => [ "#{i18n_attr($1)} = ? AND #{i18n_attr('locale')} IN (?)",
                                    args.first,I18n.fallbacks[I18n.locale].map{|tag| tag.to_s}])
             else
               super
             end
           end
-          
+                    
           def create_translation_table!(fields)
             translated_fields = self.globalize_options[:translated_attributes]
             translated_fields.each do |f|
@@ -94,15 +100,37 @@ module Globalize
             translation_table_name = self.name.underscore + '_translations'
             self.connection.drop_table translation_table_name
           end
+          
+          private
+          
+          def i18n_attr(attribute_name)
+            self.base_class.name.underscore + "_translations.#{attribute_name}"
+          end          
         end
         
         module InstanceMethods
+          def reload_with_globalize
+            globalize.clear
+            
+            # clear all globalized attributes
+            # TODO what's the best way to handle this?
+            self.class.globalize_options[:translated_attributes].each do |attr|
+              @attributes.delete attr.to_s
+            end
+            
+            reload_without_globalize
+          end
+          
           def globalize
             @globalize ||= Adapter.new self
           end
           
           def update_globalize_record
             globalize.update_translations!
+          end
+          
+          def translated_locales
+            globalize_translations.scoped(:select => 'DISTINCT locale').map {|gt| gt.locale.to_sym }
           end
         end
       end
