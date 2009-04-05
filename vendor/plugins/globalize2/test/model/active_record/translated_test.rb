@@ -12,7 +12,8 @@ class TranslatedTest < ActiveSupport::TestCase
   def setup
     I18n.locale = :'en-US'
     I18n.fallbacks.clear 
-    reset_db!
+    reset_db! File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'data', 'schema.rb'))
+    ActiveRecord::Base.locale = nil
   end
   
   def teardown
@@ -92,6 +93,13 @@ class TranslatedTest < ActiveSupport::TestCase
     assert_equal 'baz', Post.first.subject 
   end
 
+  test "update_attributes failure" do
+    post = Post.create :subject => 'foo', :content => 'bar'
+    assert !post.update_attributes( { :subject => '' } )
+    assert_nil post.reload.attributes['subject']
+    assert_equal 'foo', post.subject        
+  end
+    
   test "validates presence of :subject" do
     post = Post.new
     assert !post.save
@@ -254,6 +262,97 @@ class TranslatedTest < ActiveSupport::TestCase
     
     I18n.locale = :'de-DE'
     assert_equal 'bar', post.subject
+  end
+  
+  test 'reload' do
+    post = Post.create :subject => 'foo', :content => 'bar'
+    post.subject = 'baz'
+    assert_equal 'foo', post.reload.subject    
+  end
+  
+  test 'complex writing and stashing' do
+    post = Post.create :subject => 'foo', :content => 'bar'
+    post.subject = nil
+    assert_nil post.subject
+    assert !post.valid?    
+  end
+  
+  test 'translated class locale setting' do
+    assert ActiveRecord::Base.respond_to?(:locale)
+    assert_equal :'en-US', I18n.locale
+    assert_equal :'en-US', ActiveRecord::Base.locale
+    I18n.locale = :de
+    assert_equal :de, I18n.locale
+    assert_equal :de, ActiveRecord::Base.locale
+    ActiveRecord::Base.locale = :es
+    assert_equal :de, I18n.locale
+    assert_equal :es, ActiveRecord::Base.locale
+    I18n.locale = :fr
+    assert_equal :fr, I18n.locale
+    assert_equal :es, ActiveRecord::Base.locale
+  end
+  
+  test "untranslated class responds to locale" do
+    assert Blog.respond_to?(:locale)
+  end
+  
+  test "to ensure locales in different classes are the same" do
+    ActiveRecord::Base.locale = :de
+    assert_equal :de, ActiveRecord::Base.locale
+    assert_equal :de, Parent.locale
+    Parent.locale = :es
+    assert_equal :es, ActiveRecord::Base.locale
+    assert_equal :es, Parent.locale
+  end
+  
+  test "attribute saving goes by content locale and not global locale" do
+    ActiveRecord::Base.locale = :de
+    assert_equal :'en-US', I18n.locale
+    Post.create :subject => 'foo'
+    assert_equal :de, Post.first.globalize_translations.first.locale
+  end
+  
+  test "attribute loading goes by content locale and not global locale" do
+    post = Post.create :subject => 'foo'
+    assert_equal :'en-US', ActiveRecord::Base.locale
+    ActiveRecord::Base.locale = :de
+    assert_equal :'en-US', I18n.locale
+    post.update_attribute :subject, 'foo [de]'
+    assert_equal 'foo [de]', Post.first.subject    
+    ActiveRecord::Base.locale = :'en-US'
+    assert_equal 'foo', Post.first.subject    
+  end
+
+  test "access content locale before setting" do
+    Globalize::Model::ActiveRecord::Translated::ActMethods.class_eval "remove_class_variable(:@@locale)"
+    assert_nothing_raised { ActiveRecord::Base.locale }
+  end
+  
+  test "translated_locales" do
+    Post.locale = :de
+    post = Post.create :subject => 'foo'
+    Post.locale = :es
+    post.update_attribute :subject, 'bar'
+    Post.locale = :fr
+    post.update_attribute :subject, 'baz'
+    assert_equal [ :de, :es, :fr ], post.translated_locales
+    assert_equal [ :de, :es, :fr ], Post.first.translated_locales
+  end
+  
+  test "including globalize_translations" do
+    I18n.locale = :de
+    Post.create :subject => "Foo1", :content => "Bar1"
+    Post.create :subject => "Foo2", :content => "Bar2"
+        
+    class << Post
+      def tranlsations_included
+        self.all(:include => :globalize_translations)
+      end
+    end
+    
+    default       = Post.all.map {|x| [x.subject, x.content]}
+    with_include  = Post.tranlsations_included.map {|x| [x.subject, x.content]}
+    assert_equal default, with_include
   end
 end
 
