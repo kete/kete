@@ -40,9 +40,7 @@ class BasketsControllerTest < ActionController::TestCase
 
   def test_index_and_list
     get :index, index_path
-    assert_viewing_template 'baskets/list'
-    assert_var_assigned true
-    assert_equal 4, assigns(:baskets).size
+    assert_redirect_to( :action => 'list' )
 
     get :list, index_path({ :action => 'list' })
     assert_viewing_template 'baskets/list'
@@ -126,14 +124,14 @@ class BasketsControllerTest < ActionController::TestCase
 
   def test_basket_accessable_by_site_admin_when_status_not_approved
     basket = Basket.create(@new_model.merge({ :name => 'Test' }))
-    get :index, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
+    get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :success
   end
 
   def test_basket_not_accessable_by_non_site_admin_when_status_not_approved
     logout
     basket = Basket.create(@new_model.merge({ :name => 'Test' }))
-    get :index, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
+    get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :redirect
     assert_redirected_to "/site"
     assert_equal 'The basket Test is not approved for public viewing', flash[:error]
@@ -141,14 +139,14 @@ class BasketsControllerTest < ActionController::TestCase
 
   def test_basket_accessable_by_site_admin_when_approved
     basket = Basket.create(@new_model.merge({ :name => 'Test', :status => 'approved' }))
-    get :index, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
+    get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :success
   end
 
   def test_basket_accessable_by_non_site_admin_when_approved
     logout
     basket = Basket.create(@new_model.merge({ :name => 'Test', :status => 'approved' }))
-    get :index, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
+    get :list, :urlified_name => 'test', :controller => 'index_page', :action => 'index'
     assert_response :success
   end
 

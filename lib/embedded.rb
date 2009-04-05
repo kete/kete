@@ -71,6 +71,18 @@ module Embedded
       end
 
       embedded.each do |key, value|
+        # get rid of any extra white space at beginning or end of value
+        value = value.strip if value.is_a?(String)
+
+        # accept ; as demarkation of separate values
+        # Adobe's Bridge software doesn't use commas
+        if value.is_a?(String) && key.downcase == 'subject'
+          value = value.split(";").collect { |i| i.strip }
+        end
+
+        # get rid of nil, empty, or whitespace only items in array
+        value = value.reject { |i| i.blank? } if value.is_a?(Array)
+
         standard_attribute_synonyms.each do |a_name, synonyms|
           # if the embedded key in the list of the attribute's synonyms
           # we have a match and should assign the value of the embedded key's value
@@ -85,7 +97,13 @@ module Embedded
               all_tags = self.tag_list.split(',')
               all_tags = all_tags + value.to_a
 
-              self.tag_list = all_tags.to_sentence
+              all_tags = all_tags.reject { |i| i.blank? }
+
+              self.tag_list = all_tags.join(',')
+              # since embedded harvesting happens after the controller before filter
+              # on create and update
+              # we have to do this by hand here
+              self.raw_tag_list = all_tags.join(',')
             else
               # if the current value is prefixed with "-replace-"
               # we know it is a placeholder

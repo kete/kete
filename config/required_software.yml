@@ -41,6 +41,10 @@ testing_gems:
 
 gems:
   nokogiri:
+    gem_repo: git://github.com/kete/nokogiri.git
+    rake_build_gem: rake install:deps
+    rake_install_gem: sudo rake install_gem
+    lib_name: nokogiri
   packet:
   chronic:
   hpricot:

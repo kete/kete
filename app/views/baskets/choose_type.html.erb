@@ -1,3 +1,5 @@
+<% if @basket_list.size > 0 %>
+
 <% @title = "What would you like to add"
    if params[:relate_to_topic]
      topic = Topic.find(params[:relate_to_topic])
@@ -99,5 +101,14 @@ $('new_item_basket').observe('change', function(event) {
 });
 //]]>
 </script>
+
+<% else -%>
+
+  <% @title = "No available baskets to add items to" -%>
+  <h2>No Baskets Available</h2>
+  <p>There are no baskets that you have access to add items to.</p>
+  <p>Find a basket to join, or please try again later.</p>
+
+<% end -%>
 
 <%= render :partial => "topics/content_wrapper_end" -%>

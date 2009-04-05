@@ -1,11 +1,11 @@
-<% @zoom_class_plural_humanized = zoom_class_plural_humanize(@zoom_class)
-   @zoom_class_humanized = zoom_class_humanize(@zoom_class)
-   @title = 'Add related set of ' + @zoom_class_plural_humanized + ' to ' +  @related_topic.title + ' from uploaded archive file' -%>
+<% @title = 'Add related set of items to ' +  @related_topic.title + ' from uploaded archive file' -%>
+
+<%= render :partial => "topics/content_wrapper_start", :locals => { :style_classes => "notabs" } %>
 
 <h2><%= h(@title) -%></h2>
 
 <h3>Some things to keep in mind when uploading a batch of
-  <%= @zoom_class_plural_humanized -%> in a .zip, .tar, .gz, or other
+  related items in a .zip, .tar, .gz, or other
   archive file:</h3>
 
 <ul>
@@ -24,10 +24,10 @@
   embedded metadata it will be used as long as it is labeled "Title"
   or one of the following:
       <blockquote><%= TITLE_SYNONYMS.to_a.to_sentence -%></blockquote>
-  <strong>OR</strong></p><% end -%><p>The title for the uploaded <%= @zoom_class_plural_humanized
-  -%> will be based on the file's name as it was before it was added
+  <strong>OR</strong></p><% end -%><p>The title for the uploaded items
+  will be based on the file's name as it was before it was added
   to the compressed archive file.  If you want a different title for
-  the <%= @zoom_class_humanized -%> you may to rename the file in
+  the items you may to rename the file in
   question and recreate the archive file before you proceed.</p>
   <p><strong>IMPORTANT NOTE: please do not use spaces in file names,
   use an underscore instead.  "_" will be replaced with a space in
@@ -35,7 +35,7 @@
   <p><strong>IMPORTANT NOTE: please do not use &amp; in file names,
   use an "and" instead.  Items with ampersands in filenames will not
   be added.</strong></p>
-  <p>Alternatively, you may also edit any uploaded <%= @zoom_class_humanized -%>'s title or
+  <p>Alternatively, you may also edit any uploaded items' title or
   other details after it has been added to the site.</p></li>
 
 </ul>
@@ -66,14 +66,14 @@
     <% options = Array.new
     ATTACHABLE_CLASSES.each do |item_class_name|
       selected = (@zoom_class_name == item_class_name) ? " selected='selected'" : ''
-      options << "<option value='#{item_class_name}'#{selected}>#{item_class_name.tableize.humanize.singularize}</option>"
+      options << "<option value='#{item_class_name}'#{selected}>#{zoom_class_plural_humanize(item_class_name)}</option>"
     end -%>
     <%= select_tag 'zoom_class', options.join('') -%>
   </div>
 
   <div class="form-element">
     <label for="import_base_tags">What tags should
-    we add to each <%= @zoom_class_humanized -%> (separated by commas,
+    we add to each imported item (separated by commas,
     no &amp;s allowed in tags.)?</label>
 
     <%= form.text_field :base_tags %>
@@ -98,7 +98,7 @@
       created during this import?  An example would be "&lt;p&gt;Any use of this image must be
       accompanied by the credit 'Horowhenua Historical Society
       Inc.'&lt;\p&gt;".  Useful for including an attribution for the
-      source of the added <%= @zoom_class_humanized -%>.
+      source of the added items.
     </div>
   </div>
 
@@ -113,11 +113,11 @@
   <% end %>
 
   <div class="form_example">A .zip, .tar, or .tar.gz file that
-    contains all the <%= @zoom_class_plural_humanized -%>.</div>
+    contains all the Items.</div>
   </div>
 
   <div class="form-element">
-    <%= submit_tag 'Add Related ' + @zoom_class_plural_humanized %>
+    <%= submit_tag 'Add Related Items' %>
   </div>
 
 </fieldset>

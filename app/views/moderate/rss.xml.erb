@@ -1,0 +1,25 @@
+<%# cache(@cache_key_hash) do -%>
+<%= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
+    xml.rss(:version => '2.0') {
+      xml.channel {
+        xml.title (SITE_NAME + ' - ' + @current_basket.name + ' - Moderate')
+        xml.description "Items needing moderation"
+        xml.link (request.protocol + request.host + request.request_uri)
+        xml.language 'en-nz'
+        for item in @items
+          xml.item {
+            xml.title {
+              xml.cdata item.title
+            }
+            xml.description {
+              xml.cdata item.flag
+            }
+            xml.pubDate item.flagged_at.to_s
+            xml.link history_url(item)
+            xml.guid history_url(item)
+          }
+        end
+      }
+    }
+  }.to_xml -%>
+<%# end -%>

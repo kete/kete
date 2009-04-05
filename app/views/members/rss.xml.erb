@@ -1,0 +1,22 @@
+<%# cache(@cache_key_hash) do -%>
+<%= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
+    xml.rss(:version => '2.0') {
+      xml.channel {
+        xml.title (SITE_NAME + ' - ' + @current_basket.name + ' - Latest 50 Members')
+        xml.description "Members of #{@current_basket.name}"
+        xml.link (request.protocol + request.host + request.request_uri)
+        xml.language 'en-nz'
+        for member in @members
+          xml.item {
+            xml.title {
+              xml.cdata member.user_name
+            }
+            xml.pubDate @role_creations[member.id]
+            xml.link url_for_contributions_of(member, 'Topic')
+            xml.guid url_for_profile_of(member)
+          }
+        end
+      }
+    }
+  }.to_xml -%>
+<%# end -%>

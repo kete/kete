@@ -28,8 +28,7 @@ class BasketsController < ApplicationController
   include TaggingController
 
   def index
-    list
-    render :action => 'list'
+    redirect_to :action => 'list'
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -39,19 +38,19 @@ class BasketsController < ApplicationController
   def list
     list_baskets
 
-    @rss_tag_auto = rss_tag
-    @rss_tag_link = rss_tag(:auto_detect => false)
+    @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
+    @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
 
     @requested_count = Basket.count(:conditions => "status = 'requested'")
     @rejected_count = Basket.count(:conditions => "status = 'rejected'")
   end
 
   def rss
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
-
     @number_per_page = 100
-    list_baskets(@number_per_page)
-
+    @cache_key_hash = { :rss => "basket_list" }
+    unless has_all_rss_fragments?(@cache_key_hash)
+      @baskets = Basket.all(:limit => @number_per_page, :order => 'id DESC')
+    end
     respond_to do |format|
       format.xml
     end
@@ -313,9 +312,21 @@ class BasketsController < ApplicationController
   def choose_type
     # give the user the option to add the item to any place the have access to
     @basket_list = Array.new
-    @basket_list = @site_admin ?
-                     Basket.all(:select => 'name,urlified_name').collect { |basket| [basket.name, basket.urlified_name] } :
-                     @basket_access_hash.collect { |basket_urlified_name, basket_hash| [basket_hash[:basket_name], basket_urlified_name.to_s] }
+    if @site_admin
+      @basket_list = Basket.all(:select => 'name,urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
+    else
+      all_baskets_hash = Hash.new
+      # get the add item setting for each of the baskets the user has access to
+      Basket.find_all_by_urlified_name(@basket_access_hash.stringify_keys.keys).each do |b|
+        all_baskets_hash[b.urlified_name.to_sym] = { :basket => b, :privacy => b.settings[:show_add_links] }
+      end
+      # collect baskets that they can see add item controls for
+      @basket_list = @basket_access_hash.collect do |basket_urlified_name, basket_hash|
+        current_user_is?(all_baskets_hash[basket_urlified_name.to_sym][:privacy], all_baskets_hash[basket_urlified_name.to_sym][:basket]) \
+          ? [basket_hash[:basket_name], basket_urlified_name.to_s] \
+          : nil
+      end.compact
+    end
 
     @item_types = Array.new
     ZOOM_CLASSES.each { |zoom_class| @item_types << [zoom_class_humanize(zoom_class),

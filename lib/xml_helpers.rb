@@ -48,6 +48,12 @@ module XmlHelpers
       # at that point, refactor accordingly
       # unless ATTACHABLE_CLASSES.include?(item.class.name)
       return unless item.is_a?(StillImage)
+      # when being built for private search index, item's values are set to the latest private version's values
+      # so already_at_blank_version? will return true
+      # only if we are building for public search index
+      # and there is only a placeholder public version
+      # otherwise we are good to continue
+      return unless !item.already_at_blank_version?
 
       protocol = appropriate_protocol_for(item)
       host = !passed_request.nil? ? passed_request[:host] : request.host
@@ -71,16 +77,31 @@ module XmlHelpers
       # possibly even audio if there are samples
       # at that point, refactor accordingly
       # unless ATTACHABLE_CLASSES.include?(item.class.name)
+      # don't add information about media content if the uploaded file should be private
+      # unless we are building a private search index record
       return unless ATTACHABLE_CLASSES.include?(item.class.name)
+      # when being built for private search index, item's values are set to the latest private version's values
+      # so already_at_blank_version? will return true
+      # only if we are building for public search index
+      # and there is only a placeholder public version
+      # otherwise we are good to continue
+      return unless !item.already_at_blank_version?
 
       protocol = appropriate_protocol_for(item)
       host = !passed_request.nil? ? passed_request[:host] : request.host
 
       unless item.is_a?(StillImage)
+        # original is not available for download to public viewers
+        # so skip it, unless we are buildig a private search index record
+        # which we can tell by seeing if the version is private
+        # (in which case we are building the private search index)
+        return if item.file_private? && !item.private?
         xml.media_content(:size => item.size,
                           :content_type => item.content_type,
                           :src => protocol + '://' + host + item.public_filename)
       else
+        # if there is any non-placeholder public version it is ok to return large version
+        # for still images
         large = item.large_file
         xml.media_content(:height  => large.height, :width => large.width,
                           :size => large.size,

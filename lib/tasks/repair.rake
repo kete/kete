@@ -6,7 +6,7 @@ namespace :kete do
   namespace :repair do
     
     # Run all tasks
-    task :all => ['kete:repair:fix_topic_versions', 'kete:repair:set_missing_contributors', 'kete:repair:make_thumbnails_private']
+    task :all => ['kete:repair:fix_topic_versions', 'kete:repair:set_missing_contributors', 'kete:repair:make_thumbnails_private', 'kete:repair:correct_site_basket_roles']
     
     desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
     task :fix_topic_versions => :environment do
@@ -220,6 +220,20 @@ namespace :kete do
         end
         puts "Moving public thumnails for private still image #{still_image.id} to the private directory." if any_public_thumbnails
       end
+    end
+
+    desc "Correct site basket role creation dates for legacy databases"
+    task :correct_site_basket_roles => :environment do
+      puts "Syncing basket role creation dates with user creation dates"
+      site_basket = Basket.site_basket
+      member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member', 'Basket', site_basket)
+      user_roles = member_role.user_roles.all(:include => :user)
+      user_roles.each do |role|
+        next if role.created_at == role.user.created_at
+        UserRole.update_all({:created_at => role.user.created_at}, {:user_id => role.user, :role_id => member_role})
+        puts "Updated role creation date for #{role.user.user_name}"
+      end
+      puts "Synced basket role creation dates"
     end
 
   end

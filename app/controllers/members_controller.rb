@@ -41,7 +41,7 @@ class MembersController < ApplicationController
 
     @default_sorting = {:order => 'roles_users.created_at', :direction => 'desc'}
     acceptable_sort_types = ['users.resolved_name', 'roles_users.created_at', 'users.email']
-    acceptable_sort_types << ['users.login'] if @site_admin
+    acceptable_sort_types << 'users.login' if @site_admin
     paginate_order = current_sorting_options(@default_sorting[:order], @default_sorting[:direction], acceptable_sort_types)
 
     # this sets up all instance variables
@@ -50,7 +50,7 @@ class MembersController < ApplicationController
 
     # turn on rss
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
-    @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
+    @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
   end
 
   def list_members_in(role_name, order='users.login asc')
@@ -83,25 +83,17 @@ class MembersController < ApplicationController
       if params[:action] == 'rss'
         @members = @role.users.find(:all, { :order => 'roles_users.created_at desc', :limit => 50 })
       else
-        @members = @role.users.paginate(:include => :contributions,
-                                        :order => order,
-                                        :page => params[:page],
-                                        :per_page => 20)
-
+        @members = @role.users.paginate(:include => :contributions, :order => order,
+                                        :page => params[:page], :per_page => 20)
       end
-    end
-
-    if request.xhr?
-      render :partial =>'list_members_in',
-      :locals => { :members => @members,
-        :possible_roles => @possible_roles,
-        :admin_actions => @admin_actions }
-    else
-      if params[:action] == 'list_members_in'
-        redirect_to params.merge(:action => 'list')
+      @all_roles = UserRole.all(:conditions => ["role_id = ? AND user_id IN (?)", @role, @members])
+      @role_creations = Hash.new
+      @members.each do |member|
+        @role_creations[member.id] = @all_roles.reject { |r| r.user_id != member.id }.first.created_at
       end
     end
   end
+  private :list_members_in
 
   def potential_new_members
     @existing_users = User.find(:all,
@@ -299,11 +291,10 @@ class MembersController < ApplicationController
   end
 
   def rss
-    # changed from @headers for Rails 2.0 compliance
-    response.headers["Content-Type"] = "application/xml; charset=utf-8"
-
-    list_members_in('member')
-
+    @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_members_list" }
+    unless has_all_rss_fragments?(@cache_key_hash)
+      list_members_in('member')
+    end
     respond_to do |format|
       format.xml
     end
