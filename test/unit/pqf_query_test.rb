@@ -28,9 +28,10 @@ class PqfQueryTest < ActiveSupport::TestCase
     # We subsitute those values with what it should be, and check that its working as expected
 
     qualifying_attribute_specs = {
-      'relevance' => "@attr 2=102 @attr 5=3 @attr 5=103 ",
+      'relevance' => "@attr 2=102 @attr 5=3 ",
       'exact' => "@attr 4=3 ",
       'datetime' => "@attr 4=5 ",
+      'exact_url' => "@attr 4=104 ",
       'lt' => "@attr 2=1 ",
       'le' => "@attr 2=2 ",
       'eq' => "@attr 2=3 ",
@@ -81,7 +82,7 @@ class PqfQueryTest < ActiveSupport::TestCase
   def test_to_string_and_add_web_link_specific_query
     assert_equal "  ", @pqf_query.to_s
     @pqf_query.add_web_link_specific_query # is another test on its own that the method successfully sets a class variable
-    assert_equal "  @or @or #{@as['title']}#{@as['subjects']} ", @pqf_query.to_s
+    assert_equal "  @or @or @or #{@as['title']}#{@qas['exact_url']} #{@as['subjects']} ", @pqf_query.to_s # not sure why extra space comes up, but not a big deal
   end
 
   def test_correct_attribute_spec_methods_defined
