@@ -16,6 +16,19 @@ class BasketTest < Test::Unit::TestCase
   # load in sets of tests and helper methods
   include KeteTestUnitHelper
 
+  # test our polymorphic association with our profiles
+  should_have_many :profile_mappings, :dependent => :destroy
+  should_have_many :profiles, :through => :profile_mappings
+
+  context "The Basket class" do
+    should "have valid an array of relevant forms with human readable labels" do
+      options_spec = [['Basket New or Edit', 'edit'],
+                   ['Basket Appearance', 'appearance'],
+                   ['Basket Homepage Options', 'homepage_options']]
+      assert_equal Basket::FORMS_OPTIONS, options_spec
+    end
+  end
+
   def test_before_save_urlify_name
     basket = Basket.new(@new_model.merge({ :name => "something wicked this way comes" }))
     assert_nil basket.urlified_name, "#{@base_class}.urlified_name shouldn't have a value yet."

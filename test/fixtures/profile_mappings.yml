@@ -1,0 +1,2 @@
+# see db/bootstrap/ fixture that is preloaded
+# add additional records using factory_girl if you need them
