@@ -1,8 +1,7 @@
 class CreateProfiles < ActiveRecord::Migration
   def self.up
     create_table :profiles do |t|
-      t.string :name
-      t.text :rules
+      t.string :name, :available_to_models, :null => false
 
       t.timestamps
     end

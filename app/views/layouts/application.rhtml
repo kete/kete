@@ -40,7 +40,7 @@
   <% end -%>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
-  
+
   <% bundle :name => "#{@theme}_theme" do -%>
     <%= stylesheet_link_tag 'base', :media => 'screen' %>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>
@@ -262,10 +262,11 @@
               <h4>Administrator's Toolbox</h4>
               <p>
                 Controls:
-                <%= link_to_unless_current "add basket", { :urlified_name => @site_basket.urlified_name,
-                                                           :controller => 'baskets',
-                                                           :action => 'new' },
-                                                         :tabindex => '2' %>
+                <%= link_to_unless_current "basket profiles", { :urlified_name => @site_basket.urlified_name,
+                                                                :controller => 'profiles',
+                                                                :action => 'list' },
+                                                              :tabindex => '2' %>
+
                 |
                 <%= link_to_unless_current "topic types", { :urlified_name => @site_basket.urlified_name,
                                                             :controller => 'topic_types',
@@ -376,7 +377,7 @@
 
         <div id="header-wrapper">
           <div id="header">
-            <h1><%= PRETTY_SITE_NAME -%></h1>  
+            <h1><%= PRETTY_SITE_NAME -%></h1>
           </div><!-- /header -->
         </div><!-- /header-wrapper -->
 

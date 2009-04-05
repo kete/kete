@@ -12,6 +12,12 @@ class Basket < ActiveRecord::Base
 
   ALL_LEVEL_OPTIONS = [['All users', 'all users']] + [['Logged in user', 'logged in']] + MEMBER_LEVEL_OPTIONS
 
+  # profile forms, these should correspond to actions in the controller
+  # really this would be nicer if it came from reflecting on the baskets_controller class
+  FORMS_OPTIONS = [['Basket New or Edit', 'edit'],
+                   ['Basket Appearance', 'appearance'],
+                   ['Basket Homepage Options', 'homepage_options']]
+
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
@@ -77,6 +83,12 @@ class Basket < ActiveRecord::Base
 
   # each basket can have multiple feeds displayed in the sidebar
   has_many :feeds, :dependent => :destroy
+
+  # each basket may have a profile (or in the future, possibly more than one)
+  # that declares the rules of what options a basket admin may see/set
+  # as opposed to a site administrator
+  has_many :profile_mappings, :as => :profilable, :dependent => :destroy
+  has_many :profiles, :through => :profile_mappings
 
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
