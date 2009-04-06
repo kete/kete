@@ -1516,6 +1516,9 @@ en:
     last_modified: Last Modified
     relevance: Relevance
     title: Title
+  search_source_model:
+    requires_http: 'requires an http protocol'
+    must_be_one_of: "must be one of the following: {{types}}"
   search_sources_controller:
     move_higher_title: "Move Higher. "
     move_lower_title: "Move Lower. "

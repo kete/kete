@@ -1,5 +1,5 @@
 <% cache({ :search_source => search_source_id, :id => @cache_id }) do %>
-  <% entries = Feed.fetch_entries(search_source_url) %>
+  <% entries = Feed.fetch(search_source_url) %>
   <% if entries.size > 0 %>
 
     <% search_sources = search_sources_sort(entries, source.limit) %>
