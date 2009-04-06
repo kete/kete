@@ -1,4 +1,6 @@
 class SearchSource < ActiveRecord::Base
+  acts_as_list
+
   validates_presence_of :title
   validates_presence_of :source_type
   validates_presence_of :base_url
@@ -10,6 +12,17 @@ class SearchSource < ActiveRecord::Base
 
   def title_id
     title.gsub(/\W/, '_').downcase
+  end
+
+  def authorized_for?(args)
+    case args[:action].to_sym
+    when :move_higher
+      !first?
+    when :move_lower
+      !last?
+    else
+      true
+    end
   end
 
 end

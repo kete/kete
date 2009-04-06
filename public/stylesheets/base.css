@@ -1190,3 +1190,7 @@ div.gmnoprint {
   margin-right: 5px;
   border: none;
 }
+/* active scaffold */
+a.disabled {
+  display: none;
+}

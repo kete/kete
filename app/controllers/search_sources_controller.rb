@@ -9,7 +9,16 @@ class SearchSourcesController < ApplicationController
   active_scaffold :search_sources do |config|
     config.label = I18n.t('search_sources_controller.title')
 
+    list.sorting = { :position => 'ASC' }
+
     config.columns = [:title, :source_type, :base_url, :more_link_base_url, :limit, :cache_interval]
+
+    options = { :type => :record, :inline => false }
+    # images_tag and @template.image_tag arn't available in this scope
+    sort_arrow_up = "<img src='/images/arrow_up.gif' title='#{I18n.t('search_sources_controller.move_higher_title')}' alt='#{I18n.t('search_sources_controller.move_higher_title')}' style='border:none;' />"
+    sort_arrow_down = "<img src='/images/arrow_down.gif' title='#{I18n.t('search_sources_controller.move_lower_title')}' alt='#{I18n.t('search_sources_controller.move_lower_title')}' style='border:none;' />"
+    config.action_links.add sort_arrow_up, options.merge(:action => 'move_higher', :crud_type => :move_higher)
+    config.action_links.add sort_arrow_down, options.merge(:action => 'move_lower', :crud_type => :move_lower)
 
     config.columns[:title].required = true
     config.columns[:title].description = I18n.t('search_sources_controller.source_title_description')
@@ -30,6 +39,20 @@ class SearchSourcesController < ApplicationController
 
     config.columns[:cache_interval].required = true
     config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
+  end
+
+  def move_higher
+    search_source = SearchSource.find_by_id(params[:id])
+    search_source.move_higher
+    flash[:notice] = I18n.t('search_sources_controller.move_higher.moved_higher')
+    redirect_to :urlified_name => @site_basket.urlified_name, :action => 'list'
+  end
+
+  def move_lower
+    search_source = SearchSource.find_by_id(params[:id])
+    search_source.move_lower
+    flash[:notice] = I18n.t('search_sources_controller.move_lower.moved_lower')
+    redirect_to :urlified_name => @site_basket.urlified_name, :action => 'list'
   end
 
   private
