@@ -139,12 +139,16 @@ class ApplicationController < ActionController::Base
 
   before_filter :adjust_http_headers_for_rss, :only => [ :rss ]
 
+  # clear any outstanding search source caches
+  before_filter :expire_search_source_caches, :only => [ :show ]
+
   def adjust_http_headers_for_rss
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end
 
   helper :slideshows
   helper :extended_fields
+  helper :search_sources
 
   def set_cache_id
     @cache_id = params[:id] ? params[:id].to_i : nil
@@ -491,6 +495,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    # clear any search sources for this item (incase title has changed)
+    expire_search_source_caches(true)
+
     # if we are deleting the thing
     # also delete it's related caches
     # as well as related caches of things it's related to
@@ -583,6 +590,19 @@ class ApplicationController < ActionController::Base
                                          :action => 'show',
                                          :id => item,
                                          :part => resulting_part } )
+    end
+  end
+
+  def search_sources
+    @search_sources ||= SearchSource.all
+  end
+
+  def expire_search_source_caches(force=false)
+    return unless ZOOM_CLASSES.include?(zoom_class_from_controller(params[:controller]))
+    search_sources.each do |source|
+      next unless ((Time.now - source.updated_at) / 60 > source.cache_interval)
+      expire_fragment({ :action => 'show', :id => @cache_id, :search_source => source.title_id })
+      source.update_attribute(:updated_at, Time.now)
     end
   end
 
@@ -1256,7 +1276,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :search_sources
 
   protected
 

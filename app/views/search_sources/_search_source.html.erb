@@ -1,0 +1,36 @@
+<% cache({ :search_source => search_source_id, :id => @cache_id }) do %>
+  <% entries = Feed.fetch_entries(search_source_url) %>
+  <% if entries.size > 0 %>
+
+    <% search_sources = search_sources_sort(entries, source.limit) %>
+
+    <h4 id="<%= search_source_id %>_heading"><%= h(source.title) %></h4>
+
+    <span class='search_source_more'>
+     (
+      <%= t('topics.search_source.top_results', :amount => source.limit) %>
+      <%= " | " + link_to(t('topics.search_source.more'), search_source_more) if entries.size > source.limit %>
+     )
+    </span>
+
+    <% unless search_sources[:links].blank? %>
+      <ul id='<%= search_source_id %>_links'>
+        <% search_sources[:links].each do |link| %>
+          <li><%= link_to(h(link.title), h(link.url), :title => search_source_title_for(link)) %></li>
+        <% end -%>
+      </ul>
+    <% end -%>
+
+    <% unless search_sources[:images].blank? %>
+      <div id='<%= search_source_id %>_images' class='images'>
+        <% search_sources[:images].each do |image| %>
+          <div class='image'>
+            <%= link_to(search_source_image_for(image) + h(image.title), h(image.url), :title => search_source_title_for(image)) %>
+          </div>
+          <div style='clear:both;'></div>
+        <% end -%>
+      </div>
+    <% end -%>
+
+  <% end -%>
+<% end -%>

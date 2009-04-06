@@ -9,7 +9,7 @@ class SearchSourcesController < ApplicationController
   active_scaffold :search_sources do |config|
     config.label = I18n.t('search_sources_controller.title')
 
-    config.columns = [:title, :source_type, :base_url, :limit]
+    config.columns = [:title, :source_type, :base_url, :more_link_base_url, :limit, :cache_interval]
 
     config.columns[:title].required = true
     config.columns[:title].description = I18n.t('search_sources_controller.source_title_description')
@@ -22,8 +22,14 @@ class SearchSourcesController < ApplicationController
     config.columns[:base_url].required = true
     config.columns[:base_url].description = I18n.t('search_sources_controller.source_base_url_description')
 
+    config.columns[:more_link_base_url].label = I18n.t('search_sources_controller.source_more_link_base_url_label')
+    config.columns[:more_link_base_url].description = I18n.t('search_sources_controller.source_more_link_base_url_description')
+
     config.columns[:limit].required = true
     config.columns[:limit].description = I18n.t('search_sources_controller.source_limit_description')
+
+    config.columns[:cache_interval].required = true
+    config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
   end
 
   private

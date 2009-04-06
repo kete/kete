@@ -1517,11 +1517,17 @@ en:
     relevance: Relevance
     title: Title
   search_sources_controller:
-    source_base_url_description: "What is the base url for this source type? A search string will be appended to the so make it end in '?q='"
+    source_base_url_description: "What is the base url for this source type? A search string will be appended to the end so make it end in '?q=' or similar"
+    source_cache_interval_description: 'How long should the search source be cached for? (optional - in minutes)'
     source_limit_description: 'How many sources should be displayed?'
+    source_more_link_base_url_description: "Like Base URL, except links to a site search instead of the search source. Make it end in '?q=' or similar. (optional)"
+    source_more_link_base_url_label: "More link (optional)"
     source_title_description: 'The title that the search sources will appear under'
     source_type_description: 'What type of source is this?'
     title: Search Sources
+  search_sources_helper:
+    display_search_sources:
+      other_resources: "Other Resources"
   site_linking_lib: 
     error_linking_site: 
       appears_listed: However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>.
@@ -1740,6 +1746,9 @@ en:
       play_slideshow: "Play Slideshow. "
       private: Private
       public: Public
+    search_source:
+      more: "more &raquo;"
+      top_results: "top {{amount}} results"
     show: 
       topic: "Topic:"
       topic_type: "Topic Type:"
