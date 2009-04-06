@@ -6,6 +6,8 @@
 # of Type-1 query attributes.
 #
 # This file is copied and modified from idzebra-2.0.4/examples/alvis-oai/conf
+# updated to be merged with idzebra-2.0.36/examples/oai-pmh/conf
+# version based on dom filtering on 2009-04-04
 #
 # Walter McGinnis (walter@katipo.co.nz), 2006-12-01
 #
@@ -21,9 +23,9 @@ set.oai = info:srw/cql-context-set/1/oai-v1.1
 set.dc = info:srw/cql-context-set/1/dc-v1.1
 
 # Index info
-index.cql.serverChoice = 1=dc_all
-index.cql.all = 1=dc_all
-index.rec.id = 1=rec:id 4=3
+index.cql.serverChoice = 1=any # dc_all
+index.cql.all = 1=any # dc_all
+index.rec.id = 1=oai_identifier 4=3 #rec:id 4=3
 index.oai.identifier = 1=oai_identifier 4=3
 index.oai.date = 1=oai_datestamp 4=3
 index.oai.set = 1=oai_setspec 4=3
