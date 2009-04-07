@@ -144,6 +144,9 @@ module GoogleMap
         html += content_tag('div', "<small>(#{I18n.t('google_map_lib.extended_field_map_editor.need_javascript')})</small>", map_options.merge({:id => map_data[:map_id]}))
         if generate_text_fields
           controller = (@new_item_controller || params[:controller])
+          # this is the current topic_type from form
+          # which may not be the topic_type that is actually mapped to extended_field
+          # it might be an ancestor, we will look up actual topic_type in is_required?
           topic_type_id = controller == 'topics' ? (params[:new_item_topic_type] || (params[:topic] && params[:topic][:topic_type_id]) || current_item.topic_type.id) : nil
           unless extended_field.is_required?(controller, topic_type_id)
             html += "OR #{check_box_tag("#{name}[no_map]", "1", @do_not_use_map)} <strong>#{I18n.t('google_map_lib.extended_field_map_editor.no_location')}</strong>"
