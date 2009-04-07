@@ -5,7 +5,7 @@ class TopicType < ActiveRecord::Base
   # Walter McGinnis (walter@katipo.co.nz), 2006-10-05
   # these association extension maybe able to be cleaned up with modules or something in rails proper down the line
   # code based on work by hasmanythrough.com
-  # you have to do the elimination of dupes through the sql
+  # you have to do the elimination of duplicates through the sql
   # otherwise, rails will reorder by topic_type_to_field_mapping.id after the sql has bee run
   has_many :form_fields, :through => :topic_type_to_field_mappings, :source => :extended_field, :select => "distinct topic_type_to_field_mappings.position, extended_fields.*", :order => 'position' do
     def <<(extended_field)
