@@ -78,7 +78,7 @@ class MembersControllerTest < ActionController::TestCase
     get :join, :urlified_name => 'help'
     assert_response :redirect
     assert_redirected_to "/help/"
-    assert_equal "You have joined the help basket.", flash[:notice]
+    assert_equal "You have joined the Help basket.", flash[:notice]
 
     # check that we were joined successfully by seeing if we can rejoin
     get :join, :urlified_name => 'help'
