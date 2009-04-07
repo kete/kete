@@ -2,6 +2,8 @@
 topics_only ||= false
 inset ||= false
 
+class_suffix = inset ? "-white" : "-blue"
+
 # These queries uses zoom and aren't cached
 @total_item_counts = 0
 conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{item.class.name}')"
@@ -37,7 +39,7 @@ end
 
 <% else -%>
 
-  <%= render("topics/secondary_wrapper_start", :div_id => "related", :class_suffix => "-blue") -%>
+  <%= render("topics/secondary_wrapper_start", :div_id => "related", :class_suffix => class_suffix) -%>
 
   <h2 class="related-link">
     <%= link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_items')} (#{@total_item_counts})") -%>

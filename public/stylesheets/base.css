@@ -1194,3 +1194,27 @@ div.gmnoprint {
 a.disabled {
   display: none;
 }
+
+/*
+ * Inset for Related Items with White background
+ *
+ * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (WHITE)
+ */
+.secondary-content-section-wrapper-white {
+  background-color: white;
+  width: auto;
+}
+.secondary-content-section-wrapper-white .secondary-content-section {
+  /*border-top: 1px dashed #444;
+  border-bottom: 1px dashed #444; */
+  background-color: white;
+}
+.secondary-content-section-wrapper-white .secondary-content-section-footer-wrapper {
+  background-color: white;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+.secondary-content-section-wrapper-white .secondary-content-section-footer {
+  background-color: white;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+
