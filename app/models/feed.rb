@@ -18,7 +18,7 @@ class Feed < ActiveRecord::Base
   end
 
   def self.fetch(url)
-    feed = Feedzirra::Feed.fetch_and_parse(url)
+    feed = Feedzirra::Feed.fetch_and_parse(URI.escape(url))
     # In the case that the feed can't be parsed, it returns a Fixnum, so check
     # if the output is a Feedzirra object, and if not, return a blank array
     feed.class.name =~ /Feedzirra/ ? feed.entries : []
