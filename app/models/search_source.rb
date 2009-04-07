@@ -17,6 +17,8 @@ class SearchSource < ActiveRecord::Base
 
   validates_inclusion_of :source_type, :in => @@acceptable_source_types, :message => I18n.t('search_source_model.must_be_one_of', :types => @@acceptable_source_types.join(', '))
 
+  default_scope :order => 'position ASC'
+
   def title_id
     title.gsub(/\W/, '_').downcase
   end

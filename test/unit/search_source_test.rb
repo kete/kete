@@ -52,6 +52,17 @@ class SearchSourceTest < ActiveSupport::TestCase
       assert source1.authorized_for?(:action => :anything_else)
     end
 
+    should "sort the sources by position by default" do
+      source1 = SearchSource.create(@@new_model.merge(:position => 3))
+      source2 = SearchSource.create(@@new_model.merge(:position => 1))
+      source3 = SearchSource.create(@@new_model.merge(:position => 2))
+
+      sources = SearchSource.all
+      assert source2, sources[0]
+      assert source3, sources[1]
+      assert source1, sources[2]
+    end
+
   end
 
 end
