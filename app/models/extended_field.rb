@@ -114,7 +114,10 @@ class ExtendedField < ActiveRecord::Base
   def is_required?(controller, topic_type_id=nil)
     raise "ERROR: You must specify a topic type id since controller is topics" if controller == 'topics' && topic_type_id.nil?
     if controller == 'topics'
-      ef_mapping = TopicTypeToFieldMapping.find_by_topic_type_id_and_extended_field_id(topic_type_id, self)
+      # we have to check the submitted topic_type or its ancestors
+      topic_type = TopicType.find(topic_type_id)
+      all_possible_topic_types = topic_type.ancestors + [topic_type]
+      ef_mapping = topic_type_to_field_mappings.find_by_topic_type_id(all_possible_topic_types)
     else
       content_type = ContentType.find_by_controller(controller)
       ef_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type, self)
