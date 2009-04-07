@@ -1,9 +1,7 @@
 <tr>
   <td>
         <h4><%=t 'topic_types.current_fields.title' %></h4>
-                <% if local_id == 1 %>
-                        <p><%=t 'topic_types.current_fields.no_more_allowed' %></p>
-                <% else %>
+
                         <% # required, position, and acts_as_list functionality are in mappings
                            # but we also need field label attribute from extended_fields
                            # we use piggy_back plugin to get the label attribute, see model
@@ -38,6 +36,5 @@
                         <% else %>
                                 <p><%=t 'topic_types.current_fields.no_fields_mapped' %></p>
                         <% end %>
-                <% end %>
   </td>
 </tr>
