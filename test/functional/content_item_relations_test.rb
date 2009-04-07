@@ -177,7 +177,7 @@ class ContentItemRelationsTest < ActionController::TestCase
     assert_not_nil assigns(:successful)
 
     assert_equal 0, Topic.find(3).content_item_relations.size
-    assert_equal "Successfully removed item relationships.", flash[:notice]
+    assert_equal "Successfully removed item relationships", flash[:notice]
 
     assert_response :redirect
     assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_topic => "3-registration", :related_class => "Topic", :function => 'remove'
@@ -203,7 +203,7 @@ class ContentItemRelationsTest < ActionController::TestCase
     assert_equal 2, Topic.find(1).related_topics.first.id
     assert_equal relationship_id, Topic.find(1).content_item_relations.first.id
 
-    assert_equal "Successfully added item relationships.", flash[:notice]
+    assert_equal "Successfully added item relationships", flash[:notice]
 
     assert_response :redirect
     assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_topic => "1-about-kete", :related_class => "Topic", :function => 'remove'
