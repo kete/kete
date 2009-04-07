@@ -46,7 +46,7 @@ class TopicTypesControllerTest < ActionController::TestCase
     assert_var_assigned
     assert_attributes_same_as @new_model
     assert_redirect_to( edit_path({ :id => assigns(:topic_type).id }) )
-    assert_equal 'TopicType was successfully created.', flash[:notice]
+    assert_equal 'Topic Type was successfully created.', flash[:notice]
   end
 
   def test_edit
@@ -60,13 +60,13 @@ class TopicTypesControllerTest < ActionController::TestCase
     assert_var_assigned
     assert_attributes_same_as @updated_model
     assert_redirect_to( edit_path({ :id => assigns(:topic_type).id }) )
-    assert_equal 'TopicType was successfully updated.', flash[:notice]
+    assert_equal 'Topic Type was successfully updated.', flash[:notice]
   end
 
   def test_destroy
     destroy_record({ :id => 4 })
     assert_redirect_to( index_path({ :action => 'list' }) )
-    assert_equal 'TopicType was successfully deleted.', flash[:notice]
+    assert_equal 'Topic Type was successfully deleted.', flash[:notice]
   end
 
   def test_add_to_topic_type
