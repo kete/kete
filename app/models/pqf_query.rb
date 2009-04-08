@@ -21,8 +21,11 @@ class PqfQuery
   # see #{RAILS_ROOT}zebradb/conf/oai2index.xsl
   # for mappings of oai dc xml elements to specific indexes
   QUALIFYING_ATTRIBUTE_SPECS = {
-    'relevance' => "@attr 2=102 @attr 5=3 ", #  @attr 5=103
-    'exact' => "@attr 4=3 ",
+    'relevance' => "@attr 2=102 @attr 5=3 ", # we specify @attr 5=103, or fuzzy, separately now
+    'exact' => "@attr 4=3 ", # this is meant for exact matches against key indexes
+    'complete' => "@attr 6=3 ", # this is like exact, except to find exact matches against word or phrase indexes
+    'partial' => "@attr 5=3 ",
+    'fuzzy_regexp' => "@attr 5=103 ",
     'datetime' => "@attr 4=5 ",
     'exact_url' => "@attr 4=104 ",
     'lt' => "@attr 2=1 ",
@@ -121,7 +124,7 @@ class PqfQuery
 
       full_query = String.new
       full_query += full_query_parts[0] unless full_query_parts[0].nil?
-      full_query += "@or @or " + prepend_at_pattern
+      full_query += "@or " + prepend_at_pattern
       full_query += full_query_parts[1] unless full_query_parts[1].nil?
       full_query += QUALIFYING_ATTRIBUTE_SPECS['exact_url'] + ' ' + ATTRIBUTE_SPECS['subjects'] +
                     @title_or_any_text_operators_string +
@@ -142,11 +145,21 @@ class PqfQuery
     full_query
   end
 
-  # dynamically define _include methods for our attribute specs
+  # dynamically define _equals_completely and _include methods for our attribute specs
   ATTRIBUTE_SPECS.each do |spec_key, spec_value|
     unless DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR.include?(spec_key)
+      # define the method for exact matches for whole field value
+      method_name = spec_key + '_equals_completely'
+      full_spec_value = spec_value + QUALIFYING_ATTRIBUTE_SPECS['complete']
+      define_query_method_for(method_name, full_spec_value)
+
+      # define the more general method where the terms may be contained partially
       method_name = spec_key + '_include'
-      define_query_method_for(method_name, spec_value)
+
+      # these include methods are meant be forgiving for partial matches
+      # thus we append the partial QUALIFYING_ATTRIBUTE_SPECS value
+      full_spec_value = spec_value + QUALIFYING_ATTRIBUTE_SPECS['partial']
+      define_query_method_for(method_name, full_spec_value)
     end
   end
 
@@ -224,6 +237,18 @@ class PqfQuery
                                            options.merge({ :only_return_as_string => true,
                                                            :operator => 'none'}))
     query_part += ' ' + contributors_include(term_or_terms,
+                                             options.merge({ :only_return_as_string => true,
+                                                             :operator => 'none'}))
+
+    push_to_appropriate_variables(options.merge(:query_part => query_part, :operator => '@and')) unless options[:only_return_as_string]
+    query_part
+  end
+
+  def creators_or_contributors_equals_completely(term_or_terms, options = { })
+    query_part = '@or ' + creators_equals_completely(term_or_terms,
+                                           options.merge({ :only_return_as_string => true,
+                                                           :operator => 'none'}))
+    query_part += ' ' + contributors_equals_completely(term_or_terms,
                                              options.merge({ :only_return_as_string => true,
                                                              :operator => 'none'}))
 
@@ -373,7 +398,7 @@ class PqfQuery
     should_be_exact = options[:should_be_exact] || false
     inner_operator = options[:inner_operator] || '@or'
 
-    query_part += '@attr 4=3 ' if should_be_exact
+    query_part += QUALIFYING_ATTRIBUTE_SPECS['exact'] if should_be_exact
 
     if term_or_terms.size == 1
       query_part += "\"#{term_or_terms}\""

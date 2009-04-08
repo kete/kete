@@ -1,0 +1,51 @@
+# Generic character map.
+#
+
+# Define the basic value-set. *Beware* of changing this without re-indexing
+# your databases.
+
+lowercase {0-9}{a-y}üzæäøöå
+uppercase {0-9}{A-Y}ÜZÆÄØÖÅ
+
+# Breaking characters
+
+# Walter McGinnis, 2009-04-08
+# Kete uses colons as special characters to separate things like choices
+# as such we need to be able to search for strings with like :Choice1:
+# and include the colons, so as not to get greedy results
+# Kete also searches the oai_identifier index
+# and needs to be able to search with colons, too
+# this file is copied from /usr/share/idzebra-2.0/tab/scan.chr
+# note that we should keep an eye on that file and merge relevant changes
+# from there, into here
+# space {\001-\040}!"#$%&'\()*+,-./:;<=>?@\[\\]^_`\{|}~
+space {\001-\040}!"#$%&'\()*+,-./;<=>?@\[\\]^_`\{|}~
+
+# Characters to be considered equivalent for searching purposes.
+
+# equivalent æä(ae)
+# equivalent øö(oe)
+# equivalent å(aa)
+# equivalent uü
+
+# Supplemental mappings
+
+#map (&auml;)       ä
+#map (&aelig;)      æ
+#map (&oslash;)     ø
+#map (&aring;)      å
+#map (&ouml;)       ö
+#map (&Auml;)       Ä
+#map (&Aelig;)      Æ
+#map (&Oslash;)     Ø
+#map (&Aring;)      Å
+#map (&Ouml;)       Ö
+
+#map éÉ         e
+#map á          a
+#map ó          o
+#map í          i
+
+#map (Aa)       (AA)
+
+#map (aa)        a

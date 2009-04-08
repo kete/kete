@@ -273,15 +273,17 @@ class SearchController < ApplicationController
     # this looks in the dc_relation index in the z30.50 server
     # must be exact string
     # get the item
+    # we use should_be_exact rather than _equals_completely method here
+    # because relations have a key index on them and should be exact uses that
     @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, { :force_http => true, :minimal => true }), :should_be_exact => true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
-    @search.pqf_query.subjects_include("'#{@tag.name}'") if !@tag.nil?
+    @search.pqf_query.subjects_equals_completely("#{@tag.name}") if !@tag.nil?
 
     # this should go last because of "or contributor"
     # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
     # must be exact string
-    @search.pqf_query.creators_or_contributors_include("'#{@contributor.login}'") if !@contributor.nil?
+    @search.pqf_query.creators_or_contributors_equals_completely("'#{@contributor.login}'") if !@contributor.nil?
 
     # James
     # Extended Field choice searching mechanisms
