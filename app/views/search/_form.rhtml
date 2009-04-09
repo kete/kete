@@ -1,6 +1,6 @@
 <% simple_layout ||= false -%>
 
-<% if params[:browse_by] && params[:browse_by] == 'choice_hierarchy' %>
+<% if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
 
   <% category_columns = browse_by_category_columns -%>
   <% unless category_columns.blank? %>
@@ -77,7 +77,7 @@
     <% if !simple_layout -%>
       </div>
     <% end -%>
-  
+
   <% end -%>
 
 <% end -%>

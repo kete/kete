@@ -77,6 +77,7 @@ att 55              Code-geographic
 att 56              Code-institution
 att 57              Name-and-title
 att 58              Name-geographic
+# att 58              kete_location
 att 59              Place-publication
 att 60              CODEN
 att 61              Microform-generation
@@ -117,6 +118,7 @@ att 1019            dc_source
 att 1020            dc_contributor
 att 1021            Bib-level
 att 1022            Geographic-class
+# att 1022            kete_location
 att 1023            Indexed-by
 att 1024            Map-scale
 att 1025            Music-key

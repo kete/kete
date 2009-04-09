@@ -42,6 +42,7 @@ index.dc.source = 1=dc_source 4=3
 index.dc.language = 1=dc_language
 index.dc.relation = 1=dc_relation 4=3
 index.dc.rights = 1=dc_rights
+index.dc.coverage = 1=dc_coverage
 
 # Relation info
 relation.< = 2=1

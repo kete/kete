@@ -1323,12 +1323,12 @@ module ApplicationHelper
       # If we're in the first column, provide a link to go back to all results
       html += content_tag('li', link_to(t('application_helper.browse_by_category_columns.all_items',
                                           :item_type => @controller_name_for_zoom_class.gsub(/_/, " ")),
-                                        {:browse_by => 'choice_hierarchy'}),
+                                        {:view_as => 'choice_hierarchy'}),
                                 {:class => (params[:limit_to_choice] ? '' : 'current' )}) if time == 0
       # For every choice in the current choice, lets add a list item
       choices.each do |choice|
         html += list_item_for_choice(choice, { :current => parent_choices.include?(choice), :include_children => false },
-                                             { :extended_field => categories_field, :browse_by => 'choice_hierarchy' })
+                                             { :extended_field => categories_field, :view_as => 'choice_hierarchy' })
       end
       html += '</ul>'
       html += '</div>'

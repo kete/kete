@@ -158,4 +158,12 @@
     </z:index>
   </xsl:template>
 
+  <!-- Walter McGinnis (walter@katipo.co.nz), 2009-04-08 -->
+  <!-- added special index for locations -->
+  <!-- <xsl:template match="oai:record/oai:kete/location">
+    <z:index name="kete_location:w ">
+      <xsl:value-of select="."/>
+    </z:index>
+  </xsl:template> -->
+
 </xsl:stylesheet>

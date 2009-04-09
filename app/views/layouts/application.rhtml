@@ -40,7 +40,7 @@
   <% end -%>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
-  
+
   <% bundle :name => "#{@theme}_theme" do -%>
     <%= stylesheet_link_tag 'base', :media => 'screen' %>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>
@@ -86,6 +86,12 @@
       <% end %>
     <% end %>
     <%= javascript_include_tag 'kete' -%>
+  <% end -%>
+
+  <% if params[:controller] == 'search' && ['all', 'for'].include?(params[:action]) && (!params[:view_as].blank? && params[:view_as] == 'map') && !@map.blank?-%>
+      <%= GMap.header %>
+
+   <%= @map.to_html %>
   <% end -%>
 
   <% if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>
@@ -415,7 +421,7 @@
 
         <div id="header-wrapper">
           <div id="header">
-            <h1><%= PRETTY_SITE_NAME -%></h1>  
+            <h1><%= PRETTY_SITE_NAME -%></h1>
           </div><!-- /header -->
         </div><!-- /header-wrapper -->
 

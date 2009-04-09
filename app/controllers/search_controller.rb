@@ -76,6 +76,8 @@ class SearchController < ApplicationController
       # TODO: redirect_to search form of the same url
     end
 
+    setup_map if params[:view_as] == 'map'
+
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
     rescue_404 if @results.nil?
@@ -95,6 +97,8 @@ class SearchController < ApplicationController
       @rss_tag_link = rss_tag(:auto_detect => false)
       search
     end
+
+    setup_map if params[:view_as] == 'map'
 
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
@@ -892,6 +896,32 @@ class SearchController < ApplicationController
         end
       end
 
+    end
+  end
+
+  # create and configure our map object using ym4r
+  # requires the div "map" in view
+  def setup_map
+    # use our default coordinates and zoom
+    # TODO: DRY this up with lib/google_map.rb
+    gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
+
+    if File.exist?(gma_config_path) && @results
+      @gma_config = YAML.load(IO.read(gma_config_path))
+
+      @map = GMap.new("map")
+      # Use the larger pan/zoom control but disable the map type
+      # selector
+      @map.control_init(:large_map => true, :map_type => true)
+
+      # center on first location returned from @results or default for site
+      options = [@gma_config[:google_map_api][:default_latitude],
+                 @gma_config[:google_map_api][:default_longitude]]
+      zoom_level = @gma_config[:google_map_api][:zoom_lvl_param]
+
+      options = @first_coordinates if @first_coordinates
+
+      @map.center_zoom_init(options, zoom_level)
     end
   end
 

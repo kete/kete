@@ -29,11 +29,34 @@
                  :start => @start,
                  :finish => @end_record,
                  :total => @result_sets[@current_class].size %>
+            <% if @number_of_locations_count && @number_of_locations_count > 0 %>
+            <div id="maplinks">
+
+            <%=t 'search.results.with_n_locations',
+                 :n_locations => @number_of_locations_count %>
+
+              <% if params[:view_as] != 'map'-%>
+              [ <%= link_to(t('search.results.view_map'), :overwrite_params => { :view_as => 'map' }, :tabindex => '1' )%> ]
+              <% elsif params[:view_as] == 'map' -%>
+              [ <%= link_to(t('search.results.view_list'), :overwrite_params => { :view_as => nil }, :tabindex => '1' )%> ]
+              <% end -%>
+            </div>
+            <% end -%>
       </div>
-         <%# we will have result sets for each type of record we are returning %>
-         <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
-         <%# for now lets just get this up with one set of @results %>
+
          <% @results.each do |result|  %>
+            <% if params[:view_as] == 'map' && !@map.blank? -%>
+            <% marker_options = { :title => result[:title] }
+               marker_options[:info_window] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br/>' + result[:short_summary]
+
+               if result[:class] == 'StillImage'
+                 marker_options[:info_window] = marker_options[:info_window] + '<br/>' + image_tag(result[:thumbnail][:src], result[:thumbnail])
+               end
+               result[:associated_coordinates].each do |location|
+                 marker = GMarker.new(location, marker_options)
+                 @map.overlay_init(marker)
+               end -%>
+            <% else -%>
             <% locals = { :title => result[:title],
                           :source_url => result[:url],
                           :short_summary => result[:short_summary],
@@ -47,10 +70,13 @@
              <%= render(:partial => "generic", :locals => locals) %>
              <% end %>
             <% end %>
+            <% end %>
          <% else %>
             <%=t 'search.results.no_results_found' %>
       </div>
     <% end %>
+
+    <%= @map.div(:width => 700, :height => 400) if params[:view_as] == 'map' && !@map.blank? -%>
 
       <div class="prev-next"><%= will_paginate @results if @results.per_page > 5 && @results.total_entries > @results.per_page %></div>
       <p>&nbsp;</p>
@@ -77,6 +103,7 @@
                                         <% end %>
                                         <%=t 'search.results.results_on_this_page' %>
                                 </div>
+
                         </div>
 
                 <div class="cleaner">&nbsp;</div>

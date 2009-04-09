@@ -227,6 +227,31 @@ module ZoomSearch
         result_hash[field_name.to_sym] = field_value
       end
 
+      # get coverage values, these can be used for geographic values or temporal information
+      result_hash[:associated_coordinates] = Array.new
+      location_or_temporal_nodes = oai_dc.xpath(".//dc:coverage", oai_dc.namespaces).select { |node| !node.content.scan(":").blank? }
+
+      # we only want values you like "-41.336899,174.772512"
+      # TODO: this is a tad brittle, see if we can improve this
+      coordinate_string_values = location_or_temporal_nodes.collect do |node|
+        node.content.split(":").select { |value| value.split(",").size == 2 }
+      end.flatten
+
+      # change coordinates to fixnums
+      coordinate_values = Array.new
+      coordinate_string_values.each do |pair|
+        pair = pair.split(",")
+        coordinate_array = [pair[0].to_f, pair[1].to_f]
+        coordinate_values << coordinate_array
+
+        # load up first_coordinates if it doesn't already exist
+        @first_coordinates ||= coordinate_array
+        @number_of_locations_count = @number_of_locations_count.blank? ? 1 : @number_of_locations_count + 1
+      end
+
+      result_hash[:associated_coordinates] = Array.new
+      result_hash[:associated_coordinates] = coordinate_values unless coordinate_values.blank?
+
       related_items = zoom_record.root.at(".//xmlns:related_items", zoom_record.root.namespaces)
       unless related_items.blank?
         result_hash[:related] = Hash.new

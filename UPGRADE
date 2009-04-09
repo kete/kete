@@ -33,6 +33,9 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2009/04/09 - Adding google maps option to results pages
+Same steps as 2009/04/08
+
 == 2009/04/08 - Fixing issue with searches for choices and basket names as returning too many results, fixed searches for URLs, too
 
 1.      Stop your Kete server (mongrel or mod_rails).
