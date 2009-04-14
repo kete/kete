@@ -2,7 +2,7 @@
   <p>Filename: <%= item.filename %>
     ( <%= link_to_original_of item -%>
       <%= "|" + link_to("replace description with document text",
-                        :action => 'convert', :id => item) if ok_to_convert_to_description?(item) %>
+                        :action => 'convert', :id => item, :private => params[:private]) if ok_to_convert_to_description?(item) %>
     )
   </p>
   <p>Size: <%= number_to_human_size(item.size) %></p>
