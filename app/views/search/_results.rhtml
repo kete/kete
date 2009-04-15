@@ -36,9 +36,9 @@
                  :n_locations => @number_of_locations_count %>
 
               <% if params[:view_as] != 'map'-%>
-              [ <%= link_to(t('search.results.view_map'), :overwrite_params => { :view_as => 'map' }, :tabindex => '1' )%> ]
+              [ <%= link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )%> ]
               <% elsif params[:view_as] == 'map' -%>
-              [ <%= link_to(t('search.results.view_list'), :overwrite_params => { :view_as => nil }, :tabindex => '1' )%> ]
+              [ <%= link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )%> ]
               <% end -%>
             </div>
             <% end -%>
