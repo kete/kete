@@ -1451,6 +1451,8 @@ en:
       view_map: View on map
       view_list: View as list
       with_n_locations: results have {{n_locations}} locations
+      address: "Address:"
+      coordinates: "Coordinates:"
     rss:
       latest: Latest
       next: Next

@@ -902,26 +902,15 @@ class SearchController < ApplicationController
   # create and configure our map object using ym4r
   # requires the div "map" in view
   def setup_map
-    # use our default coordinates and zoom
-    # TODO: DRY this up with lib/google_map.rb
-    gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-
-    if File.exist?(gma_config_path) && @results
-      @gma_config = YAML.load(IO.read(gma_config_path))
-
+    if @results
       @map = GMap.new("map")
       # Use the larger pan/zoom control but disable the map type
       # selector
       @map.control_init(:large_map => true, :map_type => true)
 
-      # center on first location returned from @results or default for site
-      options = [@gma_config[:google_map_api][:default_latitude],
-                 @gma_config[:google_map_api][:default_longitude]]
-      zoom_level = @gma_config[:google_map_api][:zoom_lvl_param]
-
-      options = @first_coordinates if @first_coordinates
-
-      @map.center_zoom_init(options, zoom_level)
+      # * is essential for this to work
+      @map.center_zoom_on_points_init(*@coordinates_for_results)
+      logger.debug("what is map:" + @map.inspect)
     end
   end
 
