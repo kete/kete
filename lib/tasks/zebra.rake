@@ -74,18 +74,8 @@ namespace :zebra do
         should_add_record = false if (zoom_db.respond_to?(:has_zoom_record?) && zoom_db.has_zoom_record?(the_record_id)) rescue false
 
         if should_add_record
-          c = zoom_db.open_connection
-          p = c.package
-          p.function = 'create'
-          p.wait_action = 'waitIfPossible'
-          p.syntax = 'no syntax'
+          zoom_db.save_this(zoom_record, the_record_id)
 
-          p.action = 'specialUpdate'
-          p.record = zoom_record
-          p.record_id_opaque = the_record_id
-
-          p.send('update')
-          p.send('commit')
           puts " Initial record added to #{prefix} zebra instance (OAI identifier: oai:#{ZoomDb.zoom_id_stub}:bootstrap:Bootstrap:1)."
         else
           puts " Initial record exists, skipping in #{prefix}."
