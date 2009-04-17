@@ -1220,7 +1220,7 @@ en:
       licenses: administer licenses
       login: Login
       logout: Logout
-      members: site members
+      members: basket members
       moderate: moderate basket contents
       my_baskets: my baskets
       new_basket: add basket
