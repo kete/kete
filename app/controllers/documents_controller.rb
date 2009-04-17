@@ -71,13 +71,19 @@ class DocumentsController < ApplicationController
   # converts uploaded document to document description in html form
   def convert
     @document = Document.find(params[:id])
-    if @document.do_conversion
-      after_successful_zoom_item_update(@document)
-      flash[:notice] = 'Document description was successfully updated with text of uploaded document.'
-    else
-      flash[:notice] = 'There were problems converting the text of the uploaded document to the document\'s description.  Please edit the description manually.'
+    public_or_private_version_of(@document)
+    error_msg = 'There were problems converting the text of the uploaded document to the document\'s description.  Please edit the description manually.'
+    begin
+      if @document.do_conversion
+        after_successful_zoom_item_update(@document)
+        flash[:notice] = 'Document description was successfully updated with text of uploaded document.'
+      else
+        flash[:error] = error_msg
+      end
+    rescue
+      flash[:error] = error_msg
     end
-    redirect_to_show_for(@document)
+    redirect_to_show_for(@document, :private => (params[:private] == "true"))
   end
 
   def make_theme

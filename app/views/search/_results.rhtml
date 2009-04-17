@@ -21,7 +21,7 @@
 <%= render(:partial => "topics/content_wrapper_start",
            :locals => { :style_classes => "full-width" }) -%>
 
-      <h3><%= @title %></h3>
+      <h3><%= @heading %></h3>
       <div class="prev-next"><%= will_paginate @results %></div>
       <div id="result-show">
          <% if @results.size > 0 %>
