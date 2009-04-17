@@ -27,7 +27,7 @@ class ProfileTest < ActiveSupport::TestCase
     should "be able to set and get the rules during creation" do
       the_form = Basket::FORMS_OPTIONS.first[1]
       the_type = Profile.type_options.first[1]
-      the_rules = { the_form => the_type}
+      the_rules = { the_form => the_type }
       @profile = Profile.create!(:name => 'Test', :rules => the_rules)
       @profile.reload
       assert_equal the_rules, @profile.rules

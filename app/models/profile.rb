@@ -42,8 +42,19 @@ class Profile < ActiveRecord::Base
 
   after_save :set_rules
 
-  def rules
-    @rules ||= settings[:rules]
+  def rules(raw=false)
+    data = Array.new
+    return unless self.settings[:rules]
+    return self.settings[:rules] if raw
+    self.settings[:rules].each do |k,v|
+      value = "#{k.humanize}: "
+      Rails.logger.info 'what is v? ' + v.inspect
+      value += v['allowed'] \
+                  ? v['allowed'].collect { |a| "#{a} (#{v['values'][a]})" }.join(', ') + '.' \
+                  : "None."
+      data << value
+    end
+    data.join(' ')
   end
 
   def rules=(value)
@@ -51,19 +62,7 @@ class Profile < ActiveRecord::Base
   end
 
   def set_rules
-    settings[:rules] = @rules unless @rules.blank?
-  end
-
-  # for each form that a basket may have, we need a corresponding accessor method
-  # for active_scaffold
-  Basket::FORMS_OPTIONS.each do |form_option|
-    method_name = "rules[#{form_option[1]}]"
-    code = Proc.new {
-      return if settings[:rules].blank?
-      settings[:rules][form_option[1]] unless settings[:rules][form_option[1]].blank?
-    }
-
-    define_method(method_name, &code)
+    self.settings[:rules] = @rules unless @rules.blank?
   end
 
   private

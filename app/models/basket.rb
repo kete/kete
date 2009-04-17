@@ -224,8 +224,8 @@ class Basket < ActiveRecord::Base
     select_options = self.array_to_options_list_with_defaults(options_array,current_value)
   end
 
-  def private_file_visibility_as_options(site_basket)
-    current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
+  def private_file_visibility_as_options(site_basket, default=nil)
+    current_value = default || self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
     select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
   end
 
@@ -266,8 +266,8 @@ class Basket < ActiveRecord::Base
     (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] == true))
   end
 
-  def memberlist_policy_or_default
-    current_value = self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
+  def memberlist_policy_or_default(default=nil)
+    current_value = default || self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
     select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
   end
 
@@ -333,14 +333,16 @@ class Basket < ActiveRecord::Base
      ['Tag Cloud', 'tag cloud']]
   end
 
-  def moderation_select_options
+  def moderation_select_options(default=nil)
     select_options = String.new
     [['moderator views before item approved', true],
      ['moderation upon being flagged', false]].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
-      if fully_moderated? == value
+      if (default == value.to_s) ||
+         (default.blank? && value == false) ||
+         (!default && fully_moderated? == value)
         select_options += " selected=\"selected\""
       end
       select_options += ">" + label + "</option>"

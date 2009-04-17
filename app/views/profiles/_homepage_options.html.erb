@@ -1,0 +1,147 @@
+<fieldset style="width:750px;">
+  <%= error_messages_for 'basket' %>
+
+  <%= hidden_field_tag "source_form", 'homepage_options' %>
+
+  <div class="form-element"><label>Go directly to "browse" options</label>
+    <fieldset>
+      <div class="form-element">
+        <label for="basket_index_page_redirect_to_all" class="inline">Redirect to results of?</label>
+        <%= homepage_form.select :index_page_redirect_to_all, zoom_controllers_as_options([["Don't redirect", '']]), {}, :tabindex => '1' %>
+      </div>
+    </fieldset>
+  </div>
+
+  <div id="depth1" <%= 'style="display:none;"' unless @basket.index_page_redirect_to_all.nil? or @basket.index_page_redirect_to_all.empty? %>>
+
+    <div class="form-element" <%= 'style="display:none;"' if @index_topic.blank? %> ><label>Homepage Topic</label>
+      <fieldset>
+        <div class="form-element">
+          <% options = @index_topic.blank? ? { :disabled => true } : {} %>
+          <%= homepage_form.check_box :index_page_topic_is_entire_page, options.merge({:tabindex => '1'}) %>
+          <label for="basket_index_page_topic_is_entire_page" class="inline">Show only homepage topic?</label>
+          <div class="form-element" id="depth2" <%= 'style="display:none;"' if @basket.index_page_topic_is_entire_page %>>
+            <br />
+            <label for="basket_index_page_link_to_index_topic_as" class="inline">A link to the homepage topic's?</label>
+            <%= homepage_form.select :index_page_link_to_index_topic_as, Basket.link_to_index_topic_as_options, {}, :tabindex => '1' %>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div id="depth3" <%= 'style="display:none;"' if @basket.index_page_topic_is_entire_page %>>
+      <div class="form-element"><label>Recent Topics</label>
+        <fieldset>
+          <div class="form_example">
+            Including a rolling list of recent topics is an excellent way to present this basket as a blog or a news site.
+          </div>
+          <div class="form-element">
+            <label for="basket_index_page_number_of_recent_topics">List how many recent topics?</label>
+            <%= homepage_form.text_field :index_page_number_of_recent_topics, {:size => '3', :tabindex => '1'} %>
+          </div>
+          <div class="form-element" id="depth4" <%= 'style="display:none;"' unless @basket.index_page_number_of_recent_topics > 0 %>>
+            <label for="basket_index_page_recent_topics_as">List basket's topics as?</label>
+            <%= homepage_form.select :index_page_recent_topics_as, Basket.recent_topics_as_options, :tabindex => '1' %>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-element"><label>Search</label>
+        <fieldset>
+          <div class="form-element">
+            <%= homepage_form.check_box :index_page_basket_search, :tabindex => '1' %>
+            <label for="basket_index_page_basket_search" class="inline">Include basket search form?</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-element"><label for="basket_index_page_extra_side_bar_html">Sidebar content after search</label>
+        <fieldset>
+          <div class="form-element">
+            <%= homepage_form.text_area :index_page_extra_side_bar_html, {:class => "mceEditor", :cols => 120, :rows => 10, :tabindex => '1'} %>
+          </div>
+          <div class="form_example">
+            Note: forms and javascript are not allowed for security reasons.
+            <% if @site_admin -%>Unless you check the box below.<% end -%>
+          </div>
+          <% if @site_admin -%>
+          <div class="form-element">
+            <%= homepage_form.check_box :do_not_sanitize, :tabindex => '1' %>
+            <label for="basket_do_not_sanitize" class="inline">Allow
+              forms and other possible insecure elements and attributes in
+              the HTML?</label><br />
+          </div>
+          <% end -%>
+        </fieldset>
+      </div>
+
+      <div class="form-element"><label>Selected Image</label>
+        <fieldset>
+          <div class="form-element">
+            <label for="basket_index_page_image_as" class="inline">Show image from basket?</label>
+            <%= homepage_form.select :index_page_image_as, Basket.image_as_options, {}, :tabindex => '1' %>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-element"><label>Archives</label>
+        <fieldset>
+          <div class="form-element">
+            <label for="basket_index_page_archives_as" class="inline">List basket's archive contents as?</label>
+            <%= homepage_form.select :index_page_archives_as, Basket.archives_as_options, {}, :tabindex => '1' %>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-element"><label>Tags</label>
+        <fieldset>
+          <div class="form-element">
+            <label for="basket_index_page_number_of_tags" class="inline">List how many tags?</label>
+            <%= homepage_form.text_field :index_page_number_of_tags, {:size => '3', :tabindex => '1'} %>
+          </div>
+          <div id="depth5" <%= 'style="display:none;"' unless @basket.index_page_number_of_tags > 0 %>>
+            <div class="form-element">
+              <label for="basket_index_page_tags_as" class="inline">List basket's tags as?</label>
+              <%= homepage_form.select :index_page_tags_as, Basket.tags_as_options, :tabindex => '1' %>
+            </div>
+            <div class="form-element">
+              <label for="basket_index_page_order_tags_by" class="inline">Order tags by?</label>
+              <%= homepage_form.select :index_page_order_tags_by, Basket.order_tags_by_options, :tabindex => '1' %>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-element"><label>RSS or Atom Feeds<br />
+        </small>
+        </label>
+        <fieldset>
+          <div class="form-element">
+            <%= text_area_tag 'feeds_url_list', (params[:feeds_url_list] || @feeds_list), :cols => 80, :rows => 5, :wrap => 'off' -%>
+          </div>
+          <div class="form_example">
+            <p>A new-line separated list of URLs in the following format per line:</p>
+            <p>Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in minutes - optional)</p>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+  <!--[eoform:basket]-->
+
+  <%= setupEnableDisableFunctions %>
+  <%= toggle_elements_applicable('basket_index_page_redirect_to_all',
+      '==', '', 'depth1') %>
+  <%= toggle_elements_applicable('basket_index_page_topic_is_entire_page',
+      '!', '', 'depth2', true) %>
+  <%= toggle_elements_applicable('basket_index_page_topic_is_entire_page',
+      '!', '', 'depth3', true) %> <% # checkboxes are different in that they
+                                     # dont have a changing value, they are either checked or not so
+                                     # the true param tells it this element
+                                     # is a checkbox, and the ! says we want to show the depth2 if its not checked %>
+  <%= toggle_elements_applicable('basket_index_page_number_of_recent_topics',
+      '>', '0', 'depth4') %>
+  <%= toggle_elements_applicable('basket_index_page_number_of_tags',
+      '>', '0', 'depth5') %>
+
+</fieldset>

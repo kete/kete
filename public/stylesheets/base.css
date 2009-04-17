@@ -1058,3 +1058,13 @@ div.extended_field_autocomplete ul li {
 div.gmnoprint {
   white-space: normal !important;
 }
+
+/*
+ * Profile create form
+ */
+#profiles-create--form fieldset {
+  border: 1px solid #999;
+  clear: none;
+  padding: 10px;
+  margin: 10px;
+}
