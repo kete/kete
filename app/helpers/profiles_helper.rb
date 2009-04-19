@@ -41,14 +41,17 @@ module ProfilesHelper
     html
   end
 
+  # TODO Convert this to use Rails 2.3 try() method when available
   def current_rule_for(form_type)
     begin; params[:record][:rules][form_type.to_sym][:rule_type]; rescue; ''; end
   end
 
+  # TODO Convert this to use Rails 2.3 try() method when available
   def allowed_value?(field)
     begin; params[:record][:rules][@rule_locals[:form_type].to_sym][:allowed].include?(field); rescue; false; end
   end
 
+  # TODO Convert this to use Rails 2.3 try() method when available
   def current_value_for(field)
     begin; params[:record][:rules][@rule_locals[:form_type].to_sym][:values][field.to_sym]; rescue; ''; end
   end
@@ -64,8 +67,8 @@ module ProfilesHelper
   end
 
   def rules_allowed_check_box(name)
-    check_box_tag(@rule_locals[:allowed_field_name], name, allowed_value?(name),
-                  :id => rules_allowed_id(name))
+    content_tag('div', check_box_tag(@rule_locals[:allowed_field_name], name, allowed_value?(name),
+                  :id => rules_allowed_id(name)), :class => 'allowed_check_box')
   end
 
   def rules_allowed_id(name)
