@@ -491,7 +491,7 @@ module ApplicationHelper
     phrase = options[:phrase]
     item_class = options[:item_class]
 
-    phrase += ' ' + zoom_class_humanize(item_class)
+    phrase += ' ' + content_tag('span', zoom_class_humanize(item_class), :class => 'current_zoom_class')
 
     if @current_basket != @site_basket
       phrase += t('application_helper.link_to_add_item.in_basket',
@@ -822,6 +822,7 @@ module ApplicationHelper
 
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
+        :urlified_name => 'site',
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
         :controller => 'search',
         :extended_field => ef.label_for_params

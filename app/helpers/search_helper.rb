@@ -57,11 +57,13 @@ module SearchHelper
     html_string = t('search_helper.pagination_links.depreciated')
   end
 
-  def title_setup_first_part(title_so_far)
+  def title_setup_first_part(title_so_far, span_around_zoom_class=false)
     if @current_basket != @site_basket
       title_so_far += @current_basket.name + ' '
     end
-    title_so_far += @controller_name_for_zoom_class.gsub(/_/, " ")
+    title_so_far += span_around_zoom_class \
+                      ? content_tag('span', @controller_name_for_zoom_class.gsub(/_/, " "), :class => 'current_zoom_class') \
+                      : @controller_name_for_zoom_class.gsub(/_/, " ")
   end
 
   def toggle_in_reverse_field_js_helper
