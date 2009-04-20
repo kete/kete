@@ -534,3 +534,11 @@ system_settings_061:
   id: "61"
   value: "medium"
   section: Images
+system_settings_062:
+  name: Related Items Inset Default
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: "The default value for related items inset. Set to 'true' to always have it enabled, 'false' to always have it disabled, or leave it blank to allow the user to choose. Providing 'true' or 'false' will take away the option for a user to choose."
+  id: "62"
+  value: ""
+  section: Topics

@@ -215,12 +215,19 @@ zoom_class = zoom_class_from_controller(controller)
                :locals => { :item => @item } -%>
 
     <% if @item_type == :topic %>
-      <% if params[@item_type] && params[@item_type][:related_items_inset]; inset = params[@item_type][:related_items_inset] == '1' ? true : false
-         elsif @editing && !@item.related_items_inset.nil?; inset = @item.related_items_inset?
-         else; inset = true; end -%>
-      <%= form.check_box :related_items_inset, { :tabindex => '1',
-                                                 :label => t('topics.form.related_items_as_inset'),
-                                                 :checked => inset } %>
+      <% case RELATED_ITEMS_INSET_DEFAULT
+         when true %>
+        <%= form.hidden_field :related_items_inset, :value => "1" -%>
+      <% when false %>
+        <%= form.hidden_field :related_items_inset, :value => "0" -%>
+      <% else %>
+        <% if params[@item_type] && params[@item_type][:related_items_inset]; inset = params[@item_type][:related_items_inset] == '1' ? true : false
+           elsif @editing && !@item.related_items_inset.nil?; inset = @item.related_items_inset?
+           else; inset = true; end -%>
+        <%= form.check_box :related_items_inset, { :tabindex => '1',
+                                                   :label => t('topics.form.related_items_as_inset'),
+                                                   :checked => inset } %>
+      <% end %>
     <% end -%>
 
   </fieldset>
