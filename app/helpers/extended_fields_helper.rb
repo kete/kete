@@ -356,7 +356,8 @@ module ExtendedFieldsHelper
     html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
     if extended_field.user_choice_addition?
       user_supplied_id = "#{id_for_extended_field(extended_field)}_level_#{level}_custom"
-      html += " #{t('extended_fields_helper.extended_field_choice_select_editor.add_your_own')} "
+      html += " #{t('extended_fields_helper.extended_field_choice_select_editor.suggest_a',
+                    :field_name => extended_field.label.singularize.downcase)} "
       html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id, :class => "#{extended_field.label_for_params}_choice_custom", :tabindex => 1)
       html += javascript_tag("clearCorrespondingFieldWhenEdited('#{user_supplied_id}', '#{extended_field.label_for_params}_choice_custom', '#{default_options[:id]}', '#{default_options[:class]}');")
     end
@@ -443,7 +444,13 @@ module ExtendedFieldsHelper
   def additional_extended_field_control(extended_field, n)
     id = id_for_extended_field(extended_field) + "_additional"
 
-    link_to_remote(t('extended_fields_helper.additional_extended_field_control.add_value'), :url => { :controller => 'extended_fields', :action => 'add_field_to_multiples', :extended_field_id => extended_field.id, :n => n, :item_key => @item_type_for_params }, :id => id)
+    link_to_remote(t('extended_fields_helper.additional_extended_field_control.add_another',
+                     :field_name => extended_field.label.singularize.downcase),
+                   :url => { :controller => 'extended_fields',
+                             :action => 'add_field_to_multiples',
+                             :extended_field_id => extended_field.id,
+                             :n => n, :item_key => @item_type_for_params },
+                   :id => id)
   end
 
   def qualified_name_for_field(extended_field)
