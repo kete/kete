@@ -1055,11 +1055,11 @@ div.wrap {
 #basket_list_table tr {
   height: 55px;
 }
-.basket_image, .basket_name, .basket_created {
-  width: 18%;
+.basket_name, .basket_created {
+  width: 20%;
 }
 .basket_options {
-  width: 46%;
+  width: 60%;
 }
 .basket_image img {
   border: none;
