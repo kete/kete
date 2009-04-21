@@ -141,7 +141,7 @@ module GoogleMap
 
         # create the google map div
         map_options = { :style => 'width:550px;' }.merge(options)
-        html += content_tag('div', "<small>(#{I18n.t('google_map_lib.extended_field_map_editor.need_javascript')})</small>", map_options.merge({:id => map_data[:map_id]}))
+        html += content_tag('div', "<small>(#{I18n.t('google_map_lib.extended_field_map_editor.need_javascript')})</small>", map_options.merge({:id => map_data[:map_id], :class => 'google_map_container'}))
         if generate_text_fields
           controller = (@new_item_controller || params[:controller])
           # this is the current topic_type from form

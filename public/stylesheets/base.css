@@ -1141,6 +1141,11 @@ div.extended_field_autocomplete ul li {
 /*
  * Google Map CSS
  */
+/* According to Joel, who works at Google, you can hide overflow, which apparently doesn't break the license
+   http://groups.google.com/group/Google-Maps-API/browse_thread/thread/3360a82deb471cd3 */
+.google_map_container {
+  overflow: hidden;
+}
 div.gmnoprint {
   white-space: normal !important;
 }

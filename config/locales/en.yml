@@ -1521,7 +1521,7 @@ en:
     choice_hierarchy: 'Choice Hierarchy'
     date: Date
     browse_default: 'Browse Default'
-    google_map: 'Google Map'
+    map: 'Map'
     last_modified: Last Modified
     relevance: Relevance
     title: Title

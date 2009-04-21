@@ -537,8 +537,16 @@ system_settings_061:
 system_settings_062:
   name: Related Items Inset Default
   technically_advanced: true
-  required_to_be_configured: false
-  explanation: "The default value for related items inset. Set to 'true' to always have it enabled, 'false' to always have it disabled, or leave it blank to allow the user to choose. Providing 'true' or 'false' will take away the option for a user to choose."
+  required_to_be_configured: true
+  explanation: "The default value for related items inset. Set to '1' to have it enabled by default, '0' to have it disabled by default."
   id: "62"
-  value: ""
+  value: "1"
+  section: Topics
+system_settings_063:
+  name: Hide Related Items Inset Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should the option to change related items inset be hidden from users?"
+  id: "63"
+  value: "false"
   section: Topics
