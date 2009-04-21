@@ -137,13 +137,17 @@ class ApplicationController < ActionController::Base
                                                        :add_index_topic, :find_index,
                                                        :add_tags ]
 
-  before_filter :adjust_http_headers_for_rss, :only => [ :rss ]
-
   # clear any outstanding search source caches
   before_filter :expire_search_source_caches, :only => [ :show ]
 
+  # RSS feed related operations
+  # no layout
+  layout nil, :only => [ :rss ]
+  # adjust request and response values
+  before_filter :adjust_http_headers_for_rss, :only => [ :rss ]
   def adjust_http_headers_for_rss
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
+    request.format = :xml
   end
 
   helper :slideshows

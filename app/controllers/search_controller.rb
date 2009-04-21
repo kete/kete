@@ -9,12 +9,6 @@ class SearchController < ApplicationController
   # in kete
   skip_before_filter :verify_authenticity_token
 
-  layout "application" , :except => [:rss]
-
-  # James - 2008-09-04
-  # Ensure RSS triggers a http_auth_basic response, not redirect
-  before_filter :set_xml_format_before_auth, :only => [:rss]
-
   # James - 2008-09-03
   # Check for access before running private searches
   before_filter :require_login_if_private_search, :only => [:rss, :for, :all]
