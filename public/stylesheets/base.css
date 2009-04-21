@@ -1058,6 +1058,10 @@ div.wrap {
 .basket_options {
   width: 60%;
 }
+.basket_image img {
+  border: none;
+  margin-right: 10px;
+}
 
 /* SEARCH SORTING CONTROLS */
 .sorting_control {
