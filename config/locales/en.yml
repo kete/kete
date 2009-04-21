@@ -1655,8 +1655,8 @@ en:
       discuss: Discuss
       edit: Edit
       history: History
+      item_details: Item Details
       make_theme: Make theme
-      view_this_item: View this Item
       zoom_update: Zoom Update item (+related)
       zoom_update_confirm: Are you sure you want to update?
     content_wrapper_start:
