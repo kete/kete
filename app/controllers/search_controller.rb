@@ -1,6 +1,3 @@
-# used in rss feeds
-include ActionView::Helpers::SanitizeHelper
-
 class SearchController < ApplicationController
 
   # Walter McGinnis, 2008-02-07

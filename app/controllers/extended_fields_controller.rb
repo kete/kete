@@ -118,7 +118,7 @@ class ExtendedFieldsController < ApplicationController
     logger.debug("Topics are: #{topics.inspect}")
 
     topics = topics.map { |entry|
-      @template.content_tag("li", "#{sanitize(entry.title)} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
+      @template.content_tag("li", "#{entry.title.sanitize} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
                                                                           :controller => 'topics',
                                                                           :action => 'show',
                                                                           :id => entry,

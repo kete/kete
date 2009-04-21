@@ -19,8 +19,6 @@ class BasketsController < ApplicationController
 
   include WorkerControllerHelpers
 
-  include ActionView::Helpers::SanitizeHelper
-
   # Kieran Pilkington, 2008/11/26
   # Instantiation of Google Map code for location settings
   include GoogleMap::Mapper
