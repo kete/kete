@@ -416,6 +416,8 @@ en:
       browse_order_default: use software default
       browse_order_in_reverse: in reverse?
       browse_order_sort_by: "Sort by:"
+      browse_view_as: "Default Browse Type:"
+      browse_view_as_choice: "The default browse type should be a?"
       comment_control: "Who can add, edit and update comments on items?:"
       comment_control_allows: allows
       comment_control_anyone: Anyone logged in
@@ -1516,7 +1518,10 @@ en:
     pagination_links:
       depreciated: depreciated, we now use will_paginate plugin
   search_model:
+    choice_hierarchy: 'Choice Hierarchy'
     date: Date
+    browse_default: 'Browse Default'
+    google_map: 'Google Map'
     last_modified: Last Modified
     relevance: Relevance
     title: Title

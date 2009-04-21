@@ -146,7 +146,8 @@ module ApplicationHelper
                                                        :urlified_name => @current_basket.urlified_name,
                                                        :controller_name_for_zoom_class => 'topics',
                                                        :trailing_slash => true,
-                                                       :privacy_type => privacy_type },
+                                                       :privacy_type => privacy_type,
+                                                       :view_as => @current_basket.browse_type_with_inheritance },
                                                      { :tabindex => '2' } )
     else
       site_link_text = t('application_helper.header_browse_links.browse')
@@ -157,7 +158,8 @@ module ApplicationHelper
                                                :action => 'all',
                                                :urlified_name => @site_basket.urlified_name,
                                                :controller_name_for_zoom_class => 'topics',
-                                               :trailing_slash => true}, {:tabindex => '2'} ) + current_basket_html + '</li>'
+                                               :trailing_slash => true,
+                                               :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} ) + current_basket_html + '</li>'
   end
 
   def header_add_links(options={})

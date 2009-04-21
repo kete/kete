@@ -269,6 +269,17 @@ class Basket < ActiveRecord::Base
     end
   end
 
+  def browse_type_with_inheritance
+    case self.settings[:browse_view_as]
+    when 'inherit'
+      self.site_basket.browse_type_with_inheritance
+    when '' # if blank, return nil
+      nil
+    else
+      self.settings[:browse_view_as]
+    end
+  end
+
   def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
     select_options = String.new
     options_array.each do |option|

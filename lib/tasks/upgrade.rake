@@ -290,6 +290,17 @@ namespace :kete do
       end
     end
 
+    desc 'Make site basket default browse type blank, and other baskets inherit'
+    task :set_default_browse_type => :environment do
+      # set some defaults in the site basket
+      site_basket = Basket.first # site
+      site_basket.settings[:browse_view_as] = '' if site_basket.settings[:browse_view_as].class == NilClass
+      # All other baskets inherit from site
+      Basket.all.each do |basket|
+        basket.settings[:browse_view_as] = 'inherit' if basket.settings[:browse_view_as].class == NilClass
+      end
+    end
+
     desc 'Checks for mimetypes an adds them if needed.'
     task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
                                      'kete:upgrade:add_excel_variants_to_documents',

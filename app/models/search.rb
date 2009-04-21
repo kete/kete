@@ -2,6 +2,14 @@
 # refactoring to make search_controller stuff move to search model
 # has only just started, so this is limited
 class Search
+  def self.view_as_types
+    types = Array.new
+    types << ['', I18n.t("search_model.browse_default")]
+    types << ['choice_hierarchy', I18n.t("search_model.choice_hierarchy")] if ExtendedField.find_by_label('categories')
+    types << ['map', I18n.t("search_model.google_map")] if File.exists?(File.join(RAILS_ROOT, 'config/gmaps_api_key.yml'))
+    types
+  end
+
   def self.boolean_operators
     ['and', 'or', 'not']
   end

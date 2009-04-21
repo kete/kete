@@ -184,6 +184,28 @@
   </div>
 
   <div class="form-element">
+    <label><%=t 'baskets.form.browse_view_as' %></label>
+
+    <fieldset>
+
+      <div class="form-element">
+        <label for="settings_browse_view_as" style="width: 100%"><%=t 'baskets.form.browse_view_as_choice' %></label>
+        <%
+        options = String.new
+        options += "<option value='inherit'>#{t('baskets.form.inherit')}</option>" if @basket != @site_basket
+        current = @basket.settings[:browse_view_as]
+        Search.view_as_types.each do |type|
+          options += "<option value='#{type[0]}'#{" selected='selected'" if type[0] == current}>#{type[1]}</option>"
+        end
+        %>
+        <div style="clear: left;"><%= select_tag 'settings[browse_view_as]', options, {"id" => "settings_browse_view_as", :tabindex => '1'} %></div>
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <div class="form-element">
     <label>
       <%=t 'baskets.form.browse_order' %><br />
       <small>
