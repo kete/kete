@@ -141,8 +141,11 @@ class ApplicationController < ActionController::Base
   before_filter :expire_search_source_caches, :only => [ :show ]
 
   # RSS feed related operations
-  # no layout
-  layout nil, :only => [ :rss ]
+  # no layout on rss pages
+  layout :determine_layout
+  def determine_layout
+    params[:action] == 'rss' ? nil : "application"
+  end
   # adjust request and response values
   before_filter :adjust_http_headers_for_rss, :only => [ :rss ]
   def adjust_http_headers_for_rss
