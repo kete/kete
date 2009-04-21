@@ -590,7 +590,8 @@ module ApplicationHelper
   end
 
   # Creates an image and wraps in within a link tag
-  def related_image_link_for(still_image, options={})
+  def related_image_link_for(still_image, options={}, link_options={})
+    return '' if still_image.blank?
     options = { :privacy_type => 'public' }.merge(options)
     if still_image.is_a?(StillImage)
       if !still_image.thumbnail_file.nil?
@@ -601,9 +602,13 @@ module ApplicationHelper
       else
         link_text = t('application_helper.related_image_link_for.only_original')
       end
-      link_location = { :urlified_name => still_image.basket.urlified_name,
-                        :controller => 'images', :action => 'show', :id => still_image,
-                        :private => (options[:privacy_type] == 'private') }
+      if link_options.is_a?(String)
+        link_location = link_options
+      else
+        link_location = { :urlified_name => still_image.basket.urlified_name,
+                          :controller => 'images', :action => 'show', :id => still_image,
+                          :private => (options[:privacy_type] == 'private') }.merge(link_options)
+      end
     else
       thumb_src_value = still_image[:thumbnail][:src]
       link_text = image_tag(thumb_src_value, { :width => still_image[:thumbnail][:width],

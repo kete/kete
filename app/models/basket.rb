@@ -460,6 +460,10 @@ class Basket < ActiveRecord::Base
     end
   end
 
+  def related_images(type = :last)
+    still_images.find_non_pending(type, PUBLIC_CONDITIONS) || {}
+  end
+
   protected
 
   include FriendlyUrls

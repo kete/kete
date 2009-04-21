@@ -17,12 +17,15 @@
 <p>
   <table id="basket_list_table">
     <tr>
+      <th abbr="Image" class="basket_image">&nbsp;</th>
       <th abbr="Name" class="basket_name"><%= search_sorting_controls_for(t('baskets.list.sort_by_name'), 'name', false) -%></th>
       <th abbr="Created" class="basket_created"><%= search_sorting_controls_for(t('baskets.list.sort_by_created_at'), 'created_at', true, 'desc') -%></th>
       <th abbr="Options" class="basket_options"><%=t 'baskets.list.options' %></th>
     </tr>
     <% @baskets.each do |basket| -%>
     <tr>
+      <td class="basket_image"><%= related_image_link_for(basket.related_images, {},
+                                    basket_index_url({ :urlified_name => basket.urlified_name })) %></td>
       <td class="basket_name"><%= link_to_index_for(basket) -%></td>
       <td class="basket_created"><%= basket.created_at.to_s(:long) -%></td>
       <td class="basket_options"><ul><%= link_to_actions_available_for(basket) -%></ul></td>
