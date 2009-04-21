@@ -300,7 +300,7 @@ class BasketsController < ApplicationController
     original_html = params[:settings][:additional_footer_content]
     sanitized_html = original_html
     unless do_not_sanitize && @site_admin
-      sanitized_html = sanitize(original_html)
+      sanitized_html = original_html.sanitize
       params[:settings][:additional_footer_content] = sanitized_html
     end
     set_settings
