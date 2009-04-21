@@ -1,21 +1,12 @@
 <%= setupEnableDisableFunctions(true) %>
-    
+
 <fieldset>
 
-  <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('name') %> Name:
-    </label>
-    <fieldset id="<%= rules_label_id('name') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('name') %>>
-      <%= rules_text_field_tag('name') %>
-    </fieldset>
-    <%= toggle_elements_applicable(rules_allowed_id('name'), '', '', "#{rules_label_id('name')}_fieldset", true) %>
-  </div>
+  <div class="form-element">show<br />field?</div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('moderation_policy') %> Moderation Policy:
-    </label>
+    <%= rules_allowed_check_box('moderation_policy') %>
+    <label>Moderation Policy:</label>
     <fieldset id="<%= rules_label_id('moderation_policy') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('moderation_policy') %>>
       <%= rules_select_tag('moderation_policy', @basket.moderation_select_options(current_value_for('moderation_policy'))) %>
 
@@ -34,9 +25,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('show_privacy_controls') %> Privacy Controls:
-    </label>
+    <%= rules_allowed_check_box('show_privacy_controls') %>
+    <label>Privacy Controls:</label>
     
     <fieldset id="<%= rules_label_id('show_privacy_controls') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('show_privacy_controls') %>>
       <div class="form-element">
@@ -58,9 +48,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('private_default') %> Default Item Privacy:
-    </label>
+    <%= rules_allowed_check_box('private_default') %>
+    <label>Default Item Privacy:</label>
 
     <fieldset id="<%= rules_label_id('private_default') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('private_default') %>>
       <div class="form-element">
@@ -82,9 +71,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('file_private_default') %> Default Original File Privacy:
-    </label>
+    <%= rules_allowed_check_box('file_private_default') %>
+    <label>Default Original File Privacy:</label>
 
     <fieldset id="<%= rules_label_id('file_private_default') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('file_private_default') %>>
       <div class="form-element">
@@ -106,9 +94,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('private_file_visibility') %> Private Original Files Visibility:
-    </label>
+    <%= rules_allowed_check_box('private_file_visibility') %>
+    <label>Private Original Files Visibility:</label>
 
     <fieldset id="<%= rules_label_id('private_file_visibility') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('private_file_visibility') %>>
       <div class="form-element">
@@ -124,9 +111,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('allow_non_member_comments') %> Who can add, edit and update comments on items?:
-    </label>
+    <%= rules_allowed_check_box('allow_non_member_comments') %>
+    <label>Who can add, edit and update comments on items?:</label>
 
     <fieldset id="<%= rules_label_id('allow_non_member_comments') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('allow_non_member_comments') %>>
       <div class="form-element">
@@ -148,9 +134,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('sort_order_default') %> Default Browse Results Order:
-    </label>
+    <%= rules_allowed_check_box('sort_order_default') %>
+    <label>Default Browse Results Order:</label>
 
     <fieldset id="<%= rules_label_id('sort_order_default') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('sort_order_default') %>>
       <div class="form-element">
@@ -171,9 +156,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('disable_site_recent_topics_display') %> Disable Site Recent Topics Display:
-    </label>
+    <%= rules_allowed_check_box('disable_site_recent_topics_display') %>
+    <label>Disable Site Recent Topics Display:</label>
 
     <fieldset id="<%= rules_label_id('disable_site_recent_topics_display') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('disable_site_recent_topics_display') %>>
       <div class="form-element">
@@ -187,9 +171,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('basket_join_policy') %> Join Policy:
-    </label>
+    <%= rules_allowed_check_box('basket_join_policy') %>
+    <label>Join Policy:</label>
 
     <fieldset id="<%= rules_label_id('basket_join_policy') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('basket_join_policy') %>>
       <div class="form-element">
@@ -216,9 +199,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('memberlist_policy') %> Member List Policy:
-    </label>
+    <%= rules_allowed_check_box('memberlist_policy') %>
+    <label>Member List Policy:</label>
 
     <fieldset id="<%= rules_label_id('memberlist_policy') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('memberlist_policy') %>>
       <div class="form-element">
@@ -234,9 +216,8 @@
   </div>
 
   <div class="form-element">
-    <label>
-      <%= rules_allowed_check_box('allow_basket_admin_contact') %> Administrator contact?
-    </label>
+    <%= rules_allowed_check_box('allow_basket_admin_contact') %>
+    <label>Administrator contact?</label>
 
     <fieldset id="<%= rules_label_id('allow_basket_admin_contact') %>_fieldset"<%= ' style="display:none;"' unless allowed_value?('allow_basket_admin_contact') %>>
       <div class="form-element">

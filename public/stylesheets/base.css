@@ -1068,3 +1068,9 @@ div.gmnoprint {
   padding: 10px;
   margin: 10px;
 }
+
+.allowed_check_box {
+  width: 40px;
+  display: inline;
+  float: left;
+}
