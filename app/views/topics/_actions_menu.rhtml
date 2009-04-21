@@ -1,7 +1,6 @@
 <div id="content-tabs">
   <ul class="nav-list">
-    <li class="first selected"><a href="#" tabindex="1"><span class="view-link">View
-          this Item</span></a></li>
+    <li class="first selected"><a href="#" tabindex="1"><span class="view-link">Item Details</span></a></li>
     <% cache_with_privacy(item, {:part => 'edit'}) do -%>
     <li><%= link_to "<span class=\"edit-link\">Edit</span>",
             {:action => :edit,
