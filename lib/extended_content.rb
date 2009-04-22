@@ -622,10 +622,15 @@ module ExtendedContent
             end
           end
         else
+          # this handles the case where edit has changed the item from one topic type to a sub topic type
+          # and there isn't an existing value
+          # generates empty xml element for the field
+          final_value = params_hash[field_name].nil? ? '' : params_hash[field_name]
+
           extended_content_field_xml_tag(
             :xml => xml,
             :field => field_name,
-            :value => params_hash[field_name],
+            :value => final_value,
             :xml_element_name => field_to_xml.extended_field_xml_element_name,
             :xsi_type => field_to_xml.extended_field_xsi_type,
             :extended_field => field_to_xml.extended_field
