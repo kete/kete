@@ -231,33 +231,40 @@ module ExtendedContent
       convert_xml_to_key_value_hash.inject(Hash.new) do |hash, field|
 
         field_name = field.delete(field.first)
+        field_name_root = field_name.gsub("_multiple", "")
 
         # Grab the extended field for this field name
-        extended_field = all_fields.find { |ef| field_name == ef.label_for_params }
+        extended_field = all_fields.find { |ef| field_name_root == ef.label_for_params }
 
-        # We need to handle singular and multiple field values separate as they come out in different formats.
-        if field_name.include?("_multiple")
+        # if there isn't a corresponding extended_field, this is orphaned data, ignore
+        # otherwise add it to the hash
+        unless extended_field.blank?
 
-          # At this stage we expect to have something like:
-          # ['field_name_multiple', [['value 1'], ['value 2']]
+          # We need to handle singular and multiple field values separate as they come out in different formats.
+          if field_name.include?("_multiple")
 
-          # So we can assume the first element in the array is the field name, and the remainder are the values,
-          # already in the correct format. 'field' now contains what we want because we've removed the first
-          # element (the name) above. It is nested an extra level, through.
-          values = field.first
+            # At this stage we expect to have something like:
+            # ['field_name_multiple', [['value 1'], ['value 2']]
 
-          field_name = field_name.gsub("_multiple", "")
-        elsif ['map', 'map_address'].member?(extended_field.ftype)
-          values = field.first # pull the hash out of the array it's been put into
-        else
+            # So we can assume the first element in the array is the field name, and the remainder are the values,
+            # already in the correct format. 'field' now contains what we want because we've removed the first
+            # element (the name) above. It is nested an extra level, through.
+            values = field.first
 
-          # For singular values we expect something like:
-          # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
-          # So, we need to adjust the format to be consistent with the expected output..
-          values = field.first.is_a?(Array) ? field : [field]
+            field_name = field_name_root
+          elsif ['map', 'map_address'].member?(extended_field.ftype)
+            values = field.first # pull the hash out of the array it's been put into
+          else
+
+            # For singular values we expect something like:
+            # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
+            # So, we need to adjust the format to be consistent with the expected output..
+            values = field.first.is_a?(Array) ? field : [field]
+          end
+
+          hash[field_name] = values
         end
 
-        hash[field_name] = values
         hash
       end
     end
@@ -615,10 +622,15 @@ module ExtendedContent
             end
           end
         else
+          # this handles the case where edit has changed the item from one topic type to a sub topic type
+          # and there isn't an existing value
+          # generates empty xml element for the field
+          final_value = params_hash[field_name].nil? ? '' : params_hash[field_name]
+
           extended_content_field_xml_tag(
             :xml => xml,
             :field => field_name,
-            :value => params_hash[field_name],
+            :value => final_value,
             :xml_element_name => field_to_xml.extended_field_xml_element_name,
             :xsi_type => field_to_xml.extended_field_xsi_type,
             :extended_field => field_to_xml.extended_field
