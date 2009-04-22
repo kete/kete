@@ -65,6 +65,23 @@ class Profile < ActiveRecord::Base
     self.settings[:rules] = @rules unless @rules.blank?
   end
 
+  def authorized_for?(args={})
+    case args[:action].to_s
+    when 'destroy', 'update'
+      false
+    else
+      true
+    end
+  end
+
+  def authorized_for_update?
+    false
+  end
+
+  def authorized_for_destroy?
+    false
+  end
+
   private
 
   def set_available_to_models

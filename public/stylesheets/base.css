@@ -1069,8 +1069,17 @@ div.gmnoprint {
   margin: 10px;
 }
 
+#profiles-create--form .form-element {
+  padding: 5px 0;
+}
+
 .allowed_check_box {
   width: 40px;
   display: inline;
   float: left;
+}
+
+.expand_policy {
+  margin-left: 5px;
+  margin-top: -3px;
 }

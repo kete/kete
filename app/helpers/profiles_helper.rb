@@ -67,8 +67,17 @@ module ProfilesHelper
   end
 
   def rules_allowed_check_box(name)
-    content_tag('div', check_box_tag(@rule_locals[:allowed_field_name], name, allowed_value?(name),
-                  :id => rules_allowed_id(name)), :class => 'allowed_check_box')
+    @profile_sections ||= Array.new
+    @profile_sections << name
+
+    content = check_box_tag(@rule_locals[:allowed_field_name], name, allowed_value?(name),
+                            :id => rules_allowed_id(name))
+    content += '<br />' + image_tag('icon_results_next_off.gif',
+                                    :id => "#{rules_allowed_id(name)}_expander",
+                                    :class => 'expand_policy',
+                                    :alt => 'Expand Policy. ',
+                                    :title => 'Expand Policy. ')
+    content_tag('div', content, :class => 'allowed_check_box')
   end
 
   def rules_allowed_id(name)
@@ -85,20 +94,48 @@ module ProfilesHelper
                    :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1')
   end
 
-  def rules_select_tag(name, options)
-    select_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", options,
-               :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1')
+  def rules_select_tag(name, options, label=nil)
+    '<div class="form-element">' +
+      (label ? content_tag('label', label, :for => rules_label_id(name), :style => 'width: 100%;') : '') +
+      '<div style="clear: left">' +
+        select_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", options,
+                   :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1') +
+      '</div>' +
+    '</div>'
   end
 
-  def rules_radio_button_tag(name, value)
-    radio_button_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", value, (current_value_for(name) == value),
-                     :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}_#{value}", :tabindex => '1')
+  def rules_radio_button_tag(name, value, label)
+    '<div class="form-element">' +
+      radio_button_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", value, (current_value_for(name) == value),
+                       :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}_#{value}", :tabindex => '1') +
+      content_tag('label', label, :for => rules_label_id(name, value), :class => 'inline') +
+    '</div>'
   end
 
-  def rules_check_box_tag(name, value, is_array=false)
-    check_box_tag("#{@rule_locals[:values_field_prefix]}[#{name}]#{'[]' if is_array}", value,
-                  (is_array && current_value_for(name).is_a?(Array) ? current_value_for(name).include?(value) : current_value_for(name) == value),
-                  :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}#{"_#{value.underscore.downcase}" if is_array}", :tabindex => '1')
+  def rules_check_box_tag(name, value, label, is_array=false)
+    '<div class="form-element">' +
+      check_box_tag("#{@rule_locals[:values_field_prefix]}[#{name}]#{'[]' if is_array}", value,
+                    (is_array && current_value_for(name).is_a?(Array) ? current_value_for(name).include?(value) : current_value_for(name) == value),
+                    :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}#{"_#{value.underscore.downcase}" if is_array}", :tabindex => '1') +
+      content_tag('label', label, :for => "#{rules_label_id(name)}#{"_#{value.underscore.downcase}" if is_array}", :class => 'inline') +
+    '</div>'
+  end
+
+  def rules_fieldset_tag(name)
+    "<fieldset id='#{rules_label_id(name)}_fieldset'#{" style='display:none;'" unless allowed_value?(name)}>"
+  end
+
+  def rules_section_javascript
+    js = String.new
+    @profile_sections.each do |section|
+      #js += toggle_elements_applicable(rules_allowed_id(section), '', '', "#{rules_label_id(section)}_fieldset", true)
+      js += javascript_tag("quickExpandCollapse('#{rules_allowed_id(section)}_expander',
+                                                '#{rules_label_id(section)}_fieldset',
+                                                '/images/icon_results_next_off.gif',
+                                                '/images/arrow_down.gif');")
+    end
+    @profile_sections = Array.new
+    js
   end
 
 end
