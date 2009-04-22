@@ -51,11 +51,12 @@ class ZoomDb < ActiveRecord::Base
     p = c.package
     p.function = 'create'
     p.wait_action = 'waitIfPossible'
-    p.syntax = 'no syntax'
+    # not compatible with latest zebra
+    # p.syntax = 'no syntax'
 
     p.action = 'recordDelete'
-    p.record = record
-    p.record_id_opaque = zoom_id
+    p.record = record unless record.nil?
+    p.record_id_opaque = zoom_id unless zoom_id.nil?
 
     p.send('update')
     p.send('commit')
@@ -67,11 +68,12 @@ class ZoomDb < ActiveRecord::Base
     p = c.package
     p.function = 'create'
     p.wait_action = 'waitIfPossible'
-    p.syntax = 'no syntax'
+    # not compatible with latest zebra
+    # p.syntax = 'no syntax'
 
     p.action = 'specialUpdate'
-    p.record = record
-    p.record_id_opaque = zoom_id
+    p.record = record unless record.nil?
+    p.record_id_opaque = zoom_id unless zoom_id.nil?
 
     p.send('update')
     p.send('commit')
