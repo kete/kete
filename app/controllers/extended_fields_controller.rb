@@ -3,11 +3,12 @@ class ExtendedFieldsController < ApplicationController
   helper ExtendedFieldsHelper
 
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index, :add_field_to_multiples]
+  before_filter :login_required, :only => [:list, :index, :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type ]
 
   before_filter :set_page_title
 
-  permit "site_admin or admin of :site or tech_admin of :site"
+  permit "site_admin or admin of :site or tech_admin of :site",
+          :except => [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type ]
 
   active_scaffold :extended_field do |config|
     # Default columns and column exclusions
