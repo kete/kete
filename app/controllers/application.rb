@@ -476,9 +476,9 @@ class ApplicationController < ActionController::Base
     # if we are deleting the thing
     # also delete it's related caches
     # as well as related caches of things it's related to
-    if params[:action] == 'destroy'
+    if %w{ update destroy }.include?(params[:action])
       if controller != 'topics'
-        expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :related => 'topics' })
+        expire_related_caches_for(item, 'topics')
         # expire any related topics related caches
         # comments don't have related topics, so skip it for them
         if item_class != 'Comment'
@@ -489,7 +489,7 @@ class ApplicationController < ActionController::Base
       else
         # topics need all it's related things expired
         ZOOM_CLASSES.each do |zoom_class|
-          expire_fragment_for_all_versions(item, { :controller => controller, :action => 'show', :id => item, :related => zoom_class_controller(zoom_class) })
+          expire_related_caches_for(item, zoom_class_controller(zoom_class))
           related_items = Array.new
           if zoom_class == 'Topic'
             related_items += item.related_topics
