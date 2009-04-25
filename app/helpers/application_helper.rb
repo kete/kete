@@ -852,13 +852,13 @@ module ApplicationHelper
       end
 
       case value
-      when /^(.+)\(((http|https|ftp):\/\/.+)\)$/
+      when /^(.+)\((\w{3,9}:\/\/.+)\)$/
         # something (url)
         link_to($1.strip, $2)
       when /^\w+:\/\/[^ ]+/
         # this is a url protocal of some sort, make link
         link_to(label, value)
-      when /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/ #/^\w+[^ ]*\@\w+\.\w/
+      when /^[\w._%+-]+@[\w.-]+\.[\w]{2,4}$/
         mail_to(label, value, :encode => "hex")
       else
         sanitize(value)
