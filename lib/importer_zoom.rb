@@ -109,6 +109,7 @@ module ImporterZoom
     end
 
     def importer_prepare_and_save_to_zoom(item)
+      item.reload # make sure we have the latest data
       importer_prepare_zoom(item)
       item.private = @import.private
       item.zoom_save

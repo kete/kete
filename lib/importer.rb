@@ -189,7 +189,9 @@ module Importer
                                                  :field => field_name,
                                                  :value => m_value,
                                                  :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                                                 :xsi_type => field_to_xml.extended_field_xsi_type)
+                                                 :xsi_type => field_to_xml.extended_field_xsi_type,
+                                                 :ftype => field_to_xml.extended_field_ftype,
+                                                 :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
                 end
               end
             end
@@ -200,7 +202,9 @@ module Importer
                                          :field => field_name,
                                          :value => value,
                                          :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                                         :xsi_type => field_to_xml.extended_field_xsi_type)
+                                         :xsi_type => field_to_xml.extended_field_xsi_type,
+                                         :ftype => field_to_xml.extended_field_ftype,
+                                         :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
         end
       end
 

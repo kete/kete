@@ -4,7 +4,7 @@ class ChoicesController < ApplicationController
 
   before_filter :set_page_title
 
-  permit "site_admin"
+  permit "site_admin", :except => [ :categories_list ]
   
   active_scaffold :choices do |config|
     

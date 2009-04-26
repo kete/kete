@@ -407,7 +407,12 @@ module GoogleMap
             map.geocoder_obj.getLocations(latlng_obj, function(response) {
               if (!response || response.Status.code != 200) {
                 // if something went wrong, give the status code. This should rarely happen.
-                alert('#{I18n.t('google_map_lib.load_google_map_api.status_code')}' + response.Status.code);
+                if (response.Status.code == '602') {
+                  text = '#{I18n.t('google_map_lib.load_google_map_api.something_went_wrong_602')} (' + response.Status.code + ')';
+                } else {
+                  text = '#{I18n.t('google_map_lib.load_google_map_api.something_went_wrong')} (' + response.Status.code + ')';
+                }
+                remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text);
               } else {
                 // get the place
                 place = response.Placemark[0];
@@ -428,6 +433,9 @@ module GoogleMap
                     // the address details from the result
                     $(map.address_text_field).value = place.address;
                   }
+                } else {
+                  text = '#{I18n.t('google_map_lib.load_google_map_api.not_close_enough')}';
+                  remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text);
                 }
               }
             });

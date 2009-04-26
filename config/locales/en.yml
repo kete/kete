@@ -1017,9 +1017,11 @@ en:
       hide_lat_lng: Hide Latitude/Longitude
       lat_lng_not_set: "ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!"
       non_existant_div: You are trying to initiate the google map api on a non-existant div. Debug this!
+      not_close_enough: "Error: The marker was not close enough to a<br />road to determine the street address. Please try again."
       not_compatible: Google Maps is not compatible with this browser. Try using Firefox 3, Internet Explorer 7, or Safari 3.
       show_lat_lng: Show Latitude/Longitude
-      status_code: "Status Code:"
+      something_went_wrong: "Error: Something has happened. Please try again."
+      something_went_wrong_602: "Error: Something has happened.<br />Google Maps cannot determine the location where you placed the marker.<br />Try repositioning it nearer to a road."
     validate_extended_map_field_content:
       not_a_hash: is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently {{class}} {{value}}. Why?
       not_present_optional: is not present. If you don't want to include one, select 'don't record a location'.
