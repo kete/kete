@@ -400,7 +400,14 @@ module GoogleMap
             map.geocoder_obj.getLocations(latlng_obj, function(response) {
               if (!response || response.Status.code != 200) {
                 // if something went wrong, give the status code. This should rarely happen.
-                alert('Status Code:' + response.Status.code);
+                if (response.Status.code == '602') {
+                  text = 'Error ' + response.Status.code + ': Something has happened.<br />' +
+                         'Google Maps cannot determine the location where you placed the marker.<br />' +
+                         'Try repositioning it nearer to a road.';
+                } else {
+                  text = 'Error ' + response.Status.code + ': Something has happened. Please try again.'
+                }
+                remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text);
               } else {
                 // get the place
                 place = response.Placemark[0];
@@ -421,6 +428,10 @@ module GoogleMap
                     // the address details from the result
                     $(map.address_text_field).value = place.address;
                   }
+                } else {
+                  text = 'Error: The marker wasn\\'t close enough to a<br />' +
+                         'road to determine the street address. Please try again'
+                  remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text);
                 }
               }
             });

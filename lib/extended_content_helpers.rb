@@ -75,6 +75,9 @@ module ExtendedContentHelpers
     end
 
     # extended_content_xml_helpers
+    # CAUTION: extended_field is not always passed in so do not call
+    # extended_field.method because it will fail (example, lib/importer.rb)
+    # Pass any extended field values you need through options
     def extended_content_field_xml_tag(options = {})
 
       begin
@@ -84,11 +87,18 @@ module ExtendedContentHelpers
         xml_element_name = options[:xml_element_name] || nil
         xsi_type = options[:xsi_type] || nil
         extended_field = options[:extended_field] || nil
+        if extended_field
+          ftype = extended_field.ftype
+          user_choice_addition = extended_field.user_choice_addition?
+        else
+          ftype = options[:ftype] || nil
+          user_choice_addition = options[:user_choice_addition] || nil
+        end
 
         # With choices from a dropdown, we can have preset dropdown and custom text field
         # So before we go any further, make sure we convert the values from Hash to either
         # the preset or custom value depending on which one is filled in
-        if extended_field.ftype == 'choice'
+        if ftype == 'choice'
           value.each do |key,choice_value|
             next unless choice_value.is_a?(Hash)
             choice = choice_value['preset'] # Preset values come from the dropdown
@@ -124,7 +134,7 @@ module ExtendedContentHelpers
               matching_choice = Choice.matching(l,v)
 
               # Handle the creation of new choices where the choice is not recognised.
-              if !matching_choice && %w(autocomplete choice).include?(extended_field.ftype) && extended_field.user_choice_addition?
+              if !matching_choice && %w(autocomplete choice).include?(ftype) && user_choice_addition
                 sorted_values = value.dup.sort
                 index = sorted_values.index([k, v])
 
@@ -168,7 +178,7 @@ module ExtendedContentHelpers
         else
           # text and textarea, we intepret their values as not having
           # the special case where value and label are passed together
-          unless %w(text textarea).include?(extended_field.ftype)
+          unless %w(text textarea).include?(ftype)
             # handle special case where we have a label embedded in the value
             # if our value looks like this
             # a label string (value)
