@@ -511,6 +511,8 @@ class Basket < ActiveRecord::Base
     when DOCUMENTATION_BASKET
       @@documentation_basket = Basket.find(DOCUMENTATION_BASKET)
     end
+    # after we change these, we need to reload routes for index_page path
+    ActionController::Routing::Routes.reload!
   end
 
   # when we create, update, or destroy, we recalcutate the amount of
