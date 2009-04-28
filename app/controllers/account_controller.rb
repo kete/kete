@@ -34,7 +34,7 @@ class AccountController < ApplicationController
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
         redirect_back_or_default({ :locale => current_user.locale,
-                                   :urlified_name => 'site',
+                                   :urlified_name => @site_basket.urlified_name,
                                    :controller => 'account',
                                    :action => 'index' }, current_user.locale)
         flash[:notice] = t('account_controller.login.logged_in')
@@ -110,7 +110,7 @@ class AccountController < ApplicationController
     end
 
     redirect_back_or_default({ :locale => params[:user][:locale],
-                               :urlified_name => 'site',
+                               :urlified_name => @site_basket.urlified_name,
                                :controller => 'account',
                                :action => 'index' })
   rescue ActiveRecord::RecordInvalid
@@ -196,7 +196,7 @@ class AccountController < ApplicationController
 
       flash[:notice] = t('account_controller.update.user_updated')
       redirect_to({ :locale => params[:user][:locale],
-                    :urlified_name => 'site',
+                    :urlified_name => @site_basket.urlified_name,
                     :controller => 'account',
                     :action => 'show',
                     :id => @user })

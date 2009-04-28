@@ -133,7 +133,7 @@
             <!-- this would be a good place for your logo -->
             <h1>
               <%= link_to PRETTY_SITE_NAME,
-                          basket_index_url({ :urlified_name => 'site' }),
+                          basket_index_url({ :urlified_name => @site_basket.urlified_name }),
                           :tabindex => '2' %>
               <%= header_link_to_current_basket %>
             </h1>
@@ -192,7 +192,7 @@
           <ul id="main-nav" class="nav-list">
             <li class="first">
               <%= link_to t('layouts.application.home'),
-                          basket_index_url({ :urlified_name => 'site' }),
+                          basket_index_url({ :urlified_name => @site_basket.urlified_name }),
                           :tabindex => '2', :accesskey => '1' %>
             </li>
             <%= header_browse_links %>
