@@ -171,7 +171,7 @@
                 <p><%=t 'configure.index.link_site_later' %></p>
                 <h3><%=t 'configure.index.installation_complete' %></h3>
                 <div class="wrap">
-                  <%= button_to t('configure.index.reload_site'), basket_index_url(:urlified_name => 'site') %>
+                  <%= button_to t('configure.index.reload_site'), basket_index_url(:urlified_name => @site_basket.urlified_name) %>
                 </div>
               </div>
             </td>

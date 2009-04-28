@@ -396,7 +396,7 @@
               <% cache({:part => 'accessibility'}) do -%>
                 <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>
                 <%= content_tag('li', link_to(t('layouts.application.accessibility'),
-                                              { :urlified_name => 'help',
+                                              { :urlified_name => @help_basket.urlified_name,
                                                 :controller => 'topics',
                                                 :action => 'show',
                                                 :id => accessibility_topic },
@@ -405,7 +405,7 @@
               <% end -%>
               <li>
                 <%= link_to t('layouts.application.sitemap'),
-                            { :urlified_name => 'site',
+                            { :urlified_name => @site_basket.urlified_name,
                               :controller => 'baskets',
                               :action => 'list' },
                             { :accesskey => '2',

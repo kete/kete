@@ -31,7 +31,7 @@
           :register_link => link_to(t('account.login.register_link'),
                                     { :controller => 'account',
                                       :action => 'signup',
-                                      :urlified_name => 'site'},
+                                      :urlified_name => @site_basket.urlified_name},
                                     :tabindex => '1') %></p>
   <% else -%>
   <p><%=t 'account.login.admin_details' %></p>
@@ -57,7 +57,7 @@
           :forgot_password_link => link_to(t('account.login.forgot_password_link'),
                                              { :controller => 'account',
                                                :action => 'forgot_password',
-                                               :urlified_name => 'site'},
+                                               :urlified_name => @site_basket.urlified_name},
                                              :tabindex => '1') -%></p>
   <% end -%>
 </fieldset>

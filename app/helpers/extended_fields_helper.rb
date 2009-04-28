@@ -519,7 +519,7 @@ module ExtendedFieldsHelper
     }.merge(options)
 
     url_hash = {
-      :urlified_name => params[:urlified_name] || 'site',
+      :urlified_name => params[:urlified_name] || @site_basket.urlified_name,
       :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
     }.merge(url_hash)
 

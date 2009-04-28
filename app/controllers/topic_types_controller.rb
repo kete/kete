@@ -32,7 +32,7 @@ class TopicTypesController < ApplicationController
 
       # TODO: globalize translate
       flash[:notice] = t('topic_types_controller.create.created')
-      redirect_to :urlified_name => 'site', :action => 'edit', :id => @topic_type
+      redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => @topic_type
     else
       render :action => 'new'
     end
@@ -56,7 +56,7 @@ class TopicTypesController < ApplicationController
 
       # TODO: globalize translate
       flash[:notice] = t('topic_types_controller.update.updated')
-      redirect_to :urlified_name => 'site', :action => 'edit', :id => @topic_type
+      redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => @topic_type
     else
       render :action => 'edit'
     end
@@ -67,7 +67,7 @@ class TopicTypesController < ApplicationController
     @successful = @topic_type.destroy
     if @successful
       flash[:notice] = t('topic_types_controller.destroy.destroyed')
-      redirect_to :urlified_name => 'site', :action => 'list'
+      redirect_to :urlified_name => @site_basket.urlified_name, :action => 'list'
     end
   end
 
@@ -99,13 +99,13 @@ class TopicTypesController < ApplicationController
         end
       end
     end
-    redirect_to :urlified_name => 'site', :action => 'edit', :id => topic_type
+    redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => topic_type
   end
 
   def reorder_fields_for_topic_type
     # update position in the topic_type's form
     TopicTypeToFieldMapping.update(params[:mapping].keys, params[:mapping].values)
-    redirect_to :urlified_name => 'site', :action => 'edit', :id => params[:id]
+    redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => params[:id]
   end
 
   private
