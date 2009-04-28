@@ -353,7 +353,7 @@
               <% end -%>
               <% cache({:part => 'accessibility'}) do -%>
                 <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>
-                <%= content_tag('li', link_to('Accessibility', { :urlified_name => 'help',
+                <%= content_tag('li', link_to('Accessibility', { :urlified_name => @help_basket.urlified_name,
                                                                  :controller => 'topics',
                                                                  :action => 'show',
                                                                  :id => accessibility_topic },
@@ -361,7 +361,7 @@
                                                                  :tabindex => '2' })) if accessibility_topic -%>
               <% end -%>
               <li>
-                <%= link_to 'Sitemap', { :urlified_name => 'site',
+                <%= link_to 'Sitemap', { :urlified_name => @site_basket.urlified_name,
                                          :controller => 'baskets',
                                          :action => 'list' },
                                        { :accesskey => '2',

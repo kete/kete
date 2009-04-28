@@ -801,7 +801,7 @@ module ApplicationHelper
 
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
-        :urlified_name => 'site',
+        :urlified_name => @site_basket.urlified_name,
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
         :controller => 'search',
         :extended_field => ef.label_for_params
