@@ -1,16 +1,13 @@
-<%= setupEnableDisableFunctions(true) %>
-
 <fieldset>
 
   <div class="form-element">show<br />field?</div>
 
   <div class="form-element">
-    <%= rules_allowed_check_box('moderation_policy') %>
+    <%= rules_allowed_check_box('fully_moderated') %>
     <label>Moderation Policy:</label>
-    <%= rules_fieldset_tag('moderation_policy') %>
-      <%= rules_select_tag('moderation_policy', @basket.moderation_select_options(current_value_for('moderation_policy'))) %>
-
-      <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' unless current_value_for('moderation_policy') == 'true' -%>>
+    <%= rules_fieldset_tag('fully_moderated') %>
+      <%= rules_select_tag('fully_moderated', @basket.moderation_select_options(current_value_for('fully_moderated'))) %>
+      <div class="form-element" id="moderated_except" <%= 'style="display:none"' unless current_value_for('fully_moderated') == 'true' -%>>
         <label class="inline">Moderator views items before approved EXCEPT:</label>
         <fieldset>
           <% ZOOM_CLASSES.each do |zoom_class| -%>
@@ -19,7 +16,7 @@
         </fieldset>
       </div>
     </fieldset>
-    <%= toggle_elements_applicable(rules_label_id('moderation_policy'), '==', 'true', 'settings_moderated_except') %>
+    <%= toggle_elements_applicable(rules_label_id('fully_moderated'), '==', 'true', 'moderated_except', false, false) %>
   </div>
 
   <div class="form-element">

@@ -62,7 +62,6 @@ module ProfilesHelper
                      :allowed_field_name => "#{input_name}[#{form_type}][allowed][]",
                      :values_field_prefix => "#{input_name}[#{form_type}][values]",
                      :field_id_prefix => "record_rules_#{form_type}" }
-    return 'nothing to see yet' unless form_type == 'edit'
     render_to_string(:partial => "profiles/#{form_type}")
   end
 
@@ -89,9 +88,22 @@ module ProfilesHelper
           : "#{@rule_locals[:field_id_prefix]}_values_#{name}"
   end
 
-  def rules_text_field_tag(name)
-    text_field_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
-                   :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1')
+  def rules_text_field_tag(name, label)
+    '<div class="form-element">' +
+      content_tag('label', label, :for => rules_label_id(name), :style => 'width: 100%;') +
+      '<div style="clear: left">' +
+        text_field_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
+                       :id => "#{@rule_locals[:field_id_prefix]}_values_#{name}", :tabindex => '1') +
+      '</div>' +
+    '</div>'
+  end
+
+  def rules_text_area_tag(name, label=nil)
+    '<div class="form-element">' +
+      (label ? content_tag('label', label, :for => rules_label_id(name), :class => 'inline') : '') +
+      text_area_tag("#{@rule_locals[:values_field_prefix]}[#{name}]", current_value_for(name),
+                    :rows => 7, :cols => 30, :class => 'mceEditor') +
+    '</div>'
   end
 
   def rules_select_tag(name, options, label=nil)
@@ -128,7 +140,7 @@ module ProfilesHelper
   def rules_section_javascript
     js = String.new
     @profile_sections.each do |section|
-      #js += toggle_elements_applicable(rules_allowed_id(section), '', '', "#{rules_label_id(section)}_fieldset", true)
+      #js += toggle_elements_applicable(rules_allowed_id(section), '', '', "#{rules_label_id(section)}_fieldset", true, false)
       js += javascript_tag("quickExpandCollapse('#{rules_allowed_id(section)}_expander',
                                                 '#{rules_label_id(section)}_fieldset',
                                                 '/images/icon_results_next_off.gif',

@@ -10,6 +10,11 @@ class ProfilesController < ApplicationController
 
   helper :baskets
 
+  ### TinyMCE WYSIWYG editor stuff
+  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
+                :only => VALID_TINYMCE_ACTIONS
+  ### end TinyMCE WYSIWYG editor stuff
+
   active_scaffold :profiles do |config|
 
     # Which columns to show

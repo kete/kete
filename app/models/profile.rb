@@ -48,10 +48,15 @@ class Profile < ActiveRecord::Base
     return self.settings[:rules] if raw
     self.settings[:rules].each do |k,v|
       value = "#{k.humanize}: "
-      Rails.logger.info 'what is v? ' + v.inspect
-      value += v['allowed'] \
-                  ? v['allowed'].collect { |a| "#{a} (#{v['values'][a]})" }.join(', ') + '.' \
-                  : "None."
+      value += if v['rule_type'] == 'all'
+        "All."
+      elsif v['rule_type'] == 'none'
+        "None."
+      elsif v['rule_type'] == 'some' && v['allowed']
+        v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
+      else
+        "None."
+      end
       data << value
     end
     data.join(' ')
@@ -67,8 +72,10 @@ class Profile < ActiveRecord::Base
 
   def authorized_for?(args={})
     case args[:action].to_s
-    when 'destroy', 'update'
+    when 'update'
       false
+    when 'destroy'
+      profile_mappings.blank? ? true : false
     else
       true
     end
@@ -79,7 +86,7 @@ class Profile < ActiveRecord::Base
   end
 
   def authorized_for_destroy?
-    false
+    profile_mappings.blank? ? true : false
   end
 
   private

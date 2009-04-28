@@ -1,237 +1,250 @@
-
 <fieldset>
+
   <%= error_messages_for 'basket' %>
 
-  <!--[form:basket]-->
-  <div class="form-element"><label for="basket_name">Name:</label>
-    <%= form.text_field :name, :tabindex => '1'  %>
-  </div>
+  <%= hidden_field_tag "basket_profile", @basket_profile -%>
 
   <div class="form-element">
-    <label class="required" for="settings_fully_moderated">Moderation
-      Policy:</label>
-    <%= select_tag 'settings[fully_moderated]', @basket.moderation_select_options, {"id" => "settings_fully_moderated", :tabindex => '1'} %>
+    <label for="basket_name">Name:</label>
+    <%= form.text_field :name, :tabindex => '1' %>
   </div>
 
-  <% # make hidden and disabled to start
-     # reveal if moderation policy is changed to full moderation -%>
-  <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' if !@basket.fully_moderated? -%>>
-    <label for="settings[moderated_except]">Moderator views items
-      before approved EXCEPT:</label>
-    <fieldset>
+  <% if allowed_field?('fully_moderated') %>
+    <div class="form-element">
+      <label for="settings_fully_moderated">Moderation Policy:</label>
+      <%= select_tag 'settings[fully_moderated]',
+                     @basket.moderation_select_options(current_value_of('fully_moderated')),
+                     { :id => "settings_fully_moderated", :tabindex => '1' } %>
+    </div>
 
-      <% ZOOM_CLASSES.each do |zoom_class| -%>
-      <input type="checkbox" name="settings[moderated_except][]" value="<%= zoom_class -%>"<%=
-           ' checked="checked"' if !@basket.settings[:moderated_except].blank? && @basket.settings[:moderated_except].include?(zoom_class) -%> tabindex="1" />
-      <%= zoom_class_plural_humanize(zoom_class) %><br />
-      <% end -%>
-    </fieldset>
-    <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled="disabled" />
-  </div>
-
-  <div class="form-element">
-
-    <label>Privacy Controls:</label>
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, 'true', :tabindex => '1' %>
-        <label for="basket_show_privacy_controls_true" class="inline">Enabled</label>
-        <div class="form_example">
-          Enable Privacy Controls if members of this basket can have
-          both items that are readable by the public at large AND
-          items that are only readable by themselves.
-        </div>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, 'false', :tabindex => '1' %>
-        <label for="basket_show_privacy_controls_false" class="inline">Disabled</label>
-        <div class="form_example">
-          Disable Privacy Controls if members can only create publicly
-          readable items.
-          <% if @basket == @site_basket %>
-            This baskets browsing controls are left enabled if any other baskets have
-            privacy controls turned on (for site-wide private search).
-          <% end %>
-        </div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, '', :tabindex => '1' %>
-        <label for="basket_show_privacy_controls_" class="inline">Inherit</label>
-        <div class="form_example">
-          Inherit this setting from the Site basket.<br />
-          <% if @basket.show_privacy_controls.nil? -%>
-          The Site has <strong>
-          <%= (!@site_basket.show_privacy_controls.blank? && @site_basket.show_privacy_controls) ? "Enabled" : "Disabled" %>
-          </strong> Privacy Controls
-          <% end %>
-        </div>
-      </div>
-      <% end %>
-
-    </fieldset>
-  </div>
-
-  <div class="form-element">
-    <label>Default Item Privacy:</label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :private_default, 'false', :tabindex => '1' %>
-        <label for="basket_private_default_false" class="inline">Public</label><br />
-        <div class="form_example">Can be viewed by everyone</div>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :private_default, 'true', :tabindex => '1' %>
-        <label for="basket_private_default_true" class="inline">Private</label><br />
-        <div class="form_example">Can be viewed only by basket members</div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :private_default, '', :tabindex => '1' %>
-        <label for="basket_private_default_" class="inline">Inherit</label>
-        <div class="form_example">
-          Inherit this setting from the Site basket.<br />
-          <% if @basket.private_default.nil? -%>
-          The Site has items <strong>
-          <%= (!@site_basket.private_default.blank? && @site_basket.private_default) ? "Private" : "Public" %>
-          </strong> by default
-          <% end %>
-        </div>
-      </div>
-      <% end %>
-
-    </fieldset>
-
-  </div>
-
-
-  <div class="form-element">
-    <label>Default Original File Privacy:</label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :file_private_default, 'false', :tabindex => '1' %>
-        <label for="basket_file_private_default_false" class="inline">Public</label>
-        <div class="form_example">Can be downloaded by everyone</div>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :file_private_default, 'true', :tabindex => '1' %>
-        <label for="basket_file_private_default_true" class="inline">Private</label>
-        <div class="form_example">Can be downloaded only by authorized basket members</div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :file_private_default, '', :tabindex => '1' %>
-        <label for="basket_file_private_default_" class="inline">Inherit</label>
-        <div class="form_example">
-          Inherit this setting from the Site basket.<br />
-          <% if @basket.file_private_default.nil? -%>
-          The Site has files <strong>
-          <%= (!@site_basket.file_private_default.blank? && @site_basket.file_private_default) ? "Private" : "Public" %>
-          </strong> by default
-          <% end %>
-        </div>
-      </div>
-      <% end %>
-
-      <p>You may use this to restrict the download of an item's
-      original file.  For example, you may set a document to be "Public" and show the
-      information about it, but limit downloading the actual document
-      file to basket members.  Note this applies across all versions
-      of an item.</p>
-    </fieldset>
-
-  </div>
-
-  <%# Only show to users who can see items in the current basket %>
-  <% if current_user_can_see_private_files_in_basket?(@basket) %>
-  <div class="form-element">
-    <label>Private Original Files Visibility:</label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <label for="settings_private_file_visibility" style="width: 100%">To view private attached files you must be at least a:</label>
-        <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket), {"id" => "settings_private_file_visibility", :tabindex => '1'} %></div>
-      </div>
-
-
-   </fieldset>
-  </div>
+    <%# make hidden and disabled to start
+      # reveal if moderation policy is changed to full moderation%>
+    <% show_moderated_except = current_value_of('fully_moderated') == true %>
+    <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' unless show_moderated_except -%>>
+      <label for="settings[moderated_except]">Moderator views items before approved EXCEPT:</label>
+      <fieldset>
+        <% ZOOM_CLASSES.each do |zoom_class| -%>
+          <% checked = current_value_of('moderated_except') && current_value_of('moderated_except').include?(zoom_class) %>
+          <input type="checkbox" name="settings[moderated_except][]" value="<%= zoom_class -%>"
+                 <%= ' checked="checked"' if checked -%> tabindex="1" />
+          <%= zoom_class_plural_humanize(zoom_class) %><br />
+        <% end -%>
+      </fieldset>
+      <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled="disabled" />
+    </div>
   <% end %>
 
-  <div class="form-element">
-    <label>Who can add, edit and update comments on items?:</label>
+  <% if allowed_field?('show_privacy_controls') %>
+    <div class="form-element">
+      <label>Privacy Controls:</label>
+      
+      <fieldset>
 
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, 'true', :tabindex => '1' %>
-        <label for="basket_allow_non_member_comments_true" class="inline">Anyone logged in</label>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, 'false', :tabindex => '1' %>
-        <label for="basket_allow_non_member_comments_false" class="inline">Only basket members</label>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, '', :tabindex => '1' %>
-        <label for="basket_allow_non_member_comments_" class="inline">Inherit</label>
-        <div class="form_example">
-          Inherit this setting from the Site basket.<br />
-          <% if @basket.allow_non_member_comments.nil? -%>
-          The Site <strong>
-          <%= (!@site_basket.allow_non_member_comments.blank? && @site_basket.allow_non_member_comments) ? "allows" : "doesn't allow" %>
-          </strong> non basket members to post comments
-          <% end %>
+        <div class="form-element">
+          <%= form.radio_button :show_privacy_controls, 'true', :tabindex => '1' %>
+          <label for="basket_show_privacy_controls_true" class="inline">Enabled</label>
+          <div class="form_example">
+            Enable Privacy Controls if members of this basket can have
+            both items that are readable by the public at large AND
+            items that are only readable by themselves.
+          </div>
         </div>
-      </div>
-      <% end %>
 
-    </fieldset>
+        <div class="form-element">
+          <%= form.radio_button :show_privacy_controls, 'false', :tabindex => '1' %>
+          <label for="basket_show_privacy_controls_false" class="inline">Disabled</label>
+          <div class="form_example">
+            Disable Privacy Controls if members can only create publicly
+            readable items.
+            <% if @basket == @site_basket %>
+              This baskets browsing controls are left enabled if any other baskets have
+              privacy controls turned on (for site-wide private search).
+            <% end %>
+          </div>
+        </div>
 
-  </div>
-
-  <div class="form-element">
-    <label>
-      Default Browse Results Order:<br />
-      <small>
         <% if @basket != @site_basket %>
-          (this setting is not inherited from site basket)
-        <% else %>
-          (this setting does not inherit to other baskets)
+        <div class="form-element">
+          <%= form.radio_button :show_privacy_controls, '', :tabindex => '1' %>
+          <label for="basket_show_privacy_controls_" class="inline">Inherit</label>
+          <div class="form_example">
+            Inherit this setting from the Site basket.<br />
+            <% if @basket.show_privacy_controls.nil? -%>
+            The Site has <strong>
+            <%= (!@site_basket.show_privacy_controls.blank? && @site_basket.show_privacy_controls) ? "Enabled" : "Disabled" %>
+            </strong> Privacy Controls
+            <% end %>
+          </div>
+        </div>
         <% end %>
-      </small>
-    </label>
 
-    <fieldset>
+      </fieldset>
+    </div>
+  <% end %>
 
-      <div class="form-element">
-        <label for="settings_sort_order_default" style="width: 100%">Sort by:</label>
-        <div style="clear: left;"><%= select_tag 'settings[sort_order_default]', "<option value='none'>use software default</option>#{Search.all_sort_types((@basket.settings[:sort_order_default] || 'default'), 'all')}", {"id" => "settings_sort_order_default", :tabindex => '1'} %></div>
-      </div>
+  <% if allowed_field?('private_default') %>
+    <div class="form-element">
+      <label>Default Item Privacy:</label>
 
-      <div class="form-element">
-        <%= check_box 'settings', 'sort_direction_reversed_default', {:checked => (@basket.settings[:sort_direction_reversed_default] == 'reverse'), :tabindex => '1'}, 'reverse', '' %>
-        <label for="settings_sort_direction_reversed_default" class="inline">in reverse?</label>
-      </div>
+      <fieldset>
 
-    </fieldset>
-  </div>
+        <div class="form-element">
+          <%= form.radio_button :private_default, 'false', :tabindex => '1' %>
+          <label for="basket_private_default_false" class="inline">Public</label><br />
+          <div class="form_example">Can be viewed by everyone</div>
+        </div>
 
-  <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= form.radio_button :private_default, 'true', :tabindex => '1' %>
+          <label for="basket_private_default_true" class="inline">Private</label><br />
+          <div class="form_example">Can be viewed only by basket members</div>
+        </div>
+
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= form.radio_button :private_default, '', :tabindex => '1' %>
+          <label for="basket_private_default_" class="inline">Inherit</label>
+          <div class="form_example">
+            Inherit this setting from the Site basket.<br />
+            <% if @basket.private_default.nil? -%>
+            The Site has items <strong>
+            <%= (!@site_basket.private_default.blank? && @site_basket.private_default) ? "Private" : "Public" %>
+            </strong> by default
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+
+      </fieldset>
+
+    </div>
+  <% end %>
+
+  <% if allowed_field?('file_private_default') %>
+    <div class="form-element">
+      <label>Default Original File Privacy:</label>
+
+      <fieldset>
+
+        <div class="form-element">
+          <%= form.radio_button :file_private_default, 'false', :tabindex => '1' %>
+          <label for="basket_file_private_default_false" class="inline">Public</label>
+          <div class="form_example">Can be downloaded by everyone</div>
+        </div>
+
+        <div class="form-element">
+          <%= form.radio_button :file_private_default, 'true', :tabindex => '1' %>
+          <label for="basket_file_private_default_true" class="inline">Private</label>
+          <div class="form_example">Can be downloaded only by authorized basket members</div>
+        </div>
+
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= form.radio_button :file_private_default, '', :tabindex => '1' %>
+          <label for="basket_file_private_default_" class="inline">Inherit</label>
+          <div class="form_example">
+            Inherit this setting from the Site basket.<br />
+            <% if @basket.file_private_default.nil? -%>
+            The Site has files <strong>
+            <%= (!@site_basket.file_private_default.blank? && @site_basket.file_private_default) ? "Private" : "Public" %>
+            </strong> by default
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+
+        <p>You may use this to restrict the download of an item's
+        original file.  For example, you may set a document to be "Public" and show the
+        information about it, but limit downloading the actual document
+        file to basket members.  Note this applies across all versions
+        of an item.</p>
+      </fieldset>
+
+    </div>
+  <% end %>
+
+  <%# Only show to users who can see items in the current basket %>
+  <% if allowed_field?('private_file_visibility') && current_user_can_see_private_files_in_basket?(@basket) %>
+    <div class="form-element">
+      <label>Private Original Files Visibility:</label>
+
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_private_file_visibility" style="width: 100%">To view private attached files you must be at least a:</label>
+          <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket, current_value_of('private_file_visibility')), {"id" => "settings_private_file_visibility", :tabindex => '1'} %></div>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('allow_non_member_comments') %>
+    <div class="form-element">
+      <label>Who can add, edit and update comments on items?:</label>
+
+      <fieldset>
+
+        <div class="form-element">
+          <%= form.radio_button :allow_non_member_comments, 'true', :tabindex => '1' %>
+          <label for="basket_allow_non_member_comments_true" class="inline">Anyone logged in</label>
+        </div>
+
+        <div class="form-element">
+          <%= form.radio_button :allow_non_member_comments, 'false', :tabindex => '1' %>
+          <label for="basket_allow_non_member_comments_false" class="inline">Only basket members</label>
+        </div>
+
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= form.radio_button :allow_non_member_comments, '', :tabindex => '1' %>
+          <label for="basket_allow_non_member_comments_" class="inline">Inherit</label>
+          <div class="form_example">
+            Inherit this setting from the Site basket.<br />
+            <% if @basket.allow_non_member_comments.nil? -%>
+            The Site <strong>
+            <%= (!@site_basket.allow_non_member_comments.blank? && @site_basket.allow_non_member_comments) ? "allows" : "doesn't allow" %>
+            </strong> non basket members to post comments
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+
+      </fieldset>
+
+    </div>
+  <% end %>
+
+  <% if allowed_field?('sort_order_default') %>
+    <div class="form-element">
+      <label>
+        Default Browse Results Order:<br />
+        <small>
+          <% if @basket != @site_basket %>
+            (this setting is not inherited from site basket)
+          <% else %>
+            (this setting does not inherit to other baskets)
+          <% end %>
+        </small>
+      </label>
+
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_sort_order_default" style="width: 100%">Sort by:</label>
+          <div style="clear: left;"><%= select_tag 'settings[sort_order_default]', "<option value='none'>use software default</option>#{Search.all_sort_types((current_value_of('sort_order_default') || @basket.settings[:sort_order_default] || 'default'), 'all')}", {"id" => "settings_sort_order_default", :tabindex => '1'} %></div>
+        </div>
+
+        <div class="form-element">
+          <%= check_box 'settings', 'sort_direction_reversed_default', {:checked => (current_value_of('sort_direction_reversed_default') == 'reverse'), :tabindex => '1'}, 'reverse', '' %>
+          <label for="settings_sort_direction_reversed_default" class="inline">in reverse?</label>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('disable_site_recent_topics_display') && @basket != @site_basket %>
     <div class="form-element">
       <label>
         Disable Site Recent Topics Display:<br />
@@ -241,7 +254,7 @@
       <fieldset>
 
         <div class="form-element">
-          <%= check_box 'settings', 'disable_site_recent_topics_display', {:checked => (@basket.settings[:disable_site_recent_topics_display] == true), :tabindex => '1'}, 'true', 'false' %>
+          <%= check_box 'settings', 'disable_site_recent_topics_display', {:checked => (current_value_of('disable_site_recent_topics_display') == true), :tabindex => '1'}, 'true', 'false' %>
           <label for="settings_disable_site_recent_topics_display" class="inline">Do not show new/edited topics in recent results on the Site basket?</label>
         </div>
 
@@ -249,101 +262,105 @@
     </div>
   <% end -%>
 
-  <div class="form-element">
-    <label>Join Policy:</label>
+  <% if allowed_field?('basket_join_policy') %>
+    <div class="form-element">
+      <label>Join Policy:</label>
 
-    <fieldset>
+      <fieldset>
 
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'open', {:checked => (@basket.settings[:basket_join_policy] == 'open')} %>
-        <label for="settings_basket_join_policy_open" class="inline">Open Membership</label>
-        <div class="form_example">
-          Enable Open Basket Membership. Anyone can join this basket with one click.
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'open', {:checked => (current_value_of('basket_join_policy') == 'open')} %>
+          <label for="settings_basket_join_policy_open" class="inline">Open Membership</label>
+          <div class="form_example">
+            Enable Open Basket Membership. Anyone can join this basket with one click.
+          </div>
         </div>
-      </div>
 
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'request', {:checked => (@basket.settings[:basket_join_policy] == 'request')} %>
-        <label for="settings_basket_join_policy_request" class="inline">Request Membership</label>
-        <div class="form_example">
-          Enable Requested Basket Membership. Basket Administrators have to approve or reject each application.
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'request', {:checked => (current_value_of('basket_join_policy') == 'request')} %>
+          <label for="settings_basket_join_policy_request" class="inline">Request Membership</label>
+          <div class="form_example">
+            Enable Requested Basket Membership. Basket Administrators have to approve or reject each application.
+          </div>
         </div>
-      </div>
 
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'closed', {:checked => (@basket.settings[:basket_join_policy] == 'closed')} %>
-        <label for="settings_basket_join_policy_closed" class="inline">Closed Membership</label>
-        <div class="form_example">
-          Closed Basket Membership. Members have to be added by Basket Administrators manually.
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'closed', {:checked => (current_value_of('basket_join_policy') == 'closed')} %>
+          <label for="settings_basket_join_policy_closed" class="inline">Closed Membership</label>
+          <div class="form_example">
+            Closed Basket Membership. Members have to be added by Basket Administrators manually.
+          </div>
         </div>
-      </div>
 
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'nil', {:checked => (@basket.settings[:basket_join_policy] == nil)} %>
-        <label for="settings_basket_join_policy_nil" class="inline">Inherit</label>
-        <div class="form_example">
-          Inherit this setting from the Site basket.<br />
-          The Site has basket membership <strong>
-          <%= @site_basket.settings[:basket_join_policy] -%>
-          </strong> by default
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'nil', {:checked => (current_value_of('basket_join_policy') == nil)} %>
+          <label for="settings_basket_join_policy_nil" class="inline">Inherit</label>
+          <div class="form_example">
+            Inherit this setting from the Site basket.<br />
+            The Site has basket membership <strong>
+            <%= @site_basket.settings[:basket_join_policy] -%>
+            </strong> by default
+          </div>
         </div>
-      </div>
-      <% end -%>
-  </div>
+        <% end -%>
+    </div>
+  <% end %>
 
-  <div class="form-element">
-    <label>Member List Policy:</label>
+  <% if allowed_field?('memberlist_policy') %>
+    <div class="form-element">
+      <label>Member List Policy:</label>
 
-    <fieldset>
+      <fieldset>
 
-      <div class="form-element">
-        <label for="settings_memberlist_policy" style="width: 100%">To view the member list you must be at least a:</label>
-        <div style="clear: left"><%= select_tag 'settings[memberlist_policy]', @basket.memberlist_policy_or_default %></div>
-      </div>
-
-    </fieldset>
-  </div>
-
-  <div class="form-element">
-    <label>Administrator contact?</label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <%= radio_button 'settings', 'allow_basket_admin_contact', 'true', {:checked => (@basket.settings[:allow_basket_admin_contact] == true)} %>
-        <label for="settings_allow_basket_admin_contact_true" class="inline">Enabled</label>
-        <div class="form_example">A link will be provided that allows users to send a message to administrators.</div>
-      </div>
-
-      <div class="form-element">
-        <%= radio_button 'settings', 'allow_basket_admin_contact', 'false', {:checked => (@basket.settings[:allow_basket_admin_contact] == false)} %>
-        <label for="settings_allow_basket_admin_contact_false" class="inline">Disabled</label>
-        <div class="form_example">Users will not be able to contact administrators.</div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= radio_button 'settings', 'allow_basket_admin_contact', 'nil', {:checked => (@basket.settings[:allow_basket_admin_contact] == nil)} %>
-        <label for="settings_allow_basket_admin_contact_nil" class="inline">Inherit</label>
-        <div class="form_example">
-          Inherit this setting from the Site basket.<br />
-          The Site has <strong>
-          <%= (!@site_basket.settings[:allow_basket_admin_contact].blank? && @site_basket.settings[:allow_basket_admin_contact] == true) ? "enabled" : "disabled" %>
-          </strong> use of the administrator contact form.
+        <div class="form-element">
+          <label for="settings_memberlist_policy" style="width: 100%">To view the member list you must be at least a:</label>
+          <div style="clear: left"><%= select_tag 'settings[memberlist_policy]', @basket.memberlist_policy_or_default(current_value_of('memberlist_policy')) %></div>
         </div>
-      </div>
-      <% end %>
 
-    </fieldset>
+      </fieldset>
+    </div>
+  <% end %>
 
-  </div>
+  <% if allowed_field?('allow_basket_admin_contact') %>
+    <div class="form-element">
+      <label>Administrator contact?</label>
+
+      <fieldset>
+
+        <div class="form-element">
+          <%= radio_button 'settings', 'allow_basket_admin_contact', 'true', {:checked => (current_value_of('allow_basket_admin_contact') == true)} %>
+          <label for="settings_allow_basket_admin_contact_true" class="inline">Enabled</label>
+          <div class="form_example">A link will be provided that allows users to send a message to administrators.</div>
+        </div>
+
+        <div class="form-element">
+          <%= radio_button 'settings', 'allow_basket_admin_contact', 'false', {:checked => (current_value_of('allow_basket_admin_contact') == false)} %>
+          <label for="settings_allow_basket_admin_contact_false" class="inline">Disabled</label>
+          <div class="form_example">Users will not be able to contact administrators.</div>
+        </div>
+
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= radio_button 'settings', 'allow_basket_admin_contact', 'nil', {:checked => (current_value_of('allow_basket_admin_contact') == nil)} %>
+          <label for="settings_allow_basket_admin_contact_nil" class="inline">Inherit</label>
+          <div class="form_example">
+            Inherit this setting from the Site basket.<br />
+            The Site has <strong>
+            <%= (!@site_basket.settings[:allow_basket_admin_contact].blank? && @site_basket.settings[:allow_basket_admin_contact] == true) ? "enabled" : "disabled" %>
+            </strong> use of the administrator contact form.
+          </div>
+        </div>
+        <% end %>
+
+      </fieldset>
+
+    </div>
+  <% end %>
 
   <%= setupEnableDisableFunctions(true) %>
   <%= toggle_elements_applicable('settings_fully_moderated',
       '==', 'true', 'settings_moderated_except') %>
-
-  <!--[eoform:basket]-->
 
   <strong><%= basket_preferences_inheritance_message %></strong>
 

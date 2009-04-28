@@ -198,28 +198,28 @@ class Basket < ActiveRecord::Base
   end
 
   # attribute options methods
-  def show_flagging_as_options(site_basket)
-    current_show_flagging_value = self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
+  def show_flagging_as_options(site_basket, default=nil)
+    current_show_flagging_value = default || self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_flagging_value)
   end
 
-  def show_add_links_as_options(site_basket)
-    current_show_add_links_value = self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
+  def show_add_links_as_options(site_basket, default=nil)
+    current_show_add_links_value = default || self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_add_links_value)
   end
 
-  def show_action_menu_as_options(site_basket)
-    current_show_actions_value = self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
+  def show_action_menu_as_options(site_basket, default=nil)
+    current_show_actions_value = default || self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_actions_value)
   end
 
-  def show_discussion_as_options(site_basket)
-    current_show_discussion_value = self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
+  def show_discussion_as_options(site_basket, default=nil)
+    current_show_discussion_value = default || self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_discussion_value)
   end
 
-  def side_menu_ordering_of_topics_as_options(site_basket)
-    current_value = self.settings[:side_menu_ordering_of_topics] || site_basket.settings[:side_menu_ordering_of_topics] || 'updated_at'
+  def side_menu_ordering_of_topics_as_options(site_basket, default=nil)
+    current_value = default || self.settings[:side_menu_ordering_of_topics] || site_basket.settings[:side_menu_ordering_of_topics] || 'updated_at'
     options_array = [['Latest', 'latest'],['Alphabetical', 'alphabetical']]
     select_options = self.array_to_options_list_with_defaults(options_array,current_value)
   end
@@ -340,8 +340,7 @@ class Basket < ActiveRecord::Base
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
-      if (default == value.to_s) ||
-         (default.blank? && value == false) ||
+      if (default && (default == value.to_s || (default.blank? && value == false))) ||
          (!default && fully_moderated? == value)
         select_options += " selected=\"selected\""
       end
@@ -402,7 +401,7 @@ class Basket < ActiveRecord::Base
     @possible_themes
   end
 
-  def font_family_select_options
+  def font_family_select_options(default=nil)
     select_options = String.new
     [['Use theme default', ''],
      ['Sans Serif (Arial, Helvetica, and the like)', 'sans-serif'],
@@ -410,7 +409,8 @@ class Basket < ActiveRecord::Base
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
-      if !self.settings[:theme_font_family].blank? and self.settings[:theme_font_family] == value
+      if (default && default == value) ||
+         (!self.settings[:theme_font_family].blank? && self.settings[:theme_font_family] == value)
         select_options += " selected=\"selected\""
       end
       select_options += ">" + label + "</option>"

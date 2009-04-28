@@ -30,7 +30,7 @@ class ProfileTest < ActiveSupport::TestCase
       the_rules = { the_form => the_type }
       @profile = Profile.create!(:name => 'Test', :rules => the_rules)
       @profile.reload
-      assert_equal the_rules, @profile.rules
+      assert_equal the_rules, @profile.rules(true)
     end
 
     context "after being created" do

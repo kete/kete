@@ -12,16 +12,16 @@ module BasketsHelper
     link_to options[:phrase], {:controller => 'topics', :action => :new, :index_for_basket => options[:index_for_basket]}, :tabindex => '1'
   end
 
-  def toggle_elements_applicable(listenToThisElementID, whenElementValueCondition, whenElementValueThis, toggleThisElementID, listenToElementIsCheckbox=false)
+  def toggle_elements_applicable(listenToThisElementID, whenElementValueCondition, whenElementValueThis, toggleThisElementID, listenToElementIsCheckbox=false, clearFields=true)
     if listenToElementIsCheckbox
       javascript_tag "function toggle_#{toggleThisElementID}() {
         var element = $('#{listenToThisElementID}');
         if ( #{whenElementValueCondition}element.checked ) {
           new Effect.BlindDown('#{toggleThisElementID}', {duration: .75})
-          enableAllFields('#{toggleThisElementID}')
+          #{"enableAllFields('#{toggleThisElementID}')" if clearFields}
         } else {
           new Effect.BlindUp('#{toggleThisElementID}', {duration: .75})
-          disableAllFields('#{toggleThisElementID}')
+          #{"disableAllFields('#{toggleThisElementID}')" if clearFields}
         }
       }
       $('#{listenToThisElementID}').observe('change', toggle_#{toggleThisElementID});"
@@ -32,13 +32,13 @@ module BasketsHelper
           if (!element.blindStatus || element.blindStatus == 'up') {
             new Effect.BlindDown('#{toggleThisElementID}', {duration: .75})
             element.blindStatus = 'down';
-            enableAllFields('#{toggleThisElementID}')
+            #{"enableAllFields('#{toggleThisElementID}')" if clearFields}
           }
         } else {
           if (!element.blindStatus || element.blindStatus == 'down') {
             new Effect.BlindUp('#{toggleThisElementID}', {duration: .75})
             element.blindStatus = 'up';
-            disableAllFields('#{toggleThisElementID}')
+            #{"disableAllFields('#{toggleThisElementID}')" if clearFields}
           }
         }
       }
