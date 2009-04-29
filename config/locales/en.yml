@@ -1452,8 +1452,8 @@ en:
       show: Show
       showing_x-y_of_z: Showing {{start}}-{{finish}} results of {{total}}
       view_map: View on map
-      view_list: View as list
-      with_n_locations: results have {{n_locations}} locations
+      view_list: List View
+      x-y_have_z_locations: "{{start}}-{{finish}} results have {{n_locations}} locations"
       address: "Address:"
       coordinates: "Coordinates:"
     rss:

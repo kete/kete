@@ -1234,6 +1234,5 @@ a.disabled {
  * maplinks are used on results pages to switch view type
  */
 #maplinks {
-  margin-right: 3em;
-  float: right;
-  display: inline; }
+  margin-bottom: 10px;
+}

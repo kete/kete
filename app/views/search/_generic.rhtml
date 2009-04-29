@@ -8,20 +8,7 @@
       <%= link_to(t('search.generic.more'), source_url, { :title => t('search.generic.more_on', :title => title), :tabindex => '1' }) %>
     </div>
   </div>
-  <% if related -%>
-    <div class="generic-result-related">
-      <%=t 'search.generic.related' %>
-      <% totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) } -%>
-      <%= totals_array.to_sentence %>
-      <% if related && !related[:still_images].blank? -%>
-        <div class="topic-result-related-images">
-          <%= topic_related_thumbs_from(related[:still_images],
-                                        :link_to => source_url,
-                                        :title => t('search.generic.more_on', :title => title),
-                                        :tabindex => '1' ) -%>
-        </div>
-      <% end %>
-    </div>
-    <div style="clear:both;"></div>
-  <% end %>
+  <%= render('related', :related => related,
+                        :source_url => source_url,
+                        :title => title) if related -%>
 </div>
