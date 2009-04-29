@@ -1409,7 +1409,6 @@ en:
     generic:
       more: more &gt;&gt;
       more_on: More information on {{title}}
-      related: "Related:"
     homepage_topic_form:
       change_homepage_topic: Change Homepage Topic
       close: Close
@@ -1434,6 +1433,9 @@ en:
       title: Zoom Index Rebuild from {{start}} to {{end}}
     refine_by_choice:
       limit_to_category: Limit it to category?
+    related:
+      more_on: More information on {{title}}
+      title: "Related:"
     related_form:
       close: Close
       executing_action: "Executing {{action}} action. "
