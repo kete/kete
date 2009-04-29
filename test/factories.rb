@@ -66,3 +66,11 @@ def create_extended_field(options)
   assert_kind_of ExtendedField, @extended_field
   @extended_field
 end
+
+#
+# Profiles
+#
+Factory.define :profile do |p|
+  p.name 'Test Profile'
+  p.rules ({ 'edit' => { 'rule_type' => 'none' } })
+end

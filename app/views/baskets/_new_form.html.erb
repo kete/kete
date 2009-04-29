@@ -1,5 +1,5 @@
 <% @title = 'New basket'
-   @basket_profile = params[:basket_profile] %>
+   @basket_profile = @profiles.size == 1 ? @profiles.first.id : params[:basket_profile] %>
 
 <h2><%= h(@title) -%></h2>
 

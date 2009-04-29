@@ -28,7 +28,7 @@ class BasketsControllerTest < ActionController::TestCase
                        :file_private_default => false,
                        :allow_non_member_comments => nil }
 
-    @req_attr_names = %w(name private_default file_private_default) 
+    @req_attr_names = %w(name private_default file_private_default)
     # name of fields that must be present, e.g. %(name description)
     @duplicate_attr_names = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
   end
@@ -238,12 +238,149 @@ class BasketsControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil(:baskets)
   end
-  
+
   def test_rss_feed_accessible_logged_in
     login_as(:admin)
     get :rss, :urlified_name => 'site', :controller => 'baskets', :action => 'rss'
     assert_response :success
     assert_not_nil(:baskets)
+  end
+
+  context "When basket profile(s) are available" do
+
+    setup do
+      @rules = {
+        'edit' => {
+          'rule_type' => 'some',
+          'allowed' => ['show_privacy_controls'],
+          'values' => {
+            'show_privacy_controls' => false,
+            'private_default' => false
+          }
+        }
+      }
+      @profile = Factory(:profile, :rules => @rules)
+    end
+
+    should "show basket form when only one profile exists" do
+      get :new, :urlified_name => 'site'
+      assert_response :success
+      assert_not_nil(:template)
+      title = assigns(:template).instance_variable_get(:@title)
+      assert_equal 'New basket', title
+    end
+
+    should "show the profile selection form when more than one profile exists" do
+      @profile2 = Factory(:profile)
+      get :new, :urlified_name => 'site'
+      assert_response :success
+      assert_not_nil(:template)
+      title = assigns(:template).instance_variable_get(:@title)
+      assert_equal 'Choose Basket Profile', title
+    end
+
+    should "have form type set" do
+      get :new, :urlified_name => 'site', :basket_profile => @profile.id
+      assert_response :success
+      assert_not_nil(:form_type)
+      assert_equal :edit, assigns(:form_type)
+    end
+
+    should "have profile rules instance var available" do
+      get :new, :urlified_name => 'site', :basket_profile => @profile.id
+      assert_response :success
+      assert_not_nil(:profile_rules)
+      assert_equal @rules, assigns(:profile_rules)
+    end
+
+    should "alter the basket object to set some initial values" do
+      get :new, :urlified_name => 'site', :basket_profile => @profile.id
+      assert_response :success
+      assert_not_nil(:basket)
+      assert_equal false, assigns(:basket).show_privacy_controls
+    end
+
+    should "validate and replace values that shouldn't be there, but leave valid values" do
+      post :create, :urlified_name => 'site', :basket_profile => @profile.id, :basket => {
+        :show_privacy_controls => true,
+        :private_default => true,
+        :file_private_default => true
+      }
+      assert_response :success
+      assert_not_nil(:basket)
+      assert_equal true, assigns(:basket).show_privacy_controls
+      assert_equal false, assigns(:basket).private_default
+      assert_equal nil, assigns(:basket).file_private_default
+    end
+
+  end
+
+  context "When a basket has a profile" do
+
+    setup do
+      @rules = {
+        'edit' => {
+          'rule_type' => 'some',
+          'allowed' => ['show_privacy_controls', 'allow_non_member_comments'],
+          'values' => {
+            'show_privacy_controls' => false,
+            'private_default' => false
+          }
+        }
+      }
+      @profile = Factory(:profile, :rules => @rules)
+
+      @basket = Factory(:basket, :allow_non_member_comments => false)
+      @basket.profiles << @profile
+    end
+
+    should "have form type set" do
+      get :edit, :urlified_name => @basket.urlified_name, :id => @basket
+      assert_response :success
+      assert_not_nil(:form_type)
+      assert_equal :edit, assigns(:form_type)
+    end
+
+    should "have profile rules instance var available" do
+      get :edit, :urlified_name => @basket.urlified_name, :id => @basket
+      assert_response :success
+      assert_not_nil(:profile_rules)
+      assert_equal @rules, assigns(:profile_rules)
+    end
+
+    should "not change values of existing basket settings when first editing" do
+      get :edit, :urlified_name => @basket.urlified_name, :id => @basket
+      assert_response :success
+      assert_not_nil(:basket)
+      assert_equal false, assigns(:basket).allow_non_member_comments
+    end
+
+    should "change values of existing basket settings after user submitting" do
+      post :update, :urlified_name => @basket.urlified_name, :id => @basket, :basket => {
+        :allow_non_member_comments => true
+      }
+      assert_response :redirect
+      assert_equal 'Basket was successfully updated.', flash[:notice]
+      get :edit, :urlified_name => @basket.urlified_name, :id => @basket
+      assert_not_nil(:basket)
+      assert_equal true, assigns(:basket).allow_non_member_comments
+    end
+
+    should "validate and replace values that shouldn't be there, but leave valid values" do
+      post :update, :urlified_name => @basket.urlified_name, :id => @basket, :basket => {
+        :show_privacy_controls => true,
+        :private_default => true,
+        :file_private_default => true
+      }
+      assert_response :redirect
+      assert_equal 'Basket was successfully updated.', flash[:notice]
+      get :edit, :urlified_name => @basket.urlified_name, :id => @basket
+      assert_not_nil(:basket)
+      assert_equal true, assigns(:basket).show_privacy_controls
+      assert_equal false, assigns(:basket).private_default
+      assert_equal nil, assigns(:basket).file_private_default
+    end
+
   end
 
   private
