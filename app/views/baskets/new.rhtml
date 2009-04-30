@@ -1,4 +1,4 @@
-<% if @profiles.blank? || @profiles.size == 1 || !params[:basket_profile].blank? %>
+<% if @profiles.blank? || !params[:basket_profile].blank? %>
 
   <%= render :partial => 'new_form' %>
 

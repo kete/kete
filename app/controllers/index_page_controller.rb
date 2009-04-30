@@ -138,7 +138,7 @@ class IndexPageController < ApplicationController
             @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
           end
 
-          if @current_basket.index_page_number_of_tags > 0
+          if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0
             @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, @allow_private)
             @tag_counts_size = @tag_counts_array.size
             @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]

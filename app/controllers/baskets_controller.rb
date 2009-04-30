@@ -62,6 +62,7 @@ class BasketsController < ApplicationController
 
   def new
     @profiles = Profile.all
+    params[:basket_profile] = @profiles.first.id if @profiles.size == 1
     @basket = Basket.new
     prepare_profile_for(:edit)
   end
@@ -154,6 +155,8 @@ class BasketsController < ApplicationController
 
   def update
     params[:source_form] ||= 'edit'
+    params[:basket] ||= Hash.new
+
     @basket = Basket.find(params[:id])
     @topics = @basket.topics
     original_name = @basket.name
@@ -453,12 +456,10 @@ class BasketsController < ApplicationController
     @form_type = form_type
 
     # for each basket attribute, add a default value, only if the value isn't already set
-    %w{ show_privacy_controls private_default file_private_default allow_non_member_comments
-        index_page_redirect_to_all index_page_topic_is_entire_page index_page_link_to_index_topic_as
-        index_page_number_of_recent_topics index_page_recent_topics_as index_page_basket_search
-        index_page_extra_side_bar_html do_not_sanitize index_page_image_as index_page_archives_as
-        index_page_number_of_tags index_page_tags_as index_page_order_tags_by }.each do |setting|
-      @basket.send("#{setting}=", current_value_of(setting)) unless params[:basket] && params[:basket].key?(setting)
+    Basket::EDITABLE_ATTRIBUTES.each do |setting|
+      unless params[:basket] && params[:basket].key?(setting)
+        @basket.send("#{setting}=", current_value_of(setting))
+      end
     end
   end
 
@@ -467,7 +468,10 @@ class BasketsController < ApplicationController
   # are allowed/set and replace/add them if they aren't.
   # make sure we edit the params hash for both basket and settings
   # as well as the @basket object for basket settings
+  # don't do this if the user is a site admin though
   def validate_settings_against_profile
+    return if @site_admin
+
     if params[:basket]
       Rails.logger.debug "Before params validation, basket was " + params[:basket].inspect
       params[:basket].each do |k,v|
@@ -508,24 +512,22 @@ class BasketsController < ApplicationController
   # Check whether a field is allowed to be shown to a user
   # return true if no profiles are mapped to this basket
   # return true if the profiles rule type is all
-  # return false if the profiles rule type is none
-  # return true if the field is in the profiles allowed field list
   # Some fields exists as child options of a parent option, and as such,
   # don't have their checkboxes, and thus arn't in the allowed list, however
   # if this method is being called for them, then the parent has been allowed
-  # so return true if the field is in any of the child/nested fields
+  # so return true if the field is in any of the child/nested fields. We have
+  # to do this before anything that returns false else they get turned to nil
+  # return false if the profiles rule type is none
+  # return true if the field is in the profiles allowed field list
   # finally, return false
   def allowed_field?(name)
     return true if profile_rules.blank? # no profile mapping
+    return true if params[:show_all_fields] && @site_admin
     return true if profile_rules[@form_type.to_s]['rule_type'] == 'all'
+    return true if Basket::NESTED_FIELDS.include?(name)
     return false if profile_rules[@form_type.to_s]['rule_type'] == 'none'
     return true if profile_rules[@form_type.to_s]['allowed'] &&
                    profile_rules[@form_type.to_s]['allowed'].include?(name.to_s)
-    nested_fields = %w{ name status creator_id do_not_sanitize index_page_tags_as
-      index_page_recent_topics_as index_page_order_tags_by moderated_except
-      sort_direction_reversed_default do_not_sanitize_footer_content show_action_menu
-      show_discussion show_flagging show_add_links replace_existing_footer }
-    return true if nested_fields.include?(name)
     false
   end
 

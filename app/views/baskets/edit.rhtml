@@ -5,9 +5,12 @@
 
 <%= render :partial => "topics/content_wrapper_start" %>
 
-<h2><%= h(@title) -%></h2>
+<h2>
+  <%= h(@title) -%>
+  <%= show_all_fields_link %>
+</h2>
 
-<% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
+<% form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form| %>
   <%= render :partial => 'form', :object => form %>
   <% if @basket.status == 'requested' -%>
     <div class="wrap">

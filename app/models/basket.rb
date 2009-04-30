@@ -18,6 +18,19 @@ class Basket < ActiveRecord::Base
                    ['Basket Appearance', 'appearance'],
                    ['Basket Homepage Options', 'homepage_options']]
 
+  # Editable Basket Attrobutes
+  EDITABLE_ATTRIBUTES = %w{ show_privacy_controls private_default file_private_default allow_non_member_comments
+    index_page_redirect_to_all index_page_topic_is_entire_page index_page_link_to_index_topic_as
+    index_page_number_of_recent_topics index_page_recent_topics_as index_page_basket_search
+    index_page_extra_side_bar_html do_not_sanitize index_page_image_as index_page_archives_as
+    index_page_number_of_tags index_page_tags_as index_page_order_tags_by }
+
+  # Basket settings that are always editable or come under a parent option
+  NESTED_FIELDS = %w{ name status creator_id do_not_sanitize index_page_tags_as
+    index_page_recent_topics_as index_page_order_tags_by moderated_except
+    sort_direction_reversed_default do_not_sanitize_footer_content show_action_menu
+    show_discussion show_flagging show_add_links replace_existing_footer }
+
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
@@ -198,6 +211,7 @@ class Basket < ActiveRecord::Base
   end
 
   # attribute options methods
+  # TODO clean this up using define_method (meta programming magic)
   def show_flagging_as_options(site_basket, default=nil)
     current_show_flagging_value = default || self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_flagging_value)

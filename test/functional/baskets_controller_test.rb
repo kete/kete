@@ -174,7 +174,8 @@ class BasketsControllerTest < ActionController::TestCase
   end
 
   def test_basket_creation_accessable_when_moderated_and_logged_in
-    login_as(:bryan)
+    Factory(:user)
+    login_as(:joe)
     set_constant("BASKET_CREATION_POLICY", 'request')
     assert_equal 'request', BASKET_CREATION_POLICY
     get :new, :urlified_name => 'site', :controller => 'baskets', :action => 'new'
@@ -201,7 +202,8 @@ class BasketsControllerTest < ActionController::TestCase
   end
 
   def test_basket_needing_moderation_after_creation_not_accessible_by_non_site_admin
-    login_as(:bryan)
+    Factory(:user)
+    login_as(:joe)
     set_constant("BASKET_CREATION_POLICY", 'request')
     assert_equal 'request', BASKET_CREATION_POLICY
     post :create, :basket => @new_model.merge({ :name => 'testing' }), :urlified_name => 'site'
@@ -260,6 +262,7 @@ class BasketsControllerTest < ActionController::TestCase
         }
       }
       @profile = Factory(:profile, :rules => @rules)
+      set_constant("BASKET_CREATION_POLICY", 'open')
     end
 
     should "show basket form when only one profile exists" do
@@ -300,7 +303,9 @@ class BasketsControllerTest < ActionController::TestCase
       assert_equal false, assigns(:basket).show_privacy_controls
     end
 
-    should "validate and replace values that shouldn't be there, but leave valid values" do
+    should "validate and replace values that shouldn't be there, but leave valid values, if the user is a non site admin" do
+      Factory(:user)
+      login_as(:joe)
       post :create, :urlified_name => 'site', :basket_profile => @profile.id, :basket => {
         :show_privacy_controls => true,
         :private_default => true,
@@ -313,6 +318,18 @@ class BasketsControllerTest < ActionController::TestCase
       assert_equal nil, assigns(:basket).file_private_default
     end
 
+    should "not validate and replace values if the current user is a site admin" do
+      post :create, :urlified_name => 'site', :basket_profile => @profile.id, :basket => {
+        :show_privacy_controls => true,
+        :private_default => true,
+        :file_private_default => true
+      }
+      assert_response :success
+      assert_not_nil(:basket)
+      assert_equal true, assigns(:basket).show_privacy_controls
+      assert_equal true, assigns(:basket).private_default
+      assert_equal true, assigns(:basket).file_private_default
+    end
   end
 
   context "When a basket has a profile" do
@@ -332,6 +349,8 @@ class BasketsControllerTest < ActionController::TestCase
 
       @basket = Factory(:basket, :allow_non_member_comments => false)
       @basket.profiles << @profile
+      
+      set_constant("BASKET_CREATION_POLICY", 'open')
     end
 
     should "have form type set" do
@@ -366,8 +385,27 @@ class BasketsControllerTest < ActionController::TestCase
       assert_equal true, assigns(:basket).allow_non_member_comments
     end
 
-    should "validate and replace values that shouldn't be there, but leave valid values" do
-      post :update, :urlified_name => @basket.urlified_name, :id => @basket, :basket => {
+    # Commented out because only site admins can edit baskets at this point
+    #
+    # should "validate and replace values that shouldn't be there, but leave valid values, if the user is a non site admin" do
+    #   Factory(:user)
+    #   login_as(:joe)
+    #   post :update, :urlified_name => @basket.urlified_name, :id => @basket, :basket => {
+    #     :show_privacy_controls => true,
+    #     :private_default => true,
+    #     :file_private_default => true
+    #   }
+    #   assert_response :redirect
+    #   assert_equal 'Basket was successfully updated.', flash[:notice]
+    #   get :edit, :urlified_name => @basket.urlified_name, :id => @basket
+    #   assert_not_nil(:basket)
+    #   assert_equal true, assigns(:basket).show_privacy_controls
+    #   assert_equal false, assigns(:basket).private_default
+    #   assert_equal nil, assigns(:basket).file_private_default
+    # end
+
+    should "not validate and replace values if the current user is a site admin" do
+      post :update, :urlified_name => 'site', :basket_profile => @profile.id, :id => @basket, :basket => {
         :show_privacy_controls => true,
         :private_default => true,
         :file_private_default => true
@@ -377,8 +415,8 @@ class BasketsControllerTest < ActionController::TestCase
       get :edit, :urlified_name => @basket.urlified_name, :id => @basket
       assert_not_nil(:basket)
       assert_equal true, assigns(:basket).show_privacy_controls
-      assert_equal false, assigns(:basket).private_default
-      assert_equal nil, assigns(:basket).file_private_default
+      assert_equal true, assigns(:basket).private_default
+      assert_equal true, assigns(:basket).file_private_default
     end
 
   end
