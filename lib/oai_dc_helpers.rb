@@ -1,5 +1,7 @@
 include Utf8UrlFor
 include ActionView::Helpers::SanitizeHelper
+include OaiXmlHelpers
+
 # oai dublin core xml helpers
 # TODO: evaluate whether we can simply go with SITE_URL
 # rather than request hacking
@@ -184,14 +186,8 @@ module OaiDcHelpers
       # we want to add the commented on item as a relation
       case item.class.name
       when 'Topic'
-        ZOOM_CLASSES.each do |zoom_class|
-          related_items = String.new
-          if zoom_class == 'Topic'
-            related_items = item.related_topics
-          else
-            related_items = item.send(zoom_class.tableize)
-          end
-          related_items.each do |related|
+        related_items_of(item).each do |zoom_class,items|
+          items.each do |related|
             xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
             xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
           end
@@ -202,9 +198,11 @@ module OaiDcHelpers
         xml.tag!("dc:subject", commented_on_item.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
         xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
-        item.topics.each do |related|
-          xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+        related_items_of(item).each do |zoom_class,items|
+          items.each do |related|
+            xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          end
         end
       end
     end
