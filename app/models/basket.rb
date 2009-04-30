@@ -12,6 +12,25 @@ class Basket < ActiveRecord::Base
 
   ALL_LEVEL_OPTIONS = [['All users', 'all users']] + [['Logged in user', 'logged in']] + MEMBER_LEVEL_OPTIONS
 
+  # profile forms, these should correspond to actions in the controller
+  # really this would be nicer if it came from reflecting on the baskets_controller class
+  FORMS_OPTIONS = [['Basket New or Edit', 'edit'],
+                   ['Basket Appearance', 'appearance'],
+                   ['Basket Homepage Options', 'homepage_options']]
+
+  # Editable Basket Attrobutes
+  EDITABLE_ATTRIBUTES = %w{ show_privacy_controls private_default file_private_default allow_non_member_comments
+    index_page_redirect_to_all index_page_topic_is_entire_page index_page_link_to_index_topic_as
+    index_page_number_of_recent_topics index_page_recent_topics_as index_page_basket_search
+    index_page_extra_side_bar_html do_not_sanitize index_page_image_as index_page_archives_as
+    index_page_number_of_tags index_page_tags_as index_page_order_tags_by }
+
+  # Basket settings that are always editable or come under a parent option
+  NESTED_FIELDS = %w{ name status creator_id do_not_sanitize index_page_tags_as
+    index_page_recent_topics_as index_page_order_tags_by moderated_except
+    sort_direction_reversed_default do_not_sanitize_footer_content show_action_menu
+    show_discussion show_flagging show_add_links replace_existing_footer }
+
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
   # such as the case that a sysadmin wants to include a form
@@ -77,6 +96,12 @@ class Basket < ActiveRecord::Base
 
   # each basket can have multiple feeds displayed in the sidebar
   has_many :feeds, :dependent => :destroy
+
+  # each basket may have a profile (or in the future, possibly more than one)
+  # that declares the rules of what options a basket admin may see/set
+  # as opposed to a site administrator
+  has_many :profile_mappings, :as => :profilable, :dependent => :destroy
+  has_many :profiles, :through => :profile_mappings
 
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
@@ -186,34 +211,35 @@ class Basket < ActiveRecord::Base
   end
 
   # attribute options methods
-  def show_flagging_as_options(site_basket)
-    current_show_flagging_value = self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
+  # TODO clean this up using define_method (meta programming magic)
+  def show_flagging_as_options(site_basket, default=nil)
+    current_show_flagging_value = default || self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_flagging_value)
   end
 
-  def show_add_links_as_options(site_basket)
-    current_show_add_links_value = self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
+  def show_add_links_as_options(site_basket, default=nil)
+    current_show_add_links_value = default || self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_add_links_value)
   end
 
-  def show_action_menu_as_options(site_basket)
-    current_show_actions_value = self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
+  def show_action_menu_as_options(site_basket, default=nil)
+    current_show_actions_value = default || self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_actions_value)
   end
 
-  def show_discussion_as_options(site_basket)
-    current_show_discussion_value = self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
+  def show_discussion_as_options(site_basket, default=nil)
+    current_show_discussion_value = default || self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
     select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_discussion_value)
   end
 
-  def side_menu_ordering_of_topics_as_options(site_basket)
-    current_value = self.settings[:side_menu_ordering_of_topics] || site_basket.settings[:side_menu_ordering_of_topics] || 'updated_at'
+  def side_menu_ordering_of_topics_as_options(site_basket, default=nil)
+    current_value = default || self.settings[:side_menu_ordering_of_topics] || site_basket.settings[:side_menu_ordering_of_topics] || 'updated_at'
     options_array = [['Latest', 'latest'],['Alphabetical', 'alphabetical']]
     select_options = self.array_to_options_list_with_defaults(options_array,current_value)
   end
 
-  def private_file_visibility_as_options(site_basket)
-    current_value = self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
+  def private_file_visibility_as_options(site_basket, default=nil)
+    current_value = default || self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
     select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
   end
 
@@ -254,8 +280,8 @@ class Basket < ActiveRecord::Base
     (self.settings[:replace_existing_footer] == true || (self.settings[:replace_existing_footer].nil? && self.site_basket.settings[:replace_existing_footer] == true))
   end
 
-  def memberlist_policy_or_default
-    current_value = self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
+  def memberlist_policy_or_default(default=nil)
+    current_value = default || self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
     select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
   end
 
@@ -321,14 +347,15 @@ class Basket < ActiveRecord::Base
      ['Tag Cloud', 'tag cloud']]
   end
 
-  def moderation_select_options
+  def moderation_select_options(default=nil)
     select_options = String.new
     [['moderator views before item approved', true],
      ['moderation upon being flagged', false]].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
-      if fully_moderated? == value
+      if (default && (default == value.to_s || (default.blank? && value == false))) ||
+         (!default && fully_moderated? == value)
         select_options += " selected=\"selected\""
       end
       select_options += ">" + label + "</option>"
@@ -388,7 +415,7 @@ class Basket < ActiveRecord::Base
     @possible_themes
   end
 
-  def font_family_select_options
+  def font_family_select_options(default=nil)
     select_options = String.new
     [['Use theme default', ''],
      ['Sans Serif (Arial, Helvetica, and the like)', 'sans-serif'],
@@ -396,7 +423,8 @@ class Basket < ActiveRecord::Base
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
-      if !self.settings[:theme_font_family].blank? and self.settings[:theme_font_family] == value
+      if (default && default == value) ||
+         (!self.settings[:theme_font_family].blank? && self.settings[:theme_font_family] == value)
         select_options += " selected=\"selected\""
       end
       select_options += ">" + label + "</option>"

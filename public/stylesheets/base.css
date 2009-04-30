@@ -1058,3 +1058,32 @@ div.extended_field_autocomplete ul li {
 div.gmnoprint {
   white-space: normal !important;
 }
+
+/*
+ * Profile create form
+ */
+#profiles-create--form fieldset {
+  border: 1px solid #999;
+  clear: none;
+  padding: 10px;
+  margin: 10px;
+}
+
+#profiles-create--form .form-element {
+  padding: 5px 0;
+}
+
+.allowed_check_box {
+  width: 40px;
+  display: inline;
+  float: left;
+}
+
+.expand_policy {
+  margin-left: 5px;
+  margin-top: -3px;
+}
+
+.show_all_fields {
+  font-size: .7em;
+}

@@ -5,26 +5,35 @@
 
 <%= render :partial => "topics/content_wrapper_start" %>
 
-<h2><%= h(@title) -%></h2>
+<h2>
+  <%= h(@title) -%>
+  <%= show_all_fields_link %>
+</h2>
 
-<ul>
-        <% if !@index_topic.blank? -%>
-        <li>Current homepage topic: <span class="current_homepage_link"><%= link_to h(@index_topic.title), {:controller => 'topics', :action => 'show', :id => @index_topic, :urlified_name => @index_topic.basket.urlified_name}, :tabindex => '1' -%></span></li>
-        <% end -%>
-        <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add new basket homepage topic') -%></li>
-        
-        <% if @topics.size > 0 && !(@topics.size == 1 && @index_topic == @topics.first) -%>
-        <li class="command"><%= link_to_link_index_topic(:current_basket_id => @basket.id,
-                                                         :phrase => 'Link to new basket homepage topic') -%></li>
-        <% end -%>
+<% if any_fields_editable? %>
 
-</ul>
+  <ul>
+    <% if !@index_topic.blank? -%>
+      <li>Current homepage topic: <span class="current_homepage_link"><%= link_to h(@index_topic.title), {:controller => 'topics', :action => 'show', :id => @index_topic, :urlified_name => @index_topic.basket.urlified_name}, :tabindex => '1' -%></span></li>
+    <% end -%>
+    <li class="command"><%= link_to_add_index_topic(:index_for_basket => @basket, :phrase => 'Add new basket homepage topic') -%></li>
+    <% if @topics.size > 0 && !(@topics.size == 1 && @index_topic == @topics.first) -%>
+      <li class="command"><%= link_to_link_index_topic(:current_basket_id => @basket.id,
+                                                       :phrase => 'Link to new basket homepage topic') -%></li>
+    <% end -%>
+  </ul>
 
-<% form_for :basket, :url => {:action => 'update', :id => @basket} do |form| %>
-  <%= render :partial => 'homepage_form', :object => form %>
-  <div style="margin:0;padding:0"><%= submit_tag 'Save' , {:class => "save-button", :tabindex => '1'} %></div>
+  <% form_for :basket, :url => {:action => 'update', :id => @basket, :show_all_fields => params[:show_all_fields] } do |form| %>
+    <%= render :partial => 'homepage_form', :object => form %>
+    <div style="margin:0;padding:0"><%= submit_tag 'Save' , {:class => "save-button", :tabindex => '1'} %></div>
+  <% end %>
+  <%= link_to_cancel %>
+
+<% else %>
+
+  <h4>Homepage options are only set by site administrators at this time.</h4>
+
 <% end %>
-<%= link_to_cancel %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>
 

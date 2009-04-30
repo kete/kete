@@ -1,9 +1,9 @@
-<% tabs = [['edit','Edit', 'baskets'],
-   ['appearance', 'Appearance', 'baskets'],
-   ['homepage_options','Homepage Options', 'baskets'],
-   ['list','Members', 'members'],
-   ['list','Moderate', 'moderate']
-   ]
+<% tabs = Array.new
+   tabs << ['edit','Edit', 'baskets']
+   tabs << ['appearance', 'Appearance', 'baskets'] if any_fields_editable?(:appearance)
+   tabs << ['homepage_options','Homepage Options', 'baskets'] if any_fields_editable?(:homepage_options)
+   tabs << ['list','Members', 'members']
+   tabs << ['list','Moderate', 'moderate']
    tab_count = 1 -%>
 <div id="content-tabs">
   <ul class="nav-list">

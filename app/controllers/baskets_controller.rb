@@ -61,7 +61,21 @@ class BasketsController < ApplicationController
   end
 
   def new
+    @profiles = Profile.all
+    params[:basket_profile] = @profiles.first.id if @profiles.size == 1
     @basket = Basket.new
+    prepare_profile_for(:edit)
+  end
+
+  def render_basket_form
+    new
+    respond_to do |format|
+      format.js do
+        render :update do |page|
+          page.replace_html 'basket_form', :partial => 'new_form'
+        end
+      end
+    end
   end
 
   def create
@@ -77,12 +91,21 @@ class BasketsController < ApplicationController
     params[:basket][:creator_id] = current_user.id
 
     @basket = Basket.new(params[:basket])
+    @profiles = Profile.all
+    prepare_profile_for(:edit)
+    validate_settings_against_profile
 
     if @basket.save
       # Reload to ensure basket.creator is updated.
       @basket.reload
 
       set_settings
+
+      # Set this baskets profile mapping
+      if params[:basket_profile]
+        profile = Profile.find_by_id(params[:basket_profile])
+        @basket.profiles << profile if profile
+      end
 
       # if basket creator is admin or creation not moderated, make creator basket admin
       @basket.accepts_role('admin', current_user) if BASKET_CREATION_POLICY == 'open' || @site_admin
@@ -112,25 +135,32 @@ class BasketsController < ApplicationController
     appropriate_basket
     @topics = @basket.topics
     @index_topic = @basket.index_topic
+    prepare_profile_for(:edit)
   end
 
   def homepage_options
     edit
+    prepare_profile_for(:homepage_options)
 
-    @feeds_list = []
-    @basket.feeds.each do |feed|
-      limit = !feed.limit.nil? ? feed.limit.to_s : ''
-      frequency = !feed.update_frequency.nil? ? feed.update_frequency.to_s.gsub('.0', '') : ''
-      @feeds_list << "#{feed.title}|#{feed.url}|#{limit}|#{frequency}"
+    @feeds_list = nil
+    if @basket.feeds.count > 0
+      @basket.feeds.each do |feed|
+        limit = !feed.limit.nil? ? feed.limit.to_s : ''
+        frequency = !feed.update_frequency.nil? ? feed.update_frequency.to_s.gsub('.0', '') : ''
+        @feeds_list << "#{feed.title}|#{feed.url}|#{limit}|#{frequency}"
+      end
+      @feeds_list = @feeds_list.join("\n")
     end
-    @feeds_list = @feeds_list.join("\n")
   end
 
   def update
     params[:source_form] ||= 'edit'
+    params[:basket] ||= Hash.new
+
     @basket = Basket.find(params[:id])
     @topics = @basket.topics
     original_name = @basket.name
+    prepare_profile_for(params[:source_form].to_sym)
 
     unless params[:accept_basket].blank?
       params[:basket][:status] = 'approved'
@@ -194,6 +224,8 @@ class BasketsController < ApplicationController
     end
 
     convert_text_fields_to_boolean if params[:source_form] == 'edit'
+
+    validate_settings_against_profile
 
     if @feeds_successful && @basket.update_attributes(params[:basket])
       # Reload to ensure basket.name is updated and not the previous
@@ -291,10 +323,12 @@ class BasketsController < ApplicationController
 
   def appearance
     appropriate_basket
+    prepare_profile_for(:appearance)
   end
 
   def update_appearance
     @basket = Basket.find(params[:id])
+    prepare_profile_for(:appearance)
     do_not_sanitize = (params[:settings][:do_not_sanitize_footer_content] == 'true')
     original_html = params[:settings][:additional_footer_content]
     sanitized_html = original_html
@@ -302,6 +336,7 @@ class BasketsController < ApplicationController
       sanitized_html = sanitize(original_html)
       params[:settings][:additional_footer_content] = sanitized_html
     end
+    validate_settings_against_profile
     set_settings
     flash[:notice] = 'Basket appearance was updated.'
     logger.debug("sanitized yes") if original_html != sanitized_html
@@ -402,7 +437,152 @@ class BasketsController < ApplicationController
     params[:id].blank? || @current_basket.id == params[:id]
   end
 
+  # make these methods available in the views
+  helper_method :profile_rules, :allowed_field?, :current_value_of
+
   private
+
+  #
+  # Basket Profile Helpers
+  # (we put them in the controller because some are used here)
+  #
+
+  # when we are making/editing a basket, set the default values so they
+  # reflect on the form the person making the basket sees. Don't do this
+  # however if they have submitted a form and a value exists in params[:basket]
+  # (because it overwrites it)
+  def prepare_profile_for(form_type)
+    # this var is used in form helpers
+    @form_type = form_type
+
+    # for each basket attribute, add a default value, only if the value isn't already set
+    Basket::EDITABLE_ATTRIBUTES.each do |setting|
+      unless params[:basket] && params[:basket].key?(setting)
+        @basket.send("#{setting}=", current_value_of(setting))
+      end
+    end
+  end
+
+  # we can't use hidden fields because its not secure
+  # so after a post has been made, we have to check values
+  # are allowed/set and replace/add them if they aren't.
+  # make sure we edit the params hash for both basket and settings
+  # as well as the @basket object for basket settings
+  # don't do this if the user is a site admin though
+  def validate_settings_against_profile
+    return if @site_admin
+
+    if params[:basket]
+      Rails.logger.debug "Before params validation, basket was " + params[:basket].inspect
+      params[:basket].each do |k,v|
+        unless allowed_field?(k)
+          value = current_value_of(k, true)
+          params[:basket][k] = value
+          @basket.send("#{k}=", value)
+        end
+      end
+      Rails.logger.debug "After params validation, basket is " + params[:basket].inspect
+    end
+
+    if params[:settings]
+      Rails.logger.debug "Before params validation, settings was " + params[:settings].inspect
+      params[:settings].each do |k,v|
+        params[:settings][k] = current_value_of(k, true) unless allowed_field?(k)
+      end
+      Rails.logger.debug "After params validation, settings is " + params[:settings].inspect
+    end
+  end
+
+  # gets the profile rules for this basket. Memoize the result to prevent needless queries
+  # in the case of a new record, pull the basket profile from the db based on
+  # basket_profile param. In the case of editing a record, pull the first basket profile
+  # from the associations. In either case, if a profile doesn't exist or can't be found,
+  # return nil.
+  def profile_rules
+    @profile_rules ||= begin
+      if !@basket || @basket.new_record?
+        profile = Profile.find_by_id(params[:basket_profile])
+        profile ? profile.rules(true) : nil
+      else
+        !@basket.profiles.blank? ? @basket.profiles.first.rules(true) : nil
+      end
+    end
+  end
+
+  # Check whether a field is allowed to be shown to a user
+  # return true if no profiles are mapped to this basket
+  # return true if the profiles rule type is all
+  # Some fields exists as child options of a parent option, and as such,
+  # don't have their checkboxes, and thus arn't in the allowed list, however
+  # if this method is being called for them, then the parent has been allowed
+  # so return true if the field is in any of the child/nested fields. We have
+  # to do this before anything that returns false else they get turned to nil
+  # return false if the profiles rule type is none
+  # return true if the field is in the profiles allowed field list
+  # finally, return false
+  def allowed_field?(name)
+    return true if profile_rules.blank? # no profile mapping
+    return true if params[:show_all_fields] && @site_admin
+    return true if profile_rules[@form_type.to_s]['rule_type'] == 'all'
+    return true if Basket::NESTED_FIELDS.include?(name)
+    return false if profile_rules[@form_type.to_s]['rule_type'] == 'none'
+    return true if profile_rules[@form_type.to_s]['allowed'] &&
+                   profile_rules[@form_type.to_s]['allowed'].include?(name.to_s)
+    false
+  end
+
+  # get the current value of a field, from either basket/setting submitted values,
+  # profile if new record, or exsiting value of existing record
+  # skip_posted_values will skip getting the value from params
+  def current_value_of(name, skip_posted_values=false)
+    value = nil
+
+    unless skip_posted_values
+      # if the value exists in a submitted form, use it
+      value = params[:basket][name] if params[:basket] && params[:basket].key?(name)
+      value = params[:settings][name] if params[:settings] && params[:settings].key?(name)
+    end
+
+    if value.nil? && @basket && !@basket.new_record?
+      value = if @basket.respond_to?(name)
+        # if the basket responds to a value method
+        @basket.send(name)
+      elsif @basket.respond_to?("#{name}?")
+        # if the basket respond to a boolean method
+        @basket.send("#{name}?")
+      else
+        # else, see if it has a setting (which will returns nil if not)
+        @basket.settings[name.to_sym]
+      end
+    end
+
+    # if by this point we still have nothing/nil
+    if value.nil? || value.class == NilClass
+      value = if profile_rules.blank?
+        # no profile mapping
+        nil
+      else
+        # return the profile rule default value
+        profile_rules[@form_type.to_s]['values'][name.to_s]
+      end
+    end
+
+    # turn strings into booleans when possible for comparing (v == false) etc
+    case value
+    when 'true'
+      true
+    when 'false'
+      false
+    when 'nil', 'inherit'
+      nil
+    else
+      value
+    end
+  end
+
+  #
+  # End of Basket Profile Helpers
+  #
 
   def list_baskets(per_page=10)
     if !params[:type].blank? && @site_admin

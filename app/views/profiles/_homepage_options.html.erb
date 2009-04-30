@@ -1,0 +1,108 @@
+<fieldset>
+
+  <div class="form-element">show<br />field?</div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('index_page_redirect_to_all') %>
+    <label>Go directly to "browse" options</label>
+    <%= rules_fieldset_tag('index_page_redirect_to_all') %>
+      <%= rules_select_tag('index_page_redirect_to_all', options_for_select(zoom_controllers_as_options([["Don't redirect", '']]), current_value_for('index_page_redirect_to_all')), 'Redirect to results of?') %>
+    </fieldset>
+  </div>
+
+  <div id="depth1" <%= 'style="display:none;"' unless current_value_for('index_page_redirect_to_all').blank? %>>
+
+    <div class="form-element">
+      <%= rules_allowed_check_box('index_page_topic_is_entire_page') %>
+      <label>Homepage Topic</label>
+      <%= rules_fieldset_tag('index_page_topic_is_entire_page') %>
+        <%= rules_check_box_tag('index_page_topic_is_entire_page', '1', 'Show only homepage topic?') %>
+        <div class="form-element" id="depth2" <%= 'style="display:none;"' unless current_value_for('index_page_topic_is_entire_page').blank? %>>
+          <%= rules_select_tag('index_page_link_to_index_topic_as', options_for_select(Basket.link_to_index_topic_as_options, current_value_for('index_page_link_to_index_topic_as')), 'A link to the homepage topic\'s?') %>
+        </div>
+      </fieldset>
+    </div>
+
+    <div id="depth3" <%= 'style="display:none;"' unless current_value_for('index_page_topic_is_entire_page').blank? %>>
+      
+      <div class="form-element">
+        <%= rules_allowed_check_box('index_page_number_of_recent_topics') %>
+        <label>Recent Topics</label>
+        <%= rules_fieldset_tag('index_page_number_of_recent_topics') %>
+          <%= rules_text_field_tag('index_page_number_of_recent_topics', 'List how many recent topics?') %>
+          <div class="form-element" id="depth4" <%= 'style="display:none;"' unless current_value_for('index_page_number_of_recent_topics').to_i > 0 %>>
+            <%= rules_select_tag('index_page_recent_topics_as', options_for_select(Basket.recent_topics_as_options, current_value_for('index_page_recent_topics_as')), 'List basket\'s topics as?') %>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-element">
+        <%= rules_allowed_check_box('index_page_basket_search') %>
+        <label>Search</label>
+        <%= rules_fieldset_tag('index_page_basket_search') %>
+          <%= rules_check_box_tag('index_page_basket_search', '1', 'Include basket search form?') %>
+        </fieldset>
+      </div>
+
+      <div class="form-element">
+        <%= rules_allowed_check_box('index_page_extra_side_bar_html') %>
+        <label>Sidebar content after search</label>
+        <%= rules_fieldset_tag('index_page_extra_side_bar_html') %>
+          <%= rules_text_area_tag('index_page_extra_side_bar_html') %>
+          <%= rules_check_box_tag('do_not_sanitize', 'true', 'Allow forms and other possible insecure elements and attributes in the HTML?') %>
+        </fieldset>
+      </div>
+
+      <div class="form-element">
+        <%= rules_allowed_check_box('index_page_image_as') %>
+        <label>Selected Image</label>
+        <%= rules_fieldset_tag('index_page_image_as') %>
+          <%= rules_select_tag('index_page_image_as', options_for_select(Basket.image_as_options, current_value_for('index_page_image_as')), 'Show image from basket?') %>
+        </fieldset>
+      </div>
+
+      <div class="form-element">
+        <%= rules_allowed_check_box('index_page_archives_as') %>
+        <label>Archives</label>
+        <%= rules_fieldset_tag('index_page_archives_as') %>
+          <%= rules_select_tag('index_page_archives_as', options_for_select(Basket.archives_as_options, current_value_for('index_page_archives_as')), 'List basket\'s archive contents as?') %>
+        </fieldset>
+      </div>
+
+      <div class="form-element">
+        <%= rules_allowed_check_box('index_page_number_of_tags') %>
+        <label>Tags</label>
+        <%= rules_fieldset_tag('index_page_number_of_tags') %>
+          <%= rules_text_field_tag('index_page_number_of_tags', 'List how many tags?') %>
+          <div id="depth5" <%= 'style="display:none;"' unless current_value_for('index_page_number_of_tags').to_i > 0 %>>
+            <%= rules_select_tag('index_page_tags_as', options_for_select(Basket.tags_as_options, current_value_for('index_page_tags_as')), 'List basket\'s tags as?') %>
+            <%= rules_select_tag('index_page_order_tags_by', options_for_select(Basket.order_tags_by_options, current_value_for('index_page_order_tags_by')), 'Order tags by?') %>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-element">
+        <%= rules_allowed_check_box('feeds_url_list') %>
+        <label>RSS or Atom Feeds</label>
+        <%= rules_fieldset_tag('feeds_url_list') %>
+          <%= rules_text_area_tag('feeds_url_list') %>
+          <div class="form_example">
+            <p>A new-line separated list of URLs in the following format per line:</p>
+            <p>Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in minutes - optional)</p>
+          </div>
+        </fieldset>
+      </div>
+      
+    </div>
+    
+  </div>
+
+</fieldset>
+
+<%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_redirect_to_all', '==', '', 'depth1', false, false) %>
+<%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_topic_is_entire_page', '!', '', 'depth2', true, false) %>
+<%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_topic_is_entire_page', '!', '', 'depth3', true, false) %> 
+<%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_number_of_recent_topics', '>', '0', 'depth4', false, false) %>
+<%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_number_of_tags', '>', '0', 'depth5', false, false) %>
+
+<%= rules_section_javascript %>

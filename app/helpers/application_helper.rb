@@ -160,20 +160,22 @@ module ApplicationHelper
 
   def users_baskets_list(user=current_user, options ={})
     # if the user is the current user, use the basket_access_hash instead of fetching them again
-    @baskets = (user == current_user) ? @basket_access_hash : user.basket_permissions
+    basket_permissions = (user == current_user) ? @basket_access_hash : user.basket_permissions
 
     row1 = 'user_basket_list_row1'
     row2 = 'user_basket_list_row2'
     css_class = row1
 
     if user == current_user || @site_admin
-      Basket.find_all_by_status_and_creator_id('requested', user).each do |basket|
-        @baskets << [basket.urlified_name, nil] if @baskets[basket.urlified_name.to_sym].blank?
+      Basket.find_all_by_status_and_creator_id('requested', user, :select => 'urlified_name').each do |basket|
+        if basket_permissions[basket.urlified_name.to_sym].blank?
+          basket_permissions[basket.urlified_name.to_sym] = Hash.new
+        end
       end
     end
 
     html = String.new
-    @baskets.each do |basket_name, role|
+    basket_permissions.each do |basket_name, role|
       basket = Basket.find_by_urlified_name(basket_name.to_s)
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
       pending = (basket.status == 'requested') ? " (pending)" : ''

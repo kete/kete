@@ -1,0 +1,120 @@
+<fieldset>
+
+  <div class="form-element">show<br />field?</div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('fully_moderated') %>
+    <label>Moderation Policy:</label>
+    <%= rules_fieldset_tag('fully_moderated') %>
+      <%= rules_select_tag('fully_moderated', @basket.moderation_select_options(current_value_for('fully_moderated'))) %>
+      <div class="form-element" id="moderated_except" <%= 'style="display:none"' unless current_value_for('fully_moderated') == 'true' -%>>
+        <label class="inline">Moderator views items before approved EXCEPT:</label>
+        <fieldset>
+          <% ZOOM_CLASSES.each do |zoom_class| -%>
+            <%= rules_check_box_tag('moderated_except', zoom_class, zoom_class_plural_humanize(zoom_class), true) %>
+          <% end -%>
+        </fieldset>
+      </div>
+    </fieldset>
+    <%= toggle_elements_applicable(rules_label_id('fully_moderated'), '==', 'true', 'moderated_except', false, false) %>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('show_privacy_controls') %>
+    <label>Privacy Controls:</label>
+    <%= rules_fieldset_tag('show_privacy_controls') %>
+      <%= rules_radio_button_tag('show_privacy_controls', 'true', 'Enabled') %>
+      <%= rules_radio_button_tag('show_privacy_controls', 'false', 'Disabled') %>
+      <%= rules_radio_button_tag('show_privacy_controls', 'nil', 'Inherit') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('private_default') %>
+    <label>Default Item Privacy:</label>
+    <%= rules_fieldset_tag('private_default') %>
+      <%= rules_radio_button_tag('private_default', 'false', 'Public') %>
+      <%= rules_radio_button_tag('private_default', 'true', 'Private') %>
+      <%= rules_radio_button_tag('private_default', 'nil', 'Inherit') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('file_private_default') %>
+    <label>Default Original File Privacy:</label>
+    <%= rules_fieldset_tag('file_private_default') %>
+      <%= rules_radio_button_tag('file_private_default', 'false', 'Public') %>
+      <%= rules_radio_button_tag('file_private_default', 'true', 'Private') %>
+      <%= rules_radio_button_tag('file_private_default', 'nil', 'Inherit') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('private_file_visibility') %>
+    <label>Private Original Files Visibility:</label>
+    <%= rules_fieldset_tag('private_file_visibility') %>
+      <%= rules_select_tag('private_file_visibility', @basket.private_file_visibility_as_options(@site_basket, current_value_for('private_file_visibility')),
+                           'To view private attached files you must be at least a:') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('allow_non_member_comments') %>
+    <label>Who can add, edit and update comments on items?:</label>
+    <%= rules_fieldset_tag('allow_non_member_comments') %>
+      <%= rules_radio_button_tag('allow_non_member_comments', 'true', 'Anyone logged in') %>
+      <%= rules_radio_button_tag('allow_non_member_comments', 'false', 'Only basket members') %>
+      <%= rules_radio_button_tag('allow_non_member_comments', 'nil', 'Inherit') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('sort_order_default') %>
+    <label>Default Browse Results Order:</label>
+    <%= rules_fieldset_tag('sort_order_default') %>
+      <%= rules_select_tag('sort_order_default', "<option value='none'>use software default</option>#{Search.all_sort_types(current_value_for('sort_order_default'), 'all')}", 'Sort by:') %>
+      <%= rules_check_box_tag('sort_direction_reversed_default', 'reverse', 'in reverse?') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('disable_site_recent_topics_display') %>
+    <label>Disable Site Recent Topics Display:</label>
+    <%= rules_fieldset_tag('disable_site_recent_topics_display') %>
+      <%= rules_check_box_tag('disable_site_recent_topics_display', 'true', 'Do not show new/edited topics in recent results on the Site basket?') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('basket_join_policy') %>
+    <label>Join Policy:</label>
+    <%= rules_fieldset_tag('basket_join_policy') %>
+      <%= rules_radio_button_tag('basket_join_policy', 'open', 'Open Membership') %>
+      <%= rules_radio_button_tag('basket_join_policy', 'request', 'Request Membership') %>
+      <%= rules_radio_button_tag('basket_join_policy', 'closed', 'Closed Membership') %>
+      <%= rules_radio_button_tag('basket_join_policy', 'nil', 'Inherit') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('memberlist_policy') %>
+    <label>Member List Policy:</label>
+    <%= rules_fieldset_tag('memberlist_policy') %>
+      <%= rules_select_tag('memberlist_policy', @basket.memberlist_policy_or_default(current_value_for('memberlist_policy')),
+                           'To view the member list you must be at least a:') %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('allow_basket_admin_contact') %>
+    <label>Administrator contact?</label>
+    <%= rules_fieldset_tag('allow_basket_admin_contact') %>
+      <%= rules_radio_button_tag('allow_basket_admin_contact', 'true', 'Enabled') %>
+      <%= rules_radio_button_tag('allow_basket_admin_contact', 'false', 'Disabled') %>
+      <%= rules_radio_button_tag('allow_basket_admin_contact', 'nil', 'Inherit') %>
+    </fieldset>
+  </div>
+
+</fieldset>
+
+<%= rules_section_javascript %>
