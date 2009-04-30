@@ -25,7 +25,7 @@
   profile</p>
 <% end %>
 <% else %>
-<p>Please see the <%= link_to "site terms and conditions", :urlified_name => "about", :controller => "topics", :action => "show", :id => 4, :tabindex => '1' -%> for information on how contributions are licensed.</p>
+<p>Please see the <%= link_to "site terms and conditions", :urlified_name => @about_basket.urlified_name, :controller => "topics", :action => "show", :id => 4, :tabindex => '1' -%> for information on how contributions are licensed.</p>
 <% end %>
 
 <% end -%>

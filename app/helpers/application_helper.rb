@@ -801,7 +801,7 @@ module ApplicationHelper
 
       # If the extended field type is a choice, then link the value to the search page for the EF.
       url_hash = {
-        :urlified_name => 'site',
+        :urlified_name => @site_basket.urlified_name,
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
         :controller => 'search',
         :extended_field => ef.label_for_params
@@ -852,13 +852,13 @@ module ApplicationHelper
       end
 
       case value
-      when /^(.+)\((.+)\)$/
+      when /^(.+)\((\w{3,9}:\/\/.+)\)$/
         # something (url)
-        link_to($1, $2)
+        link_to($1.strip, $2)
       when /^\w+:\/\/[^ ]+/
         # this is a url protocal of some sort, make link
         link_to(label, value)
-      when /^\w+[^ ]*\@\w+\.\w/
+      when /^[\w._%+-]+@[\w.-]+\.[\w]{2,4}$/
         mail_to(label, value, :encode => "hex")
       else
         sanitize(value)

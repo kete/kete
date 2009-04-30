@@ -86,7 +86,7 @@ module AuthenticatedSystem
       respond_to do |accepts|
         accepts.html do
           store_location
-          redirect_to :urlified_name => 'site',
+          redirect_to :urlified_name => Basket.site_basket.urlified_name,
                       :controller => 'account',
                       :action => 'login'
         end

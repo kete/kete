@@ -2,7 +2,7 @@ class ChoicesController < ApplicationController
   
   before_filter :login_required, :only => [ :list, :index ]
   
-  permit "site_admin"
+  permit "site_admin", :except => [ :categories_list ]
   
   active_scaffold :choices do |config|
     

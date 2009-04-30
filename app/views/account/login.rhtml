@@ -33,7 +33,7 @@
   <p>Are you registered? You will need to <%= link_to("register",
                                               {:controller => 'account',
     :action => 'signup',
-    :urlified_name => 'site'}, :tabindex => '1') -%> first before you can login.</p>
+    :urlified_name => @site_basket.urlified_name}, :tabindex => '1') -%> first before you can login.</p>
   <% else -%>
   <p>Please enter the default administrator account login and password
   to continue to configuration of the site.</p>
@@ -55,7 +55,7 @@
     <%= check_box_tag 'remember_me', "1", false, :tabindex => '1' %>
   </div>
 
-  <p>Forgot your password? <%= link_to('Click here', {:controller => 'account', :action => 'forgot_password', :urlified_name => 'site'}, :tabindex => '1') -%></p>
+  <p>Forgot your password? <%= link_to('Click here', {:controller => 'account', :action => 'forgot_password', :urlified_name => @site_basket.urlified_name}, :tabindex => '1') -%></p>
   <% end -%>
 </fieldset>
 
