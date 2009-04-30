@@ -1,3 +1,5 @@
+include OaiXmlHelpers
+
 module XmlHelpers
   unless included_modules.include? XmlHelpers
     def appropriate_protocol_for(item)
@@ -127,18 +129,12 @@ module XmlHelpers
       totals_hash = Hash.new
       # only add to totals if there are items
       unless item.is_a?(Topic)
-        total = item.topics.count
+        total = related_items_of(item, true)['Topic'].size
         totals_hash[:topics] = total if total > 0
       else
         ZOOM_CLASSES.each do |class_name|
-          tableized = class_name.tableize
-          total = 0
-          unless class_name == 'Topic'
-            total = item.send(tableized).count
-          else
-            total = item.parent_related_topics.count + item.child_related_topics.count
-          end
-          totals_hash[tableized.to_sym] = total if total > 0
+          total = related_items_of(item, true)[class_name].size
+          totals_hash[class_name.tableize.to_sym] = total if total > 0
         end
       end
       options = ['related_items']
