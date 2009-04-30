@@ -1083,3 +1083,7 @@ div.gmnoprint {
   margin-left: 5px;
   margin-top: -3px;
 }
+
+.show_all_fields {
+  font-size: .7em;
+}

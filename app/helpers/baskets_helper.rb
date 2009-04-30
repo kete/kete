@@ -84,23 +84,25 @@ baskets unless they individually specify their own policy."
     if @site_admin && !request.post? &&
        profile_rules && profile_rules[@form_type.to_s] &&
        profile_rules[@form_type.to_s]['rule_type'] != 'all'
-      html += '<span style="font-size: .7em;">'
+      html += '<span class="show_all_fields">['
       action = params[:action] == 'render_basket_form' ? 'new' : params[:action]
       location = { :action => action, :basket_profile => params[:basket_profile] }
       if params[:show_all_fields]
-        html += link_to '(show allowed fields)', location.merge(:show_all_fields => nil)
+        html += link_to 'show allowed fields', location.merge(:show_all_fields => nil)
       else
-         html += link_to '(show all fields)', location.merge(:show_all_fields => true)
+         html += link_to 'show all fields', location.merge(:show_all_fields => true)
       end
-      html += '</span>'
+      html += ']</span>'
     end
     html
   end
 
-  def any_fields_editable?(form_type=@form_type.to_s)
+  def any_fields_editable?(form_type=@form_type)
+    form_type = form_type.to_s
     return true if @site_admin
+    return true if profile_rules.blank?
     return true if profile_rules[form_type]['rule_type'] == 'all'
-    return false if profile_rules[form_type]['rule_type'] == 'some'
+    return false if profile_rules[form_type]['rule_type'] == 'none'
     return false if profile_rules[form_type]['allowed'].blank?
     true
   end
