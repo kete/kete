@@ -162,7 +162,7 @@ module OaiDcHelpers
     # contribution_date = contributor.version_created_at.to_date
     # xml.tag!("dcterms:modified", contribution_date)
     def oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
-      item.contributors.each do |contributor|
+      item.contributors.all(:select => "distinct(users.login), users.resolved_name").each do |contributor|
         user_name = user_to_dc_creator_or_contributor(contributor)
         xml.tag!("dc:contributor", user_name)
         # we also add user.login, which is unique per site
@@ -264,7 +264,7 @@ module OaiDcHelpers
       else
         rights = SITE_URL.chop + utf8_url_for(
           :id => 4,
-          :urlified_name => Basket.find(ABOUT_BASKET).urlified_name,
+          :urlified_name => Basket.about_basket.urlified_name,
           :action => 'show',
           :controller => 'topics',
           :escape => false
