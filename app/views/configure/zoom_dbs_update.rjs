@@ -1,7 +1,8 @@
 if !@has_errors
   page << "RedBox.close();"
   page.show("zoom-dbs-check")
-  page.replace_html('start-zebra-message', :partial => 'zebra_start')
+  page.hide('completed-message')
+  page.show('finish')
 else
   page.replace_html('zoom-dbs', @zoom_dbs_html)
 end

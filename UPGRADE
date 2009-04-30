@@ -33,6 +33,24 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2009/04/30 - Did supporting work to make Kete work with latest Zebra and YAZ
+
+Note: after this Kete WILL NOT WORK WITH EARLIER Zebra and YAZ, you MUST upgrade them!
+
+1.      Stop your zebra instances with "rake zebra:stop"
+2.      upgrade your underlying Zebra and YAZ instances to be the following or later versions:
+
+yaz-3.0.45
+idzebra-2.0.36
+
+3.      Upgrade your code base
+4.      Start you Kete server again (mongrels or mod_rails)
+5.      Restart backgroundrb
+6.      Start zebra up with "rake zebra:start"
+
+Possible additional step -
+If you encounter problems with your zebra queries (browse and search results, etc.), use Administrator's Toolbox > Rebuild search databases to update all your search records (sites with a lot of items may take a long time).
+
 == 2009/03/26 - Switched RSS Feed generation to Nokogiri for big speed boosts
 
 1.      Stop your Kete server (mongrel or mod_rails).
