@@ -34,6 +34,7 @@ module WorkerControllerHelpers
       @clear_zebra = !params[:clear_zebra].blank? ? params[:clear_zebra] : false
 
       @worker_type = 'zoom_index_rebuild_worker'
+      @worker_key ||= @worker_type.to_s
 
       import_request = { :host => request.host,
         :protocol => request.protocol,
@@ -42,8 +43,8 @@ module WorkerControllerHelpers
       @worker_running = false
       # only one rebuild should be running at a time
       unless backgroundrb_is_running?(@worker_type)
-        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
-        MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :zoom_class => @zoom_class,
+        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
+        MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :zoom_class => @zoom_class,
                                                                            :start_id => @start_id,
                                                                            :end_id => @end_id,
                                                                            :skip_existing => @skip_existing,

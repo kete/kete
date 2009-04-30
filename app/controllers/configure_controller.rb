@@ -165,14 +165,13 @@ class ConfigureController < ApplicationController
   def prime_zebra
     # consolidating the code to do this work by using existing worker
     params[:clear_zebra] = true
+    @worker_key = 'zoom_index_rebuild_worker_' + Time.now.to_s.gsub(/\W/, '_')
     rebuild_zoom_index
 
-    status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
-    if !status.blank?
-      while status[:done_with_do_work] == false
-        sleep 10
-        status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
-      end
+    status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
+    while status.blank? || status[:done_with_do_work] != true
+      sleep 5
+      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
     end
 
     if !request.xhr?
