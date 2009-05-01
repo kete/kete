@@ -6,6 +6,8 @@ class MembersController < ApplicationController
 
   before_filter :permitted_to_remove_basket_members, :only => [:remove]
 
+  helper :baskets
+
   def index
     redirect_to :action => 'list'
   end
