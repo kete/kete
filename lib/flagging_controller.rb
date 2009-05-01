@@ -181,9 +181,9 @@ module FlaggingController
 
       # Only show private versions to authorized people.
       if permitted_to_view_private_items?
-        @versions = @item.versions
+        @versions = @item.versions.all(:include => :flags)
       else
-        @versions = @item.versions.reject { |v| v.respond_to?(:private) and v.private? }
+        @versions = @item.versions.all(:include => :flags).reject { |v| v.respond_to?(:private) and v.private? }
         @show_private_versions_notice = (@versions.size != @item.versions.size)
       end
 

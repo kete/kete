@@ -1033,7 +1033,7 @@ module ApplicationHelper
     return html_string
   end
 
-  def link_to_preview_of(item, version, check_permission = true)
+  def link_to_preview_of(item, version, check_permission = true, options = {})
     version_number = 0
     link_text = 'preview'
     begin
@@ -1043,7 +1043,7 @@ module ApplicationHelper
       version_number = version.to_i
     end
 
-    if check_permission == false or can_preview?(:item => item, :version_number => version_number)
+    if check_permission == false or can_preview?(:item => item, :version_number => version_number, :submitter => options[:submitter])
       link_to link_text, url_for_preview_of(item, version_number)
     else
       'not available'

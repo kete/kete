@@ -27,7 +27,7 @@
             <td>
               [
               <% if version.version != @current_public_version && version.version != @current_private_version -%>
-              <%= link_to_preview_of(@item, version) %>
+              <%= link_to_preview_of(@item, version, true, :submitter => item_contributors[contributor_index]) %>
               <% else -%>
               <b>current</b>
               <% end -%>
