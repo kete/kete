@@ -20,6 +20,9 @@ class ImportersController < ApplicationController
   # Get the Privacy Controls helper
   helper :privacy_controls
 
+  # action menu uses a basket helper we need
+  helper :baskets
+
   def  index
     list
   end

@@ -720,7 +720,7 @@ class ApplicationController < ActionController::Base
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = "Related #{zoom_class_humanize(item.class.name)} was successfully created."
-        redirect_to_related_topic(@new_related_topic, { :private => params[:related_topic_private] })
+        redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
       when 'commentable'
         redirect_to_show_for(commented_item, options)
       when 'appearance'

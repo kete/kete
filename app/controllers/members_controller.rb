@@ -6,6 +6,7 @@ class MembersController < ApplicationController
 
   before_filter :permitted_to_remove_basket_members, :only => [:remove]
 
+  # action menu uses a basket helper we need
   helper :baskets
 
   def index
