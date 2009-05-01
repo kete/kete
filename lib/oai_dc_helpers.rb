@@ -119,19 +119,19 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(item)
 
-      xml.tag!("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true))}")
+      xml.send("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true))}")
     end
 
     def oai_dc_xml_dc_title(xml, item)
-      xml.tag!("dc:title", item.title)
+      xml.send("dc:title", item.title)
     end
 
     def oai_dc_xml_dc_publisher(xml, publisher = nil)
       # this website is the publisher by default
       if publisher.nil?
-        xml.tag!("dc:publisher", request.host)
+        xml.send("dc:publisher", request.host)
       else
-        xml.tag!("dc:publisher", publisher)
+        xml.send("dc:publisher", publisher)
       end
     end
 
@@ -141,34 +141,36 @@ module OaiDcHelpers
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
         description = strip_tags(description)
-        xml.tag!("dc:description", description)
+        xml.send("dc:description") {
+          xml.cdata description
+        }
       end
     end
 
     def oai_dc_xml_dc_creators_and_date(xml, item)
       item_created = item.created_at.utc.xmlschema
-      xml.tag!("dc:date", item_created)
+      xml.send("dc:date", item_created)
       item.creators.each do |creator|
         user_name = user_to_dc_creator_or_contributor(creator)
-        xml.tag!("dc:creator", user_name)
+        xml.send("dc:creator", user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
         # this way we can limit exactly to one user
-        xml.tag!("dc:creator", creator.login) unless user_name == creator.login
+        xml.send("dc:creator", creator.login) unless user_name == creator.login
       end
     end
 
     # TODO: this attribute isn't coming over even though it's in the select
     # contribution_date = contributor.version_created_at.to_date
-    # xml.tag!("dcterms:modified", contribution_date)
+    # xml.send("dcterms:modified", contribution_date)
     def oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
       item.contributors.all(:select => "distinct(users.login), users.resolved_name").each do |contributor|
         user_name = user_to_dc_creator_or_contributor(contributor)
-        xml.tag!("dc:contributor", user_name)
+        xml.send("dc:contributor", user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
         # this way we can limit exactly to one user
-        xml.tag!("dc:contributor", contributor.login) unless user_name == contributor.login
+        xml.send("dc:contributor", contributor.login) unless user_name == contributor.login
       end
     end
 
@@ -188,20 +190,26 @@ module OaiDcHelpers
       when 'Topic'
         related_items_of(item).each do |zoom_class,items|
           items.each do |related|
-            xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+            xml.send("dc:subject") {
+              xml.cdata related.title
+            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:subject", commented_on_item.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
+        xml.send("dc:subject") {
+          xml.cdata commented_on_item.title
+        } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
+        xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
         related_items_of(item).each do |zoom_class,items|
           items.each do |related|
-            xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.tag!("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+            xml.send("dc:subject") {
+              xml.cdata related.title
+            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
           end
         end
       end
@@ -209,7 +217,9 @@ module OaiDcHelpers
 
     def oai_dc_xml_tags_to_dc_subjects(xml, item)
       item.tags.each do |tag|
-        xml.tag!("dc:subject", tag.name)
+        xml.send("dc:subject") {
+          xml.cdata tag.name
+        }
       end
     end
 
@@ -224,7 +234,7 @@ module OaiDcHelpers
       when 'Video'
         type = 'MovingImage'
       end
-      xml.tag!("dc:type", type)
+      xml.send("dc:type", type)
     end
 
     def oai_dc_xml_dc_format(xml, item)
@@ -242,7 +252,7 @@ module OaiDcHelpers
         format = item.content_type
       end
       if !format.blank?
-        xml.tag!("dc:format", format)
+        xml.send("dc:format", format)
       end
     end
 
@@ -251,9 +261,9 @@ module OaiDcHelpers
       return unless item.is_a?(Topic)
       topic_type = item.topic_type
       topic_type.ancestors.each do |ancestor|
-        xml.tag!("dc:coverage", ancestor.name)
+        xml.send("dc:coverage", ancestor.name)
       end
-      xml.tag!("dc:coverage", topic_type.name)
+      xml.send("dc:coverage", topic_type.name)
     end
 
     # if there is a license for item, put in its url
@@ -271,7 +281,7 @@ module OaiDcHelpers
         )
       end
 
-      xml.tag!("dc:rights", rights)
+      xml.send("dc:rights", rights)
     end
 
     def oai_dc_xml_dc_source_for_file(xml, item, passed_request = nil)
@@ -282,7 +292,7 @@ module OaiDcHelpers
       end
 
       if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
-        xml.tag!("dc:source", file_url_from_bits_for(item, host))
+        xml.send("dc:source", file_url_from_bits_for(item, host))
       end
     end
   end

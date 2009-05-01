@@ -15,27 +15,33 @@ module ImporterZoom
 
     def importer_oai_record_xml(options = { })
       item = options[:item]
-      xml = Builder::XmlMarkup.new
-      xml.instruct!
-      xml.tag!("OAI-PMH", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd", "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
+      record = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
+      xml.send("OAI-PMH",
+               :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+               :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd",
+               :"xmlns" => "http://www.openarchives.org/OAI/2.0/") do
         xml.responseDate(Time.now.utc.xmlschema)
-        oai_dc_xml_request(xml,item,@import_request)
+        oai_dc_xml_request(xml, item, @import_request)
         xml.GetRecord do
           xml.record do
             xml.header do
-              oai_dc_xml_oai_identifier(xml,item)
+              oai_dc_xml_oai_identifier(xml, item)
               oai_dc_xml_oai_datestamp(xml, item)
-              oai_dc_xml_oai_set_specs(xml,item)
+              oai_dc_xml_oai_set_specs(xml, item)
             end
             xml.metadata do
-              xml.tag!("oai_dc:dc", "xmlns:oai_dc".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/", "xmlns:xsi".to_sym => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:dc".to_sym => "http://purl.org/dc/elements/1.1/", "xmlns:dcterms".to_sym => "http://purl.org/dc/terms/", "xsi:schemaLocation".to_sym => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
-                importer_oai_dc_xml_dc_identifier(xml,item,@import_request)
-                oai_dc_xml_dc_title(xml,item)
-                oai_dc_xml_dc_publisher(xml,@import_request[:host])
+              xml.send("oai_dc:dc",
+                       :"xmlns:oai_dc" => "http://www.openarchives.org/OAI/2.0/oai_dc/",
+                       :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                       :"xmlns:dc" => "http://purl.org/dc/elements/1.1/",
+                       :"xmlns:dcterms" => "http://purl.org/dc/terms/",
+                       :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
+                importer_oai_dc_xml_dc_identifier(xml, item, @import_request)
+                oai_dc_xml_dc_title(xml, item)
+                oai_dc_xml_dc_publisher(xml, @import_request[:host])
 
-                if ['Topic', 'Document'].include?(item.class.name)
-                  oai_dc_xml_dc_description(xml,item.short_summary)
-                end
+                # topic/document specific
+                oai_dc_xml_dc_description(xml, item.short_summary) if ['Topic', 'Document'].include?(item.class.name)
 
                 oai_dc_xml_dc_description(xml,item.description)
 
@@ -51,30 +57,30 @@ module ImporterZoom
                 # we do a dc:source element for the original binary file
                 oai_dc_xml_dc_source_for_file(xml, item, @import_request)
 
-                oai_dc_xml_dc_creators_and_date(xml,item)
+                oai_dc_xml_dc_creators_and_date(xml, item)
 
-                oai_dc_xml_dc_contributors_and_modified_dates(xml,item)
+                oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
 
                 # all types at this point have an extended_content attribute
-                oai_dc_xml_dc_extended_content(xml,item)
+                oai_dc_xml_dc_extended_content(xml, item)
 
                 # related topics and items should have dc:subject elem here with their title
                 importer_oai_dc_xml_dc_relations_and_subjects(xml, item, @import_request)
 
                 logger.info("after dc xml relations and subjects")
 
-                oai_dc_xml_dc_type(xml,item)
+                oai_dc_xml_dc_type(xml, item)
 
-                oai_dc_xml_tags_to_dc_subjects(xml,item)
+                oai_dc_xml_tags_to_dc_subjects(xml, item)
 
                 # if there is a license, put it under dc:rights
                 importer_oai_dc_xml_dc_rights(xml, item, @import_request)
 
                 # this is mime type
-                oai_dc_xml_dc_format(xml,item)
+                oai_dc_xml_dc_format(xml, item)
 
                 # this is currently only used for topic type
-                oai_dc_xml_dc_coverage(xml,item)
+                oai_dc_xml_dc_coverage(xml, item)
               end
             end
             # this is meant to be a cache, outside of the oai_dc namespace
@@ -91,9 +97,9 @@ module ImporterZoom
           end
         end
       end
-      record = xml.to_s
-      logger.info("after record to_s")
-      return record.gsub("<to_s\/>","")
+      record = record.to_xml
+      logger.info("after record to_xml")
+      record
     end
 
     def importer_prepare_zoom(item)
@@ -154,7 +160,7 @@ module ImporterZoom
         host = request.host
       end
       # HACK, brittle, but can't use url_for here
-      xml.tag!("dc:identifier", importer_item_url({:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name}))
+      xml.send("dc:identifier", importer_item_url({:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name}))
     end
 
     def importer_oai_dc_xml_dc_relations_and_subjects(xml,item,passed_request = nil)
@@ -174,19 +180,25 @@ module ImporterZoom
             related_items = item.send(zoom_class.tableize)
           end
           related_items.each do |related|
-            xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name}, true))
+            xml.send("dc:subject") {
+              xml.cdata related.title
+            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name}, true))
           end
         end
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
-        xml.tag!("dc:subject", commented_on_item.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.tag!("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name}, true))
+        xml.send("dc:subject") {
+          xml.cdata commented_on_item.title
+        } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
+        xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name}, true))
       else
         item.topics.each do |related|
-          xml.tag!("dc:subject", related.title) unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.tag!("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name}, true))
+          xml.send("dc:subject") {
+            xml.cdata related.title
+          } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+          xml.send("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name}, true))
         end
       end
     end
@@ -204,7 +216,7 @@ module ImporterZoom
         rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(ABOUT_BASKET).urlified_name, :id => 4})
       end
 
-      xml.tag!("dc:rights", rights)
+      xml.send("dc:rights", rights)
     end
 
   end

@@ -173,16 +173,16 @@ module Importer
       params = options[:params]
       item_key = options[:item_key].to_sym
 
-      xml = Builder::XmlMarkup.new
+      builder = Nokogiri::XML::Builder.new { |xml
 
       @fields.each do |field_to_xml|
         field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
         if field_to_xml.extended_field_multiple
           hash_of_values = params[item_key]['extended_content_values'][field_name] rescue nil
           if !hash_of_values.nil?
-            xml.tag!("#{field_name}_multiple") do
+            xml.send("#{field_name}_multiple") do
               hash_of_values.keys.each do |key|
-                xml.tag!(key.to_s) do
+                xml.send(key.to_s) do
                   logger.debug("inside hash: key: " + key.to_s)
                   m_value = hash_of_values[key].to_s
                   extended_content_field_xml_tag(:xml => xml,
@@ -208,8 +208,8 @@ module Importer
         end
       end
 
-      extended_content = xml.to_s
-      params[item_key][:extended_content] = extended_content.gsub("<to_s\/>","")
+      extended_content = builder.to_xml
+      params[item_key][:extended_content] = extended_content.gsub("<?xml version=\"1.0\"?>\n","")
       return params
     end
 

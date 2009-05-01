@@ -859,9 +859,9 @@ class ApplicationController < ActionController::Base
     item = options[:item]
     to_string = options[:to_string] || false
     if to_string
-      render_to_string(:file => "#{RAILS_ROOT}/app/views/search/oai_record.rxml", :layout => false, :content_type => 'text/xml', :locals => { :item => item })
+      render_to_string(:file => "#{RAILS_ROOT}/app/views/search/oai_record.xml.erb", :layout => false, :content_type => 'text/xml', :locals => { :item => item })
     else
-      render :file => "#{RAILS_ROOT}/app/views/search/oai_record.rxml", :layout => false, :content_type => 'text/xml', :locals => { :item => item }
+      render :file => "#{RAILS_ROOT}/app/views/search/oai_record.xml.erb", :layout => false, :content_type => 'text/xml', :locals => { :item => item }
     end
   end
 
