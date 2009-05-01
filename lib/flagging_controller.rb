@@ -50,12 +50,8 @@ module FlaggingController
       expire_show_caches
       expire_rss_caches
 
-      # a before filter has already dropped the item
-      # from the search
-      # only reinstate it
-      # if not blank
-      # update zoom for item
-      prepare_and_save_to_zoom(item) if !item.already_at_blank_version?
+      # add contributor and update zoom if needed
+      after_successful_zoom_item_update(item)
     end
 
     # permission check in controller
@@ -181,9 +177,9 @@ module FlaggingController
 
       # Only show private versions to authorized people.
       if permitted_to_view_private_items?
-        @versions = @item.versions.all(:include => :flags)
+        @versions = @item.versions
       else
-        @versions = @item.versions.all(:include => :flags).reject { |v| v.respond_to?(:private) and v.private? }
+        @versions = @item.versions.reject { |v| v.respond_to?(:private) and v.private? }
         @show_private_versions_notice = (@versions.size != @item.versions.size)
       end
 
