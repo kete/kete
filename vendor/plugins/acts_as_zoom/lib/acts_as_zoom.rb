@@ -295,18 +295,12 @@ module ZoomMixin
         def zoom_destroy(existing_connection = nil)
           logger.debug "zoom_destroy: #{self.class.name} : #{self.id}"
 
-          # need to pass in whole record as well as zoom_id, even though it's a delete
-
           if has_public_zoom_record?
-            zoom_record = self.zoom_prepare_record
-            public_zoom_database.destroy_this(zoom_record, zoom_id, existing_connection)
+            public_zoom_database.destroy_identified_by(zoom_id, existing_connection)
           end
 
           if has_private_zoom_record?
-            private_version do
-              zoom_record = self.zoom_prepare_record
-              private_zoom_database.destroy_this(zoom_record, zoom_id, existing_connection)
-            end
+            private_zoom_database.destroy_identified_by(zoom_id, existing_connection)
           end
 
           true
