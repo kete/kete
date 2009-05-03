@@ -209,7 +209,7 @@ module Importer
       end
 
       extended_content = builder.to_xml
-      params[item_key][:extended_content] = extended_content.gsub("<?xml version=\"1.0\"?>\n","")
+      params[item_key][:extended_content] = extended_content.gsub("<?xml version=\"1.0\"?>\n","").gsub("\n", '')
       return params
     end
 

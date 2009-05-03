@@ -111,13 +111,15 @@ module ExtendedContent
 
     include GoogleMap::ExtendedContent
 
-    # Provide an instance of Builder::XmlMarkup for creating the XML representation stored in each item's extended content
-    # attribute.
+    # DEPRECATED
+    # Provide an instance of Nokogiri::XML::Builder.new for creating the XML representation
+    # stored in each item's extended content attribute.
     def xml(force_new = false)
+      raise "ERROR: xml method not needed. The call to this method should be replaced!"
       if force_new
-        @builder_xml = Builder::XmlMarkup.new
+        @builder_xml = Nokogiri::XML::Builder.new
       else
-        @builder_xml ||= Builder::XmlMarkup.new
+        @builder_xml ||= Nokogiri::XML::Builder.new
       end
     end
 
@@ -639,7 +641,7 @@ module ExtendedContent
         # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
         end.flatten.uniq.join("\n")
       
-      }.to_xml.gsub("<?xml version=\"1.0\"?>\n","")
+      }.to_xml.gsub("<?xml version=\"1.0\"?>\n","").gsub("\n", '')
     end
 
     def convert_xml_to_extended_fields_hash
