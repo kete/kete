@@ -16,87 +16,88 @@ module ImporterZoom
     def importer_oai_record_xml(options = { })
       item = options[:item]
       record = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
-      xml.send("OAI-PMH",
-               :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-               :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd",
-               :"xmlns" => "http://www.openarchives.org/OAI/2.0/") do
-        xml.responseDate(Time.now.utc.xmlschema)
-        oai_dc_xml_request(xml, item, @import_request)
-        xml.GetRecord do
-          xml.record do
-            xml.header do
-              oai_dc_xml_oai_identifier(xml, item)
-              oai_dc_xml_oai_datestamp(xml, item)
-              oai_dc_xml_oai_set_specs(xml, item)
-            end
-            xml.metadata do
-              xml.send("oai_dc:dc",
-                       :"xmlns:oai_dc" => "http://www.openarchives.org/OAI/2.0/oai_dc/",
-                       :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                       :"xmlns:dc" => "http://purl.org/dc/elements/1.1/",
-                       :"xmlns:dcterms" => "http://purl.org/dc/terms/",
-                       :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
-                importer_oai_dc_xml_dc_identifier(xml, item, @import_request)
-                oai_dc_xml_dc_title(xml, item)
-                oai_dc_xml_dc_publisher(xml, @import_request[:host])
-
-                # topic/document specific
-                oai_dc_xml_dc_description(xml, item.short_summary) if ['Topic', 'Document'].include?(item.class.name)
-
-                oai_dc_xml_dc_description(xml,item.description)
-
-                # gives use dc:description/files/version_of_item/enclosure
-                # for any associated binary files
-                # that can be used to derive the url for things like thumbnails
-                # or populate rss enclosure
-                # we are using non-oai_dc namespaces for keeping informationn about
-                # binary files (except for dc:source) with the search record
-                # DEPRECIATED
-                # oai_dc_xml_dc_description_for_file(xml,item,@import_request)
-
-                # we do a dc:source element for the original binary file
-                oai_dc_xml_dc_source_for_file(xml, item, @import_request)
-
-                oai_dc_xml_dc_creators_and_date(xml, item)
-
-                oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
-
-                # all types at this point have an extended_content attribute
-                oai_dc_xml_dc_extended_content(xml, item)
-
-                # related topics and items should have dc:subject elem here with their title
-                importer_oai_dc_xml_dc_relations_and_subjects(xml, item, @import_request)
-
-                logger.info("after dc xml relations and subjects")
-
-                oai_dc_xml_dc_type(xml, item)
-
-                oai_dc_xml_tags_to_dc_subjects(xml, item)
-
-                # if there is a license, put it under dc:rights
-                importer_oai_dc_xml_dc_rights(xml, item, @import_request)
-
-                # this is mime type
-                oai_dc_xml_dc_format(xml, item)
-
-                # this is currently only used for topic type
-                oai_dc_xml_dc_coverage(xml, item)
+        xml.send("OAI-PMH",
+                 :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                 :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd",
+                 :"xmlns" => "http://www.openarchives.org/OAI/2.0/") do
+          xml.responseDate(Time.now.utc.xmlschema)
+          oai_dc_xml_request(xml, item, @import_request)
+          xml.GetRecord do
+            xml.record do
+              xml.header do
+                oai_dc_xml_oai_identifier(xml, item)
+                oai_dc_xml_oai_datestamp(xml, item)
+                oai_dc_xml_oai_set_specs(xml, item)
               end
-            end
-            # this is meant to be a cache, outside of the oai_dc namespace
-            # of things like thumbnails to related images for a topic
-            # for non-topics
-            # it should store related topics
-            xml.kete do
-              xml_for_related_items(xml, item, @import_request)
+              xml.metadata do
+                xml.send("oai_dc:dc",
+                         :"xmlns:oai_dc" => "http://www.openarchives.org/OAI/2.0/oai_dc/",
+                         :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                         :"xmlns:dc" => "http://purl.org/dc/elements/1.1/",
+                         :"xmlns:dcterms" => "http://purl.org/dc/terms/",
+                         :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
+                  importer_oai_dc_xml_dc_identifier(xml, item, @import_request)
+                  oai_dc_xml_dc_title(xml, item)
+                  oai_dc_xml_dc_publisher(xml, @import_request[:host])
 
-              xml_for_thumbnail_image_file(xml, item, @import_request)
+                  # topic/document specific
+                  oai_dc_xml_dc_description(xml, item.short_summary) if ['Topic', 'Document'].include?(item.class.name)
 
-              xml_for_media_content_file(xml, item, @import_request)
+                  oai_dc_xml_dc_description(xml,item.description)
+
+                  # gives use dc:description/files/version_of_item/enclosure
+                  # for any associated binary files
+                  # that can be used to derive the url for things like thumbnails
+                  # or populate rss enclosure
+                  # we are using non-oai_dc namespaces for keeping informationn about
+                  # binary files (except for dc:source) with the search record
+                  # DEPRECIATED
+                  # oai_dc_xml_dc_description_for_file(xml,item,@import_request)
+
+                  # we do a dc:source element for the original binary file
+                  oai_dc_xml_dc_source_for_file(xml, item, @import_request)
+
+                  oai_dc_xml_dc_creators_and_date(xml, item)
+
+                  oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
+
+                  # all types at this point have an extended_content attribute
+                  oai_dc_xml_dc_extended_content(xml, item)
+
+                  # related topics and items should have dc:subject elem here with their title
+                  importer_oai_dc_xml_dc_relations_and_subjects(xml, item, @import_request)
+
+                  logger.info("after dc xml relations and subjects")
+
+                  oai_dc_xml_dc_type(xml, item)
+
+                  oai_dc_xml_tags_to_dc_subjects(xml, item)
+
+                  # if there is a license, put it under dc:rights
+                  importer_oai_dc_xml_dc_rights(xml, item, @import_request)
+
+                  # this is mime type
+                  oai_dc_xml_dc_format(xml, item)
+
+                  # this is currently only used for topic type
+                  oai_dc_xml_dc_coverage(xml, item)
+                end
+              end
+              # this is meant to be a cache, outside of the oai_dc namespace
+              # of things like thumbnails to related images for a topic
+              # for non-topics
+              # it should store related topics
+              xml.kete do
+                xml_for_related_items(xml, item, @import_request)
+
+                xml_for_thumbnail_image_file(xml, item, @import_request)
+
+                xml_for_media_content_file(xml, item, @import_request)
+              end
             end
           end
         end
-      end
+      }
       record = record.to_xml
       logger.info("after record to_xml")
       record
