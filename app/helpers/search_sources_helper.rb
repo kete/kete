@@ -3,10 +3,10 @@ module SearchSourcesHelper
   def display_search_sources
     html = String.new
     search_sources.each do |source|
-      search_source_url = URI.escape(source.base_url) +
-                          search_terms_with_or(source, @item.title).escape_for_url
+      search_terms = search_terms_with_or(source, @item.title).escape_for_url
+      search_source_url = URI.escape(source.base_url) + search_terms
       search_source_more = source.more_link_base_url \
-                            ? (source.more_link_base_url + @item.title.escape_for_url) \
+                            ? (URI.escape(source.more_link_base_url) + search_terms) \
                             : search_source_url
       html += @template.render('search_sources/search_source',
                                :source => source,
