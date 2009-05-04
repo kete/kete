@@ -82,9 +82,9 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             should "be able to link existing related #{class_name}" do
               visit "/site/topics/show/#{@topic.to_param}"
               click_link 'Link Existing'
-              click_link @tableized.humanize.singularize unless class_name == 'Topic' # Topic is already the default
+              click_link @item_type unless class_name == 'Topic' # Topic is already the default
 
-              lower_case_name = @tableized.humanize.downcase.pluralize
+              lower_case_name = @humanized_plural.downcase
               body_should_contain "Add related #{lower_case_name}"
               body_should_contain "Search for public #{lower_case_name}"
 
@@ -137,9 +137,9 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               body_should_contain @item_for_relating.title
 
               click_link 'Remove'
-              click_link @tableized.humanize.singularize unless class_name == 'Topic' # Topic is already the default
+              click_link @item_type unless class_name == 'Topic' # Topic is already the default
 
-              lower_case_name = @tableized.humanize.downcase.pluralize
+              lower_case_name = @humanized_plural.downcase
               body_should_contain "Existing related #{lower_case_name}"
               body_should_contain @item_for_relating.title
 
@@ -170,9 +170,9 @@ class RelatedToTopicTest < ActionController::IntegrationTest
                 body_should_not_contain @item_for_relating.title
 
                 click_link 'Restore (1)'
-                click_link @tableized.humanize.singularize unless class_name == 'Topic' # Topic is already the default
+                click_link @item_type unless class_name == 'Topic' # Topic is already the default
 
-                lower_case_name = @tableized.humanize.downcase.pluralize
+                lower_case_name = @humanized_plural.downcase
                 body_should_contain "Restore related #{lower_case_name}"
                 body_should_contain @item_for_relating.title
 

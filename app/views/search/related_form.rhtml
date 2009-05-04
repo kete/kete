@@ -1,5 +1,7 @@
-<% @title = "#{@verb} related #{zoom_class_plural_humanize(zoom_class_controller(@related_class))}" -%>
-<% item_class = @related_class.tableize.humanize.downcase.pluralize -%>
+<%
+item_class_plural = zoom_class_plural_humanize(zoom_class_controller(@related_class)).downcase
+@title = "#{@verb} related #{item_class_plural}"
+%>
 
 <p><strong><%= params[:function].capitalize %> a:</strong></p>
 <ul class="item_class_choices">
@@ -19,12 +21,12 @@
 
 <fieldset>
 
-  <legend><%= @verb %> related <%= item_class -%></legend>
+  <legend><%= @title -%></legend>
 
   <% if params[:function] == "add" -%>
     <% privacy = params[:privacy_type] || "public" -%>
     <%= form_tag(params.merge(:search_terms => nil)) -%>
-      <%= content_tag "label", "Search for #{privacy} #{item_class}:", "for" => "search_terms" -%>
+      <%= content_tag "label", "Search for #{privacy} #{item_class_plural}:", "for" => "search_terms" -%>
       <%= text_field_tag "search_terms", params[:search_terms] %>
       <%= submit_tag "Search" %>
     </form>
@@ -38,9 +40,9 @@
   <% end -%>
 
   <% if @results.blank? && !params[:search_terms].blank? %>
-  <p class="alone"><strong>No <%= item_class %> found</strong></p>
+  <p class="alone"><strong>No <%= item_class_plural %> found</strong></p>
   <% elsif !@results.blank? %>
-  <p class="alone">Select which <%= item_class %> to <%= params[:function] %>, then click "<%= params[:function] %>".</p>
+  <p class="alone">Select which <%= item_class_plural %> to <%= params[:function] %>, then click "<%= params[:function] %>".</p>
 
   <%= form_tag(
     :controller => 'search',
