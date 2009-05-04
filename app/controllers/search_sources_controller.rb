@@ -12,6 +12,7 @@ class SearchSourcesController < ApplicationController
     list.sorting = { :position => 'ASC' }
 
     config.columns = [:title, :source_type, :base_url, :more_link_base_url, :limit, :cache_interval]
+    config.list.columns.exclude [:or_syntax]
 
     options = { :type => :record, :inline => false }
     # images_tag and @template.image_tag arn't available in this scope
@@ -39,6 +40,10 @@ class SearchSourcesController < ApplicationController
 
     config.columns[:cache_interval].required = true
     config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
+
+    config.columns << [:or_syntax]
+    config.columns[:or_syntax].label = I18n.t('search_sources_controller.or_syntax_label')
+    config.columns[:or_syntax].description = I18n.t('search_sources_controller.or_syntax_description')
   end
 
   def move_higher
@@ -56,6 +61,17 @@ class SearchSourcesController < ApplicationController
   end
 
   private
+
+  # A method used by active scaffold before creating/updating a record
+  # we have to set the or_syntax here ourselves because either rails or
+  # active scaffold does not set or_syntax automatically when it is a hash
+  def before_create_save(record)
+    record.or_syntax = params[:record][:or_syntax]
+  end
+
+  def before_update_save(record)
+    record.or_syntax = params[:record][:or_syntax]
+  end
 
   def set_page_title
     @title = t('search_sources_controller.title')

@@ -7,7 +7,8 @@ class SearchSourceTest < ActiveSupport::TestCase
                   :base_url => 'http://example.com/rss.xml?q=',
                   :more_link_base_url => 'http://example.com/?q=',
                   :limit => 5,
-                  :cache_interval => 5 }
+                  :cache_interval => 5,
+                  :or_syntax => { :position => 'between', :case => 'upper' } }
 
   should_validate_presence_of :title, :source_type, :base_url, :limit, :cache_interval
   should_validate_numericality_of :limit, :cache_interval
@@ -61,6 +62,12 @@ class SearchSourceTest < ActiveSupport::TestCase
       assert source2, sources[0]
       assert source3, sources[1]
       assert source1, sources[2]
+    end
+
+    should "be configurable" do
+      source = SearchSource.create(@@new_model)
+      source.settings[:or_syntax] = { :position => 'between', :case => 'upper' }
+      assert_equal { :position => 'between', :case => 'upper' }, source.settings[:or_syntax]
     end
 
   end
