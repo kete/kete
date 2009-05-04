@@ -278,9 +278,9 @@ class PqfQuery
                 # since their placement makes them meaningless as boolean operators
                 terms_array << term
               else
-                if Search.boolean_operators.include?(term)
+                if Search.boolean_operators.include?(term.downcase)
                   # we got ourselves an operator
-                  operators_array << "@#{term}"
+                  operators_array << "@#{term.downcase}"
                   last_term_an_operator = true
                 else
                   # just a plain term
