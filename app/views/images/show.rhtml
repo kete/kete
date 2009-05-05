@@ -16,7 +16,8 @@
   <% if !@image_file.nil? -%>
     <% if !@still_image.already_at_blank_version? -%>
       <%= render(:partial => "image_file",
-                 :locals => { :image_file => @image_file,
+                 :locals => { :still_image => @still_image,
+                              :image_file => @image_file,
                               :title => @still_image.title }) -%>
     <% end -%>
   <% else -%>

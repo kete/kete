@@ -1106,6 +1106,13 @@ en:
       view: view
     edit:
       not_authorized: Sorry - editing on this section of the site has been disallowed
+    image_file:
+      available_sizes: 'Available Sizes:'
+      medium: Medium
+      large: Large
+      original: Original
+      small: Small
+      small_sq: Thumbnail
     portrait_controls:
       add_image: Add image to portraits
       make_selected: Make image selected portrait

@@ -1266,3 +1266,50 @@ a.disabled {
 .show_all_fields {
   font-size: .7em;
 }
+
+/*
+ * Horizontal Image Size Choices
+ */
+
+.pipe-list h4 {
+  float: left;
+  margin: 10px 10px 0 0;
+  padding: 0;
+}
+
+.pipe-list ul {
+  display: inline;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pipe-list ul li {
+  float: left;
+  text-align: center;
+  border-right: 1px solid #888;
+}
+
+.pipe-list ul li.last {
+  border-right: none;
+}
+
+.pipe-list ul li a {
+  display: block;
+  padding: 10px 27px 15px 27px;
+}
+
+.pipe-list ul li.last a {
+  padding-bottom: 0px;
+}
+
+.pipe-list ul li.current a {
+  color: #000;
+  background-color: #eee;
+  font-weight: bold;
+}
+
+.pipe-list .file_size {
+  display: block;
+  color: #777;
+}
