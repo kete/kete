@@ -1178,7 +1178,7 @@ en:
       description_template_start: Beginning Description Template
       description_template_start_description: A piece of HTML that will go at the start of every description during this import.
       extended_fields: You have mapped the applicable fields in the records.xml file to appropriate Extended Fields' import synonyms. Import Synonyms must be an exact match for the field in the records.xml file. See "extended fields" link in Administrator's Toolbox.  You'll also want to add these extended fields to the appropriate Topic Type or Content Type.
-      filemaker_pro: Filemaker Pro\'s FMPDSORESULT XML format (text records only, no associated images)
+      filemaker_pro: Filemaker Pro's FMPDSORESULT XML format (text records only, no associated images)
       fill_in_form: If you have done the above, fill out the form below to start the import.
       folder_name: your_folder
       images_folder: "Optional: a subfolder named 'images' - For your folders containing images or image files themselves. For example if you had a folder of images called 001, you would put it inside your_folder/images/ and then images would found be at location like your_folder/images/001/an_image.jpg."
@@ -1523,15 +1523,15 @@ en:
       use_software_default: use software default
     homepage_options:
       archives: Archives
-      archives_description: List basket\'s archive contents as?
+      archives_description: List basket's archive contents as?
       dont_redirect: Don't redirect
       go_to_browse: Go directly to "browse" options
       go_to_browse_description: Redirect to results of?
       homepage_topic: Homepage Topic
       how_many_recent_topics: List how many recent topics?
       how_many_tags: List how many tags?
-      list_tags_as: List basket\'s tags as?
-      list_topics_as: List basket\'s topics as?
+      list_tags_as: List basket's tags as?
+      list_topics_as: List basket's topics as?
       order_tags_by: Order tags by?
       recent_topics: Recent Topics
       rss_or_atom_feeds: RSS or Atom Feeds
@@ -1542,7 +1542,7 @@ en:
       selected_image: Selected Image
       selected_image_description: Show image from basket?
       show_field: show<br />field?
-      show_link_to_homepage_topic: A link to the homepage topic\'s?
+      show_link_to_homepage_topic: A link to the homepage topic's?
       show_only_homepage_topic: Show only homepage topic?
       sidebar_content: Sidebar content after search
       sidebar_content_do_not_sanitize: Allow forms and other possible insecure elements and attributes in the HTML?
