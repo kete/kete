@@ -1,4 +1,4 @@
-<div class="generic-result-wrapper" id="item_<%= result %>_wrapper">
+<div class="generic-result-wrapper<%= ' first' if first_result %>" id="item_<%= result %>_wrapper">
   <div class="generic-result-header">
     <h4><%= link_to h(title), source_url, :tabindex => '1' %></h4>
   </div>
@@ -8,20 +8,9 @@
       <%= link_to("more &gt;&gt;", source_url, { :title => "More information on #{title}", :tabindex => '1' }) %>
     </div>
   </div>
-  <% if related -%>
-    <div class="generic-result-related">
-      Related:
-      <% totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) } -%>
-      <%= totals_array.to_sentence %>
-      <% if related && !related[:still_images].blank? -%>
-        <div class="topic-result-related-images">
-          <%= topic_related_thumbs_from(related[:still_images],
-                                        :link_to => source_url,
-                                        :title => "More information on #{title}",
-                                        :tabindex => '1' ) -%>
-        </div>
-      <% end %>
-    </div>
-    <div style="clear:both;"></div>
-  <% end %>
+  <%= render(:partial => 'related',
+             :locals => { :related => related,
+                          :source_url => source_url,
+                          :title => title }) if related -%>
 </div>
+<%= javascript_tag("makeElementLinkable('item_#{result}_wrapper', '#{source_url}');") %>

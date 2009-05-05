@@ -404,17 +404,10 @@ h3 b{
 }
 
 /* --- Images search results --- */
-.image-result-wrapper {
-    clear: both;
-    margin-top: 2em;
-}
 .image-result-thumb {
     float: left;
     padding: 0 10px 0 0;
     width: 65px; /* width of thumbnail image */
-}
-.image-result-header h4 {
-    margin: 0;
 }
 .image-result-thumb a img {
     border: solid 1px;
@@ -424,6 +417,38 @@ h3 b{
 }
 .image-result-thumb a img:hover {
     border: solid 1px;
+}
+
+/* --- Both Search Results --- */
+#result-show {
+  margin-bottom: 15px;
+}
+
+.generic-result-wrapper,
+.image-result-wrapper {
+  clear: both;
+  padding: 15px;
+  border-bottom: 1px dashed #bbb;
+  margin-right: 15px;
+}
+
+.generic-result-wrapper:hover,
+.image-result-wrapper:hover {
+  background-color: #F7F7F7;
+}
+
+.generic-result-wrapper h4,
+.image-result-header h4 {
+  margin: 0;
+}
+
+.generic-result-wrapper.first,
+.image-result-wrapper.first {
+  border-top: 1px dashed #bbb;
+}
+
+#bottomlinks {
+  margin-top: 15px;
 }
 
 /* #################################### General Content Elements #################################### */
@@ -599,6 +624,9 @@ div#slideshow-controls div#slideshow-middle {
 .prev-next{
     float: right;
     padding-right: 1em;
+}
+.prev-next.after-results {
+  margin-top: 15px;
 }
 span.prev-inactive,
 span.prev-active {

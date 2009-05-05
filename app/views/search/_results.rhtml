@@ -22,7 +22,7 @@
            :locals => { :style_classes => "full-width" }) -%>
 
       <h3><%= @heading %></h3>
-      <div class="prev-next"><%= will_paginate @results %></div>
+      <div class="prev-next before-results"><%= will_paginate @results %></div>
       <div id="result-show">
          <% if @results.size > 0 %>
             Showing <%= @start -%>-<%= @end_record -%>
@@ -31,13 +31,14 @@
          <%# we will have result sets for each type of record we are returning %>
          <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
          <%# for now lets just get this up with one set of @results %>
-         <% @results.each do |result|  %>
+         <% @results.each_with_index do |result,index|  %>
             <% locals = { :title => result[:title],
                           :source_url => result[:url],
                           :short_summary => result[:short_summary],
                           :existing_relations => @existing_relations,
                           :related => result[:related],
-                          :result => result[:id]} -%>
+                          :result => result[:id],
+                          :first_result => (index == 0) } -%>
             <% if result[:class] == 'StillImage' %>
              <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],
                                                                        :thumbnail => result[:thumbnail] })) %>
@@ -50,8 +51,7 @@
       </div>
     <% end %>
 
-      <div class="prev-next"><%= will_paginate @results if @results.per_page > 5 && @results.total_entries > @results.per_page %></div>
-      <p>&nbsp;</p>
+    <div class="prev-next after-results"><%= will_paginate @results  %></div>
 
 
                         <div id="bottomlinks">

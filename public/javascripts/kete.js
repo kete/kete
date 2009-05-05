@@ -125,6 +125,12 @@ function quickExpandCollapse(clickable_element, affected_element, collapsed_imag
   });
 }
 
+function makeElementLinkable(id, url) {
+  $(id).observe('click', function(event) {
+    window.location = url;
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
