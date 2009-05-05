@@ -171,6 +171,64 @@ en:
     update_portraits:
       not_reordered: The portraits were not reordered permanently. You may only reorder portraits if they are yours.  If they are, please try again.
       reordered: Your portraits have been successfully reordered.
+  active_scaffold:
+    "!=": "!="
+    <: <
+    <=: <=
+    "=": "="
+    ">": ">"
+    ">=": ">="
+    _select_: "- select -"
+    _to_: " to "
+    add: Add
+    add_existing: Add Existing
+    add_existing_model: Add Existing {{model}}
+    are_you_sure: Are you sure?
+    between: Between
+    cancel: Cancel
+    click_to_edit: Click to edit
+    close: Close
+    create: Create
+    create_another: Create Another
+    create_model: Create {{model}}
+    create_new: Create New
+    created_model: Created {{model}}
+    customize: Customize
+    delete: Delete
+    deleted_model: Deleted {{model}}
+    delimiter: Delimiter
+    download: Download
+    edit: Edit
+    export: Export
+    filtered: (Filtered)
+    found: Found
+    hide: Hide
+    internal_error: Request Failed (code 500, Internal Error)
+    live_search: Live Search
+    loading: "Loading\xE2\x80\xA6"
+    nested_for_model: "{{nested_model}} for {{parent_model}}"
+    next: Next
+    no_entries: No Entries
+    omit_header: Omit Header
+    options: Options
+    pdf: PDF
+    previous: Previous
+    print: Print
+    refresh: Refresh
+    remove: Remove
+    remove_file: Remove or Replace file
+    replace_with_new: Replace With New
+    reset: Reset
+    revisions_for_model: Revisions for {{model}}
+    saving: "Saving\xE2\x80\xA6"
+    search: Search
+    search_terms: Search Terms
+    show: Show
+    show_model: Show {{model}}
+    udated_model: Updated {{model}}
+    update: Update
+    update_model: Update {{model}}
+    version_inconsistency: Version inconsistency - this record has been modified since you started editing it.
   activerecord:
     errors:
       messages:
@@ -218,7 +276,7 @@ en:
     avatar_for:
       users_avatar: "{{user_name}}'s Avatar. "
     browse_by_category_columns:
-      all_items: "All {{item_type}}"
+      all_items: All {{item_type}}
     embedded_enabled_message:
       harvesting: Embedded metadata will be harvested from the item's binary file to fill out any fields that match the site's settings.
     flagging_links_for:
@@ -319,8 +377,11 @@ en:
     archives_by_type: By type
     archives_dont_show: Don't show them
     basket_admin: Basket admin
+    basket_appearance: Basket Appearance
+    basket_homepage_options: Basket Homepage Options
     basket_member: Basket member
     basket_moderator: Basket moderator
+    basket_new_or_edit: Basket New or Edit
     cannot_delete_site: "Error: Cannot delete site basket!"
     details_and_comments: Full details and comments
     dont_link: Don't link
@@ -396,7 +457,7 @@ en:
       choose_type: choose item type
       no_baskets_available: No Baskets Available
       no_baskets_available_description: There are no baskets that you have access to add items to.
-      no_baskets_available_try_later: "Find a basket to join, or please try again later."
+      no_baskets_available_try_later: Find a basket to join, or please try again later.
       spinner_working: "Working.. "
       that_relates_to: that relates to {{topic_title}}
       what_to_add: What would you like to add
@@ -417,7 +478,7 @@ en:
       browse_order_in_reverse: in reverse?
       browse_order_sort_by: "Sort by:"
       browse_view_as: "Default Browse Type:"
-      browse_view_as_choice: "The default browse type should be a?"
+      browse_view_as_choice: The default browse type should be a?
       comment_control: "Who can add, edit and update comments on items?:"
       comment_control_allows: allows
       comment_control_anyone: Anyone logged in
@@ -506,6 +567,11 @@ en:
       sort_by_name: Name
       title: Baskets
     new:
+      choose_profile: Choose
+      title: Choose Basket Profile
+      which_profile: Which profile for this basket?
+      working: "Working.. "
+    new_form:
       create: Create
       request: Request
       title: New basket
@@ -547,6 +613,9 @@ en:
   baskets_helper:
     basket_preferences_inheritance_message:
       inheritance_notice: These settings will be inherited by all other baskets unless they individually specify their own policy.
+    show_all_fields_link:
+      show_all_fields: show all fields
+      show_allowed_fields: show allowed fields
   choice_model:
     must_be_unique: must be unique
     top_level: (Top level)
@@ -593,7 +662,7 @@ en:
       link_site_later: You may do this later by visiting the Administrator's Toolbox and using the "List site on Kete.net.nz" link.
       missing_software: "Missing Software:"
       missing_software_gem: "{{gem_name}} gem"
-      must_restart: Before you continue, you must restart the kete application server!
+      must_restart: Before you continue, you must restart the kete application server and start backgroundrb!
       prime_search_engine: Prime Search Engine
       regular_options: Regular Options
       reload_site: Reload Site
@@ -626,9 +695,6 @@ en:
       next_buton: Next
       restart: System Settings modified. Please restart the server for them to take effect.
       title: All required settings are complete.
-    zebra_start:
-      start_button: Start
-      title: The Search Engine needs to be started to continue.
     zoom_dbs_edit:
       password: "Password:"
       password_example: Please set a new password to connect to this Search Engine.  Leaving it the default is a security risk.
@@ -648,8 +714,6 @@ en:
       primed_zebra: Search Engine has been primed.
     send_information:
       already_running: There is already a site registration worker active. Wierd! Try refreshing the page.
-    start_zebra:
-      stopping_zebra: Search Engine started.  Stopping must be done by system administrator from command line.
   content_types:
     available_fields_form:
       add_button: Add to Content Type
@@ -957,8 +1021,8 @@ en:
     extended_field_choice_autocomplete_editor:
       getting_choices: "Getting choices. "
     extended_field_choice_select_editor:
-      suggest_a: "OR suggest a {{field_name}}"
       getting_choices: "Getting choices. "
+      suggest_a: OR suggest a {{field_name}}
     extended_field_radio_editor:
       "no": "No"
       no_value: No value
@@ -1187,7 +1251,7 @@ en:
       image_from_archive: Image from the Archive
       keyword_search: Keyword Search
       latest: Latest
-      show_x_of_x: "showing {{count}} of {{total}}"
+      show_x_of_x: showing {{count}} of {{total}}
       tags_title: Tags
       view: "View "
     post_headline:
@@ -1210,6 +1274,7 @@ en:
       add_link: List site on Kete.net.nz
       all_baskets: all baskets
       basket_label: "Tools for basket: {{basket}}"
+      basket_profiles: basket profiles
       choices: choices for extended fields
       configure: reconfigure site
       contact: Contact
@@ -1226,7 +1291,6 @@ en:
       members: basket members
       moderate: moderate basket contents
       my_baskets: my baskets
-      new_basket: add basket
       oai_pmh: OAI PMH Sets
       preferences: basket preferences
       rebuild: Rebuild search databases
@@ -1385,6 +1449,113 @@ en:
     bad_request: "Error 400: Bad Request"
     not_found: "Error 404: File Not Found"
     unauthorized: "Error 401: Unauthorized"
+  profile_model:
+    all_form_types_have_rule_type:
+      missing_rules_types: "The following forms are missing a rule type: {{missing}}"
+      no_rules_submitted: No profile rules have been submitted. Try again.
+    rules:
+      all: All.
+      none: None.
+    type_options:
+      all: All
+      none: None
+      select_below: Select Below
+  profiles:
+    appearance:
+      add_new_theme: Add new theme
+      additional_footer_content: "Additional Footer Content:"
+      additional_footer_content_do_not_sanitize: Allow forms and other possible insecure elements and attributes in the HTML?
+      additional_footer_content_replace: replace existing footer with above content?
+      additional_footer_content_replace_description: If checked, the above footer will totally replace the bottom of each page.  If you would rather it appear above the "Accessibility | Sitemap | Back to Content" links, rather than replace them, leave this unchecked.
+      basket_list_menu_options: "Basket List Menu Options:"
+      basket_list_menu_options_description: These settings only take effect if the basket list navigation menu is on in your template.
+      font_family: "Font Family:"
+      header_image: "Header Image:"
+      header_image_description: "URL for background image for the top of each page:"
+      inherit: Inherit
+      no_themes_available: No themes beyond the default are available right now.
+      number_of_menu_topics: "Number of topics to show when in this basket?:"
+      show_action_menu_description: (who can see the view, edit, history and other links)
+      show_action_menu_to: "Show Action Menu to:"
+      show_add_links_description: (who can relate or link items together)
+      show_add_links_to: "Show Add Links to:"
+      show_discussion_description: (who can see and add comments)
+      show_discussion_to: "Show Comments to:"
+      show_field: show<br />field?
+      show_flagging_description: (who can flag items)
+      show_flagging_to: "Show Flagging to:"
+      show_hide_controls: "Show/Hide Controls:"
+      sort_menu_by: "Sort by:"
+      sort_menu_in_reverse: in reverse?
+      theme: "Theme:"
+      theme_alt: "Screenshot of {{theme}} theme. "
+    edit:
+      administrator_contact: Administrator contact?
+      allow_non_member_comment: "Who can add, edit and update comments on items?:"
+      anyone_logged_in: Anyone logged in
+      closed_membership: Closed Membership
+      default_browse_order: "Default Browse Results Order:"
+      default_browse_type: "Default Browse Type:"
+      default_browse_type_description: The default browse type should be a?
+      default_file_privacy: "Default Original File Privacy:"
+      default_item_privacy: "Default Item Privacy:"
+      disable_site_recent_topics: "Disable Site Recent Topics Display:"
+      disable_site_recent_topics_description: Do not show new/edited topics in recent results on the Site basket?
+      disabled: Disabled
+      enabled: Enabled
+      in_reverse: in reverse?
+      inherit: Inherit
+      join_policy: "Join Policy:"
+      member_list_policy: "Member List Policy:"
+      member_list_policy_description: "To view the member list you must be at least a:"
+      moderate_items_except: "Moderator views items before approved EXCEPT:"
+      moderation_policy: "Moderation Policy:"
+      only_basket_members: Only basket members
+      open_membership: Open Membership
+      privacy_controls: "Privacy Controls:"
+      private: Private
+      private_file_visibility: "Private Original Files Visibility:"
+      private_file_visibility_description: "To view private attached files you must be at least a:"
+      public: Public
+      request_membership: Request Membership
+      show_field: show<br />field?
+      sort_by: "Sort by:"
+      use_software_default: use software default
+    homepage_options:
+      archives: Archives
+      archives_description: List basket\'s archive contents as?
+      dont_redirect: Don't redirect
+      go_to_browse: Go directly to "browse" options
+      go_to_browse_description: Redirect to results of?
+      homepage_topic: Homepage Topic
+      how_many_recent_topics: List how many recent topics?
+      how_many_tags: List how many tags?
+      list_tags_as: List basket\'s tags as?
+      list_topics_as: List basket\'s topics as?
+      order_tags_by: Order tags by?
+      recent_topics: Recent Topics
+      rss_or_atom_feeds: RSS or Atom Feeds
+      rss_or_atom_feeds_description_part1: "A new-line separated list of URLs in the following format per line:"
+      rss_or_atom_feeds_description_part2: Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in minutes - optional)
+      search: Search
+      search_description: Include basket search form?
+      selected_image: Selected Image
+      selected_image_description: Show image from basket?
+      show_field: show<br />field?
+      show_link_to_homepage_topic: A link to the homepage topic\'s?
+      show_only_homepage_topic: Show only homepage topic?
+      sidebar_content: Sidebar content after search
+      sidebar_content_do_not_sanitize: Allow forms and other possible insecure elements and attributes in the HTML?
+      tags: Tags
+  profiles_controller:
+    fields_available: Fields Available
+    title: Basket Profiles
+  profiles_helper:
+    rules_allowed_check_box:
+      expand_policy: "Expand Policy. "
+    rules_form_column:
+      cannot_be_changed: (cannot be changed)
+      choose_included_fields: --choose included form fields--
   search:
     all:
       all: "All "
@@ -1449,15 +1620,15 @@ en:
       title: "{{action}} related {{zoom_class_plural}}"
     results:
       add_a_new: "Add a new "
+      address: "Address:"
+      coordinates: "Coordinates:"
       no_results_found: No results found.
       results_on_this_page: results on this page
       show: Show
       showing_x-y_of_z: Showing {{start}}-{{finish}} results of {{total}}
-      view_map: View on map
       view_list: List View
+      view_map: View on map
       x-y_have_z_locations: "{{start}}-{{finish}} results have {{n_locations}} locations"
-      address: "Address:"
-      coordinates: "Coordinates:"
     rss:
       latest: Latest
       next: Next
@@ -1508,8 +1679,6 @@ en:
       forbidden: "Error 403: Forbidden"
     rebuild_zoom_for_items:
       zoom_rebuilt: ZOOM indexes rebuilt
-    rebuild_zoom_index:
-      already_running: There is another search record rebuild running at this time.  Please try again later.
   search_helper:
     last_part_of_title_if_refinement_of:
       and: " and"
@@ -1522,45 +1691,47 @@ en:
     pagination_links:
       depreciated: depreciated, we now use will_paginate plugin
   search_model:
-    choice_hierarchy: 'Choice Hierarchy'
+    browse_default: Browse Default
+    choice_hierarchy: Choice Hierarchy
     date: Date
-    browse_default: 'Browse Default'
-    map: 'Map'
     last_modified: Last Modified
+    map: Map
     relevance: Relevance
     title: Title
+    view_as_types_as_options:
+      inherit: Inherit
   search_source_model:
-    requires_http: 'requires an http protocol'
     must_be_one_of: "must be one of the following: {{types}}"
     or_case:
-      doesnt_matter: "Doesn't matter"
-      lowercase: "Lowercase"
-      uppercase: "Uppercase"
+      doesnt_matter: Doesn't matter
+      lowercase: Lowercase
+      uppercase: Uppercase
     or_positions:
-      after_terms: "After terms"
-      before_terms: "Before terms"
-      between_terms: "Between terms"
-      no_or_syntax: "No OR syntax"
+      after_terms: After terms
+      before_terms: Before terms
+      between_terms: Between terms
+      no_or_syntax: No OR syntax
+    requires_http: requires an http protocol
   search_sources_controller:
-    move_higher_title: "Move Higher. "
-    move_lower_title: "Move Lower. "
     move_higher:
-      moved_higher: "The selected search source has been moved higher."
+      moved_higher: The selected search source has been moved higher.
+    move_higher_title: "Move Higher. "
     move_lower:
-      moved_lower: "The selected search source has been moved lower."
-    or_syntax_description: "Where should the or syntax be places in the query?"
-    or_syntax_label: "Or Syntax"
-    source_base_url_description: "What is the base url for this source type? A search string will be appended to the end so make it end in '?q=' or similar"
-    source_cache_interval_description: 'How long should the search source be cached for? (optional - in minutes)'
-    source_limit_description: 'How many sources should be displayed?'
-    source_more_link_base_url_description: "Like Base URL, except links to a site search instead of the search source. Make it end in '?q=' or similar. (optional)"
-    source_more_link_base_url_label: "More link (optional)"
-    source_title_description: 'The title that the search sources will appear under'
-    source_type_description: 'What type of source is this?'
+      moved_lower: The selected search source has been moved lower.
+    move_lower_title: "Move Lower. "
+    or_syntax_description: Where should the or syntax be places in the query?
+    or_syntax_label: Or Syntax
+    source_base_url_description: What is the base url for this source type? A search string will be appended to the end so make it end in '?q=' or similar
+    source_cache_interval_description: How long should the search source be cached for? (optional - in minutes)
+    source_limit_description: How many sources should be displayed?
+    source_more_link_base_url_description: Like Base URL, except links to a site search instead of the search source. Make it end in '?q=' or similar. (optional)
+    source_more_link_base_url_label: More link (optional)
+    source_title_description: The title that the search sources will appear under
+    source_type_description: What type of source is this?
     title: Search Sources
   search_sources_helper:
     display_search_sources:
-      other_resources: "Other Resources"
+      other_resources: Other Resources
     or_syntax_form_column:
       case: Case
       position: Position
@@ -1783,8 +1954,8 @@ en:
       private: Private
       public: Public
     search_source:
-      more: "more &raquo;"
-      top_results: "top {{amount}} results"
+      more: more &raquo;
+      top_results: top {{amount}} results
     show:
       topic: "Topic:"
       topic_type: "Topic Type:"
@@ -1864,8 +2035,8 @@ en:
         want_access: "{{user_name}} has requested membership of the {{basket_name}} basket."
         youre_an_admin: Our records show you are an admin of that basket.
     login_changed:
-      description: "Your login for {{site_name}} was changed during an upgrade of the software the site runs on."
-      login_using: "To login, please now use the following login (your password remains the same)"
+      description: Your login for {{site_name}} was changed during an upgrade of the software the site runs on.
+      login_using: To login, please now use the following login (your password remains the same)
       thanks: Thank you,
     pending_review_for:
       pending_review: "Your submission of Revision # {{revision}} of this item is {{flag}} review of a moderator.  You will be notified of the outcome of the review."
@@ -1900,7 +2071,7 @@ en:
     basket_rejected: "{{basket_name}} basket creation has been rejected"
     basket_requested: "{{user_name}} has requested creation of the {{basket_name}} basket"
     item_flagged_with: Item flagged {{flag}} for moderation.
-    login_changed: "Your login has been altered in an upgrade."
+    login_changed: Your login has been altered in an upgrade.
     membership_accepted: Membership to {{basket_name}} accepted
     membership_rejected: Membership to {{basket_name}} rejected
     password_change: Request to change your password
@@ -1933,6 +2104,9 @@ en:
   web_links_controller:
     update:
       updated: Web Link was successfully updated.
+  worker_controller_helpers_lib:
+    rebuild_zoom_index:
+      aready_rebuilding: There is another search record rebuild running at this time.  Please try again later.
   zoom_controller_helpers_lib:
     zoom_class_humanize:
       audio_recording: Audio

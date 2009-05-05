@@ -158,44 +158,20 @@ class ConfigureController < ApplicationController
 
   # note that you can also rebuild your zebra instance later
   # from the 'Rebuild search databases' administrator toolbox link
-  def start_zebra
-    `rake zebra:start`
-    if !request.xhr?
-      redirect_to :action => 'index', :search_engine_started => true, :search_engine_setup => true, :search_engine_show => true
-    else
-      render :update do |page|
-        page.show('start-zebra-check')
-        page.replace_html("start-zebra-message", t('configure_controller.start_zebra.stopping_zebra'))
-        page.hide('completed-message')
-        page.show('finish')
-      end
-    end
-  end
+
+  # actions for rebuilding search records
+  include WorkerControllerHelpers
 
   def prime_zebra
-    # initialize the databases first
-    ['public', 'private'].each do |db|
-      `rake zebra:init ZEBRA_DB=#{db}`
-    end
+    # consolidating the code to do this work by using existing worker
+    params[:clear_zebra] = true
+    @worker_key = 'zoom_index_rebuild_worker_' + Time.now.to_s.gsub(/\W/, '_')
+    rebuild_zoom_index
 
-    # load initial records (initializes attributes)
-    `rake zebra:load_initial_records`
-
-    ZOOM_CLASSES.each do |zoom_class|
-      Module.class_eval(zoom_class).find(:all).each do |item|
-
-        # Make sure that if the item is private, we store the private version and load the latest
-        # public version into the master record so that OAI records are generated appropriately.
-        if item.respond_to?(:private?) && item.private?
-          logger.debug("Storing private version of #{item.id}.")
-          item.send :store_correct_versions_after_save
-          item.reload
-        end
-
-        # Generate OAI record and save to Zebra instances as appropriate.
-        prepare_and_save_to_zoom(item)
-
-      end
+    status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
+    while status.blank? || status[:done_with_do_work] != true
+      sleep 5
+      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
     end
 
     if !request.xhr?
@@ -222,8 +198,6 @@ class ConfigureController < ApplicationController
     # loads variable used in the reload-site-index section
     site_listing
   end
-
-  include WorkerControllerHelpers
 
   def send_information
     set_kete_net_urls

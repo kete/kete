@@ -1,0 +1,16 @@
+<% @title = t('baskets.new_form.title')
+   @basket_profile = params[:basket_profile] %>
+
+<h2>
+  <%= h(@title) -%>
+  <%= show_all_fields_link %>
+</h2>
+
+<% form_for :basket, :url => {:action => 'create', :show_all_fields => params[:show_all_fields] } do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <% if basket_policy_request_with_permissions? -%>
+    <div class="wrap"><%= submit_tag t('baskets.new_form.request'), {:class => "save-button", :tabindex => '1'} %></div>
+  <% else -%>
+    <div class="wrap"><%= submit_tag t('baskets.new_form.create'), {:class => "save-button", :tabindex => '1'} %></div>
+  <% end -%>
+<% end %>

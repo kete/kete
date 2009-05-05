@@ -50,12 +50,8 @@ module FlaggingController
       expire_show_caches
       expire_rss_caches
 
-      # a before filter has already dropped the item
-      # from the search
-      # only reinstate it
-      # if not blank
-      # update zoom for item
-      prepare_and_save_to_zoom(item) if !item.already_at_blank_version?
+      # add contributor and update zoom if needed
+      after_successful_zoom_item_update(item)
     end
 
     # permission check in controller

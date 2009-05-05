@@ -112,13 +112,15 @@ module ExtendedContent
 
     include GoogleMap::ExtendedContent
 
-    # Provide an instance of Builder::XmlMarkup for creating the XML representation stored in each item's extended content
-    # attribute.
+    # DEPRECATED
+    # Provide an instance of Nokogiri::XML::Builder.new for creating the XML representation
+    # stored in each item's extended content attribute.
     def xml(force_new = false)
+      raise "ERROR: xml method not needed. The call to this method should be replaced!"
       if force_new
-        @builder_xml = Builder::XmlMarkup.new
+        @builder_xml = Nokogiri::XML::Builder.new
       else
-        @builder_xml ||= Builder::XmlMarkup.new
+        @builder_xml ||= Nokogiri::XML::Builder.new
       end
     end
 
@@ -562,84 +564,85 @@ module ExtendedContent
     def convert_extended_content_to_xml(params_hash)
       return "" if params_hash.blank?
 
-      # Force a new instance of Bulder::XMLMarkup to be spawned
-      xml(true)
+      Nokogiri::XML::Builder.new { |xml|
 
-      all_field_mappings.collect do |field_to_xml|
+        all_field_mappings.collect do |field_to_xml|
 
-        # label is unique, whereas xml_element_name is not
-        # thus we use label for our internal (topic.extended_content) storage of arbitrary attributes
-        # xml_element_name is used for exported topics, such as oai/dc records
-        field_name = field_to_xml.extended_field_label.downcase.gsub(/\s/, '_')
+          # label is unique, whereas xml_element_name is not
+          # thus we use label for our internal (topic.extended_content) storage of arbitrary attributes
+          # xml_element_name is used for exported topics, such as oai/dc records
+          field_name = field_to_xml.extended_field_label.downcase.gsub(/\s/, '_')
 
-        # because we piggyback multiple, it doesn't have a ? method
-        # even though it is boolean
-        if field_to_xml.extended_field_multiple
+          # because we piggyback multiple, it doesn't have a ? method
+          # even though it is boolean
+          if field_to_xml.extended_field_multiple
 
-          # we have multiple values for this field in the form
-          # collect them in an outer tag
-          # do an explicit key, so we end up with a hash
-          xml.tag!("#{field_name}_multiple") do
-            hash_of_values = params_hash[field_name]
+            # we have multiple values for this field in the form
+            # collect them in an outer tag
+            # do an explicit key, so we end up with a hash
+            xml.send("#{field_name}_multiple") do
+              hash_of_values = params_hash[field_name]
 
-            # Do not store empty values
-            hash_of_values = hash_of_values ? hash_of_values.reject { |k, v| v.blank? } : nil
+              # Do not store empty values
+              hash_of_values = hash_of_values ? hash_of_values.reject { |k, v| v.blank? } : nil
 
-            if !hash_of_values.blank?
-              hash_of_values.keys.sort.each do |key|
+              if !hash_of_values.blank?
+                hash_of_values.keys.sort.each do |key|
 
-                # Do not store empty values of multiples for choices.
-                unless params_hash[field_name][key].to_s.blank? || \
-                      ( params_hash[field_name][key].is_a?(Hash) && params_hash[field_name][key].values.to_s.blank? )
+                  # Do not store empty values of multiples for choices.
+                  unless params_hash[field_name][key].to_s.blank? || \
+                        ( params_hash[field_name][key].is_a?(Hash) && params_hash[field_name][key].values.to_s.blank? )
 
-                  xml.tag!(key) do
+                    xml.send(key) do
+                      extended_content_field_xml_tag(
+                        :xml => xml,
+                        :field => field_name,
+                        :value => params_hash[field_name][key],
+                        :xml_element_name => field_to_xml.extended_field_xml_element_name,
+                        :xsi_type => field_to_xml.extended_field_xsi_type,
+                        :extended_field => field_to_xml.extended_field
+                      )
+                    end
+                  end
+
+                end
+              else
+                # this handles the case where edit has changed the item from one topic type to a sub topic type
+                # and there isn't an existing value for this multiple
+                # generates empty xml elements for the field
+                key = 1.to_s
+                xml.send(key) do
                     extended_content_field_xml_tag(
                       :xml => xml,
                       :field => field_name,
-                      :value => params_hash[field_name][key],
+                      :value => '',
                       :xml_element_name => field_to_xml.extended_field_xml_element_name,
                       :xsi_type => field_to_xml.extended_field_xsi_type,
                       :extended_field => field_to_xml.extended_field
                     )
-                  end
                 end
-
-              end
-            else
-              # this handles the case where edit has changed the item from one topic type to a sub topic type
-              # and there isn't an existing value for this multiple
-              # generates empty xml elements for the field
-              key = 1.to_s
-              xml.tag!(key) do
-                  extended_content_field_xml_tag(
-                    :xml => xml,
-                    :field => field_name,
-                    :value => '',
-                    :xml_element_name => field_to_xml.extended_field_xml_element_name,
-                    :xsi_type => field_to_xml.extended_field_xsi_type,
-                    :extended_field => field_to_xml.extended_field
-                  )
               end
             end
+          else
+            # this handles the case where edit has changed the item from one topic type to a sub topic type
+            # and there isn't an existing value
+            # generates empty xml element for the field
+            final_value = params_hash[field_name].nil? ? '' : params_hash[field_name]
+
+            extended_content_field_xml_tag(
+              :xml => xml,
+              :field => field_name,
+              :value => final_value,
+              :xml_element_name => field_to_xml.extended_field_xml_element_name,
+              :xsi_type => field_to_xml.extended_field_xsi_type,
+              :extended_field => field_to_xml.extended_field
+            )
           end
-        else
-          # this handles the case where edit has changed the item from one topic type to a sub topic type
-          # and there isn't an existing value
-          # generates empty xml element for the field
-          final_value = params_hash[field_name].nil? ? '' : params_hash[field_name]
 
-          extended_content_field_xml_tag(
-            :xml => xml,
-            :field => field_name,
-            :value => final_value,
-            :xml_element_name => field_to_xml.extended_field_xml_element_name,
-            :xsi_type => field_to_xml.extended_field_xsi_type,
-            :extended_field => field_to_xml.extended_field
-          )
-        end
-
-      # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
-      end.flatten.uniq.join("\n")
+        # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
+        end.flatten.uniq.join("\n")
+      
+      }.to_xml.gsub("<?xml version=\"1.0\"?>\n","").gsub("\n", '')
     end
 
     def convert_xml_to_extended_fields_hash

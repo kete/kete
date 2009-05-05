@@ -8,6 +8,9 @@ class ModerateController < ApplicationController
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
 
+  # action menu uses a basket helper we need
+  helper :baskets
+
   def index
     redirect_to :action => 'list'
   end

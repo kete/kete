@@ -178,20 +178,22 @@ module ApplicationHelper
 
   def users_baskets_list(user=current_user, options ={})
     # if the user is the current user, use the basket_access_hash instead of fetching them again
-    @baskets = (user == current_user) ? @basket_access_hash : user.basket_permissions
+    basket_permissions = (user == current_user) ? @basket_access_hash : user.basket_permissions
 
     row1 = 'user_basket_list_row1'
     row2 = 'user_basket_list_row2'
     css_class = row1
 
     if user == current_user || @site_admin
-      Basket.find_all_by_status_and_creator_id('requested', user).each do |basket|
-        @baskets << [basket.urlified_name, nil] if @baskets[basket.urlified_name.to_sym].blank?
+      Basket.find_all_by_status_and_creator_id('requested', user, :select => 'urlified_name').each do |basket|
+        if basket_permissions[basket.urlified_name.to_sym].blank?
+          basket_permissions[basket.urlified_name.to_sym] = Hash.new
+        end
       end
     end
 
     html = String.new
-    @baskets.each do |basket_name, role|
+    basket_permissions.each do |basket_name, role|
       basket = Basket.find_by_urlified_name(basket_name.to_s)
       next unless user == current_user || current_user_can_see_memberlist_for?(basket)
       pending = (basket.status == 'requested') ? t('application_helper.users_baskets_list.basket_pending') : ''
@@ -1063,7 +1065,7 @@ module ApplicationHelper
     return html_string
   end
 
-  def link_to_preview_of(item, version, check_permission = true)
+  def link_to_preview_of(item, version, check_permission = true, options = {})
     version_number = 0
     link_text = 'preview'
     begin
@@ -1073,7 +1075,7 @@ module ApplicationHelper
       version_number = version.to_i
     end
 
-    if check_permission == false or can_preview?(:item => item, :version_number => version_number)
+    if check_permission == false or can_preview?(:item => item, :version_number => version_number, :submitter => options[:submitter])
       link_to link_text, url_for_preview_of(item, version_number)
     else
       t('application_helper.link_to_preview_of.not_available')

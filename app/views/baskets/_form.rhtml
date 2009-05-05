@@ -1,248 +1,247 @@
-
 <fieldset>
+
   <%= error_messages_for 'basket' %>
 
-  <!--[form:basket]-->
-  <div class="form-element"><label for="basket_name"><%=t 'baskets.form.name' %></label>
-    <%= form.text_field :name, :tabindex => '1'  %>
-  </div>
+  <%= hidden_field_tag "basket_profile", @basket_profile -%>
 
   <div class="form-element">
-    <label class="required" for="settings_fully_moderated"><%=t 'baskets.form.moderation' %></label>
-    <%= select_tag 'settings[fully_moderated]', @basket.moderation_select_options, {"id" => "settings_fully_moderated", :tabindex => '1'} %>
+    <label for="basket_name"><%=t 'baskets.form.name' %></label>
+    <%= form.text_field :name, :tabindex => '1' %>
   </div>
 
-  <% # make hidden and disabled to start
-     # reveal if moderation policy is changed to full moderation -%>
-  <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' if !@basket.fully_moderated? -%>>
-    <label for="settings[moderated_except]"><%=t 'baskets.form.moderate_except' %></label>
-    <fieldset>
+  <% if allowed_field?('fully_moderated') %>
+    <div class="form-element">
+      <label for="settings_fully_moderated"><%=t 'baskets.form.moderation' %></label>
+      <%= select_tag 'settings[fully_moderated]',
+                     @basket.moderation_select_options(current_value_of('fully_moderated')),
+                     { :id => "settings_fully_moderated", :tabindex => '1' } %>
+    </div>
 
-      <% ZOOM_CLASSES.each do |zoom_class| -%>
-      <input type="checkbox" name="settings[moderated_except][]" value="<%= zoom_class -%>"<%=
-           ' checked="checked"' if !@basket.settings[:moderated_except].blank? && @basket.settings[:moderated_except].include?(zoom_class) -%> tabindex="1" />
-      <%= zoom_class_plural_humanize(zoom_class) %><br />
-      <% end -%>
-    </fieldset>
-    <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled="disabled" />
-  </div>
-
-  <div class="form-element">
-
-    <label><%=t 'baskets.form.privacy_controls' %></label>
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, 'true', :tabindex => '1' %>
-        <label for="basket_show_privacy_controls_true" class="inline"><%=t 'baskets.form.enabled' %></label>
-        <div class="form_example"><%=t 'baskets.form.privacy_controls_enabled_example' %></div>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, 'false', :tabindex => '1' %>
-        <label for="basket_show_privacy_controls_false" class="inline"><%=t 'baskets.form.disabled' %></label>
-        <div class="form_example"><%=t 'baskets.form.privacy_controls_disabled_example' %>
-        <%= t('baskets.form.privacy_controls_site_basket') if @basket == @site_basket %></div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :show_privacy_controls, '', :tabindex => '1' %>
-        <label for="basket_show_privacy_controls_" class="inline"><%=t 'baskets.form.inherit' %></label>
-        <div class="form_example">
-          <%=t 'baskets.form.inherit_example' %><br />
-          <% if @basket.show_privacy_controls.nil? -%>
-            <%=t 'baskets.form.privacy_controls_current_inheritance',
-                 :current_inheritance => (!@site_basket.show_privacy_controls.blank? && @site_basket.show_privacy_controls) ? t('baskets.form.enabled') : t('baskets.form.disabled') %>
-          <% end %>
-        </div>
-      </div>
-      <% end %>
-
-    </fieldset>
-  </div>
-
-  <div class="form-element">
-    <label><%=t 'baskets.form.item_privacy' %></label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :private_default, 'false', :tabindex => '1' %>
-        <label for="basket_private_default_false" class="inline"><%=t 'baskets.form.public' %></label><br />
-        <div class="form_example"><%=t 'baskets.form.item_privacy_public_example' %></div>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :private_default, 'true', :tabindex => '1' %>
-        <label for="basket_private_default_true" class="inline"><%=t 'baskets.form.private' %></label><br />
-        <div class="form_example"><%=t 'baskets.form.item_privacy_private_example' %></div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :private_default, '', :tabindex => '1' %>
-        <label for="basket_private_default_" class="inline"><%=t 'baskets.form.inherit' %></label>
-        <div class="form_example">
-          <%=t 'baskets.form.inherit_example' %><br />
-          <% if @basket.private_default.nil? -%>
-            <%=t 'baskets.form.item_privacy_current_inheritance',
-                 :current_inheritance => (!@site_basket.private_default.blank? && @site_basket.private_default) ? t('baskets.form.private') : t('baskets.form.public') %>
-          <% end %>
-        </div>
-      </div>
-      <% end %>
-
-    </fieldset>
-
-  </div>
-
-  <div class="form-element">
-    <label><%=t 'baskets.form.file_privacy' %></label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :file_private_default, 'false', :tabindex => '1' %>
-        <label for="basket_file_private_default_false" class="inline"><%=t 'baskets.form.public' %></label>
-        <div class="form_example"><%=t 'baskets.form.file_privacy_public_example' %></div>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :file_private_default, 'true', :tabindex => '1' %>
-        <label for="basket_file_private_default_true" class="inline"><%=t 'baskets.form.private' %></label>
-        <div class="form_example"><%=t 'baskets.form.file_privacy_private_example' %></div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :file_private_default, '', :tabindex => '1' %>
-        <label for="basket_file_private_default_" class="inline"><%=t 'baskets.form.inherit' %></label>
-        <div class="form_example">
-          <%=t 'baskets.form.inherit_example' %><br />
-          <% if @basket.file_private_default.nil? -%>
-            <%=t 'baskets.form.file_privacy_current_inheritance',
-                 :current_inheritance => (!@site_basket.file_private_default.blank? && @site_basket.file_private_default) ? t('baskets.form.private') : t('baskets.form.public') %>
-          <% end %>
-        </div>
-      </div>
-      <% end %>
-
-      <p><%=t 'baskets.form.file_privacy_example' %></p>
-    </fieldset>
-
-  </div>
-
-  <%# Only show to users who can see items in the current basket %>
-  <% if current_user_can_see_private_files_in_basket?(@basket) %>
-  <div class="form-element">
-    <label><%=t 'baskets.form.file_visibility' %></label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <label for="settings_private_file_visibility" style="width: 100%"><%=t 'baskets.form.file_visibility_example' %></label>
-        <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket), {"id" => "settings_private_file_visibility", :tabindex => '1'} %></div>
-      </div>
-
-
-   </fieldset>
-  </div>
+    <%# make hidden and disabled to start
+      # reveal if moderation policy is changed to full moderation%>
+    <% show_moderated_except = current_value_of('fully_moderated') == true %>
+    <div class="form-element" id="settings_moderated_except" <%= 'style="display:none"' unless show_moderated_except -%>>
+      <label for="settings[moderated_except]"><%=t 'baskets.form.moderate_except' %></label>
+      <fieldset>
+        <% ZOOM_CLASSES.each do |zoom_class| -%>
+          <% checked = current_value_of('moderated_except') && current_value_of('moderated_except').include?(zoom_class) %>
+          <input type="checkbox" name="settings[moderated_except][]" value="<%= zoom_class -%>"
+                 <%= ' checked="checked"' if checked -%> tabindex="1" />
+          <%= zoom_class_plural_humanize(zoom_class) %><br />
+        <% end -%>
+      </fieldset>
+      <input type="hidden" id="empty_settings_moderated_except" name="settings[moderated_except]" value="" disabled="disabled" />
+    </div>
   <% end %>
 
-  <div class="form-element">
-    <label><%=t 'baskets.form.comment_control' %></label>
+  <% if allowed_field?('show_privacy_controls') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.privacy_controls' %></label>
+      <fieldset>
 
-    <fieldset>
-
-      <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, 'true', :tabindex => '1' %>
-        <label for="basket_allow_non_member_comments_true" class="inline"><%=t 'baskets.form.comment_control_anyone' %></label>
-      </div>
-
-      <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, 'false', :tabindex => '1' %>
-        <label for="basket_allow_non_member_comments_false" class="inline"><%=t 'baskets.form.comment_control_members' %></label>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= form.radio_button :allow_non_member_comments, '', :tabindex => '1' %>
-        <label for="basket_allow_non_member_comments_" class="inline"><%=t 'baskets.form.inherit' %></label>
-        <div class="form_example">
-          <%=t 'baskets.form.inherit_example' %><br />
-          <% if @basket.allow_non_member_comments.nil? -%>
-            <%=t 'baskets.form.comment_control_current_inheritance',
-                 :current_inheritance => (!@site_basket.allow_non_member_comments.blank? && @site_basket.allow_non_member_comments) ? t('baskets.form.comment_control_allows') : t('baskets.form.comment_control_not_allows') %>
-          <% end %>
+        <div class="form-element">
+          <%= form.radio_button :show_privacy_controls, 'true', :tabindex => '1' %>
+          <label for="basket_show_privacy_controls_true" class="inline"><%=t 'baskets.form.enabled' %></label>
+          <div class="form_example"><%=t 'baskets.form.privacy_controls_enabled_example' %></div>
         </div>
-      </div>
-      <% end %>
 
-    </fieldset>
+        <div class="form-element">
+          <%= form.radio_button :show_privacy_controls, 'false', :tabindex => '1' %>
+          <label for="basket_show_privacy_controls_false" class="inline"><%=t 'baskets.form.disabled' %></label>
+          <div class="form_example"><%=t 'baskets.form.privacy_controls_disabled_example' %>
+          <%= t('baskets.form.privacy_controls_site_basket') if @basket == @site_basket %></div>
+        </div>
 
-  </div>
-
-  <div class="form-element">
-    <label><%=t 'baskets.form.browse_view_as' %></label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <label for="settings_browse_view_as" style="width: 100%"><%=t 'baskets.form.browse_view_as_choice' %></label>
-        <%
-        options = String.new
-        options += "<option value='inherit'>#{t('baskets.form.inherit')}</option>" if @basket != @site_basket
-        current = @basket.settings[:browse_view_as]
-        Search.view_as_types.each do |type|
-          options += "<option value='#{type[0]}'#{" selected='selected'" if type[0] == current}>#{type[1]}</option>"
-        end
-        %>
-        <div style="clear: left;"><%= select_tag 'settings[browse_view_as]', options, {"id" => "settings_browse_view_as", :tabindex => '1'} %></div>
-      </div>
-
-    </fieldset>
-
-  </div>
-
-  <div class="form-element">
-    <label>
-      <%=t 'baskets.form.browse_order' %><br />
-      <small>
         <% if @basket != @site_basket %>
-          <%=t 'baskets.form.isnt_inherited' %>
-        <% else %>
-          <%=t 'baskets.form.doesnt_inherit' %>
+        <div class="form-element">
+          <%= form.radio_button :show_privacy_controls, '', :tabindex => '1' %>
+          <label for="basket_show_privacy_controls_" class="inline"><%=t 'baskets.form.inherit' %></label>
+          <div class="form_example">
+            <%=t 'baskets.form.inherit_example' %><br />
+            <% if @basket.show_privacy_controls.nil? -%>
+              <%=t 'baskets.form.privacy_controls_current_inheritance',
+                   :current_inheritance => (!@site_basket.show_privacy_controls.blank? && @site_basket.show_privacy_controls) ? t('baskets.form.enabled') : t('baskets.form.disabled') %>
+            <% end %>
+          </div>
+        </div>
         <% end %>
-      </small>
-    </label>
 
-    <fieldset>
+      </fieldset>
+    </div>
+  <% end %>
 
-      <div class="form-element">
-        <label for="settings_sort_order_default" style="width: 100%"><%=t 'baskets.form.browse_order_sort_by' %></label>
-        <div style="clear: left;"><%= select_tag 'settings[sort_order_default]', "<option value='none'>#{t('baskets.form.browse_order_default')}</option>#{Search.all_sort_types((@basket.settings[:sort_order_default] || 'default'), 'all')}", {"id" => "settings_sort_order_default", :tabindex => '1'} %></div>
-      </div>
+  <% if allowed_field?('private_default') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.item_privacy' %></label>
+      <fieldset>
 
-      <div class="form-element">
-        <%= check_box 'settings', 'sort_direction_reversed_default', {:checked => (@basket.settings[:sort_direction_reversed_default] == 'reverse'), :tabindex => '1'}, 'reverse', '' %>
-        <label for="settings_sort_direction_reversed_default" class="inline"><%=t 'baskets.form.browse_order_in_reverse' %></label>
-      </div>
+        <div class="form-element">
+          <%= form.radio_button :private_default, 'false', :tabindex => '1' %>
+          <label for="basket_private_default_false" class="inline"><%=t 'baskets.form.public' %></label><br />
+          <div class="form_example"><%=t 'baskets.form.item_privacy_public_example' %></div>
+        </div>
 
-    </fieldset>
-  </div>
+        <div class="form-element">
+          <%= form.radio_button :private_default, 'true', :tabindex => '1' %>
+          <label for="basket_private_default_true" class="inline"><%=t 'baskets.form.private' %></label><br />
+          <div class="form_example"><%=t 'baskets.form.item_privacy_private_example' %></div>
+        </div>
 
-  <% if @basket != @site_basket %>
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= form.radio_button :private_default, '', :tabindex => '1' %>
+          <label for="basket_private_default_" class="inline"><%=t 'baskets.form.inherit' %></label>
+          <div class="form_example">
+            <%=t 'baskets.form.inherit_example' %><br />
+            <% if @basket.private_default.nil? -%>
+              <%=t 'baskets.form.item_privacy_current_inheritance',
+                   :current_inheritance => (!@site_basket.private_default.blank? && @site_basket.private_default) ? t('baskets.form.private') : t('baskets.form.public') %>
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('file_private_default') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.file_privacy' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <%= form.radio_button :file_private_default, 'false', :tabindex => '1' %>
+          <label for="basket_file_private_default_false" class="inline"><%=t 'baskets.form.public' %></label>
+          <div class="form_example"><%=t 'baskets.form.file_privacy_public_example' %></div>
+        </div>
+
+        <div class="form-element">
+          <%= form.radio_button :file_private_default, 'true', :tabindex => '1' %>
+          <label for="basket_file_private_default_true" class="inline"><%=t 'baskets.form.private' %></label>
+          <div class="form_example"><%=t 'baskets.form.file_privacy_private_example' %></div>
+        </div>
+
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= form.radio_button :file_private_default, '', :tabindex => '1' %>
+          <label for="basket_file_private_default_" class="inline"><%=t 'baskets.form.inherit' %></label>
+          <div class="form_example">
+            <%=t 'baskets.form.inherit_example' %><br />
+            <% if @basket.file_private_default.nil? -%>
+              <%=t 'baskets.form.file_privacy_current_inheritance',
+                   :current_inheritance => (!@site_basket.file_private_default.blank? && @site_basket.file_private_default) ? t('baskets.form.private') : t('baskets.form.public') %>
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+
+        <p><%=t 'baskets.form.file_privacy_example' %></p>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <%# Only show to users who can see items in the current basket %>
+  <% if allowed_field?('private_file_visibility') && current_user_can_see_private_files_in_basket?(@basket) %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.file_visibility' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_private_file_visibility" style="width: 100%"><%=t 'baskets.form.file_visibility_example' %></label>
+          <div style="clear: left"><%= select_tag 'settings[private_file_visibility]', @basket.private_file_visibility_as_options(@site_basket, current_value_of('private_file_visibility')), {"id" => "settings_private_file_visibility", :tabindex => '1'} %></div>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('allow_non_member_comments') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.comment_control' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <%= form.radio_button :allow_non_member_comments, 'true', :tabindex => '1' %>
+          <label for="basket_allow_non_member_comments_true" class="inline"><%=t 'baskets.form.comment_control_anyone' %></label>
+        </div>
+
+        <div class="form-element">
+          <%= form.radio_button :allow_non_member_comments, 'false', :tabindex => '1' %>
+          <label for="basket_allow_non_member_comments_false" class="inline"><%=t 'baskets.form.comment_control_members' %></label>
+        </div>
+
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= form.radio_button :allow_non_member_comments, '', :tabindex => '1' %>
+          <label for="basket_allow_non_member_comments_" class="inline"><%=t 'baskets.form.inherit' %></label>
+          <div class="form_example">
+            <%=t 'baskets.form.inherit_example' %><br />
+            <% if @basket.allow_non_member_comments.nil? -%>
+              <%=t 'baskets.form.comment_control_current_inheritance',
+                   :current_inheritance => (!@site_basket.allow_non_member_comments.blank? && @site_basket.allow_non_member_comments) ? t('baskets.form.comment_control_allows') : t('baskets.form.comment_control_not_allows') %>
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('browse_view_as') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.browse_view_as' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_browse_view_as" style="width: 100%"><%=t 'baskets.form.browse_view_as_choice' %></label>
+          <div style="clear: left;"><%= select_tag 'settings[browse_view_as]', Search.view_as_types_as_options(current_value_of('browse_view_as'), (@basket != @site_basket)), {"id" => "settings_browse_view_as", :tabindex => '1'} %></div>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('sort_order_default') %>
+    <div class="form-element">
+      <label>
+        <%=t 'baskets.form.browse_order' %><br />
+        <small>
+          <% if @basket != @site_basket %>
+            <%=t 'baskets.form.isnt_inherited' %>
+          <% else %>
+            <%=t 'baskets.form.doesnt_inherit' %>
+          <% end %>
+        </small>
+      </label>
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_sort_order_default" style="width: 100%"><%=t 'baskets.form.browse_order_sort_by' %></label>
+          <div style="clear: left;"><%= select_tag 'settings[sort_order_default]', "<option value='none'>#{t('baskets.form.browse_order_default')}</option>#{Search.all_sort_types((current_value_of('sort_order_default') || @basket.settings[:sort_order_default] || 'default'), 'all')}", {"id" => "settings_sort_order_default", :tabindex => '1'} %></div>
+        </div>
+
+        <div class="form-element">
+          <%= check_box 'settings', 'sort_direction_reversed_default', {:checked => (current_value_of('sort_direction_reversed_default') == 'reverse'), :tabindex => '1'}, 'reverse', '' %>
+          <label for="settings_sort_direction_reversed_default" class="inline"><%=t 'baskets.form.browse_order_in_reverse' %></label>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('disable_site_recent_topics_display') && @basket != @site_basket %>
     <div class="form-element">
       <label>
         <%=t 'baskets.form.recent_topics' %><br />
         <small><%=t 'baskets.form.isnt_inherited' %></small>
       </label>
-
       <fieldset>
 
         <div class="form-element">
-          <%= check_box 'settings', 'disable_site_recent_topics_display', {:checked => (@basket.settings[:disable_site_recent_topics_display] == true), :tabindex => '1'}, 'true', 'false' %>
+          <%= check_box 'settings', 'disable_site_recent_topics_display', {:checked => (current_value_of('disable_site_recent_topics_display') == true), :tabindex => '1'}, 'true', 'false' %>
           <label for="settings_disable_site_recent_topics_display" class="inline"><%=t 'baskets.form.recent_topics_example' %></label>
         </div>
 
@@ -250,95 +249,95 @@
     </div>
   <% end -%>
 
-  <div class="form-element">
-    <label><%=t 'baskets.form.join_policy' %></label>
+  <% if allowed_field?('basket_join_policy') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.join_policy' %></label>
+      <fieldset>
 
-    <fieldset>
-
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'open', {:checked => (@basket.settings[:basket_join_policy] == 'open')} %>
-        <label for="settings_basket_join_policy_open" class="inline"><%=t 'baskets.form.join_policy_open' %></label>
-        <div class="form_example"><%=t 'baskets.form.join_policy_open_example' %></div>
-      </div>
-
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'request', {:checked => (@basket.settings[:basket_join_policy] == 'request')} %>
-        <label for="settings_basket_join_policy_request" class="inline"><%=t 'baskets.form.join_policy_request' %></label>
-        <div class="form_example"><%=t 'baskets.form.join_policy_request_example' %></div>
-      </div>
-
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'closed', {:checked => (@basket.settings[:basket_join_policy] == 'closed')} %>
-        <label for="settings_basket_join_policy_closed" class="inline"><%=t 'baskets.form.join_policy_closed' %></label>
-        <div class="form_example"><%=t 'baskets.form.join_policy_closed_example' %></div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= radio_button 'settings', 'basket_join_policy', 'nil', {:checked => (@basket.settings[:basket_join_policy] == nil)} %>
-        <label for="settings_basket_join_policy_nil" class="inline"><%=t 'baskets.form.inherit' %></label>
-        <div class="form_example">
-          <%=t 'baskets.form.inherit_example' %><br />
-          <%=t 'baskets.form.join_policy_current_inheritance',
-               :current_inheritance => @site_basket.settings[:basket_join_policy] %>
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'open', {:checked => (current_value_of('basket_join_policy') == 'open')} %>
+          <label for="settings_basket_join_policy_open" class="inline"><%=t 'baskets.form.join_policy_open' %></label>
+          <div class="form_example"><%=t 'baskets.form.join_policy_open_example' %></div>
         </div>
-      </div>
-      <% end -%>
 
-    </fieldset>
-  </div>
-
-  <div class="form-element">
-    <label><%=t 'baskets.form.member_list_policy' %></label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <label for="settings_memberlist_policy" style="width: 100%"><%=t 'baskets.form.member_list_policy_example' %></label>
-        <div style="clear: left"><%= select_tag 'settings[memberlist_policy]', @basket.memberlist_policy_or_default %></div>
-      </div>
-
-    </fieldset>
-  </div>
-
-  <div class="form-element">
-    <label><%=t 'baskets.form.admin_contact' %></label>
-
-    <fieldset>
-
-      <div class="form-element">
-        <%= radio_button 'settings', 'allow_basket_admin_contact', 'true', {:checked => (@basket.settings[:allow_basket_admin_contact] == true)} %>
-        <label for="settings_allow_basket_admin_contact_true" class="inline"><%=t 'baskets.form.enabled' %></label>
-        <div class="form_example"><%=t 'baskets.form.admin_contact_enabled_example' %></div>
-      </div>
-
-      <div class="form-element">
-        <%= radio_button 'settings', 'allow_basket_admin_contact', 'false', {:checked => (@basket.settings[:allow_basket_admin_contact] == false)} %>
-        <label for="settings_allow_basket_admin_contact_false" class="inline"><%=t 'baskets.form.disabled' %></label>
-        <div class="form_example"><%=t 'baskets.form.admin_contact_disabled_example' %></div>
-      </div>
-
-      <% if @basket != @site_basket %>
-      <div class="form-element">
-        <%= radio_button 'settings', 'allow_basket_admin_contact', 'nil', {:checked => (@basket.settings[:allow_basket_admin_contact] == nil)} %>
-        <label for="settings_allow_basket_admin_contact_nil" class="inline"><%=t 'baskets.form.inherit' %></label>
-        <div class="form_example">
-          <%=t 'baskets.form.inherit_example' %><br />
-          <%=t 'baskets.form.admin_contain_current_inheritance',
-               :current_inheritance => (!@site_basket.settings[:allow_basket_admin_contact].blank? && @site_basket.settings[:allow_basket_admin_contact] == true) ? t('baskets.form.enabled') : t('baskets.form.disabled') %>
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'request', {:checked => (current_value_of('basket_join_policy') == 'request')} %>
+          <label for="settings_basket_join_policy_request" class="inline"><%=t 'baskets.form.join_policy_request' %></label>
+          <div class="form_example"><%=t 'baskets.form.join_policy_request_example' %></div>
         </div>
-      </div>
-      <% end %>
 
-    </fieldset>
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'closed', {:checked => (current_value_of('basket_join_policy') == 'closed')} %>
+          <label for="settings_basket_join_policy_closed" class="inline"><%=t 'baskets.form.join_policy_closed' %></label>
+          <div class="form_example"><%=t 'baskets.form.join_policy_closed_example' %></div>
+        </div>
 
-  </div>
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= radio_button 'settings', 'basket_join_policy', 'nil', {:checked => (current_value_of('basket_join_policy') == nil)} %>
+          <label for="settings_basket_join_policy_nil" class="inline"><%=t 'baskets.form.inherit' %></label>
+          <div class="form_example">
+            <%=t 'baskets.form.inherit_example' %><br />
+            <%=t 'baskets.form.join_policy_current_inheritance',
+                 :current_inheritance => @site_basket.settings[:basket_join_policy] %>
+          </div>
+        </div>
+        <% end -%>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('memberlist_policy') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.member_list_policy' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_memberlist_policy" style="width: 100%"><%=t 'baskets.form.member_list_policy_example' %></label>
+          <div style="clear: left"><%= select_tag 'settings[memberlist_policy]', @basket.memberlist_policy_or_default(current_value_of('memberlist_policy')) %></div>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
+  <% if allowed_field?('allow_basket_admin_contact') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.admin_contact' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <%= radio_button 'settings', 'allow_basket_admin_contact', 'true', {:checked => (current_value_of('allow_basket_admin_contact') == true)} %>
+          <label for="settings_allow_basket_admin_contact_true" class="inline"><%=t 'baskets.form.enabled' %></label>
+          <div class="form_example"><%=t 'baskets.form.admin_contact_enabled_example' %></div>
+        </div>
+
+        <div class="form-element">
+          <%= radio_button 'settings', 'allow_basket_admin_contact', 'false', {:checked => (current_value_of('allow_basket_admin_contact') == false)} %>
+          <label for="settings_allow_basket_admin_contact_false" class="inline"><%=t 'baskets.form.disabled' %></label>
+          <div class="form_example"><%=t 'baskets.form.admin_contact_disabled_example' %></div>
+        </div>
+
+        <% if @basket != @site_basket %>
+        <div class="form-element">
+          <%= radio_button 'settings', 'allow_basket_admin_contact', 'nil', {:checked => (current_value_of('allow_basket_admin_contact') == nil)} %>
+          <label for="settings_allow_basket_admin_contact_nil" class="inline"><%=t 'baskets.form.inherit' %></label>
+          <div class="form_example">
+            <%=t 'baskets.form.inherit_example' %><br />
+            <%=t 'baskets.form.admin_contain_current_inheritance',
+                 :current_inheritance => (!@site_basket.settings[:allow_basket_admin_contact].blank? && @site_basket.settings[:allow_basket_admin_contact] == true) ? t('baskets.form.enabled') : t('baskets.form.disabled') %>
+          </div>
+        </div>
+        <% end %>
+
+      </fieldset>
+    </div>
+  <% end %>
 
   <%= setupEnableDisableFunctions(true) %>
   <%= toggle_elements_applicable('settings_fully_moderated',
       '==', 'true', 'settings_moderated_except') %>
-
-  <!--[eoform:basket]-->
 
   <strong><%= basket_preferences_inheritance_message %></strong>
 

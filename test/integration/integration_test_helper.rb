@@ -413,6 +413,17 @@ class ActionController::IntegrationTest
     end
   end
 
+  # Quick and easy flagging for any item
+  # Takes item object and flag string/symbol
+  def flag_item_with(item, flag, version=nil)
+    version ||= item.version
+    visit "/#{item.basket.urlified_name}/#{zoom_class_controller(item.class.name)}/flag_form/#{item.id}?flag=#{flag.to_s}&version=#{version}"
+    fill_in 'message_', :with => 'Testing'
+    click_button 'Flag'
+    body_should_contain 'Thank you for your input. A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being'
+    item.reload # get the new version
+  end
+
   # Restore a moderated item (make live).
   # Takes required item object, and optional options hash, that can set :version to the version of the item
   # you wish to make live (default version is the latest version of the item)

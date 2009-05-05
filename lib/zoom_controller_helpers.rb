@@ -13,7 +13,6 @@ module ZoomControllerHelpers
     # mainly for cleaning out old zoom record
     # before we generate a new one
     def zoom_destroy_for(item)
-      prepare_zoom(item)
       @successful = item.zoom_destroy
     end
 
@@ -22,7 +21,6 @@ module ZoomControllerHelpers
       @successful = true
       # delete any comments this is on
       item.comments.each do |comment|
-        prepare_zoom(comment)
         @successful = comment.destroy
         if !@successful
           return @successful
@@ -30,7 +28,6 @@ module ZoomControllerHelpers
       end
 
       if @successful
-        prepare_zoom(item)
         @successful = item.destroy
       end
     end

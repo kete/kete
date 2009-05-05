@@ -40,9 +40,15 @@ class ZoomDb < ActiveRecord::Base
     conn.search(query.to_s)
   end
 
+  # get all zoom records that match a particular id
+  # returns result set
+  def records_identified_by(record_id, existing_connection = nil)
+    process_query(:query => "@attr 1=12 @attr 4=3 \"#{record_id}\"", :existing_connection => existing_connection)
+  end
+
   # Find whether a zoom record exists for this record in the given ZOOM database
   def has_zoom_record?(record_id, existing_connection = nil)
-    process_query(:query => "@attr 1=12 @attr 4=3 \"#{record_id}\"", :existing_connection => existing_connection).size > 0
+    records_identified_by(record_id, existing_connection).size > 0
   end
 
   # this takes a passed in record and deletes it from the zoom db
@@ -60,6 +66,19 @@ class ZoomDb < ActiveRecord::Base
 
     p.send('update')
     p.send('commit')
+  end
+
+  # this version of destroy doesn't require the record xml to be passed in
+  # it gets it from zebra itself
+  def destroy_identified_by(zoom_id, existing_connection = nil)
+    existing_connection = existing_connection || open_connection
+
+    # in theory there should only be one, but this handles duplicates
+    results = records_identified_by(zoom_id, existing_connection)
+
+    results.records.each do |record_xml|
+      destroy_this(record_xml, zoom_id, existing_connection)
+    end
   end
 
   # this takes a passed in record and saves it to the zoom db

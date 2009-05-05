@@ -287,10 +287,10 @@
               <h4><%=t 'layouts.application.toolbox_label' %></h4>
               <p>
                 <%=t 'layouts.application.toolbox_controls' %>
-                <%= link_to_unless_current t('layouts.application.new_basket'),
+                <%= link_to_unless_current t('layouts.application.basket_profiles'),
                                            { :urlified_name => @site_basket.urlified_name,
-                                             :controller => 'baskets',
-                                             :action => 'new' },
+                                             :controller => 'profiles',
+                                             :action => 'list' },
                                            :tabindex => '2' %>
                 |
                 <%= link_to_unless_current t('layouts.application.topic_types'),

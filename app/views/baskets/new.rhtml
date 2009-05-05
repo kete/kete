@@ -1,14 +1,58 @@
-<% @title = t('baskets.new.title') -%>
+<% if @profiles.blank? || !params[:basket_profile].blank? %>
 
-<h2><%= h(@title) -%></h2>
+  <%= render :partial => 'new_form' %>
 
-<% form_for :basket, :url => {:action => 'create'} do |form| %>
-  <%= render :partial => 'form', :object => form %>
-  <% if basket_policy_request_with_permissions? -%>
-    <div class="wrap"><%= submit_tag t('baskets.new.request'), {:class => "save-button", :tabindex => '1'} %></div>
-  <% else -%>
-    <div class="wrap"><%= submit_tag t('baskets.new.create'), {:class => "save-button", :tabindex => '1'} %></div>
-  <% end -%>
+<% else %>
+
+  <% @title = t('baskets.new.title') -%>
+  <div id="add_basket_form">
+
+    <h2><%= h(@title) -%></h2>
+
+    <% form_tag do -%>
+
+      <fieldset>
+        <div class="form-element">
+          <label for="basket_profile"><%=t 'baskets.new.which_profile' %></label>
+          <%= select_tag 'basket_profile', options_for_select([['', '']] + @profiles.collect { |p| [p.name, p.id] }), :id => 'basket_profile' %>
+        </div>
+      </fieldset>
+
+      <noscript>
+        <span id="submit_button">
+          <%= submit_tag t('baskets.new.choose_profile'), { :class => "save-button", :tabindex => '1' } -%>
+        </span>
+      </noscript>
+
+    <% end %>
+
+    <img src='/images/indicator.gif' width='16' height='16' alt='<%=t 'baskets.new.working' %>' id='data_spinner' style='display:none;' />
+
+    <%= link_to_cancel("choose") -%>
+
+  </div>
+
+  <div id="basket_form"></div>
+
+  <script type="text/javascript">
+  //<![CDATA[
+  $('basket_profile').observe('change', function(event) {
+    $('basket_form').hide();
+    $('basket_form').innerHTML = '';
+    if (Event.element(event).value == '') { return true; }
+    new Ajax.Request('<%= url_for(:action => "render_basket_form") -%>', {
+      method: 'get',
+      parameters: {
+        basket_profile: $('basket_profile').value
+      },
+      onLoading: function(loading) { $('data_spinner').show(); },
+      onComplete: function(complete) { $('data_spinner').hide(); },
+      onSuccess: function(success) { $('cancelchoose').hide(); $('basket_form').show(); }
+    });
+  });
+  //]]>
+  </script>
+
 <% end %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

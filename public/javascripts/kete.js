@@ -184,6 +184,19 @@ function clearCorrespondingFieldWhenEdited(field_id, field_class, select_id, sel
   });
 }
 
+function quickExpandCollapse(clickable_element, affected_element, collapsed_image, expanded_image) {
+  $(clickable_element).observe('click', function(event) {
+    if ($(clickable_element).src.match(collapsed_image)) {
+      $(clickable_element).src = expanded_image;
+      new Effect.BlindDown(affected_element, {duration: .75});
+    } else {
+      $(clickable_element).src = collapsed_image;
+      new Effect.BlindUp(affected_element, {duration: .75});
+    }
+    event.stop();
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }

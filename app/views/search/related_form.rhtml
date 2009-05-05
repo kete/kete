@@ -1,5 +1,7 @@
-<% @title = t('search.related_form.title', :action => @verb, :zoom_class_plural => zoom_class_plural_humanize(zoom_class_controller(@related_class))) -%>
-<% item_class = @related_class.tableize.humanize.downcase.pluralize -%>
+<%
+item_class_plural = zoom_class_plural_humanize(zoom_class_controller(@related_class)).downcase
+@title = t('search.related_form.title', :action => @verb, :zoom_class_plural => item_class_plural) -%>
+%>
 
 <p><strong><%=t 'search.related_form.function_a', :action => @verb %></strong></p>
 <ul class="item_class_choices">
@@ -24,7 +26,7 @@
   <% if params[:function] == "add" -%>
     <% privacy = params[:privacy_type] || "public" -%>
     <%= form_tag(params.merge(:search_terms => nil)) -%>
-      <%= content_tag "label", t('search.related_form.search_for', :privacy => privacy, :item_class => item_class), "for" => "search_terms" -%>
+      <%= content_tag "label", t('search.related_form.search_for', :privacy => privacy, :item_class => item_class_plural), "for" => "search_terms" -%>
       <%= text_field_tag "search_terms", params[:search_terms] %>
       <%= submit_tag t('search.related_form.search') %>
     </form>
@@ -38,9 +40,9 @@
   <% end -%>
 
   <% if @results.blank? && !params[:search_terms].blank? %>
-  <p class="alone"><strong><%=t 'search.related_form.no_items_found', :item_class => item_class %></strong></p>
+  <p class="alone"><strong><%=t 'search.related_form.no_items_found', :item_class => item_class_plural %></strong></p>
   <% elsif !@results.blank? %>
-  <p class="alone"><%=t 'search.related_form.select_items', :item_class => item_class, :action => @verb %></p>
+  <p class="alone"><%=t 'search.related_form.select_items', :item_class => item_class_plural, :action => @verb %></p>
 
   <%= form_tag(
     :controller => 'search',

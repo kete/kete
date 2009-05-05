@@ -768,7 +768,7 @@ class ApplicationController < ActionController::Base
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.related_item', :zoom_class => zoom_class_humanize(item.class.name))
-        redirect_to_related_topic(@new_related_topic, { :private => params[:related_topic_private] })
+        redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
       when 'commentable'
         redirect_to_show_for(commented_item, options)
       when 'appearance'
@@ -907,9 +907,9 @@ class ApplicationController < ActionController::Base
     item = options[:item]
     to_string = options[:to_string] || false
     if to_string
-      render_to_string(:file => "#{RAILS_ROOT}/app/views/search/oai_record.rxml", :layout => false, :content_type => 'text/xml', :locals => { :item => item })
+      render_to_string(:file => "#{RAILS_ROOT}/app/views/search/oai_record.xml.erb", :layout => false, :content_type => 'text/xml', :locals => { :item => item })
     else
-      render :file => "#{RAILS_ROOT}/app/views/search/oai_record.rxml", :layout => false, :content_type => 'text/xml', :locals => { :item => item }
+      render :file => "#{RAILS_ROOT}/app/views/search/oai_record.xml.erb", :layout => false, :content_type => 'text/xml', :locals => { :item => item }
     end
   end
 

@@ -1,9 +1,9 @@
-<% tabs = [['edit',t('baskets.actions_menu.edit'), 'baskets'],
-   ['appearance', t('baskets.actions_menu.appearance'), 'baskets'],
-   ['homepage_options',t('baskets.actions_menu.homepage_options'), 'baskets'],
-   ['list',t('baskets.actions_menu.members'), 'members'],
-   ['list',t('baskets.actions_menu.moderate'), 'moderate']
-   ]
+<% tabs = Array.new
+   tabs << ['edit', t('baskets.actions_menu.edit'), 'baskets']
+   tabs << ['appearance', t('baskets.actions_menu.appearance'), 'baskets'] if any_fields_editable?(:appearance)
+   tabs << ['homepage_options', t('baskets.actions_menu.homepage_options'), 'baskets'] if any_fields_editable?(:homepage_options)
+   tabs << ['list', t('baskets.actions_menu.members'), 'members']
+   tabs << ['list', t('baskets.actions_menu.moderate'), 'moderate']
    tab_count = 1 -%>
 <div id="content-tabs">
   <ul class="nav-list">

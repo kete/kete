@@ -172,7 +172,9 @@
 <% end -%>
 
 <% cache({:part => "tags_#{@privacy_type}"}) do -%>
-  <% if @current_basket.index_page_number_of_tags > 0 && @tag_counts_array.size > 0 -%>
+  <% if @current_basket.index_page_number_of_tags &&
+        @current_basket.index_page_number_of_tags > 0 &&
+        @tag_counts_array.size > 0 -%>
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "tags-box", :class_suffix => nil }) -%>
       <% tag_counts = @tag_counts_size > @tag_counts_array.size ?

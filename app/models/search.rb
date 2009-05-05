@@ -10,6 +10,15 @@ class Search
     types
   end
 
+  def self.view_as_types_as_options(current, show_inherit=true)
+    options = String.new
+    options += "<option value='inherit'>#{I18n.t('search_model.view_as_types_as_options.inherit')}</option>" if show_inherit
+    Search.view_as_types.each do |type|
+      options += "<option value='#{type[0]}'#{" selected='selected'" if type[0] == current}>#{type[1]}</option>"
+    end
+    options
+  end
+
   def self.boolean_operators
     ['and', 'or', 'not']
   end

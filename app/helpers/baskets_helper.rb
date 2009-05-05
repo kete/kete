@@ -12,16 +12,16 @@ module BasketsHelper
     link_to options[:phrase], {:controller => 'topics', :action => :new, :index_for_basket => options[:index_for_basket]}, :tabindex => '1'
   end
 
-  def toggle_elements_applicable(listenToThisElementID, whenElementValueCondition, whenElementValueThis, toggleThisElementID, listenToElementIsCheckbox=false)
+  def toggle_elements_applicable(listenToThisElementID, whenElementValueCondition, whenElementValueThis, toggleThisElementID, listenToElementIsCheckbox=false, clearFields=true)
     if listenToElementIsCheckbox
       javascript_tag "function toggle_#{toggleThisElementID}() {
         var element = $('#{listenToThisElementID}');
         if ( #{whenElementValueCondition}element.checked ) {
           new Effect.BlindDown('#{toggleThisElementID}', {duration: .75})
-          enableAllFields('#{toggleThisElementID}')
+          #{"enableAllFields('#{toggleThisElementID}')" if clearFields}
         } else {
           new Effect.BlindUp('#{toggleThisElementID}', {duration: .75})
-          disableAllFields('#{toggleThisElementID}')
+          #{"disableAllFields('#{toggleThisElementID}')" if clearFields}
         }
       }
       $('#{listenToThisElementID}').observe('change', toggle_#{toggleThisElementID});"
@@ -32,13 +32,13 @@ module BasketsHelper
           if (!element.blindStatus || element.blindStatus == 'up') {
             new Effect.BlindDown('#{toggleThisElementID}', {duration: .75})
             element.blindStatus = 'down';
-            enableAllFields('#{toggleThisElementID}')
+            #{"enableAllFields('#{toggleThisElementID}')" if clearFields}
           }
         } else {
           if (!element.blindStatus || element.blindStatus == 'down') {
             new Effect.BlindUp('#{toggleThisElementID}', {duration: .75})
             element.blindStatus = 'up';
-            disableAllFields('#{toggleThisElementID}')
+            #{"disableAllFields('#{toggleThisElementID}')" if clearFields}
           }
         }
       }
@@ -74,4 +74,36 @@ module BasketsHelper
 
     @inheritance_message += "</p>"
   end
+
+  def show_all_fields_link
+    html = String.new
+    # only show this link if the user is a basket admin
+    # and the form hasn't been submitted, and the profile
+    # doesn't already show all fields
+    if @site_admin && !request.post? &&
+       profile_rules && profile_rules[@form_type.to_s] &&
+       profile_rules[@form_type.to_s]['rule_type'] != 'all'
+      html += '<span class="show_all_fields">['
+      action = params[:action] == 'render_basket_form' ? 'new' : params[:action]
+      location = { :action => action, :basket_profile => params[:basket_profile] }
+      if params[:show_all_fields]
+        html += link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(:show_all_fields => nil)
+      else
+         html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(:show_all_fields => true)
+      end
+      html += ']</span>'
+    end
+    html
+  end
+
+  def any_fields_editable?(form_type=@form_type)
+    form_type = form_type.to_s
+    return true if @site_admin
+    return true if profile_rules.blank?
+    return true if profile_rules[form_type]['rule_type'] == 'all'
+    return false if profile_rules[form_type]['rule_type'] == 'none'
+    return false if profile_rules[form_type]['allowed'].blank?
+    true
+  end
+
 end
