@@ -67,8 +67,9 @@ module SearchSourcesHelper
     elsif !record.new_record?
       record.or_syntax
     else
-      Hash.new
+      nil
     end
+    value = Hash.new if value.blank?
     label_tag("#{input_name}[position]",
               t('search_sources_helper.or_syntax_form_column.position'),
               :class => 'inline') +
