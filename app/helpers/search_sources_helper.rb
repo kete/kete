@@ -81,7 +81,7 @@ module SearchSourcesHelper
                         select_tag("#{input_name}[case]",
                                    options_for_select(SearchSource.or_case, value[:case])),
                 :id => 'record_or_syntax_case_div') +
-    javascript_tag("#{"$('record_or_syntax_case_div').hide();" if value[:position] == 'none'}
+    javascript_tag("#{"$('record_or_syntax_case_div').hide();" if value[:position].blank? || value[:position] == 'none'}
       $('record_or_syntax_position').observe('change', function(event) {
       if($('record_or_syntax_position').value == 'none') {
         $('record_or_syntax_case_div').hide();
