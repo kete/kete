@@ -23,11 +23,11 @@
 
 <h3><%= @heading %></h3>
 
-<div class="prev-next"><%= will_paginate @results %></div>
+<div class="prev-next before-results"><%= will_paginate @results %></div>
 
-<div id="result-show">
+<% if @results.size > 0 %>
 
-  <% if @results.size > 0 %>
+  <div id="result-show">
 
     <%=t 'search.results.showing_x-y_of_z',
          :start => @start,
@@ -48,63 +48,63 @@
       </div>
     <% end -%>
 
-    <% @results.each do |result|  %>
+  </div>
 
-      <% if params[:view_as] == 'map' && !@map.blank? -%>
+  <% @results.each_with_index do |result,index|  %>
 
-        <% marker_options = { :title => result[:title] }
-        marker_options[:info_window] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + result[:short_summary]
-        if result[:class] == 'StillImage'
-          marker_options[:info_window] += '<br />' + image_tag(result[:thumbnail][:src], result[:thumbnail])
-        end
-        related_items = render('related', :related => result[:related],
-                                          :source_url => result[:url],
-                                          :title => result[:title]) if result[:related]
-        logger.debug("what is associated_locations:" + result[:associated_locations].inspect)
-        result[:associated_locations].each do |location|
-          marker_options[:info_window] += '<br />'
-          marker_options[:info_window] += '<br />' + t('search.results.address') + ' ' + location[3] unless location[3].blank?
-          marker_options[:info_window] += '<br />' + t('search.results.coordinates') + ' ' + location[2].join(", ")
-          marker_options[:info_window] += '<br /><br />' + related_items if related_items
-          marker = GMarker.new(location[2], marker_options)
-          @map.overlay_init(marker)
-        end -%>
+    <% if params[:view_as] == 'map' && !@map.blank? -%>
 
-      <% else -%>
+      <% marker_options = { :title => result[:title] }
+      marker_options[:info_window] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + result[:short_summary]
+      if result[:class] == 'StillImage'
+        marker_options[:info_window] += '<br />' + image_tag(result[:thumbnail][:src], result[:thumbnail])
+      end
+      related_items = render('related', :related => result[:related],
+                                        :source_url => result[:url],
+                                        :title => result[:title]) if result[:related]
+      logger.debug("what is associated_locations:" + result[:associated_locations].inspect)
+      result[:associated_locations].each do |location|
+        marker_options[:info_window] += '<br />'
+        marker_options[:info_window] += '<br />' + t('search.results.address') + ' ' + location[3] unless location[3].blank?
+        marker_options[:info_window] += '<br />' + t('search.results.coordinates') + ' ' + location[2].join(", ")
+        marker_options[:info_window] += '<br /><br />' + related_items if related_items
+        marker = GMarker.new(location[2], marker_options)
+        @map.overlay_init(marker)
+      end -%>
 
-        <% locals = { :title => result[:title],
-                      :source_url => result[:url],
-                      :short_summary => result[:short_summary],
-                      :existing_relations => @existing_relations,
-                      :related => result[:related],
-                      :result => result[:id]} -%>
+    <% else -%>
 
-        <% if result[:class] == 'StillImage' %>
-          <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],
-                                                                    :thumbnail => result[:thumbnail] })) %>
-        <% else %>
-          <%= render(:partial => "generic", :locals => locals) %>
-        <% end %>
+      <% locals = { :title => result[:title],
+                    :source_url => result[:url],
+                    :short_summary => result[:short_summary],
+                    :existing_relations => @existing_relations,
+                    :related => result[:related],
+                    :result => result[:id],
+                    :first_result => (index == 0) } -%>
 
+      <% if result[:class] == 'StillImage' %>
+        <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],
+                                                                  :thumbnail => result[:thumbnail] })) %>
+      <% else %>
+        <%= render(:partial => "generic", :locals => locals) %>
       <% end %>
 
     <% end %>
 
-  <% else %>
-
-    <%=t 'search.results.no_results_found' %>
-
   <% end %>
 
-</div>
+<% else %>
+
+  <div id="result-show">
+    <%=t 'search.results.no_results_found' %>
+  </div>
+
+<% end %>
+
 
 <%= @map.div(:width => 700, :height => 400) if params[:view_as] == 'map' && !@map.blank? -%>
 
-<div class="prev-next">
-  <%= will_paginate @results if @results.per_page > 5 && @results.total_entries > @results.per_page %>
-</div>
-
-<p>&nbsp;</p>
+<div class="prev-next after-results"><%= will_paginate @results  %></div>
 
 <div id="bottomlinks">
   <div id="addnew">

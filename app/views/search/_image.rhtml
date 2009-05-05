@@ -5,7 +5,7 @@
      @thumb_options = thumbnail
    end -%>
 
-<div class="image-result-wrapper" id="item_<%= result %>_wrapper">
+<div class="image-result-wrapper<%= ' first' if first_result %>" id="item_<%= result %>_wrapper">
   <div class="image-result-thumb">
     <% link_text = thumbnail.nil? ? t('search.image.view_image') :
                                     image_tag(@thumb_src, @thumb_options.merge(:alt => altify(title))) -%>
@@ -20,4 +20,8 @@
       <%= link_to(t('search.image.more'), source_url, { :title => t('search.image.more_on', :title => title), :tabindex => '1' }) %>
     </div>
   </div>
+  <%= render('related', :related => related,
+                        :source_url => source_url,
+                        :title => title) if related -%>
 </div>
+<%= javascript_tag("makeElementLinkable('item_#{result}_wrapper', '#{source_url}');") %>

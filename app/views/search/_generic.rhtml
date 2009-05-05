@@ -1,4 +1,4 @@
-<div class="generic-result-wrapper" id="item_<%= result %>_wrapper">
+<div class="generic-result-wrapper<%= ' first' if first_result %>" id="item_<%= result %>_wrapper">
   <div class="generic-result-header">
     <h4><%= link_to h(title), source_url, :tabindex => '1' %></h4>
   </div>
@@ -12,3 +12,4 @@
                         :source_url => source_url,
                         :title => title) if related -%>
 </div>
+<%= javascript_tag("makeElementLinkable('item_#{result}_wrapper', '#{source_url}');") %>
