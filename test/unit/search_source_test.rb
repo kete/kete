@@ -67,7 +67,7 @@ class SearchSourceTest < ActiveSupport::TestCase
     should "be configurable" do
       source = SearchSource.create(@@new_model)
       source.settings[:or_syntax] = { :position => 'between', :case => 'upper' }
-      assert_equal { :position => 'between', :case => 'upper' }, source.settings[:or_syntax]
+      assert_equal({ :position => 'between', :case => 'upper' }, source.settings[:or_syntax])
     end
 
   end

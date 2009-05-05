@@ -48,7 +48,7 @@ class LicensesControllerTest < ActionController::TestCase
 
   def test_new
     get :new, new_path
-    assert_viewing_template 'create_form'
+    assert_viewing_template 'create'
     assert_var_assigned
   end
 
@@ -61,7 +61,7 @@ class LicensesControllerTest < ActionController::TestCase
 
   def test_edit
     get :edit, edit_path({ :id => licenses(:one).id })
-    assert_viewing_template 'update_form'
+    assert_viewing_template 'update'
     assert_var_assigned
   end
 

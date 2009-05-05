@@ -77,7 +77,7 @@ class BasketsControllerTest < ActionController::TestCase
     update_record
     assert_var_assigned
     assert_attributes_same_as @updated_model
-    assert_redirect_to({ :urlified_name => 'site', :controller => "index_page", :action => 'index', :trailing_slash => true })
+    assert_redirect_to '/site/'
     assert_equal 'Basket was successfully updated.', flash[:notice]
   end
 

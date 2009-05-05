@@ -29,7 +29,8 @@ class CommentsControllerTest < ActionController::TestCase
       :password_confirmation => 'quire',
       :agree_to_terms => true,
       :security_code => 'test',
-      :security_code_confirmation => 'test' 
+      :security_code_confirmation => 'test',
+      :locale => 'en'
     }
       
     

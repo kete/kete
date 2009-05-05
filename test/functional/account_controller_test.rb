@@ -47,6 +47,7 @@ class AccountControllerTest < ActionController::TestCase
     assert_difference('User.count') do
       create_user
       assert_response :redirect
+      assert_equal 'Thanks for signing up!', flash[:notice]
     end
   end
 
@@ -137,8 +138,7 @@ class AccountControllerTest < ActionController::TestCase
 
   def test_should_send_activation_email_after_signup
     # Override constant to test for activation email
-    Object.send(:remove_const, :REQUIRE_ACTIVATION)
-    Object.send(:const_set, :REQUIRE_ACTIVATION, true)
+    set_constant('REQUIRE_ACTIVATION', true)
     
     create_user
     assert_equal 1, @emails.length
@@ -281,7 +281,7 @@ class AccountControllerTest < ActionController::TestCase
     def create_user(options = {})
       post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',
         :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
-        :agree_to_terms => '1', :security_code => 'test' }.merge(options), :urlified_name => @urlified_name },
+        :agree_to_terms => '1', :security_code => 'test', :locale => 'en' }.merge(options), :urlified_name => @urlified_name },
         { :captcha_id => 1 }
     end
 
