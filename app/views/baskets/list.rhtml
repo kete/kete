@@ -26,11 +26,15 @@
     <tr>
       <td class="basket_image"><%= related_image_link_for(basket.related_images, {},
                                     basket_index_url({ :urlified_name => basket.urlified_name })) %></td>
-      <td class="basket_name"><%= link_to basket.name,
-                                          { :controller => 'baskets',
-                                            :action => 'edit',
-                                            :id => basket },
-                                          :tabindex => '2' -%></td>
+      <% if %w{ requested rejected }.include?(params[:type]) %>
+        <td class="basket_name"><%= link_to basket.name,
+                                            { :controller => 'baskets',
+                                              :action => 'edit',
+                                              :id => basket },
+                                            :tabindex => '2' -%></td>
+      <% else %>
+        <td class="basket_name"><%= link_to_index_for(basket) -%></td>
+      <% end %>
       <td class="basket_created"><%= basket.created_at.to_s(:long) -%></td>
       <td class="basket_options"><ul><%= link_to_actions_available_for(basket) -%></ul></td>
     </tr>
