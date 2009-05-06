@@ -3,8 +3,9 @@ include OaiXmlHelpers
 module XmlHelpers
   unless included_modules.include? XmlHelpers
 
-    def show_file_data_for?(item)
-      return false if params[:action] == 'show' && params[:format] == 'xml' && !current_user_can_see_private_files_for?(item)
+    def show_file_data_for?(item, params=Hash.new)
+      return false if params && params[:action] == 'show' && params[:format] == 'xml' &&
+                      !current_user_can_see_private_files_for?(item)
       true
     end
 

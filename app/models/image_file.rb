@@ -57,6 +57,9 @@ class ImageFile < ActiveRecord::Base
     end
   end
 
+  # for thumbnail privacy
+  attr_accessor :item_private
+
   # Overload attachment_fu method to ensure file_private is propagated to peers
   def create_or_update_thumbnail(temp_file, file_name_suffix, *size)
     thumbnailable? || raise(ThumbnailError.new("Can't create a thumbnail if the content type is not an image or there is no parent_id column"))
@@ -67,8 +70,9 @@ class ImageFile < ActiveRecord::Base
         :temp_path                => temp_file,
         :thumbnail_resize_options => size,
 
-        # Make sure thumbnails are also saved in the context of privacy
-        :file_private             => file_private
+        # Make sure thumbnails are also saved in the context of
+        # the still image item privacy
+        :file_private             => self.item_private # <- attr_accessor, not a model attribute
 
       }
       callback_with_args :before_thumbnail_saved, thumb

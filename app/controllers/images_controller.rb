@@ -33,7 +33,8 @@ class ImagesController < ApplicationController
   def create
     @still_image = StillImage.new
     # handle problems with image file first
-    @image_file = ImageFile.new(params[:image_file].merge({ :file_private => params[:still_image][:file_private] }))
+    @image_file = ImageFile.new(params[:image_file].merge({ :file_private => params[:still_image][:file_private],
+                                                            :item_private => params[:still_image][:private] }))
 
     @successful = @image_file.save
 

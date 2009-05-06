@@ -54,6 +54,11 @@ class StillImage < ActiveRecord::Base
   private
 
   def update_image_file_locations
-    self.original_file.update_attributes({ :file_private => self.file_private }) unless self.original_file.nil?
+    unless self.original_file.nil?
+      self.original_file.update_attributes({ :file_private => self.file_private })
+      self.image_files.reject { |i| i.id == self.original_file.id }.each do |thumb|
+        thumb.update_attributes({ :file_private => self.private? })
+      end
+    end
   end
 end

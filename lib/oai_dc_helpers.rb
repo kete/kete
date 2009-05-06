@@ -291,7 +291,7 @@ module OaiDcHelpers
         host = request.host
       end
 
-      if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name) && show_file_data_for?(item)
+      if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
         xml.send("dc:source", file_url_from_bits_for(item, host))
       end
     end

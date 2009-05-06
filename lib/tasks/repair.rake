@@ -204,7 +204,7 @@ namespace :kete do
     desc "Makes sure thumbnails are stored in the correct privacy for their still image"
     task :make_thumbnails_private => :environment do
       puts "Getting all private StillImages and their public ImageFiles\n"
-      still_images = StillImage.find_all_by_file_private(true)
+      still_images = StillImage.find_all_by_private(true)
       still_images.each do |still_image|
         any_public_thumbnails = false
         still_image.image_files.find_all_by_file_private(false).each do |image_file|
