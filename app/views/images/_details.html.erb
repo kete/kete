@@ -1,4 +1,4 @@
-<% if !item.file_private? or current_user_can_see_private_files_for?(item) -%>
+<% if !item.original_file.nil? && !item.already_at_blank_version? && current_user_can_see_private_files_for?(item) -%>
 	<p>Original Filename: <%= item.original_file.filename %> (<%= link_to_original_of item, 'view', true -%>)</p>
 	<p>Original Size: <%= number_to_human_size(item.original_file.size) %></p>
 	<p>Original Image Type: <%= item.original_file.content_type %></p>

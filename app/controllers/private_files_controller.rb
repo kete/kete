@@ -17,11 +17,12 @@ class PrivateFilesController < ApplicationController
     # Instantiate an object instance based on the request parameters
     id = (params[:a] + params[:b] + params[:c]).to_i
     @record = eval("#{type.classify}").find(id)
+    @item = @record.is_a?(ImageFile) ? @record.still_image : @record
     
     @current_basket = @record.basket
 
     # Check we're allowed to view this file
-    if permitted_to_view_private_items?
+    if current_user_can_see_private_files_for?(@item)
       
       send_file_options = {
         :type => @record.content_type, 
@@ -46,6 +47,20 @@ class PrivateFilesController < ApplicationController
         # Use the normal send_file method if we're not working with Nginx.
         send_file(@record.full_filename, send_file_options)
       end
+    elsif params[:show_placeholder]
+      # in the case of search results, we can't check if they are viewable
+      # by the user because we don't have the item objects, so instead, when
+      # the image gets requested, append show_placeholder to the URL, so if
+      # the image is not authorized, we dont get a broken image because we
+      # return one here
+      no_public_version = File.join(RAILS_ROOT, 'public', 'images', 'no_public_version.gif')
+      send_file_options = {
+        :type => 'image/gif',
+        :length => File.size(no_public_version),
+        :disposition => 'inline',
+        :status => "200 OK"
+      }
+      send_file(no_public_version, send_file_options)
     else
       raise PermissionDeniedError
     end

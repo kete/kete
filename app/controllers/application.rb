@@ -237,7 +237,7 @@ class ApplicationController < ActionController::Base
 
   # Specific test for private file visibility.
   def current_user_can_see_private_files_for?(item)
-    current_user_can_see_private_files_in_basket?(item.basket)
+    !item.file_private? || current_user_can_see_private_files_in_basket?(item.basket)
   end
 
   # Test for private file visibility in a given basket
