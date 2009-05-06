@@ -7,22 +7,11 @@
 <% end -%>
 
 <% if show_attached_files_for?(@still_image) -%>
-  <% if !@still_image.original_file.nil? -%>
-    <% if !@still_image.already_at_blank_version? -%>
-      <%= render(:partial => "details", :locals => { :item => @still_image }) -%>
-    <% end -%>
-  <% end -%>
+  <%= render(:partial => "details", :locals => { :item => @still_image }) -%>
   <% # default to medium view -%>
-  <% if !@image_file.nil? -%>
-    <% if !@still_image.already_at_blank_version? -%>
-      <%= render(:partial => "image_file",
-                 :locals => { :still_image => @still_image,
-                              :image_file => @image_file,
-                              :title => @still_image.title }) -%>
-    <% end -%>
-  <% else -%>
-    <p><%=t 'images.show.only_original_available' %></p>
-  <% end -%>
+  <%= render(:partial => "image_file",
+             :locals => { :still_image => @still_image,
+                          :image_file => @image_file }) -%>
 <% end -%>
 
 <% cache_with_privacy(@still_image, {:part => 'caption'}) do -%>

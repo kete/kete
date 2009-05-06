@@ -265,8 +265,10 @@ class ApplicationController < ActionController::Base
   end
 
   # Specific test for private file visibility.
+  # If the user is a site admin, the file isn't private,
+  # or they have permissions then return true
   def current_user_can_see_private_files_for?(item)
-    current_user_can_see_private_files_in_basket?(item.basket)
+    @site_admin || !item.file_private? || current_user_can_see_private_files_in_basket?(item.basket)
   end
 
   # Test for private file visibility in a given basket

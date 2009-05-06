@@ -53,8 +53,8 @@ zoom_class = zoom_class_from_controller(controller)
         <div class="form-element">
           <label><%=t 'topics.form.current_image' %></label>
           <%= render(:partial => "images/image_file",
-                     :locals => { :image_file => @image_file,
-                                  :title => @item.title,
+                     :locals => { :still_image => @item,
+                                  :image_file => @image_file,
                                   :without_controls => true }) -%>
         </div>
       <% end -%>

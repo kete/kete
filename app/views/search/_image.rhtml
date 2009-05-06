@@ -8,7 +8,7 @@
 <div class="image-result-wrapper<%= ' first' if first_result %>" id="item_<%= result %>_wrapper">
   <div class="image-result-thumb">
     <% link_text = thumbnail.nil? ? t('search.image.view_image') :
-                                    image_tag(@thumb_src, @thumb_options.merge(:alt => altify(title))) -%>
+                                    image_tag("#{@thumb_src}?show_placeholder=true", @thumb_options.merge(:alt => altify(title))) -%>
     <%= link_to link_text, source_url %>
   </div>
   <div class="image-result-header">
@@ -23,5 +23,6 @@
   <%= render('related', :related => related,
                         :source_url => source_url,
                         :title => title) if related -%>
+  <div style="clear:both;"></div>
 </div>
 <%= javascript_tag("makeElementLinkable('item_#{result}_wrapper', '#{source_url}');") %>

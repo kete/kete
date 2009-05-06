@@ -1110,6 +1110,7 @@ en:
       available_sizes: 'Available Sizes:'
       medium: Medium
       large: Large
+      only_original_available: Only available as original.
       original: Original
       small: Small
       small_sq: Thumbnail
@@ -1122,7 +1123,6 @@ en:
       whats_this: what's this?
     show:
       caption: Caption
-      only_original_available: Only available as original.
   images_controller:
     update:
       updated: Image was successfully updated.
