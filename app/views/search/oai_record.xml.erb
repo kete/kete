@@ -72,13 +72,16 @@
           # of things like thumbnails to related images for a topic
           # for non-topics
           # it should store related topics
-          xml.kete do
-            xml_for_related_items(xml, item)
+          if show_file_data_for?(item)
+            xml.kete do
+              xml_for_related_items(xml, item)
 
-            xml_for_thumbnail_image_file(xml, item)
+              xml_for_thumbnail_image_file(xml, item)
 
-            xml_for_media_content_file(xml, item)
+              xml_for_media_content_file(xml, item)
+            end
           end
+
         end
       end
     end

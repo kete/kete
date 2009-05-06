@@ -2,6 +2,12 @@ include OaiXmlHelpers
 
 module XmlHelpers
   unless included_modules.include? XmlHelpers
+
+    def show_file_data_for?(item)
+      return false if params[:action] == 'show' && params[:format] == 'xml' && !current_user_can_see_private_files_for?(item)
+      true
+    end
+
     def appropriate_protocol_for(item)
       protocol = "http"
       if FORCE_HTTPS_ON_RESTRICTED_PAGES &&
