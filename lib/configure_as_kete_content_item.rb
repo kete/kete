@@ -22,6 +22,11 @@ module ConfigureAsKeteContentItem
         klass.send :include, KeteCommentable
       end
 
+      # though comments don't use the related content relations directly
+      # these convenience methods actually work for comments, too
+      # and are conceptually the same to end user
+      klass.send :include, RelatedItems
+
       # sanitize our descriptions and extended_content for security
       # see validate_as_sanitized_html below, too
       # but allow site admin to override
@@ -97,10 +102,9 @@ module ConfigureAsKeteContentItem
     # turn pretty urls on or off here
     include FriendlyUrls
     alias :to_param :format_for_friendly_urls
-    
+
     def to_i
       id
     end
-
   end
 end
