@@ -113,9 +113,6 @@ module GoogleMap
           html += content_tag('div', I18n.t('google_map_lib.extended_field_map_editor.need_exact_data'),
                                      { :id => "#{map_data[:map_id]}_warning" })
         end
-        # If we're on the show pages, and the map type shows the address
-        # append a paragraph after the google map with the address value
-        html += content_tag('p', @current_address) if display_address
 
         # create the lat/lng display
         latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
@@ -227,6 +224,7 @@ module GoogleMap
           @google_maps_initializers += (google_map[:latitude].blank? ? ", ''" : ", #{google_map[:latitude]}")
           @google_maps_initializers += (google_map[:longitude].blank? ? ", ''" : ", #{google_map[:longitude]}")
           @google_maps_initializers += (google_map[:zoom_lvl].blank? ? ", ''" : ", #{google_map[:zoom_lvl]}")
+          @google_maps_initializers += (google_map[:address].blank? ? ", ''" : ", '#{google_map[:address]}'")
           @google_maps_initializers += ", '#{google_map[:coords_field]}'"
           @google_maps_initializers += ", '#{google_map[:zoom_lvl_field]}'"
           @google_maps_initializers += ", '#{google_map[:address_field]}'"
@@ -269,7 +267,7 @@ module GoogleMap
           google.load('maps', '2', {'other_params':'sensor=true'});
 
           // the function run when the page finishes loading, to initiate the google map
-          function initialize_google_map(map_id, map_type, latitude, longitude, zoom_lvl, latlng_text_field, zoom_text_field, address_text_field) {
+          function initialize_google_map(map_id, map_type, latitude, longitude, zoom_lvl, address, latlng_text_field, zoom_text_field, address_text_field) {
             // make sure we don't do any google map code unless the browser supports it
             if (!google.maps.BrowserIsCompatible()) {
               alert('#{I18n.t('google_map_lib.load_google_map_api.not_compatible')}'); return;
@@ -312,7 +310,7 @@ module GoogleMap
             map.latlng_text_field = latlng_text_field;
             map.zoom_text_field = zoom_text_field;
             if (map.map_type == 'map_address') {
-              map.address_text_field = address_text_field;
+              map.address_text_field = address;
             }
             // Make sure we have the nessesary fields present
             if (!verify_all_fields_present(map)) { return; }
@@ -323,7 +321,7 @@ module GoogleMap
             map.addControl(new google.maps.SmallMapControl());
             // if we are on the index/show page, dont show search controls, dont make markers draggable
             // else if we are on the new/edit pages, bind a search control to the map, and allow dragging
-            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false);' :
+            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false, address, false);' :
                                                   'map.addControl(new google.maps.LocalSearch({suppressInitialResultSelection : true}),
                                                    new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(10,25)));
                                                    remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, true);'}
@@ -378,7 +376,7 @@ module GoogleMap
           }
 
           // remove all existing markers and one at specified latitude and longitude
-          function remove_all_markers_and_add_one_to(map, latitude, longitude, draggable, text) {
+          function remove_all_markers_and_add_one_to(map, latitude, longitude, draggable, text, auto_open) {
             // clears all overlays (info boxes, markers etc)
             map.clearOverlays();
             // create the marker (draggable is passed in as either true or false)
@@ -386,7 +384,13 @@ module GoogleMap
             // add the marker to the map
             map.addOverlay(map.current_marker);
             // add a text bubble if needed
-            if (text) { map.current_marker.openInfoWindowHtml(text); }
+            if (text) {
+              if (auto_open) {
+                map.current_marker.openInfoWindowHtml(text);
+              } else {
+                map.current_marker.bindInfoWindowHtml(text, {maxWidth: 70, pixelOffset: new GSize(0, 0)});
+              }
+            }
             // when a user stops dragging the marker, update the coords and zoom level
             google.maps.Event.addListener(map.current_marker, 'dragend', function() {
               // update the map data field
@@ -412,7 +416,7 @@ module GoogleMap
                 } else {
                   text = '#{I18n.t('google_map_lib.load_google_map_api.something_went_wrong')} (' + response.Status.code + ')';
                 }
-                remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text);
+                remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text, true);
               } else {
                 // get the place
                 place = response.Placemark[0];
@@ -424,7 +428,7 @@ module GoogleMap
                          '<b>#{I18n.t('google_map_lib.load_google_map_api.accuracy')}</b>' + place.AddressDetails.Accuracy + '<br>' +
                          '<b>#{I18n.t('google_map_lib.load_google_map_api.country_code')}</b> ' + place.AddressDetails.Country.CountryNameCode;
                   // remove the marker set earlier and reposition it to the results location
-                  remove_all_markers_and_add_one_to(map, place.Point.coordinates[1], place.Point.coordinates[0], true, text);
+                  remove_all_markers_and_add_one_to(map, place.Point.coordinates[1], place.Point.coordinates[0], true, text, true);
                   // Form a a string like   -45.861836,127.398373  (which is the format we use)
                   $(map.latlng_text_field).value = place.Point.coordinates[1] + ',' + place.Point.coordinates[0];
                   // the current maps zoom level
@@ -435,7 +439,7 @@ module GoogleMap
                   }
                 } else {
                   text = '#{I18n.t('google_map_lib.load_google_map_api.not_close_enough')}';
-                  remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text);
+                  remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text, true);
                 }
               }
             });
