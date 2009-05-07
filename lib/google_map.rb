@@ -114,6 +114,12 @@ module GoogleMap
                                      { :id => "#{map_data[:map_id]}_warning" })
         end
 
+        # If we're on the show pages, and the map type shows the address
+        # append a paragraph after the google map with the address value
+        html += content_tag('p', @current_address,
+                            :id => "#{map_data[:map_id]}_address",
+                            :style => 'float:left; padding: 0; margin: 0;') if display_address
+
         # create the lat/lng display
         latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
         latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
@@ -287,7 +293,8 @@ module GoogleMap
                                                        $(latlng_text_field + \'_show_hide\').update(\'<small>Show Latitude/Longitude</small>\');
                                                      }
                                                      event.stop();
-                                                   });' :
+                                                   });
+                                                   $(map_id + \'_address\').hide();' :
                                                   '$(map_id).setStyle({height: \'380px\'});
                                                    $(map_id + \'_warning\').hide();
                                                    $(map_id + \'_fields\').hide();'}
@@ -304,6 +311,7 @@ module GoogleMap
             map.zoom_text_field = zoom_text_field;
             if (map.map_type == 'map_address') {
               map.address_text_field = address;
+              map.address = map_id + \'_address\';
             }
             // Make sure we have the nessesary fields present
             if (!verify_all_fields_present(map)) { return; }
@@ -314,7 +322,7 @@ module GoogleMap
             map.addControl(new google.maps.SmallMapControl());
             // if we are on the index/show page, dont show search controls, dont make markers draggable
             // else if we are on the new/edit pages, bind a search control to the map, and allow dragging
-            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false, address, false);' :
+            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false, \'\', false, map.address);' :
                                                   'map.addControl(new google.maps.LocalSearch({suppressInitialResultSelection : true}),
                                                    new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(10,25)));
                                                    remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, true);'}
@@ -369,7 +377,7 @@ module GoogleMap
           }
 
           // remove all existing markers and one at specified latitude and longitude
-          function remove_all_markers_and_add_one_to(map, latitude, longitude, draggable, text, auto_open) {
+          function remove_all_markers_and_add_one_to(map, latitude, longitude, draggable, text, auto_open, address_id) {
             // clears all overlays (info boxes, markers etc)
             map.clearOverlays();
             // create the marker (draggable is passed in as either true or false)
@@ -377,11 +385,15 @@ module GoogleMap
             // add the marker to the map
             map.addOverlay(map.current_marker);
             // add a text bubble if needed
-            if (text) {
-              if (auto_open) {
+            if (address_id) {
+              google.maps.Event.addListener(map.current_marker, 'click', function() {
+                $(map.address).toggle();
+              });
+            } else if (text) {
+               if (auto_open) {
                 map.current_marker.openInfoWindowHtml(text);
               } else {
-                map.current_marker.bindInfoWindowHtml(text, {maxWidth: 70, pixelOffset: new GSize(0, 0)});
+                map.current_marker.bindInfoWindowHtml(text);
               }
             }
             // when a user stops dragging the marker, update the coords and zoom level
