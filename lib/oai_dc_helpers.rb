@@ -1,6 +1,5 @@
 include Utf8UrlFor
 include ActionView::Helpers::SanitizeHelper
-include OaiXmlHelpers
 
 # oai dublin core xml helpers
 # TODO: evaluate whether we can simply go with SITE_URL
@@ -186,17 +185,8 @@ module OaiDcHelpers
       # then it's overkill
       # however, if we are in the comment record,
       # we want to add the commented on item as a relation
-      case item.class.name
-      when 'Topic'
-        related_items_of(item).each do |zoom_class,items|
-          items.each do |related|
-            xml.send("dc:subject") {
-              xml.cdata related.title
-            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(zoom_class), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
-          end
-        end
-      when 'Comment'
+      case item.class
+      when Comment
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
         xml.send("dc:subject") {
@@ -204,13 +194,11 @@ module OaiDcHelpers
         } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
         xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
-        related_items_of(item).each do |zoom_class,items|
-          items.each do |related|
-            xml.send("dc:subject") {
-              xml.cdata related.title
-            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => 'topics', :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
-          end
+        item.related_items.each do |related|
+          xml.send("dc:subject") {
+            xml.cdata related.title
+          } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+          xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(related.class.name), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
         end
       end
     end

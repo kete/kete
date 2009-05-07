@@ -126,6 +126,9 @@ class Topic < ActiveRecord::Base
   # methods and declarations related to moderation and flagging
   include Flagging
 
+  # convenience methods for a topics relations
+  include RelatedItems
+
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload

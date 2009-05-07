@@ -1,5 +1,3 @@
-include OaiXmlHelpers
-
 module XmlHelpers
   unless included_modules.include? XmlHelpers
 
@@ -135,15 +133,18 @@ module XmlHelpers
 
       totals_hash = Hash.new
       # only add to totals if there are items
-      unless item.is_a?(Topic)
-        total = related_items_of(item, true)['Topic'].size
-        totals_hash[:topics] = total if total > 0
-      else
-        ZOOM_CLASSES.each do |class_name|
-          total = related_items_of(item, true)[class_name].size
-          totals_hash[class_name.tableize.to_sym] = total if total > 0
+      total = item.related_items.size
+      if total > 0
+        if item.is_a?(Topic)
+          ZOOM_CLASSES.each do |class_name|
+            class_total = item.related_items_hash[class_name].size
+            totals_hash[class_name.tableize.to_sym] = class_total if class_total > 0
+          end
+        else
+          totals_hash[:topics] = total if total > 0
         end
       end
+
       options = ['related_items']
       unless totals_hash.blank?
         options << totals_hash

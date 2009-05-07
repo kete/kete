@@ -39,15 +39,35 @@ module ZoomControllerHelpers
       begin
         item = Module.class_eval(zoom_class).find(params[:id])
 
+        related_items = item.related_items
+
         @successful = zoom_item_destroy(item)
       rescue
         flash[:error], @successful  = $!.to_s, false
       end
 
       if @successful
+        # if destroy went ok, we want to trigger zoom rebuild for related items
+        related_items.each do |related|
+          prepare_and_save_to_zoom(related_item)
+        end
+
         flash[:notice] = "#{pretty_zoom_class} was successfully deleted."
       end
       redirect_to :action => 'list'
+    end
+
+
+    # called by either before filter on destroy
+    # or after filter on update
+    def update_zoom_record_for_related_items
+      if CACHES_CONTROLLERS.include?(params[:controller]) && params[:controller] != 'baskets'
+        item = item_from_controller_and_id(false)
+
+        item.related_items.each do |related_item|
+          prepare_and_save_to_zoom(related_item)
+        end
+      end
     end
 
     def zoom_class_controller(zoom_class)

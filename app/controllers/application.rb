@@ -101,6 +101,8 @@ class ApplicationController < ActionController::Base
   before_filter :expire_show_caches_on_destroy, :only => [ :destroy ]
   # everything else we do after the action is completed
   after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
+  # related items only track title and url, therefore only update will change those attributes
+  after_filter :update_zoom_record_for_related_items, :only => [ :update ]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
@@ -426,8 +428,7 @@ class ApplicationController < ActionController::Base
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
   def expire_show_caches
-    caches_controllers = ['audio', 'baskets', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
-    if caches_controllers.include?(params[:controller])
+    if CACHES_CONTROLLERS.include?(params[:controller])
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
       item = item_from_controller_and_id(false)
