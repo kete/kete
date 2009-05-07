@@ -222,6 +222,7 @@ module Flagging
     def at_placeholder_public_version?
       title == NO_PUBLIC_VERSION_TITLE
     end
+    alias :private? :at_placeholder_public_version?
 
     def notify_moderators_immediatelly_if_necessary(options = { })
       if FREQUENCY_OF_MODERATION_EMAIL.is_a?(String) and FREQUENCY_OF_MODERATION_EMAIL == 'instant'
