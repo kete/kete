@@ -1,8 +1,7 @@
 <% if !image_file.nil? && !still_image.already_at_blank_version? -%>
-  <p><%= image_tag image_file.public_filename, :size => image_file.image_size, :alt => "#{still_image.title}. " %></p>
+  <p class='still_image_container'><%= image_tag image_file.public_filename, :size => image_file.image_size, :alt => "#{still_image.title}. " %></p>
   <% unless defined?(without_controls) && without_controls == true %>
   <div class="pipe-list">
-    <h4><%= t("images.image_file.available_sizes") %></h4>
     <ul>
       <% sizes_count = 1 -%>
       <% ImageFile.attachment_options[:thumbnails].stringify_keys.sort.reverse.each do |key,size| -%>

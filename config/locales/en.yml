@@ -1107,7 +1107,6 @@ en:
     edit:
       not_authorized: Sorry - editing on this section of the site has been disallowed
     image_file:
-      available_sizes: 'Available Sizes:'
       medium: Medium
       large: Large
       only_original_available: Only available as original.
