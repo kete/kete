@@ -68,43 +68,45 @@ class StillImageTest < ActiveSupport::TestCase
   def test_updates_image_file_locations_on_update
 
     # Create the scenario
-    still_image = StillImage.create(@new_model.merge({ :file_private => true }))
-    still_image.image_files.create(@new_image_file.merge(:file_private => still_image.file_private))
-    still_image.image_files.first.thumbnails.each do |thumb|
-      thumb.still_image_id = still_image.id
-      thumb.save!
-    end
-    still_image.reload
+    still_image = new_still_image({ :file_private => true }, { :file_private => true })
 
-    # Check the scenario is in place
-    assert still_image.valid?
-    still_image.image_files.each { |i| assert i.valid? }
-    assert_equal 5, still_image.image_files.size
-    assert_kind_of ImageFile, original_of(still_image)
-    assert_equal 4, thumbnails_of(still_image).size
+    # Check that original is private after create
+    file_private_should_be(true, still_image)
+
+    # Update everything to public
+    still_image.update_attributes!({ :file_private => false })
+    still_image.reload
+    file_private_should_be(false, still_image)
+
+    # Change everything to private again and check that it does not work
+    still_image.update_attributes!({ :file_private => true })
+    still_image.reload
+    file_private_should_be(false, still_image)
+
+    #
+    # Thumbnails are handled by still image private setting, not
+    # still image file_private setting, so add seperate tests for that
+    #
+
+    # setup private still image
+    still_image = new_still_image({ :private => true }, { :item_private => true })
 
     # Check that original and thumbnails are private after create
-    assert_equal true, still_image.file_private?
-    assert_equal true, original_of(still_image).file_private?
     thumbnails_of(still_image).each do |image|
       assert_equal true, image.file_private?
     end
 
     # Update everything to public
-    still_image.update_attributes!({ :file_private => false })
+    still_image.update_attributes!({ :private => false })
     still_image.reload
-    assert_equal false, still_image.file_private?
-    assert_equal false, original_of(still_image).file_private?
     thumbnails_of(still_image).each do |image|
       assert_equal false, image.file_private?
     end
 
     # Try and change everything to private again and check that it
     # does not work for original or thumbnails.
-    still_image.update_attributes!({ :file_private => true })
+    still_image.update_attributes!({ :private => true, :file_private => true })
     still_image.reload
-    assert_equal false, still_image.file_private?
-    assert_equal false, original_of(still_image).file_private?
     thumbnails_of(still_image).each do |image|
       assert_equal false, image.file_private?
     end
@@ -132,6 +134,26 @@ class StillImageTest < ActiveSupport::TestCase
 
   private
 
+    def new_still_image(still_image_options, image_file_options)
+      still_image = StillImage.create(@new_model.merge(still_image_options))
+      still_image.image_files.create(@new_image_file.merge(image_file_options))
+      still_image.image_files.first.thumbnails.each do |thumb|
+        thumb.still_image_id = still_image.id
+        thumb.save!
+      end
+      still_image.reload
+      assert_valid_still_image(still_image)
+      still_image
+    end
+
+    def assert_valid_still_image(still_image)
+      assert_valid still_image
+      still_image.image_files.each { |i| assert_valid i }
+      assert_equal 5, still_image.image_files.size
+      assert_kind_of ImageFile, original_of(still_image)
+      assert_equal 4, thumbnails_of(still_image).size
+    end
+
     def thumbnails_of(still_image)
       original = still_image.original_file
       still_image.image_files.reject { |i| i.id == original.id }
@@ -139,6 +161,11 @@ class StillImageTest < ActiveSupport::TestCase
 
     def original_of(still_image)
       still_image.original_file
+    end
+
+    def file_private_should_be(boolean, still_image)
+      assert_equal boolean, still_image.file_private?
+      assert_equal boolean, original_of(still_image).file_private?
     end
 
     def new_image_with_creator(user)

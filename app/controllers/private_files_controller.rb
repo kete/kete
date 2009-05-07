@@ -17,6 +17,10 @@ class PrivateFilesController < ApplicationController
     # Instantiate an object instance based on the request parameters
     id = (params[:a] + params[:b] + params[:c]).to_i
     @record = eval("#{type.classify}").find(id)
+
+    # images are a special case. We have to fetch
+    # the still image from the image file to check
+    # whether the current user can view the files
     @item = @record.is_a?(ImageFile) ? @record.still_image : @record
     
     @current_basket = @record.basket
