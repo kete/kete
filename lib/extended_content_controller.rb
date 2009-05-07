@@ -62,7 +62,7 @@ module ExtendedContentController
         new_doc = Nokogiri::HTML(params[item_type.to_sym][:description]) unless params[item_type.to_sym][:description].blank?
         current_elements = Array.new
 
-        EXTENDED_VALID_ELEMENTS_HASH.keys.each do |field_key|
+        INSECURE_EXTENDED_VALID_ELEMENTS.each do |field_key|
           old_doc.search("//#{field_key.to_s}").each { |element| existing_elements << element.to_s.strip } unless @item.description.blank?
           new_doc.search("//#{field_key.to_s}").each { |element| current_elements << element.to_s.strip } unless params[item_type.to_sym][:description].blank?
         end

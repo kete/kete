@@ -10,6 +10,7 @@ fields[:param] = '[name|value]'
 fields[:embed] = '[quality|type|pluginspage|width|height|src|align|wmode|flashvars|allowfullscreen]'
 EXTENDED_VALID_ELEMENTS_HASH = fields
 EXTENDED_VALID_ELEMENTS = fields.collect { |k,v| "#{k}#{v}" }.join(',')
+INSECURE_EXTENDED_VALID_ELEMENTS = [:form, :input, :select, :option, :script]
 
 VALID_TINYMCE_ACTIONS = ['new', 'create', 'edit', 'update', 'homepage_options', 'appearance', 'choose_type', 'render_item_form', 'new_related_set_from_archive_file', 'restore']
 
