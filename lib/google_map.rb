@@ -118,7 +118,7 @@ module GoogleMap
         # append a paragraph after the google map with the address value
         html += content_tag('p', @current_address,
                             :id => "#{map_data[:map_id]}_address",
-                            :style => 'float:left; padding: 0; margin: 0;') if display_address
+                            :style => 'width: 43%; padding: 0; margin: 0 0 -25px 0;') if display_address
 
         # create the lat/lng display
         latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
