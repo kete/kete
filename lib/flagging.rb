@@ -222,6 +222,10 @@ module Flagging
     def at_placeholder_public_version?
       title == NO_PUBLIC_VERSION_TITLE
     end
+    # overwrite an items private? method to return the result of 
+    # at_placeholder_public_version? , because the original private?
+    # method always returns false because we keep a public version
+    # stores at all time
     alias :private? :at_placeholder_public_version?
 
     def notify_moderators_immediatelly_if_necessary(options = { })
