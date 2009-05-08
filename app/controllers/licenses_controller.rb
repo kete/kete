@@ -7,6 +7,7 @@ class LicensesController < ApplicationController
 
   before_filter :login_required
   before_filter :set_page_title
+  before_filter :prepare_available_licenses
   permit "site_admin or admin of :site or tech_admin of :site"
 
   active_scaffold :license do |config|
@@ -16,10 +17,10 @@ class LicensesController < ApplicationController
 
   def install_license
     if params[:task]
-      if LICENSE_TASKS.key?(params[:task])
+      if @available_licenses.include?(params[:task])
         old_license_count = License.count
         ENV['RAILS_ENV'] = RAILS_ENV
-        rake_result = Rake::Task["acts_as_licensed:#{params[:task]}"].execute(ENV)
+        rake_result = Rake::Task["acts_as_licensed:import:#{params[:task]}"].execute(ENV)
         if rake_result || License.count > old_license_count
           flash[:notice] = "Successfully imported licenses."
         else
@@ -39,4 +40,11 @@ class LicensesController < ApplicationController
   def set_page_title
     @title = 'Licenses'
   end
+
+  def prepare_available_licenses
+    @available_licenses = Rake.application.tasks.
+                          reject { |t| t.name !~ /acts_as_licensed:import/ }.
+                          collect { |t| t.name.match(/:(\w+)$/)[1] }
+  end
+
 end

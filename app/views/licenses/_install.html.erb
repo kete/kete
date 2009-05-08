@@ -4,7 +4,7 @@
   <% form_tag :action => 'install_license' do %>
 
     <%= select_tag 'task', options_for_select([['-choose license to import-', '']] +
-                                              LICENSE_TASKS.collect { |k,v| [v, k.to_s] }) %>
+                                              @available_licenses.collect { |v| [v.humanize, v] }) %>
 
     <%= submit_tag 'Import' %>
 
