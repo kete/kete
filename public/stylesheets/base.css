@@ -1338,3 +1338,11 @@ a.disabled {
   display: block;
   color: #777;
 }
+
+/*
+ * Configuration Page
+ */
+.configured_site_controls form,
+.configured_site_controls form div {
+  display: inline;
+}

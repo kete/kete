@@ -169,4 +169,16 @@
       </div>
 <% end  -%>
 
+<% if IS_CONFIGURED -%>
+  <div class="configured_site_controls">
+    <% if APPLICATION_SERVER == 'passenger' %>
+      <%= button_to t('configure.index.restart_server'), {:action => 'restart_server'} %>
+    <% end %>
+    <% if RAILS_ENV == 'production' %>
+      <%= button_to t('configure.index.clear_cache'), {:action => 'clear_cache'},
+                    { :confirm => 'Are you sure? This can affect the performance of the site.'} %>
+    <% end %>
+  </div>
+<% end %>
+
 <%= render(:partial => "topics/content_wrapper_end" ) %>

@@ -651,6 +651,7 @@ en:
       change_password: You should change the default administrator account's password. Leaving it as the default is a security risk.
       change_password_button: Change password
       change_settings: You can change system settings here.  You will need to restart your server for changes to take effect.
+      clear_cache: Clear Site Cache
       click_finish: All required settings have been fulfilled. If you are satisfied, please click the 'finish' button.
       click_to: Click to
       completed: "Completed. "
@@ -666,6 +667,7 @@ en:
       prime_search_engine: Prime Search Engine
       regular_options: Regular Options
       reload_site: Reload Site
+      restart_server: Restart Server
       search_engine: Search Engine
       search_engine_needs_bootstrapping: <i>After you have restarted the server</i>, the Search Engine needs to have the initial contents of Kete added to it.  Please click 'Prime Search Engine' to continue.
       search_engine_not_complete: Not yet complete.
@@ -705,6 +707,9 @@ en:
       search_engine_database: "Search Engine Database:"
       security: "Security:"
   configure_controller:
+    clear_cache:
+      cache_cleared: The sites cache was cleared successfully.
+      problem_clearing_cache: There was a problem clearing this sites cache. Please do it manually.
     done_with_settings:
       not_yet_completed: Not yet completed.
     get_site_linking_progress:
@@ -712,6 +717,9 @@ en:
       site_registered: Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>.
     prime_zebra:
       primed_zebra: Search Engine has been primed.
+    restart_server:  
+      problem_restarting: There was a problem restarting the server. Please do it manually.
+      server_restarted: The server has been restarted
     send_information:
       already_running: There is already a site registration worker active. Wierd! Try refreshing the page.
   content_types:

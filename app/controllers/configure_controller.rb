@@ -1,3 +1,8 @@
+require 'rake'
+require 'rake/rdoctask'
+require 'rake/testtask'
+require 'tasks/rails'
+
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, :only => [:section, :finish,
@@ -290,6 +295,30 @@ class ConfigureController < ApplicationController
 
   def set_not_completed
     @not_completed = SystemSetting.not_completed
+  end
+
+  # controls once the site is configured
+
+  def restart_server
+    ENV['RAILS_ENV'] = RAILS_ENV
+    rake_result = Rake::Task["kete:tools:restart"].execute(ENV)
+    if rake_result
+      flash[:notice] = t('configure_controller.restart_server.server_restarted')
+    else
+      flash[:error] = t('configure_controller.restart_server.problem_restarting')
+    end
+    redirect_to :urlified_name => 'site', :controller => 'configure', :action => 'index'
+  end
+
+  def clear_cache
+    ENV['RAILS_ENV'] = RAILS_ENV
+    rake_result = Rake::Task["tmp:cache:clear"].execute(ENV)
+    if rake_result
+      flash[:notice] = t('configure_controller.clear_cache.cache_cleared')
+    else
+      flash[:error] = t('configure_controller.clear_cache.problem_clearing_cache')
+    end
+    redirect_to :urlified_name => 'site', :controller => 'configure', :action => 'index'
   end
 
   private

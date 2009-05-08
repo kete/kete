@@ -6,6 +6,16 @@
 #
 namespace :kete do
   namespace :tools do
+    desc 'Restart application (Passenger specific)'
+    task :restart do
+      restart_result = system("touch #{RAILS_ROOT}/tmp/restart.txt")
+      if restart_result
+        puts "Restarted Application"
+      else
+        puts "Problem restarting Application."
+      end
+    end
+
     desc 'Remove /robots.txt (will rebuild next time a bot visits the page)'
     task :remove_robots_txt => :environment do
       path = "#{RAILS_ROOT}/public/robots.txt"
