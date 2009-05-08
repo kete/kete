@@ -12,37 +12,10 @@ topics_001:
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
-    <ul class="topic_menu">
-    <li><a href="/about/">About Kete</a></li>
-    <li><a href="/about/topics/show/2">House Rules</a></li>
-    <li><a href="/about/topics/show/3">Registration</a></li>
-    <li><a href="/about/topics/show/4">Terms and Conditions</a></li>
-    <li><a href="/help/">User Manual</a></li>
-    <li><a href="/about/topics/show/5">Privacy Policy</a></li>
-    </ul>
-    <h2>About Kete</h2>
-    <p>Kete Horowhenua, the original Kete installlation, is a community built digital library of arts, cultural and heritage resources for and about Horowhenua, New Zealand. Horowhenua Library Trust are responsible for the creation and ongoing development of the site.</p>
-    <p>Kete aims to get privately owned papers and photographs out from under beds and sitting alongside public archive and photograph collections. But we want so much more too. We want to capture the memories and stories that are our heritage, we want a place where our artists can showcase their work, and where our businesses and attractions can promote themselves, where we can celebrate who we are and how we live and what we do through photographs, video and audio footage and stories.</p>
-    <p>What we want is a vibrant and lively community of Kete users adding value to the site: joining together related photographs and clips and documents by writing and submitting an article or story; a story that others can add their own memories and knowledge to as well.</p>
-    <p>Kete was developed with Ruby on Rails, utilizes Zebra z39.50 full text indexing engine developed by IndexData, is fully compatible with Koha, and will be released under a <a href="http://www.gnu.org/copyleft/gpl.html" title="GNU General Public License (GPL)">GNU General Public License (GPL)</a>. The Kete software is available for download and we invite other communities to build their own Kete.</p>
-    <p>This Horowhenua Library Trust project is carried out in partnership with Horowhenua District Council and Levin SeniorNet, and was funded from the National Digital Strategy : Community Partnership Fund.</p>
-    <p>You can read more about Kete and what we're trying to do at <a href="http://kete.net.nz/blog/" title="The Kete blog">http://kete.net.nz/blog/</a></p>
-    <h3>The future</h3>
-    <p>Our aim is to bring Kete to the world! We are seeking funding to do the following:</p>
-    <ol>
-    <li>Build a release of the code (minus all the Horowhenua customizations) that can be downloaded, installed and configured using a web based wizard to step newbies through the process, thus allowing a unique Kete installation.</li>
-    <li>Develop a prototype for skins or themes to allow a  customized installation reflecting an organisations culture or style.</li>
-    <li>Establish a kete.net community site for developers and users.</li>
-    </ol>
-    <p>If you interested in helping with further development (especially with cash!) then please contact us.</p>
-    <h3>Who's involved in Kete?</h3>
-    <p><strong>Conception:</strong> Kete was the bright idea of Joann Ransom, Deputy head of Libraries, Horowhenua Library Trust and Kete Project Manager.</p>
-    <p><strong>Partners:</strong> Horowhenua Library Trust have partnered with Horowhenua District Council and Levin SeniorNet for this project.</p>
-    <p><strong>Funders:</strong> The National Digital Strategy : Community Partnerships Fund provided the bulk of the development funding, supplemented by Horowhenua Library Trust, Horowhenua District Growers Association and Horowhenua District Council. Ross McColl Cars have provided us with transport whenever we have needed it, and Horowhenua College with a computer suite</p>
-    <p><strong>Developers:</strong> Walter McGinnis (Lead Developer), Russell Garlick (Information Architect) Robert Lyon (Web Programmer), and the rest of the crew at <a href="http://www.katipo.co.nz">Katipo Communications</a>.</p>
-    <p><strong>Content Manager:</strong> Pippa Coard has worked full time for nine months coordinating the collection of content, and managing volunteers.</p>
-    <p><strong>Workers:</strong> We asked for help and boy did we get! We have had thousands of hours of voluntary labour gifted to us by individuals in the community preparing digital content.</p>
-    <p><strong>Community groups:</strong> Horowhenua and Foxton historical societies have provided the bulk of the seed collection, and Lorraine and Chris Wright from the Levin branch of NZ Society of Genealogists have created databases for bulk import.</p>
+    <h2>Tell the world something about this site by using the edit link!<br /></h2>
+    <p>This site is run on Kete open source software. Kete was developed by <a href="http://www.library.org.nz">Horowhenua Library Trust</a> and <a href="http://katipo.co.nz">Katipo Communications Ltd</a>. to build a digital library of Horowhenua material: <a href="http://horowhenua.kete.net.nz/">Kete Horowhenua. </a></p>
+    <p><a href="http://kete.net.nz/">Kete.net.nz</a> is the home of the Kete software community; for those that are using Kete, thinking about using it, or just interested in knowing more.</p>
+    <p><a href="http://kete.net.nz/">http://kete.net.nz/</a></p>
 
 topics_002:
   title: House Rules
@@ -147,14 +120,11 @@ topics_004:
     <li><a href="/about/topics/show/5">Privacy Policy</a></li>
     </ul>
     <h2>Terms and Conditions</h2>
-    <p>The information and facilities provided on this website (referred to here as the 'Site') are provided to you ('you/your') by Horowhenua Library Trust ('we/our/us').</p>
+    <p>The information and facilities provided on this website (referred to here as the 'Site') are provided to you ('you/your') by this sites publisher ('we/our/us').</p>
     <p>If you do not agree to these Terms and Conditions then you must not register. These Terms and Conditions incorporate the <a href="/about/topics/show/5">Privacy Policy</a>.</p>
     <p>You can read and use the Site without registering but if you would like to contribute and amend material to the Site then you will need to register and agree to these Terms and Conditions. There is no charge for using the Site or for becoming a Registered User.</p>
-    <h3>Information about us and contact details.</h3>
-    <p>Horowhenua Library Trust is incorporated under the Charitable Trusts Act 1957 with the New Zealand Ministry of Commerce under registration number WN/834270. Our address is Levin Library, 10 Bath Street, Levin, New Zealand.</p>
-    <p>If you have any questions, complaints or comments on this Site, you may contact us at <a href="mailto:kete@library.org.nz">kete@library.org.nz</a> or at the address above.</p>
     <h3>Shared Content - Use by You and Others</h3>
-    <p>The Site works by enabling registered users to join this kete community to contribute and share information about the arts, culture and history of Horowhenua.</p>
+    <p>The Site works by enabling registered users to join this kete community to contribute and share information about the arts, culture and history as related to the site.</p>
     <p>The Site is about sharing content and therefore we have adopted the <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons Licence</a> arrangements to govern how you may use content indicated as 'Shared Content' on the Site and how any material you post will automatically become Shared Content for others to use.</p>
     <p>Whenever you post content on the Site, you agree to make it available under the terms of the <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons Licence</a> which governs all Shared Content on the Site. This means that users of the Site will be able to:</p>
     <ul>
@@ -176,10 +146,10 @@ topics_004:
     <p>Any use other than that permitted under this paragraph 1 may only be undertaken with our prior express authorisation.</p>
     <h3>Your Licence of Your Content and How We May Use It</h3>
     <p>When you contribute any content to the Site, you grant us a perpetual, royalty free licence to use such content as set out below. This licence is separate and different from the <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons Licence</a> that applies to other Site users' use of such content.</p>
-    <p>On posting any content, the licence you grant to us and our partners is a licence to:</p>  
+    <p>On posting any content, the licence you grant to us and our partners is a licence to:</p>
     <ul>
     <li>communicate such content to the public and otherwise make it available on this kete websites and services and to amend, copy or delete it in the course of doing so and at our discretion pursuant to any complaints in relation to such content; and</li>
-    <li>create and publish the content (in or on any media) based on (or which include copies and/or modifications of) all or any part of the content in publications produced by Horowhenua Library Trust or with our permission and you hereby waive any rights that you may otherwise have to any revenues arising from such use.</li>
+    <li>create and publish the content (in or on any media) based on (or which include copies and/or modifications of) all or any part of the content in publications produced by this sites publisher or with our permission and you hereby waive any rights that you may otherwise have to any revenues arising from such use.</li>
     </ul>
     <h3>Age Restrictions and Parental Consent</h3>
     <p>If you are under 16 years of age then you may not register to use the Site. If we discover or have reason to suspect that you are not 16 or over we may suspend or terminate your registration.</p>
@@ -190,13 +160,13 @@ topics_004:
     <p>You are responsible for maintaining the confidentiality of your Password and User Name and are responsible for all activities that occur under them. We do not have the means to check the identity of people using the Site and services and will not be liable where your Password or User Name are used by someone else.</p>
     <p>You agree to notify us immediately of any unauthorised use of your Password or User Name or any other breach of security of which you become aware.</p>
     <h3>Your use of the Site</h3>
-    <p>Please read this paragraph particularly carefully. You agree that, in using the Site, you will not:</p> 
+    <p>Please read this paragraph particularly carefully. You agree that, in using the Site, you will not:</p>
     <ul>
     <li>email, transmit or otherwise disseminate any content (including, text, image, video or audio files) which is defamatory, obscene, in breach of copyright, vulgar or indecent or may have the effect of being harassing, threatening, abusive or hateful or that otherwise degrades or intimidates an individual or group of individuals on the basis of religion, gender, sexual orientation, race, ethnicity, age or disability, or that is illegal</li>
     <li>transmit on the Site, personal data regarding another Registered User or other person including, without limitation, their email, address or other contact details that would enable another Registered User or other person to identify or contact them without their express consent;</li>
     <li>use the Site in any way that may lead to the encouragement, procurement or carrying out of any criminal activity including canvassing, prostitution or soliciting</li>
     <li>use the Site for any purpose other than for non-commercial use.</li>
-    <li>use the Site to impersonate any person or entity (including, but not limited to, any of Our employees or representatives) nor falsely state or otherwise misrepresent your affiliation with a person or entity;</li> 
+    <li>use the Site to impersonate any person or entity (including, but not limited to, any of Our employees or representatives) nor falsely state or otherwise misrepresent your affiliation with a person or entity;</li>
     <li>cause any part of the Site to be interrupted, damaged or otherwise impaired;</li>
     <li>nor use any Shared Content or Our Content other than as prescribed in paragraph 1 above.</li>
     </ul>
@@ -205,27 +175,27 @@ topics_004:
     <p>Kete includes links to other websites. We do not control such third party websites and are not responsible for their contents. Our inclusion of links does not imply any endorsement of the material contained in such websites or any association with their operators.</p>
     <p>You acknowledge that we will not be party to any transaction or contract with a third party that you may enter into and we shall not be liable to you in respect of any loss or damage which you may suffer by using those websites. You agree that you will not involve Us in any dispute between you and the third party.</p>
     <h3>Limitation of Liability</h3>
-    <p>We have no responsibility or control over the contents of any Shared Content nor communications made by or between Registered Users and can not be held liable for any contents of or consequences of such material. You must be aware that any Shared Content information provided by another Registered User may be incorrect or misleading and it is your responsibility to take precautions and use common sense when using the Site and any Shared Content or providing any information to others via the Site. Unfortunately, there may be occasions when you may find other Registered Users' use of the Site or posted Shared Content offensive, harmful or deceptive. If you have a complaint about any of the content contained on the Site then contact us at <a href="mailto:kete@library.org.nz">kete@library.org.nz</a></p>
+    <p>We have no responsibility or control over the contents of any Shared Content nor communications made by or between Registered Users and can not be held liable for any contents of or consequences of such material. You must be aware that any Shared Content information provided by another Registered User may be incorrect or misleading and it is your responsibility to take precautions and use common sense when using the Site and any Shared Content or providing any information to others via the Site. Unfortunately, there may be occasions when you may find other Registered Users' use of the Site or posted Shared Content offensive, harmful or deceptive. If you have a complaint about any of the content contained on the Site then contact us using the appropriate 'Contact' link at the top of the page.</p>
     <p>To the fullest extent permissible by law, we disclaim any and all warranties of any kind (whether express or implied) in relation to the Site and any items accessed by you via the Site or a third party provider including any Shared Content. Your statutory rights as a consumer (including your right to receive a reasonable standard of service) are not affected.</p>
     <p>Our liability in tort, contract, negligence, pre-contract or other representations or otherwise arising out of or in connection with and/or these Terms of Use shall be limited in aggregate to $1,000 in respect of any one claim or series of connected claims.</p>
-    <p>We do not accept any liability for damage to your computer system or loss of data that results from your use of the Site and we cannot guarantee that any files that you download are free from viruses, contamination or destructive features. Please ensure you run an effective virus detection system.</p> 
+    <p>We do not accept any liability for damage to your computer system or loss of data that results from your use of the Site and we cannot guarantee that any files that you download are free from viruses, contamination or destructive features. Please ensure you run an effective virus detection system.</p>
     <p>Whilst we use all reasonable endeavours to correct any errors or omissions in our own posted information as soon as practicable once they have been brought to our attention, we do not promise that it is correct.</p>
     <p>We do not promise that the Site will be available uninterrupted and in a fully operating condition due to the nature of the internet and our dependency on other service providers. Access to the Site may be suspended temporarily and without notice in the case of system failure, maintenance or repair or for reasons reasonably beyond our control.</p>
     <p>All content and services on the Site are provided on an 'as is' and 'as available' basis. We do not make any representation or give any warranty in respect of the Site or its content, including, without limitation, any advice given (on a personal or general basis) and statements made by advertisers on or via the Site. Any decisions or action taken by you on the basis of Shared Content or information provided on or via the Site is at your sole discretion and risk</p>
     <p>We will co-operate with any law enforcement authorities or court order requesting or directing us to disclose the identity of or locate anyone breaching these Terms of Use or otherwise for the prevention or detection of crime or the apprehension or prosecution of offenders.</p>
     <h3>Complaints and Feedback</h3>
-    <p>If you have any other specific complaints about another Registered User, or any Shared Content or any other aspects of the Site then you can contact us at kete.library.org.nz. Please note that we are under no obligation to take any action against a Registered User or other person unless required by law.</p>
+    <p>If you have any other specific complaints about another Registered User, or any Shared Content or any other aspects of the Site then you can contact us using the appropriate 'Contact' link at the top of the page. Please note that we are under no obligation to take any action against a Registered User or other person unless required by law.</p>
     <p>You warrant that:</p>
     <ul>
     <li>you are 16 or over</li>
     <li>all information and details provided by you to us on registration are true, accurate and up to date in all respects and at all times (note that you can update or correct your personal details at any time through amending your Profile details);</li>
     <li>you will undertake to comply with the restrictions on your use of the Site or any Shared Content or non-Shared Content as set out in the Terms and Conditions</li>
-    <li>all content that you contribute to the Site is yours and you have all rights required to grant the licences set out above without Horowhenua Library Trust or other user needing to obtain any further consents or permissions from or to pay any monies to any third person in respect of their use of such content.</li> 
+    <li>all content that you contribute to the Site is yours and you have all rights required to grant the licences set out above without this sites publisher or other user needing to obtain any further consents or permissions from or to pay any monies to any third person in respect of their use of such content.</li>
     <li>You agree to compensate us and hold us harmless from any claim or damages (including any legal fees in relation to same) made by a third party in respect of any matter in relation to or arising from your use of the Site or any Shared Content or non-Shared Content including any breach or suspected breach of these Terms and Conditions or your violation of any law or the rights of a third party.</li>
     </ul>
     <h3>Termination and Cancellation</h3>
-    <p>You can cancel or terminate your registration at any time by contacting us on <a href="mailto:kete@library.org.nz">kete@library.org.nz</a></p>
-    <p>We reserve the right to terminate or suspend your registration where we have reason to believe or suspect that you are acting in breach of these Terms and Conditions or House Rules, or where required to do so by law, regulatory body or our licensors; at any time on not less than 24 hours notice to you.</p> 
+    <p>You can cancel or terminate your registration at any time by contacting us using the appropriate 'Contact' link at the top of the page.<a href="mailto:kete@library.org.nz"></a></p>
+    <p>We reserve the right to terminate or suspend your registration where we have reason to believe or suspect that you are acting in breach of these Terms and Conditions or House Rules, or where required to do so by law, regulatory body or our licensors; at any time on not less than 24 hours notice to you.</p>
     <h3>Security and Privacy</h3>
     <p>You must read our <a href="/about/topics/show/5">Privacy Policy</a> which contains important information about the use of your personal data other information regarding your Privacy and our security processes and policies</p>
     <h3>Changes to Terms and Conditions and services.</h3>
@@ -235,12 +205,13 @@ topics_004:
     <h3>Law</h3>
     <p>These terms shall be governed by and interpreted in accordance with the laws of New Zealand. Disputes arising in connection with these terms shall be subject to the exclusive jurisdiction of the courts of New Zealand.</p>
     <h3>Force Majeure</h3>
-    <p>In these Terms and Conditions, a 'force majeure' event means and shall include, without limitation, strikes, lock-outs or other industrial disputes, nuclear accident or acts of God, war or terrorist activity, riot, civil commotion, malicious damage, compliance with any law or government order, rule regulation or direction, accident breakdown of plant or machinery, fire, flood, storm or default of suppliers, and where they are beyond Our reasonable control, any other acts, events, omissions or accidents.</p> <p>We shall not be liable for any failure, any suspension or any termination of access to the Site or any content in connection with or arising out of a force majeure event.</p>
-    <p>These Terms and Conditions were last updated on 29th June 2007.</p>
+    <p>In these Terms and Conditions, a 'force majeure' event means and shall include, without limitation, strikes, lock-outs or other industrial disputes, nuclear accident or acts of God, war or terrorist activity, riot, civil commotion, malicious damage, compliance with any law or government order, rule regulation or direction, accident breakdown of plant or machinery, fire, flood, storm or default of suppliers, and where they are beyond Our reasonable control, any other acts, events, omissions or accidents.</p>
+    <p>We shall not be liable for any failure, any suspension or any termination of access to the Site or any content in connection with or arising out of a force majeure event.</p>
+    <p>These Terms and Conditions were last updated on 8th May 2009.</p>
 
 topics_005:
   title: Privacy Policy
-  short_summary: This Privacy Policy is incorporated in this site's Terms and Conditions, and explains to you how Horowhenua Library Trust and Kete may use your personal data.
+  short_summary: This Privacy Policy is incorporated in this site's Terms and Conditions, and explains to you how this sites publisher and Kete may use your personal data.
   raw_tag_list: ""
   id: "5"
   topic_id: "5"
@@ -260,7 +231,7 @@ topics_005:
     <li><a href="/about/topics/show/5">Privacy Policy</a></li>
     </ul>
     <h2>Privacy Policy</h2>
-    <p>This Privacy Policy is incorporated in this site's <a href="/about/topics/show/4">Terms and Conditions</a>, and explains to you how Horowhenua Library Trust and Kete may use your personal data.</p> 
+    <p>This Privacy Policy is incorporated in this site's <a href="/about/topics/show/4">Terms and Conditions</a>, and explains to you how this sites publisher and Kete may use your personal data.</p>
     <p>By registering to use Kete, you give your consent to the use of your data in accordance with this Privacy Policy. If you have any questions regarding this policy or Kete then please contact us as set out at the end of this document.</p>
     <h3>What do we mean by 'Your Data'?</h3>
     <p>'Your Data' means any information about you which is personally identifiable, including, without limitation, your name, address, telephone numbers, email address, Kete user name, password, comments, personal descriptions, photos and other information from which you can be identified and which you may disclose to us.</p>
@@ -272,7 +243,7 @@ topics_005:
     <li>make a complaint or enquiry or provide other feedback whether to other users or to us through this site</li>
     <li>choose to disclose your data to us through our website or any other point.</li>
     </ul>
-    <h3>How does Horowhenua Library Trust use Your Data?</h3>
+    <h3>How does this sites publisher use Your Data?</h3>
     <p>We use Your Data to:</p>
     <ul>
     <li>monitor, develop and improve this kete website</li>
@@ -281,20 +252,20 @@ topics_005:
     <li>monitor and investigate any suspected breach of this kete <a href="/about/topics/show/4">Terms and Conditions</a> or <a href="/about/topics/show/2">House Rules</a>.</li>
     </ul>
     <p>Please note that although we do not monitor or vett entries and communications placed on or sent via this kete website, we do reserve the right to randomly check, amend, edit or remove information or data on the website that comes to our attention and is in breach or potentially in breach of this kete <a href="/about/topics/show/4">Terms and Conditions</a> or <a href="/about/topics/show/2">House Rules</a>; and we may ask carefully selected third parties to undertake such activities for us.</p>
-    <h3>Will Horowhenua Library Trust pass Your Data to third parties?</h3>
-    <p>Horowhenua Library Trust may pass Your Data to other people as follows:</p>
+    <h3>Will this sites publisher pass Your Data to third parties?</h3>
+    <p>This sites publisher may pass Your Data to other people as follows:</p>
     <ul>
     <li>Your user name will be visible on this kete website against any entries that you post and this will be the identity by which you are known on the website and will therefore be available to any other users of the website. We strongly recommend that you do not use your full name or disclose any other personal details about yourself that you do not want to be visible and available to other viewers.</li>
-    <li>To our employees, agents and partners to administer this Kete website now or in the future.  </li>
+    <li>To our employees, agents and partners to administer this Kete website now or in the future. </li>
     <li>In some cases we may use a technical partner to conduct some processing of Your Data on our behalf in providing the services and website, but this is always subject to strict contractual control.</li>
     <li>Some general statistical information about this kete user base, use patterns, traffic volumes and related matters may be passed on to reputable third parties but these details will not include information personally identifying you.</li>
     <li>We may disclose Your Data to the police, regulatory bodies or legal advisers, your parents, teacher or legal guardian in connection with any alleged criminal offence or suspected breach of this kete <a href="/about/topics/show/4">Terms and Conditions</a> by you.</li>
     </ul>
-    <p>Always think carefully before disclosing Your Data or other information to other kete users or posting Your Data on this kete website. It is important that you are aware that any of Your Data or other information which you choose to disclose on the website may then be viewed and even used by other kete users. As stated in this kete <a href="/about/topics/show/4">Terms and Conditions</a> Horowhenua Library Trust has no control over the contents of communications made between users although you can make a complaint about another user as detailed in this kete <a href="/about/topics/show/4">Terms and Conditions</a>.</p>
+    <p>Always think carefully before disclosing Your Data or other information to other kete users or posting Your Data on this kete website. It is important that you are aware that any of Your Data or other information which you choose to disclose on the website may then be viewed and even used by other kete users. As stated in this kete <a href="/about/topics/show/4">Terms and Conditions</a> this sites publisher has no control over the contents of communications made between users although you can make a complaint about another user as detailed in this kete <a href="/about/topics/show/4">Terms and Conditions</a>.</p>
     <p>You must respect the privacy of others and you should not disclose any personal details about other people that may be misleading or cause them harm or offence. It is your responsibility to obtain their prior permission in respect of any mention of them where relevant.</p>
     <p>Other than in the circumstances outlined above we will not provide Your Data to any third party without your consent or unless we are required to do so by law.</p>
     <h3>Data Security</h3>
-    <p>Horowhenua Library Trust endeavours to take all reasonable steps to protect Your Data. All the Data collected by us is stored on a secure server. The secure server software encrypts all information you input before it is sent to us.</p>
+    <p>This sites publisher endeavours to take all reasonable steps to protect Your Data. All the Data collected by us is stored on a secure server. The secure server software encrypts all information you input before it is sent to us.</p>
     <h3>Cookies</h3>
     <p>Cookies are small pieces of information stored by your browser on your computer's hard drive. We use cookies to allow us to understand who has seen which pages, to determine how frequently particular pages are visited and to determine the most popular areas of this kete website and services. Most web browsers automatically accept cookies, though you do not have to. We do not control the use of cookies by third parties. If you wish to disable cookies then you can do so by readjusting your browser settings although please note that by disabling cookies you may not be able to register with or use all features of our websites.</p>
     <p>For more information on cookies and how to disable them, you can consult the information provided by the Interactive Advertising Bureau at http://www.allaboutcookies.org.</p>
@@ -305,9 +276,7 @@ topics_005:
     <h3>Other links</h3>
     <p>Please be aware that this Kete may link to other web sites, which may be accessed by you through our site. We are not responsible for the data policies, content or security of these linked web sites.</p>
     <h3>Contact Us</h3>
-    <p>If you have any comments or queries in connection with this privacy policy, please contact us by email at <a href="mailto:kete@library.org.nz">kete@library.org.nz</a></p>
-    <p>or write to:</p>
-    <p>Kete Horowhenua at<br />Horowhenua Library Trust,<br />Levin Library,<br />10 Bath Street,<br />Levin,<br />New Zealand.</p>
+    <p>If you have any comments or queries in connection with this privacy policy, please contact us using the appropriate 'Contact' link at the top of the page.</p>
 
 topics_006:
   title: User Manual

@@ -223,6 +223,8 @@
           <%= render(:partial => "topics/content_wrapper_start",
                      :locals => { :style_classes =>"full-width notabs" }) if render_full_width_content_wrapper? %>
 
+          <%= render(:partial => "licenses/install") if params[:controller] == 'licenses' && %w{ index list }.include?(params[:action]) %>
+
           <%= @content_for_layout %>
 
           <div style="clear:both;"></div>
