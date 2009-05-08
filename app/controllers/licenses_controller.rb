@@ -43,8 +43,7 @@ class LicensesController < ApplicationController
 
   def prepare_available_licenses
     @available_licenses = Rake.application.tasks.
-                          reject { |t| t.name !~ /acts_as_licensed:import/ }.
-                          collect { |t| t.name.match(/:(\w+)$/)[1] }
+                            collect { |task| task.name =~ /acts_as_licensed:import:(\w+)$/ ? $1 : nil }.compact
   end
 
 end
