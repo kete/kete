@@ -22,15 +22,15 @@ class LicensesController < ApplicationController
         ENV['RAILS_ENV'] = RAILS_ENV
         rake_result = Rake::Task["acts_as_licensed:import:#{params[:task]}"].execute(ENV)
         if rake_result || License.count > old_license_count
-          flash[:notice] = "Successfully imported licenses."
+          flash[:notice] = t('licenses_controller.install_license.imported')
         else
-          flash[:error] = "There was a problem importing the licenses."
+          flash[:error] = t('licenses_controller.install_license.problem_importing')
         end
       else
-        flash[:error] = "Invalid license type."
+        flash[:error] = t('licenses_controller.install_license.invalid_import')
       end
     else
-      flash[:error] = "No licenses to import were selected."
+      flash[:error] = t('licenses_controller.install_license.no_import')
     end
     redirect_to :urlified_name => 'site', :controller => 'licenses', :action => 'list'
   end

@@ -1313,7 +1313,18 @@ en:
       toolbox_label: Administrator's Toolbox
       topic_types: topic types
       zoom_dbs: Z39.50 search databases
+  licenses:
+    install:
+      choose_license: '-choose license to import-'
+      creative_commons_note: 'Note: The Creative Commons license imports do not include the "no derivatives" licenses because they are not compatible with most Kete sites. If you need these, add them in the interface below.'
+      submit: Import
+      title: Import Licenses
   licenses_controller:
+    install_license:
+      imported: "Successfully imported licenses."
+      invalid_import: "Invalid license type."
+      no_import: "No licenses to import were selected."
+      problem_importing: "There was a problem importing the licenses."
     title: Licenses
   members:
     admin_actions:
