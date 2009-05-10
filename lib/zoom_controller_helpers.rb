@@ -10,6 +10,7 @@ module ZoomControllerHelpers
 
     # this keeps the RoR item around, just destroys zoom record
     # doesn't delete zoom records for any relations
+
     # mainly for cleaning out old zoom record
     # before we generate a new one
     def zoom_destroy_for(item)
@@ -64,9 +65,14 @@ module ZoomControllerHelpers
       if CACHES_CONTROLLERS.include?(params[:controller]) && params[:controller] != 'baskets'
         item = item_from_controller_and_id(false)
 
-        item.related_items.each do |related_item|
-          prepare_and_save_to_zoom(related_item)
-        end
+        # Walter McGinnis, 2009-05-11
+        # this doesn't work because of multiple render calls
+        # postponing until 1-3...
+        # at that time, it should only be called
+        # if item moved to a new basket
+        # item.related_items.each do |related_item|
+        #   prepare_and_save_to_zoom(related_item)
+        # end
       end
     end
 
