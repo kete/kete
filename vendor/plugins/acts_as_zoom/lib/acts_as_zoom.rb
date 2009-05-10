@@ -283,6 +283,8 @@ module ZoomMixin
         end
 
         # saves to the appropriate ZoomDb based on configuration
+        # be careful with existing connection
+        # there is currently no checking to make sure it corresponds to appropriate_zoom_database
         def zoom_save(existing_connection = nil)
           logger.debug "zoom_save: #{zoom_id}; private: #{(respond_to?(:private) && private?).to_s}"
 
