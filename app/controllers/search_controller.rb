@@ -498,7 +498,8 @@ class SearchController < ApplicationController
       redirect_to 'setup_rebuild'
     else
       @worker_type = 'zoom_index_rebuild_worker'
-      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      @worker_key = params[:worker_key]
+      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
       begin
         if !status.blank?
           current_zoom_class = status[:current_zoom_class] || 'Topic'

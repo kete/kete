@@ -92,6 +92,7 @@ class ImportersController < ApplicationController
       end
 
       @worker_type = "#{@import.xml_type}_importer_worker".to_sym
+      @worker_key = worker_key_for(@worker_type)
 
       case @import.xml_type
       when 'past_perfect4'
@@ -104,8 +105,8 @@ class ImportersController < ApplicationController
 
       # only run one import at a time for the moment
       unless backgroundrb_is_running?(@worker_type)
-        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
-        MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :zoom_class => @zoom_class,
+        MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
+        MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :zoom_class => @zoom_class,
                                                                                    :import => @import.id,
                                                                                    :params => params,
                                                                                    :import_request => import_request } )
@@ -142,7 +143,8 @@ class ImportersController < ApplicationController
       redirect_to :action => 'list'
     else
       @worker_type = params[:worker_type].to_sym
-      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      @worker_key = worker_key_for(@worker_type)
+      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
       begin
         if !status.blank?
           records_processed = status[:records_processed]
