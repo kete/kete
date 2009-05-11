@@ -54,10 +54,10 @@ class ImagesControllerTest < ActionController::TestCase
     assert_equal 5, assigns(:still_image).image_files.size
     assert_equal true, assigns(:still_image).file_private?
     assert_equal true, assigns(:image_file).file_private?
-    # Walter McGinnis, resized images are now private
-    # unless there is a public version of image
+    # Walter McGinnis, resized images are now public
+    # unless there is a private version of still image
     thumbnails_of(assigns(:still_image)).each do |image|
-      assert_equal true, image.file_private
+      assert_equal false, image.file_private
     end
     assert_equal true, original_of(assigns(:still_image)).file_private
     assert_response :redirect
