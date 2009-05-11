@@ -8,13 +8,8 @@ module ConfigureActsAsZoomForKete
   # otherwise lots of attributes we need for the oai_record
   # aren't available
   unless included_modules.include? ConfigureActsAsZoomForKete
-    attr_accessor :oai_record
-    attr_accessor :basket_urlified_name
     def self.included(klass)
-      # important that this goes before acts_as_zoom declaration
-      klass.send :before_destroy, :prepare_for_zoom_id
-      klass.send :private, :prepare_for_zoom_id
-
+      klass.send :include, OaiZoom
       klass.send :acts_as_zoom, :fields => [:oai_record],
                                 :save_to_public_zoom => ['localhost', 'public'],
                                 :save_to_private_zoom => ['localhost', 'private'],
@@ -24,8 +19,15 @@ module ConfigureActsAsZoomForKete
 
     end
 
-    def prepare_for_zoom_id
-      self.basket_urlified_name = self.basket.urlified_name
+    def oai_record
+      @oai_record ||= oai_record_xml
+    rescue
+      logger.error("oai_record gen error: #{$!.to_s}")
     end
+
+    def basket_urlified_name
+      @basket_urlfied_name ||= basket.urlified_name
+    end
+
   end
 end

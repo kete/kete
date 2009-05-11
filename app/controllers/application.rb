@@ -15,6 +15,8 @@ class ApplicationController < ActionController::Base
 
   include ZoomSearch
 
+  include KeteUrlFor
+
   # for the remember me functionality
   before_filter :login_from_cookie
 
@@ -541,7 +543,7 @@ class ApplicationController < ActionController::Base
       # we also want to update zoom for all items they have contributed to
       item_or_user.distinct_contributions.each do |contribution|
         expire_contributions_caches_for(contribution)
-        prepare_and_save_to_zoom(contribution) unless options[:dont_rebuild_zoom]
+        contribution.prepare_and_save_to_zoom unless options[:dont_rebuild_zoom]
       end
     else
       # rather than find out if the contribution is for a public/private item
@@ -661,7 +663,7 @@ class ApplicationController < ActionController::Base
     # refresh data for the item
     item = Module.class_eval(item.class.name).find(item)
 
-    prepare_and_save_to_zoom(item)
+    item.prepare_and_save_to_zoom
 
     if controller.nil?
       expire_related_caches_for(item)
@@ -844,30 +846,19 @@ class ApplicationController < ActionController::Base
     redirect_to url_for(path_hash)
   end
 
-  def url_for_dc_identifier(item, options={})
-    location = { :controller => zoom_class_controller(item.class.name),
-                 :action => 'show',
-                 :id => item,
-                 :format => nil,
-                 :urlified_name => item.basket.urlified_name }
-
-    location[:protocol] = 'http' if options[:force_http]
-
-    location.merge!({ :id => item.id, :private => nil }) if options[:minimal]
-
-    utf8_url_for(location)
-  end
-
   def render_oai_record_xml(options = {})
     item = options[:item]
     to_string = options[:to_string] || false
     if to_string
-      render_to_string(:file => "#{RAILS_ROOT}/app/views/search/oai_record.xml.erb", :layout => false, :content_type => 'text/xml', :locals => { :item => item })
+      item.oai_record
     else
-      render :file => "#{RAILS_ROOT}/app/views/search/oai_record.xml.erb", :layout => false, :content_type => 'text/xml', :locals => { :item => item }
+      # :layout => false,
+      render :text=> item.oai_record, :content_type => 'text/xml'
     end
   end
 
+  # TODO: this can likely be elimenated!
+  # just use user.user_name
   def user_to_dc_creator_or_contributor(user)
     user.user_name
   end
@@ -887,7 +878,7 @@ class ApplicationController < ActionController::Base
     if item.class.name == 'Comment'
       commented_item = item.commentable
       expire_caches_after_comments(commented_item, item.private?)
-      prepare_and_save_to_zoom(commented_item)
+      commented_item.prepare_and_save_to_zoom
     end
   end
 
@@ -978,7 +969,7 @@ class ApplicationController < ActionController::Base
           end
           # generate the new zoom record
           # with the new basket
-          prepare_and_save_to_zoom(comment)
+          comment.prepare_and_save_to_zoom
         end
       end
     end
@@ -1004,7 +995,7 @@ class ApplicationController < ActionController::Base
     build_relations_from_topic_type_extended_field_choices unless params[:controller] == 'search'
 
     # finally, sync up our search indexes
-    prepare_and_save_to_zoom(item) if !item.already_at_blank_version?
+    item.prepare_and_save_to_zoom if !item.already_at_blank_version?
   end
 
   def history_url(item)

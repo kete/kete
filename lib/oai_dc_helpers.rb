@@ -1,4 +1,5 @@
 include Utf8UrlFor
+include KeteUrlFor
 include ActionView::Helpers::SanitizeHelper
 
 # oai dublin core xml helpers
@@ -10,28 +11,22 @@ module OaiDcHelpers
       klass.send :include, XmlHelpers
     end
 
-    # TODO: this is duplicated in application.rb, fix
-    def user_to_dc_creator_or_contributor(user)
-      user.user_name
-    end
-
-    def oai_dc_xml_request(xml,item, passed_request = nil)
+    def oai_dc_xml_request(xml, passed_request = nil)
       if !passed_request.nil?
         protocol = passed_request[:protocol]
         host = passed_request[:host]
         request_uri = passed_request[:request_uri]
       else
-        protocol = request.protocol
-        host= request.host
-        request_uri = url_for_dc_identifier(item)
+        protocol = simulated_request[:protocol]
+        host = simulated_request[:host]
+        request_uri = simulated_request[:request_uri]
       end
 
-      basket_urlified_name = @current_basket.nil? ? item.basket.urlified_name : @current_basket.urlified_name
-      xml.request(request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{item.class.name}:#{item.id}", :metadataPrefix => "oai_dc")
+      xml.request(request_uri, :verb => "GetRecord", :identifier => "#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}", :metadataPrefix => "oai_dc")
     end
 
-    def oai_dc_xml_oai_identifier(xml, item)
-      xml.identifier("#{ZoomDb.zoom_id_stub}#{item.basket.urlified_name}:#{item.class.name}:#{item.id}")
+    def oai_dc_xml_oai_identifier(xml)
+      xml.identifier("#{ZoomDb.zoom_id_stub}#{basket_urlified_name}:#{self.class.name}:#{self.id}")
     end
 
     # Walter McGinnis, 2008-10-05
@@ -41,13 +36,13 @@ module OaiDcHelpers
     # or when a relationship has been added
     # note that if a relation is removed, this may result in rolling back in time
     # of datestamp, which may be counterintuitive, however that is a rare case
-    def oai_dc_xml_oai_datestamp(xml, item)
-      most_recent_updated_at = item.updated_at
+    def oai_dc_xml_oai_datestamp(xml)
+      most_recent_updated_at = updated_at
 
-      if item.class.name == 'Topic'
+      if self.is_a?(Topic)
         # topics can be on either side of the content_item_relation join model
         # so to get all possible relations, you have to combine them
-        all_relations = item.content_item_relations + item.child_content_item_relations
+        all_relations = content_item_relations + child_content_item_relations
 
         if all_relations.size > 0
           all_relations.sort! { |a,b| a.updated_at <=> b.updated_at }
@@ -57,9 +52,9 @@ module OaiDcHelpers
             most_recent_updated_at = last_relation.updated_at
           end
         end
-      elsif item.class.name != 'Comment' && item.content_item_relations.count > 0 &&
-          item.content_item_relations.last.updated_at > most_recent_updated_at
-        most_recent_updated_at = item.content_item_relations.last.updated_at
+      elsif self.is_a?(Comment) && content_item_relations.count > 0 &&
+          content_item_relations.last.updated_at > most_recent_updated_at
+        most_recent_updated_at = content_item_relations.last.updated_at
       end
 
       xml.datestamp(most_recent_updated_at.utc.xmlschema)
@@ -68,11 +63,11 @@ module OaiDcHelpers
     # Walter McGinnis, 2008-06-16
     # adding oai pmh set support
     # assumes public zoom_db
-    def oai_dc_xml_oai_set_specs(xml, item)
+    def oai_dc_xml_oai_set_specs(xml)
       # get the sets that match the item
       set_specs = Array.new
       ZoomDb.find(1).active_sets.each do |base_set|
-        set_specs += base_set.matching_specs(item)
+        set_specs += base_set.matching_specs(self)
       end
 
       set_specs.each do |set_spec_value|
@@ -80,55 +75,55 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_identifier(xml, item, passed_request = nil)
+    def oai_dc_xml_dc_identifier(xml, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]
       else
-        host = request.host
+        host = simulated_request[:host]
       end
 
       uri_attrs = {
-        :controller => zoom_class_controller(item.class.name),
+        :controller => zoom_class_controller(self.class.name),
         :action => 'show',
-        :id => item,
+        :id => self,
         :format => nil,
-        :urlified_name => item.basket.urlified_name
+        :urlified_name => basket_urlified_name
       }
 
       if item.class.name == 'Comment'
         # comments always point back to the thing they are commenting on
-        commented_on_item = item.commentable
+        commented_on_item = self.commentable
         uri_attrs = {
           :controller => zoom_class_controller(commented_on_item.class.name),
           :action => 'show',
           :id => commented_on_item,
           :urlified_name => commented_on_item.basket.urlified_name,
-          :anchor => "comment-#{item.id}",
-          :private => item.commentable_private?.to_s
+          :anchor => "comment-#{self.id}",
+          :private => self.commentable_private?.to_s
         }
       else
         # Link to private version if generating OAI record for it..
-        if item.respond_to?(:private) && item.private?
+        if respond_to?(:private) && private?
           # don't put title in url for private items
-          uri_attrs.merge!({ :private => "true", :id => item.id.to_s })
+          uri_attrs.merge!({ :private => "true", :id => self.id.to_s })
         end
       end
 
       # If the item is private and SSL is configured, use https instead of http for full URL for the
       # record.
-      protocol = appropriate_protocol_for(item)
+      protocol = appropriate_protocol_for(self)
 
       xml.send("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true))}")
     end
 
-    def oai_dc_xml_dc_title(xml, item)
-      xml.send("dc:title", item.title)
+    def oai_dc_xml_dc_title(xml)
+      xml.send("dc:title", title)
     end
 
     def oai_dc_xml_dc_publisher(xml, publisher = nil)
       # this website is the publisher by default
       if publisher.nil?
-        xml.send("dc:publisher", request.host)
+        xml.send("dc:publisher", simulated_request[:host])
       else
         xml.send("dc:publisher", publisher)
       end
@@ -146,11 +141,11 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_creators_and_date(xml, item)
-      item_created = item.created_at.utc.xmlschema
+    def oai_dc_xml_dc_creators_and_date(xml)
+      item_created = created_at.utc.xmlschema
       xml.send("dc:date", item_created)
-      item.creators.each do |creator|
-        user_name = user_to_dc_creator_or_contributor(creator)
+      creators.each do |creator|
+        user_name = creator.user_name
         xml.send("dc:creator", user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
@@ -162,9 +157,9 @@ module OaiDcHelpers
     # TODO: this attribute isn't coming over even though it's in the select
     # contribution_date = contributor.version_created_at.to_date
     # xml.send("dcterms:modified", contribution_date)
-    def oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
-      item.contributors.all(:select => "distinct(users.login), users.resolved_name").each do |contributor|
-        user_name = user_to_dc_creator_or_contributor(contributor)
+    def oai_dc_xml_dc_contributors_and_modified_dates(xml)
+      contributors.all(:select => "distinct(users.login), users.resolved_name").each do |contributor|
+        user_name = contributor.user_name
         xml.send("dc:contributor", user_name)
         # we also add user.login, which is unique per site
         # whereas user_name is not
@@ -173,11 +168,11 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_relations_and_subjects(xml, item, passed_request = nil)
+    def oai_dc_xml_dc_relations_and_subjects(xml, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]
       else
-        host = request.host
+        host = simulated_request[:host]
       end
 
       # in theory, direct comments might be added in as relations here
@@ -185,16 +180,16 @@ module OaiDcHelpers
       # then it's overkill
       # however, if we are in the comment record,
       # we want to add the commented on item as a relation
-      case item.class
+      case self.class
       when Comment
         # comments always point back to the thing they are commenting on
-        commented_on_item = item.commentable
+        commented_on_item = self.commentable
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
         } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
         xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
       else
-        item.related_items.each do |related|
+        related_items.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
           } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
@@ -203,41 +198,41 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_tags_to_dc_subjects(xml, item)
-      item.tags.each do |tag|
+    def oai_dc_xml_tags_to_dc_subjects(xml)
+      tags.each do |tag|
         xml.send("dc:subject") {
           xml.cdata tag.name
         }
       end
     end
 
-    def oai_dc_xml_dc_type(xml, item)
+    def oai_dc_xml_dc_type(xml)
       # topic's type is the default
       type = "InteractiveResource"
-      case item.class.name
-      when "AudioRecording"
+      case self.class
+      when AudioRecording
         type = 'Sound'
-      when "StillImage"
+      when StillImage
         type = 'StillImage'
-      when 'Video'
+      when Video
         type = 'MovingImage'
       end
       xml.send("dc:type", type)
     end
 
-    def oai_dc_xml_dc_format(xml, item)
+    def oai_dc_xml_dc_format(xml)
       # item's content type is the default
       format = String.new
-      html_classes = ['Topic', 'Comment', 'WebLink']
-      case item.class.name
+      html_classes = [Topic, Comment, WebLink]
+      case self.class
       when *html_classes
         format = 'text/html'
-      when 'StillImage'
-        if !item.original_file.nil?
-          format = item.original_file.content_type
+      when StillImage
+        if !original_file.nil?
+          format = original_file.content_type
         end
       else
-        format = item.content_type
+        format = content_type
       end
       if !format.blank?
         xml.send("dc:format", format)
@@ -245,9 +240,8 @@ module OaiDcHelpers
     end
 
     # currently only relevant to topics
-    def oai_dc_xml_dc_coverage(xml, item)
-      return unless item.is_a?(Topic)
-      topic_type = item.topic_type
+    def oai_dc_xml_dc_coverage(xml)
+      return unless self.is_a?(Topic)
       topic_type.ancestors.each do |ancestor|
         xml.send("dc:coverage", ancestor.name)
       end
@@ -256,12 +250,16 @@ module OaiDcHelpers
 
     # if there is a license for item, put in its url
     # otherwise site's terms and conditions url
-    def oai_dc_xml_dc_rights(xml, item)
-      if item.respond_to?(:license) && !item.license.blank?
-        rights = item.license.url
+    def oai_dc_xml_dc_rights(xml)
+      terms_and_conditions_topic = Basket.about_basket.find(:first,
+                                                            :conditions => "UPPER(title) like '%TERMS AND CONDITIONS'").id
+      terms_and_conditions_id ||= 4
+
+      if respond_to?(:license) && !license.blank?
+        rights = license.url
       else
         rights = SITE_URL.chop + utf8_url_for(
-          :id => 4,
+          :id => terms_and_conditions_id,
           :urlified_name => Basket.about_basket.urlified_name,
           :action => 'show',
           :controller => 'topics',
@@ -272,15 +270,15 @@ module OaiDcHelpers
       xml.send("dc:rights", rights)
     end
 
-    def oai_dc_xml_dc_source_for_file(xml, item, passed_request = nil)
+    def oai_dc_xml_dc_source_for_file(xml, passed_request = nil)
       if !passed_request.nil?
         host = passed_request[:host]
       else
-        host = request.host
+        host = simulated_request[:host]
       end
 
-      if ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
-        xml.send("dc:source", file_url_from_bits_for(item, host))
+      if ::Import::VALID_ARCHIVE_CLASSES.include?(self.class.name)
+        xml.send("dc:source", file_url_from_bits_for(self, host))
       end
     end
   end
