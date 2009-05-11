@@ -34,9 +34,12 @@
     <% end -%>
 
 
-    <% if @item.class.name == 'StillImage'
-       image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @item.id) -%>
-    <%= render(:partial => "images/image_file", :object => image_file, :locals => { :image_file => image_file, :title => @item.title }) if !image_file.nil?%>
+    <% if @item.class.name == 'StillImage' %>
+			<% image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @item.id) -%>
+      <%= render(:partial => "images/image_file",
+                 :locals => { :still_image => @item,
+                              :image_file => image_file,
+                              :without_controls => true }) if !image_file.nil? %>
     <% end -%>
 
   <% can_moderate = true if logged_in? and @at_least_a_moderator -%>

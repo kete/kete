@@ -49,7 +49,7 @@ module ZoomControllerHelpers
 
       if @successful
         # if destroy went ok, we want to trigger zoom rebuild for related items
-        related_items.each do |related|
+        related_items.each do |related_item|
           prepare_and_save_to_zoom(related_item)
         end
 
