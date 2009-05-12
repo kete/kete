@@ -54,14 +54,8 @@ class DocumentsController < ApplicationController
     @successful = @document.save if @successful
 
     if @successful
-
-      after_successful_zoom_item_update(@document)
-
-      @document.do_notifications_if_pending(version_after_update, current_user) if
-        @document.versions.exists?(:version => version_after_update)
-
+      after_successful_zoom_item_update(@document, version_after_update)
       flash[:notice] = 'Document was successfully updated.'
-
       redirect_to_show_for(@document, :private => (params[:document][:private] == "true"))
     else
       render :action => 'edit'
