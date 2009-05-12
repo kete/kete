@@ -178,7 +178,8 @@
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 
-<% cache({:part => "tags_#{@privacy_type}"}) do -%>
+<%# dont cache tags for now because they are likely to change often %>
+<%# cache({:part => "tags_#{@privacy_type}"}) do -%>
   <% if @current_basket.index_page_number_of_tags &&
         @current_basket.index_page_number_of_tags > 0 &&
         @tag_counts_array.size > 0 -%>
@@ -204,7 +205,7 @@
       <% end -%>
     <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
-<% end -%>
+<%# end -%>
 
 <% cache_with_privacy(@topic, {:part => 'license'}) do -%>
   <% unless @topic.nil? || @topic.license_metadata.nil? -%>

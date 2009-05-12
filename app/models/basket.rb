@@ -158,7 +158,7 @@ class Basket < ActiveRecord::Base
       find_tag_order = 'Rand()'
     end
 
-    options = {
+    tag_options = {
       :select => 'tags.id, tags.name, count(taggings.id) AS taggings_count',
       :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
       :group => 'taggings.tag_id',
@@ -167,11 +167,11 @@ class Basket < ActiveRecord::Base
       :offset => (((options[:page] || 1) - 1) * tag_limit),
       :conditions => "taggings.context = 'public_tags'"
     }
-    options.merge(:conditions => "taggings.context IN ('public_tags', 'private_tags')") if private_tags
-    options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
 
     @tag_counts_array = Array.new
-    Tag.all(options).each do |tag|
+    Tag.all(tag_options).each do |tag|
       @tag_counts_array << {
         :id => tag.id,
         :name => tag.name,
@@ -182,8 +182,18 @@ class Basket < ActiveRecord::Base
     return @tag_counts_array
   end
 
-  def tag_counts_total
-    self.taggings.count
+  def tag_counts_total(options)
+    private_tags = options[:allow_private] || false
+
+    tag_options = {
+      :select => 'distinct taggings.tag_id',
+      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
+      :conditions => "taggings.context = 'public_tags'"
+    }
+    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+
+    Tag.count(tag_options)
   end
 
   # attribute options methods
