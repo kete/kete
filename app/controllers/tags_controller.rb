@@ -14,8 +14,11 @@ class TagsController < ApplicationController
     @number_per_page = 75
     @number_per_page = 25 if @type == "categories"
 
-    @tags = @current_basket.tag_counts_array({ :order => @order, :direction => @direction, :limit => @number_per_page, :page => @current_page },
-                                             (privacy_type == 'private'))
+    @tags = @current_basket.tag_counts_array({ :order => @order,
+                                               :direction => @direction,
+                                               :limit => @number_per_page,
+                                               :page => @current_page,
+                                               :allow_private => (privacy_type == 'private') })
     @results = WillPaginate::Collection.new(@current_page, @number_per_page, @current_basket.tag_counts_total)
 
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
@@ -32,7 +35,11 @@ class TagsController < ApplicationController
     # this doesn't work with http auth from and IRC client
     @cache_key_hash = { :rss => "#{privacy_type}_tags_list" }
     unless has_all_rss_fragments?(@cache_key_hash)
-      @tags = @current_basket.tag_counts_array({ :limit => @number_per_page, :order => 'latest', :direction => 'desc' }, (privacy_type == 'private'))
+      @tags = @current_basket.tag_counts_array({ :order => 'latest',
+                                                 :direction => 'desc',
+                                                 :limit => @number_per_page,
+                                                 :page => @current_page,
+                                                 :allow_private => (privacy_type == 'private') })
     end
     respond_to do |format|
       format.xml

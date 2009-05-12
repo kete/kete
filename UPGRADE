@@ -37,9 +37,10 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 
 1.      Stop your Kete server (mongrels or mod_rails).
 2.      Upgrade your code base
-3.      run "rake kete:upgrade" in the proper environment
-4.      Start your Kete server again (mongrels or mod_rails)
-5.      Restart backgroundrb
+3.      run "rake db:migrate" in the proper environment
+4.      run "rake kete:upgrade" in the proper environment
+5.      Start your Kete server again (mongrels or mod_rails)
+6.      Restart backgroundrb
 
 == 2009/04/30 - Did supporting work to make Kete work with latest Zebra and YAZ
 

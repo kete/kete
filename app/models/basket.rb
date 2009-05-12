@@ -139,10 +139,11 @@ class Basket < ActiveRecord::Base
   # but we want all zoom_class's totals added together
   # special case is site basket
   # want to grab all tags from across all baskets
-  def tag_counts_array(options = {}, private_tags=false)
+  def tag_counts_array(options = {})
     tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
     tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
     tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
+    private_tags = options[:allow_private] || false
 
     return Array.new unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
 
