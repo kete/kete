@@ -21,13 +21,13 @@ module ApplicationHelper
     default_options = { :width => image_dimension, :height => image_dimension, :alt => "#{user.user_name}'s Avatar. " }
     options = default_options.merge(options)
 
-    return nil if options[:return_portrait] && (!ENABLE_USER_PORTRAITS || user.portraits.empty?)
+    return nil if options[:return_portrait] && (!ENABLE_USER_PORTRAITS || user.avatar.nil?)
 
-    if ENABLE_USER_PORTRAITS && !user.portraits.empty? && !user.portraits.first.thumbnail_file.file_private
+    if ENABLE_USER_PORTRAITS && user.avatar
       if options[:return_portrait]
-        return user.portraits.first
+        return user.avatar
       else
-        return image_tag(user.portraits.first.thumbnail_file.public_filename, options)
+        return image_tag(user.avatar.thumbnail_file.public_filename, options)
       end
     elsif ENABLE_USER_PORTRAITS && !ENABLE_GRAVATAR_SUPPORT
       return image_tag('no-avatar.png', options)

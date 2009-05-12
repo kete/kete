@@ -192,6 +192,10 @@ class User < ActiveRecord::Base
     self.resolved_name
   end
 
+  def avatar
+    @avatar ||= (self.portraits.first if !self.portraits.empty? && !self.portraits.first.thumbnail_file.file_private)
+  end
+
   def show_email?
     extended_content_hash = self.xml_attributes_without_position
     @show_email = false
