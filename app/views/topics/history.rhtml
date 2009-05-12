@@ -19,38 +19,21 @@
             <th abbr="Updated">Updated</th>
             <th abbr="Comments">Comments</th>
           </tr>
-          <%
-            # lets do some queries here and store values in an array/hash for access later
-            # rather than getting them each iteration (which can result in 100's of queries
-            select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email'
-            item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
-
-            item_taggings = Hash.new
-            taggings = Tagging.all(:conditions => ["taggable_type = ? AND taggable_id IN (?) AND context = 'flags'", "#{@item.class.name}::Version", @versions])
-            taggings.each do |tagging|
-              item_taggings[tagging[:taggable_id]] ||= Array.new
-              item_taggings[tagging[:taggable_id]] << tagging.tag
-            end
-
-            contributor_index = 0
-            users = Hash.new
-          -%>
-
           <% @versions.each do |version| -%>
           <tr valign="top" class="<%= cycle('table-row-odd', 'table-row-even') -%>">
             <td><%= "\# #{version.version}" %></td>
             <td>
               [
               <% if version.version != @current_public_version && version.version != @current_private_version -%>
-              <%= link_to_preview_of(@item, version, true, :submitter => item_contributors[contributor_index]) %>
+              <%= link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index]) %>
               <% else -%>
               <b>current</b>
               <% end -%>
               ]
             </td>
             <td>
-              <% if item_taggings[version.id] %>
-                <% item_taggings[version.id].each do |tag| %>
+              <% if @item_taggings[version.id] %>
+                <% @item_taggings[version.id].each do |tag| %>
                   <%= tag.name %>
                 <% end %>
               <% end %>
@@ -72,9 +55,9 @@
                   <% end -%>
                 <% else -%>
                   <% # reuse the same user objects so that avatars are cached
-                     contributor = (users[item_contributors[contributor_index].id] ||= item_contributors[contributor_index]) %>
-                  <%= link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if item_contributors.size > 0 %>
-                  <% contributor_index += 1 -%>
+                     contributor = (@users[@item_contributors[@contributor_index].id] ||= @item_contributors[@contributor_index]) %>
+                  <%= link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if @item_contributors.size > 0 %>
+                  <% @contributor_index += 1 -%>
                 <% end -%>
               <% rescue -%>
                 <%
