@@ -1,8 +1,6 @@
 <% @title = String.new
    @title += "All " unless @extended_field
-   @heading = @title + title_setup_first_part('Results in ', true) + last_part_of_title_if_refinement_of
-   @title = @title + title_setup_first_part('Results in ') + last_part_of_title_if_refinement_of  -%>
-
+   @title += title_setup_first_part('Results in ', true) + last_part_of_title_if_refinement_of %>
 
 <%= render(:partial => "topics/content_wrapper_start",
            :locals => { :style_classes => "full-width notabs#{" choices" if params[:browse_by] && params[:browse_by] == 'choice_hierarchy'}"}) -%>

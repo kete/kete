@@ -10,7 +10,7 @@
   <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) && params[:action] == "show") %>
     <% cache_with_privacy(current_item, {:part => 'page_title'}) do %><title><%= h(@title) %></title><% end -%>
   <% else -%>
-    <title><%= h(@title) %></title>
+    <title><%= h(strip_tags(@title)) %></title>
   <% end -%>
 
   <% unless current_item.nil? -%>
