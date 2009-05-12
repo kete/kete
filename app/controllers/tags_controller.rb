@@ -19,7 +19,7 @@ class TagsController < ApplicationController
                                              :limit => @number_per_page,
                                              :page => @current_page,
                                              :allow_private => (privacy_type == 'private'))
-    @results = WillPaginate::Collection.new(@current_page, @number_per_page, @current_basket.tag_counts_total)
+    @results = WillPaginate::Collection.new(@current_page, @number_per_page, @current_basket.tag_counts_total(:allow_private => (privacy_type == 'private')))
 
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
     @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
