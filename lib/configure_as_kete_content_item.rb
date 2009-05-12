@@ -84,6 +84,14 @@ module ConfigureAsKeteContentItem
 
       # TODO: globalize stuff, uncomment later
       # translates :title, :description
+
+      klass.send :after_save, :update_taggings_basket_id
+    end
+
+    def update_taggings_basket_id
+      self.taggings.each do |tagging|
+        tagging.update_attribute(:basket_id, self.basket_id)
+      end
     end
 
     # Implement attribute accessors for acts_as_licensed

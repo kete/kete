@@ -296,8 +296,12 @@ module ActiveRecord
 
               new_tag_names.each do |new_tag_name|
                 new_tag = Tag.find_or_create_with_like_by_name(new_tag_name)
+                # Kieran Pilkington, 2009-05-12
+                # We make taggings belong to a basket, which makes
+                # homepage tag clouds a lot faster to generate
                 Tagging.create(:tag_id => new_tag.id, :context => tag_type, 
-                               :taggable => self, :tagger => owner)
+                               :taggable => self, :tagger => owner,
+                               :basket_id => self.basket_id)
               end
             end
           end

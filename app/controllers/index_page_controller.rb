@@ -139,9 +139,8 @@ class IndexPageController < ApplicationController
           end
 
           if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0
-            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, @allow_private)
-            @tag_counts_size = @tag_counts_array.size
-            @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
+            @tag_counts_array = @current_basket.tag_counts_array({}, @allow_private)
+            @tag_counts_total = @current_basket.tag_counts_total
           end
         end
 

@@ -149,6 +149,14 @@ class Topic < ActiveRecord::Base
   }
   named_scope :public, :conditions => ['title != ?', NO_PUBLIC_VERSION_TITLE]
 
+  after_save :update_taggings_basket_id
+
+  def update_taggings_basket_id
+    self.taggings.each do |tagging|
+      tagging.update_attribute(:basket_id, self.basket_id)
+    end
+  end
+
   def clear_basket_homepage_cache
     self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self
   end

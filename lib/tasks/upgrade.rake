@@ -23,7 +23,8 @@ namespace :kete do
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt',
                     'kete:upgrade:ensure_logins_all_valid',
-                    'kete:upgrade:move_user_name_to_display_and_resolved_name']
+                    'kete:upgrade:move_user_name_to_display_and_resolved_name',
+                    'kete:upgrade:add_basket_id_to_taggings']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -282,6 +283,17 @@ namespace :kete do
           end
         end
       end
+    end
+
+    desc 'Add basket id to taggings that dont have a basket id yet'
+    task :add_basket_id_to_taggings => :environment do
+      puts "Adding Basket ID to Tagging records"
+      records = Tagging.all(:conditions => { :basket_id => nil })
+      records.each do |tagging|
+        item = tagging.taggable_type.constantize.find_by_id(tagging.taggable_id)
+        tagging.update_attribute(:basket_id, item.basket_id) if item
+      end
+      puts "Added Basket ID to #{records.size} Taggings"
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

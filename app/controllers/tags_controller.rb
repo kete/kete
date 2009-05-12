@@ -14,11 +14,9 @@ class TagsController < ApplicationController
     @number_per_page = 75
     @number_per_page = 25 if @type == "categories"
 
-    @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
-
-    @tag_counts_array = @current_basket.tag_counts_array({ :limit => false, :order => @order, :direction => @direction }, (@privacy_type == 'private'))
-    @results = WillPaginate::Collection.new(@current_page, @number_per_page, @tag_counts_array.size)
-    @tags = @tag_counts_array[(@results.offset)..(@results.offset + (@number_per_page - 1))]
+    @tags = @current_basket.tag_counts_array({ :order => @order, :direction => @direction, :limit => @number_per_page, :page => @current_page },
+                                             (privacy_type == 'private'))
+    @results = WillPaginate::Collection.new(@current_page, @number_per_page, @current_basket.tag_counts_total)
 
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
     @rss_tag_link = rss_tag(:replace_page_with_rss => true, :auto_detect => false)
@@ -32,14 +30,19 @@ class TagsController < ApplicationController
   def rss
     @number_per_page = 100
     # this doesn't work with http auth from and IRC client
-    @privacy_type = (@current_basket != @site_basket && permitted_to_view_private_items?) ? 'private' : 'public'
-    @cache_key_hash = { :rss => "#{@privacy_type}_tags_list" }
+    @cache_key_hash = { :rss => "#{privacy_type}_tags_list" }
     unless has_all_rss_fragments?(@cache_key_hash)
-      @tags = @current_basket.tag_counts_array({ :limit => @number_per_page, :order => 'latest', :direction => 'desc' }, (@privacy_type == 'private'))
+      @tags = @current_basket.tag_counts_array({ :limit => @number_per_page, :order => 'latest', :direction => 'desc' }, (privacy_type == 'private'))
     end
     respond_to do |format|
       format.xml
     end
+  end
+
+  private
+
+  def privacy_type
+    @privacy_type ||= (@current_basket != @site_basket && permitted_to_view_private_items?)
   end
 
 end

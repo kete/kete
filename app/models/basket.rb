@@ -132,6 +132,9 @@ class Basket < ActiveRecord::Base
 
   # stuff related to taggings in a basket
 
+  has_many :taggings
+  has_many :tags, :through => :taggings
+
   # it's easy to get a basket's topics tag_counts
   # but we want all zoom_class's totals added together
   # special case is site basket
@@ -141,9 +144,7 @@ class Basket < ActiveRecord::Base
     tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
     tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
 
-    unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
-      return Array.new
-    end
+    return Array.new unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
 
     case tag_order
     when 'alphabetical'
@@ -151,63 +152,37 @@ class Basket < ActiveRecord::Base
     when 'latest'
       find_tag_order = "taggings.created_at #{tag_direction}"
     when 'number'
-      find_tag_order = "count #{tag_direction}"
+      find_tag_order = "taggings_count #{tag_direction}"
     else
       find_tag_order = 'Rand()'
     end
 
-    @tag_counts_hash = Hash.new
+    options = {
+      :select => 'tags.id, tags.name, count(taggings.id) AS taggings_count',
+      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
+      :group => 'taggings.tag_id',
+      :order => find_tag_order,
+      :limit => tag_limit,
+      :offset => (((options[:page] || 1) - 1) * tag_limit),
+      :conditions => "taggings.context = 'public_tags'"
+    }
+    options.merge(:conditions => "taggings.context IN ('public_tags', 'private_tags')") if private_tags
+    options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
 
-    ZOOM_CLASSES.each do |zoom_class|
-      zoom_set = (self.id == 1) ? zoom_class.constantize : self.send(zoom_class.tableize)
-      zoom_class_tag_hash = zoom_set.tag_counts({:limit => tag_limit, :order => find_tag_order}, private_tags)
-
-      # if exists in @tag_counts, update count with added number
-      [:public, :private].each do |privacy|
-        zoom_class_tag_hash[privacy.to_sym].each do |tag|
-          tag_key = tag.id.to_s
-          if !@tag_counts_hash.include?(tag_key)
-            @tag_counts_hash[tag_key] = { :id => tag.id,
-                                          :name => tag.name,
-                                          :public_taggings_count => (privacy == :public) ? tag.count : 0,
-                                          :private_taggings_count => (privacy == :private) ? tag.count : 0,
-                                          :total_taggings_count => tag.count }
-          else
-            @tag_counts_hash[tag_key][:public_taggings_count] += tag.count if privacy == :public
-            @tag_counts_hash[tag_key][:private_taggings_count] += tag.count if privacy == :private
-            @tag_counts_hash[tag_key][:total_taggings_count] += tag.count
-          end
-        end
-      end
-    end
-
-    # take the hash and create an ordered array by amount of taggings
-    # with nested hashes for attributes
     @tag_counts_array = Array.new
-    @tag_counts_hash.keys.each do |tag_key|
-      @tag_counts_array << @tag_counts_hash[tag_key]
+    Tag.all(options).each do |tag|
+      @tag_counts_array << {
+        :id => tag.id,
+        :name => tag.name,
+        :total_taggings_count => tag.taggings_count
+      }
     end
-
-    # We need to sort through the results here as well as in the query
-    # because we joined several ZOOM_CLASSES so they'll be out of order
-    case tag_order
-    when 'alphabetical'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name] }
-      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
-    when 'latest'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:id] }
-      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
-    when 'number'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:total_taggings_count] }
-      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
-    else
-      @tag_counts_array = @tag_counts_array.sort_by { rand }
-    end
-
-    # the query limits per ZOOM_CLASS, not overall combined results, so we do that here
-    @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)] unless !tag_limit # when tag_limit is false, we return all
 
     return @tag_counts_array
+  end
+
+  def tag_counts_total
+    self.taggings.count
   end
 
   # attribute options methods

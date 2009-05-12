@@ -184,8 +184,8 @@
         @tag_counts_array.size > 0 -%>
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "tags-box", :class_suffix => nil }) -%>
-      <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
-                       "( showing #{@tag_counts_array.size} of #{@tag_counts_size} | " +
+      <% tag_counts = @tag_counts_total > @tag_counts_array.size ?
+                       "( showing #{@tag_counts_array.size} of #{@tag_counts_total} | " +
                         link_to("all",
                                 :controller => 'tags',
                                 :action => 'list') + " )" : '' -%>
