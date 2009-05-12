@@ -66,10 +66,11 @@ class DocumentsController < ApplicationController
   def convert
     @document = Document.find(params[:id])
     public_or_private_version_of(@document)
+    version_after_update = @document.max_version + 1
     error_msg = 'There were problems converting the text of the uploaded document to the document\'s description.  Please edit the description manually.'
     begin
       if @document.do_conversion
-        after_successful_zoom_item_update(@document)
+        after_successful_zoom_item_update(@document, version_after_update)
         flash[:notice] = 'Document description was successfully updated with text of uploaded document.'
       else
         flash[:error] = error_msg

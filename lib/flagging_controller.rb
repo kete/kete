@@ -51,7 +51,7 @@ module FlaggingController
       expire_rss_caches
 
       # add contributor and update zoom if needed
-      after_successful_zoom_item_update(item)
+      after_successful_zoom_item_update(item, @version_after_update)
     end
 
     # permission check in controller
@@ -236,6 +236,7 @@ module FlaggingController
       @item = item_from_controller_and_id
       @flag = !params[:flag].blank? ? params[:flag] : nil
       @version = !params[:version].blank? ? params[:version] : @item.version
+      @version_after_update = @item.max_version + 1
       if !params[:message].blank? and !params[:message][0].blank?
         @message =  params[:message][0]
       else

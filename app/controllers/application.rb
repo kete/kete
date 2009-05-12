@@ -985,7 +985,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_successful_zoom_item_update(item, version_after_update)
-    version_created = item.versions.exists?(:version => version_after_update)
+    version_created = version_after_update ? item.versions.exists?(:version => version_after_update) : false
 
     # if we need to add a contributor (sometimes, a version isn't
     # created if only timestamps were updated. In that case. we
