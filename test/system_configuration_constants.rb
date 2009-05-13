@@ -1,7 +1,7 @@
 set_constant(:IS_CONFIGURED, true)
 set_constant(:PRETTY_SITE_NAME, "Kete")
 set_constant(:SITE_NAME, "Kete")
-set_constant(:SITE_URL, "http://localhost/")
+set_constant(:SITE_URL, "http://www.example.com/") # webrat relies on www.example.com
 set_constant(:NOTIFIER_EMAIL, "user@changeme.com")
 set_constant(:CONTACT_EMAIL, "user@changeme.com")
 set_constant(:RECORDS_PER_PAGE_CHOICES, [5, 10, 20, 50])

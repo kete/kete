@@ -40,7 +40,6 @@ else
   Webrat.configure do |config|
     config.mode = :rails
     config.open_error_files = false
-    config.application_address = SITE_URL.split('://')[1].chomp('/')
   end
 end
 
