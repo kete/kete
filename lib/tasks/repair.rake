@@ -206,15 +206,15 @@ namespace :kete do
       puts "Getting all private StillImages and their public ImageFiles\n"
       StillImage.all.each do |still_image|
         any_incorrect_thumbnails = false
-        if still_image.private?
-          still_image.resized_image_files.find_all_by_file_private(false).each do |image_file|
-            any_incorrect_thumbnails = true
-            move_image_from_to(image_file, true)
-          end
-        else
+        if still_image.has_public_version?
           still_image.resized_image_files.find_all_by_file_private(true).each do |image_file|
             any_incorrect_thumbnails = true
             move_image_from_to(image_file, false)
+          end
+        else
+          still_image.resized_image_files.find_all_by_file_private(false).each do |image_file|
+            any_incorrect_thumbnails = true
+            move_image_from_to(image_file, true)
           end
         end
         puts "Moving thumnails for still image #{still_image.id} to the correct directory." if any_incorrect_thumbnails

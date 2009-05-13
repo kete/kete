@@ -51,7 +51,7 @@ module FlaggingController
       expire_rss_caches
 
       # add contributor and update zoom if needed
-      after_successful_zoom_item_update(item)
+      after_successful_zoom_item_update(item, @version_after_update)
     end
 
     # permission check in controller
@@ -192,6 +192,22 @@ module FlaggingController
         @current_private_version = @item.version
       end if @item.respond_to?(:private_version)
 
+      # lets do some queries here and store values in an array/hash for access later
+      # rather than getting them each iteration (which can result in 100's of queries)
+
+      select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email'
+      @item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
+      @contributor_index = 0
+
+      @item_taggings = Hash.new
+      taggings = Tagging.all(:conditions => ["taggable_type = ? AND taggable_id IN (?) AND context = 'flags'", "#{@item.class.name}::Version", @versions])
+      taggings.each do |tagging|
+        @item_taggings[tagging[:taggable_id]] ||= Array.new
+        @item_taggings[tagging[:taggable_id]] << tagging.tag
+      end
+
+      @users = Hash.new
+
       # one template (with logic) for all controllers
       render :template => 'topics/history'
     end
@@ -240,6 +256,7 @@ module FlaggingController
       @item = item_from_controller_and_id
       @flag = !params[:flag].blank? ? params[:flag] : nil
       @version = !params[:version].blank? ? params[:version] : @item.version
+      @version_after_update = @item.max_version + 1
       if !params[:message].blank? and !params[:message][0].blank?
         @message =  params[:message][0]
       else

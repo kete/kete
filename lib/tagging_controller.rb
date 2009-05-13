@@ -39,6 +39,7 @@ module TaggingController
 
       @item = item_from_controller_and_id
       @item = public_or_private_version_of(@item)
+      version_after_update = @item.max_version + 1
 
       if ZOOM_CLASSES.include?(zoom_class) && !params[item_key].blank? && !params[item_key][:tag_list].blank?
         params[item_key][:version_comment] = I18n.t('tagging_controller_lib.add_tags.version_comment',
@@ -49,7 +50,7 @@ module TaggingController
         @successful = @item.update_attributes(params[item_key])
         if @successful
           @item = public_or_private_version_of(@item) # make sure we are back to private item if needed
-          after_successful_zoom_item_update(@item)
+          after_successful_zoom_item_update(@item, version_after_update)
           respond_to do |format|
             flash[:notice] = I18n.t('tagging_controller_lib.add_tags.tags_added', :item_title => @item.title)
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }

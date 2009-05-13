@@ -54,11 +54,7 @@ class WebLinksController < ApplicationController
 
     if @successful
 
-      after_successful_zoom_item_update(@web_link)
-
-      @web_link.do_notifications_if_pending(version_after_update, current_user) if 
-        @web_link.versions.exists?(:version => version_after_update)
-
+      after_successful_zoom_item_update(@web_link, version_after_update)
       flash[:notice] = t('web_links_controller.update.updated')
 
       redirect_to_show_for(@web_link, :private => (params[:web_link][:private] == "true"))

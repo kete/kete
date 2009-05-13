@@ -72,7 +72,7 @@ class ImageFile < ActiveRecord::Base
 
         # Make sure thumbnails are also saved in the context of
         # the still image item privacy
-        :file_private             => self.item_private # <- attr_accessor, not a model attribute
+        :file_private             => (self.item_private || false) # <- attr_accessor, not a model attribute
 
       }
       callback_with_args :before_thumbnail_saved, thumb

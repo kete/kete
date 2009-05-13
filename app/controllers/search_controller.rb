@@ -495,7 +495,8 @@ class SearchController < ApplicationController
       redirect_to 'setup_rebuild'
     else
       @worker_type = 'zoom_index_rebuild_worker'
-      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      @worker_key = params[:worker_key]
+      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
       begin
         if !status.blank?
           current_zoom_class = status[:current_zoom_class] || 'Topic'
@@ -586,6 +587,7 @@ class SearchController < ApplicationController
         end
       when "change"
         @new_homepage_topic = Topic.find(params[:homepage_topic_id])
+        version_after_update = @new_homepage_topic.max_version + 1
         @homepage_different = (@current_homepage != @new_homepage_topic)
         # if the homepage isn't different, don't do anything or it mucks up versions, just return true so it passes
         if @homepage_different
@@ -603,7 +605,7 @@ class SearchController < ApplicationController
           end
           # this adds a contributor to the new homepage topic version, and clears the relevant show caches.
           # clearing of the basket homepage index page caches are taken care of in a before filter in application.rb
-          after_successful_zoom_item_update(@new_homepage_topic)
+          after_successful_zoom_item_update(@new_homepage_topic, version_after_update)
           @successful = true
         else
           @successful = true

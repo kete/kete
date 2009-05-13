@@ -118,35 +118,26 @@ class TopicsController < ApplicationController
   end
 
   def update
-    begin
-      @topic = Topic.find(params[:id])
+    @topic = Topic.find(params[:id])
 
-      # logic to prevent plain old members from editing
-      # site basket homepage
-      if @topic != @site_basket.index_topic or permit?("site_admin of :site_basket or admin of :site_basket")
+    # logic to prevent plain old members from editing site basket homepage
+    if @topic != @site_basket.index_topic || permit?("site_admin of :site_basket or admin of :site_basket")
+      version_after_update = @topic.max_version + 1
 
-        version_after_update = @topic.max_version + 1
-
-        @successful = ensure_no_new_insecure_elements_in('topic')
-        @topic.attributes = params[:topic]
-        @successful = @topic.save if @successful
-      else
-        # they don't have permission
-        # this will redirect them to edit
-        # which will bump them back to show for the topic
-        # with flash message
-        @successful = false
-      end
-    rescue
-      flash[:error], @successful  = $!.to_s, false
+      @successful = ensure_no_new_insecure_elements_in('topic')
+      @topic.attributes = params[:topic]
+      @successful = @topic.save if @successful
+    else
+      # they don't have permission
+      # this will redirect them to edit
+      # which will bump them back to show for the topic
+      # with flash message
+      @successful = false
     end
 
     if @successful
-      after_successful_zoom_item_update(@topic)
 
-      @topic.do_notifications_if_pending(version_after_update, current_user) if
-        @topic.versions.exists?(:version => version_after_update)
-
+      after_successful_zoom_item_update(@topic, version_after_update)
       flash[:notice] = t('topics_controller.update.updated')
 
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")

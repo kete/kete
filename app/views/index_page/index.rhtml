@@ -171,13 +171,14 @@
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 
-<% cache({:part => "tags_#{@privacy_type}"}) do -%>
+<%# dont cache tags for now because they are likely to change often %>
+<%# cache({:part => "tags_#{@privacy_type}"}) do -%>
   <% if @current_basket.index_page_number_of_tags &&
         @current_basket.index_page_number_of_tags > 0 &&
         @tag_counts_array.size > 0 -%>
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "tags-box", :class_suffix => nil }) -%>
-      <% tag_counts = @tag_counts_size > @tag_counts_array.size ?
+      <% tag_counts = @tag_counts_total > @tag_counts_array.size ?
                        "( #{t('index_page.index.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_size)} | " +
                         link_to(t('index_page.index.all_tags'),
                                 :controller => 'tags',
@@ -197,7 +198,7 @@
       <% end -%>
     <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>
-<% end -%>
+<%# end -%>
 
 <% cache_with_privacy(@topic, {:part => 'license'}) do -%>
   <% unless @topic.nil? || @topic.license_metadata.nil? -%>

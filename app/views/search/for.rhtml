@@ -1,11 +1,9 @@
-<% @title = String.new
+<% @title = title_setup_first_part(t('search.for.results_in'), true)
    if !@search_terms.blank?
      @title += t('search.for.current_search', :search_terms => h(@search_terms.to_s))
      refinements = last_part_of_title_if_refinement_of
      @title += t('search.for.refinements', :refinements => refinements) if !refinements.blank?
-   end
-   @heading = title_setup_first_part(t('search.for.results_in'), true) + @title
-   @title = title_setup_first_part(t('search.for.results_in')) + @title %>
+   end %>
 
 <% # switch for contributed_by and related_to appending to headline, extract to helper 
 

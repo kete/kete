@@ -56,11 +56,7 @@ class AudioController < ApplicationController
 
     if @successful
 
-      after_successful_zoom_item_update(@audio_recording)
-
-      @audio_recording.do_notifications_if_pending(version_after_update, current_user) if
-        @audio_recording.versions.exists?(:version => version_after_update)
-
+      after_successful_zoom_item_update(@audio_recording, version_after_update)
       flash[:notice] = t('audio_controller.update.updated')
 
       redirect_to_show_for(@audio_recording, :private => (params[:audio_recording][:private] == "true"))

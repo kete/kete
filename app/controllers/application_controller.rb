@@ -119,6 +119,8 @@ class ApplicationController < ActionController::Base
   before_filter :expire_show_caches_on_destroy, :only => [ :destroy ]
   # everything else we do after the action is completed
   after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
+  # related items only track title and url, therefore only update will change those attributes
+  after_filter :update_zoom_record_for_related_items, :only => [ :update ]
 
   # setup return_to for the session
   # TODO: this needs to be updated to store location for newer actions
@@ -455,8 +457,7 @@ class ApplicationController < ActionController::Base
   # expire the cache fragments for the show action
   # excluding the related cache, this we handle separately
   def expire_show_caches
-    caches_controllers = ['audio', 'baskets', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
-    if caches_controllers.include?(params[:controller])
+    if CACHES_CONTROLLERS.include?(params[:controller])
       # James - 2008-07-01
       # Ensure caches are expired in the context of privacy.
       item = item_from_controller_and_id(false)
@@ -1031,18 +1032,24 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_successful_zoom_item_update(item)
+  def after_successful_zoom_item_update(item, version_after_update)
+    version_created = version_after_update ? item.versions.exists?(:version => version_after_update) : false
 
-    # James - 2008-12-21
-    # Ensure the contribution is added against the latest version, not the current verrsion as it could
-    # have been reverted automatically if full moderation is on for the basket.
-    version = item.versions.find(:first, :order => 'version DESC').version
+    # if we need to add a contributor (sometimes, a version isn't
+    # created if only timestamps were updated. In that case. we
+    # don't want to add an incorrect contributor to the previous
+    # version of the updated item)
+    if version_created
+      # James - 2008-12-21
+      # Ensure the contribution is added against the latest version, not the current verrsion as it could
+      # have been reverted automatically if full moderation is on for the basket.
+      version = item.versions.find(:first, :order => 'version DESC').version
 
-    # add this to the user's empire of contributions
-    # TODO: allow current_user whom is at least moderator to pick another user
-    # as contributor
-    # uses virtual attr as hack to pass version to << method
-    item.add_as_contributor(current_user, version)
+      # add this to the user's empire of contributions
+      # TODO: allow current_user whom is at least moderator to pick another user
+      # as contributor. uses virtual attr as hack to pass version to << method
+      item.add_as_contributor(current_user, version)
+    end
 
     # if the basket has been changed, make sure comments are moved, too
     update_comments_basket_for(item, @current_basket)
@@ -1052,6 +1059,9 @@ class ApplicationController < ActionController::Base
 
     # finally, sync up our search indexes
     prepare_and_save_to_zoom(item) if !item.already_at_blank_version?
+
+    # send notifications if needed
+    item.do_notifications_if_pending(version_after_update, current_user) if version_created
   end
 
   def history_url(item)

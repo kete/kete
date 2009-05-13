@@ -170,7 +170,6 @@ class ConfigureController < ApplicationController
   def prime_zebra
     # consolidating the code to do this work by using existing worker
     params[:clear_zebra] = true
-    @worker_key = 'zoom_index_rebuild_worker_' + Time.now.to_s.gsub(/\W/, '_')
     rebuild_zoom_index
 
     status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
@@ -211,6 +210,7 @@ class ConfigureController < ApplicationController
     else
       begin
         @worker_type = "site_linking_worker".to_sym
+        @worker_key = worker_key_for(@worker_type)
 
         # if the site registration never completed, this worker may still be operational
         # (that should only happen when bgrb returns nothing, caused by errors in the worker)
@@ -218,8 +218,8 @@ class ConfigureController < ApplicationController
         delete_existing_workers_for(@worker_type)
 
         unless backgroundrb_is_running?(@worker_type)
-          MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
-          MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :params => params } )
+          MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
+          MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :params => params } )
           render :update do |page|
             page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_site_linking_progress' }, :frequency => 3))
           end
@@ -239,14 +239,15 @@ class ConfigureController < ApplicationController
     set_kete_net_urls
     begin
       @worker_type = "site_linking_worker".to_sym
-      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      @worker_key = worker_key_for(@worker_type)
+      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
       logger.debug(status.inspect)
       if !status.blank?
         if status[:linking_complete] == true
           # the following lines means the periodic calls to this method wont cause errors
           # when trying to process the registration again
-          MiddleMan.worker(@worker_type, @worker_type.to_s).reset_worker
-          MiddleMan.worker(@worker_type, @worker_type.to_s).delete
+          MiddleMan.worker(@worker_type, @worker_key).reset_worker
+          MiddleMan.worker(@worker_type, @worker_key).delete
 
           if status[:linking_success] == true
             top_message = t('configure_controller.get_site_linking_progress.site_registered',

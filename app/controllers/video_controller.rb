@@ -55,11 +55,7 @@ class VideoController < ApplicationController
 
     if @successful
 
-      after_successful_zoom_item_update(@video)
-
-      @video.do_notifications_if_pending(version_after_update, current_user) if
-        @video.versions.exists?(:version => version_after_update)
-
+      after_successful_zoom_item_update(@video, version_after_update)
       flash[:notice] = t('video_controller.update.updated')
 
       redirect_to_show_for(@video, :private => (params[:video][:private] == "true"))

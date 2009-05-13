@@ -1,10 +1,8 @@
-THIS WILL BE MAJORLY REWRITTEN SOON!!! TAKE WITH A GRAIN OF SALT
-
 zebradb/README
 
 This README describes the purpose and use of the zebradb directory.  It works in conjunction with the acts_as_zoom plugin in the Kete application.
 
-Walter McGinnis (walter@katipo.co.nz), 2006-12-19
+Walter McGinnis (walter-at-katipo dot co dot nz), 2006-12-19, updated 2009-05-12
 
 $ID: $
 
@@ -13,56 +11,34 @@ Purpose:
 
 This directory holds your Kete application's Zebra (http://indexdata.dk/zebra/) related files.  Zebra is used by Kete to carry out full text searches, as well as be another interface to it's data via Z39.50 and ZOOM by other services.
 
-Before you startup Kete, you will need to have Zebra installed on you machine, your Zebra databases (public and private dbs) initialized, updated your zebra password file, and started up your zebra listening instances.  The good news that we have done all the hard configuration.
+If you have run through the normal Kete installation and configuration, see http://kete.net.nz/documentation/topics/show/114-installation, you will have Zebra installed on you machine, your Zebra databases (public and private dbs) initialized, your zebra password file updated, and the zebra listening instances started up.  We have done all the hard configuration.  If you want to peak behind the curtains, configuration files can be found under conf/ directory.  If something goes wrong, you'll probably want to view ../log/zebra.log and ask for help at http://kete.net.nz/documentation/topics/show/140-troubleshooting via discussion.
 
-You may also need to poke holes in your firewall, depending on your setup.
-
-----
-Zebra Installation:
-
-See http://blog.katipo.co.nz/?p=26 for details on how (and what) to install Zebra for Kete on Debian Etch (testing at the time of this writing).  Other howtos likely to follow, but not available now.
+If you decide to place your Zebra instances on a separate host from your Kete application, you may also need to poke holes in your firewall, depending on your setup.
 
 ----
-Configuration:
+Zebra Management:
 
-In this directory, use the htpasswd command to update the keteaccess file.
+If you need to stop or start your Zebra instances, these actions are wrapped up in handy rake tasks specific to your Kete (assuming you have gone through standard Kete installation and configuration) for you:
 
-If you have installed on Debian using the above mentioned howto, that is all there is to it.  If not, you may need to adjust settings for paths in your conf/zebra-private.cfg and conf/zebra-public.cfg files.  See comments there.
+$ rake zebra:stop
+$ rake zebra:start
 
-----
-Initialize Your Zebra Databases:
+There is a web based way to do this better (see below), buf if you want to wipe your either of your zebra instances clean by hand here's how:
 
-From this directory (it is important to actualy run commands while cd'ing into the appropriate directory):
-$ cd private
-$ zebraidx -c ../conf/zebra-private.cfg -d private init
-$ zebraidx -c ../conf/zebra-private.cfg -d private commit
-$ cd ../public
-$ zebraidx -c ../conf/zebra-public.cfg -d public init
-$ zebraidx -c ../conf/zebra-public.cfg -d public commit
+$ rake zebra:init # will do public db by default
+$ rake zebra:init ZEBRA_DB=private # specify private if you want to clear that one
 
+Kete needs to have a bootstrap record added to each Zebra db instance to work.  Do this:
 
-----
-Startup Zebra:
+$ rake zebra:load_initial_records
 
-In this directory (it is important to actualy run commands while in the directory):
+However, if you mucked up your Zebra db instances what you probably want to do is wipe them clean, restart them, load initial records, and then load Kete's sites material back in.  The BEST WAY to do this is from your Kete site.  Log in as the default administrator account and visit this link (adjusting for your site's actual address):
 
-For debugging, run in foreground
+http://your_site/site/search/setup_rebuild
 
-$ zebrasrv -f conf/kete-zebra-servers.xml
-
-To run in background as daemon:
-
-$ zebrasrv -f conf/kete-zebra-servers.xml -l ../log/zebra.log -D
-
-Note: you will probably want to setup log rotation, Kete doesn't do it automatically!
-
-You may want to change the ports your Zebra databases are listening on, if so you'll need to edit your Kete setup below to reflect that.
+Fill out that form accordingly and submit it.  If your have your backgroundrb instance going (see Installation Guide), the Kete site will do the rest for you.
 
 ----
-For Kete:
+Misc. Notes:
 
-You'll want to edit db/bootstrap/zoom_dbs.yml entries for your passwords to match the keteaccess file BEFORE running "rake db:bootstrap".
-
-If you want to add other optional Z39.50 servers to query, you can do so under /zoom_dbs/ in the web interface.
-
-
+If you want to see more of the gory details of what Kete is doing to manage your Zebra instances, check out the code in ../lib/tasks/zebra.rake.  It mostly calls standard command line options for zebrasrv.

@@ -56,6 +56,13 @@ module ItemPrivacy
         nil
       end
 
+      # Checks if at some point someone created a public version of this item
+      # Uses method in flagging.rb lib to determine that (if the title is the default
+      # "No public version available", the only private versions exist)
+      def has_public_version?
+        !self.at_placeholder_public_version?
+      end
+
       def has_private_version?
         respond_to?(:private?) && respond_to?(:private_version_serialized) && !private_version_serialized.blank?
       end

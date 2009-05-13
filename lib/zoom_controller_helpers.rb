@@ -10,6 +10,7 @@ module ZoomControllerHelpers
 
     # this keeps the RoR item around, just destroys zoom record
     # doesn't delete zoom records for any relations
+
     # mainly for cleaning out old zoom record
     # before we generate a new one
     def zoom_destroy_for(item)
@@ -39,16 +40,41 @@ module ZoomControllerHelpers
       begin
         item = Module.class_eval(zoom_class).find(params[:id])
 
+        related_items = item.related_items
+
         @successful = zoom_item_destroy(item)
       rescue
         flash[:error], @successful  = $!.to_s, false
       end
 
       if @successful
+        # if destroy went ok, we want to trigger zoom rebuild for related items
+        related_items.each do |related_item|
+          prepare_and_save_to_zoom(related_item)
+        end
+
         flash[:notice] = I18n.t('zoom_controller_helpers_lib.zoom_destroy_and_redirect.destroyed',
                                 :pretty_zoom_class => pretty_zoom_class)
       end
       redirect_to :action => 'list'
+    end
+
+
+    # called by either before filter on destroy
+    # or after filter on update
+    def update_zoom_record_for_related_items
+      if CACHES_CONTROLLERS.include?(params[:controller]) && params[:controller] != 'baskets'
+        item = item_from_controller_and_id(false)
+
+        # Walter McGinnis, 2009-05-11
+        # this doesn't work because of multiple render calls
+        # postponing until 1-3...
+        # at that time, it should only be called
+        # if item moved to a new basket
+        # item.related_items.each do |related_item|
+        #   prepare_and_save_to_zoom(related_item)
+        # end
+      end
     end
 
     def zoom_class_controller(zoom_class)

@@ -18,7 +18,8 @@
 
 <div id="done"><%=t 'search.rebuild_zoom_index.in_progress' %></div>
 
-<%= periodically_call_remote :url => { :action => 'check_rebuild_status' },
+<%= periodically_call_remote :url => { :action => 'check_rebuild_status',
+                                       :worker_key => @worker_key },
                              :frequency => 30 %>
 
 <div id="exit"></div>

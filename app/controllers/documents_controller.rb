@@ -55,11 +55,7 @@ class DocumentsController < ApplicationController
 
     if @successful
 
-      after_successful_zoom_item_update(@document)
-
-      @document.do_notifications_if_pending(version_after_update, current_user) if
-        @document.versions.exists?(:version => version_after_update)
-
+      after_successful_zoom_item_update(@document, version_after_update)
       flash[:notice] = t('documents_controller.update.updated')
 
       redirect_to_show_for(@document, :private => (params[:document][:private] == "true"))
@@ -72,10 +68,11 @@ class DocumentsController < ApplicationController
   def convert
     @document = Document.find(params[:id])
     public_or_private_version_of(@document)
+    version_after_update = @document.max_version + 1
     error_msg = t('documents_controller.convert.not_converted')
     begin
       if @document.do_conversion
-        after_successful_zoom_item_update(@document)
+        after_successful_zoom_item_update(@document, version_after_update)
         flash[:notice] = t('documents_controller.convert.converted')
       else
         flash[:error] = error_msg

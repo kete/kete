@@ -139,13 +139,16 @@ class IndexPageController < ApplicationController
             # rather than the public topics created_at
             @recent_topics_items.sort! { |t1,t2| t2.created_at<=>t1.created_at }
           end
-
-          if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0
-            @tag_counts_array = @current_basket.tag_counts_array({:limit => false}, @allow_private)
-            @tag_counts_size = @tag_counts_array.size
-            @tag_counts_array = @tag_counts_array[0..(@current_basket.index_page_number_of_tags - 1)]
-          end
         end
+
+        # don't bother caching tags list,
+        # because it changes constantly, and
+        # doesnt rely on the homepage topic
+        if @current_basket.index_page_number_of_tags && @current_basket.index_page_number_of_tags > 0
+          @tag_counts_array = @current_basket.tag_counts_array(:allow_private => @allow_private)
+          @tag_counts_total = @current_basket.tag_counts_total(:allow_private => @allow_private)
+        end
+
       end
     end
   end

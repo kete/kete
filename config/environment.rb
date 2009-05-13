@@ -11,6 +11,7 @@ ZOOM_CLASSES = ITEM_CLASSES + ['Comment']
 # items that may have attached file(s)
 ATTACHABLE_CLASSES = ITEM_CLASSES - %w(WebLink Topic)
 ACTIVE_SCAFFOLD_CONTROLLERS = ['extended_fields', 'zoom_dbs', 'system_settings', 'oai_pmh_repository_sets', 'licenses', 'choices', 'search_sources', 'profiles']
+CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
 
 # Walter McGinnis, 2007-01-07
 # You can override default authorization system constants here.

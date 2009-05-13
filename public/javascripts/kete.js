@@ -203,6 +203,18 @@ function makeElementLinkable(id, url) {
   });
 }
 
+// makes the assumption that the first link points to the item
+// which at the time of writing this, is correct (infact, all
+// links in the div point to the item)
+function makeSearchResultsDivClickable() {
+  $$('.generic-result-wrapper').each(function(div) {
+    makeElementLinkable(div.id, div.down('a').href);
+  });
+  $$('.image-result-wrapper').each(function(div) {
+    makeElementLinkable(div.id, div.down('a').href);
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
@@ -221,4 +233,7 @@ document.observe('dom:loaded', function() {
   }
 
   if ($$('#related_items.inset').size() > 0) { setupRelatedCollapsableSections(); }
+
+  // anywhere on the site
+  makeSearchResultsDivClickable();
 });

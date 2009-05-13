@@ -22,6 +22,11 @@ module ConfigureAsKeteContentItem
         klass.send :include, KeteCommentable
       end
 
+      # though comments don't use the related content relations directly
+      # these convenience methods actually work for comments, too
+      # and are conceptually the same to end user
+      klass.send :include, RelatedItems
+
       # sanitize our descriptions and extended_content for security
       # see validate_as_sanitized_html below, too
       # but allow site admin to override
@@ -79,6 +84,14 @@ module ConfigureAsKeteContentItem
 
       # TODO: globalize stuff, uncomment later
       # translates :title, :description
+
+      klass.send :after_save, :update_taggings_basket_id
+    end
+
+    def update_taggings_basket_id
+      self.taggings.each do |tagging|
+        tagging.update_attribute(:basket_id, self.basket_id)
+      end
     end
 
     # Implement attribute accessors for acts_as_licensed
@@ -97,10 +110,9 @@ module ConfigureAsKeteContentItem
     # turn pretty urls on or off here
     include FriendlyUrls
     alias :to_param :format_for_friendly_urls
-    
+
     def to_i
       id
     end
-
   end
 end
