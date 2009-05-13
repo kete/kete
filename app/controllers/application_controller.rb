@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   # Sets the host for all url_for calls
   def default_url_options(options = nil)
-    { :host => SITE_NAME } if defined?(SITE_NAME)
+    { :host => SITE_URL.split('://')[1].chomp('/') } if defined?(SITE_URL)
   end
 
   before_filter :set_locale

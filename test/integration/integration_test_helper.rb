@@ -13,21 +13,6 @@ require File.expand_path(File.dirname(__FILE__) + "/../common_test_methods")
 # Load the libraries from installed gems required to run the tests
 load_testing_libs
 
-# Turn off error 500 page opening (it's output to the console aleady)
-# Turn the mode to rails as well (or we get errors)
-if defined?(SELENIUM_MODE) && SELENIUM_MODE
-  Webrat.configure do |config|
-    config.mode = :selenium
-    config.application_environment = :test
-    config.open_error_files = false
-  end
-else
-  Webrat.configure do |config|
-    config.mode = :rails
-    config.open_error_files = false
-  end
-end
-
 # Request permission to alter the Zebra database (if this has already been run,
 # the environment check will just skip this step)
 verify_zebra_changes_allowed
@@ -41,6 +26,22 @@ require File.expand_path(File.dirname(__FILE__) + "/../factories")
 # Overwrite all constants there may be with defaults so we can continue testing
 configure_environment do
   require File.expand_path(File.dirname(__FILE__) + "/../system_configuration_constants")
+end
+
+# Turn off error 500 page opening (it's output to the console aleady)
+# Turn the mode to rails as well (or we get errors)
+if defined?(SELENIUM_MODE) && SELENIUM_MODE
+  Webrat.configure do |config|
+    config.mode = :selenium
+    config.application_environment = :test
+    config.open_error_files = false
+  end
+else
+  Webrat.configure do |config|
+    config.mode = :rails
+    config.open_error_files = false
+    config.application_address = SITE_URL.split('://')[1].chomp('/')
+  end
 end
 
 # Overload the IntegrationTest class to ensure tear down occurs OK.
