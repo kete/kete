@@ -355,6 +355,39 @@ class CachingTest < ActionController::IntegrationTest
 
       end
 
+      context "and a topic has both a public and private version, with revisions, it" do
+
+        setup do
+          @topic = new_topic({ :title => 'Public Title',
+                               :description => 'Public Description',
+                               :private_false => true }, @@cache_basket)
+          @topic = update_item(@topic, { :title => 'Public SPAM',
+                                         :description => 'Public SPAM',
+                                         :private_false => true })
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_show_link => false)
+          @topic = update_item(@topic, { :title => 'Private Title',
+                                         :description => 'Private Description',
+                                         :private_true => true })
+          @topic.private_version!
+          @topic = update_item(@topic, { :title => 'Private SPAM',
+                                         :description => 'Private SPAM',
+                                         :private_true => true })
+          check_viewing_private_version_of(@topic, :on_topic_already => true, :check_show_link => false)
+          @topic.public_version!
+        end
+
+        should "clear the cache for the correct privacy when a previous revision is made live" do
+          # public cache
+          @topic = moderate_restore(@topic, :version => 1)
+          check_viewing_public_version_of(@topic, :on_topic_already => true, :check_show_link => false)
+
+          # private cache
+          @topic = moderate_restore(@topic, :version => 3)
+          check_viewing_private_version_of(@topic, :on_topic_already => true, :check_show_link => false)
+        end
+
+      end
+
     end
 
   end
@@ -384,16 +417,19 @@ class CachingTest < ActionController::IntegrationTest
   def check_viewing_public_version_of(item, options = {})
     unless options[:on_topic_already]
       visit "/#{item.basket.urlified_name}"
-      body_should_not_contain "Private version"
+      body_should_not_contain "Private version" unless item.has_private_version?
       options[:on_topic_already] = true
     end
     check_cache_current_for(item, options)
-    item.private_version! if item.has_private_version?
-    check_cache_current_for(item, options.merge({ :check_should_not => true }))
-    item.public_version! if item.is_private? # make sure we revert it back to public version for the next test
+    if item.has_private_version?
+      item.private_version!
+      check_cache_current_for(item, options.merge({ :check_should_not => true }))
+      item.public_version! if item.is_private? # make sure we revert it back to public version for the next test
+    end
   end
 
   def check_viewing_private_version_of(item, options = {})
+    raise "ERROR: #{item.class.name} does not have a private version." unless item.has_private_version?
     unless options[:on_topic_already]
       visit "/#{item.basket.urlified_name}"
       body_should_contain "Private version"

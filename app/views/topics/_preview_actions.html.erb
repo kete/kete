@@ -9,7 +9,8 @@
          {:action => :restore,
       :id => item,
       :version => item.version,
-      :authenticity_token => form_authenticity_token},
+      :authenticity_token => form_authenticity_token,
+      :private => item.private?},
          :method => :post,
          :confirm => t('topics.preview_actions.make_live_confirm'), :tabindex => '1' %></li>
     <li><%= link_to t('topics.preview_actions.reject'),

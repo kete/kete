@@ -944,6 +944,7 @@ class ApplicationController < ActionController::Base
 
     options = { :action => correct_action, :id => item }
     options[:version] = version if correct_action == 'preview'
+    options[:private] = params[:private]
 
     item_url = nil
     if item.class.name == 'Comment' and correct_action != 'preview'
