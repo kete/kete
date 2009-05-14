@@ -9,7 +9,8 @@
          {:action => :restore,
       :id => item,
       :version => item.version,
-      :authenticity_token => form_authenticity_token},
+      :authenticity_token => form_authenticity_token,
+      :private => item.private?},
          :method => :post,
          :confirm => 'Are you sure?', :tabindex => '1' %></li>
     <li><%= link_to "reject",

@@ -320,6 +320,7 @@ class ActionController::IntegrationTest
       :description => "#{zoom_class_humanize(zoom_class)} Updated Description",
       :success_message => "#{zoom_class_humanize(zoom_class)} was successfully updated."
     }
+    fields[:edit_path] += "?private=true" if item.is_private?
     fields.merge!(options)
     # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an
     # exception
@@ -437,6 +438,7 @@ class ActionController::IntegrationTest
     click_link 'Make this revision live'
     body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved
                          from the selected revision."
+    item.reload # get the new version
   end
 
   # Reject a moderated item.
@@ -456,6 +458,7 @@ class ActionController::IntegrationTest
     click_button 'Reject'
     body_should_contain "This version of this #{zoom_class_humanize(item_class)} has been rejected.
                          The user who submitted the revision will be notified by email."
+    item.reload # get the new version
   end
 
   # Turn on full moderation on a basket
