@@ -12,7 +12,7 @@ class SearchSourcesController < ApplicationController
     list.sorting = { :position => 'ASC' }
 
     config.columns = [:title, :source_type, :base_url, :more_link_base_url, :limit, :cache_interval]
-    config.list.columns.exclude [:or_syntax]
+    config.list.columns.exclude [:source_type, :or_syntax, :more_link_base_url, :cache_interval]
 
     options = { :type => :record, :inline => false }
     # images_tag and @template.image_tag arn't available in this scope

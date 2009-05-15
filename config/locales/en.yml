@@ -1725,6 +1725,10 @@ en:
     title: Title
     view_as_types_as_options:
       inherit: Inherit
+  search_sources:
+    search_source:
+      more: 'more &raquo;'
+      more_like_this: 'View more results like this. '
   search_source_model:
     must_be_one_of: "must be one of the following: {{types}}"
     or_case:
@@ -1978,9 +1982,6 @@ en:
       play_slideshow: "Play Slideshow. "
       private: Private
       public: Public
-    search_source:
-      more: more &raquo;
-      top_results: top {{amount}} results
     show:
       topic: "Topic:"
       topic_type: "Topic Type:"

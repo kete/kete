@@ -52,8 +52,14 @@ module SearchSourcesHelper
     { :links => links, :images => images }
   end
 
-  def search_source_title_for(entry, length=300)
-    entry.summary ? truncate(strip_tags(entry.summary).squish, :length => length, :omission => '...') : ''
+  def search_source_title_for(entry, length=50)
+    entry.title ? truncate(strip_tags(entry.title).squish, :length => length, :omission => '...') : ''
+  end
+
+  def search_source_summary_for(entry, length=300)
+    summary = entry.title
+    summary += " - " + truncate(strip_tags(entry.summary).squish, :length => length, :omission => '...') if entry.summary
+    summary
   end
 
   def search_source_image_for(entry)

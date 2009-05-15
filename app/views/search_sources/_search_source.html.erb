@@ -6,31 +6,35 @@
 
     <h4 id="<%= search_source_id %>_heading"><%= h(source.title) %></h4>
 
-    <span class='search_source_more'>
-     (
-      <%= t('topics.search_source.top_results', :amount => source.limit) %>
-      <%= " | " + link_to(t('topics.search_source.more'), search_source_more) if entries.size > source.limit %>
-     )
-    </span>
-
     <% unless search_sources[:links].blank? %>
-      <ul id='<%= search_source_id %>_links'>
+      <div id='<%= search_source_id %>_links'>
         <% search_sources[:links].each do |link| %>
-          <li><%= link_to(h(link.title), h(link.url), :title => search_source_title_for(link)) %></li>
+          <div id="<%= search_source_id %>_result_<%= link.object_id %>" class='generic-result-wrapper'>
+            <%= link_to(search_source_title_for(link), h(link.url),
+                        :title => search_source_summary_for(link)) %>
+          </div>
         <% end -%>
-      </ul>
+      </div>
     <% end -%>
 
     <% unless search_sources[:images].blank? %>
       <div id='<%= search_source_id %>_images' class='images'>
         <% search_sources[:images].each do |image| %>
-          <div class='image'>
-            <%= link_to(search_source_image_for(image) + h(image.title), h(image.url), :title => search_source_title_for(image)) %>
+          <div id="<%= search_source_id %>_result_<%= image.object_id %>" class='image-result-wrapper'>
+            <%= link_to(search_source_image_for(image) + search_source_title_for(image), h(image.url),
+                        :title => search_source_summary_for(image)) %>
+            <div style='clear:both;'></div>
           </div>
-          <div style='clear:both;'></div>
         <% end -%>
       </div>
     <% end -%>
+
+    <% if entries.size > source.limit %>
+      <div id="<%= search_source_id %>_more_results" class='generic-result-wrapper'>
+        <%= link_to(t('search_sources.search_source.more'), search_source_more,
+                    :title => t('search_sources.search_source.more_like_this')) %>
+      </div>
+    <% end %>
 
   <% end -%>
 <% end -%>

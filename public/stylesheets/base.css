@@ -1219,16 +1219,14 @@ div.gmnoprint {
 #search_sources .search_source_more {
   margin-left: 10px;
 }
-#search_sources .images {
-  margin: 0 25px;
-}
-#search_sources .images .image {
-  margin-top: 5px;
-}
-#search_sources .images .image img {
+#search_sources .images .image-result-wrapper img {
   float: left;
   margin-right: 5px;
   border: none;
+}
+#search_sources .generic-result-wrapper,
+#search_sources .image-result-wrapper {
+  padding: 5px;
 }
 
 /* active scaffold */
