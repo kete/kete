@@ -21,7 +21,8 @@
   <div style="clear:both;"></div>
 <% end -%>
 
-<% if logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
+<% if logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? &&  permitted_to_view_private_items?)) -%>
+  <div id="moderator-tools">
   <ul>
     <% if permitted_to_edit_current_item? -%>
       <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
@@ -40,11 +41,12 @@
                                  :private => params[:private] -%>
         </li>
       <% end -%>
-    <% end -%>  
+    <% end -%>
     <% if @current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items? -%>
       <%= render :partial => 'topics/privacy_chooser', :locals => { :item => @topic } -%>
     <% end -%>
   </ul>
+  </div>
 <% end -%>
 
 <% if @current_basket.allows_contact_with_inheritance? -%>
