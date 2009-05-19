@@ -117,9 +117,22 @@ class TopicsController < ApplicationController
 
   def update
     @topic = Topic.find(params[:id])
+    public_or_private_version_of(@topic)
+
+    # if they have changed the topic type, make the edit fail so they can review
+    # the new fields (and to ensure that required fields are filled in). We have to
+    # update the attribute so that when they save, the extended field validations
+    # take effect. We also have to reload and then switch to the privacy of the item
+    # they are editing (to ensure private item editing shows the correct data)
+    if @topic.topic_type_id != params[:topic][:topic_type_id].to_i
+      @topic.update_attribute(:topic_type_id, params[:topic][:topic_type_id].to_i)
+      @topic.reload
+      public_or_private_version_of(@topic)
+      flash[:notice] = 'You\'ve changed the topic type for this topic. Please review the available fields.'
+      @successful = false
 
     # logic to prevent plain old members from editing site basket homepage
-    if @topic != @site_basket.index_topic || permit?("site_admin of :site_basket or admin of :site_basket")
+    elsif @topic != @site_basket.index_topic || permit?("site_admin of :site_basket or admin of :site_basket")
       version_after_update = @topic.max_version + 1
 
       @successful = ensure_no_new_insecure_elements_in('topic')

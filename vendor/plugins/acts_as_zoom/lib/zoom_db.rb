@@ -48,7 +48,7 @@ class ZoomDb < ActiveRecord::Base
 
   # Find whether a zoom record exists for this record in the given ZOOM database
   def has_zoom_record?(record_id, existing_connection = nil)
-    records_identified_by(record_id, existing_connection).size > 0
+    records_identified_by(record_id, existing_connection).records.size > 0
   end
 
   # this takes a passed in record and deletes it from the zoom db

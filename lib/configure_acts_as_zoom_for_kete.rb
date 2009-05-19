@@ -19,7 +19,7 @@ module ConfigureActsAsZoomForKete
                                 :save_to_public_zoom => ['localhost', 'public'],
                                 :save_to_private_zoom => ['localhost', 'private'],
                                 :raw => true,
-                                :additional_zoom_id_attribute => :basket_urlified_name,
+                                :additional_zoom_id_attribute => :prepare_for_zoom_id,
                                 :use_save_callback => false
 
     end
