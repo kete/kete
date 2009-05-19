@@ -376,7 +376,10 @@ module ApplicationHelper
       when "Membership rejected"
         html += options[:rejected_text]
       else
-        html += options[:current_role].gsub('|role|', role) if show_roles
+        html += link_to(options[:current_role].gsub('|role|', role),
+                        { :urlified_name => 'site',
+                          :controller => 'account',
+                          :action => 'baskets' }) if show_roles
         # no one can remove themselves from the site basket
         # and there needs to be at least one basket admin remaining if the user removed him/herself
         if basket != @site_basket && @current_basket.more_than_one_basket_admin?

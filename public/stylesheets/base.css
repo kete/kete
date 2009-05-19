@@ -1125,12 +1125,9 @@ div.gmnoprint {
  * Basket Homepages
  */
 #moderator-tools {
-  width: 50%;
-  margin: 0 auto;
-  border: 1px solid #000;
-  background-color: #eee;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
+  margin: 15px 10px 0 0;
+  border: 1px solid #aaa;
+  background-color: #f0f0f0;
   padding: 0;
 }
 #moderator-tools ul {
@@ -1142,20 +1139,17 @@ div.gmnoprint {
   float: left;
   padding: 0;
   margin: 0;
-  border-left: 1px solid #000;
-}
-#moderator-tools ul li.first {
-  border-left: none;
+  border-right: 1px solid #aaa;
 }
 #moderator-tools ul li a {
   display: block;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
-  padding: 10px 86px 10px 40px;
+  padding: 4px 35px;
+  color: #555;
 }
 #moderator-tools ul li.first a {
-  padding: 10px 40px 10px 86px;
+  padding: 4px 35px;
 }
 #moderator-tools ul li a:hover {
   background-color: #ddd;
+  text-decoration: none;
 }
