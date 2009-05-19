@@ -294,7 +294,9 @@ module GoogleMap
                                                      }
                                                      event.stop();
                                                    });
-                                                   $(map_id + \'_address\').hide();' :
+                                                   if (map_type == \'map_address\') {
+                                                     $(map_id + \'_address\').hide();
+                                                   }' :
                                                   '$(map_id).setStyle({height: \'380px\'});
                                                    $(map_id + \'_warning\').hide();
                                                    $(map_id + \'_fields\').hide();'}
@@ -311,7 +313,7 @@ module GoogleMap
             map.zoom_text_field = zoom_text_field;
             if (map.map_type == 'map_address') {
               map.address_text_field = address;
-              map.address = map_id + \'_address\';
+              map.address = map_id + '_address';
             }
             // Make sure we have the nessesary fields present
             if (!verify_all_fields_present(map)) { return; }
