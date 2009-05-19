@@ -334,7 +334,7 @@ module ExtendedContent
           hash
         end
       elsif ['map', 'map_address'].member?(extended_field.ftype)
-        value_array
+        value_array.is_a?(Array) ? value_array.first : value_array
       else
         value_array.to_s
       end
