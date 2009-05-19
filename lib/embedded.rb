@@ -135,7 +135,7 @@ module Embedded
             end
             gma_config = YAML.load(IO.read(@gma_config_path))
             coords = convert_dms_to_decimal_degree(value)
-            value = { 'zoom_lvl' => gma_config[:google_map_api][:default_zoom_lvl],
+            value = { 'zoom_lvl' => gma_config[:google_map_api][:default_zoom_lvl].to_s,
                       'no_map' => '0',
                       'coords' => "#{coords[:latitude]},#{coords[:longitude]}" }
             self.send("#{field.label_for_params}=", value)
