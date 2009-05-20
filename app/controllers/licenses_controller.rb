@@ -12,7 +12,7 @@ class LicensesController < ApplicationController
 
   active_scaffold :license do |config|
     config.columns = [:name, :description, :url, :image_url, :metadata, :is_available, :is_creative_commons]
-    list.columns.exclude [:updated_at, :created_at, :metadata, :description, :image_url, :is_available, :is_creative_commons, :users]
+    config.list.columns = [:id, :name, :url]
   end
 
   def install_license
