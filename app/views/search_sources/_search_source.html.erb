@@ -9,9 +9,10 @@
     <% unless search_sources[:links].blank? %>
       <div id='<%= search_source_id %>_links'>
         <% search_sources[:links].each do |link| %>
-          <div id="<%= search_source_id %>_result_<%= link.object_id %>" class='generic-result-wrapper'>
+          <div id="<%= search_source_id %>_result_<%= link.object_id %>" class='generic-result-wrapper skip_div_click'>
             <%= link_to(search_source_title_for(link), h(link.url),
-                        :title => search_source_summary_for(link)) %>
+                        :title => search_source_summary_for(link),
+                        :target => '_blank') %>
           </div>
         <% end -%>
       </div>
@@ -20,9 +21,10 @@
     <% unless search_sources[:images].blank? %>
       <div id='<%= search_source_id %>_images' class='images'>
         <% search_sources[:images].each do |image| %>
-          <div id="<%= search_source_id %>_result_<%= image.object_id %>" class='image-result-wrapper'>
+          <div id="<%= search_source_id %>_result_<%= image.object_id %>" class='image-result-wrapper skip_div_click'>
             <%= link_to(search_source_image_for(image) + search_source_title_for(image), h(image.url),
-                        :title => search_source_summary_for(image)) %>
+                        :title => search_source_summary_for(image),
+                        :target => '_blank') %>
             <div style='clear:both;'></div>
           </div>
         <% end -%>
@@ -30,9 +32,10 @@
     <% end -%>
 
     <% if entries.size > source.limit %>
-      <div id="<%= search_source_id %>_more_results" class='generic-result-wrapper'>
+      <div id="<%= search_source_id %>_more_results" class='generic-result-wrapper skip_div_click'>
         <%= link_to(t('search_sources.search_source.more'), search_source_more,
-                    :title => t('search_sources.search_source.more_like_this')) %>
+                    :title => t('search_sources.search_source.more_like_this'),
+                    :target => '_blank') %>
       </div>
     <% end %>
 

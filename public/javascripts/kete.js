@@ -208,10 +208,14 @@ function makeElementLinkable(id, url) {
 // links in the div point to the item)
 function makeSearchResultsDivClickable() {
   $$('.generic-result-wrapper').each(function(div) {
-    makeElementLinkable(div.id, div.down('a').href);
+    if (!div.className.match('skip_div_click')) {
+      makeElementLinkable(div.id, div.down('a').href);
+    }
   });
   $$('.image-result-wrapper').each(function(div) {
-    makeElementLinkable(div.id, div.down('a').href);
+    if (!div.className.match('skip_div_click')) {
+      makeElementLinkable(div.id, div.down('a').href);
+    }
   });
 }
 
