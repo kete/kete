@@ -1344,3 +1344,36 @@ a.disabled {
 .configured_site_controls form div {
   display: inline;
 }
+
+/*
+ * Basket Homepages
+ */
+#moderator-tools {
+  margin: 15px 10px 0 0;
+  border: 1px solid #aaa;
+  background-color: #f0f0f0;
+  padding: 0;
+}
+#moderator-tools ul {
+  margin: 0 auto;
+  list-style: none;
+  padding: 0;
+}
+#moderator-tools ul li {
+  float: left;
+  padding: 0;
+  margin: 0;
+  border-right: 1px solid #aaa;
+}
+#moderator-tools ul li a {
+  display: block;
+  padding: 4px 35px;
+  color: #555;
+}
+#moderator-tools ul li.first a {
+  padding: 4px 35px;
+}
+#moderator-tools ul li a:hover {
+  background-color: #ddd;
+  text-decoration: none;
+}

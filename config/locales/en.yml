@@ -2001,6 +2001,7 @@ en:
     edit:
       not_authorized: You don't have permission to edit this topic.
     update:
+      changed_topic_type: "You've changed the topic type for this topic. Please review the available fields."
       updated: Topic was successfully updated.
   user_model:
     failed_security_answer: ": Your security question answer failed - please try again."
