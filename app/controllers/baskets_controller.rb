@@ -142,7 +142,7 @@ class BasketsController < ApplicationController
     edit
     prepare_profile_for(:homepage_options)
 
-    @feeds_list = nil
+    @feeds_list = Array.new
     if @basket.feeds.count > 0
       @basket.feeds.each do |feed|
         limit = !feed.limit.nil? ? feed.limit.to_s : ''
