@@ -108,7 +108,6 @@ module ImporterZoom
       if ZOOM_CLASSES.include?(item.class.name)
         begin
           item.oai_record = importer_oai_record_xml(:item => item)
-          item.basket_urlified_name = item.basket.urlified_name
         rescue
           logger.error("prepare_and_save_to_zoom error: #{$!.to_s}")
         end
