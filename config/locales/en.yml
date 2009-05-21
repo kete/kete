@@ -1,5 +1,15 @@
 ---
 en:
+  base:
+    basket: Basket
+    baskets: Baskets
+    email: Email
+    inherit: Inherit
+    login: Login
+    password: Password
+    private: Private
+    public: Public
+    username: User Name
   account:
     activate:
       button: Activate
@@ -13,40 +23,40 @@ en:
       profile_link: your profile page
       your_avatar: "Your Gravatar. "
     baskets:
-      title: Your Baskets
+      title: Your {{base.baskets}}
     change_password:
-      button: Change password
-      confirm_pass: Confirm Password
-      new_pass: Password
-      old_pass: Old Password
-      title: Change password
+      button: Change {{base.password}}
+      confirm_pass: Confirm {{base.password}}
+      new_pass: New {{base.password}}
+      old_pass: Old {{base.password}}
+      title: Change {{base.password}}
     edit:
       allow_emails: "Allow Emails from other users:"
-      change_password: Change Password
-      email: "Email:"
+      change_password: Change {{base.password}}
+      email: "{{base.email}}:"
       language: "Language:"
       language_example: Which language would you like to view the site in?
-      login: "Login:"
+      login: "{{base.login}}:"
       login_example: Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.
       prefered_license: "Prefered License:"
       save: Save
       title: Edit your details
-      user_name: "User Name:"
+      user_name: "{{base.username}}:"
       user_name_example: This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".
     forgot_password:
-      button: Request Password
+      button: Request {{base.password}}
       email: What is the email address used to create your account?
       login: What is the login of your account?
-      title: Request password
+      title: Request {{base.password}}
     login:
       admin_details: Please enter the default administrator account login and password to continue to configuration of the site.
       button: Log in
       forgot_password: Forgot your password? {{forgot_password_link}}
       forgot_password_link: Click here
-      login: "Login:"
+      login: "{{base.login}}:"
       missing_explaination: Kete requires you to install the following software and restart your server.
       missing_software: Missing Software!
-      password: "Password:"
+      password: "{{base.password}}:"
       register: Are you registered? You will need to {{register_link}} first before you can login.
       register_link: register
       remember_me: "Remember me:"
@@ -59,13 +69,13 @@ en:
       remove: "Remove Portrait. "
       selected: "Make Selected. "
     reset_password:
-      button: Reset Your Password
-      confirm_pass: "Confirm Password:"
-      new_pass: "Password:"
-      title: Reset password
+      button: Reset Your {{base.password}}
+      confirm_pass: "Confirm {{base.password}}:"
+      new_pass: "{{base.password}}:"
+      title: Reset {{base.password}}
     show:
-      baskets: Baskets
-      change_password: change password
+      baskets: "{{base.baskets}}"
+      change_password: Change {{base.password}}
       change_portrait: "To change your selected portrait:"
       close_portrait_help: Close X
       contact_user: Contact this user
@@ -76,7 +86,7 @@ en:
       drag_portraits: Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).
       edit: edit
       editing_portraits: "Editing portraits. "
-      email: "Email:"
+      email: "{{base.email}}:"
       gravatar: Add an avatar to your account by registering a global portrait with {{gravatar_link}}.
       gravatar_link: gravatar.com
       license_thumbnail: "License thumbnail. "
@@ -94,21 +104,21 @@ en:
       shift_portraits: Use the arrow buttons to shift them around (when Javascript is off).
       title: Profile of {{user_name}}
       uploaded_link: uploaded before
-      user_name: "User name:"
+      user_name: "{{base.username}}:"
       view_license: (View license)
       whats_portraits: what's this?
     signup:
       agree_to: I agree that I have read and accept the {{terms_and_conditions_link}}, {{privacy_policy_link}}, and {{house_rules_link}}.
       button: Sign up
       case_sensitive: Text is case sensitive
-      confirm_password: "Confirm Password:"
-      email: "Email:"
+      confirm_password: "Confirm {{base.password}}:"
+      email: "{{base.email}}:"
       house_rules_link: House Rules
       language: "Language:"
       language_example: Which language would you like to view the site in?
-      login: "Login:"
+      login: "{{base.login}}:"
       login_example: Your login needs to be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.
-      password: "Password:"
+      password: "{{base.password}}:"
       prefered_license: "Prefered License:"
       privacy_policy_link: Privacy policy
       security_code: "Security Code: Please enter the text from the image to the right"
@@ -116,7 +126,7 @@ en:
       text_captcha: or use a {{text_captcha_link}}
       text_captcha_link: non-image security question
       title: Registration
-      user_name: "User Name:"
+      user_name: "{{base.username}}:"
       user_name_example: This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".
   account_controller:
     activate:
@@ -126,10 +136,10 @@ en:
       added_portrait: "'{{portrait_title}}' has been added to your portraits."
       failed_portrait: "'{{portrait_title}}' failed to add to your portraits."
     change_password:
-      password_changed: Password changed
-      password_mismatch: Password mismatch
-      password_not_changed: Password not changed
-      wrong_password: Wrong password
+      password_changed: "{{base.password}} changed"
+      password_mismatch: "{{base.password}} mismatch"
+      password_not_changed: "{{base.password}} not changed"
+      wrong_password: Wrong {{base.password}}
     fetch_gravatar:
       your_gravatar: "Your Gravatar. "
     forgot_password:
@@ -158,9 +168,9 @@ en:
       removed_portrait: "'{{portrait_title}}' has been removed from your portraits."
     reset_password:
       invalid_reset: Sorry - That is an invalid password reset code. Please check your code and try again. (Perhaps your email client inserted a carriage return?)
-      password_mismatch: Password mismatch
-      password_not_reset: Password not reset
-      password_reset: Password reset
+      password_mismatch: "{{base.password}} mismatch"
+      password_not_reset: "{{base.password}} not reset"
+      password_reset: "{{base.password}} reset"
     show:
       please_login: You must be logged in to view user profiles.
     signup:
@@ -260,7 +270,7 @@ en:
     link_related:
       added_relation: Successfully added item relationships
     redirect_if_current_basket_isnt_approved_for_public_viewing:
-      not_available: The basket {{basket_name}} is not approved for public viewing
+      not_available: The {{base.basket}} {{basket_name}} is not approved for {{base.public}} viewing
     rescue_404:
       title: 404 Not Found
     rescue_500:
@@ -283,8 +293,8 @@ en:
       can_you_edit: Remember, you may have the option to directly edit this item or alternatively discuss it. Are you sure you want to flag it instead?
       flag_as: "Flag as:"
     header_add_basket_link:
-      add_basket: Add basket
-      request_basket: Request basket
+      add_basket: Add {{base.basket}}
+      request_basket: Request {{base.basket}}
     header_add_links:
       add_item: Add Item
     header_browse_links:
@@ -330,7 +340,7 @@ en:
       pending: "Review Pending:"
       reverted: "currently reverted to non-disputed {{privacy_type}} version # {{item_version}}"
     privacy_image:
-      private: "private: "
+      private: "{{base.private}}: "
     related_image_link_for:
       only_original: only available as original
     render_baskets_as_menu:
@@ -376,13 +386,13 @@ en:
     all_users: All users
     archives_by_type: By type
     archives_dont_show: Don't show them
-    basket_admin: Basket admin
-    basket_appearance: Basket Appearance
-    basket_homepage_options: Basket Homepage Options
-    basket_member: Basket member
-    basket_moderator: Basket moderator
-    basket_new_or_edit: Basket New or Edit
-    cannot_delete_site: "Error: Cannot delete site basket!"
+    basket_admin: "{{base.basket}} admin"
+    basket_appearance: "{{base.basket}} Appearance"
+    basket_homepage_options: "{{base.basket}} Homepage Options"
+    basket_member: "{{base.basket}} member"
+    basket_moderator: "{{base.basket}} moderator"
+    basket_new_or_edit: "{{base.basket}} New or Edit"
+    cannot_delete_site: "Error: Cannot delete site {{base.basket}}!"
     details_and_comments: Full details and comments
     dont_link: Don't link
     font_sans_serif: Sans Serif (Arial, Helvetica, and the like)
@@ -394,7 +404,7 @@ en:
     logged_in: Logged in user
     moderate_before_approved: moderator views before item approved
     moderate_on_flagged: moderation upon being flagged
-    now_in_site_basket: This version was in {{basket_name}} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket.
+    now_in_site_basket: This version was in {{basket_name}} {{base.basket}}, but that {{base.basket}} has been deleted and no longer exists on the site, now this version is put in default site {{base.basket}}.
     only_comments: Only comments
     only_details: Only full details
     recent_as_headlines: Headlines (news style)
@@ -411,7 +421,7 @@ en:
     actions_menu:
       appearance: Appearance
       delete: Delete
-      delete_confirmation: Are you sure? All items in this basket will be deleted forever!
+      delete_confirmation: Are you sure? All items in this {{base.basket}} will be deleted forever!
       edit: Edit
       homepage_options: Homepage Options
       importers: Importers
@@ -424,19 +434,19 @@ en:
       additional_footer_content_replace_example: If checked, the above footer will totally replace the bottom of each page.  If you would rather it appear above the "Accessibility | Sitemap | Back to Content" links, rather than replace them, leave this unchecked.
       additional_footer_content_security: "Note: forms and javascript are not allowed for security reasons."
       additional_footer_content_security_admin: Unless you check the box below.
-      basket_list_options: "Basket List Menu Options:"
-      basket_list_options_example: These settings only take effect if the basket list navigation menu is on in your template.
+      basket_list_options: "{{base.basket}} List Menu Options:"
+      basket_list_options_example: These settings only take effect if the {{base.basket}} list navigation menu is on in your template.
       basket_list_options_in_reverse: in reverse?
       basket_list_options_sort_by: "Sort by:"
-      basket_list_options_topic_number: "Number of topics to show when in this basket?:"
+      basket_list_options_topic_number: "Number of topics to show when in this {{base.basket}}?:"
       button: Save
       controls: "Show/Hide Controls:"
       current_header: "Current Basket Header Image. "
       current_inheritance: The Site uses the <strong>{{theme_name}}</strong> theme.
       font_family: "Font Family:"
       header_example: "URL for background image for the top of each page:"
-      inherit: Inherit
-      inherit_example: Inherit this setting from the Site basket.
+      inherit: "{{base.inherit}}"
+      inherit_example: "{{base.inherit}} this setting from the Site {{base.basket}}."
       new_theme: Add new theme
       no_themes: No themes beyond the default are available right now.
       screenshot_of: "Screenshot of {{theme}} theme. "
@@ -455,17 +465,17 @@ en:
       add_in: Add in?
       button: Choose
       choose_type: choose item type
-      no_baskets_available: No Baskets Available
-      no_baskets_available_description: There are no baskets that you have access to add items to.
-      no_baskets_available_try_later: Find a basket to join, or please try again later.
+      no_baskets_available: No {{base.baskets}} Available
+      no_baskets_available_description: There are no {{base.basket}}s that you have access to add items to.
+      no_baskets_available_try_later: Find a {{base.basket}} to join, or please try again later.
       spinner_working: "Working.. "
       that_relates_to: that relates to {{topic_title}}
       what_to_add: What would you like to add
       where_to_add: Where would you like to add it?
     edit:
-      accept: Accept Basket
+      accept: Accept {{base.basket}}
       currently_rejected: (currently rejected)
-      reject: Reject Basket
+      reject: Reject {{base.basket}}
       title: "{{basket_name}} Edit"
       update: Update
     form:
@@ -482,34 +492,34 @@ en:
       comment_control: "Who can add, edit and update comments on items?:"
       comment_control_allows: allows
       comment_control_anyone: Anyone logged in
-      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non basket members to post comments
-      comment_control_members: Only basket members
+      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non {{base.basket}} members to post comments
+      comment_control_members: Only {{base.basket}} members
       comment_control_not_allows: doesn't allow
       disabled: Disabled
-      doesnt_inherit: (this setting does not inherit to other baskets)
+      doesnt_inherit: (this setting does not {{base.inherit}} to other {{base.baskets}})
       enabled: Enabled
       file_privacy: "Default Original File Privacy:"
       file_privacy_current_inheritance: The Site has files <strong>{{current_inheritance}}</strong> by default
-      file_privacy_example: You may use this to restrict the download of an item's original file.  For example, you may set a document to be 'Public' and show the information about it, but limit downloading the actual document file to basket members.  Note this applies across all versions of an item.
-      file_privacy_private_example: Can be downloaded only by authorized basket members
+      file_privacy_example: You may use this to restrict the download of an item's original file.  For example, you may set a document to be '{{base.public}}' and show the information about it, but limit downloading the actual document file to {{base.basket}} members.  Note this applies across all versions of an item.
+      file_privacy_private_example: Can be downloaded only by authorized {{base.basket}} members
       file_privacy_public_example: Can be downloaded by everyone
-      file_visibility: "Private Original Files Visibility:"
-      file_visibility_example: "To view private attached files you must be at least a:"
-      inherit: Inherit
-      inherit_example: Inherit this setting from the Site basket.
-      isnt_inherited: (this setting is not inherited from site basket)
+      file_visibility: "{{base.private}} Original Files Visibility:"
+      file_visibility_example: "To view {{base.private}} attached files you must be at least a:"
+      inherit: "{{base.inherit}}"
+      inherit_example: "{{base.inherit}} this setting from the Site {{base.basket}}."
+      isnt_inherited: (this setting is not inherited from site {{base.basket}})
       item_privacy: "Default Item Privacy:"
       item_privacy_current_inheritance: The Site has items <strong>{{current_inheritance}}</strong> by default
-      item_privacy_private_example: Can be viewed only by basket members
+      item_privacy_private_example: Can be viewed only by {{base.basket}} members
       item_privacy_public_example: Can be viewed by everyone
       join_policy: "Join Policy:"
       join_policy_closed: Closed Membership
-      join_policy_closed_example: Closed Basket Membership. Members have to be added by Basket Administrators manually.
-      join_policy_current_inheritance: The Site has basket membership <strong>{{current_inheritance}}</strong> by default
+      join_policy_closed_example: Closed {{base.basket}} Membership. Members have to be added by {{base.basket}} Administrators manually.
+      join_policy_current_inheritance: The Site has {{base.basket}} membership <strong>{{current_inheritance}}</strong> by default
       join_policy_open: Open Membership
-      join_policy_open_example: Enable Open Basket Membership. Anyone can join this basket with one click.
+      join_policy_open_example: Enable Open {{base.basket}} Membership. Anyone can join this {{base.basket}} with one click.
       join_policy_request: Request Membership
-      join_policy_request_example: Enable Requested Basket Membership. Basket Administrators have to approve or reject each application.
+      join_policy_request_example: Enable Requested {{base.basket}} Membership. {{base.basket}} Administrators have to approve or reject each application.
       member_list_policy: "Member List Policy:"
       member_list_policy_example: "To view the member list you must be at least a:"
       moderate_except: "Moderator views items before approved EXCEPT:"
@@ -518,25 +528,25 @@ en:
       privacy_controls: "Privacy Controls:"
       privacy_controls_current_inheritance: The Site has <strong>{{current_inheritance}}</strong> Privacy Controls
       privacy_controls_disabled_example: Disable Privacy Controls if members can only create publicly readable items.
-      privacy_controls_enabled_example: Enable Privacy Controls if members of this basket can have both items that are readable by the public at large AND items that are only readable by themselves.
-      privacy_controls_site_basket: This baskets browsing controls are left enabled if any other baskets have privacy controls turned on (for site-wide private search)
-      private: Private
-      public: Public
+      privacy_controls_enabled_example: Enable Privacy Controls if members of this {{base.basket}} can have both items that are readable by the {{base.public}} at large AND items that are only readable by themselves.
+      privacy_controls_site_basket: This {{base.baskets}} browsing controls are left enabled if any other {{base.baskets}} have privacy controls turned on (for site-wide {{base.private}} search)
+      private: "{{base.private}}"
+      public: "{{base.public}}"
       recent_topics: "Disable Site Recent Topics Display:"
-      recent_topics_example: Do not show new/edited topics in recent results on the Site basket?
+      recent_topics_example: Do not show new/edited topics in recent results on the Site {{base.basket}}?
     homepage_form:
       archives: Archives
-      archives_as: List basket's archive contents as?
+      archives_as: List {{base.baskets}} archive contents as?
       dont_redirect: Don't redirect
       go_to_browse: Go directly to "browse" options
       homepage_link: A link to the homepage topic's?
       homepage_topic: Homepage Topic
-      include_search: Include basket search form?
+      include_search: Include {{base.basket}} search form?
       only_homepage: Show only homepage topic?
       recent_topics: Recent Topics
       recent_topics_amount: List how many recent topics?
-      recent_topics_example: Including a rolling list of recent topics is an excellent way to present this basket as a blog or a news site.
-      recent_topics_type: List basket's topics as?
+      recent_topics_example: Including a rolling list of recent topics is an excellent way to present this {{base.basket}} as a blog or a news site.
+      recent_topics_type: List {{base.baskets}} topics as?
       redirect_to: Redirect to results of?
       rss_feeds: RSS or Atom Feeds
       rss_feeds_example1: "A new-line separated list of URLs in the following format per line:"
@@ -546,17 +556,17 @@ en:
       security_warning: "Note: forms and javascript are not allowed for security reasons."
       security_warning_admin: Unless you check the box below.
       selected_image: Selected Image
-      selected_image_show: Show image from basket?
+      selected_image_show: Show image from {{base.basket}}?
       sidebar_content: Sidebar content after search
       tags: Tags
       tags_amount: List how many tags?
-      tags_as: List basket's tags as?
+      tags_as: List {{base.baskets}} tags as?
       tags_ordered_by: Order tags by?
     homepage_options:
       button: Save
       current_homepage: "Current homepage topic:"
-      link_homepage: Link to new basket homepage topic
-      new_homepage: Add new basket homepage topic
+      link_homepage: Link to new {{base.basket}} homepage topic
+      new_homepage: Add new {{base.basket}} homepage topic
       title: "{{basket_name}} Homepage Options"
     list:
       all: all
@@ -565,54 +575,54 @@ en:
       requests: "{{request_num}} requests"
       sort_by_created_at: Created
       sort_by_name: Name
-      title: Baskets
+      title: "{{base.baskets}}"
     new:
       choose_profile: Choose
-      title: Choose Basket Profile
-      which_profile: Which profile for this basket?
+      title: Choose {{base.basket}} Profile
+      which_profile: Which profile for this {{base.basket}}?
       working: "Working.. "
     new_form:
       create: Create
       request: Request
-      title: New basket
+      title: New {{base.basket}}
     permission_denied:
-      basket_contact_link: contact this baskets administrators
-      basket_join_link: basket join form
+      basket_contact_link: contact this {{base.baskets}} administrators
+      basket_join_link: "{{base.basket}} join form"
       email_link: this Contact link
       login_link: logging in
       part1: "We're sorry, but access to the page your requested is restricted. Here are some possible ways you may proceed:"
       part2: If you are using a shared computer, make sure you're logged in with the account that has access to this area. Try {{login_link}} again before revisiting the page.
-      part3: You can join, or apply to join, the basket by visiting the {{basket_join_link}}. If joins need to be approved, you'll receive an email when you're let in. Otherwise, you should be able to access the basket content instantly.
+      part3: You can join, or apply to join, the {{base.basket}} by visiting the {{basket_join_link}}. If joins need to be approved, you'll receive an email when you're let in. Otherwise, you should be able to access the {{base.basket}} content instantly.
       part4: If you should have permission to access this part of the site, you can try {{basket_contact_link}}
       part5: Use {{email_link}} to email a site administrator to report the issue. Please specify that what page you tried to access in the email.
       part6: Or simply proceed on to another page via the Browse or Search functions at the top of this page.
       thank_you: Thank you,
       title: Permission Denied
     rss:
-      description: Latest Baskets
-      title: "{{site_name}} - Latest {{amount}} Baskets"
+      description: Latest {{base.baskets}}
+      title: "{{site_name}} - Latest {{amount}} {{base.baskets}}"
     show:
       back: Back
       edit: Edit
   baskets_controller:
     add_index_topic:
-      created: Basket homepage was successfully created.
+      created: "{{base.basket}} homepage was successfully created."
     create:
-      created: Basket was successfully created.
-      to_be_reviewed: Basket will now be reviewed, and you'll be notified of the outcome.
+      created: "{{base.basket}} was successfully created."
+      to_be_reviewed: "{{base.basket}} will now be reviewed, and you'll be notified of the outcome."
     destroy:
-      destroyed: Basket was successfully deleted.
+      destroyed: "{{base.basket}} was successfully deleted."
     redirect_if_current_user_cant_add_or_request_basket:
-      not_authorized: You need to have the right permissions to add or request a basket
+      not_authorized: You need to have the right permissions to add or request a {{base.basket}}
     update:
       feed_problem: there was a problem adding your feeds. Is the format you entered correct and you haven't entered a feed twice?
-      updated: Basket was successfully updated.
+      updated: "{{base.basket}} was successfully updated."
     update_appearance:
       sanitized: Your submitted footer content was changed for security reasons.
-      updated: Basket appearance was updated.
+      updated: "{{base.basket}} appearance was updated."
   baskets_helper:
     basket_preferences_inheritance_message:
-      inheritance_notice: These settings will be inherited by all other baskets unless they individually specify their own policy.
+      inheritance_notice: These settings will be inherited by all other {{base.baskets}} unless they individually specify their own policy.
     show_all_fields_link:
       show_all_fields: show all fields
       show_allowed_fields: show allowed fields
@@ -642,14 +652,14 @@ en:
     destroy:
       destroyed: Comment was successfully deleted.
     is_authorized:
-      not_a_member: Sorry, you need to be a member to leave a comment in this basket.
+      not_a_member: Sorry, you need to be a member to leave a comment in this {{base.basket}}.
     update:
       updated: Comment was successfully updated.
   configure:
     index:
       advanced_options: Advanced Options
       change_password: You should change the default administrator account's password. Leaving it as the default is a security risk.
-      change_password_button: Change password
+      change_password_button: Change {{base.password}}
       change_settings: You can change system settings here.  You will need to restart your server for changes to take effect.
       clear_cache: Clear Site Cache
       click_finish: All required settings have been fulfilled. If you are satisfied, please click the 'finish' button.
@@ -685,7 +695,7 @@ en:
     link_to_site:
       already_listed: Kete.net.nz already lists the site. You can see details at {{listing_link}}.
       completed: "Completed. "
-      description: Would you like to send your site name, site url and a short description of your site for to a public list of Kete installations?
+      description: Would you like to send your site name, site url and a short description of your site for to a {{base.public}} list of Kete installations?
       send_information: Send Information
       site_description: "Site description:"
       site_description_optional: (optional)
@@ -698,9 +708,9 @@ en:
       restart: System Settings modified. Please restart the server for them to take effect.
       title: All required settings are complete.
     zoom_dbs_edit:
-      password: "Password:"
+      password: "{{base.password}}:"
       password_example: Please set a new password to connect to this Search Engine.  Leaving it the default is a security risk.
-      password_required: Password is required
+      password_required: "{{base.password}} is required"
       port: "Port:"
       port_advanced_note: "Advanced: Unless you run more than one Kete site on your host, it is safe to leave this as the default. Otherwise, you will want to check what ports any other Search Engines (Zebra servers) are already running on and change this to a new port."
       save: Save
@@ -1065,7 +1075,7 @@ en:
     flag_version:
       item_flagged: Thank you for your input.  A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being.
     preview:
-      no_public: There is currently no public version of this {{controller}} available.
+      no_public: There is currently no {{base.public}} version of this {{controller}} available.
     reject:
       rejected: This version of this {{zoom_class}} has been rejected.  The user who submitted the revision will be notified by email.
     restore:
@@ -1168,9 +1178,9 @@ en:
       title: Import from {{location}}
     list:
       as_of: as of
-      description: This is the import facility. Using it you can import content into this basket that has been exported from supported systems such as Past Perfect.
+      description: This is the import facility. Using it you can import content into this {{base.basket}} that has been exported from supported systems such as Past Perfect.
       folder: Folder
-      no_past_imports: No previous imports have been run in this basket.
+      no_past_imports: No previous imports have been run in this {{base.basket}}.
       records_processed: Records Processed
       start_new: Start new import
       started: Started
@@ -1203,9 +1213,9 @@ en:
       metadata: The same goes for embedded metadata if items have associated binary files (images, audio, video, and documents).
       past_perfect: Past Perfect 4
       place_in_imports_folder: your_folder should be placed on your server wherever your Kete souce code lives, <b>under the imports folder</b>.  So if you have installed Kete using the conventions of the installation guide, that would be something like '/home/kete/apps/my_kete_project/current/imports/your_folder'.
-      private: Private
-      private_description: (Can be viewed only by basket members)
-      public: Public
+      private: "{{base.private}}"
+      private_description: (Can be viewed only by {{base.basket}} members)
+      public: "{{base.public}}"
       public_description: (Can be viewed by everyone)
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
       records_xml_file: records.xml - the previously mentioned XML file that contains a record for each item of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to create this file.
@@ -1286,27 +1296,27 @@ en:
     application:
       accessibility: Accessibility
       add_link: List site on Kete.net.nz
-      all_baskets: all baskets
-      basket_label: "Tools for basket: {{basket}}"
-      basket_profiles: basket profiles
+      all_baskets: all {{base.baskets}}
+      basket_label: "Tools for {{base.basket}}: {{basket}}"
+      basket_profiles: "{{base.basket}} profiles"
       choices: choices for extended fields
       configure: reconfigure site
       contact: Contact
       content_types: content types
-      delete: delete this basket
-      delete_confirmation: Are you sure? All items in this basket will be deleted forever!
+      delete: delete this {{base.basket}}
+      delete_confirmation: Are you sure? All items in this {{base.basket}} will be deleted forever!
       documentation: documentation
       extended_fields: extended fields
       home: Home
-      import: import content into basket
+      import: import content into {{base.basket}}
       licenses: administer licenses
-      login: Login
+      login: "{{base.login}}"
       logout: Logout
-      members: basket members
-      moderate: moderate basket contents
-      my_baskets: my baskets
+      members: "{{base.basket}} members"
+      moderate: moderate {{base.basket}} contents
+      my_baskets: my {{base.baskets}}
       oai_pmh: OAI PMH Sets
-      preferences: basket preferences
+      preferences: "{{base.basket}} preferences"
       rebuild: Rebuild search databases
       register: Register
       rss: RSS feed for these items
@@ -1342,9 +1352,9 @@ en:
       admin: administrator
       admin_actions: Administrative Actions
       change_to: Change to
-      email: Email
+      email: "{{base.email}}"
       joined: Joined
-      login: Login
+      login: "{{base.login}}"
       member: member
       moderator: moderator
       or: or
@@ -1353,7 +1363,7 @@ en:
       site_admin: site administrator
       tech_admin: technical administrator
       title: "{{basket_name}} Members"
-      user_name: User name
+      user_name: "{{base.username}}"
     list_members_in:
       current_no_users_of_type: Currently no {{listing_type}}
       search_button: Search
@@ -1386,26 +1396,26 @@ en:
       has_contributions: "{{user_name}} has contributions and cannot be deleted from the site. Perhaps a ban instead?"
       need_site_admin: Unable to have no site administrators.
     join:
-      already_joined: You already have a role in this basket or you have already applied to join.
+      already_joined: You already have a role in this {{base.basket}} or you have already applied to join.
       joined: You have joined the {{basket_name}} basket.
-      not_open: This basket isn't currently accepting join requests.
-      requested: A basket membership request has been sent. You will get an email when it is approved.
+      not_open: This {{base.basket}} isn't currently accepting join requests.
+      requested: A {{base.basket}} membership request has been sent. You will get an email when it is approved.
     list_members_in:
       admin: Admin
       ban: Ban
       delete: Delete
-      login_as: Login as user
+      login_as: "{{base.login}} as user"
       member: Member
       moderator: Moderator
-      remove: Remove from Basket
+      remove: Remove from {{base.basket}}
       site_admin: Site Admin
       tech_admin: Tech Admin
     permitted_to_view_memberlist:
-      cant_remove: You need to have the right permissions to remove basket members
-      not_authorized: You need to have the right permissions to access this baskets member list
+      cant_remove: You need to have the right permissions to remove {{base.basket}} members
+      not_authorized: You need to have the right permissions to access this {{base.baskets}} member list
     remove:
-      cant_remove_self: You cannot remove yourself from the Site basket.
-      need_site_admin: Unable to have no basket administrators.
+      cant_remove_self: You cannot remove yourself from the Site {{base.basket}}.
+      need_site_admin: Unable to have no {{base.basket}} administrators.
       removed: Successfully removed user from {{basket_name}}.
     unban:
       unbanned: Successfully removed ban on user.
@@ -1421,8 +1431,8 @@ en:
       full_history: item's full history
       no_items_needing_moderation: Currently no items needing moderation.
       privacy: privacy
-      private: private
-      public: public
+      private: "{{base.private}}"
+      public: "{{base.public}}"
       revision: Revision
       title: Moderate
     rss:
@@ -1469,7 +1479,7 @@ en:
     title: Oai Pmh Repository Sets
   privacy_controls_helper:
     privacy_controls_description:
-      public_vs_private: "Note: Individual versions of this item can be public or private. The latest public version will be shown to non-basket members if available.  Otherwise, this item is completely private."
+      public_vs_private: "Note: Individual versions of this item can be {{base.public}} or {{base.private}}. The latest {{base.public}} version will be shown to non-basket members if available.  Otherwise, this item is completely {{base.private}}."
   private_files_controller:
     bad_request: "Error 400: Bad Request"
     not_found: "Error 404: File Not Found"
@@ -1487,94 +1497,94 @@ en:
       select_below: Select Below
   profiles:
     appearance:
-      add_new_theme: Add new theme
-      additional_footer_content: "Additional Footer Content:"
-      additional_footer_content_do_not_sanitize: Allow forms and other possible insecure elements and attributes in the HTML?
-      additional_footer_content_replace: replace existing footer with above content?
-      additional_footer_content_replace_description: If checked, the above footer will totally replace the bottom of each page.  If you would rather it appear above the "Accessibility | Sitemap | Back to Content" links, rather than replace them, leave this unchecked.
-      basket_list_menu_options: "Basket List Menu Options:"
-      basket_list_menu_options_description: These settings only take effect if the basket list navigation menu is on in your template.
-      font_family: "Font Family:"
-      header_image: "Header Image:"
-      header_image_description: "URL for background image for the top of each page:"
-      inherit: Inherit
-      no_themes_available: No themes beyond the default are available right now.
-      number_of_menu_topics: "Number of topics to show when in this basket?:"
-      show_action_menu_description: (who can see the view, edit, history and other links)
-      show_action_menu_to: "Show Action Menu to:"
-      show_add_links_description: (who can relate or link items together)
-      show_add_links_to: "Show Add Links to:"
-      show_discussion_description: (who can see and add comments)
-      show_discussion_to: "Show Comments to:"
+      add_new_theme: "{{baskets.appearance.new_theme}}"
+      additional_footer_content: "{{baskets.appearance.additional_footer_content}}"
+      additional_footer_content_do_not_sanitize: "{{baskets.appearance.additional_footer_content_exception}}"
+      additional_footer_content_replace: "{{baskets.appearance.additional_footer_content.replace}}"
+      additional_footer_content_replace_description: "{{baskets.appearance.additional_footer_content_replace_example}}"
+      basket_list_menu_options: "{{baskets.appearance.basket_list_options}}"
+      basket_list_menu_options_description: "{{baskets.appearance.basket_list_options_example}}"
+      font_family: "{{baskets.appearance.font_family}}"
+      header_image: "{{baskets.appearance.current_header}}"
+      header_image_description: "{{baskets.appearance.header_example}}"
+      inherit: "{{baskets.appearance.inherit}}"
+      no_themes_available: "{{baskets.appearance.no_themes}}"
+      number_of_menu_topics: "{{baskets.appearance.basket_list_options_topic_number}}"
+      show_action_menu_description: "{{baskets.appearance.show_actions_to_example}}"
+      show_action_menu_to: "{{baskets.appearance.show_actions_to}}"
+      show_add_links_description: "{{baskets.appearance.show_add_links_to_example}}"
+      show_add_links_to: "{{baskets.appearance.show_add_links_to}}"
+      show_discussion_description: "{{baskets.appearance.show_comments_to_example}}"
+      show_discussion_to: "{{baskets.appearance.show_comments_to}}"
       show_field: show<br />field?
-      show_flagging_description: (who can flag items)
-      show_flagging_to: "Show Flagging to:"
-      show_hide_controls: "Show/Hide Controls:"
-      sort_menu_by: "Sort by:"
-      sort_menu_in_reverse: in reverse?
-      theme: "Theme:"
-      theme_alt: "Screenshot of {{theme}} theme. "
+      show_flagging_description: "{{baskets.appearance.show_flagging_to_example}}"
+      show_flagging_to: "{{baskets.appearance.showing_flagging_to}}"
+      show_hide_controls: "{{baskets.appearance.controls}}"
+      sort_menu_by: "{{baskets.appearance.basket_list_options_sort_by}}"
+      sort_menu_in_reverse: "{{baskets.appearance.basket_list_options_in_reverse}}"
+      theme: "{{baskets.appearance.theme}}"
+      theme_alt: "{{baskets.appearance.screenshot_of}}"
     edit:
-      administrator_contact: Administrator contact?
-      allow_non_member_comment: "Who can add, edit and update comments on items?:"
-      anyone_logged_in: Anyone logged in
-      closed_membership: Closed Membership
-      default_browse_order: "Default Browse Results Order:"
-      default_browse_type: "Default Browse Type:"
-      default_browse_type_description: The default browse type should be a?
-      default_file_privacy: "Default Original File Privacy:"
-      default_item_privacy: "Default Item Privacy:"
-      disable_site_recent_topics: "Disable Site Recent Topics Display:"
-      disable_site_recent_topics_description: Do not show new/edited topics in recent results on the Site basket?
-      disabled: Disabled
-      enabled: Enabled
-      in_reverse: in reverse?
-      inherit: Inherit
-      join_policy: "Join Policy:"
-      member_list_policy: "Member List Policy:"
-      member_list_policy_description: "To view the member list you must be at least a:"
-      moderate_items_except: "Moderator views items before approved EXCEPT:"
-      moderation_policy: "Moderation Policy:"
-      only_basket_members: Only basket members
-      open_membership: Open Membership
-      privacy_controls: "Privacy Controls:"
-      private: Private
-      private_file_visibility: "Private Original Files Visibility:"
-      private_file_visibility_description: "To view private attached files you must be at least a:"
-      public: Public
-      request_membership: Request Membership
+      administrator_contact: "{{baskets.form.admin_contact}}"
+      allow_non_member_comment: "{{baskets.form.comment_control}}"
+      anyone_logged_in: "{{baskets.form.comment_control_anyone}}"
+      closed_membership: "{{baskets.form.join_policy_closed}}"
+      default_browse_order: "{{baskets.form.browse_order}}"
+      default_browse_type: "{{baskets.form.browse_view_as}}"
+      default_browse_type_description: "{{baskets.form.browse_view_as_choice}}"
+      default_file_privacy: "{{baskets.form.file_privacy}}"
+      default_item_privacy: "{{baskets.form.item_privacy}}"
+      disable_site_recent_topics: "{{baskets.form.recent_topics}}"
+      disable_site_recent_topics_description: "{{baskets.form.recent_topics_example}}"
+      disabled: "{{baskets.form.disabled}}"
+      enabled: "{{baskets.form.enabled}}"
+      in_reverse: "{{baskets.form.browse_order_in_reverse}}"
+      inherit: "{{base.inherit}}"
+      join_policy: "{{baskets.form.join_policy}}"
+      member_list_policy: "{{baskets.form.member_list_policy}}"
+      member_list_policy_description: "{{baskets.form.member_list_policy_example}}"
+      moderate_items_except: "{{baskets.form.moderate_except}}"
+      moderation_policy: "{{baskets.form.moderation}}"
+      only_basket_members: "{{baskets.form.comment_control_members}}"
+      open_membership: "{{baskets.form.join_policy_open}}"
+      privacy_controls: "{{baskets.form.privacy_controls}}"
+      private: "{{base.private}}"
+      private_file_visibility: "{{baskets.form.file_visibility}}"
+      private_file_visibility_description: "{{baskets.form.file_visibility_example}}"
+      public: "{{base.public}}"
+      request_membership: "{{baskets.form.join_policy_request}}"
       show_field: show<br />field?
-      sort_by: "Sort by:"
-      use_software_default: use software default
+      sort_by: "{{baskets.form.browse_order_sort_by}}"
+      use_software_default: "{{baskets.form.browse_order_default}}"
     homepage_options:
-      archives: Archives
-      archives_description: List basket's archive contents as?
-      dont_redirect: Don't redirect
-      go_to_browse: Go directly to "browse" options
-      go_to_browse_description: Redirect to results of?
-      homepage_topic: Homepage Topic
-      how_many_recent_topics: List how many recent topics?
-      how_many_tags: List how many tags?
-      list_tags_as: List basket's tags as?
-      list_topics_as: List basket's topics as?
-      order_tags_by: Order tags by?
-      recent_topics: Recent Topics
-      rss_or_atom_feeds: RSS or Atom Feeds
-      rss_or_atom_feeds_description_part1: "A new-line separated list of URLs in the following format per line:"
-      rss_or_atom_feeds_description_part2: Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in minutes - optional)
-      search: Search
-      search_description: Include basket search form?
-      selected_image: Selected Image
-      selected_image_description: Show image from basket?
+      archives: "{{baskets.homepage_form.archives}}"
+      archives_description: "{{baskets.homepage_form.achives_as}}"
+      dont_redirect: "{{baskets.homepage_form.dont_redirect}}"
+      go_to_browse: "{{baskets.homepage_form.go_to_browse}}"
+      go_to_browse_description: "{{baskets.homepage_form.redirect_to}}"
+      homepage_topic: "{{baskets.homepage_form.homepage_topic}}"
+      how_many_recent_topics: "{{baskets.homepage_form.recent_topics_amount}}"
+      how_many_tags: "{{baskets.homepage_form.tags_amount}}"
+      list_tags_as: "{{baskets.homepage_form.tags_as}}"
+      list_topics_as: "{{baskets.homepage_form.recent_topics_type}}"
+      order_tags_by: "{{baskets.homepage_form.tags_ordered_by}}"
+      recent_topics: "{{baskets.homepage_form.recent_topics}}"
+      rss_or_atom_feeds: "{{baskets.homepage_form.rss_feeds}}"
+      rss_or_atom_feeds_description_part1: "{{baskets.homepage_form.rss_feeds_example1}}"
+      rss_or_atom_feeds_description_part2: "{{baskets.homepage_form.rss_feeds_example2}}"
+      search: "{{baskets.homepage_form.search}}"
+      search_description: "{{baskets.homepage_form.include_search}}"
+      selected_image: "{{baskets.homepage_form.selected_image}}"
+      selected_image_description: "{{baskets.homepage_form.selected_image_show}}"
       show_field: show<br />field?
-      show_link_to_homepage_topic: A link to the homepage topic's?
-      show_only_homepage_topic: Show only homepage topic?
-      sidebar_content: Sidebar content after search
-      sidebar_content_do_not_sanitize: Allow forms and other possible insecure elements and attributes in the HTML?
-      tags: Tags
+      show_link_to_homepage_topic: "{{baskets.homepage_form.homepage_link}}"
+      show_only_homepage_topic: "{{baskets.homepage_form.only_homepage}}"
+      sidebar_content: "{{baskets.homepage_form.sidebar_content}}"
+      sidebar_content_do_not_sanitize: "{{baskets.homepage_form.security_exception_example}}"
+      tags: "{{baskets.homepage_form.tags}}"
   profiles_controller:
     fields_available: Fields Available
-    title: Basket Profiles
+    title: "{{base.basket}} Profiles"
   profiles_helper:
     rules_allowed_check_box:
       expand_policy: "Expand Policy. "
@@ -1597,8 +1607,8 @@ en:
       in_reverse: In reverse?
       options: Options
       privacy_type: "That are:"
-      private: Private
-      public: Public
+      private: "{{base.private}}"
+      public: "{{base.public}}"
       search: Search
       sort_by: "Sort by:"
       update_results: update
@@ -1639,8 +1649,8 @@ en:
       no_items_found: No {{item_class}} found
       search: Search
       search_for: "Search for {{privacy}} {{item_class}}:"
-      search_private: search private
-      search_public: search public
+      search_private: search {{base.private}}
+      search_public: search {{base.public}}
       select_items: Select which {{item_class}} to {{action}}, then click '{{action}}'.
       title: "{{action}} related {{zoom_class_plural}}"
     results:
@@ -1668,8 +1678,8 @@ en:
       end_rebuild_at_description: You must choose a specific type to rebuild rather than "all types" to use anything but 'last'. If you choose a specific type, you may specify the id number in the Kete database to finishing rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the last topic to be added to the search engine.
       skip_existing_records: Should we skip records that are already in the search engine?
       skip_existing_records_description: In most cases you will want to leave this unchecked for a faster rebuild.  However it is useful when you are rebuilding only missing records that didn't make it into the search engine.
-      skip_private_records: Should we skip private records?
-      skip_private_records_description: In most cases you will want to leave this unchecked for a complete rebuild.  However, if you don't have any existing private records (perhaps you are upgrading from Kete 1.0 to 1.1, for example), you can use this to speed up the rebuild process.
+      skip_private_records: Should we skip {{base.private}} records?
+      skip_private_records_description: In most cases you will want to leave this unchecked for a complete rebuild.  However, if you don't have any existing {{base.private}} records (perhaps you are upgrading from Kete 1.0 to 1.1, for example), you can use this to speed up the rebuild process.
       start_rebuild: Rebuild Search Records
       start_rebuild_at: Record id to start rebuilding process at?
       start_rebuild_at_description: You must choose a specific type to rebuild rather than "all types" to use anything but 'first'. If you choose a specific type, you may specify the id number in the Kete database to start rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the first topic to be added to the search engine.
@@ -1680,7 +1690,7 @@ en:
       all_processed: All records processed
       amount_processed: "{{amount}} records processed"
       browse: Browse records
-      failed_reason: These maybe private or pending moderation records, depending on the case. See log/backgroundrb... for details.
+      failed_reason: These maybe {{base.private}} or pending moderation records, depending on the case. See log/backgroundrb... for details.
       finished_at: at {{end_time}}
       need_js: You need javascript enabled for this feature.
       not_running: rebuild worker not running anymore?
@@ -1724,7 +1734,7 @@ en:
     relevance: Relevance
     title: Title
     view_as_types_as_options:
-      inherit: Inherit
+      inherit: "{{base.inherit}}"
   search_sources:
     search_source:
       more: 'more &raquo;'
@@ -1878,7 +1888,7 @@ en:
       zoom_update: Zoom Update item (+related)
       zoom_update_confirm: Are you sure you want to update?
     content_wrapper_start:
-      baskets: Baskets
+      baskets: "{{base.baskets}}"
     discussion:
       discuss_this_topic: Discuss This Topic
     edit:
@@ -1909,16 +1919,16 @@ en:
       editing: Editing
       embedded_note: If you fill out fields here as well, the embedded metadata will be added to it at the end.
       file_privacy: Attached file privacy
-      file_privacy_example: Please note that once public, an attached file cannot be made private.
+      file_privacy_example: Please note that once {{base.public}}, an attached file cannot be made {{base.private}}.
       getting_tags: "Getting tags. "
       help: help
-      move_baskets: Move to another basket?
+      move_baskets: Move to another {{base.basket}}?
       new: New
       note: "Note:"
       privacy: Privacy
-      private: Private
-      private_description: (Can be viewed only by basket members)
-      public: Public
+      private: "{{base.private}}"
+      private_description: (Can be viewed only by {{base.basket}} members)
+      public: "{{base.public}}"
       public_description: (Can be viewed by everyone)
       related_items_as_inset: Insert Related Items content into Topic body?
       required_fields: "* denotes a required field"
@@ -1934,12 +1944,12 @@ en:
       comments: Comments
       contributor: Contributor
       flags: Flags
-      has_private_version: This item has private versions. {{login}} as a basket member to view these.
-      login_link: Login
+      has_private_version: This item has private versions. {{login}} as a {{base.basket}} member to view these.
+      login_link: "{{base.login}}"
       number: Number
       privacy: Privacy
-      private: Private
-      public: Public
+      private: "{{base.private}}"
+      public: "{{base.public}}"
       revision_history: "Revision History:"
       updated: Updated
     license_chooser_or_agreement:
@@ -1967,8 +1977,8 @@ en:
       reject_confirm: Are you sure?
       title: "Actions:"
     privacy_chooser:
-      private_version: Private version
-      public_version: Public version (live)
+      private_version: "{{base.private}} version"
+      public_version: "{{base.public}} version (live)"
     related_items:
       create: Create
       import_set: Import Set
@@ -1980,8 +1990,8 @@ en:
     related_items_section:
       not_related: This {{item_type}} is not related to any topics at this time.
       play_slideshow: "Play Slideshow. "
-      private: Private
-      public: Public
+      private: "{{base.private}}"
+      public: "{{base.public}}"
     show:
       topic: "Topic:"
       topic_type: "Topic Type:"
@@ -2015,24 +2025,24 @@ en:
       deactivated: "{{user_name}} your account has been deactivated.  You will longer be able to contribute to this site."
     basket_create_policy:
       approved:
-        approved_for_use: The basket you requested, '{{basket_name}}', was approved for use.
-        edit_it_by: You can edit this basket by going to
+        approved_for_use: The {{base.basket}} you requested, '{{basket_name}}', was approved for use.
+        edit_it_by: You can edit this {{base.basket}} by going to
         thanks: Thank you,
         view_contents_at: And view it's contents at
       created:
-        edit_it_by: You can edit this basket by going to
-        requires_approval: It requires moderation before it will be available to the public.
+        edit_it_by: You can edit this {{base.basket}} by going to
+        requires_approval: It requires moderation before it will be available to the {{base.public}}.
         thanks: Thank you,
-        user_created_basket: "{{user_name}} has created a new basket titled '{{basket_name}}'."
+        user_created_basket: "{{user_name}} has created a new {{base.basket}} titled '{{basket_name}}'."
       rejected:
-        basket_rejected: The basket you requested, '{{basket_name}}', was rejected.
+        basket_rejected: The {{base.basket}} you requested, '{{basket_name}}', was rejected.
         not_suitable: This may be because it was inappropriate or unsuitable for this site.
         thanks: Thank you,
     email_to:
       create_new_email: If not, you can create a new message and send it to
       on_behalf_of: This email was sent by {{site_name}} on behalf of {{user_name}}.
       replying_to_sender: Replying to this message should send an email to {{user_name}}'s email address.
-      sent_from_basket_on_site: "{{user_name}} has sent you a message from the {{basket_name}} basket on {{site_name}}."
+      sent_from_basket_on_site: "{{user_name}} has sent you a message from the {{basket_name}} {{base.basket}} on {{site_name}}."
       sent_from_site: "{{user_name}} has sent you a message from {{site_name}}."
       thanks: Thank you,
     forgot_password:
@@ -2045,22 +2055,22 @@ en:
       user_provided_details: "The user has also provided these details about the flagging:"
     join_policy:
       accepted:
-        membership_granted: "{{user_name}} has accepted your request for membership in the {{basket_name}} basket."
+        membership_granted: "{{user_name}} has accepted your request for membership in the {{basket_name}} {{base.basket}}."
         participate_by: You can now participate by going to
         thanks: Thank you,
       member:
-        joined: "{{user_name}} has joined the {{basket_name}} basket."
+        joined: "{{user_name}} has joined the {{basket_name}} {{base.basket}}."
         thanks: Thank you,
         view_memberlist_at: You can view the member list at
-        youre_an_admin: You are receiving this notification because our records show you are an admin of that basket.
+        youre_an_admin: You are receiving this notification because our records show you are an admin of that {{base.basket}}.
       rejected:
-        membership_denied: "{{user_name}} has rejected your request for membership in the {{basket_name}} basket."
+        membership_denied: "{{user_name}} has rejected your request for membership in the {{basket_name}} {{base.basket}}."
         thanks: Thank you,
       request:
         approve_or_reject: You can approve or reject the application by going to
         thanks: Thank you,
-        want_access: "{{user_name}} has requested membership of the {{basket_name}} basket."
-        youre_an_admin: Our records show you are an admin of that basket.
+        want_access: "{{user_name}} has requested membership of the {{basket_name}} {{base.basket}}."
+        youre_an_admin: Our records show you are an admin of that {{base.basket}}.
     login_changed:
       description: Your login for {{site_name}} was changed during an upgrade of the software the site runs on.
       login_using: To login, please now use the following login (your password remains the same)
@@ -2086,17 +2096,17 @@ en:
       code: "Code:"
       created: Your account has been created.
       enter_this_code: "If you aren't automatically activated, please enter this code:"
-      password: "Password:"
-      username: "Username:"
+      password: "{{base.password}}:"
+      username: "{{base.username}}:"
   user_notifier_model:
     account_activated: Your account has been activated!
     account_banned: Your account has been banned!
     activate_account: Please activate your new account
     awaiting_review: User contributions waiting review in {{basket_name}}.
-    basket_approved: "{{basket_name}} basket creation has been approved"
-    basket_created: "{{user_name}} has created the {{basket_name}} basket"
-    basket_rejected: "{{basket_name}} basket creation has been rejected"
-    basket_requested: "{{user_name}} has requested creation of the {{basket_name}} basket"
+    basket_approved: "{{basket_name}} {{base.basket}} creation has been approved"
+    basket_created: "{{user_name}} has created the {{basket_name}} {{base.basket}}"
+    basket_rejected: "{{basket_name}} {{base.basket}} creation has been rejected"
+    basket_requested: "{{user_name}} has requested creation of the {{basket_name}} {{base.basket}}"
     item_flagged_with: Item flagged {{flag}} for moderation.
     login_changed: Your login has been altered in an upgrade.
     membership_accepted: Membership to {{basket_name}} accepted
@@ -2106,13 +2116,13 @@ en:
     pending_moderation: Your submission is {{flag}} moderation.
     rejected_submission: A moderator has {{flag}} your submission.
     revision_live: A moderator has made your submission the live revision.
-    user_joined: "{{user_name}} has joined the {{basket_name}} basket"
-    user_requested: "{{user_name}} has requested membership in {{basket_name}} basket"
+    user_joined: "{{user_name}} has joined the {{basket_name}} {{base.basket}}"
+    user_requested: "{{user_name}} has requested membership in {{basket_name}} {{base.basket}}"
     user_sent_message: "{{user_name}} has sent you a message."
   video:
     details:
       filename: "Filename:"
-      not_available: no public version of this video available
+      not_available: no {{base.public}} version of this video available
       size: "Size:"
       type: "Recording type:"
     edit:
@@ -2124,7 +2134,7 @@ en:
     not_acceptable: is not acceptable. It should be a .mov, .wmv, or other video file.
   web_links:
     details:
-      not_available: no public version of this link available
+      not_available: no {{base.public}} version of this link available
       url: "url:"
     edit:
       not_authorized: Sorry - editing on this section of the site has been disallowed

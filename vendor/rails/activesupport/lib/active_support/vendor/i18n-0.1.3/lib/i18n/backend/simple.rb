@@ -156,6 +156,11 @@ module I18n
 
             if escaped
               pattern
+            # CUSTOM EDIT
+            # Kieran Pilkington, 2009-05-14
+            # Allows us to use keys in translations "Change {{base.password}}"
+            elsif pattern.scan('.').size > 0
+              translate(locale, key, {})
             elsif INTERPOLATION_RESERVED_KEYS.include?(pattern)
               raise ReservedInterpolationKey.new(pattern, string)
             elsif !values.include?(key)
