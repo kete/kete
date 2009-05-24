@@ -113,7 +113,6 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
           if @skip_existing
             # test if it's in there first
             # set virtual attribute that is is need by zoom_id call
-            item.basket_urlified_name = item.basket.urlified_name
             if @public_zoom_db.has_zoom_record?(item.zoom_id, @public_zoom_connection) || (@skip_private == false && @private_zoom_db.has_zoom_record?(item.zoom_id, @private_zoom_connection))
               @skipped_record_count += 1
               @results[:records_skipped] = @skipped_record_count
