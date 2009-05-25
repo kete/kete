@@ -261,7 +261,7 @@ module ExtendedContent
             # For singular values we expect something like:
             # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
             # So, we need to adjust the format to be consistent with the expected output..
-            values = field.first.is_a?(Array) ? field : [field]
+            values = field.first.is_a?(Array) || value_label_hash?(field.first) ? field : [field]
           end
 
           hash[field_name] = values
@@ -335,6 +335,8 @@ module ExtendedContent
         end
       elsif ['map', 'map_address'].member?(extended_field.ftype)
         value_array.is_a?(Array) ? value_array.first : value_array
+      elsif value_array.is_a?(Array) && value_label_hash?(value_array.first)
+        value_array
       else
         value_array.to_s
       end
@@ -351,6 +353,8 @@ module ExtendedContent
       values = structured_extended_content[extended_field_element_name]
       if values.size == 1
         values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+      elsif field && ['map', 'map_address'].member?(field.ftype)
+        # do nothing with the data in this case
       else
         values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
       end
@@ -675,21 +679,22 @@ module ExtendedContent
     def array_of_values(hash)
       # there is one instant where we just want to return the hash
       # if it has a label, we want a hash of label and value
-      if hash.keys.include?('value') && hash.keys.include?('label')
+      if value_label_hash?(hash)
         hash.keys.each { |key| hash.delete(key) unless %w(value label).include?(key) }
         return [hash]
       end
 
       # we have to use the no_map key here because its the only constant one (0|1)
+      # however, we need to fallback to coords incase we are working with legacy data
       # the rest can be left out which causes problems when saving items
-      return [hash] if hash.keys.include?('no_map') # map or map_address
+      return [hash] if hash.keys.include?('no_map') || hash.keys.include?('coords') # map or map_address
 
       hash.map do |k, v|
         # skip special keys
         next if k == 'xml_element_name'
 
         if v.is_a?(Hash) && !v.empty?
-          if v.keys.include?('value') && v.keys.include?('label')
+          if value_label_hash?(v)
             v
           else
             array_of_values(v).flatten.compact
