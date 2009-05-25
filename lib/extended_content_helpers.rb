@@ -185,8 +185,17 @@ module ExtendedContentHelpers
             # then we reassign value to what is between the ()
             # and push the beginning string to a label attribute
             parts = Array.new
-            # rescue incase value is something that can't have .match run on it (like integers/floats/fixnum etc)
-            begin; parts = value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a; rescue; end
+
+            # in case we are given something like this [ { 'value' => 'this', :label => 'that' } ]
+            # This happens in the case of using replace_value_for method (field=) on a different field
+            parts = if value.is_a?(Array) && value_label_hash?(value.first)
+              [nil, value.first['label'], value.first['value']]
+            elsif value.is_a?(String)
+              value.match(/(.+)\(([^\(\)]+)\)\Z/).to_a
+            else
+              Array.new
+            end
+
             unless parts.blank?
               options.merge!(:label => parts[1].chomp(' '))
               value = parts[2]
@@ -199,6 +208,10 @@ module ExtendedContentHelpers
       rescue
         logger.error("failed to format xml: #{$!.to_s}")
       end
+    end
+
+    def value_label_hash?(value)
+      value.is_a?(Hash) && value.keys.include?('value') && value.keys.include?('label')
     end
 
   end

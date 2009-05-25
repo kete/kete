@@ -6,7 +6,11 @@ namespace :kete do
   namespace :repair do
     
     # Run all tasks
-    task :all => ['kete:repair:fix_topic_versions', 'kete:repair:set_missing_contributors', 'kete:repair:correct_thumbnail_privacies', 'kete:repair:correct_site_basket_roles']
+    task :all => ['kete:repair:fix_topic_versions',
+                  'kete:repair:set_missing_contributors',
+                  'kete:repair:correct_thumbnail_privacies',
+                  'kete:repair:correct_site_basket_roles',
+                  'kete:repair:extended_fields']
     
     desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
     task :fix_topic_versions => :environment do
@@ -239,16 +243,58 @@ namespace :kete do
 
     desc "Correct site basket role creation dates for legacy databases"
     task :correct_site_basket_roles => :environment do
-      puts "Syncing basket role creation dates with user creation dates"
       site_basket = Basket.site_basket
       member_role = Role.find_by_name_and_authorizable_type_and_authorizable_id('member', 'Basket', site_basket)
-      user_roles = member_role.user_roles.all(:include => :user)
-      user_roles.each do |role|
-        next if role.created_at == role.user.created_at
-        UserRole.update_all({:created_at => role.user.created_at}, {:user_id => role.user, :role_id => member_role})
-        puts "Updated role creation date for #{role.user.user_name}"
+      if member_role # skip this task incase there is no member role in site basket
+        puts "Syncing basket role creation dates with user creation dates"
+        user_roles = member_role.user_roles.all(:include => :user)
+        user_roles.each do |role|
+          next if role.created_at == role.user.created_at
+          UserRole.update_all({:created_at => role.user.created_at}, {:user_id => role.user, :role_id => member_role})
+          puts "Updated role creation date for #{role.user.user_name}"
+        end
+        puts "Synced basket role creation dates"
       end
-      puts "Synced basket role creation dates"
+    end
+
+    desc "Run all extended field repair tasks"
+    task :extended_fields => ['kete:repair:extended_fields:legacy_google_map']
+
+    namespace :extended_fields do
+
+      desc "Run the legacy google map repair tasks"
+      task :legacy_google_map => :environment do
+        each_item_with_extended_fields do |item|
+          map_types = ['map', 'map_address']
+          map_fields = ExtendedField.all(:conditions => ["ftype IN (?)", map_types]).collect { |f| f.label_for_params }
+          map_fields.each do |field|
+            begin
+              map_data = item.send(field)
+              @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
+              raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)" unless File.exists?(@gma_config_path)
+              gma_config = YAML.load(IO.read(@gma_config_path))
+              value = { 'zoom_lvl' => (map_data['zoom_lvl'] || gma_config[:google_map_api][:default_zoom_lvl].to_s),
+                        'no_map' => '0', 'coords' => map_data['coords'] }
+              value['address'] = map_data['address'] if map_data['address']
+              item.send("#{field}=", value)
+            rescue
+              next
+            end
+          end
+          item.save!
+        end
+      end
+
+      private
+
+      def each_item_with_extended_fields(&block)
+        ZOOM_CLASSES.each do |zoom_class|
+          zoom_class.constantize.all(:conditions => ["extended_content IS NOT NULL AND extended_content != ''"]).each do |item|
+            yield(item)
+          end
+        end
+      end
+
     end
 
   end

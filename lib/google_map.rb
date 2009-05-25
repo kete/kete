@@ -185,11 +185,13 @@ module GoogleMap
   module ExtendedContent
     def validate_extended_map_field_content(extended_field_mapping, values)
       # Allow nil values. If this is required, the nil value will be caught earlier.
-      return nil if values.blank? || (values['no_map'] == "1")
+      return nil if values.blank?
       # the values passed in should form an array
       return I18n.t('google_map_lib.validate_extended_map_field_content.not_a_hash',
                     :class => values.class.name,
                     :value => values.inspect) unless values.is_a?(Hash)
+      # allow the user to not provide a map if they don't want to
+      return nil if values['no_map'] == "1"
       # check if this field is required and not set
       if values['coords'].nil? || values['zoom_lvl'].nil?
         if extended_field_mapping.required
