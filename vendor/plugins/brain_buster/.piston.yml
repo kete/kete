@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: cb21bcdeea48ef9a10a32ec137c09e595faa751b
+  branch: master
+lock: false
+repository_url: git://github.com/rsanheim/brain_buster.git
+repository_class: Piston::Git::Repository

@@ -2,8 +2,7 @@ require 'humane_integer'
 
  # Simple model to hold sets of questions and answers.
 class BrainBuster < ActiveRecord::Base
-  VERSION = "0.8.1"
-  PROJECT_HOME = "http://opensource.thinkrelevance.com/wiki/BrainBuster"
+  VERSION = "0.8.3"
 
   # Attempt to answer a captcha, returns true if the answer is correct.
   def attempt?(string)
@@ -11,27 +10,36 @@ class BrainBuster < ActiveRecord::Base
     if answer_is_integer?
       return string == answer || string == HumaneInteger.new(answer.to_i).to_english
     else
-      return string == answer
+      return string == answer.downcase
     end
   end
 
   def self.find_random_or_previous(id = nil)
-    id.nil? ? self.find(random_id(first_id, count)) : find(id)
+    id ? find_specific_or_fallback(id) : find_random
+  end
+
+  def self.random_function
+    case connection.adapter_name.downcase
+      when /sqlite/, /postgres/ then "random()"
+      else                           "rand()"
+    end
   end
 
   private
-
-  def self.random_id(first_id, count)
-    Kernel.rand(count) + first_id
+  
+  def self.find_random
+    find(:first, :order => random_function) 
   end
-
-  # return first valid id
-  def self.first_id
-    @first_id ||= find(:all, :order => "id").first.id
+  
+  def self.find_specific_or_fallback(id)
+    find(id)
+  rescue ActiveRecord::RecordNotFound
+    find_random
   end
-
+  
   def answer_is_integer?
     int_answer = answer.to_i
     (int_answer != 0) || (int_answer == 0 && answer == "0")
   end
+  
 end

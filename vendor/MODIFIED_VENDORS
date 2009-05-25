@@ -26,6 +26,13 @@ plugins/
   acts_as_soft_deletable/
     lib/
       unit_test_helper.rb      -> fixed errors when testing
+  brain_buster/
+    init.rb                    -> fixing issues with rails 2.3
+    lib/
+      brain_buster_system.rb   -> returning false instead of redirecting
+    views/
+      brain_busters/
+        _captcha.html.erb      -> text change
 
 rails/
   activesupport/
