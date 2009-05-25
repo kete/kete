@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
   attr_accessor :agree_to_terms
 
   validates_presence_of     :login, :email
-  validates_presence_of     :agree_to_terms,             :if => :new_record?
+  validates_inclusion_of    :agree_to_terms, :in => ['1'], :if => :new_record?, :message => 'before you can sign up'
   validates_presence_of     :security_code,              :if => :new_record?
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?

@@ -10,7 +10,8 @@ class ConfigureController < ApplicationController
                                            :zoom_dbs_update, :start_zebra,
                                            :index]
 
-  permit "tech_admin of :site"
+  permit "tech_admin of :site", :except => [:add_link_from_kete_net, :send_information, :get_site_linking_progress]
+  permit "site_admin or tech_admin of :site", :only => [:add_link_from_kete_net, :send_information, :get_site_linking_progress]
 
   include SiteLinking
 
