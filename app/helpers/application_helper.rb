@@ -397,7 +397,7 @@ module ApplicationHelper
         html += options[:rejected_text]
       else
         html += link_to(options[:current_role].gsub('|role|', role),
-                        { :urlified_name => 'site',
+                        { :urlified_name => @site_basket.urlified_name,
                           :controller => 'account',
                           :action => 'baskets' }) if show_roles
         # no one can remove themselves from the site basket

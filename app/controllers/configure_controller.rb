@@ -309,7 +309,7 @@ class ConfigureController < ApplicationController
     else
       flash[:error] = t('configure_controller.restart_server.problem_restarting')
     end
-    redirect_to :urlified_name => 'site', :controller => 'configure', :action => 'index'
+    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
   end
 
   def clear_cache
@@ -320,7 +320,7 @@ class ConfigureController < ApplicationController
     else
       flash[:error] = t('configure_controller.clear_cache.problem_clearing_cache')
     end
-    redirect_to :urlified_name => 'site', :controller => 'configure', :action => 'index'
+    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
   end
 
   private

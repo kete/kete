@@ -16,7 +16,7 @@ class UserTest < ActiveSupport::TestCase
       :email => 'quire@example.com',
       :password => 'quire',
       :password_confirmation => 'quire',
-      :agree_to_terms => true,
+      :agree_to_terms => '1',
       :security_code => 'test',
       :security_code_confirmation => 'test',
       :locale => 'en' }
