@@ -134,7 +134,7 @@ en:
       language_example: Which language would you like to {{t.base.view}} the site in?
       login: "{{t.base.login.capitalize}}:"
       login_example: Your {{t.base.username}} must be unique and contain no spaces. You will be asked for this and your {{t.base.password}} everytime you {{t.base.login}}. If your name is "John Smith" then you could use "jsmith" as your {{t.base.login}}.
-      prefered_license: "Prefered {{t.base.license.capitalize}}:"
+      preferred_license: "Preferred {{t.base.license.capitalize}}:"
       save: "{{t.base.save.capitalize}}"
       title: "{{t.base.edit.capitalize}} your details"
       user_name: "{{t.base.username.capitalize}}:"
