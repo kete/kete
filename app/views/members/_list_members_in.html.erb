@@ -55,7 +55,7 @@
   </tr>
   <tr>
     <td colspan="6">
-      <% if @current_basket.urlified_name != 'site' && @basket_admin -%>
+      <% if @current_basket.urlified_name != @site_basket.urlified_name && @basket_admin -%>
         <% form_tag :action => 'potential_new_members' do -%>
           <div id="searchheader">
             <h4><%=t 'members.list_members_in.search_for_members' %></h4>
