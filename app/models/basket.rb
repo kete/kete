@@ -155,7 +155,7 @@ class Basket < ActiveRecord::Base
     when 'number'
       find_tag_order = "taggings_count #{tag_direction}"
     else
-      find_tag_order = 'Rand()'
+      find_tag_order = :random
     end
 
     tag_options = {
