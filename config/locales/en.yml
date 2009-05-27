@@ -389,8 +389,8 @@ en:
       can_you_edit: Remember, you may have the option to directly {{t.base.edit}} this {{t.base.item}} or alternatively discuss it. Are you sure you want to {{t.base.flag}} it instead?
       flag_as: "{{t.base.flag.capitalize}} as:"
     header_add_basket_link:
-      add_basket: "{{t.base.add.capitalize}} {{t.base.basket}}"
-      request_basket: "{{t.base.request.capitalize}} {{t.base.basket}}"
+      add_basket: "{{t.base.add.capitalize}} {{t.base.basket.capitalize}}"
+      request_basket: "{{t.base.request.capitalize}} {{t.base.basket.capitalize}}"
     header_add_links:
       add_item: "{{t.base.add.capitalize}} {{t.base.item.capitalize}}"
     header_browse_links:
@@ -489,7 +489,7 @@ en:
     basket_moderator: "{{t.base.basket.capitalize}} {{t.base.moderator}}"
     basket_new_or_edit: "{{t.base.basket.capitalize}} New or {{t.base.edit.capitalize}}"
     cannot_delete_site: "Error: Cannot delete site {{t.base.basket}}!"
-    details_and_comments: Full details and {{t.base.comment.pluralize}}
+    details_and_comments: Full details and {{t.base.zoom_types.comment.pluralize}}
     dont_link: Don't link
     font_sans_serif: Sans Serif (Arial, Helvetica, and the like)
     font_serif: Serif (Times New Roman, etc.)
@@ -501,7 +501,7 @@ en:
     moderate_before_approved: "{{t.base.moderator}} {{t.base.views}} before {{t.base.item}} {{t.base.approved}}"
     moderate_on_flagged: "{{t.base.moderation}} upon being {{t.base.flagged}}"
     now_in_site_basket: This version was in {{basket_name}} {{t.base.basket}}, but that {{t.base.basket}} has been {{t.base.deleted}} and no longer exists on the site, now this version is put in default site {{t.base.basket}}.
-    only_comments: Only {{t.base.comment.pluralize}}
+    only_comments: Only {{t.base.zoom_types.comment.pluralize}}
     only_details: Only full details
     recent_as_headlines: Headlines (news style)
     recent_as_summaries: Summaries (blog style)
@@ -550,8 +550,8 @@ en:
       show_actions_to_example: (who can see the {{t.base.view}}, {{t.base.edit}}, {{t.base.history}} and other links)
       show_add_links_to: "{{t.base.show.capitalize}} {{t.base.add.capitalize}} Links to:"
       show_add_links_to_example: (who can {{t.base.relate}} or link {{t.base.item.pluralize}} together)
-      show_comments_to: "{{t.base.show.capitalize}} {{t.base.comment.pluralize.capitalize}} to:"
-      show_comments_to_example: (who can see and {{t.base.add}} {{t.base.comment.pluralize}})
+      show_comments_to: "{{t.base.show.capitalize}} {{t.base.zoom_types.comment.pluralize.capitalize}} to:"
+      show_comments_to_example: (who can see and {{t.base.add}} {{t.base.zoom_types.comment.pluralize}})
       show_flagging_to: "{{t.base.show.capitalize}} {{t.base.flagging.capitalize}} to:"
       show_flagging_to_example: (who can {{t.base.flag}} {{t.base.item.pluralize}})
       theme: "Theme:"
@@ -588,30 +588,30 @@ en:
       comment_control: "Who can add, {{t.base.edit}} and {{t.base.update}} comments on {{t.base.item.pluralize}}?:"
       comment_control_allows: allows
       comment_control_anyone: Anyone {{t.base.logged_in.downcase}}
-      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non {{t.base.basket.downcase}} {{t.base.member.pluralize}} to post comments
-      comment_control_members: Only {{t.base.basket.downcase}} {{t.base.member.pluralize}}
+      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non {{t.base.basket}} {{t.base.member.pluralize}} to post comments
+      comment_control_members: Only {{t.base.basket}} {{t.base.member.pluralize}}
       comment_control_not_allows: doesn't allow
       disabled: "{{t.base.disabled.capitalize}}"
-      doesnt_inherit: (this setting does not {{t.base.inherit.downcase}} to other {{t.base.basket.pluralize.downcase}})
+      doesnt_inherit: (this setting does not {{t.base.inherit}} to other {{t.base.basket.pluralize}})
       enabled: "{{t.base.enabled.capitalize}}"
       file_privacy: "Default Original File Privacy:"
       file_privacy_current_inheritance: The Site has files <strong>{{current_inheritance}}</strong> by default
-      file_privacy_example: "You may use this to restrict the download of an {{t.base.item}}'s original file.  For example, you may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the information about it, but limit downloading the actual {{t.base.zoom_types.document}} file to {{t.base.basket.downcase}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
-      file_privacy_private_example: Can be downloaded only by authorized {{t.base.basket.downcase}} {{t.base.member.pluralize}}
+      file_privacy_example: "You may use this to restrict the download of an {{t.base.item}}'s original file.  For example, you may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the information about it, but limit downloading the actual {{t.base.zoom_types.document}} file to {{t.base.basket}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
+      file_privacy_private_example: Can be downloaded only by authorized {{t.base.basket}} {{t.base.member.pluralize}}
       file_privacy_public_example: Can be downloaded by everyone
       file_visibility: "{{t.base.private}} Original Files Visibility:"
       file_visibility_example: "To {{t.base.view}} {{t.base.private.downcase}} attached files you must be at least a:"
-      inherit: "{{t.base.inherit}}"
-      inherit_example: "{{t.base.inherit}} this setting from the Site {{t.base.basket.downcase}}."
-      isnt_inherited: (this setting is not inherited from site {{t.base.basket.downcase}})
+      inherit: "{{t.base.inherit.capitalize}}"
+      inherit_example: "{{t.base.inherit.capitalize}} this setting from the Site {{t.base.basket}}."
+      isnt_inherited: (this setting is not inherited from site {{t.base.basket}})
       item_privacy: "Default {{t.base.item.capitalize}} Privacy:"
       item_privacy_current_inheritance: The Site has {{t.base.item.pluralize}} <strong>{{current_inheritance}}</strong> by default
-      item_privacy_private_example: Can be {{t.base.viewed}} only by {{t.base.basket.downcase}} {{t.base.member.pluralize}}
+      item_privacy_private_example: Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}}
       item_privacy_public_example: Can be {{t.base.viewed}} by everyone
       join_policy: "{{t.base.join.capitalize}} Policy:"
       join_policy_closed: "{{t.base.closed.capitalize}} {{t.base.membership.capitalize}}"
       join_policy_closed_example: "{{t.base.closed.capitalize}} {{t.base.basket}} {{t.base.membership.capitalize}}. {{t.base.member.capitalize.pluralize}} have to be {{t.base.added}} by {{t.base.basket}} {{t.base.administrator.capitalize.pluralize}} manually."
-      join_policy_current_inheritance: The Site has {{t.base.basket.downcase}} {{t.base.membership}} <strong>{{current_inheritance}}</strong> by default
+      join_policy_current_inheritance: The Site has {{t.base.basket}} {{t.base.membership}} <strong>{{current_inheritance}}</strong> by default
       join_policy_open: "{{t.base.open.capitalize}} {{t.base.membership.capitalize}}"
       join_policy_open_example: "{{t.base.enable.capitalize}} {{t.base.open.capitalize}} {{t.base.basket}} {{t.base.membership.capitalize}}. Anyone can {{t.base.join}} this {{t.base.basket}} with one click."
       join_policy_request: "{{t.base.request.capitalize}} {{t.base.membership.capitalize}}"
@@ -624,25 +624,25 @@ en:
       privacy_controls: "Privacy Controls:"
       privacy_controls_current_inheritance: The Site has <strong>{{current_inheritance}}</strong> Privacy Controls
       privacy_controls_disabled_example: Disable Privacy Controls if {{t.base.member.pluralize}} can only {{t.base.create}} publicly readable {{t.base.item.pluralize}}.
-      privacy_controls_enabled_example: "{{t.base.enable.capitalize}} Privacy Controls if {{t.base.member.pluralize}} of this {{t.base.basket.downcase}} can have both {{t.base.item.pluralize}} that are readable by the {{t.base.public.downcase}} at large AND {{t.base.item.pluralize}} that are only readable by themselves."
-      privacy_controls_site_basket: This {{t.base.basket.downcase.pluralize}} browsing controls are left {{t.base.enabled}} if any other {{t.base.basket.downcase.pluralize}} have privacy controls turned on (for site-wide {{t.base.private.downcase}} {{t.base.search}})
-      private: "{{t.base.private}}"
-      public: "{{t.base.public}}"
+      privacy_controls_enabled_example: "{{t.base.enable.capitalize}} Privacy Controls if {{t.base.member.pluralize}} of this {{t.base.basket}} can have both {{t.base.item.pluralize}} that are readable by the {{t.base.public.downcase}} at large AND {{t.base.item.pluralize}} that are only readable by themselves."
+      privacy_controls_site_basket: This {{t.base.basket.pluralize}} browsing controls are left {{t.base.enabled}} if any other {{t.base.basket.pluralize}} have privacy controls turned on (for site-wide {{t.base.private.downcase}} {{t.base.search}})
+      private: "{{t.base.private.capitalize}}"
+      public: "{{t.base.public.capitalize}}"
       recent_topics: "{{t.base.disable.capitalize}} Site {{t.base.recent.capitalize}} {{t.base.zoom_types.topic.capitalize.pluralize}} Display:"
-      recent_topics_example: Do not {{t.base.show}} new/{{t.base.edited}} topics in {{t.base.recent}} results on the Site {{t.base.basket.downcase}}?
+      recent_topics_example: Do not {{t.base.show}} new/{{t.base.edited}} topics in {{t.base.recent}} results on the Site {{t.base.basket}}?
     homepage_form:
       archives: Archives
-      archives_as: List {{t.base.basket.downcase.pluralize}} archive contents as?
+      archives_as: List {{t.base.basket.pluralize}} archive contents as?
       dont_redirect: Don't redirect
       go_to_browse: Go directly to "browse" options
       homepage_link: A link to the homepage topic's?
       homepage_topic: Homepage {{t.base.zoom_types.topic.capitalize}}
-      include_search: Include {{t.base.basket.downcase.pluralize}} {{t.base.search}} form?
+      include_search: Include {{t.base.basket.pluralize}} {{t.base.search}} form?
       only_homepage: "{{t.base.show.capitalize}} only homepage topic?"
       recent_topics: "{{t.base.recent.capitalize}} {{t.base.zoom_types.topic.capitalize.pluralize}}"
       recent_topics_amount: List how many {{t.base.recent}} topics?
-      recent_topics_example: Including a rolling list of {{t.base.recent}} topics is an excellent way to present this {{t.base.basket.downcase}} as a blog or a news site.
-      recent_topics_type: List {{t.base.basket.downcase.pluralize}} topics as?
+      recent_topics_example: Including a rolling list of {{t.base.recent}} topics is an excellent way to present this {{t.base.basket}} as a blog or a news site.
+      recent_topics_type: List {{t.base.basket.pluralize}} topics as?
       redirect_to: Redirect to results of?
       rss_feeds: RSS or Atom Feeds
       rss_feeds_example1: "A new-line separated list of URLs in the following format per line:"
@@ -652,17 +652,17 @@ en:
       security_warning: "Note: forms and javascript are not allowed for security reasons."
       security_warning_admin: Unless you check the box below.
       selected_image: Selected {{t.base.zoom_types.image.capitalize}}
-      selected_image_show: "{{t.base.show.capitalize}} {{t.base.zoom_types.image}} from {{t.base.basket.downcase}}?"
+      selected_image_show: "{{t.base.show.capitalize}} {{t.base.zoom_types.image}} from {{t.base.basket}}?"
       sidebar_content: Sidebar content after {{t.base.search}}
       tags: "{{t.base.tag.capitalize.pluralize}}"
       tags_amount: List how many {{t.base.tag.pluralize}}?
-      tags_as: List {{t.base.basket.downcase.pluralize}} {{t.base.tag.pluralize}} as?
+      tags_as: List {{t.base.basket.pluralize}} {{t.base.tag.pluralize}} as?
       tags_ordered_by: Order {{t.base.tag.pluralize}} by?
     homepage_options:
       button: "{{t.base.save.capitalize}}"
       current_homepage: "Current homepage topic:"
-      link_homepage: Link to new {{t.base.basket.downcase}} homepage {{t.base.zoom_types.topic}}
-      new_homepage: "{{t.base.add}} new {{t.base.basket.downcase}} homepage {{t.base.zoom_types.topic}}"
+      link_homepage: Link to new {{t.base.basket}} homepage {{t.base.zoom_types.topic}}
+      new_homepage: "{{t.base.add.capitalize}} new {{t.base.basket}} homepage {{t.base.zoom_types.topic}}"
       title: "{{basket_name}} Homepage Options"
     list:
       all: all
@@ -671,7 +671,7 @@ en:
       requests: "{{request_num}} requests"
       sort_by_created_at: "{{t.base.created.capitalize}}"
       sort_by_name: Name
-      title: "{{t.base.basket.downcase.pluralize}}"
+      title: "{{t.base.basket.pluralize}}"
     new:
       choose_profile: "{{t.base.choose.capitalize}}"
       title: "{{t.base.choose.capitalize}} {{t.base.basket}} {{t.base.profile.capitalize}}"
@@ -682,7 +682,7 @@ en:
       request: "{{t.base.request.capitalize}}"
       title: New {{t.base.basket}}
     permission_denied:
-      basket_contact_link: "{{t.base.contact}} this {{t.base.basket.downcase}}'s {{t.base.administrator.pluralize}}"
+      basket_contact_link: "{{t.base.contact}} this {{t.base.basket}}'s {{t.base.administrator.pluralize}}"
       basket_join_link: "{{t.base.basket}} {{t.base.join}} form"
       email_link: this {{t.base.contact.capitalize}} link
       login_link: logging in
@@ -702,20 +702,20 @@ en:
       edit: "{{t.base.edit.capitalize}}"
   baskets_controller:
     add_index_topic:
-      created: "{{t.base.basket}} homepage {{t.base.was_created}}."
+      created: "{{t.base.basket.capitalize}} homepage {{t.base.was_created}}."
     create:
-      created: "{{t.base.basket}} {{t.base.was_created}}."
-      to_be_reviewed: "{{t.base.basket}} will now be {{t.base.reviewed}}, and you'll be notified of the outcome."
+      created: "{{t.base.basket.capitalize}} {{t.base.was_created}}."
+      to_be_reviewed: "{{t.base.basket.capitalize}} will now be {{t.base.reviewed}}, and you'll be notified of the outcome."
     destroy:
-      destroyed: "{{t.base.basket}} {{t.base.was_deleted}}."
+      destroyed: "{{t.base.basket.capitalize}} {{t.base.was_deleted}}."
     redirect_if_current_user_cant_add_or_request_basket:
       not_authorized: You need to have the right permissions to {{t.base.add}} or {{t.base.request}} a {{t.base.basket}}
     update:
       feed_problem: there was a problem adding your feeds. Is the format you entered correct and you haven't entered a feed twice?
-      updated: "{{t.base.basket}} {{t.base.was_updated}}."
+      updated: "{{t.base.basket.capitalize}} {{t.base.was_updated}}."
     update_appearance:
       sanitized: Your submitted footer content was {{t.base.changed}} for security reasons.
-      updated: "{{t.base.basket}} appearance was {{t.base.updated}}."
+      updated: "{{t.base.basket.capitalize}} appearance was {{t.base.updated}}."
   baskets_helper:
     basket_preferences_inheritance_message:
       inheritance_notice: These settings will be inherited by all other {{t.base.basket.pluralize}} unless they individually specify their own policy.
@@ -1309,9 +1309,9 @@ en:
       metadata: The same goes for embedded metadata if {{t.base.item.pluralize}} have associated binary files (images, audio, video, and documents).
       past_perfect: Past Perfect 4
       place_in_imports_folder: your_folder should be placed on your server wherever your Kete souce code lives, <b>under the imports folder</b>.  So if you have installed Kete using the conventions of the installation guide, that would be something like '/home/kete/apps/my_kete_project/current/imports/your_folder'.
-      private: "{{t.base.private}}"
+      private: "{{t.base.private.capitalize}}"
       private_description: (Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})
-      public: "{{t.base.public}}"
+      public: "{{t.base.public.capitalize}}"
       public_description: (Can be {{t.base.viewed}} by everyone)
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
       records_xml_file: records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to {{t.base.create}} this file.
@@ -1391,7 +1391,7 @@ en:
   layouts:
     application:
       accessibility: Accessibility
-      add_link: List site on Kete.net.nz
+      add_link: list site on Kete.net.nz
       all_baskets: all {{t.base.basket.pluralize}}
       basket_label: "Tools for {{t.base.basket}}: {{basket}}"
       basket_profiles: "{{t.base.basket}} profiles"
@@ -1406,7 +1406,7 @@ en:
       home: Home
       import: import content into {{t.base.basket}}
       licenses: administer licenses
-      login: "{{t.base.login}}"
+      login: "{{t.base.login.capitalize}}"
       logout: Logout
       members: "{{t.base.basket}} {{t.base.member.pluralize}}"
       moderate: moderate {{t.base.basket}} contents
@@ -1448,9 +1448,9 @@ en:
       admin: "{{t.base.administrator}}"
       admin_actions: Administrative Actions
       change_to: "{{t.base.change.capitalize}} to"
-      email: "{{t.base.email}}"
+      email: "{{t.base.email.capitalize}}"
       joined: "{{t.base.joined.capitalize}}"
-      login: "{{t.base.login}}"
+      login: "{{t.base.login.capitalize}}"
       member: "{{t.base.member}}"
       moderator: "{{t.base.moderator}}"
       or: or
@@ -1459,13 +1459,13 @@ en:
       site_admin: "{{t.base.site_administrator}}"
       tech_admin: "{{t.base.technical_administrator}}"
       title: "{{basket_name}} {{t.base.member.capitalize.pluralize}}"
-      user_name: "{{t.base.username}}"
+      user_name: "{{t.base.username.capitalize}}"
     list_members_in:
       current_no_users_of_type: Currently no {{listing_type}}
       search_button: "{{t.base.search.capitalize}}"
       search_for_members: "{{t.base.search.capitalize}} for new {{t.base.member.pluralize}}"
     potential_new_members:
-      add_members: "{{t.base.add}} {{t.base.member.pluralize}}"
+      add_members: "{{t.base.add.capitalize}} {{t.base.member.pluralize}}"
       no_members: No potential {{t.base.member.pluralize}} are available.
       title: Potential New {{t.base.member.capitalize.pluralize}}
     rss:
@@ -1596,14 +1596,14 @@ en:
       add_new_theme: "{{t.baskets.appearance.new_theme}}"
       additional_footer_content: "{{t.baskets.appearance.additional_footer_content}}"
       additional_footer_content_do_not_sanitize: "{{t.baskets.appearance.additional_footer_content_exception}}"
-      additional_footer_content_replace: "{{t.baskets.appearance.additional_footer_content.replace}}"
+      additional_footer_content_replace: "{{t.baskets.appearance.additional_footer_content_replace}}"
       additional_footer_content_replace_description: "{{t.baskets.appearance.additional_footer_content_replace_example}}"
       basket_list_menu_options: "{{t.baskets.appearance.basket_list_options}}"
       basket_list_menu_options_description: "{{t.baskets.appearance.basket_list_options_example}}"
       font_family: "{{t.baskets.appearance.font_family}}"
       header_image: "{{t.baskets.appearance.current_header}}"
       header_image_description: "{{t.baskets.appearance.header_example}}"
-      inherit: "{{t.baskets.appearance.inherit}}"
+      inherit: "{{t.base.inherit.capitalize}}"
       no_themes_available: "{{t.baskets.appearance.no_themes}}"
       number_of_menu_topics: "{{t.baskets.appearance.basket_list_options_topic_number}}"
       show_action_menu_description: "{{t.baskets.appearance.show_actions_to_example}}"
@@ -1614,7 +1614,7 @@ en:
       show_discussion_to: "{{t.baskets.appearance.show_comments_to}}"
       show_field: "{{t.base.show}}<br />field?"
       show_flagging_description: "{{t.baskets.appearance.show_flagging_to_example}}"
-      show_flagging_to: "{{t.baskets.appearance.showing_flagging_to}}"
+      show_flagging_to: "{{t.baskets.appearance.show_flagging_to}}"
       show_hide_controls: "{{t.baskets.appearance.controls}}"
       sort_menu_by: "{{t.baskets.appearance.basket_list_options_sort_by}}"
       sort_menu_in_reverse: "{{t.baskets.appearance.basket_list_options_in_reverse}}"
@@ -1635,7 +1635,7 @@ en:
       disabled: "{{t.baskets.form.disabled}}"
       enabled: "{{t.baskets.form.enabled}}"
       in_reverse: "{{t.baskets.form.browse_order_in_reverse}}"
-      inherit: "{{t.base.inherit}}"
+      inherit: "{{t.base.inherit.capitalize}}"
       join_policy: "{{t.baskets.form.join_policy}}"
       member_list_policy: "{{t.baskets.form.member_list_policy}}"
       member_list_policy_description: "{{t.baskets.form.member_list_policy_example}}"
@@ -1644,17 +1644,17 @@ en:
       only_basket_members: "{{t.baskets.form.comment_control_members}}"
       open_membership: "{{t.baskets.form.join_policy_open}}"
       privacy_controls: "{{t.baskets.form.privacy_controls}}"
-      private: "{{t.base.private}}"
+      private: "{{t.base.private.capitalize}}"
       private_file_visibility: "{{t.baskets.form.file_visibility}}"
       private_file_visibility_description: "{{t.baskets.form.file_visibility_example}}"
-      public: "{{t.base.public}}"
+      public: "{{t.base.public.capitalize}}"
       request_membership: "{{t.baskets.form.join_policy_request}}"
       show_field: "{{t.profiles.appearance.show_field}}"
       sort_by: "{{t.baskets.form.browse_order_sort_by}}"
       use_software_default: "{{t.baskets.form.browse_order_default}}"
     homepage_options:
       archives: "{{t.baskets.homepage_form.archives}}"
-      archives_description: "{{t.baskets.homepage_form.achives_as}}"
+      archives_description: "{{t.baskets.homepage_form.archives_as}}"
       dont_redirect: "{{t.baskets.homepage_form.dont_redirect}}"
       go_to_browse: "{{t.baskets.homepage_form.go_to_browse}}"
       go_to_browse_description: "{{t.baskets.homepage_form.redirect_to}}"
@@ -1672,7 +1672,7 @@ en:
       search_description: "{{t.baskets.homepage_form.include_search}}"
       selected_image: "{{t.baskets.homepage_form.selected_image}}"
       selected_image_description: "{{t.baskets.homepage_form.selected_image_show}}"
-      show_field: "{{t.baskets.appearance.show_field}}"
+      show_field: "{{t.profiles.appearance.show_field}}"
       show_link_to_homepage_topic: "{{t.baskets.homepage_form.homepage_link}}"
       show_only_homepage_topic: "{{t.baskets.homepage_form.only_homepage}}"
       sidebar_content: "{{t.baskets.homepage_form.sidebar_content}}"
@@ -1680,7 +1680,7 @@ en:
       tags: "{{t.baskets.homepage_form.tags}}"
   profiles_controller:
     fields_available: Fields Available
-    title: "{{t.base.basket}} Profiles"
+    title: "{{t.base.basket.capitalize}} Profiles"
   profiles_helper:
     rules_allowed_check_box:
       expand_policy: "Expand Policy. "
@@ -1703,8 +1703,8 @@ en:
       in_reverse: In reverse?
       options: Options
       privacy_type: "That are:"
-      private: "{{t.base.private}}"
-      public: "{{t.base.public}}"
+      private: "{{t.base.private.capitalize}}"
+      public: "{{t.base.public.capitalize}}"
       search: "{{t.base.search.capitalize}}"
       sort_by: "Sort by:"
       update_results: "{{t.base.update}}"
@@ -1750,7 +1750,7 @@ en:
       select_items: Select which {{item_class}} to {{action}}, then click '{{action}}'.
       title: "{{action}} {{t.base.related}} {{zoom_class_plural}}"
     results:
-      add_a_new: "{{t.base.add}} a new "
+      add_a_new: "{{t.base.add.capitalize}} a new "
       address: "Address:"
       coordinates: "Coordinates:"
       no_results_found: No results found.
@@ -1830,7 +1830,7 @@ en:
     relevance: Relevance
     title: Title
     view_as_types_as_options:
-      inherit: "{{t.base.inherit}}"
+      inherit: "{{t.base.inherit.capitalize}}"
   search_sources:
     search_source:
       more: 'more &raquo;'
@@ -2022,9 +2022,9 @@ en:
       new: New
       note: "Note:"
       privacy: Privacy
-      private: "{{t.base.private}}"
+      private: "{{t.base.private.capitalize}}"
       private_description: (Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})
-      public: "{{t.base.public}}"
+      public: "{{t.base.public.capitalize}}"
       public_description: (Can be {{t.base.viewed}} by everyone)
       related_items_as_inset: Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} body?
       required_fields: "* denotes a required field"

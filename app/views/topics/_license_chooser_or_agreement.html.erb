@@ -23,7 +23,7 @@
 <p><%=t 'topics.license_chooser_or_agreement.how_to_set_license' %></p>
 <% end %>
 <% else %>
-<p><%=t 'topics.license_chooser_or_agreement.see_terms', :tac_link => link_to(t('topics.license_chooser_or_agreement.tac_link'), :urlified_name => @about_basket.urlified_name, :controller => "topics", :action => "show", :id => 4, :tabindex => '1') %></p>
+<p><%=t 'topics.license_chooser_or_agreement.see_terms', :tac_link => link_to(t('topics.license_chooser_or_agreement.tac_link'), { :urlified_name => @about_basket.urlified_name, :controller => "topics", :action => "show", :id => 4 }, { :tabindex => '1' }) %></p>
 <% end %>
 
 <% end -%>
