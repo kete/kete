@@ -32,7 +32,7 @@ class LicensesController < ApplicationController
     else
       flash[:error] = "No licenses to import were selected."
     end
-    redirect_to :urlified_name => 'site', :controller => 'licenses', :action => 'list'
+    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'licenses', :action => 'list'
   end
 
   private
