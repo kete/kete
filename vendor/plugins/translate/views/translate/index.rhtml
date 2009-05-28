@@ -92,7 +92,9 @@
 		</p>
 		<p>
 		  <em>
-			  <%= link_to_function 'Auto Translate', "getGoogleTranslation('#{key}', \"#{escape_javascript(from_text)}\", '#{@from_locale}', '#{@to_locale}')", :style => 'padding: 0; margin: 0;' %>
+			  <% # Kieran Pilkington, 2009-05-28
+			     # We want to interpolate the base values but not any variable values %>
+			  <%= link_to_function 'Auto Translate', "getGoogleTranslation('#{key}', \"#{escape_javascript(interpolate(from_text))}\", '#{@from_locale}', '#{@to_locale}')", :style => 'padding: 0; margin: 0;' %>
 			  <br/>
 			  <strong>Key:</strong><%=h key %><br/>
 			  <% if @files[key] %>

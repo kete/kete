@@ -29,4 +29,13 @@ module TranslateHelper
     end
     n_lines
   end
+
+  # Kieran Pilkington, 2009-05-28
+  # We want to interpolate the base values but not any variable values
+  def interpolate(text)
+    text = text.gsub('{{', '\{\{').gsub('\\{\\{t.', '{{t.')
+    result = I18n.backend.send(:interpolate, @from_locale, text)
+    result.gsub('\{\{', '{{')
+  end
+
 end
