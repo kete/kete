@@ -856,18 +856,38 @@ module ApplicationHelper
         value = value['value']
       end
 
-      case value
-      when /^(.+)\((\w{3,9}:\/\/.+)\)$/
-        # something (url)
-        link_to($1.strip, $2)
-      when /^\w+:\/\/[^ ]+/
-        # this is a url protocal of some sort, make link
-        link_to(label, value)
-      when /^[\w._%+-]+@[\w.-]+\.[\w]{2,4}$/
-        mail_to(label, value, :encode => "hex")
+      # textboxes are different than other content types because they can have multiple links
+      # or emails or such in the some field and we want to catch all those.
+      if ef.ftype == 'textarea'
+        value = sanitize(value)
+
+        label_regex = '(\'|")([^(\'|")]+)(\'|"):'
+        url_regex = '(\w+:\/\/[^ ]+)'
+        email_regex = '([\w._%+-]+@[\w.-]+\.[\w]{2,4})'
+
+        value.gsub!(/(^|\s)#{url_regex}/) { $1 + link_to($2.strip, $2.strip) }
+        value.gsub!(/(^|\s)#{email_regex}/) { $1 + mail_to($2.strip, $2.strip, :encode => "hex") }
+        value.gsub!(/#{label_regex}#{url_regex}/) { link_to($2.strip, $4.strip) }
+        value.gsub!(/#{label_regex}#{email_regex}/) { mail_to($4.strip, $2.strip, :encode => "hex") }
+
+        value
       else
-        sanitize(value)
+
+        case value
+        when /^(.+)\((\w{3,9}:\/\/.+)\)$/
+          # something (url)
+          link_to($1.strip, $2)
+        when /^\w+:\/\/[^ ]+/
+          # this is a url protocal of some sort, make link
+          link_to(label, value)
+        when /^[\w._%+-]+@[\w.-]+\.[\w]{2,4}$/
+          mail_to(label, value, :encode => "hex")
+        else
+          sanitize(value)
+        end
+
       end
+
     end
   end
 
