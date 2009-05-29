@@ -219,6 +219,12 @@ function makeSearchResultsDivClickable() {
   });
 }
 
+function makeFooterLanguageSelectionClickable() {
+  $('footer_language_selection').down('select').observe('change', function(event) {
+    $('footer_language_selection').down('form').submit();
+  });
+}
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
@@ -240,4 +246,6 @@ document.observe('dom:loaded', function() {
 
   // anywhere on the site
   makeSearchResultsDivClickable();
+
+  if ($('footer_language_selection')) { makeFooterLanguageSelectionClickable(); }
 });

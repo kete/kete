@@ -1376,3 +1376,14 @@ a.disabled {
   background-color: #ddd;
   text-decoration: none;
 }
+
+/*
+ * Language Dropdown Selection
+ */
+#footer_language_selection {
+  float: right;
+  margin-top: -50px;
+}
+#footer_language_selection label {
+  width: auto;
+}

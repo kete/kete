@@ -1395,7 +1395,9 @@ en:
       all_baskets: all {{t.base.basket.pluralize}}
       basket_label: "Tools for {{t.base.basket}}: {{basket}}"
       basket_profiles: "{{t.base.basket}} profiles"
+      change_language: "{{t.base.change.capitalize}}"
       choices: choices for extended fields
+      choose_language: '-{{t.base.choose}} language-'
       configure: reconfigure site
       contact: "{{t.base.contact.capitalize}}"
       content_types: content types
@@ -1405,6 +1407,7 @@ en:
       extended_fields: extended fields
       home: Home
       import: import content into {{t.base.basket}}
+      language: 'Language:'
       licenses: administer licenses
       login: "{{t.base.login.capitalize}}"
       logout: Logout

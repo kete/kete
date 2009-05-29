@@ -1354,16 +1354,22 @@ module ApplicationHelper
 
   end
 
-  def locale_dropdown(form)
-    default = if params[:user]
+  def locale_dropdown(form=nil, options=nil)
+    options ||= Hash.new
+    options[:default] ||= if params[:user]
       params[:user][:locale]
     elsif current_user != :false
       current_user.locale
     else
-      I18n.default_locale
+      I18n.locale
     end
     locales = User.language_choices.collect { |key,value| [value,key] }
-    form.select :locale, locales, :selected => default
+    locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]
+    if form
+      form.select :locale, locales, :selected => options[:default]
+    else
+      select_tag :override_locale, options_for_select(locales, options[:default])
+    end
   end
 
 end
