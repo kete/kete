@@ -629,10 +629,11 @@ module ApplicationHelper
   # tag related helpers
   def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
     zoom_class = zoom_class || tag[:zoom_class]
+    tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
     link_to h(tag[:name]),
             { :controller => 'search',
               :action => 'all',
-              :tag => tag[:id],
+              :tag => tag_for_url,
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
               :urlified_name => basket.urlified_name,
@@ -642,7 +643,6 @@ module ApplicationHelper
   alias :link_to_tagged_in_basket :link_to_tagged
 
   def tag_cloud(tags, classes)
-    logger.info("using this")
     max, min = 0, 0
     tags.each { |t|
       t_count = t[:total_taggings_count].to_i
@@ -654,7 +654,7 @@ module ApplicationHelper
 
     tags.each { |t|
       t_count = t[:total_taggings_count].to_i
-      yield t[:id], t[:name], classes[(t_count - min) / divisor]
+      yield t[:id], t[:name], classes[(t_count - min) / divisor], t[:to_param]
     }
   end
 
@@ -665,6 +665,7 @@ module ApplicationHelper
 
     html_string = "<p>Tags: "
     item_tags = item.tags
+    logger.debug("what are item_tags: " + item_tags.inspect)
     item_tags.each_with_index do |tag,index|
       html_string += link_to_tagged(tag, item.class.name)
       html_string += ", " unless item_tags.size == (index + 1)
