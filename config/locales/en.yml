@@ -837,7 +837,7 @@ en:
       required: (required)
       title: Available Form Fields
     current_fields:
-      delete: Delete
+      delete: "{{t.base.delete.capitalize}}"
       multiple: (multiple)
       none_mapped: No form fields currently mapped to this content type.
       reorder_button: Reorder Content Type Form
@@ -1915,7 +1915,7 @@ en:
       required: (required)
       title: Available Form Fields
     current_fields:
-      delete: Delete
+      delete: "{{t.base.delete.capitalize}}"
       multiple: (multiple)
       no_fields_mapped: No form fields currently mapped to this {{t.base.zoom_types.topic}} type.
       no_more_allowed: You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type, see above.
