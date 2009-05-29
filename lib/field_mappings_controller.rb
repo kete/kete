@@ -101,7 +101,7 @@ module FieldMappingsController
       mapping = field_mapping_class.find(params[:mapping_id])
 
       if any_items_using_mapping?(mapping)
-        flash[:error] = "The #{mapping.extended_field.label} mapping is in use and cannot be deleted."
+        flash[:error] = "The #{mapping.extended_field.label} mapping is in use by this #{item_type_class.name.underscore.humanize} or its descendants and cannot be deleted."
       else
         mapping.destroy
         flash[:notice] = "The #{mapping.extended_field.label} mapping has been deleted."
@@ -130,34 +130,28 @@ module FieldMappingsController
 
     def any_items_using_mapping?(mapping)
       extended_field = mapping.extended_field
-      ef_label = extended_field.label_for_params
+      ef_label = Regexp.escape(extended_field.label_for_params)
       element_label = extended_field.multiple? ? "#{ef_label}_multiple" : ef_label
+
+      like, not_like = case ActiveRecord::Base.connection.adapter_name.downcase
+        when /postgres/ then ["~*", "!~*"]
+        else                 ["REGEXP", "NOT REGEXP"]
+      end
+
+      conditions = ["extended_content #{like} ? AND extended_content #{not_like} ? AND extended_content #{not_like} ?",
+                    "<#{element_label}", "<#{element_label}[^>]*\/>", "<#{element_label}[^>]*>(<[0-9]+><#{ef_label}[^>]*><\/#{ef_label}><\/[0-9]+>)*<\/#{element_label}>"]
 
       # Check whether we are dealing with a topic type mapping
       # or a content type mapping and get items accordingly
-      items = if mapping.respond_to?(:topic_type)
-        mapping.topic_type.topics
+      items_count = if mapping.respond_to?(:topic_type)
+        conditions[0] += " AND topic_type_id IN (?)"
+        conditions << mapping.topic_type.full_set.collect { |tt| tt.id }
+        Topic.count(:conditions => conditions)
       else
-        mapping.content_type.class_name.constantize.all
+        mapping.content_type.class_name.constantize.count(:conditions => conditions)
       end
 
-      items_using_mapping = 0
-
-      items.each do |item|
-        efc = item.extended_content
-        mapping_in_use = true
-
-        contains_element = ( efc =~ /<#{element_label}/ )
-        element_blank = ( contains_element && ( efc =~ /<#{element_label}[^>]*\/>/ || efc =~ /<#{element_label}[^>]*><\/#{element_label}>/ ) )
-
-        mapping_in_use = false unless contains_element
-        mapping_in_use = false if element_blank
-        mapping_in_use = false if extended_field.multiple? && efc =~ /<#{element_label}[^>]*><1><#{ef_label}[^>]*><\/#{ef_label}><\/1><\/#{element_label}>/
-
-        items_using_mapping += 1 if mapping_in_use
-      end
-
-      items_using_mapping > 0
+      items_count > 0
     end
 
   end
