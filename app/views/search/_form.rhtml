@@ -1,5 +1,5 @@
 <% if params[:action] == 'find_related'
-     urlified_name = 'site'
+     urlified_name = @site_basket.urlified_name
    else
      urlified_name = @current_basket.urlified_name
    end
