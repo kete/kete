@@ -26,11 +26,7 @@
                                                                 <% end -%>
                                                         <% end -%>
                                                         <%= "(multiple)" if @mapping.extended_field_multiple -%>
-                                                        <% if @mapping.required %>
-                                                                (required)
-                                                        <% else %>
-                                                                (optional)
-                                                        <% end %>
+                                                        -<%= check_box("mapping[]", 'required', :checked => @mapping.required?) %> required?
                                                 </p>
                                         <% end %>
                                         <div class="wrap"><%= submit_tag "Reorder Topic Type Form" %></div>
