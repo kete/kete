@@ -221,7 +221,9 @@ function makeSearchResultsDivClickable() {
 
 function makeFooterLanguageSelectionClickable() {
   $('footer_language_selection').down('select').observe('change', function(event) {
-    $('footer_language_selection').down('form').submit();
+    if ($('footer_language_selection').down('select').value != '') {
+      $('footer_language_selection').down('form').submit();
+    }
   });
 }
 

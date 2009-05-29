@@ -126,8 +126,14 @@ module AuthenticatedSystem
 
     # Redirect to the URI stored by the most recent store_location call or
     # to the passed default.
-    def redirect_back_or_default(default, lang=I18n.locale)
-      session[:return_to] ? redirect_to(strip_locale(session[:return_to])) : redirect_to(default)
+    def redirect_back_or_default(default, lang=nil)
+      if session[:return_to]
+        return_to = strip_locale(session[:return_to])
+        return_to = "/#{lang.to_s}" + return_to if lang
+        redirect_to(return_to)
+      else
+        redirect_to(default)
+      end
       session[:return_to] = nil
     end
 

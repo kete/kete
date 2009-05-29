@@ -18,7 +18,6 @@ class ApplicationController < ActionController::Base
     I18n.locale = I18n.default_locale
     I18n.locale = current_user.locale if current_user != :false && User.language_choices.include?(current_user.locale)
     I18n.locale = params[:locale] if params[:locale] && User.language_choices.include?(params[:locale])
-    I18n.locale = params[:override_locale] if params[:override_locale] && User.language_choices.include?(params[:override_locale])
   end
 
   # See lib/ssl_helpers.rb
