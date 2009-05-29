@@ -39,7 +39,7 @@ Factory.define :user do |u|
   u.updated_at Time.now.to_s(:db)
   u.activation_code 'admincode'
   u.activated_at Time.now.to_s(:db)
-  u.agree_to_terms true
+  u.agree_to_terms '1'
   u.security_code "a"
 end
 # this shouldn't be called directly, use the method missing functionality to add users on the fly
