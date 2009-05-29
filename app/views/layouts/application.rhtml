@@ -419,17 +419,7 @@
           <div style="clear:both;"></div>
         </div>
 
-        <div id="footer_language_selection" class="footer_div">
-          <% if User.language_choices.keys.size > 1 %>
-            <% form_tag do %>
-              <div class="form-element">
-                <noscript><label><%=t 'layouts.application.language' %></label></noscript>
-                <%= locale_dropdown(nil, { :default => I18n.locale, :pre_text => t('layouts.application.choose_language') }) -%>
-                <noscript><%= submit_tag t('layouts.application.change_language') %></noscript>
-              </div>
-            <% end %>
-          <% end %>
-        </div>
+        <%= render 'account/language_selection' %>
 
       <% else -%>
 
