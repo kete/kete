@@ -7,7 +7,7 @@
                         <% @available_fields = TopicType.find(local_id).available_fields %>
                         <% if @available_fields.size > 0 %>
                                 <% form_tag :action =>
-  :add_to_topic_type, :id => local_id  do %>
+  :add_to_item_type, :id => local_id  do %>
 
                                         <% for @extended_field in @available_fields %>
                                                 <p>
@@ -21,8 +21,8 @@
                                                         <% end -%>
                                                         <%= t('topic_types.available_fields_form.multiple') if @extended_field.multiple? -%>
                                                         :<br />
-                                                        <%=t 'topic_types.available_fields_form.optional' %> <%= check_box("extended_field[]", 'add_checkbox') %>
-                                                        <%=t 'topic_types.available_fields_form.required' %> <%= check_box("extended_field[]", 'required_checkbox') %>
+                                                        <label><%=t 'topic_types.available_fields_form.optional' %> <%= check_box("extended_field[]", 'add_checkbox') %></label>
+                                                        <label><%=t 'topic_types.available_fields_form.required' %> <%= check_box("extended_field[]", 'required_checkbox') %></label>
                                                 </p>
                                         <% end %>
                                         <div class="wrap"><%= submit_tag t('topic_types.available_fields_form.add') %></div>

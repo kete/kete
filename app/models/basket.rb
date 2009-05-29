@@ -175,6 +175,7 @@ class Basket < ActiveRecord::Base
       @tag_counts_array << {
         :id => tag.id,
         :name => tag.name,
+        :to_param => tag.to_param,
         :total_taggings_count => tag.taggings_count
       }
     end

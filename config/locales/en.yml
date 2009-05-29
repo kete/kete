@@ -837,11 +837,11 @@ en:
       required: (required)
       title: Available Form Fields
     current_fields:
+      delete: Delete
       multiple: (multiple)
       none_mapped: No form fields currently mapped to this content type.
-      optional: (optional)
       reorder_button: Reorder Content Type Form
-      required: (required)
+      required: 'required?'
       title: Current Form Fields
     edit:
       return_to_content_types: Return to content types
@@ -874,11 +874,6 @@ en:
     show:
       back: Back
       edit: "{{t.base.edit.capitalize}}"
-  content_types_controller:
-    create:
-      created: Content type {{t.base.was_created}}.
-    update:
-      updated: Content type {{t.base.was_updated}}.
   date:
     abbr_day_names:
     - Sun
@@ -1920,12 +1915,12 @@ en:
       required: (required)
       title: Available Form Fields
     current_fields:
+      delete: Delete
       multiple: (multiple)
       no_fields_mapped: No form fields currently mapped to this {{t.base.zoom_types.topic}} type.
       no_more_allowed: You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type, see above.
-      optional: (optional)
       reorder: Reorder {{t.base.zoom_types.topic.capitalize}} Type Form
-      required: (required)
+      required: 'required?'
       title: Current Form Fields
     edit:
       edit_button: "{{t.base.edit.capitalize}}"
@@ -1968,13 +1963,6 @@ en:
     show:
       back: Back
       edit: "{{t.base.edit.capitalize}}"
-  topic_types_controller:
-    create:
-      created: "{{t.base.zoom_types.topic.capitalize}} Type {{t.base.was_created}}."
-    destroy:
-      destroyed: "{{t.base.zoom_types.topic.capitalize}} Type {{t.base.was_deleted}}."
-    update:
-      updated: "{{t.base.zoom_types.topic.capitalize}} Type {{t.base.was_updated}}."
   topics:
     actions_menu:
       delete: "{{t.base.delete.capitalize}}"

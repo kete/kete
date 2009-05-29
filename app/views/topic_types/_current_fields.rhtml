@@ -11,7 +11,7 @@
                         <% @form_field_mappings = TopicType.find(local_id).topic_type_to_field_mappings %>
                         <% if @form_field_mappings.size > 0 %>
                                 <% form_tag :action =>
-                :reorder_fields_for_topic_type, :id => local_id do %>
+                :reorder_fields, :id => local_id do %>
                                         <% for @mapping in @form_field_mappings %>
                                                 <p>
                                                         <%= text_field("mapping[]", 'position', :size => "3") %>
@@ -24,11 +24,8 @@
                                                                 <% end -%>
                                                         <% end -%>
                                                         <%= t('topic_types.current_fields.multiple') if @mapping.extended_field_multiple -%>
-                                                        <% if @mapping.required %>
-                                                                <%=t 'topic_types.current_fields.required' %>
-                                                        <% else %>
-                                                                <%=t 'topic_types.current_fields.optional' %>
-                                                        <% end %>
+                                                        -<%= check_box("mapping[]", 'required', :checked => @mapping.required?) %> <%=t 'topic_types.current_fields.required' %>
+                                                        <%= " - " + link_to(t('topic_types.current_fields.delete'), :action => 'remove_mapping', :id => params[:id], :mapping_id => @mapping.id) unless any_items_using_mapping?(@mapping) %>
                                                 </p>
                                         <% end %>
                                         <div class="wrap"><%= submit_tag t('topic_types.current_fields.reorder') %></div>

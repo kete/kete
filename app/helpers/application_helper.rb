@@ -657,10 +657,11 @@ module ApplicationHelper
   # tag related helpers
   def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
     zoom_class = zoom_class || tag[:zoom_class]
+    tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
     link_to h(tag[:name]),
             { :controller => 'search',
               :action => 'all',
-              :tag => tag[:id],
+              :tag => tag_for_url,
               :trailing_slash => true,
               :controller_name_for_zoom_class => zoom_class_controller(zoom_class),
               :urlified_name => basket.urlified_name,
@@ -670,7 +671,6 @@ module ApplicationHelper
   alias :link_to_tagged_in_basket :link_to_tagged
 
   def tag_cloud(tags, classes)
-    logger.info("using this")
     max, min = 0, 0
     tags.each { |t|
       t_count = t[:total_taggings_count].to_i
@@ -682,7 +682,7 @@ module ApplicationHelper
 
     tags.each { |t|
       t_count = t[:total_taggings_count].to_i
-      yield t[:id], t[:name], classes[(t_count - min) / divisor]
+      yield t[:id], t[:name], classes[(t_count - min) / divisor], t[:to_param]
     }
   end
 
@@ -693,6 +693,7 @@ module ApplicationHelper
 
     html_string = "<p>#{t('application_helper.tags_for.tags')} "
     item_tags = item.tags
+    logger.debug("what are item_tags: " + item_tags.inspect)
     item_tags.each_with_index do |tag,index|
       html_string += link_to_tagged(tag, item.class.name)
       html_string += ", " unless item_tags.size == (index + 1)
@@ -884,18 +885,38 @@ module ApplicationHelper
         value = value['value']
       end
 
-      case value
-      when /^(.+)\((\w{3,9}:\/\/.+)\)$/
-        # something (url)
-        link_to($1.strip, $2)
-      when /^\w+:\/\/[^ ]+/
-        # this is a url protocal of some sort, make link
-        link_to(label, value)
-      when /^[\w._%+-]+@[\w.-]+\.[\w]{2,4}$/
-        mail_to(label, value, :encode => "hex")
+      # textboxes are different than other content types because they can have multiple links
+      # or emails or such in the some field and we want to catch all those.
+      if ef.ftype == 'textarea'
+        value = sanitize(value)
+
+        label_regex = '(\'|")([^(\'|")]+)(\'|"):'
+        url_regex = '(\w+:\/\/[^ ]+)'
+        email_regex = '([\w._%+-]+@[\w.-]+\.[\w]{2,4})'
+
+        value.gsub!(/(^|\s)#{url_regex}/) { $1 + link_to($2.strip, $2.strip) }
+        value.gsub!(/(^|\s)#{email_regex}/) { $1 + mail_to($2.strip, $2.strip, :encode => "hex") }
+        value.gsub!(/#{label_regex}#{url_regex}/) { link_to($2.strip, $4.strip) }
+        value.gsub!(/#{label_regex}#{email_regex}/) { mail_to($4.strip, $2.strip, :encode => "hex") }
+
+        value
       else
-        sanitize(value)
+
+        case value
+        when /^(.+)\((\w{3,9}:\/\/.+)\)$/
+          # something (url)
+          link_to($1.strip, $2)
+        when /^\w+:\/\/[^ ]+/
+          # this is a url protocal of some sort, make link
+          link_to(label, value)
+        when /^[\w._%+-]+@[\w.-]+\.[\w]{2,4}$/
+          mail_to(label, value, :encode => "hex")
+        else
+          sanitize(value)
+        end
+
       end
+
     end
   end
 

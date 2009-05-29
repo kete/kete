@@ -402,7 +402,9 @@ class ActionController::IntegrationTest
     visit "/#{basket.urlified_name}/baskets/destroy/#{basket.to_param}", :post
 
     body_should_contain 'Basket was successfully deleted.'
-    body_should_contain 'Introduction'
+    # should return to site basket, not sub basket
+    body_should_contain 'Browse'
+    body_should_not_contain 'Browse:'
 
     @@baskets_created.delete(basket)
 
