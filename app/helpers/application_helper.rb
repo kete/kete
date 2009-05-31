@@ -868,14 +868,11 @@ module ApplicationHelper
         value = value.gsub("\r", "\n")
         value = RedCloth.new(value).to_html
 
-        label_regex = '(\'|")([^(\'|")]+)(\'|"):'
         url_regex = '(\w+:\/\/[^ |<]+)'
         email_regex = '([\w._%+-]+@[\w.-]+\.[\w]{2,4})'
 
         value.gsub!(/(^|\s)#{url_regex}/) { $1 + link_to($2.strip, $2.strip) }
         value.gsub!(/(^|\s)#{email_regex}/) { $1 + mail_to($2.strip, $2.strip, :encode => "hex") }
-        value.gsub!(/#{label_regex}#{url_regex}/) { link_to($2.strip, $4.strip) }
-        value.gsub!(/#{label_regex}#{email_regex}/) { mail_to($4.strip, $2.strip, :encode => "hex") }
 
         value
       else
