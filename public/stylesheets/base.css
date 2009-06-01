@@ -1152,3 +1152,10 @@ div.gmnoprint {
   background-color: #ddd;
   text-decoration: none;
 }
+
+/*
+ * Extended Fields Display
+ */
+.detail-extended-field-label {
+  vertical-align: text-top;
+}
