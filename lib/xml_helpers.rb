@@ -2,7 +2,7 @@ module XmlHelpers
   unless included_modules.include? XmlHelpers
 
     def show_file_data_for?(item, params=Hash.new)
-      return false unless ::Import::VALID_ARCHIVE_CLASSES.include?(item.class.name)
+      return false unless ATTACHABLE_CLASSES.include?(item.class.name)
       return false if params && params[:action] == 'show' && params[:format] == 'xml' &&
                       !current_user_can_see_private_files_for?(item)
       true
