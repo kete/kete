@@ -144,6 +144,10 @@ en:
       email: What is the {{t.base.email}} address used to {{t.base.create}} your {{t.base.account}}?
       login: What is the {{t.base.login}} of your {{t.base.account}}?
       title: "{{t.base.request.capitalize}} {{t.base.password}}"
+    language_selection:
+      change_language: "{{t.base.change.capitalize}}"
+      choose_language: '-{{t.base.choose}} language-'
+      language: 'Language:'
     login:
       admin_details: Please enter the default {{t.base.administrator}} {{t.base.account}} {{t.base.login}} and {{t.base.password}} to continue to configuration of the site.
       button: "{{t.base.login.capitalize}}"
@@ -243,6 +247,9 @@ en:
       more_than_one_account: This {{t.base.email}} address belongs to more than one {{t.base.account}}. Please select the one you're trying to {{t.base.reset}}.
       no_such_email: Could not find a {{t.base.user}} with that {{t.base.email}} address
       no_such_login: Could not find a {{t.base.user}} with that {{t.base.login}}
+    change_locale:
+      change_permanently: ' If you prefer this language permanently, please set it via your account preference.'
+      locale_changed: 'The locale has been changed.'
     login:
       failed_login: Your {{t.base.password}} or {{t.base.login}} do not match our records. Please try again.
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
@@ -1162,6 +1169,16 @@ en:
       allow_user_choices_yes: "Yes"
       collapse_all: Collapse all
       expand_all: Expand all
+  field_mappings_controller:
+    create:
+      created: "{{item_class}} {{t.base.was_created}}."
+    destroy:
+      destroyed: "{{item_class}} {{t.base.was_deleted}}."
+    remove_mapping:
+      being_used: "The {{field_label}} mapping is in use by this {{item_class}} or its descendants and cannot be deleted."
+      removed: "The {{field_label}} mapping has been deleted."
+    update:
+      updated: "{{item_class}} {{t.base.was_updated}}."
   flagging_controller_lib:
     flag_version:
       item_flagged: Thank you for your input.  A {{t.base.moderator}} has been notified and will {{t.base.review}} the {{t.base.item}} in question. The {{t.base.item}} has been reverted to a non-contested version for the time being.
@@ -1390,9 +1407,7 @@ en:
       all_baskets: all {{t.base.basket.pluralize}}
       basket_label: "Tools for {{t.base.basket}}: {{basket}}"
       basket_profiles: "{{t.base.basket}} profiles"
-      change_language: "{{t.base.change.capitalize}}"
       choices: choices for extended fields
-      choose_language: '-{{t.base.choose}} language-'
       configure: reconfigure site
       contact: "{{t.base.contact.capitalize}}"
       content_types: content types
@@ -1402,7 +1417,6 @@ en:
       extended_fields: extended fields
       home: Home
       import: import content into {{t.base.basket}}
-      language: 'Language:'
       licenses: administer licenses
       login: "{{t.base.login.capitalize}}"
       logout: Logout

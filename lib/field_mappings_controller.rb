@@ -5,9 +5,10 @@ module FieldMappingsController
       klass.send :before_filter, :login_required, :only => [:list, :index]
       klass.send :permit, "site_admin or admin of :site"
 
-      # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
+      # GETs should be safe (see
+      # http://www.w3.org/2001/tag/doc/whenToUseGet.html)
       klass.send :verify, :method => :post, :only => [ :destroy, :create, :update ],
-                          :redirect_to => { :action => :list }
+        :redirect_to => { :action => :list }
     end
 
     def index
@@ -20,7 +21,8 @@ module FieldMappingsController
 
       if item.save
         set_ancestory(item) if item.class == TopicType
-        flash[:notice] = "#{item.class.name.underscore.humanize} was successfully created."
+        flash[:notice] = t('field_mappings_controller.create.created',
+          :item_class => item.class.name.underscore.humanize)
         set_instance_var_for(item)
         redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => item
       else
@@ -35,14 +37,15 @@ module FieldMappingsController
 
       if item.update_attributes(params[param_name])
         if item.class == TopicType
-          # expire show details for all topics of this type
-          # since it displays the topic_type.name
+          # expire show details for all topics of this type since it displays
+          # the topic_type.name
           item.topics.each do |topic|
             expire_fragment(:controller => 'topics', :urlified_name => topic.basket.urlified_name, :action => 'show', :id => topic, :part => 'details')
           end
         end
 
-        flash[:notice] = "#{item.class.name.underscore.humanize} was successfully updated."
+        flash[:notice] = t('field_mappings_controller.update.updated',
+          :item_class => item.class.name.underscore.humanize)
         set_instance_var_for(item)
         redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => item
       else
@@ -56,7 +59,8 @@ module FieldMappingsController
       successful = item.destroy
 
       if successful
-        flash[:notice] = "#{item.class.name.underscore.humanize} was successfully deleted."
+        flash[:notice] = t('field_mappings_controller.destroy.destroyed',
+          :item_class => item.class.name.underscore.humanize)
         redirect_to :urlified_name => @site_basket.urlified_name, :action => 'list'
       end
     end
@@ -64,23 +68,22 @@ module FieldMappingsController
     def add_to_item_type
       item = item_type_class.find(params[:id])
 
-      # this is setup for a form that has multiple fields
-      # we want to separate out plain form fields from required ones
+      # this is setup for a form that has multiple fields we want to separate
+      # out plain form fields from required ones
 
       # params has a hash of hashes for field with field_id as the key
       params[:extended_field].keys.each do |field_id|
         field = ExtendedField.find(field_id)
 
-        # into the field's hash
-        # now we can grab the field's attributes that are being updated
+        # into the field's hash now we can grab the field's attributes that are
+        # being updated
         params[:extended_field][field_id].keys.each do |to_add_attr|
           to_add_attr_value = params[:extended_field][field_id][to_add_attr]
 
           # if we are supposed to add the field
           if to_add_attr_value.to_i == 1
 
-            # determine if it should be a required field
-            # or just an optional one
+            # determine if it should be a required field or just an optional one
             if to_add_attr =~ /required/
               item.required_form_fields << field
             else
@@ -101,10 +104,13 @@ module FieldMappingsController
       mapping = field_mapping_class.find(params[:mapping_id])
 
       if mapping.used_by_items?
-        flash[:error] = "The #{mapping.extended_field.label} mapping is in use by this #{item_type_class.name.underscore.humanize} or its descendants and cannot be deleted."
+        flash[:error] = t('field_mappings_controller.remove_mapping.being_used',
+          :field_label => mapping.extended_field.label,
+          :item_class => item_type_class.name.underscore.humanize)
       else
         mapping.destroy
-        flash[:notice] = "The #{mapping.extended_field.label} mapping has been deleted."
+        flash[:notice] = t('field_mappings_controller.remove_mapping.removed',
+          :field_label => mapping.extended_field.label)
       end
 
       redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => params[:id]

@@ -2,9 +2,9 @@
   <% if User.language_choices.keys.size > 1 %>
     <% form_tag(:controller => 'account', :action => 'change_locale') do %>
       <div class="form-element">
-        <noscript><label><%=t 'layouts.application.language' %></label></noscript>
-        <%= locale_dropdown(nil, { :default => I18n.locale, :pre_text => t('layouts.application.choose_language') }) -%>
-        <noscript><%= submit_tag t('layouts.application.change_language') %></noscript>
+        <noscript><label><%=t 'account.language_selection.language' %></label></noscript>
+        <%= locale_dropdown(nil, { :default => I18n.locale, :pre_text => t('account.language_selection.choose_language') }) -%>
+        <noscript><%= submit_tag t('account.language_selection.change_language') %></noscript>
       </div>
     <% end %>
   <% end %>

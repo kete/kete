@@ -410,8 +410,8 @@ class AccountController < ApplicationController
   end
 
   def change_locale
-    notice = 'The locale has been changed.'
-    notice += ' If you prefer this language permanently, please set it via your account preference.' if logged_in?
+    notice = t('account_controller.change_locale.locale_changed')
+    notice += t('account_controller.change_locale.change_permanently') if logged_in?
     flash[:notice] = notice
     redirect_back_or_default({:controller => 'account', :action => 'index'}, params[:override_locale])
   end
