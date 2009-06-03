@@ -1,37 +1,36 @@
 <tr>
   <td>
-        <h4><%=t 'topic_types.current_fields.title' %></h4>
-
-                        <% # required, position, and acts_as_list functionality are in mappings
-                           # but we also need field label attribute from extended_fields
-                           # we use piggy_back plugin to get the label attribute, see model
-                           # TODO: figure out how to refresh display with new order
-                           # revert to form_remote_tag then, also in _available_form_fields.rhtml
-                        %>
-                        <% @form_field_mappings = TopicType.find(local_id).topic_type_to_field_mappings %>
-                        <% if @form_field_mappings.size > 0 %>
-                                <% form_tag :action =>
-                :reorder_fields, :id => local_id do %>
-                                        <% for @mapping in @form_field_mappings %>
-                                                <p>
-                                                        <%= text_field("mapping[]", 'position', :size => "3") %>
-                                                        <%= h(@mapping.extended_field_label) %>
-                                                        <% if !@mapping.extended_field_xml_element_name.blank? %>
-                                                                <% if !@mapping.extended_field_xsi_type.blank? %>
-                                                                        (<%= h("#{@mapping.extended_field_xml_element_name} xsi:type=\"#{@mapping.extended_field_xsi_type}\"") %>)
-                                                                <% else -%>
-                                                                        (<%= h(@mapping.extended_field_xml_element_name) %>)
-                                                                <% end -%>
-                                                        <% end -%>
-                                                        <%= t('topic_types.current_fields.multiple') if @mapping.extended_field_multiple -%>
-                                                        -<%= check_box("mapping[]", 'required', :checked => @mapping.required?) %> <%=t 'topic_types.current_fields.required' %>
-                                                        <%= " - " + link_to(t('topic_types.current_fields.delete'), :action => 'remove_mapping', :id => params[:id], :mapping_id => @mapping.id) unless any_items_using_mapping?(@mapping) %>
-                                                </p>
-                                        <% end %>
-                                        <div class="wrap"><%= submit_tag t('topic_types.current_fields.reorder') %></div>
-                                <% end %>
-                        <% else %>
-                                <p><%=t 'topic_types.current_fields.no_fields_mapped' %></p>
-                        <% end %>
+    <h4><%=t 'topic_types.current_fields.title' %></h4>
+    <% # required, position, and acts_as_list functionality are in mappings
+    # but we also need field label attribute from extended_fields
+    # we use piggy_back plugin to get the label attribute, see model
+    # TODO: figure out how to refresh display with new order
+    # revert to form_remote_tag then, also in _available_form_fields.rhtml
+    %>
+    <% @form_field_mappings = TopicType.find(local_id).topic_type_to_field_mappings %>
+    <% if @form_field_mappings.size > 0 %>
+      <% form_tag :action => :reorder_fields, :id => local_id do %>
+        <% for @mapping in @form_field_mappings %>
+          <p>
+            <%= text_field("mapping[]", 'position', :size => "3") %>
+            <%= h(@mapping.extended_field_label) %>
+            <% if !@mapping.extended_field_xml_element_name.blank? %>
+              <% if !@mapping.extended_field_xsi_type.blank? %>
+                (<%= h("#{@mapping.extended_field_xml_element_name} xsi:type=\"#{@mapping.extended_field_xsi_type}\"") %>)
+              <% else -%>
+                (<%= h(@mapping.extended_field_xml_element_name) %>)
+              <% end -%>
+            <% end -%>
+            <%= t('topic_types.current_fields.multiple') if @mapping.extended_field_multiple -%>
+            -<%= check_box("mapping[]", 'required', :checked => @mapping.required?) %> <%=t 'topic_types.current_fields.required' %>
+            <%= " - " + link_to(t('topic_types.current_fields.delete'), { :action => 'remove_mapping', :id => params[:id], :mapping_id => @mapping.id },
+              { :id => "mapping_#{@mapping.id}_delete" }) unless @mapping.used_by_items? %>
+          </p>
+        <% end %>
+        <div class="wrap"><%= submit_tag t('topic_types.current_fields.reorder') %></div>
+      <% end %>
+    <% else %>
+      <p><%=t 'topic_types.current_fields.no_fields_mapped' %></p>
+    <% end %>
   </td>
 </tr>

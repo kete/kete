@@ -1387,3 +1387,10 @@ a.disabled {
 #footer_language_selection label {
   width: auto;
 }
+
+/*
+ * Extended Fields Display
+ */
+.detail-extended-field-label {
+  vertical-align: text-top;
+}
