@@ -240,7 +240,7 @@ system_settings_027:
 
     Note, this only takes effect from this point forward.  No existing image files will be changed.
   id: "27"
-  value: "['image/tiff', 'image/bmp', 'image/x-ms-bmp', 'image/quicktime', 'image/x-quicktime', 'application/postscript', 'application/octet-stream', :image]"
+  value: "['image/tiff', 'image/bmp', 'image/x-ms-bmp', 'image/quicktime', 'image/x-quicktime', 'application/postscript', 'application/octet-stream', 'image/vnd.adobe.photoshop', :image]"
   section: Images
 system_settings_028:
   name: Maximum Uploaded File Size
