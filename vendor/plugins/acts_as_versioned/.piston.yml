@@ -1,7 +1,7 @@
 --- 
 format: 1
 handler: 
-  commit: d7c0da03e62d0fbc478678f8f0f5ddd3511c9026
+  commit: 1bd3d255eb43562a44fd1f907d82ec80db2872d3
   branch: master
 lock: false
 repository_url: git://github.com/technoweenie/acts_as_versioned.git

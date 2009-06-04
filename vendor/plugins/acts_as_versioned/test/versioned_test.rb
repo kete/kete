@@ -14,13 +14,6 @@ class VersionedTest < Test::Unit::TestCase
     assert_instance_of Page.versioned_class, p.versions.first
   end
 
-  def test_version_has_unique_created_at
-    p = pages(:welcome)
-    p.title = 'update me'
-    p.save!
-    assert_not_equal p.created_on, p.versions.latest.created_on
-  end
-
   def test_saves_without_revision
     p = pages(:welcome)
     old_versions = p.versions.count
@@ -348,5 +341,30 @@ class VersionedTest < Test::Unit::TestCase
     landmarks(:washington).doesnt_trigger_version = "This should not trigger version"
     assert landmarks(:washington).changed?
     assert !landmarks(:washington).altered?
+  end
+
+  def test_without_locking_temporarily_disables_optimistic_locking
+    enabled1 = false
+    block_called = false
+    
+    ActiveRecord::Base.lock_optimistically = true
+    LockedPage.without_locking do
+      enabled1 = ActiveRecord::Base.lock_optimistically
+      block_called = true
+    end
+    enabled2 = ActiveRecord::Base.lock_optimistically
+    
+    assert block_called
+    assert !enabled1
+    assert enabled2
+  end
+  
+  def test_without_locking_reverts_optimistic_locking_settings_if_block_raises_exception
+    assert_raises(RuntimeError) do
+      LockedPage.without_locking do
+        raise RuntimeError, "oh noes"
+      end
+    end
+    assert ActiveRecord::Base.lock_optimistically
   end
 end
