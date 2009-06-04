@@ -23,10 +23,15 @@ module Globalize
               
               include InstanceMethods
               extend  ClassMethods
-              alias_method_chain :reload, :globalize
               
               self.globalize_proxy = Globalize::Model::ActiveRecord.create_proxy_class(self)
-              has_many :globalize_translations, :class_name => globalize_proxy.name, :extend => Extensions
+              has_many(
+                :globalize_translations,
+                :class_name   => globalize_proxy.name,
+                :extend       => Extensions,
+                :dependent    => :delete_all,
+                :foreign_key  => class_name.foreign_key
+              )
 
               after_save :update_globalize_record              
             end
@@ -109,7 +114,7 @@ module Globalize
         end
         
         module InstanceMethods
-          def reload_with_globalize
+          def reload(options = nil)
             globalize.clear
             
             # clear all globalized attributes
@@ -118,7 +123,7 @@ module Globalize
               @attributes.delete attr.to_s
             end
             
-            reload_without_globalize
+            super options
           end
           
           def globalize
@@ -132,6 +137,16 @@ module Globalize
           def translated_locales
             globalize_translations.scoped(:select => 'DISTINCT locale').map {|gt| gt.locale.to_sym }
           end
+          
+          def set_translations options
+            options.keys.each do |key|
+
+              translation = globalize_translations.find_by_locale(key.to_s) ||
+                globalize_translations.build(:locale => key.to_s)
+              translation.update_attributes!(options[key])
+            end
+          end
+          
         end
       end
     end

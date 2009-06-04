@@ -1,8 +1,8 @@
 --- 
 format: 1
 handler: 
-  commit: a46ab1e885c37aff435823d992cc8c919b0e3c50
+  commit: 2aa2a3af6cf2885e2070afeb763d0241187154f1
   branch: master
-repository_url: git://github.com/joshmh/globalize2.git
 lock: false
+repository_url: git://github.com/joshmh/globalize2.git
 repository_class: Piston::Git::Repository
