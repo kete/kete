@@ -478,19 +478,21 @@ module ItemPrivacyTestHelper
         # Should be three, 1 for private, 1 for public and 1 for pending blank private..
         assert_equal 3, d.versions.size
 
-        assert_equal 1, d.versions.find_by_version(1).tags.size
-        assert_equal "test item", d.versions.find_by_version(1).title
-        assert_equal "Version 1", d.versions.find_by_version(1).description
-        assert_equal false, d.versions.find_by_version(1).private?
+        version1 = d.versions.find_by_version(1)
+        assert_equal 1, version1.tags.size
+        assert_equal "Version 1", version1.title
+        assert_equal "Version 1", version1.description
+        assert_equal false, version1.private?
 
-        assert_equal 0, d.versions.find_by_version(2).tags.size
-        assert_equal BLANK_TITLE, d.versions.find_by_version(2).title
-        assert_equal nil, d.versions.find_by_version(2).description
-        assert_equal false, d.versions.find_by_version(2).private?
+        version2 = d.versions.find_by_version(2)
+        assert_equal 0, version2.tags.size
+        assert_equal BLANK_TITLE, version2.title
+        assert_equal nil, version2.description
+        assert_equal false, version2.private?
 
         assert_equal 3, d.version
-        assert_equal "test item", d.title
-        assert_equal "Version 1", d.description
+        assert_equal "Version 3", d.title
+        assert_equal "Version 3", d.description
         assert_equal false, d.private?
 
         assert_nil d.private_version!
@@ -500,28 +502,32 @@ module ItemPrivacyTestHelper
       def test_new_version_of_moderated_public_item
 
         d = new_moderated_public_item
-        d.update_attributes!(:description => "Version 2")
+        # this will save as version 4
+        # (but because basket is moderated, result will revert to public version 3)
+        d.update_attributes!(:title => "Version 4", :description => "Version 4")
 
         assert_equal 4, d.versions.size
         assert_equal 3, d.version
-        assert_equal "Version 1", d.description
+        assert_equal "Version 3", d.description
 
         assert_equal 1, d.versions.find_by_version(4).tags.size
-        assert_equal "Version 2", d.versions.find_by_version(4).description
+        assert_equal "Version 4", d.versions.find_by_version(4).description
       end
 
       def test_new_private_version_of_moderated_public_item
 
         d = new_moderated_public_item
-        d.update_attributes!(:description => "Version 2", :private => true)
+        # this will save as version 4
+        # (but because basket is moderated, result will revert to public version 3)
+        d.update_attributes!(:title => "Version 4", :description => "Version 4", :private => true)
 
         assert_equal 5, d.versions.size
 
         assert_equal 3, d.version
-        assert_equal "Version 1", d.description
+        assert_equal "Version 3", d.description
 
         assert_equal 1, d.versions.find_by_version(4).tags.size
-        assert_equal "Version 2", d.versions.find_by_version(4).description
+        assert_equal "Version 4", d.versions.find_by_version(4).description
 
         assert_equal BLANK_TITLE, d.versions.find_by_version(5).title
         assert_equal nil, d.versions.find_by_version(5).description
@@ -738,20 +744,26 @@ module ItemPrivacyTestHelper
       protected
 
         def new_moderated_public_item
-          d = eval(@base_class).new(@new_model.merge({ :description => "Version 1", :private => false }))
+          d = eval(@base_class).new(@new_model.merge({ :title => "Version 1", :description => "Version 1", :private => false }))
           d.instance_eval do
             def fully_moderated?
               true
             end
           end
+          # this will save the above as version 1
+          # then make a 'Pending Moderation' as version 2
           d.save!
           d.reload
 
           d.change_pending_to_reviewed_flag(1)
           d.revert_to(1)
+          d.title = "Version 3"
+          d.description = "Version 3"
           d.version_comment = "Content from revision # 1."
           d.do_not_moderate = true
           d.do_not_sanitize = true
+          # this will save the above as version 3
+          # (and will be the current public version)
           d.save!
           d.reload
           d.do_not_moderate = false
