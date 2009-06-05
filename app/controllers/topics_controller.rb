@@ -124,7 +124,7 @@ class TopicsController < ApplicationController
     # update the attribute so that when they save, the extended field validations
     # take effect. We also have to reload and then switch to the privacy of the item
     # they are editing (to ensure private item editing shows the correct data)
-    if @topic.topic_type_id != params[:topic][:topic_type_id].to_i
+    if params[:topic][:topic_type_id] && @topic.topic_type_id != params[:topic][:topic_type_id].to_i
       @topic.update_attribute(:topic_type_id, params[:topic][:topic_type_id].to_i)
       @topic.reload
       public_or_private_version_of(@topic)
