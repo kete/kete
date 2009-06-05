@@ -82,7 +82,7 @@ class ActionController::IntegrationTest
     body_should_contain "Login to Kete"
     fill_in "login", :with => username.to_s
     fill_in "password", :with => password
-    click_button "Log in"
+    click_button "Login"
 
     body_should_contain("Logged in successfully") unless options[:should_fail_login]
   end
