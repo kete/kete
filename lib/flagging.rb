@@ -151,7 +151,6 @@ module Flagging
           
         update_hash[:private] = self.private? if self.respond_to?(:private)
         update_hash[:description] = PENDING_FLAG if self.class.name == 'Comment'
-        update_hash[:description] = PENDING_FLAG if self.class.name == 'Comment'
 
         update_hash[:short_summary] = nil if self.can_have_short_summary?
     
@@ -273,6 +272,7 @@ module Flagging
         # or
         # adding a blank revision, if no unflagged version is available
 
+        self.reload # make sure we have the latest attribute values (specifically version)
         if should_moderate?
           flag_live_version_with(PENDING_FLAG)
         end
