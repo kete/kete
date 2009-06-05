@@ -31,11 +31,12 @@ class SearchSourcesHelperTest < ActionView::TestCase
 
     should "return an trucated summary of the entry if one is present" do
       entry = Entry.new
+      entry.title = nil
 
       assert_equal '', search_source_title_for(entry)
 
-      entry.summary = 'This is a summary for testing purposes'
-      assert_equal entry.summary, search_source_title_for(entry)
+      entry.title = 'This is a summary for testing purposes'
+      assert_equal entry.title, search_source_title_for(entry)
       assert_equal 'This is...', search_source_title_for(entry, 10)
     end
 

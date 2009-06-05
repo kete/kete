@@ -219,7 +219,7 @@ en:
       login: "{{t.base.login.capitalize}}:"
       login_example: Your {{t.base.login}} needs to be unique and contain no spaces. You will be asked for this and your {{t.base.password}} everytime you {{t.base.login}}. If your name is "John Smith" then you could use "jsmith" as your {{t.base.login}}.
       password: "{{t.base.password.capitalize}}:"
-      prefered_license: "Prefered {{t.base.license.capitalize}}:"
+      preferred_license: "Preferred {{t.base.license.capitalize}}:"
       privacy_policy_link: Privacy policy
       security_code: "Security Code: Please enter the text from the {{t.base.zoom_types.image}} to the right"
       terms_and_conditions_link: Terms and conditions
@@ -681,7 +681,7 @@ en:
       title: "{{t.base.basket.pluralize}}"
     new:
       choose_profile: "{{t.base.choose.capitalize}}"
-      title: "{{t.base.choose.capitalize}} {{t.base.basket}} {{t.base.profile.capitalize}}"
+      title: "{{t.base.choose.capitalize}} {{t.base.basket.capitalize}} {{t.base.profile.capitalize}}"
       which_profile: Which {{t.base.profile}} for this {{t.base.basket}}?
       working: "Working.. "
     new_form:
@@ -2197,8 +2197,8 @@ en:
       code: "Code:"
       created: Your {{t.base.account}} has been {{t.base.created}}.
       enter_this_code: "If you aren't automatically activated, please enter this code:"
-      password: "{{t.base.password}}:"
-      username: "{{t.base.username}}:"
+      password: "{{t.base.password.capitalize}}:"
+      username: "{{t.base.username.capitalize}}:"
   user_notifier_model:
     account_activated: Your {{t.base.account}} has been activated!
     account_banned: Your {{t.base.account}} has been banned!

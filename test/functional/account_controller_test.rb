@@ -143,7 +143,7 @@ class AccountControllerTest < ActionController::TestCase
     create_user
     assert_equal 1, @emails.length
     assert_match /Please activate your new account/, @emails.first.subject
-    assert_match /Username: quire/, @emails.first.body
+    assert_match /User name: quire/, @emails.first.body
     assert_match /Password: quire/, @emails.first.body 
     assert_match /account\/activate\/#{assigns(:user).activation_code}/, @emails.first.body
   end
