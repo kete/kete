@@ -23,6 +23,12 @@ CHANGED
 gems/
 
 plugins/
+  acts-as-taggable-on/
+    lib/
+      acts_as_taggable_on/
+        acts_as_taggable_on.rb -> add basket id to Tagging creation
+        taggings.rb            -> belongs_to :basket
+        tags_helper.rb         -> Comment out tag cloud, we use our own
   acts_as_soft_deletable/
     lib/
       unit_test_helper.rb      -> fixed errors when testing
