@@ -26,7 +26,8 @@
        <% tab_count += 1 -%>
     <% end -%>
     <% if @tech_admin -%>
-    <li><%= link_to t('baskets.actions_menu.importers'),
+    <li class="<%= ((params[:controller] == 'importers') ? 'selected' : '') %>">
+      <%= link_to t('baskets.actions_menu.importers'),
             {:action => :list,
       :controller => 'importers'}, :tabindex => '1' %></li>
     <% end -%>
