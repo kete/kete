@@ -529,7 +529,9 @@ class ActionController::IntegrationTest
   # incase the one mimetype-fu tries to use is not compatible
   def attach_file(locator, filename, mime_type = nil)
     file_path = File.join(RAILS_ROOT, "test/fixtures/files/#{filename}")
-    mime_type = File.mime_type?(File.open(file_path)).split(';').first if mime_type.blank?
+    file = File.open(file_path)
+    mime_type = File.mime_type?(file).split(';').first if mime_type.blank?
+    file.close
     super(locator, file_path, mime_type)
   end
 
