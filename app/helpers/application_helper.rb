@@ -492,6 +492,15 @@ module ApplicationHelper
   # START RELATED ITEM HELPERS
   #
 
+  def any_related_items_for_current_item?
+    @any_related_items_for_current_item ||= begin
+      conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{zoom_class_from_controller(params[:controller])}')"
+      conditions += "OR (content_item_relations.topic_id = :cache_id)" if params[:controller] == 'topics'
+      count = ContentItemRelation.count(:conditions => [conditions, { :cache_id => @cache_id }])
+      count > 0
+    end
+  end
+
   # Public items need to be sorted based on the acts_as_list position in the database so
   # we can't use zebra to find public items in this case, so pull it from the database
   def public_related_items_for(item, options={})
