@@ -17,7 +17,7 @@ class RegisterTest < ActionController::IntegrationTest
                  :user_security_code => 'SECURITY' }
       fields.each { |name,value| fill_in name.to_s, :with => '' }
       click_button 'Sign up'
-      body_should_contain '10 errors prohibited this user from being saved'
+      body_should_contain '11 errors prohibited this user from being saved'
       fields.each { |name,value| fill_in name.to_s, :with => value }
       check 'user_agree_to_terms'
       click_button 'Sign up'

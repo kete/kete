@@ -6,7 +6,10 @@ class ExtendedContentTest < ActionController::IntegrationTest
     
     setup do
       @@extended_fields, @@topic_types = [], []
-      
+
+      TopicTypeToFieldMapping.destroy_all
+      ContentTypeToFieldMapping.destroy_all
+
       add_james_as_super_user
       login_as("james")
       
@@ -25,7 +28,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
     end
     
     should "be able to create a record with optional extended content" do
-      topic = new_topic :title => "Topic with optional extended content", :topic_type => "Test topic type" do
+      topic = new_topic :title => "Topic with optional extended content", :topic_type => @with_optional_field.name do
         fill_in "Extended data", :with => "Test value"
       end
       
@@ -43,7 +46,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
     end
     
     should "be able to create a record with required extended content" do
-      topic = new_topic :title => "Topic with required extended content", :topic_type => "Required test topic type" do
+      topic = new_topic :title => "Topic with required extended content", :topic_type => @with_required_field.name do
         fill_in "Required extended data", :with => "Test value"
       end
       
@@ -88,7 +91,10 @@ class ExtendedContentTest < ActionController::IntegrationTest
       
         add_james_as_super_user
         login_as('james')
-      
+
+        TopicTypeToFieldMapping.destroy_all
+        ContentTypeToFieldMapping.destroy_all
+
         options = {
           :extended_field_value_required => true,
           :extended_field_label => "Extended data for #{class_name}", 
@@ -124,9 +130,12 @@ class ExtendedContentTest < ActionController::IntegrationTest
         
         click_button "Add to Content Type"
       
-        text_verb = options[:extended_field_value_required] ? "required" : "optional"
-        body_should_contain "#{options[:extended_field_label]} (#{text_verb})"
-      
+        body_should_contain "#{options[:extended_field_label]}"
+        if options[:extended_field_value_required]
+          assert field_with_id("mapping_#{ContentTypeToFieldMapping.last.id}_required").checked?
+        else
+          assert !field_with_id("mapping_#{ContentTypeToFieldMapping.last.id}_required").checked?
+        end
       end
     
       teardown do
@@ -168,7 +177,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
         :extended_field_label => "Extended data", 
         :extended_field_multiple => false,
         :extended_field_ftype => "Text",
-        :topic_type_name => "Test topic type",
+        :topic_type_name => "Test topic type #{rand}",
         :topic_type_description => "Topic type description"
       }.merge(options)
       
@@ -193,9 +202,13 @@ class ExtendedContentTest < ActionController::IntegrationTest
       check "extended_field_#{ExtendedField.last.id.to_s}_#{verb}_checkbox"
       click_button "Add to Topic Type"
       
-      text_verb = options[:extended_field_value_required] ? "required" : "optional"
-      body_should_contain "#{options[:extended_field_label]} (#{text_verb})"
-      
+      body_should_contain "#{options[:extended_field_label]}"
+      if options[:extended_field_value_required]
+        assert field_with_id("mapping_#{TopicTypeToFieldMapping.last.id}_required").checked?
+      else
+        assert !field_with_id("mapping_#{TopicTypeToFieldMapping.last.id}_required").checked?
+      end
+
       assert_equal options[:topic_type_name], TopicType.last.name
       @@topic_types << TopicType.last
       
