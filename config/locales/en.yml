@@ -370,6 +370,8 @@ en:
           one: 1 error prohibited this {{model}} from being {{t.base.saved}}
           other: "{{count}} errors prohibited this {{model}} from being {{t.base.saved}}"
   application_controller:
+    link_related:
+      added_relation: "{{t.base.successfully.capitalize}} {{t.base.added}} {{t.base.item}} relationships"
     redirect_if_current_basket_isnt_approved_for_public_viewing:
       not_available: The {{t.base.basket}} {{basket_name}} is not {{t.base.approved}} for {{t.base.public}} {{t.base.viewing}}
     rescue_404:
@@ -1811,8 +1813,8 @@ en:
       changed: Homepage {{t.base.zoom_types.topic}} {{t.base.changed}} {{t.base.successfully}}
       failed: Problem changing Homepage {{t.base.zoom_types.topic}}
     find_related:
-      add: "{{t.base.add}}"
-      existing: Existing
+      add: "{{t.base.add.capitalize}}"
+      remove: "{{t.base.remove.capitalize}}"
       restore: Restore
     for:
       no_search_terms: You haven't entered any {{t.base.search}} terms.

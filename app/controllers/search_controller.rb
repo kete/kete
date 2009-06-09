@@ -643,7 +643,7 @@ class SearchController < ApplicationController
 
     case params[:function]
     when "remove"
-      @verb = t('search_controller.find_related.existing')
+      @verb = t('search_controller.find_related.remove')
       @next_action = "unlink"
       @results = existing
     when "restore"
