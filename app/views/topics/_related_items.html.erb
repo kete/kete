@@ -4,12 +4,8 @@ inset ||= false
 
 class_suffix = inset ? "-white" : "-blue"
 
-# These queries uses zoom and aren't cached
 @total_item_counts = 0
-conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{item.class.name}')"
-conditions = "content_item_relations.topic_id = :cache_id OR #{conditions}" if params[:controller] == 'topics'
-@content_relations_count = ContentItemRelation.count(:conditions => [conditions, { :cache_id => @cache_id }])
-if @content_relations_count > 0
+if any_related_items_for_current_item?
   @public_item_counts = public_related_items_for(item, { :topics_only => topics_only, :count_only => true })
   @private_item_counts = private_related_items_for(item, { :topics_only => topics_only, :count_only => true })
   @public_item_counts.each { |v| @total_item_counts += v.last }

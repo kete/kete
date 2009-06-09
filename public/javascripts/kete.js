@@ -1,4 +1,6 @@
-// Submenu code "borrowed" from lighthouseapp.com
+/**
+ * Submenu code "borrowed" from lighthouseapp.com
+ */
 
 var SubMenu = Class.create({
   initialize: function(li) {
@@ -16,6 +18,10 @@ var SubMenu = Class.create({
     this.menu.toggle()
   }
 });
+
+/**
+ * Portrait Related Javascript
+ */
 
 function preventLinksExecuting() {
   $$('.portrait_image a').each(function(link) {
@@ -69,6 +75,23 @@ function enablePortraitDragAndDrop() {
   }
 }
 
+function enabledPortraitHelpToggle() {
+  $('portrait_help').down('a').observe('click', function(event) {
+    $('portrait_help_div').show();
+    $('portrait_help').down('a').hide();
+    event.stop();
+  });
+  $('close_help').observe('click', function(event) {
+    $('portrait_help_div').hide();
+    $('portrait_help').down('a').show();
+    event.stop();
+  });
+}
+
+/**
+ * Choice Heirarchy code (inactive)
+ */
+
 function enableCategoryListUpdater(controller_name) {
   $$('.category_list a').each(function(link) {
     link.observe('click', function(evt) {
@@ -88,6 +111,10 @@ function enableCategoryListUpdater(controller_name) {
     });
   });
 }
+
+/**
+ * Related Items Slideshow functionality
+ */
 
 function setupRelatedCollapsableSections() {
   hideAllRelatedSections();
@@ -161,6 +188,12 @@ function setupRelatedImagesSlideshowPauseButton() {
   });
 }
 
+/**
+ * Extended Field Editing
+ */
+
+// Incase we add a custom choice, all choices below the
+// current field should be cleared and hidden
 function clearCorrespondingFieldWhenEdited(field_id, field_class, select_id, select_class) {
   $(select_id).observe('change', function(evt) {
     $(field_id).clear();
@@ -184,6 +217,10 @@ function clearCorrespondingFieldWhenEdited(field_id, field_class, select_id, sel
   });
 }
 
+/**
+ * Quick and easy expand and collapse fucntionality for Basket Profiles
+ */
+
 function quickExpandCollapse(clickable_element, affected_element, collapsed_image, expanded_image) {
   $(clickable_element).observe('click', function(event) {
     if ($(clickable_element).src.match(collapsed_image)) {
@@ -196,6 +233,10 @@ function quickExpandCollapse(clickable_element, affected_element, collapsed_imag
     event.stop();
   });
 }
+
+/**
+ * Search/Recent Topic result display
+ */
 
 function makeElementLinkable(id, url) {
   $(id).observe('click', function(event) {
@@ -227,27 +268,15 @@ function makeFooterLanguageSelectionClickable() {
   });
 }
 
+/**
+ * Now setup everything to run when needed once the page is loaded
+ */
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
-  
-  if ($('portrait_help_div')) {
-    $('portrait_help').down('a').observe('click', function(event) {
-      $('portrait_help_div').show();
-      $('portrait_help').down('a').hide();
-      event.stop();
-    });
-    $('close_help').observe('click', function(event) {
-      $('portrait_help_div').hide();
-      $('portrait_help').down('a').show();
-      event.stop();
-    })
-  }
-
+  if ($('portrait_help_div')) { enabledPortraitHelpToggle(); }
   if ($$('#related_items.inset').size() > 0) { setupRelatedCollapsableSections(); }
-
-  // anywhere on the site
   makeSearchResultsDivClickable();
-
   if ($('footer_language_selection')) { makeFooterLanguageSelectionClickable(); }
 });

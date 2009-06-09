@@ -370,8 +370,6 @@ en:
           one: 1 error prohibited this {{model}} from being {{t.base.saved}}
           other: "{{count}} errors prohibited this {{model}} from being {{t.base.saved}}"
   application_controller:
-    link_related:
-      added_relation: "{{t.base.successfully.capitalize}} {{t.base.added}} {{t.base.item}} relationships"
     redirect_if_current_basket_isnt_approved_for_public_viewing:
       not_available: The {{t.base.basket}} {{basket_name}} is not {{t.base.approved}} for {{t.base.public}} {{t.base.viewing}}
     rescue_404:
@@ -1831,8 +1829,6 @@ en:
       privacy_type: " that are {{privacy}}"
       related_to: " {{t.base.related}} to {{source_item}}"
       tagged_as: " {{t.base.tagged}} as {{tag_name}}"
-    pagination_links:
-      depreciated: depreciated, we now use will_paginate plugin
   search_model:
     browse_default: Browse Default
     choice_hierarchy: Choice Hierarchy

@@ -9,16 +9,6 @@ module SearchHelper
     link_to("#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})", location, :tabindex => '1')
   end
 
-  # TODO: depreciated, remove 1.2
-  def link_to_previous_page(phrase,previous_page)
-    link_to(phrase, :overwrite_params => { :page => previous_page })
-  end
-
-  # TODO: depreciated, remove 1.2
-  def link_to_next_page(phrase,next_page)
-     link_to(phrase, :overwrite_params => { :page => next_page })
-  end
-
   # look in parameters for what this is a refinement of
   def last_part_of_title_if_refinement_of(add_links = true)
     end_of_title_parts = Array.new
@@ -52,11 +42,6 @@ module SearchHelper
     last_part_of_title_if_refinement_of false
   end
 
-  # depreciated, now use will_paginate
-  def pagination_links(options = { })
-    html_string = t('search_helper.pagination_links.depreciated')
-  end
-
   def title_setup_first_part(title_so_far, span_around_zoom_class=false)
     if @current_basket != @site_basket
       title_so_far += @current_basket.name + ' '
@@ -83,12 +68,6 @@ module SearchHelper
     }
 
     $('sort_type').observe('change', toggleDisabledSortDirection);"
-  end
-
-  def instantiate_from_results(result_hash)
-    raise "A hash must be passed in. Arrays are not acceptable." unless result_hash.instance_of?(Hash)
-
-    eval("#{result_hash['class'].classify}").find(result_hash['id'])
   end
 
   # Used to check if an item is part of an existing relationship in related items search

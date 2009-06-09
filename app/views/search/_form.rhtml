@@ -1,6 +1,5 @@
-<% simple_layout ||= false -%>
-
-<% if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
+<% simple_layout ||= false
+if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
 
   <% category_columns = browse_by_category_columns -%>
   <% unless category_columns.blank? %>
@@ -55,22 +54,6 @@
 
     <div class="wrap">
       <%= text_field_tag 'search_terms', h(@search_terms.to_s), {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
-      <% if !params[:relate_to_topic].nil? or (!params[:related_class].nil? and params[:related_class] == 'Topic')-%>
-        <% if !params[:relate_to_topic].nil? -%>
-          <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-        <% end -%>
-        <%= hidden_field_tag "controller_name_for_zoom_class", zoom_class_controller(params[:related_class]) %>
-        <% # not sure why this extra check is necessary, but fixes bug -%>
-        <% if !params['existing_relations'].blank? -%>
-          <% params['existing_relations'].each do |relation| -%>
-            <%= hidden_field_tag 'existing_relations[]', relation %>
-          <% end -%>
-        <% else -%>
-          <%= hidden_field_tag 'existing_relations', '' %>
-        <% end -%>
-      <% elsif !params[:index_for_basket].nil? -%>
-        <%= hidden_field_tag 'index_for_basket', params[:index_for_basket] %>
-      <% end -%>
       <%= submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'} %>
     </div>
 

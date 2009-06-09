@@ -60,8 +60,8 @@ namespace :zebra do
   desc "Insert initial blank records into the public and private zebra instances"
   task :load_initial_records => :environment do
     # Load and render the OAI-PHM record to load
-    template = File.open(File.join(RAILS_ROOT, 'zebradb/bootstrap.xml.erb'))
-    zoom_record = ERB.new(template.read).result
+    template = File.read(File.join(RAILS_ROOT, 'zebradb/bootstrap.xml.erb'))
+    zoom_record = ERB.new(template).result
 
     # Save the record into both public and private zoom indexes
     # Assumes that both databases will be local and accessible by public and
