@@ -1,11 +1,5 @@
-<% if params[:action] == 'find_related'
-     urlified_name = @site_basket.urlified_name
-   else
-     urlified_name = @current_basket.urlified_name
-   end
-   simple_layout ||= false -%>
-
-<% if params[:browse_by] && params[:browse_by] == 'choice_hierarchy' %>
+<% simple_layout ||= false
+if params[:browse_by] && params[:browse_by] == 'choice_hierarchy' %>
 
   <% category_columns = browse_by_category_columns -%>
   <% unless category_columns.blank? %>
@@ -23,7 +17,7 @@
     :page => nil,
     :sort_type => nil,
     :sort_direction => nil,
-    :urlified_name => urlified_name,
+    :urlified_name => @current_basket.urlified_name,
     :search_terms => nil,
     :privacy_type => nil,
     :limit_to_choice => nil } do %>
@@ -65,24 +59,6 @@
     <% end -%>
     <div class="wrap">
     <%= text_field_tag 'search_terms', h(@search_terms.to_s), {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
-    <% if !params[:relate_to_topic].nil? or (!params[:related_class].nil? and params[:related_class] == 'Topic')-%>
-    <% if !params[:relate_to_topic].nil? -%>
-    <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-    <% end -%>
-    <%= hidden_field_tag "controller_name_for_zoom_class", zoom_class_controller(params[:related_class]) %>
-    <% # not sure why this extra check is necessary, but fixes bug -%>
-    <% if !params['existing_relations'].blank? -%>
-    <% params['existing_relations'].each do |relation| -%>
-    <%= hidden_field_tag 'existing_relations[]', relation %>
-    <% end -%>
-    <% else -%>
-    <%= hidden_field_tag 'existing_relations', '' %>
-    <% end -%>
-    <% elsif !params[:index_for_basket].nil? -%>
-    <%= hidden_field_tag 'index_for_basket', params[:index_for_basket] %>
-    <% end -%>
-
-
     <%= submit_tag "Search", {:class => 'searchbutton', :tabindex => '1'} %>
     </div>
     <% if !simple_layout -%>
