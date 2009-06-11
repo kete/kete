@@ -260,6 +260,210 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
   end
 
+  context "The caching issue with related items" do
+
+    setup do
+      enable_production_mode
+      add_jerry_as_super_user
+      login_as('jerry')
+      @parent_topic = new_topic(:title => 'Parent Topic')
+    end
+
+    teardown do
+      disable_production_mode
+    end
+
+    ITEM_CLASSES.each do |zoom_class|
+
+      context "when a #{zoom_class} is added" do
+
+        setup do
+          @related_item = send("new_#{zoom_class.tableize.singularize}",
+            { :title => 'Child Item 1', :relate_to => @parent_topic }) do |field_prefix|
+            fill_in_needed_information_for(zoom_class)
+          end
+        end
+
+        should "not show up in the parent topic if the child item is deleted" do
+          # delete the related item
+          old_title = @related_item.title
+          @related_item = delete_item(@related_item)
+
+          # check the parent topic still works
+          item_url = "/#{@parent_topic.basket.urlified_name}/#{zoom_class_controller(@parent_topic.class.name)}/show/#{@parent_topic.id}"
+          visit item_url
+          body_should_not_contain '500 Error!'
+          body_should_contain @parent_topic.title
+          body_should_not_contain old_title
+          visit item_url
+          body_should_not_contain '500 Error!'
+        end
+
+        should "not show up in the related item if the parent topic is deleted" do
+          # delete the parent item
+          old_title = @parent_topic.title
+          @parent_topic = delete_item(@parent_topic)
+
+          # check the child item still works
+          item_url = "/#{@related_item.basket.urlified_name}/#{zoom_class_controller(@related_item.class.name)}/show/#{@related_item.id}"
+          visit item_url
+          body_should_not_contain '500 Error!'
+          body_should_contain @related_item.title
+          body_should_not_contain old_title
+          visit item_url
+          body_should_not_contain '500 Error!'
+        end
+
+        should "not show up if a different related item is deleted" do
+          @related_item2 = send("new_#{zoom_class.tableize.singularize}",
+            { :title => 'Child Item 2', :relate_to => @parent_topic }) do |field_prefix|
+            fill_in_needed_information_for(zoom_class)
+          end
+
+          # delete one of the two related items
+          old_title = @related_item.title
+          @related_item = delete_item(@related_item)
+
+          # check the parent topic still works
+          visit "/#{@parent_topic.basket.urlified_name}/#{zoom_class_controller(@parent_topic.class.name)}/show/#{@parent_topic.id}"
+          body_should_not_contain '500 Error!'
+          body_should_contain @parent_topic.title
+          body_should_not_contain old_title
+
+          # check the other related item still works
+          item_url = "/#{@related_item2.basket.urlified_name}/#{zoom_class_controller(@related_item2.class.name)}/show/#{@related_item2.id}"
+          visit item_url
+          body_should_not_contain '500 Error!'
+          body_should_contain @related_item2.title
+          visit item_url
+          body_should_not_contain '500 Error!'
+        end
+
+      end
+
+    end
+
+    #
+    # WARNING
+    # These import tests require backgroundrb be enabled and in production mode
+    # They also take a considerable amount of time (2 minutes per zoom class X 4 zoom classes = at least 8 minutes)
+    # So aren't run by default. To run the tasks, set the following before the rake task:
+    #   BGRB=true
+    # Also, make sure you have started backgroundrb in test mode (not production or development)
+    #   script/backgroundrb start --environment=test
+
+    if ENV['BGRB'] == 'true'
+
+      puts "-------------------------------------------------------------------------------------------------------"
+      puts "Some of the tests will require long periods of waiting (because they involve backgroundrb)."
+      puts "During those tests, every 10 seconds the output will show a 'W' (waiting) to indicate processing."
+      puts "If the BGRB worker fails, the output will show a 'T' (timeout failure), but continue with other tests."
+      puts "-------------------------------------------------------------------------------------------------------"
+
+      ATTACHABLE_CLASSES.each do |zoom_class|
+
+        context "when a set of #{zoom_class} are imported" do
+
+          setup do
+            visit "/#{@parent_topic.basket.urlified_name}/#{zoom_class_controller(@parent_topic.class.name)}/show/#{@parent_topic.id}"
+            click_link 'Import Set'
+            body_should_contain 'Add related set of items'
+            select zoom_class_plural_humanize(zoom_class), :from => 'zoom_class'
+            attach_file 'import_archive_file_uploaded_data', "#{zoom_class.tableize.singularize}_files.zip"
+            count_before = zoom_class.constantize.count
+            click_button "Add Related Items"
+            body_should_contain "Import from #{zoom_class.tableize.singularize}_files.zip"
+
+            count = 0
+            @timeout = false
+            while !@timeout && ((count_before + 2) > zoom_class.constantize.count)
+              # timeout if its been longer than 60 seconds
+              if count == 6
+                @timeout = true
+                $stdout.print 'T'
+              else
+                count += 1
+                $stdout.print 'W'
+                sleep 10
+              end
+            end
+            assert false if @timeout
+            @related_item1, @related_item2 = zoom_class.constantize.all[-2..-1]
+          end
+
+          should "have imported fully with all related links setup" do
+            # check the related items are listed in parent topic
+            visit "/#{@parent_topic.basket.urlified_name}/#{zoom_class_controller(@parent_topic.class.name)}/show/#{@parent_topic.id}"
+            body_should_contain @related_item1.title
+            body_should_contain @related_item2.title
+
+            # check the parent item is listed in related item 1
+            visit "/#{@related_item1.basket.urlified_name}/#{zoom_class_controller(@related_item1.class.name)}/show/#{@related_item1.id}"
+            body_should_contain @parent_topic.title
+
+            # check the parent item is listed in related item 2
+            visit "/#{@related_item2.basket.urlified_name}/#{zoom_class_controller(@related_item2.class.name)}/show/#{@related_item2.id}"
+            body_should_contain @parent_topic.title
+          end
+
+          should "not show up in the parent topic if the child item is deleted" do
+            # delete the related item
+            old_title = @related_item1.title
+            @related_item1 = delete_item(@related_item1)
+
+            # check the parent topic still works
+            item_url = "/#{@parent_topic.basket.urlified_name}/#{zoom_class_controller(@parent_topic.class.name)}/show/#{@parent_topic.id}"
+            visit item_url
+            body_should_not_contain '500 Error!'
+            body_should_contain @parent_topic.title
+            body_should_not_contain old_title
+            visit item_url
+            body_should_not_contain '500 Error!'
+          end
+
+          should "not show up in the related item if the parent topic is deleted" do
+            # delete the parent item
+            old_title = @parent_topic.title
+            @parent_topic = delete_item(@parent_topic)
+
+            # check the child item still works
+            item_url = "/#{@related_item1.basket.urlified_name}/#{zoom_class_controller(@related_item1.class.name)}/show/#{@related_item1.id}"
+            visit item_url
+            body_should_not_contain '500 Error!'
+            body_should_contain @related_item1.title
+            body_should_not_contain old_title
+            visit item_url
+            body_should_not_contain '500 Error!'
+          end
+
+          should "not show up if a different related item is deleted" do
+            # delete one of the two related items
+            old_title = @related_item1.title
+            @related_item1 = delete_item(@related_item1)
+
+            # check the parent topic still works
+            visit "/#{@parent_topic.basket.urlified_name}/#{zoom_class_controller(@parent_topic.class.name)}/show/#{@parent_topic.id}"
+            body_should_not_contain '500 Error!'
+            body_should_contain @parent_topic.title
+            body_should_not_contain old_title
+
+            # check the other related item still works
+            item_url = "/#{@related_item2.basket.urlified_name}/#{zoom_class_controller(@related_item2.class.name)}/show/#{@related_item2.id}"
+            visit item_url
+            body_should_not_contain '500 Error!'
+            body_should_contain @related_item2.title
+            visit item_url
+            body_should_not_contain '500 Error!'
+          end
+
+        end
+
+      end
+
+    end
+
+  end
+
   private
 
   def check_private_topics_not_showing
