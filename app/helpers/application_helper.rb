@@ -503,38 +503,38 @@ module ApplicationHelper
   # Public items need to be sorted based on the acts_as_list position in the database so
   # we can't use zebra to find public items in this case, so pull it from the database
   def public_related_items_for(item, options={})
-    @items = Hash.new
-    @counts = Hash.new
+    items = Hash.new
+    counts = Hash.new
     item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
     item_classes.each do |item_class|
-      items = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
-      @items[item_class] = items
-      @counts[item_class] = items.size
+      results = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
+      items[item_class] = results
+      counts[item_class] = results.size
     end
-    options[:with_counts] ? [@items, @counts] : @items
+    options[:with_counts] ? [items, counts] : items
   end
 
   # We use a method in lib/zoom_search.rb to find all private items the current user has access to
   # (should be faster than a bunch of mysql queries - might be an interesting thing to benchmark)
   def private_related_items_for(item, options={})
-    @items = Hash.new
-    @counts = Hash.new
+    items = Hash.new
+    counts = Hash.new
     item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
     item_classes.each do |item_class|
-      items = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
-      @items[item_class] = items
-      @counts[item_class] = items.size
+      results = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
+      items[item_class] = results
+      counts[item_class] = results.size
     end
-    options[:with_counts] ? [@items, @counts] : @items
+    options[:with_counts] ? [items, counts] : items
   end
 
   # Gets the total amount of related items for a specific zoom class
-  def related_items_count_of_type(zoom_class)
+  def related_items_count_of(zoom_class)
     (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
   end
 
   # Returns true if only public items exist, else false of private ones are present
-  def only_public_related_items_of_type?(zoom_class)
+  def only_public_related_items_of?(zoom_class)
     (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
   end
 

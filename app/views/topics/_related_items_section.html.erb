@@ -2,8 +2,8 @@
 pretty_class_plural = zoom_class_plural_humanize(zoom_class)
 controller = zoom_class_controller(zoom_class)
 if @total_item_counts > 0
-  total_items = related_items_count_of_type(zoom_class)
-  only_public_items = only_public_related_items_of_type?(zoom_class)
+  total_items = related_items_count_of(zoom_class)
+  only_public_items = only_public_related_items_of?(zoom_class)
 else
   total_items = 0
 end
