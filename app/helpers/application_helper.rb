@@ -491,38 +491,50 @@ module ApplicationHelper
   # START RELATED ITEM HELPERS
   #
 
+  def related_items_count_for_current_item
+    @related_items_count_for_current_item ||= begin
+      conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{zoom_class_from_controller(params[:controller])}')"
+      conditions += " OR (content_item_relations.topic_id = :cache_id)" if params[:controller] == 'topics'
+      ContentItemRelation.count(:conditions => [conditions, { :cache_id => @cache_id }])
+    end
+  end
+
   # Public items need to be sorted based on the acts_as_list position in the database so
   # we can't use zebra to find public items in this case, so pull it from the database
   def public_related_items_for(item, options={})
-    @items = Hash.new
+    items = Hash.new
+    counts = Hash.new
     item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
     item_classes.each do |item_class|
-      if options[:count_only]
-        items = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => true })
-        @items[item_class] = items.size
-      else
-        if item_class != 'Topic' || options[:topics_only]
-          items = item.send(item_class.tableize)
-          items = items.find_all_public_non_pending if items.size > 0
-        else
-          items = item.related_topics(:only_non_pending => true)
-        end
-        @items[item_class] = items
-      end
+      results = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
+      items[item_class] = results
+      counts[item_class] = results.size
     end
-    @items
+    options[:with_counts] ? [items, counts] : items
   end
 
   # We use a method in lib/zoom_search.rb to find all private items the current user has access to
   # (should be faster than a bunch of mysql queries - might be an interesting thing to benchmark)
   def private_related_items_for(item, options={})
-    @items = Hash.new
+    items = Hash.new
+    counts = Hash.new
     item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
     item_classes.each do |item_class|
-      items = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
-      @items[item_class] = options[:count_only] ? items.size : items
+      results = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
+      items[item_class] = results
+      counts[item_class] = results.size
     end
-    @items
+    options[:with_counts] ? [items, counts] : items
+  end
+
+  # Gets the total amount of related items for a specific zoom class
+  def related_items_count_of(zoom_class)
+    (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
+  end
+
+  # Returns true if only public items exist, else false of private ones are present
+  def only_public_related_items_of?(zoom_class)
+    (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
   end
 
   # Link to the related items of a certain item
