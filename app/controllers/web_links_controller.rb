@@ -15,9 +15,6 @@ class WebLinksController < ApplicationController
   def show
     prepare_item_variables_for("WebLink")
     @web_link = @item
-    # If we are serving a cached page, we still need
-    # some details in @web_link, so lets make a dummy one
-    @web_link = DummyModel.new({ :id => @cache_id, :basket => @current_basket }) if @web_link.nil?
 
     respond_to do |format|
       format.html
