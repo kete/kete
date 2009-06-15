@@ -313,6 +313,13 @@ namespace :kete do
       puts "Added Basket ID to #{records.size} Taggings"
     end
 
+    desc "Make all baskets have private item notification 'do not email' if setting doesn't exist"
+    task :make_baskets_private_notification_do_not_email => :environment do
+      Basket.all.each do |basket|
+        basket.settings[:private_item_notification] = 'do_not_email' if basket.settings[:private_item_notification].blank?
+      end
+    end
+
     desc 'Checks for mimetypes an adds them if needed.'
     task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
                                      'kete:upgrade:add_excel_variants_to_documents',

@@ -293,7 +293,26 @@ class Basket < ActiveRecord::Base
     end
   end
 
-  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
+  def private_item_notification_or_default(default=nil)
+    current_value = default || self.settings[:private_item_notification] || self.site_basket.settings[:private_item_notification] || 'at least member'
+    options =  [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + MEMBER_LEVEL_OPTIONS
+    select_options = self.array_to_options_list_with_defaults(options, current_value, false, true)
+  end
+
+  def users_to_notify_of_private_item
+    case self.settings[:private_item_notification]
+    when 'at least member'
+      self.has_site_admins_or_admins_or_moderators_or_members
+    when 'at least moderator'
+      self.has_site_admins_or_admins_or_moderators
+    when 'at least admin'
+      self.has_site_admins_or_admins
+    else
+      Array.new
+    end
+  end
+
+  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true, pluralize=false)
     select_options = String.new
     options_array.each do |option|
       label = option[0]
@@ -303,7 +322,7 @@ class Basket < ActiveRecord::Base
       if default_value == value
         select_options += " selected=\"selected\""
       end
-      select_options += ">" + label + "</option>"
+      select_options += ">" + (pluralize ? label.pluralize : label) + "</option>"
     end
     select_options
   end

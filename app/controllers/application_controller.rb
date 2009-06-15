@@ -767,6 +767,9 @@ class ApplicationController < ActionController::Base
       build_relations_from_topic_type_extended_field_choices
       update_zoom_and_related_caches_for(item)
 
+      # send notifications of private item create
+      private_item_notification_for(item, :created) if params[item.class.name.underscore.downcase.to_sym][:private] == 'true'
+
       case where_to_redirect
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
@@ -870,7 +873,10 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_to_show_for(item, options = {})
+    redirect_to path_to_show_for(item, options)
+  end
 
+  def path_to_show_for(item, options = {})
     # By default, assume redirect to public version.
     options = {
       :private => false
@@ -880,7 +886,8 @@ class ApplicationController < ActionController::Base
       :urlified_name  => item.basket.urlified_name,
       :controller     => zoom_class_controller(item.class.name),
       :action         => 'show',
-      :id             => item
+      :id             => item,
+      :locale         => false
     }
 
     # Redirect to private version if item is private.
@@ -888,7 +895,7 @@ class ApplicationController < ActionController::Base
       path_hash.merge!({ :private => "true" })
     end
 
-    redirect_to url_for(path_hash)
+    url_for(path_hash)
   end
 
   def url_for_dc_identifier(item, options={})
@@ -1063,6 +1070,9 @@ class ApplicationController < ActionController::Base
 
     # send notifications if needed
     item.do_notifications_if_pending(version_after_update, current_user) if version_created
+
+    # send notifications of private item edit
+    private_item_notification_for(item, :edited) if params[item.class.name.underscore.downcase.to_sym][:private] == 'true'
   end
 
   def history_url(item)
@@ -1289,6 +1299,29 @@ class ApplicationController < ActionController::Base
     "#{@order} #{@direction}"
   end
 
+  def show_notification_controls?(basket = @current_basket)
+    return false unless @basket_admin
+    return false if basket.settings[:private_item_notification].blank?
+    return false if basket.settings[:private_item_notification] == 'do_not_email'
+    return false unless basket.show_privacy_controls_with_inheritance?
+    true
+  end
+
+  def private_item_notification_for(item, type)
+    return if item.skip_email_notification == '1'
+    return unless show_notification_controls?(item.basket)
+
+    # send notifications of private item
+    item.basket.users_to_notify_of_private_item.each do |user|
+      case type
+      when :created
+        UserNotifier.deliver_private_item_created(user, item, path_to_show_for(item, :private => true))
+      when :edited
+        UserNotifier.deliver_private_item_edited(user, item, path_to_show_for(item, :private => true))
+      end
+    end
+  end
+
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
                 :permitted_to_edit_current_item?, :allowed_to_access_private_version_of?, :accessing_private_search_and_allowed?,
@@ -1296,7 +1329,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :search_sources
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :search_sources, :show_notification_controls?
 
   protected
 

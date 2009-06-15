@@ -510,6 +510,8 @@ en:
     now_in_site_basket: This version was in {{basket_name}} {{t.base.basket}}, but that {{t.base.basket}} has been {{t.base.deleted}} and no longer exists on the site, now this version is put in default site {{t.base.basket}}.
     only_comments: Only {{t.base.zoom_types.comment.pluralize}}
     only_details: Only full details
+    private_item_notification_or_default:
+      dont_send_notification: "Don't send {{t.base.email}} notification"
     recent_as_headlines: Headlines (news style)
     recent_as_summaries: Summaries (blog style)
     recent_dont_show: Don't {{t.base.show}} them
@@ -634,6 +636,10 @@ en:
       privacy_controls_enabled_example: "{{t.base.enable.capitalize}} Privacy Controls if {{t.base.member.pluralize}} of this {{t.base.basket}} can have both {{t.base.item.pluralize}} that are readable by the {{t.base.public.downcase}} at large AND {{t.base.item.pluralize}} that are only readable by themselves."
       privacy_controls_site_basket: This {{t.base.basket.pluralize}} browsing controls are left {{t.base.enabled}} if any other {{t.base.basket.pluralize}} have privacy controls turned on (for site-wide {{t.base.private.downcase}} {{t.base.search}})
       private: "{{t.base.private.capitalize}}"
+      private_item_notification: "{{t.base.private.capitalize}} {{t.base.item.capitalize}} notification"
+      private_item_notification_example: "Whenever {{t.base.private}} {{t.base.item.pluralize}} are {{t.base.changed}}, which {{t.base.user.pluralize}} should be notified by {{t.base.email}}?"
+      private_item_notification_show_short_summary: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} short summary in {{t.base.email}} notifications?"
+      private_item_notification_show_title: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} title in {{t.base.email}} notifications?"
       public: "{{t.base.public.capitalize}}"
       recent_topics: "{{t.base.disable.capitalize}} Site {{t.base.recent.capitalize}} {{t.base.zoom_types.topic.capitalize.pluralize}} Display:"
       recent_topics_example: Do not {{t.base.show}} new/{{t.base.edited}} topics in {{t.base.recent}} results on the Site {{t.base.basket}}?
@@ -1657,6 +1663,10 @@ en:
       open_membership: "{{t.baskets.form.join_policy_open}}"
       privacy_controls: "{{t.baskets.form.privacy_controls}}"
       private: "{{t.base.private.capitalize}}"
+      private_item_notification: "{{t.base.private.capitalize}} {{t.base.item.capitalize}} notification"
+      private_item_notification_example: "Whenever {{t.base.private}} {{t.base.item.pluralize}} are {{t.base.changed}}, which {{t.base.user.pluralize}} should be notified by {{t.base.email}}?"
+      private_item_notification_show_short_summary: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} short summary in {{t.base.email}} notifications?"
+      private_item_notification_show_title: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} title in {{t.base.email}} notifications?"
       private_file_visibility: "{{t.baskets.form.file_visibility}}"
       private_file_visibility_description: "{{t.baskets.form.file_visibility_example}}"
       public: "{{t.base.public.capitalize}}"
@@ -2032,6 +2042,7 @@ en:
       related_items_as_inset: Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} body?
       required_fields: "* denotes a required field"
       short_summary: Short Summary
+      skip_email_notification: "Skip {{t.base.email}} notification for this {{t.base.private}} {{t.base.item}}?"
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       title: Title
       update: "{{t.base.update.capitalize}}"
@@ -2177,6 +2188,16 @@ en:
     pending_review_for:
       pending_review: "Your submission of Revision # {{revision}} of this {{t.base.item}} is {{flag}} {{t.base.review}} of a {{t.base.moderator}}.  You will be notified of the outcome of the {{t.base.review}}."
       thanks: Thank you,
+    private_item_created:
+      do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
+      item_created: "A {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+      thanks: Thank you,
+      view_item_at: "You can {{t.base.view}} the new {{t.base.item}} at:"
+    private_item_edited:
+      do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
+      item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+      thanks: Thank you,
+      view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.item}} at:"
     rejection_of:
       description: "Revision # {{revision}} of this {{t.base.item}} has been {{t.base.reviewed}} by a {{t.base.moderator}} and {{flag}}. If you would like to alter your submission, you can {{t.base.view}} it here:"
       reason: "The {{t.base.moderator}} has provided these details about why the site decided not to {{t.base.accept}} your contribution:"
@@ -2213,6 +2234,10 @@ en:
     password_change: "{{t.base.request.capitalize}} to {{t.base.change}} your {{t.base.password}}"
     password_reset: Your {{t.base.password}} has been {{t.base.reset}}
     pending_moderation: Your submission is {{flag}} {{t.base.moderation}}.
+    private_item_created: "A new {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in {{basket_name}}."
+    private_item_created_with_title: "A new {{t.base.private}} {{t.base.item}} titled '{{item_title}}' has been {{t.base.created}} in {{basket_name}}."
+    private_item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}}."
+    private_item_edited_with_title: "The {{t.base.private}} {{t.base.item}} '{{item_title}}' has been {{t.base.edited}}."
     rejected_submission: A {{t.base.moderator}} has {{flag}} your submission.
     revision_live: A {{t.base.moderator}} has made your submission the live revision.
     user_joined: "{{user_name}} has {{t.base.joined}} the {{basket_name}} {{t.base.basket}}"
