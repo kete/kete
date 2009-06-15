@@ -768,7 +768,7 @@ class ApplicationController < ActionController::Base
       update_zoom_and_related_caches_for(item)
 
       # send notifications of private item create
-      private_item_notification_for(item, :created) if params[item.class.name.underscore.downcase.to_sym][:private] == 'true'
+      private_item_notification_for(item, :created) if params[zoom_class_params_key_from_item(item)][:private] == 'true'
 
       case where_to_redirect
       when 'show_related'
@@ -1079,7 +1079,7 @@ class ApplicationController < ActionController::Base
     item.do_notifications_if_pending(version_after_update, current_user) if version_created
 
     # send notifications of private item edit
-    private_item_notification_for(item, :edited) if params[item.class.name.underscore.downcase.to_sym][:private] == 'true'
+    private_item_notification_for(item, :edited) if params[zoom_class_params_key_from_item(item)][:private] == 'true'
   end
 
   def history_url(item)

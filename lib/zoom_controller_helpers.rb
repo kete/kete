@@ -4,7 +4,9 @@ module ZoomControllerHelpers
     def self.included(klass)
       # only intended to add helper methods in app/controllers/application.rb
       if klass.name == 'ApplicationController'
-        klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :zoom_class_humanize_after, :zoom_class_params_key_from
+        klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize,
+                            :zoom_class_plural_humanize, :zoom_class_humanize_after, :zoom_class_params_key,
+                            :zoom_class_params_key_from_item, :zoom_class_params_key_from_controller
       end
     end
 
@@ -113,8 +115,16 @@ module ZoomControllerHelpers
       return I18n.t("zoom_controller_helpers_lib.zoom_class_humanize.#{zoom_class.underscore}")
     end
 
-    def zoom_class_params_key_from(controller)
-      zoom_class_from_controller(controller).tableize.singularize.to_sym
+    def zoom_class_params_key(zoom_class)
+      zoom_class.tableize.singularize.to_sym
+    end
+
+    def zoom_class_params_key_from_item(item)
+      zoom_class_params_key(item.class.name)
+    end
+
+    def zoom_class_params_key_from_controller(controller)
+      zoom_class_params_key(zoom_class_from_controller(controller))
     end
 
     def zoom_class_plural_humanize(zoom_class)

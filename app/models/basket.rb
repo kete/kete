@@ -294,19 +294,19 @@ class Basket < ActiveRecord::Base
   end
 
   def private_item_notification_or_default(default=nil)
-    current_value = default || self.settings[:private_item_notification] || self.site_basket.settings[:private_item_notification] || 'at least member'
+    current_value = default || settings[:private_item_notification] || site_basket.settings[:private_item_notification] || 'at least member'
     options =  [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + MEMBER_LEVEL_OPTIONS
-    select_options = self.array_to_options_list_with_defaults(options, current_value, false, true)
+    select_options = array_to_options_list_with_defaults(options, current_value, false, true)
   end
 
   def users_to_notify_of_private_item
-    case self.settings[:private_item_notification]
+    case settings[:private_item_notification]
     when 'at least member'
-      self.has_site_admins_or_admins_or_moderators_or_members
+      has_site_admins_or_admins_or_moderators_or_members
     when 'at least moderator'
-      self.has_site_admins_or_admins_or_moderators
+      has_site_admins_or_admins_or_moderators
     when 'at least admin'
-      self.has_site_admins_or_admins
+      has_site_admins_or_admins
     else
       Array.new
     end

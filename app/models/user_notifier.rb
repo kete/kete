@@ -145,10 +145,10 @@ class UserNotifier < ActionMailer::Base
       setup_email(recipient)
       item.private_version!
       if item.basket.settings[:private_item_notification_show_title] == true
-        @subject    +=  I18n.t("user_notifier_model.private_item_#{type}_with_title", :basket_name => item.basket.name, :item_title => item.title)
+        @subject += I18n.t("user_notifier_model.private_item_#{type}_with_title", :basket_name => item.basket.name, :item_title => item.title)
         @body[:title] = item.title 
       else
-        @subject    +=  I18n.t("user_notifier_model.private_item_#{type}", :basket_name => item.basket.name)
+        @subject += I18n.t("user_notifier_model.private_item_#{type}", :basket_name => item.basket.name)
         @body[:title] = nil
       end
       if item.respond_to?(:short_summary) && item.basket.settings[:private_item_notification_show_short_summary] == true
