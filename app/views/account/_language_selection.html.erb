@@ -1,5 +1,5 @@
-<div id="footer_language_selection" class="footer_div">
-  <% if User.language_choices.keys.size > 1 %>
+<% if User.language_choices.keys.size > 1 %>
+  <div id="footer_language_selection" class="footer_div">
     <% form_tag(:controller => 'account', :action => 'change_locale') do %>
       <div class="form-element">
         <noscript><label><%=t 'account.language_selection.language' %></label></noscript>
@@ -7,5 +7,5 @@
         <noscript><%= submit_tag t('account.language_selection.change_language') %></noscript>
       </div>
     <% end %>
-  <% end %>
-</div>
+  </div>
+<% end %>
