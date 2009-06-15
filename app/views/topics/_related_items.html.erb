@@ -1,23 +1,12 @@
 <%
 topics_only ||= false
 inset ||= false
-
 class_suffix = inset ? "-white" : "-blue"
 
-@total_item_counts = 0
-if any_related_items_for_current_item?
-  @public_item_counts = public_related_items_for(item, { :topics_only => topics_only, :count_only => true })
-  @private_item_counts = private_related_items_for(item, { :topics_only => topics_only, :count_only => true })
-  @public_item_counts.each { |v| @total_item_counts += v.last }
-  @private_item_counts.each { |v| @total_item_counts += v.last }
-
-  # The public query uses mysql and is cached
-  cache({ :related => 'public_query', :id => @cache_id }) do
-    @public_items = public_related_items_for(item, { :topics_only => topics_only })
-    "(this just ensures queries don't run when unless needed - ignore this file)"
-  end
-  # The private query uses zoom and isn't cached
-  @private_items = private_related_items_for(item, { :topics_only => topics_only })
+@total_item_counts = related_items_count_for_current_item
+if @total_item_counts > 0
+  @public_items, @public_item_counts = public_related_items_for(item, { :topics_only => topics_only, :with_counts => true })
+  @private_items, @private_item_counts = private_related_items_for(item, { :topics_only => topics_only, :with_counts => true })
 end
 -%>
 

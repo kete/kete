@@ -891,17 +891,24 @@ class ApplicationController < ActionController::Base
     redirect_to url_for(path_hash)
   end
 
+  # generate a dc identifier for zebra
+  # if item is nil (when items are fully cached), use the
+  # current request params and instance vars available
   def url_for_dc_identifier(item, options={})
-    location = { :controller => zoom_class_controller(item.class.name),
+    item_controller, item_id, item_basket = item ? \
+      [zoom_class_controller(item.class.name), item.to_param, item.basket] : \
+      [params[:controller], params[:id], @current_basket]
+
+    location = { :controller => item_controller,
                  :action => 'show',
-                 :id => item,
+                 :id => item_id,
                  :format => nil,
-                 :urlified_name => item.basket.urlified_name,
+                 :urlified_name => item_basket.urlified_name,
                  :locale => false }
 
     location[:protocol] = 'http' if options[:force_http]
 
-    location.merge!({ :id => item.id, :private => nil }) if options[:minimal]
+    location.merge!({ :id => item_id.to_i, :private => nil }) if options[:minimal]
 
     utf8_url_for(location)
   end

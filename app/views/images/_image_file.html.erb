@@ -14,7 +14,7 @@
       <% if key.to_s == @view_size -%>
       <li<%= class_statement -%>><a href="#"><%= label -%></a></li>
       <% else -%>
-      <li<%= class_statement -%>><%= link_to(label, :action => :show, :view_size => key) -%></li>
+      <li<%= class_statement -%>><%= link_to(label, :action => :show, :view_size => key, :private => params[:private]) -%></li>
       <% end -%>
       <% sizes_count += 1 -%>
       <% end -%>
