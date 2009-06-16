@@ -5,8 +5,7 @@ module ZoomControllerHelpers
       # only intended to add helper methods in app/controllers/application.rb
       if klass.name == 'ApplicationController'
         klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize,
-                            :zoom_class_plural_humanize, :zoom_class_humanize_after, :zoom_class_params_key,
-                            :zoom_class_params_key_from_item, :zoom_class_params_key_from_controller
+                            :zoom_class_plural_humanize, :zoom_class_humanize_after, :zoom_class_params_key_from_controller
       end
     end
 
