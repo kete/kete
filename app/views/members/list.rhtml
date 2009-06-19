@@ -9,7 +9,7 @@
 <p>
   <h2 style="display:inline;"><%= @title %></h2>
   [ <%= link_to_membership_request_of(@current_basket, :plus_divider => ' | ', :as_list_element => false) -%>
-  <%= link_to_unless_current pluralize(@members_count, t('members.list.member')), :type => nil %>
+  <%= link_to_unless_current pluralize(@members_count, t('members.list.member')), :type => 'member' %>
   <% if @admins_count && @admins_count > 0 -%>
     | <%= link_to_unless_current pluralize(@admins_count, t('members.list.admin')), :type => 'admin' %>
   <% end -%>
