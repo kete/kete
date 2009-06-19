@@ -1,3 +1,6 @@
+include ActionController::UrlWriter
+include ZoomControllerHelpers
+
 module Flagging
   unless included_modules.include? Flagging
     attr_accessor :do_not_moderate
@@ -225,7 +228,13 @@ module Flagging
     def notify_moderators_immediatelly_if_necessary(options = { })
       if FREQUENCY_OF_MODERATION_EMAIL.is_a?(String) and FREQUENCY_OF_MODERATION_EMAIL == 'instant'
         # if histor_url is blank it will be figured out in view
-        history_url = !options[:history_url].blank? ? options[:history_url] : nil
+        history_url = if !options[:history_url].blank?
+          options[:history_url]
+        else
+          url_for(:urlified_name => basket.urlified_name,
+                  :controller => zoom_class_controller(self.class.name),
+                  :action => 'history', :id => self)
+        end
 
         message = !options[:message].blank? ? options[:message] : nil
 

@@ -1,31 +1,76 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'user_notifier'
 
-class UserNotifierTest < ActiveSupport::TestCase
-  FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures'
-  CHARSET = "utf-8"
+::ActionController::UrlWriter.module_eval do
+  default_url_options[:host] = 'test.com'
+end
 
-  include ActionMailer::Quoting
+class UserNotifierTest < ActionMailer::TestCase
 
-  def setup
-    ActionMailer::Base.delivery_method = :test
-    ActionMailer::Base.perform_deliveries = true
-    ActionMailer::Base.deliveries = []
+  context "When sending an item_flagged_for email" do
 
-    @expected = TMail::Mail.new
-    @expected.set_content_type "text", "plain", { "charset" => CHARSET }
-  end
-
-  def test_dummy_test
-    #do nothing, necessary for other user related tests to work
-  end
-
-  private
-    def read_fixture(action)
-      IO.readlines("#{FIXTURES_PATH}/user_notifier/#{action}")
+    setup do
+      @user = User.first
+      UserNotifier.deliver_item_flagged_for(@user, 'http://test.com/', 'pending', @user, @user, 1, 'test message')
+      @email_body = ActionMailer::Base.deliveries.first.body
     end
 
-    def encode(subject)
-      quoted_printable(subject, CHARSET)
+    should "have all the necessary details" do
+      assert @email_body.include?(@user.user_name)
+      assert @email_body.include?(@user.email)
+      assert @email_body.include?('Revision # 1 of this item as pending')
+      assert @email_body.include?('http://test.com/')
+      assert @email_body.include?('test message')
     end
+
+  end
+
+  context "When sending an pending_review_for email" do
+
+    setup do
+      @user = User.first
+      UserNotifier.deliver_pending_review_for(1, @user)
+      @email_body = ActionMailer::Base.deliveries.first.body
+    end
+
+    should "have all the necessary details" do
+      assert @email_body.include?(@user.user_name)
+      assert @email_body.include?('Revision # 1 of this item is pending')
+    end
+
+  end
+
+  context "When invoking the do_notifications_if_pending method" do
+
+    setup do
+      @user = User.first
+      set_constant :FREQUENCY_OF_MODERATION_EMAIL, 'instant'
+
+      @topic = Topic.new(:title => "Version 1", :description => "Version 1", :topic_type_id => 1, :basket_id => 1)
+      @topic.instance_eval { def fully_moderated?; true; end }
+      @topic.save!
+      @topic.reload
+
+      @topic.do_notifications_if_pending(1, User.first)
+    end
+
+    should "have sent two emails" do
+      assert_equal 2, ActionMailer::Base.deliveries.size
+    end
+
+    should "have all the necessary details in the first email" do
+      email_body = ActionMailer::Base.deliveries.first.body
+      assert email_body.include?(@user.user_name)
+      assert email_body.include?('Revision # 1 of this item is pending')
+    end
+
+    should "have all the necessary details in the second email" do
+      email_body = ActionMailer::Base.deliveries.last.body
+      assert email_body.include?(@user.user_name)
+      assert email_body.include?(@user.email)
+      assert email_body.include?('Revision # 1 of this item as pending')
+      assert email_body.include?("http://test.com/site/topics/history/#{@topic.id}")
+    end
+
+  end
+
 end
