@@ -18,6 +18,7 @@ namespace :deploy do
     deploy.symlink
     deploy.kete.symlink.all
     deploy.gems.install
+    run "cd #{current_path} && rake kete:tools:regenerate_session_configuration"
     deploy.db.bootstrap
     deploy.restart
   end

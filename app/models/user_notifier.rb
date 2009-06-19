@@ -71,7 +71,7 @@ class UserNotifier < ActionMailer::Base
   end
 
   # notifications for flagging/moderation
-  def item_flagged_for(moderator, flag, url, flagging_user, submitter, revision, message)
+  def item_flagged_for(moderator, url, flag, flagging_user, submitter, revision, message)
     setup_email(moderator)
     @subject += I18n.t('user_notifier_model.item_flagged_with', :flag => flag)
     setup_body_with(revision, url, message, submitter)
