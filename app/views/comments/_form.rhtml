@@ -11,7 +11,7 @@
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
 
-                <%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || params[:comment][:commentable_private] if !edit %>
+                <%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || (params[:comment] && params[:comment][:commentable_private]) || (@comment.private? ? '1' : '0') %>
 
                 <div class="form-element">
                   <label for="comment_title"><%=t 'comments.form.title' %></label>
@@ -66,6 +66,18 @@
                         <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] || params[:comment][:commentable_id], "id" => "comment_commentable_id" %>
 
                         <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] || params[:comment][:commentable_type], "id" => "comment_commentable_type" %>
+                <% end %>
+
+                <% if show_notification_controls?(@basket) %>
+                  <div id="skip_email_notification_div"<%= "style='display:none;'" unless (params[:commentable_private] || (params[:comment] && params[:comment][:commentable_private]) || @comment.private?) == '1' %>>
+                    <div class="form-element">
+                      <label for="comment_skip_email_notification"><%=t 'comments.form.skip_email_notification' %></label>
+                      <% if params[:comment] && params[:comment][:skip_email_notification]; skip = (params[:comment][:skip_email_notification] == '1' ? true : false)
+                         elsif @editing && !@item.skip_email_notification.nil?; skip = @item.skip_email_notification?
+                         else; skip = false; end -%>
+                      <%= form.check_box :skip_email_notification, { :tabindex => '1', :checked => skip } %>
+                    </div>
+                  </div>
                 <% end %>
 
                 <!--[eoform:comment]-->

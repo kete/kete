@@ -751,6 +751,7 @@ en:
       security_warning: "Note: forms and javascript are not allowed for security reasons."
       security_warning_admin: Unless you check the box below.
       security_warning_exception: Allow forms and other possible insecure elements and attributes in the HTML?
+      skip_email_notification: Skip email notification for this private comment?
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       tags_spinner: "Getting {{t.base.tag.pluralize}}. "
       title: "Title:"
@@ -2188,16 +2189,27 @@ en:
     pending_review_for:
       pending_review: "Your submission of Revision # {{revision}} of this {{t.base.item}} is {{flag}} {{t.base.review}} of a {{t.base.moderator}}.  You will be notified of the outcome of the {{t.base.review}}."
       thanks: Thank you,
-    private_item_created:
-      do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
-      item_created: "A {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
-      thanks: Thank you,
-      view_item_at: "You can {{t.base.view}} the new {{t.base.item}} at:"
-    private_item_edited:
-      do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
-      item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
-      thanks: Thank you,
-      view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.item}} at:"
+    private_notifications:
+      item_created:
+        do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
+        item_created: "A {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        thanks: Thank you,
+        view_item_at: "You can {{t.base.view}} the new {{t.base.item}} at:"
+      item_edited:
+        do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
+        item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        thanks: Thank you,
+        view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.item}} at:"
+      comment_created:
+        do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
+        comment_created: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        thanks: Thank you,
+        view_comment_at: "You can {{t.base.view}} the new {{t.base.zoom_types.comment}} at:"
+      comment_edited:
+        do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
+        comment_edited: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        thanks: Thank you,
+        view_comment_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.zoom_types.comment}} at:"
     rejection_of:
       description: "Revision # {{revision}} of this {{t.base.item}} has been {{t.base.reviewed}} by a {{t.base.moderator}} and {{flag}}. If you would like to alter your submission, you can {{t.base.view}} it here:"
       reason: "The {{t.base.moderator}} has provided these details about why the site decided not to {{t.base.accept}} your contribution:"
@@ -2234,6 +2246,10 @@ en:
     password_change: "{{t.base.request.capitalize}} to {{t.base.change}} your {{t.base.password}}"
     password_reset: Your {{t.base.password}} has been {{t.base.reset}}
     pending_moderation: Your submission is {{flag}} {{t.base.moderation}}.
+    private_comment_created: "A new {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.added}} to an {{t.base.item}}."
+    private_comment_created_with_title: "A new {{t.base.private}} {{t.base.zoom_types.comment}} titled '{{item_title}}' has been {{t.base.added}} to an {{t.base.item}}."
+    private_comment_edited: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.edited}}."
+    private_comment_edited_with_title: "A {{t.base.private}} {{t.base.zoom_types.comment}} titled '{{item_title}}' has been {{t.base.edited}}."
     private_item_created: "A new {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in {{basket_name}}."
     private_item_created_with_title: "A new {{t.base.private}} {{t.base.item}} titled '{{item_title}}' has been {{t.base.created}} in {{basket_name}}."
     private_item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}}."

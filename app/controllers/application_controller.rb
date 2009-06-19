@@ -882,6 +882,8 @@ class ApplicationController < ActionController::Base
       :private => false
     }.merge(options)
 
+    item = item.commentable if item.is_a?(Comment)
+
     path_hash = {
       :urlified_name  => item.basket.urlified_name,
       :controller     => zoom_class_controller(item.class.name),
@@ -1318,13 +1320,15 @@ class ApplicationController < ActionController::Base
     return if item.skip_email_notification == '1'
     return unless show_notification_controls?(item.basket)
 
+    email_type = item.is_a?(Comment) ? 'comment' : 'item'
+
     # send notifications of private item
     item.basket.users_to_notify_of_private_item.each do |user|
       case type
       when :created
-        UserNotifier.deliver_private_item_created(user, item, path_to_show_for(item, :private => true))
+        UserNotifier.send("deliver_private_#{email_type}_created", user, item, path_to_show_for(item, :private => true))
       when :edited
-        UserNotifier.deliver_private_item_edited(user, item, path_to_show_for(item, :private => true))
+        UserNotifier.send("deliver_private_#{email_type}_edited", user, item, path_to_show_for(item, :private => true))
       end
     end
   end

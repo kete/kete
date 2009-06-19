@@ -1,0 +1,16 @@
+<%= @recipient.user_name %>,
+
+<%=t 'user_notifier.private_notifications.item_created.item_created' %>
+
+    <%= @title unless @title.blank? %>
+    <%= @summary unless @summary.blank? %>
+
+<%=t 'user_notifier.private_notifications.item_created.view_item_at' %>
+
+    <%= @url %>
+
+<%=t 'user_notifier.private_notifications.item_created.do_not_reply' %>
+
+<%=t 'user_notifier.private_notifications.item_created.thanks' %>
+<%= PRETTY_SITE_NAME %>
+<%= SITE_URL %>

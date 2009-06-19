@@ -140,24 +140,31 @@ class UserNotifier < ActionMailer::Base
   # define methods
   #   private_item_created
   #   private_item_edited
-  ['created', 'edited'].each do |type|
-    define_method "private_item_#{type}" do |recipient, item, url|
+  #   private_comment_created
+  #   private_comment_edited
+  ['item_created', 'item_edited', 'comment_created', 'comment_edited'].each do |type|
+    define_method "private_#{type}" do |recipient, item, url|
       setup_email(recipient)
       item.private_version!
-      if item.basket.settings[:private_item_notification_show_title] == true
-        @subject += I18n.t("user_notifier_model.private_item_#{type}_with_title", :basket_name => item.basket.name, :item_title => item.title)
+      basket = item.is_a?(Comment) ? item.commentable.basket : item.basket
+
+      if basket.settings[:private_item_notification_show_title] == true
+        @subject += I18n.t("user_notifier_model.private_#{type}_with_title", :basket_name => basket.name, :item_title => item.title)
         @body[:title] = item.title 
       else
-        @subject += I18n.t("user_notifier_model.private_item_#{type}", :basket_name => item.basket.name)
+        @subject += I18n.t("user_notifier_model.private_#{type}", :basket_name => basket.name)
         @body[:title] = nil
       end
-      if item.respond_to?(:short_summary) && item.basket.settings[:private_item_notification_show_short_summary] == true
+
+      if item.respond_to?(:short_summary) && basket.settings[:private_item_notification_show_short_summary] == true
         @body[:summary] = item.short_summary
       else
         @body[:summary] = nil
       end
+
       @body[:item] = item
       @body[:url] = url
+      @template = "user_notifier/private_notifications/#{type}"
     end
   end
 

@@ -1,0 +1,16 @@
+<%= @recipient.user_name %>,
+
+<%=t 'user_notifier.private_notifications.comment_created.comment_created' %>
+
+    <%= @title unless @title.blank? %>
+    <%= @summary unless @summary.blank? %>
+
+<%=t 'user_notifier.private_notifications.comment_created.view_comment_at' %>
+
+    <%= @url %>
+
+<%=t 'user_notifier.private_notifications.comment_created.do_not_reply' %>
+
+<%=t 'user_notifier.private_notifications.comment_created.thanks' %>
+<%= PRETTY_SITE_NAME %>
+<%= SITE_URL %>
