@@ -164,7 +164,8 @@ class UserNotifier < ActionMailer::Base
 
       @body[:item] = item
       @body[:url] = url
-      @template = "user_notifier/private_notifications/#{type}"
+      @body[:type] = type
+      @template = "user_notifier/private_item_notification"
     end
   end
 
