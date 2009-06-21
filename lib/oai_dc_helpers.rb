@@ -183,8 +183,8 @@ module OaiDcHelpers
       # then it's overkill
       # however, if we are in the comment record,
       # we want to add the commented on item as a relation
-      case item.class
-      when Comment
+      case item.class.name
+      when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = item.commentable
         xml.send("dc:subject") {
