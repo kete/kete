@@ -1,0 +1,47 @@
+<% cache_result(cache_key_for(source)) do %>
+
+  <% search_source_id = source.title_id
+     entries = source.fetch(search_text) %>
+  <% if entries[:total] > 0 %>
+
+    <h4 id="<%= search_source_id %>_heading"><%= h(source.title) %></h4>
+
+    <% unless entries[:links].blank? %>
+      <div id='<%= search_source_id %>_links'>
+        <% entries[:links].each do |link| %>
+          <div id="<%= search_source_id %>_result_<%= link.object_id %>"
+               class='<%= ExternalSearchSources::DEFAULT_LINK_CLASSES %>'>
+            <%= link_to(search_source_title_for(link), h(link.url),
+                        :title => search_source_summary_for(link),
+                        :target => '_blank') %>
+          </div>
+        <% end -%>
+      </div>
+    <% end -%>
+
+    <% unless entries[:images].blank? %>
+      <div id='<%= search_source_id %>_images' class='images'>
+        <% entries[:images].each do |image| %>
+          <div id="<%= search_source_id %>_result_<%= image.object_id %>"
+               class='<%= ExternalSearchSources::IMAGE_LINK_CLASSES %>'>
+            <%= link_to(search_source_image_for(image) + search_source_title_for(image), h(image.url),
+                        :title => search_source_summary_for(image),
+                        :target => '_blank') %>
+            <div style='clear:both;'></div>
+          </div>
+        <% end -%>
+      </div>
+    <% end -%>
+
+    <% if entries.size > source.limit %>
+      <div id="<%= search_source_id %>_more_results"
+           class='<%= ExternalSearchSources::DEFAULT_LINK_CLASSES %>'>
+        <%= link_to(t('search_sources.search_source.more'), source.more_link,
+                    :title => t('search_sources.search_source.more_like_this'),
+                    :target => '_blank') %>
+      </div>
+    <% end %>
+
+  <% end -%>
+
+<% end %>

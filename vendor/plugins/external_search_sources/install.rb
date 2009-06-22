@@ -1,0 +1,6 @@
+puts ""
+puts "Sucessfully installed External Search Sources plugin."
+puts "To complete installation, run the following commands:"
+puts "  rake external_search_sources:sync"
+puts "  rake db:migrate"
+puts ""

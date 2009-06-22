@@ -1,0 +1,46 @@
+en:
+  search_sources:
+    search_source:
+      more: 'more &raquo;'
+      more_like_this: 'View more results like this. '
+  search_source_model:
+    more_link:
+      not_fetched: Source has not been fetched from yet.
+    must_be_one_of: "must be one of the following: {{types}}"
+    or_case:
+      doesnt_matter: Doesn't matter
+      lowercase: Lowercase
+      uppercase: Uppercase
+    or_positions:
+      after_terms: After terms
+      before_terms: Before terms
+      between_terms: Between terms
+      no_or_syntax: No OR syntax
+    requires_http: requires an http protocol
+    source_url:
+      not_fetched: Source has not been fetched from yet.
+  search_sources_controller:
+    move_higher:
+      moved_higher: The selected search source has been moved higher.
+    move_higher_title: "Move Higher. "
+    move_lower:
+      moved_lower: The selected search source has been moved lower.
+    move_lower_title: "Move Lower. "
+    or_syntax_description: Where should the or syntax be places in the query?
+    or_syntax_label: Or Syntax
+    redirect_if_not_authorized:
+      not_authorized: You are not authorized to access this section of the site. Try a different account.
+    source_base_url_description: What is the base url for this source type? A search string will be appended to the end so make it end in '?q=' or similar
+    source_cache_interval_description: How long should the search source be cached for? (optional - in minutes)
+    source_limit_description: How many sources should be displayed?
+    source_more_link_base_url_description: Like Base URL, except links to a site search instead of the search source. Make it end in '?q=' or similar. (optional)
+    source_more_link_base_url_label: More link (optional)
+    source_title_description: The title that the search sources will appear under
+    source_type_description: What type of source is this?
+    title: "Search Sources"
+  search_sources_helper:
+    display_search_sources:
+      other_resources: Other Resources
+    or_syntax_form_column:
+      case: Case
+      position: Position
