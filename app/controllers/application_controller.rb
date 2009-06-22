@@ -157,7 +157,6 @@ class ApplicationController < ActionController::Base
 
   helper :slideshows
   helper :extended_fields
-  helper :search_sources
 
   def set_cache_id
     @cache_id = params[:id] ? params[:id].to_i : nil
@@ -603,13 +602,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def search_sources
-    @search_sources ||= SearchSource.all
-  end
-
   def expire_search_source_caches(force=false)
     return unless ZOOM_CLASSES.include?(zoom_class_from_controller(params[:controller]))
-    search_sources.each do |source|
+    SearchSource.all.each do |source|
       next unless ((Time.now - source.updated_at) / 60 > source.cache_interval)
       expire_fragment({ :action => 'show', :id => @cache_id, :search_source => source.title_id })
       source.update_attribute(:updated_at, Time.now)
@@ -1303,7 +1298,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :search_sources
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss
 
   protected
 

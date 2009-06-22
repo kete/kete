@@ -37,7 +37,7 @@
     <%= render(:partial => "topics/tags_div", :locals => { :item => @still_image }) %>
     <%= render(:partial => "topics/extended_fields", :locals => { :item => @still_image }) %>
     <%= render(:partial => "portrait_controls", :locals => { :item => @still_image }) %>
-    <%= display_search_sources %>
+    <%= display_search_sources(@still_image.title) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @still_image }) -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

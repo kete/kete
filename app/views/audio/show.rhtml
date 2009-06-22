@@ -24,7 +24,7 @@
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @audio_recording }) -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @audio_recording }) -%>
-    <%= display_search_sources %>
+    <%= display_search_sources(@audio_recording.title) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @audio_recording }) -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

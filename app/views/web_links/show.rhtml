@@ -23,7 +23,7 @@
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @web_link }) -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @web_link }) -%>
-    <%= display_search_sources %>
+    <%= display_search_sources(@web_link) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @web_link }) -%>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->
