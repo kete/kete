@@ -75,6 +75,11 @@ Rails::Initializer.run do |config|
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
 
+  # Use the database for sessions instead of the cookie-based default,
+  # which shouldn't be used to store highly confidential information
+  # (create the session table with "rake db:sessions:create")
+  # config.action_controller.session_store = :active_record_store
+  config.action_controller.session_store = :mem_cache_store
   config.cache_store = :file_store, 'tmp/cache'
 
   # white list html elements here, besides defaults
