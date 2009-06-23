@@ -6,7 +6,7 @@ namespace :tools do
     'acts_as_licensed:import_au_cc_licenses', 'acts_as_licensed:import_nz_cc_licenses',
     'kete:export:users', 'kete:import:users',
     'kete:repair:check_uploaded_files', 'kete:repair:correct_upload_locations', 'kete:repair:fix_topic_versions', 'kete:repair:set_missing_contributors',
-    'kete:tools:remove_robots_txt', 'kete:tools:regenerate_session_configuration',
+    'kete:tools:remove_robots_txt',
     'log:clear',
     'time:zones:all', 'time:zones:local', 'time:zones:us',
     'tmp:cache:clear', 'tmp:clear', 'tmp:create', 'tmp:pids:clear', 'tmp:sessions:clear', 'tmp:sockets:clear'

@@ -45,32 +45,6 @@ namespace :kete do
       Rake::Task["kete:tools:set_locales"].invoke
     end
 
-    desc 'Regenerate session configuration to prevent session hijacking.'
-    task :regenerate_session_configuration do
-      path = "#{RAILS_ROOT}/config/session_config.yml"
-      File.delete(path) if File.exist?(path)
-      file = File.open(path, 'w')
-      file.puts "# Be sure to restart your server when you modify this file."
-      file.puts ""
-      file.puts "# Your secret key for verifying cookie session data integrity."
-      file.puts "# If you change this key, all old sessions will become invalid!"
-      file.puts "# Make sure the secret is at least 30 characters and all random, "
-      file.puts "# no regular words or you'll be exposed to dictionary attacks."
-      file.puts "session:"
-      file.puts "  key: _kete_session"
-      file.puts "  secret: " + newpass(128)
-      file.close
-      puts "Session configuration has been regenerated. Please restart your server to make the changes take effect."
-    end
-
-    # from http://snippets.dzone.com/posts/show/491
-    def newpass( len )
-      chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
-      newpass = ""
-      1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
-      return newpass
-    end
-
     desc 'Resets the database and zebra to their preconfigured state.'
     task :reset => ['kete:tools:reset:zebra', 'db:bootstrap']
     namespace :reset do
