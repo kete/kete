@@ -20,6 +20,13 @@
 
 <div class="prev-next before-results"><%= will_paginate @results %></div>
 
+<div id="search_page_search_sources">
+  <%= display_search_sources(params[:search_terms],
+                             { :target => :search,
+                               :do_not_cache => true,
+                               :limit => @number_per_page }) %>
+</div>
+
 <% if @results.size > 0 %>
 
   <div id="result-show">

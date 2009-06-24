@@ -511,7 +511,7 @@ h3 b{
 
 .generic-result-wrapper,
 .image-result-wrapper {
-  clear: both;
+  clear: left;
   padding: 15px;
   border-bottom: 1px dashed #bbb;
   margin-right: 15px;
@@ -1225,6 +1225,13 @@ div.gmnoprint {
 }
 #search_sources .generic-result-wrapper,
 #search_sources .image-result-wrapper {
+  padding: 5px;
+}
+#search_page_search_sources {
+  width: 30%;
+  float: right;
+  background-color: #fff;
+  clear: right;
   padding: 5px;
 }
 
