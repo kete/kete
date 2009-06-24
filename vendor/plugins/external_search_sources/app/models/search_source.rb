@@ -1,10 +1,10 @@
 class SearchSource < ActiveRecord::Base
   acts_as_list
 
-  validates_presence_of :title, :source_type, :base_url, :limit, :cache_interval
+  validates_presence_of :title, :source_type
   validates_format_of :base_url, :with => /^http:\/\/.*/, :message => I18n.t('search_source_model.requires_http')
-  validates_numericality_of :limit, :only_integer => true
-  validates_numericality_of :cache_interval, :only_integer => true
+  validates_numericality_of :limit, :only_integer => true, :allow_blank => true
+  validates_numericality_of :cache_interval, :only_integer => true, :allow_blank => true
 
   cattr_accessor :acceptable_source_types
   @@acceptable_source_types = %w{ feed }
@@ -17,6 +17,19 @@ class SearchSource < ActiveRecord::Base
   default_scope :order => 'position ASC'
 
   acts_as_configurable
+
+  # in the case no limit is supplied, set a default one of 5
+  before_save :set_limit
+  def set_limit
+    self.limit = 5 if limit.blank?
+  end
+
+  # in the case that we turn on caching later,
+  # lets set this by default even if not needed right now
+  before_save :set_cache_interval
+  def set_cache_interval
+    self.cache_interval = 1440 if cache_interval.blank?
+  end
 
   after_save :store_or_syntax
 
@@ -115,6 +128,24 @@ class SearchSource < ActiveRecord::Base
     entries = feed.class.name =~ /Feedzirra/ ? feed.entries : []
 
     sort_entries(entries, options)
+  end
+
+  def self.import_from_yaml(yaml_file, verbose = true)
+    attr_sets = YAML.load(File.open(yaml_file))
+    attr_sets.each do |attrs|
+      # Fixtures are returned as name => { value, .. }. We only need the values.
+      attrs = attrs.last
+
+      begin
+        or_syntax = attrs.delete('or_syntax').split('_')
+        ss = SearchSource.new(attrs)
+        ss.or_syntax = { :position => or_syntax[0], :case => or_syntax[1] }
+        ss.save!
+        p "Inserted search source: '#{attrs["title"]}'." if verbose
+      rescue
+        p "Inserting search source '#{attrs["title"]} failed: #{$!}."
+      end
+    end
   end
 
 end

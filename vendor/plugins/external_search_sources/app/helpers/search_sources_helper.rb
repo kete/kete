@@ -1,12 +1,6 @@
 module SearchSourcesHelper
 
-  def cache_result(*args, &block)
-    !@do_not_cache && ExternalSearchSources[:cache_results] ? cache(args, &block) : yield
-  end
-
-  def cache_key_for(source)
-    { :search_source => source.title_id, :id => params[:id].to_i }
-  end
+  # This is the only method that should be used. The rest are internally used methods
 
   def display_search_sources(search_text, options = {})
     @do_not_cache = options[:do_not_cache] || false
@@ -23,6 +17,16 @@ module SearchSourcesHelper
       "<h3>#{t('search_sources_helper.display_search_sources.other_resources')}</h3>" +
       html +
     "</div>"
+  end
+
+  # You shouldn't need to use the following methods
+
+  def cache_result(*args, &block)
+    !@do_not_cache && ExternalSearchSources[:cache_results] ? cache(args, &block) : yield
+  end
+
+  def cache_key_for(source)
+    { :search_source => source.title_id, :id => params[:id].to_i }
   end
 
   def search_source_title_for(entry, length=50)

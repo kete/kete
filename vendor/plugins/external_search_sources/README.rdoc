@@ -1,6 +1,8 @@
 = External Search Sources
 
-This Rails engine provides an interface and helpers for pulling search results from external sources via rss feeds.
+This Rails Engine provides an interface, helpers, and fixture data for pulling search results from external sources via RSS feeds.
+
+This plugin has only been tested on Rails 2.3 and higher. Prior versions will not work because of incomplete engine support or missing I18n support.
 
 
 == Installation
@@ -10,7 +12,7 @@ This Rails engine provides an interface and helpers for pulling search results f
 Install all dependancies.
 
 * Plugin relies on ActiveScaffold for the admin interface.
-* Plugin relied on Kete version of the Feedzirra gem
+* Plugin relies on Kete version of the Feedzirra gem
 
   sudo gem install kete-feedzirra
 
@@ -37,7 +39,7 @@ Update your database.
 
 === Step 5
 
-Where you want search sources displayed, add the following
+Where you want search sources displayed, add the following to the view file
 
   display_search_sources 'test'
 
@@ -47,12 +49,55 @@ Replace the string 'test' with a variable or other string you want search source
 
 Add some search sources. Go to /search_sources/list and add some data into the correct fields.
 
+Alternatively, use some fixture data included with the plugin by running
+
+  rake external_search_sources:import:kete_horowhenua_images
+
 
 == Configuration
+
+=== Styling
+
+Nesting of divs and results is as follows. You'll need firebug or examine the source manually if you need more than this.
+
+* div with id of search_sources
+** h3 of box title
+** for each search source
+*** h4 of search source title
+*** div with id of '[search_source_title_id]_links'
+*** for each link result
+**** div with id of '[search_source_title_id]_result_[result_object_id]', class from ExternalSearchSources[:default_link_classes]
+*** div with id of '[search_source_title_id]_images', with class of 'images'
+*** for each image result
+**** div with id of '[search_source_title_id]_result_[result_object_id]', class from ExternalSearchSources[:image_link_classes]
+*** div with id of '[search_source_title_id]_more_results', with class of 'default_link_classes'
+
+=== Settings
 
 ExternalSearchSources has methods for [] (accessor) and []= (writer). The settings available can be found in
 
   lib/external_search_sources.rb
+
+To override some settings, create an initializer, copy the config lines from lib/external_search_sources.rb to the initializer, and change to suit.
+
+If you don't add settings to the initializer, the plugin will fall back to what is uses by default.
+
+=== Output
+
+The display_search_sources helper method takes an options hash as a second parameter.
+
+So far, the working options are:
+
+* :target
+** Pass in a symbol that matches an source targets (ExternalSearchSources[:source_targets]).
+** Using the defaults, you can use either :homepage or :search.
+** If no target is passed in, all search sources are displayed.
+
+* :do_not_cache
+** Overwrite caching on a per display basis. Set to true to disable caching for the output.
+
+* :limit
+** Overwrite the search sources default limit. Useful for cases where the number per page changes dynamically.
 
 
 == Testing

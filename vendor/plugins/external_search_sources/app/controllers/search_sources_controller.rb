@@ -11,7 +11,8 @@ class SearchSourcesController < ApplicationController
 
     list.sorting = { :position => 'ASC' }
 
-    config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit, :cache_interval]
+    config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit]
+    config.columns << [:cache_interval] if ExternalSearchSources[:cache_results]
     config.list.columns.exclude [:source_type, :or_syntax, :more_link_base_url, :cache_interval]
 
     options = { :type => :record, :inline => false }
@@ -40,10 +41,8 @@ class SearchSourcesController < ApplicationController
     config.columns[:more_link_base_url].label = I18n.t('search_sources_controller.source_more_link_base_url_label')
     config.columns[:more_link_base_url].description = I18n.t('search_sources_controller.source_more_link_base_url_description')
 
-    config.columns[:limit].required = true
     config.columns[:limit].description = I18n.t('search_sources_controller.source_limit_description')
 
-    config.columns[:cache_interval].required = true
     config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
 
     config.columns << [:or_syntax]
