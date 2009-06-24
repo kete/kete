@@ -8,8 +8,11 @@ class SearchSource < ActiveRecord::Base
 
   cattr_accessor :acceptable_source_types
   @@acceptable_source_types = %w{ feed }
-
   validates_inclusion_of :source_type, :in => @@acceptable_source_types, :message => I18n.t('search_source_model.must_be_one_of', :types => @@acceptable_source_types.join(', '))
+
+  cattr_accessor :acceptable_source_targets
+  @@acceptable_source_targets = ExternalSearchSources[:source_targets]
+  validates_inclusion_of :source_target, :in => @@acceptable_source_targets, :message => I18n.t('search_source_model.must_be_one_of', :types => @@acceptable_source_targets.join(', '))
 
   default_scope :order => 'position ASC'
 
@@ -61,7 +64,7 @@ class SearchSource < ActiveRecord::Base
     return search_text if or_syntax.blank?
 
     or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'
-    case or_syntax[:position]
+    search_text = case or_syntax[:position]
     when 'before'
       "#{or_string} #{search_text}"
     when 'after'
@@ -86,11 +89,11 @@ class SearchSource < ActiveRecord::Base
     URI.escape(more_link_base_url) + @search_text
   end
 
-  def sort_entries(entries)
+  def sort_entries(entries, options = {})
     total = 0
     links = Array.new
     images = Array.new
-    entries[0..(limit - 1)].each do |entry|
+    entries[0..((options[:limit] || limit) - 1)].each do |entry|
       if !entry.media_thumbnail.nil? || !entry.enclosure.nil?
         images << entry
       else
@@ -101,7 +104,9 @@ class SearchSource < ActiveRecord::Base
     { :total => total, :links => links, :images => images }
   end
 
-  def fetch(search_text)
+  def fetch(search_text, options = {})
+    return { :total => 0 } if search_text.blank?
+
     @search_text = parse_search_text(search_text)
 
     feed = Feedzirra::Feed.fetch_and_parse(source_url)
@@ -109,7 +114,7 @@ class SearchSource < ActiveRecord::Base
     # if the output is a Feedzirra object, and if not, return a blank array
     entries = feed.class.name =~ /Feedzirra/ ? feed.entries : []
 
-    sort_entries(entries)
+    sort_entries(entries, options)
   end
 
 end

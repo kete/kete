@@ -35,6 +35,7 @@ en:
     source_limit_description: How many sources should be displayed?
     source_more_link_base_url_description: Like Base URL, except links to a site search instead of the search source. Make it end in '?q=' or similar. (optional)
     source_more_link_base_url_label: More link (optional)
+    source_target_description: A special selector for limiting different sources to different pages
     source_title_description: The title that the search sources will appear under
     source_type_description: What type of source is this?
     title: "Search Sources"

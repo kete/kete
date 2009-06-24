@@ -1,19 +1,22 @@
 module SearchSourcesHelper
 
   def cache_result(*args, &block)
-    ExternalSearchSources::CACHE_RESULTS ? cache(args, &block) : yield
+    !@do_not_cache && ExternalSearchSources[:cache_results] ? cache(args, &block) : yield
   end
 
   def cache_key_for(source)
     { :search_source => source.title_id, :id => params[:id].to_i }
   end
 
-  def display_search_sources(search_text)
+  def display_search_sources(search_text, options = {})
+    @do_not_cache = options[:do_not_cache] || false
     html = String.new
-    SearchSource.all.each do |source|
+    search_sources = options[:target] ? SearchSource.find_all_by_source_target(options[:target].to_s) : SearchSource.all
+    search_sources.each do |source|
       html += @template.render('search_sources/search_source',
                                :search_text => search_text,
-                               :source => source)
+                               :source => source,
+                               :options => options)
     end
     return html if html.blank?
     "<div id='search_sources'>" +

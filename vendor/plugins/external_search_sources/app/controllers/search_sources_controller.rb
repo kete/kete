@@ -1,7 +1,7 @@
 class SearchSourcesController < ApplicationController
   unloadable
 
-  before_filter ExternalSearchSources::LOGIN_METHOD
+  before_filter ExternalSearchSources[:login_method]
   before_filter :redirect_if_not_authorized
   before_filter :set_page_title
   before_filter :get_search_source, :only => [ :move_higher, :move_lower ]
@@ -11,7 +11,7 @@ class SearchSourcesController < ApplicationController
 
     list.sorting = { :position => 'ASC' }
 
-    config.columns = [:title, :source_type, :base_url, :more_link_base_url, :limit, :cache_interval]
+    config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit, :cache_interval]
     config.list.columns.exclude [:source_type, :or_syntax, :more_link_base_url, :cache_interval]
 
     options = { :type => :record, :inline => false }
@@ -28,6 +28,11 @@ class SearchSourcesController < ApplicationController
     config.columns[:source_type].description = I18n.t('search_sources_controller.source_type_description')
     config.columns[:source_type].form_ui = :select
     config.columns[:source_type].options = SearchSource.acceptable_source_types.collect { |st| [st.humanize, st] }
+
+    config.columns[:source_target].required = true
+    config.columns[:source_target].description = I18n.t('search_sources_controller.source_target_description')
+    config.columns[:source_target].form_ui = :select
+    config.columns[:source_target].options = [['', '']] + SearchSource.acceptable_source_targets.collect { |st| [st.humanize, st] }
 
     config.columns[:base_url].required = true
     config.columns[:base_url].description = I18n.t('search_sources_controller.source_base_url_description')
@@ -49,25 +54,25 @@ class SearchSourcesController < ApplicationController
   def move_higher
     @search_source.move_higher
     flash[:notice] = I18n.t('search_sources_controller.move_higher.moved_higher')
-    redirect_to ExternalSearchSources::DEFAULT_URL_OPTIONS.merge(:action => 'list')
+    redirect_to ExternalSearchSources[:default_url_options].merge(:action => 'list')
   end
 
   def move_lower
     @search_source.move_lower
     flash[:notice] = I18n.t('search_sources_controller.move_lower.moved_lower')
-    redirect_to ExternalSearchSources::DEFAULT_URL_OPTIONS.merge(:action => 'list')
+    redirect_to ExternalSearchSources[:default_url_options].merge(:action => 'list')
   end
 
   private
 
   def authorized_to_access_search_sources?
-    permit? ExternalSearchSources::AUTHORIZED_ROLE
+    permit? ExternalSearchSources[:authorized_role]
   end
 
   def redirect_if_not_authorized
     unless authorized_to_access_search_sources?
       flash[:notice] = I18n.t('search_sources_controller.redirect_if_not_authorized.not_authorized')
-      redirect_to ExternalSearchSources::UNAUTHORIZED_PATH
+      redirect_to ExternalSearchSources[:unauthorized_path]
     end
   end
 

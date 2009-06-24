@@ -31,3 +31,7 @@ ExternalSearchSources[:image_link_classes] = 'search_source-image-result'
 # whether to enable caching. Disabled by default because it requires you
 # to create your own cache expiry depending on where the plugin is used
 ExternalSearchSources[:cache_results] = false
+
+# an array of source targets (something that allows you to have different
+# search sources in different pages via the :target option)
+ExternalSearchSources[:source_targets] = %w{ search homepage }
