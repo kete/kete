@@ -41,11 +41,6 @@ testing_gems:
 
 gems:
   nokogiri:
-    pre_command: "sudo gem install hoe && sudo gem install tenderlove-frex -s http://gems.github.com && sudo gem install racc"
-    gem_repo: git://github.com/kete/nokogiri.git
-    rake_build_gem: rake package
-    rake_install_gem: sudo gem install pkg/*.gem
-    lib_name: nokogiri
   packet:
   chronic:
   hpricot:
