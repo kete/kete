@@ -7,6 +7,9 @@ class ZoomDbsController < ApplicationController
 
   active_scaffold :zoom_db do |config|
     list.columns.exclude [:updated_at, :created_at, :zoom_password]
+
+    config.columns[:description].options = { :rows => 5 }
+    config.columns[:port].options = { :rows => 1 }
   end
   
   private

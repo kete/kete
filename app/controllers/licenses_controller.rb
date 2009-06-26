@@ -13,6 +13,8 @@ class LicensesController < ApplicationController
   active_scaffold :license do |config|
     config.columns = [:name, :description, :url, :image_url, :metadata, :is_available, :is_creative_commons]
     config.list.columns = [:id, :name, :url]
+
+    config.columns[:metadata].options = { :rows => 5 }
   end
 
   def install_license
