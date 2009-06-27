@@ -14,7 +14,7 @@ class ChoicesController < ApplicationController
     
     # Column overrides
     config.columns[:label].required = true
-    config.columns[:value].description = t('choices_controller.label_example')
+    config.columns[:value].description = I18n.t('choices_controller.label_example')
     
     # Subform column overrides
     # config.subform.columns = [:label]

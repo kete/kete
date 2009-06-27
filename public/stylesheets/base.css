@@ -1235,9 +1235,15 @@ div.gmnoprint {
   padding: 5px;
 }
 
-/* active scaffold */
+/*
+ * Active Scaffold
+ */
+
 a.disabled {
   display: none;
+}
+.active-scaffold textarea {
+  width: 70%;
 }
 
 /*
