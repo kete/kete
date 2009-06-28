@@ -1,7 +1,7 @@
 module ActiveScaffold::Actions
   module Create
     def self.included(base)
-      base.before_filter :create_authorized?, :only => [:new, :create]
+      base.before_filter :create_authorized_filter, :only => [:new, :create]
       base.prepend_before_filter :constraints_for_nested_create, :only => [:new, :create]
       base.verify :method => :post,
                   :only => :create,
@@ -10,63 +10,72 @@ module ActiveScaffold::Actions
 
     def new
       do_new
-
-      respond_to do |type|
-        type.html do
-          if successful?
-            render(:action => 'create', :layout => true)
-          else
-            return_to_main
-          end
-        end
-        type.js do
-          render(:partial => 'create_form.rhtml', :layout => false)
-        end
-      end
+      respond_to_action(:new)
     end
 
     def create
       do_create
       @insert_row = params[:parent_controller].nil?
-
-      respond_to do |type|
-        type.html do
-          if params[:iframe]=='true' # was this an iframe post ?
-            responds_to_parent do
-              if successful?
-                render :action => 'on_create', :layout => false
-              else
-                render :action => 'form_messages.rjs', :layout => false
-              end
-            end
-          else
-            if successful?
-              flash[:info] = as_(:created_model, :model => @record.to_label)
-              if active_scaffold_config.create.edit_after_create
-                redirect_to params.merge(:action => "edit", :id => @record.id)
-              else
-                return_to_main
-              end
-            else
-              if params[:nested].nil? && active_scaffold_config.actions.include?(:list) && active_scaffold_config.list.always_show_create
-                do_list
-                render(:action => 'list')
-              else
-                render(:action => 'create', :layout => true)
-              end
-            end
-          end
-        end
-        type.js do
-          render :action => 'on_create', :layout => false
-        end
-        type.xml { render :xml => response_object.to_xml, :content_type => Mime::XML, :status => response_status }
-        type.json { render :text => response_object.to_json, :content_type => Mime::JSON, :status => response_status }
-        type.yaml { render :text => response_object.to_yaml, :content_type => Mime::YAML, :status => response_status }
-      end
+      respond_to_action(:create)
     end
 
     protected
+    def new_respond_to_html
+      if successful?
+        render(:action => 'create')
+      else
+        return_to_main
+      end
+    end
+    
+    def new_respond_to_js
+      render(:partial => 'create_form')
+    end
+
+    def create_respond_to_html
+      if params[:iframe]=='true' # was this an iframe post ?
+        responds_to_parent do
+          if successful?
+            render :action => 'on_create.js'
+          else
+            render :action => 'form_messages_on_create.js'
+          end
+        end
+      else
+        if successful?
+          flash[:info] = as_(:created_model, :model => @record.to_label)
+          if active_scaffold_config.create.edit_after_create
+            redirect_to params.merge(:action => "edit", :id => @record.id)
+          else
+            return_to_main
+          end
+        else
+          if params[:nested].nil? && active_scaffold_config.actions.include?(:list) && active_scaffold_config.list.always_show_create
+            do_list
+            render(:action => 'list')
+          else
+            render(:action => 'create')
+          end
+        end
+      end
+    end
+
+    def create_respond_to_js
+      render :action => 'on_create'
+    end
+
+    def create_respond_to_xml
+      render :xml => response_object.to_xml, :content_type => Mime::XML, :status => response_status
+    end
+
+    def create_respond_to_json
+      render :text => response_object.to_json, :content_type => Mime::JSON, :status => response_status
+    end
+
+    def create_respond_to_yaml
+      render :text => response_object.to_yaml, :content_type => Mime::YAML, :status => response_status
+    end
+
     def constraints_for_nested_create
       if params[:parent_column] && params[:parent_id]
         @old_eid = params[:eid]
@@ -115,6 +124,17 @@ module ActiveScaffold::Actions
     # You may override the method to customize.
     def create_authorized?
       authorized_for?(:action => :create)
+    end
+    private
+    def create_authorized_filter
+      link = active_scaffold_config.create.link || active_scaffold_config.create.class.link
+      raise ActiveScaffold::ActionNotAllowed unless self.send(link.security_method)
+    end
+    def new_formats
+      (default_formats + active_scaffold_config.formats).uniq
+    end
+    def create_formats
+      (default_formats + active_scaffold_config.formats + active_scaffold_config.create.formats).uniq
     end
   end
 end

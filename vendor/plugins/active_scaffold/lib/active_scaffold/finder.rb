@@ -146,7 +146,7 @@ module ActiveScaffold
     def find_page(options = {})
       options.assert_valid_keys :sorting, :per_page, :page, :count_includes
 
-      full_includes = (active_scaffold_joins.empty? ? nil : active_scaffold_joins)
+      full_includes = (active_scaffold_joins.blank? ? nil : active_scaffold_joins)
       options[:per_page] ||= 999999999
       options[:page] ||= 1
       options[:count_includes] ||= full_includes
@@ -158,9 +158,11 @@ module ActiveScaffold
                          :conditions => all_conditions,
                          :joins => joins_for_finder,
                          :include => options[:count_includes]}
+                         
+      finder_options.merge! custom_finder_options
 
       # NOTE: we must use :include in the count query, because some conditions may reference other tables
-      count = klass.count(finder_options.reject{|k,v| [:order].include? k})
+      count = klass.count(finder_options.reject{|k,v| [:select, :order].include? k})
 
       finder_options.merge! :include => full_includes
 
@@ -181,19 +183,18 @@ module ActiveScaffold
 
     def joins_for_finder
       case joins_for_collection
-      when String
-        [ joins_for_collection ]
-      when Array
-        joins_for_collection
-      else
-        []
+        when String
+          [ joins_for_collection ]
+        when Array
+          joins_for_collection
+        else
+          []
       end + active_scaffold_habtm_joins
     end
     
     # TODO: this should reside on the model, not the controller
     def merge_conditions(*conditions)
-      c = conditions.find_all {|c| not c.nil? and not c.empty? }
-      c.empty? ? nil : c.collect{|c| active_scaffold_config.model.send(:sanitize_sql, c)}.join(' AND ')
+      active_scaffold_config.model.merge_conditions(*conditions)
     end
 
     # accepts a DataStructure::Sorting object and builds an order-by clause

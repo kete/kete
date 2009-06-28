@@ -4,80 +4,46 @@ module ActiveScaffold::Actions
 
     def self.included(base)
       super
+      base.module_eval do
+        include ActiveScaffold::Actions::Nested::ChildMethods if active_scaffold_config.model.reflect_on_all_associations.any? {|a| a.macro == :has_and_belongs_to_many}
+      end
       base.before_filter :include_habtm_actions
-      # TODO: it's a bit wasteful to run this routine every page load.
-      base.before_filter :links_for_associations
       base.helper_method :nested_habtm?
     end
 
     def nested
       do_nested
-
-      respond_to do |type|
-        type.html { render :partial => 'nested', :layout => true }
-        type.js { render :partial => 'nested', :layout => false }
-      end
+      respond_to_action(:nested)
     end
 
     protected
-
+    def nested_respond_to_html
+      render :partial => 'nested', :layout => true
+    end
+    def nested_respond_to_js
+      render :partial => 'nested'
+    end
     # A simple method to find the record we'll be nesting *from*
     # May be overridden to customize the behavior
     def do_nested
       @record = find_if_allowed(params[:id], :read)
     end
 
-    # Create the automatic column links. Note that this has to happen when configuration is *done*, because otherwise the Nested module could be disabled. Actually, it could still be disabled later, couldn't it?
-    # TODO: This should really be a post-config routine, instead of a before_filter.
-    def links_for_associations
-      active_scaffold_config.list.columns.each do |column|
-        # if column.link == false we won't create a link. that's how a dev can suppress the auto links.
-        if column.association and column.link.nil?
-          if column.plural_association?
-            # note: we can't create nested scaffolds on :through associations because there's no reverse association.
-            column.set_link('nested', :parameters => {:associations => column.name.to_sym}) #unless column.through_association?
-          elsif not column.polymorphic_association?
-            model = column.association.klass
-            begin
-              controller = self.class.active_scaffold_controller_for(model)
-            rescue ActiveScaffold::ControllerNotFound
-              next
-            end
-
-            actions = controller.active_scaffold_config.actions
-            action = nil
-            if actions.include? :update and column.actions_for_association_links.include? :edit and model.authorized_for? :action => :update
-              action = 'edit'
-            elsif actions.include? :show and column.actions_for_association_links.include? :show and model.authorized_for? :action => :read
-              action = 'show'
-            end
-            column.set_link(action, :controller => controller.controller_path, :parameters => {:parent_controller => params[:controller]}) if action
-          end
-        end
-      end
-    end
-
     def include_habtm_actions
       if nested_habtm?
         # Production mode is ok with adding a link everytime the scaffold is nested - we ar not ok with that.
-        active_scaffold_config.action_links.add('new_existing', :label => 'Add Existing', :type => :table, :security_method => :add_existing_authorized?) unless active_scaffold_config.action_links['new_existing']
+        active_scaffold_config.action_links.add('new_existing', :label => :add_existing, :type => :table, :security_method => :add_existing_authorized?) unless active_scaffold_config.action_links['new_existing']
         if active_scaffold_config.nested.shallow_delete
-          active_scaffold_config.action_links.add('destroy_existing', :label => 'Remove', :type => :record, :confirm => 'are_you_sure', :method => :delete, :position => false, :security_method => :delete_existing_authorized?) unless active_scaffold_config.action_links['destroy_existing']
+          active_scaffold_config.action_links.add('destroy_existing', :label => :remove, :type => :record, :confirm => 'are_you_sure', :method => :delete, :position => false, :security_method => :delete_existing_authorized?) unless active_scaffold_config.action_links['destroy_existing']
           active_scaffold_config.action_links.delete("destroy") if active_scaffold_config.action_links['destroy']
         end
-        
-        self.class.module_eval do
-          include ActiveScaffold::Actions::Nested::ChildMethods
-          # we need specifically to tell action_controller to add these public methods as action_methods
-          ActiveScaffold::Actions::Nested::ChildMethods.public_instance_methods.each{|m| self.action_methods.add m }
-        end unless self.class.included_modules.include?(ActiveScaffold::Actions::Nested::ChildMethods)
       else
         # Production mode is caching this link into a non nested scaffold
         active_scaffold_config.action_links.delete('new_existing') if active_scaffold_config.action_links['new_existing']
         
         if active_scaffold_config.nested.shallow_delete
           active_scaffold_config.action_links.delete("destroy_existing") if active_scaffold_config.action_links['destroy_existing']
-          active_scaffold_config.action_links.add('destroy', :label => 'Delete', :type => :record, :confirm => 'are_you_sure', :method => :delete, :position => false, :security_method => :delete_authorized?) unless active_scaffold_config.action_links['destroy']
+          active_scaffold_config.action_links.add('destroy', :label => :delete, :type => :record, :confirm => 'are_you_sure', :method => :delete, :position => false, :security_method => :delete_authorized?) unless active_scaffold_config.action_links['destroy']
         end
         
       end
@@ -106,7 +72,10 @@ module ActiveScaffold::Actions
       return active_scaffold_constraints.values.to_s if nested?
       nil
     end
-
+    private
+    def nested_formats
+      (default_formats + active_scaffold_config.formats + active_scaffold_config.nested.formats).uniq
+    end
   end
 end
 
@@ -123,64 +92,75 @@ module ActiveScaffold::Actions::Nested
 
     def new_existing
       do_new
-
-      respond_to do |type|
-        type.html do
-          if successful?
-            render(:action => 'add_existing_form', :layout => true)
-          else
-            return_to_main
-          end
-        end
-        type.js do
-          render(:partial => 'add_existing_form', :layout => false)
-        end
-      end
+      respond_to_action(:new_existing)
     end
 
     def add_existing
       do_add_existing
-
-      respond_to do |type|
-        type.html do
-          if successful?
-            flash[:info] = as_(:created_model, :model => @record.to_label)
-            return_to_main
-          else
-            render(:action => 'add_existing_form', :layout => true)
-          end
-        end
-        type.js do
-          if successful?
-            render :action => 'add_existing', :layout => false
-          else
-            render :action => 'form_messages.rjs', :layout => false
-          end
-        end
-        type.xml { render :xml => response_object.to_xml, :content_type => Mime::XML, :status => response_status }
-        type.json { render :text => response_object.to_json, :content_type => Mime::JSON, :status => response_status }
-        type.yaml { render :text => response_object.to_yaml, :content_type => Mime::YAML, :status => response_status }
-      end
+      respond_to_action(:add_existing)
     end
 
     def destroy_existing
       return redirect_to(params.merge(:action => :delete)) if request.get?
-
       do_destroy_existing
-
-      respond_to do |type|
-        type.html do
-          flash[:info] = as_(:deleted_model, :model => @record.to_label)
-          return_to_main
-        end
-        type.js { render(:action => 'destroy.rjs', :layout => false) }
-        type.xml { render :xml => successful? ? "" : response_object.to_xml, :content_type => Mime::XML, :status => response_status }
-        type.json { render :text => successful? ? "" : response_object.to_json, :content_type => Mime::JSON, :status => response_status }
-        type.yaml { render :text => successful? ? "" : response_object.to_yaml, :content_type => Mime::YAML, :status => response_status }
-      end
+      respond_to_action(:destroy_existing)
     end
     
     protected
+    def new_existing_respond_to_html
+      if successful?
+        render(:action => 'add_existing_form')
+      else
+        return_to_main
+      end
+    end
+    def new_existing_respond_to_js
+      render(:partial => 'add_existing_form')
+    end
+    def add_existing_respond_to_html
+      if successful?
+        flash[:info] = as_(:created_model, :model => @record.to_label)
+        return_to_main
+      else
+        render(:action => 'add_existing_form')
+      end
+    end
+    def add_existing_respond_to_js
+      if successful?
+        render :action => 'add_existing'
+      else
+        render :action => 'form_messages'
+      end
+    end
+    def add_existing_respond_to_xml
+      render :xml => response_object.to_xml, :content_type => Mime::XML, :status => response_status
+    end
+    def add_existing_respond_to_json
+      render :text => response_object.to_json, :content_type => Mime::JSON, :status => response_status
+    end
+    def add_existing_respond_to_yaml
+      render :text => response_object.to_yaml, :content_type => Mime::YAML, :status => response_status
+    end
+    def destroy_existing_respond_to_html
+      flash[:info] = as_(:deleted_model, :model => @record.to_label)
+      return_to_main
+    end
+
+    def destroy_existing_respond_to_js
+      render(:action => 'destroy')
+    end
+
+    def destroy_existing_respond_to_xml
+      render :xml => successful? ? "" : response_object.to_xml, :content_type => Mime::XML, :status => response_status
+    end
+
+    def destroy_existing_respond_to_json
+      render :text => successful? ? "" : response_object.to_json, :content_type => Mime::JSON, :status => response_status
+    end
+
+    def destroy_existing_respond_to_yaml
+      render :text => successful? ? "" : response_object.to_yaml, :content_type => Mime::YAML, :status => response_status
+    end
 
     def after_create_save(record)
       if params[:association_macro] == :has_and_belongs_to_many
@@ -213,6 +193,15 @@ module ActiveScaffold::Actions::Nested
         do_destroy
       end
     end
-
+    private
+    def new_existing_formats
+      (default_formats + active_scaffold_config.formats).uniq
+    end
+    def add_existing_formats
+      (default_formats + active_scaffold_config.formats).uniq
+    end
+    def destroy_existing_formats
+      (default_formats + active_scaffold_config.formats).uniq
+    end
   end
 end

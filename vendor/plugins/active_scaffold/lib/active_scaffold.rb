@@ -3,6 +3,7 @@ module ActiveScaffold
   class DependencyFailure < RuntimeError; end
   class MalformedConstraint < RuntimeError; end
   class RecordNotAllowed < SecurityError; end
+  class ActionNotAllowed < SecurityError; end
   class ReverseAssociationRequired < RuntimeError; end
 
   def self.included(base)
@@ -56,6 +57,7 @@ module ActiveScaffold
       @active_scaffold_config = ActiveScaffold::Config::Core.new(model_id)
       self.active_scaffold_config.configure &block if block_given?
       self.active_scaffold_config._load_action_columns
+      self.links_for_associations
 
       # defines the attribute read methods on the model, so record.send() doesn't find protected/private methods instead
       klass = self.active_scaffold_config.model
@@ -73,6 +75,7 @@ module ActiveScaffold
       end
       active_scaffold_default_frontend_path = File.join(Rails.root, 'vendor', 'plugins', ActiveScaffold::Config::Core.plugin_directory, 'frontends', 'default' , 'views')
       @active_scaffold_frontends << active_scaffold_default_frontend_path
+      @active_scaffold_custom_paths = []
 
       # include the rest of the code into the controller: the action core and the included actions
       module_eval do
@@ -82,7 +85,7 @@ module ActiveScaffold
         include ActiveScaffold::Actions::Core
         active_scaffold_config.actions.each do |mod|
           name = mod.to_s.camelize
-          include "ActiveScaffold::Actions::#{name}".constantize rescue nil
+          include "ActiveScaffold::Actions::#{name}".constantize
 
           # sneak the action links from the actions into the main set
           if link = active_scaffold_config.send(mod).link rescue nil
@@ -92,8 +95,41 @@ module ActiveScaffold
       end
     end
 
+    # Create the automatic column links. Note that this has to happen when configuration is *done*, because otherwise the Nested module could be disabled. Actually, it could still be disabled later, couldn't it?
+    def links_for_associations
+      return unless active_scaffold_config.actions.include? :list and active_scaffold_config.actions.include? :nested
+      active_scaffold_config.list.columns.each do |column|
+        next unless column.link.nil? and column.autolink
+        if column.plural_association?
+          # note: we can't create nested scaffolds on :through associations because there's no reverse association.
+          column.set_link('nested', :parameters => {:associations => column.name.to_sym}) #unless column.through_association?
+        elsif column.polymorphic_association?
+          # note: we can't create inline forms on singular polymorphic associations
+          column.clear_link
+        else
+          model = column.association.klass
+          begin
+            controller = active_scaffold_controller_for(model)
+          rescue ActiveScaffold::ControllerNotFound
+            next
+          end
+
+          actions = controller.active_scaffold_config.actions
+          column.actions_for_association_links.delete :new unless actions.include? :create
+          column.actions_for_association_links.delete :edit unless actions.include? :update
+          column.actions_for_association_links.delete :show unless actions.include? :show
+          column.set_link(:none, :controller => controller.controller_path, :crud_type => nil)
+        end
+      end
+    end
+
+    def add_active_scaffold_path(path)
+      @active_scaffold_paths = nil # Force active_scaffold_paths to rebuild
+      @active_scaffold_custom_paths << path
+    end
+
     def active_scaffold_paths
-      @active_scaffold_paths ||= ActionView::PathSet.new(@active_scaffold_overrides + @active_scaffold_frontends) unless @active_scaffold_overrides.nil? || @active_scaffold_frontends.nil?
+      @active_scaffold_paths ||= ActionView::PathSet.new(@active_scaffold_overrides + @active_scaffold_custom_paths + @active_scaffold_frontends) unless @active_scaffold_overrides.nil? || @active_scaffold_custom_paths.nil? || @active_scaffold_frontends.nil?
     end
 
     def active_scaffold_config
