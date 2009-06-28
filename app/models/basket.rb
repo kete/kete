@@ -258,6 +258,10 @@ class Basket < ActiveRecord::Base
     self.settings[:private_file_visibility] || self.site_basket.settings[:private_file_visibility] || "at least member"
   end
 
+  def allow_non_member_comments_with_inheritance?
+    (self.allow_non_member_comments == true || (self.allow_non_member_comments.nil? && self.site_basket.allow_non_member_comments == true))
+  end
+
   def additional_footer_content_with_inheritance
     (!settings[:additional_footer_content].nil? && !self.settings[:additional_footer_content].squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
   end

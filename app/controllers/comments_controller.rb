@@ -133,7 +133,7 @@ class CommentsController < ApplicationController
   private
   
     def is_authorized?
-      if @current_basket.allow_non_member_comments?
+      if @current_basket.allow_non_member_comments_with_inheritance?
         permitted = logged_in?
       else
         permitted = permit? "site_admin or moderator of :current_basket or member of :current_basket or admin of :current_basket"
