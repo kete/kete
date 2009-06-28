@@ -176,7 +176,7 @@ en:
       new_pass: "{{t.base.password.capitalize}}:"
       title: "{{t.base.reset.capitalize}} {{t.base.password}}"
     show:
-      baskets: "{{t.base.basket.pluralize}}"
+      baskets: "{{t.base.basket.pluralize.capitalize}}"
       change_password: "{{t.base.change}} {{t.base.password}}"
       change_portrait: "To {{t.base.change}} your selected {{t.base.portrait}}:"
       close_portrait_help: "{{t.base.close.capitalize}} X"
@@ -186,7 +186,7 @@ en:
       created: "{{t.base.created.capitalize}}:"
       current_license: Current default {{t.base.license}}
       drag_portraits: Drag a new one from "Other {{t.base.portrait.pluralize.capitalize}}" and drop it on top of the current one (requires Javascript).
-      edit: "{{t.base.edit.capitalize}}"
+      edit: "{{t.base.edit}}"
       editing_portraits: "Editing {{t.base.portrait.pluralize}}. "
       email: "{{t.base.email.capitalize}}:"
       gravatar: "{{t.base.add.capitalize}} an {{t.base.avatar}} to your {{t.base.account}} by {{t.base.registering}} a global {{t.base.portrait}} with {{gravatar_link}}."
@@ -206,7 +206,7 @@ en:
       shift_portraits: Use the arrow buttons to shift them around (when Javascript is off).
       title: "{{t.base.profile.capitalize}} of {{user_name}}"
       uploaded_link: uploaded before
-      user_name: "{{t.base.username}}:"
+      user_name: "{{t.base.username.capitalize}}:"
       view_license: ({{t.base.view.capitalize}} {{t.base.license}})
       whats_portraits: "{{t.base.whats_this}}"
     signup:
@@ -1138,7 +1138,7 @@ en:
     topic_type_choices_description: Ftype must be a "Pre-populated Choices ({{t.base.zoom_types.topic}} type)" option for these options to be available to {{t.base.user.pluralize}}.
   extended_fields_helper:
     additional_extended_field_control:
-      add_another: "{{t.base.add}} another {{field_name}}"
+      add_another: "{{t.base.add.capitalize}} another {{field_name}}"
     children_form_column:
       add_more_sub_choices: "{{t.base.add}} more sub-choices"
       existing_sub_choices: Existing sub-choices
@@ -1521,7 +1521,7 @@ en:
       admin: Admin
       ban: Ban
       delete: "{{t.base.delete.capitalize}}"
-      login_as: "{{t.base.login}} as {{t.base.user}}"
+      login_as: "{{t.base.login.capitalize}} as {{t.base.user}}"
       member: "{{t.base.member.capitalize}}"
       moderator: "{{t.base.moderator.capitalize}}"
       remove: "{{t.base.remove.capitalize}} from {{t.base.basket}}"
@@ -1932,7 +1932,7 @@ en:
     pm: pm
   topic_types:
     available_fields_form:
-      add: "{{t.base.add}} to {{t.base.zoom_types.topic.capitalize}} Type"
+      add: "{{t.base.add.capitalize}} to {{t.base.zoom_types.topic.capitalize}} Type"
       multiple: (multiple)
       no_fields_available: No form fields are available.
       no_more_allowed: You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type, see above.
