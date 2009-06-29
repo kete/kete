@@ -1767,6 +1767,7 @@ en:
       coordinates: "Coordinates:"
       no_results_found: No results found.
       results_on_this_page: results on this page
+      search_source_title: More Resources
       show: "{{t.base.show.capitalize}}"
       showing_x-y_of_z: "{{t.base.showing}} {{start}}-{{finish}} results of {{total}}"
       view_list: List {{t.base.view.capitalize}}

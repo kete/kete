@@ -1232,7 +1232,8 @@ div.gmnoprint {
   float: right;
   background-color: #fff;
   clear: right;
-  padding: 5px;
+  padding: 5px 5px 25px 5px;
+  border-left: 1px solid #bbb;
 }
 
 /*

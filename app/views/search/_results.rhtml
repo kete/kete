@@ -25,7 +25,8 @@
   <%= display_search_sources(params[:search_terms],
                              { :target => :search,
                                :do_not_cache => true,
-                               :limit => (@number_per_page.to_f / search_sources_amount.to_f).ceil }) %>
+                               :limit => (@number_per_page.to_f / search_sources_amount.to_f).ceil,
+                               :title => t('search.results.search_source_title') }) %>
 </div>
 
 <% if @results.size > 0 %>
