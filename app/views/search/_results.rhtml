@@ -20,14 +20,17 @@
 
 <div class="prev-next before-results"><%= will_paginate @results %></div>
 
-<div id="search_page_search_sources">
-  <% search_sources_amount = SearchSource.count(:conditions => { :source_target => 'search' }) %>
-  <%= display_search_sources(params[:search_terms],
+<% search_sources_amount = SearchSource.count(:conditions => { :source_target => 'search' }) %>
+<% if search_sources_amount > 0 %>
+  <% search_source_result = display_search_sources(params[:search_terms],
                              { :target => :search,
                                :do_not_cache => true,
                                :limit => (@number_per_page.to_f / search_sources_amount.to_f).ceil,
                                :title => t('search.results.search_source_title') }) %>
-</div>
+  <% unless search_source_result.blank? %>
+    <div id="search_page_search_sources"><%= search_source_result %></div>
+  <% end %>
+<% end %>
 
 <% if @results.size > 0 %>
 
