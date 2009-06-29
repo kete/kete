@@ -264,32 +264,42 @@ namespace :kete do
 
       desc "Run the legacy google map repair tasks"
       task :legacy_google_map => :environment do
-        each_item_with_extended_fields do |item|
-          map_types = ['map', 'map_address']
-          map_fields = ExtendedField.all(:conditions => ["ftype IN (?)", map_types]).collect { |f| f.label_for_params }
-          map_fields.each do |field|
-            begin
-              map_data = item.send(field)
-              @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-              raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)" unless File.exists?(@gma_config_path)
-              gma_config = YAML.load(IO.read(@gma_config_path))
+        map_types = ['map', 'map_address']
+        map_fields = ExtendedField.all(:conditions => ["ftype IN (?)", map_types]).collect { |f| f.label_for_params }
+        if map_fields.size > 0
+          @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
+          raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)" unless File.exists?(@gma_config_path)
+          gma_config = YAML.load(IO.read(@gma_config_path))
+
+          map_sql = map_fields.collect { |f| "extended_content LIKE '%<#{f}%'" }.join(' OR ')
+          each_item_with_extended_fields("(#{map_sql})") do |item|
+            original_extended_content = item.extended_content.dup
+            map_fields.each do |field|
+              begin
+                map_data = item.send(field) # replace this with .try() in Rails 2.3
+              rescue
+                next
+              end
               value = { 'zoom_lvl' => (map_data['zoom_lvl'] || gma_config[:google_map_api][:default_zoom_lvl].to_s),
-                        'no_map' => '0', 'coords' => map_data['coords'] }
+                        'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] }
               value['address'] = map_data['address'] if map_data['address']
               item.send("#{field}=", value)
-            rescue
-              next
+            end
+            if item.extended_content != original_extended_content
+              # make sure we set 'do_not_sanitize' to true or update_attribute will strip some HTML
+              item.do_not_sanitize = true
+              item.update_attribute(:extended_content, item.extended_content)
             end
           end
-          item.save!
         end
       end
 
       private
 
-      def each_item_with_extended_fields(&block)
+      def each_item_with_extended_fields(conditions = nil, &block)
+        conditions = "extended_content IS NOT NULL AND extended_content != '' AND #{(conditions || '1=1')}"
         ZOOM_CLASSES.each do |zoom_class|
-          zoom_class.constantize.all(:conditions => ["extended_content IS NOT NULL AND extended_content != ''"]).each do |item|
+          zoom_class.constantize.all(:conditions => conditions).each do |item|
             yield(item)
           end
         end

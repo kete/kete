@@ -8,8 +8,6 @@ module FieldMappingsController
       # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
       klass.send :verify, :method => :post, :only => [ :destroy, :create, :update ],
                           :redirect_to => { :action => :list }
-
-      klass.send :helper_method, :any_items_using_mapping?
     end
 
     def index
@@ -23,6 +21,7 @@ module FieldMappingsController
       if item.save
         set_ancestory(item) if item.class == TopicType
         flash[:notice] = "#{item.class.name.underscore.humanize} was successfully created."
+        set_instance_var_for(item)
         redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => item
       else
         set_instance_var_for(item)
@@ -44,6 +43,7 @@ module FieldMappingsController
         end
 
         flash[:notice] = "#{item.class.name.underscore.humanize} was successfully updated."
+        set_instance_var_for(item)
         redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => item
       else
         set_instance_var_for(item)
@@ -100,7 +100,7 @@ module FieldMappingsController
     def remove_mapping
       mapping = field_mapping_class.find(params[:mapping_id])
 
-      if any_items_using_mapping?(mapping)
+      if mapping.used_by_items?
         flash[:error] = "The #{mapping.extended_field.label} mapping is in use by this #{item_type_class.name.underscore.humanize} or its descendants and cannot be deleted."
       else
         mapping.destroy
@@ -126,32 +126,6 @@ module FieldMappingsController
       else
         @content_type = item
       end
-    end
-
-    def any_items_using_mapping?(mapping)
-      extended_field = mapping.extended_field
-      ef_label = Regexp.escape(extended_field.label_for_params)
-      element_label = extended_field.multiple? ? "#{ef_label}_multiple" : ef_label
-
-      like, not_like = case ActiveRecord::Base.connection.adapter_name.downcase
-        when /postgres/ then ["~*", "!~*"]
-        else                 ["REGEXP", "NOT REGEXP"]
-      end
-
-      conditions = ["extended_content #{like} ? AND extended_content #{not_like} ? AND extended_content #{not_like} ?",
-                    "<#{element_label}", "<#{element_label}[^>]*\/>", "<#{element_label}[^>]*>(<[0-9]+><#{ef_label}[^>]*><\/#{ef_label}><\/[0-9]+>)*<\/#{element_label}>"]
-
-      # Check whether we are dealing with a topic type mapping
-      # or a content type mapping and get items accordingly
-      items_count = if mapping.respond_to?(:topic_type)
-        conditions[0] += " AND topic_type_id IN (?)"
-        conditions << mapping.topic_type.full_set.collect { |tt| tt.id }
-        Topic.count(:conditions => conditions)
-      else
-        mapping.content_type.class_name.constantize.count(:conditions => conditions)
-      end
-
-      items_count > 0
     end
 
   end

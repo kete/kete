@@ -1,8 +1,3 @@
-<%
-  @existing_relations = Array.new
-  @existing_relations = params[:existing_relations] if !params[:existing_relations].nil?
--%>
-
 <div class="clear">&nbsp;</div>
 
 <div id="content-tabs">
@@ -35,7 +30,6 @@
             <% locals = { :title => result[:title],
                           :source_url => result[:url],
                           :short_summary => result[:short_summary],
-                          :existing_relations => @existing_relations,
                           :related => result[:related],
                           :result => result[:id],
                           :first_result => (index == 0) } -%>

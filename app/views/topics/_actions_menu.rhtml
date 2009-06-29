@@ -11,7 +11,9 @@
             {:action => :history,
       :id => item}, :tabindex => '1' %></li>
     <% end %>
-    <li><a href="#comments" tabindex="1"><span class="discuss-link">Discuss</span></a></li>
+    <% unless params[:controller] == 'comments' %>
+      <li><a href="#comments" tabindex="1"><span class="discuss-link">Discuss</span></a></li>
+    <% end %>
 
     <% if logged_in? and @site_admin -%>
        <% cache({:part => 'zoom_reindex', :id => @cache_id}) do -%>

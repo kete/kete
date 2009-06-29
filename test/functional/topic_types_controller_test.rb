@@ -19,20 +19,12 @@ class TopicTypesControllerTest < ActionController::TestCase
 
   def test_index_and_list
     get :index, index_path
-    assert_viewing_template 'topic_types/list'
-    assert_var_assigned true
-    assert_equal 5, assigns(:topic_types).size
+    assert_redirect_to :action => 'list'
 
     get :list, index_path({ :action => 'list' })
     assert_viewing_template 'topic_types/list'
     assert_var_assigned true
     assert_equal 5, assigns(:topic_types).size
-  end
-
-  def test_show
-    get :show, show_path
-    assert_viewing_template 'topic_types/show'
-    assert_var_assigned
   end
 
   def test_new
@@ -46,7 +38,7 @@ class TopicTypesControllerTest < ActionController::TestCase
     assert_var_assigned
     assert_attributes_same_as @new_model
     assert_redirect_to( edit_path({ :id => assigns(:topic_type).id }) )
-    assert_equal 'TopicType was successfully created.', flash[:notice]
+    assert_equal 'Topic type was successfully created.', flash[:notice]
   end
 
   def test_edit
@@ -60,13 +52,13 @@ class TopicTypesControllerTest < ActionController::TestCase
     assert_var_assigned
     assert_attributes_same_as @updated_model
     assert_redirect_to( edit_path({ :id => assigns(:topic_type).id }) )
-    assert_equal 'TopicType was successfully updated.', flash[:notice]
+    assert_equal 'Topic type was successfully updated.', flash[:notice]
   end
 
   def test_destroy
     destroy_record({ :id => 4 })
     assert_redirect_to( index_path({ :action => 'list' }) )
-    assert_equal 'TopicType was successfully deleted.', flash[:notice]
+    assert_equal 'Topic type was successfully deleted.', flash[:notice]
   end
 
   def test_add_to_topic_type
@@ -84,7 +76,7 @@ class TopicTypesControllerTest < ActionController::TestCase
       extended_fields_hash.merge!(temp_hash)
     end
 
-    post :add_to_topic_type, :id => @place_type.id, :extended_field => extended_fields_hash, :urlified_name => 'site'
+    post :add_to_item_type, :id => @place_type.id, :extended_field => extended_fields_hash, :urlified_name => 'site'
 
     # a simple test to make sure this worked... there should no longer be any available fields
     assert_equal @place_type.available_fields.size, 0
@@ -115,7 +107,7 @@ class TopicTypesControllerTest < ActionController::TestCase
       mappings_hash.merge!(temp_hash)
     end
 
-    post :reorder_fields_for_topic_type, :id => @person_type.id, :mapping => mappings_hash, :urlified_name => 'site'
+    post :reorder_fields, :id => @person_type.id, :mapping => mappings_hash, :urlified_name => 'site'
 
     # i found this a bit confusing, you have to refresh the object
     # after manipulating it's list (sometimes)

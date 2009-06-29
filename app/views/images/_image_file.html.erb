@@ -11,7 +11,7 @@
       <% if key.to_s == @view_size -%>
       <li<%= class_statement -%>><%= key.to_s.humanize -%></li>
       <% else -%>
-      <li<%= class_statement -%>><%= link_to(key.to_s.humanize, :action => :show, :view_size => key) -%></li>
+      <li<%= class_statement -%>><%= link_to(key.to_s.humanize, :action => :show, :view_size => key, :private => params[:private]) -%></li>
       <% end -%>
       <% sizes_count += 1 -%>
       <% end -%>

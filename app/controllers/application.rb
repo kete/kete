@@ -241,7 +241,7 @@ class ApplicationController < ActionController::Base
   # If the user is a site admin, the file isn't private,
   # or they have permissions then return true
   def current_user_can_see_private_files_for?(item)
-    @site_admin || (item.respond_to?(:file_private) && !item.file_private?) || current_user_can_see_private_files_in_basket?(item.basket)
+    @site_admin || !item.file_private? || current_user_can_see_private_files_in_basket?(item.basket)
   end
 
   # Test for private file visibility in a given basket
@@ -844,16 +844,23 @@ class ApplicationController < ActionController::Base
     redirect_to url_for(path_hash)
   end
 
+  # generate a dc identifier for zebra
+  # if item is nil (when items are fully cached), use the
+  # current request params and instance vars available
   def url_for_dc_identifier(item, options={})
-    location = { :controller => zoom_class_controller(item.class.name),
+    item_controller, item_id, item_basket = item ? \
+      [zoom_class_controller(item.class.name), item.to_param, item.basket] : \
+      [params[:controller], params[:id], @current_basket]
+
+    location = { :controller => item_controller,
                  :action => 'show',
-                 :id => item,
+                 :id => item_id,
                  :format => nil,
-                 :urlified_name => item.basket.urlified_name }
+                 :urlified_name => item_basket.urlified_name }
 
     location[:protocol] = 'http' if options[:force_http]
 
-    location.merge!({ :id => item.id, :private => nil }) if options[:minimal]
+    location.merge!({ :id => item_id.to_i, :private => nil }) if options[:minimal]
 
     utf8_url_for(location)
   end

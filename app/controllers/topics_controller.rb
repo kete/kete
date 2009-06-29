@@ -12,9 +12,6 @@ class TopicsController < ApplicationController
   def show
     prepare_item_variables_for('Topic')
     @topic = @item
-    # If we are serving a cached page, we still need
-    # some details in @topic, so lets make a dummy one
-    @topic = DummyModel.new({ :id => @cache_id, :basket => @current_basket }) if @topic.nil?
 
     respond_to do |format|
       format.html
@@ -124,7 +121,7 @@ class TopicsController < ApplicationController
     # update the attribute so that when they save, the extended field validations
     # take effect. We also have to reload and then switch to the privacy of the item
     # they are editing (to ensure private item editing shows the correct data)
-    if @topic.topic_type_id != params[:topic][:topic_type_id].to_i
+    if params[:topic][:topic_type_id] && @topic.topic_type_id != params[:topic][:topic_type_id].to_i
       @topic.update_attribute(:topic_type_id, params[:topic][:topic_type_id].to_i)
       @topic.reload
       public_or_private_version_of(@topic)

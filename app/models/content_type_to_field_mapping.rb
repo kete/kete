@@ -1,20 +1,10 @@
 class ContentTypeToFieldMapping < ActiveRecord::Base
-  belongs_to :content_type
-  belongs_to :extended_field
-  belongs_to :form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
-  belongs_to :required_form_field, :class_name => "ExtendedField", :foreign_key => "extended_field_id"
-  acts_as_list :scope => :content_type_id
-  piggy_back :extended_field_label_xml_element_name_xsi_type_multiple_description_user_choice_addition_and_ftype,
-      :from => :extended_field, :attributes => [:label, :xml_element_name, :xsi_type, :multiple, :description, :user_choice_addition, :ftype]
+  include FieldMappings
 
-  # James: Leaving this out for now. See notes below (line 21) for details.
+  # James: Leaving this out for now. See notes below (line 11) for details.
   # this creates reading and writing methods for an extendef field when it is mapped to a content_type
   # after_create :define_extended_field_accessors
   # after_destroy :undefine_extended_field_accessors
-
-  def self.add_as_to(is_required, content_type, field)
-      with_scope(:create => { :required => is_required}) { content_type.concat field }
-  end
 
   private
   
