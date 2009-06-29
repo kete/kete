@@ -1,14 +1,9 @@
 # Basic configuration class for external search sources
 class ExternalSearchSources
   @@settings = Hash.new
-
-  def self.[](key)
-    @@settings[key]
-  end
-
-  def self.[]=(key, value)
-    @@settings[key] = value
-  end
+  def self.settings;        @@settings;              end
+  def self.[](key);         @@settings[key];         end
+  def self.[]=(key, value); @@settings[key] = value; end
 end
 
 # method that tests the user is logged in and redirects if not

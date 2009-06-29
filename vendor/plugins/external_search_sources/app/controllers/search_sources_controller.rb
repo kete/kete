@@ -1,3 +1,8 @@
+require 'rake'
+require 'rake/rdoctask'
+require 'rake/testtask'
+require 'tasks/rails'
+
 class SearchSourcesController < ApplicationController
   unloadable
 
@@ -5,6 +10,7 @@ class SearchSourcesController < ApplicationController
   before_filter :redirect_if_not_authorized
   before_filter :set_page_title
   before_filter :get_search_source, :only => [ :move_higher, :move_lower ]
+  before_filter :prepare_available_search_sources
 
   active_scaffold :search_sources do |config|
     config.label = I18n.t('search_sources_controller.title')
@@ -62,13 +68,37 @@ class SearchSourcesController < ApplicationController
     redirect_to ExternalSearchSources[:default_url_options].merge(:action => 'list')
   end
 
+  def install_search_source
+    if params[:task]
+      if @available_search_sources.include?(params[:task])
+        old_search_source_count = SearchSource.count
+        ENV['RAILS_ENV'] = RAILS_ENV
+        rake_result = Rake::Task["external_search_sources:import:#{params[:task]}"].execute(ENV)
+        if rake_result || SearchSource.count > old_search_source_count
+          flash[:notice] = t('search_sources_controller.install_search_source.imported')
+        else
+          flash[:error] = t('search_sources_controller.install_search_source.problem_importing')
+        end
+      else
+        flash[:error] = t('search_sources_controller.install_search_source.invalid_import')
+      end
+    else
+      flash[:error] = t('search_sources_controller.install_search_source.no_import')
+    end
+    redirect_to ExternalSearchSources[:default_url_options].merge(:action => 'list')
+  end
+
   private
 
   def authorized_to_access_search_sources?
+    super
+  rescue NoMethodError
     permit? ExternalSearchSources[:authorized_role]
   end
 
   def redirect_if_not_authorized
+    super
+  rescue NoMethodError
     unless authorized_to_access_search_sources?
       flash[:notice] = I18n.t('search_sources_controller.redirect_if_not_authorized.not_authorized')
       redirect_to ExternalSearchSources[:unauthorized_path]
@@ -77,6 +107,11 @@ class SearchSourcesController < ApplicationController
 
   def get_search_source
     @search_source = SearchSource.find_by_id(params[:id])
+  end
+
+  def prepare_available_search_sources
+    @available_search_sources = Rake.application.tasks.
+                                 collect { |task| task.name =~ /external_search_sources:import:(\w+)$/ ? $1 : nil }.compact
   end
 
   # A method used by active scaffold before creating/updating a record

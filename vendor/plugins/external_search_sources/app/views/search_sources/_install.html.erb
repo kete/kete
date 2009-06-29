@@ -1,0 +1,14 @@
+<div class="active-scaffold-header">
+  <h2><%= t('search_sources.install.title') %></h2>
+
+  <% form_tag :action => 'install_search_source' do %>
+
+    <%= select_tag 'task', options_for_select([[t('search_sources.install.choose_search_source'), '']] +
+                                              @available_search_sources.collect { |v| [v.humanize, v] }) %>
+
+    <%= submit_tag t('search_sources.install.submit') %>
+
+  <% end %>
+</div>
+
+<br />

@@ -7,6 +7,9 @@ namespace :external_search_sources do
     system "rsync -ruv #{plugin_path}/public/images public"
   end
 
+  desc 'Import all Search Source fixture data'
+  task :import => ['external_search_sources:import:kete_horowhenua_images']
+
   namespace :import do
 
     desc "Import Kete Horowhenua Images Search Source."

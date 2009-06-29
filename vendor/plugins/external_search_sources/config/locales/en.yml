@@ -1,5 +1,10 @@
 en:
   search_sources:
+    install:
+      all: All Search Sources
+      choose_search_source: '-choose search source to import-'
+      submit: Import
+      title: Import Search Sources
     search_source:
       more: 'more &raquo;'
       more_like_this: 'View more results like this. '
@@ -20,6 +25,11 @@ en:
     source_url:
       not_fetched: Source has not been fetched from yet.
   search_sources_controller:
+    install_search_source:
+      imported: "Sucessfully imported search sources."
+      invalid_import: "Invalid search source task."
+      no_import: "No search sources to import were selected."
+      problem_importing: "There was a problem importing the search sources."
     move_higher:
       moved_higher: The selected search source has been moved higher.
     move_higher_title: "Move Higher. "

@@ -14,7 +14,9 @@ module SearchSourcesHelper
     end
     return html if html.blank?
     "<div id='search_sources'>" +
-      "<h3>#{t('search_sources_helper.display_search_sources.other_resources')}</h3>" +
+      "<h3 id='search_sources_heading'>" +
+        (options[:title] || t('search_sources_helper.display_search_sources.other_resources')) + 
+      "</h3>" +
       html +
     "</div>"
   end

@@ -2,21 +2,22 @@
 
 This Rails Engine provides an interface, helpers, and fixture data for pulling search results from external sources via RSS feeds.
 
-This plugin has only been tested on Rails 2.3 and higher. Prior versions will not work because of incomplete engine support or missing I18n support.
+
+== Requirements (unconfigurable)
+
+* Rails 2.3 or higher - Prior versions will not work because of incomplete engine support or missing I18n support
+* ActiveScaffold plugin installed for admin interface to work (http://github.com/activescaffold/active_scaffold)
+* Kete version of the Feedzirra gem (http://github.com/kete/feedzirra)
+
+== Assumptions (configurable)
+
+* Authorization plugin (http://github.com/DocSavage/rails-authorization-plugin)
+* Acts as authenticated (http://svn.techno-weenie.net/projects/plugins/acts_as_authenticated)
 
 
 == Installation
 
 === Step 1
-
-Install all dependancies.
-
-* Plugin relies on ActiveScaffold for the admin interface.
-* Plugin relies on Kete version of the Feedzirra gem
-
-  sudo gem install kete-feedzirra
-
-=== Step 2
 
 Open a console, and in the root of you Rails application, install the plugin by running one of the following (depending on the method you use to import plugins):
 
@@ -25,19 +26,19 @@ Open a console, and in the root of you Rails application, install the plugin by 
 * git submodule add git://github.com/kete/external_search_sources.git vendor/plugins/external_search_sources
 * Download the latest files ( http://github.com/kete/external_search_sources/tarball/master ) and extract to vendor/plugins/external_search_sources
 
-=== Step 3
+=== Step 2
 
 Install migrations and public images.
 
   rake external_search_sources:sync
 
-=== Step 4
+=== Step 3
 
 Update your database.
 
   rake db:migrate
 
-=== Step 5
+=== Step 4
 
 Where you want search sources displayed, add the following to the view file
 
@@ -45,13 +46,15 @@ Where you want search sources displayed, add the following to the view file
 
 Replace the string 'test' with a variable or other string you want search sources to return results of.
 
-=== Step 6
+=== Step 5
 
 Add some search sources. Go to /search_sources/list and add some data into the correct fields.
 
-Alternatively, use some fixture data included with the plugin by running
+Alternatively, use some fixture data included with the plugin. You can do this in two ways:
 
-  rake external_search_sources:import:kete_horowhenua_images
+* Importing search sources via import form on search sources controller
+
+* Running a rake task - rake external_search_sources:import
 
 
 == Configuration
@@ -60,17 +63,19 @@ Alternatively, use some fixture data included with the plugin by running
 
 Nesting of divs and results is as follows. You'll need firebug or examine the source manually if you need more than this.
 
-* div with id of search_sources
-** h3 of box title
-** for each search source
-*** h4 of search source title
-*** div with id of '[search_source_title_id]_links'
-*** for each link result
-**** div with id of '[search_source_title_id]_result_[result_object_id]', class from ExternalSearchSources[:default_link_classes]
-*** div with id of '[search_source_title_id]_images', with class of 'images'
-*** for each image result
-**** div with id of '[search_source_title_id]_result_[result_object_id]', class from ExternalSearchSources[:image_link_classes]
-*** div with id of '[search_source_title_id]_more_results', with class of 'default_link_classes'
+Format: Element name followed by #[string] (id) and .[string] (classes). e.g.  div#some_div.class1.class2 = <div id="some_div" class="class1 class2">
+
+  div#search_sources
+    h3#search_sources_heading
+    for each search source
+      h4#[search_source_title_id]_heading
+      div#[search_source_title_id]_links
+        for each link result
+          div#[search_source_title_id]_result_[result_object_id].ExternalSearchSources[:default_link_classes]
+      div#[search_source_title_id]_images.images
+        for each image result
+          div#[search_source_title_id]_result_[result_object_id].ExternalSearchSources[:image_link_classes]
+      div#[search_source_title_id]_more_results.ExternalSearchSources[:default_link_classes]
 
 === Settings
 
@@ -82,22 +87,51 @@ To override some settings, create an initializer, copy the config lines from lib
 
 If you don't add settings to the initializer, the plugin will fall back to what is uses by default.
 
+=== Method Overrides
+
+The plugin makes an assumption about other plugins you have installed and uses methods from them to get things working.
+
+Most of the time though, you'll have a different setup.
+
+There are two methods that you can override to suit your applications environment. They are:
+
+  authorized_to_access_search_sources?
+    This method returns a true or false depending on whether the current user is allowed access to the search sources admin interface.
+
+  redirect_if_not_authorized
+    This method calls the authorized_to_access_search_sources? method, and if it returns false, it will redirect to the unauthorized path (see ExternalSearchSources[:unauthorized_path]) with a flash message.
+
+The last assumption is a login_required method exists that runs on a before_filter, which you can change to your own method by configuring ExternalSearchSources[:login_method]
+
+Override any of the above methods by adding a similarly named method in application_controller.rb. If the call to super works, then it'll use it. Else if will fall back to what the plugin has by default.
+
 === Output
 
 The display_search_sources helper method takes an options hash as a second parameter.
 
 So far, the working options are:
 
-* :target
-** Pass in a symbol that matches an source targets (ExternalSearchSources[:source_targets]).
-** Using the defaults, you can use either :homepage or :search.
-** If no target is passed in, all search sources are displayed.
+  :target => [symbol]
+    Matches search sources with same value
+    More targets can be added to ExternalSearchSources[:source_targets]
+    If no target is passed in, all search sources are displayed.
+    Default(s) => :homepage or :search.
 
-* :do_not_cache
-** Overwrite caching on a per display basis. Set to true to disable caching for the output.
+  :do_not_cache => [boolean]
+    Overwrite caching on a per display basis.
+    Set to true to disable caching for the output.
+    When false, falls back to ExternalSearchSources[:cache_results]
+    Default(s) => false
 
-* :limit
-** Overwrite the search sources default limit. Useful for cases where the number per page changes dynamically.
+  :limit => [integer]
+    Overwrite the search sources default limit.
+    Useful for cases where the number per page changes dynamically.
+    When nil, falls back to search source default
+    Default(s) => nil
+
+  :title => [string]
+    The title of the search sources box.
+    Default(s) => 'Other Resources'
 
 
 == Testing
@@ -106,7 +140,7 @@ The plugin comes with a test suite that can be run once the plugin is installed 
 
 Change into the plugins directory and run 'rake' to start them.
 
-Note: The tests require Rails 2.2 or higher, and are currently tested on Rails 2.3 (so problems in older versions may arise - please see "Reporting an Issue" if they do)
+Note: The tests are run on Rails 2.3 because it is the only version with engine support (see requirements section)
 
 
 == Reporting an Issue
@@ -115,14 +149,20 @@ If you have a problem, please report it on the external_search_sources plugin ti
 
 http://kete.lighthouseapp.com/projects/32521-external_search_sources/tickets
 
-Be sure to include Rails version, plugin version, and when possible, a sample application that can reproduce the problem. Upload it to one of the various file hosting sites and link to it in the ticket. Don't include vendored rails or the external_search_sources plugin in the archive (if I know the versions, I'll add these myself).
+Be sure to include Rails version, plugin version, and when possible, a sample application that can reproduce the problem.
+
+Upload it to one of the various file hosting sites and link to it in the ticket.
+
+Don't include vendored rails or the external_search_sources plugin in the archive (if I know the versions, I'll add these myself).
 
 
 == Contributing
 
-If you've added something, why not share it. Fork the repository (http://github.com/kete/external_search_sources), make the changes and send a pull request to the maintainers.
+If you've added something, why not share it.
 
-Changes with tests, and full documentation are preferred.
+Fork the repository (http://github.com/kete/external_search_sources), make the changes and send a pull request to the maintainers.
+
+Changes with tests, and full documentation are preferred, but not required.
 
 
 = Credits
