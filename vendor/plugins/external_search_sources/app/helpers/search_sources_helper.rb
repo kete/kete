@@ -21,7 +21,8 @@ module SearchSourcesHelper
     "</div>"
   end
 
-  # You shouldn't need to use the following methods
+  # You shouldn't need to use the following methods. Though they are public (and need to be public)
+  # they should only be called by the engine (things like output methods and active scaffold overides)
 
   def cache_result(*args, &block)
     !@do_not_cache && ExternalSearchSources[:cache_results] ? cache(args, &block) : yield

@@ -1,7 +1,7 @@
 --- 
 format: 1
 handler: 
-  commit: cdaf0f84d75adae4896d5579d152623b69b16b0d
+  commit: 3b393d718879bc93990a47bb2743af164f98f7e8
   branch: master
 lock: false
 repository_url: git://github.com/kete/external_search_sources.git

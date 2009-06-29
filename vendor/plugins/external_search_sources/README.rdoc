@@ -2,14 +2,16 @@
 
 This Rails Engine provides an interface, helpers, and fixture data for pulling search results from external sources via RSS feeds.
 
+External Search Sources was developed for the [Kete](http://kete.net.nz) open source Ruby on Rails application by [Katipo Communications, Ltd.](http://katipo.co.nz/) and was funded by [Digital New Zealand](http://digitalnz.org/).
 
-== Requirements (unconfigurable)
+
+== Requirements
 
 * Rails 2.3 or higher - Prior versions will not work because of incomplete engine support or missing I18n support
 * ActiveScaffold plugin installed for admin interface to work (http://github.com/activescaffold/active_scaffold)
 * Kete version of the Feedzirra gem (http://github.com/kete/feedzirra)
 
-== Assumptions (configurable)
+== Assumptions (configurable, see Configuration section for details)
 
 * Authorization plugin (http://github.com/DocSavage/rails-authorization-plugin)
 * Acts as authenticated (http://svn.techno-weenie.net/projects/plugins/acts_as_authenticated)
@@ -44,7 +46,7 @@ Where you want search sources displayed, add the following to the view file
 
   display_search_sources 'test'
 
-Replace the string 'test' with a variable or other string you want search sources to return results of.
+Replace the string 'test' with a search term variable or other search term string you want search sources to return results of.
 
 === Step 5
 
@@ -86,6 +88,15 @@ ExternalSearchSources has methods for [] (accessor) and []= (writer). The settin
 To override some settings, create an initializer, copy the config lines from lib/external_search_sources.rb to the initializer, and change to suit.
 
 If you don't add settings to the initializer, the plugin will fall back to what is uses by default.
+
+Once you've done the initial configuration to get things working, the one you'll most likely want to change is:
+
+  :source_targets
+    Allows you to limit search sources to various pages based on the target.
+    For example, if you have a products search sources that you want on other product pages,
+    and a blog posts search source that you want on the news page, you would create two targets,
+    product and news, then adjust the options in the call to display_search_sources so that
+    :target is set and pulls only the search sources you want.
 
 === Method Overrides
 
@@ -133,6 +144,16 @@ So far, the working options are:
     The title of the search sources box.
     Default(s) => 'Other Resources'
 
+=== Internationalization (I18n)
+
+This engine uses the I18n features of Rails 2.2 and later to allow for easily translation of the search source interface, and output.
+
+Locales are stored in config/locales  inside the engine directory. When locales are completed, they are added to an array in init.rb that adds each to the I18n load path.
+
+To use your own strings, open up the locale of your choice in an editor of your choice and change them to suit.
+
+We accept new locales for the engine. If you willing and able to help, please feel free to fork the engine on Github, make your changes, and send a pull request.
+
 
 == Testing
 
@@ -167,4 +188,8 @@ Changes with tests, and full documentation are preferred, but not required.
 
 = Credits
 
-This plugin is currently maintained by Kieran Pilkington <kieran@katipo.co.nz>
+This engine was designed, implemented, and tested by Kieran Pilkington ( http://github.com/KieranP )
+
+Walter McGinnis ( http://github.com/walter ) did the system design and gave feedback on the engine as it was being developed.
+
+Current maintainers: Kieran Pilkington and Walter McGinnis

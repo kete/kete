@@ -33,7 +33,7 @@
       </div>
     <% end -%>
 
-    <% if entries.size > source.limit %>
+    <% unless entries[:total] < (options[:limit] || source.limit) %>
       <div id="<%= search_source_id %>_more_results"
            class='<%= ExternalSearchSources[:default_link_classes] %>'>
         <%= link_to(t('search_sources.search_source.more'), source.more_link,

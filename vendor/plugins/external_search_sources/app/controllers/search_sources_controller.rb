@@ -17,9 +17,9 @@ class SearchSourcesController < ApplicationController
 
     list.sorting = { :position => 'ASC' }
 
-    config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit]
+    config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit, :limit_param]
     config.columns << [:cache_interval] if ExternalSearchSources[:cache_results]
-    config.list.columns.exclude [:source_type, :or_syntax, :more_link_base_url, :cache_interval]
+    config.list.columns.exclude [:source_type, :or_syntax, :more_link_base_url, :cache_interval, :limit_param]
 
     options = { :type => :record, :inline => false }
     # images_tag and @template.image_tag arn't available in this scope
@@ -48,6 +48,10 @@ class SearchSourcesController < ApplicationController
     config.columns[:more_link_base_url].description = I18n.t('search_sources_controller.source_more_link_base_url_description')
 
     config.columns[:limit].description = I18n.t('search_sources_controller.source_limit_description')
+
+    config.columns[:limit_param].description = I18n.t('search_sources_controller.source_limit_param_description')
+    config.columns[:limit_param].form_ui = :select
+    config.columns[:limit_param].options = [['', '']] + SearchSource.acceptable_limit_params.collect { |st| [st, st] }
 
     config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
 

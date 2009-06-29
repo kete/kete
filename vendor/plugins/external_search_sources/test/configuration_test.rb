@@ -10,8 +10,10 @@ class ConfigurationTest < ActiveSupport::TestCase
       :image_link_classes => "search_source-image-result",
       :default_url_options => {},
       :login_method => :login_required,
+      :cache_results => false,
+      :source_types => ['feed'],
       :source_targets => ["search", "homepage"],
-      :cache_results => false
+      :limit_params => %w{ limit num_results count }
     }
     assert_equal expected, ExternalSearchSources.settings
   end

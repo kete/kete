@@ -16,6 +16,7 @@ class SearchSourceTest < ActiveSupport::TestCase
                   :base_url => 'http://example.com/rss.xml?q=',
                   :more_link_base_url => 'http://example.com/?q=',
                   :limit => 5,
+                  :limit_param => 'limit',
                   :cache_interval => 5,
                   :or_syntax => { :position => 'between', :case => 'upper' } }
 
@@ -74,6 +75,19 @@ class SearchSourceTest < ActiveSupport::TestCase
     source = SearchSource.new(@@new_model.merge(:source_target => 'invalid'))
     assert !source.valid?
     assert_equal 'must be one of the following: search, homepage', source.errors['source_target']
+  end
+
+  test "The Search Source model should contain a class var of acceptable limit params" do
+    assert_equal %w{ limit num_results count }, SearchSource.acceptable_limit_params
+  end
+
+  test "The Search Source model should require that limit_param be in SearchSource.acceptable_limit_params or blank" do
+    source = SearchSource.new(@@new_model.merge(:limit_param => 'invalid'))
+    assert !source.valid?
+    assert_equal 'must be one of the following: limit, num_results, count', source.errors['limit_param']
+
+    source = SearchSource.new(@@new_model.merge(:limit_param => nil))
+    assert source.valid?
   end
 
   test "The Search Source model should sort the sources by position by default" do
@@ -154,19 +168,19 @@ class SearchSourceTest < ActiveSupport::TestCase
     source = SearchSource.create(@@new_model)
 
     source.or_syntax = { :position => 'between', :case => 'upper' }
-    assert_equal 'this%20OR%20that', source.parse_search_text('this that')
+    assert_equal 'this%20OR%20that', source.send(:parse_search_text, 'this that')
 
     source.or_syntax = { :position => 'between', :case => 'lower' }
-    assert_equal 'this%20or%20that', source.parse_search_text('this that')
+    assert_equal 'this%20or%20that', source.send(:parse_search_text, 'this that')
 
     source.or_syntax = { :position => 'before', :case => 'upper' }
-    assert_equal 'OR%20this%20that', source.parse_search_text('this that')
+    assert_equal 'OR%20this%20that', source.send(:parse_search_text, 'this that')
 
     source.or_syntax = { :position => 'after', :case => 'upper' }
-    assert_equal 'this%20that%20OR', source.parse_search_text('this that')
+    assert_equal 'this%20that%20OR', source.send(:parse_search_text, 'this that')
 
     source.or_syntax = { :position => 'nothing', :case => 'upper' }
-    assert_equal 'this%20that', source.parse_search_text('this that')
+    assert_equal 'this%20that', source.send(:parse_search_text, 'this that')
   end
 
   test "Source url and more links aren't available until a feed is fetched" do
@@ -186,7 +200,7 @@ class SearchSourceTest < ActiveSupport::TestCase
     source = SearchSource.create(@@new_model)
     a,b,c,d = FeedEntry.new('1'), FeedEntry.new, FeedEntry.new('1'), FeedEntry.new
     expected = { :total => 4, :links => [b,d], :images => [a,c] }
-    assert_equal expected, source.sort_entries([a,b,c,d])
+    assert_equal expected, source.send(:sort_entries, [a,b,c,d])
   end
 
 end

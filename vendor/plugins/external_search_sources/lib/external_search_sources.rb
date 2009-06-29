@@ -27,6 +27,13 @@ ExternalSearchSources[:image_link_classes] = 'search_source-image-result'
 # to create your own cache expiry depending on where the plugin is used
 ExternalSearchSources[:cache_results] = false
 
+# an array of search source types for the search sources to choose from
+# only feed is supported at the moment
+ExternalSearchSources[:source_types] = %w{ feed }
+
 # an array of source targets (something that allows you to have different
 # search sources in different pages via the :target option)
 ExternalSearchSources[:source_targets] = %w{ search homepage }
+
+# an array of limit options for the search sources to choose from
+ExternalSearchSources[:limit_params] = %w{ limit num_results count }
