@@ -77,6 +77,7 @@ class SearchSourcesController < ApplicationController
       if @available_search_sources.include?(params[:task])
         old_search_source_count = SearchSource.count
         ENV['RAILS_ENV'] = RAILS_ENV
+        ENV['API_KEY'] = params[:api_key]
         rake_result = Rake::Task["external_search_sources:import:#{params[:task]}"].execute(ENV)
         if rake_result || SearchSource.count > old_search_source_count
           flash[:notice] = t('search_sources_controller.install_search_source.imported')

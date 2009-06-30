@@ -6,9 +6,18 @@
     <%= select_tag 'task', options_for_select([[t('search_sources.install.choose_search_source'), '']] +
                                               @available_search_sources.collect { |v| [v.humanize, v] }) %>
 
+    <span id="api_key_div" style="display:none;">
+      <label>DNZ API Key</label>
+      <%= text_field_tag 'api_key' %>
+    </span>
+
     <%= submit_tag t('search_sources.install.submit') %>
 
   <% end %>
+
+  <%= javascript_tag "$('task').observe('change', function(event) {
+    if ($('task').value.match(/dnz/i)) { $('api_key_div').show(); } else { $('api_key_div').hide(); }
+  });"%>
 </div>
 
 <br />

@@ -12,10 +12,13 @@ namespace :external_search_sources do
 
   namespace :import do
 
-    desc "Import Kete Horowhenua Images Search Source."
-    task :kete_horowhenua_images => :environment do
-      plugin_path = File.dirname(__FILE__).gsub('/tasks', '')
-      SearchSource.import_from_yaml("#{plugin_path}/fixtures/kete_horowhenua_images.yml")
+    plugin_path = File.dirname(__FILE__).gsub('/tasks', '')
+    Dir["#{plugin_path}/fixtures/*"].each do |fixture|
+      name = fixture.split('/').last.split('.').first
+      desc "Import #{name.humanize} Search Source."
+      task name.to_sym => :environment do
+        SearchSource.import_from_yaml(fixture, { :api_key => ENV['API_KEY'] })
+      end
     end
 
   end

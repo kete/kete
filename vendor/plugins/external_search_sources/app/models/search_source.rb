@@ -90,7 +90,9 @@ class SearchSource < ActiveRecord::Base
     sort_entries(entries, options)
   end
 
-  def self.import_from_yaml(yaml_file, verbose = true)
+  def self.import_from_yaml(yaml_file, options = {})
+    options = { :verbose => true }.merge(options)
+
     attr_sets = YAML.load(File.open(yaml_file))
     attr_sets.each do |attrs|
       # Fixtures are returned as name => { value, .. }. We only need the values.
@@ -98,10 +100,15 @@ class SearchSource < ActiveRecord::Base
 
       begin
         or_syntax = attrs.delete('or_syntax').split('_')
+        puts attrs.inspect
+        if attrs['base_url'].include?('[api_key]')
+          raise "No API key provided for search source that requires one." unless options[:api_key]
+          attrs['base_url'].gsub!('[api_key]', options[:api_key])
+        end
         ss = SearchSource.new(attrs)
         ss.or_syntax = { :position => or_syntax[0], :case => or_syntax[1] }
         ss.save!
-        p "Inserted search source: '#{attrs["title"]}'." if verbose
+        p "Inserted search source: '#{attrs["title"]}'." if options[:verbose]
       rescue
         p "Inserting search source '#{attrs["title"]} failed: #{$!}."
       end
