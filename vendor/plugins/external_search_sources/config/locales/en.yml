@@ -3,6 +3,8 @@ en:
     install:
       all: All Search Sources
       choose_search_source: '-choose search source to import-'
+      dnz_api_key: DigitalNZ Api Key
+      no_dnz_api_key: "don't have one?"
       submit: Import
       title: Import Search Sources
     search_source:

@@ -6,10 +6,11 @@
     <%= select_tag 'task', options_for_select([[t('search_sources.install.choose_search_source'), '']] +
                                               @available_search_sources.collect { |v| [v.humanize, v] }) %>
 
-    <span id="api_key_div" style="display:none;">
-      <label>DNZ API Key</label>
+    <div id="api_key_div" style="display:none;">
+      <label><%=t 'search_sources.install.dnz_api_key' %></label>
       <%= text_field_tag 'api_key' %>
-    </span>
+      (<%= link_to t('search_sources.install.no_dnz_api_key'), 'http://www.digitalnz.org/dashboard/api_key', { :style => 'font-size: 70%;' } %>)
+    </div>
 
     <%= submit_tag t('search_sources.install.submit') %>
 
