@@ -305,7 +305,20 @@ namespace :kete do
                                      'kete:upgrade:add_jpegs_to_documents',
                                      'kete:upgrade:add_bmp_to_images',
                                      'kete:upgrade:add_eps_to_images',
+                                     'kete:upgrade:add_psd_and_gimp_to_images_and_documents',
                                      'kete:upgrade:add_file_mime_type_variants']
+
+    desc 'Adds psd variants if needed to images and documents'
+    task :add_psd_and_gimp_to_images_and_documents => :environment do
+      ['Document Content Types', 'Image Content Types'].each do |setting_name|
+        setting = SystemSetting.find_by_name(setting_name)
+        ['image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf'].each do |new_type|
+          if setting.push(new_type)
+            p "added #{new_type} mime type to " + setting.name
+          end
+        end
+      end
+    end
 
     desc 'Adds excel variants if needed'
     task :add_excel_variants_to_documents => :environment do

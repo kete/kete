@@ -106,6 +106,7 @@ system_settings_012:
   value: "5"
   section: Extended Fields
 system_settings_013:
+
   name: Flagging Tags
   technically_advanced: false
   required_to_be_configured: true
@@ -240,7 +241,7 @@ system_settings_027:
 
     Note, this only takes effect from this point forward.  No existing image files will be changed.
   id: "27"
-  value: "['image/tiff', 'image/bmp', 'image/x-ms-bmp', 'image/quicktime', 'image/x-quicktime', 'application/postscript', 'application/octet-stream', 'image/vnd.adobe.photoshop', :image]"
+  value: "['image/tiff', 'image/bmp', 'image/x-ms-bmp', 'image/quicktime', 'image/x-quicktime', 'application/postscript', 'application/octet-stream', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf', :image]"
   section: Images
 system_settings_028:
   name: Maximum Uploaded File Size
@@ -259,7 +260,7 @@ system_settings_029:
 
     Note, this only takes effect from this point forward.  No existing document files will be changed.
   id: "29"
-  value: "['text/html', 'text/plain', 'text/rtf', 'text/css', 'application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-tar', 'application/x-compressed-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web', 'image/jpeg', 'image/jpg', 'application/octet-stream', 'application/excel', 'application/x-excel', 'application/x-msexcel' ]"
+  value: "['text/html', 'text/plain', 'text/rtf', 'text/css', 'application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-tar', 'application/x-compressed-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web', 'image/jpeg', 'image/jpg', 'application/octet-stream', 'application/excel', 'application/x-excel', 'application/x-msexcel', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf']"
   section: Documents
 system_settings_030:
   name: Audio Content Types
