@@ -15,7 +15,7 @@ module SearchSourcesHelper
     return html if html.blank?
     "<div id='search_sources'>" +
       "<h3 id='search_sources_heading'>" +
-        (options[:title] || t('search_sources_helper.display_search_sources.other_resources')) + 
+        (options[:title] || t('search_sources_helper.display_search_sources.other_resources')) +
       "</h3>" +
       html +
     "</div>"
@@ -47,34 +47,34 @@ module SearchSourcesHelper
     image_tag(image_path, :alt => "#{h(entry.title)}. ", :title => "#{h(entry.title)}. ", :width => 50, :height => 50)
   end
 
-  def or_syntax_form_column(record, input_name)
-    value = if params[:record] && params[:record][:or_syntax]
-      params[:record][:or_syntax]
-    elsif !record.new_record?
-      record.or_syntax
-    else
-      nil
+  [:or_syntax, :and_syntax, :not_syntax].each do |syntax|
+
+    define_method "#{syntax.to_s}_form_column" do |record, input_name|
+      value = if params[:record] && params[:record][syntax]
+        params[:record][syntax]
+      elsif !record.new_record?
+        record.send(syntax)
+      else
+        nil
+      end
+
+      value = Hash.new if value.blank?
+      html = String.new
+
+      html += "<span id='record_#{syntax}_case_div'>" +
+        label_tag("#{input_name}[case]", t("search_sources_helper.#{syntax.to_s}_form_column.case"), :class => 'inline') +
+        select_tag("#{input_name}[case]", options_for_select(SearchSource.case_values, value[:case])) +
+      '</span>'
+
+      if syntax == :or_syntax
+        html += " "
+        html += label_tag("#{input_name}[position]", t('search_sources_helper.or_syntax_form_column.position'), :class => 'inline')
+        html += select_tag("#{input_name}[position]", options_for_select(SearchSource.or_positions, value[:position]))
+      end
+
+      html
     end
-    value = Hash.new if value.blank?
-    label_tag("#{input_name}[position]",
-              t('search_sources_helper.or_syntax_form_column.position'),
-              :class => 'inline') +
-    select_tag("#{input_name}[position]",
-               options_for_select(SearchSource.or_positions, value[:position])) + " " +
-    content_tag('span', label_tag("#{input_name}[case]",
-                                  t('search_sources_helper.or_syntax_form_column.case'),
-                                  :class => 'inline') +
-                        select_tag("#{input_name}[case]",
-                                   options_for_select(SearchSource.or_case, value[:case])),
-                :id => 'record_or_syntax_case_div') +
-    javascript_tag("#{"$('record_or_syntax_case_div').hide();" if value[:position].blank? || value[:position] == 'none'}
-      $('record_or_syntax_position').observe('change', function(event) {
-      if($('record_or_syntax_position').value == 'none') {
-        $('record_or_syntax_case_div').hide();
-      } else {
-        $('record_or_syntax_case_div').show();
-      }
-    });")
+
   end
 
 end

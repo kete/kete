@@ -19,7 +19,8 @@ class SearchSourcesController < ApplicationController
 
     config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit, :limit_param]
     config.columns << [:cache_interval] if ExternalSearchSources[:cache_results]
-    config.list.columns.exclude [:source_type, :or_syntax, :more_link_base_url, :cache_interval, :limit_param]
+    config.columns << [:or_syntax, :and_syntax, :not_syntax]
+    config.list.columns.exclude [:source_type, :more_link_base_url, :cache_interval, :limit_param, :or_syntax, :and_syntax, :not_syntax]
 
     options = { :type => :record, :inline => false }
     # images_tag and @template.image_tag arn't available in this scope
@@ -42,22 +43,27 @@ class SearchSourcesController < ApplicationController
     config.columns[:source_target].options = [['', '']] + SearchSource.acceptable_source_targets.collect { |st| [st.humanize, st] }
 
     config.columns[:base_url].required = true
-    config.columns[:base_url].description = I18n.t('search_sources_controller.source_base_url_description')
+    config.columns[:base_url].description = '<br />' + I18n.t('search_sources_controller.source_base_url_description')
+    config.columns[:base_url].options = { :size => 82 }
 
     config.columns[:more_link_base_url].label = I18n.t('search_sources_controller.source_more_link_base_url_label')
-    config.columns[:more_link_base_url].description = I18n.t('search_sources_controller.source_more_link_base_url_description')
+    config.columns[:more_link_base_url].description = '<br />' + I18n.t('search_sources_controller.source_more_link_base_url_description')
+    config.columns[:more_link_base_url].options = { :size => 82 }
 
-    config.columns[:limit].description = I18n.t('search_sources_controller.source_limit_description')
+    config.columns[:limit].description = '<br />' + I18n.t('search_sources_controller.source_limit_description')
+    config.columns[:limit].options = { :size => 10 }
 
-    config.columns[:limit_param].description = I18n.t('search_sources_controller.source_limit_param_description')
+    config.columns[:limit_param].description = '<br />' + I18n.t('search_sources_controller.source_limit_param_description')
     config.columns[:limit_param].form_ui = :select
     config.columns[:limit_param].options = [['', '']] + SearchSource.acceptable_limit_params.collect { |st| [st, st] }
 
     config.columns[:cache_interval].description = I18n.t('search_sources_controller.source_cache_interval_description')
+    config.columns[:cache_interval].options = { :size => 10 }
 
-    config.columns << [:or_syntax]
-    config.columns[:or_syntax].label = I18n.t('search_sources_controller.or_syntax_label')
-    config.columns[:or_syntax].description = I18n.t('search_sources_controller.or_syntax_description')
+    [:or_syntax, :and_syntax, :not_syntax].each do |syntax|
+      config.columns[syntax].label = I18n.t("search_sources_controller.#{syntax.to_s}_label")
+      config.columns[syntax].description = I18n.t("search_sources_controller.#{syntax.to_s}_description")
+    end
   end
 
   def move_higher
@@ -124,10 +130,14 @@ class SearchSourcesController < ApplicationController
   # active scaffold does not set or_syntax automatically when it is a hash
   def before_create_save(record)
     record.or_syntax = params[:record][:or_syntax]
+    record.and_syntax = params[:record][:and_syntax]
+    record.not_syntax = params[:record][:not_syntax]
   end
 
   def before_update_save(record)
     record.or_syntax = params[:record][:or_syntax]
+    record.and_syntax = params[:record][:and_syntax]
+    record.not_syntax = params[:record][:not_syntax]
   end
 
   def set_page_title

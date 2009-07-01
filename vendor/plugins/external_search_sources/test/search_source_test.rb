@@ -18,7 +18,9 @@ class SearchSourceTest < ActiveSupport::TestCase
                   :limit => 5,
                   :limit_param => 'limit',
                   :cache_interval => 5,
-                  :or_syntax => { :position => 'between', :case => 'upper' } }
+                  :or_syntax => { :position => 'between', :case => 'upper' },
+                  :and_syntax => { :case => 'upper' },
+                  :not_syntax => { :case => 'lower' } }
 
   test "The Search Source model should require that title and source type are present" do
     source = SearchSource.new(@@new_model.merge(:title => nil, :source_type => nil))
@@ -102,11 +104,6 @@ class SearchSourceTest < ActiveSupport::TestCase
     assert_equal source2, sources[2]
   end
 
-  test "The Search Source model should be configurable" do
-    source = SearchSource.create(@@new_model)
-    assert source.settings.is_a?(Array)
-  end
-
   test "The Search Source model should set limit if it is blank, otherwise leave it" do
     source1 = SearchSource.create(@@new_model.merge(:limit => 10))
     assert_equal 10, source1.limit
@@ -121,25 +118,6 @@ class SearchSourceTest < ActiveSupport::TestCase
 
     source2 = SearchSource.create(@@new_model.merge(:cache_interval => nil))
     assert_equal 1440, source2.cache_interval
-  end
-
-  test "The Search Source model should have an or_syntax getter method that gets its value from settings" do
-    source = SearchSource.create(@@new_model)
-    value = { :position => 'between', :case => 'upper' }
-    source.settings[:or_syntax] = value
-    assert_equal value, source.or_syntax
-  end
-
-  test "The Search Source model should have an or_syntax setter method that stores the value in an instance var" do
-    value = { :position => 'between', :case => 'upper' }
-    source = SearchSource.new(@@new_model.merge(:or_syntax => value))
-    assert_equal value, source.or_syntax
-  end
-
-  test "The Search Source model should set or_syntax setting on search source save" do
-    value = { :position => 'between', :case => 'upper' }
-    source = SearchSource.create(@@new_model.merge(:or_syntax => value))
-    assert_equal value, source.settings[:or_syntax]
   end
 
   test "The Search Source model should have a method that returns a title based id for html element ids" do

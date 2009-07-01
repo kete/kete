@@ -15,8 +15,6 @@ class SearchSource < ActiveRecord::Base
 
   default_scope :order => 'position ASC'
 
-  acts_as_configurable
-
   # in the case no limit is supplied, set a default one of 5
   before_save :set_limit
 
@@ -24,16 +22,9 @@ class SearchSource < ActiveRecord::Base
   # lets set this by default even if not needed right now
   before_save :set_cache_interval
 
-  # take the or syntax we have and set it when this record is saved
-  after_save :store_or_syntax
-
-  def or_syntax
-    @or_syntax ||= self.settings[:or_syntax]
-  end
-
-  def or_syntax=(value)
-    @or_syntax = value
-  end
+  serialize :or_syntax
+  serialize :and_syntax
+  serialize :not_syntax
 
   def title_id
     title.gsub(/\W/, '_').downcase
@@ -57,10 +48,10 @@ class SearchSource < ActiveRecord::Base
       [I18n.t('search_source_model.or_positions.after_terms'), 'after'] ]
   end
 
-  def self.or_case
-    [ [I18n.t('search_source_model.or_case.doesnt_matter'), 'upper'],
-      [I18n.t('search_source_model.or_case.uppercase'), 'upper'],
-      [I18n.t('search_source_model.or_case.lowercase'), 'lower'] ]
+  def self.case_values
+    [ [I18n.t('search_source_model.case_values.doesnt_matter'), ''],
+      [I18n.t('search_source_model.case_values.uppercase'), 'upper'],
+      [I18n.t('search_source_model.case_values.lowercase'), 'lower'] ]
   end
 
   def source_url
@@ -77,12 +68,20 @@ class SearchSource < ActiveRecord::Base
   def fetch(search_text, options = {})
     return { :total => 0 } if search_text.blank?
 
+    logger.debug "Search text before parsing: #{search_text}"
     parse_search_text(search_text)
+    logger.debug "Search text after parsing: #{search_text}"
+
     parse_limit_param(options)
 
     logger.debug "Getting search source results from: #{source_url}"
 
-    feed = Feedzirra::Feed.fetch_and_parse(source_url)
+    begin
+      feed = Feedzirra::Feed.fetch_and_parse(source_url)
+    rescue
+      # some search terms may result in errors on the search source
+      return { :total => 0 }
+    end
     # In the case that the feed can't be parsed, it returns a Fixnum, so check
     # if the output is a Feedzirra object, and if not, return a blank array
     entries = feed.class.name =~ /Feedzirra/ ? feed.entries : []
@@ -125,23 +124,32 @@ class SearchSource < ActiveRecord::Base
     self.cache_interval = 1440 if cache_interval.blank?
   end
 
-  def store_or_syntax
-    self.settings[:or_syntax] = @or_syntax unless @or_syntax.blank?
-  end
-
   def parse_search_text(search_text)
-    return search_text if or_syntax.blank?
-
-    or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'
-    search_text = case or_syntax[:position]
-    when 'before'
-      "#{or_string} #{search_text}"
-    when 'after'
-      "#{search_text} #{or_string}"
-    when 'between'
-      search_text.strip.gsub(/\s/, " #{or_string} ")
+    if or_syntax && !or_syntax[:position].blank? && or_syntax[:position] != 'none'
+      or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'
+      search_text = case or_syntax[:position]
+      when 'before'
+        "#{or_string} #{search_text}"
+      when 'after'
+        "#{search_text} #{or_string}"
+      when 'between'
+        search_text.strip.gsub(/\s/, " #{or_string} ")
+      else
+        search_text
+      end
     else
-      search_text
+      if or_syntax && or_syntax[:case]
+        or_string = or_syntax[:case] == 'upper' ? 'OR' : 'or'
+        search_text.gsub!(/or/i, or_string)
+      end
+      if and_syntax && and_syntax[:case]
+        and_string = and_syntax[:case] == 'upper' ? 'AND' : 'and'
+        search_text.gsub!(/and/i, and_string)
+      end
+      if not_syntax && not_syntax[:case]
+        not_string = not_syntax[:case] == 'upper' ? 'NOT' : 'not'
+        search_text.gsub!(/not/i, not_string)
+      end
     end
 
     @search_text = URI.escape(search_text, /\W/)

@@ -14,7 +14,7 @@ en:
     more_link:
       not_fetched: Source has not been fetched from yet.
     must_be_one_of: "must be one of the following: {{types}}"
-    or_case:
+    case_values:
       doesnt_matter: Doesn't matter
       lowercase: Lowercase
       uppercase: Uppercase
@@ -27,6 +27,8 @@ en:
     source_url:
       not_fetched: Source has not been fetched from yet.
   search_sources_controller:
+    and_syntax_description: "What case should 'and' booleans be?"
+    and_syntax_label: And Syntax
     install_search_source:
       imported: "Sucessfully imported search sources."
       invalid_import: "Invalid search source task."
@@ -38,7 +40,9 @@ en:
     move_lower:
       moved_lower: The selected search source has been moved lower.
     move_lower_title: "Move Lower. "
-    or_syntax_description: Where should the or syntax be places in the query?
+    not_syntax_description: "What case should 'not' booleans be?"
+    not_syntax_label: Not Syntax
+    or_syntax_description: "What case should 'or' booleans be, and where should they be placed?"
     or_syntax_label: Or Syntax
     redirect_if_not_authorized:
       not_authorized: You are not authorized to access this section of the site. Try a different account.
@@ -58,3 +62,7 @@ en:
     or_syntax_form_column:
       case: Case
       position: Position
+    and_syntax_form_column:
+      case: Case
+    not_syntax_form_column:
+      case: Case
