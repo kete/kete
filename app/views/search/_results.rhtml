@@ -110,6 +110,8 @@
 
 <%= @map.div(:width => 700, :height => 400) if params[:view_as] == 'map' && !@map.blank? -%>
 
+<div style="clear:both;"></div>
+
 <div class="prev-next after-results"><%= will_paginate @results  %></div>
 
 <div id="bottomlinks">
