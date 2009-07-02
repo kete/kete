@@ -260,6 +260,10 @@ function makeSearchResultsDivClickable() {
   });
 }
 
+/**
+ * Langauge selection dropdown
+ */
+
 function makeFooterLanguageSelectionClickable() {
   $('footer_language_selection').down('select').observe('change', function(event) {
     if ($('footer_language_selection').down('select').value != '') {

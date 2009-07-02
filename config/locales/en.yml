@@ -27,6 +27,7 @@ en:
     deleted: deleted
     disable: disable
     disabled: disabled
+    do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
     edit: edit
     edited: edited
     email: email
@@ -86,6 +87,7 @@ en:
     tag: tag
     tagged: tagged
     technical_administrator: technical administrator
+    thank_you: Thank you
     update: update
     updated: updated
     user: user
@@ -510,6 +512,8 @@ en:
     now_in_site_basket: This version was in {{basket_name}} {{t.base.basket}}, but that {{t.base.basket}} has been {{t.base.deleted}} and no longer exists on the site, now this version is put in default site {{t.base.basket}}.
     only_comments: Only {{t.base.zoom_types.comment.pluralize}}
     only_details: Only full details
+    private_item_notification_or_default:
+      dont_send_notification: "Don't send {{t.base.email}} notification"
     recent_as_headlines: Headlines (news style)
     recent_as_summaries: Summaries (blog style)
     recent_dont_show: Don't {{t.base.show}} them
@@ -634,6 +638,10 @@ en:
       privacy_controls_enabled_example: "{{t.base.enable.capitalize}} Privacy Controls if {{t.base.member.pluralize}} of this {{t.base.basket}} can have both {{t.base.item.pluralize}} that are readable by the {{t.base.public.downcase}} at large AND {{t.base.item.pluralize}} that are only readable by themselves."
       privacy_controls_site_basket: This {{t.base.basket.pluralize}} browsing controls are left {{t.base.enabled}} if any other {{t.base.basket.pluralize}} have privacy controls turned on (for site-wide {{t.base.private.downcase}} {{t.base.search}})
       private: "{{t.base.private.capitalize}}"
+      private_item_notification: "{{t.base.private.capitalize}} {{t.base.item.capitalize}} notification"
+      private_item_notification_example: "Whenever {{t.base.private}} {{t.base.item.pluralize}} are {{t.base.changed}}, which role of {{t.base.user.pluralize}} (and above) should be notified by {{t.base.email}}?"
+      private_item_notification_show_short_summary: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} short summary in {{t.base.email}} notifications?"
+      private_item_notification_show_title: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} title in {{t.base.email}} notifications?"
       public: "{{t.base.public.capitalize}}"
       recent_topics: "{{t.base.disable.capitalize}} Site {{t.base.recent.capitalize}} {{t.base.zoom_types.topic.capitalize.pluralize}} Display:"
       recent_topics_example: Do not {{t.base.show}} new/{{t.base.edited}} topics in {{t.base.recent}} results on the Site {{t.base.basket}}?
@@ -699,7 +707,7 @@ en:
       part4: If you should have permission to access this part of the site, you can try {{basket_contact_link}}
       part5: Use {{email_link}} to {{t.base.email}} a {{t.base.site_administrator}} to report the issue. Please specify that what page you tried to access in the email.
       part6: Or simply proceed on to another page via the Browse or {{t.base.search.capitalize}} functions at the top of this page.
-      thank_you: Thank you,
+      thank_you: "{{t.base.thank_you}},"
       title: Permission Denied
     rss:
       description: Latest {{t.base.basket.pluralize}}
@@ -745,6 +753,7 @@ en:
       security_warning: "Note: forms and javascript are not allowed for security reasons."
       security_warning_admin: Unless you check the box below.
       security_warning_exception: Allow forms and other possible insecure elements and attributes in the HTML?
+      skip_email_notification: Skip email notification for this private comment?
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       tags_spinner: "Getting {{t.base.tag.pluralize}}. "
       title: "Title:"
@@ -827,7 +836,7 @@ en:
       not_yet_completed: Not yet completed.
     get_site_linking_progress:
       incorrect_fields: "Some fields were incorrect:"
-      site_registered: "Your Kete installation has been {{t.base.registered}}. Thank you. You can {{t.base.view}} the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
+      site_registered: "Your Kete installation has been {{t.base.registered}}. {{t.base.thank_you}}. You can {{t.base.view}} the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
     prime_zebra:
       primed_zebra: "{{t.base.search.capitalize}} Engine has been primed."
     restart_server:
@@ -1181,7 +1190,7 @@ en:
       updated: "{{item_class}} {{t.base.was_updated}}."
   flagging_controller_lib:
     flag_version:
-      item_flagged: Thank you for your input.  A {{t.base.moderator}} has been notified and will {{t.base.review}} the {{t.base.item}} in question. The {{t.base.item}} has been reverted to a non-contested version for the time being.
+      item_flagged: "{{t.base.thank_you}} for your input.  A {{t.base.moderator}} has been notified and will {{t.base.review}} the {{t.base.item}} in question. The {{t.base.item}} has been reverted to a non-contested version for the time being."
     preview:
       no_public: There is currently no {{t.base.public}} version of this {{controller}} available.
     reject:
@@ -1657,6 +1666,10 @@ en:
       open_membership: "{{t.baskets.form.join_policy_open}}"
       privacy_controls: "{{t.baskets.form.privacy_controls}}"
       private: "{{t.base.private.capitalize}}"
+      private_item_notification: "{{t.baskets.form.private_item_notification}}"
+      private_item_notification_example: "{{t.baskets.form.private_item_notification_example}}"
+      private_item_notification_show_short_summary: "{{t.baskets.form.private_item_notification_show_short_summary}}"
+      private_item_notification_show_title: "{{t.baskets.form.private_item_notification_show_title}}"
       private_file_visibility: "{{t.baskets.form.file_visibility}}"
       private_file_visibility_description: "{{t.baskets.form.file_visibility_example}}"
       public: "{{t.base.public.capitalize}}"
@@ -1990,9 +2003,10 @@ en:
       private_description: (Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})
       public: "{{t.base.public.capitalize}}"
       public_description: (Can be {{t.base.viewed}} by everyone)
-      related_items_as_inset: Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} body?
+      related_items_as_inset: Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} description?
       required_fields: "* denotes a required field"
       short_summary: Short Summary
+      skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.item}}?"
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       title: Title
       update: "{{t.base.update.capitalize}}"
@@ -2079,69 +2093,71 @@ en:
   user_notifier:
     activation:
       activated: "{{user_name}}, your {{t.base.account}} has been activated."
-    approval_of:
-      thanks: Thank you,
     banned:
       deactivated: "{{user_name}} your {{t.base.account}} has been deactivated.  You will longer be able to contribute to this site."
     basket_create_policy:
       approved:
         approved_for_use: The {{t.base.basket}} you {{t.base.requested}}, '{{basket_name}}', was {{t.base.approved}} for use.
         edit_it_by: You can {{t.base.edit}} this {{t.base.basket}} by going to
-        thanks: Thank you,
         view_contents_at: And {{t.base.view}} it's contents at
       created:
         edit_it_by: You can {{t.base.edit}} this {{t.base.basket}} by going to
         requires_approval: It requires {{t.base.moderation}} before it will be available to the {{t.base.public}}.
-        thanks: Thank you,
         user_created_basket: "{{user_name}} has {{t.base.created}} a new {{t.base.basket}} titled '{{basket_name}}'."
       rejected:
         basket_rejected: The {{t.base.basket}} you {{t.base.requested}}, '{{basket_name}}', was {{t.base.rejected}}.
         not_suitable: This may be because it was inappropriate or unsuitable for this site.
-        thanks: Thank you,
+    email_footer:
+      thanks: "{{t.base.thank_you}},"
     email_to:
       create_new_email: If not, you can {{t.base.create}} a new message and send it to
       on_behalf_of: This {{t.base.email}} was sent by {{site_name}} on behalf of {{user_name}}.
       replying_to_sender: Replying to this message should send an {{t.base.email}} to {{user_name}}'s {{t.base.email}} address.
       sent_from_basket_on_site: "{{user_name}} has sent you a message from the {{basket_name}} {{t.base.basket}} on {{site_name}}."
       sent_from_site: "{{user_name}} has sent you a message from {{site_name}}."
-      thanks: Thank you,
     forgot_password:
       follow_link: "{{user_name}}, follow the link to {{t.base.reset}} your {{t.base.password}}"
     item_flagged_for:
       description: "{{flagging_user_name}} ({{email}}) has {{t.base.flagged}} Revision # {{revision}} of this {{t.base.item}} as {{flag}}. This revision was originally submitted by {{submitted_user_name}}."
       note_about_reviewing: This will tell what versions have been {{t.base.flagged}} and with what.  You can then {{t.base.preview}} each version.  There is a "Make this revision" option on the {{t.base.preview}} page for the version, as well as a "{{t.base.reject.capitalize}}" link, too.
       review: "Please {{t.base.review}} the {{t.base.item}}'s {{t.base.history}} and take appropriate action:"
-      thanks: Thank you,
       user_provided_details: "The {{t.base.user}} has also provided these details about the {{t.base.flagging}}:"
     join_policy:
       accepted:
         membership_granted: "{{user_name}} has {{t.base.accepted}} your {{t.base.request}} for {{t.base.membership}} in the {{basket_name}} {{t.base.basket}}."
         participate_by: You can now participate by going to
-        thanks: Thank you,
       member:
         joined: "{{user_name}} has {{t.base.joined}} the {{basket_name}} {{t.base.basket}}."
-        thanks: Thank you,
         view_memberlist_at: You can {{t.base.view}} the {{t.base.member}} list at
         youre_an_admin: You are receiving this notification because our records show you are an admin of that {{t.base.basket}}.
       rejected:
         membership_denied: "{{user_name}} has {{t.base.rejected}} your {{t.base.request}} for {{t.base.membership}} in the {{basket_name}} {{t.base.basket}}."
-        thanks: Thank you,
       request:
         approve_or_reject: You can approve or {{t.base.reject}} the application by going to
-        thanks: Thank you,
         want_access: "{{user_name}} has {{t.base.requested}} {{t.base.membership}} of the {{basket_name}} {{t.base.basket}}."
         youre_an_admin: Our records show you are an admin of that {{t.base.basket}}.
     login_changed:
       description: Your {{t.base.login}} for {{site_name}} was {{t.base.changed}} during an upgrade of the software the site runs on.
       login_using: To login, please now use the following {{t.base.login}} (your {{t.base.password}} remains the same)
-      thanks: Thank you,
     pending_review_for:
       pending_review: "Your submission of Revision # {{revision}} of this {{t.base.item}} is {{flag}} {{t.base.review}} of a {{t.base.moderator}}.  You will be notified of the outcome of the {{t.base.review}}."
-      thanks: Thank you,
+    private_notifications:
+      do_not_reply: "{{t.base.do_not_reply}}"
+      item_created:
+        item_created: "A {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        view_item_at: "You can {{t.base.view}} the new {{t.base.item}} at:"
+      item_edited:
+        item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.item}} at:"
+      comment_created:
+        comment_created: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        view_item_at: "You can {{t.base.view}} the new {{t.base.zoom_types.comment}} at:"
+      comment_edited:
+        comment_edited: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.zoom_types.comment}} at:"
     rejection_of:
       description: "Revision # {{revision}} of this {{t.base.item}} has been {{t.base.reviewed}} by a {{t.base.moderator}} and {{flag}}. If you would like to alter your submission, you can {{t.base.view}} it here:"
       reason: "The {{t.base.moderator}} has provided these details about why the site decided not to {{t.base.accept}} your contribution:"
-      thanks: Thank you,
     reset_password:
       reset: "{{user_name}}, Your {{t.base.password}} has been {{t.base.reset}}."
     review_flagged_for:
@@ -2149,7 +2165,6 @@ en:
       or: or
       please_review: Please {{t.base.review}} the submitted content in {{basket_name}} and take the appropriate action.
       review_version: "{{t.base.review.capitalize}} this version:"
-      thanks: Thank you,
       view_item_history: "the full {{t.base.item}}'s {{t.base.history}}:"
     signup:
       activate_account: "Visit this url to activate your account:"
@@ -2174,6 +2189,14 @@ en:
     password_change: "{{t.base.request.capitalize}} to {{t.base.change}} your {{t.base.password}}"
     password_reset: Your {{t.base.password}} has been {{t.base.reset}}
     pending_moderation: Your submission is {{flag}} {{t.base.moderation}}.
+    private_comment_created: "A new {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.added}} to an {{t.base.item}}."
+    private_comment_created_with_title: "A new {{t.base.private}} {{t.base.zoom_types.comment}} titled '{{item_title}}' has been {{t.base.added}} to an {{t.base.item}}."
+    private_comment_edited: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.edited}}."
+    private_comment_edited_with_title: "A {{t.base.private}} {{t.base.zoom_types.comment}} titled '{{item_title}}' has been {{t.base.edited}}."
+    private_item_created: "A new {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in {{basket_name}}."
+    private_item_created_with_title: "A new {{t.base.private}} {{t.base.item}} titled '{{item_title}}' has been {{t.base.created}} in {{basket_name}}."
+    private_item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}}."
+    private_item_edited_with_title: "The {{t.base.private}} {{t.base.item}} '{{item_title}}' has been {{t.base.edited}}."
     rejected_submission: A {{t.base.moderator}} has {{flag}} your submission.
     revision_live: A {{t.base.moderator}} has made your submission the live revision.
     user_joined: "{{user_name}} has {{t.base.joined}} the {{basket_name}} {{t.base.basket}}"

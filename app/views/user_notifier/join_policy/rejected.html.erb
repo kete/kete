@@ -4,6 +4,4 @@
      :user_name => @sender.user_name,
      :basket_name => @basket.name %>
 
-<%=t 'user_notifier.join_policy.rejected.thanks' %>
-<%= PRETTY_SITE_NAME %>
-<%= SITE_URL %>
+<%= render 'user_notifier/email_footer' %>

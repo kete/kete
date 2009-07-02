@@ -335,9 +335,49 @@
     </div>
   <% end %>
 
+  <% if allowed_field?('private_item_notification') %>
+    <div class="form-element" id="private_item_notification"<%= " style='display:none;'" unless (!@basket.show_privacy_controls?.nil? ? @basket.show_privacy_controls? : @site_basket.show_privacy_controls?) %>>
+      <label><%=t 'baskets.form.private_item_notification' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_private_item_notification" style="width: 100%"><%=t 'baskets.form.private_item_notification_example' %></label>
+          <div style="clear: left"><%= select_tag 'settings[private_item_notification]', @basket.private_item_notification_or_default(current_value_of('private_item_notification')) %></div>
+        </div>
+
+        <div class="form-element">
+          <%= check_box 'settings', 'private_item_notification_show_title', {:checked => current_value_of('private_item_notification_show_title').to_s != 'false', :tabindex => '1'}, 'true', 'false' %>
+          <label for="settings_private_item_notification_show_title" class="inline"><%=t 'baskets.form.private_item_notification_show_title' %></label>
+        </div>
+
+        <div class="form-element">
+          <%= check_box 'settings', 'private_item_notification_show_short_summary', {:checked => current_value_of('private_item_notification_show_short_summary').to_s == 'true', :tabindex => '1'}, 'true', 'false' %>
+          <label for="settings_private_item_notification_show_short_summary" class="inline"><%=t 'baskets.form.private_item_notification_show_short_summary' %></label>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
   <%= setupEnableDisableFunctions(true) %>
   <%= toggle_elements_applicable('settings_fully_moderated',
       '==', 'true', 'settings_moderated_except') %>
+
+  <%= javascript_tag "if ($('private_item_notification')) {
+    $('basket_show_privacy_controls_true').observe('change', function(event) {
+      $('private_item_notification').show();
+    });
+    $('basket_show_privacy_controls_false').observe('change', function(event) {
+      $('private_item_notification').hide();
+    });
+    #{@site_basket.show_privacy_controls? ?
+    "$('basket_show_privacy_controls_').observe('change', function(event) {
+      $('private_item_notification').show();
+    });" :
+    "$('basket_show_privacy_controls_').observe('change', function(event) {
+      $('private_item_notification').hide();
+    });"}
+  }" %>
 
   <strong><%= basket_preferences_inheritance_message %></strong>
 
