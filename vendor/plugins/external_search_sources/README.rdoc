@@ -122,7 +122,7 @@ The display_search_sources helper method takes an options hash as a second param
 
 So far, the working options are:
 
-  :target => [symbol]
+  :target => [symbol] / [array of symbols]
     Matches search sources with same value
     More targets can be added to ExternalSearchSources[:source_targets]
     If no target is passed in, all search sources are displayed.
@@ -151,6 +151,8 @@ This engine uses the I18n features of Rails 2.2 and later to allow for easily tr
 Locales are stored in config/locales  inside the engine directory. When locales are completed, they are added to an array in init.rb that adds each to the I18n load path.
 
 To use your own strings, open up the locale of your choice in an editor of your choice and change them to suit.
+
+Alternatively, overwrite values from your applications locale file.
 
 We accept new locales for the engine. If you willing and able to help, please feel free to fork the engine on Github, make your changes, and send a pull request.
 

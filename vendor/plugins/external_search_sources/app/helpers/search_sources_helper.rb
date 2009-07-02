@@ -5,7 +5,15 @@ module SearchSourcesHelper
   def display_search_sources(search_text, options = {})
     @do_not_cache = options[:do_not_cache] || false
     html = String.new
-    search_sources = options[:target] ? SearchSource.find_all_by_source_target(options[:target].to_s) : SearchSource.all
+
+    conditions = Hash.new
+    if options[:target]
+      # support for :target and [:target1, :target2]
+      targets = options[:target].is_a?(Array) ? options[:target] : [options[:target]]
+      conditions[:conditions] = ["source_target IN (?)", targets.collect { |t| t.to_s }]
+    end
+
+    search_sources = SearchSource.all(conditions)
     search_sources.each do |source|
       html += @template.render('search_sources/search_source',
                                :search_text => search_text,
@@ -67,9 +75,31 @@ module SearchSourcesHelper
       '</span>'
 
       if syntax == :or_syntax
-        html += " "
+        html += " <span id='record_or_syntax_position_div'>"
         html += label_tag("#{input_name}[position]", t('search_sources_helper.or_syntax_form_column.position'), :class => 'inline')
         html += select_tag("#{input_name}[position]", options_for_select(SearchSource.or_positions, value[:position]))
+        html += '</span>'
+      end
+
+      html = content_tag('div', html, :id => "#{syntax.to_s}_form_div")
+
+      if syntax != :or_syntax
+        html += content_tag('div', t("search_sources_helper.#{syntax.to_s}_form_column.not_available"),
+                            :id => "#{syntax.to_s}_not_available", :style => 'font-size: 80%; display:none;')
+        html += javascript_tag("function hide_or_show_and_not_syntax() {
+          if ($('record_or_syntax_position').value == 'none') {
+            $('#{syntax.to_s}_not_available').hide();
+            $('#{syntax.to_s}_form_div').show();
+          } else {
+            $('#{syntax.to_s}_form_div').hide();
+            $('#{syntax.to_s}_not_available').show();
+          }
+        }
+        hide_or_show_and_not_syntax();
+        $('record_or_syntax_position').observe('change', function(event){
+          hide_or_show_and_not_syntax();
+        });
+        ")
       end
 
       html

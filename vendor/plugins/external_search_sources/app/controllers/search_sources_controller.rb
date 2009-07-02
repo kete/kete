@@ -40,7 +40,7 @@ class SearchSourcesController < ApplicationController
     config.columns[:source_target].required = true
     config.columns[:source_target].description = I18n.t('search_sources_controller.source_target_description')
     config.columns[:source_target].form_ui = :select
-    config.columns[:source_target].options = [['', '']] + SearchSource.acceptable_source_targets.collect { |st| [st.humanize, st] }
+    config.columns[:source_target].options = [['', '']] + SearchSource.acceptable_source_targets.collect { |st| [I18n.t("search_sources_controller.source_targets.#{st}"), st] }
 
     config.columns[:base_url].required = true
     config.columns[:base_url].description = '<br />' + I18n.t('search_sources_controller.source_base_url_description')

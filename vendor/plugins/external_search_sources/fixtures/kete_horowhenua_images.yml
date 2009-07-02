@@ -1,7 +1,0 @@
-kete_horowhenua_images:
-  title: Kete Horowhenua Images
-  source_type: feed
-  source_target: search
-  base_url: 'http://horowhenua.kete.net.nz/site/search/images/for/ransom/rss.xml?search_terms='
-  more_link_base_url: 'http://horowhenua.kete.net.nz/site/search/images/for/some_search?search_terms='
-  or_syntax: between_upper
