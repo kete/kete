@@ -96,6 +96,9 @@ class TopicsController < ApplicationController
 
       @topic.do_notifications_if_pending(1, current_user)
 
+      # send notifications of private item create
+      private_item_notification_for(@topic, :created) if params[:topic][:private] == "true"
+
       case where_to_redirect
       when 'show_related'
         flash[:notice] = t('topics_controller.create.created_related')

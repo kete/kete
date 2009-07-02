@@ -124,6 +124,17 @@
     </fieldset>
   </div>
 
+  <div class="form-element">
+    <%= rules_allowed_check_box('private_item_notification') %>
+    <label><%=t 'profiles.edit.private_item_notification' %></label>
+    <%= rules_fieldset_tag('private_item_notification') %>
+      <%= rules_select_tag('private_item_notification', @basket.private_item_notification_or_default(current_value_for('private_item_notification')),
+                           t('profiles.edit.private_item_notification_example')) %>
+      <%= rules_check_box_tag('private_item_notification_show_title', '1', t('profiles.edit.private_item_notification_show_title')) %>
+      <%= rules_check_box_tag('private_item_notification_show_short_summary', '1', t('profiles.edit.private_item_notification_show_short_summary')) %>
+    </fieldset>
+  </div>
+
 </fieldset>
 
 <%= rules_section_javascript %>

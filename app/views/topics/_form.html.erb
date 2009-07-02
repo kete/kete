@@ -156,6 +156,26 @@ zoom_class = zoom_class_from_controller(controller)
       " -%>
     <% end -%>
 
+    <% if show_notification_controls?(@basket) %>
+      <div id="skip_email_notification_div"<%= "style='display:none;'" unless @item.private? %>>
+        <% if params[@item_type] && params[@item_type][:skip_email_notification]; skip = (params[@item_type][:skip_email_notification] == '1' ? true : false)
+           elsif @editing && !@item.skip_email_notification.nil?; skip = @item.skip_email_notification?
+           else; skip = false; end -%>
+        <%= form.check_box :skip_email_notification, { :tabindex => '1',
+                                                       :label => t('topics.form.skip_email_notification',
+                                                                   :role_type => Basket.level_value_from(@basket.settings[:private_item_notification]).downcase.pluralize),
+                                                       :checked => skip } %>
+      </div>
+      <%= javascript_tag "
+        $('#{@item_type.to_s}_private_true').observe('change', function(event) {
+          $('skip_email_notification_div').show();
+        });
+        $('#{@item_type.to_s}_private_false').observe('change', function(event) {
+          $('skip_email_notification_div').hide();
+        });
+      " %>
+    <% end %>
+
     <% if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing) -%>
       <%= form.text_field :url, { :tabindex => '1', :label => t('topics.form.url'), :required => true } -%>
     <% end -%>

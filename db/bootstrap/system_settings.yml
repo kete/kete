@@ -548,5 +548,5 @@ system_settings_063:
   required_to_be_configured: true
   explanation: "Should the option to change related items inset be hidden from users?"
   id: "63"
-  value: "false"
+  value: "true"
   section: Topics

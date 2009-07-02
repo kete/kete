@@ -12,6 +12,10 @@ class Basket < ActiveRecord::Base
 
   ALL_LEVEL_OPTIONS = [[I18n.t('basket_model.all_users'), 'all users']] + [[I18n.t('basket_model.logged_in'), 'logged in']] + MEMBER_LEVEL_OPTIONS
 
+  def self.level_value_from(key)
+    Basket::ALL_LEVEL_OPTIONS.select { |v,k| k == key }.first.first
+  end
+
   # profile forms, these should correspond to actions in the controller
   # really this would be nicer if it came from reflecting on the baskets_controller class
   FORMS_OPTIONS = [[I18n.t('basket_model.basket_new_or_edit'), 'edit'],
@@ -297,7 +301,26 @@ class Basket < ActiveRecord::Base
     end
   end
 
-  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
+  def private_item_notification_or_default(default=nil)
+    current_value = default || settings[:private_item_notification] || site_basket.settings[:private_item_notification] || 'at least member'
+    options =  [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + MEMBER_LEVEL_OPTIONS
+    select_options = array_to_options_list_with_defaults(options, current_value, false, true)
+  end
+
+  def users_to_notify_of_private_item
+    case settings[:private_item_notification]
+    when 'at least member'
+      has_site_admins_or_admins_or_moderators_or_members
+    when 'at least moderator'
+      has_site_admins_or_admins_or_moderators
+    when 'at least admin'
+      has_site_admins_or_admins
+    else
+      Array.new
+    end
+  end
+
+  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true, pluralize=false)
     select_options = String.new
     options_array.each do |option|
       label = option[0]
@@ -307,7 +330,7 @@ class Basket < ActiveRecord::Base
       if default_value == value
         select_options += " selected=\"selected\""
       end
-      select_options += ">" + label + "</option>"
+      select_options += ">" + (pluralize ? label.pluralize : label) + "</option>"
     end
     select_options
   end

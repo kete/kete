@@ -42,6 +42,8 @@ namespace :kete do
     task :add_new_system_settings => :environment do
       system_settings_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/system_settings.yml")
 
+      printed_related_items_notice = false
+
       # for each system_setting from yml
       # check if it's in the db
       # if not, add it
@@ -55,6 +57,19 @@ namespace :kete do
         setting_hash.delete('id') if SystemSetting.count > 0
 
         if !SystemSetting.find_by_name(setting_hash['name'])
+
+          if setting_hash['name'].include?('Related Items Inset')
+            setting_hash['value'] = setting_hash['value'] == 'true' ? 'false' : 'true'
+            unless printed_related_items_notice
+              puts ""
+              puts "- Related Items Inset setting -"
+              puts "If your existing site content tends to have images or tables in your descriptions of items you'll probably want to keep these settings as they are."
+              puts "However, if your content descriptions don't have much of these you will like want to change them to the opposite to take advantage of the improved Related Items interface placement."
+              puts ""
+              printed_related_items_notice = true
+            end
+          end
+
           SystemSetting.create!(setting_hash)
           p "added " + setting_hash['name']
         end
@@ -311,6 +326,13 @@ namespace :kete do
         tagging.update_attribute(:basket_id, item.basket_id) if item
       end
       puts "Added Basket ID to #{records.size} Taggings"
+    end
+
+    desc "Make all baskets have private item notification 'do not email' if setting doesn't exist"
+    task :make_baskets_private_notification_do_not_email => :environment do
+      Basket.all.each do |basket|
+        basket.settings[:private_item_notification] = 'do_not_email' if basket.settings[:private_item_notification].blank?
+      end
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

@@ -1,0 +1,14 @@
+<%= @recipient.user_name %>,
+
+<%=t "user_notifier.private_notifications.#{@type}.#{@type}" %>
+
+    <%= @title unless @title.blank? %>
+    <%= @summary unless @summary.blank? %>
+
+<%=t "user_notifier.private_notifications.#{@type}.view_item_at" %>
+
+    <%= @url %>
+
+<%=t "user_notifier.private_notifications.do_not_reply" %>
+
+<%= render 'email_footer' %>
