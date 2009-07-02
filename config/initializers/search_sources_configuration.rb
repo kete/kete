@@ -5,5 +5,5 @@ if IS_CONFIGURED
   ExternalSearchSources[:default_link_classes] = 'generic-result-wrapper skip_div_click'
   ExternalSearchSources[:image_link_classes] = 'image-result-wrapper skip_div_click'
   ExternalSearchSources[:cache_results] = true
-  ExternalSearchSources[:source_targets] = %w{ search items }
+  ExternalSearchSources[:source_targets] = %w{ all search items }
 end

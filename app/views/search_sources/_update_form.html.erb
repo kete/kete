@@ -1,0 +1,41 @@
+<%= render :super %>
+
+<%= javascript_tag "function hide_or_show_or_and_not_syntax_fields() {
+  if ($('record_source_target_#{@record.id}').value == 'search') {
+    $('record_or_syntax_case_div').show();
+    $('record_or_syntax_position_div').hide();
+    $('record_and_syntax_case_div').show();
+    $('record_not_syntax_case_div').show();
+    $('record_limit_#{@record.id}').hide();
+    $('record_limit_param_#{@record.id}').show();
+    $('record_cache_interval_#{@record.id}').hide();
+  } else if ($('record_source_target_#{@record.id}').value == 'items') {
+    $('record_or_syntax_case_div').show();
+    $('record_or_syntax_position_div').show();
+    $('record_and_syntax_case_div').hide();
+    $('record_not_syntax_case_div').hide();
+    $('record_limit_#{@record.id}').show();
+    $('record_limit_param_#{@record.id}').show();
+    $('record_cache_interval_#{@record.id}').show();
+  } else if ($('record_source_target_#{@record.id}').value == 'all') {
+    $('record_or_syntax_case_div').show();
+    $('record_or_syntax_position_div').show();
+    $('record_and_syntax_case_div').show();
+    $('record_not_syntax_case_div').show();
+    $('record_limit_#{@record.id}').show();
+    $('record_limit_param_#{@record.id}').show();
+    $('record_cache_interval_#{@record.id}').show();
+  } else {
+    $('record_or_syntax_case_div').hide();
+    $('record_or_syntax_position_div').hide();
+    $('record_and_syntax_case_div').hide();
+    $('record_not_syntax_case_div').hide();
+    $('record_limit_#{@record.id}').hide();
+    $('record_limit_param_#{@record.id}').hide();
+    $('record_cache_interval_#{@record.id}').hide();
+  }
+}
+hide_or_show_or_and_not_syntax_fields();
+$('record_source_target_#{@record.id}').observe('change', function(event){
+  hide_or_show_or_and_not_syntax_fields();
+});" %>

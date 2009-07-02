@@ -1855,6 +1855,11 @@ en:
     title: Title
     view_as_types_as_options:
       inherit: "{{t.base.inherit.capitalize}}"
+  search_sources_controller:
+    source_targets:
+      all: All
+      items: Items - User Input for Terms
+      search: Search - User Inputted Search as is
   site_linking_lib:
     error_linking_site:
       appears_listed: However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>.

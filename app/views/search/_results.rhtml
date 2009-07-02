@@ -23,7 +23,7 @@
 <% search_sources_amount = SearchSource.count(:conditions => { :source_target => 'search' }) %>
 <% if search_sources_amount > 0 %>
   <% search_source_result = display_search_sources(params[:search_terms],
-                             { :target => :search,
+                             { :target => [:all, :search],
                                :do_not_cache => true,
                                :limit => (@number_per_page.to_f / search_sources_amount.to_f).ceil,
                                :title => t('search.results.search_source_title') }) %>

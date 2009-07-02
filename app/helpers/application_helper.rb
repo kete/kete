@@ -1424,7 +1424,7 @@ module ApplicationHelper
   end
 
   def display_search_sources_for(item)
-    display_search_sources(item.title, :target => :items)
+    display_search_sources(item.title, :target => [:all, :items])
   end
 
 end
