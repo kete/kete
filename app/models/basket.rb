@@ -12,6 +12,10 @@ class Basket < ActiveRecord::Base
 
   ALL_LEVEL_OPTIONS = [[I18n.t('basket_model.all_users'), 'all users']] + [[I18n.t('basket_model.logged_in'), 'logged in']] + MEMBER_LEVEL_OPTIONS
 
+  def self.level_value_from(key)
+    Basket::ALL_LEVEL_OPTIONS.select { |v,k| k == key }.first.first
+  end
+
   # profile forms, these should correspond to actions in the controller
   # really this would be nicer if it came from reflecting on the baskets_controller class
   FORMS_OPTIONS = [[I18n.t('basket_model.basket_new_or_edit'), 'edit'],

@@ -639,7 +639,7 @@ en:
       privacy_controls_site_basket: This {{t.base.basket.pluralize}} browsing controls are left {{t.base.enabled}} if any other {{t.base.basket.pluralize}} have privacy controls turned on (for site-wide {{t.base.private.downcase}} {{t.base.search}})
       private: "{{t.base.private.capitalize}}"
       private_item_notification: "{{t.base.private.capitalize}} {{t.base.item.capitalize}} notification"
-      private_item_notification_example: "Whenever {{t.base.private}} {{t.base.item.pluralize}} are {{t.base.changed}}, which {{t.base.user.pluralize}} should be notified by {{t.base.email}}?"
+      private_item_notification_example: "Whenever {{t.base.private}} {{t.base.item.pluralize}} are {{t.base.changed}}, which role of {{t.base.user.pluralize}} (and above) should be notified by {{t.base.email}}?"
       private_item_notification_show_short_summary: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} short summary in {{t.base.email}} notifications?"
       private_item_notification_show_title: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} title in {{t.base.email}} notifications?"
       public: "{{t.base.public.capitalize}}"
@@ -2042,10 +2042,10 @@ en:
       private_description: (Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})
       public: "{{t.base.public.capitalize}}"
       public_description: (Can be {{t.base.viewed}} by everyone)
-      related_items_as_inset: Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} body?
+      related_items_as_inset: Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} description?
       required_fields: "* denotes a required field"
       short_summary: Short Summary
-      skip_email_notification: "Skip {{t.base.email}} notification for this {{t.base.private}} {{t.base.item}}?"
+      skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.item}}?"
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       title: Title
       update: "{{t.base.update.capitalize}}"
