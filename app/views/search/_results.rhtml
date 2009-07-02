@@ -20,7 +20,7 @@
 
 <div class="prev-next before-results"><%= will_paginate @results %></div>
 
-<% search_sources_amount = SearchSource.count(:conditions => { :source_target => 'search' }) %>
+<% search_sources_amount = SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']]) %>
 <% if search_sources_amount > 0 %>
   <% search_source_result = display_search_sources(params[:search_terms],
                              { :target => [:all, :search],
