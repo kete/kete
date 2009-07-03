@@ -55,6 +55,9 @@ module Technoweenie # :nodoc:
 
         protected
           # Destroys the file.  Called in the after_destroy callback
+          # Kieran Pilkington, 2009-07-03
+          # Allow optional destination_file parametre be passed in
+          # If it remains nil, it should be full_filename instead
           def destroy_file(destination_file=nil)
             destination_file ||= full_filename
             FileUtils.rm destination_file
@@ -78,6 +81,9 @@ module Technoweenie # :nodoc:
           end
           
           # Saves the file to the file system
+          # Kieran Pilkington, 2009-07-03
+          # Allow optional destination_file parametre be passed in
+          # If it remains nil, it should be full_filename instead
           def save_to_storage(destination_file=nil)
             destination_file ||= full_filename
             if save_attachment?

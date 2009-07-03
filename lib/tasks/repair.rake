@@ -10,8 +10,7 @@ namespace :kete do
                   'kete:repair:set_missing_contributors',
                   'kete:repair:correct_thumbnail_privacies',
                   'kete:repair:correct_site_basket_roles',
-                  'kete:repair:extended_fields',
-                  'kete:repair:resize_images']
+                  'kete:repair:extended_fields']
 
     desc "Fix invalid topic versions (adds version column value or prunes on a case-by-case basis."
     task :fix_topic_versions => :environment do
@@ -308,48 +307,95 @@ namespace :kete do
 
     end
 
-    desc 'Resize original images based on current IMAGE_SIZES'
+    desc 'Resize original images based on current IMAGE_SIZES and add new ones if needed. Does not remove no longer needed ones (to prevent links breaking).'
     task :resize_images => :environment do
+      @logger = Logger.new(RAILS_ROOT + "/log/resize_images_#{Time.now.strftime('%Y-%m-%d_%H:%M:%S')}.log")
+
+      puts "Resizing/created images based on IMAGE_SIZES..."
+      @logger.info "Starting image file resizing."
+
+      # get a list of thumbnail keys
       image_size_keys = IMAGE_SIZES.keys
 
+      # setup some variables for reporting once the task is done
+      resized_images_count = 0
+      created_images_count = 0
+
+      @logger.info "Looping through parent items"
+
+      # loop over every parent image file
       ImageFile.all(:conditions => ["parent_id IS NULL"]).each do |parent_image_file|
 
+        @logger.info "  Fetched parent image #{parent_image_file.id}"
+
+        # start an array with all thumbnail keys and remove ones as we go through
         missing_image_size_keys = image_size_keys.dup
 
+        # loop over the parent images files children thumbnails
         ImageFile.all(:conditions => ["parent_id = ?", parent_image_file]).each do |child_image_file|
+
+          @logger.info "    Fetched child image #{child_image_file.id}"
+
+          # remove this image files thumbnail key from the missing image size keys array
+          # (so we eventually end up with an array of keys that aren't being used)
           missing_image_size_keys = missing_image_size_keys - [child_image_file.thumbnail.to_sym]
-          next if image_file_match_image_size?(child_image_file)
-          # recreate an existing image to new sizes
-          file_path = child_image_file.full_filename
-          resize_image_and_save_to(child_image_file, file_path, file_path)
+
+          # if this image doesn't need to be changed, skip it
+          if image_file_match_image_size?(child_image_file)
+            @logger.info "      Child image #{child_image_file.id} does not need resizing"
+            next
+          end
+
+          # recreate an existing image to new sizes based on the parent (original) file
+          resize_image_from_original(child_image_file, parent_image_file.full_filename)
+
+          # increase the amount of resized images
+          @logger.info "      Incrementing resizes images count"
+          resized_images_count += 1
+
         end
 
-        # create new ones based on new sizes
+        # loop over and keys we still have remaining
+        @logger.info "    Image sizes keys not yet used: #{missing_image_size_keys.collect { |s| s.to_s }.join(',')}"
         missing_image_size_keys.each do |size|
-          filename = parent_image_file.filename.gsub('.', "_#{size.to_s}.")
-          destination_file = parent_image_file.full_filename.gsub(parent_image_file.filename, filename)
 
+          @logger.info "    Creating image for thumbnail size #{size}"
+
+          # get the parent filename and attach the size to it for the new filename
+          filename = parent_image_file.filename.gsub('.', "_#{size.to_s}.")
+
+          # create a new image file based on the parent (details will be updated later)
           image_file = ImageFile.create!(
-            :still_image_id => parent_image_file.still_image_id,
-            :parent_id => parent_image_file.id,
-            :thumbnail => size.to_s,
-            :filename => filename,
-            :content_type => parent_image_file.content_type,
-            :size => parent_image_file.size,
-            :width => parent_image_file.width,
-            :height => parent_image_file.height,
-            :file_private => parent_image_file.file_private?
+            parent_image_file.attributes.merge(
+              :id => nil,
+              :parent_id => parent_image_file.id,
+              :thumbnail => size.to_s,
+              :filename => filename
+            )
           )
-          resize_image_and_save_to(image_file, parent_image_file.full_filename, destination_file)
+          @logger.info "      Created new image record for #{filename}, id #{image_file.id}"
+
+          # recreate an existing image to new sizes based on the parent (original) file
+          resize_image_from_original(image_file, parent_image_file.full_filename)
+
+          # increase the amount of created images
+          @logger.info "      Incrementing created images count"
+          created_images_count += 1
+
         end
 
       end
 
+      # Let the user know how many were resized and how many were created
+      puts "Finished. #{resized_images_count} images resized, #{created_images_count} images created."
+      @logger.info "Finished image resizing. #{resized_images_count} images resized, #{created_images_count} images created."
     end
 
     private
 
+    # Checks whether an image file thumbnail size matches any of the IMAGE_SIZES values
     def image_file_match_image_size?(image_file)
+      # get what the imags sizes should be
       size_string = IMAGE_SIZES[image_file.thumbnail.to_sym]
 
       # in the case that IMAGE_SIZES no longer has the sizes for existing image, skip it
@@ -357,21 +403,45 @@ namespace :kete do
       # record should be deleted
       return true if size_string.blank?
 
+      # if we have a ! in the size, then both height and width have to match (else only one needs to)
+      absolute = size_string.include?('!')
+
+      # if we have a x in the size, then we have both height and width to match (else we have only width)
       sizes = size_string.split('x').collect { |s| s.to_i }
+
+      # do we have width and height?
       if sizes.size > 1
-        sizes[0] == image_file.width &&
-          sizes[1] == image_file.height
+        # do we need to match both width and height?
+        if absolute
+          # check if the current width and height are what they should be
+          sizes[0] == image_file.width &&
+            sizes[1] == image_file.height
+        else
+          # check if the current width or height are what they should be
+          sizes[0] == image_file.width ||
+            sizes[1] == image_file.height
+        end
       else
+        # check if the current width is what it should be
         sizes[0] == image_file.width
       end
     end
 
-    def resize_image_and_save_to(image_file, original_file, destination_file)
+    # takes an image file and resizes it based on the original file
+    # uses attachment_fu method on the ImageFile class and image_file instance
+    def resize_image_from_original(image_file, original_file)
+      @logger.info "      Resizing child image #{image_file.id} based on #{original_file}"
       ImageFile.with_image original_file do |img|
         image_file.resize_image(img, IMAGE_SIZES[image_file.thumbnail.to_sym])
-        image_file.send :destroy_file, destination_file
-        image_file.send :save_to_storage, destination_file
-        image_file.update_attributes!(:size => File.size(destination_file), :width => img.columns, :height => img.rows)
+        image_file.send :destroy_file, image_file.full_filename
+        image_file.send :save_to_storage, image_file.full_filename
+        # make sure we update the image file size, width, and height based on the new resized image
+        image_file.update_attributes!(
+          :size => File.size(image_file.full_filename),
+          :width => img.columns,
+          :height => img.rows
+        )
+        @logger.info "      Child image record updated"
       end
     end
 
