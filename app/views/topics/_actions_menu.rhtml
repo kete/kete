@@ -33,14 +33,12 @@
     <% end -%>
 
     <% if logged_in? and @at_least_a_moderator -%>
-    <% cache({:part => 'delete', :id => @cache_id}) do -%>
     <li><%= link_to t('topics.actions_menu.delete'),
             {:action => :destroy,
-             :id => item},
+             :id => @cache_id},
       :method => :post,
       :confirm => t('topics.actions_menu.delete_confirm'), :tabindex => '1' %></li>
     <% end %>
-    <% end -%>
                 <%= render :partial => 'topics/privacy_chooser', :locals => { :item => item } if @show_privacy_chooser -%>
   </ul>
 </div><!-- /content-tabs -->
