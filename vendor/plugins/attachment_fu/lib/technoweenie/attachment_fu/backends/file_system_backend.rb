@@ -55,12 +55,13 @@ module Technoweenie # :nodoc:
 
         protected
           # Destroys the file.  Called in the after_destroy callback
-          def destroy_file
-            FileUtils.rm full_filename
+          def destroy_file(destination_file=nil)
+            destination_file ||= full_filename
+            FileUtils.rm destination_file
             # remove directory also if it is now empty
-            Dir.rmdir(File.dirname(full_filename)) if (Dir.entries(File.dirname(full_filename))-['.','..']).empty?
+            Dir.rmdir(File.dirname(destination_file)) if (Dir.entries(File.dirname(destination_file))-['.','..']).empty?
           rescue
-            logger.info "Exception destroying  #{full_filename.inspect}: [#{$!.class.name}] #{$1.to_s}"
+            logger.info "Exception destroying  #{destination_file.inspect}: [#{$!.class.name}] #{$1.to_s}"
             logger.warn $!.backtrace.collect { |b| " > #{b}" }.join("\n")
           end
 
@@ -77,12 +78,13 @@ module Technoweenie # :nodoc:
           end
           
           # Saves the file to the file system
-          def save_to_storage
+          def save_to_storage(destination_file=nil)
+            destination_file ||= full_filename
             if save_attachment?
               # TODO: This overwrites the file if it exists, maybe have an allow_overwrite option?
-              FileUtils.mkdir_p(File.dirname(full_filename))
-              File.cp(temp_path, full_filename)
-              File.chmod(attachment_options[:chmod] || 0644, full_filename)
+              FileUtils.mkdir_p(File.dirname(destination_file))
+              File.cp(temp_path, destination_file)
+              File.chmod(attachment_options[:chmod] || 0644, destination_file)
             end
             @old_filename = nil
             true
