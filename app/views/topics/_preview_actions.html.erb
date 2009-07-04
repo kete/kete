@@ -20,7 +20,12 @@
       :version => item.version,
       :authenticity_token => form_authenticity_token},
       :method => :post,
-      :confirm => t('topics.preview_actions.reject_confirm'), :tabindex => '1' %></li>
+      :confirm => t('topics.preview_actions.reject_confirm'),  :tabindex => '1' %></li>
+    <li><%= link_to t('topics.preview_actions.delete_all_versions'),
+            {:action => :destroy,
+             :id => item},
+      :method => :post,
+      :confirm => t('topics.preview_actions.delete_confirm'), :tabindex => '1' %></li>
     <% end -%>
   </ul>
 </div>

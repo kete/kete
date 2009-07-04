@@ -2054,6 +2054,8 @@ en:
       make_live_confirm: "{{t.base.are_you_sure}}"
       reject: "{{t.base.reject}}"
       reject_confirm: "{{t.base.are_you_sure}}"
+      delete_all_versions: "{{t.base.delete}} this {{t.base.item}} completely"
+      delete_confirm: "{{t.base.are_you_sure}}"
       title: "Actions:"
     privacy_chooser:
       private_version: "{{t.base.private}} version"
