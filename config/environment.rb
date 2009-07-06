@@ -87,9 +87,9 @@ Rails::Initializer.run do |config|
   config.action_view.sanitized_allowed_attributes = 'id', 'style', 'hspace', 'vspace', 'align', 'dir', 'border', 'cellspacing',  'cellpadding', 'summary', 'bgcolor', 'background', 'bordercolor', 'rowspan', 'valign', 'colspan', 'scope', 'lang', 'face', 'color', 'size', 'target', 'classid', 'codebase', 'quality', 'type', 'pluginspage', 'wmode', 'data', 'flashvars', 'allowfullscreen'
 end
 
-# Kieran Pilkington, 2008/07/28
-# We overwrite one of the Dispatch methods to give us the ability to make customized error pages
-# for errors that occur before controllers are called (like when memcache is not online)
+# Kieran Pilkington, 2009/07/06
+# overwrite ActionController::Failsafe to catch some errors
+# see lib/error_handler.rb
 require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 
 # Include your application configuration below
