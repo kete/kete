@@ -6,14 +6,14 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
     new_image_with_creator
     assert_not_nil @relation.user
     assert_kind_of User, @relation.user
-    assert_equal User.first, @relation.user
+    assert_equal User.last, @relation.user
   end
 
   def test_relation_should_belong_to_still_image
     new_image_with_creator
     assert_not_nil @relation.still_image
     assert_kind_of StillImage, @relation.still_image
-    assert_equal StillImage.first, @relation.still_image
+    assert_equal StillImage.last, @relation.still_image
   end
 
   def test_should_prohibit_any_action_when_uploader_isnt_current_user

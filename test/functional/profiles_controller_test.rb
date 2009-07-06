@@ -54,7 +54,7 @@ class ProfilesControllerTest < ActionController::TestCase
 
         should "not be able to edit a record" do
           create_profile
-          assert_raise ActiveScaffold::RecordNotAllowed do
+          assert_raise ActiveScaffold::ActionNotAllowed do
             post :update, :urlified_name => @urlified_name, :id => @profile, :record => { :name => 'Updated Title' }
           end
           @profile.reload

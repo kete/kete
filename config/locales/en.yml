@@ -610,7 +610,7 @@ en:
       file_privacy_example: "You may use this to restrict the download of an {{t.base.item}}'s original file.  For example, you may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the information about it, but limit downloading the actual {{t.base.zoom_types.document}} file to {{t.base.basket}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
       file_privacy_private_example: Can be downloaded only by authorized {{t.base.basket}} {{t.base.member.pluralize}}
       file_privacy_public_example: Can be downloaded by everyone
-      file_visibility: "{{t.base.private}} Original Files Visibility:"
+      file_visibility: "{{t.base.private.capitalize}} Original Files Visibility:"
       file_visibility_example: "To {{t.base.view}} {{t.base.private.downcase}} attached files you must be at least a:"
       inherit: "{{t.base.inherit.capitalize}}"
       inherit_example: "{{t.base.inherit.capitalize}} this setting from the Site {{t.base.basket}}."
@@ -2058,8 +2058,8 @@ en:
       delete_confirm: "{{t.base.are_you_sure}}"
       title: "Actions:"
     privacy_chooser:
-      private_version: "{{t.base.private}} version"
-      public_version: "{{t.base.public}} version (live)"
+      private_version: "{{t.base.private.capitalize}} version"
+      public_version: "{{t.base.public.capitalize}} version (live)"
     related_items:
       create: "{{t.base.create.capitalize}}"
       import_set: Import Set

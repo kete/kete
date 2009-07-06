@@ -133,7 +133,7 @@ class UserTest < ActiveSupport::TestCase
     assert_not_nil user.portraits
     assert_equal 1, user.portraits.size
     assert_kind_of StillImage, user.portraits.first
-    assert_equal StillImage.first, user.portraits.first
+    assert_equal StillImage.last, user.portraits.first
   end
 
   def test_user_should_have_baskets

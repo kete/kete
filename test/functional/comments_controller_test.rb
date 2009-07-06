@@ -111,7 +111,7 @@ class CommentsControllerTest < ActionController::TestCase
     post :create, :urlified_name => "open_basket", :comment => @new_comment_model.merge(:basket_id => @open_basket.id)
     assert assigns(:comment)
     assert_response :redirect
-    assert_redirected_to :urlified_name => "about", :controller => "topics", :action => "show", :id => Topic.find(1)
+    assert_redirected_to :urlified_name => "about", :controller => "topics", :action => "show", :id => Topic.find(1), :locale => false
   end
   
 end

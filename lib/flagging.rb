@@ -233,7 +233,7 @@ module Flagging
         else
           url_for(:urlified_name => basket.urlified_name,
                   :controller => zoom_class_controller(self.class.name),
-                  :action => 'history', :id => self)
+                  :action => 'history', :id => self, :locale => false)
         end
 
         message = !options[:message].blank? ? options[:message] : nil
