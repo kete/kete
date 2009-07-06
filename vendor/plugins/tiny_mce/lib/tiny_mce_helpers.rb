@@ -16,9 +16,11 @@ module TinyMCEHelpers
     # first we set some defaults, then we merge in the controller level options
     # and finally merge in the view level options (to give presidence)
 	  @tiny_mce_options ||= {}
-    options = { 'mode' => 'textareas',
+    default_options = { 'mode' => 'textareas',
                 'editor_selector' => 'mceEditor',
-                'theme' => 'simple' }.merge(@tiny_mce_options.stringify_keys).merge(options.stringify_keys)
+                'theme' => 'simple',
+                'language' => (defined?(I18n) ? I18n.locale : :en) }
+    options = default_options.merge(@tiny_mce_options.stringify_keys).merge(options.stringify_keys)
     raw_options = @raw_tiny_mce_options + raw_options unless @raw_tiny_mce_options.nil?
 
     unless options['plugins'].nil?
@@ -69,7 +71,7 @@ module TinyMCEHelpers
 
   # Form a JS include tag for the TinyMCE JS src for inclusion in the <head>
   def include_tiny_mce_js
-    javascript_include_tag ((RAILS_ENV == 'development') ? "tiny_mce/tiny_mce_src" : "tiny_mce/tiny_mce")
+    javascript_include_tag (Rails.env.development? ? "tiny_mce/tiny_mce_src" : "tiny_mce/tiny_mce")
   end
   # Form a JS include tag for the TinyMCE JS src for inclusion in the <head>
   # (only if tiny mce is actually being used)
