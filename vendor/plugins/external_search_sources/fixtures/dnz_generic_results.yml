@@ -1,8 +1,9 @@
 dnz_generic_results:
-  title: DigitalNZ Results
+  title: Results from DigitalNZ
   source_type: feed
   source_target: search
   base_url: 'http://api.digitalnz.org/records/v1.rss/?api_key=[api_key]&search_text='
   more_link_base_url: 'http://search.digitalnz.org/search?search_text='
   limit_param: num_results
   or_syntax: between_upper
+  source_credit: "<div style='padding:0 0 15px 15px'>Powered by <a href='http://digitalnz.org/' title='Digital NZ'><img src='http://kete.digitalnz.org/themes/dnz/images/dnz_logo.png' style='border:0; position: relative; top: 10px; left: 10px;' /></a></div>"

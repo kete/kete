@@ -19,8 +19,8 @@ class SearchSourcesController < ApplicationController
 
     config.columns = [:title, :source_type, :source_target, :base_url, :more_link_base_url, :limit, :limit_param]
     config.columns << [:cache_interval] if ExternalSearchSources[:cache_results]
-    config.columns << [:or_syntax, :and_syntax, :not_syntax]
-    config.list.columns.exclude [:source_type, :more_link_base_url, :cache_interval, :limit_param, :or_syntax, :and_syntax, :not_syntax]
+    config.columns << [:or_syntax, :and_syntax, :not_syntax, :source_credit]
+    config.list.columns.exclude [:source_type, :more_link_base_url, :cache_interval, :limit_param, :or_syntax, :and_syntax, :not_syntax, :source_credit]
 
     options = { :type => :record, :inline => false }
     # images_tag and @template.image_tag arn't available in this scope
@@ -64,6 +64,9 @@ class SearchSourcesController < ApplicationController
       config.columns[syntax].label = I18n.t("search_sources_controller.#{syntax.to_s}_label")
       config.columns[syntax].description = I18n.t("search_sources_controller.#{syntax.to_s}_description")
     end
+
+    config.columns[:source_credit].description = '<br />' + I18n.t('search_sources_controller.source_credit_description')
+    config.columns[:source_credit].options = { :rows => 2 }
   end
 
   def move_higher

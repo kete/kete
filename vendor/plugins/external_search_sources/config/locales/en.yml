@@ -48,6 +48,7 @@ en:
       not_authorized: You are not authorized to access this section of the site. Try a different account.
     source_base_url_description: What is the base url for this source type? A search string will be appended to the end so make it end in '?q=' or similar
     source_cache_interval_description: How long should the search source be cached for? (optional - in minutes - default 60)
+    source_credit_description: "Should this search source credit anyone? If so, add a link/image here as required by the search source (optional)."
     source_limit_description: "How many sources should be displayed? Might be overwritten internally, so won't always be used (optional - default 5)."
     source_limit_param_description: "Which param is used to limit results on the search source? Using this may speed up the time it takes to get results. Leave blank if unknown."
     source_more_link_base_url_description: Like Base URL, except links to a site search instead of the search source. Make it end in '?q=' or similar. (optional)

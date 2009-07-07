@@ -42,6 +42,12 @@
       </div>
     <% end %>
 
+    <% unless source.source_credit.blank? %>
+      <div id="<%= search_source_id %>_credit">
+        <%= source.source_credit %>
+      </div>
+    <% end %>
+
   <% end -%>
 
 <% end %>
