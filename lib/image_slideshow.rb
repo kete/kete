@@ -189,7 +189,7 @@ module ImageSlideshow
       find_args_hash.merge!(public_conditions) unless display_private_items?
       find_args_hash[:order] = 'still_images.created_at desc'
       # Execute the find on the current topics still images
-      topic = Topic.find_by_id(params[:id])
+      topic = Topic.find_by_id(params[:id]) # use find_by_id() instead of find() so we don't want to raise an error
       topic ? topic.still_images.find(:all, find_args_hash) : Array.new
     end
 
