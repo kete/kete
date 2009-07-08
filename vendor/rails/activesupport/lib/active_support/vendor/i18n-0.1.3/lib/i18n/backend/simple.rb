@@ -31,6 +31,12 @@ module I18n
         values = options.reject { |name, value| reserved.include?(name) }
 
         entry = lookup(locale, key, scope)
+
+        # Kieran Pilkington, 2009-07-09
+        # Adding simple fallback support to the default locale
+        # if the current locale doesn't have the translation
+        entry = lookup(I18n.default_locale, key, scope) if (entry.nil? || entry.empty?) && I18n.default_locale
+
         if entry.nil?
           entry = default(locale, default, options)
           if entry.nil?
