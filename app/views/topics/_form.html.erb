@@ -157,7 +157,7 @@ zoom_class = zoom_class_from_controller(controller)
     <% end -%>
 
     <% if show_notification_controls?(@basket) %>
-      <div id="skip_email_notification_div"<%= "style='display:none;'" unless @item.private? %>>
+      <div id="skip_email_notification_div"<%= "style='display:none;'" unless item_private %>>
         <% if params[@item_type] && params[@item_type][:skip_email_notification]; skip = (params[@item_type][:skip_email_notification] == '1' ? true : false)
            elsif @editing && !@item.skip_email_notification.nil?; skip = @item.skip_email_notification?
            else; skip = false; end -%>
