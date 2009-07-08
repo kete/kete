@@ -1322,6 +1322,7 @@ class ApplicationController < ActionController::Base
 
     # send notifications of private item
     item.basket.users_to_notify_of_private_item.each do |user|
+      next if user == current_user
       case type
       when :created
         UserNotifier.send("deliver_private_#{email_type}_created", user, item, path_to_show_for(item, :private => true))
