@@ -28,7 +28,7 @@ class ProfileTest < ActiveSupport::TestCase
   context "A Profile" do
 
     should "be able to set and get the rules during creation" do
-      the_form = Basket::FORMS_OPTIONS.first[1]
+      the_form = Basket.forms_options.first[1]
       the_type = Profile.type_options.first[1]
       the_rules = { the_form => { 'rule_type' => the_type } }
       profile = Factory(:profile, :rules => the_rules)

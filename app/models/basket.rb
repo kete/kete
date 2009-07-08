@@ -2,25 +2,37 @@
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
+
   # we use these for who can see what
-  MEMBER_LEVEL_OPTIONS = [[I18n.t('basket_model.basket_member'), 'at least member'],
-                          [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
-                          [I18n.t('basket_model.basket_admin'), 'at least admin'],
-                          [I18n.t('basket_model.site_admin'), 'at least site admin']]
+  def self.member_level_options
+    [[I18n.t('basket_model.basket_member'), 'at least member'],
+    [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
+    [I18n.t('basket_model.basket_admin'), 'at least admin'],
+    [I18n.t('basket_model.site_admin'), 'at least site admin']]
+  end
 
-  USER_LEVEL_OPTIONS = [[I18n.t('basket_model.all_users'), 'all users']] + MEMBER_LEVEL_OPTIONS
+  def self.user_level_options
+    [[I18n.t('basket_model.all_users'), 'all users']] +
+    Basket.member_level_options
+  end
 
-  ALL_LEVEL_OPTIONS = [[I18n.t('basket_model.all_users'), 'all users']] + [[I18n.t('basket_model.logged_in'), 'logged in']] + MEMBER_LEVEL_OPTIONS
+  def self.all_level_options
+    [[I18n.t('basket_model.all_users'), 'all users']] +
+    [[I18n.t('basket_model.logged_in'), 'logged in']] +
+    Basket.member_level_options
+  end
 
   def self.level_value_from(key)
-    Basket::ALL_LEVEL_OPTIONS.select { |v,k| k == key }.first.first
+    Basket.all_level_options.select { |v,k| k == key }.first.first
   end
 
   # profile forms, these should correspond to actions in the controller
   # really this would be nicer if it came from reflecting on the baskets_controller class
-  FORMS_OPTIONS = [[I18n.t('basket_model.basket_new_or_edit'), 'edit'],
-                   [I18n.t('basket_model.basket_appearance'), 'appearance'],
-                   [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
+  def self.forms_options
+    [[I18n.t('basket_model.basket_new_or_edit'), 'edit'],
+    [I18n.t('basket_model.basket_appearance'), 'appearance'],
+    [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
+  end
 
   # Editable Basket Attrobutes
   EDITABLE_ATTRIBUTES = %w{ show_privacy_controls private_default file_private_default allow_non_member_comments
@@ -205,22 +217,22 @@ class Basket < ActiveRecord::Base
   # TODO clean this up using define_method (meta programming magic)
   def show_flagging_as_options(site_basket, default=nil)
     current_show_flagging_value = default || self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_flagging_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_flagging_value)
   end
 
   def show_add_links_as_options(site_basket, default=nil)
     current_show_add_links_value = default || self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_add_links_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_add_links_value)
   end
 
   def show_action_menu_as_options(site_basket, default=nil)
     current_show_actions_value = default || self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_actions_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_actions_value)
   end
 
   def show_discussion_as_options(site_basket, default=nil)
     current_show_discussion_value = default || self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_discussion_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_discussion_value)
   end
 
   def side_menu_ordering_of_topics_as_options(site_basket, default=nil)
@@ -231,7 +243,7 @@ class Basket < ActiveRecord::Base
 
   def private_file_visibility_as_options(site_basket, default=nil)
     current_value = default || self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
-    select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.member_level_options,current_value)
   end
 
   def private_file_visibilty_selected_or_default(value, site_basket)
@@ -277,7 +289,7 @@ class Basket < ActiveRecord::Base
 
   def memberlist_policy_or_default(default=nil)
     current_value = default || self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
-    select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
+    select_options = self.array_to_options_list_with_defaults(Basket.all_level_options, current_value, false)
   end
 
   def memberlist_policy_with_inheritance
@@ -303,7 +315,7 @@ class Basket < ActiveRecord::Base
 
   def private_item_notification_or_default(default=nil)
     current_value = default || settings[:private_item_notification] || site_basket.settings[:private_item_notification] || 'at least member'
-    options =  [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + MEMBER_LEVEL_OPTIONS
+    options =  [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + Basket.member_level_options
     select_options = array_to_options_list_with_defaults(options, current_value, false, true)
   end
 
