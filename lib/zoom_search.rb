@@ -236,7 +236,7 @@ module ZoomSearch
         values = node.content.split(":").reject { |i| i.blank? }
         # this tells us we have coordinates and this is a location
         # 2 (3 spot) is always coordinates in location, even if place name info is in the values
-        if values[2].split(",").size != 2
+        if !values[2] || values[2].split(",").size != 2
           values = Array.new
         end
         values
