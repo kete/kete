@@ -70,6 +70,8 @@ module I18n
 
               # return the translated, and string method executed value
               value
+            else
+              "{{#{pattern}}}"
             end
           end
 
