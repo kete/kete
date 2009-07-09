@@ -148,7 +148,7 @@ So far, the working options are:
 
 This engine uses the I18n features of Rails 2.2 and later to allow for easily translation of the search source interface, and output.
 
-Locales are stored in config/locales  inside the engine directory. When locales are completed, they are added to an array in init.rb that adds each to the I18n load path.
+Locales are stored in config/locales  inside the engine directory. When locales are completed, they are added to I18n load path automatically when the application is started (this is done in the engines init.rb).
 
 To use your own strings, open up the locale of your choice in an editor of your choice and change them to suit.
 

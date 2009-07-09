@@ -1,5 +1,5 @@
-['en'].each do |locale|
-  I18n.load_path.unshift(File.dirname(__FILE__) + "/config/locales/#{locale}.yml")
+Dir[File.join("#{File.dirname(__FILE__)}/config/locales/*.yml")].each do |locale|
+  I18n.load_path.unshift(locale)
 end
 
 ActionController::Base.send(:helper, SearchSourcesHelper)

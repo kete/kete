@@ -1,5 +1,5 @@
 dnz_generic_results:
-  title: Results from DigitalNZ
+  title: Results via DigitalNZ
   source_type: feed
   source_target: search
   base_url: 'http://api.digitalnz.org/records/v1.rss/?api_key=[api_key]&search_text='
