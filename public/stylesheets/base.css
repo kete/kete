@@ -1408,3 +1408,12 @@ a.disabled {
 .detail-extended-field-label {
   vertical-align: text-top;
 }
+
+/*
+ * Credits, useful for things like "powered by kete"
+ */
+.credits {
+  padding-top: 1em;
+  text-align: center;
+  font-size:0.75em;
+}

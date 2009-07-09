@@ -551,3 +551,19 @@ system_settings_063:
   id: "63"
   value: "true"
   section: Topics
+system_settings_064:
+  name: Show Powered By Kete
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should we show the powered by Kete credit at the bottom of the site standard layout?"
+  id: "64"
+  value: "true"
+  section: Server
+system_settings_065:
+  name: Additional Credits HTML
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: "What HTML should we put at the bottom of the site standard layout for things like the company that hosts the site or did the development of the software?"
+  id: "65"
+  value:
+  section: Server
