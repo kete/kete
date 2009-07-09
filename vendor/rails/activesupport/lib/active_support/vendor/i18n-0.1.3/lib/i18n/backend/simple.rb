@@ -31,12 +31,6 @@ module I18n
         values = options.reject { |name, value| reserved.include?(name) }
 
         entry = lookup(locale, key, scope)
-
-        # Kieran Pilkington, 2009-07-09
-        # Adding simple fallback support to the default locale
-        # if the current locale doesn't have the translation
-        entry = lookup(I18n.default_locale, key, scope) if (entry.nil? || entry.empty?) && I18n.default_locale
-
         if entry.nil?
           entry = default(locale, default, options)
           if entry.nil?
@@ -162,26 +156,6 @@ module I18n
 
             if escaped
               pattern
-            # CUSTOM EDIT
-            # Kieran Pilkington, 2009-05-14
-            # Allows us to use keys in translations "Change {{t.base.password}}"
-            elsif pattern.match(/^t\./)
-              # a list of acceptable string methods to call
-              string_methods = ['downcase', 'upcase', 'capitalize', 'singularize', 'pluralize']
-
-              # remove string methods and t. from the key, then turn to a symbol
-              # and run it through the translate method
-              key = pattern.gsub(/^t\./, '').gsub(/\.(#{string_methods.join('|')})/, '').to_sym
-              value = translate(locale, key, values)
-
-              # for each string method in the patern, in order, execute that
-              # method on the returned value, and overwrite value
-              pattern.gsub(/\.(#{string_methods.join('|')})/) do
-                value = value.respond_to?($1) ? value.send($1) : value
-              end
-
-              # return the translated, and string method executed value
-              value
             elsif INTERPOLATION_RESERVED_KEYS.include?(pattern)
               raise ReservedInterpolationKey.new(pattern, string)
             elsif !values.include?(key)
