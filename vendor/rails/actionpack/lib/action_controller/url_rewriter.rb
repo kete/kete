@@ -171,11 +171,6 @@ module ActionController
     private
       # Given a path and options, returns a rewritten URL string
       def rewrite_url(options)
-        # Kieran Pilkington, 2009-07-09
-        # Getting around issue within Rails that means by this point, everything is a string
-        # Which can't be accessed below, so symbolize all keys to get it to work
-        options = options.symbolize_keys
-
         rewritten_url = ""
 
         unless options[:only_path]
