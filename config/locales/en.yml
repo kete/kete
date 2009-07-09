@@ -1381,6 +1381,8 @@ en:
     stop:
       import_stopped: Import stopped.
   index_page:
+    credits:
+      powered_by: Powered by
     index:
       all_tags: all
       categories_title: Categories
