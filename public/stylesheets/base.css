@@ -756,13 +756,8 @@ span.next-active {
   background-color: white;
   padding: 5px 15px;
 }
-#linkToRSS {
-    background-image: url(../images/icon-feed.gif);
-    background-repeat: no-repeat;
-    background-position: 15px 50%;
-}
-#linkToRSS a {
-  margin-left: 19px;
+#linkToRSS ul {
+    list-style-image: url(../images/icon-feed.gif);
 }
 #footer_links {
   padding-bottom: 20px;

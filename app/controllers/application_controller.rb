@@ -1093,6 +1093,9 @@ class ApplicationController < ActionController::Base
 
     page = !options.blank? && !options[:page].blank? ? options[:page] : nil
 
+    # whether we replace normal page controller_name_for_zoom_class with 'combined'
+    combined = options[:combined] || false
+
     url = request.protocol
     url += request.host_with_port
 
@@ -1101,6 +1104,18 @@ class ApplicationController < ActionController::Base
 
     # now split the path up and add rss to it
     path_elements = url_parts[0].split('/')
+
+    # replace topics, images, etc. with combined if called for
+    if combined && !path_elements.include?('combined')
+      # array of zoom class controllers
+      CACHES_CONTROLLERS.each do |to_be_replaced|
+        existing_index = path_elements.index(to_be_replaced)
+        if existing_index
+          path_elements.delete_at(existing_index)
+          path_elements.insert(existing_index, 'combined')
+        end
+      end
+    end
 
     # query string to hash
     query_parameters = request.query_parameters
@@ -1141,7 +1156,7 @@ class ApplicationController < ActionController::Base
     tag = String.new
     tag += auto_detect ? "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" " : "<a "
     tag += "href=\"" + derive_url_for_rss(options)
-    tag +=  auto_detect ? "\" />" : "\" tabindex='1'>" # A tag has a closing </a> in application layout
+    tag +=  auto_detect ? "\" />" : "\" tabindex=\"1\">" # A tag has a closing </a> in application layout
     tag
   end
 

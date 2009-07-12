@@ -7,10 +7,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
   <% cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links'] %>
+  <% stripped_title = h(strip_tags(@title))  %>
+
   <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) && params[:action] == "show") %>
     <% cache_with_privacy(current_item, {:part => 'page_title'}) do %><title><%= h(@title) %></title><% end -%>
   <% else -%>
-    <title><%= h(strip_tags(@title)) %></title>
+    <title><%= stripped_title %></title>
   <% end -%>
 
   <% unless current_item.nil? -%>
@@ -117,7 +119,15 @@
     <%= load_google_map_api if defined?(load_google_map_api) -%>
   <% end -%>
 
-  <%= @rss_tag_auto if !@rss_tag_auto.nil? -%>
+  <% rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a
+     rss_tag_autos = @rss_tag_auto.blank? ? Array.new : @rss_tag_auto.to_a
+     combined_rss_url = basket_all_rss_url( :urlified_name => @site_basket.urlified_name,
+                                            :controller_name_for_zoom_class => 'combined' )
+  -%>
+  <% rss_tag_autos.each do |rss_tag_auto| -%>
+    <%= rss_tag_auto.sub("title=\"RSS\"", "title=\"RSS #{stripped_title}\"")  %>
+  <% end -%>
+  <link rel="alternate" type="application/rss+xml" title="<%= t 'layouts.application.combined_rss' -%>" href="<%= combined_rss_url -%>" />
 
   <!--[if IE]><%= stylesheet_link_tag 'kete-ie', :media => 'screen' %><![endif]-->
 
@@ -137,7 +147,6 @@
     <div id="body-inner-wrapper">
 
       <% if IS_CONFIGURED -%>
-
         <div id="header-wrapper">
           <div id="header">
             <!-- this would be a good place for your logo -->
@@ -240,11 +249,22 @@
           <div style="clear:both;"></div>
         </div><!--  /container -->
 
-        <% if !@rss_tag_link.nil? -%>
-          <div id="linkToRSS" class="footer_div">
-            <%= @rss_tag_link -%><%=t 'layouts.application.rss' %></a>
-          </div>
-        <% end -%>
+	<%# we always have global RSS feed now, i.e. "combined"
+          # (does not include members, tags, baskets, though)
+	  # we may also have a combined version of @rss_tag_link
+	  # if that would be different from global RSS feed -%>
+	<div id="linkToRSS" class="footer_div">
+	  <ul>
+	    <% rss_tag_links.each do |rss_tag_link| -%>
+	    <li><%= link_for_rss(:link_html => rss_tag_link,
+	                         :preface => t('layouts.application.rss'),
+	                         :title => stripped_title) -%></li>
+	    <% end -%>
+	    <li><%= link_to(t('layouts.application.combined_rss'),
+	                    combined_rss_url,
+  	                    :tabindex => '1') -%></li>
+	  </ul>
+	</div>
 
         <div id="footer" class="footer_div">
           <% if logged_in? && @basket_admin && !@displaying_error -%>

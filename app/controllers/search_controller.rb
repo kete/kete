@@ -60,8 +60,7 @@ class SearchController < ApplicationController
   def all
     @search_terms = params[:search_terms]
     if @search_terms.nil?
-      @rss_tag_auto = rss_tag
-      @rss_tag_link = rss_tag(:auto_detect => false)
+      setup_rss
       search
     else
       # TODO: redirect_to search form of the same url
@@ -84,8 +83,7 @@ class SearchController < ApplicationController
       # TODO: have this message be derived from globalize
       flash[:notice] = t('search_controller.for.no_search_terms')
     else
-      @rss_tag_auto = rss_tag
-      @rss_tag_link = rss_tag(:auto_detect => false)
+      setup_rss
       search
     end
 
@@ -902,4 +900,14 @@ class SearchController < ApplicationController
   end
 
   helper_method :is_rss?
+
+  private
+
+  # set up the results specific rss links
+  # we now have combined version of each search/browse results RSS
+  # in addition to the zoom class specific rss
+  def setup_rss
+    @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
+    @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
+  end
 end

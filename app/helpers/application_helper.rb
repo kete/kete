@@ -1425,4 +1425,15 @@ module ApplicationHelper
     display_search_sources(item.title, :target => [:all, :items])
   end
 
+  def link_for_rss(options)
+    preface = options[:preface]
+    title = options[:title]
+    link_html = options[:link_html]
+
+    if link_html.scan("combined").any?
+      title = t('application_helper.link_for_rss.link_text')
+    end
+
+    link_html + preface + ' - ' + title + '</a>'
+  end
 end
