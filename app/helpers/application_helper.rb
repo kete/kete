@@ -136,6 +136,7 @@ module ApplicationHelper
     pre_text = String.new
     site_link_text = String.new
     current_basket_html = String.new
+    default_controller = zoom_class_controller(DEFAULT_SEARCH_CLASS)
     if @current_basket != @site_basket
       pre_text = "#{t('application_helper.header_browse_links.browse')}: "
       site_link_text = @site_basket.name
@@ -145,7 +146,7 @@ module ApplicationHelper
                                                      { :controller => 'search',
                                                        :action => 'all',
                                                        :urlified_name => @current_basket.urlified_name,
-                                                       :controller_name_for_zoom_class => 'topics',
+                                                       :controller_name_for_zoom_class => default_controller,
                                                        :trailing_slash => true,
                                                        :privacy_type => privacy_type,
                                                        :view_as => @current_basket.browse_type_with_inheritance },
@@ -158,7 +159,7 @@ module ApplicationHelper
                                                {:controller => 'search',
                                                :action => 'all',
                                                :urlified_name => @site_basket.urlified_name,
-                                               :controller_name_for_zoom_class => 'topics',
+                                               :controller_name_for_zoom_class => default_controller,
                                                :trailing_slash => true,
                                                :view_as => @site_basket.browse_type_with_inheritance }, {:tabindex => '2'} ) + current_basket_html + '</li>'
   end
