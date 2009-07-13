@@ -238,7 +238,9 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
 
       visit "/#{basket.urlified_name}/topics/show/#{@topic.id}/"
 
-      body_should_contain "<a href=\"/#{basket.urlified_name}/topics/show/#{@related_topic.id}"
+      url = "http://www.example.com/#{basket.urlified_name}/topics/show/#{@related_topic.id}"
+      body_should_contain "<a href=\"#{url}"
+
       should_appear_once_in_search_results(@topic)
       should_appear_once_in_search_results(@related_topic)
     end
