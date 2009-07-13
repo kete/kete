@@ -7,6 +7,32 @@
 namespace :kete do
   namespace :translation do
 
+    desc 'Create a new translation based on the English translation (pass in LOCALE_CODE - a two letter country code, and LOCALE_NAME - the translated name of the language you\'re adding.)'
+    task :create do
+      raise "LOCALE_CODE (two letter country code) is not set. Please set one before running the rake task." unless ENV['LOCALE_CODE']
+      raise "LOCALE_NAME (translated translation name) is not set. Please set one before running the rake task." unless ENV['LOCALE_NAME']
+
+      en = File.join(RAILS_ROOT, "config/locales/en.yml")
+      new_locale = File.join(RAILS_ROOT, "config/locales/#{ENV['LOCALE_CODE']}.yml")
+
+      raise "config/locales/#{ENV['LOCALE_CODE']}.yml already exists. Exiting..." if File.exists?(new_locale)
+
+      File.open(new_locale, 'w') do |new|
+        File.open(en, 'r') do |old|
+          lines = old.readlines
+          lines[1] = "#{ENV['LOCALE_CODE']}:\n"
+          new.print lines
+        end
+      end
+
+      locales = File.join(RAILS_ROOT, "config/locales.yml")
+      File.open(locales, 'a') do |f|
+        f.print "\n#{ENV['LOCALE_CODE']}: #{ENV['LOCALE_NAME']}"
+      end
+
+      puts "#{ENV['LOCALE_NAME']} (#{ENV['LOCALE_CODE']}) has been added."
+    end
+
     namespace :excel_2003 do
 
       desc 'Export translation to Microsoft Excel 2003 compatible format (pass in LOCALE key)'
