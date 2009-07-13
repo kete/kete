@@ -1323,7 +1323,6 @@ class ApplicationController < ActionController::Base
   end
 
   def show_notification_controls?(basket = @current_basket)
-    return false unless @basket_admin
     return false if basket.settings[:private_item_notification].blank?
     return false if basket.settings[:private_item_notification] == 'do_not_email'
     return false unless basket.show_privacy_controls_with_inheritance?
