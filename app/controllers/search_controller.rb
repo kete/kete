@@ -60,8 +60,7 @@ class SearchController < ApplicationController
   def all
     @search_terms = params[:search_terms]
     if @search_terms.nil?
-      @rss_tag_auto = rss_tag
-      @rss_tag_link = rss_tag(:auto_detect => false)
+      setup_rss
       search
     else
       # TODO: redirect_to search form of the same url
@@ -84,8 +83,7 @@ class SearchController < ApplicationController
       # TODO: have this message be derived from globalize
       flash[:notice] = t('search_controller.for.no_search_terms')
     else
-      @rss_tag_auto = rss_tag
-      @rss_tag_link = rss_tag(:auto_detect => false)
+      setup_rss
       search
     end
 
@@ -227,9 +225,8 @@ class SearchController < ApplicationController
 
     if from_result_set.size > 0
       # get the raw xml results from zoom
-      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => from_result_set,
-                                                                                    :start_record => @start_record,
-                                                                                    :end_record => @end_record)
+      raw_results = from_result_set.records_from(:start_record => @start_record,
+                                                 :end_record => @end_record)
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
         result_from_xml_hash = parse_from_xml_in(raw_record)
@@ -251,7 +248,12 @@ class SearchController < ApplicationController
     # sort_type for last_modified
 
     # limit query to within our zoom_class
-    @search.pqf_query.kind_is(zoom_class, :operator => 'none')
+    unless zoom_class == 'Combined'
+      @search.pqf_query.kind_is(zoom_class, :operator => 'none')
+    else
+      # we have to put something into this inorder to get results
+      @search.pqf_query.kind_is("oai", :operator => 'none')
+    end
 
     # limit baskets searched within
     if searching_for_related_items?
@@ -898,4 +900,14 @@ class SearchController < ApplicationController
   end
 
   helper_method :is_rss?
+
+  private
+
+  # set up the results specific rss links
+  # we now have combined version of each search/browse results RSS
+  # in addition to the zoom class specific rss
+  def setup_rss
+    @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
+    @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
+  end
 end

@@ -183,6 +183,10 @@ class PqfQuery
     options = options.first || Hash.new
 
     terms = terms_as_array(term_or_terms).collect { |term| ":#{term.to_s}:" }
+    
+    # oai is a special case, can't have : precede it
+    # replace it with proper version if found
+    terms << "oai:" if terms.delete(":oai:")
 
     oai_identifier_include(terms, options)
   end

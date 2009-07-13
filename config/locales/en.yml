@@ -438,6 +438,8 @@ en:
       not_available: "{{t.base.not_available}}"
     link_to_related_item_function:
       link_text: "{{function}} an Existing {{t.base.related.capitalize}} {{t.base.item.capitalize}}"
+    link_for_rss:
+      link_text: "from all types combined"
     link_to_related_items_of:
       link_text: "{{t.base.view.capitalize}} {{t.base.item.pluralize}} {{t.base.related}} to {{item_title}}"
     pending_review:
@@ -1419,6 +1421,7 @@ en:
       basket_label: "Tools for {{t.base.basket}}: {{basket}}"
       basket_profiles: "{{t.base.basket}} profiles"
       choices: choices for extended fields
+      combined_rss: RSS feed for all {{t.base.item.pluralize}} on site
       configure: reconfigure site
       contact: "{{t.base.contact.capitalize}}"
       content_types: content types

@@ -128,12 +128,12 @@ module ZoomSearch
     # By default, we only parse the first five records. If you need more, overwrite :end_record
     # in the options param.
     def parse_results(results, zoom_class, options={})
-      options = { :result_set => results, :start_record => 0, :end_record => 5 }.merge(options)
+      options = { :start_record => 0, :end_record => 5 }.merge(options)
 
       @results = Array.new
       if results.size > 0
         still_image_results = Array.new
-        raw_results = zoom_class.constantize.records_from_zoom_result_set(options)
+        raw_results = results.records_from(options)
         raw_results.each do |raw_record|
           result_from_xml_hash = parse_from_xml_in(raw_record)
           @results << result_from_xml_hash
