@@ -122,7 +122,19 @@ class TopicsController < ApplicationController
     # take effect. We also have to reload and then switch to the privacy of the item
     # they are editing (to ensure private item editing shows the correct data)
     if params[:topic][:topic_type_id] && @topic.topic_type_id != params[:topic][:topic_type_id].to_i
-      @topic.update_attribute(:topic_type_id, params[:topic][:topic_type_id].to_i)
+      # update the topic with the new topic type and version comment
+      old_topic_type = TopicType.find(@topic.topic_type_id)
+      new_topic_type = TopicType.find(params[:topic][:topic_type_id].to_i)
+      @topic.update_attributes(
+        :topic_type_id => params[:topic][:topic_type_id].to_i,
+        :version_comment => "Changed Topic Type from #{old_topic_type.name} to #{new_topic_type.name}"
+      )
+
+      # add a contributor to the previous topic update
+      version = @topic.versions.find(:first, :order => 'version DESC').version
+      @topic.add_as_contributor(current_user, version)
+
+      # reload, get the correct privacy and return the user to the topic form
       @topic.reload
       public_or_private_version_of(@topic)
       flash[:notice] = 'You\'ve changed the topic type for this topic. Please review the available fields.'
