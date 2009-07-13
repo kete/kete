@@ -36,7 +36,7 @@ module I18n
         def lookup(locale, key, scope = [])
           return unless key
           entry = lookup_orig(locale, key, scope)
-          if (entry.nil? || entry.empty?) && I18n.default_locale
+          if (entry.nil? || (entry.is_a?(String) && entry.empty?)) && I18n.default_locale
             entry = lookup_orig(I18n.default_locale, key, scope)
           end
           entry
