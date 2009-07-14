@@ -146,7 +146,7 @@ class MemberListTest < ActionController::IntegrationTest
       should "be able to remove members successfully" do
         visit "/#{@@non_site_basket.urlified_name}/members/list"
         click_link 'Remove from basket'
-        body_should_contain 'Successfully removed user from Non Site Basket.', :dump_response => true
+        body_should_contain 'Successfully removed user from Non Site Basket.'
       end
 
       should "not be able to remove last admin" do
