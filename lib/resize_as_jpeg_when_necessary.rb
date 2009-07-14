@@ -37,6 +37,7 @@ module ResizeAsJpegWhenNecessary
         code && code[1] == ?r
       end
 
+
       # attachment fu limits image content types to too narrow a view
       # we make it match what the user has set as configuration
       def image?(content_type)
@@ -52,7 +53,8 @@ module ResizeAsJpegWhenNecessary
     end
 
     def resize_image(img, size)
-      img.format = 'JPEG' if self.class.should_be_converted?(img.format)
+      self.temppath = writetotempfile(img.to_blob { self.format = 'JPEG' }) if self.class.should_be_converted?(img.format)
+      img.format = 'JPEG' 
       super
     end
 
