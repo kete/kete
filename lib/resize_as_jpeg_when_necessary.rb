@@ -1,4 +1,5 @@
-# from http://blog.airbladesoftware.com/2008/1/15/converting-image-format-when-thumbnailing
+# from http://blog.airbladesoftware.com/2007/6/27/compressing-images-with-attachment_fu-and-rmagick
+# and http://blog.airbladesoftware.com/2008/1/15/converting-image-format-when-thumbnailing
 # modified to use more standard tools, i believe there was some unnecessary code in here
 # basically, i'm running on the assumption that if the original is not jpeg, gif, or png
 # we should convert it to jpeg
@@ -53,8 +54,9 @@ module ResizeAsJpegWhenNecessary
     end
 
     def resize_image(img, size)
-      self.temppath = writetotempfile(img.to_blob { self.format = 'JPEG' }) if self.class.should_be_converted?(img.format)
-      img.format = 'JPEG' 
+      img.strip! # remove metadata from the resized image
+      img.format = 'JPEG' # set format to JPEG
+      self.temp_path = write_to_temp_file(img.to_blob { self.format = 'JPEG' }) if self.class.should_be_converted?(img.format)
       super
     end
 
