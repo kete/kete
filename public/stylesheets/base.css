@@ -758,6 +758,7 @@ span.next-active {
 }
 #linkToRSS {
   padding: 5px 0px;
+  margin-top: 15px;
 }
 #linkToRSS ul {
   list-style-image: url(../images/icon-feed.gif);
