@@ -209,26 +209,26 @@
           </ul>
 
           <ul id="main-nav" class="nav-list">
-            <li class="first">
+            <li id="header_home" class="first">
               <%= link_to t('layouts.application.home'),
                           basket_index_url({ :urlified_name => @site_basket.urlified_name }),
                           :tabindex => '2', :accesskey => '1' %>
             </li>
             <%= header_browse_links %>
-            <li>
+            <li id="header_about">
               <%= link_to_unless_current h(@about_basket.name),
                                          basket_index_url(:urlified_name => @about_basket.urlified_name),
                                          :tabindex => '2' %>
             </li>
-            <li>
+            <li id="header_help">
               <%= link_to_unless_current h(@help_basket.name),
                                          basket_index_url(:urlified_name => @help_basket.urlified_name),
                                          :tabindex => '2' %>
             </li>
-            <%= content_tag('li', mail_to(CONTACT_EMAIL, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2')) %>
+            <%= content_tag('li', mail_to(CONTACT_EMAIL, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact') %>
             <%= header_add_links %>
             <% add_basket_link = header_add_basket_link -%>
-            <%= content_tag('li', add_basket_link) unless add_basket_link.blank? %>
+            <%= content_tag('li', add_basket_link, :id => 'header_add_basket') unless add_basket_link.blank? %>
           </ul>
         </div><!-- /top-menu -->
 

@@ -131,7 +131,7 @@ module ApplicationHelper
   end
 
   def header_browse_links
-    html = '<li>'
+    html = '<li id="header_browse">'
 
     pre_text = String.new
     site_link_text = String.new
@@ -169,7 +169,7 @@ module ApplicationHelper
     options = { :link_text => t('application_helper.header_add_links.add_item') }.merge(options)
     link_text = options.delete(:link_text)
     li_class = options.delete(:class) || ''
-    html = "<li class='#{li_class}'>"
+    html = "<li id='header_add_item' class='#{li_class}'>"
     html += link_to_unless_current(link_text,
                                    { :controller => 'baskets',
                                      :action => 'choose_type',
