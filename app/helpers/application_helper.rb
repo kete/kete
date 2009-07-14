@@ -927,13 +927,11 @@ module ApplicationHelper
     end
 
     html_string += link_to("join this discussion",
-                           {:action => :new,
+                           { :action => 'new',
                              :controller => 'comments',
                              :commentable_id => item,
                              :commentable_type => item.class.name,
-                             :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0
-                           },
-                           :method => :post)
+                             :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 })
 
     html_string += "</p>\n"
 
@@ -980,14 +978,11 @@ module ApplicationHelper
       end
 
       html_string += "<p>" + link_to("join this discussion",
-                                     {:action => :new,
+                                     { :action => 'new',
                                        :controller => 'comments',
                                        :commentable_id => item,
                                        :commentable_type => item.class.name,
-                                       :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0,
-                                       :authenticity_token => form_authenticity_token
-                                     },
-                                     :method => :post) + "</p>"
+                                       :commentable_private => (item.respond_to?(:private) && item.private?) ? 1 : 0 }) + "</p>"
     end
 
     return html_string
