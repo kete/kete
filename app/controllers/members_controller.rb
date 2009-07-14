@@ -238,15 +238,20 @@ class MembersController < ApplicationController
   #   the current basket isn't the site basket
   #   the basket has one other admin besides this user
   def remove
+    @user ||= User.find(params[:id])
+
     # make sure we arn't trying to remove from site basket (destroy is the correct action for that)
     if @current_basket == @site_basket
       flash[:error] = t('members_controller.remove.cant_remove_self')
-    elsif !@current_basket.more_than_one_basket_admin?
+
+    # make sure that if the user is an admin, they aren't the last one
+    elsif @user.has_role?('admin', @current_basket) && !@current_basket.more_than_one_basket_admin?
       flash[:error] = t('members_controller.remove.need_site_admin')
+
+    # the user can be successfully removed, so lets do that
     else
-      @user ||= User.find(params[:id]) # will already be set by before filter 'permitted_to_remove_basket_members'
       @current_basket.delete_roles_for(@user)
-      flash[:notice] = t('members_controller.remove.need_site_admin', :basket_name => @current_basket.name)
+      flash[:notice] = t('members_controller.remove.removed', :basket_name => @current_basket.name)
     end
 
     if current_user_can_see_memberlist_for?(@current_basket)
