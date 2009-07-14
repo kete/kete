@@ -127,4 +127,58 @@ class MemberListTest < ActionController::IntegrationTest
 
   end
 
+  context "A non-site basket memberlist" do
+
+    setup do
+      add_admin_as_super_user
+      login_as(:admin)
+      @@non_site_basket = create_new_basket({ :name => 'Non Site Basket' })
+    end
+
+    context "when there is only one admin in the basket" do
+
+      setup do
+        add_lily_as_admin_to @@non_site_basket
+        add_gary_as_member_to @@non_site_basket
+      end
+
+      should "be able to remove members successfully" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list"
+        click_link 'Remove from basket'
+        body_should_contain 'Successfully removed user from Non Site Basket.'
+      end
+
+      should "not be able to remove last admin" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
+        body_should_not_contain 'Remove from basket'
+      end
+
+    end
+
+    context "when there is two admins in the basket" do
+
+      setup do
+        add_lily_as_admin_to @@non_site_basket
+        add_jim_as_admin_to @@non_site_basket
+        add_gary_as_member_to @@non_site_basket
+      end
+
+      should "be able to remove members successfully" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list"
+        click_link 'Remove from basket'
+        body_should_contain 'Successfully removed user from Non Site Basket.'
+      end
+
+      should "be able to remove one admin" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
+        click_link 'Remove from basket'
+        body_should_contain 'Successfully removed user from Non Site Basket.'
+        visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
+        body_should_not_contain 'Remove from basket'
+      end
+
+    end
+
+  end
+
 end
