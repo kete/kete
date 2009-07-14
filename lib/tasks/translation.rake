@@ -10,27 +10,31 @@ namespace :kete do
     desc 'Create a new translation based on the English translation (pass in LOCALE_CODE - a two letter country code, and LOCALE_NAME - the translated name of the language you\'re adding.)'
     task :create do
       raise "LOCALE_CODE (two letter country code) is not set. Please set one before running the rake task." unless ENV['LOCALE_CODE']
-      raise "LOCALE_NAME (translated translation name) is not set. Please set one before running the rake task." unless ENV['LOCALE_NAME']
+      raise "LOCALE_NAME (translated translation name) is not set. Please set one before running the rake task." unless ENV['SKIP_ACCESS'] || ENV['LOCALE_NAME']
 
       en = File.join(RAILS_ROOT, "config/locales/en.yml")
       new_locale = File.join(RAILS_ROOT, "config/locales/#{ENV['LOCALE_CODE']}.yml")
 
-      raise "config/locales/#{ENV['LOCALE_CODE']}.yml already exists. Exiting..." if File.exists?(new_locale)
-
-      File.open(new_locale, 'w') do |new|
-        File.open(en, 'r') do |old|
-          lines = old.readlines
-          lines[1] = "#{ENV['LOCALE_CODE']}:\n"
-          new.print lines
+      if File.exists?(new_locale)
+        puts "config/locales/#{ENV['LOCALE_CODE']}.yml already exists. Skipping locale creation..."
+      else
+        File.open(new_locale, 'w') do |new|
+          File.open(en, 'r') do |old|
+            lines = old.readlines
+            lines[1] = "#{ENV['LOCALE_CODE']}:\n"
+            new.print lines
+          end
         end
-      end
 
-      locales = File.join(RAILS_ROOT, "config/locales.yml")
-      File.open(locales, 'a') do |f|
-        f.print "\n#{ENV['LOCALE_CODE']}: #{ENV['LOCALE_NAME']}"
-      end
+        unless ENV['SKIP_ACCESS']
+          locales = File.join(RAILS_ROOT, "config/locales.yml")
+          File.open(locales, 'a') do |f|
+            f.print "\n#{ENV['LOCALE_CODE']}: #{ENV['LOCALE_NAME']}"
+          end
+        end
 
-      puts "#{ENV['LOCALE_NAME']} (#{ENV['LOCALE_CODE']}) has been added."
+        puts "#{ENV['LOCALE_NAME']} (#{ENV['LOCALE_CODE']}) has been added."
+      end
     end
 
     namespace :excel_2003 do
@@ -64,12 +68,14 @@ namespace :kete do
         write '  </Worksheet>'
         write '</Workbook>'
 
+        remove_locale_file_if_automatically_created
+
         puts "Export Completed! XML file saved to #{File.join(RAILS_ROOT, "tmp/#{ENV['LOCALE']}.xml")}"
       end
 
       desc 'Import translation from Microsoft Excel 2003 compatible format (pass in FILE_PATH to XML file)'
       task :import do
-        ensure_locale_present
+        ensure_locale_present(false)
         ensure_file_path_present
         raise "Not yet implemented"
       end
@@ -112,12 +118,14 @@ namespace :kete do
         translation_hash = YAML.load(IO.read(@translation_file))
         write strip_invalid_keys_and_values_from(translation_hash).to_xml
 
+        remove_locale_file_if_automatically_created
+
         puts "Export Completed! XML file saved to #{File.join(RAILS_ROOT, "tmp/#{ENV['LOCALE']}.xml")}"
       end
 
       desc 'Import translation from nested XML format (pass in FILE_PATH to XML file)'
       task :import do
-        ensure_locale_present
+        ensure_locale_present(false)
         ensure_file_path_present
 
         translation_xml = IO.read(ENV['FILE_PATH'])
@@ -157,10 +165,24 @@ namespace :kete do
 
     private
 
-    def ensure_locale_present
+    def ensure_locale_present(file_be_present=true)
       raise 'ERROR: No LOCALE value was set. Please set one when running the task again.' unless ENV['LOCALE']
-      @translation_file = File.join(RAILS_ROOT, "config/locales/#{ENV['LOCALE']}.yml")
-      raise "ERROR: config/locales/#{ENV['LOCALE']}.yml does not exist." unless File.exists?(@translation_file)
+      if file_be_present
+        @translation_file = File.join(RAILS_ROOT, "config/locales/#{ENV['LOCALE']}.yml")
+        unless File.exists?(@translation_file)
+          ENV['LOCALE_CODE'] = ENV['LOCALE']
+          ENV['SKIP_ACCESS'] = 'true'
+          Rake::Task["kete:translation:create"].execute(ENV)
+          @created_file_automatically = true
+        end
+      end
+    end
+
+    def remove_locale_file_if_automatically_created
+      if @created_file_automatically
+        locale_file = File.join(RAILS_ROOT, "config/locales/#{ENV['LOCALE']}.yml")
+        File.delete(locale_file) if File.exists?(locale_file)
+      end
     end
 
     def ensure_file_path_present
