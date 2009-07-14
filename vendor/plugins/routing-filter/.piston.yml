@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: d646cbb08b1fa23eaa4c2dd77f3b6195a2c37e5e
+  branch: master
+repository_url: git://github.com/svenfuchs/routing-filter.git
+lock: false
+repository_class: Piston::Git::Repository

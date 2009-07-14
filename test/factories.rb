@@ -41,6 +41,7 @@ Factory.define :user do |u|
   u.activated_at Time.now.to_s(:db)
   u.agree_to_terms '1'
   u.security_code "a"
+  u.locale "en"
 end
 # this shouldn't be called directly, use the method missing functionality to add users on the fly
 # add_bob_as_tech_admin(:baskets => @@site_basket)

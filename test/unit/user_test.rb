@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class UserTest < Test::Unit::TestCase
+class UserTest < ActiveSupport::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead.
   # Then, you can remove it from this and the functional test.
   include AuthenticatedTestHelper
@@ -18,10 +18,11 @@ class UserTest < Test::Unit::TestCase
       :password_confirmation => 'quire',
       :agree_to_terms => '1',
       :security_code => 'test',
-      :security_code_confirmation => 'test' }
+      :security_code_confirmation => 'test',
+      :locale => 'en' }
 
     # name of fields that must be present, e.g. %(name description)
-    @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation)
+    @req_attr_names = %w(login email agree_to_terms security_code password password_confirmation locale)
     # name of fields that cannot be a duplicate, e.g. %(name description)
     @duplicate_attr_names = %w(login)
 
@@ -132,7 +133,7 @@ class UserTest < Test::Unit::TestCase
     assert_not_nil user.portraits
     assert_equal 1, user.portraits.size
     assert_kind_of StillImage, user.portraits.first
-    assert_equal StillImage.first, user.portraits.first
+    assert_equal StillImage.last, user.portraits.first
   end
 
   def test_user_should_have_baskets

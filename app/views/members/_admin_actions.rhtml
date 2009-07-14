@@ -2,10 +2,10 @@
   <td class="member_administrate">
     <ul>
       <% if role_key == 'membership_requested' %>
-        <li><%= link_to("Accept Membership", :action => 'change_request_status',
+        <li><%= link_to(t('members.admin_actions.accept_membership'), :action => 'change_request_status',
                                              :id => user,
                                              :status => 'approved' ) -%></li>
-        <li><%= link_to("Reject Membership", :action => 'change_request_status',
+        <li><%= link_to(t('members.admin_actions.reject_membership'), :action => 'change_request_status',
                                              :id => user,
                                              :status => 'rejected' ) -%></li>
       <% end -%>

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TopicTest < Test::Unit::TestCase
+class TopicTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup
@@ -49,7 +49,7 @@ class TopicTest < Test::Unit::TestCase
     model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
     model.save!
 
-    assert_valid model
+    assert model.valid?
 
     assert_equal '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>', model.extended_content
   end
@@ -58,7 +58,7 @@ class TopicTest < Test::Unit::TestCase
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
     model.update_attribute(:extended_content, '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth>')
 
-    assert_valid model
+    assert model.valid?
 
     assert_equal({ "1" => { "first_names" => "Joe" }, "2" => { "last_name" => "Bloggs" }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }, model.xml_attributes)
   end
@@ -80,7 +80,7 @@ class TopicTest < Test::Unit::TestCase
         "address" => { "1" => "The Parade", "2" => "Island Bay" }
       }
 
-      assert_valid t
+      assert t.valid?
       assert_equal({
         "first_names"=> { "xml_element_name" => "dc:description", "value" => "Joe" },
         "address_multiple"=> {
@@ -123,7 +123,7 @@ class TopicTest < Test::Unit::TestCase
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
     model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "city" => "Wellington" }
 
-    assert_valid model
+    assert model.valid?
 
     assert_nothing_raised do
       model.save!
@@ -147,7 +147,7 @@ class TopicTest < Test::Unit::TestCase
     model = Topic.new(@new_model.merge(:topic_type => topic_type))
     model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "" } }
 
-    assert_valid model
+    assert model.valid?
 
     model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "", "2" => "" } }
 
@@ -161,7 +161,7 @@ class TopicTest < Test::Unit::TestCase
   def test_helpers_work
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
       t.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
-      assert_valid t
+      assert t.valid?
       assert_kind_of Topic, t
     end
   end
@@ -170,14 +170,14 @@ class TopicTest < Test::Unit::TestCase
     model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
     model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
 
-    assert_valid model
+    assert model.valid?
     assert_equal 0, model.errors.size
   end
 
   def test_extended_field_textarea_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
       t.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => "New\n Line" }
-      assert_valid t
+      assert t.valid?
     end
   end
 
@@ -191,7 +191,7 @@ class TopicTest < Test::Unit::TestCase
       compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
 
       t.extended_content_values = compulsory_content.merge("birthdate" => "1960-01-01")
-      assert_valid t
+      assert t.valid?
 
       t.extended_content_values = compulsory_content.merge("birthdate" => "In 1960")
       assert !t.valid?
@@ -211,7 +211,7 @@ class TopicTest < Test::Unit::TestCase
 
       ["Yes", "No", "yes", "no", ""].each do |value|
         t.extended_content_values = compulsory_content.merge("deceased" => value)
-        assert_valid t
+        assert t.valid?
         assert_equal 0, t.errors.size
       end
 
@@ -245,7 +245,7 @@ class TopicTest < Test::Unit::TestCase
       # Run the tests
       ["", "Married", "Defacto Relationship", "Dating", "Single"].each do |value|
         t.extended_content_values = compulsory_content.merge("marital_status" => value)
-        assert_valid t
+        assert t.valid?
         assert_equal 0, t.errors.size
       end
 
@@ -269,13 +269,13 @@ class TopicTest < Test::Unit::TestCase
 
     # Update it and check that it's still valid
     topic.update_attributes! :description => "Changed description"
-    assert_valid topic
+    assert topic.valid?
 
     # Add a new required field to the topic type
     add_field_to(topic_type, { :label => "Is a test" }, :required => true)
 
     # The current version is still valid as it never had a value for the extended content.
-    assert_valid topic
+    assert topic.valid?
 
     # But updating the topic requires a value to be passed now, because it is a new requirement.
     assert !topic.update_attributes(:description => "Updated description again", :extended_content_values => { "is_a_test" => "" })
@@ -286,7 +286,7 @@ class TopicTest < Test::Unit::TestCase
       :extended_content_values => { "is_a_test" => "Yes" }
     )
 
-    assert_valid topic
+    assert topic.valid?
   end
 
 
@@ -297,7 +297,7 @@ class TopicTest < Test::Unit::TestCase
     topic = Topic.new(@new_model.merge(:topic_type => topic_type))
     topic.extended_content_values = { "is_a_test" => "Yes" }
 
-    assert_valid topic
+    assert topic.valid?
 
     topic = Topic.new(@new_model.merge(:topic_type => topic_type))
     topic.extended_content_values = { "is_a_test" => "" }
@@ -364,7 +364,7 @@ class TopicTest < Test::Unit::TestCase
         "address" => { "1" => "The Parade", "2" => "Island Bay" }
       }
 
-      assert_valid t
+      assert t.valid?
 
       expected_hash = {
         "first_names" => [["Joe"]],
@@ -439,7 +439,7 @@ class TopicTest < Test::Unit::TestCase
         "address" => [["The Parade"], ["Island Bay"]]
       }
 
-      assert_valid t
+      assert t.valid?
 
       expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><address_multiple><1><address xml_element_name="dc:description">The Parade</address></1><2><address xml_element_name="dc:description">Island Bay</address></2></address_multiple>'
       assert_equal expected_value, t.extended_content

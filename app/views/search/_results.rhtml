@@ -16,61 +16,126 @@
 <%= render(:partial => "topics/content_wrapper_start",
            :locals => { :style_classes => "full-width" }) -%>
 
-      <h3><%= @title %></h3>
-      <div class="prev-next before-results"><%= will_paginate @results %></div>
-      <div id="result-show">
-         <% if @results.size > 0 %>
-            Showing <%= @start -%>-<%= @end_record -%>
-            results of <%= @result_sets[@current_class].size %>
+<h3><%= @title %></h3>
+
+<div class="prev-next before-results"><%= will_paginate @results %></div>
+
+<% search_sources_amount = SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']]) %>
+<% if search_sources_amount > 0 %>
+  <% search_source_result = display_search_sources(params[:search_terms],
+                             { :target => [:all, :search],
+                               :do_not_cache => true,
+                               :limit => (@number_per_page.to_f / search_sources_amount.to_f).ceil,
+                               :title => t('search.results.search_source_title') }) %>
+  <% unless search_source_result.blank? %>
+    <div id="search_page_search_sources"><%= search_source_result %></div>
+  <% end %>
+<% end %>
+
+<% if @results.size > 0 %>
+
+  <div id="result-show">
+
+    <%=t 'search.results.showing_x-y_of_z',
+         :start => @start,
+         :finish => @end_record,
+         :total => @result_sets[@current_class].size %>
+
+    <% if @number_of_locations_count && @number_of_locations_count > 0 %>
+      <div id="maplinks">
+        <%=t 'search.results.x-y_have_z_locations',
+             :start => @start,
+             :finish => @end_record,
+             :n_locations => @number_of_locations_count %>
+        <% if params[:view_as] != 'map'-%>
+          [ <%= link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )%> ]
+        <% elsif params[:view_as] == 'map' -%>
+          [ <%= link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )%> ]
+        <% end -%>
       </div>
-         <%# we will have result sets for each type of record we are returning %>
-         <%# each in turn will be in it's own list in a tab (hopefully ajaxified tabs) %>
-         <%# for now lets just get this up with one set of @results %>
-         <% @results.each_with_index do |result,index|  %>
-            <% locals = { :title => result[:title],
-                          :source_url => result[:url],
-                          :short_summary => result[:short_summary],
-                          :related => result[:related],
-                          :result => result[:id],
-                          :first_result => (index == 0) } -%>
-            <% if result[:class] == 'StillImage' %>
-             <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],
-                                                                       :thumbnail => result[:thumbnail] })) %>
-            <% else %>
-             <%= render(:partial => "generic", :locals => locals) %>
-             <% end %>
-            <% end %>
-         <% else %>
-            No results found.
-      </div>
+    <% end -%>
+
+  </div>
+
+  <% @results.each_with_index do |result,index|  %>
+
+    <% if params[:view_as] == 'map' && !@map.blank? -%>
+
+      <% marker_options = { :title => result[:title] }
+      marker_options[:info_window] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + result[:short_summary]
+      if result[:class] == 'StillImage'
+        marker_options[:info_window] += '<br />' + image_tag(result[:thumbnail][:src], result[:thumbnail])
+      end
+      related_items = render('related', :related => result[:related],
+                                        :source_url => result[:url],
+                                        :title => result[:title]) if result[:related]
+      logger.debug("what is associated_locations:" + result[:associated_locations].inspect)
+      result[:associated_locations].each do |location|
+        marker_options[:info_window] += '<br />'
+        marker_options[:info_window] += '<br />' + t('search.results.address') + ' ' + location[3] unless location[3].blank?
+        marker_options[:info_window] += '<br />' + t('search.results.coordinates') + ' ' + location[2].join(", ")
+        marker_options[:info_window] += '<br /><br />' + related_items if related_items
+        marker = GMarker.new(location[2], marker_options)
+        @map.overlay_init(marker)
+      end -%>
+
+    <% else -%>
+
+      <% locals = { :title => result[:title],
+                    :source_url => result[:url],
+                    :short_summary => result[:short_summary],
+                    :related => result[:related],
+                    :result => result[:id],
+                    :first_result => (index == 0) } -%>
+
+      <% if result[:class] == 'StillImage' %>
+        <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],
+                                                                  :thumbnail => result[:thumbnail] })) %>
+      <% else %>
+        <%= render(:partial => "generic", :locals => locals) %>
+      <% end %>
+
     <% end %>
 
-    <div class="prev-next after-results"><%= will_paginate @results  %></div>
+  <% end %>
+
+<% else %>
+
+  <div id="result-show">
+    <%=t 'search.results.no_results_found' %>
+  </div>
+
+<% end %>
 
 
-                        <div id="bottomlinks">
-                                <div id="addnew">
-                                <% if current_user_can_see_add_links? && @current_class != 'Comment' %>
-                                        <%= link_to_add_item(:phrase => "Add a new ", :item_class => @current_class) -%>
-                                <% else -%>
-                                        &nbsp;
-                                <% end -%><br />&nbsp;
-                                </div>
+<%= @map.div(:width => 700, :height => 400) if params[:view_as] == 'map' && !@map.blank? -%>
 
-                                <div id="showlinks">
-                                        Show
-                                        <% # TODO: a helper? %>
-                                        <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
-                                                <% if @number_per_page != choice %>
-                                                        <%= link_to(choice, :overwrite_params => { :number_of_results_per_page => choice, :page => 1 }, :tabindex => '1') %>
-                                                <% else %>
-                                                        <a href="#" id="thisnumber"><%= choice %></a>
-                                                <% end %>
-                                        <% end %>
-                                        results on this page
-                                </div>
-                        </div>
+<div style="clear:both;"></div>
 
-                <div class="cleaner">&nbsp;</div>
+<div class="prev-next after-results"><%= will_paginate @results  %></div>
+
+<div id="bottomlinks">
+  <div id="addnew">
+    <% if current_user_can_see_add_links? && @current_class != 'Comment' %>
+      <%= link_to_add_item(:phrase => t('search.results.add_a_new'), :item_class => @current_class) -%>
+    <% end -%>
+  </div>
+  &nbsp;
+  <div id="showlinks">
+    <%=t 'search.results.show' %>
+    <% # TODO: a helper? %>
+    <% RECORDS_PER_PAGE_CHOICES.each do |choice| %>
+      <% if @number_per_page != choice %>
+        <%= link_to(choice, :overwrite_params => { :number_of_results_per_page => choice, :page => 1 }, :tabindex => '1') %>
+      <% else %>
+        <a href="#" id="thisnumber"><%= choice %></a>
+      <% end %>
+    <% end %>
+    <%=t 'search.results.results_on_this_page' %>
+  </div>
+
+</div>
+
+<div class="cleaner">&nbsp;</div>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

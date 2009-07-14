@@ -1,23 +1,33 @@
 <% if !image_file.nil? && !still_image.already_at_blank_version? -%>
-  <p><%= image_tag image_file.public_filename, :size => image_file.image_size, :alt => "#{still_image.title}. " %></p>
+  <p class='still_image_container'><%= image_tag image_file.public_filename, :size => image_file.image_size, :alt => "#{still_image.title}. " %></p>
   <% unless defined?(without_controls) && without_controls == true %>
   <div class="pipe-list">
     <ul>
       <% sizes_count = 1 -%>
-      <% ImageFile.attachment_options[:thumbnails].keys.each do |key| -%>
+      <% ImageFile.attachment_options[:thumbnails].stringify_keys.sort.reverse.each do |key,size| -%>
       <% # not sure why, but link_to_unless_current wasn't working
-         class_statement = String.new
-         class_statement = " class=\"first\"" if sizes_count ==1 -%>
+         classes = Array.new
+         classes << "first" if sizes_count ==1
+         classes << "current" if key.to_s == @view_size
+         class_statement = " class='#{classes.join(' ')}'" -%>
+      <% label = t("images.image_file.#{key.to_s}") %>
       <% if key.to_s == @view_size -%>
-      <li<%= class_statement -%>><%= key.to_s.humanize -%></li>
+      <li<%= class_statement -%>><a href="#"><%= label -%></a></li>
       <% else -%>
-      <li<%= class_statement -%>><%= link_to(key.to_s.humanize, :action => :show, :view_size => key, :private => params[:private]) -%></li>
+      <li<%= class_statement -%>><%= link_to(label, :action => :show, :view_size => key, :private => params[:private]) -%></li>
       <% end -%>
       <% sizes_count += 1 -%>
       <% end -%>
+      <% if current_user_can_see_private_files_for?(still_image) %>
+      <li class="last">
+        <%= link_to_original_of still_image, t('images.image_file.original') %>
+        <span class='file_size'>(<%= number_to_human_size(still_image.original_file.size) %>)</span>
+      </li>
+      <% end %>
     </ul>
   </div>
+  <div style="clear:both;"></div>
   <% end %>
-<% else -%>
-  <p>Only available as original.</p>
+<% else %>
+  <p><%=t 'images.image_file.only_original_available' %></p>
 <% end -%>

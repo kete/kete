@@ -1,7 +1,7 @@
 :google_map_api:
   :api_key: ABQIAAAAqNSzGzaEZ-oLF5t965J0aRSa1xZB9HXr6knabyFZRyEcatenWhTT6KNxkZ7ovTLOwmDvGXdAtVuX6Q
-  :default_latitude: -41.277806
-  :default_longitude: 174.726563
+  :default_latitude: -41.336899
+  :default_longitude: 174.772512
   :default_zoom_lvl: 5
   # The following are used when a base url is used with the google maps. The coords will be link
   # and the latlng and zoom level passed in with these param names

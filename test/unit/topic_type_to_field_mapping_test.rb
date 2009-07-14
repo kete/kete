@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TopicTypeToFieldMappingTest < Test::Unit::TestCase
+class TopicTypeToFieldMappingTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup

@@ -59,9 +59,15 @@ gems:
     gem_name: libxml-ruby
     lib_name: libxml
     version: 0.7.0
-  feed-normalizer:
   avatar:
   htmlentities:
+  xml-simple:
+    gem_name: xml-simple
+    lib_name: xmlsimple
+  feedzirra:
+    gem_name: kete-feedzirra
+    lib_name: feedzirra
+    source: http://gems.github.com
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems

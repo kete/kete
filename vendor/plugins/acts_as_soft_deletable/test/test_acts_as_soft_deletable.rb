@@ -10,6 +10,14 @@ class TestActsAsSoftDeletable < SoftDeleteTestCase
     assert_soft_delete_models_are_equal artist, deleted
   end
 
+  def test_destroy_should_set_deleted_at_timestamp
+    artist = Artist.find_by_name('Chick Corea')
+    artist.destroy
+
+    deleted = Artist::Deleted.find_by_name('Chick Corea')
+    assert deleted.deleted_at.between?(1.minute.ago, 1.minute.from_now)
+  end
+
   def test_deleted_model_should_be_able_to_undestroy
     assert(deleted = Artist::Deleted.find_by_name('Robert Walter'))
     assert_nil Artist.find_by_name('Robert Walter')
@@ -22,8 +30,7 @@ class TestActsAsSoftDeletable < SoftDeleteTestCase
   end
 
   def test_should_copy_decimals_correctly
-    assert_equal [1, 0], [Decimal.count, Decimal::Deleted.count]
-    decimal = Decimal.find :first
+    decimal = Decimal.find 1
 
     assert_difference("Decimal.count", -1) do
       assert_difference("Decimal::Deleted.count") do
@@ -44,5 +51,12 @@ class TestActsAsSoftDeletable < SoftDeleteTestCase
 
   def test_helper_should_work
     assert_model_soft_deletes Artist.find_by_name('Chick Corea')
+  end
+
+  def test_should_replace_any_existing_deleted_entry
+    assert (d = Decimal.find(38383))
+    assert Decimal::Deleted.find(38383)
+
+    assert_nothing_raised { d.destroy }
   end
 end

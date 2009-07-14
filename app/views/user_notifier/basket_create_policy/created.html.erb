@@ -1,13 +1,11 @@
 <%= @recipient.user_name %>,
 
-<%= @sender.user_name %> has created a new basket titled '<%= @basket.name %>'.
+<%=t 'user_notifier.basket_create_policy.created.user_created_basket', :user_name => @sender.user_name, :basket_name => @basket.name %>
 
-<% if @needs_approval -%>It requires moderation before it will be available to the public.<% end %>
+<% if @needs_approval -%><%=t 'user_notifier.basket_create_policy.created.requires_approval' %><% end %>
 
-You can edit this basket by going to
+<%=t 'user_notifier.basket_create_policy.created.edit_it_by' %>
 
 <%= SITE_URL %><%= @basket.urlified_name %>/baskets/edit/<%= @basket.id %>
 
-Thank you,
-<%= PRETTY_SITE_NAME %>
-<%= SITE_URL %>
+<%= render 'user_notifier/email_footer' %>

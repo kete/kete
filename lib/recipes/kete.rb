@@ -14,6 +14,7 @@ namespace :deploy do
     deploy.kete.prepare.setup_imports
     deploy.kete.prepare.setup_private
     deploy.kete.prepare.setup_themes
+    deploy.kete.prepare.setup_locales
     deploy.symlink
     deploy.kete.symlink.all
     deploy.gems.install
@@ -66,14 +67,20 @@ namespace :deploy do
         run "cp -r #{latest_release}/public/themes #{shared_path}/system/"
       end
 
+      desc "The directory that holds locales (translations) needs to live under share/system/locales"
+      task :setup_locales, :roles => :app do
+        run "cp -r #{latest_release}/config/locales #{shared_path}/system/"
+      end
+
     end
 
     desc "Symlink folders for existing Kete installations"
     namespace :symlink do
 
       public_dirs = %w{ audio documents image_files video themes }
-      non_public_dirs = %w{ zebradb imports private }
-      all_dirs = public_dirs + non_public_dirs
+      root_dirs = %w{ zebradb imports private }
+      config_dirs = %w{ locales }
+      all_dirs = public_dirs + root_dirs + config_dirs
 
       desc "Symlink all files"
       task :all do
@@ -82,31 +89,37 @@ namespace :deploy do
         end
       end
 
-      public_dirs.each do |dir|
-        desc "Symlink the /public/#{dir} directory"
+      root_dirs.each do |dir|
+        desc "Symlink the /#{dir} directory"
         task dir.to_sym, :role => :app do
           symlink_system_directory(dir)
         end
       end
 
-      non_public_dirs.each do |dir|
-        desc "Symlink the /#{dir} directory"
+      config_dirs.each do |dir|
+        desc "Symlink the /config/#{dir} directory"
         task dir.to_sym, :role => :app do
-          symlink_system_directory(dir, false)
+          symlink_system_directory(dir, 'config/')
+        end
+      end
+
+      public_dirs.each do |dir|
+        desc "Symlink the /public/#{dir} directory"
+        task dir.to_sym, :role => :app do
+          symlink_system_directory(dir, 'public/')
         end
       end
 
       # For each directory, setup a system folder, copy the repository files to it,
       # remove the folder from the current directory and in it's place, put a symlink
-      def symlink_system_directory(dir, is_public=true)
-        public_dir = is_public ? 'public/' : ''
+      def symlink_system_directory(dir, prefix='')
         run "mkdir -p #{shared_path}/system/#{dir}"
         # The keteaccess password file is rewritten later.
         # Let's just move it to make sure we can fall back to something if it goes wrong
         run "if [ -f #{shared_path}/system/zebradb/keteaccess ]; then mv #{shared_path}/system/zebradb/keteaccess #{shared_path}/system/zebradb/keteaccess.old; fi" if dir == 'zebradb'
-        run "if [ -d #{current_path}/#{public_dir}#{dir} ]; then cp -rf #{current_path}/#{public_dir}#{dir} #{shared_path}/system/; fi"
-        run "rm -rf #{current_path}/#{public_dir}#{dir}"
-        run "ln -nfs #{shared_path}/system/#{dir} #{current_path}/#{public_dir}#{dir}"
+        run "if [ -d #{current_path}/#{prefix}#{dir} ]; then cp -rf #{current_path}/#{prefix}#{dir} #{shared_path}/system/; fi"
+        run "rm -rf #{current_path}/#{prefix}#{dir}"
+        run "ln -nfs #{shared_path}/system/#{dir} #{current_path}/#{prefix}#{dir}"
       end
 
     end

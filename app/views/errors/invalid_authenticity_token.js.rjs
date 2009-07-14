@@ -1,3 +1,3 @@
 page[:notice].hide
-page.replace_html :error, "<div>Invalid Authenticity Token. Reload the page and try again.</div>"
+page.replace_html :error, "<div>#{t('errors.invalid_authenticity_token_js.body')}</div>"
 page[:error].show

@@ -4,13 +4,13 @@
     <% if item.created_at < item.updated_at -%>
       <%= stylish_link_to_contributions_of(@last_contributor, 'Topic',
                                            :additional_classes => ['last_edited_link'],
-                                           :additional_html => add_to_stylish_display_with("was the last to edit #{h(item.title)}") +
-                                                               add_to_stylish_display_with("at #{item.updated_at.to_s(:euro_date_time)}")) %>
+                                           :additional_html => add_to_stylish_display_with("#{t('topics.flagging_contributor.last_to_edit')} #{h(item.title)}") +
+                                                               add_to_stylish_display_with("#{t('topics.flagging_contributor.at')} #{item.updated_at.to_s(:euro_date_time)}")) %>
     <% end -%>
     <%= stylish_link_to_contributions_of(@creator, 'Topic',
                                          :additional_classes => ['created_link'],
-                                         :additional_html => add_to_stylish_display_with("created #{h(item.title)}") +
-                                                             add_to_stylish_display_with("at #{item.created_at.to_s(:euro_date_time)}")) %>
+                                         :additional_html => add_to_stylish_display_with("#{t('topics.flagging_contributor.created')} #{h(item.title)}") +
+                                                             add_to_stylish_display_with("#{t('topics.flagging_contributor.at')} #{item.created_at.to_s(:euro_date_time)}")) %>
   <% end -%>
   <div class="clear"></div>
   <% cache_with_privacy(item, {:part => 'flagging'}) do -%>

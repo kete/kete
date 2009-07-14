@@ -1,6 +1,3 @@
-# used in rss feeds
-include ActionView::Helpers::SanitizeHelper
-
 class SearchController < ApplicationController
 
   # Walter McGinnis, 2008-02-07
@@ -8,12 +5,6 @@ class SearchController < ApplicationController
   # so don't need csrf protection, which is problematic with search forms
   # in kete
   skip_before_filter :verify_authenticity_token
-
-  layout "application" , :except => [:rss]
-
-  # James - 2008-09-04
-  # Ensure RSS triggers a http_auth_basic response, not redirect
-  before_filter :set_xml_format_before_auth, :only => [:rss]
 
   # James - 2008-09-03
   # Check for access before running private searches
@@ -69,12 +60,13 @@ class SearchController < ApplicationController
   def all
     @search_terms = params[:search_terms]
     if @search_terms.nil?
-      @rss_tag_auto = rss_tag
-      @rss_tag_link = rss_tag(:auto_detect => false)
+      setup_rss
       search
     else
       # TODO: redirect_to search form of the same url
     end
+
+    setup_map if params[:view_as] == 'map'
 
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
@@ -89,12 +81,13 @@ class SearchController < ApplicationController
     @search_terms = params[:search_terms]
     if @search_terms.nil?
       # TODO: have this message be derived from globalize
-      flash[:notice] = "You haven't entered any search terms."
+      flash[:notice] = t('search_controller.for.no_search_terms')
     else
-      @rss_tag_auto = rss_tag
-      @rss_tag_link = rss_tag(:auto_detect => false)
+      setup_rss
       search
     end
+
+    setup_map if params[:view_as] == 'map'
 
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
@@ -232,9 +225,8 @@ class SearchController < ApplicationController
 
     if from_result_set.size > 0
       # get the raw xml results from zoom
-      raw_results = Module.class_eval(@current_class).records_from_zoom_result_set( :result_set => from_result_set,
-                                                                                    :start_record => @start_record,
-                                                                                    :end_record => @end_record)
+      raw_results = from_result_set.records_from(:start_record => @start_record,
+                                                 :end_record => @end_record)
       # create a hash of link, title, description for each record
       raw_results.each do |raw_record|
         result_from_xml_hash = parse_from_xml_in(raw_record)
@@ -256,7 +248,12 @@ class SearchController < ApplicationController
     # sort_type for last_modified
 
     # limit query to within our zoom_class
-    @search.pqf_query.kind_is(zoom_class, :operator => 'none')
+    unless zoom_class == 'Combined'
+      @search.pqf_query.kind_is(zoom_class, :operator => 'none')
+    else
+      # we have to put something into this inorder to get results
+      @search.pqf_query.kind_is("oai", :operator => 'none')
+    end
 
     # limit baskets searched within
     if searching_for_related_items?
@@ -273,15 +270,17 @@ class SearchController < ApplicationController
     # this looks in the dc_relation index in the z30.50 server
     # must be exact string
     # get the item
+    # we use should_be_exact rather than _equals_completely method here
+    # because relations have a key index on them and should be exact uses that
     @search.pqf_query.relations_include(url_for_dc_identifier(@source_item, { :force_http => true, :minimal => true }), :should_be_exact => true) if !@source_item.nil?
 
     # this looks in the dc_subject index in the z30.50 server
-    @search.pqf_query.subjects_include("'#{@tag.name}'") if !@tag.nil?
+    @search.pqf_query.subjects_equals_completely("#{@tag.name}") if !@tag.nil?
 
     # this should go last because of "or contributor"
     # this looks in the dc_creator and dc_contributors indexes in the z30.50 server
     # must be exact string
-    @search.pqf_query.creators_or_contributors_include("'#{@contributor.login}'") if !@contributor.nil?
+    @search.pqf_query.creators_or_contributors_equals_completely("'#{@contributor.login}'") if !@contributor.nil?
 
     # James
     # Extended Field choice searching mechanisms
@@ -473,7 +472,7 @@ class SearchController < ApplicationController
         end
         items_count += 1
       end
-      flash[:notice] = "ZOOM indexes rebuilt"
+      flash[:notice] = t('search_controller.rebuild_zoom_for_items.zoom_rebuilt')
       # first item in list should be self
       redirect_to_show_for(first_item)
     end
@@ -494,7 +493,7 @@ class SearchController < ApplicationController
   # with the search record rebuild
   def check_rebuild_status
     if !request.xhr?
-      flash[:notice] = 'You need javascript enabled for this feature.'
+      flash[:notice] = t('search_controller.check_rebuild_status.need_js')
       redirect_to 'setup_rebuild'
     else
       @worker_type = 'zoom_index_rebuild_worker'
@@ -509,61 +508,60 @@ class SearchController < ApplicationController
 
           render :update do |page|
 
-            page.replace_html 'time_started', "<p>Started at #{status[:do_work_time]}</p>"
+            page.replace_html 'time_started', "<p>#{t('search_controller.check_rebuild_status.started_at', :start_time => status[:do_work_time])}</p>"
 
-            page.replace_html 'processing_zoom_class', "<p>Working on #{zoom_class_plural_humanize(current_zoom_class)}</p>"
+            page.replace_html 'processing_zoom_class', "<p>#{t('search_controller.check_rebuild_status.working_on', :zoom_class => zoom_class_plural_humanize(current_zoom_class))}</p>"
 
             if records_processed > 0
-              page.replace_html 'report_records_processed', "<p>#{records_processed} records processed</p>"
+              page.replace_html 'report_records_processed', "<p>#{t('search_controller.check_rebuild_status.amount_processed', :amount => records_processed)}</p>"
             end
 
             if records_failed > 0
-              failed_message = "<p>#{records_failed} records failed</p>"
-              failed_message += "<p>These maybe private or pending moderation records, depending on the case.
-                                  See log/backgroundrb... for details.</p>"
+              failed_message = "<p>#{t('search_controller.check_rebuild_status.records_failed', :amount => records_failed)}</p>"
+              failed_message += "<p>#{t('search_controller.check_rebuild_status.failed_reason')}</p>"
               page.replace_html 'report_records_failed', failed_message
             end
 
             if records_skipped > 0
-              page.replace_html 'report_records_skipped', "<p>#{records_skipped} records skipped</p>"
+              page.replace_html 'report_records_skipped', "<p>#{t('search_controller.check_rebuild_status.records_skipped', :amount => records_skipped)}</p>"
             end
 
             logger.info("after record reports")
             if status[:done_with_do_work] == true or !status[:error].blank?
               logger.info("inside done")
-              done_message = "All records processed "
+              done_message = t('search_controller.check_rebuild_status.all_processed')
 
               if !status[:error].blank?
                 logger.info("error not blank")
-                done_message = "There was a problem with the rebuild: #{status[:error]}<p><b>The rebuild has been stopped</b></p>"
+                done_message = t('search_controller.check_rebuild_status.rebuild_error', :error => status[:error])
               end
-              done_message += " at #{status[:done_with_do_work_time]}."
+              done_message += t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time])
               page.hide("spinner")
               page.replace_html 'done', done_message
-              page.replace_html 'exit', '<p>' + link_to('Browse records', { :action => 'all', :controller_name_for_zoom_class => 'topics' }) + '</p>'
+              page.replace_html 'exit', '<p>' + link_to(t('search_controller.check_rebuild_status.browse'), { :action => 'all', :controller_name_for_zoom_class => 'topics' }) + '</p>'
             end
           end
         else
-          message = "Rebuild failed "
-          message +=  "at #{status[:done_with_do_work_time]}." unless status[:done_with_do_work_time].blank?
+          message = t('search_controller.check_rebuild_status.rebuild_failed')
+          message +=  t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time]) unless status[:done_with_do_work_time].blank?
           flash[:notice] = message
           render :update do |page|
             page.hide("spinner")
-            page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
+            page.replace_html 'done', '<p>' + message + ' ' + link_to(t('search_controller.check_rebuild_status.return_to_rebuild'), :action => 'setup_rebuild') + '</p>'
           end
         end
       rescue
         # we aren't getting to this point, might be nested begin/rescue
         # check background logs for error
-        rebuild_error = !status.blank? ? status[:error] : "rebuild worker not running anymore?"
+        rebuild_error = !status.blank? ? status[:error] : t('search_controller.check_rebuild_status.not_running')
         logger.info(rebuild_error)
-        message = "Rebuild failed. #{rebuild_error}"
+        message = t('search_controller.check_rebuild_status.rebuild_failed', :error => rebuild_error)
         message += " - #{$!}" unless $!.blank?
-        message +=  " at #{status[:done_with_do_work_time]}." unless status.nil? || status[:done_with_do_work_time].blank?
+        message +=  t('search_controller.check_rebuild_status.finished_at', :end_time => status[:done_with_do_work_time]) unless status.nil? || status[:done_with_do_work_time].blank?
         flash[:notice] = message
         render :update do |page|
           page.hide("spinner")
-          page.replace_html 'done', '<p>' + message + ' ' + link_to('Return to Rebuild Set up', :action => 'setup_rebuild') + '</p>'
+          page.replace_html 'done', '<p>' + message + ' ' + link_to(t('search_controller.check_rebuild_status.return_to_rebuild'), :action => 'setup_rebuild') + '</p>'
         end
       end
     end
@@ -615,12 +613,12 @@ class SearchController < ApplicationController
           @successful = true
         end
         if @successful
-          flash[:notice] = "Homepage topic changed successfully"
+          flash[:notice] = t('search_controller.find_index.changed')
           # we assign the current_homepage instance var to the new homepage,
           # because its used in the template we populate the search fields and links
           @current_homepage = @new_homepage_topic
         else
-          flash[:error] = "Problem changing Homepage topic"
+          flash[:error] = t('search_controller.find_index.failed')
         end
     end
     render :action => 'homepage_topic_form', :layout => "popup_dialog"
@@ -647,11 +645,11 @@ class SearchController < ApplicationController
 
     case params[:function]
     when "remove"
-      @verb = "Existing"
+      @verb = t('search_controller.find_related.remove')
       @next_action = "unlink"
       @results = existing
     when "restore"
-      @verb = "Restore"
+      @verb = t('search_controller.find_related.restore')
       @next_action = "link"
 
       # Find resulting items through deleted relationships
@@ -662,7 +660,7 @@ class SearchController < ApplicationController
                                                 .collect { |r| Topic.find(r.topic_id) }
       end
     when "add"
-      @verb = "Add"
+      @verb = t('search_controller.find_related.add')
       @next_action = "link"
       @results = Array.new
 
@@ -858,10 +856,25 @@ class SearchController < ApplicationController
           redirect_to DEFAULT_REDIRECTION_HASH
         end
         format.xml do
-          render :text => "<error>Error 403: Forbidden</error>", :status => 403
+          render :text => "<error>#{t('search_controller.private_search_authorisation.forbidden')}</error>", :status => 403
         end
       end
 
+    end
+  end
+
+  # create and configure our map object using ym4r
+  # requires the div "map" in view
+  def setup_map
+    if @results
+      @map = GMap.new("map")
+      # Use the larger pan/zoom control but disable the map type
+      # selector
+      @map.control_init(:large_map => true, :map_type => true)
+
+      # * is essential for this to work
+      @map.center_zoom_on_points_init(*@coordinates_for_results)
+      logger.debug("what is map:" + @map.inspect)
     end
   end
 
@@ -887,4 +900,14 @@ class SearchController < ApplicationController
   end
 
   helper_method :is_rss?
+
+  private
+
+  # set up the results specific rss links
+  # we now have combined version of each search/browse results RSS
+  # in addition to the zoom class specific rss
+  def setup_rss
+    @rss_tag_auto = [rss_tag, rss_tag(:combined => true)]
+    @rss_tag_link = [rss_tag(:auto_detect => false), rss_tag(:auto_detect => false, :combined => true)]
+  end
 end

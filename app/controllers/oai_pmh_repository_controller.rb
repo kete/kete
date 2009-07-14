@@ -10,13 +10,13 @@ class OaiPmhRepositoryController < ApplicationController
       response =  provider.process_request(options)
       render :text => response, :content_type => 'text/xml'
     else
-      render :text => "OAI PMH Repository not available at this time."
+      render :text => t('oai_pmh_repository_controller.not_available')
     end
   end
 
   private
 
   def set_page_title
-    @title = 'Oai Pmh Repository'
+    @title = t('oai_pmh_repository_controller.title')
   end
 end

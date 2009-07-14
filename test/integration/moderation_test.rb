@@ -158,6 +158,12 @@ class ModerationTest < ActionController::IntegrationTest
           @topic.reload
           assert_equal 3, @topic.version
         end
+
+        should "be able to delete all versions of item from preview of version" do
+          visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
+          click_link "delete this item completely"
+          assert_equal "http://www.example.com/en/moderation_test_basket/all/topics/", current_url
+        end
         
       end
       

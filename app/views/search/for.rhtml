@@ -1,26 +1,23 @@
-<% @title = title_setup_first_part('Results in ', true)
+<% @title = title_setup_first_part(t('search.for.results_in'), true)
    if !@search_terms.blank?
-     @title += " for your search \"#{h(@search_terms.to_s)}\""
+     @title += t('search.for.current_search', :search_terms => h(@search_terms.to_s))
      refinements = last_part_of_title_if_refinement_of
-     if !refinements.blank?
-       @title += " and #{refinements}"
-     end
+     @title += t('search.for.refinements', :refinements => refinements) if !refinements.blank?
    end %>
 
-<% # switch for contributed_by and related_to appending to headline, extract to helper -%>
+<% # switch for contributed_by and related_to appending to headline, extract to helper 
 
-<%
-   basket_link = search_link_to_searched_basket
-   if basket_link.nil?
-   basket_link = " whole site"
-   end
-   %>
+basket_link = search_link_to_searched_basket
+basket_link = t('search.for.whole_site') if basket_link.nil?
+%>
 
 <%= render(:partial => "topics/content_wrapper_start",
            :locals => { :style_classes => "full-width notabs" }) -%>
-  <%= render :partial => 'form', :locals => { :headline => 'Refine your search for "'+ h(@search_terms.to_s) + '" searching in ' + basket_link } %>
+
+  <%= render :partial => 'form', :locals => { :headline => t('search.for.refine_search',
+                                                             :search_terms => h(@search_terms.to_s),
+                                                             :basket_link => basket_link) } %>
+
 <%= render(:partial => "topics/content_wrapper_end" ) %>
 
-<% if !@search_terms.blank? -%>
-<%= render :partial => 'results' %>
-<% end -%>
+<%= render(:partial => 'results') if !@search_terms.blank? %>

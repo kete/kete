@@ -1,14 +1,14 @@
 <fieldset>
 
-  <div class="form-element">show<br />field?</div>
+  <div class="form-element"><%=t 'profiles.edit.show_field' %></div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('fully_moderated') %>
-    <label>Moderation Policy:</label>
+    <label><%=t 'profiles.edit.moderation_policy' %></label>
     <%= rules_fieldset_tag('fully_moderated') %>
       <%= rules_select_tag('fully_moderated', @basket.moderation_select_options(current_value_for('fully_moderated'))) %>
       <div class="form-element" id="moderated_except" <%= 'style="display:none"' unless current_value_for('fully_moderated') == 'true' -%>>
-        <label class="inline">Moderator views items before approved EXCEPT:</label>
+        <label class="inline"><%=t 'profiles.edit.moderate_items_except' %></label>
         <fieldset>
           <% ZOOM_CLASSES.each do |zoom_class| -%>
             <%= rules_check_box_tag('moderated_except', zoom_class, zoom_class_plural_humanize(zoom_class), true) %>
@@ -21,97 +21,117 @@
 
   <div class="form-element">
     <%= rules_allowed_check_box('show_privacy_controls') %>
-    <label>Privacy Controls:</label>
+    <label><%=t 'profiles.edit.privacy_controls' %></label>
     <%= rules_fieldset_tag('show_privacy_controls') %>
-      <%= rules_radio_button_tag('show_privacy_controls', 'true', 'Enabled') %>
-      <%= rules_radio_button_tag('show_privacy_controls', 'false', 'Disabled') %>
-      <%= rules_radio_button_tag('show_privacy_controls', 'nil', 'Inherit') %>
+      <%= rules_radio_button_tag('show_privacy_controls', 'true', t('profiles.edit.enabled')) %>
+      <%= rules_radio_button_tag('show_privacy_controls', 'false', t('profiles.edit.disabled')) %>
+      <%= rules_radio_button_tag('show_privacy_controls', 'nil', t('profiles.edit.inherit')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('private_default') %>
-    <label>Default Item Privacy:</label>
+    <label><%=t 'profiles.edit.default_item_privacy' %></label>
     <%= rules_fieldset_tag('private_default') %>
-      <%= rules_radio_button_tag('private_default', 'false', 'Public') %>
-      <%= rules_radio_button_tag('private_default', 'true', 'Private') %>
-      <%= rules_radio_button_tag('private_default', 'nil', 'Inherit') %>
+      <%= rules_radio_button_tag('private_default', 'false', t('profiles.edit.public')) %>
+      <%= rules_radio_button_tag('private_default', 'true', t('profiles.edit.private')) %>
+      <%= rules_radio_button_tag('private_default', 'nil', t('profiles.edit.inherit')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('file_private_default') %>
-    <label>Default Original File Privacy:</label>
+    <label><%=t 'profiles.edit.default_file_privacy' %></label>
     <%= rules_fieldset_tag('file_private_default') %>
-      <%= rules_radio_button_tag('file_private_default', 'false', 'Public') %>
-      <%= rules_radio_button_tag('file_private_default', 'true', 'Private') %>
-      <%= rules_radio_button_tag('file_private_default', 'nil', 'Inherit') %>
+      <%= rules_radio_button_tag('file_private_default', 'false', t('profiles.edit.public')) %>
+      <%= rules_radio_button_tag('file_private_default', 'true', t('profiles.edit.private')) %>
+      <%= rules_radio_button_tag('file_private_default', 'nil', t('profiles.edit.inherit')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('private_file_visibility') %>
-    <label>Private Original Files Visibility:</label>
+    <label><%=t 'profiles.edit.private_file_visibility' %></label>
     <%= rules_fieldset_tag('private_file_visibility') %>
       <%= rules_select_tag('private_file_visibility', @basket.private_file_visibility_as_options(@site_basket, current_value_for('private_file_visibility')),
-                           'To view private attached files you must be at least a:') %>
+                           t('profiles.edit.private_file_visibility_description')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('allow_non_member_comments') %>
-    <label>Who can add, edit and update comments on items?:</label>
+    <label><%=t 'profiles.edit.allow_non_member_comment' %></label>
     <%= rules_fieldset_tag('allow_non_member_comments') %>
-      <%= rules_radio_button_tag('allow_non_member_comments', 'true', 'Anyone logged in') %>
-      <%= rules_radio_button_tag('allow_non_member_comments', 'false', 'Only basket members') %>
-      <%= rules_radio_button_tag('allow_non_member_comments', 'nil', 'Inherit') %>
+      <%= rules_radio_button_tag('allow_non_member_comments', 'true', t('profiles.edit.anyone_logged_in')) %>
+      <%= rules_radio_button_tag('allow_non_member_comments', 'false', t('profiles.edit.only_basket_members')) %>
+      <%= rules_radio_button_tag('allow_non_member_comments', 'nil', t('profiles.edit.inherit')) %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('browse_view_as') %>
+    <label><%=t 'profiles.edit.default_browse_type' %><label>
+    <%= rules_fieldset_tag('browse_view_as') %>
+      <%= rules_select_tag('browse_view_as', Search.view_as_types_as_options(current_value_for('browse_view_as'), (@basket != @site_basket)),
+                           t('profiles.edit.default_browse_type_description')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('sort_order_default') %>
-    <label>Default Browse Results Order:</label>
+    <label><%=t 'profiles.edit.default_browse_order' %></label>
     <%= rules_fieldset_tag('sort_order_default') %>
-      <%= rules_select_tag('sort_order_default', "<option value='none'>use software default</option>#{Search.all_sort_types(current_value_for('sort_order_default'), 'all')}", 'Sort by:') %>
-      <%= rules_check_box_tag('sort_direction_reversed_default', 'reverse', 'in reverse?') %>
+      <%= rules_select_tag('sort_order_default', "<option value='none'>#{t('profiles.edit.use_software_default')}</option>#{Search.all_sort_types(current_value_for('sort_order_default'), 'all')}", t('profiles.edit.sort_by')) %>
+      <%= rules_check_box_tag('sort_direction_reversed_default', 'reverse', t('profiles.edit.in_reverse')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('disable_site_recent_topics_display') %>
-    <label>Disable Site Recent Topics Display:</label>
+    <label><%=t 'profiles.edit.disable_site_recent_topics' %></label>
     <%= rules_fieldset_tag('disable_site_recent_topics_display') %>
-      <%= rules_check_box_tag('disable_site_recent_topics_display', 'true', 'Do not show new/edited topics in recent results on the Site basket?') %>
+      <%= rules_check_box_tag('disable_site_recent_topics_display', 'true', t('profiles.edit.disable_site_recent_topics_description')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('basket_join_policy') %>
-    <label>Join Policy:</label>
+    <label><%=t 'profiles.edit.join_policy' %></label>
     <%= rules_fieldset_tag('basket_join_policy') %>
-      <%= rules_radio_button_tag('basket_join_policy', 'open', 'Open Membership') %>
-      <%= rules_radio_button_tag('basket_join_policy', 'request', 'Request Membership') %>
-      <%= rules_radio_button_tag('basket_join_policy', 'closed', 'Closed Membership') %>
-      <%= rules_radio_button_tag('basket_join_policy', 'nil', 'Inherit') %>
+      <%= rules_radio_button_tag('basket_join_policy', 'open', t('profiles.edit.open_membership')) %>
+      <%= rules_radio_button_tag('basket_join_policy', 'request', t('profiles.edit.request_membership')) %>
+      <%= rules_radio_button_tag('basket_join_policy', 'closed', t('profiles.edit.closed_membership')) %>
+      <%= rules_radio_button_tag('basket_join_policy', 'nil', t('profiles.edit.inherit')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('memberlist_policy') %>
-    <label>Member List Policy:</label>
+    <label><%=t 'profiles.edit.member_list_policy' %></label>
     <%= rules_fieldset_tag('memberlist_policy') %>
       <%= rules_select_tag('memberlist_policy', @basket.memberlist_policy_or_default(current_value_for('memberlist_policy')),
-                           'To view the member list you must be at least a:') %>
+                           t('profiles.edit.member_list_policy_description')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('allow_basket_admin_contact') %>
-    <label>Administrator contact?</label>
+    <label><%=t 'profiles.edit.administrator_contact' %></label>
     <%= rules_fieldset_tag('allow_basket_admin_contact') %>
-      <%= rules_radio_button_tag('allow_basket_admin_contact', 'true', 'Enabled') %>
-      <%= rules_radio_button_tag('allow_basket_admin_contact', 'false', 'Disabled') %>
-      <%= rules_radio_button_tag('allow_basket_admin_contact', 'nil', 'Inherit') %>
+      <%= rules_radio_button_tag('allow_basket_admin_contact', 'true', t('profiles.edit.enabled')) %>
+      <%= rules_radio_button_tag('allow_basket_admin_contact', 'false', t('profiles.edit.disabled')) %>
+      <%= rules_radio_button_tag('allow_basket_admin_contact', 'nil', t('profiles.edit.inherit')) %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
+    <%= rules_allowed_check_box('private_item_notification') %>
+    <label><%=t 'profiles.edit.private_item_notification' %></label>
+    <%= rules_fieldset_tag('private_item_notification') %>
+      <%= rules_select_tag('private_item_notification', @basket.private_item_notification_or_default(current_value_for('private_item_notification')),
+                           t('profiles.edit.private_item_notification_example')) %>
+      <%= rules_check_box_tag('private_item_notification_show_title', '1', t('profiles.edit.private_item_notification_show_title')) %>
+      <%= rules_check_box_tag('private_item_notification_show_short_summary', '1', t('profiles.edit.private_item_notification_show_short_summary')) %>
     </fieldset>
   </div>
 

@@ -2,6 +2,23 @@
 # refactoring to make search_controller stuff move to search model
 # has only just started, so this is limited
 class Search
+  def self.view_as_types
+    types = Array.new
+    types << ['', I18n.t("search_model.browse_default")]
+    types << ['choice_hierarchy', I18n.t("search_model.choice_hierarchy")] if ExtendedField.find_by_label('categories')
+    types << ['map', I18n.t("search_model.map")] if File.exists?(File.join(RAILS_ROOT, 'config/gmaps_api_key.yml'))
+    types
+  end
+
+  def self.view_as_types_as_options(current, show_inherit=true)
+    options = String.new
+    options += "<option value='inherit'>#{I18n.t('search_model.view_as_types_as_options.inherit')}</option>" if show_inherit
+    Search.view_as_types.each do |type|
+      options += "<option value='#{type[0]}'#{" selected='selected'" if type[0] == current}>#{type[1]}</option>"
+    end
+    options
+  end
+
   def self.boolean_operators
     ['and', 'or', 'not']
   end
@@ -40,7 +57,7 @@ class Search
         sort_type_options += "<option value=\"#{type}\""
       end
       sort_type_options += " selected=\"selected\"" if !sort_type.nil? && type == sort_type
-      sort_type_options += ">" + type.humanize + "</option>"
+      sort_type_options += ">" + I18n.t("search_model.#{type}") + "</option>"
     end
     sort_type_options
   end

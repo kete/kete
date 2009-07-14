@@ -57,7 +57,7 @@ class MembersControllerTest < ActionController::TestCase
     logout
     get :join, :urlified_name => 'about'
     assert_response :redirect
-    assert_redirected_to "/site/account/login"
+    assert_redirected_to "http://www.example.com/en/site/account/login"
   end
 
   def test_user_cannot_apply_if_already_has_role_in_basket
@@ -78,7 +78,7 @@ class MembersControllerTest < ActionController::TestCase
     get :join, :urlified_name => 'help'
     assert_response :redirect
     assert_redirected_to "/help/"
-    assert_equal "You have joined the help basket.", flash[:notice]
+    assert_equal "You have joined the Help basket.", flash[:notice]
 
     # check that we were joined successfully by seeing if we can rejoin
     get :join, :urlified_name => 'help'

@@ -113,6 +113,82 @@ function enableCategoryListUpdater(controller_name) {
 }
 
 /**
+ * Related Items Slideshow functionality
+ */
+
+function setupRelatedCollapsableSections() {
+  hideAllRelatedSections();
+  // For each related items section, hide it, and add an hover event
+  $$('.related-items-section').each(function(section) {
+    $(section).down('a').observe('click', function(event) {
+      if ($(section).down('img.expand_collapse_image').src.match('/images/related_items_expanded.gif')) {
+        $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
+      } else {
+        $(section).down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+      }
+      $(section).down('ul').toggle();
+      if ($(section).id == 'detail-linked-images') {
+        $$('.slideshow_div').each(function(div) {
+          $(div).toggle();
+        });
+      }
+      // stop anything the hover might have triggered
+      event.stop();
+    });
+  });
+  // Show the contents of the first section in the related items inset
+  $$('.related-items-section')[0].down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+  $$('.related-items-section')[0].down('ul').show();
+}
+
+function hideAllRelatedSections() {
+  $$('.related-items-section').each(function(section) {
+    $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
+    $(section).down('ul').hide();
+  });
+}
+
+function setupRelatedImagesSlideshowPlayButton(url) {
+  $('related_items_slideshow_controls').show();
+  $('play_slideshow').observe('click', function(event) {
+    new Ajax.Updater('related_items_slideshow', url, {
+      method: 'get',
+      evalScripts: true,
+      onComplete: function(complete) {
+        $('play_slideshow').up('.buttons').hide();
+        $('related_still_image_container').hide();
+      }
+    });
+    event.stop();
+  });
+}
+
+function setupRelatedImagesSlideshowStopButton() {
+  $('stop_slideshow').observe('click', function(event) {
+    $('play_slideshow').up('.buttons').show();
+    $('related_still_image_container').show();
+    $('related_items_slideshow').innerHTML = '';
+    event.stop();
+  });
+}
+
+function setupRelatedImagesSlideshowPauseButton() {
+  if ($('selected-image-display-paused')) {
+    $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+  }
+  $('play_pause_slideshow').observe('click', function(event) {
+    if ($('selected-image-display-paused')) {
+      $('selected-image-display-paused').remove();
+      $('play_pause_slideshow').down('img').src = '/images/slideshow_pause.gif';
+    } else {
+      $('body-outer-wrapper').insert("<div id='selected-image-display-paused'></div>");
+      $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+    }
+    event.stop();
+  });
+}
+
+/**
  * Extended Field Editing
  */
 
@@ -173,10 +249,26 @@ function makeElementLinkable(id, url) {
 // links in the div point to the item)
 function makeSearchResultsDivClickable() {
   $$('.generic-result-wrapper').each(function(div) {
-    makeElementLinkable(div.id, div.down('a').href);
+    if (!div.className.match('skip_div_click')) {
+      makeElementLinkable(div.id, div.down('a').href);
+    }
   });
   $$('.image-result-wrapper').each(function(div) {
-    makeElementLinkable(div.id, div.down('a').href);
+    if (!div.className.match('skip_div_click')) {
+      makeElementLinkable(div.id, div.down('a').href);
+    }
+  });
+}
+
+/**
+ * Langauge selection dropdown
+ */
+
+function makeFooterLanguageSelectionClickable() {
+  $('footer_language_selection').down('select').observe('change', function(event) {
+    if ($('footer_language_selection').down('select').value != '') {
+      $('footer_language_selection').down('form').submit();
+    }
   });
 }
 
@@ -188,5 +280,7 @@ document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
   if ($('portrait_help_div')) { enabledPortraitHelpToggle(); }
+  if ($$('#related_items.inset').size() > 0) { setupRelatedCollapsableSections(); }
   makeSearchResultsDivClickable();
+  if ($('footer_language_selection')) { makeFooterLanguageSelectionClickable(); }
 });

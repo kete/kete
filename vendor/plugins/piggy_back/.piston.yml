@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 416eac127d747415e6608da16817e82656fa5f44
+  branch: master
+repository_url: git://github.com/skaes/piggy_back.git
+lock: false
+repository_class: Piston::Git::Repository

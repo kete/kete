@@ -251,6 +251,92 @@ body.mceContentBody {
   border-left: none;
 }
 
+/* #################################### Image Slideshow #################################### */
+#selected-image-display {
+  text-align: center;
+  overflow: auto;
+}
+#selected-image-display img {
+  border: none;
+}
+#related_items_slideshow_controls img {
+  border: none;
+}
+#related_items_slideshow_controls {
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* #################################### Related Items #################################### */
+#related_items.inset {
+  float: right;
+  margin-top: -12px;
+}
+#related_items.inset hr {
+  padding: 0;
+  margin: 0;
+}
+#related_items.inset h4 {
+  padding: 0;
+  margin: 1px 0 5px 0;
+}
+#related_items.inset h4 img {
+  border: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  top: 3px;
+}
+#related_items.inset #related_still_image_container {
+  text-align: center;
+}
+#related_items.inset .related-items-section {
+  margin-top: 10px;
+}
+#related_items.inset .two-col {
+    width: 100%;
+    padding-right: 0;
+    float: none;
+}
+#related_items.inset #related-items-tools {
+  margin: 30px auto 0 auto;
+  font-size: .8em;
+  text-align: center;
+}
+#related_items.inset #related-items-tools li {
+  padding: 0 5px;
+  margin: 0;
+  width: 50px;
+  text-align: center;
+  float: none;
+  display: inline;
+}
+#related_items.inset .no-items {
+  display: none;
+}
+#related_items.inset ul {
+  list-style: none;
+}
+#related_items.inset #detail-linked-toprow ul,
+#related_items.inset .two-col ul {
+  padding-left: 5px;
+  margin: 10px 1px 1px 1px;
+}
+#related_items.inset #detail-linked-toprow ul ul,
+#related_items.inset .two-col ul ul {
+  padding-left: 10px;
+}
+#related_items.inset .results-list {
+  margin: 0;
+  padding: 0;
+}
+#related_items.inset .results-list img {
+  margin-right: 3px;
+}
+#related_items.inset .more {
+  display: block;
+}
+
 /* #################################### Secondary Content #################################### */
 .secondary-content-section-wrapper{
     margin: 1em 1em 1em 0em;
@@ -425,7 +511,7 @@ h3 b{
 
 .generic-result-wrapper,
 .image-result-wrapper {
-  clear: both;
+  clear: left;
   padding: 15px;
   border-bottom: 1px dashed #bbb;
   margin-right: 15px;
@@ -671,12 +757,11 @@ span.next-active {
   padding: 5px 15px;
 }
 #linkToRSS {
-    background-image: url(../images/icon-feed.gif);
-    background-repeat: no-repeat;
-    background-position: 15px 50%;
+  padding: 5px 0px;
 }
-#linkToRSS a {
-  margin-left: 19px;
+#linkToRSS ul {
+  list-style-image: url(../images/icon-feed.gif);
+  margin: 0;
 }
 #footer_links {
   padding-bottom: 20px;
@@ -993,11 +1078,18 @@ div.wrap {
 #basket_list_table {
   width: 100%;
 }
+#basket_list_table tr {
+  height: 55px;
+}
 .basket_name, .basket_created {
   width: 20%;
 }
 .basket_options {
   width: 60%;
+}
+.basket_image img {
+  border: none;
+  margin-right: 10px;
 }
 
 /* SEARCH SORTING CONTROLS */
@@ -1083,12 +1175,105 @@ div.extended_field_autocomplete ul li {
  * Google Map CSS
  */
 /* According to Joel, who works at Google, you can hide overflow, which apparently doesn't break the license
-http://groups.google.com/group/Google-Maps-API/browse_thread/thread/3360a82deb471cd3 */
+   http://groups.google.com/group/Google-Maps-API/browse_thread/thread/3360a82deb471cd3 */
 .google_map_container {
   overflow: hidden;
 }
 div.gmnoprint {
   white-space: normal !important;
+}
+
+/*
+ * Slideshow controls
+ */
+.buttons {
+  border: 1px solid #444;
+  background-color: #ccc;
+  padding: 3px 8px 0 8px;
+  width: 80px;
+  margin: 0 auto;
+  -moz-border-radius: .6em;
+  -webkit-border-radius: .6em;
+}
+.one_button {
+  width: 32px;
+}
+#selected-image-display .slideshow_previous {
+  border-right: 1px solid #444;
+}
+#selected-image-display .slideshow_grid {
+  border-right: 1px solid #444;
+}
+#selected-image-display .slideshow_next {
+  border-left: 1px solid #444;
+}
+
+/*
+ * Search Sources
+ */
+#search_sources {
+  margin: 0 15px;
+}
+#search_sources .search_source_more {
+  margin-left: 10px;
+}
+#search_sources .images .image-result-wrapper img {
+  float: left;
+  margin-right: 5px;
+  border: none;
+}
+#search_sources .generic-result-wrapper,
+#search_sources .image-result-wrapper {
+  padding: 5px;
+}
+#search_page_search_sources {
+  width: 30%;
+  float: right;
+  background-color: #fff;
+  clear: right;
+  padding: 5px 5px 25px 5px;
+  border-left: 1px solid #bbb;
+}
+
+/*
+ * Active Scaffold
+ */
+
+a.disabled {
+  display: none;
+}
+.active-scaffold textarea {
+  width: 70%;
+}
+
+/*
+ * Inset for Related Items with White background
+ *
+ * SECONDARY CONTENT WRAPPER FOR MAIN CONTENT (WHITE)
+ */
+.secondary-content-section-wrapper-white {
+  background-color: white;
+  width: auto;
+}
+.secondary-content-section-wrapper-white .secondary-content-section {
+  /*border-top: 1px dashed #444;
+  border-bottom: 1px dashed #444; */
+  background-color: white;
+}
+.secondary-content-section-wrapper-white .secondary-content-section-footer-wrapper {
+  background-color: white;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+.secondary-content-section-wrapper-white .secondary-content-section-footer {
+  background-color: white;
+  width: auto; height: 13px; padding: 0; margin: 0;
+}
+
+/*
+ * maplinks are used on results pages to switch view type
+ */
+#maplinks {
+  margin-bottom: 10px;
 }
 
 /*
@@ -1118,6 +1303,58 @@ div.gmnoprint {
 
 .show_all_fields {
   font-size: .7em;
+}
+
+/*
+ * Horizontal Image Size Choices
+ */
+
+.still_image_container {
+  margin-bottom: 0;
+}
+
+.pipe-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pipe-list ul li {
+  float: left;
+  text-align: center;
+  border-right: 1px solid #888;
+}
+
+.pipe-list ul li.last {
+  border-right: none;
+}
+
+.pipe-list ul li a {
+  display: block;
+  padding: 10px 18px 15px 18px;
+}
+
+.pipe-list ul li.last a {
+  padding-bottom: 0px;
+}
+
+.pipe-list ul li.current a {
+  color: #000;
+  background-color: #eee;
+  font-weight: bold;
+}
+
+.pipe-list .file_size {
+  display: block;
+  color: #777;
+}
+
+/*
+ * Configuration Page
+ */
+.configured_site_controls form,
+.configured_site_controls form div {
+  display: inline;
 }
 
 /*
@@ -1154,8 +1391,32 @@ div.gmnoprint {
 }
 
 /*
+ * Language Dropdown Selection
+ */
+#footer_language_selection {
+  float: right;
+  margin-top: -50px;
+}
+#footer_language_selection label {
+  width: auto;
+}
+
+/*
  * Extended Fields Display
  */
 .detail-extended-field-label {
   vertical-align: text-top;
+}
+
+/*
+ * Credits, useful for things like "powered by kete"
+ */
+.credits {
+  padding-top: 1em;
+  text-align: center;
+  font-size:0.75em;
+}
+
+.credits img {
+  border: none;
 }

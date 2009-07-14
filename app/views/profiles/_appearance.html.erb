@@ -1,10 +1,10 @@
 <fieldset>
 
-  <div class="form-element">show<br />field?</div>
+  <div class="form-element"><%=t 'profiles.appearance.show_field' %></div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('theme_font_family') %>
-    <label>Font Family:</label>
+    <label><%=t 'profiles.appearance.font_family' %></label>
     <%= rules_fieldset_tag('theme_font_family') %>
       <%= rules_select_tag('theme_font_family', @basket.font_family_select_options(current_value_for('theme_font_family'))) %>
     </fieldset>
@@ -12,74 +12,69 @@
 
   <div class="form-element">
     <%= rules_allowed_check_box('header_image') %>
-    <label>Header Image:</label>
+    <label><%=t 'profiles.appearance.header_image' %></label>
     <%= rules_fieldset_tag('header_image') %>
-      <%= rules_text_field_tag('header_image', 'URL for background image for the top of each page:') %>
+      <%= rules_text_field_tag('header_image', t('profiles.appearance.header_image_description')) %>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('theme') %>
-    <label>Theme:</label>
+    <label><%=t 'profiles.appearance.theme' %></label>
     <%= rules_fieldset_tag('theme') %>
       <% if @basket.possible_themes.size > 0 -%>
         <% @basket.possible_themes.each do |theme| -%>
           <div>
-            <%= image_tag "/themes/#{theme}/images/sample.jpg", :alt => "Screenshot of #{theme} theme. " -%>
+            <%= image_tag "/themes/#{theme}/images/sample.jpg", :alt => t('profiles.appearance.theme_alt', :theme => theme) -%>
             <%= rules_radio_button_tag('theme', theme, theme.humanize) %>
           </div>
         <% end -%>
-        <div><%= rules_radio_button_tag('theme', 'inherit', 'Inherit') %></div>
+        <div><%= rules_radio_button_tag('theme', 'inherit', t('profiles.appearance.inherit')) %></div>
       <% else -%>
-        <div>No themes beyond the default are available right now.</div>
+        <div><%=t 'profiles.appearance.no_themes_available' %></div>
       <% end -%>
       <div><ul><li>
-        <%= link_to "Add new theme", {:action => 'new', :controller => 'documents', :is_theme => true}, :tabindex => '1' -%>
+        <%= link_to t('profiles.appearance.add_new_theme'), {:action => 'new', :controller => 'documents', :is_theme => true}, :tabindex => '1' -%>
       </li></ul></div>
     </fieldset>
   </div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('show_hide_controls') %>
-    <label>Show/Hide Controls:</label>
+    <label><%=t 'profiles.appearance.show_hide_controls' %></label>
     <%= rules_fieldset_tag('show_hide_controls') %>
-      <%= rules_select_tag('show_action_menu', @basket.show_action_menu_as_options(@site_basket, current_value_for('show_action_menu')), 'Show Action Menu to:') %>
-        <div class="form_example">(who can see the view, edit, history and other links)</div>
-      <%= rules_select_tag('show_discussion', @basket.show_discussion_as_options(@site_basket, current_value_for('show_discussion')), 'Show Comments to:') %>
-        <div class="form_example">(who can see and add comments)</div>
-      <%= rules_select_tag('show_flagging', @basket.show_flagging_as_options(@site_basket, current_value_for('show_flagging')), 'Show Flagging to:') %>
-        <div class="form_example">(who can flag items)</div>
-      <%= rules_select_tag('show_add_links', @basket.show_add_links_as_options(@site_basket, current_value_for('show_add_links')), 'Show Add Links to:') %>
-        <div class="form_example">(who can relate or link items together)</div>
+      <%= rules_select_tag('show_action_menu', @basket.show_action_menu_as_options(@site_basket, current_value_for('show_action_menu')), t('profiles.appearance.show_action_menu_to')) %>
+        <div class="form_example"><%=t 'profiles.appearance.show_action_menu_description' %></div>
+      <%= rules_select_tag('show_discussion', @basket.show_discussion_as_options(@site_basket, current_value_for('show_discussion')), t('profiles.appearance.show_discussion_to')) %>
+        <div class="form_example"><%=t 'profiles.appearance.show_discussion_description' %></div>
+      <%= rules_select_tag('show_flagging', @basket.show_flagging_as_options(@site_basket, current_value_for('show_flagging')), t('profiles.appearance.show_flagging_to')) %>
+        <div class="form_example"><%=t 'profiles.appearance.show_flagging_description' %></div>
+      <%= rules_select_tag('show_add_links', @basket.show_add_links_as_options(@site_basket, current_value_for('show_add_links')), t('profiles.appearance.show_add_links_to')) %>
+        <div class="form_example"><%=t 'profiles.appearance.show_add_links_description' %></div>
     </fieldset>
   </div>
 
   <%# if USES_BASKET_LIST_NAVIGATION_MENU_ON_EVERY_PAGE -%>
   <div class="form-element">
     <%= rules_allowed_check_box('basket_list_menu') %>
-    <label>Basket List Menu Options:</label>
+    <label><%=t 'profiles.appearance.basket_list_menu_options' %></label>
     <%= rules_fieldset_tag('basket_list_menu') %>
-      <p>These settings only take effect if the basket list navigation menu is on in your template.</p>
-      <%= rules_text_field_tag('side_menu_number_of_topics', 'Number of topics to show when in this basket?:') %>
-      <%= rules_select_tag('side_menu_ordering_of_topics', @basket.side_menu_ordering_of_topics_as_options(@site_basket, current_value_for('side_menu_ordering_of_topics')), 'Sort by:') %>
-      <%= rules_check_box_tag('side_menu_direction_of_topics', 'reverse', 'in reverse?') %>
+      <p><%=t 'profiles.appearance.basket_list_menu_options_description' %></p>
+      <%= rules_text_field_tag('side_menu_number_of_topics', t('profiles.appearance.number_of_menu_topics')) %>
+      <%= rules_select_tag('side_menu_ordering_of_topics', @basket.side_menu_ordering_of_topics_as_options(@site_basket, current_value_for('side_menu_ordering_of_topics')), t('profiles.appearance.sort_menu_by')) %>
+      <%= rules_check_box_tag('side_menu_direction_of_topics', 'reverse', t('profiles.appearance.sort_menu_in_reverse')) %>
     </fieldset>
   </div>
   <%# end -%>
 
   <div class="form-element">
     <%= rules_allowed_check_box('additional_footer_content') %>
-    <label>Additional Footer Content:</label>
+    <label><%=t 'profiles.appearance.additional_footer_content' %></label>
     <%= rules_fieldset_tag('additional_footer_content') %>
       <%= rules_text_area_tag('additional_footer_content')%>
-      <%= rules_check_box_tag('do_not_sanitize_footer_content', 'true', 'Allow forms and other possible insecure elements and attributes in the HTML?') %>
-      <%= rules_check_box_tag('replace_existing_footer', 'true', 'replace existing footer with above content?') %>
-      <div class="form_example">
-        If checked, the above footer will totally replace the
-        bottom of each page.  If you would rather it appear above
-        the "Accessibility | Sitemap | Back to Content" links,
-        rather than replace them, leave this unchecked.
-      </div>
+      <%= rules_check_box_tag('do_not_sanitize_footer_content', 'true', t('profiles.appearance.additional_footer_content_do_not_sanitize')) %>
+      <%= rules_check_box_tag('replace_existing_footer', 'true', t('profiles.appearance.additional_footer_content_replace')) %>
+      <div class="form_example"><%=t 'profiles.appearance.additional_footer_content_replace_description' %></div>
     </fieldset>
   </div>
 

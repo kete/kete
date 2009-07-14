@@ -1,7 +1,11 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
 class RssTest < ActionController::IntegrationTest
-
+  # some pretty massive holes in test coverage here!!!
+  # TODO: test comments being added and having proper rss
+  # TODO: add contributed by, related to, and tagged tests
+  # TODO: add privacy tests
+  # after you start adding these TODOs, you'll immediately want to DRY up this testing
   context "An rss feed with items" do
 
     setup do
@@ -10,7 +14,7 @@ class RssTest < ActionController::IntegrationTest
     end
 
     ITEM_CLASSES.each do |item_class|
-      should "still function properly for #{item_class}" do
+      should "still have a feed for all class #{item_class}" do
         item_type = item_class.underscore
         controller = zoom_class_controller(item_class)
         case item_class
@@ -35,6 +39,34 @@ class RssTest < ActionController::IntegrationTest
         body_should_contain "Latest 50 Results in #{@item_type || controller}"
         body_should_contain @item.title
       end
+
+      should "still have a feed for all combined" do
+        item_type = item_class.underscore
+        controller = zoom_class_controller(item_class)
+        case item_class
+        when "Topic"
+          @item = new_topic
+        when "StillImage"
+          @item = new_still_image { attach_file "image_file_uploaded_data", "white.jpg" }
+        when "AudioRecording"
+          @item = new_audio_recording { attach_file "audio_recording_uploaded_data", "Sin1000Hz.mp3" }
+        when "Video"
+          @item = new_video { attach_file "video_uploaded_data", "teststrip.mpg", "video/mpeg" }
+        when "WebLink"
+          @item = new_web_link({ :url => "http://google.co.nz/#{rand() * 100}" })
+          @item_type = 'web links'
+        when "Document"
+          @item = new_document { attach_file "document_uploaded_data", "test.pdf" }
+        else
+          raise "ERROR: Unable to create item. Unknown item_class #{item_class}"
+        end
+
+        # now should have a combined rss that contains the same item
+        visit "/site/all/combined/rss.xml"
+        body_should_contain "Latest 50 Results in combined"
+        body_should_contain @item.title
+      end
+
     end
 
     should "escape title and short summary" do

@@ -1,4 +1,4 @@
-<% @title = 'Imports' -%>
+<% @title = t('importers.list.title') -%>
 
 <%= render(:partial => "baskets/actions_menu",
            :locals => { :item => @current_basket }) %>
@@ -6,20 +6,19 @@
 <%= render :partial => "topics/content_wrapper_start" %>
 
 <h2><%= h(@title) -%></h2>
-<p>This is the import facility. Using it you can import content into
-  this basket that has been exported from supported systems such as Past Perfect.</p>
+<p><%=t 'importers.list.description' %></p>
 
 <% if @imports.blank? %>
-<p>No previous imports have been run in this basket.</p>
+<p><%=t 'importers.list.no_past_imports' %></p>
 <% else %>
 <table class="history-table">
   <tr>
-    <th abbr="Folder">Folder</th>
-    <th abbr="Started">Started</th>
-    <th abbr="Type">Type</th>
-    <th abbr="User">User</th>
-    <th abbr="Status">Status</th>
-    <th abbr="Processed">Records Processed</th>
+    <th abbr="Folder"><%=t 'importers.list.folder' %></th>
+    <th abbr="Started"><%=t 'importers.list.started' %></th>
+    <th abbr="Type"><%=t 'importers.list.type' %></th>
+    <th abbr="User"><%=t 'importers.list.user' %></th>
+    <th abbr="Status"><%=t 'importers.list.status' %></th>
+    <th abbr="Processed"><%=t 'importers.list.records_processed' %></th>
   </tr>
   <% for import in @imports %>
   <tr>
@@ -34,7 +33,7 @@
     </td>
     <td><%= link_to_contributions_of(import.user,'Topic') -%></td>
     <td>
-      <%= import.status %> as of
+      <%= import.status %> <%=t 'importers.list.as_of' %>
       <%= import.updated_at.to_s(:euro_date_time) %>
     </td>
     <td>
@@ -45,7 +44,7 @@
 </table>
 <% end %>
 
-<p><%= link_to 'Start new import', :action => 'new' -%></p>
+<p><%= link_to t('importers.list.start_new'), :action => 'new' -%></p>
 
 <div id="prev-next"><%=  will_paginate @imports %></div>
 

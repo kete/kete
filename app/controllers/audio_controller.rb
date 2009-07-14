@@ -55,8 +55,10 @@ class AudioController < ApplicationController
     @successful = @audio_recording.save if @successful
 
     if @successful
+
       after_successful_zoom_item_update(@audio_recording, version_after_update)
-      flash[:notice] = 'Audio was successfully updated.'
+      flash[:notice] = t('audio_controller.update.updated')
+
       redirect_to_show_for(@audio_recording, :private => (params[:audio_recording][:private] == "true"))
     else
       render :action => 'edit'

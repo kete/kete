@@ -108,7 +108,7 @@ module Importer
         @import_records_xml = REXML::Document.new File.open(@path_to_trimmed_records)
 
         # variables assigned, files good to go, we're started
-        @import.update_attributes(:status => 'in progress')
+        @import.update_attributes(:status => I18n.t('importer_lib.do_work.in_progress'))
 
         # work through records and add topics for each
         # if they don't already exist
@@ -140,11 +140,11 @@ module Importer
           if !extended_field.nil?
             @import_field_to_extended_field_map[field] = extended_field
           else
-            @import_field_to_extended_field_map[field] = 'not available'
+            @import_field_to_extended_field_map[field] = I18n.t('importer_lib.importer_prepare_extended_field.not_available')
           end
         end
 
-        if !extended_field.nil? and extended_field != 'not available'
+        if !extended_field.nil? and extended_field != I18n.t('importer_lib.importer_prepare_extended_field.not_available')
           # add some smarts for handling fields that are multiple
           # assumes comma separated values
 
@@ -306,17 +306,17 @@ module Importer
 
     def importer_update_processing_vars_at_end
       if @successful
-        @results[:notice] = 'Import was successful.'
+        @results[:notice] = I18n.t('importer_lib.importer_update_processing_vars_at_end.import_successful')
         @results[:done_with_do_work] = true
         @import.update_attributes(:status => 'complete')
       else
-        @results[:notice] = 'Import failed. '
+        @results[:notice] = I18n.t('importer_lib.importer_update_processing_vars_at_end.import_failed')
         if !@results[:error].nil?
           logger.info("import error: #{@results[:error]}")
           @results[:notice] += @results[:error]
         end
         @results[:done_with_do_work] = true
-        @import.update_attributes(:status => 'failed')
+        @import.update_attributes(:status => I18n.t('importer_lib.importer_update_processing_vars_at_end.failed_status'))
       end
       cache[:results] = @results
       stop_worker
@@ -326,7 +326,7 @@ module Importer
       @results[:error], @successful  = $!.to_s, false
       @results[:done_with_do_work] = true
       cache[:results] = @results
-      @import.update_attributes(:status => 'failed')
+      @import.update_attributes(:status => I18n.t('importer_lib.importer_update_processing_vars_if_rescue.failed_status'))
       stop_worker
     end
 
@@ -358,7 +358,7 @@ module Importer
       else
         logger.info("what is existing item: " + existing_item.id.to_s)
         # record exists in kete already
-        reason_skipped = 'kete already has a copy of this record'
+        reason_skipped = I18n.t('importer_lib.importer_process.already_have_record')
       end
 
       if !new_record.nil? and !new_record.id.nil?

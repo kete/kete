@@ -9,7 +9,7 @@ module PrivacyControlsHelper
   end
   
   def privacy_controls_description
-    "Note: Individual versions of this item can be public or private. The latest public version will be shown to non-basket members if available.  Otherwise, this item is completely private."
+    t('privacy_controls_helper.privacy_controls_description.public_vs_private')
   end
   
 end

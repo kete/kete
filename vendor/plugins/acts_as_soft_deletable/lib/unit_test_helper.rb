@@ -33,4 +33,14 @@ module Test #:nodoc:
   end
 end
 
-Test::Unit::TestCase.send(:include, Test::Unit::ActsAsDeleted)
+# CUSTOM EDIT
+# Kieran Pilkington - 2009/02/16
+# Was getting this "uninitialized constant Test::Unit::TestCase"
+# Test::Unit::TestCase.send(:include, Test::Unit::ActsAsDeleted)
+module Test
+  module Unit
+    class TestCase
+      include Test::Unit::ActsAsDeleted
+    end
+  end
+end

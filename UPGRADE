@@ -65,6 +65,37 @@ idzebra-2.0.36
 Possible additional step -
 If you encounter problems with your zebra queries (browse and search results, etc.), use Administrator's Toolbox > Rebuild search databases to update all your search records (sites with a lot of items may take a long time).
 
+== 2009/04/09 - Adding google maps option to results pages
+Same steps as 2009/04/08
+
+== 2009/04/08 - Fixing issue with searches for choices and basket names as returning too many results, fixed searches for URLs, too
+
+1.      Stop your Kete server (mongrel or mod_rails).
+2.      Upgrade your code base
+3.      Start you Kete server again (mongrels or mod_rails)
+4.      Restart backgroundrb
+5.      Use Administrator's Toolbox > Rebuild search databases to update all your search records (sites with a lot of items may take a long time)
+
+== 2009/04/04 - Added support for latest YAZ (3.0.45) and Zebra (2.0.36) required software (older Zebra 2.0.6 no longer compatible)
+
+1.      Upgrade YAZ and Zebra and then reinstall the zoom gem.
+2.      Stop your Kete server (mongrel or mod_rails).
+3.      Upgrade your code base
+4.      Start you Kete server again (mongrels or mod_rails)
+5.      Restart backgroundrb
+6.      Use Administrator's Toolbox > Rebuild search databases to update all your search records (sites with a lot of items may take a long time)
+
+== 2009/04/03 - Switching RSS Feed parsing from feed-normalizer to Feedzirra
+
+1.      Stop your Kete server (mongrel or mod_rails).
+2.      Upgrade your code base
+3.      Install the Feedzirra gem.
+            sudo gem install kete-feedzirra -s http://gems.github.com
+4.      (note) We no longer use feed-normalizer and it can be uninstalled if no other Kete instances need it
+            sudo gem uninstall feed-normalizer
+5.      Start you Kete server again (mongrels or mod_rails)
+6.      Restart backgroundrb
+
 == 2009/03/26 - Switched RSS Feed generation to Nokogiri for big speed boosts
 
 1.      Stop your Kete server (mongrel or mod_rails).

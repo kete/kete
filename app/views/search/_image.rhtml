@@ -7,7 +7,7 @@
 
 <div class="image-result-wrapper<%= ' first' if first_result %>" id="item_<%= result %>_wrapper">
   <div class="image-result-thumb">
-    <% link_text = thumbnail.nil? ? "View Image" :
+    <% link_text = thumbnail.nil? ? t('search.image.view_image') :
                                     image_tag("#{@thumb_src}?show_placeholder=true", @thumb_options.merge(:alt => altify(title))) -%>
     <%= link_to link_text, source_url %>
   </div>
@@ -17,12 +17,11 @@
   <div class="image-result-description">
     <%= strip_tags(short_summary) %>
     <div class="image-result-more">
-      <%= link_to("more &gt;&gt;", source_url, { :title => "More information on #{title}", :tabindex => '1' }) %>
+      <%= link_to(t('search.image.more'), source_url, { :title => t('search.image.more_on', :title => title), :tabindex => '1' }) %>
     </div>
   </div>
-  <%= render(:partial => 'related',
-             :locals => { :related => related,
-                          :source_url => source_url,
-                          :title => title }) if related -%>
-  <div style="clear:both;"></div>
+  <%= render('related', :related => related,
+                        :source_url => source_url,
+                        :title => title) if related -%>
+  <div style="clear:left;"></div>
 </div>

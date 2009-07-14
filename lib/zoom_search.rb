@@ -128,12 +128,12 @@ module ZoomSearch
     # By default, we only parse the first five records. If you need more, overwrite :end_record
     # in the options param.
     def parse_results(results, zoom_class, options={})
-      options = { :result_set => results, :start_record => 0, :end_record => 5 }.merge(options)
+      options = { :start_record => 0, :end_record => 5 }.merge(options)
 
       @results = Array.new
       if results.size > 0
         still_image_results = Array.new
-        raw_results = zoom_class.constantize.records_from_zoom_result_set(options)
+        raw_results = results.records_from(options)
         raw_results.each do |raw_record|
           result_from_xml_hash = parse_from_xml_in(raw_record)
           @results << result_from_xml_hash
@@ -225,6 +225,44 @@ module ZoomSearch
         field_value = prepare_short_summary(field_value) if field_name == 'short_summary'
 
         result_hash[field_name.to_sym] = field_value
+      end
+
+      # get coverage values, these can be used for geographic values or temporal information
+      location_or_temporal_nodes = oai_dc.xpath(".//dc:coverage", oai_dc.namespaces).select { |node| !node.content.scan(":").blank? }
+
+      # we only want values you like "-41.336899,174.772512"
+      # TODO: this is a tad brittle, see if we can improve this
+      location_arrays = location_or_temporal_nodes.collect do |node|
+        values = node.content.split(":").reject { |i| i.blank? }
+        # this tells us we have coordinates and this is a location
+        # 2 (3 spot) is always coordinates in location, even if place name info is in the values
+        if !values[2] || values[2].split(",").size != 2
+          values = Array.new
+        end
+        values
+      end.reject { |array| array.empty?}
+
+      # we need the lat/lngs when we initialize the map
+      # separate from results_hash
+      # this covers all locations for a give set of results
+      @coordinates_for_results ||= Array.new
+
+      # this is the set of location JUST FOR THIS RESULT
+      result_hash[:associated_locations] = Array.new
+
+      # change coordinates to fixnums
+      location_arrays.each do |l|
+        # we just want a string version of the coordinates for this
+        # so grab l[2] before it is transformed
+
+        pair = l[2].split(",")
+        coordinate_array = [pair[0].to_f, pair[1].to_f]
+        l[2] = coordinate_array
+
+        @coordinates_for_results << pair
+
+        result_hash[:associated_locations] << l
+        @number_of_locations_count = @number_of_locations_count.blank? ? 1 : @number_of_locations_count + 1
       end
 
       related_items = zoom_record.root.at(".//xmlns:related_items", zoom_record.root.namespaces)

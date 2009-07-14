@@ -33,6 +33,9 @@ module ConfigureAsKeteContentItem
       klass.send :attr_accessor, :do_not_sanitize
       klass.send :acts_as_sanitized, :fields => [:description]
 
+      # this allows us to turn on/off email notification per item
+      klass.send :attr_accessor, :skip_email_notification
+
       # note, since acts_as_taggable doesn't support versioning
       # out of the box
       # we also track each versions raw_tag_list input

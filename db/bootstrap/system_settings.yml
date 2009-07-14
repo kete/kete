@@ -527,3 +527,43 @@ system_settings_060:
   id: "60"
   value: "false"
   section: System
+system_settings_061:
+  name: Image Slideshow Size
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "The size of images in the slideshows on both the homepage and inset related items sections. Can be one of the following: small_sq, small, medium, large"
+  id: "61"
+  value: "medium"
+  section: Images
+system_settings_062:
+  name: Related Items Inset Default
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "The default value for related items inset. Set to 'true' to have it enabled by default, 'false' to have it disabled by default."
+  id: "62"
+  value: "true"
+  section: Topics
+system_settings_063:
+  name: Hide Related Items Inset Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should the option to change related items inset be hidden from users?"
+  id: "63"
+  value: "true"
+  section: Topics
+system_settings_064:
+  name: Show Powered By Kete
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should we show the powered by Kete credit at the bottom of the site standard layout?"
+  id: "64"
+  value: "true"
+  section: Server
+system_settings_065:
+  name: Additional Credits HTML
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: "What HTML should we put at the bottom of the site standard layout for things like the company that hosts the site or did the development of the software?"
+  id: "65"
+  value:
+  section: Server

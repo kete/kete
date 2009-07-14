@@ -14,7 +14,7 @@ module KeteTestFunctionalHelper
       #
 
       def load_test_environment
-        # nothing here yet
+        @request.host = SITE_NAME
       end
 
       #

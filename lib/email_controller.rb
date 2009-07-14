@@ -26,7 +26,7 @@ module EmailController
 
     def send_email
       if params[:contact].nil? || params[:contact][:subject].blank? || params[:contact][:message].blank?
-        flash[:error] = "Both subject and message must be filled in. Please try again."
+        flash[:error] = I18n.t('email_controller_lib.send_email.need_subject_and_message')
         render :template => 'email/contact'
       else
         # are we sending to multiple recipients, or only one?
@@ -37,7 +37,7 @@ module EmailController
         else
           UserNotifier.deliver_email_to(@recipient, current_user, params[:contact][:subject], params[:contact][:message], @from_basket)
         end
-        flash[:notice] = "Your email has been sent. You will receive the reply in your email box."
+        flash[:notice] = I18n.t('email_controller_lib.send_email.email_sent')
         redirect_to @redirect_to
       end
     end
@@ -63,7 +63,7 @@ module EmailController
 
     def redirect_if_contact_form_disabled
       unless @contact_form_enabled
-        flash[:notice] = "This contact form is not currently enabled."
+        flash[:notice] = I18n.t('email_controller_lib.redirect_if_contact_form_disabled.not_enabled')
         redirect_to @redirect_to
       end
     end

@@ -71,13 +71,13 @@ class PrivateFilesController < ApplicationController
 
   rescue ActiveRecord::RecordNotFound
     logger.warn("#{Time.now} - Requested File Not Found: #{params.inspect}")
-    render :text => "Error 404: File Not Found", :status => 404
+    render :text => t('private_files_controller.not_found'), :status => 404
   rescue UnknownTypeError
     logger.warn("#{Time.now} - Unknown type requested: #{params.inspect}")
-    render :text => "Error 400: Bad Request", :status => 400
+    render :text => t('private_files_controller.bad_request'), :status => 400
   rescue PermissionDeniedError
     logger.warn("#{Time.now} - Permission Denied While Requesting Private Item: #{params.inspect}")
-    render :text => "Error 401: Unauthorized", :status => 401
+    render :text => t('private_files_controller.unauthorized'), :status => 401
   end
   
 end

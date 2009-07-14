@@ -18,7 +18,7 @@
   </div>
   <div class="generic-result-description"><%= prepare_short_summary(post_excerpt, 20) %>
     <div class="generic-result-more">
-      <%= link_to("read more &gt;&gt;", post_url, { :title => "Read More about #{post_headline.title}" })%>
+      <%= link_to(t('index_page.post_headline.read_more'), post_url, { :title => t('index_page.post_headline.read_more_about', :post_title => post_headline.title) })%>
     </div>
   </div>
 </div>

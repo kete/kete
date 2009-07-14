@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContentTypeTest < Test::Unit::TestCase
+class ContentTypeTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup

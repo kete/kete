@@ -54,8 +54,10 @@ class VideoController < ApplicationController
     @successful = @video.save if @successful
 
     if @successful
+
       after_successful_zoom_item_update(@video, version_after_update)
-      flash[:notice] = 'Video was successfully updated.'
+      flash[:notice] = t('video_controller.update.updated')
+
       redirect_to_show_for(@video, :private => (params[:video][:private] == "true"))
     else
       render :action => 'edit'

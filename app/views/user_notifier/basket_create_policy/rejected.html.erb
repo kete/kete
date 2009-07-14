@@ -1,9 +1,7 @@
 <%= @recipient.user_name %>,
 
-The basket you requested, '<%= @basket.name %>', was rejected.
+<%=t 'user_notifier.basket_create_policy.rejected.basket_rejected', :basket_name => @basket.name %>
 
-This may be because it was inappropriate or unsuitable for this site.
+<%=t 'user_notifier.basket_create_policy.rejected.not_suitable' %>
 
-Thank you,
-<%= PRETTY_SITE_NAME %>
-<%= SITE_URL %>
+<%= render 'user_notifier/email_footer' %>

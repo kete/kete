@@ -1,6 +1,7 @@
 # Requirements for XML conversion of extended fields
 require "rexml/document"
 require 'builder'
+require 'xmlsimple'
 
 # ExtendedContent provides a way to access additional, extended content directly on a model. (ExtendedContent is included in all
 # Kete content types.)
@@ -742,7 +743,8 @@ module ExtendedContent
          (value.blank? || (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value['no_map'] == "1")) &&
          extended_field_mapping.extended_field.ftype != "checkbox"
 
-        errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank") unless \
+        errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
+                                  :label => extended_field_mapping.extended_field.label)) unless \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params].nil? && \
           allow_nil_values_for_extended_content
 
@@ -752,7 +754,7 @@ module ExtendedContent
         if message = send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
           extended_field_mapping, value)
 
-          errors.add_to_base("#{extended_field_mapping.extended_field_label} #{message}")
+          errors.add_to_base(message)
         end
 
       end
@@ -763,7 +765,8 @@ module ExtendedContent
       if extended_field_mapping.required && values.all? { |v| v.to_s.blank? } && \
         extended_field_mapping.extended_field.ftype != "checkbox"
 
-        errors.add_to_base("#{extended_field_mapping.extended_field.label} must have at least one value") unless \
+        errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
+                                  :label => extended_field_mapping.extended_field.label)) unless \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + "_multiple"].nil? && \
           allow_nil_values_for_extended_content
 
@@ -778,8 +781,8 @@ module ExtendedContent
             extended_field_mapping, v.to_s)
         end
 
-        error_array.compact.each do |e|
-          errors.add_to_base("#{extended_field_mapping.extended_field.label} #{e}")
+        error_array.compact.each do |error|
+          errors.add_to_base(error)
         end
       end
     end
@@ -790,7 +793,8 @@ module ExtendedContent
       return nil if value.blank?
 
       unless value =~ /^((Y|y)es|(N|n)o)$/
-        "must be a valid checkbox value (Yes or No)"
+        I18n.t('extended_content_lib.validate_extended_checkbox_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label)
       end
     end
 
@@ -807,7 +811,8 @@ module ExtendedContent
       return nil if value.blank?
 
       unless value =~ /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/
-        "must be in the standard date format (YYYY-MM-DD)"
+        I18n.t('extended_content_lib.validate_extended_date_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label)
       end
     end
 
@@ -844,7 +849,8 @@ module ExtendedContent
       end
 
       if !values_array.all? { |v| valid_choice_values.member?(v) }
-        "must be a valid choice"
+        I18n.t('extended_content_lib.validate_extended_choice_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label)
       end
     end
 
@@ -871,14 +877,16 @@ module ExtendedContent
 
       # if this is nil, we were unable to find a matching topic
       unless topic_type_id
-        return "we were unable to find a matching topic on our site. Did you enter topic in the format of 'topic title (URL)?'"
+        return I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic')
       end
 
       parent_topic_type = TopicType.find(extended_field_mapping.extended_field.topic_type.to_i)
       valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
 
       unless valid_topic_type_ids.include?(topic_type_id)
-        "is not valid choice for a '#{parent_topic_type.name}'"
+        I18n.t('extended_content_lib.validate_extended_topic_type_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label,
+               :topic_type => parent_topic_type.name)
       end
     end
 

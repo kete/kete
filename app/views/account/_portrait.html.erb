@@ -1,5 +1,5 @@
 <div id="image_<%= portrait.id -%>" class="portrait_image">
-  <% image_title = (params[:controller] == 'images') ? nil : "Drag and Drop portraits within the 'Other Portraits' section to reorder them or place on top of the current portrait to change it." -%>
+  <% image_title = (params[:controller] == 'images') ? nil : t('account.portrait.title') -%>
   <%= link_to image_tag(portrait.thumbnail_file.public_filename,
                         { :width => 50, :height => 50, :alt => "#{altify(portrait.title)}", :title => image_title }),
                         { :urlified_name => portrait.basket.urlified_name,

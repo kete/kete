@@ -8,6 +8,7 @@ default:
   updated_at: <%= Time.now.to_s :db %>
   activation_code: admincode
   activated_at: <%= Time.now.to_s :db %>
+  locale: en
 bryan:
   id: 2
   login: bryan
@@ -18,6 +19,7 @@ bryan:
   updated_at: <%= Time.now.to_s :db %>
   activation_code: bryancode
   activated_at: <%= Time.now.to_s :db %>
+  locale: en
 arthur:
   id: 3
   login: arthur
@@ -28,3 +30,4 @@ arthur:
   updated_at: <%= Time.now.to_s :db %>
   activation_code: arthurcode
   activated_at: 
+  locale: en

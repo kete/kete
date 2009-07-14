@@ -24,6 +24,7 @@ namespace :kete do
                     'kete:tools:remove_robots_txt',
                     'kete:upgrade:ensure_logins_all_valid',
                     'kete:upgrade:move_user_name_to_display_and_resolved_name',
+                    'kete:upgrade:set_default_locale_for_existing_users',
                     'kete:upgrade:add_basket_id_to_taggings']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
@@ -41,6 +42,8 @@ namespace :kete do
     task :add_new_system_settings => :environment do
       system_settings_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/system_settings.yml")
 
+      printed_related_items_notice = false
+
       # for each system_setting from yml
       # check if it's in the db
       # if not, add it
@@ -54,6 +57,19 @@ namespace :kete do
         setting_hash.delete('id') if SystemSetting.count > 0
 
         if !SystemSetting.find_by_name(setting_hash['name'])
+
+          if setting_hash['name'].include?('Related Items Inset')
+            setting_hash['value'] = setting_hash['value'] == 'true' ? 'false' : 'true'
+            unless printed_related_items_notice
+              puts ""
+              puts "- Related Items Inset setting -"
+              puts "If your existing site content tends to have images or tables in your descriptions of items you'll probably want to keep these settings as they are."
+              puts "However, if your content descriptions don't have much of these you will like want to change them to the opposite to take advantage of the improved Related Items interface placement."
+              puts ""
+              printed_related_items_notice = true
+            end
+          end
+
           SystemSetting.create!(setting_hash)
           p "added " + setting_hash['name']
         end
@@ -242,6 +258,11 @@ namespace :kete do
       p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
     end
 
+    desc 'Give existing users a default locale if they don\'t already have one.'
+    task :set_default_locale_for_existing_users => :environment do
+      User.update_all({ :locale => 'en' }, { :locale => nil })
+    end
+
     desc 'Expire old style page caching for RSS feeds, otherwise they will conflict with new RSS caching system.'
     task :expire_depreciated_rss_cache => :environment do
       # needed for zoom_class_controller method
@@ -285,6 +306,17 @@ namespace :kete do
       end
     end
 
+    desc 'Make site basket default browse type blank, and other baskets inherit'
+    task :set_default_browse_type => :environment do
+      # set some defaults in the site basket
+      site_basket = Basket.first # site
+      site_basket.settings[:browse_view_as] = '' if site_basket.settings[:browse_view_as].class == NilClass
+      # All other baskets inherit from site
+      Basket.all.each do |basket|
+        basket.settings[:browse_view_as] = 'inherit' if basket.settings[:browse_view_as].class == NilClass
+      end
+    end
+
     desc 'Add basket id to taggings that dont have a basket id yet'
     task :add_basket_id_to_taggings => :environment do
       puts "Adding Basket ID to Tagging records"
@@ -294,6 +326,13 @@ namespace :kete do
         tagging.update_attribute(:basket_id, item.basket_id) if item
       end
       puts "Added Basket ID to #{records.size} Taggings"
+    end
+
+    desc "Make all baskets have private item notification 'do not email' if setting doesn't exist"
+    task :make_baskets_private_notification_do_not_email => :environment do
+      Basket.all.each do |basket|
+        basket.settings[:private_item_notification] = 'do_not_email' if basket.settings[:private_item_notification].blank?
+      end
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

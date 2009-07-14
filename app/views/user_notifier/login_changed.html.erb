@@ -1,11 +1,9 @@
 <%= @user.user_name %>,
 
-Your login for <%= PRETTY_SITE_NAME %> was changed during an upgrade of the software the site runs on.
+<%=t 'user_notifier.login_changed.description', :site_name => PRETTY_SITE_NAME %>
 
-To login, please now use the following login (your password remains the same)
+<%=t 'user_notifier.login_changed.login_using' %>
 
 <%= @user.login %>
 
-Thank you,
-<%= PRETTY_SITE_NAME %>
-<%= SITE_URL %>
+<%= render 'email_footer' %>

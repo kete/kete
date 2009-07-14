@@ -94,6 +94,7 @@ class MemberListTest < ActionController::IntegrationTest
     end
 
     should "only allow site admins to sort by login" do
+      @@site_basket.settings[:memberlist_policy] = 'at least member'
       visit "/site/members/list"
       body_should_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
       login_as('joe')

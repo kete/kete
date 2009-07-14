@@ -27,7 +27,7 @@ class ProfilesController < ApplicationController
     # the parent field for the individual forms
     config.columns << [:rules]
     config.columns[:rules].required = true
-    config.columns[:rules].label = "Fields Available"
+    config.columns[:rules].label = I18n.t('profiles_controller.fields_available')
 
   end
 
@@ -46,6 +46,6 @@ class ProfilesController < ApplicationController
   end
 
   def set_page_title
-    @title = 'Basket Profiles'
+    @title = t('profiles_controller.title')
   end
 end

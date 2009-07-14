@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + '/../test_helper'
   default_url_options[:host] = 'test.com'
 end
 
-class OaiDcHelpersTest < Test::Unit::TestCase
+class OaiDcHelpersTest < ActiveSupport::TestCase
 
   include OaiDcHelpers
 

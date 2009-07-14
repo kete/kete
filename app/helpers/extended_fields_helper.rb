@@ -12,11 +12,6 @@ module ExtendedFieldsHelper
     content_tag('div', select, { :id => "hidden_choices_topic_type_select_#{record.id.to_s}", :style => 'display:none;' })
   end
 
-  def base_url_form_column(record, input_name)
-    value = record.id.nil? ? '' : record.base_url
-    text_field_tag(input_name, value, { :id => 'record_base_url' })
-  end
-
   # Using YUI TreeView
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find_top_level
@@ -26,7 +21,7 @@ module ExtendedFieldsHelper
     '<div class="yui-skin-sam" style="float: left" id="hidden_choices_select_' + record.id.to_s + '">' +
 
     # Expand all and collapse all links
-    content_tag("p", link_to_function("Expand all", "", :id => "#{id}_expand") + " | " + link_to_function("Collapse all", "", :id => "#{id}_collapse")) +
+    content_tag("p", link_to_function(t('extended_fields_helper.pseudo_choices_form_column.expand_all'), "", :id => "#{id}_expand") + " | " + link_to_function(t('extended_fields_helper.pseudo_choices_form_column.collapse_all'), "", :id => "#{id}_collapse")) +
 
     # Actual XHTML list that is shown in the case JS fails or is not supported
     '<div id="choice_selection_' + record.id.to_s + '"><ul>' +
@@ -35,7 +30,7 @@ module ExtendedFieldsHelper
     end +
     '</ul></div>' +
     '<div id="allow_user_additions">' +
-      "Allow user addition of choices? Yes " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " No " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
+      "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
     '</div>' +
     '</div>' +
 
@@ -88,20 +83,20 @@ module ExtendedFieldsHelper
   def ftype_form_column(record, input_name)
 
     options_for_select = [
-      ['Check box', 'checkbox'],
-      ['Radio buttons', 'radio'],
-      ['Date', 'date'],
-      ['Text', 'text'],
-      ['Text box', 'textarea'],
-      ['Choices (auto-completion)', 'autocomplete'],
-      ['Choices (drop-down)', 'choice'],
-      ['Pre-populated Choices (topic type)', 'topic_type']
+      [t('extended_fields_helper.ftype_form_column.check_box'), 'checkbox'],
+      [t('extended_fields_helper.ftype_form_column.radio_button'), 'radio'],
+      [t('extended_fields_helper.ftype_form_column.date'), 'date'],
+      [t('extended_fields_helper.ftype_form_column.text'), 'text'],
+      [t('extended_fields_helper.ftype_form_column.text_box'), 'textarea'],
+      [t('extended_fields_helper.ftype_form_column.choices_auto_complete'), 'autocomplete'],
+      [t('extended_fields_helper.ftype_form_column.choices_drop_down'), 'choice'],
+      [t('extended_fields_helper.ftype_form_column.choices_topic_type'), 'topic_type']
     ]
 
     @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
     if File.exists?(@gma_config_path)
-      options_for_select << ['Location on map (lat/lng coordinates)', 'map']
-      options_for_select << ['Location on map with address', 'map_address']
+      options_for_select << [t('extended_fields_helper.ftype_form_column.location_map'), 'map']
+      options_for_select << [t('extended_fields_helper.ftype_form_column.location_map_address'), 'map_address']
     end
 
     if record.new_record?
@@ -149,7 +144,7 @@ module ExtendedFieldsHelper
         });
       ")
     else
-      "#{record.ftype} (cannot be changed)"
+      "#{record.ftype} #{t('extended_fields_helper.ftype_form_column.cannot_be_changed')}"
     end
   end
 
@@ -158,7 +153,7 @@ module ExtendedFieldsHelper
     if record.new_record?
       text_field(:record, :label, :class => "label-input text-input", :id => "record_label_", :size => "20", :autocomplete => "off")
     else
-      "#{record.label} (cannot be changed)"
+      "#{record.label} #{t('extended_fields_helper.label_form_column.cannot_be_changed')}"
     end
   end
 
@@ -167,7 +162,7 @@ module ExtendedFieldsHelper
     if record.new_record?
       select(:record, :multiple, [["True", true], ["False", false]])
     else
-      "#{record.multiple.to_s.capitalize} (cannot be changed)"
+      "#{record.multiple.to_s.capitalize} #{t('extended_fields_helper.multiple_form_column.cannot_be_changed')}"
     end
   end
 
@@ -178,7 +173,7 @@ module ExtendedFieldsHelper
       # Due to a limitation on better-nested-set, you cannot move_to any node unless the node you're
       # moving has already been saved. The intention here is that hierarchical manipulation of choices
       # will be done from the parent side.
-      "You cannot select a parent choice until the choice has been created."
+      t('extended_fields_helper.parent_form_column.need_choice_for_parent')
     else
 
       select(:record, :parent_id,
@@ -194,7 +189,7 @@ module ExtendedFieldsHelper
       # Due to a limitation on better-nested-set, you cannot move_to any node unless the node you're
       # moving has already been saved. The intention here is that hierarchical manipulation of choices
       # will be done from the parent side.
-      "You cannot select child choices until the choice has been created."
+      t('extended_fields_helper.children_form_column.need_choice_for_children')
     else
 
       currently_selected = record.children.map do |choice|
@@ -205,12 +200,12 @@ module ExtendedFieldsHelper
         check_box_tag("record[children][]", choice.id, false) + " " + choice.label
       end
 
-      output = content_tag("h6", "Existing sub-choices")
+      output = content_tag("h6", t('extended_fields_helper.children_form_column.existing_sub_choices'))
       output << "<ul>" + currently_selected.inject("") do |memo, choice|
         memo = memo + content_tag("li", choice)
       end + "</ul>"
 
-      output << content_tag("h6", "Add more sub-choices")
+      output << content_tag("h6", t('extended_fields_helper.children_form_column.add_more_sub_choices'))
       output << "<ul>" + candidates.inject("") do |memo, choice|
         memo = memo + content_tag("li", choice)
       end + "</ul>"
@@ -279,7 +274,7 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_radio_editor(name, existing_value, options)
-    default_choices = [["Yes", "yes"], ["No", "no"], ["No value", ""]]
+    default_choices = [[t('extended_fields_helper.extended_field_radio_editor.yes'), "yes"], [t('extended_fields_helper.extended_field_radio_editor.no'), "no"], [t('extended_fields_helper.extended_field_radio_editor.no_value'), ""]]
 
     # In the future we might allow radio buttons to be used for selecting choices
     # choices = extended_field.choices.empty? ? default_choices : extended_field.choices.find_top_level.map { |c| [c.label, c.value] }
@@ -358,10 +353,11 @@ module ExtendedFieldsHelper
     }
 
     html = select_tag("#{name}[#{level}][preset]", option_tags, options.merge(default_options))
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
+    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_select_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_level_#{level}_spinner' style='display:none;' />"
     if extended_field.user_choice_addition?
       user_supplied_id = "#{id_for_extended_field(extended_field)}_level_#{level}_custom"
-      html += ' OR add your own '
+      html += " #{t('extended_fields_helper.extended_field_choice_select_editor.suggest_a',
+                    :field_name => extended_field.label.singularize.downcase)} "
       html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id, :class => "#{extended_field.label_for_params}_choice_custom", :tabindex => 1)
       html += javascript_tag("clearCorrespondingFieldWhenEdited('#{user_supplied_id}', '#{extended_field.label_for_params}_choice_custom', '#{default_options[:id]}', '#{default_options[:class]}');")
     end
@@ -384,7 +380,7 @@ module ExtendedFieldsHelper
                                   :complete => "Element.hide('#{id_for_extended_field(extended_field)}_#{level}_spinner')")
 
     text_field_tag("#{name}[#{level}]", value, options.merge(:id => "#{id_for_extended_field(extended_field)}_#{level}", :autocomplete => "off", :tabindex => 1)) +
-    "<img src='/images/indicator.gif' width='16' height='16' alt='Getting choices. ' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
+    "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_choice_autocomplete_editor.getting_choices')}' id='#{id_for_extended_field(extended_field)}_#{level}_spinner' style='display:none;' />" +
     tag("br") +
     content_tag("div", nil,
       :class => "extended_field_autocomplete",
@@ -433,7 +429,7 @@ module ExtendedFieldsHelper
                                              :multiple_id => (extended_field.multiple? ? @field_multiple_id : nil)
                                            }
                                          })
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='Getting topics. ' id='#{spinner_id}' style='display:none;' />"
+    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
     html
   end
 
@@ -448,7 +444,13 @@ module ExtendedFieldsHelper
   def additional_extended_field_control(extended_field, n)
     id = id_for_extended_field(extended_field) + "_additional"
 
-    link_to_remote("Add another value", :url => { :controller => 'extended_fields', :action => 'add_field_to_multiples', :extended_field_id => extended_field.id, :n => n, :item_key => @item_type_for_params }, :id => id)
+    link_to_remote(t('extended_fields_helper.additional_extended_field_control.add_another',
+                     :field_name => extended_field.label.singularize.downcase),
+                   :url => { :controller => 'extended_fields',
+                             :action => 'add_field_to_multiples',
+                             :extended_field_id => extended_field.id,
+                             :n => n, :item_key => @item_type_for_params },
+                   :id => id)
   end
 
   def qualified_name_for_field(extended_field)

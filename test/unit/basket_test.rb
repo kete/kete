@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BasketTest < Test::Unit::TestCase
+class BasketTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   def setup
@@ -25,7 +25,7 @@ class BasketTest < Test::Unit::TestCase
       options_spec = [['Basket New or Edit', 'edit'],
                    ['Basket Appearance', 'appearance'],
                    ['Basket Homepage Options', 'homepage_options']]
-      assert_equal Basket::FORMS_OPTIONS, options_spec
+      assert_equal Basket.forms_options, options_spec
     end
   end
 
@@ -208,5 +208,39 @@ class BasketTest < Test::Unit::TestCase
 
   # TODO: tag_counts_array
   # TODO: index_page_order_tags_by
+
+  context "The users_to_notify_of_private_item method" do
+
+    should "work with various settings" do
+      basket = create_new_basket :name => 'Notify Basket'
+
+      # setup basket admin
+      neil = create_new_user :login => 'neil'
+      neil.has_role('admin', basket)
+      # setup basket moderator
+      jack = create_new_user :login => 'jack'
+      jack.has_role('moderator', basket)
+      # setup basket member
+      nancy = create_new_user :login => 'nancy'
+      nancy.has_role('member', basket)
+
+      basket.settings[:private_item_notification] = 'at least admin'
+      assert_equal 1, basket.users_to_notify_of_private_item.size
+      assert_equal %w{neil}, basket.users_to_notify_of_private_item.collect { |u| u.login }
+
+      basket.settings[:private_item_notification] = 'at least moderator'
+      assert_equal 2, basket.users_to_notify_of_private_item.size
+      assert_equal %w{neil jack}, basket.users_to_notify_of_private_item.collect { |u| u.login }
+
+      basket.settings[:private_item_notification] = 'at least member'
+      assert_equal 3, basket.users_to_notify_of_private_item.size
+      assert_equal %w{neil jack nancy}, basket.users_to_notify_of_private_item.collect { |u| u.login }
+
+      basket.settings[:private_item_notification] = 'do_not_email'
+      assert_equal 0, basket.users_to_notify_of_private_item.size
+      assert_equal [], basket.users_to_notify_of_private_item.collect { |u| u.login }
+    end
+
+  end
 
 end

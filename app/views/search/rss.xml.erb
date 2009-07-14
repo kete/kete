@@ -1,6 +1,6 @@
 <% cache(@cache_key_hash) do -%>
-<% blather = params[:page] && params[:page].to_i > 1 ? 'Next' : 'Latest'
-   @title = title_setup_first_part(SITE_NAME + " - #{blather} 50 Results in ") + last_part_of_title_for_rss_if_refinement_of -%>
+<% blather = params[:page] && params[:page].to_i > 1 ? t('search.rss.next') : t('search.rss.latest')
+   @title = title_setup_first_part(SITE_NAME + " - #{blather} #{t('search.rss.results_in')} ") + last_part_of_title_for_rss_if_refinement_of -%>
 <%= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
     xml.rss(:version => '2.0',
             "xmlns:media" => "http://search.yahoo.com/mrss",
@@ -9,7 +9,10 @@
         will_paginate_atom(@results, xml)
         xml.title @title
         xml.link (request.protocol + request.host + request.request_uri)
-        xml.description ("Showing #{@start} - #{@end_record} results of #{@result_sets[@current_class].size}")
+        xml.description t('search.rss.showing_x-y_of_z',
+                          :start => @start,
+                          :end => @end_record,
+                          :total => @result_sets[@current_class].size)
         xml.language 'en-nz'
         for result in @results
           xml.item {
@@ -44,7 +47,7 @@
             # and totals of related items for everything
             if result[:related]
               related = result[:related]
-              related_string = '<p>Related: '
+              related_string = "<p>#{t('search.rss.related')} "
               totals_array = related[:counts].keys.collect { |key| zoom_class_humanize_after(related[:counts][key], key.to_s.classify) }
               related_string += totals_array.to_sentence + '</p>'
 

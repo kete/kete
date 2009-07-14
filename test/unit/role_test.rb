@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class RoleTest < Test::Unit::TestCase
+class RoleTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   # skipping, testing handled by ActiveRecord and authorization plugin

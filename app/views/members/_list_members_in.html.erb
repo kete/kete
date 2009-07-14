@@ -1,6 +1,6 @@
   <% if members.blank? -%>
     <tr>
-      <td colspan="6">Currently no <%= @listing_type.humanize.pluralize -%></td>
+      <td colspan="6"><%=t 'members.list_members_in.current_no_users_of_type', :listing_type => @listing_type.humanize.pluralize %></td>
     </tr>
   <% else %>
     <% for user in members -%>
@@ -58,9 +58,9 @@
       <% if @current_basket.urlified_name != @site_basket.urlified_name && @basket_admin -%>
         <% form_tag :action => 'potential_new_members' do -%>
           <div id="searchheader">
-            <h4>Search for new members</h4>
+            <h4><%=t 'members.list_members_in.search_for_members' %></h4>
             <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' -%>
-            <%= submit_tag "Search", :class => 'searchbutton' -%>
+            <%= submit_tag t('members.list_members_in.search_button'), :class => 'searchbutton' -%>
           </div>
         <% end -%>
       <% end -%>

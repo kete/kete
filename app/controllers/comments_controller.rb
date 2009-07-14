@@ -49,6 +49,9 @@ class CommentsController < ApplicationController
 
       @comment.do_notifications_if_pending(1, current_user)
       
+      # send notifications of private item create
+      private_item_notification_for(@comment, :created) if params[:comment][:commentable_private] == "1"
+
       # Ensure we only use valid ZOOM CLASSes
       zoom_class = only_valid_zoom_class(params[:comment][:commentable_type])
 
@@ -85,6 +88,9 @@ class CommentsController < ApplicationController
 
       @comment.do_notifications_if_pending(version_after_update, current_user)
 
+      # send notifications of private comment edit
+      private_item_notification_for(@comment, :edited) if params[:comment][:commentable_private] == "1"
+
       # make sure that we wipe comments cache for thing we are commenting on
       commented_item = @comment.commentable
       commented_privacy = @comment.commentable_private
@@ -94,7 +100,7 @@ class CommentsController < ApplicationController
 
       prepare_and_save_to_zoom(commented_item)
       
-      flash[:notice] = 'Comment was successfully updated.'
+      flash[:notice] = t('comments_controller.update.updated')
       redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
                           :action => 'show',
                           :id => commented_item,
@@ -120,7 +126,7 @@ class CommentsController < ApplicationController
       expire_caches_after_comments(commented_item, commented_privacy)
       prepare_and_save_to_zoom(commented_item)
 
-      flash[:notice] = 'Comment was successfully deleted.'
+      flash[:notice] = t('comments_controller.destroy.destroyed')
 
       redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
                           :action => 'show',
@@ -140,7 +146,7 @@ class CommentsController < ApplicationController
       end
       
       unless permitted
-        flash[:notice] = "Sorry, you need to be a member to leave a comment in this basket."
+        flash[:notice] = t('comments_controller.is_authorized.not_a_member')
         redirect_to DEFAULT_REDIRECTION_HASH
         false
       end

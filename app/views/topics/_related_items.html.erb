@@ -1,5 +1,8 @@
 <%
 topics_only ||= false
+inset ||= false
+class_suffix = inset ? "-white" : "-blue"
+
 @total_item_counts = related_items_count_for_current_item
 if @total_item_counts > 0
   @public_items, @public_item_counts = public_related_items_for(item, { :topics_only => topics_only, :with_counts => true })
@@ -7,72 +10,46 @@ if @total_item_counts > 0
 end
 -%>
 
+<div id="related_items"<%= " class='inset' style='width: #{(image_size_of(IMAGE_SLIDESHOW_SIZE)+30)}px;'" if inset -%>>
+
 <% if topics_only -%>
 
-  <%= render(:partial => "topics/secondary_wrapper_start",
-             :locals => { :div_id => "related-link", :class_suffix => "-blue" }) -%>
+  <%= render("topics/secondary_wrapper_start", :div_id => "related-link", :class_suffix => "-blue") -%>
 
-  <%= render(:partial => "topics/related_items_section",
-             :locals => { :item => item, :zoom_class => 'Topic',
-                          :display_heading => '<h3>Related Topics:</h3>',
-                          :display_no_item_text => true }) -%>
+  <%= render("topics/related_items_section", :item => item, :zoom_class => 'Topic',
+             :display_heading => "<h3>#{t('topics.related_items.related_topics')}</h3>",
+             :display_no_item_text => true) -%>
 
-  <%= render(:partial => "topics/secondary_wrapper_end") -%>
+  <%= render("topics/secondary_wrapper_end") -%>
 
 <% else -%>
 
-  <%= render(:partial => "topics/secondary_wrapper_start",
-             :locals => { :div_id => "related", :class_suffix => "-blue" }) -%>
+  <%= render("topics/secondary_wrapper_start", :div_id => "related", :class_suffix => class_suffix) -%>
 
   <h2 class="related-link">
-    <%= link_to_related_items_of(item, 'Topic', :link_text => "Related Items (#{@total_item_counts})") -%>
+    <%= link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_items')} (#{@total_item_counts})") -%>
   </h2>
 
-  <% if current_user_can_see_add_links? -%>
-    <div id="related-items-tools">
-      <ul>
-        <% cache({ :related => 'related-tools-create-or-link-or-remove', :id => @cache_id }) do -%>
-          <%= header_add_links(:relate_to_topic => item, :related_topic_private => (params[:private] && params[:private] == 'true'), :link_text => 'Create', :class => 'first') -%>
-          <%= link_to_related_item_function(:link_text => 'Link Existing', :function => 'add', :relate_to_topic => item) -%>
-          <%= link_to_related_item_function(:link_text => 'Remove', :function => 'remove', :relate_to_topic => item) -%>
-        <% end -%>
-        <% if @basket_moderator -%>
-          <% cache({ :related => 'related-tools-restore', :id => @cache_id }) do -%>
-            <%= link_to_related_item_function(:link_text => 'Restore', :function => 'restore', :relate_to_topic => item) -%>
-          <% end -%>
-        <% end -%>
-        <% if @site_admin -%>
-          <% cache({ :related => 'related-tools-import', :id => @cache_id }) do -%>
-            <%= link_to_add_set_of_related_items(:link_text => 'Import Set', :relate_to_topic => item) -%>
-          <% end -%>
-        <% end -%>
-      </ul>
-    </div>
-    <div style="clear:both;"></div>
-  <% end -%>
+  <%= render('topics/related_items_tools', :item => item) unless inset %>
 
   <div id="detail-linked-toprow">
-    <%= render(:partial => "topics/related_items_section",
-               :locals => { :item => item, :zoom_class => 'StillImage' }) -%>
+    <%= render("topics/related_items_section", :item => item, :zoom_class => 'StillImage', :inset => inset) -%>
   </div>
 
-  <div class="two-col">
-    <%= render(:partial => "topics/related_items_section",
-               :locals => { :item => item, :zoom_class => 'Topic' }) -%>
-    <%= render(:partial => "topics/related_items_section",
-               :locals => { :item => item, :zoom_class => 'AudioRecording' }) -%>
-    <%= render(:partial => "topics/related_items_section",
-               :locals => { :item => item, :zoom_class => 'Video' }) -%>
-    <div class="cleaner-left">&nbsp;</div>
-  </div>
+  <% [['Topic', 'AudioRecording', 'Video'],
+      ['Document', 'WebLink']].each do |item_set| %>
+    <div class="two-col">
+      <% item_set.each do |item_type| %>
+        <%= render("topics/related_items_section", :item => item, :zoom_class => item_type, :inset => inset) -%>
+      <% end %>
+      <div style="clear:both;"></div>
+    </div>
+  <% end %>
 
-  <div class="two-col">
-    <%= render(:partial => "topics/related_items_section",
-               :locals => { :item => item, :zoom_class => 'Document' }) -%>
-    <%= render(:partial => "topics/related_items_section",
-               :locals => { :item => item, :zoom_class => 'WebLink' }) -%>
-  </div>
+  <%= render('topics/related_items_tools', :item => item) if inset %>
 
-  <%= render(:partial => "topics/secondary_wrapper_end") -%>
+  <%= render("topics/secondary_wrapper_end") -%>
 
 <% end -%>
+
+</div>

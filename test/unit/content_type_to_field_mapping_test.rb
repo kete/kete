@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContentTypeToFieldMappingTest < Test::Unit::TestCase
+class ContentTypeToFieldMappingTest < ActiveSupport::TestCase
 
   (ITEM_CLASSES - ['Topic', 'Comment']).each do |zoom_class|
 

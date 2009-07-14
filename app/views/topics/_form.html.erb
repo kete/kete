@@ -21,16 +21,16 @@ zoom_class = zoom_class_from_controller(controller)
 -%>
 
 <% if @editing -%>
-  <% @title, @url, @submit_text = "Editing #{@item_name}", { :urlified_name => @basket.urlified_name,
+  <% @title, @url, @submit_text = "#{t('topics.form.editing')} #{@item_name}", { :urlified_name => @basket.urlified_name,
                                                              :controller => controller,
                                                              :action => 'update',
                                                              :id => @item,
-                                                             :private => params[:private] }, 'Update' -%>
+                                                             :private => params[:private] }, t('topics.form.update') -%>
 <% else -%>
-  <% @title, @url, @submit_text = "New #{@item_name}", { :urlified_name => @basket.urlified_name,
+  <% @title, @url, @submit_text = "#{t('topics.form.new')} #{@item_name}", { :urlified_name => @basket.urlified_name,
                                                          :controller => controller,
                                                          :action => 'create',
-                                                         :private => params[:private] }, 'Create' -%>
+                                                         :private => params[:private] }, t('topics.form.create') -%>
 <% end -%>
 
 <h2><%= @title -%></h2>
@@ -43,7 +43,7 @@ zoom_class = zoom_class_from_controller(controller)
 
     <%= form.error_messages -%>
 
-    <p class="required"><em>* denotes a required field</em></p>
+    <p class="required"><em><%=t 'topics.form.required_fields' %></em></p>
 
     <% if @item_type == :still_image -%>
       <%= error_messages_for 'image_file' -%>
@@ -51,7 +51,7 @@ zoom_class = zoom_class_from_controller(controller)
         <%= hidden_field_tag 'image_file[still_image_id]', @item.id, :id => "image_file_still_image_id" -%>
         <% @image_file = ImageFile.find_by_thumbnail_and_still_image_id("medium", @item.id) %>
         <div class="form-element">
-          <label>Current Image:</label>
+          <label><%=t 'topics.form.current_image' %></label>
           <%= render(:partial => "images/image_file",
                      :locals => { :still_image => @item,
                                   :image_file => @image_file,
@@ -78,7 +78,7 @@ zoom_class = zoom_class_from_controller(controller)
     <% end -%>
 
     <% if @editing && @site_admin -%>
-      <%= form.select 'basket_id', @baskets, {}, { :tabindex => '1', :label => 'Move to another basket?' } -%>
+      <%= form.select 'basket_id', @baskets, {}, { :tabindex => '1', :label => t('topics.form.move_baskets') } -%>
     <% else -%>
       <%= form.hidden_field :basket_id, :value => @basket.id -%>
     <% end -%>
@@ -94,40 +94,38 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
-    <%= embedded_enabled_message('<p class=\"help\">Note: ', ' If you fill out fields here as well, the embedded metadata will be added to it at the end.</p>') if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing %>
+    <%= embedded_enabled_message("<p class='help'>#{t('topics.form.note')} ", " #{t('topics.form.embedded_note')}</p>") if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing %>
 
     <% if params[@item_type] && params[@item_type][:private]; item_private = params[@item_type][:private] == 'true' ? true : false
        elsif @editing && !@item.private.nil?; item_private = @item.private?
        else; item_private = @basket.private_default_with_inheritance?; end -%>
     <% if show_privacy_controls_for_basket?(@basket) -%>
       <%= form.radio_button :private,
-                            [ ['Public', false, { :label_for => "#{@item_type.to_s}_private_false",
-                                                  :note => '(Can be viewed by everyone)',
+                            [ [t('topics.form.public'), false, { :label_for => "#{@item_type.to_s}_private_false",
+                                                  :note => t('topics.form.public_description'),
                                                   :checked => (item_private ? '' : 'checked') }],
-                              ['Private', true, { :label_for => "#{@item_type.to_s}_private_true",
-                                                  :note => '(Can be viewed only by basket members)',
+                              [t('topics.form.private'), true, { :label_for => "#{@item_type.to_s}_private_true",
+                                                  :note => t('topics.form.private_description'),
                                                   :checked => (item_private ? 'checked' : '') }] ],
-                            { :tabindex => '1', :label => 'Privacy', :example => privacy_controls_description } -%>
+                            { :tabindex => '1', :label => t('topics.form.privacy'), :example => privacy_controls_description } -%>
     <% else %>
       <%= form.hidden_field :private, :value => item_private -%>
     <% end %>
 
-    <%= form.text_field :title, { :tabindex => '1', :label => 'Title', :required => true } -%>
+    <%= form.text_field :title, { :tabindex => '1', :label => t('topics.form.title'), :required => true } -%>
 
     <% if [:document, :topic].include?(@item_type) -%>
       <%= form.text_area :short_summary, { :class => "text-area", :cols => 120, :rows => 2, :tabindex => '1',
-                                           :label => 'Short Summary' } %>
+                                           :label => t('topics.form.short_summary') } %>
     <% end -%>
 
     <%= form.text_area :description, { :class => "mceEditor", :cols => 120, :tabindex => '1',
-                                       :label => 'Description', :label_class => 'cleared-right',
-                                       :example => "Note: new forms and javascript are not allowed for security reasons
-                                                    #{", unless you check the box below" if @site_admin}." } -%>
+                                       :label => t('topics.form.description'), :label_class => 'cleared-right',
+                                       :example => "#{t('topics.form.description_example')} #{t('topics.form.description_example_exception') if @site_admin}." } -%>
 
     <% if @site_admin -%>
       <%= form.check_box :do_not_sanitize, { :tabindex => '1',
-                                             :label => "Allow new forms and other possible insecure elements
-                                                        and attributes in the HTML?" } -%>
+                                             :label => t('topics.form.allow_insecure_elements') } -%>
     <% end -%>
 
     <% unless [:topic, :web_link].include?(@item_type) -%>
@@ -136,16 +134,15 @@ zoom_class = zoom_class_from_controller(controller)
          else; file_private = @basket.file_private_default_with_inheritance?; end -%>
       <% if show_privacy_controls_for?(@item, @basket) %>
         <%= form.radio_button :file_private,
-                              [ ['Can be downloaded by everyone', false,
+                              [ [t('topics.form.downloaded_by_everyone'), false,
                                   { :label_for => "#{@item_type.to_s}_file_private_false",
                                     :checked => (file_private ? '' : 'checked') }],
-                                ["Can only be downloaded by people who have #{@basket.private_file_visibility_with_inheritance} access.", true,
+                                [t('topics.form.downloaded_by_role', :role_name => @basket.private_file_visibility_with_inheritance), true,
                                   { :label_for => "#{@item_type.to_s}_file_private_true",
                                     :checked => (file_private ? 'checked' : '') }] ],
                               file_private_radio_options(@item).merge({ :tabindex => '1',
-                                                                        :label => 'Attached file privacy',
-                                                                        :example => 'Please note that once public, an attached file
-                                                                                     cannot be made private.' }) -%>
+                                                                        :label => t('topics.form.file_privacy'),
+                                                                        :example => t('topics.form.file_privacy_example') }) -%>
       <% else -%>
         <%= form.hidden_field :file_private, :value => file_private -%>
       <% end -%>
@@ -159,16 +156,36 @@ zoom_class = zoom_class_from_controller(controller)
       " -%>
     <% end -%>
 
+    <% if show_notification_controls?(@basket) %>
+      <div id="skip_email_notification_div"<%= "style='display:none;'" unless item_private %>>
+        <% if params[@item_type] && params[@item_type][:skip_email_notification]; skip = (params[@item_type][:skip_email_notification] == '1' ? true : false)
+           elsif @editing && !@item.skip_email_notification.nil?; skip = @item.skip_email_notification?
+           else; skip = false; end -%>
+        <%= form.check_box :skip_email_notification, { :tabindex => '1',
+                                                       :label => t('topics.form.skip_email_notification',
+                                                                   :role_type => Basket.level_value_from(@basket.settings[:private_item_notification]).downcase.pluralize),
+                                                       :checked => skip } %>
+      </div>
+      <%= javascript_tag "
+        $('#{@item_type.to_s}_private_true').observe('change', function(event) {
+          $('skip_email_notification_div').show();
+        });
+        $('#{@item_type.to_s}_private_false').observe('change', function(event) {
+          $('skip_email_notification_div').hide();
+        });
+      " %>
+    <% end %>
+
     <% if @item_type == :web_link && (show_privacy_controls_for?(@item, @basket) || !@editing) -%>
-      <%= form.text_field :url, { :tabindex => '1', :label => 'URL', :required => true } -%>
+      <%= form.text_field :url, { :tabindex => '1', :label => t('topics.form.url'), :required => true } -%>
     <% end -%>
 
     <div class="form-element">
-      <label for="<%= @item_type -%>_tag_list">Tags (separated by commas)</label>
+      <label for="<%= @item_type -%>_tag_list"><%=t 'topics.form.tags' %></label>
       <%= text_field_with_auto_complete(@item_type, :tag_list, { :tabindex => '1' },
                                                                { :tokens => ',',
                                                                  :indicator => 'data_spinner_tags' }) -%>
-      <img src='/images/indicator.gif' width='16' height='16' alt='Getting tags. ' id='data_spinner_tags' style='display:none;' />
+      <img src='/images/indicator.gif' width='16' height='16' alt='<%=t 'topics.form.getting_tags' %>' id='data_spinner_tags' style='display:none;' />
     </div>
 
     <% # disabling overwriting of original file for the timebeing
@@ -176,11 +193,11 @@ zoom_class = zoom_class_from_controller(controller)
     <% unless [:topic, :web_link].include?(@item_type) || @editing -%>
       <% if @item_type == :still_image -%>
         <div class="form-element">
-          <label for="image_file_uploaded_data" class="required">Upload image <em>*</em></label>
+          <label for="image_file_uploaded_data" class="required"><%=t 'topics.form.upload_image' %> <em>*</em></label>
           <%= file_field_tag 'image_file[uploaded_data]', { :id => 'image_file_uploaded_data', :tabindex => '1' } -%>
         </div>
       <% else -%>
-        <%= form.file_field :uploaded_data, { :tabindex => '1', :label => "Upload #{@item_name}", :required => true } -%>
+        <%= form.file_field :uploaded_data, { :tabindex => '1', :label => "#{t('topics.form.upload')} #{@item_name}", :required => true } -%>
       <% end -%>
     <% end -%>
 
@@ -211,11 +228,24 @@ zoom_class = zoom_class_from_controller(controller)
     <% if @editing -%>
       <%= form.text_field :version_comment, { :tabindex => '1',
                                               :value => (!params[@item_type].blank? ? params[@item_type][:version_comment] : ''),
-                                              :label => 'Comment on this edit' } -%>
+                                              :label => t('topics.form.comment_on_edit') } -%>
     <% end -%>
 
     <%= render :partial => 'topics/license_chooser_or_agreement',
                :locals => { :item => @item } -%>
+
+    <% if @item_type == :topic %>
+      <% if HIDE_RELATED_ITEMS_INSET_FIELD %>
+        <%= form.hidden_field :related_items_inset, :value => (RELATED_ITEMS_INSET_DEFAULT ? '1' : '0') -%>
+      <% else %>
+        <% if params[@item_type] && params[@item_type][:related_items_inset]; inset = params[@item_type][:related_items_inset] == '1' ? true : false
+           elsif @editing && !@item.related_items_inset.nil?; inset = @item.related_items_inset?
+           else; inset = RELATED_ITEMS_INSET_DEFAULT; end -%>
+        <%= form.check_box :related_items_inset, { :tabindex => '1',
+                                                   :label => t('topics.form.related_items_as_inset'),
+                                                   :checked => inset } %>
+      <% end %>
+    <% end -%>
 
   </fieldset>
 
@@ -226,6 +256,6 @@ zoom_class = zoom_class_from_controller(controller)
 <% end -%>
 
 <%= link_to_cancel -%> |
-<%= link_to("help", { :controller => 'index_page', :action => :help_file },
+<%= link_to(t('topics.form.help'), { :controller => 'index_page', :action => :help_file },
                     :popup => ['help', 'height=500,width=780,scrollbars=yes,top=100,left=100'],
                     :tabindex => '1') -%>

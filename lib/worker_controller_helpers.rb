@@ -60,7 +60,7 @@ module WorkerControllerHelpers
                                                                            :import_request => import_request } )
         @worker_running = true
       else
-        flash[:notice] = 'There is another search record rebuild running at this time.  Please try again later.'
+        flash[:notice] = I18n.t('worker_controller_helpers_lib.rebuild_zoom_index.aready_rebuilding')
       end
     end
   end

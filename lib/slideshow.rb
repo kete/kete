@@ -76,11 +76,11 @@ class Slideshow
   end
 
   def navigable?
-    results.size > 0
+    results && results.size > 0
   end
 
   def in_set?(url)
-    results.include?(url)
+    results && results.include?(url)
   end
 
   def last_result?(url)
@@ -91,6 +91,21 @@ class Slideshow
     first?(url) && on_first_page?
   end
 
+  def next(url=nil)
+    if url
+      in_set?(url) ? after(url) : nil
+    else
+      after(last_requested)
+    end
+  end
+
+  def previous(url=nil)
+    if url
+      in_set?(url) ? before(url) : nil
+    else
+      before(last_requested)
+    end
+  end
 
   private
 

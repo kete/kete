@@ -25,12 +25,12 @@
   <% cache_with_privacy(@topic, {:part => 'tools'}) do -%>
     <div class="detail-tools">
     <% if !@url_to_full_topic.nil? -%>
-      <ul><%= li_with_correct_class(tool_count) + link_to("Click here to continue to topic and its links", @url_to_full_topic) %></li></ul>
+      <ul><%= li_with_correct_class(tool_count) + link_to(t('index_page.index.continue_to_topic'), @url_to_full_topic) %></li></ul>
       <% tool_count += 1 -%>
       <% end -%>
       <% if !@url_to_comments.nil? -%>
       <% if @comments.size > 0 -%>
-        <ul><%= li_with_correct_class(tool_count) + "View " + link_to( "#{@comments.size} comments", @url_to_comments) -%></li></ul>
+        <ul><%= li_with_correct_class(tool_count) + t('index_page.index.view') + link_to( t('index_page.index.comments', :count => @comments.size), @url_to_comments) -%></li></ul>
         <% tool_count += 1 -%>
       <% end -%>
     <% end -%>
@@ -43,13 +43,13 @@
         <% if permitted_to_edit_current_item? -%>
           <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
             <%= li_with_correct_class(tool_count) +
-                link_to("Edit", :action => 'edit',
+                link_to(t('index_page.index.edit'), :action => 'edit',
                                 :urlified_name => @topic.basket.urlified_name,
                                 :controller => 'topics',
                                 :id => @topic,
                                 :private => @topic.private? ) %></li>
             <% tool_count += 1 -%>
-            <li><%= link_to "History", :action => 'history',
+            <li><%= link_to t('index_page.index.history'), :action => 'history',
                                        :urlified_name => @topic.basket.urlified_name,
                                        :controller => 'topics',
                                        :id => @topic,
@@ -70,7 +70,7 @@
         @recent_topics_items.size > 0 &&
         !@current_basket.index_page_recent_topics_as.blank? -%>
     <div class="home-feature-wrapper">
-      <h3>Latest <%= @recent_topics_items.size.to_s if @recent_topics_items.size > 1 -%> topic<%= 's' if @recent_topics_items.size > 1 -%></h3>
+      <h3><%=t 'index_page.index.latest' %> <%= @recent_topics_items.size.to_s if @recent_topics_items.size > 1 -%> topic<%= 's' if @recent_topics_items.size > 1 -%></h3>
       <% case @current_basket.index_page_recent_topics_as
          when 'summaries' -%>
         <%= render :partial => 'post_summary',
@@ -92,7 +92,7 @@
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "search-box", :class_suffix => nil }) -%>
       <div id="right-search-box">
-        <% @headline = 'Keyword Search'
+        <% @headline = t('index_page.index.keyword_search')
            @headline += (' ' + @title) if @current_basket != @site_basket -%>
         <%= render :partial => '/search/form',
                    :locals => { :headline => @headline,
@@ -133,7 +133,7 @@
 <% if !@current_basket.index_page_archives_as.blank? && @current_basket.index_page_archives_as == 'by type' %>
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "contents-by-type", :class_suffix => nil }) -%>
-    <h3>Contents by type</h3>
+    <h3><%=t 'index_page.index.contents_by_type' %></h3>
     <%= render :partial => 'archive_by_type' -%>
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
@@ -147,7 +147,7 @@
         <ul>
           <% feed.entries.each do |entry| -%>
             <% begin %>
-              <%= content_tag("li", link_to(h(entry.title), h(entry.urls.first))) -%>
+              <%= content_tag("li", link_to(h(entry.title), h(entry.url))) -%>
             <% rescue %>
               <% logger.info("ERROR: This feed entry is invalid. Probably because an error occurred in the deserialization of the feed.")
                  logger.info("Check the source feed and make sure it is serializes/deserializes correctly.") %>
@@ -162,17 +162,10 @@
 <% if !@current_basket.index_page_image_as.blank? and !@selected_image_file.nil? -%>
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "selected-image-box", :class_suffix => nil }) -%>
-    <div id="selected-image-headline"><h3><%= @current_basket.index_page_image_as.capitalize -%> Image from the Archive</h3></div>
-    <div id="selected-image-display">
-      <%= render :partial =>'selected_image',
-                 :locals => { :selected_image_file => @selected_image_file,
-                              :previous_url => @previous_url,
-                              :next_url => @next_url,
-                              :selected_still_image => @selected_still_image } -%>
+    <div id="selected-image-headline">
+      <h3><%= @current_basket.index_page_image_as.capitalize -%> <%=t 'index_page.index.image_from_archive' %></h3>
     </div>
-    <%= periodically_call_remote :update => 'selected-image-display',
-                                 :url => { :action => 'selected_image' },
-                                 :frequency => 15 -%>
+    <%= slideshow_div %>
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
 
@@ -184,19 +177,19 @@
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "tags-box", :class_suffix => nil }) -%>
       <% tag_counts = @tag_counts_total > @tag_counts_array.size ?
-                       "( showing #{@tag_counts_array.size} of #{@tag_counts_total} | " +
-                        link_to("all",
+                       "( #{t('index_page.index.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_total)} | " +
+                        link_to(t('index_page.index.all_tags'),
                                 :controller => 'tags',
                                 :action => 'list') + " )" : '' -%>
       <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
         <div id="tags-headline">
-          <h3 style="display:inline;">Tags</h3>
+          <h3 style="display:inline;"><%=t 'index_page.index.tags_title' %></h3>
           <span><%= tag_counts -%></span>
         </div>
         <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array } -%>
       <% else -%>
         <div id="tags-headline">
-          <h3 style="display:inline;">Categories</h3>
+          <h3 style="display:inline;"><%=t 'index_page.index.categories_title' %></h3>
           <span><%= tag_counts -%></span>
         </div>
         <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array } -%>

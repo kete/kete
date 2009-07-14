@@ -1,11 +1,7 @@
 # Be sure to restart your web server when you modify this file.
 
-# Uncomment below to force Rails into production mode when
-# you don't control web/app server and can't set it the proper way
-# ENV['RAILS_ENV'] ||= 'production'
-
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
@@ -14,7 +10,7 @@ ITEM_CLASSES = %w(Topic StillImage AudioRecording Video WebLink Document)
 ZOOM_CLASSES = ITEM_CLASSES + ['Comment']
 # items that may have attached file(s)
 ATTACHABLE_CLASSES = ITEM_CLASSES - %w(WebLink Topic)
-ACTIVE_SCAFFOLD_CONTROLLERS = ['extended_fields', 'zoom_dbs', 'system_settings', 'oai_pmh_repository_sets', 'licenses', 'choices', 'profiles']
+ACTIVE_SCAFFOLD_CONTROLLERS = ['extended_fields', 'zoom_dbs', 'system_settings', 'oai_pmh_repository_sets', 'licenses', 'choices', 'search_sources', 'profiles']
 CACHES_CONTROLLERS = ['audio', 'baskets', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
 
 # Walter McGinnis, 2007-01-07
@@ -35,15 +31,14 @@ Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
-  # See Rails::Configuration for more options.
 
-  # Skip frameworks you're not going to use. To use Rails without a database
-  # you must remove the Active Record framework.
-  # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
+  # Add additional load paths for your own custom dirs
+  # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
-  # Specify gems that this application depends on.
-  # They can then be installed with "rake gems:install" on new installations.
+  # Specify gems that this application depends on and have them installed with rake gems:install
+  # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
+  # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
   # Walter McGinnis, 2008-07-02
@@ -59,32 +54,26 @@ Rails::Initializer.run do |config|
   # backgroundrb 1.1 requires packet 0.1.14
   config.gem 'packet', :version => '>= 0.1.14'
 
-
-  # Only load the plugins named here, in the order given. By default, all plugins
-  # in vendor/plugins are loaded in alphabetical order.
+  # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
+  config.plugins = [ :random_finders, :all ]
 
-  # Add additional load paths for your own custom dirs
-  # config.load_paths += %W( #{RAILS_ROOT}/extras )
+  # Skip frameworks you're not going to use. To use Rails without a database,
+  # you must remove the Active Record framework.
+  # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
 
-  # Force all environments to use the same logger level
-  # (by default production uses :info, the others :debug)
-  # config.log_level = :debug
+  # Activate observers that should always be running
+  # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
+  config.active_record.observers = :user_observer
 
-  # Make Time.zone default to the specified zone, and make Active Record store time values
-  # in the database in UTC, and return them converted to the specified local zone.
-  # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
+  # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
+  # Run "rake -D time" for a list of tasks for finding time zone names.
   config.time_zone = 'UTC'
 
-  # Your secret key for verifying cookie session data integrity.
-  # If you change this key, all old sessions will become invalid!
-  # Make sure the secret is at least 30 characters and all random,
-  # no regular words or you'll be exposed to dictionary attacks.
-  config.action_controller.session = {
-    :session_key => '_kete_session',
-    :secret      => 'a05fb67d1237cf87cf04a30a7a141d3c1377ae6db1985f15fefa745684790c320e672bda6d9201eea2013f3936bdf57f834006ab4df473c4590cb79944e12a52'
-  }
+  # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
+  # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
+  # config.i18n.default_locale = :de
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
@@ -93,28 +82,14 @@ Rails::Initializer.run do |config|
   config.action_controller.session_store = :mem_cache_store
   config.cache_store = :file_store, 'tmp/cache'
 
-  # Use SQL instead of Active Record's schema dumper when creating the test database.
-  # This is necessary if your schema can't be completely dumped by the schema dumper,
-  # like if you have constraints or database-specific column types
-  # config.active_record.schema_format = :sql
-
-  # Activate observers that should always be running
-  # config.active_record.observers = :cacher, :garbage_collector
-  # incremental step towards the proper way of doing this in 2.0
-  # should go in a file under config/initializers/
-  config.active_record.observers = :user_observer
-
   # white list html elements here, besides defaults
   config.action_view.sanitized_allowed_tags = 'table', 'tr', 'td', 'tbody', 'th', 'thead', 'tfoot', 'font', 'object', 'param', 'embed'
   config.action_view.sanitized_allowed_attributes = 'id', 'style', 'hspace', 'vspace', 'align', 'dir', 'border', 'cellspacing',  'cellpadding', 'summary', 'bgcolor', 'background', 'bordercolor', 'rowspan', 'valign', 'colspan', 'scope', 'lang', 'face', 'color', 'size', 'target', 'classid', 'codebase', 'quality', 'type', 'pluginspage', 'wmode', 'data', 'flashvars', 'allowfullscreen'
-
-  # we need to set up randmom_finders first
-  config.plugins = [ :random_finders, :all ]
 end
 
-# Kieran Pilkington, 2008/07/28
-# We overwrite one of the Dispatch methods to give us the ability to make customized error pages
-# for errors that occur before controllers are called (like when memcache is not online)
+# Kieran Pilkington, 2009/07/06
+# overwrite ActionController::Failsafe to catch some errors
+# see lib/error_handler.rb
 require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 
 # Include your application configuration below
@@ -130,6 +105,14 @@ class String
     # decode special chars (like multi language chars)
     # escape xml special chars &, <, and >
     CGI::escapeHTML(entities.decode(self))
+  end
+  # In Rails 2.3, strip_tags and sanitize are not accessible in their short form outside of
+  # helpers and view, so lets add a method on String that we can call in controllers/models/libs etc
+  def strip_tags
+    ActionController::Base.helpers.strip_tags(self)
+  end
+  def sanitize
+    ActionController::Base.helpers.sanitize(self)
   end
   def escape_for_url
     URI.escape(self, /\W/)

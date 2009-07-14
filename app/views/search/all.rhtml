@@ -1,9 +1,9 @@
 <% @title = String.new
-   @title += "All " unless @extended_field
-   @title += title_setup_first_part('Results in ', true) + last_part_of_title_if_refinement_of %>
+   @title += t('search.all.all') unless @extended_field
+   @title += title_setup_first_part(t('search.all.results_in'), true) + last_part_of_title_if_refinement_of %>
 
 <%= render(:partial => "topics/content_wrapper_start",
-           :locals => { :style_classes => "full-width notabs#{" choices" if params[:browse_by] && params[:browse_by] == 'choice_hierarchy'}"}) -%>
+           :locals => { :style_classes => "full-width notabs#{" choices" if params[:view_as] && params[:view_as] == 'choice_hierarchy'}"}) -%>
   <%= render :partial => 'form', :locals => { :headline => 'Refine your results' } %>
 <%= render(:partial => "topics/content_wrapper_end" ) %>
 

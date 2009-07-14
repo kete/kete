@@ -23,9 +23,10 @@ end
 module ActiveScaffold
   module Helpers
     # Helpers that assist with the rendering of a Form Column
-    module FormColumns
+    module FormColumnHelpers
       def active_scaffold_input_calendar_date_select(column, options)
-        calendar_date_select("record", column.name, options)
+        options[:class] = "#{options[:class]} text-input".strip
+        calendar_date_select("record", column.name, options.merge(column.options))
       end      
     end
   end
@@ -35,12 +36,18 @@ module ActiveScaffold
   module Helpers
     module ViewHelpers
 
-      def active_scaffold_includes_with_calendar_date_select
-        active_scaffold_includes_without_calendar_date_select + 
-          calendar_date_select_includes
+      # Provides stylesheets to include with +stylesheet_link_tag+
+      def active_scaffold_stylesheets_with_calendar_date_select(frontend = :default)
+        active_scaffold_stylesheets_without_calendar_date_select.to_a << calendar_date_select_stylesheets
       end
+      alias_method_chain :active_scaffold_stylesheets, :calendar_date_select
+
+      # Provides stylesheets to include with +stylesheet_link_tag+
+      def active_scaffold_javascripts_with_calendar_date_select(frontend = :default)
+        active_scaffold_javascripts_without_calendar_date_select.to_a << calendar_date_select_javascripts
+      end
+      alias_method_chain :active_scaffold_javascripts, :calendar_date_select
       
-      alias_method_chain :active_scaffold_includes, :calendar_date_select
     end
   end
 end

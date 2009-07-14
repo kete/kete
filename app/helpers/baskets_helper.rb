@@ -69,8 +69,7 @@ module BasketsHelper
     #  @inheritance_message += "Unspecified settings will be inherited
     #                        from the settings of the Site."
     #else
-      @inheritance_message += "These settings will be inherited by all other
-baskets unless they individually specify their own policy."
+      @inheritance_message += t('baskets_helper.basket_preferences_inheritance_message.inheritance_notice')
     #end
 
     @inheritance_message += "</p>"
@@ -88,9 +87,9 @@ baskets unless they individually specify their own policy."
       action = params[:action] == 'render_basket_form' ? 'new' : params[:action]
       location = { :action => action, :basket_profile => params[:basket_profile] }
       if params[:show_all_fields]
-        html += link_to 'show allowed fields', location.merge(:show_all_fields => nil)
+        html += link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(:show_all_fields => nil)
       else
-         html += link_to 'show all fields', location.merge(:show_all_fields => true)
+         html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(:show_all_fields => true)
       end
       html += ']</span>'
     end

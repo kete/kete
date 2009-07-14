@@ -15,19 +15,22 @@ class ExtendedFieldsController < ApplicationController
     config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition]
     config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition]
 
+    config.columns[:description].options = { :rows => 5 }
+    config.columns[:import_synonyms].options = { :rows => 5 }
+
     config.columns << [:base_url]
-    config.columns[:base_url].label = "Base URL"
-    config.columns[:base_url].description = "Whatever the user inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the choice ftypes, Base URL + value will take over from normal linking to all results that match the value for the choice for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
+    config.columns[:base_url].label = I18n.t('extended_fields_controller.base_url')
+    config.columns[:base_url].description = I18n.t('extended_fields_controller.base_url_description')
 
     # CRUD for adding/removing choices
     config.columns << [:pseudo_choices]
-    config.columns[:pseudo_choices].label = "Available choices"
-    config.columns[:pseudo_choices].description = "Ftype must be a \"choices\" option for these options to be available to users."
+    config.columns[:pseudo_choices].label = I18n.t('extended_fields_controller.available_choices')
+    config.columns[:pseudo_choices].description = I18n.t('extended_fields_controller.available_choices_description')
     config.columns[:user_choice_addition].label = nil
 
     config.columns << [:topic_type]
-    config.columns[:topic_type].label = "Topic Type Choices"
-    config.columns[:topic_type].description = "Ftype must be a \"Pre-populated Choices (topic type)\" option for these options to be available to users."
+    config.columns[:topic_type].label = I18n.t('extended_fields_controller.topic_type_choices')
+    config.columns[:topic_type].description = I18n.t('extended_fields_controller.topic_type_choices_description')
   end
 
   def add_field_to_multiples
@@ -119,7 +122,7 @@ class ExtendedFieldsController < ApplicationController
     logger.debug("Topics are: #{topics.inspect}")
 
     topics = topics.map { |entry|
-      @template.content_tag("li", "#{sanitize(entry.title)} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
+      @template.content_tag("li", "#{entry.title.sanitize} (#{@template.url_for(:urlified_name => entry.basket.urlified_name,
                                                                           :controller => 'topics',
                                                                           :action => 'show',
                                                                           :id => entry,
@@ -130,7 +133,13 @@ class ExtendedFieldsController < ApplicationController
 
   private
 
+  def base_url_form_column(record, input_name)
+    value = record.id.nil? ? '' : record.base_url
+    @template.text_field_tag(input_name, value, { :id => 'record_base_url' })
+  end
+  helper_method :base_url_form_column
+
   def set_page_title
-    @title = 'Extended Fields'
+    @title = t('extended_fields_controller.title')
   end
 end

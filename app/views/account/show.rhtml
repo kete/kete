@@ -1,47 +1,46 @@
-<% @title = 'Profile of ' + h(@user.user_name) -%>
+<% @title = t('account.show.title', :user_name => h(@user.user_name)) -%>
 
 <div>
   <h2 style="display:inline;"><%= h(@title) -%></h2>
   <% if @viewer_is_user -%>
     [
-    <%= link_to 'edit', :action => 'edit' %>
-    | <%= link_to 'change password', :action => 'change_password' %>
+    <%= link_to t('account.show.edit'), :action => 'edit' %>
+    | <%= link_to t('account.show.change_password'), :action => 'change_password' %>
     ]
   <% end -%>
 </div>
 
 <% if @viewer_is_user && (ENABLE_USER_PORTRAITS || (ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil?)) -%>
   <div id="portrait_help_div">
-    <p>
-      Portraits are a set of images you display on your profile page to users who view it.
-      It can be your own artwork uploaded to the site, or your favorite images.
-      The first portrait added (which can be reordered later) becomes your 'selected' portrait, that is,
-      the one you wish to use as an avatar around the site. It will be displayed on your profile page and next
-      to any comments you post.
-    </p>
+    <p><%=t 'account.show.portrait_description' -%></p>
     <ul>
       <% if ENABLE_USER_PORTRAITS -%>
         <li>
-          You can create a <%= link_to 'new portrait', { :controller => 'images', :action => 'new', :portrait => true, :selected_portrait => true } -%> by uploading a new image.
-          Alternatively, you can go to an image you've <%= link_to 'uploaded before', url_for_contributions_of(current_user, 'StillImage') -%>, and select 'Add image to portraits' in the right sidebar.
+          <%=t 'account.show.portrait_new',
+               :new_portrait_link => link_to(t('account.show.new_portrait_link'),
+                                             { :controller => 'images', :action => 'new',
+                                               :portrait => true, :selected_portrait => true }),
+               :uploaded_link => link_to(t('account.show.uploaded_link'),
+                                         url_for_contributions_of(current_user, 'StillImage')) -%>
         </li>
         <% if !@viewer_portraits.blank? -%>
-          <li>To change your selected portrait:
+          <li><%=t 'account.show.change_portrait' %>
             <ul>
-              <li>Drag a new one from "Other Portraits" and drop it on top of the current one (requires Javascript).</li>
-              <li>Use the arrow buttons to shift them around (when Javascript is off).</li>
+              <li><%=t 'account.show.drag_portraits' %></li>
+              <li><%=t 'account.show.shift_portraits' %></li>
             </ul>
           </li>
         <% end -%>
       <% end -%>
       <% if ENABLE_GRAVATAR_SUPPORT && @viewer_portraits.nil? -%>
         <li>
-          Add an avatar to your account by registering a global portrait with <%= link_to 'gravatar.com', 'http://gravatar.com/' -%>.
-          <%= "Alternatively, you can add a user portrait using the instructions above." if ENABLE_USER_PORTRAITS -%>
+          <%=t 'account.show.gravatar',
+               :gravatar_link => link_to(t('account.show.gravatar_link'), 'http://gravatar.com/') -%>
+          <%= t('account.show.portrait_or_gravatar') if ENABLE_USER_PORTRAITS -%>
         </li>
       <% end -%>
     </ul>
-    <div id="close_help"><%= link_to 'Close X', :action => 'show' -%></a></div>
+    <div id="close_help"><%= link_to t('account.show.close_portrait_help'), :action => 'show' -%></a></div>
   </div>
   <% if !params[:whats_this] -%>
     <%= javascript_tag "$('portrait_help_div').hide();" -%>
@@ -53,9 +52,9 @@
   <% if ENABLE_USER_PORTRAITS && !@viewer_portraits.blank? -%>
   <div id="portraits">
     <div>
-      <h4>Other Portraits</h4>
+      <h4><%=t 'account.show.other_portraits' %></h4>
       <% if @viewer_is_user -%>
-        <img src="/images/indicator.gif" width="16" height="16" alt="Editing portraits. " id="data_spinner" style="display:none;" />
+        <img src="/images/indicator.gif" width="16" height="16" alt="<%=t 'account.show.editing_portraits' %>" id="data_spinner" style="display:none;" />
       <% end -%>
     </div>
     <br />
@@ -70,13 +69,13 @@
 
   <% user_baskets = users_baskets_list(@user, { :show_options => true,
                                                 :show_roles => false,
-                                                :request_text => 'Request',
-                                                :pending_text => 'Pending',
-                                                :rejected_text => 'Rejected' }) -%>
+                                                :request_text => t('account.show.request'),
+                                                :pending_text => t('account.show.pending'),
+                                                :rejected_text => t('account.show.rejected') }) -%>
   <% unless user_baskets.blank? -%>
   <div>
     <div>
-      <h4 style="display:inline;">Baskets</h4>
+      <h4 style="display:inline;"><%=t 'account.show.baskets' -%></h4>
       <%= "[ #{header_add_basket_link.downcase} ]" if @viewer_is_user && !header_add_basket_link.blank?-%>
     </div>
     <div>
@@ -98,35 +97,35 @@
     </div>
     <% if @viewer_is_user && ENABLE_USER_PORTRAITS -%>
       <% unless selected_portrait.nil? %>
-        <div id="selected_portrait">Selected<br />Portrait</div>
+        <div id="selected_portrait"><%=t 'account.show.selected_portrait' %></div>
       <% end -%>
-      <div id="portrait_help"><%= link_to "what's this?", :whats_this => true -%></div>
-      <div id="new_portrait"><%= link_to 'new portrait', { :controller => 'images', :action => 'new', :selected_portrait => true } -%></div>
+      <div id="portrait_help"><%= link_to t('account.show.whats_portraits'), :whats_this => true -%></div>
+      <div id="new_portrait"><%= link_to t('account.show.new_portrait'), { :controller => 'images', :action => 'new', :selected_portrait => true } -%></div>
     <% end -%>
   <% end -%>
 </div>
 
 <div class="profile_content_left">
   <p>
-    <strong>User name:</strong>
+    <strong><%=t 'account.show.user_name' %></strong>
     <%= h(@user.user_name) -%>
     <%= "(#{@user.login})" if @site_admin && @user.user_name != @user.login -%>
   </p>
 
   <% if @user.show_email? || @viewer_is_user -%>
   <p>
-    <strong>Email:</strong>
+    <strong><%=t 'account.show.email' %></strong>
     <%= mail_to(@user.email, @user.email, :encode => "hex") -%>
   </p>
   <% elsif @user.accepts_emails? -%>
   <p>
-    <strong>Email:</strong>
-    <%= link_to 'Contact this user', :action => 'contact', :id => @user -%>
+    <strong><%=t 'account.show.email' %></strong>
+    <%= link_to t('account.show.contact_user'), :action => 'contact', :id => @user -%>
   </p>
   <% end -%>
 
   <p>
-    <strong>Created:</strong>
+    <strong><%=t 'account.show.created' %></strong>
     <%= h(@user.created_at.to_s(:euro_date_time)) -%>
   </p>
 
@@ -139,22 +138,22 @@
 
   <% if @viewer_is_user and licenses_are_available? %>
   <div>
-    <h4>Current default license</h4>
+    <h4><%=t 'account.show.current_license' %></h4>
     <div class="license">
       <% if @user.license.nil? %>
-        Click the edit link above to set your default license.
+        <%=t 'account.show.set_license' %>
       <% else -%>
-        <%= image_tag(@user.license.image_url, :alt => "License thumbnail. ") %>
+        <%= image_tag(@user.license.image_url, :alt => t('account.show.license_thumbnail')) %>
         <%= @user.license.title %>
-        <%= link_to("(View license)", url_for(@user.license.url)) %>
+        <%= link_to(t('account.show.view_license'), url_for(@user.license.url)) %>
       <% end -%>
     </div>
   </div>
   <% end -%>
 
   <div>
-    <h4>Contributions</h4>
-    Items created by or contributed to by <%= link_to_contributions_of(@user,'Topic') -%>
+    <h4><%=t 'account.show.contributions' %></h4>
+    <%=t 'account.show.contributions_link', :user_link => link_to_contributions_of(@user,'Topic') %>
   </div>
 
 </div>

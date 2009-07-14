@@ -1,10 +1,10 @@
-<% @title = 'New topic type' -%>
+<% @title = t('topic_types.new.title') -%>
 
 <h2><%= h(@title) -%></h2>
 
 <% form_tag :action => 'create' do %>
   <%= render :partial => 'form' %>
-  <div class="wrap"><%= submit_tag "Create" %></div>
+  <div class="wrap"><%= submit_tag t('topic_types.new.create_button') %></div>
 <% end %>
 
 <table>
@@ -14,6 +14,6 @@
 <%= render(:partial => 'inherited_fields', :locals => { :parent_id => params[:parent_id] }) %>
 </table>
 
-<%= link_to 'Cancel', :action => 'list' %>
+<%= link_to t('topic_types.new.cancel'), :action => 'list' %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

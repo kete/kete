@@ -14,6 +14,6 @@ class OaiPmhRepositorySetsController < ApplicationController
   private
 
   def set_page_title
-    @title = 'Oai Pmh Repository Sets'
+    @title = t('oai_pmh_repository_sets_controller.title')
   end
 end

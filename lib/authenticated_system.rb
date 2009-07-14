@@ -109,10 +109,31 @@ module AuthenticatedSystem
       session[:return_to] = request.request_uri
     end
 
+    # Strip the locale out of the URL
+    # If a hash, sets locale to false
+    # If a string, gsubs it out
+    def strip_locale(hash_or_url)
+      if hash_or_url.is_a?(Hash)
+        hash_or_url[:locale] = false
+      elsif hash_or_url.is_a?(String)
+        locale_match = %r(^/(#{User.language_choices.keys.map{|l|l.to_s}.join('|')}))
+        hash_or_url = hash_or_url.gsub(locale_match, '')
+        hash_or_url
+      else
+        raise "ERROR: Don't know how to strip locale from #{hash_or_url.class.name}"
+      end
+    end
+
     # Redirect to the URI stored by the most recent store_location call or
     # to the passed default.
-    def redirect_back_or_default(default)
-      session[:return_to] ? redirect_to(session[:return_to]) : redirect_to(default)
+    def redirect_back_or_default(default, lang=nil)
+      if session[:return_to]
+        return_to = strip_locale(session[:return_to])
+        return_to = "/#{lang.to_s}" + return_to if lang
+        redirect_to(return_to)
+      else
+        redirect_to(default)
+      end
       session[:return_to] = nil
     end
 
@@ -131,7 +152,7 @@ module AuthenticatedSystem
         user.remember_me
         self.current_user = user
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-        flash[:notice] = "Logged in successfully"
+        flash[:notice] = I18n.t('authenticated_system_lib.login_from_cookie.logged_in')
       end
     end
 

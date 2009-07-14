@@ -24,7 +24,7 @@ module BrainBusterSystem
     raise_if_salt_isnt_set
     return true if (captcha_passed? || !brain_buster_enabled)
     debug_brain_buster { "Initializing the brain_buster object."}
-    assigns[:captcha] = find_brain_buster
+    @captcha = find_brain_buster
   end
   
   # Ensure that the answer attempt from the params successfully passes the captcha.
@@ -36,7 +36,7 @@ module BrainBusterSystem
     return true if (captcha_passed? || !brain_buster_enabled)
     return captcha_failure unless (params[:captcha_id] && params[:captcha_answer])
       
-    captcha = assigns[:captcha] = find_brain_buster
+    captcha = @captcha = find_brain_buster
     is_success = captcha.attempt?(params[:captcha_answer])
     debug_brain_buster { is_success ? "Captcha successfully passed." : "Captcha failed - #{ captcha.inspect }" }
     set_captcha_status(is_success)
@@ -75,8 +75,11 @@ module BrainBusterSystem
   # attempt fails.  You should override #render_or_redirect_for_captcha_failure to
   # handle captcha failure yourself.
   def captcha_failure
-    set_captcha_failure_message
-    render_or_redirect_for_captcha_failure
+    # Kieran Pilkington, 2009-05-25
+    # We use our own messages/display, so return false instead
+    #set_captcha_failure_message
+    #render_or_redirect_for_captcha_failure
+    false
   end
   
   def render_or_redirect_for_captcha_failure

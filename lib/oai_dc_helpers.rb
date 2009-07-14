@@ -1,5 +1,4 @@
 include Utf8UrlFor
-include ActionView::Helpers::SanitizeHelper
 
 # oai dublin core xml helpers
 # TODO: evaluate whether we can simply go with SITE_URL
@@ -118,7 +117,7 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(item)
 
-      xml.send("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true))}")
+      xml.send("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true, :locale => false))}")
     end
 
     def oai_dc_xml_dc_title(xml, item)
@@ -139,9 +138,8 @@ module OaiDcHelpers
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
-        description = strip_tags(description)
         xml.send("dc:description") {
-          xml.cdata description
+          xml.cdata description.strip_tags
         }
       end
     end
@@ -192,13 +190,13 @@ module OaiDcHelpers
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
         } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name)}")
+        xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name, :locale => false)}")
       else
         item.related_items.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
           } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(related.class.name), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name)}")
+          xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(related.class.name), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name, :locale => false)}")
         end
       end
     end
@@ -265,7 +263,8 @@ module OaiDcHelpers
           :urlified_name => Basket.about_basket.urlified_name,
           :action => 'show',
           :controller => 'topics',
-          :escape => false
+          :escape => false,
+          :locale => false
         )
       end
 

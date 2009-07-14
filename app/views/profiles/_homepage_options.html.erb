@@ -1,12 +1,12 @@
 <fieldset>
 
-  <div class="form-element">show<br />field?</div>
+  <div class="form-element"><%=t 'profiles.homepage_options.show_field' %></div>
 
   <div class="form-element">
     <%= rules_allowed_check_box('index_page_redirect_to_all') %>
-    <label>Go directly to "browse" options</label>
+    <label><%=t 'profiles.homepage_options.go_to_browse' %></label>
     <%= rules_fieldset_tag('index_page_redirect_to_all') %>
-      <%= rules_select_tag('index_page_redirect_to_all', options_for_select(zoom_controllers_as_options([["Don't redirect", '']]), current_value_for('index_page_redirect_to_all')), 'Redirect to results of?') %>
+      <%= rules_select_tag('index_page_redirect_to_all', options_for_select(zoom_controllers_as_options([[t('profiles.homepage_options.dont_redirect'), '']]), current_value_for('index_page_redirect_to_all')), t('profiles.homepage_options.go_to_browse_description')) %>
     </fieldset>
   </div>
 
@@ -14,11 +14,11 @@
 
     <div class="form-element">
       <%= rules_allowed_check_box('index_page_topic_is_entire_page') %>
-      <label>Homepage Topic</label>
+      <label><%=t 'profiles.homepage_options.homepage_topic' %></label>
       <%= rules_fieldset_tag('index_page_topic_is_entire_page') %>
-        <%= rules_check_box_tag('index_page_topic_is_entire_page', '1', 'Show only homepage topic?') %>
+        <%= rules_check_box_tag('index_page_topic_is_entire_page', '1', t('profiles.homepage_options.show_only_homepage_topic')) %>
         <div class="form-element" id="depth2" <%= 'style="display:none;"' unless current_value_for('index_page_topic_is_entire_page').blank? %>>
-          <%= rules_select_tag('index_page_link_to_index_topic_as', options_for_select(Basket.link_to_index_topic_as_options, current_value_for('index_page_link_to_index_topic_as')), 'A link to the homepage topic\'s?') %>
+          <%= rules_select_tag('index_page_link_to_index_topic_as', options_for_select(Basket.link_to_index_topic_as_options, current_value_for('index_page_link_to_index_topic_as')), t('profiles.homepage_options.show_link_to_homepage_topic')) %>
         </div>
       </fieldset>
     </div>
@@ -27,68 +27,68 @@
       
       <div class="form-element">
         <%= rules_allowed_check_box('index_page_number_of_recent_topics') %>
-        <label>Recent Topics</label>
+        <label><%=t 'profiles.homepage_options.recent_topics' %></label>
         <%= rules_fieldset_tag('index_page_number_of_recent_topics') %>
-          <%= rules_text_field_tag('index_page_number_of_recent_topics', 'List how many recent topics?') %>
+          <%= rules_text_field_tag('index_page_number_of_recent_topics', t('profiles.homepage_options.how_many_recent_topics')) %>
           <div class="form-element" id="depth4" <%= 'style="display:none;"' unless current_value_for('index_page_number_of_recent_topics').to_i > 0 %>>
-            <%= rules_select_tag('index_page_recent_topics_as', options_for_select(Basket.recent_topics_as_options, current_value_for('index_page_recent_topics_as')), 'List basket\'s topics as?') %>
+            <%= rules_select_tag('index_page_recent_topics_as', options_for_select(Basket.recent_topics_as_options, current_value_for('index_page_recent_topics_as')), t('profiles.homepage_options.list_topics_as')) %>
           </div>
         </fieldset>
       </div>
 
       <div class="form-element">
         <%= rules_allowed_check_box('index_page_basket_search') %>
-        <label>Search</label>
+        <label><%=t 'profiles.homepage_options.search' %></label>
         <%= rules_fieldset_tag('index_page_basket_search') %>
-          <%= rules_check_box_tag('index_page_basket_search', '1', 'Include basket search form?') %>
+          <%= rules_check_box_tag('index_page_basket_search', '1', t('profiles.homepage_options.search_description')) %>
         </fieldset>
       </div>
 
       <div class="form-element">
         <%= rules_allowed_check_box('index_page_extra_side_bar_html') %>
-        <label>Sidebar content after search</label>
+        <label><%=t 'profiles.homepage_options.sidebar_content' %></label>
         <%= rules_fieldset_tag('index_page_extra_side_bar_html') %>
           <%= rules_text_area_tag('index_page_extra_side_bar_html') %>
-          <%= rules_check_box_tag('do_not_sanitize', 'true', 'Allow forms and other possible insecure elements and attributes in the HTML?') %>
+          <%= rules_check_box_tag('do_not_sanitize', 'true', t('profiles.homepage_options.sidebar_content_do_not_sanitize')) %>
         </fieldset>
       </div>
 
       <div class="form-element">
         <%= rules_allowed_check_box('index_page_image_as') %>
-        <label>Selected Image</label>
+        <label><%=t 'profiles.homepage_options.selected_image' %></label>
         <%= rules_fieldset_tag('index_page_image_as') %>
-          <%= rules_select_tag('index_page_image_as', options_for_select(Basket.image_as_options, current_value_for('index_page_image_as')), 'Show image from basket?') %>
+          <%= rules_select_tag('index_page_image_as', options_for_select(Basket.image_as_options, current_value_for('index_page_image_as')), t('profiles.homepage_options.selected_image_description')) %>
         </fieldset>
       </div>
 
       <div class="form-element">
         <%= rules_allowed_check_box('index_page_archives_as') %>
-        <label>Archives</label>
+        <label><%=t 'profiles.homepage_options.archives' %></label>
         <%= rules_fieldset_tag('index_page_archives_as') %>
-          <%= rules_select_tag('index_page_archives_as', options_for_select(Basket.archives_as_options, current_value_for('index_page_archives_as')), 'List basket\'s archive contents as?') %>
+          <%= rules_select_tag('index_page_archives_as', options_for_select(Basket.archives_as_options, current_value_for('index_page_archives_as')), t('profiles.homepage_options.archives_description')) %>
         </fieldset>
       </div>
 
       <div class="form-element">
         <%= rules_allowed_check_box('index_page_number_of_tags') %>
-        <label>Tags</label>
+        <label><%=t 'profiles.homepage_options.tags' %></label>
         <%= rules_fieldset_tag('index_page_number_of_tags') %>
-          <%= rules_text_field_tag('index_page_number_of_tags', 'List how many tags?') %>
+          <%= rules_text_field_tag('index_page_number_of_tags', t('profiles.homepage_options.how_many_tags')) %>
           <div id="depth5" <%= 'style="display:none;"' unless current_value_for('index_page_number_of_tags').to_i > 0 %>>
-            <%= rules_select_tag('index_page_tags_as', options_for_select(Basket.tags_as_options, current_value_for('index_page_tags_as')), 'List basket\'s tags as?') %>
-            <%= rules_select_tag('index_page_order_tags_by', options_for_select(Basket.order_tags_by_options, current_value_for('index_page_order_tags_by')), 'Order tags by?') %>
+            <%= rules_select_tag('index_page_tags_as', options_for_select(Basket.tags_as_options, current_value_for('index_page_tags_as')), t('profiles.homepage_options.list_tags_as')) %>
+            <%= rules_select_tag('index_page_order_tags_by', options_for_select(Basket.order_tags_by_options, current_value_for('index_page_order_tags_by')), t('profiles.homepage_options.order_tags_by')) %>
           </div>
         </fieldset>
       </div>
 
       <div class="form-element">
         <%= rules_allowed_check_box('feeds_url_list') %>
-        <label>RSS or Atom Feeds</label>
+        <label><%=t 'profiles.homepage_options.rss_or_atom_feeds' %></label>
         <%= rules_fieldset_tag('feeds_url_list') %>
           <%= rules_text_area_tag('feeds_url_list') %>
           <div class="form_example">
-            <p>A new-line separated list of URLs in the following format per line:</p>
-            <p>Feed Title|Feed URL|(Maximum number of entries to display - optional)|(Update frequency in minutes - optional)</p>
+            <p><%=t 'profiles.homepage_options.rss_or_atom_feeds_description_part1' %></p>
+            <p><%=t 'profiles.homepage_options.rss_or_atom_feeds_description_part2' %></p>
           </div>
         </fieldset>
       </div>

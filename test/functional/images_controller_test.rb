@@ -43,7 +43,7 @@ class ImagesControllerTest < ActionController::TestCase
       assert_equal false, image.file_private?
     end
     assert_response :redirect
-    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image)
+    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
   end
 
   def test_create_populates_file_privacy_correctly_with_private
@@ -61,7 +61,7 @@ class ImagesControllerTest < ActionController::TestCase
     end
     assert_equal true, original_of(assigns(:still_image)).file_private
     assert_response :redirect
-    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image)
+    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
   end
 
   def test_update_populates_file_privacy_correctly_from_public_to_private
@@ -86,7 +86,7 @@ class ImagesControllerTest < ActionController::TestCase
     end
 
     assert_response :redirect
-    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image)
+    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
   end
 
   def test_update_populates_file_privacy_correctly_from_private_to_public
@@ -111,7 +111,7 @@ class ImagesControllerTest < ActionController::TestCase
     end
 
     assert_response :redirect
-    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image)
+    assert_redirected_to :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
   end
 
   private

@@ -1,3 +1,8 @@
+require 'rake'
+require 'rake/rdoctask'
+require 'rake/testtask'
+require 'tasks/rails'
+
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, :only => [:section, :finish,
@@ -92,7 +97,7 @@ class ConfigureController < ApplicationController
       render :update do |page|
         page.hide("settings")
         page.show("zoom")
-        page.replace_html("completed-message", "<h3>Not yet completed.</h3>")
+        page.replace_html("completed-message", "<h3>#{t('configure_controller.done_with_settings.not_yet_completed')}</h3>")
       end
     end
   end
@@ -183,7 +188,7 @@ class ConfigureController < ApplicationController
 
       render :update do |page|
         page.show('prime-zebra-check')
-        page.replace_html("prime-zebra-message", "Search Engine has been primed.")
+        page.replace_html("prime-zebra-message", t('configure_controller.prime_zebra.primed_zebra'))
         page.show('reload-site-index')
         page.hide('restart-before-continue-message')
       end
@@ -221,7 +226,7 @@ class ConfigureController < ApplicationController
           end
         else
           render :update do |page|
-            page.replace_html("top_message", "There is already a site registration worker active. Wierd! Try refreshing the page.")
+            page.replace_html("top_message", t('configure_controller.send_information.already_running'))
             page.hide('spinner')
           end
         end
@@ -246,13 +251,14 @@ class ConfigureController < ApplicationController
           MiddleMan.worker(@worker_type, @worker_key).delete
 
           if status[:linking_success] == true
-            top_message = "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='#{@kete_sites}'>#{@kete_sites}</a>."
+            top_message = t('configure_controller.get_site_linking_progress.site_registered',
+                            :kete_sites_link => @kete_sites)
             render :update do |page|
               page.hide('spinner')
               page.replace_html("top_message", top_message)
             end
           elsif !status[:linking_validation_errors].blank?
-            linking_errors = "<strong>Some fields were incorrect:</strong><br />"
+            linking_errors = "<strong>#{t('configure_controller.get_site_linking_progress.incorrect_fields')}</strong><br />"
             status[:linking_validation_errors].each do |field, error|
               linking_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
             end
@@ -291,6 +297,30 @@ class ConfigureController < ApplicationController
 
   def set_not_completed
     @not_completed = SystemSetting.not_completed
+  end
+
+  # controls once the site is configured
+
+  def restart_server
+    ENV['RAILS_ENV'] = RAILS_ENV
+    rake_result = Rake::Task["kete:tools:restart"].execute(ENV)
+    if rake_result
+      flash[:notice] = t('configure_controller.restart_server.server_restarted')
+    else
+      flash[:error] = t('configure_controller.restart_server.problem_restarting')
+    end
+    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
+  end
+
+  def clear_cache
+    ENV['RAILS_ENV'] = RAILS_ENV
+    rake_result = Rake::Task["tmp:cache:clear"].execute(ENV)
+    if rake_result
+      flash[:notice] = t('configure_controller.clear_cache.cache_cleared')
+    else
+      flash[:error] = t('configure_controller.clear_cache.problem_clearing_cache')
+    end
+    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
   end
 
   private

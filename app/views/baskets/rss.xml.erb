@@ -2,8 +2,8 @@
 <%= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
     xml.rss(:version => '2.0') {
       xml.channel {
-        xml.title (SITE_NAME + ' - Latest ' + @number_per_page.to_s + ' Baskets')
-        xml.description "Latest Baskets"
+        xml.title t('baskets.rss.title', :site_name => SITE_NAME, :amount => @number_per_page.to_s)
+        xml.description t('baskets.rss.description')
         xml.link (request.protocol + request.host + request.request_uri)
         xml.language 'en-nz'
         for basket in @baskets

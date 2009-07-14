@@ -100,7 +100,8 @@ class ImagesController < ApplicationController
       @image_file = ImageFile.update_attributes(params[:image_file]) if !params[:image_file][:uploaded_data].blank?
 
       after_successful_zoom_item_update(@still_image, version_after_update)
-      flash[:notice] = 'Image was successfully updated.'
+      flash[:notice] = t('images_controller.update.updated')
+
       redirect_to_show_for(@still_image, :private => (params[:still_image][:private] == "true"))
     else
       render :action => 'edit'

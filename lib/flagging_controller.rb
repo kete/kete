@@ -41,7 +41,7 @@ module FlaggingController
                                                         :submitter => @submitter,
                                                         :message => @message)
 
-      flash[:notice] = "Thank you for your input.  A moderator has been notified and will review the item in question. The item has been reverted to a non-contested version for the time being."
+      flash[:notice] = I18n.t('flagging_controller_lib.flag_version.item_flagged')
       redirect_to @item_url
     end
 
@@ -82,13 +82,14 @@ module FlaggingController
 
         # Set the version comment
         params[name_for_params.to_sym] = {}
-        params[name_for_params.to_sym][:version_comment] = "Content from revision # #{@version}."
+        params[name_for_params.to_sym][:version_comment] = I18n.t('flagging_controller_lib.restore.version_comment',
+                                                                  :version => @version)
 
         # Exempt the next version from moderation
         # See app/controllers/application.rb lines 241 through 282
         exempt_next_version_from_moderation!(@item)
 
-        flash[:notice] = "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
+        flash[:notice] = I18n.t('flagging_controller_lib.restore.missing_details')
         render :action => 'edit'
 
         @item.send(:allow_nil_values_for_extended_content=, true)
@@ -101,7 +102,8 @@ module FlaggingController
         @item.flag_at_with(current_version, BLANK_FLAG) if @item.already_at_blank_version?
 
         @item.tag_list = @item.raw_tag_list
-        @item.version_comment = "Content from revision \# #{@version}."
+        @item.version_comment = I18n.t('flagging_controller_lib.restore.version_comment',
+                                       :version => @version)
         @item.do_not_moderate = true
         # turn off sanitizing in restores
         # for the rare case when invalid code made it in
@@ -134,10 +136,9 @@ module FlaggingController
 
         clear_caches_and_update_zoom_for_commented_item(@item)
 
-        approval_message = 'Your contribution to ' + PRETTY_SITE_NAME + ' '
-        approval_message += 'in ' + @current_basket.name + ' ' if @current_basket != @site_basket
-        approval_message += 'has been made the live version.'
-
+        approval_message = I18n.t('flagging_controller_lib.restore.made_live',
+                                  :site_name => PRETTY_SITE_NAME,
+                                  :basket_name => @current_basket.name)
 
         # notify the contributor of this revision
         UserNotifier.deliver_approval_of(@version,
@@ -146,7 +147,8 @@ module FlaggingController
                                          approval_message)
 
 
-        flash[:notice] = "The content of this #{zoom_class_humanize(@item.class.name)} has been approved from the selected revision."
+        flash[:notice] = I18n.t('flagging_controller_lib.restore.approved',
+                                :zoom_class => zoom_class_humanize(@item.class.name))
 
         redirect_to @item_url
       end
@@ -163,7 +165,8 @@ module FlaggingController
                                         @submitter,
                                         @message)
 
-      flash[:notice] = "This version of this #{zoom_class_humanize(@item.class.name)} has been rejected.  The user who submitted the revision will be notified by email."
+      flash[:notice] = I18n.t('flagging_controller_lib.reject.rejected',
+                              :zoom_class => zoom_class_humanize(@item.class.name))
 
       redirect_to @item_url
     end
@@ -238,7 +241,8 @@ module FlaggingController
         render :template => 'topics/preview'
       end
     rescue ActiveRecord::RecordNotFound
-      flash[:notice] = "There is currently no public version of this #{params[:controller].singularize} available."
+      flash[:notice] = I18n.t('flagging_controller_lib.preview.no_public',
+                              :controller => params[:controller].singularize)
       redirect_to :controller => 'account', :action => 'login'
     end
 

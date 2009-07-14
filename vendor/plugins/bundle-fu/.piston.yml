@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 8056fd05c7ee4f637eb6137d544e91065400daab
+  branch: master
+repository_url: git://github.com/timcharper/bundle-fu.git
+lock: 
+repository_class: Piston::Git::Repository

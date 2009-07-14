@@ -1,4 +1,4 @@
-<% @title = 'New Import' -%>
+<% @title = t('importers.new.title') -%>
 
 <%= render(:partial => "baskets/actions_menu",
            :locals => { :item => @current_basket }) %>
@@ -7,73 +7,29 @@
 
 <h2><%= h(@title) -%></h2>
 
-<h3>To start an import, you must follow several conventions:</h3>
+<h3><%=t 'importers.new.conventions_note' %></h3>
 
 <ul>
-  <li><p>You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in
-    a supported format.</p></li>
-
-  <li><p>Optional: you have created a Topic Type ("topic types" link under
-  Administrator Toolbox) to group related items together, such as
-  "Collection" or be the topic type for new topics in the case of
-  text only imports.</p></li>
-
-  <li><p>You have mapped the applicable fields in the records.xml file to
-    appropriate Extended Fields' import synonyms. Import Synonyms must
-    be an exact match for the field in the records.xml file.  See "extended
-    fields" link in Administrator's Toolbox.  You'll also want to add
-    these extended fields to the appropriate Topic Type or Content Type.</p></li>
-
-  <%= embedded_enabled_message('<li><p>The same goes for embedded
-  metadata if items have associated binary files (images, audio,
-  video, and documents). ', '</p></li>') %>
-
-  <li><p>You have mapped the appropriate fields in the records.xml
-    file to tags or the title, short summary, or description fields.  Click "reconfigure site" in Administrator's Toolbox, then
-    "Advanced Options", then "Imports", and fill out form
-    appropriately.  You will need to restart the site before your
-    import for these settings to take effect.</p></li>
-
-  <li><p>You may also add a Description Template in the above
-    mentioned "Imports" form which contains HTML to be added the top
-    of each imported item's description.</p></li>
-
-  <li><p>Make a folder, referred to as your_folder from here on in the instructions, that has the following files and
-    subfolders involved in your import:</p></li>
-
+  <li><p><%=t 'importers.new.records_xml_description' %></p></li>
+  <li><p><%=t 'importers.new.topic_type' %></p></li>
+  <li><p><%=t 'importers.new.extended_fields' %></p></li>
+  <%= embedded_enabled_message("<li><p>#{t('importers.new.metadata')} ", '</p></li>') %>
+  <li><p><%=t 'importers.new.mapping_fields' %></p></li>
+  <li><p><%=t 'importers.new.description_template' %></p></li>
+  <li><p><%=t 'importers.new.structure_description' %></p></li>
   <ul>
-    <li>your_folder</li>
+    <li><%=t 'importers.new.folder_name' %></li>
     <ul>
-      <li>records.xml - the previously mentioned XML file that contains a record for
-        each item of content to be imported.  Note that it has to be
-        in a format that your selected "Import Type" understands or
-        the import will fail. Seen notes on "Import Type" for tools
-        to create this file.</li>
-      <li>Optional: a subfolder named 'images' - For your folders containing
-        images or image files themselves. For example if you had a
-        folder of images called 001, you would put it inside
-        your_folder/images/ and then images would found be at location
-        like your_folder/images/001/an_image.jpg.</li>
-      <li>Optional: accessions.xml - only applicable if this is a Past
-        Perfect import.</li>
+      <li><%=t 'importers.new.records_xml_file' %></li>
+      <li><%=t 'importers.new.images_folder' %></li>
+      <li><%=t 'importers.new.accessions_xml' %></li>
     </ul>
   </ul>
-
-  <li><p>your_folder should be placed on your server wherever your Kete
-    souce code lives, <b>under the imports folder</b>.  So if you have
-    installed Kete using the conventions of the installation guide,
-    that would be something like '/home/kete/apps/my_kete_project/current/imports/your_folder'.</p></li>
-
-  <li><p><b>You will have to transfer the files involved to the server
-    which houses your kete installation via a separate process.</b>  We do
-    this separately since imports may involve a large amount of big
-    files and the method necessary may vary depending on your
-    installation.</p></li>
-
+  <li><p><%=t 'importers.new.place_in_imports_folder' %></p></li>
+  <li><p><%=t 'importers.new.transfer_is_done_manually' %></p></li>
 </ul>
 
-<h3>If you have done the above, fill out the form below to start the
-  import.</h3>
+<h3><%=t 'importers.new.fill_in_form' %></h3>
 
 <fieldset>
   <% if @site_admin -%>
@@ -92,63 +48,43 @@
   <%= hidden_field_tag 'import[user_id]', @contributing_user.id %>
 
   <div class="form-element">
-    <label for="import_directory">What is the name of
-      your folder under the imports directory?</label>
+    <label for="import_directory"><%=t 'importers.new.what_is_folder_name' %></label>
     <%= form.text_field :directory %>
   </div>
 
   <div class="form-element">
-    <label class="required" for="import_interval_between_records">How
-    long should we wait in seconds between processing records?</label>
+    <label class="required" for="import_interval_between_records"><%=t 'importers.new.delay_between_records' %></label>
     <%= form.text_field :interval_between_records, :size => 3 %>
-    <div class="form_example">To protect against an import
-    overwhelming your server's resources and affecting the response
-    time of your website, we recommend an interval
-    between processing each record.  If your server has a lot of
-    computing power, feel free to lower this number or even put in '0'.
-    </div>
+    <div class="form_example"><%=t 'importers.new.delay_between_records_explaination' %></div>
   </div>
 
-
-  <% @type_options = [['Past Perfect 4', 'past_perfect4'],
-  ['Filemaker Pro\'s FMPDSORESULT XML format (text records only, no
-  associated images)', 'fmpdsoresult_no_images'],
-['Simple XML Topics', 'simple_topic']] -%>
+  <% @type_options = [[t('importers.new.past_perfect'), 'past_perfect4'],
+                      [t('importers.new.filemaker_pro'), 'fmpdsoresult_no_images'],
+                      [t('importers.new.simple_xml'), 'simple_topic']] -%>
 
   <div class="form-element">
-    <label class="required" for="import_xml_type">Import Type?</label>
+    <label class="required" for="import_xml_type"><%=t 'importers.new.import_type' %></label>
     <%= form.select :xml_type, @type_options %>
   </div>
 
   <div class="form-element">
-    <label for="import_xml_path_to_record">XML Path
-    to Record (only
-    applicable to Simple XML Topics type):</label>
+    <label for="import_xml_path_to_record"><%=t 'importers.new.xml_path_to_records' %></label>
     <%= form.text_field :xml_path_to_record %>
-    <div class="form_example">What is the XML element path that specifies
-      each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'.
-    </div>
+    <div class="form_example"><%=t 'importers.new.xml_path_to_records_description' %></div>
   </div>
 
   <div class="form-element">
-    <label for="import_topic_type_id">Applicable Topic
-      Type?</label>
+    <label for="import_topic_type_id"><%=t 'importers.new.applicable_topic_type' %></label>
     <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, {:class=>"select"}) %>
-    <div class="form_example">If this is an image import, such as
-      Past Perfect, than what's the name of the Topic Type of the
-      new topic for groups of
-      related items (e.g. 'Archive', 'Collection', 'Album')?
-      If this is a text only import such as FMPDSORESULT, than
-      this is the Topic Type of new topic that is created.
-    </div>
+    <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
   </div>
 
   <% if show_privacy_controls? %>
     <div class="form-element">
-      <label>Default Privacy Setting</label>
+      <label><%=t 'importers.new.default_privacy_setting' %></label>
       <ul class="option-list">
-        <li><%= radio_button 'import', :private, false, { :id => "import_private_false" }.merge((@current_basket.private_default?) ? Hash.new : { "checked" => "checked" }) %><label for="import_private_false" class="privacy-label">Public</label> (Can be viewed by everyone)</li>
-        <li><%= radio_button 'import', :private, true, { :id => "import_private_true" }.merge((@current_basket.private_default?) ? { "checked" => "checked" } : Hash.new) %><label for="import_private_true">Private</label> (Can be viewed only by basket members)</li>
+        <li><%= radio_button 'import', :private, false, { :id => "import_private_false" }.merge((@current_basket.private_default?) ? Hash.new : { "checked" => "checked" }) %><label for="import_private_false" class="privacy-label"><%=t 'importers.new.public' %></label> <%=t 'importers.new.public_description' %></li>
+        <li><%= radio_button 'import', :private, true, { :id => "import_private_true" }.merge((@current_basket.private_default?) ? { "checked" => "checked" } : Hash.new) %><label for="import_private_true"><%=t 'importers.new.private' %></label> <%=t 'importers.new.private_description' %></li>
       </ul>
     </div>
     <div class="form-element">
@@ -160,49 +96,30 @@
   <% end %>
 
   <div class="form-element">
-    <label for="import_base_tags">What tags should
-    we add to each imported item (separated by commas)?</label>
-
+    <label for="import_base_tags"><%=t 'importers.new.tags' %></label>
     <%= form.text_field :base_tags %>
-
-    <div class="form_example">These tags will be added to every item
-    in the import in addition to whatever is specified as a tag per record.
-    </div>
-
+    <div class="form_example"><%=t 'importers.new.tags_description' %></div>
   </div>
 
   <div class="form-element">
-    <label for="import_description_beginning_template">Beginning Description Template</label>
-
+    <label for="import_description_beginning_template"><%=t 'importers.new.description_template_start' %></label>
     <%= form.text_area :description_beginning_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
-
-    <div class="form_example">A piece of HTML that will go at the
-    start of every description during this import.
-    </div>
+    <div class="form_example"><%=t 'importers.new.description_template_start_description' %></div>
   </div>
 
   <div class="form-element">
-    <label for="import_default_description_end_template">End
-    Description Template (good for including an attribution)</label>
-
+    <label for="import_default_description_end_template"><%=t 'importers.new.description_template_end' %></label>
     <%= form.text_area :default_description_end_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
-
-    <div class="form_example">Should we append an piece of text
-      formatted in HTML to the end of the description of each piece of content that is
-      created during this import?  An example would be "&lt;p&gt;Any use of this image must be
-      accompanied by the credit 'Horowhenua Historical Society
-      Inc.'&lt;\p&gt;".  Useful for including an attribution for the
-      source of the imported item.
-    </div>
+    <div class="form_example"><%=t 'importers.new.description_template_end_description' %></div>
   </div>
 
   <% if licenses_are_available? -%>
-  <h3>You may also choose to have all imported items be under one of these licenses.</h3>
-  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => Import.new} %>
+    <h3><%=t 'importers.new.license' %></h3>
+    <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => Import.new} %>
   <% end -%>
 
   <div class="form-element">
-    <%= submit_tag 'Import' %>
+    <%= submit_tag t('importers.new.import_button') %>
   </div>
 
 </fieldset>

@@ -1,6 +1,8 @@
 class TopicsController < ApplicationController
   include ExtendedContentController
 
+  include ImageSlideshow
+
   def index
     redirect_to_search_for('Topic')
   end
@@ -37,7 +39,7 @@ class TopicsController < ApplicationController
       @topic_types = @topic.topic_type.full_set
     else
       # this is the site's index page, but they don't have permission to edit
-      flash[:notice] = 'You don\'t have permission to edit this topic.'
+      flash[:notice] = t('topics_controller.edit.not_authorized')
       redirect_to :action => 'show', :id => params[:id]
     end
   end
@@ -94,9 +96,12 @@ class TopicsController < ApplicationController
 
       @topic.do_notifications_if_pending(1, current_user)
 
+      # send notifications of private item create
+      private_item_notification_for(@topic, :created) if params[:topic][:private] == "true"
+
       case where_to_redirect
       when 'show_related'
-        flash[:notice] = 'Related Topic was successfully created.'
+        flash[:notice] = t('topics_controller.create.created_related')
         redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
         redirect_to :action => 'add_index_topic',
@@ -104,7 +109,7 @@ class TopicsController < ApplicationController
         :index_for_basket => params[:index_for_basket],
         :topic => @topic
       else
-        flash[:notice] = 'Topic was successfully created.'
+        flash[:notice] = t('topics_controller.create.created')
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
@@ -137,7 +142,7 @@ class TopicsController < ApplicationController
       # reload, get the correct privacy and return the user to the topic form
       @topic.reload
       public_or_private_version_of(@topic)
-      flash[:notice] = 'You\'ve changed the topic type for this topic. Please review the available fields.'
+      flash[:notice] = t('topics_controller.update.changed_topic_type')
       @successful = false
 
     # logic to prevent plain old members from editing site basket homepage
@@ -156,8 +161,10 @@ class TopicsController < ApplicationController
     end
 
     if @successful
+
       after_successful_zoom_item_update(@topic, version_after_update)
-      flash[:notice] = 'Topic was successfully updated.'
+      flash[:notice] = t('topics_controller.update.updated')
+
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
     else
       if @topic != @site_basket.index_topic or permit?("site_admin of :site_basket or admin of :site_basket")

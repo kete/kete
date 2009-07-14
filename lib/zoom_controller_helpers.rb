@@ -4,7 +4,8 @@ module ZoomControllerHelpers
     def self.included(klass)
       # only intended to add helper methods in app/controllers/application.rb
       if klass.name == 'ApplicationController'
-        klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize, :zoom_class_plural_humanize, :zoom_class_humanize_after, :zoom_class_params_key_from
+        klass.helper_method :zoom_class_controller, :zoom_class_from_controller, :zoom_class_humanize,
+                            :zoom_class_plural_humanize, :zoom_class_humanize_after, :zoom_class_params_key_from_controller
       end
     end
 
@@ -53,7 +54,8 @@ module ZoomControllerHelpers
           prepare_and_save_to_zoom(related_item)
         end
 
-        flash[:notice] = "#{pretty_zoom_class} was successfully deleted."
+        flash[:notice] = I18n.t('zoom_controller_helpers_lib.zoom_destroy_and_redirect.destroyed',
+                                :pretty_zoom_class => pretty_zoom_class)
       end
       redirect_to :action => 'list'
     end
@@ -109,41 +111,15 @@ module ZoomControllerHelpers
     end
 
     def zoom_class_humanize(zoom_class)
-      humanized = String.new
-      case zoom_class
-      when "AudioRecording"
-        humanized = 'Audio'
-      when "WebLink"
-        humanized = 'Web Link'
-      when "Comment"
-        humanized = 'Discussion'
-      when "StillImage"
-        humanized = 'Image'
-      else
-        humanized = zoom_class.humanize
-      end
-      return humanized
+      return I18n.t("zoom_controller_helpers_lib.zoom_class_humanize.#{zoom_class.underscore}")
     end
 
-    def zoom_class_params_key_from(controller)
+    def zoom_class_params_key_from_controller(controller)
       zoom_class_from_controller(controller).tableize.singularize.to_sym
     end
 
     def zoom_class_plural_humanize(zoom_class)
-      plural_humanized = String.new
-      case zoom_class
-      when "AudioRecording"
-        plural_humanized = 'Audio'
-      when "WebLink"
-        plural_humanized = 'Web Links'
-      when "Comment"
-        plural_humanized = 'Discussion'
-      when "StillImage"
-        plural_humanized = 'Images'
-      else
-        plural_humanized = zoom_class.humanize.pluralize
-      end
-      return plural_humanized
+      return I18n.t("zoom_controller_helpers_lib.zoom_class_plural_humanize.#{zoom_class.underscore}")
     end
 
     def zoom_class_humanize_after(count, zoom_class)
