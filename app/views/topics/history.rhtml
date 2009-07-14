@@ -63,7 +63,7 @@
                 <%
                 # catch the ugly error message and display something nicer
                 message = "It looks like there is no contributor associated with version #{version.version.to_s} of #{@item.class.name} #{@item.id}.\n"
-                message += "Possible data corruption. You should consider running rake kete:repair."
+                message += "Possible data corruption. You should consider running 'rake kete:repair:all'."
                 raise message
                 -%>
               <% end %>

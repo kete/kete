@@ -336,7 +336,7 @@
   <% end %>
 
   <% if allowed_field?('private_item_notification') %>
-    <div class="form-element" id="private_item_notification"<%= " style='display:none;'" unless (!@basket.show_privacy_controls?.nil? ? @basket.show_privacy_controls? : @site_basket.show_privacy_controls?) %>>
+    <div class="form-element" id="private_item_notification"<%= " style='display:none;'" unless @basket.show_privacy_controls_with_inheritance? %>>
       <label><%=t 'baskets.form.private_item_notification' %></label>
       <fieldset>
 

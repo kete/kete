@@ -1076,7 +1076,8 @@ class ApplicationController < ActionController::Base
     item.do_notifications_if_pending(version_after_update, current_user) if version_created
 
     # send notifications of private item edit
-    skipped_actions = ['flag_version', 'restore']
+    # do not do this when flagging, restoring, or changing a homepage topic
+    skipped_actions = ['flag_version', 'restore', 'find_index']
     if !skipped_actions.include?(params[:action]) && params[item.class_as_key][:private] == 'true'
         private_item_notification_for(item, :edited) 
     end
@@ -1322,7 +1323,6 @@ class ApplicationController < ActionController::Base
   end
 
   def show_notification_controls?(basket = @current_basket)
-    return false unless @basket_admin
     return false if basket.settings[:private_item_notification].blank?
     return false if basket.settings[:private_item_notification] == 'do_not_email'
     return false unless basket.show_privacy_controls_with_inheritance?
