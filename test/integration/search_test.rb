@@ -142,6 +142,36 @@ class SearchTest < ActionController::IntegrationTest
 
   end
 
+  context "When a topic exists with related items, the search page" do
+
+    setup do
+      add_harry_as_regular_user
+      login_as(:harry)
+
+      @parent = new_topic
+      @related_topic = new_topic(:relate_to => @parent)
+      @related_image = new_still_image(:relate_to => @parent) { attach_file "image_file_uploaded_data", "white.jpg" }
+    end
+
+    should "show the related count on the search page" do
+      visit "/#{@@site_basket.urlified_name}/all/topics/"
+      body_should_contain 'Related: 1 Image and 1 Topic' # Parent item should have both
+      body_should_contain 'Related: 1 Topic' # child topic should have parent
+      visit "/#{@@site_basket.urlified_name}/all/images/"
+      body_should_contain 'Related: 1 Topic' # child image should have parent
+    end
+
+    should "show the related counts on the search page after the parent is edited" do
+      @parent = update_item(@parent)
+      visit "/#{@@site_basket.urlified_name}/all/topics/"
+      body_should_contain 'Related: 1 Image and 1 Topic' # Parent item should have both
+      body_should_contain 'Related: 1 Topic' # child topic should have parent
+      visit "/#{@@site_basket.urlified_name}/all/images/"
+      body_should_contain 'Related: 1 Topic' # child image should have parent
+    end
+
+  end
+
   private
 
   def make_search_at(url, fields, should_have)
