@@ -10,16 +10,10 @@
 <script type="text/javascript">
       google.load("language", "1");
 
-      /*
-       * Kieran Pilkington, 2009-05-28
-       * Replace {{ and }} with __ so google doesn't mess with variables
-       * Then when the result comes back, replace __(.+)__ with {{$1}}
-       */
-
       function getGoogleTranslation(id, text, from_language, to_language) {
         text = text.replace(/\{\{/, '__').replace(/\}\}/, '__')
         google.language.translate(text, from_language, to_language, function(result) {
-          if (!result.error) {
+          if (!result.error) { 
             result_text = result.translation.unescapeHTML().gsub(/__(.+)__/, function(match){
               return '{{' + match[1] + '}}';
             });
