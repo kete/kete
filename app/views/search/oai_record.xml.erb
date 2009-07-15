@@ -42,7 +42,7 @@
               # oai_dc_xml_dc_description_for_file(xml, item)
 
               # we do a dc:source element for the original binary file
-              oai_dc_xml_dc_source_for_file(xml, item) if show_file_data_for?(item, params)
+              oai_dc_xml_dc_source_for_file(xml, item)
 
               oai_dc_xml_dc_creators_and_date(xml, item)
               oai_dc_xml_dc_contributors_and_modified_dates(xml, item)
@@ -72,14 +72,12 @@
           # of things like thumbnails to related images for a topic
           # for non-topics
           # it should store related topics
-          if show_file_data_for?(item, params)
-            xml.kete do
-              xml_for_related_items(xml, item)
+          xml.kete do
+            xml_for_related_items(xml, item)
 
-              xml_for_thumbnail_image_file(xml, item)
+            xml_for_thumbnail_image_file(xml, item)
 
-              xml_for_media_content_file(xml, item)
-            end
+            xml_for_media_content_file(xml, item)
           end
 
         end
