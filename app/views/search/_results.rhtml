@@ -20,7 +20,8 @@
 
 <div class="prev-next before-results"><%= will_paginate @results %></div>
 
-<% search_sources_amount = SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']]) %>
+<% search_source_result = ''
+   search_sources_amount = SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']]) %>
 <% if search_sources_amount > 0 %>
   <% search_source_result = display_search_sources(params[:search_terms],
                              { :target => [:all, :search],
@@ -78,6 +79,10 @@
         marker = GMarker.new(location[2], marker_options)
         @map.overlay_init(marker)
       end -%>
+
+      <% unless search_source_result.blank? %>
+        <style type="text/css">#map { width: 600px !important; }</style>
+      <% end %>
 
     <% else -%>
 
