@@ -573,5 +573,5 @@ system_settings_066:
   required_to_be_configured: true
   explanation: "When an item is flagged, by default, site admins are the last to be notified (after moderators, basket admin, and site basket admins). Set this value to true to always have site admins be notified of flaggings (along with moderators or other admins that need to be notified)."
   id: "66"
-  value: false
+  value: "false"
   section: Flagging
