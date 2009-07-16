@@ -243,4 +243,40 @@ class BasketTest < ActiveSupport::TestCase
 
   end
 
+  context "The moderators_or_next_in_line method" do
+
+    should "return the correct users to notify" do
+      site_basket = Basket.site_basket
+      basket = create_new_basket :name => 'Moderated Basket'
+
+      set_constant(:NOTIFY_SITE_ADMINS_OF_FLAGGINGS, false)
+
+      # site admin should already exist at this point
+      assert_equal 1, basket.moderators_or_next_in_line.size
+      assert_equal 'admin', basket.moderators_or_next_in_line.first.login
+
+      neil = create_new_user :login => 'neil'
+      neil.has_role('admin', site_basket)
+      assert_equal 1, basket.moderators_or_next_in_line.size
+      assert_equal 'neil', basket.moderators_or_next_in_line.first.login
+
+      sarah = create_new_user :login => 'sarah'
+      sarah.has_role('admin', basket)
+      assert_equal 1, basket.moderators_or_next_in_line.size
+      assert_equal 'sarah', basket.moderators_or_next_in_line.first.login
+
+      jack = create_new_user :login => 'jack'
+      jack.has_role('moderator', basket)
+      assert_equal 1, basket.moderators_or_next_in_line.size
+      assert_equal 'jack', basket.moderators_or_next_in_line.first.login
+
+      set_constant(:NOTIFY_SITE_ADMINS_OF_FLAGGINGS, true)
+
+      assert_equal 2, basket.moderators_or_next_in_line.size
+      assert_equal 'jack', basket.moderators_or_next_in_line.first.login
+      assert_equal 'admin', basket.moderators_or_next_in_line.last.login
+    end
+
+  end
+
 end

@@ -410,19 +410,11 @@ class Basket < ActiveRecord::Base
   # if no admins for site, go with any site_admins
   def moderators_or_next_in_line
     moderators = self.has_moderators
+    moderators = self.has_admins if moderators.size == 0
+    moderators = Basket.site_basket.has_admins if moderators.size == 0
+    moderators << Basket.site_basket.has_site_admins if moderators.size == 0 || NOTIFY_SITE_ADMINS_OF_FLAGGINGS
 
-    if moderators.size == 0
-      moderators = self.has_admins
-
-      if moderators.size == 0
-        moderators = Basket.find(:first).has_admins
-
-        if moderators.size == 0
-          moderators = Basket.find(:first).has_site_admins
-        end
-      end
-    end
-    moderators
+    moderators.flatten.uniq
   end
 
   def all_disputed_revisions
