@@ -63,7 +63,23 @@
       <div style="clear:both;"></div>
     </div>
   <% end -%>
-<% end -%>
+<% else -%>
+
+  <% if @basket_admin %>
+    <div id="moderator-tools">
+      <ul>
+        <li><%= link_to t('index_page.index.create_homepage_topic'),
+                        :urlified_name => @current_basket.urlified_name,
+                        :controller => 'topics',
+                        :action => 'new',
+                        :index_for_basket => @current_basket.id,
+                        :return_to_homepage => true %></li>
+      </ul>
+      <div style="clear:both;"></div>
+    </div>
+  <% end %>
+
+<% end %>
 
 <% cache({:part => "recent_topics_#{@privacy_type}"}) do -%>
   <% if @recent_topics_limit > 0 &&

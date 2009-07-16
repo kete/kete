@@ -107,6 +107,7 @@ class TopicsController < ApplicationController
         redirect_to :action => 'add_index_topic',
         :controller => 'baskets',
         :index_for_basket => params[:index_for_basket],
+        :return_to_homepage => params[:return_to_homepage],
         :topic => @topic
       else
         flash[:notice] = t('topics_controller.create.created')

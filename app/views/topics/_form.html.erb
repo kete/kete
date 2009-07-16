@@ -86,6 +86,9 @@ zoom_class = zoom_class_from_controller(controller)
     <% if @item_type == :topic -%>
       <% unless params[:index_for_basket].nil? -%>
         <%= hidden_field_tag "index_for_basket", params[:index_for_basket] -%>
+        <% unless params[:return_to_homepage].nil? %>
+          <%= hidden_field_tag "return_to_homepage", params[:return_to_homepage] %>
+        <% end %>
       <% end -%>
       <% if @editing -%>
         <%= render :partial => 'topic_types', :locals => { :topic_types => @topic_types } -%>

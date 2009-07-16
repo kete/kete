@@ -230,6 +230,25 @@ class HomepageTest < ActionController::IntegrationTest
 
     end
 
+    context "when no homepage topic exists" do
+
+      setup do
+        @@homepage_basket = create_new_basket({ :name => 'No Homepage Topic' })
+      end
+
+      should "be able to create a homepage topic from the blank basket index" do
+        visit "/#{@@homepage_basket.urlified_name}"
+        click_link 'Create homepage topic'
+        click_button 'Choose Type'
+        fill_in 'topic_title', :with => 'Test Homepage'
+        click_button 'Create'
+        body_should_contain 'Basket homepage was successfully created.'
+        body_should_not_contain 'Create homepage topic'
+        assert request.url =~ /\/#{@@homepage_basket.urlified_name}/
+      end
+
+    end
+
   end
 
   private

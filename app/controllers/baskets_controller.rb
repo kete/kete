@@ -310,13 +310,18 @@ class BasketsController < ApplicationController
 
   def add_index_topic
     @topic = Topic.find(params[:topic])
-    @successful = Basket.find(params[:index_for_basket]).update_index_topic(@topic)
+    @basket = Basket.find(params[:index_for_basket])
+    @successful = @basket.update_index_topic(@topic)
     if @successful
       # this action saves a new version of the topic
       # add this as a contribution
       @topic.add_as_contributor(current_user)
       flash[:notice] = t('baskets_controller.add_index_topic.created')
-      redirect_to :action => 'homepage_options', :controller => 'baskets', :id => params[:index_for_basket]
+      if params[:return_to_homepage]
+        redirect_to "/#{@basket.urlified_name}"
+      else
+        redirect_to :action => 'homepage_options', :controller => 'baskets', :id => params[:index_for_basket]
+      end
     end
   end
 
