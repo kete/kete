@@ -1391,7 +1391,7 @@ en:
       comments: "{{count}} comments"
       contents_by_type: Contents by type
       continue_to_topic: Click here to continue to {{t.base.zoom_types.topic}} and its links
-      create_homepage_topic: "{{t.base.create.capitalize}} homepage {{t.base.zoom_types.topic}}"
+      create_homepage_topic: "{{t.base.create.capitalize}} {{t.base.basket}} homepage"
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
       image_from_archive: "{{t.base.zoom_types.image.capitalize}} from the Archive"
