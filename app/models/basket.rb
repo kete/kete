@@ -34,18 +34,31 @@ class Basket < ActiveRecord::Base
     [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
   end
 
-  # Editable Basket Attrobutes
-  EDITABLE_ATTRIBUTES = %w{ show_privacy_controls private_default file_private_default allow_non_member_comments
-    index_page_redirect_to_all index_page_topic_is_entire_page index_page_link_to_index_topic_as
-    index_page_number_of_recent_topics index_page_recent_topics_as index_page_basket_search
-    index_page_extra_side_bar_html do_not_sanitize index_page_image_as index_page_archives_as
-    index_page_number_of_tags index_page_tags_as index_page_order_tags_by }
+  # Editable Basket Attributes (copy from the basket database fields)
+  EDITABLE_ATTRIBUTES = %w{ index_page_redirect_to_all index_page_topic_is_entire_page
+    index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
+    index_page_tags_as index_page_number_of_tags index_page_order_tags_by
+    index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
+    index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
+    show_privacy_controls do_not_sanitize }
+
+  # Editable Basket Settings
+  EDITABLE_SETTINGS = %w{ fully_moderated moderated_except private_file_visibility browse_view_as
+    sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
+    basket_join_policy memberlist_policy allow_basket_admin_contact private_item_notification
+    private_item_notification_show_title private_item_notification_show_short_summary
+    theme_font_family header_image theme show_action_menu show_discussion show_flagging
+    show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+    additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
 
   # Basket settings that are always editable or come under a parent option
-  NESTED_FIELDS = %w{ name status creator_id do_not_sanitize index_page_tags_as
-    index_page_recent_topics_as index_page_order_tags_by moderated_except
-    sort_direction_reversed_default do_not_sanitize_footer_content show_action_menu
-    show_discussion show_flagging show_add_links replace_existing_footer }
+  NESTED_FIELDS = %w{ name status creator_id do_not_sanitize moderated_except
+    sort_direction_reversed_default private_item_notification_show_title
+    private_item_notification_show_short_summary index_page_link_to_index_topic_as
+    index_page_recent_topics_as index_page_tags_as index_page_order_tags_by
+    show_action_menu show_discussion show_flagging show_add_links
+    side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+    do_not_sanitize_footer_content replace_existing_footer }
 
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
@@ -280,7 +293,7 @@ class Basket < ActiveRecord::Base
   end
 
   def additional_footer_content_with_inheritance
-    (!settings[:additional_footer_content].nil? && !self.settings[:additional_footer_content].squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
+    (!settings[:additional_footer_content].nil? && !self.settings[:additional_footer_content].to_s.squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
   end
 
   def replace_existing_footer_with_inheritance?
