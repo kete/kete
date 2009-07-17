@@ -459,6 +459,9 @@ class BasketsController < ApplicationController
   # as well as the @basket object for basket settings
   # don't do this if the user is a site admin though
   def prepare_and_validate_profile_for(form_type)
+    # we don't run this method is we don't have profile rules
+    return if profile_rules.blank?
+
     # this var is used in form helpers
     @form_type = form_type
 
@@ -474,7 +477,7 @@ class BasketsController < ApplicationController
 
     # for each basket attribute, reset to the default value if not an allowed field
     Basket::EDITABLE_ATTRIBUTES.each do |setting|
-      if allowed_field?(setting) && !params[:basket][setting.to_sym].blank?
+      if (@site_admin || allowed_field?(setting)) && !params[:basket][setting.to_sym].blank?
         @basket.send("#{setting}=", params[:basket][setting.to_sym])
       else
         value = current_value_of(setting, true, form_types)
@@ -485,7 +488,7 @@ class BasketsController < ApplicationController
 
     # for each basket setting, reset to the default value if not an allowed field
     Basket::EDITABLE_SETTINGS.each do |setting|
-      unless allowed_field?(setting) && !params[:settings][setting.to_sym].blank?
+      unless (@site_admin || allowed_field?(setting)) && !params[:settings][setting.to_sym].blank?
         params[:settings][setting.to_sym] = current_value_of(setting, true, form_types)
       end
     end
@@ -569,6 +572,7 @@ class BasketsController < ApplicationController
         # if we have an array, loop through them all, checking all types for an ok field
         if form_type.is_a?(Array)
           form_type.each do |type|
+            next unless profile_rules[type.to_s] && profile_rules[type.to_s]['values']
             value ||= profile_rules[type.to_s]['values'][name.to_s]
           end
         else
