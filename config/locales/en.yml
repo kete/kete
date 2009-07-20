@@ -2107,7 +2107,7 @@ en:
     activation:
       activated: "{{user_name}}, your {{t.base.account}} has been activated."
     banned:
-      deactivated: "{{user_name}} your {{t.base.account}} has been deactivated.  You will longer be able to contribute to this site."
+      deactivated: "{{user_name}} your {{t.base.account}} has been deactivated.  You will no longer be able to contribute to this site."
     basket_create_policy:
       approved:
         approved_for_use: The {{t.base.basket}} you {{t.base.requested}}, '{{basket_name}}', was {{t.base.approved}} for use.

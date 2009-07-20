@@ -191,10 +191,12 @@ namespace :translate do
       write '  <Worksheet ss:Name="Sheet1">'
       write '    <Table>'
       write '      <Column ss:Width="150"/>'
-      write '      <Column ss:Width="850"/>'
+      write '      <Column ss:Width="425"/>'
+      write '      <Column ss:Width="425"/>'
       write '      <Row ss:StyleID="1">'
       write '        <Cell><Data ss:Type="String">Key (DNC)</Data></Cell>'
       write '        <Cell><Data ss:Type="String">Value</Data></Cell>'
+      write '        <Cell><Data ss:Type="String">Translation</Data></Cell>'
       write '      </Row>'
       write output_rows(translation_hash[ENV['LOCALE']])
       write '    </Table>'
@@ -210,7 +212,54 @@ namespace :translate do
     task :import do
       ensure_locale_present(false)
       ensure_file_path_present
-      raise "Not yet implemented"
+      
+      require 'nokogiri'
+      require 'ya2yaml'
+      $KCODE = 'u'
+
+      # <Workbook>
+      #   <ss:Worksheet>
+      #     <Table>
+      #       <Row>
+      #         <Cell>
+      #           <Data>key</Data>
+      #         </Cell>
+      #         <Cell>
+      #           <Data>original value</Data>
+      #         </Cell>
+      #         <Cell>
+      #           <Data>translated value</Data>
+      #         </Cell>
+      #       </Row>
+      #     </Table>
+      #   </ss:Worksheet>
+      # </Workbook>
+
+      values = { ENV['LOCALE'] => {} }
+      xml = Nokogiri::XML(File.read(ENV['FILE_PATH']))
+      rows = xml.root.search("Table/Row")
+      rows.shift
+
+      rows.each do |row|
+        value = Array.new
+        row.search("Cell").each do |cell|
+          cell.search("Data").each do |data|
+            value << data.inner_text
+          end
+        end
+        unless value.empty?
+          keys = value[0].split('.')
+          last_key = keys.pop
+
+          level = values[ENV['LOCALE']]
+          keys.each { |key| level[key] ||= Hash.new; level = level[key] }
+          level[last_key] = value[2]
+        end
+      end
+
+      write values.ya2yaml, :yml
+
+      puts "Import Completed! YAML file saved to #{File.join(RAILS_ROOT, "tmp/#{ENV['LOCALE']}.yml")}"
     end
 
     private
@@ -229,6 +278,7 @@ namespace :translate do
             '      <Row>',
             "        <Cell><Data ss:Type=\"String\">#{h(@keys.join('.'))}</Data></Cell>",
             "        <Cell><Data ss:Type=\"String\">#{h(v)}</Data></Cell>",
+            "        <Cell><Data ss:Type=\"String\"></Data></Cell>",
             '      </Row>' ]
           data.each { |d| (@keys.first == 'base' ? @base_keys : @result) << d }
         end
