@@ -1215,7 +1215,9 @@ en:
       accuracy: "Accuracy:"
       address: "Address:"
       country_code: "Country code:"
+      fields_dont_exist: "ERROR: The fields for latitude, longitude, zoom level and address don't exist on the page. Debug this!"
       hide_lat_lng: "{{t.base.hide.capitalize}} Latitude/Longitude"
+      lat_lng_not_floats: "ERROR: One of latitude, longitude, or zoom level are not of the correct type. Debug this!"
       lat_lng_not_set: "ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!"
       non_existant_div: You are trying to initiate the google map api on a non-existant div. Debug this!
       not_close_enough: "Error: The marker was not close enough to a<br />road to determine the street address. Please try again."

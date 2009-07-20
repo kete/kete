@@ -278,11 +278,11 @@ module GoogleMap
           function initialize_google_map(map_id, map_type, latitude, longitude, zoom_lvl, address, latlng_text_field, zoom_text_field, address_text_field) {
             // make sure we don't do any google map code unless the browser supports it
             if (!google.maps.BrowserIsCompatible()) {
-              alert('#{I18n.t('google_map_lib.load_google_map_api.not_compatible')}'); return;
+              alert('#{i18n_js('google_map_lib.load_google_map_api.not_compatible')}'); return;
             }
             // check the google map div is present on the page before continuing
             if (!$(map_id)) {
-              alert('#{I18n.t('google_map_lib.load_google_map_api.non_existant_div')} - ' + map_id); return;
+              alert('#{i18n_js('google_map_lib.load_google_map_api.non_existant_div')} - ' + map_id); return;
             }
             // clear/resize the div on both displays, and replace the warning/hide the fields
             $(map_id).value = '';
@@ -295,11 +295,11 @@ module GoogleMap
                                                      if ($(latlng_text_field + \'_display\').hidden_status == \'hidden\') {
                                                        $(latlng_text_field + \'_display\').show();
                                                        $(latlng_text_field + \'_display\').hidden_status = \'showing\';
-                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>' + I18n.t('google_map_lib.load_google_map_api.hide_lat_lng') + '</small>\');
+                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>' + i18n_js('google_map_lib.load_google_map_api.hide_lat_lng') + '</small>\');
                                                      } else {
                                                        $(latlng_text_field + \'_display\').hide();
                                                        $(latlng_text_field + \'_display\').hidden_status = \'hidden\';
-                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>' +  I18n.t('google_map_lib.load_google_map_api.show_lat_lng') + '</small>\');
+                                                       $(latlng_text_field + \'_show_hide\').update(\'<small>' +  i18n_js('google_map_lib.load_google_map_api.show_lat_lng') + '</small>\');
                                                      }
                                                      event.stop();
                                                    });
@@ -321,8 +321,9 @@ module GoogleMap
             map.latlng_text_field = latlng_text_field;
             map.zoom_text_field = zoom_text_field;
             if (map.map_type == 'map_address') {
-              map.address_text_field = address;
-              map.address = map_id + '_address';
+              map.address_text_field = address_text_field;
+              map.address_value = address;
+              map.address_value_div_id = map_id + '_address';
             }
             // Make sure we have the nessesary fields present
             if (!verify_all_fields_present(map)) { return; }
@@ -333,7 +334,7 @@ module GoogleMap
             map.addControl(new google.maps.SmallMapControl());
             // if we are on the index/show page, dont show search controls, dont make markers draggable
             // else if we are on the new/edit pages, bind a search control to the map, and allow dragging
-            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false, \'\', false, map.address);' :
+            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false, \'\', false, map.address_value_div_id);' :
                                                   'map.addControl(new google.maps.LocalSearch({suppressInitialResultSelection : true}),
                                                    new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(10,25)));
                                                    remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, true);'}
@@ -357,6 +358,10 @@ module GoogleMap
               google.maps.Event.addListener(map, 'moveend', function() {
                 $(map.zoom_text_field).value = map.getZoom();
               });
+            } else {
+              #{!@google_map_on_index_or_show_page ?
+                "alert('#{i18n_js('google_map_lib.load_google_map_api.fields_dont_exist')}');" :
+                "// do nothing"}
             }
           }
 
@@ -367,16 +372,20 @@ module GoogleMap
             // Use the default lat/lng/zoom in the kete's google api config file
             if (map.latitude_value == '') {
               if (google.loader.ClientLocation.latitude) { map.latitude_value = google.loader.ClientLocation.latitude; }
-              else { map.latitude_value = #{@default_latitude}; }
+              else { map.latitude_value = #{@default_latitude.to_f.to_s}; }
             }
             if (map.longitude_value == '') {
               if (google.loader.ClientLocation.longitude) { map.longitude_value = google.loader.ClientLocation.longitude; }
-              else { map.longitude_value = #{@default_longitude}; }
+              else { map.longitude_value = #{@default_longitude.to_f.to_s}; }
             }
-            if (map.zoom_lvl_value == '') { map.zoom_lvl_value = #{@default_zoom_lvl}; }
+            if (map.zoom_lvl_value == '') { map.zoom_lvl_value = #{@default_zoom_lvl.to_i.to_s}; }
             // If the values arn't populated by now (after 4 different sources), something went wrong.
             if (map.latitude_value == '' || map.longitude_value == '' || map.zoom_lvl_value == '') {
-              alert('#{I18n.t('google_map_lib.load_google_map_api.lat_lng_not_set')}'); return false;
+              alert('#{i18n_js('google_map_lib.load_google_map_api.lat_lng_not_set')}'); return false;
+            }
+            // Make ure that the three values are floats as needed by Google maps
+            if (isNaN(parseFloat(map.latitude_value)) || isNaN(parseFloat(map.longitude_value)) || isNaN(parseInt(map.zoom_lvl_value))) {
+              alert('#{i18n_js('google_map_lib.load_google_map_api.lat_lng_not_floats')}'); return false;
             }
             if ($(map.latlng_text_field) && $(map.latlng_text_field).value == '') {
               $(map.latlng_text_field).value = map.latitude_value + ',' + map.longitude_value;
@@ -388,7 +397,7 @@ module GoogleMap
           }
 
           // remove all existing markers and one at specified latitude and longitude
-          function remove_all_markers_and_add_one_to(map, latitude, longitude, draggable, text, auto_open, address_id) {
+          function remove_all_markers_and_add_one_to(map, latitude, longitude, draggable, text, auto_open, address_value_div_id) {
             // clears all overlays (info boxes, markers etc)
             map.clearOverlays();
             // create the marker (draggable is passed in as either true or false)
@@ -396,9 +405,9 @@ module GoogleMap
             // add the marker to the map
             map.addOverlay(map.current_marker);
             // add a text bubble if needed
-            if (address_id) {
+            if (address_value_div_id) {
               google.maps.Event.addListener(map.current_marker, 'click', function() {
-                $(map.address).toggle();
+                $(address_value_div_id).toggle();
               });
             } else if (text) {
                if (auto_open) {
@@ -428,9 +437,9 @@ module GoogleMap
               if (!response || response.Status.code != 200) {
                 // if something went wrong, give the status code. This should rarely happen.
                 if (response.Status.code == '602') {
-                  text = '#{I18n.t('google_map_lib.load_google_map_api.something_went_wrong_602')} (' + response.Status.code + ')';
+                  text = '#{i18n_js('google_map_lib.load_google_map_api.something_went_wrong_602')} (' + response.Status.code + ')';
                 } else {
-                  text = '#{I18n.t('google_map_lib.load_google_map_api.something_went_wrong')} (' + response.Status.code + ')';
+                  text = '#{i18n_js('google_map_lib.load_google_map_api.something_went_wrong')} (' + response.Status.code + ')';
                 }
                 remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text, true);
               } else {
@@ -440,9 +449,9 @@ module GoogleMap
                 // if it isn't, we end up clicking and getting sent half way across the country
                 if (place.AddressDetails.Accuracy > 5) {
                   // create the text used in a bubble soon
-                  text = '<b>#{I18n.t('google_map_lib.load_google_map_api.address')}</b>' + place.address + '<br>' +
-                         '<b>#{I18n.t('google_map_lib.load_google_map_api.accuracy')}</b>' + place.AddressDetails.Accuracy + '<br>' +
-                         '<b>#{I18n.t('google_map_lib.load_google_map_api.country_code')}</b> ' + place.AddressDetails.Country.CountryNameCode;
+                  text = '<b>#{i18n_js('google_map_lib.load_google_map_api.address')}</b>' + place.address + '<br>' +
+                         '<b>#{i18n_js('google_map_lib.load_google_map_api.accuracy')}</b>' + place.AddressDetails.Accuracy + '<br>' +
+                         '<b>#{i18n_js('google_map_lib.load_google_map_api.country_code')}</b> ' + place.AddressDetails.Country.CountryNameCode;
                   // remove the marker set earlier and reposition it to the results location
                   remove_all_markers_and_add_one_to(map, place.Point.coordinates[1], place.Point.coordinates[0], true, text, true);
                   // Form a a string like   -45.861836,127.398373  (which is the format we use)
@@ -454,7 +463,7 @@ module GoogleMap
                     $(map.address_text_field).value = place.address;
                   }
                 } else {
-                  text = '#{I18n.t('google_map_lib.load_google_map_api.not_close_enough')}';
+                  text = '#{i18n_js('google_map_lib.load_google_map_api.not_close_enough')}';
                   remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text, true);
                 }
               }
@@ -473,6 +482,12 @@ module GoogleMap
         end
         html
       end
+    end
+
+    # anything we put into javascript needs to be specially escaped
+    # to prevent JS from breaking and stopping the site from working
+    def i18n_js(key)
+      escape_javascript I18n.t(key)
     end
   end
 
