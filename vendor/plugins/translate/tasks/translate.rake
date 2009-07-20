@@ -212,7 +212,7 @@ namespace :translate do
     task :import do
       ensure_locale_present(false)
       ensure_file_path_present
-      
+
       require 'nokogiri'
       require 'ya2yaml'
       $KCODE = 'u'
