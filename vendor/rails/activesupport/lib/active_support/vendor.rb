@@ -20,9 +20,11 @@ rescue Gem::LoadError
   $:.unshift "#{File.dirname(__FILE__)}/vendor/tzinfo-0.3.12"
 end
 
-begin
-  gem 'i18n', '~> 0.1.3'
-rescue Gem::LoadError
+# Kieran Pilkington, 2009-07-21
+# We can't load the i18n gem in the case of Kete (since we need additions)
+#begin
+#  gem 'i18n', '~> 0.1.3'
+#rescue Gem::LoadError
   $:.unshift "#{File.dirname(__FILE__)}/vendor/i18n-0.1.3/lib"
   require 'i18n'
-end
+#end

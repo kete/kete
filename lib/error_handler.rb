@@ -9,7 +9,7 @@ module ActionController
       @app.call(env)
     rescue Exception => exception
       # Reraise exception in test environment
-      if env["rack.test"]
+      if defined?(Rails) && Rails.env.test?
         raise exception
       elsif exception.to_s.include?('MemCacheStore') && exception.to_s.include?('unable to find server')
         raise_custom_error(memcache_offline_response_body, exception.to_s)
@@ -22,9 +22,9 @@ module ActionController
 
     def raise_custom_error(body, error_message='')
       status, headers, body = 500, {'Content-Type' => 'text/html'}, body
-      headers['Content-Length'] = body.length.to_s
       body.gsub!(/ERROR_MESSAGE/, CGI::escapeHTML(error_message))
-      [status, headers, body]
+      headers['Content-Length'] = body.length.to_s
+      [status, headers, [body]]
     end
 
     def memcache_offline_response_body

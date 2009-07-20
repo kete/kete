@@ -1,3 +1,10 @@
+#
+# CAUTION
+#
+# This intializer must be run before all others!!!
+# (name it accordingly so it is sorted alphabetically before all others)
+#
+
 # Include extensions into Rails components here
 
 # Kieran Pilkington, 2009-07-09
@@ -28,7 +35,7 @@ end
 module I18n
   module Backend
     class Simple
-      private
+      protected
         # Kieran Pilkington, 2009-07-09
         # Adding very simple translation fallback support to I18n module
         # Calls the original lookup method. If the value is empty, call it again with default locale

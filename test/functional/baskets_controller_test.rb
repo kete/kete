@@ -92,7 +92,7 @@ class BasketsControllerTest < ActionController::TestCase
     # test contact form restricted to logged in members
     get :contact, :urlified_name => 'site'
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'login'
+    assert_redirected_to :urlified_name => 'site', :controller => 'account', :action => 'login', :locale => :en
   end
 
   def test_contact
@@ -163,7 +163,7 @@ class BasketsControllerTest < ActionController::TestCase
     assert_equal 'closed', BASKET_CREATION_POLICY
     get :new, :urlified_name => 'site', :controller => 'baskets', :action => 'new'
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'login'
+    assert_redirected_to :urlified_name => 'site', :controller => 'account', :action => 'login', :locale => :en
   end
 
   def test_basket_creation_accessable_when_moderated_and_site_admin
@@ -188,7 +188,7 @@ class BasketsControllerTest < ActionController::TestCase
     assert_equal 'request', BASKET_CREATION_POLICY
     get :new, :urlified_name => 'site', :controller => 'baskets', :action => 'new'
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'login'
+    assert_redirected_to :urlified_name => 'site', :controller => 'account', :action => 'login', :locale => :en
   end
 
   def test_basket_instant_approval_for_site_admin_even_if_moderation_on
