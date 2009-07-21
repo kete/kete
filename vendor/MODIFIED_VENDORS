@@ -39,3 +39,9 @@ plugins/
     views/
       brain_busters/
         _captcha.html.erb      -> text change
+
+rails/
+  activesupport/
+    lib/
+      active_support/
+        vendor.rb              -> don't use the i18n gem (since we have custom changes needed)

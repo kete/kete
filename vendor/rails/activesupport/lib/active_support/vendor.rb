@@ -9,9 +9,9 @@ end
 require 'builder'
 
 begin
-  gem 'memcache-client', '>= 1.6.5'
+  gem 'memcache-client', '>= 1.7.4'
 rescue Gem::LoadError
-  $:.unshift "#{File.dirname(__FILE__)}/vendor/memcache-client-1.6.5"
+  $:.unshift "#{File.dirname(__FILE__)}/vendor/memcache-client-1.7.4"
 end
 
 begin
@@ -20,10 +20,11 @@ rescue Gem::LoadError
   $:.unshift "#{File.dirname(__FILE__)}/vendor/tzinfo-0.3.12"
 end
 
-# TODO I18n gem has not been released yet
-# begin
-#   gem 'i18n', '~> 0.1.3'
-# rescue Gem::LoadError
+# Kieran Pilkington, 2009-07-21
+# We can't load the i18n gem in the case of Kete (since we need additions)
+#begin
+#  gem 'i18n', '~> 0.1.3'
+#rescue Gem::LoadError
   $:.unshift "#{File.dirname(__FILE__)}/vendor/i18n-0.1.3/lib"
   require 'i18n'
-# end
+#end

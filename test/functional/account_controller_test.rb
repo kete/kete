@@ -208,7 +208,7 @@ class AccountControllerTest < ActionController::TestCase
     post :login, :login => 'bryan', :password => 'newpassword', :urlified_name => @urlified_name
     assert session[:user]
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'index'
+    assert_redirected_to :urlified_name => @urlified_name, :controller => 'account', :action => 'index', :locale => :en
   end
 
   def test_non_matching_passwords_should_not_change
