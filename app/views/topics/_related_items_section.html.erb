@@ -68,7 +68,7 @@ display_no_item_text ||= false
           </a>
         </p>
       </div>
-      <%= javascript_tag "setupRelatedImagesSlideshowPlayButton('#{url_for(params.merge(:action => 'selected_image'))}');" %>
+      <%= javascript_tag "setupRelatedImagesSlideshowPlayButton('#{url_for(params.merge(:action => 'selected_image', :id => nil, :topic_id => params[:id]))}');" %>
     <% end -%>
   <% elsif display_no_item_text -%>
     <h4><%=t 'topics.related_items_section.not_related', :item_type => zoom_class_humanize(item.class.name) %></h4>
