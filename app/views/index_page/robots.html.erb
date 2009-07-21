@@ -27,19 +27,20 @@ Disallow: /<%= basket.urlified_name -%>/<%= controller-%>/auto_complete_for_vide
 Disallow: /<%= basket.urlified_name -%>/<%= controller-%>/auto_complete_for_audio_recording_tag_list
 Disallow: /<%= basket.urlified_name -%>/<%= controller-%>/selected_image
 <% end -%>
+# Other
+Disallow: /<%= basket.urlified_name -%>/index_page/help_file
+Disallow: /<%= basket.urlified_name -%>/account
+Disallow: /<%= basket.urlified_name -%>/baskets
+Disallow: /<%= basket.urlified_name -%>/members
+Disallow: /<%= basket.urlified_name -%>/extended_fields
+Disallow: /<%= basket.urlified_name -%>/topic_types
+Disallow: /<%= basket.urlified_name -%>/content_types
+Disallow: /<%= basket.urlified_name -%>/zoom_dbs
+Disallow: /<%= basket.urlified_name -%>/importers
+Disallow: /<%= basket.urlified_name -%>/search
 <% end -%>
 
 #
-# Miscellaneous
+# Global
 #
-Disallow: /site/index_page/help_file
-Disallow: /site/account
-Disallow: /site/baskets
-Disallow: /site/members
-Disallow: /site/extended_fields
-Disallow: /site/topic_types
-Disallow: /site/content_types
-Disallow: /site/zoom_dbs
-Disallow: /site/importers
-Disallow: /site/search
-Disallow: /site/search/
+Disallow: /*number_of_results_per_page*
