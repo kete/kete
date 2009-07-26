@@ -2,7 +2,7 @@ module ImageSlideshow
   unless included_modules.include? ImageSlideshow
     def self.included(klass)
       if klass.name == 'TopicsController'
-        klass.send :before_filter, :prepare_slideshow, :only => ['show', 'selected_image']
+        klass.send :before_filter, :prepare_slideshow, :only => ['selected_image']
       else
         klass.send :before_filter, :prepare_slideshow, :only => ['index', 'selected_image']
       end
@@ -184,6 +184,7 @@ module ImageSlideshow
 
     # Finds all basket images scoped to the current topic
     def find_related_images(limit=20)
+      raise "ERROR: Tried to populate topic slideshow without passing in params[:topic_id]" unless params[:topic_id]
       find_args_hash = { :select => 'still_images.id, still_images.title, still_images.created_at', :limit => limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?
       find_args_hash[:order] = 'still_images.created_at desc'
