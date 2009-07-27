@@ -2,7 +2,7 @@ module ImageSlideshow
   unless included_modules.include? ImageSlideshow
     def self.included(klass)
       if klass.name == 'TopicsController'
-        klass.send :before_filter, :prepare_slideshow, :only => ['show', 'selected_image']
+        klass.send :before_filter, :prepare_slideshow, :only => ['selected_image']
       else
         klass.send :before_filter, :prepare_slideshow, :only => ['index', 'selected_image']
       end
@@ -25,7 +25,7 @@ module ImageSlideshow
       update_id = (topic_slideshow? ? 'related_items_slideshow' : 'selected-image-display')
       @template.periodically_call_remote(:update => update_id,
                                          :url => { :action => 'selected_image',
-                                                   :id => (params[:controller] == 'topics') ? params[:id] : nil },
+                                                   :topic_id => topic_slideshow? ? params[:id] : nil },
                                          :frequency => 15,
                                          :method => 'get',
                                          :before => "if (!$('selected-image-display') || $('selected-image-display-paused')) { return false; }")
@@ -49,15 +49,11 @@ module ImageSlideshow
     # render in a template will stop the page processing, instead
     # of parsing and returning a string)
     def render_selected_image
-      begin
-        @template.render 'index_page/selected_image',
-                         :selected_image_file => @selected_image_file,
-                         :previous_url => @previous_url,
-                         :next_url => @next_url,
-                         :selected_still_image => @selected_still_image
-      rescue
-        "Invalid Image File" # If this happens, it was likely a conflict with another slideshow
-      end
+      @template.render 'index_page/selected_image',
+                       :selected_image_file => @selected_image_file,
+                       :previous_url => @previous_url,
+                       :next_url => @next_url,
+                       :selected_still_image => @selected_still_image
     end
 
     def topic_slideshow?
@@ -72,10 +68,13 @@ module ImageSlideshow
     # Helps make sure conflicts between different slideshows don't occur
     # hash keys have to be strings so as not to trip up later comparisons
     def slideshow_key
-      { "basket" => @current_basket.id,
+      key = {
+        "basket" => @current_basket.id,
         "order" => @current_basket.index_page_image_as,
-        "zoom_class" => 'StillImage',
-        "topic_slideshow" => topic_slideshow? }
+        "zoom_class" => 'StillImage'
+      }
+      key.merge!("slideshow_topic_id" => params[:topic_id].to_i) if topic_slideshow?
+      key
     end
 
     def slideshow_has_results?
@@ -185,11 +184,12 @@ module ImageSlideshow
 
     # Finds all basket images scoped to the current topic
     def find_related_images(limit=20)
+      raise "ERROR: Tried to populate topic slideshow without passing in params[:topic_id]" unless params[:topic_id]
       find_args_hash = { :select => 'still_images.id, still_images.title, still_images.created_at', :limit => limit }
       find_args_hash.merge!(public_conditions) unless display_private_items?
       find_args_hash[:order] = 'still_images.created_at desc'
       # Execute the find on the current topics still images
-      topic = Topic.find_by_id(params[:id]) # use find_by_id() instead of find() so we don't want to raise an error
+      topic = Topic.find_by_id(params[:topic_id]) # use find_by_id() instead of find() so we don't want to raise an error
       topic ? topic.still_images.find(:all, find_args_hash) : Array.new
     end
 

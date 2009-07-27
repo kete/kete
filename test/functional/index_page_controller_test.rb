@@ -4,6 +4,8 @@ class IndexPageControllerTest < ActionController::TestCase
 
   include KeteTestFunctionalHelper
 
+  include ImageSlideshowTestHelper
+
   def setup
     @base_class = "IndexPage"
     load_test_environment
