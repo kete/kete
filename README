@@ -28,7 +28,7 @@ Horowhenua Library Trust, Te Reo o Taranaki (http://kete.taranakireo.co.nz/), Li
 
 Kete 1.1's major work was funded by Te Reo o Taranaki, Aotearoa Peoples Network New Zealand (http://www.peoplesnetworknz.info/), the New Zealand Mental Health Commission (http://www.mhc.govt.nz/), Katipo, and HLT.  It was done by Walter, Steven, and new Kete team members at Katipo, James Stradling and Kieran Pilkington.  Patches were contributed by Joe Atzberger and Mason James for Liblime as well as Sam Villain for Catalyst IT, Ltd. (http://www.catalyst.net.nz/).
 
-Kete 1.2's major work was funded by Auckland City Libraries, Te Reo o Taranaki, Katipo, Horizons Regional Council, and HLT.  It was done by Walter, James, and Kieran Pilkington.  Kieren deserves special mention for doing a large amount of implementation, with software design and supervision from Walter, for the 1.2 release.
+Kete 1.2's major work was funded by Auckland City Libraries, Te Reo o Taranaki, Katipo, Friends of Pukekura Park, Horizons Regional Council, and HLT.  It was done by Walter, James, and Kieran Pilkington.  Kieren deserves special mention for doing a large amount of implementation, with software design and supervision from Walter, for the 1.2 release.
 
 Kete is a Ruby on Rails application, so huge thanks go to those that have worked on Ruby and Ruby on Rails for providing a great foundation to build an application on top of.  Thanks also go to the team at IndexData (http://www.indexdata.com/) for their work on Zebra which Kete uses as the basis for its search and browsing functionality.
 
