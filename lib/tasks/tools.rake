@@ -158,21 +158,34 @@ namespace :kete do
       private
 
       def set_related_items_inset_to(bool_value)
-        numeric_value = bool_value ? '1' : '0'
-        Topic.update_all("related_items_inset = #{numeric_value}")
-        Topic::Version.update_all("related_items_inset = #{numeric_value}")
+        # update all topics
+        Topic.update_all(:related_items_inset => bool_value)
+        # update all versions of every topic
+        Topic::Version.update_all(:related_items_inset => bool_value)
+        # then go through and update the private attributes of any topics with them
         each_topic_with_private_version do |private_data|
+          # loop through each key/value array (starts as [[key,value],[key,value]])
           private_data.each_with_index do |(key, value), index|
+            # skip this unless we have the right field
             next unless key == 'related_items_inset'
+            # delete the old data
             private_data.delete_at(index)
+            # add in the new data
             private_data << ['related_items_inset', bool_value]
           end
         end
       end
 
       def each_topic_with_private_version(&block)
+        # find all topics with private version data present, then loop through each
         Topic.all(:conditions => "private_version_serialized IS NOT NULL AND private_version_serialized != ''").each do |topic|
-          private_data = YAML.dump(yield(YAML.load(topic.private_version_serialized)))
+          # load the data from YML to an array of key/value arrays (e.g. [[key,value],[key,value]])
+          current_data = YAML.load(topic.private_version_serialized)
+          # yield the block passed in (passing the current data to it) and capture the return data
+          changed_data = yield(current_data)
+          # dump the changed data into a YAML representation
+          private_data = YAML.dump(changed_data)
+          # and update the private version serialized field (update_all means we avoid annoying validations)
           Topic.update_all({ :private_version_serialized => private_data }, { :id => topic.id })
         end
       end
