@@ -97,27 +97,3 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 # Walter McGinnis, 2007-12-03
 # most application specific configuration has moved to files
 # under config/initializers/
-
-class String
-  def escape
-    require 'htmlentities'
-    entities = HTMLEntities.new
-    # decode special chars (like multi language chars)
-    # escape xml special chars &, <, and >
-    CGI::escapeHTML(entities.decode(self))
-  end
-  # In Rails 2.3, strip_tags and sanitize are not accessible in their short form outside of
-  # helpers and view, so lets add a method on String that we can call in controllers/models/libs etc
-  def strip_tags
-    ActionController::Base.helpers.strip_tags(self)
-  end
-  def sanitize
-    ActionController::Base.helpers.sanitize(self)
-  end
-  def escape_for_url
-    URI.escape(self, /\W/)
-  end
-  def decode_from_url
-    URI.decode(self)
-  end
-end

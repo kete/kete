@@ -5,6 +5,46 @@
 # (name it accordingly so it is sorted alphabetically before all others)
 #
 
+# Include extensions into Ruby components here
+
+class String
+  # Add a quick escape method to all string instances
+  # (for xml displays)
+  def escape
+    require 'htmlentities'
+    entities = HTMLEntities.new
+    # decode special chars (like multi language chars)
+    # escape xml special chars &, <, and >
+    CGI::escapeHTML(entities.decode(self))
+  end
+
+  # In Rails 2.3, strip_tags and sanitize are not accessible in their short form outside of
+  # helpers and view, so lets add a method on String that we can call in controllers/models/libs etc
+  def strip_tags
+    ActionController::Base.helpers.strip_tags(self)
+  end
+  def sanitize
+    ActionController::Base.helpers.sanitize(self)
+  end
+
+  # Add a quick escpe for url and decode from url methods to string instances
+  # (escapes anything that causes issues with route parsing, like forward slashes and periods)
+  def escape_for_url
+    URI.escape(self, /\W/)
+  end
+  def decode_from_url
+    URI.decode(self)
+  end
+
+  # converts "true", "false", and "nil" into their appropriate boolean/NilClass values
+  def to_bool
+    return true if self == "true"
+    return false if self == "false"
+    return nil if self == "nil"
+    return self
+  end
+end
+
 # Include extensions into Rails components here
 
 # Kieran Pilkington, 2009-07-09
