@@ -145,15 +145,38 @@ namespace :kete do
     namespace :topics do
       desc 'Update all topics so that the related items section in each is inset in the topic description.'
       task :inset_related_items => :environment do
-        Topic.update_all('related_items_inset = 1')
+        set_related_items_inset_to(true)
         puts "Finished. All topics now have their related items inset in the topic description."
       end
 
       desc 'Update all topics so that the related items section in each is not inset in the topic description.'
       task :unset_related_items => :environment do
-        Topic.update_all('related_items_inset = 0')
+        set_related_items_inset_to(false)
         puts "Finished. All topics now do not have their related items inset in the topic description."
       end
+
+      private
+
+      def set_related_items_inset_to(bool_value)
+        numeric_value = bool_value ? '1' : '0'
+        Topic.update_all("related_items_inset = #{numeric_value}")
+        Topic::Version.update_all("related_items_inset = #{numeric_value}")
+        each_topic_with_private_version do |private_data|
+          private_data.each_with_index do |(key, value), index|
+            next unless key == 'related_items_inset'
+            private_data.delete_at(index)
+            private_data << ['related_items_inset', bool_value]
+          end
+        end
+      end
+
+      def each_topic_with_private_version(&block)
+        Topic.all(:conditions => "private_version_serialized IS NOT NULL AND private_version_serialized != ''").each do |topic|
+          private_data = YAML.dump(yield(YAML.load(topic.private_version_serialized)))
+          Topic.update_all({ :private_version_serialized => private_data }, { :id => topic.id })
+        end
+      end
+
     end
 
     private
