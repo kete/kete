@@ -142,6 +142,20 @@ namespace :kete do
       @logger.info "Finished image resizing. #{resized_images_count} images resized, #{created_images_count} images created."
     end
 
+    namespace :topics do
+      desc 'Update all topics so that the related items section in each is inset in the topic description.'
+      task :inset_related_items => :environment do
+        Topic.update_all('related_items_inset = 1')
+        puts "Finished. All topics now have their related items inset in the topic description."
+      end
+
+      desc 'Update all topics so that the related items section in each is not inset in the topic description.'
+      task :unset_related_items => :environment do
+        Topic.update_all('related_items_inset = 0')
+        puts "Finished. All topics now do not have their related items inset in the topic description."
+      end
+    end
+
     private
 
     # Checks whether an image file thumbnail size matches any of the IMAGE_SIZES values
