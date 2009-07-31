@@ -12,7 +12,7 @@ class ProfileTest < ActiveSupport::TestCase
   # we'll want to use the commented out test
   # in the meantime, we test that available_to_models is always 'Basket
   # should_require_attributes :name, :available_to_models
-  should_require_attributes :name
+  should_validate_presence_of :name
 
   context "The Profile class" do
 
