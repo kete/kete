@@ -412,21 +412,19 @@ class BasketsController < ApplicationController
   end
 
   def set_settings
-    if !params[:settings].nil?
-      params[:settings].each do |name, value|
-        # HACK
-        # is there a better way to typecast?
-        # rails does so in AR, but not sure it's appropriate here
-        case value
-        when "true"
-          value = true
-        when "false"
-          value = false
-        when "nil"
-          value = nil
-        end
-        @basket.settings[name] = value
-      end
+    return unless params[:settings]
+
+    # create a hash with setting keys and values for usage later
+    basket_settings = Hash.new
+    @basket.settings.each_with_key { |key, value| basket_settings[key.to_sym] = value }
+
+    params[:settings].each do |name, value|
+      # make sure we do not cause an SQL query if the value is the same
+      next if basket_settings[name.to_sym] == value
+      # convert the string to a boolean/nil value if it can be
+      value = value.to_bool if value.is_a?(String)
+      # save this new value to the baskets settings
+      @basket.settings[name] = value
     end
   end
 
@@ -478,8 +476,12 @@ class BasketsController < ApplicationController
     # for each basket attribute, reset to the default value if not an allowed field
     Basket::EDITABLE_ATTRIBUTES.each do |setting|
       if (@site_admin || allowed_field?(setting)) && !params[:basket][setting.to_sym].blank?
+        # if we run this, it means that the current user is allowed
+        # to set this field and the field has a value already
         @basket.send("#{setting}=", params[:basket][setting.to_sym])
       else
+        # if we run this, it means that the current user is not allowed
+        # to set this field, or they are but the field has no value
         value = current_value_of(setting, true, form_types)
         params[:basket][setting.to_sym] = value
         @basket.send("#{setting}=", value)
@@ -489,6 +491,8 @@ class BasketsController < ApplicationController
     # for each basket setting, reset to the default value if not an allowed field
     Basket::EDITABLE_SETTINGS.each do |setting|
       unless (@site_admin || allowed_field?(setting)) && !params[:settings][setting.to_sym].blank?
+        # if we run this, it means that the current user is not allowed
+        # to set this field, or they are but the field has no value
         params[:settings][setting.to_sym] = current_value_of(setting, true, form_types)
       end
     end
