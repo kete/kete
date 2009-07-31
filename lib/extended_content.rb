@@ -568,7 +568,8 @@ module ExtendedContent
     def convert_extended_content_to_xml(params_hash)
       return "" if params_hash.blank?
 
-      Nokogiri::XML::Builder.new { |xml|
+      builder = Nokogiri::XML::Builder.new
+      builder.root do |xml|
 
         all_field_mappings.collect do |field_to_xml|
 
@@ -646,7 +647,9 @@ module ExtendedContent
         # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
         end.flatten.uniq.join("\n")
       
-      }.to_xml.gsub("<?xml version=\"1.0\"?>\n","").gsub("\n", '')
+      end
+
+      builder.to_xml.gsub("<?xml version=\"1.0\"?>\n<root>","").gsub("</root>", '').gsub("\n", '')
     end
 
     def convert_xml_to_extended_fields_hash
