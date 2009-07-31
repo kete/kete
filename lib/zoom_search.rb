@@ -7,29 +7,29 @@ module ZoomSearch
     # This gets added into application.rb so by making them helper methods here,
     # we can use them in our controllers and views throughout the site
     def self.included(klass)
-      klass.helper_method :count_items_for, :count_private_items_for, :find_related_items_for, :find_private_related_items_for
+      klass.helper_method :count_public_items_for, :count_private_items_for, :find_public_related_items_for, :find_private_related_items_for
     end
 
     # Performs a search and returns a Zoom Object (which you can run .size)
     # Since this is purely for the amount, we :dont_parse_results => true
     # which stops parse_results from running (saves time)
-    def count_items_for(zoom_class, options = {})
+    def count_public_items_for(zoom_class, options = {})
       options = { :dont_parse_results => true }.merge(options)
-      make_search(zoom_class, options) do
+      make_search(zoom_class, options) {
         @search.pqf_query.kind_is(zoom_class, :operator => 'none')
-      end
+      }[:total]
     end
 
-    # Assigns privacy to 'private' and passes the same params through to count_items_for
+    # Assigns privacy to 'private' and passes the same params through to count_public_items_for
     def count_private_items_for(zoom_class, options={})
       options = { :privacy => 'private' }.merge(options)
-      count_items_for(zoom_class, options)
+      count_public_items_for(zoom_class, options)
     end
 
     # Performs a search of items related to an item, and returns an Array, filled with item hashes
     # We add a sort query of last_modified though technically it should be by position
     # in the acts_as_list setup, but that detail isn't stored in the zoom record at the moment
-    def find_related_items_for(item, zoom_class, options={})
+    def find_public_related_items_for(item, zoom_class, options={})
       # searching related items, at least at this stage, is always site wide
       # but you can limit it by passing a basket object in
       options[:as_if_within_basket] = options[:as_if_within_basket].blank? ? @site_basket : options[:as_if_within_basket]
@@ -40,10 +40,10 @@ module ZoomSearch
       end
     end
 
-    # Assigns privacy to 'private' and passes the same params through to find_related_items_for
+    # Assigns privacy to 'private' and passes the same params through to find_private_related_items_for
     def find_private_related_items_for(item, zoom_class, options={})
       options = { :privacy => 'private' }.merge(options)
-      find_related_items_for(item, zoom_class, options)
+      find_public_related_items_for(item, zoom_class, options)
     end
 
     private
@@ -67,9 +67,9 @@ module ZoomSearch
       @search.pqf_query = PqfQuery.new
 
       if options[:dont_parse_results]
-        @zoom_results
+        { :results => @zoom_results, :total => @zoom_results.size }
       else
-        parse_results(@zoom_results, zoom_class, options)
+        { :results => parse_results(@zoom_results, zoom_class, options), :total => @zoom_results.size }
       end
     end
 
