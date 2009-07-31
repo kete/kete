@@ -522,32 +522,27 @@ module ApplicationHelper
     end
   end
 
-  # Public items need to be sorted based on the acts_as_list position in the database so
-  # we can't use zebra to find public items in this case, so pull it from the database
-  def public_related_items_for(item, options={})
-    items = Hash.new
-    counts = Hash.new
-    item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
-    item_classes.each do |item_class|
-      results = find_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
-      items[item_class] = results
-      counts[item_class] = results.size
-    end
-    options[:with_counts] ? [items, counts] : items
-  end
+  # Create two methods for fetching public and private related items
+  # Both are identical except for method names, so use module_eval
+  # so we don't have to repeat ourselves.
+  %w{ public_related_items_for private_related_items_for }.each do |method_name|
+    module_eval <<-EOT, __FILE__, __LINE__ + 1
+      def #{method_name}(item, options={})
+        options = { :start_record => nil, :end_record => nil,
+                    :dont_parse_results => nil, :item_classes => nil }.merge(options)
+        items = Hash.new
+        counts = Hash.new if options[:with_counts]
 
-  # We use a method in lib/zoom_search.rb to find all private items the current user has access to
-  # (should be faster than a bunch of mysql queries - might be an interesting thing to benchmark)
-  def private_related_items_for(item, options={})
-    items = Hash.new
-    counts = Hash.new
-    item_classes = options[:topics_only] ? ['Topic'] : ITEM_CLASSES
-    item_classes.each do |item_class|
-      results = find_private_related_items_for(item, item_class, { :start_record => nil, :end_record => nil, :dont_parse_results => options[:count_only] })
-      items[item_class] = results
-      counts[item_class] = results.size
-    end
-    options[:with_counts] ? [items, counts] : items
+        options[:item_classes] ||= ITEM_CLASSES
+        options[:item_classes].each do |item_class|
+          results = find_#{method_name}(item, item_class, options)
+          items[item_class] = results[:results]
+          counts[item_class] = results[:total] if options[:with_counts]
+        end
+
+        options[:with_counts] ? [items, counts] : items
+      end
+    EOT
   end
 
   # Gets the total amount of related items for a specific zoom class
