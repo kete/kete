@@ -61,7 +61,7 @@ module ZoomSearch
       # we usually want to scope to baskets the user has permission to
       # the only exception is when your are in find_related... which acts as if you are in site basket
       as_if_within_basket = options[:as_if_within_basket].nil? ? nil : options[:as_if_within_basket]
-      return Array.new unless scoped_to_authorized_baskets(as_if_within_basket)
+      return { :results => Array.new, :total => 0 } unless scoped_to_authorized_baskets(as_if_within_basket)
       logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
       @zoom_results = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
       @search.pqf_query = PqfQuery.new
