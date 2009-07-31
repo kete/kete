@@ -117,7 +117,10 @@ module Embedded
               if current_value.blank? || current_value =~ /^-replace-/
                 self.send("#{a_name}=", value)
               else
-                current_value += ' ' if current_value.is_a?(String)
+                if current_value.is_a?(String)
+                  current_value += ' '
+                  value = value.to_s
+                end
                 self.send("#{a_name}=", current_value + value)
               end
             end
