@@ -13,7 +13,6 @@ class OaiDcHelpersTest < Test::Unit::TestCase
     ZOOM_CLASSES.each do |zoom_class|
 
       should "send back correct xml for #{zoom_class}" do
-        builder = Nokogiri::XML::Builder.new
         parent = Topic.create(:title => 'Parent Topic', :topic_type_id => 1, :basket_id => 1)
 
         if ATTACHABLE_CLASSES.include?(zoom_class)
@@ -37,9 +36,12 @@ class OaiDcHelpersTest < Test::Unit::TestCase
 
         relate_child_item_to_parent_item(item, parent)
 
-        oai_dc_xml_dc_relations_and_subjects(builder, item, {})
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          oai_dc_xml_dc_relations_and_subjects(xml, item, {})
+        end
 
-        expect = "<?xml version=\"1.0\"?>\n<dc:subject><![CDATA[Parent Topic]]></dc:subject>\n<dc:relation>http://http://test.com/site/topics/show/#{parent.id}</dc:relation>\n"
+        expect = "<?xml version=\"1.0\"?>\n<root><dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://http://test.com/site/topics/show/#{parent.id}</dc:relation></root>\n"
         assert_equal expect, builder.to_xml
       end
 
