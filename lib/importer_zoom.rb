@@ -45,6 +45,10 @@ module ImporterZoom
 
                   oai_dc_xml_dc_description(xml,item.description)
 
+                  xml.send("dc:subject") {
+                    xml.cdata item.url
+                  } if item.class.name == 'WebLink'
+
                   # gives use dc:description/files/version_of_item/enclosure
                   # for any associated binary files
                   # that can be used to derive the url for things like thumbnails
