@@ -741,6 +741,7 @@ class ApplicationController < ActionController::Base
   def setup_related_topic_and_zoom_and_redirect(item, commented_item = nil, options = {})
     where_to_redirect = 'show_self'
     if !commented_item.nil? and @successful
+      update_zoom_and_related_caches_for(commented_item)
       where_to_redirect = 'commentable'
     elsif !params[:relate_to_topic].blank? and @successful
       @new_related_topic = Topic.find(params[:relate_to_topic])
