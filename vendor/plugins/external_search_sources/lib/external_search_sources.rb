@@ -37,3 +37,8 @@ ExternalSearchSources[:source_targets] = %w{ search homepage }
 
 # an array of limit options for the search sources to choose from
 ExternalSearchSources[:limit_params] = %w{ limit num_results count }
+
+# how long should we wait to get a response before terminating the search source?
+# (ensures that page load times aren't extremely high if the source is offline)
+# in seconds, set to nil for no timeout (which falls back to system default)
+ExternalSearchSources[:timeout] = 2

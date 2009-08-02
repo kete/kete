@@ -77,7 +77,7 @@ class SearchSource < ActiveRecord::Base
     logger.debug "Getting search source results from: #{source_url}"
 
     begin
-      feed = Feedzirra::Feed.fetch_and_parse(source_url)
+      feed = Feedzirra::Feed.fetch_and_parse(source_url, { :timeout => ExternalSearchSources[:timeout] })
     rescue
       # some search terms may result in errors on the search source
       return { :total => 0 }

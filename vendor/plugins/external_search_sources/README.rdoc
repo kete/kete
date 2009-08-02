@@ -2,14 +2,16 @@
 
 This Rails Engine provides an interface, helpers, and fixture data for pulling search results from external sources via RSS feeds.
 
-External Search Sources was developed for the [Kete](http://kete.net.nz) open source Ruby on Rails application by [Katipo Communications, Ltd.](http://katipo.co.nz/) and was funded by [Digital New Zealand](http://digitalnz.org/).
+External Search Sources was developed for the [Kete](http://kete.net.nz) open source Ruby on Rails application by [Katipo Communications, Ltd.](http://katipo.co.nz) and was funded by [Digital New Zealand](http://digitalnz.org).
 
+It is built upon work originally funded by Auckland City Libraries (http://www.aucklandcitylibraries.com).
 
 == Requirements
 
 * Rails 2.3 or higher - Prior versions will not work because of incomplete engine support or missing I18n support
 * ActiveScaffold plugin installed for admin interface to work (http://github.com/activescaffold/active_scaffold)
 * Kete version of the Feedzirra gem (http://github.com/kete/feedzirra)
+  (source timeout support requires version 0.0.16.1 or higher)
 
 == Assumptions (configurable, see Configuration section for details)
 
@@ -193,5 +195,7 @@ Changes with tests, and full documentation are preferred, but not required.
 This engine was designed, implemented, and tested by Kieran Pilkington ( http://github.com/KieranP )
 
 Walter McGinnis ( http://github.com/walter ) did the system design and gave feedback on the engine as it was being developed.
+
+The original concept of "contextual search" is from Paul Reynolds of McGovern Online (http://www.mcgovern.co.nz).
 
 Current maintainers: Kieran Pilkington and Walter McGinnis
