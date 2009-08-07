@@ -160,7 +160,8 @@ class SearchSource < ActiveRecord::Base
     links = Array.new
     images = Array.new
     entries[0..((options[:limit] || limit) - 1)].each do |entry|
-      if !entry.media_thumbnail.nil? || !entry.enclosure.nil?
+      media_data = entry.media_thumbnail || entry.enclosure
+      if media_data && looks_like_image_url?(media_data)
         images << entry
       else
         links << entry
@@ -168,6 +169,10 @@ class SearchSource < ActiveRecord::Base
       total += 1
     end
     { :total => total, :links => links, :images => images }
+  end
+
+  def looks_like_image_url?(link)
+    %w{ jpg png gif tif bmp }.include?(link.split('.').last.downcase)
   end
 
   def parse_limit_param(options = {})
