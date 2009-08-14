@@ -9,6 +9,9 @@ module ExtendedContentHelpers
       @anonymous_fields = []
 
       item.xml_attributes_without_position.each_pair do |field_key, field_data|
+        # If this is google map contents, and no_map is '1', then do not use this data
+        next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+
         if field_key =~ /_multiple$/
 
           # We are dealing with multiple instances of an attribute
