@@ -68,16 +68,16 @@ class ExtendedField < ActiveRecord::Base
   validates_uniqueness_of :label, :case_sensitive => false
 
   # don't allow special characters in label that will break our xml
-  validates_format_of :label, :with => /^[^\'\":<>\&,\/\\\?\.]*$/, :message => ": \', \\, /, &, \", ?, <, >, and . characters aren't allowed"
+  validates_format_of :label, :with => /^[^\'\":<>\&,\/\\\?\.]*$/, :message => I18n.t('extended_field_model.invalid_chars', :invalid_chars => ": \', \\, /, &, \", ?, <, >, and .")
 
   # don't allow spaces
-  validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => ": spaces aren't allowed"
+  validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => I18n.t('extended_field_model.no_spaces')
 
   # TODO: add validation that prevents adding xsi_type without xml_element_name
 
   # don't allow topic or content base attributes: title, description
   invalid_label_names = TopicType.column_names + ContentType.column_names
-  validates_exclusion_of :label, :in => invalid_label_names, :message => ": labels of " + invalid_label_names.join(", ") + " aren't allowed because they already used be default"
+  validates_exclusion_of :label, :in => invalid_label_names, :message => I18n.t('extended_field_model.already_used', :invalid_label_names => invalid_label_names.join(", "))
 
   # TODO: globalize stuff, uncomment later
   # translates :label, :description
@@ -114,7 +114,10 @@ class ExtendedField < ActiveRecord::Base
   def is_required?(controller, topic_type_id=nil)
     raise "ERROR: You must specify a topic type id since controller is topics" if controller == 'topics' && topic_type_id.nil?
     if controller == 'topics'
-      ef_mapping = TopicTypeToFieldMapping.find_by_topic_type_id_and_extended_field_id(topic_type_id, self)
+      # we have to check the submitted topic_type or its ancestors
+      topic_type = TopicType.find(topic_type_id)
+      all_possible_topic_types = topic_type.ancestors + [topic_type]
+      ef_mapping = topic_type_to_field_mappings.find_by_topic_type_id(all_possible_topic_types)
     else
       content_type = ContentType.find_by_controller(controller)
       ef_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type, self)
@@ -125,7 +128,7 @@ class ExtendedField < ActiveRecord::Base
   protected
 
     def validate
-      errors.add('label', "cannot contain Form, Script, or Input because they are reserved starting words") if label =~ /^(form|input|script)(.*)$/i
+      errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label =~ /^(form|input|script)(.*)$/i
     end
 
 end

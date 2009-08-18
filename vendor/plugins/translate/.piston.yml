@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: c66c7c46509b7d5345013d16e123d4efe95c6716
+  branch: master
+lock: false
+repository_url: git://github.com/kete/translate.git
+repository_class: Piston::Git::Repository

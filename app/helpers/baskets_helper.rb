@@ -69,8 +69,7 @@ module BasketsHelper
     #  @inheritance_message += "Unspecified settings will be inherited
     #                        from the settings of the Site."
     #else
-      @inheritance_message += "These settings will be inherited by all other
-baskets unless they individually specify their own policy."
+      @inheritance_message += t('baskets_helper.basket_preferences_inheritance_message.inheritance_notice')
     #end
 
     @inheritance_message += "</p>"
@@ -88,18 +87,21 @@ baskets unless they individually specify their own policy."
       action = params[:action] == 'render_basket_form' ? 'new' : params[:action]
       location = { :action => action, :basket_profile => params[:basket_profile] }
       if params[:show_all_fields]
-        html += link_to 'show allowed fields', location.merge(:show_all_fields => nil)
+        html += link_to t('baskets_helper.show_all_fields_link.show_allowed_fields'), location.merge(:show_all_fields => nil)
       else
-         html += link_to 'show all fields', location.merge(:show_all_fields => true)
+         html += link_to t('baskets_helper.show_all_fields_link.show_all_fields'), location.merge(:show_all_fields => true)
       end
       html += ']</span>'
     end
     html
   end
 
+  # Write tests for this method in Rails 2.3 (which supports helper tests)
   def any_fields_editable?(form_type=@form_type)
     form_type = form_type.to_s
     return true if @site_admin
+    return true if @basket.profiles.blank?
+    profile_rules = @basket.profiles.first.rules(true)
     return true if profile_rules.blank?
     return true if profile_rules[form_type]['rule_type'] == 'all'
     return false if profile_rules[form_type]['rule_type'] == 'none'

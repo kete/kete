@@ -7,29 +7,29 @@ module ZoomSearch
     # This gets added into application.rb so by making them helper methods here,
     # we can use them in our controllers and views throughout the site
     def self.included(klass)
-      klass.helper_method :count_items_for, :count_private_items_for, :find_related_items_for, :find_private_related_items_for
+      klass.helper_method :count_public_items_for, :count_private_items_for, :find_public_related_items_for, :find_private_related_items_for
     end
 
     # Performs a search and returns a Zoom Object (which you can run .size)
     # Since this is purely for the amount, we :dont_parse_results => true
     # which stops parse_results from running (saves time)
-    def count_items_for(zoom_class, options = {})
+    def count_public_items_for(zoom_class, options = {})
       options = { :dont_parse_results => true }.merge(options)
-      make_search(zoom_class, options) do
+      make_search(zoom_class, options) {
         @search.pqf_query.kind_is(zoom_class, :operator => 'none')
-      end
+      }[:total]
     end
 
-    # Assigns privacy to 'private' and passes the same params through to count_items_for
+    # Assigns privacy to 'private' and passes the same params through to count_public_items_for
     def count_private_items_for(zoom_class, options={})
       options = { :privacy => 'private' }.merge(options)
-      count_items_for(zoom_class, options)
+      count_public_items_for(zoom_class, options)
     end
 
     # Performs a search of items related to an item, and returns an Array, filled with item hashes
     # We add a sort query of last_modified though technically it should be by position
     # in the acts_as_list setup, but that detail isn't stored in the zoom record at the moment
-    def find_related_items_for(item, zoom_class, options={})
+    def find_public_related_items_for(item, zoom_class, options={})
       # searching related items, at least at this stage, is always site wide
       # but you can limit it by passing a basket object in
       options[:as_if_within_basket] = options[:as_if_within_basket].blank? ? @site_basket : options[:as_if_within_basket]
@@ -40,10 +40,10 @@ module ZoomSearch
       end
     end
 
-    # Assigns privacy to 'private' and passes the same params through to find_related_items_for
+    # Assigns privacy to 'private' and passes the same params through to find_private_related_items_for
     def find_private_related_items_for(item, zoom_class, options={})
       options = { :privacy => 'private' }.merge(options)
-      find_related_items_for(item, zoom_class, options)
+      find_public_related_items_for(item, zoom_class, options)
     end
 
     private
@@ -61,15 +61,15 @@ module ZoomSearch
       # we usually want to scope to baskets the user has permission to
       # the only exception is when your are in find_related... which acts as if you are in site basket
       as_if_within_basket = options[:as_if_within_basket].nil? ? nil : options[:as_if_within_basket]
-      return Array.new unless scoped_to_authorized_baskets(as_if_within_basket)
+      return { :results => Array.new, :total => 0 } unless scoped_to_authorized_baskets(as_if_within_basket)
       logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
       @zoom_results = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
       @search.pqf_query = PqfQuery.new
 
       if options[:dont_parse_results]
-        @zoom_results
+        { :results => @zoom_results, :total => @zoom_results.size }
       else
-        parse_results(@zoom_results, zoom_class, options)
+        { :results => parse_results(@zoom_results, zoom_class, options), :total => @zoom_results.size }
       end
     end
 
@@ -128,12 +128,12 @@ module ZoomSearch
     # By default, we only parse the first five records. If you need more, overwrite :end_record
     # in the options param.
     def parse_results(results, zoom_class, options={})
-      options = { :result_set => results, :start_record => 0, :end_record => 5 }.merge(options)
+      options = { :start_record => 0, :end_record => 5 }.merge(options)
 
       @results = Array.new
       if results.size > 0
         still_image_results = Array.new
-        raw_results = zoom_class.constantize.records_from_zoom_result_set(options)
+        raw_results = results.records_from(options)
         raw_results.each do |raw_record|
           result_from_xml_hash = parse_from_xml_in(raw_record)
           @results << result_from_xml_hash
@@ -225,6 +225,44 @@ module ZoomSearch
         field_value = prepare_short_summary(field_value) if field_name == 'short_summary'
 
         result_hash[field_name.to_sym] = field_value
+      end
+
+      # get coverage values, these can be used for geographic values or temporal information
+      location_or_temporal_nodes = oai_dc.xpath(".//dc:coverage", oai_dc.namespaces).select { |node| !node.content.scan(":").blank? }
+
+      # we only want values you like "-41.336899,174.772512"
+      # TODO: this is a tad brittle, see if we can improve this
+      location_arrays = location_or_temporal_nodes.collect do |node|
+        values = node.content.split(":").reject { |i| i.blank? }
+        # this tells us we have coordinates and this is a location
+        # 2 (3 spot) is always coordinates in location, even if place name info is in the values
+        if !values[2] || values[2].split(",").size != 2
+          values = Array.new
+        end
+        values
+      end.reject { |array| array.empty?}
+
+      # we need the lat/lngs when we initialize the map
+      # separate from results_hash
+      # this covers all locations for a give set of results
+      @coordinates_for_results ||= Array.new
+
+      # this is the set of location JUST FOR THIS RESULT
+      result_hash[:associated_locations] = Array.new
+
+      # change coordinates to fixnums
+      location_arrays.each do |l|
+        # we just want a string version of the coordinates for this
+        # so grab l[2] before it is transformed
+
+        pair = l[2].split(",")
+        coordinate_array = [pair[0].to_f, pair[1].to_f]
+        l[2] = coordinate_array
+
+        @coordinates_for_results << pair
+
+        result_hash[:associated_locations] << l
+        @number_of_locations_count = @number_of_locations_count.blank? ? 1 : @number_of_locations_count + 1
       end
 
       related_items = zoom_record.root.at(".//xmlns:related_items", zoom_record.root.namespaces)

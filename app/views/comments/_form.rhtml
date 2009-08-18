@@ -11,39 +11,35 @@
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
 
-                <%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || params[:comment][:commentable_private] if !edit %>
+                <%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || (params[:comment] && params[:comment][:commentable_private]) || (@comment.private? ? '1' : '0') %>
 
                 <div class="form-element">
-                  <label for="comment_title">Title:</label>
+                  <label for="comment_title"><%=t 'comments.form.title' %></label>
                 <%= form.text_field :title, :tabindex => '1'  %>
                 </div>
 
                 <div class="form-element">
-                  <label for="comment_description" class="cleared-right">Description:</label>
+                  <label for="comment_description" class="cleared-right"><%=t 'comments.form.description' %></label>
                   <%= form.text_area :description, {:class => "mceEditor", :cols => 120, :tabindex => '1'} %>
                   <div class="form-example">
-                           Note: forms and javascript are not allowed
-                           for security reasons.
-                           <% if @site_admin -%>
-                           Unless you check the box below.
-                           <% end -%>
+                           <%=t 'comments.form.security_warning' %>
+                           <%=t 'comments.form.security_warning_admin' if @site_admin %>
                   </div>
                 </div>
 
                 <% if @site_admin -%>
-                <div class="form-element"><label for="comment_do_not_sanitize">Allow
-                    forms and other possible insecure elements and attributes in the HTML?</label>
+                <div class="form-element"><label for="comment_do_not_sanitize"><%=t 'comments.form.security_warning_exception' %></label>
                   <%= form.check_box :do_not_sanitize, :tabindex => '1' %></div>
                 <% end -%>
 
                 <div class="form-element">
-                  <label for="<%= @item_type -%>_tag_list">Tags (separated by commas)</label>
+                  <label for="<%= @item_type -%>_tag_list"><%=t 'comments.form.tags' %></label>
                   <%= text_field_with_auto_complete(:comment,
                                                     :tag_list,
                                                     { :tabindex => '1' },
-                                                    { :taokens => ',',
+                                                    { :tokens => ',',
                                                     :indicator => 'data_spinner_tags' }) -%>
-                  <img src='/images/indicator.gif' width='16' height='16' alt='Getting tags. ' id='data_spinner_tags' style='display:none;' />
+                  <img src='/images/indicator.gif' width='16' height='16' alt='<%=t 'comments.form.tags_spinner' %>' id='data_spinner_tags' style='display:none;' />
                 </div>
 
                 <% form_fields = @content_type.content_type_to_field_mappings -%>
@@ -57,7 +53,7 @@
 
                 <% if edit -%>
                         <div class="form-element">
-                                <label for="comment_version_comment">Comment on this edit:</label>
+                                <label for="comment_version_comment"><%=t 'comments.form.edit_comment' %></label>
                                 <%  # delete the last version_comment's value
                                     @comment.version_comment = nil -%>
                                   <%= form.text_field :version_comment, :tabindex => '1' %>
@@ -70,6 +66,21 @@
                         <%= hidden_field_tag 'comment[commentable_id]', params[:commentable_id] || params[:comment][:commentable_id], "id" => "comment_commentable_id" %>
 
                         <%= hidden_field_tag 'comment[commentable_type]', params[:commentable_type] || params[:comment][:commentable_type], "id" => "comment_commentable_type" %>
+                <% end %>
+
+                <% if show_notification_controls?(@current_basket) %>
+                  <div id="skip_email_notification_div"<%= "style='display:none;'" unless (params[:commentable_private] || (params[:comment] && params[:comment][:commentable_private]) || @comment.private?) == '1' %>>
+                    <div class="form-element">
+                      <label for="comment_skip_email_notification">
+                        <%=t 'comments.form.skip_email_notification',
+                            :role_type => Basket.level_value_from(@basket.settings[:private_item_notification]).downcase.pluralize %>
+                      </label>
+                      <% if params[:comment] && params[:comment][:skip_email_notification]; skip = (params[:comment][:skip_email_notification] == '1' ? true : false)
+                         elsif @editing && !@item.skip_email_notification.nil?; skip = @item.skip_email_notification?
+                         else; skip = false; end -%>
+                      <%= form.check_box :skip_email_notification, { :tabindex => '1', :checked => skip } %>
+                    </div>
+                  </div>
                 <% end %>
 
                 <!--[eoform:comment]-->

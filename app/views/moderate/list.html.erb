@@ -1,4 +1,4 @@
-<% @title = 'Moderate' -%>
+<% @title = t('moderate.list.title') -%>
 
 <%= render(:partial => "baskets/actions_menu",
            :locals => { :item => @current_basket }) %>
@@ -8,15 +8,15 @@
 <h2><%= h(@title) -%></h2>
 
 <% if @items.blank? %>
-<p>Currently no items needing moderation.</p>
+<p><%=t 'moderate.list.no_items_needing_moderation' %></p>
 <% else %>
 
 <table class="history-table">
   <tr>
-    <th abbr="Revision">Revision</th>
-    <th abbr="privacy">privacy</th>
-    <th abbr="flagged with">flagged with</th>
-    <th abbr="flagged at">flagged at</th>
+    <th abbr="Revision"><%=t 'moderate.list.revision' %></th>
+    <th abbr="privacy"><%=t 'moderate.list.privacy' %></th>
+    <th abbr="flagged with"><%=t 'moderate.list.flagged_with' %></th>
+    <th abbr="flagged at"><%=t 'moderate.list.flagged_at' %></th>
   </tr>
   <% for item in @items %>
   <tr>
@@ -25,7 +25,7 @@
       <%= h(item.title) %>
     </td>
     <td>
-      <%= item.respond_to?(:private?) && item.private? ? "private" : "public" %>
+      <%= item.respond_to?(:private?) && item.private? ? t('moderate.list.private') : t('moderate.list.public') %>
     </td>
     <td>
       <%= h(item.flag) %>
@@ -34,7 +34,7 @@
       <%= item.flagged_at %>
     </td>
     <td>
-      <%= link_to( "item's full history", history_url(item)) %>
+      <%= link_to( t('moderate.list.full_history'), history_url(item)) %>
     </td>
   </tr>
   <% end %>

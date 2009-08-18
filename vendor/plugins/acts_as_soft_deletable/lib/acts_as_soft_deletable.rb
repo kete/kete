@@ -96,7 +96,7 @@ module ActiveRecord #:nodoc:
 
             (deleted_specs.keys - live_specs.keys).each do |name|
               if ActiveRecord::Acts::SoftDeletable.remove_column_warning_enabled?
-                warn "Acts_as_soft_deletable is removing column #{table_name}.#{name}. You can disable this warning by setting blah = false in your migration."
+                warn "Acts_as_soft_deletable is removing column #{table_name}.#{name}. You can disable this warning by setting 'ActiveRecord::Acts::SoftDeletable.remove_column_warning_enabled = false' in your migration."
               end
               connection.remove_column table_name, name
             end
@@ -144,7 +144,7 @@ module ActiveRecord #:nodoc:
           def find_with_deleted(*args)
             if args.last.is_a?(Hash) 
               [:order, :limit, :offset].each do |option|
-                raise ArgumentError.new "#{option} option is not supported" if args.last.key?(option)
+                raise ArgumentError.new("#{option} option is not supported") if args.last.key?(option)
               end
             end
 
@@ -198,10 +198,16 @@ module ActiveRecord #:nodoc:
           # exception.
           def destroy_with_soft_delete
             self.class.transaction do
+              self.class.deleted_class.delete self.id
+
               deleted = self.class.deleted_class.new
               self.attributes.keys.each do |key|
                 deleted.send("#{key}=", self.send(key))
               end
+              # If you set Time.zone then deleted_at will be stored in UTC. See
+              # http://api.rubyonrails.org/classes/ActiveSupport/CoreExtensions/Time/Zones/ClassMethods.html#M001101
+              deleted.deleted_at = Time.now
+
               deleted.save!
               destroy_without_soft_delete
             end

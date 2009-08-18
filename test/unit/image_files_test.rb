@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ImageFilesTest < Test::Unit::TestCase
+class ImageFilesTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   # skipping, almost exclusively declaritive
@@ -36,21 +36,21 @@ class ImageFilesTest < Test::Unit::TestCase
     image_file = ImageFile.create(@new_model.merge({ :file_private => false }))
     assert_match(attachment_fu_test_path("public", @uploads_folder), image_file.full_filename)
     assert File.exists?(image_file.full_filename)
-    assert_valid image_file
+    assert image_file.valid?
   end
   
   def test_attachment_fu_uses_correct_path_prefix2
     image_file2 = ImageFile.create(@new_model.merge({ :file_private => true }))
     assert_match(attachment_fu_test_path("private", @uploads_folder), image_file2.full_filename)
     assert File.exists?(image_file2.full_filename)
-    assert_valid image_file2
+    assert image_file2.valid?
   end
   
   def test_attachment_fu_does_not_move_files_when_going_from_public_to_private
     image_file = ImageFile.create(@new_model.merge({ :file_private => false }))
     assert_match(attachment_fu_test_path("public", @uploads_folder), image_file.full_filename)
     assert File.exists?(image_file.full_filename)
-    assert_valid image_file
+    assert image_file.valid?
     old_filename = image_file.full_filename
     id = image_file.id
   
@@ -59,7 +59,7 @@ class ImageFilesTest < Test::Unit::TestCase
     assert_match(attachment_fu_test_path("public", @uploads_folder), image_file.full_filename)
     assert File.exists?(image_file.full_filename), "File is not where we expected. Should be at #{image_file.full_filename} but is not present."
     assert_equal old_filename, image_file.full_filename
-    assert_valid image_file
+    assert image_file.valid?
   end
 
   def test_attachment_fu_moves_files_to_correct_path_when_going_from_private_to_public
@@ -67,7 +67,7 @@ class ImageFilesTest < Test::Unit::TestCase
     assert_equal true, image_file.file_private?
     assert_match(attachment_fu_test_path("private", @uploads_folder), image_file.full_filename)
     assert File.exists?(image_file.full_filename)
-    assert_valid image_file
+    assert image_file.valid?
     old_filename = image_file.full_filename
     id = image_file.id
   
@@ -81,7 +81,7 @@ class ImageFilesTest < Test::Unit::TestCase
     assert_match(attachment_fu_test_path("public", @uploads_folder), image_file.full_filename)
     assert File.exists?(image_file.full_filename), "File is not where we expected. Should be at #{image_file.full_filename} but is not present."
     assert !File.exists?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
-    assert_valid image_file
+    assert image_file.valid?
   end
   
   def test_attachment_path_prefix

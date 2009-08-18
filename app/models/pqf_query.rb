@@ -21,16 +21,20 @@ class PqfQuery
   # see #{RAILS_ROOT}zebradb/conf/oai2index.xsl
   # for mappings of oai dc xml elements to specific indexes
   QUALIFYING_ATTRIBUTE_SPECS = {
-    'relevance' => "@attr 2=102 @attr 5=3 @attr 5=103 ",
-    'exact' => "@attr 4=3 ",
+    'relevance' => "@attr 2=102 @attr 5=3 ", # we specify @attr 5=103, or fuzzy, separately now
+    'exact' => "@attr 4=3 ", # this is meant for exact matches against key indexes
+    'complete' => "@attr 6=3 ", # this is like exact, except to find exact matches against word or phrase indexes
+    'partial' => "@attr 5=3 ",
+    'fuzzy_regexp' => "@attr 5=103 ",
     'datetime' => "@attr 4=5 ",
+    'exact_url' => "@attr 4=104 ",
     'lt' => "@attr 2=1 ",
     'le' => "@attr 2=2 ",
     'eq' => "@attr 2=3 ",
     'ge' => "@attr 2=4 ",
     'gt' => "@attr 2=5 ",
     'sort_stub' => "@attr 7="
-  }
+  } unless defined?(QUALIFYING_ATTRIBUTE_SPECS)
 
   ATTRIBUTE_SPECS = {
     'oai_identifier' => "@attr 1=12 ",
@@ -47,25 +51,25 @@ class PqfQuery
     'date' => "@attr 1=30 #{QUALIFYING_ATTRIBUTE_SPECS['datetime']}",
     'last_modified_sort' => "@attr 1=1012 ",
     'date_sort' => "@attr 1=30 "
-  }
+  } unless defined?(ATTRIBUTE_SPECS)
 
   # TODO: my hash_fu is failing me, DRY this up
   DATETIME_SPECS = { 'oai_datestamp' => ATTRIBUTE_SPECS['last_modified'],
     'last_modified' => ATTRIBUTE_SPECS['last_modified'],
     'date' => ATTRIBUTE_SPECS['date']
-  }
+  } unless defined?(DATETIME_SPECS)
 
   DATETIME_COMPARISON_SPECS = { 'before' => QUALIFYING_ATTRIBUTE_SPECS['lt'],
     'after' => QUALIFYING_ATTRIBUTE_SPECS['gt'],
     'on' => QUALIFYING_ATTRIBUTE_SPECS['eq'],
     'on_or_before' => QUALIFYING_ATTRIBUTE_SPECS['le'],
     'on_or_after' => QUALIFYING_ATTRIBUTE_SPECS['ge']
-  }
+  } unless defined?(DATETIME_COMPARISON_SPECS)
 
   # all ATTRIBUTE_SPECS wll have ..._include method created for them
   # except what is specified here
   # any spec with sort in its key is skipped
-  DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR = ATTRIBUTE_SPECS.keys.select { |key| key.include?('sort') }
+  DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR = ATTRIBUTE_SPECS.keys.select { |key| key.include?('sort') } unless defined?(DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR)
 
   attr_accessor :query_parts, :operators,
   :title_or_any_text_query_string, :title_or_any_text_operators_string,
@@ -116,12 +120,13 @@ class PqfQuery
       # for where to add the extra @or
       prepend_at_pattern = "@or #{ATTRIBUTE_SPECS['title']}"
       full_query_parts = full_query.split(prepend_at_pattern)
+      no_relevance_query_string =
 
       full_query = String.new
       full_query += full_query_parts[0] unless full_query_parts[0].nil?
       full_query += "@or " + prepend_at_pattern
       full_query += full_query_parts[1] unless full_query_parts[1].nil?
-      full_query += ATTRIBUTE_SPECS['subjects'] +
+      full_query += QUALIFYING_ATTRIBUTE_SPECS['exact_url'] + ' ' + ATTRIBUTE_SPECS['subjects'] +
                     @title_or_any_text_operators_string +
                     @title_or_any_text_query_string + ' '
       full_query
@@ -140,11 +145,21 @@ class PqfQuery
     full_query
   end
 
-  # dynamically define _include methods for our attribute specs
+  # dynamically define _equals_completely and _include methods for our attribute specs
   ATTRIBUTE_SPECS.each do |spec_key, spec_value|
     unless DO_NOT_AUTO_DEF_INCLUDE_METHODS_FOR.include?(spec_key)
+      # define the method for exact matches for whole field value
+      method_name = spec_key + '_equals_completely'
+      full_spec_value = spec_value + QUALIFYING_ATTRIBUTE_SPECS['complete']
+      define_query_method_for(method_name, full_spec_value)
+
+      # define the more general method where the terms may be contained partially
       method_name = spec_key + '_include'
-      define_query_method_for(method_name, spec_value)
+
+      # these include methods are meant be forgiving for partial matches
+      # thus we append the partial QUALIFYING_ATTRIBUTE_SPECS value
+      full_spec_value = spec_value + QUALIFYING_ATTRIBUTE_SPECS['partial']
+      define_query_method_for(method_name, full_spec_value)
     end
   end
 
@@ -168,6 +183,10 @@ class PqfQuery
     options = options.first || Hash.new
 
     terms = terms_as_array(term_or_terms).collect { |term| ":#{term.to_s}:" }
+    
+    # oai is a special case, can't have : precede it
+    # replace it with proper version if found
+    terms << "oai:" if terms.delete(":oai:")
 
     oai_identifier_include(terms, options)
   end
@@ -222,6 +241,18 @@ class PqfQuery
                                            options.merge({ :only_return_as_string => true,
                                                            :operator => 'none'}))
     query_part += ' ' + contributors_include(term_or_terms,
+                                             options.merge({ :only_return_as_string => true,
+                                                             :operator => 'none'}))
+
+    push_to_appropriate_variables(options.merge(:query_part => query_part, :operator => '@and')) unless options[:only_return_as_string]
+    query_part
+  end
+
+  def creators_or_contributors_equals_completely(term_or_terms, options = { })
+    query_part = '@or ' + creators_equals_completely(term_or_terms,
+                                           options.merge({ :only_return_as_string => true,
+                                                           :operator => 'none'}))
+    query_part += ' ' + contributors_equals_completely(term_or_terms,
                                              options.merge({ :only_return_as_string => true,
                                                              :operator => 'none'}))
 
@@ -371,7 +402,7 @@ class PqfQuery
     should_be_exact = options[:should_be_exact] || false
     inner_operator = options[:inner_operator] || '@or'
 
-    query_part += '@attr 4=3 ' if should_be_exact
+    query_part += QUALIFYING_ATTRIBUTE_SPECS['exact'] if should_be_exact
 
     if term_or_terms.size == 1
       query_part += "\"#{term_or_terms}\""

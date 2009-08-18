@@ -4,8 +4,8 @@
       <%
       location = { :controller_name_for_zoom_class => zoom_class_controller(zoom_class) }
       @items = Hash.new
-      @items[:public] = count_items_for(zoom_class).size
-      @items[:private] = count_private_items_for(zoom_class).size
+      @items[:public] = count_public_items_for(zoom_class)
+      @items[:private] = count_private_items_for(zoom_class)
       -%>
       <li>
         <%= link_to zoom_class_plural_humanize(zoom_class), basket_all_url(location) -%>

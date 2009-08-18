@@ -1,3 +1,5 @@
-<%= @user.login %>, your account has been activated.
+<%=t 'user_notifier.activation.activated', :user_name => @user.user_name %>
 
   <%= @url %>
+
+<%= render 'email_footer' %>

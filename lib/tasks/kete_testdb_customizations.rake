@@ -1,6 +1,15 @@
 # lib/tasks/kete_testdb_customizations.rake
 #
 # overrides rake db:test:prepare to do kete specific set up
+# add selenium test task
+#
+# This code lets us redefine existing Rake tasks, which is
+# extremely handy for modifying existing Rails rake tasks.
+#
+
+# lib/tasks/kete_testdb_customizations.rake
+#
+# overrides rake db:test:prepare to do kete specific set up
 #
 # Walter McGinnis, 2007-10-25
 #
@@ -51,7 +60,11 @@ namespace :db do
   namespace :test do
     desc 'Prepare the test database with the bootstrapped data necessary for Kete'
     Rake::Task.redefine_task(:prepare => :environment) do
+      # this is a hack to make sure that RAILS_ENV is set to 'test'
+      # when we redefine this task
+      RAILS_ENV = 'test'
       ENV['RAILS_ENV'] = 'test'
+
       require File.expand_path(File.dirname(__FILE__) + "/../required_software")
       require File.expand_path(File.dirname(__FILE__) + "/../../test/common_test_methods")
       #load_testing_libs

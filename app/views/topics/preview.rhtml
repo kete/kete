@@ -1,5 +1,5 @@
-<% @title = "Preview revision ##{@item.version}"
-   @title = "#{@title} - Flagged #{h(@flags.to_sentence)}" if @flags.size > 0 -%>
+<% @title = "#{t('topics.preview.preview_revision')} ##{@item.version}"
+   @title = "#{@title} - #{t('topics.preview.flagged')} #{h(@flags.to_sentence)}" if @flags.size > 0 -%>
 
 <% if can_preview?(:item => @item, :version_number => @item.version, :submitter => @submitter) -%>
    <% @title = "#{@title}: #{h(@item.title)}" -%>
@@ -9,7 +9,7 @@
 
 
     <% if @flag_messages.size > 0 -%>
-    <p>Reasons flagged:</p>
+    <p><%=t 'topics.preview.reasons_flagged' %></p>
     <% @flag_messages.each do |msg| -%>
     <p><%= h(msg) -%></p>
     <% end -%>
@@ -21,7 +21,7 @@
        # (shared by show template?)
        # and call the appropriate one based on class -%>
     <% if @item.class.name == 'Topic' -%>
-    <h4>Topic Type: <%= h(@item.topic_type.name) %></h4>
+    <h4><%=t 'topics.preview.topic_type' %> <%= h(@item.topic_type.name) %></h4>
     <% end -%>
 
     <p><b><%= @item.short_summary if @item.can_have_short_summary? %></b></p>
@@ -34,9 +34,12 @@
     <% end -%>
 
 
-    <% if @item.class.name == 'StillImage'
-       image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @item.id) -%>
-    <%= render(:partial => "images/image_file", :object => image_file, :locals => { :image_file => image_file, :title => @item.title }) if !image_file.nil?%>
+    <% if @item.class.name == 'StillImage' %>
+			<% image_file = ImageFile.find_by_thumbnail_and_still_image_id('medium', @item.id) -%>
+      <%= render(:partial => "images/image_file",
+                 :locals => { :still_image => @item,
+                              :image_file => image_file,
+                              :without_controls => true }) if !image_file.nil? %>
     <% end -%>
 
   <% can_moderate = true if logged_in? and @at_least_a_moderator -%>
@@ -50,7 +53,6 @@
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->
 <% else -%>
-  <% @title = "#{@title}: Permission Denied" -%>
-  <p>You aren't allowed to view this revision of this item at the
-    current time.</p>
+  <% @title = "#{@title}: #{t('topics.preview.permission_denied')}" -%>
+  <p><%=t 'topics.preview.not_authorized' %></p>
 <% end -%>

@@ -1,9 +1,9 @@
-<% @title = 'Import from '
-   if params[:related_topic].blank?
-     @title += @import.directory
+<% if params[:related_topic].blank?
+     location = @import.directory
    else
-     @title += @import.import_archive_file.filename
+     location = @import.import_archive_file.filename
    end
+   @title = t('importers.create.title', :location => location)
 %>
 
 <%= render(:partial => "baskets/actions_menu",
@@ -16,16 +16,16 @@
 <%= periodically_call_remote(:url => {:action => 'get_progress',
 :worker_type => @worker_type, :related_topic => params[:related_topic]}, :frequency => 30) %>
 
-<div id="report_records_processed">Starting import...</div>
+<div id="report_records_processed"><%=t 'importers.create.starting_import' %></div>
 
 <div id="spinner">
-<img src="/images/indicator.gif" width="16" height="16" alt="Completed. ">
+<img src="/images/indicator.gif" width="16" height="16" alt="<%=t 'importers.create.completed' %>">
 </div>
 
-<div id="done">...in progress.</div>
+<div id="done"><%=t 'importers.create.in_progress' %></div>
 
 <div id="exit">
-  <%= button_to 'Stop Import Early', :action => 'stop', :id => @import, :worker_type => @worker_type %>
+  <%= button_to t('importers.create.stop_early'), :action => 'stop', :id => @import, :worker_type => @worker_type %>
 </div>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

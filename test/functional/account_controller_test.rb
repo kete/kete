@@ -47,6 +47,7 @@ class AccountControllerTest < ActionController::TestCase
     assert_difference('User.count') do
       create_user
       assert_response :redirect
+      assert_equal 'Thanks for signing up!', flash[:notice]
     end
   end
 
@@ -102,7 +103,7 @@ class AccountControllerTest < ActionController::TestCase
   def test_should_delete_token_on_logout
     login_as :admin
     get :logout, :urlified_name => @urlified_name
-    assert_equal @response.cookies["auth_token"], []
+    assert_nil @response.cookies["auth_token"]
   end
 
   def test_should_login_with_cookie
@@ -137,13 +138,12 @@ class AccountControllerTest < ActionController::TestCase
 
   def test_should_send_activation_email_after_signup
     # Override constant to test for activation email
-    Object.send(:remove_const, :REQUIRE_ACTIVATION)
-    Object.send(:const_set, :REQUIRE_ACTIVATION, true)
+    set_constant('REQUIRE_ACTIVATION', true)
     
     create_user
     assert_equal 1, @emails.length
     assert_match /Please activate your new account/, @emails.first.subject
-    assert_match /Username: quire/, @emails.first.body
+    assert_match /User name: quire/, @emails.first.body
     assert_match /Password: quire/, @emails.first.body 
     assert_match /account\/activate\/#{assigns(:user).activation_code}/, @emails.first.body
   end
@@ -208,7 +208,7 @@ class AccountControllerTest < ActionController::TestCase
     post :login, :login => 'bryan', :password => 'newpassword', :urlified_name => @urlified_name
     assert session[:user]
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'index'
+    assert_redirected_to :urlified_name => @urlified_name, :controller => 'account', :action => 'index', :locale => :en
   end
 
   def test_non_matching_passwords_should_not_change
@@ -255,7 +255,7 @@ class AccountControllerTest < ActionController::TestCase
     still_image = StillImage.create({ :title => 'test still image', :basket_id => Basket.find(:first) })
     get :add_portrait, :urlified_name => 'site', :id => still_image.id
     assert_response :redirect
-    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
+    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
   end
 
   def test_remove_portrait
@@ -264,7 +264,7 @@ class AccountControllerTest < ActionController::TestCase
     get :add_portrait, :urlified_name => 'site', :id => still_image.id
     get :remove_portrait, :urlified_name => 'site', :id => still_image.id
     assert_response :redirect
-    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
+    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
   end
 
   def test_make_selected_portrait
@@ -273,7 +273,7 @@ class AccountControllerTest < ActionController::TestCase
     get :add_portrait, :urlified_name => 'site', :id => still_image.id
     get :make_selected_portrait, :urlified_name => 'site', :id => still_image.id
     assert_response :redirect
-    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image)
+    assert_redirected_to :urlified_name => 'site', :controller => 'images', :action => 'show', :id => assigns(:still_image), :locale => false
   end
 
   protected
@@ -281,7 +281,7 @@ class AccountControllerTest < ActionController::TestCase
     def create_user(options = {})
       post :signup, { :user => { :login => 'quire', :email => 'quire@changme.com',
         :password => 'quire', :password_confirmation => 'quire', :captcha_type => 'image',
-        :agree_to_terms => '1', :security_code => 'test' }.merge(options), :urlified_name => @urlified_name },
+        :agree_to_terms => '1', :security_code => 'test', :locale => 'en' }.merge(options), :urlified_name => @urlified_name },
         { :captcha_id => 1 }
     end
 

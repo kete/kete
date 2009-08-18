@@ -13,21 +13,6 @@ require File.expand_path(File.dirname(__FILE__) + "/../common_test_methods")
 # Load the libraries from installed gems required to run the tests
 load_testing_libs
 
-# Turn off error 500 page opening (it's output to the console aleady)
-# Turn the mode to rails as well (or we get errors)
-if defined?(SELENIUM_MODE) && SELENIUM_MODE
-  Webrat.configure do |config|
-    config.mode = :selenium
-    config.application_environment = :test
-    config.open_error_files = false
-  end
-else
-  Webrat.configure do |config|
-    config.mode = :rails
-    config.open_error_files = false
-  end
-end
-
 # Request permission to alter the Zebra database (if this has already been run,
 # the environment check will just skip this step)
 verify_zebra_changes_allowed
@@ -41,6 +26,21 @@ require File.expand_path(File.dirname(__FILE__) + "/../factories")
 # Overwrite all constants there may be with defaults so we can continue testing
 configure_environment do
   require File.expand_path(File.dirname(__FILE__) + "/../system_configuration_constants")
+end
+
+# Turn off error 500 page opening (it's output to the console aleady)
+# Turn the mode to rails as well (or we get errors)
+if defined?(SELENIUM_MODE) && SELENIUM_MODE
+  Webrat.configure do |config|
+    config.mode = :selenium
+    config.application_environment = :test
+    config.open_error_files = false
+  end
+else
+  Webrat.configure do |config|
+    config.mode = :rails
+    config.open_error_files = false
+  end
 end
 
 # Overload the IntegrationTest class to ensure tear down occurs OK.
@@ -82,7 +82,7 @@ class ActionController::IntegrationTest
     body_should_contain "Login to Kete"
     fill_in "login", :with => username.to_s
     fill_in "password", :with => password
-    click_button "Log in"
+    click_button "Login"
 
     body_should_contain("Logged in successfully") unless options[:should_fail_login]
   end
@@ -320,6 +320,7 @@ class ActionController::IntegrationTest
       :description => "#{zoom_class_humanize(zoom_class)} Updated Description",
       :success_message => "#{zoom_class_humanize(zoom_class)} was successfully updated."
     }
+    fields[:edit_path] += "?private=true" if item.is_private?
     fields.merge!(options)
     # Delete these here because they arn't fields and will <tt>get_webrat_actions_from</tt> to raise an
     # exception
@@ -401,7 +402,9 @@ class ActionController::IntegrationTest
     visit "/#{basket.urlified_name}/baskets/destroy/#{basket.to_param}", :post
 
     body_should_contain 'Basket was successfully deleted.'
-    body_should_contain 'Introduction'
+    # should return to site basket, not sub basket
+    body_should_contain 'Browse'
+    body_should_not_contain 'Browse:'
 
     @@baskets_created.delete(basket)
 
@@ -437,6 +440,7 @@ class ActionController::IntegrationTest
     click_link 'Make this revision live'
     body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved
                          from the selected revision."
+    item.reload # get the new version
   end
 
   # Reject a moderated item.
@@ -456,6 +460,7 @@ class ActionController::IntegrationTest
     click_button 'Reject'
     body_should_contain "This version of this #{zoom_class_humanize(item_class)} has been rejected.
                          The user who submitted the revision will be notified by email."
+    item.reload # get the new version
   end
 
   # Turn on full moderation on a basket
@@ -524,7 +529,9 @@ class ActionController::IntegrationTest
   # incase the one mimetype-fu tries to use is not compatible
   def attach_file(locator, filename, mime_type = nil)
     file_path = File.join(RAILS_ROOT, "test/fixtures/files/#{filename}")
-    mime_type = File.mime_type?(File.open(file_path)).split(';').first if mime_type.blank?
+    file = File.open(file_path)
+    mime_type = File.mime_type?(file).split(';').first if mime_type.blank?
+    file.close
     super(locator, file_path, mime_type)
   end
 

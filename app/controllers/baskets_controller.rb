@@ -19,8 +19,6 @@ class BasketsController < ApplicationController
 
   include WorkerControllerHelpers
 
-  include ActionView::Helpers::SanitizeHelper
-
   # Kieran Pilkington, 2008/11/26
   # Instantiation of Google Map code for location settings
   include GoogleMap::Mapper
@@ -64,7 +62,7 @@ class BasketsController < ApplicationController
     @profiles = Profile.all
     params[:basket_profile] = @profiles.first.id if @profiles.size == 1
     @basket = Basket.new
-    prepare_profile_for(:edit)
+    prepare_and_validate_profile_for(:edit)
   end
 
   def render_basket_form
@@ -92,8 +90,7 @@ class BasketsController < ApplicationController
 
     @basket = Basket.new(params[:basket])
     @profiles = Profile.all
-    prepare_profile_for(:edit)
-    validate_settings_against_profile
+    prepare_and_validate_profile_for(:edit)
 
     if @basket.save
       # Reload to ensure basket.creator is updated.
@@ -115,7 +112,7 @@ class BasketsController < ApplicationController
         @site_basket.administrators.each do |administrator|
           UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'request')
         end
-        flash[:notice] = 'Basket will now be reviewed, and you\'ll be notified of the outcome.'
+        flash[:notice] = t('baskets_controller.create.to_be_reviewed')
         redirect_to "/#{@site_basket.urlified_name}"
       else
         if !@site_admin
@@ -123,7 +120,7 @@ class BasketsController < ApplicationController
             UserNotifier.deliver_basket_notification_to(administrator, current_user, @basket, 'created')
           end
         end
-        flash[:notice] = 'Basket was successfully created.'
+        flash[:notice] = t('baskets_controller.create.created')
         redirect_to :urlified_name => @basket.urlified_name, :controller => 'baskets', :action => 'edit', :id => @basket
       end
     else
@@ -135,14 +132,14 @@ class BasketsController < ApplicationController
     appropriate_basket
     @topics = @basket.topics
     @index_topic = @basket.index_topic
-    prepare_profile_for(:edit)
+    prepare_and_validate_profile_for(:edit)
   end
 
   def homepage_options
     edit
-    prepare_profile_for(:homepage_options)
+    prepare_and_validate_profile_for(:homepage_options)
 
-    @feeds_list = nil
+    @feeds_list = Array.new
     if @basket.feeds.count > 0
       @basket.feeds.each do |feed|
         limit = !feed.limit.nil? ? feed.limit.to_s : ''
@@ -160,7 +157,6 @@ class BasketsController < ApplicationController
     @basket = Basket.find(params[:id])
     @topics = @basket.topics
     original_name = @basket.name
-    prepare_profile_for(params[:source_form].to_sym)
 
     unless params[:accept_basket].blank?
       params[:basket][:status] = 'approved'
@@ -218,14 +214,14 @@ class BasketsController < ApplicationController
       rescue
         # if there is a problem adding feeds, raise an error the user
         # chances are that they didn't format things correctly
-        @basket.errors.add('Feeds', "there was a problem adding your feeds. Is the format you entered correct and you haven\'t entered a feed twice?")
+        @basket.errors.add('Feeds', t('baskets_controller.update.feed_problem'))
         @feeds_successful = false
       end
     end
 
     convert_text_fields_to_boolean if params[:source_form] == 'edit'
 
-    validate_settings_against_profile
+    prepare_and_validate_profile_for(params[:source_form].to_sym)
 
     if @feeds_successful && @basket.update_attributes(params[:basket])
       # Reload to ensure basket.name is updated and not the previous
@@ -237,6 +233,7 @@ class BasketsController < ApplicationController
       # clear slideshow in session
       # in case the user user changes how images should be ordered
       session[:slideshow] = nil
+      session[:image_slideshow] = nil
 
       # @basket.name has changed
       if original_name != @basket.name
@@ -265,7 +262,7 @@ class BasketsController < ApplicationController
         MiddleMan.new_worker( :worker => :feeds_worker, :worker_key => feed.to_worker_key, :data => feed.id )
       end
 
-      flash[:notice] = 'Basket was successfully updated.'
+      flash[:notice] = t('baskets_controller.update.updated')
       redirect_to "/#{@basket.urlified_name}/"
     else
       render :action => params[:source_form]
@@ -304,43 +301,47 @@ class BasketsController < ApplicationController
     end
 
     if @successful
-      flash[:notice] = 'Basket was successfully deleted.'
+      flash[:notice] = t('baskets_controller.destroy.destroyed')
       redirect_to '/'
     end
   end
 
   def add_index_topic
     @topic = Topic.find(params[:topic])
-    @successful = Basket.find(params[:index_for_basket]).update_index_topic(@topic)
+    @basket = Basket.find(params[:index_for_basket])
+    @successful = @basket.update_index_topic(@topic)
     if @successful
       # this action saves a new version of the topic
       # add this as a contribution
       @topic.add_as_contributor(current_user)
-      flash[:notice] = 'Basket homepage was successfully created.'
-      redirect_to :action => 'homepage_options', :controller => 'baskets', :id => params[:index_for_basket]
+      flash[:notice] = t('baskets_controller.add_index_topic.created')
+      if params[:return_to_homepage]
+        redirect_to "/#{@basket.urlified_name}"
+      else
+        redirect_to :action => 'homepage_options', :controller => 'baskets', :id => params[:index_for_basket]
+      end
     end
   end
 
   def appearance
     appropriate_basket
-    prepare_profile_for(:appearance)
+    prepare_and_validate_profile_for(:appearance)
   end
 
   def update_appearance
     @basket = Basket.find(params[:id])
-    prepare_profile_for(:appearance)
     do_not_sanitize = (params[:settings][:do_not_sanitize_footer_content] == 'true')
     original_html = params[:settings][:additional_footer_content]
     sanitized_html = original_html
     unless do_not_sanitize && @site_admin
-      sanitized_html = sanitize(original_html)
+      sanitized_html = original_html.sanitize
       params[:settings][:additional_footer_content] = sanitized_html
     end
-    validate_settings_against_profile
+    prepare_and_validate_profile_for(:appearance)
     set_settings
-    flash[:notice] = 'Basket appearance was updated.'
+    flash[:notice] = t('baskets_controller.update_appearance.updated')
     logger.debug("sanitized yes") if original_html != sanitized_html
-    flash[:notice] += ' Your submitted footer content was changed for security reasons.' if original_html != sanitized_html
+    flash[:notice] += t('baskets_controller.update_appearance.sanitized') if original_html != sanitized_html
     redirect_to :action => :appearance
   end
 
@@ -411,21 +412,19 @@ class BasketsController < ApplicationController
   end
 
   def set_settings
-    if !params[:settings].nil?
-      params[:settings].each do |name, value|
-        # HACK
-        # is there a better way to typecast?
-        # rails does so in AR, but not sure it's appropriate here
-        case value
-        when "true"
-          value = true
-        when "false"
-          value = false
-        when "nil"
-          value = nil
-        end
-        @basket.settings[name] = value
-      end
+    return unless params[:settings]
+
+    # create a hash with setting keys and values for usage later
+    basket_settings = Hash.new
+    @basket.settings.each_with_key { |key, value| basket_settings[key.to_sym] = value }
+
+    params[:settings].each do |name, value|
+      # make sure we do not cause an SQL query if the value is the same
+      next if basket_settings[name.to_sym] == value
+      # convert the string to a boolean/nil value if it can be
+      value = value.to_bool if value.is_a?(String)
+      # save this new value to the baskets settings
+      @basket.settings[name] = value
     end
   end
 
@@ -451,46 +450,55 @@ class BasketsController < ApplicationController
   # reflect on the form the person making the basket sees. Don't do this
   # however if they have submitted a form and a value exists in params[:basket]
   # (because it overwrites it)
-  def prepare_profile_for(form_type)
-    # this var is used in form helpers
-    @form_type = form_type
-
-    # for each basket attribute, add a default value, only if the value isn't already set
-    Basket::EDITABLE_ATTRIBUTES.each do |setting|
-      unless params[:basket] && params[:basket].key?(setting)
-        @basket.send("#{setting}=", current_value_of(setting))
-      end
-    end
-  end
-
   # we can't use hidden fields because its not secure
   # so after a post has been made, we have to check values
   # are allowed/set and replace/add them if they aren't.
   # make sure we edit the params hash for both basket and settings
   # as well as the @basket object for basket settings
   # don't do this if the user is a site admin though
-  def validate_settings_against_profile
-    return if @site_admin
+  def prepare_and_validate_profile_for(form_type)
+    # we don't run this method is we don't have profile rules
+    return if profile_rules.blank?
 
-    if params[:basket]
-      Rails.logger.debug "Before params validation, basket was " + params[:basket].inspect
-      params[:basket].each do |k,v|
-        unless allowed_field?(k)
-          value = current_value_of(k, true)
-          params[:basket][k] = value
-          @basket.send("#{k}=", value)
-        end
+    # this var is used in form helpers
+    @form_type = form_type
+
+    # we need to check all form types for the values
+    form_types = [:edit, :appearance, :homepage_options]
+
+    # make the params values hash if they aren't already
+    params[:basket] ||= Hash.new
+    params[:settings] ||= Hash.new
+
+    Rails.logger.debug "Before params validation and reset, basket was " + params[:basket].inspect
+    Rails.logger.debug "Before params validation and reset, settings was " + params[:settings].inspect
+
+    # for each basket attribute, reset to the default value if not an allowed field
+    Basket::EDITABLE_ATTRIBUTES.each do |setting|
+      if (@site_admin || allowed_field?(setting)) && !params[:basket][setting.to_sym].blank?
+        # if we run this, it means that the current user is allowed
+        # to set this field and the field has a value already
+        @basket.send("#{setting}=", params[:basket][setting.to_sym])
+      else
+        # if we run this, it means that the current user is not allowed
+        # to set this field, or they are but the field has no value
+        value = current_value_of(setting, true, form_types)
+        params[:basket][setting.to_sym] = value
+        @basket.send("#{setting}=", value)
       end
-      Rails.logger.debug "After params validation, basket is " + params[:basket].inspect
     end
 
-    if params[:settings]
-      Rails.logger.debug "Before params validation, settings was " + params[:settings].inspect
-      params[:settings].each do |k,v|
-        params[:settings][k] = current_value_of(k, true) unless allowed_field?(k)
+    # for each basket setting, reset to the default value if not an allowed field
+    Basket::EDITABLE_SETTINGS.each do |setting|
+      unless (@site_admin || allowed_field?(setting)) && !params[:settings][setting.to_sym].blank?
+        # if we run this, it means that the current user is not allowed
+        # to set this field, or they are but the field has no value
+        params[:settings][setting.to_sym] = current_value_of(setting, true, form_types)
       end
-      Rails.logger.debug "After params validation, settings is " + params[:settings].inspect
     end
+
+    Rails.logger.debug "After params validation and reset, basket is " + params[:basket].inspect
+    Rails.logger.debug "After params validation and reset, settings is " + params[:settings].inspect
   end
 
   # gets the profile rules for this basket. Memoize the result to prevent needless queries
@@ -534,7 +542,9 @@ class BasketsController < ApplicationController
   # get the current value of a field, from either basket/setting submitted values,
   # profile if new record, or exsiting value of existing record
   # skip_posted_values will skip getting the value from params
-  def current_value_of(name, skip_posted_values=false)
+  def current_value_of(name, skip_posted_values=false, form_type=nil)
+    form_type ||= @form_type
+
     value = nil
 
     unless skip_posted_values
@@ -558,12 +568,20 @@ class BasketsController < ApplicationController
 
     # if by this point we still have nothing/nil
     if value.nil? || value.class == NilClass
-      value = if profile_rules.blank?
+      if profile_rules.blank?
         # no profile mapping
-        nil
+        value = nil
       else
         # return the profile rule default value
-        profile_rules[@form_type.to_s]['values'][name.to_s]
+        # if we have an array, loop through them all, checking all types for an ok field
+        if form_type.is_a?(Array)
+          form_type.each do |type|
+            next unless profile_rules[type.to_s] && profile_rules[type.to_s]['values']
+            value ||= profile_rules[type.to_s]['values'][name.to_s]
+          end
+        else
+          value = profile_rules[form_type.to_s]['values'][name.to_s]
+        end
       end
     end
 
@@ -631,7 +649,7 @@ class BasketsController < ApplicationController
   # redirect to permission denied if current user cant add/request baskets
   def redirect_if_current_user_cant_add_or_request_basket
     unless current_user_can_add_or_request_basket?
-      flash[:error] = "You need to have the right permissions to add or request a basket"
+      flash[:error] = t('baskets_controller.redirect_if_current_user_cant_add_or_request_basket.not_authorized')
       redirect_to DEFAULT_REDIRECTION_HASH
     end
   end

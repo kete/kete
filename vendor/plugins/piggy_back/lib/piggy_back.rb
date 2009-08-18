@@ -177,11 +177,12 @@ end
 # we don't use this anyway
 # since we use will_paginate or roll our own pagination
 # it was preventing compatibility with Rails 2.0
-# module ActionController::Pagination
 
+# module ActionController::Pagination
+#
 #   # make paginator swallow piggy option
 #   DEFAULT_OPTIONS[:piggy] = nil
-
+#
 #   # pass piggy option to model find
 #   def find_collection_for_pagination(model, options, paginator)
 #     model.find(:all,
@@ -194,14 +195,14 @@ end
 #                :offset => paginator.current.offset,
 #                :piggy => options[:piggy])
 #   end
-
+#
 # end
 
 __END__
 
 # This software is released under the MIT license
 #
-# Copyright (c) 2006 Stefan Kaes
+# Copyright (c) 2006-2008 Stefan Kaes
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the

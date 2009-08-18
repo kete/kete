@@ -57,21 +57,21 @@ module ItemPrivacyTestHelper
         item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
-        assert_valid item
+        assert item.valid?
       end
 
       def test_attachment_fu_uses_correct_path_prefix2
         item2 = eval(@base_class).create(@new_model.merge({ :file_private => true }))
         assert_match(attachment_fu_test_path("private", @uploads_folder), item2.full_filename)
         assert File.exists?(item2.full_filename)
-        assert_valid item2
+        assert item2.valid?
       end
 
       def test_attachment_fu_does_not_move_files_when_going_from_public_to_private
         item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
-        assert_valid item
+        assert item.valid?
         old_filename = item.full_filename
         id = item.id
 
@@ -80,14 +80,14 @@ module ItemPrivacyTestHelper
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert_equal old_filename, item.full_filename
-        assert_valid item
+        assert item.valid?
       end
 
       def test_attachment_fu_moves_files_to_correct_path_when_going_from_private_to_public
         item = eval(@base_class).create(@new_model.merge({ :file_private => true }))
         assert_match(attachment_fu_test_path("private", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename)
-        assert_valid item
+        assert item.valid?
         old_filename = item.full_filename
         id = item.id
 
@@ -96,7 +96,7 @@ module ItemPrivacyTestHelper
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
         assert File.exists?(item.full_filename), "File is not where we expected. Should be at #{item.full_filename} but is not present."
         assert !File.exists?(old_filename), "File is not where we expected. Should NOT be at #{old_filename} but IS present."
-        assert_valid item
+        assert item.valid?
       end
 
       def test_attachment_path_prefix
@@ -132,9 +132,10 @@ module ItemPrivacyTestHelper
           :email => 'quire@example.com',
           :password => 'quire',
           :password_confirmation => 'quire',
-          :agree_to_terms => true,
+          :agree_to_terms => '1',
           :security_code => 'test',
-          :security_code_confirmation => 'test'
+          :security_code_confirmation => 'test',
+          :locale => 'en'
         )
         basket_instance.accepts_role(role, user)
         
@@ -477,19 +478,21 @@ module ItemPrivacyTestHelper
         # Should be three, 1 for private, 1 for public and 1 for pending blank private..
         assert_equal 3, d.versions.size
 
-        assert_equal 1, d.versions.find_by_version(1).tags.size
-        assert_equal "test item", d.versions.find_by_version(1).title
-        assert_equal "Version 1", d.versions.find_by_version(1).description
-        assert_equal false, d.versions.find_by_version(1).private?
+        version1 = d.versions.find_by_version(1)
+        assert_equal 1, version1.tags.size
+        assert_equal "Version 1", version1.title
+        assert_equal "Version 1", version1.description
+        assert_equal false, version1.private?
 
-        assert_equal 0, d.versions.find_by_version(2).tags.size
-        assert_equal BLANK_TITLE, d.versions.find_by_version(2).title
-        assert_equal nil, d.versions.find_by_version(2).description
-        assert_equal false, d.versions.find_by_version(2).private?
+        version2 = d.versions.find_by_version(2)
+        assert_equal 0, version2.tags.size
+        assert_equal BLANK_TITLE, version2.title
+        assert_equal nil, version2.description
+        assert_equal false, version2.private?
 
         assert_equal 3, d.version
-        assert_equal "test item", d.title
-        assert_equal "Version 1", d.description
+        assert_equal "Version 3", d.title
+        assert_equal "Version 3", d.description
         assert_equal false, d.private?
 
         assert_nil d.private_version!
@@ -499,29 +502,32 @@ module ItemPrivacyTestHelper
       def test_new_version_of_moderated_public_item
 
         d = new_moderated_public_item
-        d.update_attributes!(:description => "Version 2")
+        # this will save as version 4
+        # (but because basket is moderated, result will revert to public version 3)
+        d.update_attributes!(:title => "Version 4", :description => "Version 4")
 
         assert_equal 4, d.versions.size
-
         assert_equal 3, d.version
-        assert_equal "Version 1", d.description
+        assert_equal "Version 3", d.description
 
         assert_equal 1, d.versions.find_by_version(4).tags.size
-        assert_equal "Version 2", d.versions.find_by_version(4).description
+        assert_equal "Version 4", d.versions.find_by_version(4).description
       end
 
       def test_new_private_version_of_moderated_public_item
 
         d = new_moderated_public_item
-        d.update_attributes!(:description => "Version 2", :private => true)
+        # this will save as version 4
+        # (but because basket is moderated, result will revert to public version 3)
+        d.update_attributes!(:title => "Version 4", :description => "Version 4", :private => true)
 
         assert_equal 5, d.versions.size
 
         assert_equal 3, d.version
-        assert_equal "Version 1", d.description
+        assert_equal "Version 3", d.description
 
         assert_equal 1, d.versions.find_by_version(4).tags.size
-        assert_equal "Version 2", d.versions.find_by_version(4).description
+        assert_equal "Version 4", d.versions.find_by_version(4).description
 
         assert_equal BLANK_TITLE, d.versions.find_by_version(5).title
         assert_equal nil, d.versions.find_by_version(5).description
@@ -738,20 +744,26 @@ module ItemPrivacyTestHelper
       protected
 
         def new_moderated_public_item
-          d = eval(@base_class).new(@new_model.merge({ :description => "Version 1", :private => false }))
+          d = eval(@base_class).new(@new_model.merge({ :title => "Version 1", :description => "Version 1", :private => false }))
           d.instance_eval do
             def fully_moderated?
               true
             end
           end
+          # this will save the above as version 1
+          # then make a 'Pending Moderation' as version 2
           d.save!
           d.reload
 
           d.change_pending_to_reviewed_flag(1)
           d.revert_to(1)
+          d.title = "Version 3"
+          d.description = "Version 3"
           d.version_comment = "Content from revision # 1."
           d.do_not_moderate = true
           d.do_not_sanitize = true
+          # this will save the above as version 3
+          # (and will be the current public version)
           d.save!
           d.reload
           d.do_not_moderate = false

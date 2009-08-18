@@ -1,14 +1,14 @@
 <%= @user.user_name %>,
 
-Revision # <%= @revision -%> of this item has been reviewed by a moderator and <%= REJECTED_FLAG -%>.  If you would like to alter your submission, you can view it here:
+<%=t 'user_notifier.rejection_of.description',
+     :revision => @revision,
+     :flag => REJECTED_FLAG %>
 
   <%= @url %>
 
 <% if !@message.blank? -%>
-The moderator has provided these details about why the site decided not to accept your contribution:
+  <%=t 'user_notifier.rejection_of.reason' %>
   <%= @message %>
 <% end -%>
 
-Thank you,
-<%= PRETTY_SITE_NAME %>
-<%= SITE_URL %>
+<%= render 'email_footer' %>

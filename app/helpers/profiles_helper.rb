@@ -9,9 +9,9 @@ module ProfilesHelper
     html = String.new
     if record.new_record?
       html = "<div id=\"rules_forms\" style=\"display: inline-block; margin-left: 2em;\">"
-      type_options = [['--choose included form fields--', '']] + Profile.type_options
+      type_options = [[t('profiles_helper.rules_form_column.choose_included_fields'), '']] + Profile.type_options
       # we start with a select for type options for each form
-      Basket::FORMS_OPTIONS.each do |form_option|
+      Basket.forms_options.each do |form_option|
         form_type = form_option[1]
         html += "<div id=\"#{form_type}_section\">"
         html += "<label for=\"#{form_type}\">#{form_option[0]}</label>"
@@ -38,7 +38,7 @@ module ProfilesHelper
 
     else
       html = record.rules
-      html += "<br /><strong>(cannot be changed)</strong>"
+      html += "<br /><strong>#{t('profiles_helper.rules_form_column.cannot_be_changed')}</strong>"
     end
     html
   end
@@ -86,8 +86,8 @@ module ProfilesHelper
     content += '<br />' + image_tag('icon_results_next_off.gif',
                                     :id => "#{rules_allowed_id(name)}_expander",
                                     :class => 'expand_policy',
-                                    :alt => 'Expand Policy. ',
-                                    :title => 'Expand Policy. ')
+                                    :alt => t('profiles_helper.rules_allowed_check_box.expand_policy'),
+                                    :title => t('profiles_helper.rules_allowed_check_box.expand_policy'))
     content_tag('div', content, :class => 'allowed_check_box')
   end
 

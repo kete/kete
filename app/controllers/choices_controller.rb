@@ -1,7 +1,9 @@
 class ChoicesController < ApplicationController
   
   before_filter :login_required, :only => [ :list, :index ]
-  
+
+  before_filter :set_page_title
+
   permit "site_admin", :except => [ :categories_list ]
   
   active_scaffold :choices do |config|
@@ -12,7 +14,7 @@ class ChoicesController < ApplicationController
     
     # Column overrides
     config.columns[:label].required = true
-    config.columns[:value].description = "Label will be used as value if left blank."
+    config.columns[:value].description = I18n.t('choices_controller.label_example')
     
     # Subform column overrides
     # config.subform.columns = [:label]
@@ -26,4 +28,9 @@ class ChoicesController < ApplicationController
   def categories_list
   end
 
+  private
+
+  def set_page_title
+    @title = t('choices_controller.title')
+  end
 end

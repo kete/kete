@@ -1,4 +1,6 @@
-// Submenu code "borrowed" from lighthouseapp.com
+/**
+ * Submenu code "borrowed" from lighthouseapp.com
+ */
 
 var SubMenu = Class.create({
   initialize: function(li) {
@@ -16,6 +18,10 @@ var SubMenu = Class.create({
     this.menu.toggle()
   }
 });
+
+/**
+ * Portrait Related Javascript
+ */
 
 function preventLinksExecuting() {
   $$('.portrait_image a').each(function(link) {
@@ -69,6 +75,23 @@ function enablePortraitDragAndDrop() {
   }
 }
 
+function enabledPortraitHelpToggle() {
+  $('portrait_help').down('a').observe('click', function(event) {
+    $('portrait_help_div').show();
+    $('portrait_help').down('a').hide();
+    event.stop();
+  });
+  $('close_help').observe('click', function(event) {
+    $('portrait_help_div').hide();
+    $('portrait_help').down('a').show();
+    event.stop();
+  });
+}
+
+/**
+ * Choice Heirarchy code (inactive)
+ */
+
 function enableCategoryListUpdater(controller_name) {
   $$('.category_list a').each(function(link) {
     link.observe('click', function(evt) {
@@ -89,6 +112,88 @@ function enableCategoryListUpdater(controller_name) {
   });
 }
 
+/**
+ * Related Items Slideshow functionality
+ */
+
+function setupRelatedCollapsableSections() {
+  hideAllRelatedSections();
+  // For each related items section, hide it, and add an hover event
+  $$('.related-items-section').each(function(section) {
+    $(section).down('a').observe('click', function(event) {
+      if ($(section).down('img.expand_collapse_image').src.match('/images/related_items_expanded.gif')) {
+        $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
+      } else {
+        $(section).down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+      }
+      $(section).down('ul').toggle();
+      if ($(section).id == 'detail-linked-images') {
+        $$('.slideshow_div').each(function(div) {
+          $(div).toggle();
+        });
+      }
+      // stop anything the hover might have triggered
+      event.stop();
+    });
+  });
+  // Show the contents of the first section in the related items inset
+  $$('.related-items-section')[0].down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+  $$('.related-items-section')[0].down('ul').show();
+}
+
+function hideAllRelatedSections() {
+  $$('.related-items-section').each(function(section) {
+    $(section).down('img.expand_collapse_image').src = '/images/related_items_collapsed.gif';
+    $(section).down('ul').hide();
+  });
+}
+
+function setupRelatedImagesSlideshowPlayButton(url) {
+  $('related_items_slideshow_controls').show();
+  $('play_slideshow').observe('click', function(event) {
+    new Ajax.Updater('related_items_slideshow', url, {
+      method: 'get',
+      evalScripts: true,
+      onComplete: function(complete) {
+        $('play_slideshow').up('.buttons').hide();
+        $('related_still_image_container').hide();
+      }
+    });
+    event.stop();
+  });
+}
+
+function setupRelatedImagesSlideshowStopButton() {
+  $('stop_slideshow').observe('click', function(event) {
+    $('play_slideshow').up('.buttons').show();
+    $('related_still_image_container').show();
+    $('related_items_slideshow').innerHTML = '';
+    event.stop();
+  });
+}
+
+function setupRelatedImagesSlideshowPauseButton() {
+  if ($('selected-image-display-paused')) {
+    $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+  }
+  $('play_pause_slideshow').observe('click', function(event) {
+    if ($('selected-image-display-paused')) {
+      $('selected-image-display-paused').remove();
+      $('play_pause_slideshow').down('img').src = '/images/slideshow_pause.gif';
+    } else {
+      $('body-outer-wrapper').insert("<div id='selected-image-display-paused'></div>");
+      $('play_pause_slideshow').down('img').src = '/images/slideshow_play.gif';
+    }
+    event.stop();
+  });
+}
+
+/**
+ * Extended Field Editing
+ */
+
+// Incase we add a custom choice, all choices below the
+// current field should be cleared and hidden
 function clearCorrespondingFieldWhenEdited(field_id, field_class, select_id, select_class) {
   $(select_id).observe('change', function(evt) {
     $(field_id).clear();
@@ -112,6 +217,10 @@ function clearCorrespondingFieldWhenEdited(field_id, field_class, select_id, sel
   });
 }
 
+/**
+ * Quick and easy expand and collapse fucntionality for Basket Profiles
+ */
+
 function quickExpandCollapse(clickable_element, affected_element, collapsed_image, expanded_image) {
   $(clickable_element).observe('click', function(event) {
     if ($(clickable_element).src.match(collapsed_image)) {
@@ -125,26 +234,53 @@ function quickExpandCollapse(clickable_element, affected_element, collapsed_imag
   });
 }
 
+/**
+ * Search/Recent Topic result display
+ */
+
 function makeElementLinkable(id, url) {
   $(id).observe('click', function(event) {
     window.location = url;
   });
 }
 
+// makes the assumption that the first link points to the item
+// which at the time of writing this, is correct (infact, all
+// links in the div point to the item)
+function makeSearchResultsDivClickable() {
+  $$('.generic-result-wrapper').each(function(div) {
+    if (!div.className.match('skip_div_click')) {
+      makeElementLinkable(div.id, div.down('a').href);
+    }
+  });
+  $$('.image-result-wrapper').each(function(div) {
+    if (!div.className.match('skip_div_click')) {
+      makeElementLinkable(div.id, div.down('a').href);
+    }
+  });
+}
+
+/**
+ * Langauge selection dropdown
+ */
+
+function makeFooterLanguageSelectionClickable() {
+  $('footer_language_selection').down('select').observe('change', function(event) {
+    if ($('footer_language_selection').down('select').value != '') {
+      $('footer_language_selection').down('form').submit();
+    }
+  });
+}
+
+/**
+ * Now setup everything to run when needed once the page is loaded
+ */
+
 document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
-  
-  if ($('portrait_help_div')) {
-    $('portrait_help').down('a').observe('click', function(event) {
-      $('portrait_help_div').show();
-      $('portrait_help').down('a').hide();
-      event.stop();
-    });
-    $('close_help').observe('click', function(event) {
-      $('portrait_help_div').hide();
-      $('portrait_help').down('a').show();
-      event.stop();
-    })
-  }
+  if ($('portrait_help_div')) { enabledPortraitHelpToggle(); }
+  if ($$('#related_items.inset').size() > 0) { setupRelatedCollapsableSections(); }
+  makeSearchResultsDivClickable();
+  if ($('footer_language_selection')) { makeFooterLanguageSelectionClickable(); }
 });

@@ -1,0 +1,47 @@
+================
+MODIFIED VENDORS
+================
+
+If you make a change to vendored gem, plugin, or rails, you should note
+which files here so we don't overwrite the changes during a Rails upgrade.
+
+In the file itself, above the changes you made, should be in this format:
+
+# CUSTOM EDIT
+# Name - YYYY/MM/DD
+# Reason for change(s)
+# Summary of change(s)
+new code here
+
+If you can comment out the old lines then make changes in new code,
+so we can compare the changes later, that would be beneficial.
+
+=======
+CHANGED
+=======
+
+gems/
+
+plugins/
+  acts-as-taggable-on/
+    lib/
+      acts_as_taggable_on/
+        acts_as_taggable_on.rb -> add basket id to Tagging creation
+        taggings.rb            -> belongs_to :basket
+        tags_helper.rb         -> Comment out tag cloud, we use our own
+  acts_as_soft_deletable/
+    lib/
+      unit_test_helper.rb      -> fixed errors when testing
+  brain_buster/
+    init.rb                    -> fixing issues with rails 2.3
+    lib/
+      brain_buster_system.rb   -> returning false instead of redirecting
+    views/
+      brain_busters/
+        _captcha.html.erb      -> text change
+
+rails/
+  activesupport/
+    lib/
+      active_support/
+        vendor.rb              -> don't use the i18n gem (since we have custom changes needed)

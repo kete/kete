@@ -1,11 +1,11 @@
-<h3>List your site on Kete.net.nz (optional)</h3>
+<h3><%=t 'configure.link_to_site.title' %></h3>
 
 <% if @site_listing.blank? -%>
 
   <div id="send_information">
     <div id="top_message">
       <p>
-        Would you like to send your site name, site url and a short description of your site for to a public list of Kete installations?
+        <%=t 'configure.link_to_site.description' %>
       </p>
     </div>
 
@@ -15,10 +15,10 @@
       <div id="form_fields">
         <div id="linking_errors"></div>
         <div>
-          <label for="site_description">Site description: <small>(optional)</small></label><br />
+          <label for="site_description"><%=t 'configure.link_to_site.site_description' %> <small><%=t 'configure.link_to_site.site_description_optional' %></small></label><br />
           <input type="text" id="site_description" name="site_description" size="45" />
         </div>
-        <div><%= submit_tag 'Send Information', :id => 'data-button' -%></div>
+        <div><%= submit_tag t('configure.link_to_site.send_information'), :id => 'data-button' -%></div>
       </div>
     <% end -%>
   </div>
@@ -26,13 +26,13 @@
   <div id="updater"></div>
 
   <div id="spinner" style="display:none;">
-    <img src="/images/indicator.gif" width="16" height="16" alt="Completed. ">
+    <img src="/images/indicator.gif" width="16" height="16" alt="<%=t 'configure.link_to_site.completed' %>">
   </div>
 
 <% else -%>
 
   <div id="site_is_listed">
-    Kete.net.nz already lists the site. You can see details at <%= link_to(@site_listing, @site_listing) -%>.
+    <%=t 'configure.link_to_site.already_listed', :listing_link => link_to(@site_listing, @site_listing) %>
   </div>
 
 <% end -%>

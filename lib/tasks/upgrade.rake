@@ -23,7 +23,9 @@ namespace :kete do
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt',
                     'kete:upgrade:ensure_logins_all_valid',
-                    'kete:upgrade:move_user_name_to_display_and_resolved_name']
+                    'kete:upgrade:move_user_name_to_display_and_resolved_name',
+                    'kete:upgrade:set_default_locale_for_existing_users',
+                    'kete:upgrade:add_basket_id_to_taggings']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -40,6 +42,8 @@ namespace :kete do
     task :add_new_system_settings => :environment do
       system_settings_from_yml = YAML.load_file("#{RAILS_ROOT}/db/bootstrap/system_settings.yml")
 
+      printed_related_items_notice = false
+
       # for each system_setting from yml
       # check if it's in the db
       # if not, add it
@@ -53,6 +57,19 @@ namespace :kete do
         setting_hash.delete('id') if SystemSetting.count > 0
 
         if !SystemSetting.find_by_name(setting_hash['name'])
+
+          if setting_hash['name'].include?('Related Items Inset')
+            setting_hash['value'] = setting_hash['value'] == 'true' ? 'false' : 'true'
+            unless printed_related_items_notice
+              puts ""
+              puts "- Related Items Inset setting -"
+              puts "If your existing site content tends to have images or tables in your descriptions of items you'll probably want to keep these settings as they are."
+              puts "However, if your content descriptions don't have much of these you will like want to change them to the opposite to take advantage of the improved Related Items interface placement."
+              puts ""
+              printed_related_items_notice = true
+            end
+          end
+
           SystemSetting.create!(setting_hash)
           p "added " + setting_hash['name']
         end
@@ -241,6 +258,11 @@ namespace :kete do
       p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
     end
 
+    desc 'Give existing users a default locale if they don\'t already have one.'
+    task :set_default_locale_for_existing_users => :environment do
+      User.update_all({ :locale => 'en' }, { :locale => nil })
+    end
+
     desc 'Expire old style page caching for RSS feeds, otherwise they will conflict with new RSS caching system.'
     task :expire_depreciated_rss_cache => :environment do
       # needed for zoom_class_controller method
@@ -284,6 +306,35 @@ namespace :kete do
       end
     end
 
+    desc 'Make site basket default browse type blank, and other baskets inherit'
+    task :set_default_browse_type => :environment do
+      # set some defaults in the site basket
+      site_basket = Basket.first # site
+      site_basket.settings[:browse_view_as] = '' if site_basket.settings[:browse_view_as].class == NilClass
+      # All other baskets inherit from site
+      Basket.all.each do |basket|
+        basket.settings[:browse_view_as] = 'inherit' if basket.settings[:browse_view_as].class == NilClass
+      end
+    end
+
+    desc 'Add basket id to taggings that dont have a basket id yet'
+    task :add_basket_id_to_taggings => :environment do
+      puts "Adding Basket ID to Tagging records"
+      records = Tagging.all(:conditions => { :basket_id => nil })
+      records.each do |tagging|
+        item = tagging.taggable_type.constantize.find_by_id(tagging.taggable_id)
+        tagging.update_attribute(:basket_id, item.basket_id) if item
+      end
+      puts "Added Basket ID to #{records.size} Taggings"
+    end
+
+    desc "Make all baskets have private item notification 'do not email' if setting doesn't exist"
+    task :make_baskets_private_notification_do_not_email => :environment do
+      Basket.all.each do |basket|
+        basket.settings[:private_item_notification] = 'do_not_email' if basket.settings[:private_item_notification].blank?
+      end
+    end
+
     desc 'Checks for mimetypes an adds them if needed.'
     task :add_missing_mime_types => ['kete:upgrade:add_octet_stream_and_word_types',
                                      'kete:upgrade:add_excel_variants_to_documents',
@@ -293,7 +344,20 @@ namespace :kete do
                                      'kete:upgrade:add_jpegs_to_documents',
                                      'kete:upgrade:add_bmp_to_images',
                                      'kete:upgrade:add_eps_to_images',
+                                     'kete:upgrade:add_psd_and_gimp_to_images_and_documents',
                                      'kete:upgrade:add_file_mime_type_variants']
+
+    desc 'Adds psd variants if needed to images and documents'
+    task :add_psd_and_gimp_to_images_and_documents => :environment do
+      ['Document Content Types', 'Image Content Types'].each do |setting_name|
+        setting = SystemSetting.find_by_name(setting_name)
+        ['image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf'].each do |new_type|
+          if setting.push(new_type)
+            p "added #{new_type} mime type to " + setting.name
+          end
+        end
+      end
+    end
 
     desc 'Adds excel variants if needed'
     task :add_excel_variants_to_documents => :environment do

@@ -25,6 +25,7 @@
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @document }) %>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @document }) %>
+    <%= display_search_sources_for(@document) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @document }) %>
   </div> <!-- /secondary-content-warpper -->
 </div><!-- /content-wrapper -->

@@ -1,4 +1,4 @@
-<% @title = 'Edit your details'  -%>
+<% @title = t('account.edit.title') -%>
 
 <h2><%= h(@title) -%></h2>
 
@@ -9,29 +9,41 @@
 <%= error_messages_for :user %>
 
 <div class="form-element">
-<label for="user_login">Login:</label> <%= f.text_field :login, :tabindex => '1' %>
-<div class="form_example">Your username must be unique and contain no spaces. You will be asked for this and your password everytime you login. If your names is "John Smith" then you could use "jsmith" as your login.</div>
+  <label for="user_login"><%=t 'account.edit.login' %></label>
+  <%= f.text_field :login, :tabindex => '1' %>
+  <div class="form_example"><%=t 'account.edit.login_example' %></div>
 </div>
 
 <div class="form-element">
-  <label for="user_email">Email:</label>
+  <label for="user_email"><%=t 'account.edit.email' %></label>
   <%= f.text_field :email, :tabindex => '1', :style => 'float:left;' %>
   <%= render :partial => 'avatar_updater' -%>
 </div>
 
 <div class="form-element">
-<label for="user_display_name">User Name:</label> <%= f.text_field :display_name, :tabindex => '1' %>
-<div class="form_example">This is the name others will see on your profile and when you make contributions to the site. If you do not supply one, your login will be used instead. Your user name can contain spaces. E.g if your login was "jsmith" your screen name could be "John Smith".</div>
+  <label for="user_display_name"><%=t 'account.edit.user_name' %></label>
+  <%= f.text_field :display_name, :tabindex => '1' %>
+  <div class="form_example"><%=t 'account.edit.user_name_example' %></div>
 </div>
 
+<% if User.language_choices.keys.size > 1 %>
 <div class="form-element">
-  <label for="allow_emails">Allow Emails from other users:</label>
+  <label><%=t 'account.edit.language' %></label>
+  <%= locale_dropdown(f) -%>
+  <div class="form_example"><%=t 'account.edit.language_example' %></div>
+</div>
+<% else %>
+  <%= f.hidden_field :locale, :value => I18n.default_locale %>
+<% end %>
+
+<div class="form-element">
+  <label for="allow_emails"><%=t 'account.edit.allow_emails' %></label>
   <%= f.check_box :allow_emails, :tabindex => '1' %>
 </div>
 
 <div class="form-element">
-<label>Prefered License:</label>
-  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user} %>				
+<label><%=t 'account.edit.preferred_license' %></label>
+  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => @user} %>
 </div>
 
 
@@ -47,13 +59,13 @@
 
 </fieldset>
 
-<div class="wrap"><%= submit_tag 'Save', :tabindex => '1' %></div>
+<div class="wrap"><%= submit_tag t('account.edit.save'), :tabindex => '1' %></div>
 
 <% end -%>
 
 <div class="detail-tools">
         <ul>
-                <li class="first"><%= link_to 'Change Password', {:action => 'change_password'}, :tabindex => '1' %></li>
+                <li class="first"><%= link_to t('account.edit.change_password'), {:action => 'change_password'}, :tabindex => '1' %></li>
         </ul>
 </div>
 

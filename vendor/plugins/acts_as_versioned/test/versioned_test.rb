@@ -81,7 +81,7 @@ class VersionedTest < Test::Unit::TestCase
     assert_equal 'Welcome to the weblog', p.title
     assert_equal 'LockedPage', p.versions.first.version_type
 
-    assert p.revert_to!(p.versions.first.version), "Couldn't revert to 23"
+    assert p.revert_to!(p.versions.first.lock_version), "Couldn't revert to 23"
     assert_equal 'Welcome to the weblg', p.title
     assert_equal 'LockedPage', p.versions.first.version_type
   end
@@ -108,7 +108,7 @@ class VersionedTest < Test::Unit::TestCase
     p = locked_pages(:thinking)
     assert_equal 'So I was thinking', p.title
 
-    assert p.revert_to!(p.versions.first.version), "Couldn't revert to 1"
+    assert p.revert_to!(p.versions.first.lock_version), "Couldn't revert to 1"
     assert_equal 'So I was thinking!!!', p.title
     assert_equal 'SpecialLockedPage', p.versions.first.version_type
   end
@@ -218,7 +218,7 @@ class VersionedTest < Test::Unit::TestCase
     assert_equal 1, p.lock_version
     assert_equal 1, p.versions(true).size
 
-    p.title = 'title'
+    p.body = 'whoa'
     assert !p.save_version?
     p.save
     assert_equal 2, p.lock_version # still increments version because of optimistic locking
@@ -341,5 +341,30 @@ class VersionedTest < Test::Unit::TestCase
     landmarks(:washington).doesnt_trigger_version = "This should not trigger version"
     assert landmarks(:washington).changed?
     assert !landmarks(:washington).altered?
+  end
+
+  def test_without_locking_temporarily_disables_optimistic_locking
+    enabled1 = false
+    block_called = false
+    
+    ActiveRecord::Base.lock_optimistically = true
+    LockedPage.without_locking do
+      enabled1 = ActiveRecord::Base.lock_optimistically
+      block_called = true
+    end
+    enabled2 = ActiveRecord::Base.lock_optimistically
+    
+    assert block_called
+    assert !enabled1
+    assert enabled2
+  end
+  
+  def test_without_locking_reverts_optimistic_locking_settings_if_block_raises_exception
+    assert_raises(RuntimeError) do
+      LockedPage.without_locking do
+        raise RuntimeError, "oh noes"
+      end
+    end
+    assert ActiveRecord::Base.lock_optimistically
   end
 end

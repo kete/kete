@@ -1,6 +1,7 @@
 # Requirements for XML conversion of extended fields
 require "rexml/document"
 require 'builder'
+require 'xmlsimple'
 
 # ExtendedContent provides a way to access additional, extended content directly on a model. (ExtendedContent is included in all
 # Kete content types.)
@@ -261,7 +262,7 @@ module ExtendedContent
             # For singular values we expect something like:
             # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
             # So, we need to adjust the format to be consistent with the expected output..
-            values = field.first.is_a?(Array) ? field : [field]
+            values = field.first.is_a?(Array) || value_label_hash?(field.first) ? field : [field]
           end
 
           hash[field_name] = values
@@ -334,6 +335,8 @@ module ExtendedContent
           hash
         end
       elsif ['map', 'map_address'].member?(extended_field.ftype)
+        value_array.is_a?(Array) ? value_array.first : value_array
+      elsif value_array.is_a?(Array) && value_label_hash?(value_array.first)
         value_array
       else
         value_array.to_s
@@ -351,6 +354,8 @@ module ExtendedContent
       values = structured_extended_content[extended_field_element_name]
       if values.size == 1
         values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+      elsif field && ['map', 'map_address'].member?(field.ftype)
+        # do nothing with the data in this case
       else
         values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
       end
@@ -563,7 +568,8 @@ module ExtendedContent
     def convert_extended_content_to_xml(params_hash)
       return "" if params_hash.blank?
 
-      Nokogiri::XML::Builder.new { |xml|
+      builder = Nokogiri::XML::Builder.new
+      builder.root do |xml|
 
         all_field_mappings.collect do |field_to_xml|
 
@@ -641,7 +647,9 @@ module ExtendedContent
         # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
         end.flatten.uniq.join("\n")
       
-      }.to_xml.gsub("<?xml version=\"1.0\"?>\n","").gsub("\n", '')
+      end
+
+      builder.to_xml.gsub("<?xml version=\"1.0\"?>\n<root>","").gsub("</root>", '').gsub("\n", '')
     end
 
     def convert_xml_to_extended_fields_hash
@@ -675,21 +683,22 @@ module ExtendedContent
     def array_of_values(hash)
       # there is one instant where we just want to return the hash
       # if it has a label, we want a hash of label and value
-      if hash.keys.include?('value') && hash.keys.include?('label')
+      if value_label_hash?(hash)
         hash.keys.each { |key| hash.delete(key) unless %w(value label).include?(key) }
         return [hash]
       end
 
       # we have to use the no_map key here because its the only constant one (0|1)
+      # however, we need to fallback to coords incase we are working with legacy data
       # the rest can be left out which causes problems when saving items
-      return [hash] if hash.keys.include?('no_map') # map or map_address
+      return [hash] if hash.keys.include?('no_map') || hash.keys.include?('coords') # map or map_address
 
       hash.map do |k, v|
         # skip special keys
         next if k == 'xml_element_name'
 
         if v.is_a?(Hash) && !v.empty?
-          if v.keys.include?('value') && v.keys.include?('label')
+          if value_label_hash?(v)
             v
           else
             array_of_values(v).flatten.compact
@@ -737,7 +746,8 @@ module ExtendedContent
          (value.blank? || (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value['no_map'] == "1")) &&
          extended_field_mapping.extended_field.ftype != "checkbox"
 
-        errors.add_to_base("#{extended_field_mapping.extended_field.label} cannot be blank") unless \
+        errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
+                                  :label => extended_field_mapping.extended_field.label)) unless \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params].nil? && \
           allow_nil_values_for_extended_content
 
@@ -747,7 +757,7 @@ module ExtendedContent
         if message = send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
           extended_field_mapping, value)
 
-          errors.add_to_base("#{extended_field_mapping.extended_field_label} #{message}")
+          errors.add_to_base(message)
         end
 
       end
@@ -758,7 +768,8 @@ module ExtendedContent
       if extended_field_mapping.required && values.all? { |v| v.to_s.blank? } && \
         extended_field_mapping.extended_field.ftype != "checkbox"
 
-        errors.add_to_base("#{extended_field_mapping.extended_field.label} must have at least one value") unless \
+        errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
+                                  :label => extended_field_mapping.extended_field.label)) unless \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params + "_multiple"].nil? && \
           allow_nil_values_for_extended_content
 
@@ -773,8 +784,8 @@ module ExtendedContent
             extended_field_mapping, v.to_s)
         end
 
-        error_array.compact.each do |e|
-          errors.add_to_base("#{extended_field_mapping.extended_field.label} #{e}")
+        error_array.compact.each do |error|
+          errors.add_to_base(error)
         end
       end
     end
@@ -785,7 +796,8 @@ module ExtendedContent
       return nil if value.blank?
 
       unless value =~ /^((Y|y)es|(N|n)o)$/
-        "must be a valid checkbox value (Yes or No)"
+        I18n.t('extended_content_lib.validate_extended_checkbox_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label)
       end
     end
 
@@ -802,7 +814,8 @@ module ExtendedContent
       return nil if value.blank?
 
       unless value =~ /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/
-        "must be in the standard date format (YYYY-MM-DD)"
+        I18n.t('extended_content_lib.validate_extended_date_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label)
       end
     end
 
@@ -839,7 +852,8 @@ module ExtendedContent
       end
 
       if !values_array.all? { |v| valid_choice_values.member?(v) }
-        "must be a valid choice"
+        I18n.t('extended_content_lib.validate_extended_choice_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label)
       end
     end
 
@@ -866,14 +880,16 @@ module ExtendedContent
 
       # if this is nil, we were unable to find a matching topic
       unless topic_type_id
-        return "we were unable to find a matching topic on our site. Did you enter topic in the format of 'topic title (URL)?'"
+        return I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic')
       end
 
       parent_topic_type = TopicType.find(extended_field_mapping.extended_field.topic_type.to_i)
       valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
 
       unless valid_topic_type_ids.include?(topic_type_id)
-        "is not valid choice for a '#{parent_topic_type.name}'"
+        I18n.t('extended_content_lib.validate_extended_topic_type_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label,
+               :topic_type => parent_topic_type.name)
       end
     end
 

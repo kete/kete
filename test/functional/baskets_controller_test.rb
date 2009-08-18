@@ -35,7 +35,7 @@ class BasketsControllerTest < ActionController::TestCase
 
   def test_redirect_to_basket_all
     get :show, :urlified_name => 'site'
-    assert_redirect_to({ :urlified_name => 'site', :controller_name_for_zoom_class => 'topics' })
+    assert_redirect_to({ :urlified_name => 'site', :controller => 'search', :action => 'all', :controller_name_for_zoom_class => 'topics' })
   end
 
   def test_index_and_list
@@ -77,7 +77,7 @@ class BasketsControllerTest < ActionController::TestCase
     update_record
     assert_var_assigned
     assert_attributes_same_as @updated_model
-    assert_redirect_to({ :urlified_name => 'site' })
+    assert_redirect_to '/site/'
     assert_equal 'Basket was successfully updated.', flash[:notice]
   end
 
@@ -92,14 +92,14 @@ class BasketsControllerTest < ActionController::TestCase
     # test contact form restricted to logged in members
     get :contact, :urlified_name => 'site'
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'login'
+    assert_redirected_to :urlified_name => 'site', :controller => 'account', :action => 'login', :locale => :en
   end
 
   def test_contact
     # test redirect when disabled
     get :contact, :urlified_name => 'site'
     assert_response :redirect
-    assert_redirected_to :urlified_name => 'site'
+    assert_redirected_to '/'
     assert_equal "This contact form is not currently enabled.", flash[:notice]
 
     Basket.first.settings[:allow_basket_admin_contact] = true
@@ -118,7 +118,7 @@ class BasketsControllerTest < ActionController::TestCase
     # test successfull emailing
     post :send_email, :contact => { :subject => "test", :message => "test" }, :urlified_name => 'site'
     assert_response :redirect
-    assert_redirected_to :urlified_name => 'site'
+    assert_redirected_to '/'
     assert_equal "Your email has been sent. You will receive the reply in your email box.", flash[:notice]
   end
 
@@ -163,7 +163,7 @@ class BasketsControllerTest < ActionController::TestCase
     assert_equal 'closed', BASKET_CREATION_POLICY
     get :new, :urlified_name => 'site', :controller => 'baskets', :action => 'new'
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'login'
+    assert_redirected_to :urlified_name => 'site', :controller => 'account', :action => 'login', :locale => :en
   end
 
   def test_basket_creation_accessable_when_moderated_and_site_admin
@@ -188,7 +188,7 @@ class BasketsControllerTest < ActionController::TestCase
     assert_equal 'request', BASKET_CREATION_POLICY
     get :new, :urlified_name => 'site', :controller => 'baskets', :action => 'new'
     assert_response :redirect
-    assert_redirected_to :controller => 'account', :action => 'login'
+    assert_redirected_to :urlified_name => 'site', :controller => 'account', :action => 'login', :locale => :en
   end
 
   def test_basket_instant_approval_for_site_admin_even_if_moderation_on

@@ -1,15 +1,15 @@
-<% @title = 'Listing content types' -%>
+<% @title = t('content_types.list.title') -%>
 
 <h2><%= h(@title) -%></h2>
 
 <table>
   <tr>
-    <th abbr="Controller">Controller</th>
-    <th abbr="Type">Type</th>
+    <th abbr="Controller"><%=t 'content_types.list.controller' %></th>
+    <th abbr="Type"><%=t 'content_types.list.type' %></th>
 <!--    <th abbr="Type 2>Humanized Type</th> -->
 <!--    <th abbr="Type 2 Plural">Humanized Type Plural</th> -->
-    <th abbr="Desc">Description</th>
-    <th abbr="Options">Options</th>
+    <th abbr="Desc"><%=t 'content_types.list.description' %></th>
+    <th abbr="Options"><%=t 'content_types.list.options' %></th>
   </tr>
 
 <% for content_type in @content_types %>
@@ -19,7 +19,7 @@
 <!--     <td><%=h content_type.humanized %></td> -->
 <!--     <td><%=h content_type.humanized_plural %></td> -->
     <td><%=h content_type.description %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => content_type %></td>
+    <td><%= link_to t('content_types.list.edit'), :action => 'edit', :id => content_type %></td>
   </tr>
 <% end %>
 </table>

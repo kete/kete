@@ -1,12 +1,10 @@
-<h3>All required settings are complete.</h3>
+<h3><%=t 'configure.settings_complete.title' %></h3>
 <% if IS_CONFIGURED -%>
-<p>System Settings modified. Please restart the server for
-  them to take effect.</p>
+  <p><%=t 'configure.settings_complete.restart' %></p>
 <% else -%>
-<p>If you are satisfied with your settings, please the 'Next'
-  button.</p>
-<% form_remote_tag( :url => { :action => 'done_with_settings' },
-                              :href => url_for( :action => 'done_with_settings' ) ) do %>
-<%= submit_tag 'Next' -%>
-<% end -%>
+  <p><%=t 'configure.settings_complete.next' %></p>
+  <% form_remote_tag( :url => { :action => 'done_with_settings' },
+                                :href => url_for( :action => 'done_with_settings' ) ) do %>
+    <%= submit_tag t('configure.settings_complete.next_buton') -%>
+  <% end -%>
 <% end -%>

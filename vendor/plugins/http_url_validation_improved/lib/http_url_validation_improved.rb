@@ -9,7 +9,7 @@ module ActiveRecord
      # Validates a URL.
      def validates_http_url(*attr_names)
        configuration = {
-        :message_not_accessible => "is not accessible",
+        :message_not_accessible => "is not accessible when we tried the link",
         :message_wrong_content => "is not of the appropriate content type",
         :message_moved_permanently => "has moved permanently",
         :message_url_format => "is not formatted correctly. (Missing 'http://'?)"
@@ -35,7 +35,9 @@ module ActiveRecord
             http.use_ssl = true
             http.verify_mode = OpenSSL::SSL::VERIFY_NONE
            end
-           response = not_allowed_retry ? http.request_get(url.path) {|r|} : http.request_head(url.path)
+           headers = Object.const_defined?('SITE_URL') ? { "User-Agent" => "#{SITE_URL} link checking mechanism via Ruby Net/HTTP" } : { "User-Agent" => "Ruby Net/HTTp used for link checking mechanism" }
+           response = not_allowed_retry ? http.request_get(url.path, headers) {|r|} : http.request_head(url.path, headers)
+           # response = not_allowed_retry ? http.request_get(url.path) {|r|} : http.request_head(url.path)
            # Comment out as you need to
            allowed_codes = [
             Net::HTTPMovedPermanently,
@@ -64,13 +66,17 @@ module ActiveRecord
            else
             record.errors.add(attr_name, configuration[:message_moved_permanently])
            end
-          elsif response.is_a?(Net::HTTPMethodNotAllowed)
+          elsif response.is_a?(Net::HTTPMethodNotAllowed) || response.is_a?(Net::HTTPInternalServerError)
            unless not_allowed_retry
             # Retry with a GET
             not_allowed_retry = true
             retry
            else
-            record.errors.add(attr_name, configuration[:message_not_accessible]+" (GET method not allowed)")
+             if response.is_a?(Net::HTTPInternalServerError)
+               record.errors.add(attr_name, configuration[:message_not_accessible]+". The site link in question has had a problem. Please raise the issue with them and let them know that requests to the link break when coming from the automatic link checking mechanism on this site.")
+             else
+               record.errors.add(attr_name, configuration[:message_not_accessible]+" (GET method not allowed)")
+             end
            end
           else
             # if response is nil, then it's a format issue
@@ -78,7 +84,7 @@ module ActiveRecord
               record.errors.add(attr_name, configuration[:message_url_format])
             else
               # Just Plain non-accessible
-              record.errors.add(attr_name, configuration[:message_not_accessible]+" "+response.class.to_s)
+              record.errors.add(attr_name, configuration[:message_not_accessible]+". This is what the website in question returned to us: "+response.class.to_s)
             end
           end
          end

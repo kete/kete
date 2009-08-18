@@ -33,6 +33,9 @@ module ConfigureAsKeteContentItem
       klass.send :attr_accessor, :do_not_sanitize
       klass.send :acts_as_sanitized, :fields => [:description]
 
+      # this allows us to turn on/off email notification per item
+      klass.send :attr_accessor, :skip_email_notification
+
       # note, since acts_as_taggable doesn't support versioning
       # out of the box
       # we also track each versions raw_tag_list input
@@ -84,6 +87,14 @@ module ConfigureAsKeteContentItem
 
       # TODO: globalize stuff, uncomment later
       # translates :title, :description
+
+      klass.send :after_save, :update_taggings_basket_id
+    end
+
+    def update_taggings_basket_id
+      self.taggings.each do |tagging|
+        tagging.update_attribute(:basket_id, self.basket_id)
+      end
     end
 
     # Implement attribute accessors for acts_as_licensed

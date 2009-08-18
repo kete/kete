@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  piston:remote-revision: 107
+  piston:uuid: c9bc9743-7714-0410-b404-d8b1d4e1ace9
+repository_url: svn://rubyforge.org/var/svn/ym4r/Plugins/GM/trunk/ym4r_gm
+lock: false
+repository_class: Piston::Svn::Repository

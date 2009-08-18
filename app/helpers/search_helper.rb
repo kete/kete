@@ -9,52 +9,37 @@ module SearchHelper
     link_to("#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})", location, :tabindex => '1')
   end
 
-  # TODO: depreciated, remove 1.2
-  def link_to_previous_page(phrase,previous_page)
-    link_to(phrase, :overwrite_params => { :page => previous_page })
-  end
-
-  # TODO: depreciated, remove 1.2
-  def link_to_next_page(phrase,next_page)
-     link_to(phrase, :overwrite_params => { :page => next_page })
-  end
-
   # look in parameters for what this is a refinement of
   def last_part_of_title_if_refinement_of(add_links = true)
     end_of_title_parts = Array.new
 
-    end_of_title_parts << " tagged as \"#{@tag.name}\"" if !@tag.nil?
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.tagged_as', :tag_name => @tag.name) if !@tag.nil?
 
     if !@contributor.nil?
       contributor = add_links ? link_to_profile_for(@contributor) : @contributor.user_name
-      contributor_string = " contributed by \"#{contributor}\""
+      contributor_string = t('search_helper.last_part_of_title_if_refinement_of.contributed_by', :contributor => contributor)
       contributor_string += ' ' + avatar_for(@contributor) if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT
       end_of_title_parts << contributor_string
     end
 
     unless @limit_to_choice.nil?
-      end_of_title_parts << "#{@extended_field ? " with #{@extended_field.label.singularize.downcase}" : ''}
-                                                   of #{h(@limit_to_choice)}"
+      end_of_title_parts << "#{@extended_field ? t('search_helper.last_part_of_title_if_refinement_of.extended_field', :field_name => @extended_field.label.singularize.downcase) : ''}
+                                                 #{t('search_helper.last_part_of_title_if_refinement_of.limit_to_choice', :choice => h(params[:limit_to_choice]))}"
     end
 
     unless @source_item.nil?
       @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
-      end_of_title_parts << " related to \"#{@source_item.title}\""
+      end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.related_to', :source_item => @source_item.title)
     end
 
-    end_of_title_parts << " that are #{@privacy}" if !@privacy.nil?
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.privacy_type', :privacy => @privacy) if !@privacy.nil?
 
-    end_of_title = end_of_title_parts.join(" and")
+    end_of_title = end_of_title_parts.join(t('search_helper.last_part_of_title_if_refinement_of.and'))
   end
 
   # We have to turn off linking to the contributor
   def last_part_of_title_for_rss_if_refinement_of
     last_part_of_title_if_refinement_of false
-  end
-
-  # depreciated, now use will_paginate
-  def pagination_links(options = { })
-    html_string = "depreciated, we now use will_paginate plugin"
   end
 
   def title_setup_first_part(title_so_far, span_around_zoom_class=false)
@@ -83,12 +68,6 @@ module SearchHelper
     }
 
     $('sort_type').observe('change', toggleDisabledSortDirection);"
-  end
-
-  def instantiate_from_results(result_hash)
-    raise "A hash must be passed in. Arrays are not acceptable." unless result_hash.instance_of?(Hash)
-
-    eval("#{result_hash['class'].classify}").find(result_hash['id'])
   end
 
   # Used to check if an item is part of an existing relationship in related items search

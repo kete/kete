@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
   attr_accessor :agree_to_terms
 
   validates_presence_of     :login, :email
-  validates_presence_of     :agree_to_terms,             :if => :new_record?
+  validates_inclusion_of    :agree_to_terms, :in => ['1'], :if => :new_record?, :message => 'before you can sign up'
   validates_presence_of     :security_code,              :if => :new_record?
   validates_presence_of     :password,                   :if => :password_required?
   validates_presence_of     :password_confirmation,      :if => :password_required?
@@ -88,11 +88,15 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password,                   :if => :password_required?
   # Walter McGinnis, 2008-03-16
   # refining captcha to be more accessable (i.e. adding questions) and also make more sense to end user
-  validates_confirmation_of :security_code,              :if => :new_record?, :message => ': Your security question answer failed - please try again.'
+  validates_confirmation_of :security_code,              :if => :new_record?, :message => I18n.t('user_model.failed_security_answer')
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_format_of       :login, :with => /^[^\s]+$/
   validates_uniqueness_of   :login, :case_sensitive => false
+
+  cattr_accessor :language_choices
+  @@language_choices ||= YAML.load(IO.read(File.join(RAILS_ROOT, 'config/locales.yml')))
+  validates_inclusion_of :locale, :in => @@language_choices.keys, :message => I18n.t('user_model.locale_incorrect', :locales => @@language_choices.keys.join(', '))
 
   before_save :encrypt_password
 
@@ -190,6 +194,10 @@ class User < ActiveRecord::Base
 
   def user_name
     self.resolved_name
+  end
+
+  def avatar
+    @avatar ||= (self.portraits.first if !self.portraits.empty? && !self.portraits.first.thumbnail_file.file_private)
   end
 
   def show_email?

@@ -39,7 +39,7 @@ class ProfilesControllerTest < ActionController::TestCase
           login_as :admin
         end
 
-        Basket::FORMS_OPTIONS.each do |form_option|
+        Basket.forms_options.each do |form_option|
           Profile.type_options.each do |type_option|
             should "be able to set form and type for #{form_option[0]} and #{type_option[0]}" do
               post :create, :urlified_name => @urlified_name, :record => { :name => 'Test Profile',
@@ -54,7 +54,7 @@ class ProfilesControllerTest < ActionController::TestCase
 
         should "not be able to edit a record" do
           create_profile
-          assert_raise ActiveScaffold::RecordNotAllowed do
+          assert_raise ActiveScaffold::ActionNotAllowed do
             post :update, :urlified_name => @urlified_name, :id => @profile, :record => { :name => 'Updated Title' }
           end
           @profile.reload
@@ -93,9 +93,9 @@ class ProfilesControllerTest < ActionController::TestCase
                   :record => {
                     :name => "Test Profile #{random}",
                     :rules => {
-                      Basket::FORMS_OPTIONS[0][1] => { 'rule_type' => Profile.type_options[0][1] },
-                      Basket::FORMS_OPTIONS[1][1] => { 'rule_type' => Profile.type_options[1][1] },
-                      Basket::FORMS_OPTIONS[2][1] => { 'rule_type' => Profile.type_options[2][1] }
+                      Basket.forms_options[0][1] => { 'rule_type' => Profile.type_options[0][1] },
+                      Basket.forms_options[1][1] => { 'rule_type' => Profile.type_options[1][1] },
+                      Basket.forms_options[2][1] => { 'rule_type' => Profile.type_options[2][1] }
                     }
                   }
     assert_response :redirect

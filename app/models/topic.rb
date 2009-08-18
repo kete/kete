@@ -66,6 +66,9 @@ class Topic < ActiveRecord::Base
   # sanitize our descriptions for security
   acts_as_sanitized :fields => [:description]
 
+  # this allows us to turn on/off email notification per item
+  attr_accessor :skip_email_notification
+
   # note, since acts_as_taggable doesn't support versioning
   # out of the box
   # we also track each versions raw_tag_list input
@@ -148,6 +151,14 @@ class Topic < ActiveRecord::Base
     { :order => 'created_at desc', :limit => 5 }.merge(args)
   }
   named_scope :public, :conditions => ['title != ?', NO_PUBLIC_VERSION_TITLE]
+
+  after_save :update_taggings_basket_id
+
+  def update_taggings_basket_id
+    self.taggings.each do |tagging|
+      tagging.update_attribute(:basket_id, self.basket_id)
+    end
+  end
 
   def clear_basket_homepage_cache
     self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self

@@ -1,39 +1,34 @@
-<% @title = 'Configure' -%>
+<% @title = t('configure.index.title') -%>
 
 <h2><%= h(@title) -%></h2>
 
 <div id="message">
   <% if IS_CONFIGURED -%>
-  <p>You can change system settings here.  You will need to restart your server for changes to take effect.</p>
+    <p><%=t 'configure.index.change_settings' %></p>
   <% else -%>
-  <p>Before your new site is ready, you'll need to fill out some
-  details, change some passwords, restart your server, prime the
-  search engine, and then reload this page.</p>
-
-  <% if !@admin_password_changed -%>
-  <h3>Security:</h3>
-  <p>You should change the default administrator account's password.
-    Leaving it as the default is a security risk.</p>
-   <%= button_to "Change password",
-       :controller => 'account',
-       :action => 'change_password',
-       :id => 1 -%>
-   <% end -%>
-   <% end -%>
-
+    <p><%=t 'configure.index.setup_site' %></p>
+    <% if !@admin_password_changed -%>
+      <h3><%=t 'configure.index.security_title' %></h3>
+      <p><%=t 'configure.index.change_password' %></p>
+      <%= button_to t('configure.index.change_password_button'),
+                    :controller => 'account',
+                    :action => 'change_password',
+                    :id => 1 -%>
+    <% end -%>
+  <% end -%>
 </div>
 
 <% if @admin_password_changed -%>
 <div id="controls">
   <% if !MISSING_SOFTWARE['Gems'].blank? or !MISSING_SOFTWARE['Commands'].blank? -%>
   <div id="required-software">
-    <h3>Missing Software:</h3>
+    <h3><%=t 'configure.index.missing_software' %></h3>
     <ul>
-      <% MISSING_SOFTWARE['Gems'].each do |gem| -%>
-      <li><%= gem -%> gem</li>
+      <% MISSING_SOFTWARE['Gems'].each do |gem_name| -%>
+        <li><%=t 'configure.index.missing_software_gem', :gem_name => gem_name %></li>
       <% end -%>
       <% MISSING_SOFTWARE['Commands'].each do |command| -%>
-      <li><%= command -%></li>
+        <li><%= command -%></li>
       <% end -%>
     </ul>
 
@@ -44,14 +39,12 @@
   <% else -%>
   <div id="settings" style="display:none">
   <% end -%>
-      <h3>Settings</h3>
-
-      <p>Click on section to fill out its settings.
-
+      <h3><%=t 'configure.index.settings_title' %></h3>
+      <p><%=t 'configure.index.settings_description' %>
         <% if !@advanced -%>
-        Show <%= link_to "Advanced Options", :advanced => true -%>
+          <%=t 'configure.index.show', :show_link => link_to(t('configure.index.advanced_options'), :advanced => true) -%>
         <% else -%>
-        Show only <%= link_to "Regular Options", :advanced => false -%>
+          <%=t 'configure.index.show_only', :show_link => link_to(t('configure.index.regular_options'), :advanced => false) -%>
         <% end -%>
       </p>
 
@@ -59,7 +52,7 @@
         <% section_count = 1 -%>
         <% @sections.each do |section| -%>
         <tr>
-          <td><div id="<%= section.split.join("-") -%>-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="Completed. " /></div></td>
+          <td><div id="<%= section.split.join("-") -%>-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="<%=t 'configure.index.completed' %>" /></div></td>
           <td><%= link_to_remote_redbox(h(section),
             {
               :url => {
@@ -83,45 +76,43 @@
       <% else -%>
       <div id="zoom" style="display:none">
         <% end -%>
-        <h3>Search Engine</h3>
+        <h3><%=t 'configure.index.search_engine' %></h3>
         <table>
           <tr>
-            <td><div id="zoom-dbs-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="Completed. " /></div></td>
-            <td>Click to <%= link_to_remote_redbox('set up Search Engine',
+            <td><div id="zoom-dbs-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="<%=t 'configure.index.completed' %>" /></div></td>
+            <td><%=t 'configure.index.click_to' %> <%= link_to_remote_redbox(t('configure.index.setup_search_engine'),
                     :url => { :action => 'zoom_dbs_edit' },
               :href => url_for( :action => 'zoom_dbs_edit' ) ) -%></td>
           </tr>
-      </table>
-
+        </table>
       </div>
       <% end -%>
     </div>
 
     <div id="status">
       <% if !MISSING_SOFTWARE['Gems'].blank? or !MISSING_SOFTWARE['Commands'].blank? -%>
-      <h3>Install missing software, restart your server, and reload this page to proceed.</h3>
-      <p>Refer to installation guide for details specific to the listed software.</p>
+        <h3><%=t 'configure.index.install_missing_software' %></h3>
+        <p><%=t 'configure.index.see_install_guide' %></p>
       <% else -%>
-      <div id="completed-message">
-        <% if @search_engine_show or @not_completed -%>
-        <h3>Not yet complete.</h3>
-        <% else -%>
-        <%= render :partial => 'settings_complete' %>
-        <% end -%>
-      </div>
+        <div id="completed-message">
+          <% if @search_engine_show or @not_completed -%>
+            <h3><%=t 'configure.index.search_engine_not_complete' %></h3>
+          <% else -%>
+            <%= render :partial => 'settings_complete' %>
+          <% end -%>
+        </div>
       <% end -%>
 
       <% if @finished -%>
-      <div id="finish">
+        <div id="finish">
       <% else -%>
-      <div id="finish" style="display:none">
+        <div id="finish" style="display:none">
       <% end -%>
-        <h3>Finished with Settings?</h3>
-        <p>All required settings have been fulfilled. If you are
-        satisfied, please click the 'finish' button.</p>
+        <h3><%=t 'configure.index.finished_with_settings' %></h3>
+        <p><%=t 'configure.index.click_finish' %></p>
         <% form_remote_tag( :url => { :action => 'finish' },
-        :href => url_for( :action => 'finish' ) ) do %>
-        <div class="wrap"><%= submit_tag 'Finish' -%></div>
+                            :href => url_for( :action => 'finish' ) ) do %>
+        <div class="wrap"><%= submit_tag t('configure.index.finish_button') -%></div>
         <% end -%>
       </div>
     </div>
@@ -130,14 +121,13 @@
       <% else -%>
       <div id="ready-to-restart" style="display:none">
         <% end -%>
-        <h2>Final Configuration Step</h2>
+        <h2><%=t 'configure.index.final_step' %></h2>
         <div id="restart-before-continue-message">
-          <p><b>Before you continue, you must restart the kete application
-              server and start backgroundrb!</b></p>
+          <p><b><%=t 'configure.index.must_restart' %></b></p>
         </div>
         <table>
           <tr>
-            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="Completed. " /></div></td>
+            <td><div id="prime-zebra-check" style="display:none"><img src="/images/tick14x14.gif" width="14" height="14" alt="<%=t 'configure.index.completed' %>" /></div></td>
             <td>
               <% if @search_engine_primed -%>
               <div id="prime-zebra-message">
@@ -145,20 +135,18 @@
                 <div id="prime-zebra-message" style="display:none">
                   <% end -%>
                   <% if @search_engine_primed -%>
-                  <p>Search Engine primed.</p>
+                  <p><%=t 'configure.index.search_engine_primed' %></p>
                   <% else -%>
-                  <p><i>After you have restarted the server</i>, the Search Engine needs to have the initial
-                  contents of Kete added to it.  Please click 'Prime
-                  Search Engine' to continue.</p>
+                  <p><%=t 'configure.index.search_engine_needs_bootstrapping' %></p>
                   <% form_remote_tag( :url => { :action => 'prime_zebra' },
                                       :before => "Element.hide('prime-button');Element.show('prime-spinner')",
                                       :complete => "Element.hide('prime-spinner')",
                                       :href => url_for( :action => 'prime_zebra' ) ) do %>
                   <div id="prime-spinner"
                   style="display:none; text-align:center"><img src="/images/indicator.gif"
-                  width="16" height="16" alt="Completed. " /></div>
+                  width="16" height="16" alt="<%=t 'configure.index.completed' %>" /></div>
 
-                  <div class="wrap"><%= submit_tag 'Prime Search Engine', :id => 'prime-button' -%></div>
+                  <div class="wrap"><%= submit_tag t('configure.index.prime_search_engine'), :id => 'prime-button' -%></div>
                   <% end -%>
                   <% end -%>
               </div>
@@ -167,16 +155,12 @@
           <tr>
             <td colspan="2">
               <div id="reload-site-index"<%= ' style="display:none"' if !@search_engine_primed %>>
-                <p>Congratulations!  Your Kete site is configured and ready to be viewed.
-                Click 'Reload Site' to move on to customising your Kete's content to suit.</p>
-
+                <p><%=t 'configure.index.site_configured' %></p>
                 <%= render :partial => 'link_to_site' %>
-
-                <p>You may do this later by visiting the Administrator's Toolbox and using the "List site on Kete.net.nz" link.</p>
-
-                <h3>Installation complete</h3>
+                <p><%=t 'configure.index.link_site_later' %></p>
+                <h3><%=t 'configure.index.installation_complete' %></h3>
                 <div class="wrap">
-                  <%= button_to 'Reload Site', basket_index_url(:urlified_name => @site_basket.urlified_name) %>
+                  <%= button_to t('configure.index.reload_site'), basket_index_url(:urlified_name => @site_basket.urlified_name) %>
                 </div>
               </div>
             </td>
@@ -184,5 +168,17 @@
         </table>
       </div>
 <% end  -%>
+
+<% if IS_CONFIGURED -%>
+  <div class="configured_site_controls">
+    <% if APPLICATION_SERVER == 'passenger' %>
+      <%= button_to t('configure.index.restart_server'), {:action => 'restart_server'} %>
+    <% end %>
+    <% if RAILS_ENV == 'production' %>
+      <%= button_to t('configure.index.clear_cache'), {:action => 'clear_cache'},
+                    { :confirm => 'Are you sure? This can affect the performance of the site.'} %>
+    <% end %>
+  </div>
+<% end %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

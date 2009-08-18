@@ -7,13 +7,13 @@
         <% end %>
 
         <div class="form-element">
-          <label class="required" for="topic_type_name">Name</label>
+          <label class="required" for="topic_type_name"><%=t 'topic_types.form.name' %></label>
           <%= text_field 'topic_type', 'name' , {:class=>"text-input"} %>
         </div>
 
         <div class="form-element">
-          <label for="topic_type_description">Description</label>
-          <%= text_area 'topic_type', 'description'  %>
+          <label for="topic_type_description"><%=t 'topic_types.form.description' %></label>
+          <%= text_field 'topic_type', 'description', {:size => 75 } %>
         </div>
 
 <!--[eoform:topic_type]-->

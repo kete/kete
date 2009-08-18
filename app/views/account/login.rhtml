@@ -1,28 +1,25 @@
 
-<% @title = "Login to #{PRETTY_SITE_NAME}"  -%>
+<% @title = t('account.login.title', :site_name => PRETTY_SITE_NAME) -%>
 
 <% if !IS_CONFIGURED and ( !MISSING_SOFTWARE['Gems'].blank? or
    !MISSING_SOFTWARE['Commands'].blank? ) -%>
 
 <div id="required-software">
-  <h3>Missing Software!</h3>
-  Kete requires you to install the following
-  software and restart your server.
-
+  <h3><%=t 'account.login.missing_software' %></h3>
+  <p><%=t 'account.login.missing_explaination' %></p>
   <ul>
     <% MISSING_SOFTWARE['Gems'].each do |gem| -%>
-    <li><%= gem -%> gem</li>
+      <li><%= gem -%> gem</li>
     <% end -%>
     <% MISSING_SOFTWARE['Commands'].each do |command| -%>
-    <li><%= command -%></li>
+      <li><%= command -%></li>
     <% end -%>
   </ul>
-
 </div>
 <% else -%>
 
 <% if IS_CONFIGURED -%>
-<h2><%= h(@title) -%></h2>
+  <h2><%= h(@title) -%></h2>
 <% end -%>
 
 <% form_tag do -%>
@@ -30,36 +27,42 @@
 <fieldset>
   <!--[form:login]-->
   <% if IS_CONFIGURED -%>
-  <p>Are you registered? You will need to <%= link_to("register",
-                                              {:controller => 'account',
-    :action => 'signup',
-    :urlified_name => @site_basket.urlified_name}, :tabindex => '1') -%> first before you can login.</p>
+  <p><%=t 'account.login.register',
+          :register_link => link_to(t('account.login.register_link'),
+                                    { :controller => 'account',
+                                      :action => 'signup',
+                                      :urlified_name => @site_basket.urlified_name},
+                                    :tabindex => '1') %></p>
   <% else -%>
-  <p>Please enter the default administrator account login and password
-  to continue to configuration of the site.</p>
+  <p><%=t 'account.login.admin_details' %></p>
   <% end -%>
 
   <div class="form-element">
-    <label for="login">Login:</label>
+    <label for="login"><%=t 'account.login.login' %></label>
     <%= text_field_tag 'login', nil, :tabindex => '1' %>
   </div>
 
   <div class="form-element">
-    <label for="password">Password:</label>
+    <label for="password"><%=t 'account.login.password' %></label>
     <%= password_field_tag 'password', nil, :tabindex => '1' %>
   </div>
 
   <% if IS_CONFIGURED -%>
   <div class="form-element">
-    <label for="remember_me">Remember me:</label>
+    <label for="remember_me"><%=t 'account.login.remember_me' %></label>
     <%= check_box_tag 'remember_me', "1", false, :tabindex => '1' %>
   </div>
 
-  <p>Forgot your password? <%= link_to('Click here', {:controller => 'account', :action => 'forgot_password', :urlified_name => @site_basket.urlified_name}, :tabindex => '1') -%></p>
+  <p><%=t 'account.login.forgot_password',
+          :forgot_password_link => link_to(t('account.login.forgot_password_link'),
+                                             { :controller => 'account',
+                                               :action => 'forgot_password',
+                                               :urlified_name => @site_basket.urlified_name},
+                                             :tabindex => '1') -%></p>
   <% end -%>
 </fieldset>
 
-<div class="wrap"><%= submit_tag 'Log in',{:class => "login-button", :tabindex => '1'} %></div>
+<div class="wrap"><%= submit_tag t('account.login.button'), { :class => "login-button", :tabindex => '1'} %></div>
 <% end -%>
 <% end -%>
 

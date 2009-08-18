@@ -1,8 +1,15 @@
 # used by controllers that manage backgroundrb workers
 module WorkerControllerHelpers
   unless included_modules.include? WorkerControllerHelpers
+
+    # in order to prevent conflicts from other Kete installations on the same host
+    # we need to add a site name prefix to our worker key
+    def worker_key_for(worker_type)
+      SITE_URL.split('//')[1].chomp('/').gsub(/\W/, '_') + "_" + worker_type.to_s
+    end
+
     def backgroundrb_is_running?(worker_type, worker_key = nil)
-      worker_key = worker_key || worker_type
+      worker_key = worker_key || worker_key_for(worker_type)
       is_running = false
       MiddleMan.all_worker_info.each do |server|
         if !server[1].nil?
@@ -16,7 +23,7 @@ module WorkerControllerHelpers
     end
 
     def delete_existing_workers_for(worker_type, worker_key = nil)
-      worker_key = worker_key || worker_type
+      worker_key = worker_key || worker_key_for(worker_type)
       if backgroundrb_is_running?(worker_type, worker_key)
         MiddleMan.worker(worker_type.to_sym, worker_key.to_s).delete
         sleep 5 # give it time to kill the worker
@@ -34,7 +41,7 @@ module WorkerControllerHelpers
       @clear_zebra = !params[:clear_zebra].blank? ? params[:clear_zebra] : false
 
       @worker_type = 'zoom_index_rebuild_worker'
-      @worker_key ||= @worker_type.to_s
+      @worker_key ||= worker_key_for(@worker_type)
 
       import_request = { :host => request.host,
         :protocol => request.protocol,
@@ -53,7 +60,7 @@ module WorkerControllerHelpers
                                                                            :import_request => import_request } )
         @worker_running = true
       else
-        flash[:notice] = 'There is another search record rebuild running at this time.  Please try again later.'
+        flash[:notice] = I18n.t('worker_controller_helpers_lib.rebuild_zoom_index.aready_rebuilding')
       end
     end
   end

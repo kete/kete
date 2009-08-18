@@ -54,9 +54,9 @@ class Profile < ActiveRecord::Base
   # otherwise they choose which fields specifically to show
   # each form within a profile may have a type
   def self.type_options
-    [ ['None', 'none'],
-      ['All', 'all'],
-      ['Select Below', 'some'] ]
+    [ [I18n.t('profile_model.type_options.none'), 'none'],
+      [I18n.t('profile_model.type_options.all'), 'all'],
+      [I18n.t('profile_model.type_options.select_below'), 'some'] ]
   end
 
   # send @rules to profile.settings[:rules] for storage
@@ -76,13 +76,13 @@ class Profile < ActiveRecord::Base
     self.settings[:rules].each do |k,v|
       value = "#{k.humanize}: "
       value += if v['rule_type'] == 'all'
-        "All."
+        I18n.t('profile_model.rules.all')
       elsif v['rule_type'] == 'none'
-        "None."
+        I18n.t('profile_model.rules.none')
       elsif v['rule_type'] == 'some' && v['allowed']
         v['allowed'].collect { |a| a.humanize }.join(', ') + '.'
       else
-        "None."
+        I18n.t('profile_model.rules.none')
       end
       data << value
     end
@@ -136,10 +136,10 @@ class Profile < ActiveRecord::Base
         missing_rule_types << k.humanize if v['rule_type'].blank?
       end
       unless missing_rule_types.blank?
-        errors.add_to_base("The following forms are missing a rule type: #{missing_rule_types.join(', ')}")
+        errors.add_to_base(I18n.t('profile_model.all_form_types_have_rule_type.missing_rules_types', :missing => missing_rule_types.join(', ')))
       end
     else
-      errors.add_to_base("No profile rules have been submitted. Try again.")
+      errors.add_to_base(I18n.t('profile_model.all_form_types_have_rule_type.no_rules_submitted'))
     end
   end
 

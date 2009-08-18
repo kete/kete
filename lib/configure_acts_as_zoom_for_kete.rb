@@ -10,6 +10,7 @@ module ConfigureActsAsZoomForKete
   unless included_modules.include? ConfigureActsAsZoomForKete
     def self.included(klass)
       klass.send :include, OaiZoom
+
       klass.send :acts_as_zoom, :fields => [:oai_record],
                                 :save_to_public_zoom => ['localhost', 'public'],
                                 :save_to_private_zoom => ['localhost', 'private'],

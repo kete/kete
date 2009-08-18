@@ -1,6 +1,6 @@
 <%= render :partial => "topics/content_wrapper_start", :locals => { :style_classes => 'full-width notabs' } %>
 
-<% @title = 'Zoom Index Rebuild from ' + @start_id + ' to ' + @end_id %>
+<% @title = t('search.rebuild_zoom_index.title', :start => @start_id, :end => @end_id) %>
 
 <h2><%= @title -%></h2>
 
@@ -8,20 +8,20 @@
 
 <div id="processing_zoom_class"></div>
 
-<div id="report_records_processed">Starting rebuild...</div>
+<div id="report_records_processed"><%=t 'search.rebuild_zoom_index.starting' %></div>
 <div id="report_records_failed"></div>
 <div id="report_records_skipped"></div>
 
 <div id="spinner">
-<img src="/images/indicator.gif" width="16" height="16" alt="Completed. ">
+  <img src="/images/indicator.gif" width="16" height="16" alt="<%=t 'search.rebuild_zoom_index.completed' %>">
 </div>
 
-<div id="done">...in progress.</div>
+<div id="done"><%=t 'search.rebuild_zoom_index.in_progress' %></div>
 
-<%= periodically_call_remote :url => { :action => 'check_rebuild_status' },
+<%= periodically_call_remote :url => { :action => 'check_rebuild_status',
+                                       :worker_key => @worker_key },
                              :frequency => 30 %>
 
-<div id="exit">
-</div>
+<div id="exit"></div>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

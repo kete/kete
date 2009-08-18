@@ -1,7 +1,7 @@
 <% if current_user_can_see_action_menu? -%>
   <%= render :partial => 'form' -%>
 <% else -%>
-  <h2>Sorry - editing on this section of the site has been disallowed</h2>
+  <h2><%=t 'topics.edit.not_authorized' %></h2>
 <% end -%>
 
 <%= render :partial => "content_wrapper_end" -%>

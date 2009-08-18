@@ -1,43 +1,28 @@
-<% @title = 'Add related set of items to ' +  @related_topic.title + ' from uploaded archive file' -%>
+<% @title = t('importers.new_related_set_from_archive_file.title', :related_topic_title => @related_topic.title) -%>
 
 <%= render :partial => "topics/content_wrapper_start", :locals => { :style_classes => "notabs" } %>
 
 <h2><%= h(@title) -%></h2>
 
-<h3>Some things to keep in mind when uploading a batch of
-  related items in a .zip, .tar, .gz, or other
-  archive file:</h3>
+<h3><%=t 'importers.new_related_set_from_archive_file.uploading_note' %></h3>
 
 <ul>
-  <li><p>The archive file should be of a folder containing the items to
-  be added.  Please do not uses spaces in the folder name and name the
-  archive file after the folder.  For example "the_images" folder
-  would become the "the_images.zip" archive file.</p></li>
-  <li><p>The largest archive file you may upload is
-  <%= number_to_human_size(MAXIMUM_UPLOADED_FILE_SIZE) -%>.  You may want to scale down
-  your <%= @zoom_class_plural_humanized -%> to be more reasonable
-  sized to add to the site and recreate your archive file.</p></li>
-
+  <li><p><%=t 'importers.new_related_set_from_archive_file.folder_containing_items' %></p></li>
+  <li><p><%=t 'importers.new_related_set_from_archive_file.archive_limit', :size => number_to_human_size(MAXIMUM_UPLOADED_FILE_SIZE) %></p></li>
   <%= embedded_enabled_message('<li><p>', '</p></li>') %>
-
-  <li><% if ENABLE_EMBEDDED_SUPPORT -%><p>If the title is in an item's
-  embedded metadata it will be used as long as it is labeled "Title"
-  or one of the following:
+  <li>
+    <% if ENABLE_EMBEDDED_SUPPORT -%>
+    <p>
+      <%=t 'importers.new_related_set_from_archive_file.title_from_metadata' %>
       <blockquote><%= TITLE_SYNONYMS.to_a.to_sentence -%></blockquote>
-  <strong>OR</strong></p><% end -%><p>The title for the uploaded items
-  will be based on the file's name as it was before it was added
-  to the compressed archive file.  If you want a different title for
-  the items you may to rename the file in
-  question and recreate the archive file before you proceed.</p>
-  <p><strong>IMPORTANT NOTE: please do not use spaces in file names,
-  use an underscore instead.  "_" will be replaced with a space in
-  the final title for the item.</strong></p>
-  <p><strong>IMPORTANT NOTE: please do not use &amp; in file names,
-  use an "and" instead.  Items with ampersands in filenames will not
-  be added.</strong></p>
-  <p>Alternatively, you may also edit any uploaded items' title or
-  other details after it has been added to the site.</p></li>
-
+      <strong><%=t 'importers.new_related_set_from_archive_file.title_from_metadata_or' %></strong>
+    </p>
+    <% end -%>
+    <p><%=t 'importers.new_related_set_from_archive_file.title_from_filename' %></p>
+    <p><strong><%=t 'importers.new_related_set_from_archive_file.no_spaces_in_filenames' %></strong></p>
+    <p><strong><%=t 'importers.new_related_set_from_archive_file.no_ampersands_in_filenames' %></strong></p>
+    <p><%=t 'importers.new_related_set_from_archive_file.edit_after_import' %></p>
+  </li>
 </ul>
 
 <fieldset>
@@ -62,7 +47,7 @@
   <%= hidden_field_tag 'related_topic', @related_topic.id %>
 
   <div class="form-element">
-    <label for="zoom_class">What are you uploading?</label>
+    <label for="zoom_class"><%=t 'importers.new_related_set_from_archive_file.whats_the_upload' %></label>
     <% options = Array.new
     ATTACHABLE_CLASSES.each do |item_class_name|
       selected = (@zoom_class_name == item_class_name) ? " selected='selected'" : ''
@@ -72,52 +57,35 @@
   </div>
 
   <div class="form-element">
-    <label for="import_base_tags">What tags should
-    we add to each imported item (separated by commas,
-    no &amp;s allowed in tags.)?</label>
-
+    <label for="import_base_tags"><%=t 'importers.new_related_set_from_archive_file.tags' %></label>
     <%= form.text_field :base_tags %>
-
-    <div class="form_example">This is a good way to group things (by
-    subject or category) so
-    that they can be found later, for example, if had a series of
-    photos of my home, I might use 'Island Bay,
-    Wellington, New Zealand'.
-    </div>
-
+    <div class="form_example"><%=t 'importers.new_related_set_from_archive_file.tags_description' %></div>
   </div>
 
   <div class="form-element">
-    <label for="import_default_description_end_template">
-    Description Template (good for including an attribution)</label>
-
+    <label for="import_default_description_end_template"><%=t 'importers.new_related_set_from_archive_file.description_template' %></label>
     <%= form.text_area :default_description_end_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
-
-    <div class="form_example">Should we append an piece of text
-      formatted in HTML to the end of the description of each piece of content that is
-      created during this import?  An example would be "&lt;p&gt;Any use of this image must be
-      accompanied by the credit 'Horowhenua Historical Society
-      Inc.'&lt;\p&gt;".  Useful for including an attribution for the
-      source of the added items.
-    </div>
+    <div class="form_example"><%=t 'importers.new_related_set_from_archive_file.description_template_example' %></div>
   </div>
 
   <% if licenses_are_available? -%>
-  <h3>You may also choose to have all imported items be under one of these licenses.</h3>
-  <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => Import.new} %>
+    <h3><%=t 'importers.new_related_set_from_archive_file.license' %></h3>
+    <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => Import.new} %>
   <% end -%>
 
   <% fields_for @import.import_archive_file do |archive_file| %>
-  <div class="form-element"><label for="import_archive_file_uploaded_data">Upload Archive file:</label><br/>
+  <div class="form-element">
+    <label for="import_archive_file_uploaded_data"><%=t 'importers.new_related_set_from_archive_file.upload' %></label><br />
     <%= archive_file.file_field :uploaded_data %>
+  </div>
   <% end %>
 
-  <div class="form_example">A .zip, .tar, or .tar.gz file that
-    contains all the Items.</div>
+  <div class="form_example">
+    <%=t 'importers.new_related_set_from_archive_file.upload_description' -%>
   </div>
 
   <div class="form-element">
-    <%= submit_tag 'Add Related Items' %>
+    <%= submit_tag t('importers.new_related_set_from_archive_file.add_related') %>
   </div>
 
 </fieldset>

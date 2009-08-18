@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 8771a632dc26a7782800347993869c964133ea29
+  branch: master
+repository_url: git://github.com/rails/acts_as_list.git
+lock: false
+repository_class: Piston::Git::Repository

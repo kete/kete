@@ -1,29 +1,36 @@
 <%
+inset ||= false
 pretty_class_plural = zoom_class_plural_humanize(zoom_class)
 controller = zoom_class_controller(zoom_class)
 if @total_item_counts > 0
-  total_items = (@public_item_counts[zoom_class] + @private_item_counts[zoom_class])
-  only_public_items = (@public_item_counts[zoom_class] > 0 && @private_item_counts[zoom_class] < 1)
+  total_items = related_items_count_of(zoom_class)
+  only_public_items = only_public_related_items_of?(zoom_class)
 else
   total_items = 0
 end
 are_still_images = (zoom_class == 'StillImage')
 display_num = are_still_images ? NUMBER_OF_RELATED_IMAGES_TO_DISPLAY : NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE
-display_heading = defined?(display_heading) && display_heading != false ? display_heading : nil
-display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : false
+display_num = 9 if inset && are_still_images
+display_heading ||= nil
+display_no_item_text ||= false
 -%>
 
-<div id="detail-linked-<%= controller -%>">
+<div id="detail-linked-<%= controller -%>"<%= (total_items < 1) ? " class='no-items'" : " class='related-items-section'" -%>>
   <% if !display_heading.nil? -%>
     <%= display_heading -%>
   <% else -%>
-    <h4><%= link_to_related_items_of(item, zoom_class, :link_text => "#{pretty_class_plural} (#{total_items})") -%></h4>
+    <h4>
+      <% inset_img = inset ? image_tag('related_items_collapsed.gif', :class => 'expand_collapse_image') : '' %>
+      <%= link_to_related_items_of(item, zoom_class, :link_text => "#{pretty_class_plural} (#{total_items}) #{inset_img}") -%>
+    </h4>
+    <%= "<hr />" if inset -%>
   <% end -%>
   <% if total_items > 0 -%>
+    <%= "<div id='related_still_image_container'>" if are_still_images %>
     <%= '<ul>' unless only_public_items -%>
       <% if @public_item_counts[zoom_class] > 0 -%>
         <% unless only_public_items -%>
-          <li><strong><%= link_to_related_items_of(item, zoom_class, :link_text => "Public") -%></strong>
+          <li><strong><%= link_to_related_items_of(item, zoom_class, :link_text => t('topics.related_items_section.public')) -%></strong>
         <% end -%>
         <% cache ({ :related => controller, :id => @cache_id }) do -%>
           <%= related_items_display_of @public_items[zoom_class],
@@ -37,7 +44,7 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
       <% end -%>
       <% if @private_item_counts[zoom_class] > 0 -%>
         <%= '<li>' unless only_public_items -%>
-        <strong><%= link_to_related_items_of(item, zoom_class, { :link_text => "Private" }, { :privacy_type => 'private' }) -%></strong>
+        <strong><%= link_to_related_items_of(item, zoom_class, { :link_text => t('topics.related_items_section.private') }, { :privacy_type => 'private' }) -%></strong>
         <%= related_items_display_of @private_items[zoom_class],
                                      { :are_still_images => are_still_images,
                                        :item => item,
@@ -48,8 +55,23 @@ display_no_item_text = defined?(display_no_item_text) ? display_no_item_text : f
         <%= '</li>' unless only_public_items -%>
       <% end -%>
     <%= '</ul>' unless only_public_items -%>
+    <%= "</div>" if are_still_images %>
+    <% if are_still_images %>
+      <div id="related_items_slideshow" class="slideshow_div"></div>
+      <%= slideshow_updater %>
+      <div id="related_items_slideshow_controls" class="slideshow_div" style="display: none;">
+        <p class="buttons one_button">
+          <a id="play_slideshow" href="">
+            <%= image_tag 'slideshow_play.gif',
+                          :title => t('topics.related_items_section.play_slideshow'),
+                          :alt => t('topics.related_items_section.play_slideshow') %>
+          </a>
+        </p>
+      </div>
+      <%= javascript_tag "setupRelatedImagesSlideshowPlayButton('#{url_for(params.merge(:action => 'selected_image', :id => nil, :topic_id => params[:id]))}');" %>
+    <% end -%>
   <% elsif display_no_item_text -%>
-    <h4>This <%= zoom_class_humanize(item.class.name) -%> is not related to any topics at this time.</h4>
+    <h4><%=t 'topics.related_items_section.not_related', :item_type => zoom_class_humanize(item.class.name) %></h4>
   <% else -%>
     &nbsp;
   <% end -%>

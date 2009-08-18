@@ -1,13 +1,13 @@
 <%= @recipient.user_name %>,
 
-<%= @sender.user_name %> has requested membership of the <%= @basket.name %> basket.
+<%=t 'user_notifier.join_policy.request.want_access',
+     :user_name => @sender.user_name,
+     :basket_name => @basket.name %>
 
-Our records show you are an admin of that basket.
+<%=t 'user_notifier.join_policy.request.youre_an_admin' %>
 
-You can approve or reject the application by going to 
+<%=t 'user_notifier.join_policy.request.approve_or_reject' %> 
 
 <%= SITE_URL %><%= @basket.urlified_name %>/members/list
 
-Thank you,
-<%= PRETTY_SITE_NAME %>
-<%= SITE_URL %>
+<%= render 'user_notifier/email_footer' %>

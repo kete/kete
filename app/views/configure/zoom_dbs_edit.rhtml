@@ -1,39 +1,31 @@
 <div id="zoom-dbs">
   <fieldset>
     <% form_remote_tag :url => { :action => 'zoom_dbs_update' } do %>
-    <h4>Security:</h4>
+    <h4><%=t 'configure.zoom_dbs_edit.security' %></h4>
     <% if @kete_password.blank? -%>
     <% # TODO: make the error message match -%>
-    <h2 class="#errorExplanation">Password is required</h2>
+    <h2 class="#errorExplanation"><%=t 'configure.zoom_dbs_edit.password_required' %></h2>
     <% end -%>
     <div class="form-element">
-      <label class="required" for="kete_password">Password:</label><br />
+      <label class="required" for="kete_password"><%=t 'configure.zoom_dbs_edit.password' %></label><br />
       <%= text_field_tag :kete_password, @kete_password %>
-      <div class="form_example">
-        Please set a new password to connect to this Search
-        Engine.  Leaving it the default is a security risk.
+      <div class="form_example"><%=t 'configure.zoom_dbs_edit.password_example' %>
       </div>
     </div>
 
     <% for @zoom_db in @zoom_dbs -%>
-    <h4>Search Engine Database: <%= @zoom_db.database_name %></h4>
+    <h4><%=t 'configure.zoom_dbs_edit.search_engine_database' %> <%= @zoom_db.database_name %></h4>
     <%= error_messages_for :zoom_db %>
       <% fields_for "zoom_db[]" do |f| %>
       <div class="form-element">
-        <label class="required" for="@zoom_db">Port:</label><br />
+        <label class="required" for="@zoom_db"><%=t 'configure.zoom_dbs_edit.port' %></label><br />
         <%= f.text_field :port %>
-        <div class="form_example">
-          Advanced: Unless you run more than one Kete site on your
-          host, it is safe to leave this as the default.
-          Otherwise, you will want to check what ports any other Search Engines
-          (Zebra servers) are already running on and change this to a
-          new port.
-        </div>
+        <div class="form_example"><%=t 'configure.zoom_dbs_edit.port_advanced_note' %></div>
       </div>
 
       <% end -%>
       <% end -%>
-    <p><%= submit_tag 'Save' %></p>
+    <p><%= submit_tag t('configure.zoom_dbs_edit.save') %></p>
     <% end -%>
   </fieldset>
 </div>

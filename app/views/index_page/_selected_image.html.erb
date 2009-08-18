@@ -1,0 +1,53 @@
+<p>
+  <% begin %>
+    <%= link_to image_tag(selected_image_file.public_filename,
+                          :size => selected_image_file.image_size,
+                          :alt => "#{selected_still_image.title}. "),
+                :action => 'show',
+                :urlified_name => selected_still_image.basket.urlified_name,
+                :controller => 'images',
+                :id => selected_still_image  -%>
+  <% rescue %>
+    Invalid Image File <!-- If this happens, it was likely a conflict with another slideshow -->
+  <% end %>
+</p>
+
+<p class="buttons">
+  <% if previous_url.blank? -%>
+    <%= image_tag('blank.png', :class => 'slideshow_previous') -%>
+  <% else %>
+    <%= link_to_remote(image_tag('slideshow_previous.gif',
+                                 :title => t('index_page.selected_image.previous_image'),
+                                 :alt => t('index_page.selected_image.previous_image'),
+                                 :class => 'slideshow_previous'),
+                       :update => 'selected-image-display', :method => 'get',
+                       :url => "#{previous_url}?topic_id=#{params[:topic_id]}" ) -%>
+  <% end -%>
+
+  <% if params[:controller] == 'topics' %>
+    <%= content_tag('a', image_tag('slideshow_grid.gif',
+                                   :title => t('index_page.selected_image.return_to_grid'),
+                                   :alt => t('index_page.selected_image.return_to_grid'),
+                                   :class => 'slideshow_grid'),
+                    :id => 'stop_slideshow', :href => '') -%>
+    <%= javascript_tag("setupRelatedImagesSlideshowStopButton();") -%>
+  <% end -%>
+
+  <%= content_tag('a', image_tag('slideshow_pause.gif',
+                                 :alt => t('index_page.selected_image.play_pause_slideshow'),
+                                 :title => t('index_page.selected_image.play_pause_slideshow'),
+                                 :class => 'slideshow_pause'),
+                  :id => 'play_pause_slideshow', :href => '') -%>
+  <%= javascript_tag("setupRelatedImagesSlideshowPauseButton();") -%>
+
+  <% if next_url.blank? -%>
+    <%= image_tag('blank.png', :class => 'slideshow_next') -%>
+  <% else %>
+    <%= link_to_remote(image_tag('slideshow_next.gif',
+                                 :title => t('index_page.selected_image.next_image'),
+                                 :alt => t('index_page.selected_image.next_image'),
+                                 :class => 'slideshow_next'),
+                       :update => 'selected-image-display', :method => 'get',
+                       :url => "#{next_url}?topic_id=#{params[:topic_id]}" ) -%>
+  <% end -%>
+</p>

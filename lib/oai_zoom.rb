@@ -54,6 +54,10 @@ module OaiZoom
 
                   oai_dc_xml_dc_description(xml, description)
 
+                  xml.send("dc:subject") {
+                    xml.cdata item.url
+                  } if item.class.name == 'WebLink'
+
                   # gives use dc:description/files/version_of_item/enclosure
                   # for any associated binary files
                   # that can be used to derive the url for things like thumbnails
@@ -127,7 +131,7 @@ module OaiZoom
         host = request.host
       end
       # HACK, brittle, but can't use url_for here
-      xml.send("dc:identifier", fully_qualified_item_url({:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name}))
+      xml.send("dc:identifier", fully_qualified_item_url({:host => host, :controller => zoom_class_controller(item.class.name), :item => item, :urlified_name => item.basket.urlified_name, :locale => false}))
     end
 
     # TODO: this may not be needed anymore
@@ -151,7 +155,7 @@ module OaiZoom
             xml.send("dc:subject") {
               xml.cdata related.title
             } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-            xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name}, true))
+            xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
           end
         end
       when 'Comment'
@@ -160,13 +164,13 @@ module OaiZoom
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
         } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name}, true))
+        xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name, :locale => false}, true))
       else
         item.topics.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
           } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.send("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name}, true))
+          xml.send("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
         end
       end
     end
@@ -182,7 +186,7 @@ module OaiZoom
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(ABOUT_BASKET).urlified_name, :id => 4})
+        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(ABOUT_BASKET).urlified_name, :id => 4, :locale => false})
       end
 
       xml.send("dc:rights", rights)

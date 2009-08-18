@@ -1,25 +1,31 @@
 <div class="detail-tools">
-  <h3>Actions:</h3>
+  <h3><%=t 'topics.preview_actions.title' %></h3>
   <ul>
-    <li class="first"><%= link_to "History",
+    <li class="first"><%= link_to t('topics.preview_actions.history'),
                           {:action => :history,
       :id => item}, :tabindex => '1' %></li>
     <% if can_moderate -%>
-    <li><%= link_to "Make this revision live",
+    <li><%= link_to t('topics.preview_actions.make_live'),
          {:action => :restore,
       :id => item,
       :version => item.version,
-      :authenticity_token => form_authenticity_token},
+      :authenticity_token => form_authenticity_token,
+      :private => item.private?},
          :method => :post,
-         :confirm => 'Are you sure?', :tabindex => '1' %></li>
-    <li><%= link_to "reject",
+         :confirm => t('topics.preview_actions.make_live_confirm'), :tabindex => '1' %></li>
+    <li><%= link_to t('topics.preview_actions.reject'),
             {:action => :flag_form,
       :id => item,
       :flag => REJECTED_FLAG,
       :version => item.version,
       :authenticity_token => form_authenticity_token},
       :method => :post,
-      :confirm => 'Are you sure?', :tabindex => '1' %></li>
+      :confirm => t('topics.preview_actions.reject_confirm'),  :tabindex => '1' %></li>
+    <li><%= link_to t('topics.preview_actions.delete_all_versions'),
+            {:action => :destroy,
+             :id => item},
+      :method => :post,
+      :confirm => t('topics.preview_actions.delete_confirm'), :tabindex => '1' %></li>
     <% end -%>
   </ul>
 </div>

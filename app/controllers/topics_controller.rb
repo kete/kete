@@ -1,6 +1,8 @@
 class TopicsController < ApplicationController
   include ExtendedContentController
 
+  include ImageSlideshow
+
   def index
     redirect_to_search_for('Topic')
   end
@@ -12,9 +14,6 @@ class TopicsController < ApplicationController
   def show
     prepare_item_variables_for('Topic')
     @topic = @item
-    # If we are serving a cached page, we still need
-    # some details in @topic, so lets make a dummy one
-    @topic = DummyModel.new({ :id => @cache_id, :basket => @current_basket }) if @topic.nil?
 
     respond_to do |format|
       format.html
@@ -40,7 +39,7 @@ class TopicsController < ApplicationController
       @topic_types = @topic.topic_type.full_set
     else
       # this is the site's index page, but they don't have permission to edit
-      flash[:notice] = 'You don\'t have permission to edit this topic.'
+      flash[:notice] = t('topics_controller.edit.not_authorized')
       redirect_to :action => 'show', :id => params[:id]
     end
   end
@@ -97,17 +96,21 @@ class TopicsController < ApplicationController
 
       @topic.do_notifications_if_pending(1, current_user)
 
+      # send notifications of private item create
+      private_item_notification_for(@topic, :created) if params[:topic][:private] == "true"
+
       case where_to_redirect
       when 'show_related'
-        flash[:notice] = 'Related Topic was successfully created.'
+        flash[:notice] = t('topics_controller.create.created_related')
         redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
         redirect_to :action => 'add_index_topic',
         :controller => 'baskets',
         :index_for_basket => params[:index_for_basket],
+        :return_to_homepage => params[:return_to_homepage],
         :topic => @topic
       else
-        flash[:notice] = 'Topic was successfully created.'
+        flash[:notice] = t('topics_controller.create.created')
         redirect_to :action => 'show', :id => @topic, :private => (params[:topic][:private] == "true")
       end
     else
@@ -116,37 +119,52 @@ class TopicsController < ApplicationController
   end
 
   def update
-    begin
-      @topic = Topic.find(params[:id])
+    @topic = Topic.find(params[:id])
+    public_or_private_version_of(@topic)
 
-      # logic to prevent plain old members from editing
-      # site basket homepage
-      if @topic != @site_basket.index_topic or permit?("site_admin of :site_basket or admin of :site_basket")
+    # if they have changed the topic type, make the edit fail so they can review
+    # the new fields (and to ensure that required fields are filled in). We have to
+    # update the attribute so that when they save, the extended field validations
+    # take effect. We also have to reload and then switch to the privacy of the item
+    # they are editing (to ensure private item editing shows the correct data)
+    if params[:topic][:topic_type_id] && @topic.topic_type_id != params[:topic][:topic_type_id].to_i
+      # update the topic with the new topic type and version comment
+      old_topic_type = TopicType.find(@topic.topic_type_id)
+      new_topic_type = TopicType.find(params[:topic][:topic_type_id].to_i)
+      @topic.update_attributes(
+        :topic_type_id => params[:topic][:topic_type_id].to_i,
+        :version_comment => "Changed Topic Type from #{old_topic_type.name} to #{new_topic_type.name}"
+      )
 
-        version_after_update = @topic.max_version + 1
+      # add a contributor to the previous topic update
+      version = @topic.versions.find(:first, :order => 'version DESC').version
+      @topic.add_as_contributor(current_user, version)
 
-        @successful = ensure_no_new_insecure_elements_in('topic')
-        @topic.attributes = params[:topic]
-        @successful = @topic.save if @successful
-      else
-        # they don't have permission
-        # this will redirect them to edit
-        # which will bump them back to show for the topic
-        # with flash message
-        @successful = false
-      end
-    rescue
-      flash[:error], @successful  = $!.to_s, false
+      # reload, get the correct privacy and return the user to the topic form
+      @topic.reload
+      public_or_private_version_of(@topic)
+      flash[:notice] = t('topics_controller.update.changed_topic_type')
+      @successful = false
+
+    # logic to prevent plain old members from editing site basket homepage
+    elsif @topic != @site_basket.index_topic || permit?("site_admin of :site_basket or admin of :site_basket")
+      version_after_update = @topic.max_version + 1
+
+      @successful = ensure_no_new_insecure_elements_in('topic')
+      @topic.attributes = params[:topic]
+      @successful = @topic.save if @successful
+    else
+      # they don't have permission
+      # this will redirect them to edit
+      # which will bump them back to show for the topic
+      # with flash message
+      @successful = false
     end
 
     if @successful
-      after_successful_zoom_item_update(@topic)
 
-      @topic.do_notifications_if_pending(version_after_update, current_user) if
-        @topic.versions.exists?(:version => version_after_update)
-
-      # TODO: replace with translation stuff when we get globalize going
-      flash[:notice] = 'Topic was successfully updated.'
+      after_successful_zoom_item_update(@topic, version_after_update)
+      flash[:notice] = t('topics_controller.update.updated')
 
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")
     else

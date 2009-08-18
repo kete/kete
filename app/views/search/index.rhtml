@@ -1,3 +1,7 @@
-      <% @title = "Search " + @current_basket.name -%>
-      <%= render :partial => 'form', :locals => {:headline => @title, :search_terms => ''} %>
+<%= render(:partial => "topics/content_wrapper_start",
+           :locals => { :style_classes => "full-width notabs" }) -%>
+
+  <% @title = t('search.index.title', :basket_name => @current_basket.name) -%>
+  <%= render :partial => 'form', :locals => {:headline => @title, :search_terms => ''} %>
+
 <%= render(:partial => "topics/content_wrapper_end" ) %>

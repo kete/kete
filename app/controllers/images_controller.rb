@@ -96,18 +96,11 @@ class ImagesController < ApplicationController
     @successful = @still_image.save if @successful
 
     if @successful
+      # if they have uploaded something new, insert it
+      @image_file = ImageFile.update_attributes(params[:image_file]) if !params[:image_file][:uploaded_data].blank?
 
-      if !params[:image_file][:uploaded_data].blank?
-        # if they have uploaded something new, insert it
-        @image_file = ImageFile.update_attributes(params[:image_file])
-      end
-
-      after_successful_zoom_item_update(@still_image)
-
-      @still_image.do_notifications_if_pending(version_after_update, current_user) if
-        @still_image.versions.exists?(:version => version_after_update)
-
-      flash[:notice] = 'Image was successfully updated.'
+      after_successful_zoom_item_update(@still_image, version_after_update)
+      flash[:notice] = t('images_controller.update.updated')
 
       redirect_to_show_for(@still_image, :private => (params[:still_image][:private] == "true"))
     else

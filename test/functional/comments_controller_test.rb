@@ -27,9 +27,10 @@ class CommentsControllerTest < ActionController::TestCase
       :email => 'quire@example.com',
       :password => 'quire',
       :password_confirmation => 'quire',
-      :agree_to_terms => true,
+      :agree_to_terms => '1',
       :security_code => 'test',
-      :security_code_confirmation => 'test' 
+      :security_code_confirmation => 'test',
+      :locale => 'en'
     }
       
     
@@ -42,7 +43,7 @@ class CommentsControllerTest < ActionController::TestCase
   
   def test_baskets_set_up
     [@closed_basket, @open_basket].each do |basket|
-      assert_valid basket
+      assert basket.valid?
       assert basket.respond_to?(:allow_non_member_comments)
       assert_not_nil basket.allow_non_member_comments
     end
@@ -50,7 +51,7 @@ class CommentsControllerTest < ActionController::TestCase
   
   def test_users_set_up
     [@non_member_user, @member_user].each do |user|
-      assert_valid user
+      assert user.valid?
     end
     assert_equal true, @member_user.has_role?('member', @closed_basket)
   end
@@ -58,14 +59,14 @@ class CommentsControllerTest < ActionController::TestCase
   def test_protected_from_non_member_comments_not_logged_in
     get :new, :urlified_name => "closed_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
     assert_response :redirect
-    assert_redirected_to :controller => "account", :action => "login"
+    assert_redirected_to :urlified_name => "site", :controller => "account", :action => "login", :locale => :en
   end
   
   def test_protected_from_non_member_comments_non_member
     login_as(:quire)
     get :new, :urlified_name => "closed_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
     assert_response :redirect
-    assert_redirected_to :controller => "baskets", :action => "permission_denied"
+    assert_redirected_to :urlified_name => 'closed_basket', :controller => "baskets", :action => "permission_denied", :locale => :en
   end
   
   def test_protected_allows_member_comments_from_member
@@ -79,7 +80,7 @@ class CommentsControllerTest < ActionController::TestCase
   def test_protected_from_non_member_comments_not_logged_in2
     get :new, :urlified_name => "open_basket", :commentable_id => 1, :commentable_type => "Topic", :commentable_private => "false"
     assert_response :redirect
-    assert_redirected_to :controller => "account", :action => "login"
+    assert_redirected_to :urlified_name => 'site', :controller => "account", :action => "login", :locale => :en
   end
   
   def test_allow_non_member_comments_non_member
@@ -102,14 +103,15 @@ class CommentsControllerTest < ActionController::TestCase
     login_as(:quire)
     post :create, :urlified_name => "closed_basket", :comment => @new_comment_model
     assert_response :redirect
-    assert_redirected_to :controller => "baskets", :action => "permission_denied"
+    assert_redirected_to :urlified_name => 'closed_basket', :controller => "baskets", :action => "permission_denied", :locale => :en
   end
   
   def test_can_create_if_non_member_on_unprotected
     login_as(:quire)
     post :create, :urlified_name => "open_basket", :comment => @new_comment_model.merge(:basket_id => @open_basket.id)
+    assert assigns(:comment)
     assert_response :redirect
-    assert_redirected_to :controller => "topics", :action => "show"
+    assert_redirected_to :urlified_name => "about", :controller => "topics", :action => "show", :id => Topic.find(1), :locale => false
   end
   
 end

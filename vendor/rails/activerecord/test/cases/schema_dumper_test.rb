@@ -1,5 +1,4 @@
 require "cases/helper"
-require 'active_record/schema_dumper'
 require 'stringio'
 
 
@@ -21,6 +20,11 @@ class SchemaDumperTest < ActiveRecord::TestCase
   def test_schema_dump_excludes_sqlite_sequence
     output = standard_dump
     assert_no_match %r{create_table "sqlite_sequence"}, output
+  end
+
+  def test_schema_dump_includes_camelcase_table_name
+    output = standard_dump
+    assert_match %r{create_table "CamelCase"}, output
   end
 
   def assert_line_up(lines, pattern, required = false)
@@ -72,6 +76,52 @@ class SchemaDumperTest < ActiveRecord::TestCase
     assert_match %r{:null => false}, output
   end
 
+  def test_schema_dump_includes_limit_constraint_for_integer_columns
+    stream = StringIO.new
+
+    ActiveRecord::SchemaDumper.ignore_tables = [/^(?!integer_limits)/]
+    ActiveRecord::SchemaDumper.dump(ActiveRecord::Base.connection, stream)
+    output = stream.string
+
+    if current_adapter?(:PostgreSQLAdapter)
+      assert_match %r{c_int_1.*:limit => 2}, output
+      assert_match %r{c_int_2.*:limit => 2}, output
+
+      # int 3 is 4 bytes in postgresql
+      assert_match %r{c_int_3.*}, output
+      assert_no_match %r{c_int_3.*:limit}, output
+
+      assert_match %r{c_int_4.*}, output
+      assert_no_match %r{c_int_4.*:limit}, output
+    elsif current_adapter?(:MysqlAdapter)
+      assert_match %r{c_int_1.*:limit => 1}, output
+      assert_match %r{c_int_2.*:limit => 2}, output
+      assert_match %r{c_int_3.*:limit => 3}, output
+
+      assert_match %r{c_int_4.*}, output
+      assert_no_match %r{c_int_4.*:limit}, output
+    elsif current_adapter?(:SQLiteAdapter)
+      assert_match %r{c_int_1.*:limit => 1}, output
+      assert_match %r{c_int_2.*:limit => 2}, output
+      assert_match %r{c_int_3.*:limit => 3}, output
+      assert_match %r{c_int_4.*:limit => 4}, output
+    end
+    assert_match %r{c_int_without_limit.*}, output
+    assert_no_match %r{c_int_without_limit.*:limit}, output
+
+    if current_adapter?(:SQLiteAdapter)
+      assert_match %r{c_int_5.*:limit => 5}, output
+      assert_match %r{c_int_6.*:limit => 6}, output
+      assert_match %r{c_int_7.*:limit => 7}, output
+      assert_match %r{c_int_8.*:limit => 8}, output
+    else
+      assert_match %r{c_int_5.*:limit => 8}, output
+      assert_match %r{c_int_6.*:limit => 8}, output
+      assert_match %r{c_int_7.*:limit => 8}, output
+      assert_match %r{c_int_8.*:limit => 8}, output
+    end
+  end
+
   def test_schema_dump_with_string_ignored_table
     stream = StringIO.new
 
@@ -102,17 +152,22 @@ class SchemaDumperTest < ActiveRecord::TestCase
     end
   end
 
+  def test_schema_dumps_index_columns_in_right_order
+    index_definition = standard_dump.split(/\n/).grep(/add_index.*companies/).first.strip
+    assert_equal 'add_index "companies", ["firm_id", "type", "rating", "ruby_type"], :name => "company_index"', index_definition
+  end
+  
+  def test_schema_dump_should_honor_nonstandard_primary_keys
+    output = standard_dump
+    match = output.match(%r{create_table "movies"(.*)do})
+    assert_not_nil(match, "nonstandardpk table not found")
+    assert_match %r(:primary_key => "movieid"), match[1], "non-standard primary key not preserved"
+  end
+
   if current_adapter?(:MysqlAdapter)
     def test_schema_dump_should_not_add_default_value_for_mysql_text_field
       output = standard_dump
       assert_match %r{t.text\s+"body",\s+:null => false$}, output
-    end
-
-    def test_mysql_schema_dump_should_honor_nonstandard_primary_keys
-      output = standard_dump
-      match = output.match(%r{create_table "movies"(.*)do})
-      assert_not_nil(match, "nonstandardpk table not found")
-      assert_match %r(:primary_key => "movieid"), match[1], "non-standard primary key not preserved"
     end
 
     def test_schema_dump_includes_length_for_mysql_blob_and_text_fields

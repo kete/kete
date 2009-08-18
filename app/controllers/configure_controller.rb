@@ -1,3 +1,8 @@
+require 'rake'
+require 'rake/rdoctask'
+require 'rake/testtask'
+require 'tasks/rails'
+
 class ConfigureController < ApplicationController
   # everything else is handled by application.rb
   before_filter :login_required, :only => [:section, :finish,
@@ -5,7 +10,8 @@ class ConfigureController < ApplicationController
                                            :zoom_dbs_update, :start_zebra,
                                            :index]
 
-  permit "tech_admin of :site"
+  permit "tech_admin of :site", :except => [:add_link_from_kete_net, :send_information, :get_site_linking_progress]
+  permit "site_admin or tech_admin of :site", :only => [:add_link_from_kete_net, :send_information, :get_site_linking_progress]
 
   include SiteLinking
 
@@ -91,7 +97,7 @@ class ConfigureController < ApplicationController
       render :update do |page|
         page.hide("settings")
         page.show("zoom")
-        page.replace_html("completed-message", "<h3>Not yet completed.</h3>")
+        page.replace_html("completed-message", "<h3>#{t('configure_controller.done_with_settings.not_yet_completed')}</h3>")
       end
     end
   end
@@ -165,7 +171,6 @@ class ConfigureController < ApplicationController
   def prime_zebra
     # consolidating the code to do this work by using existing worker
     params[:clear_zebra] = true
-    @worker_key = 'zoom_index_rebuild_worker_' + Time.now.to_s.gsub(/\W/, '_')
     rebuild_zoom_index
 
     status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
@@ -183,7 +188,7 @@ class ConfigureController < ApplicationController
 
       render :update do |page|
         page.show('prime-zebra-check')
-        page.replace_html("prime-zebra-message", "Search Engine has been primed.")
+        page.replace_html("prime-zebra-message", t('configure_controller.prime_zebra.primed_zebra'))
         page.show('reload-site-index')
         page.hide('restart-before-continue-message')
       end
@@ -206,6 +211,7 @@ class ConfigureController < ApplicationController
     else
       begin
         @worker_type = "site_linking_worker".to_sym
+        @worker_key = worker_key_for(@worker_type)
 
         # if the site registration never completed, this worker may still be operational
         # (that should only happen when bgrb returns nothing, caused by errors in the worker)
@@ -213,14 +219,14 @@ class ConfigureController < ApplicationController
         delete_existing_workers_for(@worker_type)
 
         unless backgroundrb_is_running?(@worker_type)
-          MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_type.to_s )
-          MiddleMan.worker(@worker_type, @worker_type.to_s).async_do_work( :arg => { :params => params } )
+          MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
+          MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :params => params } )
           render :update do |page|
             page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_site_linking_progress' }, :frequency => 3))
           end
         else
           render :update do |page|
-            page.replace_html("top_message", "There is already a site registration worker active. Wierd! Try refreshing the page.")
+            page.replace_html("top_message", t('configure_controller.send_information.already_running'))
             page.hide('spinner')
           end
         end
@@ -234,23 +240,25 @@ class ConfigureController < ApplicationController
     set_kete_net_urls
     begin
       @worker_type = "site_linking_worker".to_sym
-      status = MiddleMan.worker(@worker_type, @worker_type.to_s).ask_result(:results)
+      @worker_key = worker_key_for(@worker_type)
+      status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
       logger.debug(status.inspect)
       if !status.blank?
         if status[:linking_complete] == true
           # the following lines means the periodic calls to this method wont cause errors
           # when trying to process the registration again
-          MiddleMan.worker(@worker_type, @worker_type.to_s).reset_worker
-          MiddleMan.worker(@worker_type, @worker_type.to_s).delete
+          MiddleMan.worker(@worker_type, @worker_key).reset_worker
+          MiddleMan.worker(@worker_type, @worker_key).delete
 
           if status[:linking_success] == true
-            top_message = "Your Kete installation has been registered. Thank you. You can view the whole directory of Kete sites at <a href='#{@kete_sites}'>#{@kete_sites}</a>."
+            top_message = t('configure_controller.get_site_linking_progress.site_registered',
+                            :kete_sites_link => @kete_sites)
             render :update do |page|
               page.hide('spinner')
               page.replace_html("top_message", top_message)
             end
           elsif !status[:linking_validation_errors].blank?
-            linking_errors = "<strong>Some fields were incorrect:</strong><br />"
+            linking_errors = "<strong>#{t('configure_controller.get_site_linking_progress.incorrect_fields')}</strong><br />"
             status[:linking_validation_errors].each do |field, error|
               linking_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
             end
@@ -289,6 +297,30 @@ class ConfigureController < ApplicationController
 
   def set_not_completed
     @not_completed = SystemSetting.not_completed
+  end
+
+  # controls once the site is configured
+
+  def restart_server
+    ENV['RAILS_ENV'] = RAILS_ENV
+    rake_result = Rake::Task["kete:tools:restart"].execute(ENV)
+    if rake_result
+      flash[:notice] = t('configure_controller.restart_server.server_restarted')
+    else
+      flash[:error] = t('configure_controller.restart_server.problem_restarting')
+    end
+    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
+  end
+
+  def clear_cache
+    ENV['RAILS_ENV'] = RAILS_ENV
+    rake_result = Rake::Task["tmp:cache:clear"].execute(ENV)
+    if rake_result
+      flash[:notice] = t('configure_controller.clear_cache.cache_cleared')
+    else
+      flash[:error] = t('configure_controller.clear_cache.problem_clearing_cache')
+    end
+    redirect_to :urlified_name => @site_basket.urlified_name, :controller => 'configure', :action => 'index'
   end
 
   private

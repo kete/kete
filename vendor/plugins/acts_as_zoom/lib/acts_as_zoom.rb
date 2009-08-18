@@ -21,8 +21,9 @@ require 'rexml/document'
 require 'zoom'
 # our model for storing Z39.50 server connection information
 require 'zoom_db'
-# we extend the ZOOM::Record class
+# we extend the ZOOM::Record class and ZOOM:ResultSet class
 require File.dirname(__FILE__) + "/record"
+require File.dirname(__FILE__) + "/result_set"
 
 module ZoomMixin
   module Acts #:nodoc:
@@ -118,17 +119,8 @@ module ZoomMixin
         # and optionally start and end record range
         # returns zoom records
         def records_from_zoom_result_set(options={})
-          logger.debug("inside records_from_zoom_result_set")
-          rset = options[:result_set]
-
-          records = ''
-          if options[:start_record].nil?
-            records = rset.records
-          else
-            records = rset[options[:start_record]..options[:end_record]]
-          end
-
-          return records
+          result_set = options.delete(:result_set)
+          result_set.records_from(options)
         end
 
         # collect the ids of the records
@@ -295,13 +287,13 @@ module ZoomMixin
         end
 
         def zoom_destroy(existing_connection = nil)
-          logger.debug "zoom_destroy: #{self.class.name} : #{self.id}"
-
           if has_public_zoom_record?
+            logger.debug "zoom_destroy: #{zoom_id}; private: false"
             public_zoom_database.destroy_identified_by(zoom_id, existing_connection)
           end
 
           if has_private_zoom_record?
+            logger.debug "zoom_destroy: #{zoom_id}; private: true"
             private_zoom_database.destroy_identified_by(zoom_id, existing_connection)
           end
 

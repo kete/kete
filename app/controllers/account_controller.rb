@@ -33,10 +33,13 @@ class AccountController < ApplicationController
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
-        redirect_back_or_default(:controller => '/account', :action => 'index')
-        flash[:notice] = "Logged in successfully"
+        redirect_back_or_default({ :locale => current_user.locale,
+                                   :urlified_name => @site_basket.urlified_name,
+                                   :controller => 'account',
+                                   :action => 'index' }, current_user.locale)
+        flash[:notice] = t('account_controller.login.logged_in')
       else
-        flash[:notice] = "Your password or login do not match our records. Please try again."
+        flash[:notice] = t('account_controller.login.failed_login')
       end
     else
       logger.debug("what is return_to: " + session[:return_to].inspect)
@@ -101,12 +104,15 @@ class AccountController < ApplicationController
 
     if !REQUIRE_ACTIVATION
       self.current_user = @user
-      flash[:notice] = "Thanks for signing up!"
+      flash[:notice] = t('account_controller.signup.signed_up')
     else
-      flash[:notice] = "Thanks for signing up! Expect an email with a code shortly to activate your account."
+      flash[:notice] = t('account_controller.signup.signed_up_with_email')
     end
 
-    redirect_back_or_default(:controller => '/account', :action => 'index')
+    redirect_back_or_default({ :locale => params[:user][:locale],
+                               :urlified_name => @site_basket.urlified_name,
+                               :controller => 'account',
+                               :action => 'index' })
   rescue ActiveRecord::RecordInvalid
     render :action => 'signup'
   end
@@ -118,7 +124,7 @@ class AccountController < ApplicationController
           page.replace_html params[:avatar_id],
                             avatar_tag(User.new({ :email => params[:email] }),
                                                 { :size => 30, :rating => 'G', :gravatar_default_url => "#{SITE_URL}images/no-avatar.png" },
-                                                { :width => 30, :height => 30, :alt => 'Your Gravatar. ' })
+                                                { :width => 30, :height => 30, :alt => t('account_controller.fetch_gravatar.your_gravatar') })
         end
       end
     end
@@ -156,7 +162,7 @@ class AccountController < ApplicationController
     # added to support brain_buster plugin captcha
     cookies.delete :captcha_status
     reset_session
-    flash[:notice] = "You have been logged out."
+    flash[:notice] = t('account_controller.logout.logged_out')
     redirect_back_or_default(:controller => '/account', :action => 'index')
   end
 
@@ -171,7 +177,7 @@ class AccountController < ApplicationController
       @viewer_is_user = (@user == @current_user) ? true : false
       @viewer_portraits = !@user.portraits.empty? ? @user.portraits.all(:conditions => ['position != 1']) : nil
     else
-      flash[:notice] = "You must be logged in to view user profiles."
+      flash[:notice] = t('account_controller.show.please_login')
       redirect_to :action => 'login'
     end
   end
@@ -188,8 +194,12 @@ class AccountController < ApplicationController
       # @user.user_name has changed
       expire_contributions_caches_for(@user) if original_user_name != @user.user_name
 
-      flash[:notice] = 'User was successfully updated.'
-      redirect_to :action => 'show', :id => @user
+      flash[:notice] = t('account_controller.update.user_updated')
+      redirect_to({ :locale => params[:user][:locale],
+                    :urlified_name => @site_basket.urlified_name,
+                    :controller => 'account',
+                    :action => 'show',
+                    :id => @user })
     else
       logger.debug("what is problem")
       render :action => 'edit'
@@ -203,19 +213,19 @@ class AccountController < ApplicationController
         current_user.password_confirmation = params[:password_confirmation]
         current_user.password = params[:password]
         flash[:notice] = current_user.save ?
-        "Password changed" :
-          "Password not changed"
+        t('account_controller.change_password.password_changed') :
+          t('account_controller.change_password.password_not_changed')
         if IS_CONFIGURED
           redirect_to :action => 'show'
         else
           redirect_to '/'
         end
       else
-        flash[:notice] = "Password mismatch"
+        flash[:notice] = t('account_controller.change_password.password_mismatch')
         @old_password = params[:old_password]
       end
     else
-      flash[:notice] = "Wrong password"
+      flash[:notice] = t('account_controller.change_password.wrong_password')
     end
   end
 
@@ -245,12 +255,10 @@ class AccountController < ApplicationController
     activator = params[:id] || params[:activation_code]
     @user = User.find_by_activation_code(activator)
     if @user and @user.activate
-      flash[:notice] = "Your account has been activated.  Please login."
+      flash[:notice] = t('account_controller.activate.activated')
       redirect_back_or_default(:controller => '/account', :action => 'login')
     else
-      msg = "Unable to activate the account.  Please check or enter manually."
-      flash[:error] = msg
-      # flash[:notice] = msg
+      flash[:error] = t('account_controller.activate.not_activated')
     end
   end
 
@@ -264,13 +272,13 @@ class AccountController < ApplicationController
       user.forgot_password
       user.save
       redirect_back_or_default(:controller => '/account', :action => 'index')
-      flash[:notice] = "A password reset link has been sent to your email address"
+      flash[:notice] = t('account_controller.forgot_password.email_sent')
     elsif @users.size > 1
-      flash[:notice] = "This email address belongs to more than one account. Please select the one you're trying to reset."
+      flash[:notice] = t('account_controller.forgot_password.more_than_one_account')
     elsif !params[:user][:login].blank?
-      flash[:error] = "Could not find a user with that login"
+      flash[:error] = t('account_controller.forgot_password.no_such_login')
     else
-      flash[:error] = "Could not find a user with that email address"
+      flash[:error] = t('account_controller.forgot_password.no_such_email')
     end
   end
 
@@ -284,23 +292,23 @@ class AccountController < ApplicationController
       current_user.password_confirmation = params[:user][:password_confirmation]
       current_user.password = params[:user][:password]
       @user.reset_password
-      flash[:notice] = current_user.save ? "Password reset" : "Password not reset"
+      flash[:notice] = current_user.save ? t('account_controller.reset_password.password_reset') : t('account_controller.reset_password.password_not_reset')
     else
-      flash[:notice] = "Password mismatch"
+      flash[:notice] = t('account_controller.reset_password.password_mismatch')
     end
     redirect_back_or_default(:controller => '/account', :action => 'index')
   rescue
     logger.error "Invalid Reset Code entered"
-    flash[:notice] = "Sorry - That is an invalid password reset code. Please check your code and try again. (Perhaps your email client inserted a carriage return?"
+    flash[:notice] = t('account_controller.reset_password.invalid_reset')
     redirect_back_or_default(:controller => '/account', :action => 'index')
   end
 
   def add_portrait
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.new_portrait_for(current_user, @still_image)
-      flash[:notice] = "'#{@still_image.title}' has been added to your portraits."
+      flash[:notice] = t('account_controller.add_portrait.added_portrait', :portrait_title => @still_image.title)
     else
-      flash[:error] = "'#{@still_image.title}' failed to add to your portraits."
+      flash[:error] = t('account_controller.add_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
@@ -310,10 +318,10 @@ class AccountController < ApplicationController
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.remove_portrait_for(current_user, @still_image)
       @successful = true
-      flash[:notice] = "'#{@still_image.title}' has been removed from your portraits."
+      flash[:notice] = t('account_controller.remove_portrait.removed_portrait', :portrait_title => @still_image.title)
     else
       @successful = false
-      flash[:error] = "'#{@still_image.title}' failed to remove from your portraits."
+      flash[:error] = t('account_controller.remove_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
@@ -325,9 +333,9 @@ class AccountController < ApplicationController
   def make_selected_portrait
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.make_portrait_selected_for(current_user, @still_image)
-      flash[:notice] = "'#{@still_image.title}' has been made your selected portrait."
+      flash[:notice] = t('account_controller.make_selected_portrait.made_selected', :portrait_title => @still_image.title)
     else
-      flash[:error] = "'#{@still_image.title}' failed to become your selected portrait."
+      flash[:error] = t('account_controller.make_selected_portrait.failed_portrait', :portrait_title => @still_image.title)
     end
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     redirect_to_image_or_profile
@@ -337,10 +345,10 @@ class AccountController < ApplicationController
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.move_portrait_higher_for(current_user, @still_image)
       @successful = true
-      flash[:notice] = "'#{@still_image.title}' has been moved closer to the front of your portraits."
+      flash[:notice] = t('account_controller.move_portrait_higher.moved_higher', :portrait_title => @still_image.title)
     else
       @successful = false
-      flash[:error] = "'#{@still_image.title}' failed to move closer to the front of your portraits."
+      flash[:error] = t('account_controller.move_portrait_higher.failed_portrait', :portrait_title => @still_image.title)
     end
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
@@ -353,10 +361,10 @@ class AccountController < ApplicationController
     @still_image = StillImage.find(params[:id])
     if UserPortraitRelation.move_portrait_lower_for(current_user, @still_image)
       @successful = true
-      flash[:notice] = "'#{@still_image.title}' has been moved closer to the end of your portraits."
+      flash[:notice] = t('account_controller.move_portrait_lower.moved_lower', :portrait_title => @still_image.title)
     else
       @successful = false
-      flash[:error] = "'#{@still_image.title}' failed to move closer to the end of your portraits."
+      flash[:error] = t('account_controller.move_portrait_lower.failed_portrait', :portrait_title => @still_image.title)
     end
     expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
     respond_to do |format|
@@ -387,10 +395,10 @@ class AccountController < ApplicationController
       end
       expire_contributions_caches_for(current_user, :dont_rebuild_zoom => true)
       @successful = true
-      flash[:notice] = "Your portraits have been successfully reordered."
+      flash[:notice] = t('account_controller.update_portraits.reordered')
     rescue
       @successful = false
-      flash[:error] = "The portraits were not reordered permanently. You may only reorder portraits if they are yours.  If they are, please try again."
+      flash[:error] = t('account_controller.update_portraits.not_reordered')
     end
     # This action is only called via Ajax JS request, so don't respond to HTML
     respond_to do |format|
@@ -401,11 +409,18 @@ class AccountController < ApplicationController
   def baskets
   end
 
+  def change_locale
+    notice = t('account_controller.change_locale.locale_changed')
+    notice += t('account_controller.change_locale.change_permanently') if logged_in?
+    flash[:notice] = notice
+    redirect_back_or_default({:controller => 'account', :action => 'index'}, params[:override_locale])
+  end
+
   private
 
     def redirect_if_user_portraits_arnt_enabled
       unless ENABLE_USER_PORTRAITS
-        flash[:notice] = "User portraits are not enabled so you cannot use this feature."
+        flash[:notice] = t('account_controller.redirect_if_user_portraits_arnt_enabled.not_enabled')
         @still_image = StillImage.find(params[:id])
         redirect_to_show_for(@still_image)
       end

@@ -79,3 +79,32 @@ configurable_settings_011:
   name: memberlist_policy
   value_type: String
   value: "--- at least admin\n"
+# Make basket browse type blank for site basket and inherit for others
+configurable_settings_008:
+  id: "12"
+  configurable_id: 1
+  configurable_type: Basket
+  name: browse_view_as
+  value_type: String
+  value: "--- ''\n"
+configurable_settings_009:
+  id: "13"
+  configurable_id: 2
+  configurable_type: Basket
+  name: browse_view_as
+  value_type: String
+  value: "--- inherit\n"
+configurable_settings_010:
+  id: "14"
+  configurable_id: 3
+  configurable_type: Basket
+  name: browse_view_as
+  value_type: String
+  value: "--- inherit\n"
+configurable_settings_011:
+  id: "15"
+  configurable_id: 4
+  configurable_type: Basket
+  name: browse_view_as
+  value_type: String
+  value: "--- inherit\n"

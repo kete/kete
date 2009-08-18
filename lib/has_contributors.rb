@@ -59,8 +59,11 @@ module HasContributors
           submitter = contribution.user
         rescue
           # catch the ugly error message and display something nicer
-          message = "It looks like there is no contributor associated with version #{version.to_s} of #{self.class.name} #{self.id}.\n"
-          message += "Possible data corruption. You should consider running rake kete:repair."
+          message = I18n.t('has_contributors_lib.submitter_of.no_contributor',
+                           :version => version.to_s,
+                           :item_class => self.class.name,
+                           :item_id => self.id) + "\n"
+          message += I18n.t('has_contributors_lib.submitter_of.data_corruption')
           raise message
         end
       end

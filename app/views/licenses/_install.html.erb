@@ -1,16 +1,16 @@
 <div class="active-scaffold-header">
-  <h2>Import Licenses</h2>
+  <h2><%= t('licenses.install.title') %></h2>
 
   <% form_tag :action => 'install_license' do %>
 
-    <%= select_tag 'task', options_for_select([['-choose license to import-', '']] +
+    <%= select_tag 'task', options_for_select([[t('licenses.install.choose_license'), '']] +
                                               @available_licenses.collect { |v| [v.humanize, v] }) %>
 
-    <%= submit_tag 'Import' %>
+    <%= submit_tag t('licenses.install.submit') %>
 
   <% end %>
 
-  <p>Note: The Creative Commons license imports do not include the "no derivatives" licenses because they are not compatible with most Kete sites. If you need these, add them in the interface below.</p>
+  <p><%= t('licenses.install.creative_commons_note') %></p>
 
 </div>
 

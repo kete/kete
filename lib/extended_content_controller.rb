@@ -29,10 +29,6 @@ module ExtendedContentController
                           :only => [ :destroy, :create, :update ],
                           :redirect_to => { :action => :list }
 
-      # override the site wide protect_from_forgery to exclude
-      # things that you must be logged in to do anyway or at least a moderator
-      klass.send :protect_from_forgery, :secret => KETE_SECRET, :except => ['new', 'destroy']
-
       unless klass.name == 'TopicsController'
         # used to determined appropriate extended fields for the model you are operating on
         klass.send :before_filter, :load_content_type,
@@ -85,10 +81,12 @@ module ExtendedContentController
 
         if new_elements.size > 0
           if @site_admin
-            @item.errors.add('Description', "contains #{new_elements.size} new insecure elements and you forgot to check the 'do not sanitize' checkbox.")
+            @item.errors.add('Description', I18n.t('extended_content_controller_lib.ensure_no_new_insecure_elements_in.contains_new_elements_admin',
+                                                   :count => new_elements.size))
             false
           else
-            @item.errors.add('Description', "contains #{new_elements.size} new insecure elements but you're not authorized to add them.")
+            @item.errors.add('Description', I18n.t('extended_content_controller_lib.ensure_no_new_insecure_elements_in.contains_new_elements',
+                                                   :count => new_elements.size))
             logger.warn "WARNING: #{current_user.login} tried to add the following new elements to #{item_type} #{@item.id}"
             new_elements.each { |element| logger.warn element.inspect }
             false
@@ -99,7 +97,7 @@ module ExtendedContentController
       end
 
       def build_relations_from_topic_type_extended_field_choices(extended_values=nil)
-        params_key = zoom_class_params_key_from(params[:controller])
+        params_key = zoom_class_params_key_from_controller(params[:controller])
         unless extended_values.blank?
           extended_values = params[params_key][:extended_content_values] if !params[params_key].blank? && !params[params_key][:extended_content_values].blank?
         end

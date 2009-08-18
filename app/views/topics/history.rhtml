@@ -1,4 +1,4 @@
-<% @title = "Revision History: #{h(@item.title)}" -%>
+<% @title = "#{t('topics.history.revision_history')} #{h(@item.title)}" -%>
 
       <div id="detail-wrapper">
         <div id="detail-header">
@@ -11,34 +11,32 @@
       <div class="detail-tools">
         <table class="history-table">
           <tr>
-            <th abbr="Number">Number</th>
+            <th abbr="Number"><%=t 'topics.history.number' %></th>
             <th></th>
-            <th abbr="Flags">Flags</th>
-            <th abbr="Privacy">Privacy</th>
-            <th abbr="Contributor">Contributor</th>
-            <th abbr="Updated">Updated</th>
-            <th abbr="Comments">Comments</th>
+            <th abbr="Flags"><%=t 'topics.history.flags' %></th>
+            <th abbr="Privacy"><%=t 'topics.history.privacy' %></th>
+            <th abbr="Contributor"><%=t 'topics.history.contributor' %></th>
+            <th abbr="Updated"><%=t 'topics.history.updated' %></th>
+            <th abbr="Comments"><%=t 'topics.history.comments' %></th>
           </tr>
-          <% item_contributors = @item.contributors.find(:all, :order => 'version ASC')
-             contributor_index = 0 -%>
           <% @versions.each do |version| -%>
           <tr valign="top" class="<%= cycle('table-row-odd', 'table-row-even') -%>">
             <td><%= "\# #{version.version}" %></td>
             <td>
               [
               <% if version.version != @current_public_version && version.version != @current_private_version -%>
-              <%= link_to_preview_of(@item, version, true, :submitter => item_contributors[contributor_index]) %>
+              <%= link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index]) %>
               <% else -%>
               <b>current</b>
               <% end -%>
               ]
             </td>
             <td>
-              <% if version.tags.size > 0 -%>
-              <% version.tags.each do |tag| -%>
-              <%= h(tag.name) %>
-              <% end -%>
-              <% end -%>
+              <% if @item_taggings[version.id] %>
+                <% @item_taggings[version.id].each do |tag| %>
+                  <%= tag.name %>
+                <% end %>
+              <% end %>
             </td>
             <td>
                                                         <% private_condition = case params[:controller]
@@ -47,7 +45,7 @@
                                                                 else
                                                                         (version.respond_to?(:private?) && version.private?)
                                                                 end -%>
-              <%= private_condition ? "<strong>Private</strong>" : "Public" -%>
+              <%= private_condition ? "<strong>#{t('topics.history.private')}</strong>" : t('topics.history.public') -%>
             </td>
             <td>
               <% begin -%>
@@ -56,14 +54,16 @@
                     <%= link_to_contributions_of(creator, @item.class.name, :with_avatar => true) %>
                   <% end -%>
                 <% else -%>
-                  <%= link_to_contributions_of(item_contributors[contributor_index], @item.class.name, :with_avatar => true) if item_contributors.size > 0 %>
-                  <% contributor_index += 1 -%>
+                  <% # reuse the same user objects so that avatars are cached
+                     contributor = (@users[@item_contributors[@contributor_index].id] ||= @item_contributors[@contributor_index]) %>
+                  <%= link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if @item_contributors.size > 0 %>
+                  <% @contributor_index += 1 -%>
                 <% end -%>
               <% rescue -%>
                 <%
                 # catch the ugly error message and display something nicer
                 message = "It looks like there is no contributor associated with version #{version.version.to_s} of #{@item.class.name} #{@item.id}.\n"
-                message += "Possible data corruption. You should consider running rake kete:repair."
+                message += "Possible data corruption. You should consider running 'rake kete:repair:all'."
                 raise message
                 -%>
               <% end %>
@@ -79,10 +79,10 @@
         </table>
 
                                 <% if @show_private_versions_notice -%>
-                                        <p><strong>This item has private versions. <%= link_to "Login", :controller => "account", :action => "login" -%> as a basket member to view these.</strong></p>
+                                        <p><strong><%=t 'topics.history.has_private_version', :login => link_to( t('topics.history.login_link'), :controller => "account", :action => "login") %></strong></p>
                                 <% end -%>
 
-        <h3>Back to live <%= link_to_item(@item) -%></h3>
+        <h3><%=t 'topics.history.back_to_live' %> <%= link_to_item(@item) -%></h3>
       </div>
 <%= render(:partial => "topics/content_wrapper_end" ) %>
 

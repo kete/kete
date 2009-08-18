@@ -39,8 +39,9 @@ Factory.define :user do |u|
   u.updated_at Time.now.to_s(:db)
   u.activation_code 'admincode'
   u.activated_at Time.now.to_s(:db)
-  u.agree_to_terms true
+  u.agree_to_terms '1'
   u.security_code "a"
+  u.locale "en"
 end
 # this shouldn't be called directly, use the method missing functionality to add users on the fly
 # add_bob_as_tech_admin(:baskets => @@site_basket)
@@ -72,5 +73,66 @@ end
 #
 Factory.define :profile do |p|
   p.name 'Test Profile'
-  p.rules ({ 'edit' => { 'rule_type' => 'none' } })
+  p.rules({ 'edit' => { 'rule_type' => 'none' } })
+end
+
+#
+# Topic
+#
+Factory.define :topic do |t|
+  t.title 'Topic'
+  t.topic_type_id 1
+  t.basket_id 1
+end
+
+#
+# Still Image
+#
+Factory.define :still_image do |si|
+  si.title 'Still Image'
+  si.basket_id 1
+end
+
+#
+# Image File
+#
+Factory.define :image_file do |img|
+  img.uploaded_data upload_fixture_file('white.jpg', 'image/jpeg')
+  img.association :still_image
+end
+
+#
+# Audio Recording
+#
+Factory.define :audio_recording do |ar|
+  ar.title 'Audio Recording'
+  ar.basket_id 1
+  ar.uploaded_data upload_fixture_file('Sin1000Hz.mp3', 'audio/mpeg')
+end
+
+#
+# Video
+#
+Factory.define :video do |v|
+  v.title 'Video'
+  v.basket_id 1
+  v.uploaded_data upload_fixture_file('teststrip.mpg', 'video/mpeg')
+end
+
+#
+# Document
+#
+Factory.define :document do |d|
+  d.title 'Document'
+  d.basket_id 1
+  d.uploaded_data upload_fixture_file('test.pdf', 'application/pdf')
+end
+
+#
+# Web Links
+#
+Factory.define :web_link do |w|
+  w.title 'Web Link'
+  w.sequence(:url) {|n| "http://google.co.nz/#{rand}" }
+  w.basket_id 1
 end

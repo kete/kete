@@ -1,4 +1,4 @@
-<% @title = 'Editing content type: ' + @content_type.controller -%>
+<% @title = t('content_types.edit.title', :controller => @content_type.controller) -%>
 
 <h2><%= h(@title) -%></h2>
 
@@ -19,6 +19,6 @@
 
 </table>
 
-<%= link_to 'Return to content types', :action => 'list' %>
+<%= link_to t('content_types.edit.return_to_content_types'), :action => 'list' %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

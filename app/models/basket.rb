@@ -2,34 +2,63 @@
 # using term basket here to spell out concept for developers
 # and to avoid confusion with the kete app
 class Basket < ActiveRecord::Base
+
   # we use these for who can see what
-  MEMBER_LEVEL_OPTIONS = [['Basket member', 'at least member'],
-                          ['Basket moderator', 'at least moderator'],
-                          ['Basket admin', 'at least admin'],
-                          ['Site admin', 'at least site admin']]
+  def self.member_level_options
+    [[I18n.t('basket_model.basket_member'), 'at least member'],
+    [I18n.t('basket_model.basket_moderator'), 'at least moderator'],
+    [I18n.t('basket_model.basket_admin'), 'at least admin'],
+    [I18n.t('basket_model.site_admin'), 'at least site admin']]
+  end
 
-  USER_LEVEL_OPTIONS = [['All users', 'all users']] + MEMBER_LEVEL_OPTIONS
+  def self.user_level_options
+    [[I18n.t('basket_model.all_users'), 'all users']] +
+    Basket.member_level_options
+  end
 
-  ALL_LEVEL_OPTIONS = [['All users', 'all users']] + [['Logged in user', 'logged in']] + MEMBER_LEVEL_OPTIONS
+  def self.all_level_options
+    [[I18n.t('basket_model.all_users'), 'all users']] +
+    [[I18n.t('basket_model.logged_in'), 'logged in']] +
+    Basket.member_level_options
+  end
+
+  def self.level_value_from(key)
+    Basket.all_level_options.select { |v,k| k == key }.first.first
+  end
 
   # profile forms, these should correspond to actions in the controller
   # really this would be nicer if it came from reflecting on the baskets_controller class
-  FORMS_OPTIONS = [['Basket New or Edit', 'edit'],
-                   ['Basket Appearance', 'appearance'],
-                   ['Basket Homepage Options', 'homepage_options']]
+  def self.forms_options
+    [[I18n.t('basket_model.basket_new_or_edit'), 'edit'],
+    [I18n.t('basket_model.basket_appearance'), 'appearance'],
+    [I18n.t('basket_model.basket_homepage_options'), 'homepage_options']]
+  end
 
-  # Editable Basket Attrobutes
-  EDITABLE_ATTRIBUTES = %w{ show_privacy_controls private_default file_private_default allow_non_member_comments
-    index_page_redirect_to_all index_page_topic_is_entire_page index_page_link_to_index_topic_as
-    index_page_number_of_recent_topics index_page_recent_topics_as index_page_basket_search
-    index_page_extra_side_bar_html do_not_sanitize index_page_image_as index_page_archives_as
-    index_page_number_of_tags index_page_tags_as index_page_order_tags_by }
+  # Editable Basket Attributes (copy from the basket database fields)
+  EDITABLE_ATTRIBUTES = %w{ index_page_redirect_to_all index_page_topic_is_entire_page
+    index_page_link_to_index_topic_as index_page_basket_search index_page_image_as
+    index_page_tags_as index_page_number_of_tags index_page_order_tags_by
+    index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
+    index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
+    show_privacy_controls do_not_sanitize }
+
+  # Editable Basket Settings
+  EDITABLE_SETTINGS = %w{ fully_moderated moderated_except private_file_visibility browse_view_as
+    sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
+    basket_join_policy memberlist_policy allow_basket_admin_contact private_item_notification
+    private_item_notification_show_title private_item_notification_show_short_summary
+    theme_font_family header_image theme show_action_menu show_discussion show_flagging
+    show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+    additional_footer_content do_not_sanitize_footer_content replace_existing_footer }
 
   # Basket settings that are always editable or come under a parent option
-  NESTED_FIELDS = %w{ name status creator_id do_not_sanitize index_page_tags_as
-    index_page_recent_topics_as index_page_order_tags_by moderated_except
-    sort_direction_reversed_default do_not_sanitize_footer_content show_action_menu
-    show_discussion show_flagging show_add_links replace_existing_footer }
+  NESTED_FIELDS = %w{ name status creator_id do_not_sanitize moderated_except
+    sort_direction_reversed_default private_item_notification_show_title
+    private_item_notification_show_short_summary index_page_link_to_index_topic_as
+    index_page_recent_topics_as index_page_tags_as index_page_order_tags_by
+    show_action_menu show_discussion show_flagging show_add_links
+    side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
+    do_not_sanitize_footer_content replace_existing_footer }
 
   # this allows for turning off sanitizing before save
   # and validates_as_sanitized_html
@@ -132,18 +161,20 @@ class Basket < ActiveRecord::Base
 
   # stuff related to taggings in a basket
 
+  has_many :taggings
+  has_many :tags, :through => :taggings
+
   # it's easy to get a basket's topics tag_counts
   # but we want all zoom_class's totals added together
   # special case is site basket
   # want to grab all tags from across all baskets
-  def tag_counts_array(options = {}, private_tags=false)
+  def tag_counts_array(options = {})
     tag_limit = !options[:limit].nil? ? options[:limit] : self.index_page_number_of_tags
     tag_order = !options[:order].nil? ? options[:order] : self.index_page_order_tags_by
     tag_direction = ['asc', 'desc'].include?(options[:direction]) ? options[:direction] : (tag_order == 'alphabetical' ? 'asc' : 'desc')
+    private_tags = options[:allow_private] || false
 
-    unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
-      return Array.new
-    end
+    return Array.new unless !tag_limit || tag_limit > 0 # false = no limit, 0 = no tags
 
     case tag_order
     when 'alphabetical'
@@ -151,85 +182,70 @@ class Basket < ActiveRecord::Base
     when 'latest'
       find_tag_order = "taggings.created_at #{tag_direction}"
     when 'number'
-      find_tag_order = "count #{tag_direction}"
+      find_tag_order = "taggings_count #{tag_direction}"
     else
-      find_tag_order = 'Rand()'
+      find_tag_order = :random
     end
 
-    @tag_counts_hash = Hash.new
+    tag_options = {
+      :select => 'tags.id, tags.name, count(taggings.id) AS taggings_count',
+      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
+      :group => 'taggings.tag_id',
+      :order => find_tag_order,
+      :limit => tag_limit,
+      :offset => (((options[:page] || 1) - 1) * tag_limit),
+      :conditions => "taggings.context = 'public_tags'"
+    }
+    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
 
-    ZOOM_CLASSES.each do |zoom_class|
-      zoom_set = (self.id == 1) ? zoom_class.constantize : self.send(zoom_class.tableize)
-      zoom_class_tag_hash = zoom_set.tag_counts({:limit => tag_limit, :order => find_tag_order}, private_tags)
-
-      # if exists in @tag_counts, update count with added number
-      [:public, :private].each do |privacy|
-        zoom_class_tag_hash[privacy.to_sym].each do |tag|
-          tag_key = tag.id.to_s
-          if !@tag_counts_hash.include?(tag_key)
-            @tag_counts_hash[tag_key] = { :id => tag.id,
-                                          :name => tag.name,
-                                          :public_taggings_count => (privacy == :public) ? tag.count : 0,
-                                          :private_taggings_count => (privacy == :private) ? tag.count : 0,
-                                          :total_taggings_count => tag.count }
-          else
-            @tag_counts_hash[tag_key][:public_taggings_count] += tag.count if privacy == :public
-            @tag_counts_hash[tag_key][:private_taggings_count] += tag.count if privacy == :private
-            @tag_counts_hash[tag_key][:total_taggings_count] += tag.count
-          end
-        end
-      end
-    end
-
-    # take the hash and create an ordered array by amount of taggings
-    # with nested hashes for attributes
     @tag_counts_array = Array.new
-    @tag_counts_hash.keys.each do |tag_key|
-      @tag_counts_array << @tag_counts_hash[tag_key]
+    Tag.all(tag_options).each do |tag|
+      @tag_counts_array << {
+        :id => tag.id,
+        :name => tag.name,
+        :to_param => tag.to_param,
+        :total_taggings_count => tag.taggings_count
+      }
     end
-
-    # We need to sort through the results here as well as in the query
-    # because we joined several ZOOM_CLASSES so they'll be out of order
-    case tag_order
-    when 'alphabetical'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:name] }
-      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
-    when 'latest'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:id] }
-      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
-    when 'number'
-      @tag_counts_array = @tag_counts_array.sort_by { |tag_hash| tag_hash[:total_taggings_count] }
-      @tag_counts_array = @tag_counts_array.reverse if tag_direction == 'desc'
-    else
-      @tag_counts_array = @tag_counts_array.sort_by { rand }
-    end
-
-    # the query limits per ZOOM_CLASS, not overall combined results, so we do that here
-    @tag_counts_array = @tag_counts_array[0..(tag_limit - 1)] unless !tag_limit # when tag_limit is false, we return all
 
     return @tag_counts_array
+  end
+
+  def tag_counts_total(options)
+    private_tags = options[:allow_private] || false
+
+    tag_options = {
+      :select => 'distinct taggings.tag_id',
+      :joins => 'INNER JOIN taggings ON (tags.id = taggings.tag_id)',
+      :conditions => "taggings.context = 'public_tags'"
+    }
+    tag_options[:conditions] = "taggings.context IN ('public_tags', 'private_tags')" if private_tags
+    tag_options[:conditions] += " AND taggings.basket_id = #{self.id}" unless self == @@site_basket
+
+    Tag.count(tag_options)
   end
 
   # attribute options methods
   # TODO clean this up using define_method (meta programming magic)
   def show_flagging_as_options(site_basket, default=nil)
     current_show_flagging_value = default || self.settings[:show_flagging] || site_basket.settings[:show_flagging] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_flagging_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_flagging_value)
   end
 
   def show_add_links_as_options(site_basket, default=nil)
     current_show_add_links_value = default || self.settings[:show_add_links] || site_basket.settings[:show_add_links] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_add_links_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_add_links_value)
   end
 
   def show_action_menu_as_options(site_basket, default=nil)
     current_show_actions_value = default || self.settings[:show_action_menu] || site_basket.settings[:show_action_menu] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_actions_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_actions_value)
   end
 
   def show_discussion_as_options(site_basket, default=nil)
     current_show_discussion_value = default || self.settings[:show_discussion] || site_basket.settings[:show_discussion] || 'all users'
-    select_options = self.array_to_options_list_with_defaults(USER_LEVEL_OPTIONS,current_show_discussion_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.user_level_options,current_show_discussion_value)
   end
 
   def side_menu_ordering_of_topics_as_options(site_basket, default=nil)
@@ -240,7 +256,7 @@ class Basket < ActiveRecord::Base
 
   def private_file_visibility_as_options(site_basket, default=nil)
     current_value = default || self.settings[:private_file_visibility] || site_basket.settings[:private_file_visibility] || 'at least member'
-    select_options = self.array_to_options_list_with_defaults(MEMBER_LEVEL_OPTIONS,current_value)
+    select_options = self.array_to_options_list_with_defaults(Basket.member_level_options,current_value)
   end
 
   def private_file_visibilty_selected_or_default(value, site_basket)
@@ -272,8 +288,12 @@ class Basket < ActiveRecord::Base
     self.settings[:private_file_visibility] || self.site_basket.settings[:private_file_visibility] || "at least member"
   end
 
+  def allow_non_member_comments_with_inheritance?
+    (self.allow_non_member_comments == true || (self.allow_non_member_comments.nil? && self.site_basket.allow_non_member_comments == true))
+  end
+
   def additional_footer_content_with_inheritance
-    (!settings[:additional_footer_content].nil? && !self.settings[:additional_footer_content].squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
+    (!settings[:additional_footer_content].nil? && !self.settings[:additional_footer_content].to_s.squish.blank? ? self.settings[:additional_footer_content] : self.site_basket.settings[:additional_footer_content])
   end
 
   def replace_existing_footer_with_inheritance?
@@ -282,7 +302,7 @@ class Basket < ActiveRecord::Base
 
   def memberlist_policy_or_default(default=nil)
     current_value = default || self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
-    select_options = self.array_to_options_list_with_defaults(ALL_LEVEL_OPTIONS, current_value, false)
+    select_options = self.array_to_options_list_with_defaults(Basket.all_level_options, current_value, false)
   end
 
   def memberlist_policy_with_inheritance
@@ -295,62 +315,92 @@ class Basket < ActiveRecord::Base
     end
   end
 
-  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true)
+  def browse_type_with_inheritance
+    case self.settings[:browse_view_as]
+    when 'inherit'
+      self.site_basket.browse_type_with_inheritance
+    when '' # if blank, return nil
+      nil
+    else
+      self.settings[:browse_view_as]
+    end
+  end
+
+  def private_item_notification_or_default(default=nil)
+    current_value = default || settings[:private_item_notification] || site_basket.settings[:private_item_notification] || 'at least member'
+    options =  [[I18n.t('basket_model.private_item_notification_or_default.dont_send_notification'), 'do_not_email']] + Basket.member_level_options
+    select_options = array_to_options_list_with_defaults(options, current_value, false, true)
+  end
+
+  def users_to_notify_of_private_item
+    case settings[:private_item_notification]
+    when 'at least member'
+      has_site_admins_or_admins_or_moderators_or_members
+    when 'at least moderator'
+      has_site_admins_or_admins_or_moderators
+    when 'at least admin'
+      has_site_admins_or_admins
+    else
+      Array.new
+    end
+  end
+
+  def array_to_options_list_with_defaults(options_array, default_value, site_admin=true, pluralize=false)
     select_options = String.new
     options_array.each do |option|
       label = option[0]
       value = option[1]
-      next if label == "Site admin" && !site_admin
+      next if label == I18n.t('basket_model.site_admin') && !site_admin
       select_options += "<option value=\"#{value}\""
       if default_value == value
         select_options += " selected=\"selected\""
       end
-      select_options += ">" + label + "</option>"
+      select_options += ">" + (pluralize ? label.pluralize : label) + "</option>"
     end
     select_options
   end
 
   # attribute options methods
   def self.link_to_index_topic_as_options
-    [['Full details and comments', 'full topic and comments'],
-     ['Only full details', 'full topic'],
-     ['Only comments', 'comments'],
-     ['Don\'t link', '']]
+    [[I18n.t('basket_model.details_and_comments'), 'full topic and comments'],
+     [I18n.t('basket_model.only_details'), 'full topic'],
+     [I18n.t('basket_model.only_comments'), 'comments'],
+     [I18n.t('basket_model.dont_link'), '']]
   end
 
   def self.recent_topics_as_options
-    [['Don\'t show them', ''],
-     ['Summaries (blog style)', 'summaries'],
-     ['Headlines (news style)', 'headlines']]
+    [[I18n.t('basket_model.recent_dont_show'), ''],
+     [I18n.t('basket_model.recent_as_summaries'), 'summaries'],
+     [I18n.t('basket_model.recent_as_headlines'), 'headlines']]
   end
 
   def self.archives_as_options
-    [['Don\'t show them', ''],
-     ['By type', 'by type']]
+    [[I18n.t('basket_model.archives_dont_show'), ''],
+     [I18n.t('basket_model.archives_by_type'), 'by type']]
   end
 
   def self.image_as_options
-    [['No image', ''],
-     ['Latest', 'latest'],
-     ['Random', 'random']]
+    [[I18n.t('basket_model.image_dont_show'), ''],
+     [I18n.t('basket_model.image_latest'), 'latest'],
+     [I18n.t('basket_model.image_random'), 'random']]
   end
 
   def self.order_tags_by_options
-    [['Most Popular', 'number'],
-     ['By Name', 'alphabetical'],
-     ['Latest', 'latest'],
-     ['Random', 'random']]
+    [[I18n.t('basket_model.tags_ordered_most_popular'), 'number'],
+     [I18n.t('basket_model.tags_ordered_by_name'), 'alphabetical'],
+     [I18n.t('basket_model.tags_ordered_latest'), 'latest'],
+     [I18n.t('basket_model.tags_ordered_random'), 'random']]
   end
 
   def self.tags_as_options
-    [['Categories', 'categories'],
-     ['Tag Cloud', 'tag cloud']]
+    [[I18n.t('basket_model.tags_as_categories'), 'categories'],
+     [I18n.t('basket_model.tags_as_tag_cloud'), 'tag cloud']]
   end
 
   def moderation_select_options(default=nil)
     select_options = String.new
-    [['moderator views before item approved', true],
-     ['moderation upon being flagged', false]].each do |option|
+    [[I18n.t('basket_model.moderate_before_approved'), true],
+     [I18n.t('basket_model.moderate_on_flagged'), false]].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
@@ -373,19 +423,11 @@ class Basket < ActiveRecord::Base
   # if no admins for site, go with any site_admins
   def moderators_or_next_in_line
     moderators = self.has_moderators
+    moderators = self.has_admins if moderators.size == 0
+    moderators = Basket.site_basket.has_admins if moderators.size == 0
+    moderators << Basket.site_basket.has_site_admins if moderators.size == 0 || NOTIFY_SITE_ADMINS_OF_FLAGGINGS
 
-    if moderators.size == 0
-      moderators = self.has_admins
-
-      if moderators.size == 0
-        moderators = Basket.find(:first).has_admins
-
-        if moderators.size == 0
-          moderators = Basket.find(:first).has_site_admins
-        end
-      end
-    end
-    moderators
+    moderators.flatten.uniq
   end
 
   def all_disputed_revisions
@@ -417,9 +459,9 @@ class Basket < ActiveRecord::Base
 
   def font_family_select_options(default=nil)
     select_options = String.new
-    [['Use theme default', ''],
-     ['Sans Serif (Arial, Helvetica, and the like)', 'sans-serif'],
-     ['Serif (Times New Roman, etc.)', 'serif']].each do |option|
+    [[I18n.t('basket_model.font_use_theme_default'), ''],
+     [I18n.t('basket_model.font_sans_serif'), 'sans-serif'],
+     [I18n.t('basket_model.font_serif'), 'serif']].each do |option|
       label = option[0]
       value = option[1]
       select_options += "<option value=\"#{value}\""
@@ -477,6 +519,10 @@ class Basket < ActiveRecord::Base
     end
   end
 
+  def related_images(type = :last)
+    still_images.find_non_pending(type, PUBLIC_CONDITIONS) || {}
+  end
+
   protected
 
   include FriendlyUrls
@@ -505,7 +551,7 @@ class Basket < ActiveRecord::Base
       versions = Module.class_eval(zoom_class + '::Version').find_all_by_basket_id(self)
       versions.each do |version|
         new_version_comment = version.version_comment.nil? ? String.new : version.version_comment + '. '
-        new_version_comment += "This version was in #{self.name} basket, but that basket has been deleted and no longer exists on the site, now this version is put in default site basket."
+        new_version_comment += I18n.t('basket_model.now_in_site_basket', :basket_name => self.name)
 
         version.update_attributes(:basket_id => 1, :version_comment => new_version_comment )
       end
@@ -555,7 +601,7 @@ class Basket < ActiveRecord::Base
 
   def prevent_site_basket_destruction
     if self == @@site_basket
-      raise "Error: Cannot delete site basket!"
+      raise I18n.t('basket_model.cannot_delete_site')
       false
     else
       true

@@ -1,3 +1,5 @@
-<%= @user.login %>, your account has been deactivated.  You will longer be able to contribute to this site.
+<%=t 'user_notifier.banned.deactivated', :user_name => @user.user_name %>
 
   <%= @url %>
+
+<%= render 'email_footer' %>

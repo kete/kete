@@ -1,15 +1,14 @@
 <% if current_user_can_see_flagging? -%>
 <% @user_type = 'moderator'
-   @title = ' this '
-   @submit_text = 'Flag'
-   @instructions = 'Please give details that might be helpful for the moderator reviewing this item.  For example, if flagging as a duplicate, the URL for the item this content duplicates.'
+   @submit_text = t('topics.flag_form.flag_button')
+   @instructions = t('topics.flag_form.flag_instructions')
    if @flag != REJECTED_FLAG
-     @title = 'Flag' + @title + 'item'
+     @title = t('topics.flag_form.flag_item_title')
    else
-     @title = 'Reject' + @title + 'revision'
+     @title = t('topics.flag_form.reject_revision_title')
      @user_type = 'user'
-     @submit_text = 'Reject'
-     @instructions = 'Please add a message to the user telling the why you have passed over their submitted revision.'
+     @submit_text = t('topics.flag_form.reject_button')
+     @instructions = t('topics.flag_form.reject_instructions')
    end
 -%>
 
@@ -21,7 +20,7 @@
                 <%= hidden_field_tag "id", params[:id] %>
                 <%= hidden_field_tag "version", params[:version] if !params[:version].blank? %>
                 <div class="form-element">
-                        <label for="message_">Message for
+                        <label for="message_"><%=t 'topics.flag_form.message_for' %>
                         <%= @user_type -%>:</label>
                         <%= text_area 'message', '', :tabindex => '1' %>
                         <p><%= @instructions -%></p>
@@ -32,7 +31,7 @@
 
 <%= link_to_cancel %>
 <% else %>
-  <h2>Sorry flagging has been disabled on this section of the site</h2>
+  <h2><%=t 'topics.flag_form.not_authorized' %></h2>
 <% end -%>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

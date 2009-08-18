@@ -87,7 +87,7 @@ class AccountTest < ActionController::IntegrationTest
       end
 
       should "be able to add existing image to portraits and have it show up as selected image" do
-        item_base_url = "/site/images/show/#{@item.id}"
+        item_base_url = "/en/site/images/show/#{@item.id}"
         visit item_base_url
         click_link 'Add image to portraits'
         body_should_contain "'#{@item.title}' has been added to your portraits."

@@ -1,0 +1,11 @@
+<div class="credits">
+  <% if SHOW_POWERED_BY_KETE -%>
+  <%= t('index_page.credits.powered_by') -%> <a href="http://kete.net.nz/"><img src="/images/kete-logo-36x17-transparent-bg.gif"
+  width="36" height="17" alt="small kete logo. "
+  style="vertical-align: text-bottom;" /></a>
+  <% end -%>
+
+  <!-- additional credits here from system settings -->
+  <%= ADDITIONAL_CREDITS_HTML unless ADDITIONAL_CREDITS_HTML.blank? %>
+  <!-- end additional credits here from system settings -->
+</div>

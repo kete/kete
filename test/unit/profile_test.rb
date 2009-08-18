@@ -11,8 +11,8 @@ class ProfileTest < ActiveSupport::TestCase
   # in the future, if profiles are used in other aspects of kete
   # we'll want to use the commented out test
   # in the meantime, we test that available_to_models is always 'Basket
-  # should_require_attributes :name, :available_to_models
-  should_require_attributes :name
+  # should_validate_presence_of :name, :available_to_models
+  should_validate_presence_of :name
 
   context "The Profile class" do
 
@@ -28,7 +28,7 @@ class ProfileTest < ActiveSupport::TestCase
   context "A Profile" do
 
     should "be able to set and get the rules during creation" do
-      the_form = Basket::FORMS_OPTIONS.first[1]
+      the_form = Basket.forms_options.first[1]
       the_type = Profile.type_options.first[1]
       the_rules = { the_form => { 'rule_type' => the_type } }
       profile = Factory(:profile, :rules => the_rules)

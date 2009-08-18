@@ -39,25 +39,29 @@ module TaggingController
 
       @item = item_from_controller_and_id
       @item = public_or_private_version_of(@item)
+      version_after_update = @item.max_version + 1
 
       if ZOOM_CLASSES.include?(zoom_class) && !params[item_key].blank? && !params[item_key][:tag_list].blank?
-        params[item_key][:version_comment] = "Only tags added: " + params[item_key][:tag_list]
+        params[item_key][:version_comment] = I18n.t('tagging_controller_lib.add_tags.version_comment',
+                                                    :tags_list => params[item_key][:tag_list])
         params[item_key][:tag_list] = "#{@item.tag_list.join(", ")}, #{params[item_key][:tag_list]}"
         params[item_key][:raw_tag_list] = params[item_key][:tag_list]
 
         @successful = @item.update_attributes(params[item_key])
         if @successful
           @item = public_or_private_version_of(@item) # make sure we are back to private item if needed
-          after_successful_zoom_item_update(@item)
+          after_successful_zoom_item_update(@item, version_after_update)
           respond_to do |format|
-            flash[:notice] = "The new tag(s) have been added to #{@item.title}"
+            flash[:notice] = I18n.t('tagging_controller_lib.add_tags.tags_added', :item_title => @item.title)
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
             format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
           end
           return true
         else
           respond_to do |format|
-            flash[:error] = "There was an error adding the new tags to #{@item.title}: Tags #{@item.errors['Tags']}"
+            flash[:error] = I18n.t('tagging_controller_lib.add_tags.error_adding_tags',
+                                   :item_title => @item.title,
+                                   :errors => @item.errors['Tags'])
             format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
             format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
           end
@@ -66,7 +70,7 @@ module TaggingController
       else
         @empty = true
         respond_to do |format|
-          flash[:error] = "There was an error adding the new tags to #{@item.title}: No tags were entered."
+          flash[:error] = I18n.t('tagging_controller_lib.add_tags.no_tags_entered', :item_title => @item.title)
           format.html { redirect_to_show_for @item, :private => (params[:private] == "true") }
           format.js { render :file => File.join(RAILS_ROOT, 'app/views/topics/add_tags.js.rjs') }
         end

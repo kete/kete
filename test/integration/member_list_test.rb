@@ -94,6 +94,7 @@ class MemberListTest < ActionController::IntegrationTest
     end
 
     should "only allow site admins to sort by login" do
+      @@site_basket.settings[:memberlist_policy] = 'at least member'
       visit "/site/members/list"
       body_should_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
       login_as('joe')
@@ -121,6 +122,60 @@ class MemberListTest < ActionController::IntegrationTest
         visit '/sorting_basket/members/list?direction=asc&order=users.login'
         # Surounding the names with () is a quick way to check it's not part of a link
         body_should_contain_in_order(['(user1)', '(user2)', '(user3)'], '<td class="member_avatar">', :offset => 1)
+      end
+
+    end
+
+  end
+
+  context "A non-site basket memberlist" do
+
+    setup do
+      add_admin_as_super_user
+      login_as(:admin)
+      @@non_site_basket = create_new_basket({ :name => 'Non Site Basket' })
+    end
+
+    context "when there is only one admin in the basket" do
+
+      setup do
+        add_lily_as_admin_to @@non_site_basket
+        add_gary_as_member_to @@non_site_basket
+      end
+
+      should "be able to remove members successfully" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list"
+        click_link 'Remove from basket'
+        body_should_contain 'Successfully removed user from Non Site Basket.'
+      end
+
+      should "not be able to remove last admin" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
+        body_should_not_contain 'Remove from basket'
+      end
+
+    end
+
+    context "when there is two admins in the basket" do
+
+      setup do
+        add_lily_as_admin_to @@non_site_basket
+        add_jim_as_admin_to @@non_site_basket
+        add_gary_as_member_to @@non_site_basket
+      end
+
+      should "be able to remove members successfully" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list"
+        click_link 'Remove from basket'
+        body_should_contain 'Successfully removed user from Non Site Basket.'
+      end
+
+      should "be able to remove one admin" do
+        visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
+        click_link 'Remove from basket'
+        body_should_contain 'Successfully removed user from Non Site Basket.'
+        visit "/#{@@non_site_basket.urlified_name}/members/list?type=admin"
+        body_should_not_contain 'Remove from basket'
       end
 
     end

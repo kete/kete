@@ -1,6 +1,9 @@
+require 'rubygems'
 require 'test/unit'
+require 'active_support/test_case'
 
 $:.unshift "#{File.dirname(__FILE__)}/../lib"
+$:.unshift "#{File.dirname(__FILE__)}/../../activesupport/lib"
 require 'active_resource'
 require 'active_resource/http_mock'
 
@@ -9,14 +12,10 @@ require 'setter_trap'
 
 ActiveResource::Base.logger = Logger.new("#{File.dirname(__FILE__)}/debug.log")
 
-# Wrap tests that use Mocha and skip if unavailable.
-def uses_mocha(test_name)
-  unless Object.const_defined?(:Mocha)
-    require 'mocha'
-    require 'stubba'
-  end
+def uses_gem(gem_name, test_name, version = '> 0')
+  gem gem_name.to_s, version
+  require gem_name.to_s
   yield
-rescue LoadError => load_error
-  raise unless load_error.message =~ /mocha/i
-  $stderr.puts "Skipping #{test_name} tests. `gem install mocha` and try again."
+rescue LoadError
+  $stderr.puts "Skipping #{test_name} tests. `gem install #{gem_name}` and try again."
 end

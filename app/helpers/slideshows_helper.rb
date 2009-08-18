@@ -3,7 +3,7 @@ module SlideshowsHelper
   # James - 2008-07-04
   # Helpers specific to slideshow/results navigation
 
-  def link_to_next_in_slideshow(text = "Next &raquo;", current_url = request.url)
+  def link_to_next_in_slideshow(text = t('slideshows_helper.next'), current_url = request.url)
     current_url = url_without_extras(current_url)
     return nil if slideshow.last_result?(current_url)
 
@@ -19,7 +19,7 @@ module SlideshowsHelper
     end
   end
 
-  def link_to_previous_in_slideshow(text = "&laquo; Previous", current_url = request.url)
+  def link_to_previous_in_slideshow(text = t('slideshows_helper.previous'), current_url = request.url)
     current_url = url_without_extras(current_url)
     return nil if slideshow.first_result?(current_url)
 
@@ -34,11 +34,11 @@ module SlideshowsHelper
     end
   end
 
-  def link_to_results(text = "Back to results")
+  def link_to_results(text = t('slideshows_helper.all_results'))
     link_to text, slideshow.redirect_to_results_hash
   end
 
-  def link_to_stop_slideshow(text = "Stop results slideshow")
+  def link_to_stop_slideshow(text = t('slideshows_helper.stop'))
     link_to text, :controller => "search", :action => 'clear_slideshow', :return_to => request.url
   end
 

@@ -1,0 +1,160 @@
+--- !ruby/object:Gem::Specification 
+name: oai
+version: !ruby/object:Gem::Version 
+  version: 0.0.12
+platform: ruby
+authors: 
+- Ed Summers
+autorequire: oai
+bindir: bin
+cert_chain: 
+date: 2008-12-22 00:00:00 +13:00
+default_executable: oai
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: builder
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: 2.0.0
+    version: 
+description: 
+email: ehs@pobox.com
+executables: 
+- oai
+extensions: []
+
+extra_rdoc_files: []
+
+files: 
+- README
+- Rakefile
+- bin/oai
+- test/client
+- test/client/helpers
+- test/client/helpers/test_wrapper.rb
+- test/client/helpers/provider.rb
+- test/client/tc_list_sets.rb
+- test/client/tc_list_metadata_formats.rb
+- test/client/tc_utf8_escaping.rb
+- test/client/tc_identify.rb
+- test/client/tc_libxml.rb
+- test/client/tc_list_identifiers.rb
+- test/client/tc_get_record.rb
+- test/client/tc_low_resolution_dates.rb
+- test/client/tc_list_records.rb
+- test/client/tc_xpath.rb
+- test/client/test_helper.rb
+- test/client/tc_exception.rb
+- test/activerecord_provider
+- test/activerecord_provider/tc_ar_provider.rb
+- test/activerecord_provider/helpers
+- test/activerecord_provider/helpers/providers.rb
+- test/activerecord_provider/helpers/set_provider.rb
+- test/activerecord_provider/models
+- test/activerecord_provider/models/dc_set.rb
+- test/activerecord_provider/models/oai_token.rb
+- test/activerecord_provider/models/dc_field.rb
+- test/activerecord_provider/tc_simple_paging_provider.rb
+- test/activerecord_provider/tc_caching_paging_provider.rb
+- test/activerecord_provider/database
+- test/activerecord_provider/database/ar_migration.rb
+- test/activerecord_provider/database/oaipmhtest
+- test/activerecord_provider/test_helper.rb
+- test/activerecord_provider/fixtures
+- test/activerecord_provider/fixtures/dc.yml
+- test/activerecord_provider/tc_ar_sets_provider.rb
+- test/activerecord_provider/config
+- test/activerecord_provider/config/database.yml
+- test/activerecord_provider/config/connection.rb
+- test/test.xml
+- test/provider
+- test/provider/tc_provider.rb
+- test/provider/tc_functional_tokens.rb
+- test/provider/tc_simple_provider.rb
+- test/provider/tc_exceptions.rb
+- test/provider/tc_resumption_tokens.rb
+- test/provider/test_helper.rb
+- test/provider/models.rb
+- lib/oai
+- lib/oai/xpath.rb
+- lib/oai/client
+- lib/oai/client/identify.rb
+- lib/oai/client/record.rb
+- lib/oai/client/list_sets.rb
+- lib/oai/client/header.rb
+- lib/oai/client/metadata_format.rb
+- lib/oai/client/response.rb
+- lib/oai/client/list_records.rb
+- lib/oai/client/get_record.rb
+- lib/oai/client/list_identifiers.rb
+- lib/oai/client/list_metadata_formats.rb
+- lib/oai/exception.rb
+- lib/oai/constants.rb
+- lib/oai/set.rb
+- lib/oai/harvester
+- lib/oai/harvester/harvest.rb
+- lib/oai/harvester/config.rb
+- lib/oai/harvester/logging.rb
+- lib/oai/harvester/mailer.rb
+- lib/oai/harvester/shell.rb
+- lib/oai/client.rb
+- lib/oai/harvester.rb
+- lib/oai/provider.rb
+- lib/oai/provider
+- lib/oai/provider/resumption_token.rb
+- lib/oai/provider/partial_result.rb
+- lib/oai/provider/model.rb
+- lib/oai/provider/metadata_format.rb
+- lib/oai/provider/response.rb
+- lib/oai/provider/response
+- lib/oai/provider/response/identify.rb
+- lib/oai/provider/response/list_sets.rb
+- lib/oai/provider/response/record_response.rb
+- lib/oai/provider/response/error.rb
+- lib/oai/provider/response/list_records.rb
+- lib/oai/provider/response/get_record.rb
+- lib/oai/provider/response/list_identifiers.rb
+- lib/oai/provider/response/list_metadata_formats.rb
+- lib/oai/provider/model
+- lib/oai/provider/model/activerecord_caching_wrapper.rb
+- lib/oai/provider/model/activerecord_wrapper.rb
+- lib/oai/provider/extensions
+- lib/oai/provider/metadata_format
+- lib/oai/provider/metadata_format/oai_dc.rb
+- lib/oai.rb
+- lib/test.rb
+- examples/providers/dublin_core.rb
+- examples/models/file_model.rb
+has_rdoc: true
+homepage: http://www.textualize.com/ruby_oai_0
+post_install_message: 
+rdoc_options: []
+
+require_paths: 
+- bin
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">"
+    - !ruby/object:Gem::Version 
+      version: 0.0.0
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.1
+signing_key: 
+specification_version: 1
+summary: A ruby library for working with the Open Archive Initiative Protocol for Metadata Harvesting (OAI-PMH)
+test_files: []
+

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TopicTypeTest < Test::Unit::TestCase
+class TopicTypeTest < ActiveSupport::TestCase
   # fixtures preloaded
 
   NEW_TOPIC_TYPE = {:name => 'Test TopicType', :description => 'Dummy', :parent_id => 1}

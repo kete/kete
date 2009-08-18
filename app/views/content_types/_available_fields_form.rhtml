@@ -1,10 +1,10 @@
 <tr>
   <td>
-        <h4>Available Form Fields</h4>
+        <h4><%=t 'content_types.available_fields_form.title' %></h4>
                         <% @available_fields = ContentType.find(local_id).available_fields %>
                         <% if @available_fields.size > 0 %>
                                 <% form_tag :action =>
-                        :add_to_content_type, :id => local_id do %>
+                        :add_to_item_type, :id => local_id do %>
 
                                         <% for @extended_field in @available_fields %>
                                                 <p>
@@ -16,16 +16,16 @@
                                                                         (<%= h(@extended_field.xml_element_name) %>)
                                                                 <% end -%>
                                                         <% end -%>
-                                                        <%= "(multiple)" if @extended_field.multiple? -%>
+                                                        <%= t('content_types.available_fields_form.multiple') if @extended_field.multiple? -%>
                                                         :<br />
-                                                        (optional) <%= check_box("extended_field[]", 'add_checkbox') %>
-                                                        (required) <%= check_box("extended_field[]", 'required_checkbox') %>
+                                                        <label><%=t 'content_types.available_fields_form.optional' %> <%= check_box("extended_field[]", 'add_checkbox') %></label>
+                                                        <label><%=t 'content_types.available_fields_form.required' %> <%= check_box("extended_field[]", 'required_checkbox') %></label>
                                                 </p>
                                         <% end %>
-                                        <div class="wrap"><%= submit_tag "Add to Content Type" %></div>
+                                        <div class="wrap"><%= submit_tag t('content_types.available_fields_form.add_button') %></div>
                                 <% end %>
                         <% else %>
-                                <p>No form fields are available.</p>
+                                <p><%=t 'content_types.available_fields_form.none_available' %></p>
                         <% end %>
   </td>
 </tr>

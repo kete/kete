@@ -3,13 +3,14 @@ BrainBuster - A Logic Captcha For Rails
 Homepage: http://opensource.thinkrelevance.com/wiki/BrainBuster
 Mailing List: http://groups.google.com/group/brainbuster-discuss
 Git Repository (dev happens here): git://github.com/rsanheim/brain_buster.git
-SVN Repository (read only mirror): http://opensource.thinkrelevance.com/svn/plugins/brain_buster/trunk/
 
 Notes
 =========================
 The latest version removes all deprecated code from 0.7 and below, and does serious clean up all over the place.
 
 You now have to handle captcha failure on your own, since Rails 2.0 requires a render or redirect to halt a filter chain.  This makes sense anyways, because if you really want a decent user experience you should be placing the user's half saved model in the flash (or an ivar, or a cookie, or whatever) and then pulling it back into the form if the captcha fails.
+
+Not currently support under Rails 2.3.x, as I'm seeing breakage in the specs and haven't investigated to see if it really breaks the plugin.
 
 See the CHANGELOG for more details.
 
@@ -18,20 +19,17 @@ Quick Install
 
 * How to install fresh in a Rails app?
 
-  script/plugin install http://opensource.thinkrelevance.com/svn/plugins/brain_buster/trunk/
+  script/plugin install http://github.com/rsanheim/brain_buster.git
   script/generate brain_buster_migration 
   rake db:migrate
   optionally set the cookie salt in your ApplicationController (or don't touch it to use the default)
   add the appropriate filters where you want to use the captcha
-  render the _captcha.rhtml partial to any views where you want to challenge the user and you are all set!
+  render the _captcha partial to any views where you want to challenge the user and you are all set!
 
 * Want to check out the source?
 
 git clone git://github.com/rsanheim/brain_buster.git
 
-or 
-
-svn checkout http://opensource.thinkrelevance.com/svn/plugins/brain_buster/trunk/ brainbuster
 
 * Need more help?
 
@@ -78,9 +76,9 @@ Installation
       end
        
 * render the partial in appropriate templates - if we are creating the captcha for the show action, we probably need the 
-  form rendered in show.rhtml.
+  form rendered in show.html.erb.
 
-    - show.rhtml:
+    - show.html.erb:
       ... inside your update form somewhere
       <%= render :partial => '/captcha' %> 
       <%= render :partial => "/captcha_footer" %>  --> optional, only if you want to give credit back...
@@ -107,6 +105,7 @@ You can see the plugin in action at http://madisonrails.com or at http://wiki.ru
 Credits
 =======================================
 BrainBuster is by Rob Sanheim (http://robsanheim.com) and Relevance (http://thinkrelevance.com).  
-Email: rsanheim at gmail no spam dot com
+Email: rsanheim at gmail no spam dot com 
 
-Thanks to the creators of the Exception Logger plugin (http://svn.techno-weenie.net/projects/plugins/exception_logger/) and the Unobtrusive Javascript plugin (http://www.ujs4rails.com/), as I referred to their source code for help.
+Thanks to the creators of the Exception Logger plugin (http://svn.techno-weenie.net/projects/plugins/exception_logger/) and the Unobtrusive Javascript plugin (http://www.ujs4rails.com/), as I referred to their source code for help. 
+ 

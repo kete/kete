@@ -5,13 +5,11 @@
   <div class="generic-result-description">
     <%= strip_tags(short_summary) %>
     <div class="generic-result-more">
-      <%= link_to("more &gt;&gt;", source_url, { :title => "More information on #{title}", :tabindex => '1' }) %>
+      <%= link_to(t('search.generic.more'), source_url, { :title => t('search.generic.more_on', :title => title), :tabindex => '1' }) %>
     </div>
   </div>
-  <%= render(:partial => 'related',
-             :locals => { :related => related,
-                          :source_url => source_url,
-                          :title => title }) if related -%>
-  <div style="clear:both;"></div>
+  <%= render('related', :related => related,
+                        :source_url => source_url,
+                        :title => title) if related -%>
+  <div style="clear:left;"></div>
 </div>
-<%= javascript_tag("makeElementLinkable('item_#{result}_wrapper', '#{source_url}');") %>

@@ -207,6 +207,48 @@ class HomepageTest < ActionController::IntegrationTest
 
     end
 
+    context "when changing homepage topic" do
+
+      context "by linking to an existing topic" do
+
+        should "successfully replace homepage" do
+          visit "/#{@@about_basket.urlified_name}/baskets/homepage_options/#{@@about_basket.id}"
+          click_link "Link to new basket homepage topic"
+          fill_in 'search_terms', :with => 'a'
+          click_button 'Search for Topics'
+          body_should_not_contain 'No Topics found'
+          body_should_contain '(current homepage topic)'
+          topic_id = Topic.find_by_title('Finding Things').id
+          select "homepage_topic_id_#{topic_id}"
+          click_button 'Change Homepage Topic'
+          body_should_contain 'Homepage topic changed successfully'
+          visit "/#{@@about_basket.urlified_name}/baskets/homepage_options/#{@@about_basket.id}"
+          body_should_contain Regexp.new("Finding Things")
+        end
+
+      end
+
+    end
+
+    context "when no homepage topic exists" do
+
+      setup do
+        @@homepage_basket = create_new_basket({ :name => 'No Homepage Topic' })
+      end
+
+      should "be able to create a homepage topic from the blank basket index" do
+        visit "/#{@@homepage_basket.urlified_name}"
+        click_link 'Create homepage topic'
+        click_button 'Choose Type'
+        fill_in 'topic_title', :with => 'Test Homepage'
+        click_button 'Create'
+        body_should_contain 'Basket homepage was successfully created.'
+        body_should_not_contain 'Create homepage topic'
+        assert request.url =~ /\/#{@@homepage_basket.urlified_name}/
+      end
+
+    end
+
   end
 
   private

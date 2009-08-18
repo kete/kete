@@ -1,13 +1,13 @@
 <tr>
   <td>
-        <h4>Available Form Fields</h4>
+        <h4><%=t 'topic_types.available_fields_form.title' %></h4>
                 <% if local_id == 1 %>
-                        <p>You cannot add any additional fields to this topic type, see above.</p>
+                        <p><%=t 'topic_types.available_fields_form.no_more_allowed' %></p>
                 <% else %>
                         <% @available_fields = TopicType.find(local_id).available_fields %>
                         <% if @available_fields.size > 0 %>
                                 <% form_tag :action =>
-  :add_to_topic_type, :id => local_id  do %>
+  :add_to_item_type, :id => local_id  do %>
 
                                         <% for @extended_field in @available_fields %>
                                                 <p>
@@ -19,16 +19,16 @@
                                                                         (<%= h(@extended_field.xml_element_name) %>)
                                                                 <% end -%>
                                                         <% end -%>
-                                                        <%= "(multiple)" if @extended_field.multiple? -%>
+                                                        <%= t('topic_types.available_fields_form.multiple') if @extended_field.multiple? -%>
                                                         :<br />
-                                                        (optional) <%= check_box("extended_field[]", 'add_checkbox') %>
-                                                        (required) <%= check_box("extended_field[]", 'required_checkbox') %>
+                                                        <label><%=t 'topic_types.available_fields_form.optional' %> <%= check_box("extended_field[]", 'add_checkbox') %></label>
+                                                        <label><%=t 'topic_types.available_fields_form.required' %> <%= check_box("extended_field[]", 'required_checkbox') %></label>
                                                 </p>
                                         <% end %>
-                                        <div class="wrap"><%= submit_tag "Add to Topic Type" %></div>
+                                        <div class="wrap"><%= submit_tag t('topic_types.available_fields_form.add') %></div>
                                 <% end %>
                         <% else %>
-                                <p>No form fields are available.</p>
+                                <p><%=t 'topic_types.available_fields_form.no_fields_available' %></p>
                         <% end %>
                 <% end %>
   </td>
