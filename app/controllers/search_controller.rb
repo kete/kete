@@ -457,16 +457,7 @@ class SearchController < ApplicationController
       items_to_rebuild.each do |item_class_and_id|
         item_array = item_class_and_id.split("-")
         item = only_valid_zoom_class(item_array[0]).find(item_array[1])
-        prepare_and_save_to_zoom(item)
-
-        # Rebuild
-        # Should be unnecessary.
-        # if item.has_private_version?
-        #   item.private_version do
-        #     prepare_and_save_to_zoom(item)
-        #   end
-        # end
-
+        item.prepare_and_save_to_zoom
         if items_count == 1
           first_item = item
         end
@@ -760,7 +751,7 @@ class SearchController < ApplicationController
     end
 
     # if not, add it
-    prepare_and_save_to_zoom(item)
+    item.prepare_and_save_to_zoom
 
     # confirm that it's now available
     if item.has_appropriate_zoom_records?

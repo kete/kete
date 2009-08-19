@@ -122,7 +122,7 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             end
           end
 
-          prepare_and_save_to_zoom(item)
+          item.prepare_and_save_to_zoom
 
           if @public_zoom_db.has_zoom_record?(item.zoom_id, @public_zoom_connection) || (@skip_private == false && @private_zoom_db.has_zoom_record?(item.zoom_id, @private_zoom_connection))
             @record_count += 1
@@ -159,6 +159,8 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
     end
   end
 
+  ## DEPRECIATED
+  # kept for reference temporarily
   def prepare_and_save_to_zoom(item)
     # This is always the public version..
     unless item.already_at_blank_version? || item.at_placeholder_public_version?

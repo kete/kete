@@ -96,9 +96,9 @@ class CommentsController < ApplicationController
       commented_privacy = @comment.commentable_private
       expire_caches_after_comments(commented_item, commented_privacy)
 
-      prepare_and_save_to_zoom(@comment)
+      @comment.prepare_and_save_to_zoom
 
-      prepare_and_save_to_zoom(commented_item)
+      commented_item.prepare_and_save_to_zoom
       
       flash[:notice] = t('comments_controller.update.updated')
       redirect_to url_for(:controller => zoom_class_controller(commented_item.class.name),
@@ -124,7 +124,7 @@ class CommentsController < ApplicationController
 
     if @successful
       expire_caches_after_comments(commented_item, commented_privacy)
-      prepare_and_save_to_zoom(commented_item)
+      commented_item.prepare_and_save_to_zoom
 
       flash[:notice] = t('comments_controller.destroy.destroyed')
 

@@ -96,10 +96,10 @@ class RelatedSetFromArchiveFileImporterWorker < BackgrounDRb::MetaWorker
       ContentItemRelation.new_relation_to_topic(@related_topic.id, new_record)
 
       # update the last topic, since we are done adding things to it for now
-      importer_prepare_and_save_to_zoom(@related_topic)
+      @related_topic.prepare_and_save_to_zoom
 
       # update the actual add record
-      importer_prepare_and_save_to_zoom(new_record)
+      new_record.prepare_and_save_to_zoom
       importer_update_records_processed_vars
     end
 

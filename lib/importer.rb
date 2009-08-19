@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'rexml/document'
 require 'tempfile'
 require 'fileutils'
@@ -363,7 +364,7 @@ module Importer
 
       if !new_record.nil? and !new_record.id.nil?
         logger.info("new record succeeded for insert")
-        importer_prepare_and_save_to_zoom(new_record)
+        new_record.prepare_and_save_to_zoom
         importer_update_records_processed_vars
       end
 

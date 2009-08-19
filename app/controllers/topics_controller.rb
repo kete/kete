@@ -78,7 +78,7 @@ class TopicsController < ApplicationController
 
       # update the related topic
       # so this new relationship is reflected in search
-      prepare_and_save_to_zoom(@new_related_topic)
+      @new_related_topic.prepare_and_save_to_zoom
 
       # make sure the related topics cache is cleared for related topic
       expire_related_caches_for(@new_related_topic, 'topics')
@@ -92,7 +92,7 @@ class TopicsController < ApplicationController
 
     if @successful
       build_relations_from_topic_type_extended_field_choices
-      prepare_and_save_to_zoom(@topic)
+      @topic.prepare_and_save_to_zoom
 
       @topic.do_notifications_if_pending(1, current_user)
 

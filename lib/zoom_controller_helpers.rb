@@ -18,7 +18,9 @@ module ZoomControllerHelpers
       @successful = item.zoom_destroy
     end
 
-    # destroy zoom and then item itself
+    # this has very little to do with explicit zoom_destroy anymore
+    # but we're not bothering to rename it at the moment
+    # the zoom_item_destroy makes sure comments are deleted as expected
     def zoom_item_destroy(item)
       @successful = true
       # delete any comments this is on
@@ -34,6 +36,10 @@ module ZoomControllerHelpers
       end
     end
 
+    # this has very little to do with explicit zoom_destroy anymore
+    # but we're not bothering to rename it at the moment
+    # the main thing is that it cause related items zoom records to be rebuilt
+    # the zoom_item_destroy makes sure comments are deleted as expected
     def zoom_destroy_and_redirect(zoom_class,pretty_zoom_class = nil)
       if pretty_zoom_class.nil?
         pretty_zoom_class = zoom_class
@@ -49,9 +55,11 @@ module ZoomControllerHelpers
       end
 
       if @successful
+        # TODO: look into whether this works or throws a multiple render calls error
         # if destroy went ok, we want to trigger zoom rebuild for related items
+        # should be moved to backgroundrb worker
         related_items.each do |related_item|
-          prepare_and_save_to_zoom(related_item)
+          related_item.prepare_and_save_to_zoom
         end
 
         flash[:notice] = I18n.t('zoom_controller_helpers_lib.zoom_destroy_and_redirect.destroyed',
@@ -59,7 +67,6 @@ module ZoomControllerHelpers
       end
       redirect_to :action => 'list'
     end
-
 
     # called by either before filter on destroy
     # or after filter on update
@@ -69,9 +76,10 @@ module ZoomControllerHelpers
 
         # Walter McGinnis, 2009-05-11
         # this doesn't work because of multiple render calls
-        # postponing until 1-3...
+        # postponing until some time later
         # at that time, it should only be called
         # if item moved to a new basket
+        # should be moved to backgroundrb worker
         # item.related_items.each do |related_item|
         #   prepare_and_save_to_zoom(related_item)
         # end
@@ -142,6 +150,8 @@ module ZoomControllerHelpers
       end
     end
 
+    ## DEPRECIATED
+    # kept for reference temporarily
     def prepare_and_save_to_zoom(item)
 
       # This is always the public version..

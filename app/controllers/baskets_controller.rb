@@ -242,7 +242,7 @@ class BasketsController < ApplicationController
         ZOOM_CLASSES.each do |zoom_class|
           basket_items = @basket.send(zoom_class.tableize)
           basket_items.each do |item|
-            prepare_and_save_to_zoom(item)
+            item.prepare_and_save_to_zoom
           end
         end
       end

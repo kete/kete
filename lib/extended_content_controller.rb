@@ -136,7 +136,7 @@ module ExtendedContentController
             logger.debug("Add relation for #{value}, with id of #{topic_id}")
             topic = Topic.find(topic_id)
             ContentItemRelation.new_relation_to_topic(topic, current_item)
-            prepare_and_save_to_zoom(topic)
+            topic.prepare_and_save_to_zoom
             expire_related_caches_for(topic, 'topics')
           end
         end

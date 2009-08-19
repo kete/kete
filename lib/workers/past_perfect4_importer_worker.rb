@@ -273,11 +273,11 @@ class PastPerfect4ImporterWorker < BackgrounDRb::MetaWorker
           ContentItemRelation.new_relation_to_topic(related_topic.id, new_record)
           if @last_related_topic.nil? or related_topic.id != @last_related_topic.id
             # update the last topic, since we are done adding things to it for now
-            importer_prepare_and_save_to_zoom(related_topic)
+            related_topic.prepare_and_save_to_zoom
           end
         end
 
-        importer_prepare_and_save_to_zoom(new_record)
+        new_record.prepare_and_save_to_zoom
         sleep(@record_interval) if @record_interval > 0
 
         # now that we know that we have a valid related_topic
