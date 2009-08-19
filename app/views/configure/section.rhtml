@@ -20,7 +20,8 @@
     <% end -%>
 
     <% end -%>
-    <p><%= submit_tag t('configure.section.save') %></p>
+    <p><%= submit_tag t('configure.section.save') %>
+    <%= link_to_close_redbox t('configure.section.cancel') if IS_CONFIGURED %></p>
     <% end -%>
   </fieldset>
 </div>

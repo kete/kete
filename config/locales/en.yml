@@ -816,6 +816,7 @@ en:
       title: List your site on Kete.net.nz (optional)
     section:
       save: "{{t.base.save.capitalize}}"
+      cancel: "{{t.base.cancel.capitalize}}"
     settings_complete:
       next: If you are satisfied with your settings, please click the 'Next' button.
       next_buton: Next

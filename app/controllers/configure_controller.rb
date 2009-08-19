@@ -17,7 +17,7 @@ class ConfigureController < ApplicationController
 
   def index
     @advanced = params[:advanced] || false
-    @sections = SETUP_SECTIONS.collect { |s| s}
+    @sections = SETUP_SECTIONS.collect { |s| s }
     if @advanced
       SystemSetting.find(:all,
                          :select => 'distinct section',
