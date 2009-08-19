@@ -90,7 +90,7 @@ module OaiDcHelpers
         :urlified_name => basket_urlified_name
       }
 
-      if item.class.name == 'Comment'
+      if self.class.name == 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = self.commentable
         uri_attrs = {
@@ -179,7 +179,7 @@ module OaiDcHelpers
       # then it's overkill
       # however, if we are in the comment record,
       # we want to add the commented on item as a relation
-      case item.class.name
+      case self.class.name
       when 'Comment'
         # comments always point back to the thing they are commenting on
         commented_on_item = self.commentable
