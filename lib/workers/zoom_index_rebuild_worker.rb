@@ -1,10 +1,10 @@
-require "importer_zoom"
+require "zoom_controller_helpers"
 class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
   set_worker_name :zoom_index_rebuild_worker
   set_no_auto_load true
 
   # for prepare_to_zoom, etc.
-  include ImporterZoom
+  include ZoomControllerHelpers
 
   def create(args = nil)
     results = { :do_work_time => Time.now.utc.to_s,
@@ -122,7 +122,11 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
             end
           end
 
-          item.prepare_and_save_to_zoom
+          item.prepare_and_save_to_zoom(:public_existing_connectiond => @public_zoom_connection,
+                                        :private_existing_connectiond => @private_zoom_connection,
+                                        :import_private => false,
+                                        :skip_private => @skip_private,
+                                        :import_request => @import_request)
 
           if @public_zoom_db.has_zoom_record?(item.zoom_id, @public_zoom_connection) || (@skip_private == false && @private_zoom_db.has_zoom_record?(item.zoom_id, @private_zoom_connection))
             @record_count += 1
@@ -156,32 +160,6 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       @results[:done_with_do_work_time] = Time.now.utc.to_s
       cache[:results] = @results
       stop_worker
-    end
-  end
-
-  ## DEPRECIATED
-  # kept for reference temporarily
-  def prepare_and_save_to_zoom(item)
-    # This is always the public version..
-    unless item.already_at_blank_version? || item.at_placeholder_public_version?
-      importer_prepare_zoom(item)
-      item.zoom_save(@public_zoom_connection) unless item.is_a?(Comment) && item.commentable_private
-    end
-
-    # Redo the save for the private version
-    if @skip_private == false &&
-        (item.respond_to?(:private) && item.has_private_version? && !item.private?) ||
-        (item.is_a?(Comment) && item.commentable_private)
-
-      item.private_version do
-        unless item.already_at_blank_version?
-          importer_prepare_zoom(item)
-          item.zoom_save(@private_zoom_connection)
-        end
-      end
-
-      raise "Could not return to public version" if item.private? && !item.is_a?(Comment)
-
     end
   end
 

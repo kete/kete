@@ -16,7 +16,7 @@ module OaiZoom
     end
 
     def simulated_request
-      @simulated_request ||= { :host => SITE_URL,
+      @simulated_request ||= { :host => SITE_NAME,
         :protocol => appropriate_protocol_for(self),
         :request_uri => url_for_dc_identifier(self)}
     end
@@ -56,22 +56,12 @@ module OaiZoom
 
                   xml.send("dc:subject") {
                     xml.cdata item.url
-                  } if item.class.name == 'WebLink'
-
-                  # gives use dc:description/files/version_of_item/enclosure
-                  # for any associated binary files
-                  # that can be used to derive the url for things like thumbnails
-                  # or populate rss enclosure
-                  # we are using non-oai_dc namespaces for keeping informationn about
-                  # binary files (except for dc:source) with the search record
-                  # DEPRECIATED
-                  # oai_dc_xml_dc_description_for_file(xml,item,request)
+                  } if item.is_a?(WebLink)
 
                   # we do a dc:source element for the original binary file
                   oai_dc_xml_dc_source_for_file(xml, request)
 
                   oai_dc_xml_dc_creators_and_date(xml)
-
                   oai_dc_xml_dc_contributors_and_modified_dates(xml)
 
                   # all types at this point have an extended_content attribute
@@ -80,14 +70,13 @@ module OaiZoom
                   # related topics and items should have dc:subject elem here with their title
                   oai_dc_xml_dc_relations_and_subjects(xml, request)
 
-                  logger.info("after dc xml relations and subjects")
 
                   oai_dc_xml_dc_type(xml)
 
                   oai_dc_xml_tags_to_dc_subjects(xml)
 
                   # if there is a license, put it under dc:rights
-                  oai_dc_xml_dc_rights(xml, request)
+                  oai_dc_xml_dc_rights(xml)
 
                   # this is mime type
                   oai_dc_xml_dc_format(xml)
@@ -101,11 +90,11 @@ module OaiZoom
               # for non-topics
               # it should store related topics
               xml.kete do
-                xml_for_related_items(xml, request)
+                xml_for_related_items(xml, self, request)
 
-                xml_for_thumbnail_image_file(xml, request)
+                xml_for_thumbnail_image_file(xml, self, request)
 
-                xml_for_media_content_file(xml, request)
+                xml_for_media_content_file(xml, self, request)
               end
             end
           end
@@ -116,10 +105,37 @@ module OaiZoom
       record
     end
 
-    def prepare_and_save_to_zoom(existing_connection = nil)
-      reload # make sure we have the latest data
-      private = @import ? @import.private : private?
-      zoom_save(existing_connection)
+    def prepare_and_save_to_zoom(options = { })
+      public_existing_connection = options[:public_existing_connection]
+      private_existing_connection = options[:private_existing_connection]
+
+      import_private = options[:import_private]
+      @import_request = options[:import_request]
+      skip_private = options[:skip_private]
+
+      reload # get the the most up to date version of self
+
+      # This is always the public version..
+      unless already_at_blank_version? || at_placeholder_public_version?
+        zoom_save(public_existing_connection) unless is_a?(Comment) && commentable_private
+      end
+
+      # Redo the save for the private version
+      if !skip_private &&
+          (respond_to?(:private) && has_private_version? && !self.private?) ||
+          (is_a?(Comment) && commentable_private)
+
+        # have to reset self.oai_record, so that private version gets loaded in
+        @oai_record = nil
+        self.private_version do
+          unless already_at_blank_version?
+            zoom_save(private_existing_connection)
+          end
+        end
+
+        raise "Could not return to public version" if private? && !self.is_a?(Comment)
+
+      end
     end
 
 

@@ -1,5 +1,9 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
+::ActionController::UrlWriter.module_eval do
+  default_url_options[:host] = SITE_NAME
+end
+
 class RelatedToTopicTest < ActionController::IntegrationTest
 
   context "A Topic\'s related items" do

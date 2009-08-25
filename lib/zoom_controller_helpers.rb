@@ -139,42 +139,6 @@ module ZoomControllerHelpers
       end
     end
 
-    def prepare_zoom(item)
-      # only do this for members of ZOOM_CLASSES
-      if ZOOM_CLASSES.include?(item.class.name)
-        begin
-          item.oai_record = render_oai_record_xml(:item => item, :to_string => true)
-        rescue
-          logger.error("prepare_and_save_to_zoom error: #{$!.to_s}")
-        end
-      end
-    end
-
-    ## DEPRECIATED
-    # kept for reference temporarily
-    def prepare_and_save_to_zoom(item)
-
-      # This is always the public version..
-      unless item.already_at_blank_version? || item.at_placeholder_public_version?
-        prepare_zoom(item)
-        item.zoom_save
-      end
-
-      # Redo the save for the private version
-      if item.respond_to?(:private) and item.has_private_version? and !item.private?
-
-        item.private_version do
-          unless item.already_at_blank_version?
-            prepare_zoom(item)
-            item.zoom_save
-          end
-        end
-
-        raise "Could not return to public version" if item.private?
-
-      end
-    end
-
     protected
 
     # Evaluate a possibly unsafe string into a zoom class.

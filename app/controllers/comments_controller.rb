@@ -119,7 +119,6 @@ class CommentsController < ApplicationController
     commented_item = @comment.commentable
     commented_privacy = @comment.commentable_private
 
-    prepare_zoom(@comment)
     @successful = @comment.destroy
 
     if @successful

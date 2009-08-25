@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 module ExtendedContentHelpers
   unless included_modules.include? ExtendedContentHelpers
 
-    def oai_dc_xml_dc_extended_content(xml,item)
+    def oai_dc_xml_dc_extended_content(xml, item = self)
       @builder_instance = xml
 
       # We start with something like: {"text_field_multiple"=>{"2"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Value"}}, "3"=>{"text_field"=>{"xml_element_name"=>"dc:description", "value"=>"Second value"}}}, "married"=>"No", "check_boxes_multiple"=>{"1"=>{"check_boxes"=>"Yes"}}, "vehicle_type"=>{"1"=>"Car", "2"=>"Coupé"}, "truck_type_multiple"=>{"1"=>{"truck_type"=>{"1"=>"Lorry"}}, "2"=>{"truck_type"=>{"1"=>"Tractor Unit", "2"=>"Tractor with one trailer"}}}}

@@ -200,3 +200,4 @@ def populate_extended_field_data_for(zoom_class, ef_data, options={})
      Factory(zoom_class.tableize.singularize.to_sym, { :extended_content => ef_data.join, :private => is_private }.merge(options))
   end
 end
+

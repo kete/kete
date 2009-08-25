@@ -13,12 +13,8 @@ module OaiDcHelpers
 
     def oai_dc_xml_request(xml, passed_request = nil)
       if !passed_request.nil?
-        protocol = passed_request[:protocol]
-        host = passed_request[:host]
         request_uri = passed_request[:request_uri]
       else
-        protocol = simulated_request[:protocol]
-        host = simulated_request[:host]
         request_uri = simulated_request[:request_uri]
       end
 
@@ -52,7 +48,7 @@ module OaiDcHelpers
             most_recent_updated_at = last_relation.updated_at
           end
         end
-      elsif self.is_a?(Comment) && content_item_relations.count > 0 &&
+      elsif !self.is_a?(Comment) && content_item_relations.count > 0 &&
           content_item_relations.last.updated_at > most_recent_updated_at
         most_recent_updated_at = content_item_relations.last.updated_at
       end
@@ -113,7 +109,9 @@ module OaiDcHelpers
       # record.
       protocol = appropriate_protocol_for(self)
 
-      xml.send("dc:identifier", "#{protocol}://#{host}#{utf8_url_for(uri_attrs.merge(:only_path => true, :locale => false))}")
+      xml.send("dc:identifier", utf8_url_for(uri_attrs.merge(:protocol => protocol,
+                                                             :host => host,
+                                                             :locale => false)))
     end
 
     def oai_dc_xml_dc_title(xml)
@@ -186,13 +184,13 @@ module OaiDcHelpers
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
         } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(commented_on_item.class.name), :action => 'show', :id => commented_on_item.id, :format => nil, :urlified_name => commented_on_item.basket.urlified_name, :locale => false)}")
+        xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }))
       else
         related_items.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
           } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.send("dc:relation", "http://#{host}#{utf8_url_for(:controller => zoom_class_controller(related.class.name), :action => 'show', :id => related.id, :format => nil, :urlified_name => related.basket.urlified_name, :locale => false)}")
+          xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }))
         end
       end
     end
@@ -222,11 +220,11 @@ module OaiDcHelpers
     def oai_dc_xml_dc_format(xml)
       # item's content type is the default
       format = String.new
-      html_classes = [Topic, Comment, WebLink]
-      case self.class
+      html_classes = %w(Topic Comment WebLink)
+      case self.class.name
       when *html_classes
         format = 'text/html'
-      when StillImage
+      when 'StillImage'
         if !original_file.nil?
           format = original_file.content_type
         end
@@ -250,15 +248,16 @@ module OaiDcHelpers
     # if there is a license for item, put in its url
     # otherwise site's terms and conditions url
     def oai_dc_xml_dc_rights(xml)
-      terms_and_conditions_topic = Basket.about_basket.find(:first,
-                                                            :conditions => "UPPER(title) like '%TERMS AND CONDITIONS'").id
-      terms_and_conditions_id ||= 4
+      terms_and_conditions_topic = Basket.about_basket.topics.find(:first,
+                                                                   :conditions => "UPPER(title) like '%TERMS AND CONDITIONS'")
+      terms_and_conditions_topic ||= 4
 
       if respond_to?(:license) && !license.blank?
         rights = license.url
       else
-        rights = SITE_URL.chop + utf8_url_for(
-          :id => terms_and_conditions_id,
+        rights = utf8_url_for(
+          :host => SITE_NAME,
+          :id => terms_and_conditions_topic,
           :urlified_name => Basket.about_basket.urlified_name,
           :action => 'show',
           :controller => 'topics',

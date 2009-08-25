@@ -1,11 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-::ActionController::UrlWriter.module_eval do
-  default_url_options[:host] = 'test.com'
-end
-
 class OaiDcHelpersTest < ActiveSupport::TestCase
-
   include OaiDcHelpers
 
   context "The oai_dc_xml_dc_relations_and_subjects method" do
@@ -38,10 +33,10 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
 
         builder = Nokogiri::XML::Builder.new
         builder.root do |xml|
-          item.oai_dc_xml_dc_relations_and_subjects(xml, { })
+          item.oai_dc_xml_dc_relations_and_subjects(xml, { :host => "www.example.com" })
         end
 
-        expect = "<?xml version=\"1.0\"?>\n<root><dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://http://test.com/site/topics/show/#{parent.id}</dc:relation></root>\n"
+        expect = "<?xml version=\"1.0\"?>\n<root><dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://www.example.com/site/topics/show/#{parent.id}</dc:relation></root>\n"
         assert_equal expect, builder.to_xml
       end
 

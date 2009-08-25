@@ -119,8 +119,7 @@ module XmlHelpers
     # simply has related topics
     def xml_for_related_items(xml, item, passed_request = nil)
       # comments are the only zoom class without content_item_relations
-      return if item.class == Comment
-
+      return if item.is_a?(Comment)
       protocol = appropriate_protocol_for(item)
       host = !passed_request.nil? ? passed_request[:host] : request.host
       request = !passed_request.nil? ? passed_request : request

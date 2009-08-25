@@ -6,7 +6,6 @@ require 'mime/types'
 require 'builder'
 require "oai_dc_helpers"
 require "xml_helpers"
-require "importer_zoom"
 require "zoom_helpers"
 require "zoom_controller_helpers"
 require "extended_content_helpers"
@@ -17,7 +16,6 @@ module Importer
       klass.send :include, OaiDcHelpers
       klass.send :include, ZoomHelpers
       klass.send :include, ZoomControllerHelpers
-      klass.send :include, ImporterZoom
       klass.send :include, ExtendedContentHelpers
       klass.send :include, ActionController::UrlWriter
     end

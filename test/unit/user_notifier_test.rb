@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 ::ActionController::UrlWriter.module_eval do
-  default_url_options[:host] = 'test.com'
+  default_url_options[:host] = 'www.example.com'
 end
 
 class UserNotifierTest < ActionMailer::TestCase
@@ -10,7 +10,7 @@ class UserNotifierTest < ActionMailer::TestCase
 
     setup do
       @user = User.first
-      UserNotifier.deliver_item_flagged_for(@user, 'http://test.com/', 'pending', @user, @user, 1, 'test message')
+      Usernotifier.deliver_item_flagged_for(@user, 'http://www.example.com/', 'pending', @user, @user, 1, 'test message')
       @email_body = ActionMailer::Base.deliveries.first.body
     end
 
@@ -18,7 +18,7 @@ class UserNotifierTest < ActionMailer::TestCase
       assert @email_body.include?(@user.user_name)
       assert @email_body.include?(@user.email)
       assert @email_body.include?('Revision # 1 of this item as pending')
-      assert @email_body.include?('http://test.com/')
+      assert @email_body.include?('http://www.example.com/')
       assert @email_body.include?('test message')
     end
 
@@ -68,7 +68,7 @@ class UserNotifierTest < ActionMailer::TestCase
       assert email_body.include?(@user.user_name)
       assert email_body.include?(@user.email)
       assert email_body.include?('Revision # 1 of this item as pending')
-      assert email_body.include?("http://test.com/site/topics/history/#{@topic.id}")
+      assert email_body.include?("http://www.example.com/site/topics/history/#{@topic.id}")
     end
 
   end

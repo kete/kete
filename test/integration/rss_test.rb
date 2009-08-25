@@ -1,5 +1,9 @@
 require File.dirname(__FILE__) + '/integration_test_helper'
 
+::ActionController::UrlWriter.module_eval do
+  default_url_options[:host] = SITE_NAME
+end
+
 class RssTest < ActionController::IntegrationTest
   # some pretty massive holes in test coverage here!!!
   # TODO: test comments being added and having proper rss
