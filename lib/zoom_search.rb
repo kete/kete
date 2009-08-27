@@ -63,7 +63,17 @@ module ZoomSearch
       as_if_within_basket = options[:as_if_within_basket].nil? ? nil : options[:as_if_within_basket]
       return { :results => Array.new, :total => 0 } unless scoped_to_authorized_baskets(as_if_within_basket)
       logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
-      @zoom_results = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
+
+      # Walter McGinnis, 2009-08-27
+      # right now Kete only needs abbreviated records back,
+      # but in the future, it might make sense to move this to @search attribute
+      query_options = { :query => @search.pqf_query.to_s,
+        :existing_connection => @zoom_connection }
+
+      query_options[:element_set_name] = "oai-kete-short" # @search.element_set_name
+
+      @zoom_results = @search.zoom_db.process_query(query_options)
+
       @search.pqf_query = PqfQuery.new
 
       if options[:dont_parse_results]

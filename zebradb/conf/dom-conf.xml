@@ -23,5 +23,9 @@
   <retrieve name="zebra">
     <xslt stylesheet="conf/oai2zebra.xsl"/>
   </retrieve>
+
+  <retrieve name="oai-kete-short">
+    <xslt stylesheet="conf/oai2oaiketeshort.xsl"/>
+  </retrieve>
  
  </dom>

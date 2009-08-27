@@ -36,6 +36,15 @@ class ZoomDb < ActiveRecord::Base
     # we are always using xml at this point
     conn.preferred_record_syntax = 'XML'
 
+    # do we want to retrieve the data
+    # in a format other than the default?
+    # corresponds to retrieve defined in zebra config
+    # via an xslt file
+    conn.element_set_name = args[:element_set_name] if args[:element_set_name]
+
+    # not used by Kete, but others might find this useful
+    conn.schema = args[:schema] if args[:schema]
+
     logger.info("query is #{query.to_s}, syntax XML")
     conn.search(query.to_s)
   end
