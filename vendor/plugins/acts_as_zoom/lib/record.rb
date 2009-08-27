@@ -26,8 +26,7 @@ ZOOM::Record.class_eval do
 
   # returns fully formed oai_identifier from the record including wrapping xml
   def complete_id
-    # complete_id = header.at("identifier").inner_xml
-    complete_id = Nokogiri::XML(complete_header).at("identifier")
+    @complete_id ||= header.at("identifier")
   end
 
   # returns fully formed oai_datestamp from the record
@@ -37,7 +36,7 @@ ZOOM::Record.class_eval do
     # doing this for backwards compatibility
     # may pull out, may also need an "Z" at end, not sure
     # complete_datestamp = header.at("datestamp").inner_xml
-    complete_datestamp = Nokogiri::XML(complete_header).at("datestamp")
+    @complete_datestamp ||= header.at("datestamp")
   end
 
   def sets
@@ -53,7 +52,7 @@ ZOOM::Record.class_eval do
 
   # return the header element as a string of the xml
   def complete_header
-    header.to_s
+    @complete_header ||= header.to_s
   end
 
   # return the metadata as Nokogiri::XML::Element
@@ -63,7 +62,7 @@ ZOOM::Record.class_eval do
 
   # return the metadata element as a string of the xml
   def complete_metadata
-    metadata.to_s
+    @complete_metadata ||= metadata.to_s
   end
 
   # return only the oai_dc bit
