@@ -329,7 +329,8 @@ class SearchController < ApplicationController
                                         :search_terms => @search_terms)
 
     logger.debug("what is query: " + @search.pqf_query.to_s.inspect)
-    this_result_set = @search.zoom_db.process_query(:query => @search.pqf_query.to_s, :existing_connection => @zoom_connection)
+
+    this_result_set = @search.zoom_db.process_query(query_options)
 
     @result_sets[zoom_class] = this_result_set
 

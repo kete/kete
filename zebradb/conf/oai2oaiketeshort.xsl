@@ -3,18 +3,19 @@
   xmlns:z="http://indexdata.dk/zebra/xslt/1"
   xmlns:oai="http://www.openarchives.org/OAI/2.0/"
   xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+  exclude-result-prefixes="oai_dc dc z oai"
   version="1.0">
 
   <!-- switch to non-indented version after debugging -->
-  <!-- <xsl:output indent="no" method="xml" version="1.0" encoding="UTF-8"/> -->
-  <xsl:output indent="yes" method="xml" version="1.0" encoding="UTF-8"/>
+  <xsl:output indent="no" method="xml" version="1.0" encoding="UTF-8"/>
+  <!-- <xsl:output indent="yes" method="xml" version="1.0" encoding="UTF-8"/> -->
 
   <!-- disable all default text node output -->
   <xsl:template match="text()"/>
 
   <!-- match on oai xml record -->
   <xsl:template match="/">
-    <record>
+    <record xmlns="http://www.openarchives.org/OAI/2.0/">
       <xsl:apply-templates/>
     </record>
   </xsl:template>
@@ -26,8 +27,12 @@
 
   <!-- here's the meat, include only the dc elements we need -->
   <xsl:template match="oai:record/oai:metadata/oai_dc:dc">
-    <metadata>
-      <oai_dc:dc>
+    <metadata xmlns="http://www.openarchives.org/OAI/2.0/">
+      <oai_dc:dc xmlns:dcterms="http://purl.org/dc/terms/"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+		 xmlns:dc="http://purl.org/dc/elements/1.1/"
+		 xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
 	<xsl:for-each select="dc:identifier">
 	  <dc:identifier><xsl:value-of select="."/></dc:identifier>
 	</xsl:for-each>
