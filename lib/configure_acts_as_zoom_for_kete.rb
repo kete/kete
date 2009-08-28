@@ -12,8 +12,8 @@ module ConfigureActsAsZoomForKete
       klass.send :include, OaiZoom
 
       klass.send :acts_as_zoom, :fields => [:oai_record],
-                                :save_to_public_zoom => ['localhost', 'public'],
-                                :save_to_private_zoom => ['localhost', 'private'],
+                                :save_to_public_zoom => ['public'],
+                                :save_to_private_zoom => ['private'],
                                 :raw => true,
                                 :additional_zoom_id_attribute => :basket_urlified_name,
                                 :use_save_callback => false

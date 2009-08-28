@@ -17,7 +17,7 @@ class SearchControllerTest < ActionController::TestCase
     
     assert_response :success
     assert_nil assigns(:privacy)
-    assert_equal ZoomDb.find_by_host_and_database_name('localhost', 'public'), assigns(:search).zoom_db
+    assert_equal ZoomDb.find_by_database_name('public'), assigns(:search).zoom_db
     assert_not_nil assigns(:results)
     
     assert_template 'search/all'
@@ -31,7 +31,7 @@ class SearchControllerTest < ActionController::TestCase
     
     assert_response :success
     assert_nil assigns(:privacy)
-    assert_equal ZoomDb.find_by_host_and_database_name('localhost', 'public'), assigns(:search).zoom_db
+    assert_equal ZoomDb.find_by_database_name('public'), assigns(:search).zoom_db
     assert_not_nil assigns(:results)
     
     assert_template 'search/all'
@@ -61,7 +61,7 @@ class SearchControllerTest < ActionController::TestCase
     assert_equal "private", @controller.send(:zoom_database)
     
     assert assigns(:privacy)
-    assert_equal ZoomDb.find_by_host_and_database_name('localhost', 'private'), assigns(:search).zoom_db
+    assert_equal ZoomDb.find_by_database_name('private'), assigns(:search).zoom_db
     assert_not_nil assigns(:results)
   end
 
@@ -74,7 +74,7 @@ class SearchControllerTest < ActionController::TestCase
     assert_equal "private", @controller.send(:zoom_database)
     
     assert assigns(:privacy)
-    assert_equal ZoomDb.find_by_host_and_database_name('localhost', 'private'), assigns(:search).zoom_db
+    assert_equal ZoomDb.find_by_database_name('private'), assigns(:search).zoom_db
     assert_not_nil assigns(:results)
     
     assert_response :success

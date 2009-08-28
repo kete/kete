@@ -160,7 +160,7 @@ class SearchController < ApplicationController
     @privacy = "private" if is_a_private_search?
 
     # Load the correct zoom_db instance and connect to it
-    @search.zoom_db = ZoomDb.find_by_host_and_database_name('localhost', zoom_database)
+    @search.zoom_db = ZoomDb.find_by_database_name(zoom_database)
     @zoom_connection = @search.zoom_db.open_connection
 
     @result_sets = Hash.new

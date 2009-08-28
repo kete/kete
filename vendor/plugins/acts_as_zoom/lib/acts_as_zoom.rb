@@ -398,7 +398,11 @@ module ZoomMixin
             # Store the returned ZoomDb instance to avoid doing an additional SQL SELECT on each
             # save or for each record during zoom_rebuild_item, etc.
             # Note that this does not persist between Mongrel processes.
-            @@public_zoom_database ||= ZoomDb.find_by_host_and_database_name(conf[0], conf[1])
+            if conf.size == 2
+              @@public_zoom_database ||= ZoomDb.find_by_host_and_database_name(conf[0], conf[1])
+            else
+              @@public_zoom_database ||= ZoomDb.find_by_database_name(conf[0])
+            end
           rescue
             raise "Cannot find public ZOOM database: #{$!}"
           end
@@ -409,7 +413,11 @@ module ZoomMixin
             # Store the returned ZoomDb instance to avoid doing an additional SQL SELECT on each
             # save or for each record during zoom_rebuild_item, etc.
             # Note that this does not persist between Mongrel processes.
-            @@private_zoom_databse ||= ZoomDb.find_by_host_and_database_name(conf[0], conf[1])
+            if conf.size == 2
+              @@private_zoom_databse ||= ZoomDb.find_by_host_and_database_name(conf[0], conf[1])
+            else
+              @@private_zoom_databse ||= ZoomDb.find_by_database_name(conf[0])
+            end
           rescue
             raise "Cannot find private ZOOM database: #{$!}"
           end

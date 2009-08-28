@@ -17,9 +17,19 @@ class ZoomDb < ActiveRecord::Base
   # Create and return a zoom connection
   def open_connection
     zoom_options = { 'user' => zoom_user, 'password' => zoom_password }
-    c = ZOOM::Connection.new(zoom_options).connect(host, port.to_i)
-    c.database_name = database_name
+    
+    # enable unix socket connecting
+    # this might make too many assumptions (i.e. using port as end to socket name)
+    # TODO: maybe refactor
+    c = ZOOM::Connection.new(zoom_options)
+    if host.first == "/"
+      unix_socket = 'unix:' + host + "-#{port}"
+      c.connect(unix_socket)
+    else
+      c.connect(host, port.to_i)
+    end
 
+    c.database_name = database_name
     c
   end
 

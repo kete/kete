@@ -22,8 +22,10 @@ namespace :zebra do
     # read in template
     servers_conf_xml = File.read("#{conf_file_path}.template")
 
-    specs = {'private_spec' => "tcp:localhost:#{ENV['PRIVATE_PORT']}",
-      'public_spec' => "tcp:@:#{ENV['PUBLIC_PORT']}"}
+    specs = { 'unix_spec_private' => "unix:#{RAILS_ROOT}/tmp/sockets/zebra-#{ENV['PRIVATE_PORT']}",
+      'unix_spec_public' => "unix:#{RAILS_ROOT}/tmp/sockets/zebra-#{ENV['PUBLIC_PORT']}",
+      'private_spec' => "tcp:localhost:#{ENV['PRIVATE_PORT']}",
+      'public_spec' => "tcp:@:#{ENV['PUBLIC_PORT']}" }
 
     specs.each do |spec_name, listen_spec|
       servers_conf_xml = servers_conf_xml.gsub(spec_name, listen_spec)
@@ -68,7 +70,7 @@ namespace :zebra do
     # private respectively
     ["public", "private"].each do |prefix|
       begin
-        zoom_db = ZoomDb.find_by_host_and_database_name('localhost', prefix)
+        zoom_db = ZoomDb.find_by_database_name(prefix)
         the_record_id = "#{ZoomDb.zoom_id_stub}bootstrap:Bootstrap:1"
         should_add_record = true
         should_add_record = false if (zoom_db.respond_to?(:has_zoom_record?) && zoom_db.has_zoom_record?(the_record_id)) rescue false
@@ -85,14 +87,4 @@ namespace :zebra do
       end
     end
   end
-
-  # No longer necessary
-  # desc "Choose zebra correct zebra database configuration files for your platform.  I.e. whether the zebra is installed under /usr/local or /opt/local.  Set UNDER=opt or UNDER=usr.  The default configuration files are for /usr/local."
-  # task :install_location do
-  #     # have to run the command from inside #{RAILS_ROOT}/zebradb/conf
-  #     %w[ public private ].each do |db|
-  #       `cd #{RAILS_ROOT}/zebradb/conf; cp zebra-#{db}.cfg.#{ENV['UNDER']} zebra-#{db}.cfg`
-  #     end
-  #   end
-
 end

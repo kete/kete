@@ -123,8 +123,8 @@ module ZoomSearch
 
     # Fetch both databases in one go, they will be used later
     def zoom_database
-      @public_database ||= ZoomDb.find_by_host_and_database_name('localhost', 'public')
-      @private_database ||= ZoomDb.find_by_host_and_database_name('localhost', 'private')
+      @public_database ||= ZoomDb.find_by_database_name('public')
+      @private_database ||= ZoomDb.find_by_database_name('private')
       return (is_a_private_search? ? @private_database : @public_database)
     end
 

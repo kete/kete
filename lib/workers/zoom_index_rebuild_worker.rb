@@ -36,8 +36,8 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       @skip_private = args[:skip_private]
       @clear_zebra = args[:clear_zebra]
 
-      @public_zoom_db = ZoomDb.find_by_host_and_database_name('localhost','public')
-      @private_zoom_db = @skip_private ? nil : ZoomDb.find_by_host_and_database_name('localhost','private')
+      @public_zoom_db = ZoomDb.find_by_database_name('public')
+      @private_zoom_db = @skip_private ? nil : ZoomDb.find_by_database_name('private')
 
       # a bit of a misnomer
       # but will allow us to use importer lib oai record rendering unaltered

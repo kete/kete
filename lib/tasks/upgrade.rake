@@ -151,6 +151,7 @@ namespace :kete do
       ENV['ZEBRA_PASSWORD'] = ZoomDb.find(1).zoom_password
       Rake::Task['zebra:stop'].invoke
       Rake::Task['zebra:set_keteaccess'].invoke
+      Rake::Task['zebra:set_ports'].invoke
       Rake::Task['zebra:start'].invoke
       p "changed zebra password file"
     end

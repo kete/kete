@@ -6,14 +6,25 @@
 
 <!-- [scheme:]host[:port][/databaseName] -->
         <!-- scheme: tcp, ssl, unix, http, sru? -->
-<!-- look into changing private server to unix socket and how that effects our acts_as_zoom stuff -->
+<!-- Both databases are available from tcp and unix socket (socket for speed) -->
 <!-- private is limited to ONLY localhost for security, since passwords are passed in clear text, i believe -->
 <listen id="privateserver" >private_spec</listen>
+<listen id="privateserver-unix" >unix_spec_private</listen>
 <!-- this should catch with the @ wildcard, both localhost and any outside ip interface -->
 <listen id="publicserver" >public_spec</listen>
+<listen id="publicserver-unix" >unix_spec_public</listen>
 
 <!-- PRIVATE KETE RECORDS -->
 <server id="privateserver"  listenref="privateserver">
+    <directory>./private</directory>
+    <config>../conf/zebra-private.cfg</config>
+    <!-- location of CQL-to-PQF file
+         see: http://www.indexdata.com/yaz/doc/tools.tkl#tools.cql.map -->
+    <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
+</server>
+
+<!-- PRIVATE KETE SERVER UNIX SOCKET -->
+<server id="privateserver-unix"  listenref="privateserver-unix">
     <directory>./private</directory>
     <config>../conf/zebra-private.cfg</config>
     <!-- location of CQL-to-PQF file
@@ -29,4 +40,14 @@
          see: http://www.indexdata.com/yaz/doc/tools.tkl#tools.cql.map -->
     <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
 </server>
+
+<!-- PUBLIC KETE SERVER UNIX SOCKET -->
+<server id="publicserver-unix"  listenref="publicserver-unix">
+    <directory>./public</directory>
+    <config>../conf/zebra-public.cfg</config>
+    <!-- location of CQL-to-PQF file
+         see: http://www.indexdata.com/yaz/doc/tools.tkl#tools.cql.map -->
+    <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
+</server>
+
 </yazgfs>
