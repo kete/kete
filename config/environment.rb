@@ -47,10 +47,7 @@ Rails::Initializer.run do |config|
   # specifying it here allows this to work
   config.gem "oai"
 
-  # Kieran, 2008-07-22
-  # specify the specific versions we need to run Kete
-  # libxml-ruby 0.8.0 causes errors in acts_as_zoom
-  config.gem 'libxml-ruby', :lib => 'libxml', :version => '< 0.8.0'
+  config.gem 'libxml-ruby', :lib => 'libxml'
   # backgroundrb 1.1 requires packet 0.1.14
   config.gem 'packet', :version => '>= 0.1.14'
 

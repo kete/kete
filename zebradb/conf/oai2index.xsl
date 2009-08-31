@@ -33,7 +33,7 @@
   </xsl:template>
 
   <xsl:template match="oai:record/oai:header/oai:datestamp">
-    <z:index name="oai_datestamp:0 oai_datestamp:w oai_datestamp:s">
+    <z:index name="oai_datestamp:0 oai_datestamp:d oai_datestamp:w oai_datestamp:s">
       <xsl:value-of select="."/>
     </z:index>
   </xsl:template>
