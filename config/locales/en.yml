@@ -146,9 +146,9 @@ en:
       email: What is the {{t.base.email}} address used to {{t.base.create}} your {{t.base.account}}?
       login: What is the {{t.base.login}} of your {{t.base.account}}?
       title: "{{t.base.request.capitalize}} {{t.base.password}}"
-    language_selection:
-      change_language: "{{t.base.change.capitalize}}"
-      choose_language: '-{{t.base.choose}} language-'
+    locale_selection:
+      change_locale: "{{t.base.change.capitalize}}"
+      choose_locale: '-{{t.base.choose}} language-'
       language: 'Language:'
     login:
       admin_details: Please enter the default {{t.base.administrator}} {{t.base.account}} {{t.base.login}} and {{t.base.password}} to continue to configuration of the site.

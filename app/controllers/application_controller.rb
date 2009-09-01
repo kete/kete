@@ -16,8 +16,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
   def set_locale
     I18n.locale = I18n.default_locale
-    I18n.locale = current_user.locale if current_user != :false && User.language_choices.include?(current_user.locale)
-    I18n.locale = params[:locale] if params[:locale] && User.language_choices.include?(params[:locale])
+    I18n.locale = current_user.locale if current_user != :false && User.locale_choices.include?(current_user.locale)
+    I18n.locale = params[:locale] if params[:locale] && User.locale_choices.include?(params[:locale])
   end
 
   # See lib/ssl_helpers.rb

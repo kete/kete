@@ -1405,7 +1405,7 @@ module ApplicationHelper
     else
       I18n.locale
     end
-    locales = User.language_choices.collect { |key,value| [value,key] }
+    locales = User.locale_choices.collect { |key,value| [value,key] }
     locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]
     if form
       form.select :locale, locales, :selected => options[:default]

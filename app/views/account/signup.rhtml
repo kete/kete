@@ -44,7 +44,7 @@
                                         :item_key => 'user'}) %>
 <% end -%>
 
-<% if User.language_choices.keys.size > 1 %>
+<% if User.locale_choices.keys.size > 1 %>
 <div class="form-element">
   <label><%=t 'account.signup.language' %></label>
   <%= locale_dropdown(f) -%>
