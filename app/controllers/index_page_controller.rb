@@ -202,7 +202,7 @@ class IndexPageController < ApplicationController
   def robots
     @baskets = Basket.all
     @controller_names = ZOOM_CLASSES.collect { |name| zoom_class_controller(name) }
-    render :action => 'robots', :layout => false
+    render :action => 'robots', :layout => false, :content_type => 'text/plain'
   end
 
 end
