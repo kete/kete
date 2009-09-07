@@ -16,7 +16,7 @@ module TranslateHelper
         filter << link_to(label, link_params)
       end
     end
-    filter.join(" | ")    
+    filter.join(" | ")
   end
 
   def n_lines(text, line_size)
@@ -33,6 +33,7 @@ module TranslateHelper
   # Kieran Pilkington, 2009-05-28
   # We want to interpolate the base values but not any variable values
   def interpolate(text)
+    return '' unless text
     text = text.gsub('{{', '\{\{').gsub('\\{\\{t.', '{{t.')
     result = I18n.backend.send(:interpolate, @from_locale, text)
     result.gsub('\{\{', '{{')
