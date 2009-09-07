@@ -1,3 +1,13 @@
+*2.1.2 (October 23rd, 2008)*
+
+* Included in Rails 2.1.2
+
+
+*2.1.1 (September 4th, 2008)*
+
+* Fixed Base#exists? to check status code as integer [#299 state:resolved] (Wes Oldenbeuving)
+
+
 *2.1.0 (May 31st, 2008)*
 
 * Fixed response logging to use length instead of the entire thing (seangeo) [#27]

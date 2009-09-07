@@ -14,13 +14,13 @@ rescue Gem::LoadError
 end
 
 begin
-  gem 'memcache-client', '~> 1.5.0'
+  gem 'memcache-client', '>= 1.5.0'
 rescue Gem::LoadError
   $:.unshift "#{File.dirname(__FILE__)}/vendor/memcache-client-1.5.0"
 end
 
 begin
-  gem 'tzinfo', '~> 0.3.8'
+  gem 'tzinfo', '~> 0.3.11'
 rescue Gem::LoadError
-  $:.unshift "#{File.dirname(__FILE__)}/vendor/tzinfo-0.3.8"
+  $:.unshift "#{File.dirname(__FILE__)}/vendor/tzinfo-0.3.11"
 end

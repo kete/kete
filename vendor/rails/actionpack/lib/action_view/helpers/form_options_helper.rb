@@ -304,7 +304,7 @@ module ActionView
       #
       # NOTE: Only the option tags are returned, you have to wrap this call in
       # a regular HTML select tag.
-      def time_zone_options_for_select(selected = nil, priority_zones = nil, model = TimeZone)
+      def time_zone_options_for_select(selected = nil, priority_zones = nil, model = ::ActiveSupport::TimeZone)
         zone_options = ""
 
         zones = model.all
@@ -400,6 +400,7 @@ module ActionView
       end
 
       def to_country_select_tag(priority_countries, options, html_options)
+        ActiveSupport::Deprecation.warn("country_select will be removed from 2.2.0.  http://www.rubyonrails.org/deprecation/list-of-countries has more information.", caller)
         html_options = html_options.stringify_keys
         add_default_name_and_id(html_options)
         value = value(object)
@@ -417,7 +418,7 @@ module ActionView
         value = value(object)
         content_tag("select",
           add_options(
-            time_zone_options_for_select(value || options[:default], priority_zones, options[:model] || TimeZone),
+            time_zone_options_for_select(value || options[:default], priority_zones, options[:model] || ActiveSupport::TimeZone),
             options, value
           ), html_options
         )
