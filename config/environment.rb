@@ -85,7 +85,9 @@ Rails::Initializer.run do |config|
 end
 
 # Walter McGinnis, 2009-09-08
-ActiveSupport::XmlMini.backend = 'Nokogiri'
+# rolling this back, as Nokogiri may not work with Extended Fields populating
+# more research necessary, may use LibXML if it is compatible
+# ActiveSupport::XmlMini.backend = 'Nokogiri'
 
 # Kieran Pilkington, 2009/07/06
 # overwrite ActionController::Failsafe to catch some errors
