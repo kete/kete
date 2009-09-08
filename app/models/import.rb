@@ -16,4 +16,9 @@ class Import < ActiveRecord::Base
   validates_format_of :directory, :with => /^[^ \'\"<>\&,\/\\\?]*$/, :message => I18n.t('import_model.invalid_chars', :invalid_chars => "spaces and  \', \\, /, &, \", ?, <, and >")
   validates_numericality_of :interval_between_records, :only_integer => true, :message => I18n.t('import_model.must_be_seconds')
 
+  # HACK -- directory appears to have become a reserved word in some context
+  # and as a result is a private method
+  def directory_name
+    self.attributes['directory']
+  end
 end

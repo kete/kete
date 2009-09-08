@@ -84,6 +84,9 @@ Rails::Initializer.run do |config|
   config.action_view.sanitized_allowed_attributes = 'id', 'style', 'hspace', 'vspace', 'align', 'dir', 'border', 'cellspacing',  'cellpadding', 'summary', 'bgcolor', 'background', 'bordercolor', 'rowspan', 'valign', 'colspan', 'scope', 'lang', 'face', 'color', 'size', 'target', 'classid', 'codebase', 'quality', 'type', 'pluginspage', 'wmode', 'data', 'flashvars', 'allowfullscreen'
 end
 
+# Walter McGinnis, 2009-09-08
+ActiveSupport::XmlMini.backend = 'Nokogiri'
+
 # Kieran Pilkington, 2009/07/06
 # overwrite ActionController::Failsafe to catch some errors
 # see lib/error_handler.rb

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-require 'rexml/document'
 require 'tempfile'
 require 'fileutils'
 require 'mime/types'
-require 'builder'
 require "oai_dc_helpers"
 require "xml_helpers"
 require "zoom_helpers"
@@ -104,7 +102,7 @@ module Importer
         # trimming of file
         @path_to_trimmed_records = "#{@import_dir_path}/records_trimmed.xml"
         @path_to_trimmed_records = importer_trim_fat_from_xml_import_file("#{@import_dir_path}/records.xml",@path_to_trimmed_records)
-        @import_records_xml = REXML::Document.new File.open(@path_to_trimmed_records)
+        @import_records_xml = Nokogiri::XML File.open(@path_to_trimmed_records)
 
         # variables assigned, files good to go, we're started
         @import.update_attributes(:status => I18n.t('importer_lib.do_work.in_progress'))
@@ -113,7 +111,7 @@ module Importer
         # if they don't already exist
         @results[:records_processed] = 0
         cache[:results] = @results
-        @import_records_xml.elements.each(@xml_path_to_record) do |record|
+        @import_records_xml.xpath(@xml_path_to_record).each do |record|
           importer_process(record, params)
         end
         importer_update_processing_vars_at_end
@@ -346,7 +344,7 @@ module Importer
       # that is a title synonym, we go with last match just in case
       title = nil
       record_hash.keys.each do |field_name|
-        title = record_hash[field_name].strip if TITLE_SYNONYMS.include?(field_name)
+        title = record_hash[field_name].strip if field_name == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
       end
       existing_item = @current_basket.topics.find_by_title(title)
 
