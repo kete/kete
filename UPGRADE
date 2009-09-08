@@ -43,9 +43,8 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 1.      Stop your Kete server (mongrels or mod_rails).
 2.      Upgrade your code base
 3.      run "rake zebra:stop"
-4.      if you are using a capistrano based deploy: cd /path/to/apps/your_app/shared && cp cached-copy/zebradb/conf/dom-conf.xml system/zebradb/ && cp cached-copy/zebradb/conf/oai2oaiketeshort.xml system/zebradb/
-5.      run "rake zebra:start"
-6.      Restart backgroundrb
+4.      run "rake zebra:start"
+5.      Restart backgroundrb
 
 == 2009/05/12 - Added Basket Id column to Taggings table
 
