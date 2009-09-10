@@ -95,18 +95,4 @@ module BasketsHelper
     end
     html
   end
-
-  # Write tests for this method in Rails 2.3 (which supports helper tests)
-  def any_fields_editable?(form_type=@form_type)
-    form_type = form_type.to_s
-    return true if @site_admin
-    return true if @basket.profiles.blank?
-    profile_rules = @basket.profiles.first.rules(true)
-    return true if profile_rules.blank?
-    return true if profile_rules[form_type]['rule_type'] == 'all'
-    return false if profile_rules[form_type]['rule_type'] == 'none'
-    return false if profile_rules[form_type]['allowed'].blank?
-    true
-  end
-
 end
