@@ -270,47 +270,41 @@
           <% if logged_in? && @basket_admin && !@displaying_error -%>
             <div id="basket-toolbox">
               <h4><%=t 'layouts.application.basket_label', :basket => h(@current_basket.name) %></h4>
-              <ul>
-                <li class="first">
-                  <%= link_to_unless_current t('layouts.application.preferences'),
-                                             { :controller => 'baskets',
-                                               :action => 'edit',
-                                               :id => @current_basket },
-                                            :tabindex => '2' %>
-                </li>
-                <li>
-                  <%= link_to_unless_current t('layouts.application.moderate'),
-                                             { :controller => 'moderate',
-                                               :action => 'list' },
-                                             :tabindex => '2' %>
-                </li>
-                <li>
-                  <%= link_to_unless_current t('layouts.application.members'),
-                                             { :controller => 'members',
-                                               :action => 'list' },
-                                             :tabindex => '2' %>
-                </li>
-                <% # when this is more refined, may open this up to non-tech-admins -%>
-                <% if @tech_admin -%>
-                  <li>
-                    <%= link_to_unless_current t('layouts.application.import'),
-                                               { :controller => 'importers',
-                                                 :action => 'list' },
-                                               :tabindex => '2' %>
-                  </li>
-                <% end -%>
-                <% if @current_basket != @site_basket -%>
-                  <li>
-                    <%= link_to_unless_current t('layouts.application.delete'),
-                                               { :controller => 'baskets',
-                                                 :action => 'destroy',
-                                                 :id => @current_basket, },
-                                               :confirm => t('layouts.application.delete_confirmation'),
-                                               :method => 'post',
-                                               :tabindex => '2' %>
-                  </li>
-                <% end %>
-              </ul>
+              <p>
+	      <%= link_to_unless_current t('layouts.application.preferences'),
+	      { :controller => 'baskets',
+	      :action => 'edit',
+	      :id => @current_basket },
+	      :tabindex => '2' %>
+              |
+	      <%= link_to_unless_current t('layouts.application.moderate'),
+	      { :controller => 'moderate',
+	      :action => 'list' },
+	      :tabindex => '2' %>
+              |
+	      <%= link_to_unless_current t('layouts.application.members'),
+	      { :controller => 'members',
+	      :action => 'list' },
+	      :tabindex => '2' %>
+	      <% # when this is more refined, may open this up to non-tech-admins -%>
+	      <% if @tech_admin -%>
+	      |
+	      <%= link_to_unless_current t('layouts.application.import'),
+	      { :controller => 'importers',
+	      :action => 'list' },
+	      :tabindex => '2' %>
+	      <% end -%>
+	      <% if @current_basket != @site_basket -%>
+	      |
+	      <%= link_to_unless_current t('layouts.application.delete'),
+	      { :controller => 'baskets',
+	      :action => 'destroy',
+	      :id => @current_basket, },
+	      :confirm => t('layouts.application.delete_confirmation'),
+	      :method => 'post',
+	      :tabindex => '2' %>
+	      <% end %>
+              </p>
             </div>
           <% end %>
 
