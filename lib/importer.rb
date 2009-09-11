@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'rexml/document'
 require 'tempfile'
 require 'fileutils'
@@ -97,10 +98,20 @@ module Importer
         logger.info("what is current basket: " + @current_basket.inspect)
         @import_topic_type = @import.topic_type
         @zoom_class_for_params = @zoom_class.tableize.singularize
-        @xml_path_to_record ||= @import.xml_path_to_record
+        # Walter McGinnis, 2009-09-11
+        # excel bulk import patch - backported from 1.3
+        # @xml_path_to_record ||= @import.xml_path_to_record
+        @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
         @record_interval = @import.interval_between_records
 
         params = args[:params]
+
+        # Walter McGinnis, 2009-09-11
+        # excel bulk import patch - backported from 1.3
+        # some import types will take data in type specific format
+        # and convert to standard records.xml that importer expects
+        # this is done simply by defining a records_pre_processor method in worker class
+        records_pre_processor if defined?(records_pre_processor)
 
         # trimming of file
         @path_to_trimmed_records = "#{@import_dir_path}/records_trimmed.xml"
@@ -347,7 +358,10 @@ module Importer
       # that is a title synonym, we go with last match just in case
       title = nil
       record_hash.keys.each do |field_name|
-        title = record_hash[field_name].strip if TITLE_SYNONYMS.include?(field_name)
+        # Walter McGinnis, 2009-09-11
+        # excel bulk import patch - backported from 1.3
+        # title = record_hash[field_name].strip if TITLE_SYNONYMS.include?(field_name)
+        title = record_hash[field_name].strip if field_name == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
       end
       existing_item = @current_basket.topics.find_by_title(title)
 
