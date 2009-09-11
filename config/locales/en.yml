@@ -1314,6 +1314,9 @@ en:
       accessions_xml: "Optional: accessions.xml - only applicable if this is a Past Perfect import."
       applicable_topic_type: Applicable {{t.base.zoom_types.topic.capitalize}} Type?
       applicable_topic_type_description: If this is an {{t.base.zoom_types.image}} import, such as Past Perfect, than what's the name of the {{t.base.zoom_types.topic.capitalize}} Type of the new {{t.base.zoom_types.topic}} for groups of {{t.base.related}} {{t.base.item.pluralize}} (e.g. 'Archive', 'Collection', 'Album')? If this is a text only import such as FMPDSORESULT, than this is the {{t.base.zoom_types.topic.capitalize}} Type of new {{t.base.zoom_types.topic}} that is {{t.base.created}}.
+      applicable_zoom_class: Applicable {{t.base.item.capitalize}} Type?
+      applicable_zoom_class_description: If this is an Excel based import, than what type of item of item should we create per row?
+      audio: "{{t.base.zoom_types.audio.capitalize}}"
       conventions_note: "To start an import, you must follow several conventions:"
       default_privacy_setting: Default Privacy Setting
       delay_between_records: How long should we wait in seconds between processing records?
@@ -1323,10 +1326,13 @@ en:
       description_template_end_description: Should we append an piece of text formatted in HTML to the end of the description of each piece of content that is {{t.base.created}} during this import?  An example would be "&lt;p&gt;Any use of this {{t.base.zoom_types.image}} must be accompanied by the cr{{t.base.edit}} 'Horowhenua Historical Society Inc.'&lt;\p&gt;".  Useful for including an attribution for the source of the imported {{t.base.item}}.
       description_template_start: Beginning Description Template
       description_template_start_description: A piece of HTML that will go at the start of every description during this import.
+      document: "{{t.base.zoom_types.document.capitalize}}"
+      excel_based: Excel based
       extended_fields: You have mapped the applicable fields in the records.xml file to appropriate Extended Fields' import synonyms. Import Synonyms must be an exact match for the field in the records.xml file. See "extended fields" link in {{t.layouts.application.toolbox_label}}.  You'll also want to {{t.base.add}} these extended fields to the appropriate {{t.base.zoom_types.topic.capitalize}} Type or Content Type.
       filemaker_pro: Filemaker Pro's FMPDSORESULT XML format (text records only, no associated images)
       fill_in_form: If you have done the above, fill out the form below to start the import.
       folder_name: your_folder
+      image: "{{t.base.zoom_types.image.capitalize}}"
       images_folder: "Optional: a subfolder named 'images' - For your folders containing images or {{t.base.zoom_types.image}} files themselves. For example if you had a folder of images called 001, you would put it inside your_folder/images/ and then images would found be at location like your_folder/images/001/an_image.jpg."
       import_button: Import
       import_type: Import Type?
@@ -1346,8 +1352,10 @@ en:
       tags: What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas)?
       tags_description: These {{t.base.tag.pluralize}} will be {{t.base.added}} to every {{t.base.item}} in the import in addition to whatever is specified as a {{t.base.tag}} per record.
       title: New Import
+      topic: "{{t.base.zoom_types.topic.capitalize}}"
       topic_type: "Optional: you have {{t.base.created}} a {{t.base.zoom_types.topic.capitalize}} Type (\"{{t.base.zoom_types.topic}} types\" link under {{t.layouts.application.toolbox_label}}) to group {{t.base.related}} {{t.base.item.pluralize}} together, such as \"Collection\" or be the {{t.base.zoom_types.topic}} type for new topics in the case of text only imports."
       transfer_is_done_manually: <b>You will have to transfer the files involved to the server which houses your kete installation via a separate process.</b>  We do this separately since imports may involve a large amount of big files and the method necessary may vary depending on your installation.
+      video: "{{t.base.zoom_types.video.capitalize}}"
       what_is_folder_name: What is the name of your folder under the imports directory?
       xml_path_to_records: "XML Path to Record (only applicable to Simple XML {{t.base.zoom_types.topic.capitalize.pluralize}} type):"
       xml_path_to_records_description: What is the XML element path that specifies each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'.
@@ -1434,15 +1442,15 @@ en:
       documentation: documentation
       extended_fields: extended fields
       home: Home
-      import: import content into {{t.base.basket}}
+      import: import content
       licenses: administer licenses
       login: "{{t.base.login.capitalize}}"
       logout: Logout
-      members: "{{t.base.basket}} {{t.base.member.pluralize}}"
-      moderate: moderate {{t.base.basket}} contents
+      members: "{{t.base.member.pluralize}}"
+      moderate: moderate contents
       my_baskets: my {{t.base.basket.pluralize}}
       oai_pmh: OAI PMH Sets
-      preferences: "{{t.base.basket}} preferences"
+      preferences: "preferences"
       rebuild: Rebuild {{t.base.search}} databases
       register: "{{t.base.register.capitalize}}"
       rss: RSS feed for these {{t.base.item.pluralize}}

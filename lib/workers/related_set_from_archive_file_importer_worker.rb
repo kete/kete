@@ -1,5 +1,3 @@
-require 'rexml/document'
-require 'redcloth'
 require "importer"
 # generic simple topic importer
 # must have xml_to_record_path specified

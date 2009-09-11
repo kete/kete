@@ -48,12 +48,7 @@
 
   <div class="form-element">
     <label for="zoom_class"><%=t 'importers.new_related_set_from_archive_file.whats_the_upload' %></label>
-    <% options = Array.new
-    ATTACHABLE_CLASSES.each do |item_class_name|
-      selected = (@zoom_class_name == item_class_name) ? " selected='selected'" : ''
-      options << "<option value='#{item_class_name}'#{selected}>#{zoom_class_plural_humanize(item_class_name)}</option>"
-    end -%>
-    <%= select_tag 'zoom_class', options.join('') -%>
+    <%= select_tag 'zoom_class', attachable_classes_as_options, { :id => 'zoom_class', :tabindex => '1' }  -%>
   </div>
 
   <div class="form-element">

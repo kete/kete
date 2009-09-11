@@ -94,10 +94,15 @@ module Importer
         logger.info("what is current basket: " + @current_basket.inspect)
         @import_topic_type = @import.topic_type
         @zoom_class_for_params = @zoom_class.tableize.singularize
-        @xml_path_to_record ||= @import.xml_path_to_record
+        @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
         @record_interval = @import.interval_between_records
 
         params = args[:params]
+
+        # some import types will take data in type specific format
+        # and convert to standard records.xml that importer expects
+        # this is done simply by defining a records_pre_processor method in worker class
+        records_pre_processor if defined?(records_pre_processor)
 
         # trimming of file
         @path_to_trimmed_records = "#{@import_dir_path}/records_trimmed.xml"
