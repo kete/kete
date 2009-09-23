@@ -1245,43 +1245,41 @@ class ApplicationController < ActionController::Base
   end
 
   # setup a few variables that will be used on topic/audio/etc items
-  # pass in the item type in class format (AudioRecording), and whether
-  # you want the item always loaded, or only when everything isn't cached
-  def prepare_item_variables_for(zoom_class, always_load=false)
+  # pass in the item type in class format (AudioRecording)
+  def prepare_item_variables_for(zoom_class)
     if !ZOOM_CLASSES.member?(zoom_class)
       raise(ArgumentError, "zoom_class name expected. #{zoom_class} is not registered in #{ZOOM_CLASSES}.")
     end
 
-    # on certain items, always load the item, since we check
-    # for blank version to determine whether to show it
-    @item = @current_basket.send(zoom_class.tableize).find(params[:id]) if always_load
+    item = @current_basket.send(zoom_class.tableize).find(params[:id])
 
     @show_privacy_chooser = true if permitted_to_view_private_items?
 
-    if params[:format] == 'xml' || !has_all_fragments? || allowed_to_access_private_version_of?(@item)
-      @item = @current_basket.send(zoom_class.tableize).find(params[:id]) unless always_load
-      public_or_private_version_of(@item)
-      privacy = get_acceptable_privacy_type_for(@item)
+    if params[:format] == 'xml' || !has_all_fragments? || allowed_to_access_private_version_of?(item)
+      public_or_private_version_of(item)
+      privacy = get_acceptable_privacy_type_for(item)
 
       if params[:format] == 'xml' || !has_fragment?({ :part => "page_title_#{privacy}" })
-        @title = @item.title
+        @title = item.title
       end
 
       if params[:format] == 'xml' || !has_fragment?({ :part => "contributor_#{privacy}" })
-        @creator = @item.creator
-        @last_contributor = @item.contributors.last || @creator
+        @creator = item.creator
+        @last_contributor = item.contributors.last || @creator
       end
 
       if logged_in? && @at_least_a_moderator
         if params[:format] == 'xml' || !has_fragment?({ :part => "comments-moderators_#{privacy}" })
-          @comments = @item.non_pending_comments
+          @comments = item.non_pending_comments
         end
       else
         if params[:format] == 'xml' || !has_fragment?({ :part => "comments_#{privacy}" })
-          @comments = @item.non_pending_comments
+          @comments = item.non_pending_comments
         end
       end
     end
+
+    item
   end
 
   def rescue_404

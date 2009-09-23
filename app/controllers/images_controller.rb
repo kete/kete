@@ -10,8 +10,7 @@ class ImagesController < ApplicationController
   end
 
   def show
-    prepare_item_variables_for("StillImage", true)
-    @still_image = @item
+    @still_image = prepare_item_variables_for("StillImage")
 
     @view_size = params[:view_size] || "medium"
     @image_file = ImageFile.find_by_thumbnail_and_still_image_id(@view_size, params[:id])

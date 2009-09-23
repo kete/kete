@@ -10,8 +10,7 @@ class VideoController < ApplicationController
   end
 
   def show
-    prepare_item_variables_for("Video", true)
-    @video = @item
+    @video = prepare_item_variables_for("Video")
 
     respond_to do |format|
       format.html
