@@ -608,7 +608,7 @@ class ApplicationController < ActionController::Base
     return unless ZOOM_CLASSES.include?(zoom_class_from_controller(params[:controller]))
     SearchSource.all.each do |source|
       next unless ((Time.now - source.updated_at) / 60 > source.cache_interval)
-      expire_fragment({ :action => 'show', :id => @cache_id, :search_source => source.title_id })
+      expire_fragment({ :action => 'show', :id => @cache_id, :search_source => source.title_id, :title => @current_item.to_param })
       source.update_attribute(:updated_at, Time.now)
     end
   end
