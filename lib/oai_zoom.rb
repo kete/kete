@@ -113,6 +113,8 @@ module OaiZoom
       @import_request = options[:import_request]
       skip_private = options[:skip_private]
 
+      was_private = private? # store whether the item was private or not before the reload
+
       reload # get the the most up to date version of self
 
       # This is always the public version..
@@ -136,6 +138,8 @@ module OaiZoom
         raise "Could not return to public version" if private? && !self.is_a?(Comment)
 
       end
+
+      private_version! if was_private # restore the privacy before we reloaded
     end
 
 
