@@ -1251,35 +1251,35 @@ class ApplicationController < ActionController::Base
       raise(ArgumentError, "zoom_class name expected. #{zoom_class} is not registered in #{ZOOM_CLASSES}.")
     end
 
-    item = @current_basket.send(zoom_class.tableize).find(params[:id])
+    @current_item = @current_basket.send(zoom_class.tableize).find(params[:id])
 
     @show_privacy_chooser = true if permitted_to_view_private_items?
 
-    if params[:format] == 'xml' || !has_all_fragments? || allowed_to_access_private_version_of?(item)
-      public_or_private_version_of(item)
-      privacy = get_acceptable_privacy_type_for(item)
+    if params[:format] == 'xml' || !has_all_fragments? || allowed_to_access_private_version_of?(@current_item)
+      public_or_private_version_of(@current_item)
+      privacy = get_acceptable_privacy_type_for(@current_item)
 
       if params[:format] == 'xml' || !has_fragment?({ :part => "page_title_#{privacy}" })
-        @title = item.title
+        @title = @current_item.title
       end
 
       if params[:format] == 'xml' || !has_fragment?({ :part => "contributor_#{privacy}" })
-        @creator = item.creator
-        @last_contributor = item.contributors.last || @creator
+        @creator = @current_item.creator
+        @last_contributor = @current_item.contributors.last || @creator
       end
 
       if logged_in? && @at_least_a_moderator
         if params[:format] == 'xml' || !has_fragment?({ :part => "comments-moderators_#{privacy}" })
-          @comments = item.non_pending_comments
+          @comments = @current_item.non_pending_comments
         end
       else
         if params[:format] == 'xml' || !has_fragment?({ :part => "comments_#{privacy}" })
-          @comments = item.non_pending_comments
+          @comments = @current_item.non_pending_comments
         end
       end
     end
 
-    item
+    @current_item
   end
 
   def rescue_404
