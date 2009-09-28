@@ -58,26 +58,36 @@
     <div class="form_example"><%=t 'importers.new.delay_between_records_explaination' %></div>
   </div>
 
-  <% @type_options = [[t('importers.new.past_perfect'), 'past_perfect4'],
-                      [t('importers.new.filemaker_pro'), 'fmpdsoresult_no_images'],
-                      [t('importers.new.simple_xml'), 'simple_topic']] -%>
+  <% @type_options = [[t('importers.new.excel_based'), 'excel_based'],
+     [t('importers.new.past_perfect'), 'past_perfect4'],
+     [t('importers.new.filemaker_pro'), 'fmpdsoresult_no_images'],
+     [t('importers.new.simple_xml'), 'simple_topic']
+     ] -%>
 
   <div class="form-element">
     <label class="required" for="import_xml_type"><%=t 'importers.new.import_type' %></label>
     <%= form.select :xml_type, @type_options %>
   </div>
 
-  <div class="form-element">
+  <div class="form-element" style="display:none" id="import_xml_path">
     <label for="import_xml_path_to_record"><%=t 'importers.new.xml_path_to_records' %></label>
     <%= form.text_field :xml_path_to_record %>
     <div class="form_example"><%=t 'importers.new.xml_path_to_records_description' %></div>
   </div>
 
-  <div class="form-element">
+  <div class="form-element" id="import_topic_type" style="display:none">
     <label for="import_topic_type_id"><%=t 'importers.new.applicable_topic_type' %></label>
     <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, {:class=>"select"}) %>
     <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
   </div>
+
+  <div class="form-element" id="zoom">
+    <label for="zoom_class"><%= t 'importers.new.applicable_zoom_class'  -%></label>
+    <%= select_tag 'zoom_class', attachable_classes_as_options, { :id => 'zoom_class', :tabindex => '1' } %>
+    <div class="form_example"><%=t 'importers.new.applicable_zoom_class_description' -%></div>
+  </div>
+
+  <%= xml_type_js_observer -%>
 
   <% if show_privacy_controls? %>
     <div class="form-element">
