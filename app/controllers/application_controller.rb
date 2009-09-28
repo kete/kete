@@ -1245,8 +1245,8 @@ class ApplicationController < ActionController::Base
   end
 
   # setup a few variables that will be used on topic/audio/etc items
-  # pass in the item type in class format (AudioRecording)
-  def prepare_item_variables_for(zoom_class)
+  def prepare_item_and_vars
+    zoom_class = zoom_class_from_controller(params[:controller])
     if !ZOOM_CLASSES.member?(zoom_class)
       raise(ArgumentError, "zoom_class name expected. #{zoom_class} is not registered in #{ZOOM_CLASSES}.")
     end

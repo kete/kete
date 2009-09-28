@@ -13,7 +13,7 @@ class WebLinksController < ApplicationController
   end
 
   def show
-    @web_link = prepare_item_variables_for("WebLink")
+    @web_link = prepare_item_and_vars
 
     respond_to do |format|
       format.html

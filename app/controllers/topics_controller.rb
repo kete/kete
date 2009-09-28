@@ -12,7 +12,7 @@ class TopicsController < ApplicationController
   end
 
   def show
-    @topic = prepare_item_variables_for('Topic')
+    @topic = prepare_item_and_vars
 
     respond_to do |format|
       format.html

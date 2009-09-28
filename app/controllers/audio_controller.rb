@@ -10,7 +10,7 @@ class AudioController < ApplicationController
   end
 
   def show
-    @audio_recording = prepare_item_variables_for("AudioRecording")
+    @audio_recording = prepare_item_and_vars
 
     respond_to do |format|
       format.html

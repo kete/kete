@@ -10,7 +10,7 @@ class DocumentsController < ApplicationController
   end
 
   def show
-    @document = prepare_item_variables_for("Document")
+    @document = prepare_item_and_vars
 
     respond_to do |format|
       format.html
