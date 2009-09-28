@@ -32,9 +32,16 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
     # create an array of column names
     # column name's array index will be used to name output XML element
     # to data rows' data value
+    # empty cells will be called __No_Name__
+    # they likely hold empty values (one assumes spacers columns or perhaps undetected end of row columns)
     names_array = Array.new
     names_row.search("Cell").each do |cell|
-      names_array << cell.at("Data").text
+      data = cell.at("Data")
+      if data
+        names_array << data.text
+      else
+        names_array << "__No_Name__"
+      end
     end
 
     # and pop spec row off rows
@@ -53,7 +60,7 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
               cell.search("Data").each do |data|
                 value << data.inner_text
               end
-
+              
               element_name = names_array[cell_index].gsub(' ', '_')
 
               # we use "path_to_file" internally, but "File" or "file" are likely the column name
@@ -61,7 +68,6 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
               element_name = 'path_to_file' if element_name == 'File' || element_name == 'file'
 
               # resolve the absolute path of file
-              logger.debug("whta is value: " + value.inspect)
               if element_name == 'path_to_file'
                 value = @import_dir_path + '/files/' + value[0]
                 value.to_a
