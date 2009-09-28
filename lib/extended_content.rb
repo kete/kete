@@ -649,7 +649,7 @@ module ExtendedContent
       
       end
 
-      builder.to_xml.gsub("<?xml version=\"1.0\"?>\n<root>","").gsub("</root>", '').gsub("\n", '')
+      builder.to_xml.gsub(/>\s*</, '><').gsub("<?xml version=\"1.0\"?><root>","").gsub("</root>", '').gsub("\n", '')
     end
 
     def convert_xml_to_extended_fields_hash

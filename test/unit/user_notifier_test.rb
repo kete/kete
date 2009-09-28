@@ -10,7 +10,7 @@ class UserNotifierTest < ActionMailer::TestCase
 
     setup do
       @user = User.first
-      Usernotifier.deliver_item_flagged_for(@user, 'http://www.example.com/', 'pending', @user, @user, 1, 'test message')
+      UserNotifier.deliver_item_flagged_for(@user, 'http://www.example.com/', 'pending', @user, @user, 1, 'test message')
       @email_body = ActionMailer::Base.deliveries.first.body
     end
 

@@ -36,8 +36,8 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
           item.oai_dc_xml_dc_relations_and_subjects(xml, { :host => "www.example.com" })
         end
 
-        expect = "<?xml version=\"1.0\"?>\n<root><dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://www.example.com/site/topics/show/#{parent.id}</dc:relation></root>\n"
-        assert_equal expect, builder.to_xml
+        expect = "<?xml version=\"1.0\"?><root><dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://www.example.com/site/topics/show/#{parent.id}</dc:relation></root>\n"
+        assert_equal expect, builder.to_xml.gsub(/>\s*</, '><')
       end
 
     end

@@ -165,13 +165,7 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_relations_and_subjects(xml, passed_request = nil)
-      if !passed_request.nil?
-        host = passed_request[:host]
-      else
-        host = simulated_request[:host]
-      end
-
+    def oai_dc_xml_dc_relations_and_subjects(xml, passed_request = {})
       # in theory, direct comments might be added in as relations here
       # but since there url is the thing they are commenting on
       # then it's overkill
@@ -184,13 +178,13 @@ module OaiDcHelpers
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
         } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
-        xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }))
+        xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }.merge(passed_request)))
       else
         related_items.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
           } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
-          xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }))
+          xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(passed_request)))
         end
       end
     end

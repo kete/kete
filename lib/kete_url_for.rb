@@ -17,9 +17,7 @@ module KeteUrlFor
 
       location[:protocol] = 'http' if options[:force_http]
 
-      if RAILS_ENV != 'test'
-        location[:host] = options[:host] || SITE_NAME
-      end
+      location[:host] = options[:host] || SITE_NAME
 
       location.merge!({ :id => item.id, :private => nil }) if options[:minimal]
 
