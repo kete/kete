@@ -115,7 +115,15 @@ module Importer
 
         # trimming of file
         @path_to_trimmed_records = "#{@import_dir_path}/records_trimmed.xml"
-        @path_to_trimmed_records = importer_trim_fat_from_xml_import_file("#{@import_dir_path}/records.xml",@path_to_trimmed_records)
+        # @skip_trimming is set in records_pre_processor (or not if it is not run)
+        # just use records.xml if we should skip trimming
+        records_xml_path = "#{@import_dir_path}/records.xml"
+        if @skip_trimming
+          @path_to_trimmed_records = records_xml_path
+        else
+          @path_to_trimmed_records = importer_trim_fat_from_xml_import_file(records_xml_path, @path_to_trimmed_records)
+        end
+
         @import_records_xml = REXML::Document.new File.open(@path_to_trimmed_records)
 
         # variables assigned, files good to go, we're started
@@ -126,7 +134,7 @@ module Importer
         @results[:records_processed] = 0
         cache[:results] = @results
         @import_records_xml.elements.each(@xml_path_to_record) do |record|
-          importer_process(record, params)
+          importer_process(record, params) unless record.content.blank?
         end
         importer_update_processing_vars_at_end
       rescue
@@ -269,22 +277,31 @@ module Importer
       # if we can't find the file, try downcasing or upcasing the extension
       # also try escaping any spaces
 
-      if !File.exists?(path_to_file_to_grab)
+      if !File.exist?(path_to_file_to_grab)
         logger.debug("path_to_file_to_grab no match yet")
 
-        file_name_array = the_file_name.scan(/(.+)(\.[^\d]+$)/)[0]
-        file_name_no_extension = file_name_array[0]
-        extension = file_name_array[1]
+        # Try case insensitive check
+        # this may not work on all systems, so falling back to only checking extensions after
+        case_insensitive_matches = Dir.glob(path_to_file_to_grab, File::FNM_CASEFOLD)
+        if case_insensitive_matches.any?
+            path_to_file_to_grab = case_insensitive_matches.first
+            logger.debug("path_to_file_to_grab is different by case: " + path_to_file_to_grab)
+        else
 
-        downer = directories_up_to + file_name_no_extension + extension.downcase
-        upper = directories_up_to + file_name_no_extension + extension.upcase
+          file_name_array = the_file_name.scan(/(.+)(\.[^\d]+$)/)[0]
+          file_name_no_extension = file_name_array[0]
+          extension = file_name_array[1]
 
-        if File.exists?(downer)
-          path_to_file_to_grab = downer
-          logger.debug("path_to_file_to_grab is downer: " + path_to_file_to_grab)
-        elsif File.exists?(upper)
-          path_to_file_to_grab = upper
-          logger.debug("path_to_file_to_grab is upper: " + path_to_file_to_grab)
+          downer = directories_up_to + file_name_no_extension + extension.downcase
+          upper = directories_up_to + file_name_no_extension + extension.upcase
+
+          if File.exist?(downer)
+            path_to_file_to_grab = downer
+            logger.debug("path_to_file_to_grab is downer: " + path_to_file_to_grab)
+          elsif File.exist?(upper)
+            path_to_file_to_grab = upper
+            logger.debug("path_to_file_to_grab is upper: " + path_to_file_to_grab)
+          end
         end
       end
 
@@ -363,7 +380,7 @@ module Importer
         # title = record_hash[field_name].strip if TITLE_SYNONYMS.include?(field_name)
         title = record_hash[field_name].strip if field_name == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
       end
-      existing_item = @current_basket.topics.find_by_title(title)
+      existing_item = @current_basket.send(@zoom_class_for_params.pluralize).find_by_title(title)
 
       new_record = nil
       if existing_item.nil?
