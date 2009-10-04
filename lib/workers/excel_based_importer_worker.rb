@@ -20,6 +20,10 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
   def records_pre_processor
     path_to_records_file_output = @import_dir_path + '/records.xml'
     path_to_xl_xml_file = @import_dir_path + '/records.xl.xml'
+    
+    # we don't need a separate trimming of fat from the xml file
+    # as Nokogiri does that for use in XML building process
+    @skip_trimming = true
 
     return if File.exist?(path_to_records_file_output)
 
@@ -68,7 +72,7 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
               element_name = 'path_to_file' if element_name == 'File' || element_name == 'file'
 
               # resolve the absolute path of file
-              if element_name == 'path_to_file'
+              if element_name == 'path_to_file' && !value[0].blank?
                 value = @import_dir_path + '/files/' + value[0]
                 value.to_a
               end

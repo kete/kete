@@ -402,7 +402,13 @@ class PqfQuery
     should_be_exact = options[:should_be_exact] || false
     inner_operator = options[:inner_operator] || '@or'
 
-    query_part += QUALIFYING_ATTRIBUTE_SPECS['exact'] if should_be_exact
+    if should_be_exact
+      # strip out partial qualify attribute spec if it is in there
+      query_part = query_part.gsub(QUALIFYING_ATTRIBUTE_SPECS['partial'], '')
+
+      # now add in exact qualifying attribute spec
+      query_part += QUALIFYING_ATTRIBUTE_SPECS['exact']
+    end
 
     if term_or_terms.size == 1
       query_part += "\"#{term_or_terms}\""
