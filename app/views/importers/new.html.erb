@@ -75,19 +75,20 @@
     <div class="form_example"><%=t 'importers.new.xml_path_to_records_description' %></div>
   </div>
 
-  <div class="form-element" id="import_topic_type" style="display:none">
+  <div class="form-element" id="zoom">
+    <label for="zoom_class"><%= t 'importers.new.applicable_zoom_class'  -%></label>
+    <%= select_tag 'zoom_class', item_classes_as_options, { :id => 'zoom_class', :tabindex => '1' } %>
+    <div class="form_example"><%=t 'importers.new.applicable_zoom_class_description' -%></div>
+  </div>
+
+  <div class="form-element" id="import_topic_type">
     <label for="import_topic_type_id"><%=t 'importers.new.applicable_topic_type' %></label>
     <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, {:class=>"select"}) %>
     <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
   </div>
 
-  <div class="form-element" id="zoom">
-    <label for="zoom_class"><%= t 'importers.new.applicable_zoom_class'  -%></label>
-    <%= select_tag 'zoom_class', attachable_classes_as_options, { :id => 'zoom_class', :tabindex => '1' } %>
-    <div class="form_example"><%=t 'importers.new.applicable_zoom_class_description' -%></div>
-  </div>
-
   <%= xml_type_js_observer -%>
+  <%= zoom_class_js_observer -%>
 
   <% if show_privacy_controls? %>
     <div class="form-element">
