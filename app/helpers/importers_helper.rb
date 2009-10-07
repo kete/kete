@@ -34,14 +34,41 @@ module ImportersHelper
         });
       ")
   end
-  
-  def attachable_classes_as_options
-    options = Array.new
-    ATTACHABLE_CLASSES.each do |item_class_name|
-      selected = (@zoom_class_name == item_class_name) ? " selected='selected'" : ''
-      options << "<option value='#{item_class_name}'#{selected}>#{zoom_class_plural_humanize(item_class_name)}</option>"
-    end
-    options.join('')
+
+  def zoom_class_js_observer
+    javascript_tag("
+        $('zoom_class').observe('change', function() {
+          value = $('zoom_class').value;
+          // hide the topic_type field if this class doesn't need it
+          if ( value == 'Topic' ) {
+            $('import_topic_type').show();
+            $('import_topic_type_id').disabled = false;
+          } else {
+            $('import_topic_type_id').value = '';
+            $('import_topic_type_id').disabled = true;
+            $('import_topic_type').hide();
+          }
+        });
+      ")
   end
+  
+  # dynamically define query methods for our attribute specs
+  def self.define_options_method_for(constant_name)
+    method_name = constant_name.downcase + '_as_options'
+
+    # create the template code
+    code = Proc.new {
+      options = Array.new
+      constant_name.constantize.each do |item_class_name|
+        selected = (@zoom_class_name == item_class_name) ? " selected='selected'" : ''
+        options << "<option value='#{item_class_name}'#{selected}>#{zoom_class_plural_humanize(item_class_name)}</option>"
+      end
+      options.join('')
+    }
+
+    define_method(method_name, &code)
+  end
+  
+  ["ATTACHABLE_CLASSES", "ITEM_CLASSES"].each { |constant_name| define_options_method_for(constant_name) }
 
 end
