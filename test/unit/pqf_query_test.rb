@@ -78,7 +78,7 @@ class PqfQueryTest < ActiveSupport::TestCase
     }
     assert_equal datetime_comparison_specs, @dtcs
 
-    do_not_auto_def_include_methods_for = ["date_sort", "last_modified_sort"]
+    do_not_auto_def_include_methods_for = ["last_modified_sort", "date_sort"]
     assert_equal do_not_auto_def_include_methods_for, @dnadimf
   end
 
