@@ -452,8 +452,8 @@ namespace :kete do
       new_mime_types =  [
                           [ 'Image Content Types',    [ 'image/quicktime', 'image/x-quicktime', 'image/x-ms-bmp' ] ],
                           [ 'Document Content Types', [ 'application/x-zip', 'application/x-zip-compressed', 'application/x-compressed-tar' ] ],
-                          [ 'Video Content Types',    [ 'application/flash-video', 'application/x-flash-video', 'video/x-flv', 'video/mp4', 'video/x-m4v' ] ],
-                          [ 'Audio Content Types',    [ 'audio/mpg', 'audio/x-mpeg', 'audio/wav', 'audio/x-vorbis+ogg' ] ]
+                          [ 'Video Content Types',    [ 'application/flash-video', 'application/x-flash-video', 'video/x-flv', 'video/mp4', 'video/x-m4v', 'video/ogg', 'application/ogg', 'video/theora'] ],
+                          [ 'Audio Content Types',    [ 'audio/mpg', 'audio/x-mpeg', 'audio/wav', 'audio/x-vorbis+ogg', 'audio/ogg', 'application/ogg', 'audio/vorbis', 'audio/speex', 'audio/flac'] ]
                         ]
       new_mime_types.each do |settings|
         setting = SystemSetting.find_by_name(settings.first)
