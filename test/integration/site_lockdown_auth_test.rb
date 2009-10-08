@@ -3,11 +3,11 @@ require File.dirname(__FILE__) + '/integration_test_helper'
 class SiteLockdownAuthTest < ActionController::IntegrationTest
 
   context "When viewing various pages, and" do
-    
+
     setup do
       add_alice_as_regular_user
       login_as('alice')
-      @topic = new_topic
+      @topic = new_topic :title => 'Kete'
       @pages = ['/',
                 '/site/all/topics',
                 '/site/baskets/choose_type',
@@ -65,7 +65,7 @@ class SiteLockdownAuthTest < ActionController::IntegrationTest
       end
 
     end
-    
+
   end
 
 end
