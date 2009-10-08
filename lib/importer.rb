@@ -134,7 +134,7 @@ module Importer
         @results[:records_processed] = 0
         cache[:results] = @results
         @import_records_xml.elements.each(@xml_path_to_record) do |record|
-          importer_process(record, params) unless record.text.blank?
+          importer_process(record, params) if record.has_elements?
         end
         importer_update_processing_vars_at_end
       rescue
@@ -243,6 +243,7 @@ module Importer
       extra_fields = options[:extra_fields] || Array.new
       extra_fields << 'tag_list'
       extra_fields << 'uploaded_data'
+      extra_fields << 'url'
 
       replacement_hash = Hash.new
 
@@ -605,6 +606,10 @@ module Importer
 
             if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
               tag_list_array << value.gsub("\n", " ")
+            end
+
+            if zoom_class == 'WebLink' && record_field.upcase == 'URL'
+              params[zoom_class_for_params][:url] = value
             end
 
             # path_to_file is special case, we know we have an associated file that goes in uploaded_data
