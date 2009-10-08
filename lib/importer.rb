@@ -134,7 +134,7 @@ module Importer
         @results[:records_processed] = 0
         cache[:results] = @results
         @import_records_xml.elements.each(@xml_path_to_record) do |record|
-          importer_process(record, params) unless record.content.blank?
+          importer_process(record, params) unless record.text.blank?
         end
         importer_update_processing_vars_at_end
       rescue
