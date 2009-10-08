@@ -594,6 +594,10 @@ module Importer
               tag_list_array << value.gsub("\n", " ")
             end
 
+            if zoom_class == 'WebLink' && record_field.upcase == 'URL'
+              params[zoom_class_for_params][:url] = value
+            end
+
             # path_to_file is special case, we know we have an associated file that goes in uploaded_data
             if record_field == 'path_to_file'
               logger.debug("in path_to_file")
