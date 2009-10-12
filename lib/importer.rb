@@ -235,6 +235,8 @@ module Importer
       extra_fields << 'tag_list'
       extra_fields << 'uploaded_data'
 
+      extra_fields << 'url'
+
       replacement_hash = Hash.new
 
       params[item_key].keys.each do |field_key|
