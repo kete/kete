@@ -95,6 +95,10 @@ module ExtendedContentHelpers
           user_choice_addition = options[:user_choice_addition] || nil
         end
 
+        # In some cases, like XML imports, we pass in a string for choices.
+        # If that's the case, we need to convert it to a hash, split by comma
+        value = { "1" => value } if %w{ choice autocomplete }.include?(ftype) && value.is_a?(String)
+
         # With choices from a dropdown, we can have preset dropdown and custom text field
         # So before we go any further, make sure we convert the values from Hash to either
         # the preset or custom value depending on which one is filled in
@@ -132,9 +136,10 @@ module ExtendedContentHelpers
               # this will handle a number of cases, see comment in app/models/choice.rb
               # for details
               matching_choice = Choice.matching(l,v)
+              matching_choice_mapped = extended_field.choices.matching(l,v)
 
               # Handle the creation of new choices where the choice is not recognised.
-              if !matching_choice && %w(autocomplete choice).include?(ftype) && user_choice_addition
+              if !matching_choice_mapped && %w(autocomplete choice).include?(ftype) && user_choice_addition
                 sorted_values = value.dup.sort
                 index = sorted_values.index([k, v])
 
@@ -146,7 +151,7 @@ module ExtendedContentHelpers
                 parent = Choice.find_by_value(to_check) || Choice.find(1)
 
                 begin
-                  choice = Choice.create!(:value => v, :label => l)
+                  choice = matching_choice || Choice.create!(:value => v, :label => l)
                   choice.move_to_child_of(parent)
                   choice.save!
                   extended_field.choices << choice

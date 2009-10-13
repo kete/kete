@@ -169,7 +169,7 @@ module Importer
 
           params[zoom_class_for_params]['extended_content_values'] = Hash.new if \
             params[zoom_class_for_params]['extended_content_values'].nil?
-            
+
           if extended_field.multiple
             multiple_values = value.split(",")
             m_field_count = 1
@@ -192,7 +192,8 @@ module Importer
       params = options[:params]
       item_key = options[:item_key].to_sym
 
-      builder = Nokogiri::XML::Builder.new { |xml|
+      builder = Nokogiri::XML::Builder.new
+      builder.root do |xml|
 
         @fields.each do |field_to_xml|
           field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
@@ -209,8 +210,7 @@ module Importer
                                                    :value => m_value,
                                                    :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                                    :xsi_type => field_to_xml.extended_field_xsi_type,
-                                                   :ftype => field_to_xml.extended_field_ftype,
-                                                   :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
+                                                   :extended_field => field_to_xml.extended_field)
                   end
                 end
               end
@@ -222,15 +222,13 @@ module Importer
                                            :value => value,
                                            :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                            :xsi_type => field_to_xml.extended_field_xsi_type,
-                                           :ftype => field_to_xml.extended_field_ftype,
-                                           :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
+                                           :extended_field => field_to_xml.extended_field)
           end
         end
 
-      }
+      end
 
-      extended_content = builder.to_xml
-      params[item_key][:extended_content] = extended_content.gsub("<?xml version=\"1.0\"?>\n","").gsub("\n", '')
+      params[item_key][:extended_content] = builder.to_xml.gsub("<?xml version=\"1.0\"?>\n<root>","").gsub("</root>", '').gsub("\n", '')
       return params
     end
 
