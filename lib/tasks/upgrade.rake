@@ -235,10 +235,13 @@ namespace :kete do
         user_count += 1
       end
       # finally, lets removing the user name field mapping to prevent new user names from being set
-      content_type_id = ContentType.find_by_class_name('User').id
-      extended_field_id = ExtendedField.find_by_label('User Name').id
-      content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
-      content_mapping.destroy unless content_mapping.nil?
+      extended_field = ExtendedField.find_by_label('User Name')
+      if extended_field
+        content_type_id = ContentType.find_by_class_name('User').id
+        extended_field_id = extended_field.id
+        content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
+        content_mapping.destroy unless content_mapping.nil?
+      end
       p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
     end
 
