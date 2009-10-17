@@ -138,3 +138,15 @@ class String
     URI.decode(self)
   end
 end
+
+# A quick way to strip new lines, remove <?xml
+# and <root> tags, and remove excess whitespace
+module Nokogiri
+  module XML
+    class Builder
+      def to_stripped_xml
+        @doc.to_xml.gsub(/(^\s*|\s*$)/, '').gsub(/>(\n*|\s*)</, '><').gsub('<?xml version="1.0"?>', '').gsub(/(<root>|<\/root>)/, '')
+      end
+    end
+  end
+end

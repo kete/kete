@@ -41,8 +41,8 @@ class OaiDcHelpersTest < Test::Unit::TestCase
           oai_dc_xml_dc_relations_and_subjects(xml, item, {})
         end
 
-        expect = "<?xml version=\"1.0\"?>\n<root><dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://http://test.com/site/topics/show/#{parent.id}</dc:relation></root>\n"
-        assert_equal expect, builder.to_xml
+        expect = "<dc:subject><![CDATA[Parent Topic]]></dc:subject><dc:relation>http://http://test.com/site/topics/show/#{parent.id}</dc:relation>"
+        assert_equal expect, builder.to_stripped_xml
       end
 
     end
