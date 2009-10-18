@@ -1326,6 +1326,7 @@ en:
       description_template_end_description: Should we append an piece of text formatted in HTML to the end of the description of each piece of content that is {{t.base.created}} during this import?  An example would be "&lt;p&gt;Any use of this {{t.base.zoom_types.image}} must be accompanied by the cr{{t.base.edit}} 'Horowhenua Historical Society Inc.'&lt;\p&gt;".  Useful for including an attribution for the source of the imported {{t.base.item}}.
       description_template_start: Beginning Description Template
       description_template_start_description: A piece of HTML that will go at the start of every description during this import.
+      dfc_xml: DFC XML
       document: "{{t.base.zoom_types.document.capitalize}}"
       excel_based: Excel based
       extended_fields: You have mapped the applicable fields in the records.xml file to appropriate Extended Fields' import synonyms. Import Synonyms must be an exact match for the field in the records.xml file. See "extended fields" link in {{t.layouts.application.toolbox_label}}.  You'll also want to {{t.base.add}} these extended fields to the appropriate {{t.base.zoom_types.topic.capitalize}} Type or Content Type.

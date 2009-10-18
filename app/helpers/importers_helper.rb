@@ -12,17 +12,8 @@ module ImportersHelper
             $('import_xml_path_to_record').disabled = true;
             $('import_xml_path').hide();
           }
-          // hide the topic_type_id if this type doesn't need it
-          if ( value == 'past_perfect4' || value == 'fmpdsoresult_no_images' || value == 'simple_topic') {
-            $('import_topic_type_id').disabled = false;
-            $('import_topic_type').show();
-          } else {
-            $('import_topic_type_id').value = '';
-            $('import_topic_type_id').disabled = true;
-            $('import_topic_type').hide();
-          }
           // hide the zoom_class choice if this type doesn't need it
-          if ( value == 'excel_based') {
+          if ( value == 'excel_based' || value == 'dfc_xml' ) {
             $('zoom_class').disabled = false;
             $('zoom_class').value = 'Topic';
             $('zoom').show();
@@ -51,7 +42,7 @@ module ImportersHelper
         });
       ")
   end
-  
+
   # dynamically define query methods for our attribute specs
   def self.define_options_method_for(constant_name)
     method_name = constant_name.downcase + '_as_options'
@@ -68,7 +59,7 @@ module ImportersHelper
 
     define_method(method_name, &code)
   end
-  
+
   ["ATTACHABLE_CLASSES", "ITEM_CLASSES"].each { |constant_name| define_options_method_for(constant_name) }
 
 end
