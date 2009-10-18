@@ -646,10 +646,10 @@ module ExtendedContent
 
         # TODO: For some reason a bunch of duplicate extended fields are created. Work out why.
         end.flatten.uniq.join("\n")
-      
+
       end
 
-      builder.to_xml.gsub(/>\s*</, '><').gsub("<?xml version=\"1.0\"?><root>","").gsub("</root>", '').gsub("\n", '')
+      builder.to_stripped_xml
     end
 
     def convert_xml_to_extended_fields_hash

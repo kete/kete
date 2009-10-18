@@ -160,20 +160,37 @@ module Importer
 
           params[zoom_class_for_params]['extended_content_values'] = Hash.new if \
             params[zoom_class_for_params]['extended_content_values'].nil?
-            
-          if extended_field.multiple
-            multiple_values = value.split(",")
-            m_field_count = 1
-            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
-            multiple_values.each do |m_field_value|
-              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = m_field_value.strip
-              m_field_count += 1
+
+          if %w{ choice autocomplete }.include?(extended_field.ftype)
+            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] ||= Hash.new
+            if extended_field.multiple
+              value.split(',').each_with_index do |multiple_choice, multiple_index|
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(multiple_index + 1).to_s] ||= Hash.new
+                multiple_choice.strip.split('->').each_with_index do |choice, choice_index|
+                  params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(multiple_index + 1).to_s][(choice_index + 1).to_s] = choice.strip
+                end
+              end
+            else
+              value.split('->').each_with_index do |choice, choice_index|
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(choice_index + 1).to_s] = choice.strip
+              end
             end
           else
-            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value
+            if extended_field.multiple
+              multiple_values = value.split(",")
+              m_field_count = 1
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
+              multiple_values.each do |m_field_value|
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = m_field_value.to_s.strip
+                m_field_count += 1
+              end
+            else
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value.to_s
+            end
           end
         end
       end
+
       return params
     end
 
@@ -183,7 +200,8 @@ module Importer
       params = options[:params]
       item_key = options[:item_key].to_sym
 
-      builder = Nokogiri::XML::Builder.new { |xml|
+      builder = Nokogiri::XML::Builder.new
+      builder.root do |xml|
 
         @fields.each do |field_to_xml|
           field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
@@ -194,34 +212,31 @@ module Importer
                 hash_of_values.keys.each do |key|
                   xml.send(key.to_s) do
                     logger.debug("inside hash: key: " + key.to_s)
-                    m_value = hash_of_values[key].to_s
+                    m_value = hash_of_values[key]
                     extended_content_field_xml_tag(:xml => xml,
                                                    :field => field_name,
                                                    :value => m_value,
                                                    :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                                    :xsi_type => field_to_xml.extended_field_xsi_type,
-                                                   :ftype => field_to_xml.extended_field_ftype,
-                                                   :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
+                                                   :extended_field => field_to_xml.extended_field)
                   end
                 end
               end
             end
           else
-            value = params[item_key]['extended_content_values'][field_name] rescue ""
+            value = (params[item_key]['extended_content_values'][field_name] || "") rescue ""
             extended_content_field_xml_tag(:xml => xml,
                                            :field => field_name,
                                            :value => value,
                                            :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                            :xsi_type => field_to_xml.extended_field_xsi_type,
-                                           :ftype => field_to_xml.extended_field_ftype,
-                                           :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
+                                           :extended_field => field_to_xml.extended_field)
           end
         end
 
-      }
+      end
 
-      extended_content = builder.to_xml
-      params[item_key][:extended_content] = extended_content.gsub(/>\s*</, '><').gsub("<?xml version=\"1.0\"?>","").gsub("\n", '')
+      params[item_key][:extended_content] = builder.to_stripped_xml
       return params
     end
 
