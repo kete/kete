@@ -615,7 +615,7 @@ module Importer
             # path_to_file is special case, we know we have an associated file that goes in uploaded_data
             if record_field == 'path_to_file'
               logger.debug("in path_to_file")
-              if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class)
+              if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class) && File.exist?(value)
                 # we do a check earlier in the script for imagefile
                 # so we should have something to work with here
                 upload_hash = { :uploaded_data => copy_and_load_to_temp_file(value) }
