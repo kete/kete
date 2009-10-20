@@ -44,6 +44,8 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
               xml.send(field_name, value)
               titles[field_name] = value if %w{ Title Item_Listing Filename }.include?(field_name)
               is_accession_record = true if field_name == 'Record_Type' && value.downcase == 'accession'
+              # we use "path_to_file" internally, but "Filename" is the column name we get
+              xml.path_to_file(@import_dir_path + '/files/' + value) if field_name == 'Filename'
             end
             xml.Title(titles['Filename'] || 'Untitled') if titles['Title'].nil? || titles['Title'].blank?
             xml.Record_Identifier($1.strip.to_i) if is_accession_record && titles['Filename'] =~ /(\d+)/
