@@ -22,6 +22,12 @@ module ImportersHelper
             $('zoom_class').disabled = true;
             $('zoom').hide();
           }
+          // hide the related_topic_type choice if this type doesn't need it
+          if ( value == 'dfc_xml' ) {
+            $('import_related_topic_type').show();
+          } else {
+            $('import_related_topic_type').hide();
+          }
         });
       ")
   end

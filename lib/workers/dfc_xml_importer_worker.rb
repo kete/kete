@@ -10,6 +10,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
   # do_work method is defined in Importer module
   def create(args = nil)
     importer_simple_setup
+    @related_topic_key_field = "Accession"
   end
 
   # this takes dfc's standard xml export format
@@ -35,14 +36,17 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
         rows.each do |row|
           xml.record do
             titles = Hash.new
+            is_accession_record = false
             row.search("field").each do |field|
               value = field.inner_text.strip
               next if value.blank?
               field_name = field.attributes['name'].to_s || '__No_Name__'
               xml.send(field_name, value)
               titles[field_name] = value if %w{ Title Item_Listing Filename }.include?(field_name)
+              is_accession_record = true if field_name == 'Record_Type' && value.downcase == 'accession'
             end
-            xml.Title(titles['Filename'] || 'Untitled') if titles['Title'].blank?
+            xml.Title(titles['Filename'] || 'Untitled') if titles['Title'].nil? || titles['Title'].blank?
+            xml.Record_Identifier($1.strip.to_i) if is_accession_record && titles['Filename'] =~ /(\d+)/
           end
         end
       end

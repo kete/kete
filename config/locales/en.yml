@@ -1314,6 +1314,8 @@ en:
       accessions_xml: "Optional: accessions.xml - only applicable if this is a Past Perfect import."
       applicable_topic_type: Applicable {{t.base.zoom_types.topic.capitalize}} Type?
       applicable_topic_type_description: If this is an {{t.base.zoom_types.image}} import, such as Past Perfect, than what's the name of the {{t.base.zoom_types.topic.capitalize}} Type of the new {{t.base.zoom_types.topic}} for groups of {{t.base.related}} {{t.base.item.pluralize}} (e.g. 'Archive', 'Collection', 'Album')? If this is a text only import such as FMPDSORESULT, than this is the {{t.base.zoom_types.topic.capitalize}} Type of new {{t.base.zoom_types.topic}} that is {{t.base.created}}.
+      applicable_related_topic_type: Applicable {{t.base.related.capitalize}} {{t.base.zoom_types.topic.capitalize}} Type?
+      applicable_related_topic_type_description: Which topic type should we find topics in which will be related to imported items when needed?
       applicable_zoom_class: Applicable {{t.base.item.capitalize}} Type?
       applicable_zoom_class_description: If this is an Excel based import, than what type of item of item should we create per row?
       audio: "{{t.base.zoom_types.audio.capitalize}}"
@@ -1348,6 +1350,7 @@ en:
       public_description: (Can be {{t.base.viewed}} by everyone)
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
       records_xml_file: records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to {{t.base.create}} this file.
+      related_topic_type_all: (any topic type)
       simple_xml: Simple XML {{t.base.zoom_types.topic.capitalize.pluralize}}
       structure_description: "Make a folder, referred to as your_folder from here on in the instructions, that has the following files and subfolders involved in your import:"
       tags: What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas)?

@@ -84,8 +84,14 @@
 
   <div class="form-element" id="import_topic_type">
     <label for="import_topic_type_id"><%=t 'importers.new.applicable_topic_type' %></label>
-    <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, {:class=>"select"}) %>
+    <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}) %>
     <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
+  </div>
+
+  <div class="form-element" id="import_related_topic_type" style="display: none;">
+    <label for="import_related_topic_type_id"><%=t 'importers.new.applicable_related_topic_type' %></label>
+    <%= topic_type_select_with_indent('import', 'related_topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}, [[t('importers.new.related_topic_type_all'), ''], ['', '']]) %>
+    <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
   </div>
 
   <%= xml_type_js_observer -%>
