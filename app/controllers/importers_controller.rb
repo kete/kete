@@ -161,7 +161,7 @@ class ImportersController < ApplicationController
               done_message = t('importers_controller.get_progress.all_processed')
 
               if !status[:error].blank?
-                done_message = t('importers_controller.get_progress.error_message', :error => status[:error])
+                done_message = t('importers_controller.get_progress.error_message', :error => status[:error].gsub("\n", '<br />'))
               end
               page.hide("spinner")
               page.replace_html 'done', done_message

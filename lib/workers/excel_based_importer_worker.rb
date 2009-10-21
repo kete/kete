@@ -93,7 +93,8 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
                           # give the server a break (esp when pdfs with thousands of images are created)
                           sleep(@record_interval) if @record_interval > 0
                         rescue
-                          msg = "PDF Generation failed. Are you using image types besides JPG or PNG?"
+                          msg = "PDF Generation failed in #{value[0]}. Are you using image types besides JPG or PNG?\n"
+                          msg += "Here's what the server tells us is the problem:\n" + $!.to_s
                           logger.info msg
                           raise msg
                         end
