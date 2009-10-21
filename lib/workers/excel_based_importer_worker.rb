@@ -76,23 +76,38 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
                   value = @import_dir_path + '/files/' + value[0]
                   has_path_to_file = true
                 when 'folder'
-                  pdf_file = "#{@import_dir_path}/#{value[0]}.pdf"
-                  unless File.exist?(pdf_file)
-                    require 'prawn'
-                    images = Dir["#{@import_dir_path}/#{value[0]}/*"]
-                    Prawn::Document.generate(pdf_file, :page_layout => :landscape) do
-                      images.each_with_index do |file, index|
-                        start_new_page unless index == 0
-                        image file
+                  if @zoom_class == 'Document'
+                    pdf_file = "#{@import_dir_path}/#{value[0]}.pdf"
+                    unless File.exist?(pdf_file)
+                      images_path = "#{@import_dir_path}/#{value[0]}"
+                      if File.exist?(images_path) && File.directory?(images_path)
+                        begin
+                          require 'prawn'
+                          images = Dir["#{images_path}/*"]
+                          Prawn::Document.generate(pdf_file, :page_layout => :landscape) do
+                            images.each_with_index do |file, index|
+                              start_new_page unless index == 0
+                              image file
+                            end
+                          end
+                          # give the server a break (esp when pdfs with thousands of images are created)
+                          sleep(@record_interval) if @record_interval > 0
+                        rescue
+                          msg = "PDF Generation failed. Are you using image types besides JPG or PNG?"
+                          logger.info msg
+                          raise msg
+                        end
+                      else
+                        msg = "The directory #{images_path} does not exist, but was expected to be there."
+                        logger.info msg
+                        raise msg
                       end
                     end
-                    # give the server a break (esp when pdfs with thousands of images are created)
-                    sleep(@record_interval) if @record_interval > 0
-                  end
 
-                  element_name = 'path_to_file'
-                  value = pdf_file
-                  has_path_to_file = true
+                    element_name = 'path_to_file'
+                    value = pdf_file
+                    has_path_to_file = true
+                  end
                 end
               end
 
