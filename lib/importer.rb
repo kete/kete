@@ -764,7 +764,11 @@ module Importer
     end
 
     def importer_build_relations_to(new_record, record_hash, params)
-      return if @related_topic_key_field.blank? || record_hash[@related_topic_key_field].blank?
+      logger.info("building relations for new record")
+      if @related_topic_key_field.blank? || record_hash[@related_topic_key_field].blank?
+        logger.info("no relations to be made for new record")
+        return
+      end
 
       record_hash[@related_topic_key_field].split(',').each do |related_topic_identifier|
         related_topic_identifier = related_topic_identifier.strip
@@ -798,6 +802,7 @@ module Importer
         @last_related_topic_identifier = related_topic_identifier
         @last_related_topics = related_topics
       end
+      logger.info("finished building relations for new record")
     end
 
     # override in your importer worker to customize

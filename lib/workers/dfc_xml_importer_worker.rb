@@ -28,8 +28,8 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
 
     return if File.exist?(path_to_records_file_output)
 
-    xl_xml = Nokogiri::XML(File.read(path_to_dfc_xml_file))
-    rows = xl_xml.search("metadata/asset")
+    dfc_xml = Nokogiri::XML(File.read(path_to_dfc_xml_file))
+    rows = dfc_xml.search("metadata/asset")
 
     output = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
       xml.records do

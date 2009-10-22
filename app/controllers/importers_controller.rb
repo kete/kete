@@ -97,7 +97,7 @@ class ImportersController < ApplicationController
       case @import.xml_type
       when 'past_perfect4'
         @zoom_class = 'StillImage'
-      when 'excel_based', 'related_set_from_archive_file'
+      when 'excel_based', 'dfc_xml', 'related_set_from_archive_file'
         @zoom_class = params[:zoom_class]
       else
         @zoom_class = 'Topic'
