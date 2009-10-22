@@ -142,7 +142,7 @@ ul#main-nav {
   top: 90px;
   right: 70px;
   width: 230px;
-  background-color: #fff;
+  background-color: #fff !important;
   background-image: none;
   border: 1px solid #838383;
   margin: 0;
