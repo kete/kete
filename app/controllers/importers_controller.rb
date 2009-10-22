@@ -223,4 +223,8 @@ class ImportersController < ApplicationController
     flash[:notice] = t('importers_controller.stop.import_stopped')
     redirect_to :action => 'list'
   end
+
+  def fetch_applicable_extended_fields
+    render :partial => "extended_field_selection", :locals => { :topic_type_id => params[:topic_type_id] }
+  end
 end

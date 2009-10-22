@@ -97,6 +97,8 @@ module Importer
         @zoom_class_for_params = @zoom_class.tableize.singularize
         @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
         @record_interval = @import.interval_between_records
+        @record_identifier_extended_field ||= @import.record_identifier_extended_field
+        @record_identifier_xml_field ||= 'Record_Identifier'
 
         params = args[:params]
 
@@ -748,7 +750,7 @@ module Importer
 
         new_record.creator = @contributing_user
 
-        importer_build_relations_to(new_record, record, options[:params])
+        importer_build_relations_to(new_record, record_hash, options[:params])
 
         logger.info("in topic creation made it past creator")
       else
@@ -761,27 +763,40 @@ module Importer
       return new_record
     end
 
-    def importer_build_relations_to(new_record, record, params)
-      return if @related_topic_key_field.blank? || record[@related_topic_key_field].blank?
-      record[@related_topic_key_field].split(',').each do |related_topic_identifier|
-        if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
-          conditions = ["extended_content like '%<record_identifier>?</record_identifier>%'"]
-          conditions << "topic_type_id = #{@related_topic_type.id}" unless @related_topic_type.blank?
-          related_topic = Topic.find(:first, :conditions => [conditions.join(' AND '), related_topic_identifier.strip])
+    def importer_build_relations_to(new_record, record_hash, params)
+      return if @related_topic_key_field.blank? || record_hash[@related_topic_key_field].blank?
 
-          if related_topic.nil?
-            accession_record = xml.xpath("records/record[Record_Identifier='#{related_topic_identifier.strip}']")
-            related_topic = importer_process(accession_record, params) unless accession_record.blank? || accession_record.content.blank?
+      record_hash[@related_topic_key_field].split(',').each do |related_topic_identifier|
+        related_topic_identifier = related_topic_identifier.strip
+
+        if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
+          related_topics = Array.new
+
+          if @record_identifier_extended_field
+            ext_field_id = @record_identifier_extended_field.label_for_params
+            conditions = ["extended_content like '%<#{ext_field_id}>#{related_topic_identifier}</#{ext_field_id}>%'"]
+            conditions << "topic_type_id = #{@related_topic_type.id}" unless @related_topic_type.blank?
+            related_topics += Topic.all(:conditions => conditions.join(' AND '))
+          end
+
+          if related_topics.blank?
+            @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']").each do |accession_record|
+              related_topics << importer_process(accession_record, params) unless accession_record.blank? || accession_record.content.blank?
+            end
           end
         else
-          related_topic = @last_related_topic
+          related_topics = @last_related_topics
         end
 
-        unless related_topic.nil? || related_topic == record
+        next if related_topics.blank?
+
+        related_topics.uniq.flatten.compact.each do |related_topic|
+          next if related_topic == new_record
           ContentItemRelation.new_relation_to_topic(related_topic, new_record)
-          @last_related_topic_identifier = related_topic_identifier
-          @last_related_topic = related_topic
         end
+
+        @last_related_topic_identifier = related_topic_identifier
+        @last_related_topics = related_topics
       end
     end
 

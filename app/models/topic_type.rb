@@ -40,4 +40,9 @@ class TopicType < ActiveRecord::Base
   def available_fields
     @available_fields = ExtendedField.find_available_fields(self,'TopicType')
   end
+
+  def mapped_fields(with_ancestors=true)
+    all_fields = (with_ancestors ? ancestors : []) + [self]
+    ExtendedField.find(:all, :conditions => ["id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", all_fields])
+  end
 end

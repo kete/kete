@@ -94,8 +94,15 @@
     <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
   </div>
 
+  <div class="form-element" id="import_record_identifier_extended_field" style="display: none;">
+    <label for="import_record_identifier_extended_field_id"><%=t 'importers.new.record_identifier_extended_field' %></label>
+    <div id="import_record_identifier_extended_field_select"><%= render 'extended_field_selection' %></div>
+    <div class="form_example"><%=t 'importers.new.record_identifier_extended_field_description' %></div>
+  </div>
+
   <%= xml_type_js_observer -%>
   <%= zoom_class_js_observer -%>
+  <%= related_topic_type_js_observer -%>
 
   <% if show_privacy_controls? %>
     <div class="form-element">

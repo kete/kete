@@ -1348,6 +1348,8 @@ en:
       private_description: (Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})
       public: "{{t.base.public.capitalize}}"
       public_description: (Can be {{t.base.viewed}} by everyone)
+      record_identifier_extended_field: Record Identifier Extended Field?
+      record_identifier_extended_field_description: "Which extended field contains the data to link imported records to existing ones? (filtered by the above applicable {{t.base.related}} {{t.base.zoom_types.topic}} type). If one is not given, the importer will do it's best to sort out what should get related, but isn't always accurate."
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
       records_xml_file: records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to {{t.base.create}} this file.
       related_topic_type_all: (any topic type)

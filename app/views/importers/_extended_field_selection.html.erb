@@ -1,0 +1,16 @@
+<%
+  topic_type_id ||= nil
+  fields = !topic_type_id.blank? ? TopicType.find(topic_type_id).mapped_fields : ExtendedField.all
+%>
+
+<select id="import_record_identifier_extended_field_id" name="import[record_identifier_extended_field_id]">
+
+  <option value=""></option>
+
+  <% fields.each do |field| %>
+    <option value="<%= field.id %>"><%= field.label %></option>
+  <% end %>
+
+</select>
+
+<img src="/images/indicator.gif" width="16" height="16" id="extended_fields_spinner" style="display:none;" />
