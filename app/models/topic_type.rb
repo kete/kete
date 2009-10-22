@@ -41,8 +41,10 @@ class TopicType < ActiveRecord::Base
     @available_fields = ExtendedField.find_available_fields(self,'TopicType')
   end
 
-  def mapped_fields(with_ancestors=true)
-    all_fields = (with_ancestors ? ancestors : []) + [self]
-    ExtendedField.find(:all, :conditions => ["id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", all_fields])
+  def mapped_fields(options={})
+    options[:with_ancestors] ||= true
+    relevant_topic_types = options[:with_ancestors] ? self_and_ancestors : [self]
+    # TODO: might want to reconsider using a subselect here
+    ExtendedField.find(:all, :conditions => ["id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", relevant_topic_types])
   end
 end

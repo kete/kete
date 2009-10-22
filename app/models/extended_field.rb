@@ -82,6 +82,7 @@ class ExtendedField < ActiveRecord::Base
   # TODO: globalize stuff, uncomment later
   # translates :label, :description
 
+  # TODO: might want to reconsider using subselects here
   def self.find_available_fields(type,type_of)
     if type_of == 'TopicType'
       # exclude ancestor's fields as well
