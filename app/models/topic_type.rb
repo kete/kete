@@ -40,4 +40,20 @@ class TopicType < ActiveRecord::Base
   def available_fields
     @available_fields = ExtendedField.find_available_fields(self,'TopicType')
   end
+
+  def self_and_ancestors_ids
+    @self_and_ancestors_ids ||= self_and_ancestors.collect { |a| a.id }
+  end
+
+  # MySQL ordering doesn't work well here so we do our own ordering
+  def all_field_mappings
+    @all_field_mappings ||= begin
+      mappings = TopicTypeToFieldMapping.find_all_by_topic_type_id(self_and_ancestors_ids, :order => 'position ASC')
+      self_and_ancestors_ids.collect do |id|
+        mappings.select { |mapping| mapping.topic_type_id == id }
+      end.flatten
+    end
+  rescue
+    []
+  end
 end
