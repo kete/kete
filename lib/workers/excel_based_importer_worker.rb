@@ -77,13 +77,15 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
                   has_path_to_file = true
                 when 'folder'
                   if @zoom_class == 'Document'
-                    pdf_file = "#{@import_dir_path}/#{value[0]}.pdf"
+                    pdfs_path = "#{@import_dir_path}/pdfs"
+                    pdf_file = "#{pdfs_path}/#{value[0]}.pdf"
                     unless File.exist?(pdf_file)
-                      images_path = "#{@import_dir_path}/#{value[0]}"
-                      if File.exist?(images_path) && File.directory?(images_path)
+                      images_path = "#{@import_dir_path}/files/#{value[0]}"
+                      if File.directory?(images_path)
                         begin
                           require 'prawn'
                           images = Dir["#{images_path}/*"]
+                          FileUtils.mkdir_p pdfs_path unless File.directory?(pdfs_path)
                           Prawn::Document.generate(pdf_file, :page_layout => :landscape) do
                             images.each_with_index do |file, index|
                               start_new_page unless index == 0
