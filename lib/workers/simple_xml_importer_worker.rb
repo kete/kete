@@ -14,7 +14,5 @@ class SimpleXmlImporterWorker < BackgrounDRb::MetaWorker
   # do_work method is defined in Importer module
   def create(args = nil)
     importer_simple_setup
-    @record_identifier_xml_field = "Id"
-    @related_topic_key_field = "Related"
   end
 end

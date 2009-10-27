@@ -66,6 +66,7 @@ en:
     relate: relate
     related: related
     relates: relates
+    relation: relation
     remove: remove
     removed: removed
     replace: replace
@@ -1335,6 +1336,7 @@ en:
       filemaker_pro: Filemaker Pro's FMPDSORESULT XML format (text records only, no associated images)
       fill_in_form: If you have done the above, fill out the form below to start the import.
       folder_name: your_folder
+      has_related_items_in_data: Does this data contain any {{t.base.relation.pluralize}} between records?
       image: "{{t.base.zoom_types.image.capitalize}}"
       images_folder: "Optional: a subfolder named 'images' - For your folders containing images or {{t.base.zoom_types.image}} files themselves. For example if you had a folder of images called 001, you would put it inside your_folder/images/ and then images would found be at location like your_folder/images/001/an_image.jpg."
       import_button: Import
@@ -1349,7 +1351,11 @@ en:
       public: "{{t.base.public.capitalize}}"
       public_description: (Can be {{t.base.viewed}} by everyone)
       record_identifier_extended_field: Record Identifier Extended Field?
-      record_identifier_extended_field_description: "Which extended field contains the data to link imported records to existing ones? (filtered by the above applicable {{t.base.related}} {{t.base.zoom_types.topic}} type). If one is not given, the importer will do it's best to sort out what should get related, but isn't always accurate."
+      record_identifier_extended_field_description: "Which extended field contains the data to link imported records to existing {{t.base.zoom_types.topic.pluralize}}? (filtered by the above applicable {{t.base.related}} {{t.base.zoom_types.topic}} type). If one is not given, the importer will do it's best to sort out what should get {{t.base.related}}, but isn't always accurate."
+      record_identifier_xml_field: "Record Identifier XML Field:"
+      record_identifier_xml_field_description: "Which field in the import data contains an identifier unique to each record? If left blank, the importer will use it's default record identifier field. If it doesn't have one, not all {{t.base.relation.pluralize}} may be built {{t.base.successfully}}."
+      related_records_xml_field: "Related Records XML Field:"
+      related_records_xml_field_description: "Which field in the import data contains a comma separated list of record identifiers, indicating relationships between records? If not provided, no {{t.base.relation.pluralize}} will be {{t.base.created}}."
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
       records_xml_file: records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to {{t.base.create}} this file.
       related_topic_type_all: (any topic type)

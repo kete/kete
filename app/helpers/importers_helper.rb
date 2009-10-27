@@ -24,11 +24,17 @@ module ImportersHelper
           }
           // hide the related_topic_type and record_identifier_extended_field choices if this type doesn't need it
           if ( value == 'dfc_xml' || value == 'simple_xml' ) {
-            $('import_related_topic_type').show();
-            $('import_record_identifier_extended_field').show();
+            $('import_related_items').show();
           } else {
-            $('import_related_topic_type').hide();
-            $('import_record_identifier_extended_field').hide();
+            $('import_related_items').hide();
+          }
+          // hide the related_records_field and record_identifier_field values for all but simple xml
+          if ( value == 'simple_xml' ) {
+            $('import_related_records').show();
+            $('import_record_identifier').show();
+          } else {
+            $('import_related_records').hide();
+            $('import_record_identifier').hide();
           }
         });
       ")
@@ -51,8 +57,16 @@ module ImportersHelper
       ")
   end
 
-  def related_topic_type_js_observer
+  def related_topics_js_observer
     javascript_tag("
+      $('import_has_related_items_in_data').observe('change', function() {
+        if ($('import_has_related_items_in_data').checked) {
+          $('import_related_items_fields').show();
+        } else {
+          $('import_related_items_fields').hide();
+        }
+      });
+
       $('import_related_topic_type_id').observe('change', function() {
         new Ajax.Updater('import_record_identifier_extended_field_select', '#{url_for(:action => 'fetch_applicable_extended_fields')}', {
           parameters: { topic_type_id: $('import_related_topic_type_id').value },

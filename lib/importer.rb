@@ -93,12 +93,16 @@ module Importer
         @current_basket = @import.basket
         logger.info("what is current basket: " + @current_basket.inspect)
         @import_topic_type = @import.topic_type
-        @related_topic_type = @import.related_topic_type
         @zoom_class_for_params = @zoom_class.tableize.singularize
         @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
         @record_interval = @import.interval_between_records
+
+        # Values for relating records.
+        # Use ||= so they are only assigned if the importer worker doesn't specify one already
+        @related_records_xml_field ||= @import.related_records_xml_field
+        @record_identifier_xml_field ||= @import.record_identifier_xml_field
+        @related_topic_type ||= @import.related_topic_type
         @record_identifier_extended_field ||= @import.record_identifier_extended_field
-        @record_identifier_xml_field ||= 'Record_Identifier'
 
         params = args[:params]
 
@@ -770,12 +774,12 @@ module Importer
 
     def importer_build_relations_to(new_record, record_hash, params)
       logger.info("building relations for new record")
-      if @related_topic_key_field.blank? || record_hash[@related_topic_key_field].blank?
+      if @related_records_xml_field.blank? || record_hash[@related_records_xml_field].blank?
         logger.info("no relations to be made for new record")
         return
       end
 
-      record_hash[@related_topic_key_field].split(',').each do |related_topic_identifier|
+      record_hash[@related_records_xml_field].split(',').each do |related_topic_identifier|
         related_topic_identifier = related_topic_identifier.strip
 
         if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
@@ -789,7 +793,7 @@ module Importer
             related_topics += Topic.all(:conditions => conditions.join(' AND '))
           end
 
-          if related_topics.blank?
+          if related_topics.blank? && !@record_identifier_xml_field.blank?
             @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']").each do |accession_record|
               related_topics << importer_process(accession_record, params) unless accession_record.blank? || accession_record.content.blank?
             end

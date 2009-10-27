@@ -10,7 +10,8 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
   # do_work method is defined in Importer module
   def create(args = nil)
     importer_simple_setup
-    @related_topic_key_field = "Accession"
+    @record_identifier_xml_field = "Record_Identifier"
+    @related_records_xml_field = "Accession"
   end
 
   # this takes dfc's standard xml export format

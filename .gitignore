@@ -20,7 +20,7 @@ public/documents/
 public/image_files/
 public/videos/
 public/video/
-tmp/restart.txt
+tmp/*
 webrat-*.html
 zebradb/conf/kete-zebra-servers.xml
 selenium-rc-server.pid
