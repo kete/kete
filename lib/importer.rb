@@ -737,6 +737,11 @@ module Importer
         end
       end
 
+      # if we are making a topic, respect the Related Items Inset configurations
+      if zoom_class == 'Topic'
+        new_record.related_items_inset = (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
+      end
+
       # if still image and new_image failed, fail
       new_record_added = false
       unless zoom_class == 'StillImage'
@@ -856,7 +861,8 @@ module Importer
                                     :basket_id => topic_params[:topic][:basket_id],
                                     :license_id => topic_params[:topic][:license_id],
                                     :topic_type_id => topic_params[:topic][:topic_type_id],
-                                    :do_not_moderate => true
+                                    :do_not_moderate => true,
+                                    :related_items_inset => (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
                                     )
 
       related_topic.creator =  @contributing_user
