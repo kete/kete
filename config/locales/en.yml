@@ -1353,7 +1353,7 @@ en:
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
       records_xml_file: records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to {{t.base.create}} this file.
       related_topic_type_all: (any topic type)
-      simple_xml: Simple XML {{t.base.zoom_types.topic.capitalize.pluralize}}
+      simple_xml: Simple XML
       structure_description: "Make a folder, referred to as your_folder from here on in the instructions, that has the following files and subfolders involved in your import:"
       tags: What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas)?
       tags_description: These {{t.base.tag.pluralize}} will be {{t.base.added}} to every {{t.base.item}} in the import in addition to whatever is specified as a {{t.base.tag}} per record.

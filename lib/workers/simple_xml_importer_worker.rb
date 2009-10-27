@@ -3,8 +3,8 @@ require "importer"
 # must have xml_to_record_path specified
 # in the Import object
 # uses the default Importer methods
-class SimpleTopicImporterWorker < BackgrounDRb::MetaWorker
-  set_worker_name :simple_topic_importer_worker
+class SimpleXmlImporterWorker < BackgrounDRb::MetaWorker
+  set_worker_name :simple_xml_importer_worker
   set_no_auto_load true
 
   # importer has the version of methods that will work in the context
@@ -14,5 +14,7 @@ class SimpleTopicImporterWorker < BackgrounDRb::MetaWorker
   # do_work method is defined in Importer module
   def create(args = nil)
     importer_simple_setup
+    @record_identifier_xml_field = "Id"
+    @related_topic_key_field = "Related"
   end
 end

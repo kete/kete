@@ -4,7 +4,7 @@ module ImportersHelper
         $('import_xml_type').observe('change', function() {
           value = $('import_xml_type').value;
           // hide the xml_path_to_record text field if this type doesn't need it
-          if ( value == 'simple_topic' ) {
+          if ( value == 'simple_xml' ) {
             $('import_xml_path').show();
             $('import_xml_path_to_record').disabled = false;
           } else {
@@ -13,7 +13,7 @@ module ImportersHelper
             $('import_xml_path').hide();
           }
           // hide the zoom_class choice if this type doesn't need it
-          if ( value == 'excel_based' || value == 'dfc_xml' ) {
+          if ( value == 'excel_based' || value == 'dfc_xml' || value == 'simple_xml' ) {
             $('zoom_class').disabled = false;
             $('zoom_class').value = 'Topic';
             $('zoom').show();
@@ -23,7 +23,7 @@ module ImportersHelper
             $('zoom').hide();
           }
           // hide the related_topic_type and record_identifier_extended_field choices if this type doesn't need it
-          if ( value == 'dfc_xml' ) {
+          if ( value == 'dfc_xml' || value == 'simple_xml' ) {
             $('import_related_topic_type').show();
             $('import_record_identifier_extended_field').show();
           } else {
