@@ -1351,9 +1351,9 @@ en:
       public: "{{t.base.public.capitalize}}"
       public_description: (Can be {{t.base.viewed}} by everyone)
       record_identifier_extended_field: Record Identifier Extended Field?
-      record_identifier_extended_field_description: "Which extended field contains the data to link imported records to existing {{t.base.zoom_types.topic.pluralize}}? (filtered by the above applicable {{t.base.related}} {{t.base.zoom_types.topic}} type). If one is not given, the importer will do it's best to sort out what should get {{t.base.related}}, but isn't always accurate."
+      record_identifier_extended_field_description: "Which extended field contains the data to link imported records to existing {{t.base.zoom_types.topic.pluralize}}? (filtered by the above applicable {{t.base.related}} {{t.base.zoom_types.topic}} type). If one is not given, the importer will do its best to sort out what should get {{t.base.related}}, but isn't always accurate."
       record_identifier_xml_field: "Record Identifier XML Field:"
-      record_identifier_xml_field_description: "Which field in the import data contains an identifier unique to each record? If left blank, the importer will use it's default record identifier field. If it doesn't have one, not all {{t.base.relation.pluralize}} may be built {{t.base.successfully}}."
+      record_identifier_xml_field_description: "Which field in the import data contains an identifier unique to each record? If left blank, the importer will use its default record identifier field. If it doesn't have one, not all {{t.base.relation.pluralize}} may be built {{t.base.successfully}}."
       related_records_xml_field: "Related Records XML Field(s):"
       related_records_xml_field_description: "Which field in the import data contains a comma separated list of record identifiers, indicating relationships between records? If several exist, seperate them with commas. If not provided and the importer doesn't specify one itself, no {{t.base.relation.pluralize}} will be {{t.base.created}}."
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
@@ -2135,7 +2135,7 @@ en:
       approved:
         approved_for_use: The {{t.base.basket}} you {{t.base.requested}}, '{{basket_name}}', was {{t.base.approved}} for use.
         edit_it_by: You can {{t.base.edit}} this {{t.base.basket}} by going to
-        view_contents_at: And {{t.base.view}} it's contents at
+        view_contents_at: And {{t.base.view}} its contents at
       created:
         edit_it_by: You can {{t.base.edit}} this {{t.base.basket}} by going to
         requires_approval: It requires {{t.base.moderation}} before it will be available to the {{t.base.public}}.
