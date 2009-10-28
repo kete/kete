@@ -1354,8 +1354,8 @@ en:
       record_identifier_extended_field_description: "Which extended field contains the data to link imported records to existing {{t.base.zoom_types.topic.pluralize}}? (filtered by the above applicable {{t.base.related}} {{t.base.zoom_types.topic}} type). If one is not given, the importer will do it's best to sort out what should get {{t.base.related}}, but isn't always accurate."
       record_identifier_xml_field: "Record Identifier XML Field:"
       record_identifier_xml_field_description: "Which field in the import data contains an identifier unique to each record? If left blank, the importer will use it's default record identifier field. If it doesn't have one, not all {{t.base.relation.pluralize}} may be built {{t.base.successfully}}."
-      related_records_xml_field: "Related Records XML Field:"
-      related_records_xml_field_description: "Which field in the import data contains a comma separated list of record identifiers, indicating relationships between records? If not provided, no {{t.base.relation.pluralize}} will be {{t.base.created}}."
+      related_records_xml_field: "Related Records XML Field(s):"
+      related_records_xml_field_description: "Which field in the import data contains a comma separated list of record identifiers, indicating relationships between records? If several exist, seperate them with commas. If not provided and the importer doesn't specify one itself, no {{t.base.relation.pluralize}} will be {{t.base.created}}."
       records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
       records_xml_file: records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to {{t.base.create}} this file.
       related_topic_type_all: (any topic type)
