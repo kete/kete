@@ -135,9 +135,23 @@ module Importer
           importer_process(record, params) unless record.content.blank?
         end
         importer_update_processing_vars_at_end
-      rescue
-        importer_update_processing_vars_if_rescue
+      #rescue
+      #  importer_update_processing_vars_if_rescue
       end
+    end
+
+    def importer_fetch_related_topics(related_topic_identifier, params, options = {})
+      related_topics = Array.new
+
+      related_topics += importer_locate_existing_items(options)
+
+      if related_topics.blank? && !@record_identifier_xml_field.blank?
+        @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']").each do |record|
+          related_topics << importer_process(record, params) unless record.blank? || record.content.blank?
+        end
+      end
+
+      related_topics
     end
 
     def importer_prepare_extended_field(options = {})
@@ -182,6 +196,30 @@ module Importer
                 params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(choice_index + 1).to_s] = choice.strip
               end
             end
+
+
+          # Kieran Pilkington, 2009-10-28
+          # The following code does not work yet
+          elsif %w{ topic_type }.include?(extended_field.ftype)
+            logger.info 'dealing with topic_type extended field'
+            logger.info 'what is value? ' + value.inspect
+            unless value =~ /http:\/\//
+              logger.info 'value does not include http://'
+              topic_type = TopicType.find_by_id(extended_field.topic_type)
+              logger.info 'finding topic in topic type: ' + topic_type.inspect
+              topics = importer_fetch_related_topics(value, params, {
+                :item_type => 'topics',
+                :extended_field_data => value,
+                :topic_type => topic_type
+              })
+              logger.info 'what is found topics? ' + topics.inspect
+              return params if topics.blank?
+              value = { 'label' => value, 'value' => "#{SITE_URL}/#{topics.first.basket.id}/topics/show/#{topics.first.id}" }
+              logger.info 'what is resulting value? ' + value.inspect
+            end
+            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value
+
+
           else
             if extended_field.multiple
               multiple_values = value.split(",")
@@ -401,7 +439,8 @@ module Importer
         conditions << "(extended_content like '%#{ext_field_data}%' OR private_version_serialized like '%#{ext_field_data}%')"
       end
 
-      @current_basket.send(options[:item_type]).all(:conditions => ([conditions.join(' AND ')] + params))
+      conditions = !params.blank? ? ([conditions.join(' AND ')] + params) : conditions.join(' AND ')
+      @current_basket.send(options[:item_type]).find(:all, :conditions => conditions)
     end
 
     # override in your importer worker to customize
@@ -843,19 +882,11 @@ module Importer
           related_topic_identifier = related_topic_identifier.strip
 
           if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
-            related_topics = Array.new
-
-            related_topics += importer_locate_existing_items(
+            related_topics = importer_fetch_related_topics(related_topic_identifier, params, {
               :item_type => 'topics',
               :extended_field_data => related_topic_identifier,
               :topic_type => @related_topic_type
-            )
-
-            if related_topics.blank? && !@record_identifier_xml_field.blank?
-              @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']").each do |accession_record|
-                related_topics << importer_process(accession_record, params) unless accession_record.blank? || accession_record.content.blank?
-              end
-            end
+            })
           else
             related_topics = @last_related_topics
           end
