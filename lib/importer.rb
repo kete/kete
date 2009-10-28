@@ -7,10 +7,12 @@ require "xml_helpers"
 require "zoom_helpers"
 require "zoom_controller_helpers"
 require "extended_content_helpers"
+require "kete_url_for"
 # used by importer scripts  in lib/workers
 module Importer
   unless included_modules.include? Importer
     def self.included(klass)
+      klass.send :include, KeteUrlFor
       klass.send :include, OaiDcHelpers
       klass.send :include, ZoomHelpers
       klass.send :include, ZoomControllerHelpers
@@ -134,6 +136,7 @@ module Importer
         @import_records_xml.xpath(@xml_path_to_record).each do |record|
           importer_process(record, params) unless record.content.blank?
         end
+
         importer_update_processing_vars_at_end
       #rescue
       #  importer_update_processing_vars_if_rescue
@@ -146,7 +149,24 @@ module Importer
       related_topics += importer_locate_existing_items(options)
 
       if related_topics.blank? && !@record_identifier_xml_field.blank?
-        @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']").each do |record|
+        # HACK, for horizons agency/series import, needs to be handled better
+        return [] if @import_dir = 'series'
+        matching_records = @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']")
+
+        # if no matches, try downcase and upcase searches
+        matching_records = @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip.downcase}']") unless matching_records.any?
+        matching_records = @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip.upcase}']") unless matching_records.any?
+
+        matching_records.each do |record|
+          # HACK, for horizons agency/series import, needs to be handled better
+          # remove agency.Successor and agency.Predecessor (causes infinite loop) for nodes for now
+          record.search("//agency.Successor").each do |node|
+            node.remove
+          end
+          record.search("//agency.Predecessor").each do |node|
+            node.remove
+          end
+
           related_topics << importer_process(record, params) unless record.blank? || record.content.blank?
         end
       end
@@ -200,21 +220,24 @@ module Importer
 
           # Kieran Pilkington, 2009-10-28
           # The following code does not work yet
-          elsif %w{ topic_type }.include?(extended_field.ftype)
+          # TODO: it looks like this still needs multiple support?
+          elsif extended_field.ftype == 'topic_type'
             logger.info 'dealing with topic_type extended field'
             logger.info 'what is value? ' + value.inspect
             unless value =~ /http:\/\//
               logger.info 'value does not include http://'
               topic_type = TopicType.find_by_id(extended_field.topic_type)
               logger.info 'finding topic in topic type: ' + topic_type.inspect
+
               topics = importer_fetch_related_topics(value, params, {
-                :item_type => 'topics',
-                :extended_field_data => value,
-                :topic_type => topic_type
-              })
+                                                       :item_type => 'topics',
+                                                       :extended_field_data => value,
+                                                       :topic_type => topic_type
+                                                     })
               logger.info 'what is found topics? ' + topics.inspect
               return params if topics.blank?
-              value = { 'label' => value, 'value' => "#{SITE_URL}/#{topics.first.basket.id}/topics/show/#{topics.first.id}" }
+              topic_url = url_for_dc_identifier(topics.first)
+              value = { 'label' => value, 'value' => topic_url }
               logger.info 'what is resulting value? ' + value.inspect
             end
             params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value
@@ -435,11 +458,18 @@ module Importer
         ext_field_xml_element_name = @record_identifier_extended_field.xml_element_name
         ext_field_xml_element_name = " xml_element_name=\"#{ext_field_xml_element_name}\"" unless ext_field_xml_element_name.blank?
 
-        ext_field_data = "<#{ext_field_id}#{ext_field_xml_element_name}>#{options[:extended_field_data]}</#{ext_field_id}>"
-        conditions << "(extended_content like '%#{ext_field_data}%' OR private_version_serialized like '%#{ext_field_data}%')"
+        # making match more greedy, exact or downcased version or upcased version
+        ef_data_varations = [options[:extended_field_data], options[:extended_field_data].downcase, options[:extended_field_data].upcase]
+        ef_conditions = Array.new
+        ef_data_varations.each do |variant|
+          ext_field_data = "<#{ext_field_id}#{ext_field_xml_element_name}>#{variant}</#{ext_field_id}>"
+          ef_conditions << "(extended_content like '%#{ext_field_data}%' OR private_version_serialized like '%#{ext_field_data}%')"
+        end
+        conditions << ef_conditions.join(' OR ')
       end
 
       conditions = !params.blank? ? ([conditions.join(' AND ')] + params) : conditions.join(' AND ')
+      logger.debug("what are conditions: " + conditions.inspect)
       @current_basket.send(options[:item_type]).find(:all, :conditions => conditions)
     end
 
