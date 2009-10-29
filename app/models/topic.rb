@@ -200,6 +200,8 @@ class Topic < ActiveRecord::Base
   # of our TopicType.
   def all_field_mappings
     topic_type.all_field_mappings
+  rescue
+    []
   end
 
 end
