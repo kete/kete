@@ -16,7 +16,7 @@ module ApplicationHelper
     h(strip_tags(@title))
   end
 
-  def page_title
+  def title_with_context
     if @current_basket == @site_basket
       "#{stripped_title} - #{PRETTY_SITE_NAME}"
     else

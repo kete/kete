@@ -8,9 +8,9 @@
 
   <% cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links'] %>
   <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) && params[:action] == "show") %>
-    <% cache_with_privacy(current_item, {:part => 'page_title'}) do %><title><%= page_title %></title><% end -%>
+    <% cache_with_privacy(current_item, {:part => 'page_title'}) do %><title><%= title_with_context %></title><% end -%>
   <% else -%>
-    <title><%= page_title %></title>
+    <title><%= title_with_context %></title>
   <% end -%>
 
   <% unless current_item.nil? -%>
