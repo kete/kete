@@ -7,6 +7,10 @@
                 <%= error_messages_for 'comment' %>
 
                 <!--[form:comment]-->
+                <% unless params[:parent_id].blank? %>
+                  <%= hidden_field_tag "parent_id", params[:parent_id] %>
+                <% end %>
+
                 <% if !params[:relate_to_topic].nil? %>
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>

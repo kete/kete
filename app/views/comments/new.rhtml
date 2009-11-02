@@ -10,5 +10,16 @@
       <% end %>
 
       <%= link_to_cancel %>
+
+      <% if @parent_comment %>
+        <div id="comment_in_response_to">
+          <div id="comment_in_response_to_original">
+            <%= link_to t('comments.new.view_original'), path_to_show_for(@parent_comment, :anchor => @parent_comment.to_anchor) %>
+          </div>
+          <h2><%= t('comments.new.in_response_to', :user_name => link_to_contributions_of(@parent_comment.creators.first)) %></h2>
+          <h4><%= @parent_comment.title %></h4>
+          <%= @parent_comment.description %>
+        </div>
+      <% end %>
 <%= render(:partial => "topics/content_wrapper_end" ) %>
 

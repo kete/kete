@@ -23,6 +23,11 @@
   margin-top: -47px;
 }
 
+.comment-date {
+  float: right;
+  margin-top: 15px;
+}
+
 .comment-tools ul {
   margin-bottom: 0;
 }

@@ -462,7 +462,9 @@ en:
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
       join_discussion: "{{t.base.join}} this discussion"
+      posted_on: Posted on
       read_and: "Read and "
+      reply: Reply
       said: said
     tags_for:
       tags: "{{t.base.tag.capitalize.pluralize}}:"
@@ -761,7 +763,9 @@ en:
       title: "Title:"
     new:
       button: "{{t.base.save.capitalize}}"
+      in_response_to: "In response to {{user_name}}"
       title: New discussion
+      view_original: "(view original)"
   comments_controller:
     destroy:
       destroyed: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_deleted}}."

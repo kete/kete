@@ -453,7 +453,7 @@ module ApplicationHelper
             :action => :all, :contributor => user, :trailing_slash => true, :only_path => false)
   end
 
-  def link_to_contributions_of(user, zoom_class, options = {})
+  def link_to_contributions_of(user, zoom_class = 'Topic', options = {})
     if options[:with_avatar]
       display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
       display_html += h(user.user_name)
@@ -995,23 +995,34 @@ module ApplicationHelper
         comment_string += pending_review(comment) + "\n"
         comment_string += "<div class=\"comment-tools\">\n"
         comment_string += flagging_links_for(comment,true,'comments')
-        if logged_in? and @at_least_a_moderator
+        comment_string += "<div class=\"comment-date\">
+                            #{t('application_helper.show_comments_for.posted_on')} #{comment.created_at.to_s(:natural)}
+                          </div>"
+        if logged_in?
           comment_string += "<ul>"
-          comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.edit'),
+          comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.reply'),
                                              :controller => 'comments',
-                                             :action => :edit,
-                                             :id => comment) + "</li>\n"
-          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
-                                             :controller => 'comments',
-                                             :action => :history,
-                                             :id => comment) + "</li>\n"
-          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
-                                             {:action => :destroy,
+                                             :action => :new,
+                                             :parent_id => comment) + "</li>\n"
+
+          if @at_least_a_moderator
+            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.edit'),
                                                :controller => 'comments',
-                                               :id => comment,
-                                               :authenticity_token => form_authenticity_token},
-                                             :method => :post,
-                                             :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
+                                               :action => :edit,
+                                               :id => comment) + "</li>\n"
+            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
+                                               :controller => 'comments',
+                                               :action => :history,
+                                               :id => comment) + "</li>\n"
+            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
+                                               {:action => :destroy,
+                                                 :controller => 'comments',
+                                                 :id => comment,
+                                                 :authenticity_token => form_authenticity_token},
+                                               :method => :post,
+                                               :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
+          end
+
           comment_string += "</ul>\n"
         end
         comment_string += "</div>" # comment-tools
@@ -1021,7 +1032,7 @@ module ApplicationHelper
 
         html_string += '<div class="comment-outer-wrapper">'
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
-                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
+                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a href=\"##{comment.to_anchor}\" name=\"#{comment.to_anchor}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end

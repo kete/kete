@@ -1420,3 +1420,15 @@ a.disabled {
 .credits img {
   border: none;
 }
+
+/*
+ * Comment in reply to
+ */
+#comment_in_response_to {
+  border: 1px solid #CCC;
+  padding: 15px;
+  margin: 10px 20px 0 0;
+}
+#comment_in_response_to_original {
+  float: right;
+}
