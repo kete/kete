@@ -134,9 +134,9 @@ class SearchController < ApplicationController
     @next_page = @current_page + 1
     @previous_page = @current_page - 1
 
-    # rss is always is set at 50 per page
+    # rss is always is set at 50 per page unless limit if specified
     if is_rss?
-      @number_per_page = 50
+      @number_per_page = (params[:count] || 50).to_i
     else
       # otherwise we fallback to default constant
       # unless user has specifically chosen a different number
@@ -188,7 +188,10 @@ class SearchController < ApplicationController
     @search_terms = params[:search_terms]
 
     # set up the cache key, which handles our params beyond basket, action, and controller
-    @cache_key_hash = { :page => params[:page] || 1 }
+    @cache_key_hash = Hash.new
+
+    @cache_key_hash[:page] = (params[:page] || 1).to_i
+    @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
 
     @cache_key_hash[:privacy] = "private" if is_a_private_search?
 

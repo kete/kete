@@ -12,6 +12,18 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  def stripped_title
+    h(strip_tags(@title))
+  end
+
+  def title_with_context
+    if @current_basket == @site_basket
+      "#{stripped_title} - #{PRETTY_SITE_NAME}"
+    else
+      "#{stripped_title} - #{@current_basket.name} - #{PRETTY_SITE_NAME}"
+    end
+  end
+
   # Get the integer of any given image size
   def image_size_of(string)
     size = IMAGE_SIZES[string.to_sym].is_a?(String) ? \

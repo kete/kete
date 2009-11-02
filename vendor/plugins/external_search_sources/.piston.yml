@@ -1,8 +1,8 @@
 --- 
 format: 1
 handler: 
-  commit: 775965deba505640eff5fc35aff00e5dc5362dd9
+  commit: b932d94f13ca8d78498dfa57e486fcfb3112dd30
   branch: master
-repository_url: git://github.com/kete/external_search_sources.git
 lock: false
 repository_class: Piston::Git::Repository
+repository_url: git://github.com/kete/external_search_sources.git
