@@ -94,6 +94,23 @@ class RssTest < ActionController::IntegrationTest
       body_should_contain image_tag
     end
 
+    should "be able to be limited using count" do
+      @topic1 = new_topic :title => 'Topic 1'
+      @topic2 = new_topic :title => 'Topic 2'
+
+      visit "/site/all/topics/rss.xml"
+      body_should_contain 'Topic 2'
+      body_should_contain 'Topic 1'
+
+      visit "/site/all/topics/rss.xml?count=1"
+      body_should_contain 'Topic 2'
+      body_should_not_contain 'Topic 1'
+
+      visit "/site/all/topics/rss.xml?count=1&page=2"
+      body_should_contain 'Topic 1'
+      body_should_not_contain 'Topic 2'
+    end
+
   end
 
 end
