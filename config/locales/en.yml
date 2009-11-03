@@ -1953,6 +1953,7 @@ en:
     generic_topic_fields:
       description_field: "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
       note: "All {{t.base.zoom_types.topic}} types inherit the following form fields:"
+      present_in_all: These form fields will be present in all {{t.base.zoom_types.topic}} types.
       short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
       title: Generic {{t.base.zoom_types.topic.capitalize}} Fields
       title_field: "Title: What shoule we this topic?  This will also be used to generate a URL for this topic."
