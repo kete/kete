@@ -1,6 +1,10 @@
       <% @title = t('comments.new.title') -%>
 
-      <h2><%= h(@title) -%></h2>
+      <% if @parent_comment %>
+        <h2><%= h(@title) -%> in reply to <a href="#original"><%=h @parent_comment.title %></a></h2>
+      <% else %>
+        <h2><%= h(@title) -%></h2>
+      <% end %>
 
       <% form_for :comment,
          :url => { :action => 'create'},
@@ -14,10 +18,11 @@
       <% if @parent_comment %>
         <div id="comment_in_response_to">
           <div id="comment_in_response_to_original">
+            <a name="original"></a>
             <%= link_to t('comments.new.view_original'), path_to_show_for(@parent_comment, :anchor => @parent_comment.to_anchor) %>
           </div>
           <h2><%= t('comments.new.in_response_to', :user_name => link_to_contributions_of(@parent_comment.creators.first)) %></h2>
-          <h4><%= @parent_comment.title %></h4>
+          <h4><%=h @parent_comment.title %></h4>
           <%= @parent_comment.description %>
         </div>
       <% end %>

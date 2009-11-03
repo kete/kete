@@ -2009,8 +2009,8 @@ en:
       reject_instructions: Please {{t.base.add}} a message to the {{t.base.user}} telling the why you have passed over their submitted revision.
       reject_revision_title: "{{t.base.reject.capitalize}} this revision"
     flagging_contributor:
-      at: at
       created: "{{t.base.created}}"
+      created_or_updated_on: "on"
       last_to_edit: was the last to {{t.base.edit}}
     form:
       allow_insecure_elements: Allow new forms and other possible insecure elements and attributes in the HTML?
