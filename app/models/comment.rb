@@ -12,8 +12,6 @@ class Comment < ActiveRecord::Base
     end
   end
 
-  # we order by position in relation to item commented on
-  acts_as_list :scope => :commentable_id
   acts_as_nested_set
 
   # all the common configuration is handled by this module
@@ -45,7 +43,7 @@ class Comment < ActiveRecord::Base
   def self.find_comments_for_commentable(commentable_str, commentable_id)
     find(:all,
       :conditions => ["commentable_type = ? and commentable_id = ?", commentable_str, commentable_id],
-      :order => "position"
+      :order => "lft"
     )
   end
 
