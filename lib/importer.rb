@@ -186,8 +186,13 @@ module Importer
         if !@import_field_to_extended_field_map[field].nil?
           extended_field = @import_field_to_extended_field_map[field]
         else
-          extended_field = ExtendedField.find(:first,
-                                              :conditions => "import_synonyms like \'%#{field}%\'")
+          if @import_topic_type
+            extended_field = @import_topic_type.mapped_fields.select { |ef| ef.import_synonyms =~ /#{field}/ }.first
+          else
+            extended_field = ExtendedField.find(:first,
+                                                :conditions => "import_synonyms like \'%#{field}%\'")
+          end
+
           if !extended_field.nil?
             @import_field_to_extended_field_map[field] = extended_field
           else
