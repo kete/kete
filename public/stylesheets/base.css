@@ -1420,3 +1420,16 @@ a.disabled {
 .credits img {
   border: none;
 }
+
+/*
+ * Limit to choice dropdown
+ * Ensure that really long options are
+ * truncated to keep the page layout tidy
+ */
+#limit_to_choice {
+  max-width: 500px;
+}
+
+#limit_to_choice option {
+  max-width: 500px;
+}
