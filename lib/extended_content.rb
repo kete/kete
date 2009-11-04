@@ -301,6 +301,15 @@ module ExtendedContent
 
         if ['map', 'map_address'].member?(extended_field.ftype)
           result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+        elsif extended_field.ftype == 'topic_type'
+          index = 1
+          result[field_param_name] = field.inject(Hash.new) do |multiple, value|
+            unless value.blank?
+              multiple[(index).to_s] = value
+              index += 1
+            end
+            multiple
+          end
         else
           if field.size > 1
             # We're dealing with a multiple field value.
@@ -876,7 +885,7 @@ module ExtendedContent
       # this will tell us
       # whether there is a matching topic
       # what the topic_type_id is so we can check if the topic type is valid
-      topic_type_id = Topic.find(value.split('/').last, :select => 'topic_type_id').topic_type_id
+      topic_type_id = Topic.find(value.split('/').last.to_i, :select => 'topic_type_id').topic_type_id
 
       # if this is nil, we were unable to find a matching topic
       unless topic_type_id

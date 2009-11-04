@@ -407,7 +407,7 @@ module ExtendedFieldsHelper
     if value.blank?
       value = ''
     else
-      value = { 'label' => value[1], 'value' => value[0] } if value.is_a?(Array)
+      value = { 'label' => value[0], 'value' => value[1] } if value.is_a?(Array)
       unless value.is_a?(Hash) && value['value'] && value['label']
         raise "ERROR: By this point we should have a hash with label and value keys. Instead, we have #{value.inspect}"
       end
