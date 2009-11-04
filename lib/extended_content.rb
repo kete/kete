@@ -301,7 +301,10 @@ module ExtendedContent
 
         if ['map', 'map_address'].member?(extended_field.ftype)
           result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
-        elsif extended_field.ftype == 'topic_type'
+
+        # if we are dealing with a multiple topic type
+        # we need to do things a bit differently
+        elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
           index = 1
           result[field_param_name] = field.inject(Hash.new) do |multiple, value|
             unless value.blank?
@@ -310,6 +313,7 @@ module ExtendedContent
             end
             multiple
           end
+
         else
           if field.size > 1
             # We're dealing with a multiple field value.
@@ -360,7 +364,7 @@ module ExtendedContent
     # I.e. when selecting a singular choice value where hierarchical choices have been selected,
     # you would expect "parent choice -> child choice".
     def reader_for(extended_field_element_name, field = nil)
-      values = structured_extended_content[extended_field_element_name]
+      values = structured_extended_content[extended_field_element_name].to_a
       if values.size == 1
         values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
       elsif field && ['map', 'map_address'].member?(field.ftype)
