@@ -14,6 +14,5 @@ class SimpleXmlImporterWorker < BackgrounDRb::MetaWorker
   # do_work method is defined in Importer module
   def create(args = nil)
     importer_simple_setup
-    @skip_trimming = true
   end
 end
