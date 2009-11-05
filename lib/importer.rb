@@ -594,7 +594,9 @@ module Importer
         # HACK to seriously trim down accession records
         # and make them in a form we can search easily
         # only add non-fat to our fat_free_file
-        if !line.match(fatty_re) && !line.blank?
+        #  && !line.blank?
+        # keeping new lines only lines for redcloth formatting
+        if !line.match(fatty_re)
           if accession.nil?
             # replace double dotted version of maori vowels
             # with macrons
