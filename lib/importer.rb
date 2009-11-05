@@ -150,7 +150,7 @@ module Importer
 
       if related_topics.blank? && !@record_identifier_xml_field.blank?
         # HACK, for horizons agency/series import, needs to be handled better
-        return [] if @import_dir = 'series'
+        return [] if @import_dir == 'series'
         matching_records = @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']")
 
         # if no matches, try downcase and upcase searches
