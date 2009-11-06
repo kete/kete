@@ -575,3 +575,11 @@ system_settings_066:
   id: "66"
   value: "false"
   section: Flagging
+system_settings_067:
+  name: Keep Embedded Metadata For All Sizes
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "When creating the different versions of uploaded images, such as thumbnails, should we keep the embedded metadata with the new version of the image? Not transferring embedded metadata to the new versions can make them significantly smaller, especially if the original has an embedded thumbnail version already. On the other hand embedded metadata may contain information that is important to keep, such as copyright holder."
+  id: "67"
+  value: "false"
+  section: Images
