@@ -757,7 +757,7 @@ en:
       security_warning: "Note: forms and javascript are not allowed for security reasons."
       security_warning_admin: Unless you check the box below.
       security_warning_exception: Allow forms and other possible insecure elements and attributes in the HTML?
-      skip_email_notification: Skip email notification for this private comment?
+      skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.zoom_types.comment}}?"
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       tags_spinner: "Getting {{t.base.tag.pluralize}}. "
       title: "Title:"

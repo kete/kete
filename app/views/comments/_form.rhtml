@@ -15,7 +15,8 @@
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
 
-                <%= hidden_field_tag 'comment[commentable_private]', params[:commentable_private] || (params[:comment] && params[:comment][:commentable_private]) || (@comment.private? ? '1' : '0') %>
+                <% commentable_private = params[:commentable_private] || (params[:comment] && params[:comment][:commentable_private]) || (@comment.private? ? '1' : '0') %>
+                <%= hidden_field_tag 'comment[commentable_private]', commentable_private %>
 
                 <div class="form-element">
                   <label for="comment_title"><%=t 'comments.form.title' %></label>
@@ -73,7 +74,7 @@
                 <% end %>
 
                 <% if show_notification_controls?(@current_basket) %>
-                  <div id="skip_email_notification_div"<%= "style='display:none;'" unless (params[:commentable_private] || (params[:comment] && params[:comment][:commentable_private]) || @comment.private?) == '1' %>>
+                  <div id="skip_email_notification_div"<%= "style='display:none;'" unless commentable_private %>>
                     <div class="form-element">
                       <label for="comment_skip_email_notification">
                         <%=t 'comments.form.skip_email_notification',
