@@ -54,7 +54,7 @@ module ResizeAsJpegWhenNecessary
     end
 
     def resize_image(img, size)
-      img.strip! # remove metadata from the resized image
+      img.strip! unless attachment_options[:keep_profile] # remove metadata from the resized image
       img.format = 'JPEG' # set format to JPEG
       self.temp_path = write_to_temp_file(img.to_blob { self.format = 'JPEG' }) if self.class.should_be_converted?(img.format)
       super
