@@ -34,7 +34,7 @@ class CommentsController < ApplicationController
     unless params[:parent_id].blank?
       @parent_comment = Comment.find(params[:parent_id])
       %w{ commentable_id commentable_type commentable_private }.each do |attr|
-        params[attr.to_sym] = @parent_comment.send(attr.to_sym)
+        params[attr.to_sym] = @parent_comment.send(attr.to_sym).to_s
       end
       @comment.title ||= "Re: #{@parent_comment.title.gsub(/^Re:\s?/i, '')}"
       @comment.tag_list = @parent_comment.raw_tag_list

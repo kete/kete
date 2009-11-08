@@ -23,4 +23,12 @@ module CommentsHelper
     wrapped_lines_array.collect! { |wrapped_line| "&gt; #{wrapped_line}" }
     wrapped_lines_array.join('<br />')
   end
+
+  # We need to handle new comments, when the form has
+  # been submitted, and when editing a comment.
+  def comment_private?(comment)
+    (params[:commentable_private] && params[:commentable_private].to_bool) ||
+    (params[:comment] && params[:comment][:commentable_private] && params[:comment][:commentable_private].to_bool) ||
+    (comment.private?)
+  end
 end
