@@ -1010,33 +1010,32 @@ module ApplicationHelper
         comment_string += "<div class=\"comment-date\">
                             #{t('application_helper.show_comments_for.posted_on')} #{comment.created_at.to_s(:natural)}
                           </div>"
-        if logged_in?
-          comment_string += "<ul>"
-          comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.reply'),
+
+        comment_string += "<ul>"
+        comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.reply'),
+                                           :controller => 'comments',
+                                           :action => :new,
+                                           :parent_id => comment) + "</li>\n"
+
+        if logged_in? && @at_least_a_moderator
+          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.edit'),
                                              :controller => 'comments',
-                                             :action => :new,
-                                             :parent_id => comment) + "</li>\n"
-
-          if @at_least_a_moderator
-            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.edit'),
+                                             :action => :edit,
+                                             :id => comment) + "</li>\n"
+          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
+                                             :controller => 'comments',
+                                             :action => :history,
+                                             :id => comment) + "</li>\n"
+          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
+                                             {:action => :destroy,
                                                :controller => 'comments',
-                                               :action => :edit,
-                                               :id => comment) + "</li>\n"
-            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
-                                               :controller => 'comments',
-                                               :action => :history,
-                                               :id => comment) + "</li>\n"
-            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
-                                               {:action => :destroy,
-                                                 :controller => 'comments',
-                                                 :id => comment,
-                                                 :authenticity_token => form_authenticity_token},
-                                               :method => :post,
-                                               :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
-          end
-
-          comment_string += "</ul>\n"
+                                               :id => comment,
+                                               :authenticity_token => form_authenticity_token},
+                                             :method => :post,
+                                             :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
         end
+
+        comment_string += "</ul>\n"
         comment_string += "</div>" # comment-tools
         comment_string += "</div>" # comment-content
         comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
