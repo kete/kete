@@ -465,7 +465,7 @@ module ApplicationHelper
             :action => :all, :contributor => user, :trailing_slash => true, :only_path => false)
   end
 
-  def link_to_contributions_of(user, zoom_class, options = {})
+  def link_to_contributions_of(user, zoom_class = 'Topic', options = {})
     if options[:with_avatar]
       display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
       display_html += h(user.user_name)
@@ -1007,23 +1007,34 @@ module ApplicationHelper
         comment_string += pending_review(comment) + "\n"
         comment_string += "<div class=\"comment-tools\">\n"
         comment_string += flagging_links_for(comment,true,'comments')
-        if logged_in? and @at_least_a_moderator
+        comment_string += "<div class=\"comment-date\">
+                            #{t('application_helper.show_comments_for.posted_on')} #{comment.created_at.to_s(:natural)}
+                          </div>"
+        if logged_in?
           comment_string += "<ul>"
-          comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.edit'),
+          comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.reply'),
                                              :controller => 'comments',
-                                             :action => :edit,
-                                             :id => comment) + "</li>\n"
-          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
-                                             :controller => 'comments',
-                                             :action => :history,
-                                             :id => comment) + "</li>\n"
-          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
-                                             {:action => :destroy,
+                                             :action => :new,
+                                             :parent_id => comment) + "</li>\n"
+
+          if @at_least_a_moderator
+            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.edit'),
                                                :controller => 'comments',
-                                               :id => comment,
-                                               :authenticity_token => form_authenticity_token},
-                                             :method => :post,
-                                             :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
+                                               :action => :edit,
+                                               :id => comment) + "</li>\n"
+            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.history'),
+                                               :controller => 'comments',
+                                               :action => :history,
+                                               :id => comment) + "</li>\n"
+            comment_string += "<li>" + link_to(t('application_helper.show_comments_for.delete'),
+                                               {:action => :destroy,
+                                                 :controller => 'comments',
+                                                 :id => comment,
+                                                 :authenticity_token => form_authenticity_token},
+                                               :method => :post,
+                                               :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
+          end
+
           comment_string += "</ul>\n"
         end
         comment_string += "</div>" # comment-tools
@@ -1031,9 +1042,9 @@ module ApplicationHelper
         comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
         comment_string += "</div>" # comment-wrapper
 
-        html_string += '<div class="comment-outer-wrapper">'
+        html_string += "<div class='comment-outer-wrapper comment-depth-#{calculate_comment_depth_for(comment)}'>"
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
-                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
+                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a href=\"##{comment.to_anchor}\" name=\"#{comment.to_anchor}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end
@@ -1049,6 +1060,19 @@ module ApplicationHelper
     return html_string
   end
 
+  # Calculate the comment depth (how many ancestors)
+  # we could call a acts_as_nested_set method here to get ancestor count,
+  # but it makes a new query each comment, so try not do that, even if it
+  # makes code a little more verbose
+  def calculate_comment_depth_for(comment)
+    depth, parent_comment_id = 0, comment.parent_id
+    until parent_comment_id.blank?
+      depth += 1
+      parent_comment_id = @comments.select { |c| c.id == parent_comment_id }.first.parent_id rescue nil
+    end
+    depth
+  end
+
   def flagging_links_for(item, first = false, controller = nil)
     html_string = String.new
     if FLAGGING_TAGS.size > 0 and !item.already_at_blank_version?
@@ -1057,7 +1081,7 @@ module ApplicationHelper
       else
         html_string = "<ul><li class=\"flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       end
-      html_string += "<li><ul>\n"
+      html_string += "<li class=\"first\"><ul>\n"
       flag_count = 1
       FLAGGING_TAGS.each do |flag|
         if flag_count == 1

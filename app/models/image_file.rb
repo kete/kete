@@ -7,24 +7,22 @@ class ImageFile < ActiveRecord::Base
   belongs_to :still_image
 
   # handles file uploads
-  # this will require overriding full_filename method locally
-  # processor none means we don't have to load expensive image manipulation
-  # dependencies that we don't need
-  # :file_system_path => "#{BASE_PRIVATE_PATH}/#{self.table_name}",
-  # will rework with when we get to public/private split
   # Rmagick is default processor for thumbnails
-  # TODO: we may want better square cropping via overriding resize_image
+  # better square cropping via overriding resize_image in plugin in place
   # from vendor/plugins/attachment_fu/lib/technoweenie/attachment_fu/processors/rmagick.rb
-  # locally, or possibly by image_science later
-  # TODO: have all files converted to jpegs, possibly done by changing filename of thumbnails
-  # i.e. should just mean that you replace source extension suffix with desired suffix (.jpg)
-  # in the saved filename
-  # we use image_thumbs for our resized images
-  # so we that on save for each resized version, we don't get a call to acts_as_zoom
-  # :file_system_path => "public/images",
-  has_attachment :storage => :file_system,
-  :content_type => IMAGE_CONTENT_TYPES, :thumbnails => IMAGE_SIZES,
-  :max_size => MAXIMUM_UPLOADED_FILE_SIZE
+  # we also make non-web friendly image files end up with jpegs for resized versions
+  # see lib/resize_as_jpeg_when_necessary
+  attachment_options = { :storage => :file_system,
+    :content_type => IMAGE_CONTENT_TYPES,
+    :thumbnails => IMAGE_SIZES,
+    :max_size => MAXIMUM_UPLOADED_FILE_SIZE }
+
+  # allow sites to opt-in for keeping embedded metadata from original with resized versions
+  if Object.const_defined?('KEEP_EMBEDDED_METADATA_FOR_ALL_SIZES') && KEEP_EMBEDDED_METADATA_FOR_ALL_SIZES
+    attachment_options[:keep_profile] = true
+  end
+
+  has_attachment attachment_options
 
   validates_as_attachment
 

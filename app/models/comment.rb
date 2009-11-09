@@ -12,15 +12,14 @@ class Comment < ActiveRecord::Base
     end
   end
 
-  # we order by position in relation to item commented on
-  acts_as_list :scope => :commentable_id
+  acts_as_nested_set
 
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
-  
+
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload
-  
+
   validates_presence_of :description
 
   # most likely we won't use versioning for comments
@@ -29,17 +28,22 @@ class Comment < ActiveRecord::Base
   # in the versioning table
   self.non_versioned_columns << 'commentable_id'
   self.non_versioned_columns << 'commentable_type'
-  
+
   # Do not version commentable privacy.
   self.non_versioned_columns << 'commentable_private'
-  
+
+  # Do not version nested set fields since they can't change
+  self.non_versioned_columns << 'parent_id'
+  self.non_versioned_columns << 'lft'
+  self.non_versioned_columns << 'rgt'
+
   # pulled almost directly from acts_as_commentable
   # Helper class method to look up all comments for
   # commentable class name and commentable id.
   def self.find_comments_for_commentable(commentable_str, commentable_id)
     find(:all,
       :conditions => ["commentable_type = ? and commentable_id = ?", commentable_str, commentable_id],
-      :order => "position"
+      :order => "lft"
     )
   end
 
@@ -49,33 +53,37 @@ class Comment < ActiveRecord::Base
   def self.find_commentable(commentable_str, commentable_id)
     commentable_str.constantize.find(commentable_id)
   end
-  
-  
+
+
   # We need to pretend to respond to privacy related methods in order
-  # for the customized ActsAsZoom to store the comment record in the 
+  # for the customized ActsAsZoom to store the comment record in the
   # correct Zebra instance.
   def private?
     commentable_private?
   end
-  
+
   def private
     commentable_private
   end
-  
+
   def private=(*args)
     self.commentable_private = *args
   end
-  
+
   def has_private_version?
     commentable_private?
   end
-  
+
   def should_save_to_private_zoom?
     commentable_private?
   end
-  
+
   def private_version(&block)
     block.call
+  end
+
+  def to_anchor
+    "comment-#{id}"
   end
 
 end

@@ -36,10 +36,10 @@ class String
     URI.decode(self)
   end
 
-  # converts "true", "false", and "nil" into their appropriate boolean/NilClass values
+  # converts "true", "1", "false", "0" and "nil" into their appropriate boolean/NilClass values
   def to_bool
-    return true if self == "true"
-    return false if self == "false"
+    return true if self == "true" || self == "1"
+    return false if self == "false" || self == "0"
     return nil if self == "nil"
     return self
   end

@@ -1433,3 +1433,15 @@ a.disabled {
 #limit_to_choice option {
   max-width: 500px;
 }
+
+/*
+ * Comment in reply to
+ */
+#comment_in_response_to {
+  border: 1px solid #CCC;
+  padding: 15px;
+  margin: 10px 20px 0 0;
+}
+#comment_in_response_to_original {
+  float: right;
+}

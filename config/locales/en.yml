@@ -463,7 +463,9 @@ en:
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
       join_discussion: "{{t.base.join}} this discussion"
+      posted_on: Posted on
       read_and: "Read and "
+      reply: Reply
       said: said
     tags_for:
       tags: "{{t.base.tag.capitalize.pluralize}}:"
@@ -756,13 +758,15 @@ en:
       security_warning: "Note: forms and javascript are not allowed for security reasons."
       security_warning_admin: Unless you check the box below.
       security_warning_exception: Allow forms and other possible insecure elements and attributes in the HTML?
-      skip_email_notification: Skip email notification for this private comment?
+      skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.zoom_types.comment}}?"
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       tags_spinner: "Getting {{t.base.tag.pluralize}}. "
       title: "Title:"
     new:
       button: "{{t.base.save.capitalize}}"
+      in_response_to: "In response to {{user_name}}"
       title: New discussion
+      view_original: "(view original)"
   comments_controller:
     destroy:
       destroyed: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_deleted}}."
@@ -2011,8 +2015,8 @@ en:
       reject_instructions: Please {{t.base.add}} a message to the {{t.base.user}} telling the why you have passed over their submitted revision.
       reject_revision_title: "{{t.base.reject.capitalize}} this revision"
     flagging_contributor:
-      at: at
       created: "{{t.base.created}}"
+      created_or_updated_on: "on"
       last_to_edit: was the last to {{t.base.edit}}
     form:
       allow_insecure_elements: Allow new forms and other possible insecure elements and attributes in the HTML?
