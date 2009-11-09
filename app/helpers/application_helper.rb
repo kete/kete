@@ -1081,7 +1081,7 @@ module ApplicationHelper
       else
         html_string = "<ul><li class=\"flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       end
-      html_string += "<li><ul>\n"
+      html_string += "<li class=\"first\"><ul>\n"
       flag_count = 1
       FLAGGING_TAGS.each do |flag|
         if flag_count == 1
