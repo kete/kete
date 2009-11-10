@@ -1,4 +1,6 @@
 class TranslateController < ActionController::Base
+  unloadable
+
   # It seems users with active_record_store may get a "no :secret given" error if we don't disable csrf protection,
   skip_before_filter :verify_authenticity_token
 
@@ -7,7 +9,7 @@ class TranslateController < ActionController::Base
 
   before_filter :init_translations
   before_filter :set_locale
-  
+
   def index
     initialize_keys
     filter_by_key_pattern
@@ -17,30 +19,63 @@ class TranslateController < ActionController::Base
     paginate_keys
     @total_entries = @keys.size
   end
-  
+
   def translate
-    I18n.backend.store_translations(@to_locale, Translate::Keys.to_deep_hash(params[:key]))
-    Translate::Storage.new(@to_locale).write_to_file
-    Translate::Log.new(@from_locale, @to_locale, params[:key].keys).write_to_file
-    force_init_translations # Force reload from YAML file
-    flash[:notice] = "Translations stored"
-    redirect_to params.slice(:filter, :sort_by, :key_type, :key_pattern, :text_type, :text_pattern).merge({:action => :index})
+    # Kieran Pilkington, 2009-11-10
+    # If we are translating a single field (javascript is enabled)
+    # change the data to match the order we need
+    if request.format.js?
+      params[:key] = { params[:key] => params[:value] }
+      @from_locale, @to_locale = params[:from], params[:to]
+    end
+
+    unless params[:key].blank?
+      I18n.backend.store_translations(@to_locale, Translate::Keys.to_deep_hash(params[:key]))
+      Translate::Storage.new(@to_locale).write_to_file
+      Translate::Log.new(@from_locale, @to_locale, params[:key].keys).write_to_file
+      force_init_translations # Force reload from YAML file
+    end
+
+    respond_to do |format|
+      format.js { render :text => 'OK', :layout => false }
+      format.html do
+        flash[:notice] = "Translations stored"
+        redirect_to params.slice(:filter, :sort_by, :key_type, :key_pattern, :text_type, :text_pattern).merge({:action => :index})
+      end
+    end
   end
 
   def reload
     Translate::Keys.files = nil
     redirect_to :action => 'index'
   end
-  
+
+  # Kieran Pilkington, 2009-05-28
+  def interpolate_and_render
+    @from_locale, @to_locale = params[:from], params[:to]
+    render :text => interpolate(params[:text]), :layout => false
+  end
+
+  # We want to interpolate the base values but not any variable values
+  def interpolate(text)
+    return '' if text.blank?
+    text = text.gsub('{{', '\{\{').gsub('\\{\\{t.', '{{t.')
+    result = I18n.backend.send(:interpolate, @from_locale, text)
+    result.gsub('\{\{', '{{')
+  rescue
+    text
+  end
+  helper_method :interpolate
+
   private
   def initialize_keys
     @files = Translate::Keys.files
-    @keys = (@files.keys.map(&:to_s) + Translate::Keys.new.i18n_keys(@from_locale)).uniq    
+    @keys = (@files.keys.map(&:to_s) + Translate::Keys.new.i18n_keys(@from_locale)).uniq
     @keys.reject! do |key|
       from_text = lookup(@from_locale, key)
       # When translating from one language to another, make sure there is a text to translate from.
       # Always exclude non string translation objects as we don't support editing them in the UI.
-      (@from_locale != @to_locale && !from_text.present?) || (from_text.present? && !from_text.is_a?(String))      
+      (@from_locale != @to_locale && !from_text.present?) || (from_text.present? && !from_text.is_a?(String))
     end
   end
 
@@ -48,7 +83,7 @@ class TranslateController < ActionController::Base
     I18n.backend.send(:lookup, locale, key)
   end
   helper_method :lookup
-  
+
   def filter_by_translated_or_changed
     params[:filter] ||= 'all'
     return if params[:filter] == 'all'
@@ -65,7 +100,7 @@ class TranslateController < ActionController::Base
       end
     end
   end
-  
+
   def filter_by_key_pattern
     return if params[:key_pattern].blank?
     @keys.reject! do |key|
@@ -113,7 +148,7 @@ class TranslateController < ActionController::Base
       raise "Unknown sort_by '#{params[:sort_by]}'"
     end
   end
-  
+
   def paginate_keys
     params[:page] ||= 1
     @paginated_keys = @keys[offset, per_page]
@@ -122,24 +157,24 @@ class TranslateController < ActionController::Base
   def offset
     (params[:page].to_i - 1) * per_page
   end
-  
+
   def per_page
     50
   end
   helper_method :per_page
-  
+
   def init_translations
-    I18n.backend.send(:init_translations) unless I18n.backend.initialized?    
+    I18n.backend.send(:init_translations) unless I18n.backend.initialized?
   end
 
   def force_init_translations
     I18n.backend.send(:init_translations)
   end
-  
+
   def default_locale
     I18n.default_locale
   end
-  
+
   def set_locale
     session[:from_locale] ||= default_locale
     session[:to_locale] ||= :en
@@ -148,7 +183,7 @@ class TranslateController < ActionController::Base
     @from_locale = session[:from_locale].to_sym
     @to_locale = session[:to_locale].to_sym
   end
-  
+
   def old_from_text(key)
     return @old_from_text[key] if @old_from_text && @old_from_text[key]
     @old_from_text = {}
@@ -158,7 +193,7 @@ class TranslateController < ActionController::Base
     @old_from_text[key] = text
   end
   helper_method :old_from_text
-  
+
   def log_hash
     @log_hash ||= Translate::Log.new(@from_locale, @to_locale, {}).read
   end
