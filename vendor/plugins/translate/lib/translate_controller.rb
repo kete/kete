@@ -60,7 +60,7 @@ class TranslateController < ActionController::Base
   def interpolate(text)
     return '' if text.blank?
     text = text.gsub('{{', '\{\{').gsub('\\{\\{t.', '{{t.')
-    result = I18n.backend.send(:interpolate, @from_locale, text)
+    result = I18n.backend.send(:interpolate, @to_locale, text)
     result.gsub('\{\{', '{{')
   rescue
     text
