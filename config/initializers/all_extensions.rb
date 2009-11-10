@@ -132,7 +132,7 @@ module I18n
         end
 
         PluralizeValues = {
-          :mi => { :prefix => 'nga ' }
+          :mi => { :prefix => 'ngā ' }
         }
         SingularizeValues = {
           :mi => { :prefix => 'te ' }
