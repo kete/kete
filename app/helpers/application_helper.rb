@@ -1041,7 +1041,7 @@ module ApplicationHelper
         comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
         comment_string += "</div>" # comment-wrapper
 
-        html_string += "<div class='comment-outer-wrapper comment-depth-#{calculate_comment_depth_for(comment)}'>"
+        html_string += "<div class='comment-outer-wrapper #{comment_depth_div_classes_for(comment)}'>"
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
                                                         :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a href=\"##{comment.to_anchor}\" name=\"#{comment.to_anchor}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
@@ -1070,6 +1070,18 @@ module ApplicationHelper
       parent_comment_id = @comments.select { |c| c.id == parent_comment_id }.first.parent_id rescue nil
     end
     depth
+  end
+
+  # Each comment needs to have the classes of it's parent in order of oldest to newest,
+  # so if css for a depth of 4 is provided, but css for depth 5 isn't, depth 5 and onward
+  # use the last class, in this example, comment-depth-4, for indentation styling instead
+  # of having no styling (in which case, they appear as depth 0 which is wrong)
+  def comment_depth_div_classes_for(comment)
+    classes = Array.new
+    calculate_comment_depth_for(comment).times do |depth|
+      classes << "comment-depth-#{depth}"
+    end
+    classes.join(' ')
   end
 
   def flagging_links_for(item, first = false, controller = nil)
