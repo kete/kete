@@ -115,7 +115,7 @@ class ExtendedFieldsController < ApplicationController
     search_term = search_term.split(' (').first if search_term =~ /.+ \(.+\)/
     logger.debug("What is search term: #{search_term}")
 
-    topic_type_ids = TopicType.find(parent_topic_type).full_set.collect { |a| a.id }
+    topic_type_ids = TopicType.find_by_id(parent_topic_type).full_set.collect { |a| a.id } rescue []
 
     topics = Topic.find(:all, :conditions => ["title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids],
                         :order => "title ASC", :limit => 10)

@@ -1078,7 +1078,7 @@ module ApplicationHelper
   # of having no styling (in which case, they appear as depth 0 which is wrong)
   def comment_depth_div_classes_for(comment)
     classes = Array.new
-    calculate_comment_depth_for(comment).times do |depth|
+    0.upto(calculate_comment_depth_for(comment)) do |depth|
       classes << "comment-depth-#{depth}"
     end
     classes.join(' ')

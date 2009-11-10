@@ -886,20 +886,17 @@ module ExtendedContent
         value = value['value']
       end
 
-      # this will tell us
-      # whether there is a matching topic
-      # what the topic_type_id is so we can check if the topic type is valid
-      topic_type_id = Topic.find(value.split('/').last.to_i, :select => 'topic_type_id').topic_type_id
+      # this will tell us whether there is a matching topic
+      topic = Topic.find_by_id(value.split('/').last.to_i, :select => 'topic_type_id')
 
       # if this is nil, we were unable to find a matching topic
-      unless topic_type_id
-        return I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic')
-      end
+      return I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic',
+                    :label => extended_field_mapping.extended_field_label) unless topic
 
       parent_topic_type = TopicType.find(extended_field_mapping.extended_field.topic_type.to_i)
       valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
 
-      unless valid_topic_type_ids.include?(topic_type_id)
+      unless valid_topic_type_ids.include?(topic.topic_type_id)
         I18n.t('extended_content_lib.validate_extended_topic_type_field_content.must_be_valid',
                :label => extended_field_mapping.extended_field_label,
                :topic_type => parent_topic_type.name)

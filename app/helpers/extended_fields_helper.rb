@@ -404,15 +404,9 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_topic_type_editor(name, value, tag_options, extended_field)
-    if value.blank?
-      value = ''
-    else
-      value = { 'label' => value[0], 'value' => value[1] } if value.is_a?(Array)
-      unless value.is_a?(Hash) && value['value'] && value['label']
-        raise "ERROR: By this point we should have a hash with label and value keys. Instead, we have #{value.inspect}"
-      end
-      value = value['label'] + " (#{value['value']})"
-    end
+    value = '' if value.blank?
+    value = { 'label' => value[1], 'value' => value[0] } if value.is_a?(Array)
+    value = "#{value['label']} (#{value['value']})" if value.is_a?(Hash) && value['value'] && value['label']
 
     id = "#{name.split(/\[/)[0]}_topic_types_auto_complete_extfield_#{extended_field.id}"
     id = "#{id}_multiple_#{@field_multiple_id}" if extended_field.multiple?

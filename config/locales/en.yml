@@ -1124,8 +1124,8 @@ en:
     validate_extended_date_field_content:
       must_be_valid: "{{label}} must be in the standard date format (YYYY-MM-DD)"
     validate_extended_topic_type_field_content:
-      must_be_valid: "{{label}} is not valid choice for a '{{topic_type}}'"
-      no_such_topic: "we were unable to find a matching {{t.base.zoom_types.topic}} on our site. Did you enter {{t.base.zoom_types.topic}} in the format of '{{t.base.zoom_types.topic}} title (URL)?'"
+      must_be_valid: "{{label}} found the topic, but it is not a type of {{topic_type}}, nor one of it's sub-types."
+      no_such_topic: "{{label}} couldn't find the topic. Must be in the format of '{{t.base.zoom_types.topic}} title (URL)?'"
   extended_field_model:
     already_used: ": labels of {{invalid_label_names}} aren't allowed because they already used be default"
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
