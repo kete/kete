@@ -1162,9 +1162,9 @@ en:
       "yes": "Yes"
     extended_field_topic_type_editor:
       checking_value: "Checking value. "
-      getting_topics: "Getting topics. "
-      invalid_value: "Invalid topic type value. "
-      valid_value: "Valid topic type value. "
+      getting_topics: "Getting {{t.base.zoom_types.topic.pluralize}}. "
+      invalid_value: "This is not a valid {{t.base.zoom_types.topic}} value. "
+      valid_value: "This is a valid {{t.base.zoom_types.topic}} value. "
     ftype_form_column:
       cannot_be_changed: (cannot be {{t.base.changed}})
       check_box: Check box
