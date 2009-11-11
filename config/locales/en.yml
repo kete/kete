@@ -103,6 +103,7 @@ en:
     zoom_types:
       audio: audio
       comment: comment
+      discussion: discussion
       document: document
       image: image
       topic: topic
@@ -456,12 +457,12 @@ en:
       ascending: "Ascending. "
       descending: "Descending. "
     show_comments_for:
-      comment_count: There are {{count}} comments in this discussion.
+      comment_count: There are {{count}} {{t.base.zoom_types.comment.pluralize}} in this {{t.base.zoom_types.dicussion}}.
       confirm_delete: "{{t.base.are_you_sure}}"
       delete: "{{t.base.delete.capitalize}}"
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
-      join_discussion: "{{t.base.join}} this discussion"
+      join_discussion: "{{t.base.join}} this {{t.base.zoom_types.dicussion}}"
       posted_on: Posted on
       read_and: "Read and "
       reply: Reply
@@ -600,10 +601,10 @@ en:
       browse_order_sort_by: "Sort by:"
       browse_view_as: "Default Browse Type:"
       browse_view_as_choice: The default browse type should be a?
-      comment_control: "Who can add, {{t.base.edit}} and {{t.base.update}} comments on {{t.base.item.pluralize}}?:"
+      comment_control: "Who can add, {{t.base.edit}} and {{t.base.update}} {{t.base.zoom_types.comment.pluralize}} on {{t.base.item.pluralize}}?:"
       comment_control_allows: allows
       comment_control_anyone: Anyone {{t.base.logged_in.downcase}}
-      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non {{t.base.basket}} {{t.base.member.pluralize}} to post comments
+      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non {{t.base.basket}} {{t.base.member.pluralize}} to post {{t.base.zoom_types.comment.pluralize}}
       comment_control_members: Only {{t.base.basket}} {{t.base.member.pluralize}}
       comment_control_not_allows: doesn't allow
       disabled: "{{t.base.disabled.capitalize}}"
@@ -764,7 +765,7 @@ en:
     new:
       button: "{{t.base.save.capitalize}}"
       in_response_to: "In response to {{user_name}}"
-      title: New discussion
+      title: New {{t.base.zoom_types.dicussion}}
       view_original: "(view original)"
   comments_controller:
     destroy:
@@ -2265,7 +2266,7 @@ en:
   zoom_controller_helpers_lib:
     zoom_class_humanize:
       audio_recording: "{{t.base.zoom_types.audio.capitalize}}"
-      comment: Discussion
+      comment: "{{t.base.zoom_types.dicussion.capitalize}}"
       document: "{{t.base.zoom_types.document.capitalize}}"
       still_image: "{{t.base.zoom_types.image.capitalize}}"
       topic: "{{t.base.zoom_types.topic.capitalize}}"
@@ -2273,7 +2274,7 @@ en:
       web_link: "{{t.base.zoom_types.web_link.capitalize}}"
     zoom_class_plural_humanize:
       audio_recording: "{{t.base.zoom_types.audio.capitalize}}"
-      comment: Discussion
+      comment: "{{t.base.zoom_types.dicussion.capitalize}}"
       document: "{{t.base.zoom_types.document.capitalize.pluralize}}"
       still_image: "{{t.base.zoom_types.image.capitalize.pluralize}}"
       topic: "{{t.base.zoom_types.topic.capitalize.pluralize}}"
