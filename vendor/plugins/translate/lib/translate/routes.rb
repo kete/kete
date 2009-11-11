@@ -5,6 +5,7 @@ module Translate
         t.translate_list 'translate'
         t.translate 'translate/translate', :action => 'translate'
         t.translate_reload 'translate/reload', :action => 'reload'
+        t.translate_interpolate_and_render 'translate/interpolate_and_render', :action => 'interpolate_and_render'
       end
     end
   end
