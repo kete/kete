@@ -15,7 +15,7 @@ if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
   <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
     :controller => 'search', :urlified_name => @current_basket.urlified_name,
     :page => nil, :sort_type => nil, :sort_direction => nil,
-    :search_terms => nil, :privacy_type => nil, :limit_to_choice => nil } do %>
+    :search_terms => nil, :privacy_type => nil, :limit_to_choice => nil, :extended_field => nil } do %>
 
     <% if !simple_layout && !@search.nil? -%>
 
