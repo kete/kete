@@ -457,12 +457,12 @@ en:
       ascending: "Ascending. "
       descending: "Descending. "
     show_comments_for:
-      comment_count: There are {{count}} {{t.base.zoom_types.comment.pluralize}} in this {{t.base.zoom_types.dicussion}}.
+      comment_count: There are {{count}} {{t.base.zoom_types.comment.pluralize}} in this {{t.base.zoom_types.discussion}}.
       confirm_delete: "{{t.base.are_you_sure}}"
       delete: "{{t.base.delete.capitalize}}"
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
-      join_discussion: "{{t.base.join}} this {{t.base.zoom_types.dicussion}}"
+      join_discussion: "{{t.base.join}} this {{t.base.zoom_types.discussion}}"
       posted_on: Posted on
       read_and: "Read and "
       reply: Reply
@@ -765,7 +765,7 @@ en:
     new:
       button: "{{t.base.save.capitalize}}"
       in_response_to: "In response to {{user_name}}"
-      title: New {{t.base.zoom_types.dicussion}}
+      title: New {{t.base.zoom_types.discussion}}
       view_original: "(view original)"
   comments_controller:
     destroy:
@@ -2266,7 +2266,7 @@ en:
   zoom_controller_helpers_lib:
     zoom_class_humanize:
       audio_recording: "{{t.base.zoom_types.audio.capitalize}}"
-      comment: "{{t.base.zoom_types.dicussion.capitalize}}"
+      comment: "{{t.base.zoom_types.discussion.capitalize}}"
       document: "{{t.base.zoom_types.document.capitalize}}"
       still_image: "{{t.base.zoom_types.image.capitalize}}"
       topic: "{{t.base.zoom_types.topic.capitalize}}"
@@ -2274,7 +2274,7 @@ en:
       web_link: "{{t.base.zoom_types.web_link.capitalize}}"
     zoom_class_plural_humanize:
       audio_recording: "{{t.base.zoom_types.audio.capitalize}}"
-      comment: "{{t.base.zoom_types.dicussion.capitalize}}"
+      comment: "{{t.base.zoom_types.discussion.capitalize}}"
       document: "{{t.base.zoom_types.document.capitalize.pluralize}}"
       still_image: "{{t.base.zoom_types.image.capitalize.pluralize}}"
       topic: "{{t.base.zoom_types.topic.capitalize.pluralize}}"
