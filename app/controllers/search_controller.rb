@@ -364,6 +364,7 @@ class SearchController < ApplicationController
                       :sort_direction => params[:sort_direction],
                       :sort_type => params[:sort_type],
                       :limit_to_choice => params[:limit_to_choice],
+                      :extended_field => params[:extended_field],
                       :authenticity_token => nil }
 
     if is_a_private_search?

@@ -9,7 +9,7 @@ en:
     added: added
     administrator: administrator
     approved: approved
-    are_you_sure: Are you sure?
+    are_you_sure: "Are you sure?"
     avatar: avatar
     basket: basket
     cancel: cancel
@@ -43,13 +43,13 @@ en:
     join: join
     joined: joined
     license: license
+    logged_in: "Logged in"
     login: login
-    logged_in: Logged in
     member: member
     membership: membership
-    moderator: moderator
     moderation: moderation
-    not_available: not available
+    moderator: moderator
+    not_available: "not available"
     open: open
     password: password
     portrait: portrait
@@ -73,33 +73,33 @@ en:
     replaced: replaced
     request: request
     requested: requested
+    reset: reset
     review: review
     reviewed: reviewed
     reviewing: reviewing
-    reset: reset
     save: save
     saved: saved
     search: search
     searching: searching
     show: show
     showing: showing
-    site_administrator: site administrator
+    site_administrator: "site administrator"
     successfully: successfully
     tag: tag
     tagged: tagged
-    technical_administrator: technical administrator
-    thank_you: Thank you
+    technical_administrator: "technical administrator"
+    thank_you: "Thank you"
     update: update
     updated: updated
     user: user
-    username: user name
+    username: "user name"
     view: view
     viewed: viewed
     viewing: viewing
     views: views
-    was_created: was {{t.base.successfully}} {{t.base.created}}
-    was_deleted: was {{t.base.successfully}} {{t.base.deleted}}
-    was_updated: was {{t.base.successfully}} {{t.base.updated}}
+    was_created: "was {{t.base.successfully}} {{t.base.created}}"
+    was_deleted: "was {{t.base.successfully}} {{t.base.deleted}}"
+    was_updated: "was {{t.base.successfully}} {{t.base.updated}}"
     whats_this: "what's this?"
     zoom_types:
       audio: audio
@@ -109,59 +109,59 @@ en:
       image: image
       topic: topic
       video: video
-      web_link: web link
+      web_link: "web link"
   account:
     activate:
       button: Activate
       label: "{{t.base.activation.capitalize}} Code"
-      title: Enter your {{t.base.activation}} code
+      title: "Enter your {{t.base.activation}} code"
     avatar_updater:
-      add_avatar: You may designate a picture you have uploaded to the site as your {{t.base.portrait}} from {{profile_link}}.
-      add_avatar_after_signup: You may designate a picture you have uploaded to the site as your {{t.base.portrait}} after you signup.
+      add_avatar: "You may designate a picture you have uploaded to the site as your {{t.base.portrait}} from {{profile_link}}."
+      add_avatar_after_signup: "You may designate a picture you have uploaded to the site as your {{t.base.portrait}} after you signup."
       fetching_avatar: "Fetching {{t.base.avatar}}. "
-      gravatar_link: This site supports {{gravatar_link}}
-      profile_link: your {{t.base.profile}} page
+      gravatar_link: "This site supports {{gravatar_link}}"
+      profile_link: "your {{t.base.profile}} page"
       your_avatar: "Your Gravatar. "
     baskets:
-      title: Your {{t.base.basket.pluralize}}
+      title: "Your {{t.base.basket.pluralize}}"
     change_password:
       button: "{{t.base.change.capitalize}} {{t.base.password}}"
       confirm_pass: "{{t.base.confirm.capitalize}} {{t.base.password}}"
-      new_pass: New {{t.base.password}}
-      old_pass: Old {{t.base.password}}
+      new_pass: "New {{t.base.password}}"
+      old_pass: "Old {{t.base.password}}"
       title: "{{t.base.change.capitalize}} {{t.base.password}}"
     edit:
       allow_emails: "Allow {{t.base.email}} from other {{t.base.user.pluralize}}:"
       change_password: "{{t.base.change.capitalize}} {{t.base.password}}"
       email: "{{t.base.email.capitalize}}:"
       language: "Language:"
-      language_example: Which language would you like to {{t.base.view}} the site in?
+      language_example: "Which language would you like to {{t.base.view}} the site in?"
       login: "{{t.base.login.capitalize}}:"
-      login_example: Your {{t.base.username}} must be unique and contain no spaces. You will be asked for this and your {{t.base.password}} everytime you {{t.base.login}}. If your name is "John Smith" then you could use "jsmith" as your {{t.base.login}}.
+      login_example: "Your {{t.base.username}} must be unique and contain no spaces. You will be asked for this and your {{t.base.password}} everytime you {{t.base.login}}. If your name is \"John Smith\" then you could use \"jsmith\" as your {{t.base.login}}."
       preferred_license: "Preferred {{t.base.license.capitalize}}:"
       save: "{{t.base.save.capitalize}}"
       title: "{{t.base.edit.capitalize}} your details"
       user_name: "{{t.base.username.capitalize}}:"
-      user_name_example: This is the name others will see on your {{t.base.profile}} and when you make {{t.base.contribution.pluralize}} to the site. If you do not supply one, your {{t.base.login}} will be used instead. Your {{t.base.username}} can contain spaces. E.g if your {{t.base.login}} was "jsmith" your screen name could be "John Smith".
+      user_name_example: "This is the name others will see on your {{t.base.profile}} and when you make {{t.base.contribution.pluralize}} to the site. If you do not supply one, your {{t.base.login}} will be used instead. Your {{t.base.username}} can contain spaces. E.g if your {{t.base.login}} was \"jsmith\" your screen name could be \"John Smith\"."
     forgot_password:
       button: "{{t.base.request.capitalize}} {{t.base.password.downcase}}"
-      email: What is the {{t.base.email}} address used to {{t.base.create}} your {{t.base.account}}?
-      login: What is the {{t.base.login}} of your {{t.base.account}}?
+      email: "What is the {{t.base.email}} address used to {{t.base.create}} your {{t.base.account}}?"
+      login: "What is the {{t.base.login}} of your {{t.base.account}}?"
       title: "{{t.base.request.capitalize}} {{t.base.password}}"
     locale_selection:
       change_locale: "{{t.base.change.capitalize}}"
-      choose_locale: '-{{t.base.choose}} language-'
-      language: 'Language:'
+      choose_locale: "-{{t.base.choose}} language-"
+      language: "Language:"
     login:
-      admin_details: Please enter the default {{t.base.administrator}} {{t.base.account}} {{t.base.login}} and {{t.base.password}} to continue to configuration of the site.
+      admin_details: "Please enter the default {{t.base.administrator}} {{t.base.account}} {{t.base.login}} and {{t.base.password}} to continue to configuration of the site."
       button: "{{t.base.login.capitalize}}"
-      forgot_password: Forgot your {{t.base.password}}? {{forgot_password_link}}
-      forgot_password_link: Click here
+      forgot_password: "Forgot your {{t.base.password}}? {{forgot_password_link}}"
+      forgot_password_link: "Click here"
       login: "{{t.base.login.capitalize}}:"
-      missing_explaination: Kete requires you to install the following software and restart your server.
-      missing_software: Missing Software!
+      missing_explaination: "Kete requires you to install the following software and restart your server."
+      missing_software: "Missing Software!"
       password: "{{t.base.password.capitalize}}:"
-      register: Are you {{t.base.registered}}? You will need to {{register_link}} first before you can {{t.base.login}}.
+      register: "Are you {{t.base.registered}}? You will need to {{register_link}} first before you can {{t.base.login}}."
       register_link: "{{t.base.register}}"
       remember_me: "Remember me:"
       title: "{{t.base.login.capitalize}} to {{site_name}}"
@@ -186,79 +186,79 @@ en:
       contributions: "{{t.base.contribution.pluralize.capitalize}}"
       contributions_link: "{{t.base.item.capitalize.pluralize}} {{t.base.created}} by or contributed to by {{user_link}}"
       created: "{{t.base.created.capitalize}}:"
-      current_license: Current default {{t.base.license}}
-      drag_portraits: Drag a new one from "Other {{t.base.portrait.pluralize.capitalize}}" and drop it on top of the current one (requires Javascript).
+      current_license: "Current default {{t.base.license}}"
+      drag_portraits: "Drag a new one from \"Other {{t.base.portrait.pluralize.capitalize}}\" and drop it on top of the current one (requires Javascript)."
       edit: "{{t.base.edit}}"
       editing_portraits: "Editing {{t.base.portrait.pluralize}}. "
       email: "{{t.base.email.capitalize}}:"
       gravatar: "{{t.base.add.capitalize}} an {{t.base.avatar}} to your {{t.base.account}} by {{t.base.registering}} a global {{t.base.portrait}} with {{gravatar_link}}."
       gravatar_link: gravatar.com
       license_thumbnail: "{{t.base.license.capitalize}} thumbnail. "
-      new_portrait: new {{t.base.portrait}}
-      new_portrait_link: new {{t.base.portrait}}
-      other_portraits: Other {{t.base.portrait.pluralize.capitalize}}
+      new_portrait: "new {{t.base.portrait}}"
+      new_portrait_link: "new {{t.base.portrait}}"
+      other_portraits: "Other {{t.base.portrait.pluralize.capitalize}}"
       pending: Pending
       portrait_description: "{{t.base.portrait.pluralize.capitalize}} are a set of images you display on your {{t.base.profile}} page to {{t.base.user.pluralize}} who {{t.base.view}} it. It can be your own artwork uploaded to the site, or your favorite images. The first {{t.base.portrait}} {{t.base.added}} (which can be reordered later) becomes your 'selected' {{t.base.portrait}}, that is, the one you wish to use as an {{t.base.avatar}} around the site. It will be displayed on your {{t.base.profile}} page and next to any {{t.base.zoom_types.comment.pluralize}} you post."
       portrait_new: "You can {{t.base.create}} a {{new_portrait_link}} by uploading a new image. Alternatively, you can go to an {{t.base.zoom_types.image}} you've {{uploaded_link}}, and select '{{t.base.add.capitalize}} {{t.base.zoom_types.image}} to {{t.base.portrait.pluralize}}' in the right sidebar."
-      portrait_or_gravatar: Alternatively, you can {{t.base.add}} a {{t.base.user}} {{t.base.portrait}} using the instructions above.
+      portrait_or_gravatar: "Alternatively, you can {{t.base.add}} a {{t.base.user}} {{t.base.portrait}} using the instructions above."
       rejected: "{{t.base.rejected.capitalize}}"
       request: "{{t.base.request.capitalize}}"
-      selected_portrait: Selected<br />{{t.base.portrait.capitalize}}
-      set_license: Click the {{t.base.edit}} link above to set your default {{t.base.license}}.
-      shift_portraits: Use the arrow buttons to shift them around (when Javascript is off).
+      selected_portrait: "Selected<br />{{t.base.portrait.capitalize}}"
+      set_license: "Click the {{t.base.edit}} link above to set your default {{t.base.license}}."
+      shift_portraits: "Use the arrow buttons to shift them around (when Javascript is off)."
       title: "{{t.base.profile.capitalize}} of {{user_name}}"
-      uploaded_link: uploaded before
+      uploaded_link: "uploaded before"
       user_name: "{{t.base.username.capitalize}}:"
-      view_license: ({{t.base.view.capitalize}} {{t.base.license}})
+      view_license: "({{t.base.view.capitalize}} {{t.base.license}})"
       whats_portraits: "{{t.base.whats_this}}"
     signup:
-      agree_to: I agree that I have read and {{t.base.accept}} the {{terms_and_conditions_link}}, {{privacy_policy_link}}, and {{house_rules_link}}.
-      button: Sign up
-      case_sensitive: Text is case sensitive
+      agree_to: "I agree that I have read and {{t.base.accept}} the {{terms_and_conditions_link}}, {{privacy_policy_link}}, and {{house_rules_link}}."
+      button: "Sign up"
+      case_sensitive: "Text is case sensitive"
       confirm_password: "{{t.base.confirm.capitalize}} {{t.base.password}}:"
       email: "{{t.base.email.capitalize}}:"
-      house_rules_link: House Rules
+      house_rules_link: "House Rules"
       language: "Language:"
-      language_example: Which language would you like to {{t.base.view}} the site in?
+      language_example: "Which language would you like to {{t.base.view}} the site in?"
       login: "{{t.base.login.capitalize}}:"
-      login_example: Your {{t.base.login}} needs to be unique and contain no spaces. You will be asked for this and your {{t.base.password}} everytime you {{t.base.login}}. If your name is "John Smith" then you could use "jsmith" as your {{t.base.login}}.
+      login_example: "Your {{t.base.login}} needs to be unique and contain no spaces. You will be asked for this and your {{t.base.password}} everytime you {{t.base.login}}. If your name is \"John Smith\" then you could use \"jsmith\" as your {{t.base.login}}."
       password: "{{t.base.password.capitalize}}:"
       preferred_license: "Preferred {{t.base.license.capitalize}}:"
-      privacy_policy_link: Privacy policy
+      privacy_policy_link: "Privacy policy"
       security_code: "Security Code: Please enter the text from the {{t.base.zoom_types.image}} to the right"
-      terms_and_conditions_link: Terms and conditions
-      text_captcha: or use a {{text_captcha_link}}
-      text_captcha_link: non-{{t.base.zoom_types.image}} security question
+      terms_and_conditions_link: "Terms and conditions"
+      text_captcha: "or use a {{text_captcha_link}}"
+      text_captcha_link: "non-{{t.base.zoom_types.image}} security question"
       title: Registration
       user_name: "{{t.base.username.capitalize}}:"
-      user_name_example: This is the name others will see on your {{t.base.profile}} and when you make {{t.base.contribution.pluralize}} to the site. If you do not supply one, your {{t.base.login}} will be used instead. Your {{t.base.username}} can contain spaces. E.g if your {{t.base.login}} was "jsmith" your screen name could be "John Smith".
+      user_name_example: "This is the name others will see on your {{t.base.profile}} and when you make {{t.base.contribution.pluralize}} to the site. If you do not supply one, your {{t.base.login}} will be used instead. Your {{t.base.username}} can contain spaces. E.g if your {{t.base.login}} was \"jsmith\" your screen name could be \"John Smith\"."
   account_controller:
     activate:
-      activated: Your {{t.base.account}} has been activated.  Please {{t.base.login}}.
-      not_activated: Unable to activate the {{t.base.account}}.  Please check or enter manually.
+      activated: "Your {{t.base.account}} has been activated.  Please {{t.base.login}}."
+      not_activated: "Unable to activate the {{t.base.account}}.  Please check or enter manually."
     add_portrait:
       added_portrait: "'{{portrait_title}}' has been {{t.base.added}} to your {{t.base.portrait.pluralize}}."
       failed_portrait: "'{{portrait_title}}' failed to {{t.base.add}} to your {{t.base.portrait.pluralize}}."
+    change_locale:
+      change_permanently: " If you prefer this language permanently, please set it via your account preference."
+      locale_changed: "The locale has been changed."
     change_password:
       password_changed: "{{t.base.password.capitalize}} {{t.base.changed}}"
       password_mismatch: "{{t.base.password.capitalize}} mismatch"
       password_not_changed: "{{t.base.password.capitalize}} not {{t.base.changed}}"
-      wrong_password: Wrong {{t.base.password}}
+      wrong_password: "Wrong {{t.base.password}}"
     fetch_gravatar:
       your_gravatar: "Your Gravatar. "
     forgot_password:
-      email_sent: A {{t.base.password}} {{t.base.reset}} link has been sent to your {{t.base.email}} address
-      more_than_one_account: This {{t.base.email}} address belongs to more than one {{t.base.account}}. Please select the one you're trying to {{t.base.reset}}.
-      no_such_email: Could not find a {{t.base.user}} with that {{t.base.email}} address
-      no_such_login: Could not find a {{t.base.user}} with that {{t.base.login}}
-    change_locale:
-      change_permanently: ' If you prefer this language permanently, please set it via your account preference.'
-      locale_changed: 'The locale has been changed.'
+      email_sent: "A {{t.base.password}} {{t.base.reset}} link has been sent to your {{t.base.email}} address"
+      more_than_one_account: "This {{t.base.email}} address belongs to more than one {{t.base.account}}. Please select the one you're trying to {{t.base.reset}}."
+      no_such_email: "Could not find a {{t.base.user}} with that {{t.base.email}} address"
+      no_such_login: "Could not find a {{t.base.user}} with that {{t.base.login}}"
     login:
-      failed_login: Your {{t.base.password}} or {{t.base.login}} do not match our records. Please try again.
+      failed_login: "Your {{t.base.password}} or {{t.base.login}} do not match our records. Please try again."
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
     logout:
-      logged_out: You have been logged out.
+      logged_out: "You have been logged out."
     make_selected_portrait:
       failed_portrait: "'{{portrait_title}}' failed to become your selected {{t.base.portrait}}."
       made_selected: "'{{portrait_title}}' has been made your selected {{t.base.portrait}}."
@@ -274,27 +274,31 @@ en:
       failed_portrait: "'{{portrait_title}}' failed to {{t.base.remove}} from your {{t.base.portrait.pluralize}}."
       removed_portrait: "'{{portrait_title}}' has been {{t.base.removed}} from your {{t.base.portrait.pluralize}}."
     reset_password:
-      invalid_reset: Sorry - That is an invalid {{t.base.password}} {{t.base.reset}} code. Please check your code and try again. (Perhaps your {{t.base.email}} client inserted a carriage return?)
+      invalid_reset: "Sorry - That is an invalid {{t.base.password}} {{t.base.reset}} code. Please check your code and try again. (Perhaps your {{t.base.email}} client inserted a carriage return?)"
       password_mismatch: "{{t.base.password.capitalize}} mismatch"
       password_not_reset: "{{t.base.password.capitalize}} not {{t.base.reset}}"
       password_reset: "{{t.base.password.capitalize}} {{t.base.reset}}"
     show:
-      please_login: You must be {{t.base.logged_in.downcase}} to {{t.base.view}} {{t.base.user}} {{t.base.profile.pluralize}}.
+      please_login: "You must be {{t.base.logged_in.downcase}} to {{t.base.view}} {{t.base.user}} {{t.base.profile.pluralize}}."
     signup:
-      signed_up: Thanks for signing up!
-      signed_up_with_email: Thanks for signing up! Expect an {{t.base.email}} with a code shortly to activate your {{t.base.account}}.
+      signed_up: "Thanks for signing up!"
+      signed_up_with_email: "Thanks for signing up! Expect an {{t.base.email}} with a code shortly to activate your {{t.base.account}}."
     update:
       user_updated: "{{t.base.user.capitalize}} {{t.base.was_updated}}."
     update_portraits:
-      not_reordered: The {{t.base.portrait.pluralize}} were not reordered permanently. You may only reorder {{t.base.portrait.pluralize}} if they are yours.  If they are, please try again.
-      reordered: Your {{t.base.portrait.pluralize}} have been {{t.base.successfully}} reordered.
+      not_reordered: "The {{t.base.portrait.pluralize}} were not reordered permanently. You may only reorder {{t.base.portrait.pluralize}} if they are yours.  If they are, please try again."
+      reordered: "Your {{t.base.portrait.pluralize}} have been {{t.base.successfully}} reordered."
   active_scaffold:
-    "!=": "!="
+    ? "!="
+    : "!="
     <: <
     <=: <=
-    "=": "="
-    ">": ">"
-    ">=": ">="
+    ? "="
+    : "="
+    ? ">"
+    : ">"
+    ? ">="
+    : ">="
     _select_: "- select -"
     _to_: " to "
     add: "{{t.base.add.capitalize}}"
@@ -303,7 +307,7 @@ en:
     are_you_sure: "{{t.base.are_you_sure}}"
     between: Between
     cancel: "{{t.base.cancel}}"
-    click_to_edit: Click to {{t.base.edit}}
+    click_to_edit: "Click to {{t.base.edit}}"
     close: "{{t.base.close.capitalize}}"
     create: "{{t.base.create.capitalize}}"
     create_another: "{{t.base.create.capitalize}} Another"
@@ -321,12 +325,12 @@ en:
     found: Found
     hide: "{{t.base.hide.capitalize}}"
     internal_error: "{{t.base.request.capitalize}} Failed (code 500, Internal Error)"
-    live_search: Live {{t.base.search.capitalize}}
-    loading: "Loading\xE2\x80\xA6"
+    live_search: "Live {{t.base.search.capitalize}}"
+    loading: Loading…
     nested_for_model: "{{nested_model}} for {{parent_model}}"
     next: Next
-    no_entries: No Entries
-    omit_header: Omit Header
+    no_entries: "No Entries"
+    omit_header: "Omit Header"
     options: Options
     pdf: PDF
     previous: Previous
@@ -336,52 +340,52 @@ en:
     remove_file: "{{t.base.remove.capitalize}} or {{t.base.replace.capitalize}} file"
     replace_with_new: "{{t.base.replace.capitalize}} With New"
     reset: "{{t.base.reset.capitalize}}"
-    revisions_for_model: Revisions for {{model}}
-    saving: "Saving\xE2\x80\xA6"
+    revisions_for_model: "Revisions for {{model}}"
+    saving: Saving…
     search: "{{t.base.search.capitalize}}"
     search_terms: "{{t.base.search.capitalize}} Terms"
     show: "{{t.base.show.capitalize}}"
     show_model: "{{t.base.show.capitalize}} {{model}}"
-    udated_model: "{{t.base.updated.capitalize}} {{model}}" # bad key name is from AS
+    udated_model: "{{t.base.updated.capitalize}} {{model}}"
     update: "{{t.base.update.capitalize}}"
     update_model: "{{t.base.update.capitalize}} {{model}}"
-    version_inconsistency: Version inconsistency - this record has been modified since you started editing it.
+    version_inconsistency: "Version inconsistency - this record has been modified since you started editing it."
   activerecord:
     errors:
       messages:
-        accepted: must be {{t.base.accepted}}
-        blank: can't be blank
-        confirmation: doesn't match confirmation
-        empty: can't be empty
-        equal_to: must be equal to {{count}}
-        even: must be even
-        exclusion: is reserved
-        greater_than: must be greater than {{count}}
-        greater_than_or_equal_to: must be greater than or equal to {{count}}
-        inclusion: is not included in the list. Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image.
-        invalid: is invalid
-        less_than: must be less than {{count}}
-        less_than_or_equal_to: must be less than or equal to {{count}}
-        not_a_number: is not a number
-        odd: must be odd
-        taken: has already been taken
-        too_long: is too long (maximum is {{count}} characters)
-        too_short: is too short (minimum is {{count}} characters)
-        wrong_length: is the wrong length (should be {{count}} characters)
+        accepted: "must be {{t.base.accepted}}"
+        blank: "can't be blank"
+        confirmation: "doesn't match confirmation"
+        empty: "can't be empty"
+        equal_to: "must be equal to {{count}}"
+        even: "must be even"
+        exclusion: "is reserved"
+        greater_than: "must be greater than {{count}}"
+        greater_than_or_equal_to: "must be greater than or equal to {{count}}"
+        inclusion: "is not included in the list. Are you sure entered the right type of file for what you wanted to upload?  For example, a .jpg for an image."
+        invalid: "is invalid"
+        less_than: "must be less than {{count}}"
+        less_than_or_equal_to: "must be less than or equal to {{count}}"
+        not_a_number: "is not a number"
+        odd: "must be odd"
+        taken: "has already been taken"
+        too_long: "is too long (maximum is {{count}} characters)"
+        too_short: "is too short (minimum is {{count}} characters)"
+        wrong_length: "is the wrong length (should be {{count}} characters)"
       template:
         body: "There were problems with the following fields:"
         header:
-          one: 1 error prohibited this {{model}} from being {{t.base.saved}}
+          one: "1 error prohibited this {{model}} from being {{t.base.saved}}"
           other: "{{count}} errors prohibited this {{model}} from being {{t.base.saved}}"
   application_controller:
     link_related:
       added_relation: "{{t.base.successfully.capitalize}} {{t.base.added}} {{t.base.item}} relationships"
     redirect_if_current_basket_isnt_approved_for_public_viewing:
-      not_available: The {{t.base.basket}} {{basket_name}} is not {{t.base.approved}} for {{t.base.public}} {{t.base.viewing}}
+      not_available: "The {{t.base.basket}} {{basket_name}} is not {{t.base.approved}} for {{t.base.public}} {{t.base.viewing}}"
     rescue_404:
-      title: 404 Not Found
+      title: "404 Not Found"
     rescue_500:
-      title: 500 Internal Server Error
+      title: "500 Internal Server Error"
     setup_related_topic_and_zoom_and_redirect:
       created: "{{zoom_class}} {{t.base.was_created}}."
       portrait: "{{zoom_class}} {{t.base.was_created}} as a {{t.base.portrait}}."
@@ -393,11 +397,11 @@ en:
     avatar_for:
       users_avatar: "{{user_name}}'s {{t.base.avatar.capitalize}}. "
     browse_by_category_columns:
-      all_items: All {{item_type}}
+      all_items: "All {{item_type}}"
     embedded_enabled_message:
-      harvesting: Embedded metadata will be harvested from the {{t.base.item}}'s binary file to fill out any fields that match the site's settings.
+      harvesting: "Embedded metadata will be harvested from the {{t.base.item}}'s binary file to fill out any fields that match the site's settings."
     flagging_links_for:
-      can_you_edit: Remember, you may have the option to directly {{t.base.edit}} this {{t.base.item}} or alternatively discuss it. Are you sure you want to {{t.base.flag}} it instead?
+      can_you_edit: "Remember, you may have the option to directly {{t.base.edit}} this {{t.base.item}} or alternatively discuss it. Are you sure you want to {{t.base.flag}} it instead?"
       flag_as: "{{t.base.flag.capitalize}} as:"
     header_add_basket_link:
       add_basket: "{{t.base.add.capitalize}} {{t.base.basket.capitalize}}"
@@ -412,12 +416,14 @@ en:
     header_links_to_baskets:
       more_baskets: more...
     kete_time_ago_in_words:
-      longer_than_a_week: on {{date}}
+      longer_than_a_week: "on {{date}}"
       within_a_week: "{{time}} ago"
+    link_for_rss:
+      link_text: "from all types combined"
     link_to_add_item:
       in_basket: " in {{basket_name}}"
     link_to_add_set_of_related_items:
-      link_text: Import Set of {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}
+      link_text: "Import Set of {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}"
     link_to_basket_contact_for:
       contact: "{{t.base.contact.capitalize}}"
     link_to_cancel:
@@ -428,7 +434,7 @@ en:
     link_to_members_of:
       members_link_text: "{{t.base.member.capitalize.pluralize}}"
     link_to_membership_request_of:
-      current_role: You're a |role|.
+      current_role: "You're a |role|."
       join: "{{t.base.join.capitalize}}"
       leave: Leave
       pending: "{{t.base.membership.capitalize}} pending"
@@ -440,31 +446,29 @@ en:
       not_available: "{{t.base.not_available}}"
     link_to_related_item_function:
       link_text: "{{function}} an Existing {{t.base.related.capitalize}} {{t.base.item.capitalize}}"
-    link_for_rss:
-      link_text: "from all types combined"
     link_to_related_items_of:
       link_text: "{{t.base.view.capitalize}} {{t.base.item.pluralize}} {{t.base.related}} to {{item_title}}"
     pending_review:
-      no_safe_version: currently no non-disputed {{privacy_type}} versions of this {{t.base.item}}. Details of the {{privacy_type}} version of this {{t.base.item}} are not being displayed at this time.
+      no_safe_version: "currently no non-disputed {{privacy_type}} versions of this {{t.base.item}}. Details of the {{privacy_type}} version of this {{t.base.item}} are not being displayed at this time."
       pending: "{{t.base.review.capitalize}} Pending:"
       reverted: "currently reverted to non-disputed {{privacy_type}} version # {{item_version}}"
     privacy_image:
       private: "{{t.base.private}}: "
     related_image_link_for:
-      only_original: only available as original
+      only_original: "only available as original"
     render_baskets_as_menu:
       more: More..
     search_sorting_controls_for:
       ascending: "Ascending. "
       descending: "Descending. "
     show_comments_for:
-      comment_count: There are {{count}} {{t.base.zoom_types.comment.pluralize}} in this {{t.base.zoom_types.discussion}}.
+      comment_count: "There are {{count}} {{t.base.zoom_types.comment.pluralize}} in this {{t.base.zoom_types.discussion}}."
       confirm_delete: "{{t.base.are_you_sure}}"
       delete: "{{t.base.delete.capitalize}}"
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
       join_discussion: "{{t.base.join}} this {{t.base.zoom_types.discussion}}"
-      posted_on: Posted on
+      posted_on: "Posted on"
       read_and: "Read and "
       reply: Reply
       said: said
@@ -482,21 +486,21 @@ en:
       size: "Size:"
       type: "Recording type:"
     edit:
-      not_allowed: Sorry - editing on this section of the site has been disallowed
+      not_allowed: "Sorry - editing on this section of the site has been disallowed"
   audio_controller:
     update:
       updated: "{{t.base.zoom_types.audio.capitalize}} {{t.base.was_updated}}."
   audio_recording_model:
-    not_acceptable: is not acceptable. It should be a .mp3, .m4a, or other sound file.
+    not_acceptable: "is not acceptable. It should be a .mp3, .m4a, or other sound file."
   authenticated_system_lib:
     login_from_cookie:
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
   authorization_initializer:
-    permission_denied: Permission denied. Your {{t.base.account}} cannot access the {{t.base.requested}} page.
+    permission_denied: "Permission denied. Your {{t.base.account}} cannot access the {{t.base.requested}} page."
   basket_model:
-    all_users: All {{t.base.user.pluralize}}
-    archives_by_type: By type
-    archives_dont_show: Don't {{t.base.show}} them
+    all_users: "All {{t.base.user.pluralize}}"
+    archives_by_type: "By type"
+    archives_dont_show: "Don't {{t.base.show}} them"
     basket_admin: "{{t.base.basket.capitalize}} admin"
     basket_appearance: "{{t.base.basket.capitalize}} Appearance"
     basket_homepage_options: "{{t.base.basket.capitalize}} Homepage Options"
@@ -504,31 +508,31 @@ en:
     basket_moderator: "{{t.base.basket.capitalize}} {{t.base.moderator}}"
     basket_new_or_edit: "{{t.base.basket.capitalize}} New or {{t.base.edit.capitalize}}"
     cannot_delete_site: "Error: Cannot delete site {{t.base.basket}}!"
-    details_and_comments: Full details and {{t.base.zoom_types.comment.pluralize}}
-    dont_link: Don't link
-    font_sans_serif: Sans Serif (Arial, Helvetica, and the like)
-    font_serif: Serif (Times New Roman, etc.)
-    font_use_theme_default: Use theme default
-    image_dont_show: No {{t.base.zoom_types.image}}
+    details_and_comments: "Full details and {{t.base.zoom_types.comment.pluralize}}"
+    dont_link: "Don't link"
+    font_sans_serif: "Sans Serif (Arial, Helvetica, and the like)"
+    font_serif: "Serif (Times New Roman, etc.)"
+    font_use_theme_default: "Use theme default"
+    image_dont_show: "No {{t.base.zoom_types.image}}"
     image_latest: Latest
     image_random: Random
     logged_in: "{{t.base.logged_in}} {{t.base.user}}"
     moderate_before_approved: "{{t.base.moderator}} {{t.base.views}} before {{t.base.item}} {{t.base.approved}}"
     moderate_on_flagged: "{{t.base.moderation}} upon being {{t.base.flagged}}"
-    now_in_site_basket: This version was in {{basket_name}} {{t.base.basket}}, but that {{t.base.basket}} has been {{t.base.deleted}} and no longer exists on the site, now this version is put in default site {{t.base.basket}}.
-    only_comments: Only {{t.base.zoom_types.comment.pluralize}}
-    only_details: Only full details
+    now_in_site_basket: "This version was in {{basket_name}} {{t.base.basket}}, but that {{t.base.basket}} has been {{t.base.deleted}} and no longer exists on the site, now this version is put in default site {{t.base.basket}}."
+    only_comments: "Only {{t.base.zoom_types.comment.pluralize}}"
+    only_details: "Only full details"
     private_item_notification_or_default:
       dont_send_notification: "Don't send {{t.base.email}} notification"
-    recent_as_headlines: Headlines (news style)
-    recent_as_summaries: Summaries (blog style)
-    recent_dont_show: Don't {{t.base.show}} them
-    site_admin: Site admin
+    recent_as_headlines: "Headlines (news style)"
+    recent_as_summaries: "Summaries (blog style)"
+    recent_dont_show: "Don't {{t.base.show}} them"
+    site_admin: "Site admin"
     tags_as_categories: Categories
     tags_as_tag_cloud: "{{t.base.tag.capitalize}} Cloud"
-    tags_ordered_by_name: By Name
+    tags_ordered_by_name: "By Name"
     tags_ordered_latest: Latest
-    tags_ordered_most_popular: Most Popular
+    tags_ordered_most_popular: "Most Popular"
     tags_ordered_random: Random
   baskets:
     actions_menu:
@@ -536,41 +540,41 @@ en:
       delete: "{{t.base.delete.capitalize}}"
       delete_confirmation: "{{t.base.are_you_sure}} All {{t.base.item.pluralize}} in this {{t.base.basket}} will be {{t.base.deleted}} forever!"
       edit: "{{t.base.edit.capitalize}}"
-      homepage_options: Homepage Options
+      homepage_options: "Homepage Options"
       importers: Importers
       members: "{{t.base.member.capitalize.pluralize}}"
       moderate: Moderate
     appearance:
       additional_footer_content: "Additional Footer Content:"
-      additional_footer_content_exception: Allow forms and other possible insecure elements and attributes in the HTML?
+      additional_footer_content_exception: "Allow forms and other possible insecure elements and attributes in the HTML?"
       additional_footer_content_replace: "{{t.base.replace}} existing footer with above content?"
-      additional_footer_content_replace_example: If checked, the above footer will totally {{t.base.replace}} the bottom of each page.  If you would rather it appear above the "Accessibility | Sitemap | Back to Content" links, rather than {{t.base.replace}} them, leave this unchecked.
+      additional_footer_content_replace_example: "If checked, the above footer will totally {{t.base.replace}} the bottom of each page.  If you would rather it appear above the \"Accessibility | Sitemap | Back to Content\" links, rather than {{t.base.replace}} them, leave this unchecked."
       additional_footer_content_security: "Note: forms and javascript are not allowed for security reasons."
-      additional_footer_content_security_admin: Unless you check the box below.
+      additional_footer_content_security_admin: "Unless you check the box below."
       basket_list_options: "{{t.base.basket.capitalize}} List Menu Options:"
-      basket_list_options_example: These settings only take effect if the {{t.base.basket}} list navigation menu is on in your template.
-      basket_list_options_in_reverse: in reverse?
+      basket_list_options_example: "These settings only take effect if the {{t.base.basket}} list navigation menu is on in your template."
+      basket_list_options_in_reverse: "in reverse?"
       basket_list_options_sort_by: "Sort by:"
       basket_list_options_topic_number: "Number of topics to {{t.base.show}} when in this {{t.base.basket}}?:"
       button: "{{t.base.save.capitalize}}"
       controls: "{{t.base.show.capitalize}}/{{t.base.hide.capitalize}} Controls:"
       current_header: "Current {{t.base.basket.capitalize}} Header Image. "
-      current_inheritance: The Site uses the <strong>{{theme_name}}</strong> theme.
+      current_inheritance: "The Site uses the <strong>{{theme_name}}</strong> theme."
       font_family: "Font Family:"
       header_example: "URL for background {{t.base.zoom_types.image}} for the top of each page:"
       inherit: "{{t.base.inherit.capitalize}}"
       inherit_example: "{{t.base.inherit.capitalize}} this setting from the Site {{t.base.basket}}."
       new_theme: "{{t.base.add.capitalize}} new theme"
-      no_themes: No themes beyond the default are available right now.
+      no_themes: "No themes beyond the default are available right now."
       screenshot_of: "Screenshot of {{theme}} theme. "
       show_actions_to: "{{t.base.show.capitalize}} Action Menu to:"
-      show_actions_to_example: (who can see the {{t.base.view}}, {{t.base.edit}}, {{t.base.history}} and other links)
+      show_actions_to_example: "(who can see the {{t.base.view}}, {{t.base.edit}}, {{t.base.history}} and other links)"
       show_add_links_to: "{{t.base.show.capitalize}} {{t.base.add.capitalize}} Links to:"
-      show_add_links_to_example: (who can {{t.base.relate}} or link {{t.base.item.pluralize}} together)
+      show_add_links_to_example: "(who can {{t.base.relate}} or link {{t.base.item.pluralize}} together)"
       show_comments_to: "{{t.base.show.capitalize}} {{t.base.zoom_types.comment.pluralize.capitalize}} to:"
-      show_comments_to_example: (who can see and {{t.base.add}} {{t.base.zoom_types.comment.pluralize}})
+      show_comments_to_example: "(who can see and {{t.base.add}} {{t.base.zoom_types.comment.pluralize}})"
       show_flagging_to: "{{t.base.show.capitalize}} {{t.base.flagging.capitalize}} to:"
-      show_flagging_to_example: (who can {{t.base.flag}} {{t.base.item.pluralize}})
+      show_flagging_to_example: "(who can {{t.base.flag}} {{t.base.item.pluralize}})"
       theme: "Theme:"
       title: "{{basket_name}} Appearance"
     choose_type:
@@ -578,57 +582,57 @@ en:
       add_in: "{{t.base.add.capitalize}} in?"
       button: "{{t.base.choose.capitalize}}"
       choose_type: "{{t.base.choose}} {{t.base.item}} type"
-      no_baskets_available: No {{t.base.basket.pluralize}} Available
-      no_baskets_available_description: There are no {{t.base.basket.pluralize}} that you have access to {{t.base.add}} {{t.base.item.pluralize}} to.
-      no_baskets_available_try_later: Find a {{t.base.basket}} to {{t.base.join}}, or please try again later.
+      no_baskets_available: "No {{t.base.basket.pluralize}} Available"
+      no_baskets_available_description: "There are no {{t.base.basket.pluralize}} that you have access to {{t.base.add}} {{t.base.item.pluralize}} to."
+      no_baskets_available_try_later: "Find a {{t.base.basket}} to {{t.base.join}}, or please try again later."
       spinner_working: "Working... "
-      that_relates_to: that {{t.base.relates}} to {{topic_title}}
-      what_to_add: What would you like to {{t.base.add}}
-      where_to_add: Where would you like to {{t.base.add}} it?
+      that_relates_to: "that {{t.base.relates}} to {{topic_title}}"
+      what_to_add: "What would you like to {{t.base.add}}"
+      where_to_add: "Where would you like to {{t.base.add}} it?"
     edit:
       accept: "{{t.base.accept.capitalize}} {{t.base.basket}}"
-      currently_rejected: (currently {{t.base.rejected}})
+      currently_rejected: "(currently {{t.base.rejected}})"
       reject: "{{t.base.reject.capitalize}} {{t.base.basket}}"
       title: "{{basket_name}} {{t.base.edit.capitalize}}"
       update: "{{t.base.update.capitalize}}"
     form:
       admin_contact: "{{t.base.administrator.capitalize}} {{t.base.contact}}?"
       admin_contact_disabled_example: "{{t.base.user.capitalize.pluralize}} will not be able to {{t.base.contact}} {{t.base.administrator.pluralize}}."
-      admin_contact_enabled_example: A link will be provided that allows {{t.base.user.pluralize}} to send a message to {{t.base.administrator.pluralize}}.
-      admin_contain_current_inheritance: The Site has <strong>{{current_inheritance}}</strong> use of the {{t.base.administrator}} {{t.base.contact}} form.
+      admin_contact_enabled_example: "A link will be provided that allows {{t.base.user.pluralize}} to send a message to {{t.base.administrator.pluralize}}."
+      admin_contain_current_inheritance: "The Site has <strong>{{current_inheritance}}</strong> use of the {{t.base.administrator}} {{t.base.contact}} form."
       browse_order: "Default Browse Results Order:"
-      browse_order_default: use software default
-      browse_order_in_reverse: in reverse?
+      browse_order_default: "use software default"
+      browse_order_in_reverse: "in reverse?"
       browse_order_sort_by: "Sort by:"
       browse_view_as: "Default Browse Type:"
-      browse_view_as_choice: The default browse type should be a?
+      browse_view_as_choice: "The default browse type should be a?"
       comment_control: "Who can add, {{t.base.edit}} and {{t.base.update}} {{t.base.zoom_types.comment.pluralize}} on {{t.base.item.pluralize}}?:"
       comment_control_allows: allows
-      comment_control_anyone: Anyone {{t.base.logged_in.downcase}}
-      comment_control_current_inheritance: The Site <strong>{{current_inheritance}}</strong> non {{t.base.basket}} {{t.base.member.pluralize}} to post {{t.base.zoom_types.comment.pluralize}}
-      comment_control_members: Only {{t.base.basket}} {{t.base.member.pluralize}}
-      comment_control_not_allows: doesn't allow
+      comment_control_anyone: "Anyone {{t.base.logged_in.downcase}}"
+      comment_control_current_inheritance: "The Site <strong>{{current_inheritance}}</strong> non {{t.base.basket}} {{t.base.member.pluralize}} to post {{t.base.zoom_types.comment.pluralize}}"
+      comment_control_members: "Only {{t.base.basket}} {{t.base.member.pluralize}}"
+      comment_control_not_allows: "doesn't allow"
       disabled: "{{t.base.disabled.capitalize}}"
-      doesnt_inherit: (this setting does not {{t.base.inherit}} to other {{t.base.basket.pluralize}})
+      doesnt_inherit: "(this setting does not {{t.base.inherit}} to other {{t.base.basket.pluralize}})"
       enabled: "{{t.base.enabled.capitalize}}"
       file_privacy: "Default Original File Privacy:"
-      file_privacy_current_inheritance: The Site has files <strong>{{current_inheritance}}</strong> by default
+      file_privacy_current_inheritance: "The Site has files <strong>{{current_inheritance}}</strong> by default"
       file_privacy_example: "You may use this to restrict the download of an {{t.base.item}}'s original file.  For example, you may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the information about it, but limit downloading the actual {{t.base.zoom_types.document}} file to {{t.base.basket}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
-      file_privacy_private_example: Can be downloaded only by authorized {{t.base.basket}} {{t.base.member.pluralize}}
-      file_privacy_public_example: Can be downloaded by everyone
+      file_privacy_private_example: "Can be downloaded only by authorized {{t.base.basket}} {{t.base.member.pluralize}}"
+      file_privacy_public_example: "Can be downloaded by everyone"
       file_visibility: "{{t.base.private.capitalize}} Original Files Visibility:"
       file_visibility_example: "To {{t.base.view}} {{t.base.private.downcase}} attached files you must be at least a:"
       inherit: "{{t.base.inherit.capitalize}}"
       inherit_example: "{{t.base.inherit.capitalize}} this setting from the Site {{t.base.basket}}."
-      isnt_inherited: (this setting is not inherited from site {{t.base.basket}})
+      isnt_inherited: "(this setting is not inherited from site {{t.base.basket}})"
       item_privacy: "Default {{t.base.item.capitalize}} Privacy:"
-      item_privacy_current_inheritance: The Site has {{t.base.item.pluralize}} <strong>{{current_inheritance}}</strong> by default
-      item_privacy_private_example: Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}}
-      item_privacy_public_example: Can be {{t.base.viewed}} by everyone
+      item_privacy_current_inheritance: "The Site has {{t.base.item.pluralize}} <strong>{{current_inheritance}}</strong> by default"
+      item_privacy_private_example: "Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}}"
+      item_privacy_public_example: "Can be {{t.base.viewed}} by everyone"
       join_policy: "{{t.base.join.capitalize}} Policy:"
       join_policy_closed: "{{t.base.closed.capitalize}} {{t.base.membership.capitalize}}"
       join_policy_closed_example: "{{t.base.closed.capitalize}} {{t.base.basket}} {{t.base.membership.capitalize}}. {{t.base.member.capitalize.pluralize}} have to be {{t.base.added}} by {{t.base.basket}} {{t.base.administrator.capitalize.pluralize}} manually."
-      join_policy_current_inheritance: The Site has {{t.base.basket}} {{t.base.membership}} <strong>{{current_inheritance}}</strong> by default
+      join_policy_current_inheritance: "The Site has {{t.base.basket}} {{t.base.membership}} <strong>{{current_inheritance}}</strong> by default"
       join_policy_open: "{{t.base.open.capitalize}} {{t.base.membership.capitalize}}"
       join_policy_open_example: "{{t.base.enable.capitalize}} {{t.base.open.capitalize}} {{t.base.basket}} {{t.base.membership.capitalize}}. Anyone can {{t.base.join}} this {{t.base.basket}} with one click."
       join_policy_request: "{{t.base.request.capitalize}} {{t.base.membership.capitalize}}"
@@ -639,10 +643,10 @@ en:
       moderation: "{{t.base.moderation.capitalize}} Policy:"
       name: "Name:"
       privacy_controls: "Privacy Controls:"
-      privacy_controls_current_inheritance: The Site has <strong>{{current_inheritance}}</strong> Privacy Controls
-      privacy_controls_disabled_example: Disable Privacy Controls if {{t.base.member.pluralize}} can only {{t.base.create}} publicly readable {{t.base.item.pluralize}}.
+      privacy_controls_current_inheritance: "The Site has <strong>{{current_inheritance}}</strong> Privacy Controls"
+      privacy_controls_disabled_example: "Disable Privacy Controls if {{t.base.member.pluralize}} can only {{t.base.create}} publicly readable {{t.base.item.pluralize}}."
       privacy_controls_enabled_example: "{{t.base.enable.capitalize}} Privacy Controls if {{t.base.member.pluralize}} of this {{t.base.basket}} can have both {{t.base.item.pluralize}} that are readable by the {{t.base.public.downcase}} at large AND {{t.base.item.pluralize}} that are only readable by themselves."
-      privacy_controls_site_basket: This {{t.base.basket.pluralize}} browsing controls are left {{t.base.enabled}} if any other {{t.base.basket.pluralize}} have privacy controls turned on (for site-wide {{t.base.private.downcase}} {{t.base.search}})
+      privacy_controls_site_basket: "This {{t.base.basket.pluralize}} browsing controls are left {{t.base.enabled}} if any other {{t.base.basket.pluralize}} have privacy controls turned on (for site-wide {{t.base.private.downcase}} {{t.base.search}})"
       private: "{{t.base.private.capitalize}}"
       private_item_notification: "{{t.base.private.capitalize}} {{t.base.item.capitalize}} notification"
       private_item_notification_example: "Whenever {{t.base.private}} {{t.base.item.pluralize}} are {{t.base.changed}}, which role of {{t.base.user.pluralize}} (and above) should be notified by {{t.base.email}}?"
@@ -650,39 +654,39 @@ en:
       private_item_notification_show_title: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} title in {{t.base.email}} notifications?"
       public: "{{t.base.public.capitalize}}"
       recent_topics: "{{t.base.disable.capitalize}} Site {{t.base.recent.capitalize}} {{t.base.zoom_types.topic.capitalize.pluralize}} Display:"
-      recent_topics_example: Do not {{t.base.show}} new/{{t.base.edited}} topics in {{t.base.recent}} results on the Site {{t.base.basket}}?
+      recent_topics_example: "Do not {{t.base.show}} new/{{t.base.edited}} topics in {{t.base.recent}} results on the Site {{t.base.basket}}?"
     homepage_form:
       archives: Archives
-      archives_as: List {{t.base.basket.pluralize}} archive contents as?
-      dont_redirect: Don't redirect
-      go_to_browse: Go directly to "browse" options
-      homepage_link: A link to the homepage topic's?
-      homepage_topic: Homepage {{t.base.zoom_types.topic.capitalize}}
-      include_search: Include {{t.base.basket.pluralize}} {{t.base.search}} form?
+      archives_as: "List {{t.base.basket.pluralize}} archive contents as?"
+      dont_redirect: "Don't redirect"
+      go_to_browse: "Go directly to \"browse\" options"
+      homepage_link: "A link to the homepage topic's?"
+      homepage_topic: "Homepage {{t.base.zoom_types.topic.capitalize}}"
+      include_search: "Include {{t.base.basket.pluralize}} {{t.base.search}} form?"
       only_homepage: "{{t.base.show.capitalize}} only homepage topic?"
       recent_topics: "{{t.base.recent.capitalize}} {{t.base.zoom_types.topic.capitalize.pluralize}}"
-      recent_topics_amount: List how many {{t.base.recent}} topics?
-      recent_topics_example: Including a rolling list of {{t.base.recent}} topics is an excellent way to present this {{t.base.basket}} as a blog or a news site.
-      recent_topics_type: List {{t.base.basket.pluralize}} topics as?
-      redirect_to: Redirect to results of?
-      rss_feeds: RSS or Atom Feeds
+      recent_topics_amount: "List how many {{t.base.recent}} topics?"
+      recent_topics_example: "Including a rolling list of {{t.base.recent}} topics is an excellent way to present this {{t.base.basket}} as a blog or a news site."
+      recent_topics_type: "List {{t.base.basket.pluralize}} topics as?"
+      redirect_to: "Redirect to results of?"
+      rss_feeds: "RSS or Atom Feeds"
       rss_feeds_example1: "A new-line separated list of URLs in the following format per line:"
-      rss_feeds_example2: Feed Title|Feed URL|(Maximum number of entries to display - optional)|({{t.base.update.capitalize}} frequency in minutes - optional)
+      rss_feeds_example2: "Feed Title|Feed URL|(Maximum number of entries to display - optional)|({{t.base.update.capitalize}} frequency in minutes - optional)"
       search: "{{t.base.search.capitalize}}"
-      security_exception_example: Allow forms and other possible insecure elements and attributes in the HTML?
+      security_exception_example: "Allow forms and other possible insecure elements and attributes in the HTML?"
       security_warning: "Note: forms and javascript are not allowed for security reasons."
-      security_warning_admin: Unless you check the box below.
-      selected_image: Selected {{t.base.zoom_types.image.capitalize}}
+      security_warning_admin: "Unless you check the box below."
+      selected_image: "Selected {{t.base.zoom_types.image.capitalize}}"
       selected_image_show: "{{t.base.show.capitalize}} {{t.base.zoom_types.image}} from {{t.base.basket}}?"
-      sidebar_content: Sidebar content after {{t.base.search}}
+      sidebar_content: "Sidebar content after {{t.base.search}}"
       tags: "{{t.base.tag.capitalize.pluralize}}"
-      tags_amount: List how many {{t.base.tag.pluralize}}?
-      tags_as: List {{t.base.basket.pluralize}} {{t.base.tag.pluralize}} as?
-      tags_ordered_by: Order {{t.base.tag.pluralize}} by?
+      tags_amount: "List how many {{t.base.tag.pluralize}}?"
+      tags_as: "List {{t.base.basket.pluralize}} {{t.base.tag.pluralize}} as?"
+      tags_ordered_by: "Order {{t.base.tag.pluralize}} by?"
     homepage_options:
       button: "{{t.base.save.capitalize}}"
       current_homepage: "Current homepage topic:"
-      link_homepage: Link to new {{t.base.basket}} homepage {{t.base.zoom_types.topic}}
+      link_homepage: "Link to new {{t.base.basket}} homepage {{t.base.zoom_types.topic}}"
       new_homepage: "{{t.base.add.capitalize}} new {{t.base.basket}} homepage {{t.base.zoom_types.topic}}"
       title: "{{basket_name}} Homepage Options"
     list:
@@ -696,27 +700,27 @@ en:
     new:
       choose_profile: "{{t.base.choose.capitalize}}"
       title: "{{t.base.choose.capitalize}} {{t.base.basket.capitalize}} {{t.base.profile.capitalize}}"
-      which_profile: Which {{t.base.profile}} for this {{t.base.basket}}?
+      which_profile: "Which {{t.base.profile}} for this {{t.base.basket}}?"
       working: "Working.. "
     new_form:
       create: "{{t.base.create.capitalize}}"
       request: "{{t.base.request.capitalize}}"
-      title: New {{t.base.basket}}
+      title: "New {{t.base.basket}}"
     permission_denied:
       basket_contact_link: "{{t.base.contact}} this {{t.base.basket}}'s {{t.base.administrator.pluralize}}"
       basket_join_link: "{{t.base.basket}} {{t.base.join}} form"
-      email_link: this {{t.base.contact.capitalize}} link
-      login_link: logging in
+      email_link: "this {{t.base.contact.capitalize}} link"
+      login_link: "logging in"
       part1: "We're sorry, but access to the page your {{t.base.requested}} is restricted. Here are some possible ways you may proceed:"
-      part2: If you are using a shared computer, make sure you're {{t.base.logged_in.downcase}} with the {{t.base.account}} that has access to this area. Try {{login_link}} again before revisiting the page.
-      part3: You can {{t.base.join}}, or apply to {{t.base.join}}, the {{t.base.basket}} by visiting the {{basket_join_link}}. If {{t.base.join.pluralize}} need to be {{t.base.approved}}, you'll receive an {{t.base.email}} when you're let in. Otherwise, you should be able to access the {{t.base.basket}} content instantly.
-      part4: If you should have permission to access this part of the site, you can try {{basket_contact_link}}
-      part5: Use {{email_link}} to {{t.base.email}} a {{t.base.site_administrator}} to report the issue. Please specify that what page you tried to access in the email.
-      part6: Or simply proceed on to another page via the Browse or {{t.base.search.capitalize}} functions at the top of this page.
+      part2: "If you are using a shared computer, make sure you're {{t.base.logged_in.downcase}} with the {{t.base.account}} that has access to this area. Try {{login_link}} again before revisiting the page."
+      part3: "You can {{t.base.join}}, or apply to {{t.base.join}}, the {{t.base.basket}} by visiting the {{basket_join_link}}. If {{t.base.join.pluralize}} need to be {{t.base.approved}}, you'll receive an {{t.base.email}} when you're let in. Otherwise, you should be able to access the {{t.base.basket}} content instantly."
+      part4: "If you should have permission to access this part of the site, you can try {{basket_contact_link}}"
+      part5: "Use {{email_link}} to {{t.base.email}} a {{t.base.site_administrator}} to report the issue. Please specify that what page you tried to access in the email."
+      part6: "Or simply proceed on to another page via the Browse or {{t.base.search.capitalize}} functions at the top of this page."
       thank_you: "{{t.base.thank_you}},"
-      title: Permission Denied
+      title: "Permission Denied"
     rss:
-      description: Latest {{t.base.basket.pluralize}}
+      description: "Latest {{t.base.basket.pluralize}}"
       title: "{{site_name}} - Latest {{amount}} {{t.base.basket.pluralize}}"
     show:
       back: Back
@@ -730,35 +734,35 @@ en:
     destroy:
       destroyed: "{{t.base.basket.capitalize}} {{t.base.was_deleted}}."
     redirect_if_current_user_cant_add_or_request_basket:
-      not_authorized: You need to have the right permissions to {{t.base.add}} or {{t.base.request}} a {{t.base.basket}}
+      not_authorized: "You need to have the right permissions to {{t.base.add}} or {{t.base.request}} a {{t.base.basket}}"
     update:
-      feed_problem: there was a problem adding your feeds. Is the format you entered correct and you haven't entered a feed twice?
+      feed_problem: "there was a problem adding your feeds. Is the format you entered correct and you haven't entered a feed twice?"
       updated: "{{t.base.basket.capitalize}} {{t.base.was_updated}}."
     update_appearance:
-      sanitized: Your submitted footer content was {{t.base.changed}} for security reasons.
+      sanitized: "Your submitted footer content was {{t.base.changed}} for security reasons."
       updated: "{{t.base.basket.capitalize}} appearance was {{t.base.updated}}."
   baskets_helper:
     basket_preferences_inheritance_message:
-      inheritance_notice: These settings will be inherited by all other {{t.base.basket.pluralize}} unless they individually specify their own policy.
+      inheritance_notice: "These settings will be inherited by all other {{t.base.basket.pluralize}} unless they individually specify their own policy."
     show_all_fields_link:
       show_all_fields: "{{t.base.show}} all fields"
       show_allowed_fields: "{{t.base.show}} allowed fields"
   choice_model:
-    must_be_unique: must be unique
-    top_level: (Top level)
+    must_be_unique: "must be unique"
+    top_level: "(Top level)"
   choices_controller:
-    label_example: Label will be used as value if left blank.
+    label_example: "Label will be used as value if left blank."
     title: Choices
   comments:
     edit:
       button: "{{t.base.save.capitalize}}"
-      title: Editing {{t.base.zoom_types.comment}}
+      title: "Editing {{t.base.zoom_types.comment}}"
     form:
       description: "Description:"
       edit_comment: "{{t.base.zoom_types.comment.capitalize}} on this edit:"
       security_warning: "Note: forms and javascript are not allowed for security reasons."
-      security_warning_admin: Unless you check the box below.
-      security_warning_exception: Allow forms and other possible insecure elements and attributes in the HTML?
+      security_warning_admin: "Unless you check the box below."
+      security_warning_exception: "Allow forms and other possible insecure elements and attributes in the HTML?"
       skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.zoom_types.comment}}?"
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       tags_spinner: "Getting {{t.base.tag.pluralize}}. "
@@ -766,71 +770,71 @@ en:
     new:
       button: "{{t.base.save.capitalize}}"
       in_response_to: "In response to {{user_name}}"
-      title: New {{t.base.zoom_types.discussion}}
+      title: "New {{t.base.zoom_types.discussion}}"
       view_original: "(view original)"
   comments_controller:
     destroy:
       destroyed: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_deleted}}."
     is_authorized:
-      not_a_member: Sorry, you need to be a {{t.base.member}} to leave a {{t.base.zoom_types.comment}} in this {{t.base.basket}}.
+      not_a_member: "Sorry, you need to be a {{t.base.member}} to leave a {{t.base.zoom_types.comment}} in this {{t.base.basket}}."
     update:
       updated: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_updated}}."
   configure:
     index:
-      advanced_options: Advanced Options
-      change_password: You should {{t.base.change}} the default {{t.base.administrator}} account's password. Leaving it as the default is a security risk.
+      advanced_options: "Advanced Options"
+      change_password: "You should {{t.base.change}} the default {{t.base.administrator}} account's password. Leaving it as the default is a security risk."
       change_password_button: "{{t.base.change.capitalize}} {{t.base.password}}"
-      change_settings: You can {{t.base.change}} system settings here.  You will need to restart your server for changes to take effect.
-      clear_cache: Clear Site Cache
-      click_finish: All required settings have been fulfilled. If you are satisfied, please click the 'finish' button.
-      click_to: Click to
+      change_settings: "You can {{t.base.change}} system settings here.  You will need to restart your server for changes to take effect."
+      clear_cache: "Clear Site Cache"
+      click_finish: "All required settings have been fulfilled. If you are satisfied, please click the 'finish' button."
+      click_to: "Click to"
       completed: "Completed. "
-      final_step: Final Configuration Step
+      final_step: "Final Configuration Step"
       finish_button: Finish
-      finished_with_settings: Finished with Settings?
-      install_missing_software: Install missing software, restart your server, and reload this page to proceed.
-      installation_complete: Installation complete
-      link_site_later: You may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the "List site on Kete.net.nz" link.
+      finished_with_settings: "Finished with Settings?"
+      install_missing_software: "Install missing software, restart your server, and reload this page to proceed."
+      installation_complete: "Installation complete"
+      link_site_later: "You may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List site on Kete.net.nz\" link."
       missing_software: "Missing Software:"
       missing_software_gem: "{{gem_name}} gem"
-      must_restart: Before you continue, you must restart the kete application server and start backgroundrb!
-      prime_search_engine: Prime {{t.base.search.capitalize}} Engine
-      regular_options: Regular Options
-      reload_site: Reload Site
-      restart_server: Restart Server
+      must_restart: "Before you continue, you must restart the kete application server and start backgroundrb!"
+      prime_search_engine: "Prime {{t.base.search.capitalize}} Engine"
+      regular_options: "Regular Options"
+      reload_site: "Reload Site"
+      restart_server: "Restart Server"
       search_engine: "{{t.base.search.capitalize}} Engine"
       search_engine_needs_bootstrapping: "<i>After you have restarted the server</i>, the {{t.base.search.capitalize}} Engine needs to have the initial contents of Kete {{t.base.added}} to it.  Please click 'Prime {{t.base.search.capitalize}} Engine' to continue."
-      search_engine_not_complete: Not yet complete.
+      search_engine_not_complete: "Not yet complete."
       search_engine_primed: "{{t.base.search.capitalize}} Engine primed."
       security_title: "Security:"
-      see_install_guide: Refer to installation guide for details specific to the listed software.
-      settings_description: Click on section to fill out its settings.
+      see_install_guide: "Refer to installation guide for details specific to the listed software."
+      settings_description: "Click on section to fill out its settings."
       settings_title: Settings
-      setup_search_engine: set up {{t.base.search.capitalize}} Engine
-      setup_site: Before your new site is ready, you'll need to fill out some details, {{t.base.change}} some passwords, restart your server, prime the {{t.base.search}} engine, and then reload this page.
+      setup_search_engine: "set up {{t.base.search.capitalize}} Engine"
+      setup_site: "Before your new site is ready, you'll need to fill out some details, {{t.base.change}} some passwords, restart your server, prime the {{t.base.search}} engine, and then reload this page."
       show: "{{t.base.show.capitalize}} {{show_link}}"
       show_only: "{{t.base.show.capitalize}} only {{show_link}}"
-      site_configured: Congratulations!  Your Kete site is configured and ready to be {{t.base.viewed}}. Click 'Reload Site' to move on to customising your Kete's content to suit.
+      site_configured: "Congratulations!  Your Kete site is configured and ready to be {{t.base.viewed}}. Click 'Reload Site' to move on to customising your Kete's content to suit."
       title: Configure
     link_to_site:
-      already_listed: Kete.net.nz already lists the site. You can see details at {{listing_link}}.
+      already_listed: "Kete.net.nz already lists the site. You can see details at {{listing_link}}."
       completed: "Completed. "
-      description: Would you like to send your site name, site url and a short description of your site for to a {{t.base.public}} list of Kete installations?
-      send_information: Send Information
+      description: "Would you like to send your site name, site url and a short description of your site for to a {{t.base.public}} list of Kete installations?"
+      send_information: "Send Information"
       site_description: "Site description:"
       site_description_optional: (optional)
-      title: List your site on Kete.net.nz (optional)
+      title: "List your site on Kete.net.nz (optional)"
     section:
-      save: "{{t.base.save.capitalize}}"
       cancel: "{{t.base.cancel.capitalize}}"
+      save: "{{t.base.save.capitalize}}"
     settings_complete:
-      next: If you are satisfied with your settings, please click the 'Next' button.
+      next: "If you are satisfied with your settings, please click the 'Next' button."
       next_buton: Next
-      restart: System Settings modified. Please restart the server for them to take effect.
-      title: All required settings are complete.
+      restart: "System Settings modified. Please restart the server for them to take effect."
+      title: "All required settings are complete."
     zoom_dbs_edit:
       password: "{{t.base.password}}:"
-      password_example: Please set a new {{t.base.password}} to connect to this {{t.base.search.capitalize}} Engine.  Leaving it the default is a security risk.
+      password_example: "Please set a new {{t.base.password}} to connect to this {{t.base.search.capitalize}} Engine.  Leaving it the default is a security risk."
       password_required: "{{t.base.password}} is required"
       port: "Port:"
       port_advanced_note: "Advanced: Unless you run more than one Kete site on your host, it is safe to leave this as the default. Otherwise, you will want to check what ports any other {{t.base.search.capitalize}} Engines (Zebra servers) are already running on and {{t.base.change}} this to a new port."
@@ -839,151 +843,151 @@ en:
       security: "Security:"
   configure_controller:
     clear_cache:
-      cache_cleared: The sites cache was cleared {{t.base.successfully}}.
-      problem_clearing_cache: There was a problem clearing this sites cache. Please do it manually.
+      cache_cleared: "The sites cache was cleared {{t.base.successfully}}."
+      problem_clearing_cache: "There was a problem clearing this sites cache. Please do it manually."
     done_with_settings:
-      not_yet_completed: Not yet completed.
+      not_yet_completed: "Not yet completed."
     get_site_linking_progress:
       incorrect_fields: "Some fields were incorrect:"
       site_registered: "Your Kete installation has been {{t.base.registered}}. {{t.base.thank_you}}. You can {{t.base.view}} the whole directory of Kete sites at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
     prime_zebra:
       primed_zebra: "{{t.base.search.capitalize}} Engine has been primed."
     restart_server:
-      problem_restarting: There was a problem restarting the server. Please do it manually.
-      server_restarted: The server has been restarted
+      problem_restarting: "There was a problem restarting the server. Please do it manually."
+      server_restarted: "The server has been restarted"
     send_information:
-      already_running: There is already a site registration worker active. Wierd! Try refreshing the page.
+      already_running: "There is already a site registration worker active. Wierd! Try refreshing the page."
   content_types:
     available_fields_form:
       add_button: "{{t.base.add}} to Content Type"
       multiple: (multiple)
-      none_available: No form fields are available.
+      none_available: "No form fields are available."
       optional: (optional)
       required: (required)
-      title: Available Form Fields
+      title: "Available Form Fields"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
       multiple: (multiple)
-      none_mapped: No form fields currently mapped to this content type.
-      reorder_button: Reorder Content Type Form
-      required: 'required?'
-      title: Current Form Fields
+      none_mapped: "No form fields currently mapped to this content type."
+      reorder_button: "Reorder Content Type Form"
+      required: required?
+      title: "Current Form Fields"
     edit:
-      return_to_content_types: Return to content types
+      return_to_content_types: "Return to content types"
       title: "Editing content type: {{controller}}"
     form:
-      class_name: Class Name
+      class_name: "Class Name"
       controller: Controller
       description: Description
       humanize: Humanized
-      humanized_plural: Humanized Plural
-      note: These are technical specifications and should not be {{t.base.edited}} unless you understand what they do.
+      humanized_plural: "Humanized Plural"
+      note: "These are technical specifications and should not be {{t.base.edited}} unless you understand what they do."
     generic_fields:
       description_field: "Description: Describe the content."
       note: "All content types have the following fields to start:"
-      present_in_all: These form fields will be present in all content types.
+      present_in_all: "These form fields will be present in all content types."
       short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
-      title: Generic Content Fields
+      title: "Generic Content Fields"
       title_field: "Title: What should we call this content?"
     list:
       controller: Controller
       description: Description
       edit: "{{t.base.edit.capitalize}}"
       options: Options
-      title: Listing content types
+      title: "Listing content types"
       type: Type
     new:
       cancel: "{{t.base.cancel}}"
       create: "{{t.base.create.capitalize}}"
-      title: New content type
+      title: "New content type"
     show:
       back: Back
       edit: "{{t.base.edit.capitalize}}"
   date:
     abbr_day_names:
-    - Sun
-    - Mon
-    - Tue
-    - Wed
-    - Thu
-    - Fri
-    - Sat
+      - Sun
+      - Mon
+      - Tue
+      - Wed
+      - Thu
+      - Fri
+      - Sat
     abbr_month_names:
-    -
-    - Jan
-    - Feb
-    - Mar
-    - Apr
-    - May
-    - Jun
-    - Jul
-    - Aug
-    - Sep
-    - Oct
-    - Nov
-    - Dec
+      - ~
+      - Jan
+      - Feb
+      - Mar
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Oct
+      - Nov
+      - Dec
     day_names:
-    - Sunday
-    - Monday
-    - Tuesday
-    - Wednesday
-    - Thursday
-    - Friday
-    - Saturday
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
     formats:
       default: "%Y-%m-%d"
       long: "%B %d, %Y"
       short: "%b %d"
     month_names:
-    -
-    - January
-    - February
-    - March
-    - April
-    - May
-    - June
-    - July
-    - August
-    - September
-    - October
-    - November
-    - December
+      - ~
+      - January
+      - February
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August
+      - September
+      - October
+      - November
+      - December
     order:
-    - :year
-    - :month
-    - :day
+      - !ruby/symbol year
+      - !ruby/symbol month
+      - !ruby/symbol day
   datetime:
     distance_in_words:
       about_x_hours:
-        one: about 1 hour
-        other: about {{count}} hours
+        one: "about 1 hour"
+        other: "about {{count}} hours"
       about_x_months:
-        one: about 1 month
-        other: about {{count}} months
+        one: "about 1 month"
+        other: "about {{count}} months"
       about_x_years:
-        one: about 1 year
-        other: about {{count}} years
-      half_a_minute: half a minute
+        one: "about 1 year"
+        other: "about {{count}} years"
+      half_a_minute: "half a minute"
       less_than_x_minutes:
-        one: less than a minute
-        other: less than {{count}} minutes
+        one: "less than a minute"
+        other: "less than {{count}} minutes"
       less_than_x_seconds:
-        one: less than 1 second
-        other: less than {{count}} seconds
+        one: "less than 1 second"
+        other: "less than {{count}} seconds"
       over_x_years:
-        one: over 1 year
-        other: over {{count}} years
+        one: "over 1 year"
+        other: "over {{count}} years"
       x_days:
-        one: 1 day
+        one: "1 day"
         other: "{{count}} days"
       x_minutes:
-        one: 1 minute
+        one: "1 minute"
         other: "{{count}} minutes"
       x_months:
-        one: 1 month
+        one: "1 month"
         other: "{{count}} months"
       x_seconds:
-        one: 1 second
+        one: "1 second"
         other: "{{count}} seconds"
     prompts:
       day: Day
@@ -993,7 +997,7 @@ en:
       second: Seconds
       year: Year
   document_model:
-    not_acceptable: is not acceptable. It should be a .pdf, .doc, or other {{t.base.zoom_types.document}} file.
+    not_acceptable: "is not acceptable. It should be a .pdf, .doc, or other {{t.base.zoom_types.document}} file."
   documents:
     details:
       filename: "Filename:"
@@ -1002,11 +1006,11 @@ en:
       size: "Size:"
       type: "{{t.base.zoom_types.document.capitalize}} type:"
     edit:
-      not_authorized: Sorry - editing on this section of the site has been disallowed
+      not_authorized: "Sorry - editing on this section of the site has been disallowed"
   documents_controller:
     convert:
       converted: "{{t.base.zoom_types.document.capitalize}} description {{t.base.was_updated}} with text of uploaded document."
-      not_converted: There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's description.  Please {{t.base.edit}} the description manually.
+      not_converted: "There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's description.  Please {{t.base.edit}} the description manually."
     make_theme:
       made_theme: "{{t.base.zoom_types.document.capitalize}} expanded to be new theme."
     update:
@@ -1021,98 +1025,98 @@ en:
       subject: "Subject:"
   email_controller_lib:
     redirect_if_contact_form_disabled:
-      not_enabled: This {{t.base.contact}} form is not currently {{t.base.enabled}}.
+      not_enabled: "This {{t.base.contact}} form is not currently {{t.base.enabled}}."
     send_email:
-      email_sent: Your {{t.base.email}} has been sent. You will receive the reply in your {{t.base.email}} box.
-      need_subject_and_message: Both subject and message must be filled in. Please try again.
+      email_sent: "Your {{t.base.email}} has been sent. You will receive the reply in your {{t.base.email}} box."
+      need_subject_and_message: "Both subject and message must be filled in. Please try again."
   errors:
     backgroundrb_connection_failed:
       body: |-
-        <h2>500 Error!</h2>
-        <p>Oops! There wasn't an available BackgroundRB process available to handle your request.</p>
-        <p>This could be because BackgroundRB was not started or is offline for maintenance.</p>
-        <h3>What now?</h3>
-        <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
-        <h3>Still getting this error?</h3>
-        <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-        <p>Please send an email via the "{{t.layouts.application.contact}}" link at the top of the page.</p>
-        <p>Include details about what you were trying to do.</p>
-        <p><span style="font-weight: bold;">Example </span></p>
-        <p>"I was trying to import a set of topics using the Simple XML importer and I got this error."</p>
-        <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
-        <p><span style="font-weight: bold;">Example</span></p>
-        <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
-        <h3>Thanks and once again sorry for the inconvenience. </h3>
+          <h2>500 Error!</h2>
+          <p>Oops! There wasn't an available BackgroundRB process available to handle your request.</p>
+          <p>This could be because BackgroundRB was not started or is offline for maintenance.</p>
+          <h3>What now?</h3>
+          <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
+          <h3>Still getting this error?</h3>
+          <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
+          <p>Please send an email via the "{{t.layouts.application.contact}}" link at the top of the page.</p>
+          <p>Include details about what you were trying to do.</p>
+          <p><span style="font-weight: bold;">Example </span></p>
+          <p>"I was trying to import a set of topics using the Simple XML importer and I got this error."</p>
+          <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
+          <p><span style="font-weight: bold;">Example</span></p>
+          <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
+          <h3>Thanks and once again sorry for the inconvenience. </h3>
     error404:
       body: |-
-        <h2>404 Error!</h2>
-        <p>Oops! You have encountered an error in this site. A 404 error means that that the content you were after could not be found.</p>
-        <p>This could be a broken link or a symptom of another problem.</p>
-        <h3>What now?</h3>
-        <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
-        <h3>Still getting this error?</h3>
-        <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-        <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
-        <p>Include details about what you were trying to do.</p>
-        <p><span style="font-weight: bold;">Example </span></p>
-        <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got a number of results. When I clicked on the result "Foxton Beach" I got this error."</p>
-        <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
-        <p><span style="font-weight: bold;">Example</span></p>
-        <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
-        <h3>Thanks and once again sorry for the inconvenience. </h3>
+          <h2>404 Error!</h2>
+          <p>Oops! You have encountered an error in this site. A 404 error means that that the content you were after could not be found.</p>
+          <p>This could be a broken link or a symptom of another problem.</p>
+          <h3>What now?</h3>
+          <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
+          <h3>Still getting this error?</h3>
+          <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
+          <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
+          <p>Include details about what you were trying to do.</p>
+          <p><span style="font-weight: bold;">Example </span></p>
+          <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got a number of results. When I clicked on the result "Foxton Beach" I got this error."</p>
+          <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
+          <p><span style="font-weight: bold;">Example</span></p>
+          <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
+          <h3>Thanks and once again sorry for the inconvenience. </h3>
     error500:
       body: |-
-        <h2>500 Error!</h2>
-        <p>Oops! An error has prevented this page from loading.</p>
-        <p>It has been logged and will be looked into by a system {{t.base.administrator.capitalize}} shortly.</p>
-        <h3>What now?</h3>
-        <p>Hit the Back button on your browser to return to the page you were on.</p>
+          <h2>500 Error!</h2>
+          <p>Oops! An error has prevented this page from loading.</p>
+          <p>It has been logged and will be looked into by a system {{t.base.administrator.capitalize}} shortly.</p>
+          <h3>What now?</h3>
+          <p>Hit the Back button on your browser to return to the page you were on.</p>
     error500js:
-      response_is_500: Response returned an Error 500. Please check the logs.
+      response_is_500: "Response returned an Error 500. Please check the logs."
     invalid_authenticity_token:
       body: |-
-        <h2>Invalid Authenticity Token!</h2>
-        <p>Oops! It seems your session has expired and caused your authenticity token to become invalid.</p>
-        <p>This could be because you've returned to a page that was cached by your browser (containing the old token).</p>
-        <h3>What now?</h3>
-        <p>You can try fix this by doing one of the following:</p>
-        <ol>
-          <li>Clear your browsers cache and reload the page.</li>
-          <li>Logout and back into this site, then try again.</li>
-        </ol>
-        <h3>Still getting this error?</h3>
-        <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-        <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
-        <p>Include details about what you were trying to do.</p>
-        <p><span style="font-weight: bold;">Example </span></p>
-        <p>"I was trying to edit the topic 'Introduction' and I got the Authenticity Token problem."</p>
-        <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
-        <p><span style="font-weight: bold;">Example</span></p>
-        <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
-        <h3>Thanks and once again sorry for the inconvenience. </h3>
+          <h2>Invalid Authenticity Token!</h2>
+          <p>Oops! It seems your session has expired and caused your authenticity token to become invalid.</p>
+          <p>This could be because you've returned to a page that was cached by your browser (containing the old token).</p>
+          <h3>What now?</h3>
+          <p>You can try fix this by doing one of the following:</p>
+          <ol>
+            <li>Clear your browsers cache and reload the page.</li>
+            <li>Logout and back into this site, then try again.</li>
+          </ol>
+          <h3>Still getting this error?</h3>
+          <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
+          <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
+          <p>Include details about what you were trying to do.</p>
+          <p><span style="font-weight: bold;">Example </span></p>
+          <p>"I was trying to edit the topic 'Introduction' and I got the Authenticity Token problem."</p>
+          <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
+          <p><span style="font-weight: bold;">Example</span></p>
+          <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
+          <h3>Thanks and once again sorry for the inconvenience. </h3>
     invalid_authenticity_token_js:
-      body: Invalid Authenticity Token. Reload the page and try again.
+      body: "Invalid Authenticity Token. Reload the page and try again."
     zebra_connection_failed:
       body: |-
-        <h2>500 Error!</h2>
-        <p>Oops! Zebra failed to connect to get the information you {{t.base.requested}}.</p>
-        <p>This could be because Zebra is not started, or is currently offline for maintenance.</p>
-        <h3>What now?</h3>
-        <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
-        <h3>Still getting this error?</h3>
-        <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-        <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
-        <p>Include details about what you were trying to do.</p>
-        <p><span style="font-weight: bold;">Example </span></p>
-        <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got this error."</p>
-        <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
-        <p><span style="font-weight: bold;">Example</span></p>
-        <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
-        <h3>Thanks and once again sorry for the inconvenience.</h3>
+          <h2>500 Error!</h2>
+          <p>Oops! Zebra failed to connect to get the information you {{t.base.requested}}.</p>
+          <p>This could be because Zebra is not started, or is currently offline for maintenance.</p>
+          <h3>What now?</h3>
+          <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
+          <h3>Still getting this error?</h3>
+          <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
+          <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
+          <p>Include details about what you were trying to do.</p>
+          <p><span style="font-weight: bold;">Example </span></p>
+          <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got this error."</p>
+          <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
+          <p><span style="font-weight: bold;">Example</span></p>
+          <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
+          <h3>Thanks and once again sorry for the inconvenience.</h3>
   extended_content_controller_lib:
     ensure_no_new_insecure_elements_in:
-      contains_new_elements: contains {{count}} new insecure elements but you're not authorized to {{t.base.add}} them.
-      contains_new_elements_admin: contains {{count}} new insecure elements and you forgot to check the 'do not sanitize' checkbox.
+      contains_new_elements: "contains {{count}} new insecure elements but you're not authorized to {{t.base.add}} them."
+      contains_new_elements_admin: "contains {{count}} new insecure elements and you forgot to check the 'do not sanitize' checkbox."
   extended_content_lib:
     validate_extended_checkbox_field_content:
       must_be_valid: "{{label}} must be a valid checkbox value (Yes or No)"
@@ -1130,7 +1134,7 @@ en:
   extended_field_model:
     already_used: ": labels of {{invalid_label_names}} aren't allowed because they already used be default"
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
-    label_cant_have: cannot contain Form, Script, or Input because they are reserved starting words
+    label_cant_have: "cannot contain Form, Script, or Input because they are reserved starting words"
     no_spaces: ": spaces aren't allowed"
   extended_fields:
     choice_autocomplete_editor:
@@ -1138,58 +1142,60 @@ en:
     choice_select_editor:
       sub_setting: " Sub-{{field_name}}: "
   extended_fields_controller:
-    available_choices: Available choices
-    available_choices_description: Ftype must be a "choices" option for these options to be available to {{t.base.user.pluralize}}.
-    base_url: Base URL
-    base_url_description: Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the choice ftypes, Base URL + value will take over from normal linking to all results that match the value for the choice for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)
-    title: Extended Fields
+    available_choices: "Available choices"
+    available_choices_description: "Ftype must be a \"choices\" option for these options to be available to {{t.base.user.pluralize}}."
+    base_url: "Base URL"
+    base_url_description: "Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the choice ftypes, Base URL + value will take over from normal linking to all results that match the value for the choice for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
+    title: "Extended Fields"
     topic_type_choices: "{{t.base.zoom_types.topic.capitalize}} Type Choices"
-    topic_type_choices_description: Ftype must be a "Pre-populated Choices ({{t.base.zoom_types.topic}} type)" option for these options to be available to {{t.base.user.pluralize}}.
+    topic_type_choices_description: "Ftype must be a \"Pre-populated Choices ({{t.base.zoom_types.topic}} type)\" option for these options to be available to {{t.base.user.pluralize}}."
   extended_fields_helper:
     additional_extended_field_control:
       add_another: "{{t.base.add.capitalize}} another {{field_name}}"
     children_form_column:
       add_more_sub_choices: "{{t.base.add}} more sub-choices"
-      existing_sub_choices: Existing sub-choices
-      need_choice_for_children: You cannot select child choices until the choice has been {{t.base.created}}.
+      existing_sub_choices: "Existing sub-choices"
+      need_choice_for_children: "You cannot select child choices until the choice has been {{t.base.created}}."
     extended_field_choice_autocomplete_editor:
       getting_choices: "Getting choices. "
     extended_field_choice_select_editor:
       getting_choices: "Getting choices. "
-      suggest_a: OR suggest a {{field_name}}
+      suggest_a: "OR suggest a {{field_name}}"
     extended_field_radio_editor:
-      "no": "No"
-      no_value: No value
-      "yes": "Yes"
+      ? "no"
+      : "No"
+      no_value: "No value"
+      ? "yes"
+      : "Yes"
     extended_field_topic_type_editor:
       checking_value: "Checking value. "
       getting_topics: "Getting {{t.base.zoom_types.topic.pluralize}}. "
       invalid_value: "This is not a valid {{t.base.zoom_types.topic}} value. "
       valid_value: "This is a valid {{t.base.zoom_types.topic}} value. "
     ftype_form_column:
-      cannot_be_changed: (cannot be {{t.base.changed}})
-      check_box: Check box
-      choices_auto_complete: Choices (auto-completion)
-      choices_drop_down: Choices (drop-down)
-      choices_topic_type: Pre-populated Choices ({{t.base.zoom_types.topic}} type)
+      cannot_be_changed: "(cannot be {{t.base.changed}})"
+      check_box: "Check box"
+      choices_auto_complete: "Choices (auto-completion)"
+      choices_drop_down: "Choices (drop-down)"
+      choices_topic_type: "Pre-populated Choices ({{t.base.zoom_types.topic}} type)"
       date: Date
-      location_map: Location on map (lat/lng coordinates)
-      location_map_address: Location on map with address
-      radio_button: Radio buttons
+      location_map: "Location on map (lat/lng coordinates)"
+      location_map_address: "Location on map with address"
+      radio_button: "Radio buttons"
       text: Text
-      text_box: Text box
+      text_box: "Text box"
     label_form_column:
-      cannot_be_changed: (cannot be {{t.base.changed}})
+      cannot_be_changed: "(cannot be {{t.base.changed}})"
     multiple_form_column:
-      cannot_be_changed: (cannot be {{t.base.changed}})
+      cannot_be_changed: "(cannot be {{t.base.changed}})"
     parent_form_column:
-      need_choice_for_parent: You cannot select a parent choice until the choice has been {{t.base.created}}.
+      need_choice_for_parent: "You cannot select a parent choice until the choice has been {{t.base.created}}."
     pseudo_choices_form_column:
-      allow_user_choices: Allow {{t.base.user}} addition of choices?
+      allow_user_choices: "Allow {{t.base.user}} addition of choices?"
       allow_user_choices_no: "No"
       allow_user_choices_yes: "Yes"
-      collapse_all: Collapse all
-      expand_all: Expand all
+      collapse_all: "Collapse all"
+      expand_all: "Expand all"
   field_mappings_controller:
     create:
       created: "{{item_class}} {{t.base.was_created}}."
@@ -1204,21 +1210,21 @@ en:
     flag_version:
       item_flagged: "{{t.base.thank_you}} for your input.  A {{t.base.moderator}} has been notified and will {{t.base.review}} the {{t.base.item}} in question. The {{t.base.item}} has been reverted to a non-contested version for the time being."
     preview:
-      no_public: There is currently no {{t.base.public}} version of this {{controller}} available.
+      no_public: "There is currently no {{t.base.public}} version of this {{controller}} available."
     reject:
-      rejected: This version of this {{zoom_class}} has been {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by email.
+      rejected: "This version of this {{zoom_class}} has been {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by email."
     restore:
-      approved: The content of this {{zoom_class}} has been {{t.base.approved}} from the selected revision.
-      made_live: Your {{t.base.contribution}} to {{site_name}} in {{basket_name}} has been made the live version.
-      missing_details: The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to {{t.base.contact}} the original author to collect additional information.
+      approved: "The content of this {{zoom_class}} has been {{t.base.approved}} from the selected revision."
+      made_live: "Your {{t.base.contribution}} to {{site_name}} in {{basket_name}} has been made the live version."
+      missing_details: "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to {{t.base.contact}} the original author to collect additional information."
       version_comment: "Content from revision # {{version}}."
   google_map_lib:
     extended_field_map_editor:
       address: "Address:"
       lat_lng: "Latitude and Longitude coordinates:"
-      need_exact_data: This feature requires exact data to function properly.
-      need_javascript: javascript needs to be on to use Google Maps
-      no_location: don't record a location
+      need_exact_data: "This feature requires exact data to function properly."
+      need_javascript: "javascript needs to be on to use Google Maps"
+      no_location: "don't record a location"
       show_lat_lng: "{{t.base.show.capitalize}} Latitude/Longitude"
       zoom_lvl: "Zoom level for map:"
     load_google_map_api:
@@ -1229,23 +1235,23 @@ en:
       hide_lat_lng: "{{t.base.hide.capitalize}} Latitude/Longitude"
       lat_lng_not_floats: "ERROR: One of latitude, longitude, or zoom level are not of the correct type. Debug this!"
       lat_lng_not_set: "ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!"
-      non_existant_div: You are trying to initiate the google map api on a non-existant div. Debug this!
+      non_existant_div: "You are trying to initiate the google map api on a non-existant div. Debug this!"
       not_close_enough: "Error: The marker was not close enough to a<br />road to determine the street address. Please try again."
-      not_compatible: Google Maps is not compatible with this browser. Try using Firefox 3, Internet Explorer 7, or Safari 3.
+      not_compatible: "Google Maps is not compatible with this browser. Try using Firefox 3, Internet Explorer 7, or Safari 3."
       show_lat_lng: "{{t.base.show.capitalize}} Latitude/Longitude"
       something_went_wrong: "Error: Something has happened. Please try again."
       something_went_wrong_602: "Error: Something has happened.<br />Google Maps cannot determine the location where you placed the marker.<br />Try repositioning it nearer to a road."
     validate_extended_map_field_content:
-      not_a_hash: is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently {{class}} {{value}}. Why?
-      not_present_optional: is not present. If you don't want to include one, select 'don't record a location'.
-      not_present_required: is not present. This field is required so you must enter something before saving.
-      wrong_format: is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currently {{class}} {{value}}. Why?
+      not_a_hash: "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently {{class}} {{value}}. Why?"
+      not_present_optional: "is not present. If you don't want to include one, select 'don't record a location'."
+      not_present_required: "is not present. This field is required so you must enter something before saving."
+      wrong_format: "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currently {{class}} {{value}}. Why?"
   has_contributors_lib:
     submitter_of:
-      data_corruption: Possible data corruption. You should consider running rake kete:repair.
-      no_contributor: It looks like there is no contributor associated with version {{version}} of {{item_class}} {{item_id}}.
+      data_corruption: "Possible data corruption. You should consider running rake kete:repair."
+      no_contributor: "It looks like there is no contributor associated with version {{version}} of {{item_class}} {{item_id}}."
   image_file_model:
-    not_acceptable: is not acceptable. It should be a .jpg, .gif, or other {{t.base.zoom_types.image}} file.
+    not_acceptable: "is not acceptable. It should be a .jpg, .gif, or other {{t.base.zoom_types.image}} file."
   images:
     details:
       filename: "Original Filename:"
@@ -1254,18 +1260,18 @@ en:
       type: "Original {{t.base.zoom_types.image.capitalize}} Type:"
       view: "{{t.base.view}}"
     edit:
-      not_authorized: Sorry - editing on this section of the site has been disallowed
+      not_authorized: "Sorry - editing on this section of the site has been disallowed"
     image_file:
-      medium: Medium
       large: Large
-      only_original_available: Only available as original.
+      medium: Medium
+      only_original_available: "Only available as original."
       original: Original
       small: Small
       small_sq: Thumbnail
     portrait_controls:
       add_image: "{{t.base.add}} {{t.base.zoom_types.image}} to portraits"
-      make_selected: Make {{t.base.zoom_types.image}} selected {{t.base.portrait}}
-      other_portraits: Other Portraits
+      make_selected: "Make {{t.base.zoom_types.image}} selected {{t.base.portrait}}"
+      other_portraits: "Other Portraits"
       remove_image: "{{t.base.remove.capitalize}} {{t.base.zoom_types.image}} from portraits"
       title: "{{t.base.portrait.capitalize}} Controls"
       whats_this: "{{t.base.whats_this}}"
@@ -1276,24 +1282,24 @@ en:
       updated: "{{t.base.zoom_types.image.capitalize}} {{t.base.was_updated}}."
   import_model:
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
-    must_be_seconds: the interval must be in seconds
+    must_be_seconds: "the interval must be in seconds"
   importer_lib:
     do_work:
-      in_progress: in progress
+      in_progress: "in progress"
     importer_prepare_extended_field:
       not_available: "{{t.base.not_available}}"
     importer_process:
-      already_have_record: kete already has a copy of this record
+      already_have_record: "kete already has a copy of this record"
     importer_update_processing_vars_at_end:
       failed_status: failed
       import_failed: "Import failed. "
-      import_successful: Import was successful.
+      import_successful: "Import was successful."
     importer_update_processing_vars_if_rescue:
       failed_status: failed
   importers:
     choose_contributing_user:
       choose: "{{t.base.choose.capitalize}}"
-      no_user_found: No potential contributing {{t.base.user}} found.
+      no_user_found: "No potential contributing {{t.base.user}} found."
       title: "{{t.base.choose.capitalize}} Contributing {{t.base.user.capitalize}}"
     contributing_user_form:
       current_choice: "Current choice:"
@@ -1303,17 +1309,17 @@ en:
       title: "{{t.base.choose.capitalize}} someone to be contributor of imported {{t.base.item.pluralize}}"
     create:
       completed: "Completed. "
-      in_progress: ...in progress.
-      starting_import: Starting import...
-      stop_early: Stop Import Early
-      title: Import from {{location}}
+      in_progress: "...in progress."
+      starting_import: "Starting import..."
+      stop_early: "Stop Import Early"
+      title: "Import from {{location}}"
     list:
-      as_of: as of
-      description: This is the import facility. Using it you can import content into this {{t.base.basket}} that has been exported from supported systems such as Past Perfect.
+      as_of: "as of"
+      description: "This is the import facility. Using it you can import content into this {{t.base.basket}} that has been exported from supported systems such as Past Perfect."
       folder: Folder
-      no_past_imports: No previous imports have been run in this {{t.base.basket}}.
-      records_processed: Records Processed
-      start_new: Start new import
+      no_past_imports: "No previous imports have been run in this {{t.base.basket}}."
+      records_processed: "Records Processed"
+      start_new: "Start new import"
       started: Started
       status: Status
       title: Imports
@@ -1321,122 +1327,122 @@ en:
       user: "{{t.base.user.capitalize}}"
     new:
       accessions_xml: "Optional: accessions.xml - only applicable if this is a Past Perfect import."
-      applicable_topic_type: Applicable {{t.base.zoom_types.topic.capitalize}} Type?
-      applicable_topic_type_description: If this is an {{t.base.zoom_types.image}} import, such as Past Perfect, than what's the name of the {{t.base.zoom_types.topic.capitalize}} Type of the new {{t.base.zoom_types.topic}} for groups of {{t.base.related}} {{t.base.item.pluralize}} (e.g. 'Archive', 'Collection', 'Album')? If this is a text only import such as FMPDSORESULT, than this is the {{t.base.zoom_types.topic.capitalize}} Type of new {{t.base.zoom_types.topic}} that is {{t.base.created}}.
-      applicable_related_topic_type: Applicable {{t.base.related.capitalize}} {{t.base.zoom_types.topic.capitalize}} Type?
-      applicable_related_topic_type_description: Which topic type should we find topics in which will be related to imported items when needed?
-      applicable_zoom_class: Applicable {{t.base.item.capitalize}} Type?
-      applicable_zoom_class_description: If this is an Excel based import, than what type of item of item should we create per row?
+      applicable_related_topic_type: "Applicable {{t.base.related.capitalize}} {{t.base.zoom_types.topic.capitalize}} Type?"
+      applicable_related_topic_type_description: "Which topic type should we find topics in which will be related to imported items when needed?"
+      applicable_topic_type: "Applicable {{t.base.zoom_types.topic.capitalize}} Type?"
+      applicable_topic_type_description: "If this is an {{t.base.zoom_types.image}} import, such as Past Perfect, than what's the name of the {{t.base.zoom_types.topic.capitalize}} Type of the new {{t.base.zoom_types.topic}} for groups of {{t.base.related}} {{t.base.item.pluralize}} (e.g. 'Archive', 'Collection', 'Album')? If this is a text only import such as FMPDSORESULT, than this is the {{t.base.zoom_types.topic.capitalize}} Type of new {{t.base.zoom_types.topic}} that is {{t.base.created}}."
+      applicable_zoom_class: "Applicable {{t.base.item.capitalize}} Type?"
+      applicable_zoom_class_description: "If this is an Excel based import, than what type of item of item should we create per row?"
       audio: "{{t.base.zoom_types.audio.capitalize}}"
       conventions_note: "To start an import, you must follow several conventions:"
-      default_privacy_setting: Default Privacy Setting
-      delay_between_records: How long should we wait in seconds between processing records?
-      delay_between_records_explaination: To protect against an import overwhelming your server's resources and affecting the response time of your website, we recommend an interval between processing each record.  If your server has a lot of computing power, feel free to lower this number or even put in '0'.
-      description_template: You may also {{t.base.add}} a Description Template in the above mentioned "Imports" form which contains HTML to be {{t.base.added}} the top of each imported {{t.base.item}}'s description.
-      description_template_end: End Description Template (good for including an attribution)
-      description_template_end_description: Should we append an piece of text formatted in HTML to the end of the description of each piece of content that is {{t.base.created}} during this import?  An example would be "&lt;p&gt;Any use of this {{t.base.zoom_types.image}} must be accompanied by the cr{{t.base.edit}} 'Horowhenua Historical Society Inc.'&lt;\p&gt;".  Useful for including an attribution for the source of the imported {{t.base.item}}.
-      description_template_start: Beginning Description Template
-      description_template_start_description: A piece of HTML that will go at the start of every description during this import.
-      dfc_xml: DFC XML
+      default_privacy_setting: "Default Privacy Setting"
+      delay_between_records: "How long should we wait in seconds between processing records?"
+      delay_between_records_explaination: "To protect against an import overwhelming your server's resources and affecting the response time of your website, we recommend an interval between processing each record.  If your server has a lot of computing power, feel free to lower this number or even put in '0'."
+      description_template: "You may also {{t.base.add}} a Description Template in the above mentioned \"Imports\" form which contains HTML to be {{t.base.added}} the top of each imported {{t.base.item}}'s description."
+      description_template_end: "End Description Template (good for including an attribution)"
+      description_template_end_description: "Should we append an piece of text formatted in HTML to the end of the description of each piece of content that is {{t.base.created}} during this import?  An example would be \"&lt;p&gt;Any use of this {{t.base.zoom_types.image}} must be accompanied by the cr{{t.base.edit}} 'Horowhenua Historical Society Inc.'&lt;\\p&gt;\".  Useful for including an attribution for the source of the imported {{t.base.item}}."
+      description_template_start: "Beginning Description Template"
+      description_template_start_description: "A piece of HTML that will go at the start of every description during this import."
+      dfc_xml: "DFC XML"
       document: "{{t.base.zoom_types.document.capitalize}}"
-      excel_based: Excel based
-      extended_fields: You have mapped the applicable fields in the records.xml file to appropriate Extended Fields' import synonyms. Import Synonyms must be an exact match for the field in the records.xml file. See "extended fields" link in {{t.layouts.application.toolbox_label}}.  You'll also want to {{t.base.add}} these extended fields to the appropriate {{t.base.zoom_types.topic.capitalize}} Type or Content Type.
-      filemaker_pro: Filemaker Pro's FMPDSORESULT XML format (text records only, no associated images)
-      fill_in_form: If you have done the above, fill out the form below to start the import.
+      excel_based: "Excel based"
+      extended_fields: "You have mapped the applicable fields in the records.xml file to appropriate Extended Fields' import synonyms. Import Synonyms must be an exact match for the field in the records.xml file. See \"extended fields\" link in {{t.layouts.application.toolbox_label}}.  You'll also want to {{t.base.add}} these extended fields to the appropriate {{t.base.zoom_types.topic.capitalize}} Type or Content Type."
+      filemaker_pro: "Filemaker Pro's FMPDSORESULT XML format (text records only, no associated images)"
+      fill_in_form: "If you have done the above, fill out the form below to start the import."
       folder_name: your_folder
       has_related_items_in_data: Does this data contain any {{t.base.relation.pluralize}} between records?
       image: "{{t.base.zoom_types.image.capitalize}}"
       images_folder: "Optional: a subfolder named 'images' - For your folders containing images or {{t.base.zoom_types.image}} files themselves. For example if you had a folder of images called 001, you would put it inside your_folder/images/ and then images would found be at location like your_folder/images/001/an_image.jpg."
       import_button: Import
-      import_type: Import Type?
-      license: You may also {{t.base.choose}} to have all imported {{t.base.item.pluralize}} be under one of these licenses.
-      mapping_fields: You have mapped the appropriate fields in the records.xml file to {{t.base.tag.pluralize}} or the title, short summary, or description fields.  Click "reconfigure site" in {{t.layouts.application.toolbox_label}}, then "Advanced Options", then "Imports", and fill out form appropriately.  You will need to restart the site before your import for these settings to take effect.
-      metadata: The same goes for embedded metadata if {{t.base.item.pluralize}} have associated binary files (images, audio, video, and documents).
-      past_perfect: Past Perfect 4
-      place_in_imports_folder: your_folder should be placed on your server wherever your Kete souce code lives, <b>under the imports folder</b>.  So if you have installed Kete using the conventions of the installation guide, that would be something like '/home/kete/apps/my_kete_project/current/imports/your_folder'.
+      import_type: "Import Type?"
+      license: "You may also {{t.base.choose}} to have all imported {{t.base.item.pluralize}} be under one of these licenses."
+      mapping_fields: "You have mapped the appropriate fields in the records.xml file to {{t.base.tag.pluralize}} or the title, short summary, or description fields.  Click \"reconfigure site\" in {{t.layouts.application.toolbox_label}}, then \"Advanced Options\", then \"Imports\", and fill out form appropriately.  You will need to restart the site before your import for these settings to take effect."
+      metadata: "The same goes for embedded metadata if {{t.base.item.pluralize}} have associated binary files (images, audio, video, and documents)."
+      past_perfect: "Past Perfect 4"
+      place_in_imports_folder: "your_folder should be placed on your server wherever your Kete souce code lives, <b>under the imports folder</b>.  So if you have installed Kete using the conventions of the installation guide, that would be something like '/home/kete/apps/my_kete_project/current/imports/your_folder'."
       private: "{{t.base.private.capitalize}}"
-      private_description: (Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})
+      private_description: "(Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})"
       public: "{{t.base.public.capitalize}}"
-      public_description: (Can be {{t.base.viewed}} by everyone)
-      record_identifier_extended_field: Record Identifier Extended Field?
+      public_description: "(Can be {{t.base.viewed}} by everyone)"
+      record_identifier_extended_field: "Record Identifier Extended Field?"
       record_identifier_extended_field_description: "Which extended field contains the data to link imported records to existing {{t.base.zoom_types.topic.pluralize}}? (filtered by the above applicable {{t.base.related}} {{t.base.zoom_types.topic}} type). If one is not given, the importer will do its best to sort out what should get {{t.base.related}}, but isn't always accurate."
       record_identifier_xml_field: "Record Identifier XML Field:"
       record_identifier_xml_field_description: "Which field in the import data contains an identifier unique to each record? If left blank, the importer will use its default record identifier field. If it doesn't have one, not all {{t.base.relation.pluralize}} may be built {{t.base.successfully}}."
       related_records_xml_field: "Related Records XML Field(s):"
       related_records_xml_field_description: "Which field in the import data contains a comma separated list of record identifiers, indicating relationships between records? If several exist, seperate them with commas. If not provided and the importer doesn't specify one itself, no {{t.base.relation.pluralize}} will be {{t.base.created}}."
-      records_xml_description: You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format.
-      records_xml_file: records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected "Import Type" understands or the import will fail. Seen notes on "Import Type" for tools to {{t.base.create}} this file.
-      related_topic_type_all: (any topic type)
-      simple_xml: Simple XML
+      records_xml_description: "You have an XML file, called <b>records.xml</b> (more information below), that contains an export of your data in a supported format."
+      records_xml_file: "records.xml - the previously mentioned XML file that contains a record for each {{t.base.item}} of content to be imported.  Note that it has to be in a format that your selected \"Import Type\" understands or the import will fail. Seen notes on \"Import Type\" for tools to {{t.base.create}} this file."
+      related_topic_type_all: "(any topic type)"
+      simple_xml: "Simple XML"
       structure_description: "Make a folder, referred to as your_folder from here on in the instructions, that has the following files and subfolders involved in your import:"
-      tags: What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas)?
-      tags_description: These {{t.base.tag.pluralize}} will be {{t.base.added}} to every {{t.base.item}} in the import in addition to whatever is specified as a {{t.base.tag}} per record.
-      title: New Import
+      tags: "What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas)?"
+      tags_description: "These {{t.base.tag.pluralize}} will be {{t.base.added}} to every {{t.base.item}} in the import in addition to whatever is specified as a {{t.base.tag}} per record."
+      title: "New Import"
       topic: "{{t.base.zoom_types.topic.capitalize}}"
       topic_type: "Optional: you have {{t.base.created}} a {{t.base.zoom_types.topic.capitalize}} Type (\"{{t.base.zoom_types.topic}} types\" link under {{t.layouts.application.toolbox_label}}) to group {{t.base.related}} {{t.base.item.pluralize}} together, such as \"Collection\" or be the {{t.base.zoom_types.topic}} type for new topics in the case of text only imports."
-      transfer_is_done_manually: <b>You will have to transfer the files involved to the server which houses your kete installation via a separate process.</b>  We do this separately since imports may involve a large amount of big files and the method necessary may vary depending on your installation.
+      transfer_is_done_manually: "<b>You will have to transfer the files involved to the server which houses your kete installation via a separate process.</b>  We do this separately since imports may involve a large amount of big files and the method necessary may vary depending on your installation."
       video: "{{t.base.zoom_types.video.capitalize}}"
-      what_is_folder_name: What is the name of your folder under the imports directory?
+      what_is_folder_name: "What is the name of your folder under the imports directory?"
       xml_path_to_records: "XML Path to Record (only applicable to Simple XML {{t.base.zoom_types.topic.capitalize.pluralize}} type):"
-      xml_path_to_records_description: What is the XML element path that specifies each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'.
+      xml_path_to_records_description: "What is the XML element path that specifies each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'."
     new_related_set_from_archive_file:
       add_related: "{{t.base.add}} {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}"
-      archive_limit: The largest archive file you may upload is {{size}}.  You may want to scale down your {{t.base.item.pluralize}} to be more reasonable sized to {{t.base.add}} to the site and re{{t.base.create}} your archive file.
-      description_template: Description Template (good for including an attribution)
-      description_template_example: Should we append an piece of text formatted in HTML to the end of the description of each piece of content that is {{t.base.created}} during this import?  An example would be "&lt;p&gt;Any use of this {{t.base.zoom_types.image}} must be accompanied by the cr{{t.base.edit}} 'Horowhenua Historical Society Inc.'&lt;\p&gt;".  Useful for including an attribution for the source of the {{t.base.added}} {{t.base.item.pluralize}}.
-      edit_after_import: Alternatively, you may also {{t.base.edit}} any uploaded {{t.base.item}}'s title or other details after it has been {{t.base.added}} to the site.
-      folder_containing_items: The archive file should be of a folder containing the {{t.base.item.pluralize}} to be {{t.base.added}}.  Please do not uses spaces in the folder name and name the archive file after the folder.  For example "the_images" folder would become the "the_images.zip" archive file.
-      license: You may also {{t.base.choose}} to have all imported {{t.base.item.pluralize}} be under one of these licenses.
+      archive_limit: "The largest archive file you may upload is {{size}}.  You may want to scale down your {{t.base.item.pluralize}} to be more reasonable sized to {{t.base.add}} to the site and re{{t.base.create}} your archive file."
+      description_template: "Description Template (good for including an attribution)"
+      description_template_example: "Should we append an piece of text formatted in HTML to the end of the description of each piece of content that is {{t.base.created}} during this import?  An example would be \"&lt;p&gt;Any use of this {{t.base.zoom_types.image}} must be accompanied by the cr{{t.base.edit}} 'Horowhenua Historical Society Inc.'&lt;\\p&gt;\".  Useful for including an attribution for the source of the {{t.base.added}} {{t.base.item.pluralize}}."
+      edit_after_import: "Alternatively, you may also {{t.base.edit}} any uploaded {{t.base.item}}'s title or other details after it has been {{t.base.added}} to the site."
+      folder_containing_items: "The archive file should be of a folder containing the {{t.base.item.pluralize}} to be {{t.base.added}}.  Please do not uses spaces in the folder name and name the archive file after the folder.  For example \"the_images\" folder would become the \"the_images.zip\" archive file."
+      license: "You may also {{t.base.choose}} to have all imported {{t.base.item.pluralize}} be under one of these licenses."
       no_ampersands_in_filenames: "IMPORTANT NOTE: please do not use &amp; in file names, use an \"and\" instead.  {{t.base.item.capitalize.pluralize}} with ampersands in filenames will not be {{t.base.added}}."
       no_spaces_in_filenames: "IMPORTANT NOTE: please do not use spaces in file names, use an underscore instead.  \"_\" will be {{t.base.replaced}} with a space in the final title for the {{t.base.item}}."
-      tags: What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas, no &amp;s allowed in {{t.base.tag.pluralize}}.)?
-      tags_description: This is a good way to group things (by subject or category) so that they can be found later, for example, if had a series of photos of my home, I might use 'Island Bay, Wellington, New Zealand'.
+      tags: "What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas, no &amp;s allowed in {{t.base.tag.pluralize}}.)?"
+      tags_description: "This is a good way to group things (by subject or category) so that they can be found later, for example, if had a series of photos of my home, I might use 'Island Bay, Wellington, New Zealand'."
       title: "{{t.base.add}} {{t.base.related}} set of {{t.base.item.pluralize}} to {{related_topic_title}} from uploaded archive file"
-      title_from_filename: The title for the uploaded {{t.base.item.pluralize}} will be based on the file's name as it was before it was {{t.base.added}} to the compressed archive file.  If you want a different title for the {{t.base.item}} you may to rename the file in question and re{{t.base.create}} the archive file before you proceed.
+      title_from_filename: "The title for the uploaded {{t.base.item.pluralize}} will be based on the file's name as it was before it was {{t.base.added}} to the compressed archive file.  If you want a different title for the {{t.base.item}} you may to rename the file in question and re{{t.base.create}} the archive file before you proceed."
       title_from_metadata: "If the title is in an {{t.base.item}}'s embedded metadata it will be used as long as it is labeled \"Title\" or one of the following:"
       title_from_metadata_or: OR
       upload: "Upload Archive file:"
-      upload_description: A .zip, .tar, or .tar.gz file that contains all the {{t.base.item.pluralize}}.
+      upload_description: "A .zip, .tar, or .tar.gz file that contains all the {{t.base.item.pluralize}}."
       uploading_note: "Some things to keep in mind when uploading a batch of {{t.base.item.pluralize}} in a .zip, .tar, .gz, or other archive file:"
-      whats_the_upload: What are you uploading?
+      whats_the_upload: "What are you uploading?"
   importers_controller:
     create:
-      already_running: There is another import of this type running at this time.  Please try again later.
+      already_running: "There is another import of this type running at this time.  Please try again later."
     get_progress:
-      all_processed: All records processed.
+      all_processed: "All records processed."
       amount_processed: "{{records_processed}} records processed"
-      back_to: Back to {{item_title}}
+      back_to: "Back to {{item_title}}"
       error_message: "There was a problem with the import: {{error}}<p><b>The import has been stopped</b></p>"
-      import_failed: Import failed. {{error}}
-      not_running: import worker not running anymore?
-      to_imports: Back to Imports
-      to_related_topics: Return to {{t.base.related}} topic.
+      import_failed: "Import failed. {{error}}"
+      not_running: "import worker not running anymore?"
+      to_imports: "Back to Imports"
+      to_related_topics: "Return to {{t.base.related}} topic."
     stop:
-      import_stopped: Import stopped.
+      import_stopped: "Import stopped."
   index_page:
     credits:
-      powered_by: Powered by
+      powered_by: "Powered by"
     index:
       all_tags: all
       categories_title: Categories
       comments: "{{count}} comments"
-      contents_by_type: Contents by type
-      continue_to_topic: Click here to continue to {{t.base.zoom_types.topic}} and its links
+      contents_by_type: "Contents by type"
+      continue_to_topic: "Click here to continue to {{t.base.zoom_types.topic}} and its links"
       create_homepage_topic: "{{t.base.create.capitalize}} {{t.base.basket}} homepage"
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
       image_from_archive: "{{t.base.zoom_types.image.capitalize}} from the Archive"
-      keyword_search: Keyword {{t.base.search.capitalize}}
+      keyword_search: "Keyword {{t.base.search.capitalize}}"
       latest: Latest
       show_x_of_x: "{{t.base.showing}} {{count}} of {{total}}"
       tags_title: "{{t.base.tag.capitalize.pluralize}}"
       view: "{{t.base.view.capitalize}} "
     post_headline:
-      read_more: read more &gt;&gt;
-      read_more_about: Read More about {{post_title}}
+      read_more: "read more &gt;&gt;"
+      read_more_about: "Read More about {{post_title}}"
     post_summary:
-      read_more: read more &gt;&gt;
-      read_more_about: Read More about {{post_title}}
+      read_more: "read more &gt;&gt;"
+      read_more_about: "Read More about {{post_title}}"
     selected_image:
       next_image: "Next Image. "
       play_pause_slideshow: "Play/Pause Slideshow. "
@@ -1448,49 +1454,49 @@ en:
   layouts:
     application:
       accessibility: Accessibility
-      add_link: list site on Kete.net.nz
-      all_baskets: all {{t.base.basket.pluralize}}
+      add_link: "list site on Kete.net.nz"
+      all_baskets: "all {{t.base.basket.pluralize}}"
       basket_label: "Tools for {{t.base.basket}}: {{basket}}"
       basket_profiles: "{{t.base.basket}} profiles"
-      choices: choices for extended fields
-      combined_rss: RSS feed for all {{t.base.item.pluralize}} on site
-      configure: reconfigure site
+      choices: "choices for extended fields"
+      combined_rss: "RSS feed for all {{t.base.item.pluralize}} on site"
+      configure: "reconfigure site"
       contact: "{{t.base.contact.capitalize}}"
-      content_types: content types
+      content_types: "content types"
       delete: "{{t.base.delete}} this {{t.base.basket}}"
       delete_confirmation: "{{t.base.are_you_sure}} All {{t.base.item.pluralize}} in this {{t.base.basket}} will be {{t.base.deleted}} forever!"
       documentation: documentation
-      extended_fields: extended fields
+      extended_fields: "extended fields"
       home: Home
-      import: import content
-      licenses: administer licenses
+      import: "import content"
+      licenses: "administer licenses"
       login: "{{t.base.login.capitalize}}"
       logout: Logout
       members: "{{t.base.member.pluralize}}"
-      moderate: moderate contents
-      my_baskets: my {{t.base.basket.pluralize}}
-      oai_pmh: OAI PMH Sets
-      preferences: "preferences"
-      rebuild: Rebuild {{t.base.search}} databases
+      moderate: "moderate contents"
+      my_baskets: "my {{t.base.basket.pluralize}}"
+      oai_pmh: "OAI PMH Sets"
+      preferences: preferences
+      rebuild: "Rebuild {{t.base.search}} databases"
       register: "{{t.base.register.capitalize}}"
-      rss: RSS feed for these {{t.base.item.pluralize}}
+      rss: "RSS feed for these {{t.base.item.pluralize}}"
       search_button: Go
       search_label: "{{t.base.search.capitalize}}"
       search_sources: "{{t.base.search}} sources"
-      site_members: site {{t.base.member.pluralize}}
+      site_members: "site {{t.base.member.pluralize}}"
       sitemap: Sitemap
       support: "Support:"
-      to_content: Back to Content
+      to_content: "Back to Content"
       toolbox_controls: "Controls:"
-      toolbox_label: Administrator's Toolbox
+      toolbox_label: "Administrator's Toolbox"
       topic_types: "{{t.base.zoom_types.topic}} types"
-      zoom_dbs: Z39.50 {{t.base.search}} databases
+      zoom_dbs: "Z39.50 {{t.base.search}} databases"
   licenses:
     install:
-      choose_license: '-{{t.base.choose}} {{t.base.license}} to import-'
-      creative_commons_note: 'Note: The Creative Commons {{t.base.license}} imports do not include the "no derivatives" licenses because they are not compatible with most Kete sites. If you need these, {{t.base.add}} them in the interface below.'
+      choose_license: "-{{t.base.choose}} {{t.base.license}} to import-"
+      creative_commons_note: "Note: The Creative Commons {{t.base.license}} imports do not include the \"no derivatives\" licenses because they are not compatible with most Kete sites. If you need these, {{t.base.add}} them in the interface below."
       submit: Import
-      title: Import Licenses
+      title: "Import Licenses"
   licenses_controller:
     install_license:
       imported: "{{t.base.successfully.capitalize}} imported licenses."
@@ -1504,7 +1510,7 @@ en:
       reject_membership: "{{t.base.reject.capitalize}} {{t.base.membership.capitalize}}"
     list:
       admin: "{{t.base.administrator}}"
-      admin_actions: Administrative Actions
+      admin_actions: "Administrative Actions"
       change_to: "{{t.base.change.capitalize}} to"
       email: "{{t.base.email.capitalize}}"
       joined: "{{t.base.joined.capitalize}}"
@@ -1519,13 +1525,13 @@ en:
       title: "{{basket_name}} {{t.base.member.capitalize.pluralize}}"
       user_name: "{{t.base.username.capitalize}}"
     list_members_in:
-      current_no_users_of_type: Currently no {{listing_type}}
+      current_no_users_of_type: "Currently no {{listing_type}}"
       search_button: "{{t.base.search.capitalize}}"
       search_for_members: "{{t.base.search.capitalize}} for new {{t.base.member.pluralize}}"
     potential_new_members:
       add_members: "{{t.base.add.capitalize}} {{t.base.member.pluralize}}"
-      no_members: No potential {{t.base.member.pluralize}} are available.
-      title: Potential New {{t.base.member.capitalize.pluralize}}
+      no_members: "No potential {{t.base.member.pluralize}} are available."
+      title: "Potential New {{t.base.member.capitalize.pluralize}}"
     rss:
       description: "{{t.base.member.capitalize.pluralize}} of {{basket_name}}"
       title: "{{site_name}} - {{basket_name}} - Latest 50 {{t.base.member.capitalize.pluralize}}"
@@ -1541,19 +1547,19 @@ en:
       cannot_be_tech_admin: "{{t.base.user.capitalize}} is not eligable to be {{t.base.technical_administrator}}. The need to be a {{t.base.site_administrator}}, too."
       changed_role: "{{t.base.user.capitalize}} {{t.base.successfully}} {{t.base.changed}} role."
       made_tech_admin: "{{t.base.user.capitalize}} has been made {{t.base.technical_administrator}}."
-      need_site_admin: Unable to have no {{t.base.site_administrator.pluralize}}.
+      need_site_admin: "Unable to have no {{t.base.site_administrator.pluralize}}."
     change_request_status:
       accepted: "{{user_name}}'s {{t.base.membership}} {{t.base.request}} has been {{t.base.accepted}}."
       rejected: "{{user_name}}'s {{t.base.membership}} {{t.base.request}} has been {{t.base.rejected}}."
     destroy:
       destroyed: "{{user_name}} has been {{t.base.deleted}} from the site."
       has_contributions: "{{user_name}} has contributions and cannot be {{t.base.deleted}} from the site. Perhaps a ban instead?"
-      need_site_admin: Unable to have no {{t.base.site_administrator.pluralize}}.
+      need_site_admin: "Unable to have no {{t.base.site_administrator.pluralize}}."
     join:
-      already_joined: You already have a role in this {{t.base.basket}} or you have already applied to {{t.base.join}}.
-      joined: You have {{t.base.joined}} the {{basket_name}} basket.
-      not_open: This {{t.base.basket}} isn't currently accepting {{t.base.join}} requests.
-      requested: A {{t.base.basket}} {{t.base.membership}} {{t.base.request}} has been sent. You will get an {{t.base.email}} when it is {{t.base.approved}}.
+      already_joined: "You already have a role in this {{t.base.basket}} or you have already applied to {{t.base.join}}."
+      joined: "You have {{t.base.joined}} the {{basket_name}} basket."
+      not_open: "This {{t.base.basket}} isn't currently accepting {{t.base.join}} requests."
+      requested: "A {{t.base.basket}} {{t.base.membership}} {{t.base.request}} has been sent. You will get an {{t.base.email}} when it is {{t.base.approved}}."
     list_members_in:
       admin: Admin
       ban: Ban
@@ -1562,14 +1568,14 @@ en:
       member: "{{t.base.member.capitalize}}"
       moderator: "{{t.base.moderator.capitalize}}"
       remove: "{{t.base.remove.capitalize}} from {{t.base.basket}}"
-      site_admin: Site Admin
-      tech_admin: Tech Admin
+      site_admin: "Site Admin"
+      tech_admin: "Tech Admin"
     permitted_to_view_memberlist:
-      cant_remove: You need to have the right permissions to {{t.base.remove}} {{t.base.basket}} {{t.base.member.pluralize}}
-      not_authorized: You need to have the right permissions to access this {{t.base.basket.pluralize}} {{t.base.member}} list
+      cant_remove: "You need to have the right permissions to {{t.base.remove}} {{t.base.basket}} {{t.base.member.pluralize}}"
+      not_authorized: "You need to have the right permissions to access this {{t.base.basket.pluralize}} {{t.base.member}} list"
     remove:
-      cant_remove_self: You cannot {{t.base.remove}} yourself from the Site {{t.base.basket}}.
-      need_site_admin: Unable to have no {{t.base.basket}} {{t.base.administrator.pluralize}}.
+      cant_remove_self: "You cannot {{t.base.remove}} yourself from the Site {{t.base.basket}}."
+      need_site_admin: "Unable to have no {{t.base.basket}} {{t.base.administrator.pluralize}}."
       removed: "{{t.base.successfully.capitalize}} {{t.base.removed}} {{t.base.user}} from {{basket_name}}."
     unban:
       unbanned: "{{t.base.successfully.capitalize}} {{t.base.removed}} ban on {{t.base.user}}."
@@ -1583,7 +1589,7 @@ en:
       flagged_at: "{{t.base.flagged}} at"
       flagged_with: "{{t.base.flagged}} with"
       full_history: "{{t.base.item}}'s full {{t.base.history}}"
-      no_items_needing_moderation: Currently no {{t.base.item.pluralize}} needing {{t.base.moderation}}.
+      no_items_needing_moderation: "Currently no {{t.base.item.pluralize}} needing {{t.base.moderation}}."
       privacy: privacy
       private: "{{t.base.private}}"
       public: "{{t.base.public}}"
@@ -1598,12 +1604,12 @@ en:
         delimiter: ","
         format: "%u%n"
         precision: 2
-        separator: .
+        separator: "."
         unit: $
     format:
       delimiter: ","
       precision: 3
-      separator: .
+      separator: "."
     human:
       format:
         delimiter: ""
@@ -1625,12 +1631,12 @@ en:
       format:
         delimiter: ""
   oai_pmh_repository_controller:
-    not_available: OAI PMH Repository {{t.base.not_available}} at this time.
-    title: Oai Pmh Repository
+    not_available: "OAI PMH Repository {{t.base.not_available}} at this time."
+    title: "Oai Pmh Repository"
   oai_pmh_repository_set_model:
     invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
   oai_pmh_repository_sets_controller:
-    title: Oai Pmh Repository Sets
+    title: "Oai Pmh Repository Sets"
   privacy_controls_helper:
     privacy_controls_description:
       public_vs_private: "Note: Individual versions of this {{t.base.item}} can be {{t.base.public}} or {{t.base.private}}. The latest {{t.base.public}} version will be shown to non-{{t.base.basket}} members if available.  Otherwise, this {{t.base.item}} is completely {{t.base.private}}."
@@ -1641,14 +1647,14 @@ en:
   profile_model:
     all_form_types_have_rule_type:
       missing_rules_types: "The following forms are missing a rule type: {{missing}}"
-      no_rules_submitted: No {{t.base.profile}} rules have been submitted. Try again.
+      no_rules_submitted: "No {{t.base.profile}} rules have been submitted. Try again."
     rules:
       all: All.
       none: None.
     type_options:
       all: All
       none: None
-      select_below: Select Below
+      select_below: "Select Below"
   profiles:
     appearance:
       add_new_theme: "{{t.baskets.appearance.new_theme}}"
@@ -1703,12 +1709,12 @@ en:
       open_membership: "{{t.baskets.form.join_policy_open}}"
       privacy_controls: "{{t.baskets.form.privacy_controls}}"
       private: "{{t.base.private.capitalize}}"
+      private_file_visibility: "{{t.baskets.form.file_visibility}}"
+      private_file_visibility_description: "{{t.baskets.form.file_visibility_example}}"
       private_item_notification: "{{t.baskets.form.private_item_notification}}"
       private_item_notification_example: "{{t.baskets.form.private_item_notification_example}}"
       private_item_notification_show_short_summary: "{{t.baskets.form.private_item_notification_show_short_summary}}"
       private_item_notification_show_title: "{{t.baskets.form.private_item_notification_show_title}}"
-      private_file_visibility: "{{t.baskets.form.file_visibility}}"
-      private_file_visibility_description: "{{t.baskets.form.file_visibility_example}}"
       public: "{{t.base.public.capitalize}}"
       request_membership: "{{t.baskets.form.join_policy_request}}"
       show_field: "{{t.profiles.appearance.show_field}}"
@@ -1741,14 +1747,14 @@ en:
       sidebar_content_do_not_sanitize: "{{t.baskets.homepage_form.security_exception_example}}"
       tags: "{{t.baskets.homepage_form.tags}}"
   profiles_controller:
-    fields_available: Fields Available
+    fields_available: "Fields Available"
     title: "{{t.base.basket.capitalize}} Profiles"
   profiles_helper:
     rules_allowed_check_box:
       expand_policy: "Expand Policy. "
     rules_form_column:
-      cannot_be_changed: (cannot be {{t.base.changed}})
-      choose_included_fields: --{{t.base.choose}} included form fields--
+      cannot_be_changed: "(cannot be {{t.base.changed}})"
+      choose_included_fields: "--{{t.base.choose}} included form fields--"
   search:
     all:
       all: "All "
@@ -1760,9 +1766,9 @@ en:
       results_in: "Results in "
       whole_site: " whole site"
     form:
-      browse_by_category: Browse by category
+      browse_by_category: "Browse by category"
       getting_categories: "Getting Categories. "
-      in_reverse: In reverse?
+      in_reverse: "In reverse?"
       options: Options
       privacy_type: "That are:"
       private: "{{t.base.private.capitalize}}"
@@ -1771,108 +1777,108 @@ en:
       sort_by: "Sort by:"
       update_results: "{{t.base.update}}"
     generic:
-      more: more &gt;&gt;
-      more_on: More information on {{title}}
+      more: "more &gt;&gt;"
+      more_on: "More information on {{title}}"
     homepage_topic_form:
       change_homepage_topic: "{{t.base.change.capitalize}} Homepage {{t.base.zoom_types.topic.capitalize}}"
       close: "{{t.base.close.capitalize}}"
-      current_homepage_topic: (current homepage topic)
-      no_topics_found: No {{t.base.zoom_types.topic.capitalize.pluralize}} found
+      current_homepage_topic: "(current homepage topic)"
+      no_topics_found: "No {{t.base.zoom_types.topic.capitalize.pluralize}} found"
       search_for_topic: "{{t.base.search.capitalize}} for {{t.base.zoom_types.topic.capitalize}}"
       search_for_topics: "{{t.base.search.capitalize}} for {{t.base.zoom_types.topic.capitalize.pluralize}}"
-      select_homepage_topic: Select which {{t.base.zoom_types.topic.capitalize}} to mark as Homepage, then click 'Change'.
+      select_homepage_topic: "Select which {{t.base.zoom_types.topic.capitalize}} to mark as Homepage, then click 'Change'."
       title: "{{t.base.change.capitalize}} Homepage {{t.base.zoom_types.topic.capitalize}}"
     image:
-      more: more &gt;&gt;
-      more_on: More information on {{title}}
+      more: "more &gt;&gt;"
+      more_on: "More information on {{title}}"
       view_image: "{{t.base.view.capitalize}} {{t.base.zoom_types.image.capitalize}}"
     index:
       title: "{{t.base.search.capitalize}} {{basket_name}}"
     link_related:
-      linked: Linked {{t.base.successfully}}
+      linked: "Linked {{t.base.successfully}}"
     rebuild_zoom_index:
       completed: "Completed. "
-      in_progress: ...in progress.
-      starting: Starting rebuild...
-      title: Zoom Index Rebuild from {{start}} to {{end}}
+      in_progress: "...in progress."
+      starting: "Starting rebuild..."
+      title: "Zoom Index Rebuild from {{start}} to {{end}}"
     refine_by_choice:
-      limit_to_category: Limit it to category?
+      limit_to_category: "Limit it to category?"
     related:
-      more_on: More information on {{title}}
+      more_on: "More information on {{title}}"
       title: "{{t.base.related.capitalize}}:"
     related_form:
       close: "{{t.base.close.capitalize}}"
       executing_action: "Executing {{action}} action. "
       function_a: "{{action}} a:"
-      no_items_found: No {{item_class}} found
+      no_items_found: "No {{item_class}} found"
       search: "{{t.base.search.capitalize}}"
       search_for: "{{t.base.search.capitalize}} for {{privacy}} {{item_class}}:"
       search_private: "{{t.base.search}} {{t.base.private}}"
       search_public: "{{t.base.search}} {{t.base.public}}"
-      select_items: Select which {{item_class}} to {{action}}, then click '{{action}}'.
+      select_items: "Select which {{item_class}} to {{action}}, then click '{{action}}'."
       title: "{{action}} {{t.base.related}} {{zoom_class_plural}}"
     results:
       add_a_new: "{{t.base.add.capitalize}} a new "
       address: "Address:"
       coordinates: "Coordinates:"
-      no_results_found: No results found.
-      results_on_this_page: results on this page
-      search_source_title: More Resources
+      no_results_found: "No results found."
+      results_on_this_page: "results on this page"
+      search_source_title: "More Resources"
       show: "{{t.base.show.capitalize}}"
       showing_x-y_of_z: "{{t.base.showing}} {{start}}-{{finish}} results of {{total}}"
-      view_list: List {{t.base.view.capitalize}}
+      view_list: "List {{t.base.view.capitalize}}"
       view_map: "{{t.base.view.capitalize}} on map"
       x-y_have_z_locations: "{{start}}-{{finish}} results have {{n_locations}} locations"
     rss:
       latest: Latest
       next: Next
       related: "{{t.base.related.capitalize}}:"
-      results_in: 50 Results in
+      results_in: "50 Results in"
       showing_x-y_of_z: "{{t.base.showing.capitalize}} {{start}} - {{end}} results of {{total}}"
     setup_rebuild:
-      all_types: all types
-      clear_search_engine: Clear and restart {{t.base.search}} engine first?
-      clear_search_engine_description: This will "erase" your existing {{t.base.search}} records and start from scratch.  Use this if starting from the first record and ending with the last.  This involves some steps that don't work on all platforms (e.g. Solaris 10), uncheck if will be doing these steps by hand from the command line on the server.
-      end_rebuild_at: Record id to finish rebuilding process at?
-      end_rebuild_at_description: You must {{t.base.choose}} a specific type to rebuild rather than "all types" to use anything but 'last'. If you {{t.base.choose}} a specific type, you may specify the id number in the Kete database to finishing rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the last {{t.base.zoom_types.topic}} to be {{t.base.added}} to the {{t.base.search}} engine.
-      skip_existing_records: Should we skip records that are already in the {{t.base.search}} engine?
-      skip_existing_records_description: In most cases you will want to leave this unchecked for a faster rebuild.  However it is useful when you are rebuilding only missing records that didn't make it into the {{t.base.search}} engine.
-      skip_private_records: Should we skip {{t.base.private}} records?
-      skip_private_records_description: In most cases you will want to leave this unchecked for a complete rebuild.  However, if you don't have any existing {{t.base.private}} records (perhaps you are upgrading from Kete 1.0 to 1.1, for example), you can use this to speed up the rebuild process.
-      start_rebuild: Rebuild {{t.base.search.capitalize}} Records
-      start_rebuild_at: Record id to start rebuilding process at?
-      start_rebuild_at_description: You must {{t.base.choose}} a specific type to rebuild rather than "all types" to use anything but 'first'. If you {{t.base.choose}} a specific type, you may specify the id number in the Kete database to start rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the first {{t.base.zoom_types.topic}} to be {{t.base.added}} to the {{t.base.search}} engine.
-      title: Set up a rebuild of your {{t.base.search}} records
+      all_types: "all types"
+      clear_search_engine: "Clear and restart {{t.base.search}} engine first?"
+      clear_search_engine_description: "This will \"erase\" your existing {{t.base.search}} records and start from scratch.  Use this if starting from the first record and ending with the last.  This involves some steps that don't work on all platforms (e.g. Solaris 10), uncheck if will be doing these steps by hand from the command line on the server."
+      end_rebuild_at: "Record id to finish rebuilding process at?"
+      end_rebuild_at_description: "You must {{t.base.choose}} a specific type to rebuild rather than \"all types\" to use anything but 'last'. If you {{t.base.choose}} a specific type, you may specify the id number in the Kete database to finishing rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the last {{t.base.zoom_types.topic}} to be {{t.base.added}} to the {{t.base.search}} engine."
+      skip_existing_records: "Should we skip records that are already in the {{t.base.search}} engine?"
+      skip_existing_records_description: "In most cases you will want to leave this unchecked for a faster rebuild.  However it is useful when you are rebuilding only missing records that didn't make it into the {{t.base.search}} engine."
+      skip_private_records: "Should we skip {{t.base.private}} records?"
+      skip_private_records_description: "In most cases you will want to leave this unchecked for a complete rebuild.  However, if you don't have any existing {{t.base.private}} records (perhaps you are upgrading from Kete 1.0 to 1.1, for example), you can use this to speed up the rebuild process."
+      start_rebuild: "Rebuild {{t.base.search.capitalize}} Records"
+      start_rebuild_at: "Record id to start rebuilding process at?"
+      start_rebuild_at_description: "You must {{t.base.choose}} a specific type to rebuild rather than \"all types\" to use anything but 'first'. If you {{t.base.choose}} a specific type, you may specify the id number in the Kete database to start rebuilding at, i.e. the value you of the id column in the topics table that corresponds to the first {{t.base.zoom_types.topic}} to be {{t.base.added}} to the {{t.base.search}} engine."
+      title: "Set up a rebuild of your {{t.base.search}} records"
       type_to_rebuild: "Type to rebuild:"
   search_controller:
     check_rebuild_status:
-      all_processed: All records processed
+      all_processed: "All records processed"
       amount_processed: "{{amount}} records processed"
-      browse: Browse records
-      failed_reason: These maybe {{t.base.private}} or pending {{t.base.moderation}} records, depending on the case. See log/backgroundrb... for details.
-      finished_at: at {{end_time}}
-      need_js: You need javascript {{t.base.enabled}} for this feature.
-      not_running: rebuild worker not running anymore?
+      browse: "Browse records"
+      failed_reason: "These maybe {{t.base.private}} or pending {{t.base.moderation}} records, depending on the case. See log/backgroundrb... for details."
+      finished_at: "at {{end_time}}"
+      need_js: "You need javascript {{t.base.enabled}} for this feature."
+      not_running: "rebuild worker not running anymore?"
       rebuild_error: "There was a problem with the rebuild: {{error}}<p><b>The rebuild has been stopped</b></p>"
-      rebuild_failed: Rebuild failed. {{error}}
+      rebuild_failed: "Rebuild failed. {{error}}"
       records_failed: "{{amount}} records failed"
       records_skipped: "{{amount}} records skipped"
-      return_to_rebuild: Return to Rebuild Set up
-      started_at: Started at {{start_time}}
-      working_on: Working on {{zoom_class}}
+      return_to_rebuild: "Return to Rebuild Set up"
+      started_at: "Started at {{start_time}}"
+      working_on: "Working on {{zoom_class}}"
     find_index:
-      changed: Homepage {{t.base.zoom_types.topic}} {{t.base.changed}} {{t.base.successfully}}
-      failed: Problem changing Homepage {{t.base.zoom_types.topic}}
+      changed: "Homepage {{t.base.zoom_types.topic}} {{t.base.changed}} {{t.base.successfully}}"
+      failed: "Problem changing Homepage {{t.base.zoom_types.topic}}"
     find_related:
       add: "{{t.base.add.capitalize}}"
       remove: "{{t.base.remove.capitalize}}"
       restore: Restore
     for:
-      no_search_terms: You haven't entered any {{t.base.search}} terms.
+      no_search_terms: "You haven't entered any {{t.base.search}} terms."
     private_search_authorisation:
       forbidden: "Error 403: Forbidden"
     rebuild_zoom_for_items:
-      zoom_rebuilt: ZOOM indexes rebuilt
+      zoom_rebuilt: "ZOOM indexes rebuilt"
   search_helper:
     last_part_of_title_if_refinement_of:
       and: " and"
@@ -1883,10 +1889,10 @@ en:
       related_to: " {{t.base.related}} to {{source_item}}"
       tagged_as: " {{t.base.tagged}} as {{tag_name}}"
   search_model:
-    browse_default: Browse Default
-    choice_hierarchy: Choice Hierarchy
+    browse_default: "Browse Default"
+    choice_hierarchy: "Choice Hierarchy"
     date: Date
-    last_modified: Last Modified
+    last_modified: "Last Modified"
     map: Map
     relevance: Relevance
     title: Title
@@ -1895,18 +1901,18 @@ en:
   search_sources_controller:
     source_targets:
       all: All
-      items: Items - User Input for Terms
-      search: Search - User Inputted Search as is
+      items: "Items - User Input for Terms"
+      search: "Search - User Inputted Search as is"
   site_linking_lib:
     error_linking_site:
-      appears_listed: However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>.
+      appears_listed: "However, it appears that your site is now listed. Please check the listing to make sure it is correct at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>."
       error_occured: "There was an error linking to your site. "
-      manual_linking: You can do it manually at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>.
+      manual_linking: "You can do it manually at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>."
   slideshows_helper:
-    all_results: Back to results
-    next: Next &raquo;
+    all_results: "Back to results"
+    next: "Next &raquo;"
     previous: "&laquo; Previous"
-    stop: Stop results slideshow
+    stop: "Stop results slideshow"
   support:
     array:
       last_word_connector: ", and "
@@ -1916,7 +1922,7 @@ en:
     add_tags:
       error_adding_tags: "There was an error adding the new {{t.base.tag.pluralize}} to {{item_title}}: {{t.base.tag.capitalize.pluralize}} {{errors}}"
       no_tags_entered: "There was an error adding the new {{t.base.tag.pluralize}} to {{item_title}}: No {{t.base.tag.pluralize}} were entered."
-      tags_added: The new {{t.base.tag}}(s) have been {{t.base.added}} to {{item_title}}
+      tags_added: "The new {{t.base.tag}}(s) have been {{t.base.added}} to {{item_title}}"
       version_comment: "Only {{t.base.tag.pluralize}} {{t.base.added}}: {{tags_list}}"
   tags:
     list:
@@ -1926,7 +1932,7 @@ en:
       description: "{{t.base.tag.capitalize.pluralize}} in {{basket_name}}"
       title: "{{site_name}} - {{basket_name}} - Latest {{count}} {{t.base.tag.capitalize.pluralize}}"
     tags_list:
-      no_tags: No {{t.base.tag.pluralize}} to display.
+      no_tags: "No {{t.base.tag.pluralize}} to display."
   time:
     am: am
     formats:
@@ -1938,57 +1944,57 @@ en:
     available_fields_form:
       add: "{{t.base.add.capitalize}} to {{t.base.zoom_types.topic.capitalize}} Type"
       multiple: (multiple)
-      no_fields_available: No form fields are available.
-      no_more_allowed: You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type, see above.
+      no_fields_available: "No form fields are available."
+      no_more_allowed: "You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type, see above."
       optional: (optional)
       required: (required)
-      title: Available Form Fields
+      title: "Available Form Fields"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
       multiple: (multiple)
-      no_fields_mapped: No form fields currently mapped to this {{t.base.zoom_types.topic}} type.
-      no_more_allowed: You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type, see above.
-      reorder: Reorder {{t.base.zoom_types.topic.capitalize}} Type Form
-      required: 'required?'
-      title: Current Form Fields
+      no_fields_mapped: "No form fields currently mapped to this {{t.base.zoom_types.topic}} type."
+      no_more_allowed: "You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type, see above."
+      reorder: "Reorder {{t.base.zoom_types.topic.capitalize}} Type Form"
+      required: required?
+      title: "Current Form Fields"
     edit:
       edit_button: "{{t.base.edit.capitalize}}"
-      return_to_topic_types: Return to {{t.base.zoom_types.topic}} types
-      title: Editing {{t.base.zoom_types.topic}} type
+      return_to_topic_types: "Return to {{t.base.zoom_types.topic}} types"
+      title: "Editing {{t.base.zoom_types.topic}} type"
     form:
       description: Description
       name: Name
     generic_topic_fields:
       description_field: "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
       note: "All {{t.base.zoom_types.topic}} types inherit the following form fields:"
-      present_in_all: These form fields will be present in all {{t.base.zoom_types.topic}} types.
+      present_in_all: "These form fields will be present in all {{t.base.zoom_types.topic}} types."
       short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
-      title: Generic {{t.base.zoom_types.topic.capitalize}} Fields
+      title: "Generic {{t.base.zoom_types.topic.capitalize}} Fields"
       title_field: "Title: What shoule we this topic?  This will also be used to generate a URL for this topic."
     inherited_fields:
       multiple: (multiple)
-      no_inherited_form_fields: No inherited form fields.
-      no_more_allowed: You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type.
+      no_inherited_form_fields: "No inherited form fields."
+      no_more_allowed: "You cannot {{t.base.add}} any additional fields to this {{t.base.zoom_types.topic}} type."
       optional: (optional)
       required: (required)
-      title: Inherited Form Fields
+      title: "Inherited Form Fields"
     list:
       add_sub_topic: "{{t.base.add.capitalize}} sub-type"
-      cannot_delete: Can't {{t.base.delete.capitalize}} This type.
+      cannot_delete: "Can't {{t.base.delete.capitalize}} This type."
       created_at: "{{t.base.created.capitalize}} at"
       delete: "{{t.base.delete.capitalize}}"
       delete_confirm: "{{t.base.are_you_sure}}"
       description: Description
       edit: "{{t.base.edit.capitalize}}"
-      has_topics: Has topics.
+      has_topics: "Has topics."
       name: Name
       options: Options
-      title: Listing {{t.base.zoom_types.topic}} types
+      title: "Listing {{t.base.zoom_types.topic}} types"
       updated_at: "{{t.base.updated.capitalize}} at"
     new:
       cancel: "{{t.base.cancel}}"
       create_button: "{{t.base.create.capitalize}}"
-      title: New {{t.base.zoom_types.topic}} type
+      title: "New {{t.base.zoom_types.topic}} type"
     show:
       back: Back
       edit: "{{t.base.edit.capitalize}}"
@@ -2000,68 +2006,68 @@ en:
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
       item_details: "{{t.base.item.capitalize}} Details"
-      make_theme: Make theme
-      zoom_update: Zoom Update {{t.base.item}} (+{{t.base.related}})
-      zoom_update_confirm: Are you sure you want to update?
+      make_theme: "Make theme"
+      zoom_update: "Zoom Update {{t.base.item}} (+{{t.base.related}})"
+      zoom_update_confirm: "Are you sure you want to update?"
     content_wrapper_start:
       baskets: "{{t.base.basket.pluralize}}"
     discussion:
-      discuss_this_topic: Discuss This {{t.base.zoom_types.topic.capitalize}}
+      discuss_this_topic: "Discuss This {{t.base.zoom_types.topic.capitalize}}"
     edit:
-      not_authorized: Sorry - editing on this section of the site has been disallowed
+      not_authorized: "Sorry - editing on this section of the site has been disallowed"
     flag_form:
       flag_button: "{{t.base.flag.capitalize}}"
-      flag_instructions: Please give details that might be helpful for the {{t.base.moderator}} {{t.base.reviewing}} this {{t.base.item}}.  For example, if {{t.base.flagging}} as a duplicate, the URL for the {{t.base.item}} this content duplicates.
+      flag_instructions: "Please give details that might be helpful for the {{t.base.moderator}} {{t.base.reviewing}} this {{t.base.item}}.  For example, if {{t.base.flagging}} as a duplicate, the URL for the {{t.base.item}} this content duplicates."
       flag_item_title: "{{t.base.flag.capitalize}} this {{t.base.item}}"
-      message_for: Message for
-      not_authorized: Sorry {{t.base.flagging}} has been {{t.base.disabled}} on this section of the site
+      message_for: "Message for"
+      not_authorized: "Sorry {{t.base.flagging}} has been {{t.base.disabled}} on this section of the site"
       reject_button: "{{t.base.reject.capitalize}}"
-      reject_instructions: Please {{t.base.add}} a message to the {{t.base.user}} telling the why you have passed over their submitted revision.
+      reject_instructions: "Please {{t.base.add}} a message to the {{t.base.user}} telling the why you have passed over their submitted revision."
       reject_revision_title: "{{t.base.reject.capitalize}} this revision"
     flagging_contributor:
       created: "{{t.base.created}}"
       created_or_updated_on: "on"
-      last_to_edit: was the last to {{t.base.edit}}
+      last_to_edit: "was the last to {{t.base.edit}}"
     form:
-      allow_insecure_elements: Allow new forms and other possible insecure elements and attributes in the HTML?
+      allow_insecure_elements: "Allow new forms and other possible insecure elements and attributes in the HTML?"
       comment_on_edit: "{{t.base.zoom_types.comment.capitalize}} on this {{t.base.edit}}"
       create: "{{t.base.create.capitalize}}"
       current_image: "Current Image:"
       description: Description
       description_example: "Note: new forms and javascript are not allowed for security reasons"
       description_example_exception: ", unless you check the box below"
-      downloaded_by_everyone: Can be downloaded by everyone
-      downloaded_by_role: Can only be downloaded by people who have {{role_name}} access.
+      downloaded_by_everyone: "Can be downloaded by everyone"
+      downloaded_by_role: "Can only be downloaded by people who have {{role_name}} access."
       editing: Editing
-      embedded_note: If you fill out fields here as well, the embedded metadata will be {{t.base.added}} to it at the end.
-      file_privacy: Attached file privacy
-      file_privacy_example: Please note that once {{t.base.public}}, an attached file cannot be made {{t.base.private}}.
+      embedded_note: "If you fill out fields here as well, the embedded metadata will be {{t.base.added}} to it at the end."
+      file_privacy: "Attached file privacy"
+      file_privacy_example: "Please note that once {{t.base.public}}, an attached file cannot be made {{t.base.private}}."
       getting_tags: "Getting {{t.base.tag.pluralize}}. "
       help: help
-      move_baskets: Move to another {{t.base.basket}}?
+      move_baskets: "Move to another {{t.base.basket}}?"
       new: New
       note: "Note:"
       privacy: Privacy
       private: "{{t.base.private.capitalize}}"
-      private_description: (Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})
+      private_description: "(Can be {{t.base.viewed}} only by {{t.base.basket}} {{t.base.member.pluralize}})"
       public: "{{t.base.public.capitalize}}"
-      public_description: (Can be {{t.base.viewed}} by everyone)
-      related_items_as_inset: Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} description?
+      public_description: "(Can be {{t.base.viewed}} by everyone)"
+      related_items_as_inset: "Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} content into {{t.base.zoom_types.topic.capitalize}} description?"
       required_fields: "* denotes a required field"
-      short_summary: Short Summary
+      short_summary: "Short Summary"
       skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.item}}?"
       tags: "{{t.base.tag.capitalize.pluralize}} (separated by commas)"
       title: Title
       update: "{{t.base.update.capitalize}}"
       upload: Upload
-      upload_image: Upload {{t.base.zoom_types.image}}
+      upload_image: "Upload {{t.base.zoom_types.image}}"
       url: URL
     history:
-      back_to_live: Back to live
+      back_to_live: "Back to live"
       comments: Comments
       contributor: Contributor
       flags: "{{t.base.flag.capitalize.pluralize}}"
-      has_private_version: This {{t.base.item}} has {{t.base.private}} versions. {{login}} as a {{t.base.basket}} {{t.base.member}} to {{t.base.view}} these.
+      has_private_version: "This {{t.base.item}} has {{t.base.private}} versions. {{login}} as a {{t.base.basket}} {{t.base.member}} to {{t.base.view}} these."
       login_link: "{{t.base.login}}"
       number: Number
       privacy: Privacy
@@ -2070,44 +2076,44 @@ en:
       revision_history: "Revision {{t.base.history.capitalize}}:"
       updated: "{{t.base.updated.capitalize}}"
     license_chooser_or_agreement:
-      how_to_set_license: You can {{t.base.change}} or set your default licence by editing your {{t.base.profile}}
-      license_description: This {{item_type}} is licensed under the {{license_title}}. By editing it you agree that your changes will fall under this license.
-      see_terms: Please see the {{tac_link}} for information on how contributions are licensed.
-      tac_link: site terms and conditions
+      how_to_set_license: "You can {{t.base.change}} or set your default licence by editing your {{t.base.profile}}"
+      license_description: "This {{item_type}} is licensed under the {{license_title}}. By editing it you agree that your changes will fall under this license."
+      see_terms: "Please see the {{tac_link}} for information on how contributions are licensed."
+      tac_link: "site terms and conditions"
       title: "{{t.base.license.capitalize}}"
       view_license: "{{t.base.view}} {{t.base.license}}"
     new:
       choose_type: "{{t.base.choose.capitalize}} Type"
-      what_is_topic_about: What is the {{t.base.zoom_types.topic}} about?
+      what_is_topic_about: "What is the {{t.base.zoom_types.topic}} about?"
     preview:
       flagged: "{{t.base.flagged.capitalize}}"
-      not_authorized: You aren't allowed to {{t.base.view}} this revision of this {{t.base.item}} at the current time.
-      permission_denied: Permission Denied
+      not_authorized: "You aren't allowed to {{t.base.view}} this revision of this {{t.base.item}} at the current time."
+      permission_denied: "Permission Denied"
       preview_revision: "{{t.base.preview.capitalize}} revision"
       reasons_flagged: "Reasons {{t.base.flagged}}:"
       topic_type: "{{t.base.zoom_types.topic.capitalize}} Type:"
     preview_actions:
+      delete_all_versions: "{{t.base.delete}} this {{t.base.item}} completely"
+      delete_confirm: "{{t.base.are_you_sure}}"
       history: "{{t.base.history.capitalize}}"
-      make_live: Make this revision live
+      make_live: "Make this revision live"
       make_live_confirm: "{{t.base.are_you_sure}}"
       reject: "{{t.base.reject}}"
       reject_confirm: "{{t.base.are_you_sure}}"
-      delete_all_versions: "{{t.base.delete}} this {{t.base.item}} completely"
-      delete_confirm: "{{t.base.are_you_sure}}"
       title: "Actions:"
     privacy_chooser:
       private_version: "{{t.base.private.capitalize}} version"
       public_version: "{{t.base.public.capitalize}} version (live)"
     related_items:
       create: "{{t.base.create.capitalize}}"
-      import_set: Import Set
-      link_existing: Link Existing
+      import_set: "Import Set"
+      link_existing: "Link Existing"
       related_items: "{{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}"
       related_topics: "{{t.base.related.capitalize}} Topics:"
       remove: "{{t.base.remove.capitalize}}"
       restore: Restore
     related_items_section:
-      not_related: This {{item_type}} is not {{t.base.related}} to any topics at this time.
+      not_related: "This {{item_type}} is not {{t.base.related}} to any topics at this time."
       play_slideshow: "Play Slideshow. "
       private: "{{t.base.private}}"
       public: "{{t.base.public}}"
@@ -2117,18 +2123,18 @@ en:
     slideshow_controls:
       current: "{{t.base.viewing.capitalize}}: {{slideshow_total}} of {{total}}"
     tags:
-      click_to_add: click to {{t.base.add}} {{t.base.tag}}(s)
+      click_to_add: "click to {{t.base.add}} {{t.base.tag}}(s)"
       getting_tags: "Getting {{t.base.tag.pluralize}}. "
       sending_tags: "Sending {{t.base.tag.pluralize}}. "
       title: "{{t.base.tag.capitalize.pluralize}}"
     topic_types:
-      about_a: About a?
+      about_a: "About a?"
   topics_controller:
     create:
       created: "{{t.base.zoom_types.topic.capitalize}} {{t.base.was_created}}."
       created_related: "{{t.base.related.capitalize}} {{t.base.zoom_types.topic.capitalize}} {{t.base.was_created}}."
     edit:
-      not_authorized: You don't have permission to {{t.base.edit}} this topic.
+      not_authorized: "You don't have permission to {{t.base.edit}} this topic."
     update:
       changed_topic_type: "You've {{t.base.changed}} the {{t.base.zoom_types.topic}} type for this topic. Please {{t.base.review}} the available fields."
       updated: "{{t.base.zoom_types.topic.capitalize}} {{t.base.was_updated}}."
@@ -2146,47 +2152,53 @@ en:
         edit_it_by: You can {{t.base.edit}} this {{t.base.basket}} by going to
         view_contents_at: And {{t.base.view}} its contents at
       created:
-        edit_it_by: You can {{t.base.edit}} this {{t.base.basket}} by going to
-        requires_approval: It requires {{t.base.moderation}} before it will be available to the {{t.base.public}}.
+        edit_it_by: "You can {{t.base.edit}} this {{t.base.basket}} by going to"
+        requires_approval: "It requires {{t.base.moderation}} before it will be available to the {{t.base.public}}."
         user_created_basket: "{{user_name}} has {{t.base.created}} a new {{t.base.basket}} titled '{{basket_name}}'."
       rejected:
-        basket_rejected: The {{t.base.basket}} you {{t.base.requested}}, '{{basket_name}}', was {{t.base.rejected}}.
-        not_suitable: This may be because it was inappropriate or unsuitable for this site.
+        basket_rejected: "The {{t.base.basket}} you {{t.base.requested}}, '{{basket_name}}', was {{t.base.rejected}}."
+        not_suitable: "This may be because it was inappropriate or unsuitable for this site."
     email_footer:
       thanks: "{{t.base.thank_you}},"
     email_to:
-      create_new_email: If not, you can {{t.base.create}} a new message and send it to
-      on_behalf_of: This {{t.base.email}} was sent by {{site_name}} on behalf of {{user_name}}.
-      replying_to_sender: Replying to this message should send an {{t.base.email}} to {{user_name}}'s {{t.base.email}} address.
+      create_new_email: "If not, you can {{t.base.create}} a new message and send it to"
+      on_behalf_of: "This {{t.base.email}} was sent by {{site_name}} on behalf of {{user_name}}."
+      replying_to_sender: "Replying to this message should send an {{t.base.email}} to {{user_name}}'s {{t.base.email}} address."
       sent_from_basket_on_site: "{{user_name}} has sent you a message from the {{basket_name}} {{t.base.basket}} on {{site_name}}."
       sent_from_site: "{{user_name}} has sent you a message from {{site_name}}."
     forgot_password:
       follow_link: "{{user_name}}, follow the link to {{t.base.reset}} your {{t.base.password}}"
     item_flagged_for:
       description: "{{flagging_user_name}} ({{email}}) has {{t.base.flagged}} Revision # {{revision}} of this {{t.base.item}} as {{flag}}. This revision was originally submitted by {{submitted_user_name}}."
-      note_about_reviewing: This will tell what versions have been {{t.base.flagged}} and with what.  You can then {{t.base.preview}} each version.  There is a "Make this revision" option on the {{t.base.preview}} page for the version, as well as a "{{t.base.reject.capitalize}}" link, too.
+      note_about_reviewing: "This will tell what versions have been {{t.base.flagged}} and with what.  You can then {{t.base.preview}} each version.  There is a \"Make this revision\" option on the {{t.base.preview}} page for the version, as well as a \"{{t.base.reject.capitalize}}\" link, too."
       review: "Please {{t.base.review}} the {{t.base.item}}'s {{t.base.history}} and take appropriate action:"
       user_provided_details: "The {{t.base.user}} has also provided these details about the {{t.base.flagging}}:"
     join_policy:
       accepted:
         membership_granted: "{{user_name}} has {{t.base.accepted}} your {{t.base.request}} for {{t.base.membership}} in the {{basket_name}} {{t.base.basket}}."
-        participate_by: You can now participate by going to
+        participate_by: "You can now participate by going to"
       member:
         joined: "{{user_name}} has {{t.base.joined}} the {{basket_name}} {{t.base.basket}}."
-        view_memberlist_at: You can {{t.base.view}} the {{t.base.member}} list at
-        youre_an_admin: You are receiving this notification because our records show you are an admin of that {{t.base.basket}}.
+        view_memberlist_at: "You can {{t.base.view}} the {{t.base.member}} list at"
+        youre_an_admin: "You are receiving this notification because our records show you are an admin of that {{t.base.basket}}."
       rejected:
         membership_denied: "{{user_name}} has {{t.base.rejected}} your {{t.base.request}} for {{t.base.membership}} in the {{basket_name}} {{t.base.basket}}."
       request:
-        approve_or_reject: You can approve or {{t.base.reject}} the application by going to
+        approve_or_reject: "You can approve or {{t.base.reject}} the application by going to"
         want_access: "{{user_name}} has {{t.base.requested}} {{t.base.membership}} of the {{basket_name}} {{t.base.basket}}."
-        youre_an_admin: Our records show you are an admin of that {{t.base.basket}}.
+        youre_an_admin: "Our records show you are an admin of that {{t.base.basket}}."
     login_changed:
-      description: Your {{t.base.login}} for {{site_name}} was {{t.base.changed}} during an upgrade of the software the site runs on.
-      login_using: To login, please now use the following {{t.base.login}} (your {{t.base.password}} remains the same)
+      description: "Your {{t.base.login}} for {{site_name}} was {{t.base.changed}} during an upgrade of the software the site runs on."
+      login_using: "To login, please now use the following {{t.base.login}} (your {{t.base.password}} remains the same)"
     pending_review_for:
       pending_review: "Your submission of Revision # {{revision}} of this {{t.base.item}} is {{flag}} {{t.base.review}} of a {{t.base.moderator}}.  You will be notified of the outcome of the {{t.base.review}}."
     private_notifications:
+      comment_created:
+        comment_created: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        view_item_at: "You can {{t.base.view}} the new {{t.base.zoom_types.comment}} at:"
+      comment_edited:
+        comment_edited: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
+        view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.zoom_types.comment}} at:"
       do_not_reply: "{{t.base.do_not_reply}}"
       item_created:
         item_created: "A {{t.base.private}} {{t.base.item}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
@@ -2194,46 +2206,40 @@ en:
       item_edited:
         item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
         view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.item}} at:"
-      comment_created:
-        comment_created: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.created}} in a {{t.base.basket}} you are a {{t.base.member}} of."
-        view_item_at: "You can {{t.base.view}} the new {{t.base.zoom_types.comment}} at:"
-      comment_edited:
-        comment_edited: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.edited}} in a {{t.base.basket}} you are a {{t.base.member}} of."
-        view_item_at: "You can {{t.base.view}} the {{t.base.edited}} {{t.base.zoom_types.comment}} at:"
     rejection_of:
       description: "Revision # {{revision}} of this {{t.base.item}} has been {{t.base.reviewed}} by a {{t.base.moderator}} and {{flag}}. If you would like to alter your submission, you can {{t.base.view}} it here:"
       reason: "The {{t.base.moderator}} has provided these details about why the site decided not to {{t.base.accept}} your contribution:"
     reset_password:
       reset: "{{user_name}}, Your {{t.base.password}} has been {{t.base.reset}}."
     review_flagged_for:
-      marked_as: Marked as {{flag}} at {{time}}
+      marked_as: "Marked as {{flag}} at {{time}}"
       or: or
-      please_review: Please {{t.base.review}} the submitted content in {{basket_name}} and take the appropriate action.
+      please_review: "Please {{t.base.review}} the submitted content in {{basket_name}} and take the appropriate action."
       review_version: "{{t.base.review.capitalize}} this version:"
       view_item_history: "the full {{t.base.item}}'s {{t.base.history}}:"
     signup:
       activate_account: "Visit this url to activate your account:"
       code: "Code:"
-      created: Your {{t.base.account}} has been {{t.base.created}}.
+      created: "Your {{t.base.account}} has been {{t.base.created}}."
       enter_this_code: "If you aren't automatically activated, please enter this code:"
       password: "{{t.base.password.capitalize}}:"
       username: "{{t.base.username.capitalize}}:"
   user_notifier_model:
-    account_activated: Your {{t.base.account}} has been activated!
-    account_banned: Your {{t.base.account}} has been banned!
-    activate_account: Please activate your new {{t.base.account}}
+    account_activated: "Your {{t.base.account}} has been activated!"
+    account_banned: "Your {{t.base.account}} has been banned!"
+    activate_account: "Please activate your new {{t.base.account}}"
     awaiting_review: "{{t.base.user.capitalize}} contributions waiting {{t.base.review}} in {{basket_name}}."
     basket_approved: "{{basket_name}} {{t.base.basket}} creation has been {{t.base.approved}}"
     basket_created: "{{user_name}} has {{t.base.created}} the {{basket_name}} {{t.base.basket}}"
     basket_rejected: "{{basket_name}} {{t.base.basket}} creation has been {{t.base.rejected}}"
     basket_requested: "{{user_name}} has {{t.base.requested}} creation of the {{basket_name}} {{t.base.basket}}"
     item_flagged_with: "{{t.base.item.capitalize}} {{t.base.flagged}} {{flag}} for {{t.base.moderation}}."
-    login_changed: Your {{t.base.login}} has been altered in an upgrade.
+    login_changed: "Your {{t.base.login}} has been altered in an upgrade."
     membership_accepted: "{{t.base.membership.capitalize}} to {{basket_name}} {{t.base.accepted}}"
     membership_rejected: "{{t.base.membership.capitalize}} to {{basket_name}} {{t.base.rejected}}"
     password_change: "{{t.base.request.capitalize}} to {{t.base.change}} your {{t.base.password}}"
-    password_reset: Your {{t.base.password}} has been {{t.base.reset}}
-    pending_moderation: Your submission is {{flag}} {{t.base.moderation}}.
+    password_reset: "Your {{t.base.password}} has been {{t.base.reset}}"
+    pending_moderation: "Your submission is {{flag}} {{t.base.moderation}}."
     private_comment_created: "A new {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.added}} to an {{t.base.item}}."
     private_comment_created_with_title: "A new {{t.base.private}} {{t.base.zoom_types.comment}} titled '{{item_title}}' has been {{t.base.added}} to an {{t.base.item}}."
     private_comment_edited: "A {{t.base.private}} {{t.base.zoom_types.comment}} has been {{t.base.edited}}."
@@ -2242,36 +2248,36 @@ en:
     private_item_created_with_title: "A new {{t.base.private}} {{t.base.item}} titled '{{item_title}}' has been {{t.base.created}} in {{basket_name}}."
     private_item_edited: "A {{t.base.private}} {{t.base.item}} has been {{t.base.edited}}."
     private_item_edited_with_title: "The {{t.base.private}} {{t.base.item}} '{{item_title}}' has been {{t.base.edited}}."
-    rejected_submission: A {{t.base.moderator}} has {{flag}} your submission.
-    revision_live: A {{t.base.moderator}} has made your submission the live revision.
+    rejected_submission: "A {{t.base.moderator}} has {{flag}} your submission."
+    revision_live: "A {{t.base.moderator}} has made your submission the live revision."
     user_joined: "{{user_name}} has {{t.base.joined}} the {{basket_name}} {{t.base.basket}}"
     user_requested: "{{user_name}} has {{t.base.requested}} {{t.base.membership}} in {{basket_name}} {{t.base.basket}}"
     user_sent_message: "{{user_name}} has sent you a message."
   video:
     details:
       filename: "Filename:"
-      not_available: no {{t.base.public}} version of this {{t.base.zoom_types.video}} available
+      not_available: "no {{t.base.public}} version of this {{t.base.zoom_types.video}} available"
       size: "Size:"
       type: "Recording type:"
     edit:
-      not_authorized: Sorry - editing on this section of the site has been disallowed
+      not_authorized: "Sorry - editing on this section of the site has been disallowed"
   video_controller:
     update:
       updated: "{{t.base.zoom_types.video.capitalize}} {{t.base.was_updated}}."
   video_model:
-    not_acceptable: is not acceptable. It should be a .mov, .wmv, or other {{t.base.zoom_types.video}} file.
+    not_acceptable: "is not acceptable. It should be a .mov, .wmv, or other {{t.base.zoom_types.video}} file."
   web_links:
     details:
-      not_available: no {{t.base.public}} version of this link available
+      not_available: "no {{t.base.public}} version of this link available"
       url: "url:"
     edit:
-      not_authorized: Sorry - editing on this section of the site has been disallowed
+      not_authorized: "Sorry - editing on this section of the site has been disallowed"
   web_links_controller:
     update:
       updated: "{{t.base.zoom_types.web_link.capitalize}} {{t.base.was_updated}}."
   worker_controller_helpers_lib:
     rebuild_zoom_index:
-      aready_rebuilding: There is another {{t.base.search}} record rebuild running at this time.  Please try again later.
+      aready_rebuilding: "There is another {{t.base.search}} record rebuild running at this time.  Please try again later."
   zoom_controller_helpers_lib:
     zoom_class_humanize:
       audio_recording: "{{t.base.zoom_types.audio.capitalize}}"
@@ -2292,7 +2298,7 @@ en:
     zoom_destroy_and_redirect:
       destroyed: "{{pretty_zoom_class}} {{t.base.was_deleted}}."
   zoom_dbs_controller:
-    title: Zoom Dbs
+    title: "Zoom Dbs"
   zoom_helpers_lib:
     zoom_controllers_as_options:
-      all: All {{zoom_class}}
+      all: "All {{zoom_class}}"
