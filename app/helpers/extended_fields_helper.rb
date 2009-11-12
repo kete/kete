@@ -424,6 +424,19 @@ module ExtendedFieldsHelper
                                            }
                                          })
     html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
+    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.checking_value')}' id='#{spinner_id}_checker' style='display:none;' />"
+    html += "<img src='/images/tick14x14.gif' width='14' height='14' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.valid_value')}' id='#{id}_valid' style='display:none;' />"
+    html += "<img src='/images/cross.png' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.invalid_value')}' id='#{id}_invalid' style='display:none;' />"
+    html += javascript_tag("
+    $('#{id}').observe('change', function(){
+      new Ajax.Request('#{url_for(:controller => 'extended_fields', :action => 'validate_topic_type_entry')}', {
+        method: 'get',
+        parameters: { field_id: '#{id}', extended_field_id: #{extended_field.id}, value: $('#{id}').value },
+        onCreate: function(create) { $('#{spinner_id}_checker').show(); },
+        onComplete: function(complete) { $('#{spinner_id}_checker').hide(); }
+      });
+    });
+    ")
     html
   end
 

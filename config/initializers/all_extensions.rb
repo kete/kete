@@ -132,10 +132,10 @@ module I18n
         end
 
         PluralizeValues = {
-          :mi => { :prefix => 'nga' }
+          :mi => { :prefix => 'ngā ' }
         }
         SingularizeValues = {
-          :mi => { :prefix => 'te' }
+          :mi => { :prefix => 'te ' }
         }
 
         def pluralize_with_locale(locale, string)

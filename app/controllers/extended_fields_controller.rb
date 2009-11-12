@@ -131,6 +131,32 @@ class ExtendedFieldsController < ApplicationController
     render :inline => @template.content_tag("ul", topics.uniq)
   end
 
+  def validate_topic_type_entry
+    extended_field = ExtendedField.find(params[:extended_field_id])
+    parent_topic_type = TopicType.find(extended_field.topic_type.to_i)
+    value, field_id = params[:value], params[:field_id]
+
+    no_value_js = "$('#{field_id}_valid').hide(); $('#{field_id}_invalid').hide();"
+    valid_value_js = "$('#{field_id}_valid').show(); $('#{field_id}_invalid').hide();"
+    invalid_value_js = "$('#{field_id}_valid').hide(); $('#{field_id}_invalid').show();"
+
+    js = no_value_js
+    unless value.blank?
+      js = invalid_value_js
+      topic = Topic.find_by_id(value.split('/').last.to_i, :select => 'topic_type_id')
+      if topic
+        valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
+        js = valid_value_js if valid_topic_type_ids.include?(topic.topic_type_id)
+      end
+    end
+
+    respond_to do |format|
+      format.js do
+        render :text => js, :layout => false
+      end
+    end
+  end
+
   private
 
   def base_url_form_column(record, input_name)

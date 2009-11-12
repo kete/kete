@@ -5,23 +5,24 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <%= javascript_include_tag :defaults %>
     <title><%= h(@page_title) %></title>
-    
+
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
       google.load("language", "1");
 
       function getGoogleTranslation(id, text, from_language, to_language) {
-        text = text.replace(/\{\{/, '__').replace(/\}\}/, '__')
+        text = text.gsub(/\{\{/, '__').gsub(/\}\}/, '__')
         google.language.translate(text, from_language, to_language, function(result) {
-          if (!result.error) { 
-            result_text = result.translation.unescapeHTML().gsub(/__(.+)__/, function(match){
+          if (!result.error) {
+            result_text = result.translation.unescapeHTML().gsub(/__(((?!__).)*)__/, function(match){
               return '{{' + match[1] + '}}';
             });
             Form.Element.setValue(id, result_text);
+            update_displays_as_text($(id));
+            save_translation_string($(id));
           }
         });
-
-    }
+      }
 
     /*
     prototypeUtils.js from http://jehiah.com/
@@ -78,7 +79,7 @@
           if (element.options[i].value == newValue){
             element.selectedIndex = i;
             return true;
-          }        
+          }
         }
       }
     }
@@ -274,7 +275,7 @@
 		margin:0 1em 1em 1.6em;
 	}
 	div.translation input, div.translation textarea{
-		width:98%;
+		width:85%;
 		margin:1em 0;
 		display:inline-block;
 		padding:0.3em;
@@ -327,6 +328,9 @@
     border-color: #72A974;
     color: #597B5C;
     background-color: #BCFFBD;
+  }
+  p.displays-as {
+    font-size: 1.2em !important;
   }
     </style>
 	<script type="text/javascript">
