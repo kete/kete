@@ -35,20 +35,36 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
       xml.records do
         rows.each do |row|
           xml.record do
-            titles = Hash.new
-            is_accession_record = false
+            is_accession_record, titles, descriptions = false, Hash.new, Hash.new
+
             row.search("field").each do |field|
               value = field.inner_text.strip
-              next if value.blank?
-              field_name = field.attributes['name'].to_s || '__No_Name__'
+              field_name = field.attributes['name'].to_s
+              next if value.blank? || field_name.blank?
               xml.send(field_name, value)
-              titles[field_name] = value if %w{ Title Item_Listing Filename }.include?(field_name)
-              is_accession_record = true if field_name == 'Record_Type' && value.downcase == 'accession'
-              # we use "path_to_file" internally, but "Filename" is the column name we get
-              xml.path_to_file(@import_dir_path + '/files/' + value) if field_name == 'Filename'
+
+              case field_name
+              when 'Title', 'Filename'
+                titles[field_name] = value
+              when 'Description', 'Comments', 'Item_Listing', 'History'
+                descriptions[field_name] = value
+              when 'Record_Type'
+                is_accession_record = true if value.downcase == 'accession'
+              when 'Filename'
+                # we use "path_to_file" internally, but "Filename" is the column name we get
+                xml.path_to_file(@import_dir_path + '/files/' + value)
+              end
             end
-            xml.Title(titles['Filename'] || 'Untitled') if titles['Title'].nil? || titles['Title'].blank?
+
             xml.Record_Identifier($1.strip.to_i) if is_accession_record && titles['Filename'] =~ /(\d+)/
+
+            # If more than one record exists without a title, it'll be skipped
+            # So add code to skip topic check if the title is Untitled?
+            xml.Record_Title(titles['Title'] || titles['Filename'] || 'Untitled')
+
+            # For each description part, append data below a heading
+            # We run the description through redcloth, so use it's formatting
+            xml.Record_Description(descriptions.collect { |k, v| "h3. #{k.humanize}\n\n#{v}\n\n" }.join)
           end
         end
       end
