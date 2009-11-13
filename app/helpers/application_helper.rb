@@ -1186,7 +1186,11 @@ module ApplicationHelper
 
   # we use this in imports, too
   def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options=Hash.new, pre_options=Array.new)
-    result = "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
+    if method
+      result = "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
+    else
+      result = "<select name=\"#{object}\" id=\"#{object}\""
+    end
     html_options.each do |key, value|
         result << ' ' + key.to_s + '="' + value.to_s + '"'
     end
@@ -1194,15 +1198,24 @@ module ApplicationHelper
     result << options_for_select(pre_options) unless pre_options.blank?
     for element in collection
       indent_string = String.new
-        element.level.times { indent_string += "&nbsp;" }
-        if current_value == element.send(value_method)
-          result << "<option value='#{ element.send(value_method)}' selected='selected'>#{indent_string}#{element.send(text_method)}</option>\n"
-        else
-          result << "<option value='#{element.send(value_method)}'>#{indent_string}#{element.send(text_method)}</option>\n"
-        end
+      element.level.times { indent_string += "&nbsp;" }
+      escaped_value = element.send(value_method).strip.downcase.gsub(/\s/, '_')
+      selected = current_value == escaped_value ? " selected='selected'" : ''
+      result << "<option value='#{escaped_value}'#{selected}>#{indent_string}#{element.send(text_method)}</option>\n"
     end
     result << "</select>\n"
     return result
+  end
+
+  def url_for_topics_of_type(topic_type)
+    url_hash = {
+      :urlified_name => @site_basket.urlified_name,
+      :controller => 'search',
+      :controller_name_for_zoom_class => 'topics',
+      :topic_type => topic_type.name.downcase.gsub(/\s/, '_')
+    }
+
+    basket_all_topic_type_path(url_hash)
   end
 
   def load_styles(theme)
