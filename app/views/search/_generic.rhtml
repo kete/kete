@@ -2,6 +2,11 @@
   <div class="generic-result-header">
     <h4><%= link_to h(title), source_url, :tabindex => '1' %></h4>
   </div>
+  <% if topic_types %>
+    <div class="generic-result-topic-type">
+      Topic type: <%= topic_types.last %>
+    </div>
+  <% end %>
   <div class="generic-result-description">
     <%= strip_tags(short_summary) %>
     <div class="generic-result-more">
