@@ -783,8 +783,10 @@ module Importer
 
           if @record_identifier_extended_field
             ext_field_id = @record_identifier_extended_field.label_for_params
-            ext_field_data = "<#{ext_field_id}>#{related_topic_identifier}</#{ext_field_id}>"
-            conditions = ["(extended_content like '%#{ext_field_data}%' OR private_version_serialized like '%#{ext_field_data}%')"]
+            ext_field_xml_element_name = @record_identifier_extended_field.xml_element_name
+            ext_field_xml_element_name = " xml_element_name=\"#{ext_field_xml_element_name}\"" unless ext_field_xml_element_name.blank?
+            ext_field_xml = "<#{ext_field_id}#{ext_field_xml_element_name}>#{related_topic_identifier}</#{ext_field_id}>".downcase
+            conditions = ["(LOWER(extended_content) LIKE '%#{ext_field_xml}%' OR LOWER(private_version_serialized) LIKE '%#{ext_field_xml}%')"]
             conditions << "topic_type_id = #{@related_topic_type.id}" unless @related_topic_type.blank?
             related_topics += Topic.all(:conditions => conditions.join(' AND '))
           end
