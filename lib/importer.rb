@@ -460,17 +460,14 @@ module Importer
 
       unless options[:extended_field_data].blank? || @record_identifier_extended_field.blank?
         ext_field_id = @record_identifier_extended_field.label_for_params
-        ext_field_xml_element_name = @record_identifier_extended_field.xml_element_name
-        ext_field_xml_element_name = " xml_element_name=\"#{ext_field_xml_element_name}\"" unless ext_field_xml_element_name.blank?
+        regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
+        ext_field_data = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
 
-        # making match more greedy, exact or downcased version or upcased version
-        ef_data_varations = [options[:extended_field_data], options[:extended_field_data].downcase, options[:extended_field_data].upcase]
         ef_conditions = Array.new
-        ef_data_varations.each do |variant|
-          ext_field_data = "<#{ext_field_id}#{ext_field_xml_element_name}>#{variant}</#{ext_field_id}>"
-          ef_conditions << "(extended_content like '%#{ext_field_data}%' OR private_version_serialized like '%#{ext_field_data}%')"
-        end
-        conditions << ef_conditions.join(' OR ')
+        ef_conditions << "LOWER(extended_content) #{regexp} '%#{ext_field_data}%'"
+        ef_conditions << "LOWER(private_version_serialized) #{regexp} '%#{ext_field_data}%'"
+
+        conditions << "(#{ef_conditions.join(' OR ')})"
       end
 
       conditions = !params.blank? ? ([conditions.join(' AND ')] + params) : conditions.join(' AND ')
