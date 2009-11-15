@@ -446,31 +446,26 @@ module Importer
       }.merge(options)
 
       conditions = Array.new
-      params = Array.new
+      params = Hash.new
 
       unless options[:title].blank?
-        conditions << "title = ?"
-        params << options[:title]
+        conditions << "title = :title"
+        params[:title] = options[:title]
       end
 
       unless options[:topic_type].blank?
-        conditions << "topic_type_id = ?"
-        params << options[:topic_type].id
+        conditions << "topic_type_id = :topic_type_id"
+        params[:topic_type_id] = options[:topic_type].id
       end
 
       unless options[:extended_field_data].blank? || @record_identifier_extended_field.blank?
         ext_field_id = @record_identifier_extended_field.label_for_params
         regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
-        ext_field_data = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
-
-        ef_conditions = Array.new
-        ef_conditions << "LOWER(extended_content) #{regexp} '%#{ext_field_data}%'"
-        ef_conditions << "LOWER(private_version_serialized) #{regexp} '%#{ext_field_data}%'"
-
-        conditions << "(#{ef_conditions.join(' OR ')})"
+        conditions << "(LOWER(extended_content) #{regexp} :ext_field_data OR LOWER(private_version_serialized) #{regexp} :ext_field_data)"
+        params[:ext_field_data] = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
       end
 
-      conditions = !params.blank? ? ([conditions.join(' AND ')] + params) : conditions.join(' AND ')
+      conditions = !params.blank? ? [conditions.join(' AND '), params] : conditions.join(' AND ')
       logger.debug("what are conditions: " + conditions.inspect)
       @current_basket.send(options[:item_type]).find(:all, :conditions => conditions)
     end
