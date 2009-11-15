@@ -36,20 +36,40 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
       xml.records do
         rows.each do |row|
           xml.record do
-            titles = Hash.new
-            is_accession_record = false
+            fields = Hash.new
+
             row.search("field").each do |field|
               value = field.inner_text.strip
-              next if value.blank?
-              field_name = field.attributes['name'].to_s || '__No_Name__'
-              xml.send(field_name, value)
-              titles[field_name] = value if %w{ Title Item_Listing Filename }.include?(field_name)
-              is_accession_record = true if field_name == 'Record_Type' && value.downcase == 'accession'
-              # we use "path_to_file" internally, but "Filename" is the column name we get
-              xml.path_to_file(@import_dir_path + '/files/' + value) if field_name == 'Filename'
+              field_name = field.attributes['name'].to_s
+              next if value.blank? || field_name.blank?
+              fields[field_name] = value
             end
-            xml.Title(titles['Filename'] || 'Untitled') if titles['Title'].nil? || titles['Title'].blank?
-            xml.Record_Identifier($1.strip.to_i) if is_accession_record && titles['Filename'] =~ /(\d+)/
+
+            fields.each do |field_name, value|
+              xml.send(field_name, value)
+            end
+
+            fields['Record_Type'] ||= ''
+            case fields['Record_Type'].downcase
+            when 'archives', 'publication'
+              title_parts = ["Collection Title: #{fields['Collection_Title']}"]
+              title_parts << "Reference: #{fields['Archive_Reference']}"
+              xml.Record_Title(title_parts.join(' - '))
+            when 'photograph'
+              title_parts = ["Collection Title: #{fields['Collection_Title']}"]
+              title_parts << "Reference: #{fields['Photograph_Reference']}"
+              xml.Record_Title(title_parts.join(' - '))
+            else
+              xml.Record_Identifier($1.strip.to_i) if fields['Filename'] =~ /(\d+)/
+              xml.Record_Title(fields['Filename'].split('.').first)
+            end
+
+            unless fields['Filename'].blank?
+              # we use "path_to_file" internally, but "Filename" is the column name we get
+              file_path = @import_dir_path + '/files/' + fields['Filename']
+              xml.path_to_file(file_path) if File.exists?(file_path)
+            end
+
           end
         end
       end
