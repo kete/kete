@@ -35,36 +35,40 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
       xml.records do
         rows.each do |row|
           xml.record do
-            is_accession_record, titles, descriptions = false, Hash.new, Hash.new
+            fields = Hash.new
 
             row.search("field").each do |field|
               value = field.inner_text.strip
               field_name = field.attributes['name'].to_s
               next if value.blank? || field_name.blank?
-              xml.send(field_name, value)
-
-              case field_name
-              when 'Title', 'Filename'
-                titles[field_name] = value
-              when 'Description', 'Comments', 'Item_Listing', 'History'
-                descriptions[field_name] = value
-              when 'Record_Type'
-                is_accession_record = true if value.downcase == 'accession'
-              when 'Filename'
-                # we use "path_to_file" internally, but "Filename" is the column name we get
-                xml.path_to_file(@import_dir_path + '/files/' + value)
-              end
+              fields[field_name] = value
             end
 
-            xml.Record_Identifier($1.strip.to_i) if is_accession_record && titles['Filename'] =~ /(\d+)/
+            fields.each do |field_name, value|
+              xml.send(field_name, value)
+            end
 
-            # If more than one record exists without a title, it'll be skipped
-            # So add code to skip topic check if the title is Untitled?
-            xml.Record_Title(titles['Title'] || titles['Filename'] || 'Untitled')
+            fields['Record_Type'] ||= ''
+            case fields['Record_Type'].downcase
+            when 'archives', 'publication'
+              title_parts = ["Collection Title: #{fields['Collection_Title']}"]
+              title_parts << "Reference: #{fields['Archive_Reference']}"
+              xml.Record_Title(title_parts.join(' - '))
+            when 'photograph'
+              title_parts = ["Collection Title: #{fields['Collection_Title']}"]
+              title_parts << "Reference: #{fields['Photograph_Reference']}"
+              xml.Record_Title(title_parts.join(' - '))
+            else
+              xml.Record_Identifier($1.strip.to_i) if fields['Filename'] =~ /(\d+)/
+              xml.Record_Title(fields['Filename'].split('.').first)
+            end
 
-            # For each description part, append data below a heading
-            # We run the description through redcloth, so use it's formatting
-            xml.Record_Description(descriptions.collect { |k, v| "h3. #{k.humanize}\n\n#{v}\n\n" }.join)
+            unless fields['Filename'].blank?
+              # we use "path_to_file" internally, but "Filename" is the column name we get
+              file_path = @import_dir_path + '/files/' + fields['Filename']
+              xml.path_to_file(file_path) if File.exists?(file_path)
+            end
+
           end
         end
       end
