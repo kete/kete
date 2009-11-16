@@ -129,6 +129,8 @@ class SearchController < ApplicationController
     @extended_field = ExtendedField.from_label_for_params(params[:extended_field]).first if params[:extended_field]
     @all_choices = true unless @extended_field
 
+    @topic_type = TopicType.from_url_escaped_name(params[:topic_type]).first if params[:topic_type]
+
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
     @next_page = @current_page + 1
@@ -312,6 +314,8 @@ class SearchController < ApplicationController
       @search.pqf_query.any_text_include("':#{@limit_to_choice}:'") unless @limit_to_choice.blank?
     end
 
+    @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?
+
     # Normal search terms..
 
     if !@search_terms.blank?
@@ -406,6 +410,10 @@ class SearchController < ApplicationController
     end
     if !params[:extended_field].blank?
       location_hash.merge({ :extended_field => params[:extended_field] })
+    end
+
+    if !params[:topic_type].blank?
+      location_hash.merge!({ :topic_type => params[:topic_type] })
     end
 
     logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)

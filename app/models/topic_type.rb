@@ -24,6 +24,8 @@ class TopicType < ActiveRecord::Base
   # that they are importing
   has_many :imports, :dependent => :destroy
 
+  named_scope :from_url_escaped_name, lambda { |url_escaped_name| { :conditions => ['LOWER(name) = ?', url_escaped_name.downcase.gsub('_', ' ')] } }
+
   validates_presence_of :name, :description
   validates_uniqueness_of :name, :case_sensitive => false
 
