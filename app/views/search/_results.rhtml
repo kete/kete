@@ -91,7 +91,8 @@
                     :short_summary => result[:short_summary],
                     :related => result[:related],
                     :result => result[:id],
-                    :first_result => (index == 0) } -%>
+                    :first_result => (index == 0),
+                    :topic_types => result[:topic_types] } -%>
 
       <% if result[:class] == 'StillImage' %>
         <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],

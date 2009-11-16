@@ -991,6 +991,7 @@ input.searchheader-search {
     margin-left: 2em;
     margin-bottom: 1em;
     margin-right: 1em;
+    margin-top: -20px;
 }
 
 #sort_direction_field{

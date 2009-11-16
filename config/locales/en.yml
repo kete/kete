@@ -1769,11 +1769,13 @@ en:
       browse_by_category: "Browse by category"
       getting_categories: "Getting Categories. "
       in_reverse: "In reverse?"
+      of_topic_type: "Of type:"
       options: Options
       privacy_type: "That are:"
       private: "{{t.base.private.capitalize}}"
       public: "{{t.base.public.capitalize}}"
       search: "{{t.base.search.capitalize}}"
+      any_topic_type: "- any type -"
       sort_by: "Sort by:"
       update_results: "{{t.base.update}}"
     generic:

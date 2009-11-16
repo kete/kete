@@ -15,7 +15,7 @@ if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
   <% form_tag :overwrite_params => { :action => 'terms_to_page_url_redirect',
     :controller => 'search', :urlified_name => @current_basket.urlified_name,
     :page => nil, :sort_type => nil, :sort_direction => nil,
-    :search_terms => nil, :privacy_type => nil, :limit_to_choice => nil, :extended_field => nil } do %>
+    :search_terms => nil, :privacy_type => nil, :limit_to_choice => nil, :extended_field => nil, :topic_type => nil } do %>
 
     <% if !simple_layout && !@search.nil? -%>
 
@@ -30,6 +30,14 @@ if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
           <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
           <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
         </div>
+
+        <br />
+
+        <% if params[:controller_name_for_zoom_class] == 'topics' %>
+          <label for="topic_type"><%=t 'search.form.of_topic_type' %></label>
+          <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set, :name, :name, params[:topic_type], {}, [[t('search.form.any_topic_type'), '']]) %>
+        <% end %>
+
         <% # Only show private search control if allowed and we aren't relating something to a topic. %>
         <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
           <label for="privacy_type"><%=t 'search.form.privacy_type' %></label>

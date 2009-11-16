@@ -238,6 +238,14 @@ module ZoomSearch
         result_hash[field_name.to_sym] = field_value
       end
 
+      # determine the topic type(s)
+      topic_type_names = TopicType.all(:select => 'name').collect { |topic_type| topic_type.name }
+      result_hash[:topic_types] = Array.new
+      oai_dc.xpath(".//dc:coverage", oai_dc.namespaces).each do |node|
+        value = node.content.strip
+        result_hash[:topic_types] << value if topic_type_names.include?(value)
+      end
+
       # get coverage values, these can be used for geographic values or temporal information
       location_or_temporal_nodes = oai_dc.xpath(".//dc:coverage", oai_dc.namespaces).select { |node| !node.content.scan(":").blank? }
 

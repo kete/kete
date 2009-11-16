@@ -4,4 +4,4 @@
 <% elsif @all_choices && categories_field -%>
 <br /><%= content_tag("label", t('search.refine_by_choice.limit_to_category')) + control unless control.blank? %>
 <% end -%>
-<%= hidden_field_tag 'extended_field', params[:extended_field] %>
+<%= hidden_field_tag 'extended_field', params[:extended_field] if params[:extended_field] %>
