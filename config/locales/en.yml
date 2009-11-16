@@ -1877,6 +1877,7 @@ en:
       zoom_rebuilt: "ZOOM indexes rebuilt"
   search_helper:
     last_part_of_title_if_refinement_of:
+      about_a: " about a {{topic_type_name}}"
       and: " and"
       contributed_by: " contributed by {{contributor}}"
       extended_field: " with {{field_name}}"

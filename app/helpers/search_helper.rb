@@ -13,6 +13,8 @@ module SearchHelper
   def last_part_of_title_if_refinement_of(add_links = true)
     end_of_title_parts = Array.new
 
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.about_a', :topic_type_name => @topic_type.name) if !@topic_type.nil?
+
     end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.tagged_as', :tag_name => @tag.name) if !@tag.nil?
 
     if !@contributor.nil?
