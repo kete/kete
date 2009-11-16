@@ -532,6 +532,11 @@ h3 b{
   border-top: 1px dashed #bbb;
 }
 
+.generic-result-topic-type {
+  float: right;
+  color: #bbb;
+}
+
 #bottomlinks {
   margin-top: 15px;
 }

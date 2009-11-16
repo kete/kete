@@ -1760,10 +1760,10 @@ en:
       results_in: "Results in "
       whole_site: " whole site"
     form:
+      about_a: "About a:"
       browse_by_category: "Browse by category"
       getting_categories: "Getting Categories. "
       in_reverse: "In reverse?"
-      of_topic_type: "Of type:"
       options: Options
       privacy_type: "That are:"
       private: "{{t.base.private.capitalize}}"
