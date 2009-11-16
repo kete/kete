@@ -686,7 +686,7 @@ module Importer
       tag_list_array = Array.new
       # add support for all items during this import getting a set of tags
       # added to every item in addition to the specific ones for the item
-      tag_list_array = @import.base_tags.split(",") if !@import.base_tags.blank?
+      tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
 
       record_hash.keys.each do |record_field|
         logger.debug("record_field " + record_field.inspect)
@@ -729,7 +729,7 @@ module Importer
             end
 
             if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
-              tag_list_array << value.gsub("\n", " ")
+              tag_list_array += value.split(',').collect { |tag| tag.strip }
             end
 
             # path_to_file is special case, we know we have an associated file that goes in uploaded_data
