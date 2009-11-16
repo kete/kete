@@ -1,7 +1,7 @@
 <div class="generic-result-wrapper<%= ' first' if first_result %>" id="item_<%= result %>_wrapper">
   <div class="generic-result-header">
     <h4>
-      <%= "#{topic_types.last}: " if topic_types && DISPLAY_TOPIC_TYPE_ON_SEARCH_RESULT %>
+      <%= "#{topic_types.last}: " if topic_types && !topic_types.last.blank? && DISPLAY_TOPIC_TYPE_ON_SEARCH_RESULT %>
       <%= link_to h(title), source_url, :tabindex => '1' %>
     </h4>
   </div>
