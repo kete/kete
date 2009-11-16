@@ -29,7 +29,7 @@ module SearchHelper
 
     unless @source_item.nil?
       @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
-      end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.related_to', :source_item => @source_item.title)
+      end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.related_to', :source_item => link_to_item(@source_item))
     end
 
     end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.privacy_type', :privacy => @privacy) if !@privacy.nil?
