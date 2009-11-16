@@ -1936,6 +1936,8 @@ en:
       long: "%B %d, %Y %H:%M"
       short: "%d %b %H:%M"
     pm: pm
+  topic_type_model:
+    invalid_chars: ": the following characters aren't allowed - {{invalid_chars}}"
   topic_types:
     available_fields_form:
       add: "{{t.base.add.capitalize}} to {{t.base.zoom_types.topic.capitalize}} Type"

@@ -1199,7 +1199,7 @@ module ApplicationHelper
     for element in collection
       indent_string = String.new
       element.level.times { indent_string += "&nbsp;" }
-      escaped_value = element.send(value_method).strip.downcase.gsub(/\s/, '_')
+      escaped_value = element.send(value_method).to_s.strip.downcase.gsub(/\s/, '_')
       selected = current_value == escaped_value ? " selected='selected'" : ''
       result << "<option value='#{escaped_value}'#{selected}>#{indent_string}#{element.send(text_method)}</option>\n"
     end
