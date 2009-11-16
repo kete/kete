@@ -34,7 +34,7 @@ if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
         <br />
 
         <% if params[:controller_name_for_zoom_class] == 'topics' %>
-          <label for="topic_type"><%=t 'search.form.of_topic_type' %></label>
+          <label for="topic_type"><%=t 'search.form.about_a' %></label>
           <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set, :name, :name, params[:topic_type], {}, [[t('search.form.any_topic_type'), '']]) %>
         <% end %>
 

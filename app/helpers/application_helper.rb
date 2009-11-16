@@ -1207,15 +1207,22 @@ module ApplicationHelper
     return result
   end
 
-  def url_for_topics_of_type(topic_type)
+  def url_for_topics_of_type(topic_type, privacy=nil)
+    privacy = 'private' if !params[:private].nil? && params[:private] == "true"
+
     url_hash = {
       :urlified_name => @site_basket.urlified_name,
       :controller => 'search',
       :controller_name_for_zoom_class => 'topics',
-      :topic_type => topic_type.name.downcase.gsub(/\s/, '_')
+      :topic_type => topic_type.name.downcase.gsub(/\s/, '_'),
+      :privacy_type => privacy
     }
 
-    basket_all_topic_type_path(url_hash)
+    if privacy == 'private'
+      basket_all_private_topic_type_path(url_hash)
+    else
+      basket_all_topic_type_path(url_hash)
+    end
   end
 
   def load_styles(theme)

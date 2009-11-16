@@ -1766,10 +1766,10 @@ en:
       results_in: "Results in "
       whole_site: " whole site"
     form:
+      about_a: "About a:"
       browse_by_category: "Browse by category"
       getting_categories: "Getting Categories. "
       in_reverse: "In reverse?"
-      of_topic_type: "Of type:"
       options: Options
       privacy_type: "That are:"
       private: "{{t.base.private.capitalize}}"
@@ -1883,6 +1883,7 @@ en:
       zoom_rebuilt: "ZOOM indexes rebuilt"
   search_helper:
     last_part_of_title_if_refinement_of:
+      about_a: " about a {{topic_type_name}}"
       and: " and"
       contributed_by: " contributed by {{contributor}}"
       extended_field: " with {{field_name}}"
