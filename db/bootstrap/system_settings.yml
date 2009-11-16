@@ -583,3 +583,11 @@ system_settings_067:
   id: "67"
   value: "false"
   section: Images
+system_settings_068:
+  name: Display Topic Type on Search Result
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "Should the topic type of an item be displayed before the topic title on search results?"
+  id: "68"
+  value: "false"
+  section: Results Display
