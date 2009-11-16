@@ -29,6 +29,9 @@ class TopicType < ActiveRecord::Base
   validates_presence_of :name, :description
   validates_uniqueness_of :name, :case_sensitive => false
 
+  # don't allow special characters in label that will break urls
+  validates_format_of :name, :with => /^[^\'\":<>\&,\/\\\?\.]*$/, :message => I18n.t('topic_type_model.invalid_chars', :invalid_chars => ": \', \\, /, &, \", ?, <, >, and .")
+
   # to support inheritance of fields from ancestor topic types
   acts_as_nested_set
 
