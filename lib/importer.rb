@@ -138,8 +138,8 @@ module Importer
         end
 
         importer_update_processing_vars_at_end
-      #rescue
-      #  importer_update_processing_vars_if_rescue
+      rescue
+        importer_update_processing_vars_if_rescue
       end
     end
 
@@ -281,9 +281,9 @@ module Importer
           if field_to_xml.extended_field_multiple
             hash_of_values = params[item_key]['extended_content_values'][field_name] rescue nil
             if !hash_of_values.nil?
-              xml.send("#{field_name}_multiple") do
+              xml.safe_send("#{field_name}_multiple") do
                 hash_of_values.keys.each do |key|
-                  xml.send(key.to_s) do
+                  xml.safe_send(key.to_s) do
                     logger.debug("inside hash: key: " + key.to_s)
                     m_value = hash_of_values[key]
                     extended_content_field_xml_tag(:xml => xml,
@@ -831,6 +831,8 @@ module Importer
 
       # replace with something that isn't reliant on params
       replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(:item_key => zoom_class_for_params, :item_class => zoom_class, :params => params)
+
+      logger.info 'what is replacement_zoom_item_hash? ' + replacement_zoom_item_hash.inspect
 
       new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
 

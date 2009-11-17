@@ -598,7 +598,7 @@ module ExtendedContent
             # we have multiple values for this field in the form
             # collect them in an outer tag
             # do an explicit key, so we end up with a hash
-            xml.send("#{field_name}_multiple") do
+            xml.safe_send("#{field_name}_multiple") do
               hash_of_values = params_hash[field_name]
 
               # Do not store empty values
@@ -611,7 +611,7 @@ module ExtendedContent
                   unless params_hash[field_name][key].to_s.blank? || \
                         ( params_hash[field_name][key].is_a?(Hash) && params_hash[field_name][key].values.to_s.blank? )
 
-                    xml.send(key) do
+                    xml.safe_send(key) do
                       extended_content_field_xml_tag(
                         :xml => xml,
                         :field => field_name,
@@ -629,7 +629,7 @@ module ExtendedContent
                 # and there isn't an existing value for this multiple
                 # generates empty xml elements for the field
                 key = 1.to_s
-                xml.send(key) do
+                xml.safe_send(key) do
                     extended_content_field_xml_tag(
                       :xml => xml,
                       :field => field_name,

@@ -46,7 +46,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
             end
 
             fields.each do |field_name, value|
-              xml.send(field_name, value)
+              xml.safe_send(field_name, value)
             end
 
             fields['Record_Type'] ||= ''

@@ -28,7 +28,7 @@ module ExtendedContentHelpers
       # Build the anonymous fields that have no dc:* attributes.
       @builder_instance.send("dc:description") do |nested|
         @anonymous_fields.each do |k, v|
-          nested.send(k, v)
+          nested.safe_send(k, v)
         end
       end
 
@@ -48,7 +48,7 @@ module ExtendedContentHelpers
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, data["value"]]
         else
-          @builder_instance.send(data["xml_element_name"], data["value"])
+          @builder_instance.safe_send(data["xml_element_name"], data["value"])
         end
       else
 
@@ -72,7 +72,7 @@ module ExtendedContentHelpers
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
         else
-          @builder_instance.send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+          @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
         end
       end
 
@@ -116,7 +116,7 @@ module ExtendedContentHelpers
         options.merge!(:xsi_type => xsi_type) unless xsi_type.blank?
 
         if value.is_a?(Hash)
-          xml.send(field, options) do |tag|
+          xml.safe_send(field, options) do |tag|
             value.each_pair do |k, v|
               next if v.to_s.blank?
 
@@ -162,9 +162,9 @@ module ExtendedContentHelpers
                   extended_field.save!
 
                   if choice.value != choice.label
-                    tag.send(k, choice.value, :label => choice.label)
+                    tag.safe_send(k, choice.value, :label => choice.label)
                   else
-                    tag.send(k, choice.value)
+                    tag.safe_send(k, choice.value)
                   end
                 rescue
                   next
@@ -173,13 +173,13 @@ module ExtendedContentHelpers
               # Handle the normal case
               else
                 if matching_choice && matching_choice.value != matching_choice.label
-                  tag.send(k, matching_choice.value, :label => matching_choice.label)
+                  tag.safe_send(k, matching_choice.value, :label => matching_choice.label)
                 else
                   # if there is a matching choice, use its value
                   # otherwise leave value to handled by validation
                   # will likely fail, but they will get error feedback and can modify
                   final_value = matching_choice ? matching_choice.value : v
-                  tag.send(k, final_value)
+                  tag.safe_send(k, final_value)
                 end
               end
             end
@@ -211,7 +211,7 @@ module ExtendedContentHelpers
             end
           end
 
-          xml.send(field, value, options)
+          xml.safe_send(field, value, options)
         end
 
       rescue
