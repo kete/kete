@@ -1,4 +1,9 @@
 class Comment < ActiveRecord::Base
+  # don't orphan children
+  # reassign them as children of their grandparent
+  # if you destroy their parent
+  before_destroy :reassign_children_to_grandparent
+
   # comments unique feature is that they are attached to another item
   # this code is adapted from the acts_as_commentable plugin
   # http://www.juixe.com/techknow/index.php/2006/06/18/acts-as-commentable-plugin/
@@ -11,8 +16,6 @@ class Comment < ActiveRecord::Base
       belongs_to "direct_#{zoom_class.tableize.singularize}".to_sym, :class_name => zoom_class, :foreign_key => "commentable_id"
     end
   end
-
-  acts_as_nested_set
 
   # all the common configuration is handled by this module
   include ConfigureAsKeteContentItem
@@ -36,6 +39,8 @@ class Comment < ActiveRecord::Base
   self.non_versioned_columns << 'parent_id'
   self.non_versioned_columns << 'lft'
   self.non_versioned_columns << 'rgt'
+
+  acts_as_nested_set
 
   # pulled almost directly from acts_as_commentable
   # Helper class method to look up all comments for
@@ -84,6 +89,25 @@ class Comment < ActiveRecord::Base
 
   def to_anchor
     "comment-#{id}"
+  end
+
+  private
+
+  def reassign_children_to_grandparent
+    grandparent = parent
+    # Move children up a level
+    if grandparent
+      children.each do |comment|
+        comment.move_to_child_of(grandparent)
+      end
+    else
+      children.each do |comment|
+        # Use update_all instead of self.update_attribute to avoid validations and callbacks
+        Comment.update_all("#{parent_col_name} = NULL", { :id => comment.id })
+      end
+      # With parents now correct
+      Comment.renumber_all
+    end
   end
 
 end
