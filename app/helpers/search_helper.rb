@@ -48,9 +48,11 @@ module SearchHelper
     if @current_basket != @site_basket
       title_so_far += @current_basket.name + ' '
     end
+    zoom_class = zoom_class_from_controller(@controller_name_for_zoom_class)
+    zoom_class_humanized = zoom_class_plural_humanize(zoom_class).downcase
     title_so_far += span_around_zoom_class \
-                      ? content_tag('span', @controller_name_for_zoom_class.gsub(/_/, " "), :class => 'current_zoom_class') \
-                      : @controller_name_for_zoom_class.gsub(/_/, " ")
+                      ? content_tag('span', zoom_class_humanized, :class => 'current_zoom_class') \
+                      : zoom_class_humanized
   end
 
   def toggle_in_reverse_field_js_helper
