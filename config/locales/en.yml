@@ -103,6 +103,7 @@ en:
     whats_this: "what's this?"
     zoom_types:
       audio: audio
+      combined: combined
       comment: comment
       discussion: discussion
       document: document
@@ -419,7 +420,7 @@ en:
       longer_than_a_week: "on {{date}}"
       within_a_week: "{{time}} ago"
     link_for_rss:
-      link_text: "from all types combined"
+      link_text: "From all types {{t.base.zoom_types.combined}}"
     link_to_add_item:
       in_basket: " in {{basket_name}}"
     link_to_add_set_of_related_items:
@@ -859,7 +860,7 @@ en:
       already_running: "There is already a site registration worker active. Wierd! Try refreshing the page."
   content_types:
     available_fields_form:
-      add_button: "{{t.base.add}} to Content Type"
+      add_button: "{{t.base.add.capitalize}} to Content Type"
       multiple: (multiple)
       none_available: "No form fields are available."
       optional: (optional)
@@ -1269,7 +1270,7 @@ en:
       small: Small
       small_sq: Thumbnail
     portrait_controls:
-      add_image: "{{t.base.add}} {{t.base.zoom_types.image}} to portraits"
+      add_image: "{{t.base.add.capitalize}} {{t.base.zoom_types.image}} to portraits"
       make_selected: "Make {{t.base.zoom_types.image}} selected {{t.base.portrait}}"
       other_portraits: "Other Portraits"
       remove_image: "{{t.base.remove.capitalize}} {{t.base.zoom_types.image}} from portraits"
@@ -1386,7 +1387,7 @@ en:
       xml_path_to_records: "XML Path to Record (only applicable to Simple XML {{t.base.zoom_types.topic.capitalize.pluralize}} type):"
       xml_path_to_records_description: "What is the XML element path that specifies each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/item'."
     new_related_set_from_archive_file:
-      add_related: "{{t.base.add}} {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}"
+      add_related: "{{t.base.add.capitalize}} {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}"
       archive_limit: "The largest archive file you may upload is {{size}}.  You may want to scale down your {{t.base.item.pluralize}} to be more reasonable sized to {{t.base.add}} to the site and re{{t.base.create}} your archive file."
       description_template: "Description Template (good for including an attribution)"
       description_template_example: "Should we append an piece of text formatted in HTML to the end of the description of each piece of content that is {{t.base.created}} during this import?  An example would be \"&lt;p&gt;Any use of this {{t.base.zoom_types.image}} must be accompanied by the cr{{t.base.edit}} 'Horowhenua Historical Society Inc.'&lt;\\p&gt;\".  Useful for including an attribution for the source of the {{t.base.added}} {{t.base.item.pluralize}}."
@@ -1397,7 +1398,7 @@ en:
       no_spaces_in_filenames: "IMPORTANT NOTE: please do not use spaces in file names, use an underscore instead.  \"_\" will be {{t.base.replaced}} with a space in the final title for the {{t.base.item}}."
       tags: "What {{t.base.tag.pluralize}} should we {{t.base.add}} to each imported {{t.base.item}} (separated by commas, no &amp;s allowed in {{t.base.tag.pluralize}}.)?"
       tags_description: "This is a good way to group things (by subject or category) so that they can be found later, for example, if had a series of photos of my home, I might use 'Island Bay, Wellington, New Zealand'."
-      title: "{{t.base.add}} {{t.base.related}} set of {{t.base.item.pluralize}} to {{related_topic_title}} from uploaded archive file"
+      title: "{{t.base.add.capitalize}} {{t.base.related}} set of {{t.base.item.pluralize}} to {{related_topic_title}} from uploaded archive file"
       title_from_filename: "The title for the uploaded {{t.base.item.pluralize}} will be based on the file's name as it was before it was {{t.base.added}} to the compressed archive file.  If you want a different title for the {{t.base.item}} you may to rename the file in question and re{{t.base.create}} the archive file before you proceed."
       title_from_metadata: "If the title is in an {{t.base.item}}'s embedded metadata it will be used as long as it is labeled \"Title\" or one of the following:"
       title_from_metadata_or: OR
@@ -1767,6 +1768,7 @@ en:
       whole_site: " whole site"
     form:
       about_a: "About a:"
+      any_topic_type: "- any type -"
       browse_by_category: "Browse by category"
       getting_categories: "Getting Categories. "
       in_reverse: "In reverse?"
@@ -1775,7 +1777,6 @@ en:
       private: "{{t.base.private.capitalize}}"
       public: "{{t.base.public.capitalize}}"
       search: "{{t.base.search.capitalize}}"
-      any_topic_type: "- any type -"
       sort_by: "Sort by:"
       update_results: "{{t.base.update}}"
     generic:
@@ -2286,6 +2287,7 @@ en:
   zoom_controller_helpers_lib:
     zoom_class_humanize:
       audio_recording: "{{t.base.zoom_types.audio.capitalize}}"
+      combined: "{{t.base.zoom_types.combined.capitalize}}"
       comment: "{{t.base.zoom_types.discussion.capitalize}}"
       document: "{{t.base.zoom_types.document.capitalize}}"
       still_image: "{{t.base.zoom_types.image.capitalize}}"
@@ -2294,6 +2296,7 @@ en:
       web_link: "{{t.base.zoom_types.web_link.capitalize}}"
     zoom_class_plural_humanize:
       audio_recording: "{{t.base.zoom_types.audio.capitalize}}"
+      combined: "{{t.base.zoom_types.combined.capitalize}}"
       comment: "{{t.base.zoom_types.discussion.capitalize}}"
       document: "{{t.base.zoom_types.document.capitalize.pluralize}}"
       still_image: "{{t.base.zoom_types.image.capitalize.pluralize}}"
