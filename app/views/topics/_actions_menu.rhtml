@@ -12,7 +12,10 @@
       :id => item}, :tabindex => '1' %></li>
     <% end %>
     <% unless params[:controller] == 'comments' %>
-      <li><a href="#comments" tabindex="1"><span class="discuss-link"><%=t 'topics.actions_menu.discuss' %></span></a></li>
+      <% cache_with_privacy(item, {:part => 'comments-link'}) do -%>
+        <li><%= link_to "<span class=\"discuss-link\">#{t('topics.actions_menu.discuss')} (#{@comments.size})</span>",
+                        '#comments', :tabindex => '1' %></li>
+      <% end %>
     <% end %>
 
     <% if logged_in? and @site_admin -%>

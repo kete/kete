@@ -170,6 +170,22 @@ namespace :translate do
     end
   end
 
+  desc 'Sort a translation from a-z keys, for easier use.'
+  task :sort => :environment do
+    raise "LOCALE (two letter country code) is not set. Please set one before running the rake task." unless ENV['LOCALE']
+    file_path = File.join(Rails.root, "config", "locales", "#{ENV['LOCALE']}.yml")
+    translations = YAML::load(IO.read(file_path))
+
+    require 'ya2yaml'
+    $KCODE = 'u'
+    FileUtils.mkdir_p File.dirname(file_path)
+    File.open(file_path, "w") do |file|
+      file.puts translations.ya2yaml
+    end
+
+    puts "Sorted #{ENV['LOCALE']}."
+  end
+
   namespace :excel_2003 do
 
     desc 'Export translation to Microsoft Excel 2003 compatible format (pass in LOCALE key)'

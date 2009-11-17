@@ -6,6 +6,12 @@
   margin: 0;
 }
 
+/* Any more than 4 depths, and comments start looking compacted */
+.comment-depth-1 { margin-left: 15px; }
+.comment-depth-2 { margin-left: 30px; }
+.comment-depth-3 { margin-left: 45px; }
+.comment-depth-4 { margin-left: 60px; }
+
 .comment-wrapper {
   margin: 1.5em .8em 1em .8em;
 }
@@ -21,6 +27,11 @@
   border-right: 1px solid #B6B5B2;
   background-color: #fff;
   margin-top: -47px;
+}
+
+.comment-date {
+  float: right;
+  margin-top: 15px;
 }
 
 .comment-tools ul {

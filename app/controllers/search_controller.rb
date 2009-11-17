@@ -129,14 +129,16 @@ class SearchController < ApplicationController
     @extended_field = ExtendedField.from_label_for_params(params[:extended_field]).first if params[:extended_field]
     @all_choices = true unless @extended_field
 
+    @topic_type = TopicType.from_url_escaped_name(params[:topic_type]).first if params[:topic_type]
+
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
     @next_page = @current_page + 1
     @previous_page = @current_page - 1
 
-    # rss is always is set at 50 per page
+    # rss is always is set at 50 per page unless limit if specified
     if is_rss?
-      @number_per_page = 50
+      @number_per_page = (params[:count] || 50).to_i
     else
       # otherwise we fallback to default constant
       # unless user has specifically chosen a different number
@@ -188,7 +190,10 @@ class SearchController < ApplicationController
     @search_terms = params[:search_terms]
 
     # set up the cache key, which handles our params beyond basket, action, and controller
-    @cache_key_hash = { :page => params[:page] || 1 }
+    @cache_key_hash = Hash.new
+
+    @cache_key_hash[:page] = (params[:page] || 1).to_i
+    @cache_key_hash[:number_per_page] = (params[:count] || 50).to_i
 
     @cache_key_hash[:privacy] = "private" if is_a_private_search?
 
@@ -309,6 +314,8 @@ class SearchController < ApplicationController
       @search.pqf_query.any_text_include("':#{@limit_to_choice}:'") unless @limit_to_choice.blank?
     end
 
+    @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?
+
     # Normal search terms..
 
     if !@search_terms.blank?
@@ -361,6 +368,7 @@ class SearchController < ApplicationController
                       :sort_direction => params[:sort_direction],
                       :sort_type => params[:sort_type],
                       :limit_to_choice => params[:limit_to_choice],
+                      :extended_field => params[:extended_field],
                       :authenticity_token => nil }
 
     if is_a_private_search?
@@ -402,6 +410,10 @@ class SearchController < ApplicationController
     end
     if !params[:extended_field].blank?
       location_hash.merge({ :extended_field => params[:extended_field] })
+    end
+
+    if !params[:topic_type].blank?
+      location_hash.merge!({ :topic_type => params[:topic_type] })
     end
 
     logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)

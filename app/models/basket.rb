@@ -161,7 +161,7 @@ class Basket < ActiveRecord::Base
 
   # stuff related to taggings in a basket
 
-  has_many :taggings
+  has_many :taggings, :dependent => :destroy
   has_many :tags, :through => :taggings
 
   # it's easy to get a basket's topics tag_counts

@@ -59,6 +59,7 @@
   </div>
 
   <% @type_options = [[t('importers.new.excel_based'), 'excel_based'],
+     [t('importers.new.dfc_xml'), 'dfc_xml'],
      [t('importers.new.past_perfect'), 'past_perfect4'],
      [t('importers.new.filemaker_pro'), 'fmpdsoresult_no_images'],
      [t('importers.new.simple_xml'), 'simple_topic']
@@ -83,12 +84,25 @@
 
   <div class="form-element" id="import_topic_type">
     <label for="import_topic_type_id"><%=t 'importers.new.applicable_topic_type' %></label>
-    <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, {:class=>"select"}) %>
+    <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}) %>
     <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
+  </div>
+
+  <div class="form-element" id="import_related_topic_type" style="display: none;">
+    <label for="import_related_topic_type_id"><%=t 'importers.new.applicable_related_topic_type' %></label>
+    <%= topic_type_select_with_indent('import', 'related_topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}, [[t('importers.new.related_topic_type_all'), ''], ['', '']]) %>
+    <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
+  </div>
+
+  <div class="form-element" id="import_record_identifier_extended_field" style="display: none;">
+    <label for="import_record_identifier_extended_field_id"><%=t 'importers.new.record_identifier_extended_field' %></label>
+    <div id="import_record_identifier_extended_field_select"><%= render 'extended_field_selection' %></div>
+    <div class="form_example"><%=t 'importers.new.record_identifier_extended_field_description' %></div>
   </div>
 
   <%= xml_type_js_observer -%>
   <%= zoom_class_js_observer -%>
+  <%= related_topic_type_js_observer -%>
 
   <% if show_privacy_controls? %>
     <div class="form-element">

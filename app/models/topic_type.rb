@@ -24,8 +24,13 @@ class TopicType < ActiveRecord::Base
   # that they are importing
   has_many :imports, :dependent => :destroy
 
+  named_scope :from_url_escaped_name, lambda { |url_escaped_name| { :conditions => ['LOWER(name) = ?', url_escaped_name.downcase.gsub('_', ' ')] } }
+
   validates_presence_of :name, :description
   validates_uniqueness_of :name, :case_sensitive => false
+
+  # don't allow special characters in label that will break urls
+  validates_format_of :name, :with => /^[^\'\":<>\&,\/\\\?\.]*$/, :message => I18n.t('topic_type_model.invalid_chars', :invalid_chars => ": \', \\, /, &, \", ?, <, >, and .")
 
   # to support inheritance of fields from ancestor topic types
   acts_as_nested_set
@@ -39,5 +44,26 @@ class TopicType < ActiveRecord::Base
 
   def available_fields
     @available_fields = ExtendedField.find_available_fields(self,'TopicType')
+  end
+
+  def mapped_fields(options={})
+    options[:with_ancestors] ||= true
+    relevant_topic_types = options[:with_ancestors] ? self_and_ancestors : [self]
+    # TODO: might want to reconsider using a subselect here
+    ExtendedField.find(:all, :conditions => ["id in (select extended_field_id from topic_type_to_field_mappings where topic_type_id in (?))", relevant_topic_types])
+  end
+
+  def self_and_ancestors_ids
+    @self_and_ancestors_ids ||= self_and_ancestors.collect { |a| a.id }
+  end
+
+  # MySQL ordering doesn't work well here so we do our own ordering
+  def all_field_mappings
+    mappings = TopicTypeToFieldMapping.find_all_by_topic_type_id(self_and_ancestors_ids, :order => 'position ASC')
+    self_and_ancestors_ids.collect do |id|
+      mappings.select { |mapping| mapping.topic_type_id == id }
+    end.flatten
+  rescue
+    []
   end
 end

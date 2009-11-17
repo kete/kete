@@ -142,7 +142,7 @@ ul#main-nav {
   top: 90px;
   right: 70px;
   width: 230px;
-  background-color: #fff;
+  background-color: #fff !important;
   background-image: none;
   border: 1px solid #838383;
   margin: 0;
@@ -530,6 +530,11 @@ h3 b{
 .generic-result-wrapper.first,
 .image-result-wrapper.first {
   border-top: 1px dashed #bbb;
+}
+
+.generic-result-topic-type {
+  float: right;
+  color: #888;
 }
 
 #bottomlinks {
@@ -991,6 +996,7 @@ input.searchheader-search {
     margin-left: 2em;
     margin-bottom: 1em;
     margin-right: 1em;
+    margin-top: -20px;
 }
 
 #sort_direction_field{
@@ -1419,4 +1425,16 @@ a.disabled {
 
 .credits img {
   border: none;
+}
+
+/*
+ * Comment in reply to
+ */
+#comment_in_response_to {
+  border: 1px solid #CCC;
+  padding: 15px;
+  margin: 10px 20px 0 0;
+}
+#comment_in_response_to_original {
+  float: right;
 }

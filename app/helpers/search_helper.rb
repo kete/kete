@@ -13,6 +13,8 @@ module SearchHelper
   def last_part_of_title_if_refinement_of(add_links = true)
     end_of_title_parts = Array.new
 
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.about_a', :topic_type_name => @topic_type.name) if !@topic_type.nil?
+
     end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.tagged_as', :tag_name => @tag.name) if !@tag.nil?
 
     if !@contributor.nil?
@@ -29,7 +31,7 @@ module SearchHelper
 
     unless @source_item.nil?
       @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
-      end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.related_to', :source_item => @source_item.title)
+      end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.related_to', :source_item => link_to_item(@source_item))
     end
 
     end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.privacy_type', :privacy => @privacy) if !@privacy.nil?
@@ -46,9 +48,11 @@ module SearchHelper
     if @current_basket != @site_basket
       title_so_far += @current_basket.name + ' '
     end
+    zoom_class = zoom_class_from_controller(@controller_name_for_zoom_class)
+    zoom_class_humanized = zoom_class_plural_humanize(zoom_class).downcase
     title_so_far += span_around_zoom_class \
-                      ? content_tag('span', @controller_name_for_zoom_class.gsub(/_/, " "), :class => 'current_zoom_class') \
-                      : @controller_name_for_zoom_class.gsub(/_/, " ")
+                      ? content_tag('span', zoom_class_humanized, :class => 'current_zoom_class') \
+                      : zoom_class_humanized
   end
 
   def toggle_in_reverse_field_js_helper

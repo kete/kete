@@ -34,6 +34,8 @@ ActionController::Routing::Routes.draw do |map|
     search.with_options :action => 'all' do |search_all|
       search_all.basket_all ':urlified_name/all/:controller_name_for_zoom_class/'
       search_all.basket_all_private ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/'
+      search_all.basket_all_topic_type ':urlified_name/all/:controller_name_for_zoom_class/of/:topic_type'
+      search_all.basket_all_private_topic_type ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:topic_type'
       search_all.basket_all_contributed_by ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
       search_all.basket_all_private_contributed_by ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/'
       search_all.basket_all_of_category ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice'
@@ -47,6 +49,8 @@ ActionController::Routing::Routes.draw do |map|
     search.with_options :action => 'rss' do |search_rss|
       search_rss.basket_all_rss ':urlified_name/all/:controller_name_for_zoom_class/rss.xml'
       search_rss.basket_all_private_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/rss.xml'
+      search_rss.basket_all_topic_type_rss ':urlified_name/all/:controller_name_for_zoom_class/of/:topic_type/rss.xml'
+      search_rss.basket_all_private_topic_type_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/rss.xml'
       search_rss.basket_all_contributed_by_rss ':urlified_name/all/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
       search_rss.basket_all_private_contributed_by_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/rss.xml'
       search_rss.basket_all_related_to_rss ':urlified_name/all/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/rss.xml'
@@ -63,6 +67,8 @@ ActionController::Routing::Routes.draw do |map|
       search_rss.basket_search_private_tagged_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_rss ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_private_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_topic_type ':urlified_name/search/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_of_category_rss ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_private_of_category_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
     end
@@ -76,6 +82,8 @@ ActionController::Routing::Routes.draw do |map|
       search_for.basket_search_private_tagged ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for/:search_terms_slug'
       search_for.basket_search ':urlified_name/search/:controller_name_for_zoom_class/for/:search_terms_slug'
       search_for.basket_search_private ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for/:search_terms_slug'
+      search_for.basket_search_topic_type ':urlified_name/search/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug'
+      search_for.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug'
       search_for.basket_search_of_category ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
       search_for.basket_search_private_of_category ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
 
@@ -88,6 +96,8 @@ ActionController::Routing::Routes.draw do |map|
         nil_search_terms.basket_search_private_tagged_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/for'
         nil_search_terms.basket_search_empty ':urlified_name/search/:controller_name_for_zoom_class/for'
         nil_search_terms.basket_search_private_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/for'
+        nil_search_terms.basket_search_topic_type ':urlified_name/search/:controller_name_for_zoom_class/of/:topic_type/for'
+        nil_search_terms.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for'
         nil_search_terms.basket_search_of_category_empty ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
         nil_search_terms.basket_search_private_of_category_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
       end

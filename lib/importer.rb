@@ -93,9 +93,12 @@ module Importer
         @current_basket = @import.basket
         logger.info("what is current basket: " + @current_basket.inspect)
         @import_topic_type = @import.topic_type
+        @related_topic_type = @import.related_topic_type
         @zoom_class_for_params = @zoom_class.tableize.singularize
         @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
         @record_interval = @import.interval_between_records
+        @record_identifier_extended_field ||= @import.record_identifier_extended_field
+        @record_identifier_xml_field ||= 'Record_Identifier'
 
         params = args[:params]
 
@@ -160,20 +163,37 @@ module Importer
 
           params[zoom_class_for_params]['extended_content_values'] = Hash.new if \
             params[zoom_class_for_params]['extended_content_values'].nil?
-            
-          if extended_field.multiple
-            multiple_values = value.split(",")
-            m_field_count = 1
-            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
-            multiple_values.each do |m_field_value|
-              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = m_field_value.strip
-              m_field_count += 1
+
+          if %w{ choice autocomplete }.include?(extended_field.ftype)
+            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] ||= Hash.new
+            if extended_field.multiple
+              value.split(',').each_with_index do |multiple_choice, multiple_index|
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(multiple_index + 1).to_s] ||= Hash.new
+                multiple_choice.strip.split('->').each_with_index do |choice, choice_index|
+                  params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(multiple_index + 1).to_s][(choice_index + 1).to_s] = choice.strip
+                end
+              end
+            else
+              value.split('->').each_with_index do |choice, choice_index|
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(choice_index + 1).to_s] = choice.strip
+              end
             end
           else
-            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value
+            if extended_field.multiple
+              multiple_values = value.split(",")
+              m_field_count = 1
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
+              multiple_values.each do |m_field_value|
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = m_field_value.to_s.strip
+                m_field_count += 1
+              end
+            else
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value.to_s
+            end
           end
         end
       end
+
       return params
     end
 
@@ -183,7 +203,8 @@ module Importer
       params = options[:params]
       item_key = options[:item_key].to_sym
 
-      builder = Nokogiri::XML::Builder.new { |xml|
+      builder = Nokogiri::XML::Builder.new
+      builder.root do |xml|
 
         @fields.each do |field_to_xml|
           field_name = field_to_xml.extended_field_label.downcase.gsub(/ /, '_')
@@ -194,34 +215,31 @@ module Importer
                 hash_of_values.keys.each do |key|
                   xml.send(key.to_s) do
                     logger.debug("inside hash: key: " + key.to_s)
-                    m_value = hash_of_values[key].to_s
+                    m_value = hash_of_values[key]
                     extended_content_field_xml_tag(:xml => xml,
                                                    :field => field_name,
                                                    :value => m_value,
                                                    :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                                    :xsi_type => field_to_xml.extended_field_xsi_type,
-                                                   :ftype => field_to_xml.extended_field_ftype,
-                                                   :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
+                                                   :extended_field => field_to_xml.extended_field)
                   end
                 end
               end
             end
           else
-            value = params[item_key]['extended_content_values'][field_name] rescue ""
+            value = (params[item_key]['extended_content_values'][field_name] || "") rescue ""
             extended_content_field_xml_tag(:xml => xml,
                                            :field => field_name,
                                            :value => value,
                                            :xml_element_name => field_to_xml.extended_field_xml_element_name,
                                            :xsi_type => field_to_xml.extended_field_xsi_type,
-                                           :ftype => field_to_xml.extended_field_ftype,
-                                           :user_choice_addition => field_to_xml.extended_field_user_choice_addition)
+                                           :extended_field => field_to_xml.extended_field)
           end
         end
 
-      }
+      end
 
-      extended_content = builder.to_xml
-      params[item_key][:extended_content] = extended_content.gsub(/>\s*</, '><').gsub("<?xml version=\"1.0\"?>","").gsub("\n", '')
+      params[item_key][:extended_content] = builder.to_stripped_xml
       return params
     end
 
@@ -397,6 +415,8 @@ module Importer
       record = nil
       # give zebra and our server a small break
       sleep(@record_interval) if @record_interval > 0
+
+      return existing_item || new_record
     end
 
     # XPATH was proving too unreliable
@@ -603,7 +623,7 @@ module Importer
             # path_to_file is special case, we know we have an associated file that goes in uploaded_data
             if record_field == 'path_to_file'
               logger.debug("in path_to_file")
-              if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class)
+              if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class) && File.exist?(value)
                 # we do a check earlier in the script for imagefile
                 # so we should have something to work with here
                 upload_hash = { :uploaded_data => copy_and_load_to_temp_file(value) }
@@ -723,6 +743,11 @@ module Importer
         end
       end
 
+      # if we are making a topic, respect the Related Items Inset configurations
+      if zoom_class == 'Topic'
+        new_record.related_items_inset = (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
+      end
+
       # if still image and new_image failed, fail
       new_record_added = false
       unless zoom_class == 'StillImage'
@@ -735,6 +760,9 @@ module Importer
         importer_add_still_image_to(new_image_file, new_record, zoom_class) unless new_image_file.nil?
 
         new_record.creator = @contributing_user
+
+        importer_build_relations_to(new_record, record_hash, options[:params])
+
         logger.info("in topic creation made it past creator")
       else
         # destroy images if the record wasn't added successfully
@@ -744,6 +772,49 @@ module Importer
       end
 
       return new_record
+    end
+
+    def importer_build_relations_to(new_record, record_hash, params)
+      logger.info("building relations for new record")
+      if @related_topic_key_field.blank? || record_hash[@related_topic_key_field].blank?
+        logger.info("no relations to be made for new record")
+        return
+      end
+
+      record_hash[@related_topic_key_field].split(',').each do |related_topic_identifier|
+        related_topic_identifier = related_topic_identifier.strip
+
+        if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
+          related_topics = Array.new
+
+          if @record_identifier_extended_field
+            ext_field_id = @record_identifier_extended_field.label_for_params
+            ext_field_data = "<#{ext_field_id}>#{related_topic_identifier}</#{ext_field_id}>"
+            conditions = ["(extended_content like '%#{ext_field_data}%' OR private_version_serialized like '%#{ext_field_data}%')"]
+            conditions << "topic_type_id = #{@related_topic_type.id}" unless @related_topic_type.blank?
+            related_topics += Topic.all(:conditions => conditions.join(' AND '))
+          end
+
+          if related_topics.blank?
+            @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']").each do |accession_record|
+              related_topics << importer_process(accession_record, params) unless accession_record.blank? || accession_record.content.blank?
+            end
+          end
+        else
+          related_topics = @last_related_topics
+        end
+
+        next if related_topics.blank?
+
+        related_topics.uniq.flatten.compact.each do |related_topic|
+          next if related_topic == new_record
+          ContentItemRelation.new_relation_to_topic(related_topic, new_record)
+        end
+
+        @last_related_topic_identifier = related_topic_identifier
+        @last_related_topics = related_topics
+      end
+      logger.info("finished building relations for new record")
     end
 
     # override in your importer worker to customize
@@ -796,7 +867,8 @@ module Importer
                                     :basket_id => topic_params[:topic][:basket_id],
                                     :license_id => topic_params[:topic][:license_id],
                                     :topic_type_id => topic_params[:topic][:topic_type_id],
-                                    :do_not_moderate => true
+                                    :do_not_moderate => true,
+                                    :related_items_inset => (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
                                     )
 
       related_topic.creator =  @contributing_user

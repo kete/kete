@@ -30,13 +30,53 @@ module TranslateHelper
     n_lines
   end
 
-  # Kieran Pilkington, 2009-05-28
-  # We want to interpolate the base values but not any variable values
-  def interpolate(text)
-    return '' unless text
-    text = text.gsub('{{', '\{\{').gsub('\\{\\{t.', '{{t.')
-    result = I18n.backend.send(:interpolate, @from_locale, text)
-    result.gsub('\{\{', '{{')
+  # Kieran Pilkington, 2009-11-10
+  # We want to save and reload things as soon as they leave the field
+  def watch_for_field_changes_js
+    javascript_tag("
+      $$('div.translation input, div.translation textarea').each(function(field) {
+        // each time they add a character, update the preview
+        field.observe('keyup', function(){
+          update_displays_as_text(field);
+        });
+        // each time they move on, save if any changes were made
+        field.observe('change', function(){
+          save_translation_string(field);
+        });
+      });
+
+      function update_displays_as_text(field) {
+        indicators = field.up('.translation').down('.translation-indicators');
+        indicators.down('.saving').hide(); indicators.down('.saved').hide(); indicators.down('.failed').hide();
+
+        displays_as = field.up('.translation').down('.displays-as');
+        displays_as_text = displays_as.down('.text');
+        displays_as_spinner = displays_as.down('img');
+        new Ajax.Updater(displays_as_text, '/translate/interpolate_and_render', {
+          method: 'get',
+          parameters: { text: $(field.id).value, from: '#{@from_locale}', to: '#{@to_locale}' },
+          onCreate: function(create) { displays_as_spinner.show(); },
+          onComplete: function(complete) { displays_as_spinner.hide(); }
+        });
+      }
+
+      function save_translation_string(field) {
+        indicators = field.up('.translation').down('.translation-indicators');
+        saving_indicator = indicators.down('.saving');
+        saved_indicator = indicators.down('.saved');
+        failed_indicator = indicators.down('.failed');
+
+        new Ajax.Request('/translate/translate', {
+          method: 'post',
+          parameters: { key: field.id, value: field.value, from: '#{@from_locale}', to: '#{@to_locale}' },
+          onCreate: function(create) { saving_indicator.show(); saved_indicator.hide(); failed_indicator.hide();  },
+          onComplete: function(complete) { saving_indicator.hide(); },
+          onSuccess: function(success) { saved_indicator.show(); },
+          onFailure: function(failure) { failed_indicator.show(); }
+        });
+      }
+
+    ")
   end
 
 end

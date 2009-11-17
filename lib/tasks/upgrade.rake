@@ -25,7 +25,9 @@ namespace :kete do
                     'kete:upgrade:ensure_logins_all_valid',
                     'kete:upgrade:move_user_name_to_display_and_resolved_name',
                     'kete:upgrade:set_default_locale_for_existing_users',
-                    'kete:upgrade:add_basket_id_to_taggings']
+                    'kete:upgrade:add_basket_id_to_taggings',
+                    'kete:upgrade:make_baskets_private_notification_do_not_email',
+                    'kete:upgrade:add_nested_values_to_comments']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -251,10 +253,13 @@ namespace :kete do
         user_count += 1
       end
       # finally, lets removing the user name field mapping to prevent new user names from being set
-      content_type_id = ContentType.find_by_class_name('User').id
-      extended_field_id = ExtendedField.find_by_label('User Name').id
-      content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
-      content_mapping.destroy unless content_mapping.nil?
+      extended_field = ExtendedField.find_by_label('User Name')
+      if extended_field
+        content_type_id = ContentType.find_by_class_name('User').id
+        extended_field_id = extended_field.id
+        content_mapping = ContentTypeToFieldMapping.find_by_content_type_id_and_extended_field_id(content_type_id, extended_field_id)
+        content_mapping.destroy unless content_mapping.nil?
+      end
       p "#{user_count.to_s} users user_name moved to resolved_name" if user_count > 0
     end
 
@@ -333,6 +338,11 @@ namespace :kete do
       Basket.all.each do |basket|
         basket.settings[:private_item_notification] = 'do_not_email' if basket.settings[:private_item_notification].blank?
       end
+    end
+
+    desc "Add the parent_id, lft, and rgt values to comments that were created before acts_as_nested_set was put in place"
+    task :add_nested_values_to_comments => :environment do
+      Comment.renumber_all if (Comment.count(:conditions => { :lft => nil }) > 0)
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

@@ -12,6 +12,18 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  def stripped_title
+    h(strip_tags(@title))
+  end
+
+  def title_with_context
+    if @current_basket == @site_basket
+      "#{stripped_title} - #{PRETTY_SITE_NAME}"
+    else
+      "#{stripped_title} - #{@current_basket.name} - #{PRETTY_SITE_NAME}"
+    end
+  end
+
   # Get the integer of any given image size
   def image_size_of(string)
     size = IMAGE_SIZES[string.to_sym].is_a?(String) ? \
@@ -453,7 +465,7 @@ module ApplicationHelper
             :action => :all, :contributor => user, :trailing_slash => true, :only_path => false)
   end
 
-  def link_to_contributions_of(user, zoom_class, options = {})
+  def link_to_contributions_of(user, zoom_class = 'Topic', options = {})
     if options[:with_avatar]
       display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
       display_html += h(user.user_name)
@@ -995,9 +1007,18 @@ module ApplicationHelper
         comment_string += pending_review(comment) + "\n"
         comment_string += "<div class=\"comment-tools\">\n"
         comment_string += flagging_links_for(comment,true,'comments')
-        if logged_in? and @at_least_a_moderator
-          comment_string += "<ul>"
-          comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.edit'),
+        comment_string += "<div class=\"comment-date\">
+                            #{t('application_helper.show_comments_for.posted_on')} #{comment.created_at.to_s(:natural)}
+                          </div>"
+
+        comment_string += "<ul>"
+        comment_string += "<li class='first'>" + link_to(t('application_helper.show_comments_for.reply'),
+                                           :controller => 'comments',
+                                           :action => :new,
+                                           :parent_id => comment) + "</li>\n"
+
+        if logged_in? && @at_least_a_moderator
+          comment_string += "<li>" + link_to(t('application_helper.show_comments_for.edit'),
                                              :controller => 'comments',
                                              :action => :edit,
                                              :id => comment) + "</li>\n"
@@ -1012,16 +1033,17 @@ module ApplicationHelper
                                                :authenticity_token => form_authenticity_token},
                                              :method => :post,
                                              :confirm => t('application_helper.show_comments_for.confirm_delete')) + "</li>\n"
-          comment_string += "</ul>\n"
         end
+
+        comment_string += "</ul>\n"
         comment_string += "</div>" # comment-tools
         comment_string += "</div>" # comment-content
         comment_string += "<div class=\"comment-wrapper-footer-wrapper\"><div class=\"comment-wrapper-footer\"></div></div>"
         comment_string += "</div>" # comment-wrapper
 
-        html_string += '<div class="comment-outer-wrapper">'
+        html_string += "<div class='comment-outer-wrapper #{comment_depth_div_classes_for(comment)}'>"
         html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
-                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a name=\"comment-#{comment.id}\">#{h(comment.title)}</a></h3></div>",
+                                                        :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a href=\"##{comment.to_anchor}\" name=\"#{comment.to_anchor}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper
       end
@@ -1037,6 +1059,31 @@ module ApplicationHelper
     return html_string
   end
 
+  # Calculate the comment depth (how many ancestors)
+  # we could call a acts_as_nested_set method here to get ancestor count,
+  # but it makes a new query each comment, so try not do that, even if it
+  # makes code a little more verbose
+  def calculate_comment_depth_for(comment)
+    depth, parent_comment_id = 0, comment.parent_id
+    until parent_comment_id.blank?
+      depth += 1
+      parent_comment_id = @comments.select { |c| c.id == parent_comment_id }.first.parent_id rescue nil
+    end
+    depth
+  end
+
+  # Each comment needs to have the classes of it's parent in order of oldest to newest,
+  # so if css for a depth of 4 is provided, but css for depth 5 isn't, depth 5 and onward
+  # use the last class, in this example, comment-depth-4, for indentation styling instead
+  # of having no styling (in which case, they appear as depth 0 which is wrong)
+  def comment_depth_div_classes_for(comment)
+    classes = Array.new
+    0.upto(calculate_comment_depth_for(comment)) do |depth|
+      classes << "comment-depth-#{depth}"
+    end
+    classes.join(' ')
+  end
+
   def flagging_links_for(item, first = false, controller = nil)
     html_string = String.new
     if FLAGGING_TAGS.size > 0 and !item.already_at_blank_version?
@@ -1045,7 +1092,7 @@ module ApplicationHelper
       else
         html_string = "<ul><li class=\"flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       end
-      html_string += "<li><ul>\n"
+      html_string += "<li class=\"first\"><ul>\n"
       flag_count = 1
       FLAGGING_TAGS.each do |flag|
         if flag_count == 1
@@ -1139,7 +1186,11 @@ module ApplicationHelper
 
   # we use this in imports, too
   def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options=Hash.new, pre_options=Array.new)
-    result = "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
+    if method
+      result = "<select name=\"#{object}[#{method}]\" id=\"#{object}_#{method}\""
+    else
+      result = "<select name=\"#{object}\" id=\"#{object}\""
+    end
     html_options.each do |key, value|
         result << ' ' + key.to_s + '="' + value.to_s + '"'
     end
@@ -1147,15 +1198,31 @@ module ApplicationHelper
     result << options_for_select(pre_options) unless pre_options.blank?
     for element in collection
       indent_string = String.new
-        element.level.times { indent_string += "&nbsp;" }
-        if current_value == element.send(value_method)
-          result << "<option value='#{ element.send(value_method)}' selected='selected'>#{indent_string}#{element.send(text_method)}</option>\n"
-        else
-          result << "<option value='#{element.send(value_method)}'>#{indent_string}#{element.send(text_method)}</option>\n"
-        end
+      element.level.times { indent_string += "&nbsp;" }
+      escaped_value = element.send(value_method).to_s.strip.downcase.gsub(/\s/, '_')
+      selected = current_value == escaped_value ? " selected='selected'" : ''
+      result << "<option value='#{escaped_value}'#{selected}>#{indent_string}#{element.send(text_method)}</option>\n"
     end
     result << "</select>\n"
     return result
+  end
+
+  def url_for_topics_of_type(topic_type, privacy=nil)
+    privacy = 'private' if !params[:private].nil? && params[:private] == "true"
+
+    url_hash = {
+      :urlified_name => @site_basket.urlified_name,
+      :controller => 'search',
+      :controller_name_for_zoom_class => 'topics',
+      :topic_type => topic_type.name.downcase.gsub(/\s/, '_'),
+      :privacy_type => privacy
+    }
+
+    if privacy == 'private'
+      basket_all_private_topic_type_path(url_hash)
+    else
+      basket_all_topic_type_path(url_hash)
+    end
   end
 
   def load_styles(theme)

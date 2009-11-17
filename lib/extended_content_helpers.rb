@@ -136,9 +136,10 @@ module ExtendedContentHelpers
               # this will handle a number of cases, see comment in app/models/choice.rb
               # for details
               matching_choice = Choice.matching(l,v)
+              matching_choice_mapped = extended_field.choices.matching(l,v)
 
               # Handle the creation of new choices where the choice is not recognised.
-              if !matching_choice && %w(autocomplete choice).include?(ftype) && user_choice_addition
+              if !matching_choice_mapped && %w(autocomplete choice).include?(ftype) && user_choice_addition
                 sorted_values = value.dup.sort
                 index = sorted_values.index([k, v])
 
@@ -150,9 +151,13 @@ module ExtendedContentHelpers
                 parent = Choice.find_by_value(to_check) || Choice.find(1)
 
                 begin
-                  choice = Choice.create!(:value => v, :label => l)
-                  choice.move_to_child_of(parent)
-                  choice.save!
+                  if matching_choice
+                    choice = matching_choice
+                  else
+                    choice = Choice.create!(:value => v, :label => l)
+                    choice.move_to_child_of(parent)
+                    choice.save!
+                  end
                   extended_field.choices << choice
                   extended_field.save!
 

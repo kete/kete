@@ -36,10 +36,10 @@ class String
     URI.decode(self)
   end
 
-  # converts "true", "false", and "nil" into their appropriate boolean/NilClass values
+  # converts "true", "1", "false", "0" and "nil" into their appropriate boolean/NilClass values
   def to_bool
-    return true if self == "true"
-    return false if self == "false"
+    return true if self == "true" || self == "1"
+    return false if self == "false" || self == "0"
     return nil if self == "nil"
     return self
   end
@@ -112,7 +112,13 @@ module I18n
               # for each string method in the patern, in order, execute that
               # method on the returned value, and overwrite value
               pattern.gsub(/\.(#{string_methods.join('|')})/) do
-                value = value.respond_to?($1) ? value.send($1) : value
+                if $1 == 'pluralize'
+                  value = pluralize_with_locale(locale, value)
+                elsif $1 == 'singularize'
+                  value = singularize_with_locale(locale, value)
+                else
+                  value = value.respond_to?($1) ? value.send($1) : value
+                end
               end
 
               # return the translated, and string method executed value
@@ -124,6 +130,58 @@ module I18n
 
           interpolate_orig(locale, string, values)
         end
+
+        PluralizeValues = {
+          :mi => { :prefix => 'ngā ' }
+        }
+        SingularizeValues = {
+          :mi => { :prefix => 'te ' }
+        }
+
+        def pluralize_with_locale(locale, string)
+          if PluralizeValues[locale.to_sym]
+            string = strip_prefix_and_suffix(locale, string)
+            PluralizeValues[locale.to_sym][:prefix].to_s + string + PluralizeValues[locale.to_sym][:suffix].to_s
+          else
+            string.pluralize
+          end
+        end
+
+        def singularize_with_locale(locale, string)
+          if SingularizeValues[locale.to_sym]
+            string = strip_prefix_and_suffix(locale, string)
+            SingularizeValues[locale.to_sym][:prefix].to_s + string + SingularizeValues[locale.to_sym][:suffix].to_s
+          else
+            string.singularize
+          end
+        end
+
+        def strip_prefix_and_suffix(locale, string)
+          # strip any prefixes for this locale
+          string.gsub!(/^#{PluralizeValues[locale.to_sym][:prefix]}/, '') unless PluralizeValues[locale.to_sym][:prefix].blank?
+          string.gsub!(/^#{SingularizeValues[locale.to_sym][:prefix]}/, '') unless SingularizeValues[locale.to_sym][:prefix].blank?
+
+          # strip any suffixes for this locale
+          string.gsub!(/#{PluralizeValues[locale.to_sym][:suffix]}$/, '') unless PluralizeValues[locale.to_sym][:suffix].blank?
+          string.gsub!(/#{SingularizeValues[locale.to_sym][:suffix]}$/, '') unless SingularizeValues[locale.to_sym][:suffix].blank?
+
+          string
+        end
+    end
+  end
+end
+
+# Include extensions into Kete dependancies here
+
+# Kieran Pilkington, 2009-10-19
+# A quick way to strip new lines, remove <?xml
+# and <root> tags, and remove excess whitespace
+module Nokogiri
+  module XML
+    class Builder
+      def to_stripped_xml
+        @doc.to_xml.gsub(/(^\s*|\s*$)/, '').gsub(/>(\n*|\s*)</, '><').gsub('<?xml version="1.0"?>', '').gsub(/(<root>|<\/root>)/, '')
+      end
     end
   end
 end

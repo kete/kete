@@ -51,8 +51,8 @@ module SearchSourcesHelper
   end
 
   def search_source_image_for(entry)
-    image_path = !entry.media_thumbnail.nil? ? entry.media_thumbnail : entry.enclosure
-    image_tag(image_path, :alt => "#{h(entry.title)}. ", :title => "#{h(entry.title)}. ", :width => 50, :height => 50)
+    media_data = entry.media_thumbnail || entry.enclosure
+    image_tag(media_data, :alt => "#{h(entry.title)}. ", :title => "#{h(entry.title)}. ", :width => 50, :height => 50)
   end
 
   [:or_syntax, :and_syntax, :not_syntax].each do |syntax|

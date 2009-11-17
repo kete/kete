@@ -376,7 +376,7 @@ class ApplicationController < ActionController::Base
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
                 'secondary_content_license_metadata_[privacy]', 'history_[privacy]']
 
-  PUBLIC_SHOW_PARTS = ['comments_[privacy]']
+  PUBLIC_SHOW_PARTS = ['comments-link_[privacy]', 'comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
   ADMIN_SHOW_PARTS = ['zoom_reindex']
   PRIVACY_SHOW_PARTS = ['privacy_chooser_[privacy]']
@@ -591,7 +591,10 @@ class ApplicationController < ActionController::Base
   end
 
   def expire_caches_after_comments(item, private_comment)
-    ['zoom_reindex', 'comments-moderators_[privacy]', 'comments_[privacy]'].each do |part|
+    [ 'zoom_reindex',
+      'comments-link_[privacy]',
+      'comments-moderators_[privacy]',
+      'comments_[privacy]' ].each do |part|
 
       @privacy_type ||= (private_comment ? "private" : "public")
       resulting_part = cache_name_for(part, @privacy_type)
@@ -893,6 +896,11 @@ class ApplicationController < ActionController::Base
     # Redirect to private version if item is private.
     if options[:private]
       path_hash.merge!({ :private => "true" })
+    end
+
+    # Add the anchor if one is passed in
+    if options[:anchor]
+      path_hash.merge!({ :anchor => options[:anchor] })
     end
 
     url_for(path_hash)
@@ -1315,16 +1323,23 @@ class ApplicationController < ActionController::Base
     return if item.skip_email_notification == '1'
     return unless show_notification_controls?(item.basket)
 
-    email_type = item.is_a?(Comment) ? 'comment' : 'item'
+    url_options = { :private => true }
+
+    if item.is_a?(Comment)
+      email_type = 'comment'
+      url_options.merge!(:anchor => item.to_anchor)
+    else
+      email_type = 'item'
+    end
 
     # send notifications of private item
     item.basket.users_to_notify_of_private_item.each do |user|
       next if user == current_user
       case type
       when :created
-        UserNotifier.send("deliver_private_#{email_type}_created", user, item, path_to_show_for(item, :private => true))
+        UserNotifier.send("deliver_private_#{email_type}_created", user, item, path_to_show_for(item, url_options))
       when :edited
-        UserNotifier.send("deliver_private_#{email_type}_edited", user, item, path_to_show_for(item, :private => true))
+        UserNotifier.send("deliver_private_#{email_type}_edited", user, item, path_to_show_for(item, url_options))
       end
     end
   end
@@ -1336,7 +1351,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :show_notification_controls?
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :show_notification_controls?, :path_to_show_for
 
   protected
 

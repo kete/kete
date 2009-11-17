@@ -97,7 +97,7 @@ class ImportersController < ApplicationController
       case @import.xml_type
       when 'past_perfect4'
         @zoom_class = 'StillImage'
-      when 'excel_based', 'related_set_from_archive_file'
+      when 'excel_based', 'dfc_xml', 'related_set_from_archive_file'
         @zoom_class = params[:zoom_class]
       else
         @zoom_class = 'Topic'
@@ -161,7 +161,7 @@ class ImportersController < ApplicationController
               done_message = t('importers_controller.get_progress.all_processed')
 
               if !status[:error].blank?
-                done_message = t('importers_controller.get_progress.error_message', :error => status[:error])
+                done_message = t('importers_controller.get_progress.error_message', :error => status[:error].gsub("\n", '<br />'))
               end
               page.hide("spinner")
               page.replace_html 'done', done_message
@@ -222,5 +222,9 @@ class ImportersController < ApplicationController
 
     flash[:notice] = t('importers_controller.stop.import_stopped')
     redirect_to :action => 'list'
+  end
+
+  def fetch_applicable_extended_fields
+    render :partial => "extended_field_selection", :locals => { :topic_type_id => params[:topic_type_id] }
   end
 end

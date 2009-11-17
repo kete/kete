@@ -58,12 +58,18 @@ namespace :kete do
       end
     end
 
-    desc 'Resize original images based on current IMAGE_SIZES and add new ones if needed. Does not remove no longer needed ones (to prevent links breaking).'
+    desc 'Resize original images based on current IMAGE_SIZES and add new ones if needed. Does not remove no longer needed ones (to prevent links breaking). By default image files that match new sizes will be skipped. If you need new versions recreated even if there is an existing file that matches the size, use FORCE_RESIZE=true.'
     task :resize_images => :environment do
       @logger = Logger.new(RAILS_ROOT + "/log/resize_images_#{Time.now.strftime('%Y-%m-%d_%H:%M:%S')}.log")
 
       puts "Resizing/created images based on IMAGE_SIZES..."
       @logger.info "Starting image file resizing."
+
+      force_resize = (ENV['FORCE_RESIZE'] && ENV['FORCE_RESIZE'] == "true") ? true : false
+      if force_resize
+        puts "All image sizes will be recreated from originals, even if the same size image file already exists."
+        @logger.info "FORCE_RESIZE=true"
+      end
 
       # get a list of thumbnail keys
       image_size_keys = IMAGE_SIZES.keys
@@ -92,7 +98,7 @@ namespace :kete do
           missing_image_size_keys = missing_image_size_keys - [child_image_file.thumbnail.to_sym]
 
           # if this image doesn't need to be changed, skip it
-          if image_file_match_image_size?(child_image_file)
+          if image_file_match_image_size?(child_image_file) && !force_resize
             @logger.info "      Child image #{child_image_file.id} does not need resizing"
             next
           end

@@ -34,7 +34,7 @@
    <p>
      <label for="text_pattern_value">Text</label>
      <%= select_tag(:text_type, options_for_select(['contains', 'equals'], params[:text_type])) %>
-     <%= text_field_tag(:text_pattern, params[:text_pattern], :size => 50, :id => "text_pattern_value", :class => "text-default") %>	     
+     <%= text_field_tag(:text_pattern, params[:text_pattern], :size => 50, :id => "text_pattern_value", :class => "text-default") %>
    </p>
    <p>
     <%= submit_tag "Search" %>
@@ -56,7 +56,8 @@
 </div>
 
 <% if @total_entries > 0 %>
-<% form_tag(translate_path) do %>
+<!-- don't use form_tag to avoid authenticity token issues -->
+<form method="post" action="<%= translate_path %>">
   <div>
       <%= hidden_field_tag(:filter, params[:filter], :id => "hid_filter") %>
       <%= hidden_field_tag(:sort_by, params[:sort_by], :id => "hid_sort_by") %>
@@ -67,50 +68,60 @@
   </div>
   <div class="translations">
 	  <h2>Translations from <%= @from_locale %> to <%= @to_locale %></h2>
-    <p class="translate">
-	    <%= submit_tag "Save Translations" %>
-	  </p>
-	  <% @paginated_keys.each do |key| 
+    <noscript>
+      <p class="translate">
+	      <%= submit_tag "Save Translations" %>
+	    </p>
+	  </noscript>
+	  <% @paginated_keys.each do |key|
 	      from_text = lookup(@from_locale, key)
 	      to_text = lookup(@to_locale, key)
 	      line_size = 100
 	      n_lines = n_lines(from_text, line_size)
 	      field_name = "key[#{key}]"
     %>
-	  <div class="translation">    
-		<% if from_text.present? %>
-		  <p class="translation-text">
-				<%= simple_format(h(from_text)) %>
-			</p>
-		<% end %>
+	  <div class="translation">
+		<p class="displays-as">
+		  <strong>Displays as:</strong>
+		  <img src='/images/indicator.gif' width='16' height='16' alt='Fetching translation.' style="display:none;" />
+		  <span class='text'><%= interpolate(to_text) %></span>
+		</p>
 		<p class="edit-form">
 		<% if n_lines > 1 %>
 			<%= text_area_tag(field_name, to_text, :size => "#{line_size}x#{n_lines}", :id => key) %>
 		<% else %>
 			<%= text_field_tag(field_name, to_text, :size => line_size, :id => key) %>
 		<% end %>
+		<span class='translation-indicators'>
+  		<span class='saving' style='display:none;'><img src='/images/indicator.gif' width='16' height='16' alt='Saving translation.' /> Saving....</span>
+  		<span class='saved' style='display:none;'><img src='/images/tick14x14.gif' width='14' height='14' alt='Translation saved.' /> Saved.</span>
+  		<span class='failed' style='display:none;'><img src='/images/cross.png' width='16' height='16' alt='Translation save failed.' /> Save failed.</span>
+   	</span>
 		</p>
 		<p>
 		  <em>
-			  <% # Kieran Pilkington, 2009-05-28
-			     # We want to interpolate the base values but not any variable values %>
-			  <%= link_to_function 'Auto Translate', "getGoogleTranslation('#{key}', \"#{escape_javascript(interpolate(from_text))}\", '#{@from_locale}', '#{@to_locale}')", :style => 'padding: 0; margin: 0;' %>
+			  <%= link_to_function 'Auto Translate', "getGoogleTranslation('#{key}', $('#{key}').value, '#{@from_locale}', '#{@to_locale}')", :style => 'padding: 0; margin: 0;' %>
 			  <br/>
 			  <strong>Key:</strong><%=h key %><br/>
 			  <% if @files[key] %>
 				  <strong>File:</strong><%= @files[key].join("<br/>") %>
-			    <% end %>
+			    <% end %><br />
+			  <strong>Original:</strong><%= h(from_text) %>
 			</em>
 		</p>
-	</div>  
+	</div>
 <% end %>
-  <p class="translate">
-    <%= submit_tag "Save Translations" %>
-	</p>
+  <noscript>
+    <p class="translate">
+      <%= submit_tag "Save Translations" %>
+	  </p>
+	</noscript>
 </div>
 <% end %>
-<% end %>
+</form>
 
 <div class="paging">
   <%= render :partial => 'pagination', :locals => {:total_entries => @total_entries, :per_page => per_page} %>
 </div>
+
+<%= watch_for_field_changes_js %>

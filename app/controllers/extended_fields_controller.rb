@@ -3,12 +3,12 @@ class ExtendedFieldsController < ApplicationController
   helper ExtendedFieldsHelper
 
   # everything else is handled by application.rb
-  before_filter :login_required, :only => [:list, :index, :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type ]
+  before_filter :login_required, :only => [:list, :index, :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
 
   before_filter :set_page_title
 
   permit "site_admin or admin of :site or tech_admin of :site",
-          :except => [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type ]
+          :except => [ :add_field_to_multiples, :fetch_subchoices, :fetch_topics_from_topic_type, :validate_topic_type_entry ]
 
   active_scaffold :extended_field do |config|
     # Default columns and column exclusions
@@ -115,7 +115,7 @@ class ExtendedFieldsController < ApplicationController
     search_term = search_term.split(' (').first if search_term =~ /.+ \(.+\)/
     logger.debug("What is search term: #{search_term}")
 
-    topic_type_ids = TopicType.find(parent_topic_type).full_set.collect { |a| a.id }
+    topic_type_ids = TopicType.find_by_id(parent_topic_type).full_set.collect { |a| a.id } rescue []
 
     topics = Topic.find(:all, :conditions => ["title LIKE ? AND topic_type_id IN (?)", "%#{search_term}%", topic_type_ids],
                         :order => "title ASC", :limit => 10)
@@ -129,6 +129,32 @@ class ExtendedFieldsController < ApplicationController
                                                                           :only_path => false)})")
     }
     render :inline => @template.content_tag("ul", topics.uniq)
+  end
+
+  def validate_topic_type_entry
+    extended_field = ExtendedField.find(params[:extended_field_id])
+    parent_topic_type = TopicType.find(extended_field.topic_type.to_i)
+    value, field_id = params[:value], params[:field_id]
+
+    no_value_js = "$('#{field_id}_valid').hide(); $('#{field_id}_invalid').hide();"
+    valid_value_js = "$('#{field_id}_valid').show(); $('#{field_id}_invalid').hide();"
+    invalid_value_js = "$('#{field_id}_valid').hide(); $('#{field_id}_invalid').show();"
+
+    js = no_value_js
+    unless value.blank?
+      js = invalid_value_js
+      topic = Topic.find_by_id(value.split('/').last.to_i, :select => 'topic_type_id')
+      if topic
+        valid_topic_type_ids = parent_topic_type.full_set.collect { |topic_type| topic_type.id }
+        js = valid_value_js if valid_topic_type_ids.include?(topic.topic_type_id)
+      end
+    end
+
+    respond_to do |format|
+      format.js do
+        render :text => js, :layout => false
+      end
+    end
   end
 
   private
