@@ -46,18 +46,31 @@ class String
 end
 
 class Array
-  def hash_of_topic_type_name_and_counts(ordered = false)
-    raise "Trying to get hash of topic type names and counts, but Array contains a non-topic object." if any? { |item| item.class.name != 'Topic' }
+  # Pass in an attribute name that corresponds to a
+  # column in the database, but without the _id
+  # i.e.   basket_id     => :basket
+  # i.e.   topic_type_id => :topic_type_id
+  def collection_of_objects_and_counts_for(attr_name, ordered = false)
+    attr_name_id = "#{attr_name}_id"
+
+    if any? { |item| !item.respond_to?(attr_name_id) }
+      error_msg = "Trying to get hash of #{attr_name.humanize} names and counts, "
+      error_msg += "but Array contains an object that doesn't have that value."
+      raise error_msg
+    end
 
     name_and_counts = Hash.new
 
-    topic_types = TopicType.from_item_set(self).all
-    topic_types.each do |topic_type|
-      name_and_counts[topic_type] = select { |topic| topic.topic_type_id == topic_type.id }.size
+    attr_ids = collect { |item| item.send(attr_name_id) }
+    attr_types = attr_name.to_s.classify.constantize.all(:conditions => { :id => attr_ids })
+    attr_types.each do |attr_type|
+      name_and_counts[attr_type] = select { |item| item.send(attr_name_id) == attr_type.id }.size
     end
 
     if ordered
-      name_and_counts.sort_by { |topic_type, count| topic_type.lft }
+      name_and_counts.sort_by do |attr_type, count|
+        attr_type.respond_to?(:lft) ? attr_type.lft : attr_type.id
+      end
     else
       name_and_counts
     end
