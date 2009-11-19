@@ -161,6 +161,11 @@ module ActiveRecord
       error, attribute = error_or_attr.is_a?(Error) ? [error_or_attr, error_or_attr.attribute] : [nil, error_or_attr]
       options[:message] = options.delete(:default) if options.has_key?(:default)
 
+      # Kieran Pilkington, 2009-11-20
+      # Adding support for wrapping messages in lambdas,
+      # to parse at run time, not when the application boots
+      options[:message] = options[:message].call if options[:message].is_a?(Proc)
+
       @errors[attribute.to_s] ||= []
       @errors[attribute.to_s] << (error || Error.new(@base, attribute, message, options))
     end
