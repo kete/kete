@@ -3,7 +3,10 @@
 <%= render(:partial => "content_wrapper_start") -%>
 
 <% cache_with_privacy(@topic, {:part => 'details_first'}) do -%>
-  <h2><%=t 'topics.show.topic' %> <%= h(@topic.title) %></h2>
+  <h2>
+    <span class='prefix'><%=t 'topics.show.topic' %></span>
+    <%= h(@topic.title) %>
+  </h2>
   <h4>
     <%=t 'topics.show.topic_type' %>
     <%= link_to(h(@topic.topic_type.name), url_for_topics_of_type(@topic.topic_type)) %>
