@@ -19,8 +19,8 @@ en:
     anyone: anyone
     approve: approve
     approved: approved
-    arent: "aren't"
     are_you_sure: "Are {{t.base.you}} sure?"
+    arent: aren't
     avatar: avatar
     back_to: "back to"
     basket: basket
@@ -30,10 +30,10 @@ en:
     can_be: "{{t.base.can}} be"
     can_be_downloaded: "{{t.base.can_be}} {{t.base.downloaded}}"
     can_be_viewed: "{{t.base.can_be}} {{t.base.viewed}}"
+    cancel: cancel
     cannot: cannot
     cannot_be: "{{t.base.cannot}} be"
     cannot_be_changed: "{{t.base.cannot_be}} {{t.base.changed}}"
-    cancel: cancel
     change: change
     changed: changed
     choice: choice
@@ -86,9 +86,9 @@ en:
     hide: hide
     history: history
     import: import
+    import_type: "{{t.base.import}} {{t.base.type}}"
     imported: imported
     importing: importing
-    import_type: "{{t.base.import}} {{t.base.type}}"
     inherit: inherit
     invalid: invalid
     item: item
@@ -96,9 +96,9 @@ en:
     joined: joined
     language: language
     latest: latest
-    locale: locale
     license: license
     licensed: licensed
+    locale: locale
     logged_in: "Logged in"
     login: login
     made: made
@@ -113,6 +113,9 @@ en:
     only: only
     open: open
     password: password
+    phrases:
+      change_password: "{{t.base.change.capitalize}} {{t.base.password}}"
+      request_password: "{{t.base.request.capitalize}} {{t.base.password.downcase}}"
     please: please
     please_try_again: "{{t.base.please}} try again"
     please_try_again_later: "{{t.base.please_try_again}} later"
@@ -144,9 +147,9 @@ en:
     saved: saved
     search: search
     searching: searching
+    sent: sent
     show: show
     showing: showing
-    sent: sent
     site: site
     site_administrator: "{{t.base.site}} {{t.base.administrator}}"
     sort: sort
@@ -158,7 +161,7 @@ en:
     technical_administrator: "technical {{t.base.administrator}}"
     thank_you: "Thank {{t.base.you}}"
     topic_type: "{{t.base.zoom_types.topic}} type"
-    type: "type"
+    type: type
     update: update
     updated: updated
     user: user
@@ -187,9 +190,6 @@ en:
       topic: topic
       video: video
       web_link: "web link"
-    phrases:
-      change_password: "{{t.base.change.capitalize}} {{t.base.password}}"
-      request_password: "{{t.base.request.capitalize}} {{t.base.password.downcase}}"
   account:
     activate:
       button: "{{t.base.activate.capatalize}}"
@@ -861,6 +861,8 @@ en:
       updated: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_updated}}."
   configure:
     index:
+      Link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
+      Missing_software: "Missing Software:"
       advanced_options: "Advanced Options"
       change_password: "{{t.base.you.capitalize}} should {{t.base.change}} the {{t.base.default}} {{t.base.administrator}} account's password. Leaving it as the {{t.base.default}} is a security risk."
       change_password_button: "{{t.base.change.capitalize}} {{t.base.password}}"
@@ -874,8 +876,6 @@ en:
       finished_with_settings: "Finished with Settings?"
       install_missing_software: "Install missing software, restart {{t.base.your}} server, and reload this page to proceed."
       installation_complete: "Installation complete"
-      Link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
-      Missing_software: "Missing Software:"
       missing_software_gem: "{{gem_name}} gem"
       must_restart: "Before {{t.base.you}} continue, {{t.base.you}} must restart the kete application server and start backgroundrb!"
       prime_search_engine: "Prime {{t.base.search.capitalize}} Engine"
@@ -1233,9 +1233,9 @@ en:
     additional_extended_field_control:
       add_another: "{{t.base.add.capitalize}} another {{field_name}}"
     children_form_column:
+      Need_choice_for_children: "{{t.base.you.capitalize}} {{t.base.cannot}} select child {{t.base.choice.pluralize}} until the {{t.base.choice}} {{t.base.has_been}} {{t.base.created}}."
       add_more_sub_choices: "{{t.base.add}} more sub-{{t.base.choice.pluralize}}"
       existing_sub_choices: "{{t.base.existing.capitalize}} sub-{{t.base.choice.pluralize}}"
-      Need_choice_for_children: "{{t.base.you.capitalize}} {{t.base.cannot}} select child {{t.base.choice.pluralize}} until the {{t.base.choice}} {{t.base.has_been}} {{t.base.created}}."
     extended_field_choice_autocomplete_editor:
       getting_choices: "Getting {{t.base.choice.pluralize}}. "
     extended_field_choice_select_editor:
@@ -2045,7 +2045,8 @@ en:
       description: Description
       name: "{{t.base.name.capitalize}}"
     generic_topic_fields:
-      description_{{t.base.field}}: "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
+      ? "description_{{t.base.field}}"
+      : "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
       note: "{{t.base.all.capitalize}} {{t.base.topic_type.pluralize}} inherit the following {{t.base.form}} {{t.base.field.pluralize}}:"
       present_in_all: "These {{t.base.form}} {{t.base.field.pluralize}} will be present in {{t.base.all}} {{t.base.topic_type.pluralize}}."
       short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
