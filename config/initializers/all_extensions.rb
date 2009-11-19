@@ -45,6 +45,25 @@ class String
   end
 end
 
+class Array
+  def hash_of_topic_type_name_and_counts(ordered = false)
+    raise "Trying to get hash of topic type names and counts, but Array contains a non-topic object." if any? { |item| item.class.name != 'Topic' }
+
+    name_and_counts = Hash.new
+
+    topic_types = TopicType.from_item_set(self).all
+    topic_types.each do |topic_type|
+      name_and_counts[topic_type] = select { |topic| topic.topic_type_id == topic_type.id }.size
+    end
+
+    if ordered
+      name_and_counts.sort_by { |topic_type, count| topic_type.lft }
+    else
+      name_and_counts
+    end
+  end
+end
+
 # Include extensions into Rails components here
 
 # Kieran Pilkington, 2009-07-09
