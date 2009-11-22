@@ -68,16 +68,16 @@ class ExtendedField < ActiveRecord::Base
   validates_uniqueness_of :label, :case_sensitive => false
 
   # don't allow special characters in label that will break our xml
-  validates_format_of :label, :with => /^[^\'\":<>\&,\/\\\?\.]*$/, :message => I18n.t('extended_field_model.invalid_chars', :invalid_chars => ": \', \\, /, &, \", ?, <, >, and .")
+  validates_format_of :label, :with => /^[^\'\":<>\&,\/\\\?\.]*$/, :message => lambda { I18n.t('extended_field_model.invalid_chars', :invalid_chars => ": \', \\, /, &, \", ?, <, >, and .") }
 
   # don't allow spaces
-  validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => I18n.t('extended_field_model.no_spaces')
+  validates_format_of :xml_element_name, :xsi_type, :with => /^[^\s]*$/, :message => lambda { I18n.t('extended_field_model.no_spaces') }
 
   # TODO: add validation that prevents adding xsi_type without xml_element_name
 
   # don't allow topic or content base attributes: title, description
   invalid_label_names = TopicType.column_names + ContentType.column_names
-  validates_exclusion_of :label, :in => invalid_label_names, :message => I18n.t('extended_field_model.already_used', :invalid_label_names => invalid_label_names.join(", "))
+  validates_exclusion_of :label, :in => invalid_label_names, :message => lambda { I18n.t('extended_field_model.already_used', :invalid_label_names => invalid_label_names.join(", ")) }
 
   # TODO: globalize stuff, uncomment later
   # translates :label, :description

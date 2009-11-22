@@ -323,6 +323,8 @@ module Importer
       extra_fields << 'tag_list'
       extra_fields << 'uploaded_data'
 
+      extra_fields << 'url'
+
       replacement_hash = Hash.new
 
       params[item_key].keys.each do |field_key|
@@ -730,6 +732,10 @@ module Importer
 
             if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
               tag_list_array += value.split(',').collect { |tag| tag.strip }
+            end
+
+            if zoom_class == 'WebLink' && record_field.upcase == 'URL'
+              params[zoom_class_for_params][:url] = value
             end
 
             # path_to_file is special case, we know we have an associated file that goes in uploaded_data

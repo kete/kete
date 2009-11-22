@@ -424,19 +424,35 @@ module ExtendedFieldsHelper
                                            }
                                          })
     html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.getting_topics')}' id='#{spinner_id}' style='display:none;' />"
-    html += "<img src='/images/indicator.gif' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.checking_value')}' id='#{spinner_id}_checker' style='display:none;' />"
-    html += "<img src='/images/tick14x14.gif' width='14' height='14' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.valid_value')}' id='#{id}_valid' style='display:none;' />"
-    html += "<img src='/images/cross.png' width='16' height='16' alt='#{t('extended_fields_helper.extended_field_topic_type_editor.invalid_value')}' id='#{id}_invalid' style='display:none;' />"
+
+    # Add some images and text to indicate whether the value entered is valid or invalid
+    checking_value = t('extended_fields_helper.extended_field_topic_type_editor.checking_value')
+    valid_value = t('extended_fields_helper.extended_field_topic_type_editor.valid_value')
+    invalid_value = t('extended_fields_helper.extended_field_topic_type_editor.invalid_value')
+    html += <<-RUBY
+      <span id='#{spinner_id}_checker' style='display:none;'>
+        <img src='/images/indicator.gif' width='16' height='16' alt='#{checking_value}' /> #{checking_value}...
+      </span>
+      <span id='#{id}_valid' style='display:none;'>
+        <img src='/images/tick14x14.gif' width='14' height='14' alt='#{valid_value}' /> #{valid_value}
+      </span>
+      <span id='#{id}_invalid' style='display:none;'>
+        <img src='/images/cross.png' width='16' height='16' alt='#{invalid_value}' /> #{invalid_value}
+      </span>
+    RUBY
+
+    # Use Javascript to send a request which checks on the server if the value is valid or not
     html += javascript_tag("
-    $('#{id}').observe('change', function(){
+    $('#{id}').observe('blur', function(){
       new Ajax.Request('#{url_for(:controller => 'extended_fields', :action => 'validate_topic_type_entry')}', {
         method: 'get',
         parameters: { field_id: '#{id}', extended_field_id: #{extended_field.id}, value: $('#{id}').value },
-        onCreate: function(create) { $('#{spinner_id}_checker').show(); },
+        onCreate: function(create) { $('#{id}_valid').hide(); $('#{id}_invalid').hide(); $('#{spinner_id}_checker').show(); },
         onComplete: function(complete) { $('#{spinner_id}_checker').hide(); }
       });
     });
     ")
+
     html
   end
 
