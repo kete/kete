@@ -1,5 +1,6 @@
 .DS_Store
 *.sqlite3*
+mkmf.log
 config/database.yml
 config/backgroundrb.yml
 config/mongrel_cluster.yml
