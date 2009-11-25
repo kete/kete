@@ -185,8 +185,12 @@ module Nokogiri
       # to escape it by appending an underscore, then sending
       # it to the builder, which Nokogiri sees and removes
       # before generating the XML.
+      # At the same time, make sure that the name is a valid
+      # XML name and escape common patterns (spaces to
+      # underscores) to prevent import errors
       def safe_send(*args, &block)
-        args[0] = "#{args[0]}_" if self.respond_to?(args[0].to_s)
+        args[0] = args[0].to_s.gsub(/\s/, '_')
+        args[0] = "#{args[0]}_" if self.respond_to?(args[0])
         send(*args, &block)
       end
 

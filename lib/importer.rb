@@ -450,19 +450,20 @@ module Importer
       conditions = Array.new
       params = Hash.new
 
+      regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
+
       unless options[:title].blank?
-        conditions << "title = :title"
-        params[:title] = options[:title]
+        sanitized_title = options[:title].gsub(/\\/, '\&\&').gsub(/'/, "''")
+        conditions << "(LOWER(title) = '#{sanitized_title}' OR LOWER(private_version_serialized) #{regexp} '- - title\n  - #{sanitized_title}')"
       end
 
       unless options[:topic_type].blank?
-        conditions << "topic_type_id = :topic_type_id"
-        params[:topic_type_id] = options[:topic_type].id
+        topic_type_id = options[:topic_type].id.to_i
+        conditions << "(topic_type_id = #{topic_type_id} OR LOWER(private_version_serialized) #{regexp} '- - topic_type_id\n  - #{topic_type_id}')"
       end
 
       unless options[:extended_field_data].blank? || @record_identifier_extended_field.blank?
         ext_field_id = @record_identifier_extended_field.label_for_params
-        regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
         conditions << "(LOWER(extended_content) #{regexp} :ext_field_data OR LOWER(private_version_serialized) #{regexp} :ext_field_data)"
         params[:ext_field_data] = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
       end

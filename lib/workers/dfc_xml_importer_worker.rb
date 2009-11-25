@@ -40,7 +40,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
 
             row.search("field").each do |field|
               value = field.inner_text.strip
-              field_name = field.attributes['name'].to_s
+              field_name = field.attributes['name'].to_s.gsub(/\s/, '_')
               next if value.blank? || field_name.blank?
               fields[field_name] = value
             end
