@@ -304,7 +304,7 @@ class ConfigureController < ApplicationController
   def restart_server
     ENV['RAILS_ENV'] = RAILS_ENV
     rake_result = Rake::Task["kete:tools:restart"].execute(ENV)
-    if rake_result
+    if rake_result && rake_result.to_s =~ /Restarted Application/
       flash[:notice] = t('configure_controller.restart_server.server_restarted')
     else
       flash[:error] = t('configure_controller.restart_server.problem_restarting')
