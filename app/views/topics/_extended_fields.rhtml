@@ -1,5 +1,5 @@
 <% cache_with_privacy(item, {:part => "secondary_content_extended_fields"}) do -%>
-  <% extended_fields_html = display_xml_attributes(item) -%>
+  <% extended_fields_html = display_xml_attributes(item, :embedded_only => embedded) -%>
   <% if !extended_fields_html.blank? %>
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "extended-fields", :class_suffix => nil }) -%>

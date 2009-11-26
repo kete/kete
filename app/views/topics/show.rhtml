@@ -18,11 +18,9 @@
   <%= pending_review(@topic) -%>
 <% end -%>
 
-<% if @topic.topic_type.embed_extended_field_data? %>
-  <div id="embedded_extended_field_data">
-    <%= render(:partial => "extended_fields", :locals => { :item => @topic }) -%>
-  </div>
-<% end %>
+<div id="embedded_extended_field_data">
+  <%= render(:partial => "extended_fields", :locals => { :item => @topic, :embedded => true }) -%>
+</div>
 
 <div style="clear:both;"></div>
 
@@ -36,7 +34,7 @@
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
     <%= render(:partial => "tags_div", :locals => { :item => @topic }) -%>
-    <%= render(:partial => "extended_fields", :locals => { :item => @topic }) unless @topic.topic_type.embed_extended_field_data? -%>
+    <%= render(:partial => "extended_fields", :locals => { :item => @topic, :embedded => false }) -%>
     <%= display_search_sources_for(@topic) %>
     <%= render(:partial => "license", :locals => { :item => @topic }) -%>
   </div> <!-- /secondary-content-wrapper -->
