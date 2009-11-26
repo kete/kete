@@ -1438,3 +1438,19 @@ a.disabled {
 #comment_in_response_to_original {
   float: right;
 }
+
+/*
+ * Embedded Extended Field Data
+ */
+#embedded_extended_field_data {
+  margin-right: 1px;
+  padding-right: 1px;
+}
+#embedded_extended_field_data * {
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+#embedded_extended_field_data #detail-extended-heading {
+  display: none;
+}

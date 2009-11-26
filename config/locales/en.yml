@@ -2043,6 +2043,7 @@ en:
       title: "{{t.base.editing.capitalize}} {{t.base.topic_type}}"
     form:
       description: Description
+      embed_extended_field_data: "Embed Extended Field Data?"
       name: "{{t.base.name.capitalize}}"
     generic_topic_fields:
       ? "description_{{t.base.field}}"
