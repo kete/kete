@@ -776,7 +776,7 @@ module ApplicationHelper
     content = item.extended_content_pairs
 
     mappings.each do |mapping|
-      next if options[:embedded_only] && !mapping.embedded?
+      next if options[:embedded_only] && (!mapping.embedded? || mapping.embedded.nil?)
       next if !options[:embedded_only] && mapping.embedded?
 
       field = mapping.extended_field
