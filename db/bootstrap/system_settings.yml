@@ -1,4 +1,4 @@
----
+--
 system_settings_001:
   name: Is Configured
   technically_advanced: true
@@ -260,7 +260,7 @@ system_settings_029:
 
     Note, this only takes effect from this point forward.  No existing document files will be changed.
   id: "29"
-  value: "['text/html', 'text/plain', 'text/rtf', 'text/css', 'application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-tar', 'application/x-compressed-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web', 'image/jpeg', 'image/jpg', 'application/octet-stream', 'application/excel', 'application/x-excel', 'application/x-msexcel', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf']"
+  value: "['text/html', 'text/plain', 'text/rtf', 'text/css', 'application/mac-binhex40', 'application/msword', 'application/word', 'application/pdf', 'application/pics-rules', 'application/postscript', 'application/rtf', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/x-gtar', 'application/x-gzip', 'application/zip', 'application/x-zip', 'application/x-zip-compressed', 'application/x-tar', 'application/x-compressed-tar', 'application/vnd.oasis.opendocument.chart', 'application/vnd.oasis.opendocument.database', 'application/vnd.oasis.opendocument.formula', 'application/vnd.oasis.opendocument.drawing', 'application/vnd.oasis.opendocument.image', 'application/vnd.oasis.opendocument.text-master', 'application/vnd.oasis.opendocument.presentation', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.oasis.opendocument.text', 'application/vnd.oasis.opendocument.text-web', 'image/jpeg', 'image/jpg', 'application/octet-stream', 'application/excel', 'application/x-excel', 'application/x-msexcel', 'application/msexcel', 'application/x-ms-excel', 'application/ms-excel', 'application/x-dos_ms_excel', 'image/vnd.adobe.photoshop', 'image/x-photoshop', 'application/x-photoshop', 'image/xcf']"
   section: Documents
 system_settings_030:
   name: Audio Content Types
@@ -563,7 +563,8 @@ system_settings_065:
   name: Additional Credits HTML
   technically_advanced: true
   required_to_be_configured: false
-  explanation: "What HTML should we put at the bottom of the site standard layout for things like the company that hosts the site or did the development of the software?"
+  explanation: "What HTML should we put at the bottom of the site standard layout for things like the c
+ompany that hosts the site or did the development of the software?"
   id: "65"
   value:
   section: Server
