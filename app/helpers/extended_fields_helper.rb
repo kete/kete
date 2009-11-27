@@ -32,6 +32,9 @@ module ExtendedFieldsHelper
     '<div id="allow_user_additions">' +
       "#{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices')} #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_yes')} " + radio_button_tag("record[user_choice_addition]", 1, record.user_choice_addition?) + " #{t('extended_fields_helper.pseudo_choices_form_column.allow_user_choices_no')} " +   radio_button_tag("record[user_choice_addition]", 0, !record.user_choice_addition?) +
     '</div>' +
+    '<div id="link_choice_values">' +
+      "#{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values')} #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_yes')} " + radio_button_tag("record[link_choice_values]", 1, record.new_record? || record.link_choice_values.nil? || record.link_choice_values?) + " #{t('extended_fields_helper.pseudo_choices_form_column.link_choice_values_no')} " + radio_button_tag("record[link_choice_values]", 0, !record.new_record? && !record.link_choice_values.nil? && !record.link_choice_values?) +
+    '</div>' +
     '</div>' +
 
     # Javascript call to initialise YUI TreeView, and listens for expand/collapse links
@@ -47,6 +50,10 @@ module ExtendedFieldsHelper
   end
 
   def user_choice_addition_form_column(record, input_name)
+    ""
+  end
+
+  def link_choice_values_form_column(record, input_name)
     ""
   end
 
