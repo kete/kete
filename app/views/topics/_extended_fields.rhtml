@@ -1,4 +1,5 @@
-<% cache_with_privacy(item, {:part => "secondary_content_extended_fields"}) do -%>
+<% cache_key = embedded ? "secondary_content_extended_fields_embedded" : "secondary_content_extended_fields" %>
+<% cache_with_privacy(item, {:part => cache_key}) do -%>
   <% extended_fields_html = display_xml_attributes(item, :embedded_only => embedded) -%>
   <% if !extended_fields_html.blank? %>
     <%= render(:partial => "topics/secondary_wrapper_start",
