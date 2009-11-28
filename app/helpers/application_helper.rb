@@ -765,8 +765,6 @@ module ApplicationHelper
 
   #---- related to extended_fields for either topic_types or content_types
   def display_xml_attributes(item, options = {})
-    options[:embedded_only] ||= false
-
     raq = " &raquo; "
     html = []
 
@@ -776,8 +774,13 @@ module ApplicationHelper
     content = item.extended_content_pairs
 
     mappings.each do |mapping|
-      next if options[:embedded_only] && (!mapping.embedded? || mapping.embedded.nil?)
-      next if !options[:embedded_only] && mapping.embedded?
+      unless options[:embedded_only].nil?
+        if options[:embedded_only]
+          next unless mapping.embedded?
+        else
+          next if mapping.embedded?
+        end
+      end
 
       field = mapping.extended_field
       # value = content[qualified_name_for_field(field)]

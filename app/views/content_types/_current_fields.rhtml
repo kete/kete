@@ -23,6 +23,7 @@
             <% end -%>
             <%= t('content_types.current_fields.multiple') if @mapping.extended_field_multiple -%>
             -<%= check_box("mapping[]", 'required', :checked => @mapping.required?) %> <%=t 'content_types.current_fields.required' %>
+            -<%= check_box("mapping[]", 'embedded', :checked => @mapping.embedded?) %> <%=t 'content_types.current_fields.embedded' %>
             <%= " - " + link_to(t('content_types.current_fields.delete'), { :action => 'remove_mapping', :id => params[:id], :mapping_id => @mapping.id },
               { :id => "mapping_#{@mapping.id}_delete" }) unless @mapping.used_by_items? %>
           </p>

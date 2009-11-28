@@ -57,6 +57,7 @@ en:
     default: default
     delete: delete
     deleted: deleted
+    description: description
     disable: disable
     disabled: disabled
     disallow: disallow
@@ -838,7 +839,7 @@ en:
       button: "{{t.base.save.capitalize}}"
       title: "{{t.base.editing.capitalize}} {{t.base.zoom_types.comment}}"
     form:
-      description: "Description:"
+      description: "{{t.base.description.capitalize}}:"
       edit_comment: "{{t.base.zoom_types.comment.capitalize}} on this edit:"
       security_warning: "Note: {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons."
       security_warning_admin: "Unless {{t.base.you}} check the box below."
@@ -947,7 +948,7 @@ en:
       title: "Available {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
-      embedded: embedded?
+      embedded: "display under {{t.base.description}}?"
       multiple: (multiple)
       none_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.content_type}}."
       reorder_button: "Reorder {{t.base.content_type.capitalize}} {{t.base.form.capitalize}}"
@@ -1083,15 +1084,15 @@ en:
     details:
       filename: "Filename:"
       not_available: "{{t.base.not_available}} for download"
-      replace_description: "{{t.base.replace.capitalize}} description with {{t.base.zoom_types.document}} text"
+      replace_description: "{{t.base.replace.capitalize}} {{t.base.description}} with {{t.base.zoom_types.document}} text"
       size: "Size:"
       type: "{{t.base.zoom_types.document.capitalize}} {{t.base.type}}:"
     edit:
       not_authorized: "Sorry - {{t.base.editing}} on this section of the {{t.base.site}} {{t.base.has_been}} {{t.base.disallowed}}"
   documents_controller:
     convert:
-      converted: "{{t.base.zoom_types.document.capitalize}} description {{t.base.was_updated}} with text of uploaded document."
-      not_converted: "There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's description.  {{t.base.please.capitalize}} {{t.base.edit}} the description manually."
+      converted: "{{t.base.zoom_types.document.capitalize}} {{t.base.description}} {{t.base.was_updated}} with text of uploaded document."
+      not_converted: "There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's {{t.base.description}}.  {{t.base.please.capitalize}} {{t.base.edit}} the {{t.base.description}} manually."
     make_theme:
       made_theme: "{{t.base.zoom_types.document.capitalize}} expanded to be {{t.base.new}} theme."
     update:
@@ -1436,7 +1437,7 @@ en:
       import_button: "{{t.base.import.capitalize}}"
       import_type: "{{t.base.import_type.capitalize}}?"
       license: "{{t.base.you.capitalize}} may also {{t.base.choose}} to have all {{t.base.imported}} {{t.base.item.pluralize}} be under one of these {{t.base.license.pluralize}}."
-      mapping_fields: "{{t.base.you.capitalize}} have mapped the appropriate {{t.base.field.pluralize}} in the records.xml file to {{t.base.tag.pluralize}} or the title, short summary, or description {{t.base.field.pluralize}}.  {{t.base.click.capitalize}} \"reconfigure {{t.base.site}}\" in {{t.layouts.application.toolbox_label}}, then \"Advanced Options\", then \"{{t.base.import.pluralize.capitalize}}\", and fill out {{t.base.form}} appropriately.  {{t.base.you.capitalize}} will need to restart the {{t.base.site}} before {{t.base.your}} {{t.base.import}} for these settings to take effect."
+      mapping_fields: "{{t.base.you.capitalize}} have mapped the appropriate {{t.base.field.pluralize}} in the records.xml file to {{t.base.tag.pluralize}} or the title, short summary, or {{t.base.description}} {{t.base.field.pluralize}}.  {{t.base.click.capitalize}} \"reconfigure {{t.base.site}}\" in {{t.layouts.application.toolbox_label}}, then \"Advanced Options\", then \"{{t.base.import.pluralize.capitalize}}\", and fill out {{t.base.form}} appropriately.  {{t.base.you.capitalize}} will need to restart the {{t.base.site}} before {{t.base.your}} {{t.base.import}} for these settings to take effect."
       metadata: "The same goes for embedded metadata if {{t.base.item.pluralize}} have associated binary files (images, audio, video, and documents)."
       past_perfect: "Past Perfect 4"
       place_in_imports_folder: "your_folder should be placed on your server wherever your Kete souce code lives, <b>under the imports folder</b>.  So if you have installed Kete using the conventions of the installation guide, that would be something like '/home/kete/apps/my_kete_project/current/imports/your_folder'."
@@ -2032,7 +2033,7 @@ en:
       title: "Available {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
-      embedded: embedded?
+      embedded: "display under {{t.base.description}}?"
       multiple: (multiple)
       no_fields_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.topic_type}}."
       no_more_allowed: "{{t.base.you.capitalize}} {{t.base.cannot}} {{t.base.add}} {{t.base.any}} additional {{t.base.field.pluralize}} to this {{t.base.topic_type}}, see above."
@@ -2045,11 +2046,9 @@ en:
       title: "{{t.base.editing.capitalize}} {{t.base.topic_type}}"
     form:
       description: Description
-      embed_extended_field_data: "Embed Extended Field Data?"
       name: "{{t.base.name.capitalize}}"
     generic_topic_fields:
-      ? "description_{{t.base.field}}"
-      : "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
+      description_field: "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
       note: "{{t.base.all.capitalize}} {{t.base.topic_type.pluralize}} inherit the following {{t.base.form}} {{t.base.field.pluralize}}:"
       present_in_all: "These {{t.base.form}} {{t.base.field.pluralize}} will be present in {{t.base.all}} {{t.base.topic_type.pluralize}}."
       short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
@@ -2117,7 +2116,7 @@ en:
       comment_on_edit: "{{t.base.zoom_types.comment.capitalize}} on this {{t.base.edit}}"
       create: "{{t.base.create.capitalize}}"
       current_image: "Current Image:"
-      description: Description
+      description: "{{t.base.description.capitalize}}"
       description_example: "Note: {{t.base.new}} {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons"
       description_example_exception: ", unless {{t.base.you}} check the box below"
       downloaded_by_everyone: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
@@ -2136,7 +2135,7 @@ en:
       private_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.only}} {{t.base.by}} {{t.base.basket}} {{t.base.member.pluralize}})"
       public: "{{t.base.public.capitalize}}"
       public_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.by}} {{t.base.everyone}})"
-      related_items_as_inset: "Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} {{t.base.content}} into {{t.base.zoom_types.topic.capitalize}} description?"
+      related_items_as_inset: "Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} {{t.base.content}} into {{t.base.zoom_types.topic.capitalize}} {{t.base.description}}?"
       required_fields: "* denotes a required {{t.base.field}}"
       short_summary: "Short Summary"
       skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.item}}?"

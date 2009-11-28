@@ -18,9 +18,7 @@
   <%= pending_review(@topic) -%>
 <% end -%>
 
-<div id="embedded_extended_field_data">
-  <%= render(:partial => "extended_fields", :locals => { :item => @topic, :embedded => true }) -%>
-</div>
+<%= render(:partial => "extended_fields", :locals => { :item => @topic, :embedded => true }) -%>
 
 <div style="clear:both;"></div>
 

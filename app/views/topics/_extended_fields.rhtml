@@ -1,8 +1,9 @@
-<% embedded ||= false
+<% embedded = nil unless defined?(embedded)
    cache_key = embedded ? "secondary_content_extended_fields_embedded" : "secondary_content_extended_fields" %>
 <% cache_with_privacy(item, {:part => cache_key}) do -%>
   <% extended_fields_html = display_xml_attributes(item, :embedded_only => embedded) -%>
   <% if !extended_fields_html.blank? %>
+    <%= '<div id="embedded_extended_field_data">' if embedded %>
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "extended-fields", :class_suffix => nil }) -%>
     <div id="detail-extended">
@@ -10,5 +11,6 @@
       <%= extended_fields_html %>
     </div>
     <%= render(:partial => "topics/secondary_wrapper_end") -%>
+    <%= '</div>' if embedded %>
   <% end %>
 <% end %>

@@ -13,6 +13,10 @@
   <%= pending_review(@audio_recording) -%>
 <% end -%>
 
+<%= render(:partial => "extended_fields", :locals => { :item => @audio_recording, :embedded => true }) -%>
+
+<div style="clear:both;"></div>
+
 <%= render(:partial => "topics/flagging_contributor", :locals => { :item => @audio_recording }) if current_user_can_see_flagging? -%>
 
 <%= render(:partial => "topics/related_items", :locals => { :item => @audio_recording, :topics_only => true }) -%>
@@ -23,7 +27,7 @@
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @audio_recording }) -%>
-    <%= render(:partial => "topics/extended_fields" , :locals => { :item => @audio_recording }) -%>
+    <%= render(:partial => "topics/extended_fields" , :locals => { :item => @audio_recording, :embedded => false }) -%>
     <%= display_search_sources_for(@audio_recording) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @audio_recording }) -%>
   </div> <!-- /secondary-content-warpper -->
