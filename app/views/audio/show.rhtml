@@ -13,7 +13,7 @@
   <%= pending_review(@audio_recording) -%>
 <% end -%>
 
-<%= render(:partial => "extended_fields", :locals => { :item => @audio_recording, :embedded => true }) -%>
+<%= render(:partial => "topics/extended_fields", :locals => { :item => @audio_recording, :embedded => true }) -%>
 
 <div style="clear:both;"></div>
 
