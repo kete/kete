@@ -450,27 +450,34 @@ module Importer
       conditions = Array.new
       params = Hash.new
 
-      regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
-
       unless options[:title].blank?
-        sanitized_title = options[:title].gsub(/\\/, '\&\&').gsub(/'/, "''")
-        conditions << "(LOWER(title) = '#{sanitized_title}' OR LOWER(private_version_serialized) #{regexp} '- - title\n  - #{sanitized_title}')"
+        conditions << "(LOWER(title) = :title)"
+        params[:title] = options[:title].downcase
       end
 
       unless options[:topic_type].blank?
-        topic_type_id = options[:topic_type].id.to_i
-        conditions << "(topic_type_id = #{topic_type_id} OR LOWER(private_version_serialized) #{regexp} '- - topic_type_id\n  - #{topic_type_id}')"
+        conditions << "(topic_type_id = :topic_type_id)"
+        params[:topic_type_id] = options[:topic_type].id
       end
 
       unless options[:extended_field_data].blank? || @record_identifier_extended_field.blank?
+        regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
         ext_field_id = @record_identifier_extended_field.label_for_params
-        conditions << "(LOWER(extended_content) #{regexp} :ext_field_data OR LOWER(private_version_serialized) #{regexp} :ext_field_data)"
+        conditions << "(LOWER(extended_content) #{regexp} :ext_field_data)"
         params[:ext_field_data] = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
       end
 
-      conditions = !params.blank? ? [conditions.join(' AND '), params] : conditions.join(' AND ')
+      # Select all topics where the id is within a subselect of topic versions matching criteria
+      # Adds a little complexity, but gets around privacy related import issues, as well as
+      # no longer adds the topic if the first version was the same title but was later changed
+      conditions = formulate_conditions(conditions.join(' AND '), options[:item_type].singularize)
+      conditions = [conditions, params] unless params.blank?
       logger.debug("what are conditions: " + conditions.inspect)
       @current_basket.send(options[:item_type]).find(:all, :conditions => conditions)
+    end
+
+    def formulate_conditions(conditions, item_type)
+      "id IN (SELECT #{item_type}_id FROM #{item_type}_versions WHERE #{conditions})"
     end
 
     # override in your importer worker to customize
