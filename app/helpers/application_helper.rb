@@ -890,7 +890,7 @@ module ApplicationHelper
         unless base_url.blank?
           link_to(l, base_url + v)
         else
-          if ef && !ef.link_choice_values.nil? && !ef.link_choice_values?
+          if ef && ef.dont_link_choice_values?
             l
           else
             link_to(l, send(method, url_hash.merge(:limit_to_choice => v.escape_for_url)))

@@ -1276,9 +1276,9 @@ en:
       allow_user_choices_yes: "Yes"
       collapse_all: "Collapse {{t.base.all}}"
       expand_all: "Expand {{t.base.all}}"
-      link_choice_values: "Link {{t.base.choice}} values?"
-      link_choice_values_no: "No"
-      link_choice_values_yes: "Yes"
+      dont_link_choice_values: "Do not link {{t.base.choice}} values?"
+      dont_link_choice_values_no: "No"
+      dont_link_choice_values_yes: "Yes"
   field_mappings_controller:
     create:
       created: "{{item_class}} {{t.base.was_created}}."
