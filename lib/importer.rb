@@ -455,7 +455,7 @@ module Importer
         params[:title] = options[:title].downcase
       end
 
-      unless options[:topic_type].blank?
+      if options[:item_type] == 'topics' && !options[:topic_type].blank?
         conditions << "(topic_type_id = :topic_type_id)"
         params[:topic_type_id] = options[:topic_type].id
       end
@@ -503,17 +503,14 @@ module Importer
       # In some cases, records may share the same name, but have a different code
       # In order to accomodate for that, we check both title, extended field data
       # and topic type if available
-      # Otherwise, do a very basic check againts items with the same title
-      if !record_hash[@record_identifier_xml_field].blank?
-        existing_item = importer_locate_existing_items(
-          :title => title,
-          :topic_type => @related_topic_type,
-          :extended_field_data => record_hash[@record_identifier_xml_field]
-        ).first
-      else
-        #existing_item = @current_basket.send(@zoom_class_for_params.pluralize).find_by_title(title)
-        existing_item = importer_locate_existing_items(:title => title).first
-      end
+      # Otherwise, do a very basic check againts items with the same title and topic type
+      options = {
+        :title => title,
+        :topic_type => @import_topic_type
+      }
+      options.merge!(:extended_field_data => record_hash[@record_identifier_xml_field]) unless record_hash[@record_identifier_xml_field].blank?
+
+      existing_item = importer_locate_existing_items(options).first
 
       new_record = nil
       if existing_item.blank?
