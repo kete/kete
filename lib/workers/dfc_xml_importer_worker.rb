@@ -65,7 +65,7 @@ class DfcXmlImporterWorker < BackgrounDRb::MetaWorker
 
               title_parts, filename_without_ext = Array.new, fields['Filename'].split('.').first
 
-              case record_type
+              case (fields['Record_Type'] || '').downcase
               when 'archives', 'publication'
                 title_parts << "Collection Title: #{fields['Collection_Title']}" unless fields['Collection_Title'].blank?
                 title_parts << "Reference: #{fields['Archive_Reference']}" unless fields['Archive_Reference'].blank?
