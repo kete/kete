@@ -1,3 +1,4 @@
+<%# THIS FILE IS NO LONGER USED. SEE lib/oai_zoom.rb#oai_record_xml -%>
 <%= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
     xml.send("OAI-PMH",
              :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",

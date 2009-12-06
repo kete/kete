@@ -14,10 +14,11 @@ module RequiredSoftware
       required_software[lib_type].each do |key, value|
         next if !args[:exclude].blank? && args[:exclude].include?(key)
         if !value.blank? && value.kind_of?(Hash)
-          if !value['lib_name'].blank?
-            required_libs[key] = value['lib_name']
+          name = (value['lib_name'] || value['gem_name'] || key)
+          if value['version']
+            required_libs[key] = [name, value['version']]
           else
-            required_libs[key] = value['gem_name']
+            required_libs[key] = name
           end
         else
           required_libs[key] = key
@@ -32,7 +33,11 @@ module RequiredSoftware
 
       required_libs.values.each do |lib|
         begin
-          require lib
+          if lib.is_a?(Array)
+            gem lib[0], "= #{lib[1]}"
+          else
+            require lib
+          end
         rescue LoadError
           missing_libs << lib
         end

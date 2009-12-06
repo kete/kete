@@ -41,6 +41,7 @@ testing_gems:
 
 gems:
   nokogiri:
+    version: 1.3.3
   packet:
   chronic:
   hpricot:
