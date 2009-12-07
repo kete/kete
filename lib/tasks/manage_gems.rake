@@ -44,7 +44,7 @@ namespace :manage_gems do
           `cd tmp && sudo rm -rf #{key}`
         else
           # we are installing a prebuilt gem
-          gem_name = value['gem_name']
+          gem_name = value['gem_name'] || key
           version = " --version=#{value['version']}" unless value['version'].blank?
           source = " --source=#{value['source']}" unless value['source'].blank?
           p "sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
