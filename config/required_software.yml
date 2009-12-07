@@ -57,8 +57,6 @@ gems:
     lib_name: memcache
   zoom:
   libxml-ruby:
-    gem_name: libxml-ruby
-    lib_name: libxml
     version: 0.7.0
   avatar:
   htmlentities:

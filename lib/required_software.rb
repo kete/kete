@@ -14,10 +14,14 @@ module RequiredSoftware
       required_software[lib_type].each do |key, value|
         next if !args[:exclude].blank? && args[:exclude].include?(key)
         if !value.blank? && value.kind_of?(Hash)
-          name = (value['lib_name'] || value['gem_name'] || key)
           if value['version']
+            # Don't use lib_name with version because gem requires the gem_name
+            name = (value['gem_name'] || key)
+            # If version is present, set an array of name and version, e.g. ['nokogiri', '1.3.3']
             required_libs[key] = [name, value['version']]
           else
+            # Try lib name first, fall back to gem name and finally the yaml key
+            name = (value['lib_name'] || value['gem_name'] || key)
             required_libs[key] = name
           end
         else
