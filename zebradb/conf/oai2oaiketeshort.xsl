@@ -41,7 +41,7 @@
 	</xsl:for-each>
 	<!-- dc:description, we only need the first one -->
 	<xsl:for-each select="dc:description">
-	  <xsl:if test="position()=1">
+	  <xsl:if test="position()=1 and count(child::*)=0">
 	    <dc:description><xsl:value-of select="."/></dc:description>
 	  </xsl:if>
 	</xsl:for-each>

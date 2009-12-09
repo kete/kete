@@ -220,7 +220,9 @@ module ZoomSearch
       desired_fields.each do |field|
         # make xpath request to get first instance of the desired field's value
         # (dc elements may be used more than once)
-        field_value = oai_dc.xpath(".//dc:#{field[0]}", oai_dc.namespaces).first.content
+        field_value = oai_dc.xpath(".//dc:#{field[0]}", oai_dc.namespaces).first
+        next if field_value.nil?
+        field_value = field_value.content
 
         # description may sometimes be nil so if it is, skip this element so we don't get 500 errors
         next if field_value.nil?
