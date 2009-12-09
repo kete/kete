@@ -35,7 +35,7 @@
       <xsl:when test="$WordCount > 1 and
                       (string-length(substring-before($TextData, ' ')) > 0 or
                       string-length(substring-before($TextData, '  ')) > 0)">
-        <xsl:value-of select="concat(substring-before($TextData, ' '), ' ')" disable-output-escaping="yes"/>
+        <xsl:value-of select="concat(substring-before($TextData, ' '), ' ')"/>
         <xsl:call-template name="FirstNWords">
           <xsl:with-param name="TextData" select="substring-after($TextData, ' ')"/>
           <xsl:with-param name="WordCount" select="$WordCount - 1"/>
@@ -44,10 +44,10 @@
       </xsl:when>
       <xsl:when test="(string-length(substring-before($TextData, ' ')) > 0 or
                        string-length(substring-before($TextData, '  ')) > 0)">
-        <xsl:value-of select="concat(substring-before($TextData, ' '), $MoreText)" disable-output-escaping="yes"/>
+        <xsl:value-of select="concat(substring-before($TextData, ' '), $MoreText)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$TextData" disable-output-escaping="yes"/>
+        <xsl:value-of select="$TextData"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
