@@ -25,6 +25,33 @@
     <xsl:copy-of select="."/>
   </xsl:template>
 
+  <!-- ability to select n amount of words -->
+  <!-- http://mdasblog.wordpress.com/2009/01/20/displaying-the-first-n-words-of-a-long-text-column-with-xsl/ -->
+  <xsl:template name="FirstNWords">
+    <xsl:param name="TextData"/>
+    <xsl:param name="WordCount"/>
+    <xsl:param name="MoreText"/>
+    <xsl:choose>
+      <xsl:when test="$WordCount > 1 and
+                      (string-length(substring-before($TextData, ' ')) > 0 or
+                      string-length(substring-before($TextData, '  ')) > 0)">
+        <xsl:value-of select="concat(substring-before($TextData, ' '), ' ')" disable-output-escaping="yes"/>
+        <xsl:call-template name="FirstNWords">
+          <xsl:with-param name="TextData" select="substring-after($TextData, ' ')"/>
+          <xsl:with-param name="WordCount" select="$WordCount - 1"/>
+          <xsl:with-param name="MoreText" select="$MoreText"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="(string-length(substring-before($TextData, ' ')) > 0 or
+                       string-length(substring-before($TextData, '  ')) > 0)">
+        <xsl:value-of select="concat(substring-before($TextData, ' '), $MoreText)" disable-output-escaping="yes"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$TextData" disable-output-escaping="yes"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <!-- here's the meat, include only the dc elements we need -->
   <xsl:template match="oai:record/oai:metadata/oai_dc:dc">
     <metadata xmlns="http://www.openarchives.org/OAI/2.0/">
@@ -42,7 +69,13 @@
 	<!-- dc:description, we only need the first one -->
 	<xsl:for-each select="dc:description">
 	  <xsl:if test="position()=1 and count(child::*)=0">
-	    <dc:description><xsl:value-of select="."/></dc:description>
+	    <dc:description>
+	      <xsl:call-template  name="FirstNWords">
+	        <xsl:with-param name="TextData" select="."/>
+	        <xsl:with-param name="WordCount" select="100"/>
+	        <xsl:with-param name="MoreText" select="'...'"/>
+	      </xsl:call-template>
+	    </dc:description>
 	  </xsl:if>
 	</xsl:for-each>
 	<xsl:for-each select="dc:date">
