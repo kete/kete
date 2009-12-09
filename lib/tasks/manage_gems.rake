@@ -14,10 +14,9 @@ require 'yaml'
 require 'required_software'
 include RequiredSoftware
 
-desc "Tasks related to gems for Kete. Requires sudo privilege. See config/required_software.yml for list. Expect numerous warnings that can ignore."
+desc "Tasks related to gems for Kete. See config/required_software.yml for list."
 namespace :manage_gems do
   task :exec_action do
-    p "Requires sudo or root privileges.  You will be prompted for password if necessary."
     # default
     ENV['GEMS_ACTION'] ||= 'update'
 
@@ -33,7 +32,8 @@ namespace :manage_gems do
           unless value['gem_deps'].blank?
             p "Install dependancies for building gem #{key} (#{value['gem_deps'].join(', ')})"
             value['gem_deps'].each do |dependancy_key,dependancy_value|
-              `sudo gem install #{dependancy_key}`
+              p "gem install #{dependancy_key}"
+              `gem install #{dependancy_key}`
             end
           end
           raise "rake_build_gem command not present" if value['rake_build_gem'].blank?
@@ -41,18 +41,18 @@ namespace :manage_gems do
           p "cd tmp && git clone #{value['gem_repo']} #{key} && cd #{key} && #{value['rake_build_gem']} && #{value['rake_install_gem']}"
           `cd tmp && git clone #{value['gem_repo']} #{key} && cd #{key} && #{value['rake_build_gem']} && #{value['rake_install_gem']}`
           p "Cleaning up #{key}"
-          `cd tmp && sudo rm -rf #{key}`
+          `cd tmp && rm -rf #{key}`
         else
           # we are installing a prebuilt gem
           gem_name = value['gem_name'] || key
           version = " --version=#{value['version']}" unless value['version'].blank?
           source = " --source=#{value['source']}" unless value['source'].blank?
-          p "sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
-          `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}`
+          p "gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
+          `gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}`
         end
       else
-        p "sudo gem #{ENV['GEMS_ACTION']} #{key}"
-        `sudo gem #{ENV['GEMS_ACTION']} #{key}`
+        p "gem #{ENV['GEMS_ACTION']} #{key}"
+        `gem #{ENV['GEMS_ACTION']} #{key}`
       end
     end
   end
