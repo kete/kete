@@ -23,6 +23,8 @@ module FriendlyUrlsTestUnitHelper
   end
 
   def test_format_for_friendly_urls
+    title_or_name_attr = @base_class == 'Basket' ? :name : :title
+
     model = Module.class_eval(@base_class).create! @new_model
     formatted_title = model.format_for_friendly_urls
 
@@ -32,8 +34,17 @@ module FriendlyUrlsTestUnitHelper
     assert_equal model.id.to_s, friendly_id.to_s, "#{@base_class}.format_for_friendly_urls didn't match the id of the model"
 
     # make sure that formatting is correct
-    model.update_attributes(:title => 'something else!')
-    assert_equal model.id.to_s + '-something-else', model.format_for_friendly_urls, "#{@base_class}.format_for_friendly_urls didn't format the title correctly"
+    model.update_attributes(title_or_name_attr => 'something else!')
+    assert_equal model.id.to_s + '-something-else', model.format_for_friendly_urls, "#{@base_class}.format_for_friendly_urls didn't format the #{title_or_name_attr} correctly"
+
+    # test selection of title/name in find(:all) queries still works as intended
+    # test both types of selections:
+    #   :select => 'name'
+    #   :select => 'basket.name'
+    ["#{title_or_name_attr}", "#{@base_class.tableize}.#{title_or_name_attr}"].each do |select_type|
+      selected_model = @base_class.constantize.find(:all, :select => "#{select_type}, created_at").last
+      assert_equal selected_model.id.to_s + '-something-else', selected_model.format_for_friendly_urls, "#{@base_class}.format_for_friendly_urls didn't format the #{title_or_name_attr} correctly"
+    end
   end
 
 end
