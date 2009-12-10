@@ -61,7 +61,7 @@ namespace :manage_gems do
     desc "Install required gems"
     task :install do
       ENV['GEMS_TO_GRAB'] = 'gems'
-      ENV['GEMS_ACTION'] = 'install -y'
+      ENV['GEMS_ACTION'] = 'install'
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
 
@@ -72,7 +72,7 @@ namespace :manage_gems do
     end
 
     desc "Check that you have required gems"
-    task :check do
+    task :check => :environment do
       required_software = load_required_software
       missing_lib_count = 0
       puts "Missing Gems or Libs:\n-----"
@@ -94,7 +94,7 @@ namespace :manage_gems do
     desc "Install management gems"
     task :install do
       ENV['GEMS_TO_GRAB'] = 'management_gems'
-      ENV['GEMS_ACTION'] = 'install -y'
+      ENV['GEMS_ACTION'] = 'install'
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
 
@@ -109,7 +109,7 @@ namespace :manage_gems do
     desc "Install testing gems"
     task :install do
       ENV['GEMS_TO_GRAB'] = 'testing_gems'
-      ENV['GEMS_ACTION'] = 'install -y'
+      ENV['GEMS_ACTION'] = 'install'
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
 
