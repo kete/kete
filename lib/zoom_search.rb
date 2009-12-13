@@ -220,7 +220,8 @@ module ZoomSearch
       desired_fields.each do |field|
         # make xpath request to get first instance of the desired field's value
         # (dc elements may be used more than once)
-        field_value = oai_dc.xpath(".//dc:#{field[0]}", oai_dc.namespaces).first
+        # we use a hardcoded xml path because oai_dc.namescapes doesn't return the one we need in Nokogiri 1.4.0 or later
+        field_value = oai_dc.xpath(".//dc:#{field[0]}", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
         next if field_value.nil?
         field_value = field_value.content
 
@@ -243,13 +244,15 @@ module ZoomSearch
       # determine the topic type(s)
       topic_type_names = TopicType.all(:select => 'name').collect { |topic_type| topic_type.name }
       result_hash[:topic_types] = Array.new
-      oai_dc.xpath(".//dc:coverage", oai_dc.namespaces).each do |node|
+      # we use a hardcoded xml path because oai_dc.namescapes doesn't return the one we need in Nokogiri 1.4.0 or later
+      oai_dc.xpath(".//dc:coverage", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").each do |node|
         value = node.content.strip
         result_hash[:topic_types] << value if topic_type_names.include?(value)
       end
 
       # get coverage values, these can be used for geographic values or temporal information
-      location_or_temporal_nodes = oai_dc.xpath(".//dc:coverage", oai_dc.namespaces).select { |node| !node.content.scan(":").blank? }
+      # we use a hardcoded xml path because oai_dc.namescapes doesn't return the one we need in Nokogiri 1.4.0 or later
+      location_or_temporal_nodes = oai_dc.xpath(".//dc:coverage", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").select { |node| !node.content.scan(":").blank? }
 
       # we only want values you like "-41.336899,174.772512"
       # TODO: this is a tad brittle, see if we can improve this
