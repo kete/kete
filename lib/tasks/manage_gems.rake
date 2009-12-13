@@ -23,7 +23,7 @@ namespace :manage_gems do
     if `echo $USER`.strip.downcase != 'root'
       puts "\n/!\\ IMPORTANT /!\\\n\n"
       puts "This script has detected you are trying to run this as either a non root account or using sudo."
-      puts "Please make sure you are installing these gems as a root user."
+      puts "Please make sure you are installing these gems as a root user or as a user that will install gems in the system wide location."
       puts "Installing them as anyone without permission to the gem paths will install to your user account, not system wide."
       puts "This will cause issues later on with the web server being unable to locate gems."
       puts "Some operating systems, such as Debian Lenny, also have issues installing to the right place when using sudo."
