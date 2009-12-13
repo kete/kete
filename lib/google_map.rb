@@ -118,11 +118,11 @@ module GoogleMap
         # append a paragraph after the google map with the address value
         html += content_tag('p', @current_address,
                             :id => "#{map_data[:map_id]}_address",
-                            :style => 'width: 43%; padding: 0; margin: 0 0 -25px 0;') if display_address
+                            :style => 'padding: 0; margin: 0;') if display_address
 
         # create the lat/lng display
         latlng_data = { :style => 'width:550px;' }.merge(latlng_options)
-        latlng_data[:style] = "#{latlng_data[:style]} margin-bottom:0px; text-align:right;"
+        latlng_data[:style] = "#{latlng_data[:style]} margin:0px; text-align:right;"
 
         if !extended_field.base_url.blank?
           gma_config = YAML.load(IO.read(File.join(RAILS_ROOT, 'config/google_map_api.yml')))
@@ -229,10 +229,10 @@ module GoogleMap
           @google_maps_initializers += "initialize_google_map("
           @google_maps_initializers += "'#{google_map[:map_id]}'"
           @google_maps_initializers += ", '#{google_map[:map_type]}'"
-          @google_maps_initializers += (google_map[:latitude].blank? ? ", ''" : ", #{google_map[:latitude]}")
-          @google_maps_initializers += (google_map[:longitude].blank? ? ", ''" : ", #{google_map[:longitude]}")
-          @google_maps_initializers += (google_map[:zoom_lvl].blank? ? ", ''" : ", #{google_map[:zoom_lvl]}")
-          @google_maps_initializers += (google_map[:address].blank? ? ", ''" : ", '#{google_map[:address]}'")
+          @google_maps_initializers += (google_map[:latitude].blank? ? ", ''" : ", #{google_map[:latitude].to_f.to_s}")
+          @google_maps_initializers += (google_map[:longitude].blank? ? ", ''" : ", #{google_map[:longitude].to_f.to_s}")
+          @google_maps_initializers += (google_map[:zoom_lvl].blank? ? ", ''" : ", #{google_map[:zoom_lvl].to_i.to_s}")
+          @google_maps_initializers += (google_map[:address].blank? ? ", ''" : ", '#{escape_javascript(google_map[:address])}'")
           @google_maps_initializers += ", '#{google_map[:coords_field]}'"
           @google_maps_initializers += ", '#{google_map[:zoom_lvl_field]}'"
           @google_maps_initializers += ", '#{google_map[:address_field]}'"
@@ -311,6 +311,10 @@ module GoogleMap
                                                    $(map_id + \'_fields\').hide();'}
             // initialize the google map
             var map = new google.maps.Map2($(map_id));
+            // disable dblclick for zoom because it conflicts with a click event
+            map.disableDoubleClickZoom();
+            // enable the ability to use scroll wheel for zoom, because dblclick is disabled
+            map.enableScrollWheelZoom();
             // store the several objects/values in the map object for easy access
             // it also makes it possible to have different maps on the same page
             map.geocoder_obj = new google.maps.ClientGeocoder();
@@ -334,10 +338,8 @@ module GoogleMap
             map.addControl(new google.maps.SmallMapControl());
             // if we are on the index/show page, dont show search controls, dont make markers draggable
             // else if we are on the new/edit pages, bind a search control to the map, and allow dragging
-            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false, \'\', false, map.address_value_div_id);' :
-                                                  'map.addControl(new google.maps.LocalSearch({suppressInitialResultSelection : true}),
-                                                   new GControlPosition(G_ANCHOR_BOTTOM_RIGHT, new GSize(10,25)));
-                                                   remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, true);'}
+            #{@google_map_on_index_or_show_page ? 'remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, false, \'\', false, map.address_value_div_id);' \
+                                                : 'map.enableGoogleBar(); remove_all_markers_and_add_one_to(map, map.latitude_value, map.longitude_value, true);'}
             // the code from this point only executes on new/edit pages, not the show pages
             if ($(map.latlng_text_field) && $(map.zoom_text_field) && (map.map_type == 'map' || (map.map_type == 'map_address' && $(map.address_text_field)))) {
               // make readonly
@@ -355,8 +357,8 @@ module GoogleMap
                 }
               });
               // when a user stops dragging/zooming, update the zoom level (not the coords, thats what the pinpoint is for)
-              google.maps.Event.addListener(map, 'moveend', function() {
-                $(map.zoom_text_field).value = map.getZoom();
+              google.maps.Event.addListener(map, 'zoomend', function(old_zoom_lvl, new_zoom_lvl) {
+                $(map.zoom_text_field).value = new_zoom_lvl;
               });
             } else {
               #{!@google_map_on_index_or_show_page ?
@@ -383,8 +385,8 @@ module GoogleMap
             if (map.latitude_value == '' || map.longitude_value == '' || map.zoom_lvl_value == '') {
               alert('#{i18n_js('google_map_lib.load_google_map_api.lat_lng_not_set')}'); return false;
             }
-            // Make ure that the three values are floats as needed by Google maps
-            if (isNaN(parseFloat(map.latitude_value)) || isNaN(parseFloat(map.longitude_value)) || isNaN(parseInt(map.zoom_lvl_value))) {
+            // Make sure that the three values are floats as needed by Google maps
+            if (isNaN(parseFloat(map.latitude_value, 10)) || isNaN(parseFloat(map.longitude_value, 10)) || isNaN(parseInt(map.zoom_lvl_value, 10))) {
               alert('#{i18n_js('google_map_lib.load_google_map_api.lat_lng_not_floats')}'); return false;
             }
             if ($(map.latlng_text_field) && $(map.latlng_text_field).value == '') {
@@ -400,8 +402,12 @@ module GoogleMap
           function remove_all_markers_and_add_one_to(map, latitude, longitude, draggable, text, auto_open, address_value_div_id) {
             // clears all overlays (info boxes, markers etc)
             map.clearOverlays();
+            // create a latlng object from the values passed in
+            latlng = new GLatLng(latitude, longitude);
             // create the marker (draggable is passed in as either true or false)
-            map.current_marker = new GMarker(new GLatLng(latitude, longitude), {draggable: draggable});
+            map.current_marker = new GMarker(latlng, {draggable: draggable});
+            // center the map on this new marker
+            map.setCenter(latlng);
             // add the marker to the map
             map.addOverlay(map.current_marker);
             // add a text bubble if needed
@@ -429,29 +435,27 @@ module GoogleMap
             $(map.latlng_text_field).value = latlng_obj.y + ',' + latlng_obj.x;
             // the current maps zoom level
             $(map.zoom_text_field).value = map.getZoom();
-            // add a marker on where the user just clicked/drag marker to
-            remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true);
             // Attempt to get the address. When it succeeds, it'll reposition the marker to the location
             // the address corresponds to, and update the text/fields as well (to keep data current)
             map.geocoder_obj.getLocations(latlng_obj, function(response) {
               if (!response || response.Status.code != 200) {
                 // if something went wrong, give the status code. This should rarely happen.
                 if (response.Status.code == '602') {
-                  text = '#{i18n_js('google_map_lib.load_google_map_api.something_went_wrong_602')} (' + response.Status.code + ')';
+                  var text = '#{i18n_js('google_map_lib.load_google_map_api.something_went_wrong_602')} (' + response.Status.code + ')';
                 } else {
-                  text = '#{i18n_js('google_map_lib.load_google_map_api.something_went_wrong')} (' + response.Status.code + ')';
+                  var text = '#{i18n_js('google_map_lib.load_google_map_api.something_went_wrong')} (' + response.Status.code + ')';
                 }
                 remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text, true);
               } else {
                 // get the place
-                place = response.Placemark[0];
+                var place = response.Placemark[0];
                 // if the place result is accurate enough (6-10 accuracy)
                 // if it isn't, we end up clicking and getting sent half way across the country
                 if (place.AddressDetails.Accuracy > 5) {
                   // create the text used in a bubble soon
-                  text = '<b>#{i18n_js('google_map_lib.load_google_map_api.address')}</b>' + place.address + '<br>' +
-                         '<b>#{i18n_js('google_map_lib.load_google_map_api.accuracy')}</b>' + place.AddressDetails.Accuracy + '<br>' +
-                         '<b>#{i18n_js('google_map_lib.load_google_map_api.country_code')}</b> ' + place.AddressDetails.Country.CountryNameCode;
+                  var text = '<b>#{i18n_js('google_map_lib.load_google_map_api.address')}</b>' + place.address + '<br>' +
+                             '<b>#{i18n_js('google_map_lib.load_google_map_api.accuracy')}</b>' + place.AddressDetails.Accuracy + '<br>' +
+                             '<b>#{i18n_js('google_map_lib.load_google_map_api.country_code')}</b> ' + place.AddressDetails.Country.CountryNameCode;
                   // remove the marker set earlier and reposition it to the results location
                   remove_all_markers_and_add_one_to(map, place.Point.coordinates[1], place.Point.coordinates[0], true, text, true);
                   // Form a a string like   -45.861836,127.398373  (which is the format we use)
@@ -463,7 +467,7 @@ module GoogleMap
                     $(map.address_text_field).value = place.address;
                   }
                 } else {
-                  text = '#{i18n_js('google_map_lib.load_google_map_api.not_close_enough')}';
+                  var text = '#{i18n_js('google_map_lib.load_google_map_api.not_close_enough')}';
                   remove_all_markers_and_add_one_to(map, latlng_obj.y, latlng_obj.x, true, text, true);
                 }
               }
@@ -471,14 +475,11 @@ module GoogleMap
           }
 
           #{'// when the page has finished loading, then initiate the google map
-            document.observe(\'dom:loaded\', function() { ' + @google_maps_initializers + ' });' unless @do_not_load_google_maps_on_page_load}
+            google.setOnLoadCallback(function() { ' + @google_maps_initializers + ' });' unless @do_not_load_google_maps_on_page_load}
         ") + "\n"
         # We don't need the search controls and stylesheets on the index/show, only new/edit
         unless @google_map_on_index_or_show_page
-          html += javascript_include_tag("http://www.google.com/uds/api?file=uds.js&amp;v=1.0&amp;key=#{@gma_config[:google_map_api][:api_key]}") + "\n"
-          html += javascript_include_tag("http://www.google.com/uds/solutions/localsearch/gmlocalsearch") + "\n"
-          html += stylesheet_link_tag("http://www.google.com/uds/css/gsearch.css") + "\n"
-          html += stylesheet_link_tag("http://www.google.com/uds/solutions/localsearch/gmlocalsearch.css") + "\n"
+          html += javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}")
         end
         html
       end
