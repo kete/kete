@@ -16,6 +16,9 @@ class BasketTest < ActiveSupport::TestCase
   # load in sets of tests and helper methods
   include KeteTestUnitHelper
 
+  # only include in basket and audio unit tests
+  include FriendlyUrlsTestUnitHelper
+
   # test our polymorphic association with our profiles
   should_have_many :profile_mappings, :dependent => :destroy
   should_have_many :profiles, :through => :profile_mappings
