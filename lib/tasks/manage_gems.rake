@@ -20,6 +20,19 @@ namespace :manage_gems do
     # default
     ENV['GEMS_ACTION'] ||= 'update'
 
+    if `echo $USER`.strip.downcase != 'root'
+      puts "\n/!\\ IMPORTANT /!\\\n\n"
+      puts "This script has detected you are trying to run this as either a non root account or using sudo."
+      puts "Please make sure you are installing these gems as a root user."
+      puts "Installing them as anyone without permission to the gem paths will install to your user account, not system wide."
+      puts "This will cause issues later on with the web server being unable to locate gems."
+      puts "Some operating systems, such as Debian Lenny, also have issues installing to the right place when using sudo."
+      puts ""
+      puts "If you are sure that you have permission to write to the correct location, please continue."
+      puts "Otherwise press CTRL+C to abort, login as root, and run this task again. "
+      STDIN.gets
+    end
+
     required = load_required_software
     required[ENV['GEMS_TO_GRAB']].each do |key,value|
       if !value.blank? && value.kind_of?(Hash)
