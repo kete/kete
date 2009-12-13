@@ -35,6 +35,7 @@ gems:
     gem_name: mime-types
     lib_name: mime/types
   memcache-client:
+    gem_deps: ['system_timer']
     gem_name: memcache-client
     lib_name: memcache
   zoom:
