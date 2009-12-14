@@ -24,6 +24,7 @@ en:
     avatar: avatar
     back_to: "back to"
     basket: basket
+    below: below
     browse: browse
     by: by
     can: can
@@ -90,6 +91,7 @@ en:
     imported: imported
     importing: importing
     inherit: inherit
+    inside: inside
     invalid: invalid
     item: item
     join: join
@@ -150,6 +152,7 @@ en:
     sent: sent
     show: show
     showing: showing
+    sidebar: sidebar
     site: site
     site_administrator: "{{t.base.site}} {{t.base.administrator}}"
     sort: sort
@@ -537,9 +540,9 @@ en:
     related_image_link_for:
       only_original: "{{t.base.only}} available as original"
     related_items_positions:
-      below: "Below the Item Description"
-      inset: "Inside the Item Description"
-      sidebar: "In the Items Sidebar"
+      below: "{{t.base.below.capitalize}} the {{t.base.item.capitalize}} Description"
+      inset: "{{t.base.inside.capitalize}} the {{t.base.item.capitalize}} Description"
+      sidebar: "In the {{t.base.item.capitalize.pluralize}} {{t.base.sidebar.capitalize}}"
     render_baskets_as_menu:
       more: More..
     search_sorting_controls_for:
