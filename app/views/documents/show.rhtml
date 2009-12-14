@@ -7,6 +7,8 @@
   <p><b><%= @document.short_summary %></b></p>
 <% end -%>
 
+<%= render(:partial => "topics/related_items", :locals => { :item => @document, :topics_only => true, :inset => true }) if @document.related_items_position == 'inset' -%>
+
 <%= render(:partial => "details", :locals => { :item => @document }) if show_attached_files_for?(@document) -%>
 
 <% cache_with_privacy(@document, { :part => 'details_second' }) do -%>
@@ -16,7 +18,7 @@
 
 <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @document }) if current_user_can_see_flagging? -%>
 
-<%= render(:partial => "topics/related_items", :locals => { :item => @document, :topics_only => true }) -%>
+<%= render(:partial => "topics/related_items", :locals => { :item => @document, :topics_only => true }) if @document.related_items_position == 'below' -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @document }) if current_user_can_see_discussion? -%>
 
@@ -25,6 +27,7 @@
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @document }) %>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @document }) %>
+    <%= render(:partial => "topics/related_items", :locals => { :item => @document, :topics_only => true, :inset => true }) if @document.related_items_position == 'sidebar' -%>
     <%= display_search_sources_for(@document) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @document }) %>
   </div> <!-- /secondary-content-warpper -->

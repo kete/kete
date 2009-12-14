@@ -16,7 +16,7 @@ end
 
 <% if topics_only -%>
 
-  <%= render("topics/secondary_wrapper_start", :div_id => "related-link", :class_suffix => "-blue") -%>
+  <%= render("topics/secondary_wrapper_start", :div_id => "related", :class_suffix => class_suffix) -%>
 
   <%= render("topics/related_items_section", :item => item, :zoom_class => 'Topic',
              :display_heading => "<h3>#{t('topics.related_items.related_topics')}</h3>",

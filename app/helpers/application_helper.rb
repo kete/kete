@@ -526,6 +526,14 @@ module ApplicationHelper
   # START RELATED ITEM HELPERS
   #
 
+  def related_items_positions
+    [
+      [t('application_helper.related_items_positions.below'), 'below'],
+      [t('application_helper.related_items_positions.inset'), 'inset'],
+      [t('application_helper.related_items_positions.sidebar'), 'sidebar']
+    ]
+  end
+
   def related_items_count_for_current_item
     @related_items_count_for_current_item ||= begin
       conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{zoom_class_from_controller(params[:controller])}')"
