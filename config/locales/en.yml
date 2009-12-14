@@ -24,6 +24,7 @@ en:
     avatar: avatar
     back_to: "back to"
     basket: basket
+    below: below
     browse: browse
     by: by
     can: can
@@ -90,6 +91,7 @@ en:
     imported: imported
     importing: importing
     inherit: inherit
+    inside: inside
     invalid: invalid
     item: item
     join: join
@@ -150,6 +152,7 @@ en:
     sent: sent
     show: show
     showing: showing
+    sidebar: sidebar
     site: site
     site_administrator: "{{t.base.site}} {{t.base.administrator}}"
     sort: sort
@@ -536,6 +539,10 @@ en:
       private: "{{t.base.private}}: "
     related_image_link_for:
       only_original: "{{t.base.only}} available as original"
+    related_items_positions:
+      below: "{{t.base.below.capitalize}} the {{t.base.item.capitalize}} Description"
+      inset: "{{t.base.inside.capitalize}} the {{t.base.item.capitalize}} Description"
+      sidebar: "In the {{t.base.item.capitalize.pluralize}} {{t.base.sidebar.capitalize}}"
     render_baskets_as_menu:
       more: More..
     search_sorting_controls_for:
@@ -2133,7 +2140,7 @@ en:
       private_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.only}} {{t.base.by}} {{t.base.basket}} {{t.base.member.pluralize}})"
       public: "{{t.base.public.capitalize}}"
       public_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.by}} {{t.base.everyone}})"
-      related_items_as_inset: "Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} {{t.base.content}} into {{t.base.zoom_types.topic.capitalize}} description?"
+      related_items_position: "Where should the {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} {{t.base.content}} be inserted into the page?"
       required_fields: "* denotes a required {{t.base.field}}"
       short_summary: "Short Summary"
       skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.item}}?"
