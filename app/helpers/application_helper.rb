@@ -552,7 +552,7 @@ module ApplicationHelper
     when 'sidebar'
       " class='sidebar'"
     when 'below'
-      " class='other'"
+      " class='below'"
     else
       ""
     end

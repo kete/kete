@@ -273,6 +273,12 @@ body.mceContentBody {
   margin-top: -12px;
 }
 
+#related_items.below .two-col {
+  float: left;
+  width: 48%;
+  padding-right: 10px;
+}
+
 #related_items hr {
   padding: 0;
   margin: 0;
