@@ -111,6 +111,8 @@ en:
     moderator: moderator
     name: name
     new: new
+    not_acceptable: "not acceptable"
+    not_acceptable_size: "is {{t.base.not_acceptable}}. It should be less than {{max_size}} megabytes."
     not_available: "not available"
     only: only
     open: open
@@ -578,7 +580,8 @@ en:
     update:
       updated: "{{t.base.zoom_types.audio.capitalize}} {{t.base.was_updated}}."
   audio_recording_model:
-    not_acceptable: "is not acceptable. It should be a .mp3, .m4a, or other sound file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .mp3, .m4a, or other {{t.base.zoom_types.audio}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   authenticated_system_lib:
     login_from_cookie:
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
@@ -1084,7 +1087,8 @@ en:
       second: Seconds
       year: Year
   document_model:
-    not_acceptable: "is not acceptable. It should be a .pdf, .doc, or other {{t.base.zoom_types.document}} file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .pdf, .doc, or other {{t.base.zoom_types.document}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   documents:
     details:
       filename: "Filename:"
@@ -1338,7 +1342,8 @@ en:
       data_corruption: "Possible data corruption. You should consider running rake kete:repair."
       no_contributor: "It looks like there is no {{t.base.contributor}} associated with version {{version}} of {{item_class}} {{item_id}}."
   image_file_model:
-    not_acceptable: "is not acceptable. It should be a .jpg, .gif, or other {{t.base.zoom_types.image}} file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .jpg, .gif, or other {{t.base.zoom_types.image}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   images:
     details:
       filename: "Original Filename:"
@@ -2353,7 +2358,8 @@ en:
     update:
       updated: "{{t.base.zoom_types.video.capitalize}} {{t.base.was_updated}}."
   video_model:
-    not_acceptable: "is not acceptable. It should be a .mov, .wmv, or other {{t.base.zoom_types.video}} file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .mov, .wmv, or other {{t.base.zoom_types.video}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   web_links:
     details:
       not_available: "no {{t.base.public}} version of this link available"
