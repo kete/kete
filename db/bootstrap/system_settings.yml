@@ -539,10 +539,10 @@ system_settings_062:
   name: Related Items Position Default
   technically_advanced: true
   required_to_be_configured: true
-  explanation: "The default value for related items inset. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages."
+  explanation: "The default value for related items position. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages."
   id: "62"
   value: "inset"
-  section: Topics
+  section: Related Items Display
 system_settings_063:
   name: Hide Related Items Position Field
   technically_advanced: true
@@ -550,7 +550,7 @@ system_settings_063:
   explanation: "Should the option to change related items position be hidden from users?"
   id: "63"
   value: "true"
-  section: Topics
+  section: Related Items Display
 system_settings_064:
   name: Show Powered By Kete
   technically_advanced: true
