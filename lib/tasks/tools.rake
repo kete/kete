@@ -148,57 +148,55 @@ namespace :kete do
       @logger.info "Finished image resizing. #{resized_images_count} images resized, #{created_images_count} images created."
     end
 
-    namespace :topics do
-      desc 'Update all topics so that the related items section in each is inset in the topic description.'
-      task :inset_related_items => :environment do
-        set_related_items_inset_to(true)
-        puts "Finished. All topics now have their related items inset in the topic description."
-      end
-
-      desc 'Update all topics so that the related items section in each is not inset in the topic description.'
-      task :unset_related_items => :environment do
-        set_related_items_inset_to(false)
-        puts "Finished. All topics now do not have their related items inset in the topic description."
-      end
-
-      private
-
-      def set_related_items_inset_to(bool_value)
-        # update all topics
-        Topic.update_all(:related_items_inset => bool_value)
-        # update all versions of every topic
-        Topic::Version.update_all(:related_items_inset => bool_value)
-        # then go through and update the private attributes of any topics with them
-        each_topic_with_private_version do |private_data|
-          # loop through each key/value array (starts as [[key,value],[key,value]])
-          private_data.each_with_index do |(key, value), index|
-            # skip this unless we have the right field
-            next unless key == 'related_items_inset'
-            # delete the old data
-            private_data.delete_at(index)
-            # add in the new data
-            private_data << ['related_items_inset', bool_value]
+    namespace :related_items do
+      # ITEM_CLASSES is not available here
+      %w(Topic StillImage AudioRecording Video WebLink Document).each do |item_class|
+        namespace item_class.tableize.to_sym do
+          %w{ inset below sidebar }.each do |setting|
+            desc "Update all #{item_class.tableize} so that the related items section in each is positioned #{setting}."
+            task "position_to_#{setting}" => :environment do
+              set_related_items_inset_to(item_class, setting)
+              puts "Finished. All #{item_class.tableize} now have their related items #{setting}."
+            end
           end
         end
       end
-
-      def each_topic_with_private_version(&block)
-        # find all topics with private version data present, then loop through each
-        Topic.all(:conditions => "private_version_serialized IS NOT NULL AND private_version_serialized != ''").each do |topic|
-          # load the data from YML to an array of key/value arrays (e.g. [[key,value],[key,value]])
-          current_data = YAML.load(topic.private_version_serialized)
-          # yield the block passed in (passing the current data to it) and capture the return data
-          changed_data = yield(current_data)
-          # dump the changed data into a YAML representation
-          private_data = YAML.dump(changed_data)
-          # and update the private version serialized field (update_all means we avoid annoying validations)
-          Topic.update_all({ :private_version_serialized => private_data }, { :id => topic.id })
-        end
-      end
-
     end
 
     private
+
+    def set_related_items_inset_to(item_class, position)
+      # update all items
+      item_class.constantize.update_all(:related_items_position => position)
+      # update all versions of every item
+      item_class.constantize::Version.update_all(:related_items_position => position)
+      # then go through and update the private attributes of any items with them
+      each_item_with_private_version(item_class) do |private_data|
+        # loop through each key/value array (starts as [[key,value],[key,value]])
+        private_data.each_with_index do |(key, value), index|
+          # skip this unless we have the right field
+          next unless key == 'related_items_position'
+          # delete the old data
+          private_data.delete_at(index)
+          # add in the new data
+          private_data << ['related_items_position', position]
+        end
+      end
+    end
+
+    def each_item_with_private_version(item_class, &block)
+      # find all items with private version data present, then loop through each
+      item_class.constantize.all(:conditions => "private_version_serialized IS NOT NULL AND private_version_serialized != ''").each do |item|
+        # load the data from YML to an array of key/value arrays (e.g. [[key,value],[key,value]])
+        current_data = YAML.load(item.private_version_serialized)
+        # yield the block passed in (passing the current data to it) and capture the return data
+        changed_data = yield(current_data)
+        # dump the changed data into a YAML representation
+        private_data = YAML.dump(changed_data)
+        # and update the private version serialized field (update_all means we avoid annoying validations)
+        item_class.constanize.update_all({ :private_version_serialized => private_data }, { :id => item.id })
+      end
+    end
 
     # Checks whether an image file thumbnail size matches any of the IMAGE_SIZES values
     def image_file_match_image_size?(image_file)
