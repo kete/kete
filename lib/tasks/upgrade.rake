@@ -28,7 +28,8 @@ namespace :kete do
                     'kete:upgrade:add_basket_id_to_taggings',
                     'kete:upgrade:make_baskets_private_notification_do_not_email',
                     'kete:upgrade:add_nested_values_to_comments',
-                    'kete:upgrade:change_inset_to_positon']
+                    'kete:upgrade:change_inset_to_positon',
+                    'kete:upgrade:set_null_private_only_mappings_to_false']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -385,6 +386,12 @@ namespace :kete do
         position_hidden.update_attribute(:value, inset_default.value)
         inset_hidden.destroy
       end
+    end
+
+    desc "Set all NULL value private_only values on topic type and content type field mappings to false."
+    task :set_null_private_only_mappings_to_false => :environment do
+      ContentTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
+      TopicTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

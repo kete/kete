@@ -36,7 +36,11 @@ module FieldMappings
       @all_versions ||= if self.is_a?(TopicTypeToFieldMapping)
         Topic::Version.all(:conditions => { :topic_type_id => topic_type.full_set.collect { |tt| tt.id } })
       else
-        content_type.class_name.constantize::Version.all
+        if content_type.class_name == 'User'
+          User.all
+        else
+          content_type.class_name.constantize::Version.all
+        end
       end
 
       ef_label = Regexp.escape(extended_field_label.downcase.gsub(/ /, '_'))

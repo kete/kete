@@ -180,7 +180,7 @@ module Nokogiri
   module XML
     class Builder
       def to_stripped_xml
-        @doc.to_xml.gsub(/(^\s*|\s*$)/, '').gsub(/>(\n*|\s*)</, '><').gsub('<?xml version="1.0"?>', '').gsub(/(<root>|<\/root>)/, '')
+        @doc.to_xml.gsub(/(^\s*|\s*$)/, '').gsub(/>(\n*|\s*)</, '><').gsub('<?xml version="1.0"?>', '').gsub(/(<root\/?>|<\/root>)/, '')
       end
     end
   end

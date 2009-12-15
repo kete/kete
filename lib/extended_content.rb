@@ -573,6 +573,10 @@ module ExtendedContent
 
         all_field_mappings.collect do |field_to_xml|
 
+          # we should not generate extended field content for mappings that
+          # are private_only but are submitted for a public version
+          next if field_to_xml.private_only? && !self.private?
+
           # label is unique, whereas xml_element_name is not
           # thus we use label for our internal (topic.extended_content) storage of arbitrary attributes
           # xml_element_name is used for exported topics, such as oai/dc records

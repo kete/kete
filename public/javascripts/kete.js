@@ -272,6 +272,20 @@ function makeFooterLanguageSelectionClickable() {
   });
 }
 
+/*
+ * Show or hide the required or private only checkbox as needed on topic type or content type field mappings
+ */
+function showOrHideRequiredAsNeededFor(id) {
+ $(id).observe('change', function(event) {
+   this.up('.mapping_required_and_private_only').down('.mapping_private_only').toggle();
+ });
+}
+function showOrHidePrivateOnlyAsNeededFor(id) {
+  $(id).observe('change', function(event) {
+    this.up('.mapping_required_and_private_only').down('.mapping_required').toggle();
+  });
+}
+
 /**
  * Now setup everything to run when needed once the page is loaded
  */

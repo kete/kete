@@ -96,6 +96,10 @@ module FieldMappingsController
     end
 
     def reorder_fields
+      # if private_only is true, it cannot be required at this stage
+      params[:mapping].values.each do |value|
+        value[:required] = '0' if value[:private_only] == '1'
+      end
       field_mapping_class.update(params[:mapping].keys, params[:mapping].values)
       redirect_to :urlified_name => @site_basket.urlified_name, :action => 'edit', :id => params[:id]
     end
