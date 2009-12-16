@@ -280,7 +280,7 @@ document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
   if ($('portrait_help_div')) { enabledPortraitHelpToggle(); }
-  if ($$('#related_items.inset').size() > 0) { setupRelatedCollapsableSections(); }
+  if ($$('#related_items').size() > 0) { setupRelatedCollapsableSections(); }
   makeSearchResultsDivClickable();
   if ($('footer_language_selection')) { makeFooterLanguageSelectionClickable(); }
 });

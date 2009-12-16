@@ -26,9 +26,9 @@ module OaiZoom
       request = @import_request || simulated_request
       record = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
         xml.send("OAI-PMH",
-                 :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                 :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd",
-                 :"xmlns" => "http://www.openarchives.org/OAI/2.0/") do
+                 "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                 "xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd",
+                 "xmlns" => "http://www.openarchives.org/OAI/2.0/") do
           xml.responseDate(Time.now.utc.xmlschema)
           oai_dc_xml_request(xml, request)
           xml.GetRecord do
@@ -40,11 +40,11 @@ module OaiZoom
               end
               xml.metadata do
                 xml.send("oai_dc:dc",
-                         :"xmlns:oai_dc" => "http://www.openarchives.org/OAI/2.0/oai_dc/",
-                         :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-                         :"xmlns:dc" => "http://purl.org/dc/elements/1.1/",
-                         :"xmlns:dcterms" => "http://purl.org/dc/terms/",
-                         :"xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
+                         "xmlns:oai_dc" => "http://www.openarchives.org/OAI/2.0/oai_dc/",
+                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+                         "xmlns:dc" => "http://purl.org/dc/elements/1.1/",
+                         "xmlns:dcterms" => "http://purl.org/dc/terms/",
+                         "xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
                   oai_dc_xml_dc_identifier(xml, request)
                   oai_dc_xml_dc_title(xml)
                   oai_dc_xml_dc_publisher(xml, request[:host])

@@ -526,6 +526,38 @@ module ApplicationHelper
   # START RELATED ITEM HELPERS
   #
 
+  def related_items_positions
+    [
+      [t('application_helper.related_items_positions.below'), 'below'],
+      [t('application_helper.related_items_positions.inset'), 'inset'],
+      [t('application_helper.related_items_positions.sidebar'), 'sidebar']
+    ]
+  end
+
+  def class_suffix_from(position)
+    case position
+    when 'inset'
+      "-white"
+    when 'below'
+      "-blue"
+    else
+      "" # grey sidebar
+    end
+  end
+
+  def class_and_width_from(position)
+    case position
+    when 'inset'
+      " class='inset' style='width: #{(image_size_of(IMAGE_SLIDESHOW_SIZE)+30)}px;'"
+    when 'sidebar'
+      " class='sidebar'"
+    when 'below'
+      " class='below'"
+    else
+      ""
+    end
+  end
+
   def related_items_count_for_current_item
     @related_items_count_for_current_item ||= begin
       conditions = "(content_item_relations.related_item_id = :cache_id AND content_item_relations.related_item_type = '#{zoom_class_from_controller(params[:controller])}')"
@@ -917,7 +949,10 @@ module ApplicationHelper
 
         # format the value to html with RedCloth for things like line breaks
         # start by replacing carriage returns with newlines
-        value = value.gsub("\r", "\n")
+        # gotcha: if you have a \r\n or \n\r, you need to convert both to a
+        # single new line before converting all remaining \r to \n (else
+        # you get double lines where there should only be a single)
+        value = value.gsub(/(\r\n|\n\r|\r)/, "\n")
         value = RedCloth.new(value).to_html
 
         url_regex = '(\w+:\/\/[^ |<]+)'
