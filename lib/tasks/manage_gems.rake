@@ -33,6 +33,8 @@ namespace :manage_gems do
       STDIN.gets
     end
 
+    no_rdoc_or_ri = '--no-rdoc --no-ri'
+
     required = load_required_software
     required[ENV['GEMS_TO_GRAB']].each do |key,value|
       if !value.blank? && value.kind_of?(Hash)
@@ -46,8 +48,8 @@ namespace :manage_gems do
         # If this gem relies on dependancies it doesn't properly take care of, manually install them
         unless value['gem_deps'].blank?
           value['gem_deps'].each do |dependancy_key,dependancy_value|
-            p "gem install #{dependancy_key}"
-            `gem install #{dependancy_key}`
+            p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{dependancy_key}"
+            `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{dependancy_key}`
           end
         end
 
@@ -64,13 +66,13 @@ namespace :manage_gems do
           gem_name = value['gem_name'] || key
           version = " --version=#{value['version']}" unless value['version'].blank?
           source = " --source=#{value['source']}" unless value['source'].blank?
-          p "gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
-          `gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}`
+          p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{gem_name}#{version}#{source}"
+          `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{gem_name}#{version}#{source}`
         end
 
       else
-        p "gem #{ENV['GEMS_ACTION']} #{key}"
-        `gem #{ENV['GEMS_ACTION']} #{key}`
+        p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{key}"
+        `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{key}`
       end
     end
   end

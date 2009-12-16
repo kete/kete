@@ -1,7 +1,6 @@
 <%
 topics_only ||= false
-inset ||= false
-class_suffix = inset ? "-white" : "-blue"
+position ||= ''
 
 @total_item_counts = related_items_count_for_current_item
 if @total_item_counts > 0
@@ -12,46 +11,42 @@ if @total_item_counts > 0
 end
 -%>
 
-<div id="related_items"<%= " class='inset' style='width: #{(image_size_of(IMAGE_SLIDESHOW_SIZE)+30)}px;'" if inset -%>>
+<div id="related_items" <%= class_and_width_from(position) %>>
+
+<%= render("topics/secondary_wrapper_start", :div_id => "related", :class_suffix => class_suffix_from(position)) -%>
 
 <% if topics_only -%>
-
-  <%= render("topics/secondary_wrapper_start", :div_id => "related-link", :class_suffix => "-blue") -%>
 
   <%= render("topics/related_items_section", :item => item, :zoom_class => 'Topic',
              :display_heading => "<h3>#{t('topics.related_items.related_topics')}</h3>",
              :display_no_item_text => true) -%>
 
-  <%= render("topics/secondary_wrapper_end") -%>
-
 <% else -%>
-
-  <%= render("topics/secondary_wrapper_start", :div_id => "related", :class_suffix => class_suffix) -%>
 
   <h2 class="related-link">
     <%= link_to_related_items_of(item, 'Topic', :link_text => "#{t('topics.related_items.related_items')} (#{@total_item_counts})") -%>
   </h2>
 
-  <%= render('topics/related_items_tools', :item => item) unless inset %>
-
   <div id="detail-linked-toprow">
-    <%= render("topics/related_items_section", :item => item, :zoom_class => 'StillImage', :inset => inset) -%>
+    <%= render("topics/related_items_section", :item => item, :zoom_class => 'StillImage') -%>
   </div>
 
   <% [['Topic', 'AudioRecording', 'Video'],
       ['Document', 'WebLink']].each do |item_set| %>
     <div class="two-col">
       <% item_set.each do |item_type| %>
-        <%= render("topics/related_items_section", :item => item, :zoom_class => item_type, :inset => inset) -%>
+        <%= render("topics/related_items_section", :item => item, :zoom_class => item_type) -%>
       <% end %>
       <div style="clear:both;"></div>
     </div>
   <% end %>
 
-  <%= render('topics/related_items_tools', :item => item) if inset %>
+  <div style="clear:both;"></div>
 
-  <%= render("topics/secondary_wrapper_end") -%>
+  <%= render('topics/related_items_tools', :item => item) %>
 
 <% end -%>
+
+<%= render("topics/secondary_wrapper_end") -%>
 
 </div>

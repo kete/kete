@@ -4,18 +4,20 @@
 
 <% cache_with_privacy(@video, {:part => 'details_first'}) do -%>
   <h2><%= h(@video.title) %></h2>
-  <p><%= @video.description %></p>
 <% end -%>
+
+<%= render(:partial => "topics/related_items", :locals => { :item => @video, :topics_only => true, :position => 'inset' }) if @video.related_items_position == 'inset' -%>
 
 <%= render(:partial => "details", :locals => { :item => @video }) if show_attached_files_for?(@video) -%>
 
 <% cache_with_privacy(@video, {:part => 'details_second'}) do -%>
+  <p><%= @video.description %></p>
   <%= pending_review(@video) -%>
 <% end -%>
 
 <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @video }) if current_user_can_see_flagging? -%>
 
-<%= render(:partial => "topics/related_items", :locals => { :item => @video, :topics_only => true }) -%>
+<%= render(:partial => "topics/related_items", :locals => { :item => @video, :topics_only => true, :position => 'below' }) if @video.related_items_position == 'below' -%>
 
 <%= render(:partial => "topics/discussion" , :locals => { :item => @video }) if current_user_can_see_discussion? -%>
 
@@ -23,6 +25,7 @@
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div" , :locals => { :item => @video }) -%>
+    <%= render(:partial => "topics/related_items", :locals => { :item => @video, :topics_only => true, :position => 'sidebar' }) if @video.related_items_position == 'sidebar' -%>
     <%= render(:partial => "topics/extended_fields" , :locals => { :item => @video }) -%>
     <%= display_search_sources_for(@video) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @video }) -%>

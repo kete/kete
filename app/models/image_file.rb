@@ -51,7 +51,10 @@ class ImageFile < ActiveRecord::Base
   def attachment_attributes_valid?
     [:size, :content_type].each do |attr_name|
       enum = attachment_options[attr_name]
-      errors.add attr_name, I18n.t('image_file_model.not_acceptable') unless enum.nil? || enum.include?(send(attr_name))
+      unless enum.nil? || enum.include?(send(attr_name))
+        errors.add attr_name, I18n.t("image_file_model.not_acceptable_#{attr_name}",
+                                     :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
+      end
     end
   end
 

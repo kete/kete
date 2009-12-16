@@ -1,5 +1,4 @@
 <%
-inset ||= false
 pretty_class_plural = zoom_class_plural_humanize(zoom_class)
 controller = zoom_class_controller(zoom_class)
 if @total_item_counts > 0
@@ -10,7 +9,7 @@ else
 end
 are_still_images = (zoom_class == 'StillImage')
 display_num = are_still_images ? NUMBER_OF_RELATED_IMAGES_TO_DISPLAY : NUMBER_OF_RELATED_THINGS_TO_DISPLAY_PER_TYPE
-display_num = 9 if inset && are_still_images
+display_num = 9 if are_still_images
 display_heading ||= nil
 display_no_item_text ||= false
 -%>
@@ -20,10 +19,10 @@ display_no_item_text ||= false
     <%= display_heading -%>
   <% else -%>
     <h4>
-      <% inset_img = inset ? image_tag('related_items_collapsed.gif', :class => 'expand_collapse_image') : '' %>
-      <%= link_to_related_items_of(item, zoom_class, :link_text => "#{pretty_class_plural} (#{total_items}) #{inset_img}") -%>
+      <% collapsed_img = image_tag('related_items_collapsed.gif', :class => 'expand_collapse_image') %>
+      <%= link_to_related_items_of(item, zoom_class, :link_text => "#{pretty_class_plural} (#{total_items}) #{collapsed_img}") -%>
     </h4>
-    <%= "<hr />" if inset -%>
+    <hr />
   <% end -%>
   <% if total_items > 0 -%>
     <% if zoom_class == 'Topic' && DISPLAY_RELATED_TOPICS_AS_TOPIC_TYPE_COUNTS %>
