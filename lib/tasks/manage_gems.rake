@@ -64,7 +64,7 @@ namespace :manage_gems do
         else
           # we are installing a prebuilt gem
           gem_name = value['gem_name'] || key
-          version = " --version=#{value['version']}" unless value['version'].blank?
+          version = " --version='#{value['version']}'" unless value['version'].blank?
           source = " --source=#{value['source']}" unless value['source'].blank?
           p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{gem_name}#{version}#{source}"
           `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{gem_name}#{version}#{source}`
