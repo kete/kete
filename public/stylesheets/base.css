@@ -1450,13 +1450,20 @@ a.disabled {
  * Embedded Extended Field Data
  */
 #embedded_extended_field_data {
-  margin-right: 1px;
-  padding-right: 1px;
+  width: 98%;
 }
 #embedded_extended_field_data * {
   background: none;
+}
+#embedded_extended_field_data .secondary-content-section-content {
   padding: 0;
   margin: 0;
+}
+#embedded_extended_field_data .detail-extended-field-table .detail-extended-field-label {
+  padding-right: 30px;
+}
+#embedded_extended_field_data .detail-extended-field-table p:nth-child(1) {
+  margin-top: 0;
 }
 #embedded_extended_field_data #detail-extended-heading {
   display: none;
