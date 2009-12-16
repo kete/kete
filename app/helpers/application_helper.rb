@@ -945,7 +945,10 @@ module ApplicationHelper
 
         # format the value to html with RedCloth for things like line breaks
         # start by replacing carriage returns with newlines
-        value = value.gsub("\r", "\n")
+        # gotcha: if you have a \r\n or \n\r, you need to convert both to a
+        # single new line before converting all remaining \r to \n (else
+        # you get double lines where there should only be a single)
+        value = value.gsub(/(\r\n|\n\r|\r)/, "\n")
         value = RedCloth.new(value).to_html
 
         url_regex = '(\w+:\/\/[^ |<]+)'
