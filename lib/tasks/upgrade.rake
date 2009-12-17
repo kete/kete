@@ -28,7 +28,7 @@ namespace :kete do
                     'kete:upgrade:add_basket_id_to_taggings',
                     'kete:upgrade:make_baskets_private_notification_do_not_email',
                     'kete:upgrade:add_nested_values_to_comments',
-                    'kete:upgrade:change_inset_to_positon']
+                    'kete:upgrade:change_inset_to_position']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -356,20 +356,35 @@ namespace :kete do
     end
 
     desc "Migrate from older style related items inset booleans to newer related items position flags"
-    task :change_inset_to_positon => :environment do
-      conditions = ["related_items_position IS NULL OR related_items_position IN (?)", ['', 0, 1]]
+    task :change_inset_to_position => :environment do
+      # Use Model.update_all({ changes }, { :id => id }) to get
+      # around time consuming validations and possible failures
 
-      topic_versions = Topic::Version.all(:conditions => conditions)
-      topic_versions.each do |topic_version|
-        topic_version.related_items_position = (topic_version.related_items_position == '1' ? 'inset' : 'below')
-        topic_version.save
+      conditions = ["related_items_position IS NULL OR related_items_position IN (?)", ['', 0, 1]]
+      topics = Topic::Version.all(:conditions => conditions)
+      topics.each do |topic|
+        Topic::Version.update_all({
+          :related_items_position => (topic.related_items_position == '1' ? 'inset' : 'below')
+        }, { :id => topic.id })
       end
 
       topics = Topic.all(:conditions => conditions)
       topics.each do |topic|
-        topic.related_items_position = (topic.related_items_position == '1' ? 'inset' : 'below')
-        topic.save
-        topic.add_as_contributor(User.first)
+        Topic.update_all({
+          :related_items_position => (topic.related_items_position == '1' ? 'inset' : 'below')
+        }, { :id => topic.id })
+      end
+
+      topics = Topic.all(:conditions => "private_version_serialized LIKE '%related_items_inset%'")
+      topics.each do |topic|
+        private_data = YAML.load(topic.private_version_serialized)
+        private_data.each_with_index do |(key, value), index|
+          next unless key == 'related_items_inset'
+          private_data.delete_at(index)
+          private_data << ['related_items_position', (value == '1' ? 'inset' : 'below')]
+        end
+        private_data = YAML.dump(private_data)
+        Topic.update_all({ :private_version_serialized => private_data }, { :id => topic.id })
       end
 
       inset_default = SystemSetting.find_by_name('Related Items Inset Default')
