@@ -52,5 +52,18 @@ module FieldMappings
       end
     end
 
+    private
+
+    def validate
+      if self.is_a?(ContentTypeToFieldMapping) && private_only? && self.content_type.class_name == 'User'
+        errors.add_to_base("Users cannot have private only mappings.")
+      elsif required? && private_only?
+        errors.add_to_base("Mapping cannot be required and private only.")
+        false
+      else
+        true
+      end
+    end
+
   end
 end
