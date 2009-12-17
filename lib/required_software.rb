@@ -38,7 +38,7 @@ module RequiredSoftware
       required_libs.values.each do |lib|
         begin
           if lib.is_a?(Array)
-            gem lib[0], "= #{lib[1]}"
+            gem lib[0], lib[1]
           else
             require lib
           end

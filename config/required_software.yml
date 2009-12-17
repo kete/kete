@@ -6,7 +6,7 @@
 #   gem_name: libxml-ruby
 #   lib_name: libxml
 #   source: http://gems.rubyforge.org
-#   version: 0.7.0
+#   version: '= 0.7.0'
 
 management_gems:
   capistrano:
@@ -24,6 +24,7 @@ testing_gems:
 gems:
   nokogiri:
   packet:
+    version: '>= 0.1.14'
   chronic:
   hpricot:
   unicode:
