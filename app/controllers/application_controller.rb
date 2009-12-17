@@ -1219,7 +1219,7 @@ class ApplicationController < ActionController::Base
     if @comment
       return params[:commentable_private].to_bool if params[:commentable_private]
       return params[:comment][:commentable_private].to_bool if params[:comment] && params[:comment][:commentable_private]
-      return item.private?
+      return @comment.private?
     else
       if @item_type && params[@item_type] && params[@item_type][:private]
         params[@item_type][:private].to_bool
