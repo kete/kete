@@ -24,6 +24,15 @@ AUTHORIZATION_MIXIN = "object roles"
 # which causes rails to bug out that it can't find the module
 # require File.join(File.dirname(__FILE__) + '/initializers/', 'oai_pmh')
 
+# Kieran Pilkington, 2009-12-18
+# Apache doesn't take environment variables from any bashrc file
+# So if we use Ruby Enterprise Edition, it'll never find ruby/rake
+# Until Passenger automatically corrects this, we can use Apache
+# SetEnv function to pass in a variable from the configurations
+# We get that variable and append it to the environment here so
+# calls like `rake zebra:start` work properly
+ENV['PATH'] = "#{ENV['RUBY_INSTALL_PATH']}/bin:#{ENV['PATH']}" if ENV['RUBY_INSTALL_PATH']
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 

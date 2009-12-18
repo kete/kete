@@ -131,7 +131,7 @@ class ConfigureController < ApplicationController
     if @zoom_dbs.all? { |zoom_db| zoom_db.errors.empty? and !@kete_password.blank? }
 
       ENV['ZEBRA_PASSWORD'] = @kete_password
-      `rake zebra:set_keteaccess`
+      Rails.logger.info `rake zebra:set_keteaccess`
 
       @zoom_dbs.each do |zoom_db|
         zoom_db.save!
@@ -145,7 +145,7 @@ class ConfigureController < ApplicationController
         end
       end
 
-      `rake zebra:set_ports`
+      Rails.logger.info `rake zebra:set_ports`
       ENV.delete 'PUBLIC_PORT'
       ENV.delete 'PRIVATE_PORT'
 
