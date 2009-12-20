@@ -54,26 +54,34 @@ class ZoomIndexRebuildWorker < BackgrounDRb::MetaWorker
       raise "Start must be a valid item id number." if @start_id != 'first' && @start_id.to_i == 0
       raise "End must be a valid item id number." if @end_id != 'last' && @end_id.to_i ==  0
 
+      # Rake::Task is available inside Rails, but not backgroundrb workers
+      # so we need to include rake and load the task(s) we need to use
+      require 'rake'
+      load File.join(Rails.root, 'lib', 'tasks', 'zebra.rake')
+
       # reset the zebra dbs to no records
       # the zebra:stop task is problematic on some platforms (known issue with solaris 10)
       # so you may want to do this bit by hand (before you request that this worker starts)
       if @clear_zebra
         logger.info("in clear zebra")
-        `rake zebra:init`
-        # do the private zebra db, too if we should
-        `rake zebra:init ZEBRA_DB=private` unless @skip_private
+        Rake::Task["zebra:init"].execute(ENV)
+        # do the private zebra db, too if we should`rake zebra:init`
+        unless @skip_private
+          ENV['ZEBRA_DB'] = 'private'
+          Rake::Task["zebra:init"].execute(ENV)
+        end
 
         # we stop and start zebra so that any changes to configuration files
         # (maybe the case with upgrades)
         # are loaded
-        `rake zebra:stop`
-        `rake zebra:start`
+        Rake::Task["zebra:stop"].execute(ENV)
+        Rake::Task["zebra:start"].execute(ENV)
       end
 
       # add the bootstrap records
       # we always do this to handle upgrades (before the bootstrap records existed)
       # the rake task will skip the records if they already exist
-      `rake zebra:load_initial_records`
+      Rake::Task["zebra:load_initial_records"].execute(ENV)
 
       clause = "id >= :start_id"
       clause_values = Hash.new
