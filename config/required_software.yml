@@ -40,6 +40,7 @@ gems:
     lib_name: memcache
   zoom:
   libxml-ruby:
+    lib_name: libxml
   avatar:
   htmlentities:
   xml-simple:
