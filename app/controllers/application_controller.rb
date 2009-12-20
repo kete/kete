@@ -1214,25 +1214,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # determine if we are editing a private version of something
-  def adding_or_editing_private_item?
-    if @comment
-      return params[:commentable_private].to_bool if params[:commentable_private]
-      return params[:comment][:commentable_private].to_bool if params[:comment] && params[:comment][:commentable_private]
-      return @comment.private?
-    else
-      if @item_type && params[@item_type] && params[@item_type][:private]
-        params[@item_type][:private].to_bool
-      elsif @item && !@item.new_record? && !@item.private.nil?
-        @item.private?
-      elsif @basket
-        @basket.private_default_with_inheritance?
-      else
-        false
-      end
-    end
-  end
-
   # Check whether the attached files for a given item should be displayed
   # Note this is independent of file privacy.
   def show_attached_files_for?(item)
@@ -1366,7 +1347,6 @@ class ApplicationController < ActionController::Base
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
                 :permitted_to_edit_current_item?, :allowed_to_access_private_version_of?, :accessing_private_search_and_allowed?,
-                :adding_or_editing_private_item?,
                 :get_acceptable_privacy_type_for, :current_user_can_see_flagging?, :current_user_can_see_add_links?,
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,

@@ -9,7 +9,7 @@
 <% @item_type_for_params = item_key %>
 <% hide_field = extended_field_mapping.private_only? && !adding_or_editing_private_item? %>
 
-<div class="form-element<%= " private_only" if hide_field %>"<%= " style='display:none;'" if hide_field %>>
+<div class="form-element<%= " private_only" if extended_field_mapping.private_only? %>"<%= " style='display:none;'" if hide_field %>>
   <%= extended_field_label(ef, extended_field_mapping.required) %>
 
   <div style="float: left">

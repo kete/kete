@@ -1546,4 +1546,23 @@ module ApplicationHelper
     true
   end
 
+  # determine if we are editing a private version of something
+  def adding_or_editing_private_item?
+    if @comment
+      return params[:commentable_private].to_bool if params[:commentable_private]
+      return params[:comment][:commentable_private].to_bool if params[:comment] && params[:comment][:commentable_private]
+      return @comment.private?
+    else
+      if @item_type && params[@item_type] && params[@item_type][:private]
+        params[@item_type][:private].to_bool
+      elsif @item && !@item.new_record? && !@item.private.nil?
+        @item.private?
+      elsif @basket
+        @basket.private_default_with_inheritance?
+      else
+        false
+      end
+    end
+  end
+
 end
