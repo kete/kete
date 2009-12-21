@@ -98,21 +98,24 @@ module ApplicationHelper
   def dc_metadata_for(item)
     metadata = String.new
 
-    metadata += meta_tag(:name => 'DC.Identifier', :content => url_to_item(item, :locale => false, :only_path => false), :scheme => "URI")
-    metadata += meta_tag(:name => 'DC.Title', :content => stripped_title)
-    metadata += meta_tag(:name => 'DC.Description', :content => page_description)
-    metadata += meta_tag(:name => 'DC.Subject', :content => page_keywords)
-    metadata += meta_tag(:name => 'DC.Creator', :content => item.creator.user_name)
+    metadata += tag(:link, :rel => "schema.DCTERMS", :href => "http://purl.org/dc/terms/")
+    metadata += tag(:link, :rel => "schema.DC", :href => "http://purl.org/dc/elements/1.1/")
+
+    metadata += meta_tag(:name => 'DC.identifier', :content => url_to_item(item, :locale => false, :only_path => false), :scheme => "DCTERMS.URI")
+    metadata += meta_tag(:name => 'DC.title', :content => stripped_title, :'xml:lang' => I18n.locale)
+    metadata += meta_tag(:name => 'DC.description', :content => page_description, :'xml:lang' => I18n.locale)
+    metadata += meta_tag(:name => 'DC.subject', :content => page_keywords, :'xml:lang' => I18n.locale)
+    metadata += meta_tag(:name => 'DC.creator', :content => item.creator.user_name)
     contributors = item.contributors.uniq[0..3].collect { |c| c.user_name }
-    metadata += meta_tag(:name => 'DC.Contributor', :content => contributors.join(', ') + ", et al") if contributors.size > 1
-    metadata += meta_tag(:name => 'DC.Publisher', :content => PRETTY_SITE_NAME)
-    metadata += meta_tag(:name => 'DC.Type', :content => 'Text', :scheme => "IMT")
-    metadata += meta_tag(:name => 'DC.Format', :content => 'text/html')
-    metadata += meta_tag(:name => 'DC.Rights', :content => item.license.url) if item.license
-    metadata += meta_tag(:name => 'DC.Rights', :content => item.license.name) if item.license
-    metadata += meta_tag(:name => 'DC.Language', :content => I18n.locale, :scheme => "RFC3066")
-    metadata += meta_tag(:name => 'DC.Date.created', :content => item.created_at.to_date, :scheme => "IS08601")
-    metadata += meta_tag(:name => 'DC.Date.modified', :content => item.updated_at.to_date, :scheme => "IS08601")
+    metadata += meta_tag(:name => 'DC.contributor', :content => contributors.join(', ') + ", et al") if contributors.size > 1
+    metadata += meta_tag(:name => 'DC.publisher', :content => PRETTY_SITE_NAME, :'xml:lang' => I18n.locale)
+    metadata += meta_tag(:name => 'DC.type', :content => 'Text', :'xml:lang' => I18n.locale)
+    metadata += meta_tag(:name => 'DC.format', :content => 'text/html')
+    metadata += meta_tag(:name => 'DC.rights', :content => item.license.url) if item.license
+    metadata += meta_tag(:name => 'DC.rights', :content => item.license.name) if item.license
+    metadata += meta_tag(:name => 'DC.language', :content => I18n.locale, :'xml:lang' => I18n.locale, :scheme => "DCTERMS.RFC1766")
+    metadata += meta_tag(:name => 'DC.date.created', :content => item.created_at.to_date, :scheme => "IS08601")
+    metadata += meta_tag(:name => 'DC.date.modified', :content => item.updated_at.to_date, :scheme => "IS08601")
 
     metadata
   end
