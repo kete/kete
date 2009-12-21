@@ -84,11 +84,16 @@ module ApplicationHelper
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
   end
 
+  def short_summary_or_description_of(item)
+    description_text = (item.respond_to?(:short_summary) && !item.short_summary.blank?) ? item.short_summary : item.description
+    strip_tags(truncate(description_text, :length => 180, :omission => '...')).gsub("\"", "").squish
+  end
+
   def page_description
     return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
-    description_text = (current_item.respond_to?(:short_summary) && !current_item.short_summary.blank?) ? current_item.short_summary : current_item.description
+    description_text = short_summary_or_description_of(current_item)
     return DEFAULT_PAGE_DESCRIPTION if description_text.blank?
-    strip_tags(truncate(description_text, :length => 180, :omission => '...')).gsub("\"", "").squish
+    description_text
   end
 
   def meta_tag(*args)
@@ -98,24 +103,33 @@ module ApplicationHelper
   def dc_metadata_for(item)
     metadata = String.new
 
-    metadata += tag(:link, :rel => "schema.DCTERMS", :href => "http://purl.org/dc/terms/")
-    metadata += tag(:link, :rel => "schema.DC", :href => "http://purl.org/dc/elements/1.1/")
+    metadata += tag(:link, :rel => "schema.DCTERMS", :href => "http://purl.org/dc/terms/") + "\n"
+    metadata += tag(:link, :rel => "schema.DC", :href => "http://purl.org/dc/elements/1.1/") + "\n"
 
-    metadata += meta_tag(:name => 'DC.identifier', :content => url_to_item(item, :locale => false, :only_path => false), :scheme => "DCTERMS.URI")
-    metadata += meta_tag(:name => 'DC.title', :content => stripped_title, :'xml:lang' => I18n.locale)
-    metadata += meta_tag(:name => 'DC.description', :content => page_description, :'xml:lang' => I18n.locale)
-    metadata += meta_tag(:name => 'DC.subject', :content => page_keywords, :'xml:lang' => I18n.locale)
-    metadata += meta_tag(:name => 'DC.creator', :content => item.creator.user_name)
-    contributors = item.contributors.uniq[0..3].collect { |c| c.user_name }
-    metadata += meta_tag(:name => 'DC.contributor', :content => contributors.join(', ') + ", et al") if contributors.size > 1
-    metadata += meta_tag(:name => 'DC.publisher', :content => PRETTY_SITE_NAME, :'xml:lang' => I18n.locale)
-    metadata += meta_tag(:name => 'DC.type', :content => 'Text', :'xml:lang' => I18n.locale)
-    metadata += meta_tag(:name => 'DC.format', :content => 'text/html')
-    metadata += meta_tag(:name => 'DC.rights', :content => item.license.url) if item.license
-    metadata += meta_tag(:name => 'DC.rights', :content => item.license.name) if item.license
-    metadata += meta_tag(:name => 'DC.language', :content => I18n.locale, :'xml:lang' => I18n.locale, :scheme => "DCTERMS.RFC1766")
-    metadata += meta_tag(:name => 'DC.date.created', :content => item.created_at.to_date, :scheme => "IS08601")
-    metadata += meta_tag(:name => 'DC.date.modified', :content => item.updated_at.to_date, :scheme => "IS08601")
+    metadata += meta_tag(:name => 'DC.identifier', :content => url_for_dc_identifier(item), :scheme => "DCTERMS.URI")
+    metadata += meta_tag(:name => 'DC.title', :content => h(item.title))
+
+    # If someone requests the description, uncomment this, else for now, leave it
+    # metadata += meta_tag(:name => 'DC.description', :content => short_summary_or_description_of(item))
+
+    item.tags.each do |tag|
+      metadata += meta_tag(:name => 'DC.subject', :content => h(tag))
+    end
+
+    metadata += meta_tag(:name => 'DC.creator', :content => h(item.creator.user_name))
+    metadata += meta_tag(:name => 'DC.contributor', :content => h(item.contributors.last.user_name) + ", et al") if item.contributors.size > 1
+    metadata += meta_tag(:name => 'DC.publisher', :content => h(PRETTY_SITE_NAME))
+    metadata += meta_tag(:name => 'DC.type', :content => 'Text')
+    metadata += meta_tag(:name => 'DC.rights', :content => h(item.license.name + " (" + item.license.url + ")")) if item.license
+
+    # A bit misleading as we have images and possible files attached to this item
+    # metadata += meta_tag(:name => 'DC.format', :content => 'text/html')
+
+    # Don't support content translations yet, but when we do, uncomment this
+    # metadata += meta_tag(:name => 'DC.language', :content => I18n.locale, :scheme => "DCTERMS.RFC1766")
+
+    # We don't have a published date at the moment
+    # metadata += meta_tag(:name => 'DC.date', :content => item.created_at.to_date, :scheme => "IS08601")
 
     metadata
   end
@@ -481,14 +495,10 @@ module ApplicationHelper
     html += "</div>"
   end
 
-  def url_to_item(item, options = {})
-    url_for({:controller => zoom_class_controller(item.class.name),
-    :urlified_name => item.basket.urlified_name,
-    :action => :show, :id => item}.merge(options))
-  end
-
   def link_to_item(item)
-    link_to h(item.title), url_to_item(item)
+    link_to h(item.title), :controller => zoom_class_controller(item.class.name),
+    :urlified_name => item.basket.urlified_name,
+    :action => :show, :id => item
   end
 
   def url_for_contributions_of(user, zoom_class)

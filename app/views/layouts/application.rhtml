@@ -29,7 +29,8 @@
     <% end -%>
   <% end -%>
 
-  <%= meta_tag :name => 'content-language', :content => I18n.locale %>
+  <%# Don't support content translations yet, but when we do, uncomment this %>
+  <%#= meta_tag :name => 'content-language', :content => I18n.locale %>
 
   <% if cached_controllers.include?(params[:controller]) && params[:action] == "show" %>
     <% cache_with_privacy(current_item, { :part => 'dc_metadata' }) do %>
