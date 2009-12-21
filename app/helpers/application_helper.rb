@@ -91,6 +91,32 @@ module ApplicationHelper
     strip_tags(truncate(description_text, :length => 180, :omission => '...')).gsub("\"", "").squish
   end
 
+  def meta_tag(*args)
+    tag(:meta, *args) + "\n"
+  end
+
+  def dc_metadata_for(item)
+    metadata = String.new
+
+    metadata += meta_tag(:name => 'DC.Identifier', :content => url_to_item(item, :locale => false, :only_path => false), :scheme => "URI")
+    metadata += meta_tag(:name => 'DC.Title', :content => stripped_title)
+    metadata += meta_tag(:name => 'DC.Description', :content => page_description)
+    metadata += meta_tag(:name => 'DC.Subject', :content => page_keywords)
+    metadata += meta_tag(:name => 'DC.Creator', :content => item.creator.user_name)
+    contributors = item.contributors.uniq[0..3].collect { |c| c.user_name }
+    metadata += meta_tag(:name => 'DC.Contributor', :content => contributors.join(', ') + ", et al") if contributors.size > 1
+    metadata += meta_tag(:name => 'DC.Publisher', :content => PRETTY_SITE_NAME)
+    metadata += meta_tag(:name => 'DC.Type', :content => 'Text', :scheme => "IMT")
+    metadata += meta_tag(:name => 'DC.Format', :content => 'text/html')
+    metadata += meta_tag(:name => 'DC.Rights', :content => item.license.url) if item.license
+    metadata += meta_tag(:name => 'DC.Rights', :content => item.license.name) if item.license
+    metadata += meta_tag(:name => 'DC.Language', :content => I18n.locale, :scheme => "RFC3066")
+    metadata += meta_tag(:name => 'DC.Date.created', :content => item.created_at.to_date, :scheme => "IS08601")
+    metadata += meta_tag(:name => 'DC.Date.modified', :content => item.updated_at.to_date, :scheme => "IS08601")
+
+    metadata
+  end
+
   def header_links_to_baskets
     html = '<ul id="basket-list" class="nav-list">'
 
@@ -452,10 +478,14 @@ module ApplicationHelper
     html += "</div>"
   end
 
-  def link_to_item(item)
-    link_to h(item.title), :controller => zoom_class_controller(item.class.name),
+  def url_to_item(item, options = {})
+    url_for({:controller => zoom_class_controller(item.class.name),
     :urlified_name => item.basket.urlified_name,
-    :action => :show, :id => item
+    :action => :show, :id => item}.merge(options))
+  end
+
+  def link_to_item(item)
+    link_to h(item.title), url_to_item(item)
   end
 
   def url_for_contributions_of(user, zoom_class)
