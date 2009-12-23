@@ -7,7 +7,8 @@
     # TODO: figure out how to refresh display with new order
     # revert to form_remote_tag then, also in _available_form_fields.rhtml
     %>
-    <% @form_field_mappings = ContentType.find(local_id).content_type_to_field_mappings %>
+    <% content_type = ContentType.find(local_id)
+       @form_field_mappings = content_type.content_type_to_field_mappings %>
     <% if @form_field_mappings.size > 0 %>
       <% form_tag :action => :reorder_fields, :id => local_id  do %>
         <% for @mapping in @form_field_mappings %>
@@ -22,7 +23,20 @@
               <% end -%>
             <% end -%>
             <%= t('content_types.current_fields.multiple') if @mapping.extended_field_multiple -%>
-            -<%= check_box("mapping[]", 'required', :checked => @mapping.required?) %> <%=t 'content_types.current_fields.required' %>
+            <span class="mapping_required_and_private_only">
+              <span class="mapping_required"<%= " style='display:none;'" if @mapping.private_only? -%>>
+                -<%= check_box("mapping[]", 'required', :checked => @mapping.required?, :id => "mapping_#{@mapping.id}_required") %> <%=t 'content_types.current_fields.required' %>
+              </span>
+              <% unless content_type.class_name == 'User' %>
+                <span class="mapping_private_only"<%= " style='display:none;'" if @mapping.required? -%>>
+                  -<%= check_box("mapping[]", 'private_only', :checked => @mapping.private_only?, :id => "mapping_#{@mapping.id}_private_only") %> <%=t 'content_types.current_fields.private_only' %>
+                </span>
+                <%= javascript_tag("
+                showOrHideRequiredAsNeededFor('mapping_#{@mapping.id}_required');
+                showOrHidePrivateOnlyAsNeededFor('mapping_#{@mapping.id}_private_only');
+                ") %>
+              <% end %>
+            </span>
             <%= " - " + link_to(t('content_types.current_fields.delete'), { :action => 'remove_mapping', :id => params[:id], :mapping_id => @mapping.id },
               { :id => "mapping_#{@mapping.id}_delete" }) unless @mapping.used_by_items? %>
           </p>
