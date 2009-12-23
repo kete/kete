@@ -47,10 +47,6 @@ Rails::Initializer.run do |config|
   # specifying it here allows this to work
   config.gem "oai"
 
-  config.gem 'libxml-ruby', :lib => 'libxml'
-  # backgroundrb 1.1 requires packet 0.1.14
-  config.gem 'packet', :version => '>= 0.1.14'
-
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]

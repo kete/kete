@@ -99,9 +99,7 @@ zoom_class = zoom_class_from_controller(controller)
 
     <%= embedded_enabled_message("<p class='help'>#{t('topics.form.note')} ", " #{t('topics.form.embedded_note')}</p>") if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing %>
 
-    <% if params[@item_type] && params[@item_type][:private]; item_private = params[@item_type][:private] == 'true' ? true : false
-       elsif @editing && !@item.private.nil?; item_private = @item.private?
-       else; item_private = @basket.private_default_with_inheritance?; end -%>
+    <% item_private = adding_or_editing_private_item? -%>
     <% if show_privacy_controls_for_basket?(@basket) -%>
       <%= form.radio_button :private,
                             [ [t('topics.form.public'), false, { :label_for => "#{@item_type.to_s}_private_false",
@@ -227,6 +225,14 @@ zoom_class = zoom_class_from_controller(controller)
                                 :item_key => @item_type.to_s }) -%>
       <% end %>
     <% end -%>
+    <%= javascript_tag "
+      $('#{@item_type.to_s}_private_true').observe('change', function(event) {
+        $$('.private_only').each(function(field) { field.show(); });
+      });
+      $('#{@item_type.to_s}_private_false').observe('change', function(event) {
+        $$('.private_only').each(function(field) { field.hide(); });
+      });
+    " %>
 
     <% if @editing -%>
       <%= form.text_field :version_comment, { :tabindex => '1',

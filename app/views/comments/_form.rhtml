@@ -15,7 +15,7 @@
                         <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
                 <% end %>
 
-                <%= hidden_field_tag 'comment[commentable_private]', (should_be_private?(@comment) ? '1' : '0') %>
+                <%= hidden_field_tag 'comment[commentable_private]', (adding_or_editing_private_item? ? '1' : '0') %>
 
                 <div class="form-element">
                   <label for="comment_title"><%=t 'comments.form.title' %></label>
@@ -37,7 +37,7 @@
                 <% end -%>
 
                 <div class="form-element">
-                  <label for="<%= @item_type -%>_tag_list"><%=t 'comments.form.tags' %></label>
+                  <label for="comment_tag_list"><%=t 'comments.form.tags' %></label>
                   <%= text_field_with_auto_complete(:comment,
                                                     :tag_list,
                                                     { :tabindex => '1' },
@@ -73,7 +73,7 @@
                 <% end %>
 
                 <% if show_notification_controls?(@current_basket) %>
-                  <div id="skip_email_notification_div"<%= "style='display:none;'" unless should_be_private?(@comment) %>>
+                  <div id="skip_email_notification_div"<%= "style='display:none;'" unless adding_or_editing_private_item? %>>
                     <div class="form-element">
                       <label for="comment_skip_email_notification">
                         <%=t 'comments.form.skip_email_notification',

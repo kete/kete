@@ -36,7 +36,11 @@ module FieldMappings
       @all_versions ||= if self.is_a?(TopicTypeToFieldMapping)
         Topic::Version.all(:conditions => { :topic_type_id => topic_type.full_set.collect { |tt| tt.id } })
       else
-        content_type.class_name.constantize::Version.all
+        if content_type.class_name == 'User'
+          User.all
+        else
+          content_type.class_name.constantize::Version.all
+        end
       end
 
       ef_label = Regexp.escape(extended_field_label.downcase.gsub(/ /, '_'))
@@ -45,6 +49,19 @@ module FieldMappings
         version.extended_content =~ /<#{element_label}/ &&
         version.extended_content !~ /<#{element_label}[^>]*\/>/ &&
         version.extended_content !~ /<#{element_label}[^>]*>(<[0-9]+><#{ef_label}[^>]*><\/#{ef_label}><\/[0-9]+>)*<\/#{element_label}>/
+      end
+    end
+
+    private
+
+    def validate
+      if self.is_a?(ContentTypeToFieldMapping) && private_only? && self.content_type.class_name == 'User'
+        errors.add_to_base("Users cannot have private only mappings.")
+      elsif required? && private_only?
+        errors.add_to_base("Mapping cannot be required and private only.")
+        false
+      else
+        true
       end
     end
 

@@ -369,7 +369,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]',
+  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'dc_metadata_[privacy]',
                 'page_description_[privacy]', 'google_map_api_[privacy]', 'edit_[privacy]',
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',

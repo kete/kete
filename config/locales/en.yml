@@ -961,6 +961,7 @@ en:
       embedded: "display under {{t.base.description}}?"
       multiple: (multiple)
       none_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.content_type}}."
+      private_only: "{{t.base.private}} {{t.base.only}}?"
       reorder_button: "Reorder {{t.base.content_type.capitalize}} {{t.base.form.capitalize}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
@@ -2049,6 +2050,7 @@ en:
       multiple: (multiple)
       no_fields_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.topic_type}}."
       no_more_allowed: "{{t.base.you.capitalize}} {{t.base.cannot}} {{t.base.add}} {{t.base.any}} additional {{t.base.field.pluralize}} to this {{t.base.topic_type}}, see above."
+      private_only: "{{t.base.private}} {{t.base.only}}?"
       reorder: "Reorder {{t.base.topic_type.capitalize}} {{t.base.form.capitalize}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
