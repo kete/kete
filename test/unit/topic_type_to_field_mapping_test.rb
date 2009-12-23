@@ -80,4 +80,20 @@ class TopicTypeToFieldMappingTest < ActiveSupport::TestCase
 
   end
 
+  context "When dealing with required and private_only fields, you" do
+
+    setup do
+      @topic_type, @mappings = setup_mappings_of_class('TopicType', 'Person')
+    end
+
+    should "not be allowed to have both required and private_only to be enabled" do
+      mapping = @mappings.last
+      mapping.required = true
+      mapping.private_only = true
+      assert !mapping.valid?
+      assert_equal 'Mapping cannot be required and private only.', mapping.errors['base']
+    end
+
+  end
+
 end

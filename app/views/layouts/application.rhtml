@@ -29,6 +29,15 @@
     <% end -%>
   <% end -%>
 
+  <%# Don't support content translations yet, but when we do, uncomment this %>
+  <%#= meta_tag :name => 'content-language', :content => I18n.locale %>
+
+  <% if cached_controllers.include?(params[:controller]) && params[:action] == "show" %>
+    <% cache_with_privacy(current_item, { :part => 'dc_metadata' }) do %>
+      <%= dc_metadata_for(current_item) unless current_item.private? %>
+    <% end %>
+  <% end %>
+
   <% if using_tiny_mce? -%>
     <% # Include TinyMCE before other JS to avoid problems,
        # tinymce not compatible with bundle_fu -%>
