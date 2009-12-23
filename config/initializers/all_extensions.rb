@@ -49,7 +49,7 @@ class Array
   # Pass in an attribute name that corresponds to a
   # column in the database, but without the _id
   # i.e.   basket_id     => :basket
-  # i.e.   topic_type_id => :topic_type_id
+  # i.e.   topic_type_id => :topic_type
   def collection_of_objects_and_counts_for(attr_name, ordered = false)
     attr_name_id = "#{attr_name}_id"
 
