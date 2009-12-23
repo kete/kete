@@ -292,8 +292,8 @@ namespace :translate do
         elsif v.is_a?(String)
           data = [
             '      <Row>',
-            "        <Cell><Data ss:Type=\"String\">#{h(@keys.join('.'))}</Data></Cell>",
-            "        <Cell><Data ss:Type=\"String\">#{h(v)}</Data></Cell>",
+            "        <Cell><Data ss:Type=\"String\">#{escape_for_xml(@keys.join('.'))}</Data></Cell>",
+            "        <Cell><Data ss:Type=\"String\">#{escape_for_xml(v)}</Data></Cell>",
             "        <Cell><Data ss:Type=\"String\"></Data></Cell>",
             '      </Row>' ]
           data.each { |d| (@keys.first == 'base' ? @base_keys : @result) << d }
@@ -394,7 +394,7 @@ namespace :translate do
     @output.puts text
   end
 
-  def h(text)
+  def escape_for_xml(text)
     text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;')
   end
 
