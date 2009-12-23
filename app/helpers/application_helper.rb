@@ -84,11 +84,54 @@ module ApplicationHelper
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
   end
 
+  def short_summary_or_description_of(item)
+    description_text = (item.respond_to?(:short_summary) && !item.short_summary.blank?) ? item.short_summary : item.description
+    strip_tags(truncate(description_text, :length => 180, :omission => '...')).gsub("\"", "").squish
+  end
+
   def page_description
     return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
-    description_text = (current_item.respond_to?(:short_summary) && !current_item.short_summary.blank?) ? current_item.short_summary : current_item.description
+    description_text = short_summary_or_description_of(current_item)
     return DEFAULT_PAGE_DESCRIPTION if description_text.blank?
-    strip_tags(truncate(description_text, :length => 180, :omission => '...')).gsub("\"", "").squish
+    description_text
+  end
+
+  def meta_tag(*args)
+    tag(:meta, *args) + "\n"
+  end
+
+  def dc_metadata_for(item)
+    metadata = String.new
+
+    metadata += tag(:link, :rel => "schema.DCTERMS", :href => "http://purl.org/dc/terms/") + "\n"
+    metadata += tag(:link, :rel => "schema.DC", :href => "http://purl.org/dc/elements/1.1/") + "\n"
+
+    metadata += meta_tag(:name => 'DC.identifier', :content => url_for_dc_identifier(item), :scheme => "DCTERMS.URI")
+    metadata += meta_tag(:name => 'DC.title', :content => h(item.title))
+
+    # If someone requests the description, uncomment this, else for now, leave it
+    # metadata += meta_tag(:name => 'DC.description', :content => short_summary_or_description_of(item))
+
+    item.tags.each do |tag|
+      metadata += meta_tag(:name => 'DC.subject', :content => h(tag))
+    end
+
+    metadata += meta_tag(:name => 'DC.creator', :content => h(item.creator.user_name))
+    metadata += meta_tag(:name => 'DC.contributor', :content => h(item.contributors.last.user_name) + ", et al") if item.contributors.size > 1
+    metadata += meta_tag(:name => 'DC.publisher', :content => h(PRETTY_SITE_NAME))
+    metadata += meta_tag(:name => 'DC.type', :content => 'Text')
+    metadata += meta_tag(:name => 'DC.rights', :content => h(item.license.name + " (" + item.license.url + ")")) if item.license
+
+    # A bit misleading as we have images and possible files attached to this item
+    # metadata += meta_tag(:name => 'DC.format', :content => 'text/html')
+
+    # Don't support content translations yet, but when we do, uncomment this
+    # metadata += meta_tag(:name => 'DC.language', :content => I18n.locale, :scheme => "DCTERMS.RFC1766")
+
+    # We don't have a published date at the moment
+    # metadata += meta_tag(:name => 'DC.date', :content => item.created_at.to_date, :scheme => "IS08601")
+
+    metadata
   end
 
   def header_links_to_baskets
@@ -1544,6 +1587,25 @@ module ApplicationHelper
     return false if profile_rules[form_type]['rule_type'] == 'none'
     return false if profile_rules[form_type]['allowed'].blank?
     true
+  end
+
+  # determine if we are editing a private version of something
+  def adding_or_editing_private_item?
+    if @comment
+      return params[:commentable_private].to_bool if params[:commentable_private]
+      return params[:comment][:commentable_private].to_bool if params[:comment] && params[:comment][:commentable_private]
+      return @comment.private?
+    else
+      if @item_type && params[@item_type] && params[@item_type][:private]
+        params[@item_type][:private].to_bool
+      elsif @item && !@item.new_record? && !@item.private.nil?
+        @item.private?
+      elsif @basket
+        @basket.private_default_with_inheritance?
+      else
+        false
+      end
+    end
   end
 
 end
