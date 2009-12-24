@@ -1394,10 +1394,12 @@ a.disabled {
   margin: 0;
   border-right: 1px solid #aaa;
 }
+#moderator-tools ul li h4,
 #moderator-tools ul li a {
   display: block;
   padding: 4px 35px;
   color: #555;
+  margin: 0;
 }
 #moderator-tools ul li.first a {
   padding: 4px 35px;
@@ -1405,6 +1407,10 @@ a.disabled {
 #moderator-tools ul li a:hover {
   background-color: #ddd;
   text-decoration: none;
+}
+#moderator-tools.slim ul li h4,
+#moderator-tools.slim ul li a {
+  padding: 4px 5px;
 }
 
 /*

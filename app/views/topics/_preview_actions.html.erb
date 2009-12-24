@@ -1,7 +1,7 @@
-<div class="detail-tools">
-  <h3><%=t 'topics.preview_actions.title' %></h3>
+<div id="moderator-tools" class="slim">
   <ul>
-    <li class="first"><%= link_to t('topics.preview_actions.history'),
+    <li><h4><%=t 'topics.preview_actions.title' %></h4></li>
+    <li><%= link_to t('topics.preview_actions.history'),
                           {:action => :history,
       :id => item}, :tabindex => '1' %></li>
     <% if can_moderate -%>
@@ -28,4 +28,5 @@
       :confirm => t('topics.preview_actions.delete_confirm'), :tabindex => '1' %></li>
     <% end -%>
   </ul>
+  <div style="clear:both;"></div>
 </div>

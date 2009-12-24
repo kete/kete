@@ -68,9 +68,10 @@ module Flagging
       flag_at_with(version_number, REVIEWED_FLAG)
     end
 
-    def reject_this(version_number, message = nil)
+    def reject_this(version_number, options = {})
       remove_pending_flag(version_number)
-      flag_at_with(version_number, REJECTED_FLAG, message)
+      flag_at_with(version_number, REJECTED_FLAG, options[:message])
+      flag_at_with(version_number, RESTRICTED_FLAG, options[:message]) if options[:restricted]
     end
 
     def max_version
@@ -210,7 +211,8 @@ module Flagging
       # Disputed is now used on a version by version basis.
       # An item is disputed if it has one or more tags (flags).
       this_version = self.versions.find_by_version(version)
-      this_version.tags.size > 0 && !this_version.tags.collect { |t| t.name }.member?("reviewed by moderator")
+      undisputed_flags = [REVIEWED_FLAG, BLANK_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
+      this_version.tags.size > 0 && !this_version.tags.join(',') =~ /(#{undisputed_flags.join('|')})/
     end
 
     def reverted?

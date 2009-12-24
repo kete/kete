@@ -600,3 +600,11 @@ system_settings_069:
   id: "69"
   value: "false"
   section: Related Items Display
+system_settings_070:
+  name: Restricted Flag
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: What is the tag that designates a version having been restricted to a moderator or above?  You probably want to decide this once for the site and not change it.  Otherwise previously tagged versions will come up as just plain flagged in the future.
+  id: "70"
+  value: restricted
+  section: Flagging

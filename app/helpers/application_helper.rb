@@ -85,7 +85,7 @@ module ApplicationHelper
   end
 
   def short_summary_or_description_of(item)
-    description_text = (item.respond_to?(:short_summary) && !item.short_summary.blank?) ? item.short_summary : item.description
+    description_text = ((item.respond_to?(:short_summary) && !item.short_summary.blank?) ? item.short_summary : item.description) || String.new
     strip_tags(truncate(description_text, :length => 180, :omission => '...')).gsub("\"", "").squish
   end
 

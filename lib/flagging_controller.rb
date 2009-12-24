@@ -157,7 +157,8 @@ module FlaggingController
     def reject
       setup_flagging_vars
 
-      @item.reject_this(@version, @message)
+      @item.reject_this(@version, :message => @message,
+                                  :restricted => params[:restricted].present?)
 
       # notify the contributor of this revision
       UserNotifier.deliver_rejection_of(@version,
@@ -232,8 +233,9 @@ module FlaggingController
         end
         @item.revert_to(@preview_version)
 
-        # Do not allow access to private item versions..
-        if @item.respond_to?(:private?) && @item.private? && !permitted_to_view_private_items?
+        # Do not allow access to restricted or private item versions..
+        if (@flags.include?(RESTRICTED_FLAG) && !@at_least_moderator) ||
+           (@item.respond_to?(:private?) && @item.private? && !permitted_to_view_private_items?)
           raise ActiveRecord::RecordNotFound
         end
 

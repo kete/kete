@@ -25,6 +25,13 @@
                         <%= text_area 'message', '', :tabindex => '1' %>
                         <p><%= @instructions -%></p>
                 </div>
+                <% if @flag == REJECTED_FLAG %>
+                <div class="form-element">
+                  <label for="restricted"><%=t 'topics.flag_form.restricted' %></label>
+                  <%= check_box_tag 'restricted', true, false, :tabindex => '1' %>
+                  <p><%=t 'topics.flag_form.restricted_description' %></p>
+                </div>
+                <% end %>
         </fieldset>
         <div class="wrap"><%= submit_tag @submit_text, :tabindex => '1' %></div>
 <% end %>

@@ -42,7 +42,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
         body_should_not_contain "reject"
       end
     end
-      
+
     context "as a super user" do
 
       setup do
@@ -63,7 +63,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
           body_should_contain "reject"
         end
       end
-      
+
     end
 
   end
@@ -209,6 +209,44 @@ class ModerationViewsTest < ActionController::IntegrationTest
 
     teardown do
       @weblink.destroy unless @weblink.new_record?
+    end
+
+  end
+
+  context "The ability to restrict revisions upon moderation" do
+
+    setup do
+      login_as(:admin)
+      add_sally_as_moderator_to @@site_basket
+      add_grant_as_regular_user
+
+      @topic = new_topic(:title => 'Version 1')
+      @topic = update_item(@topic, :title => 'Version 2')
+      visit "/site/topics/preview/#{@topic.id}?version=1"
+      click_link 'Reject this revision'
+      fill_in 'message_', :with => 'Testing'
+      check 'restricted'
+      click_button 'Reject'
+      body_should_contain 'This version of this Topic has been rejected.'
+    end
+
+    should "work as expected and block access to moderators or above" do
+      %w{ admin sally }.each do |user|
+        login_as(user)
+        visit "/site/topics/history/#{@topic.id}"
+        body_should_contain 'preview' # rev 1
+        body_should_contain 'current' # rev 2
+        visit "/site/topics/preview/#{@topic.id}?version=1"
+        body_should_contain 'Preview revision #1'
+      end
+
+      login_as(:grant)
+      visit "/site/topics/history/#{@topic.id}"
+      body_should_contain 'restricted' # rev 1
+      body_should_contain 'current'    # rev 2
+      visit "/site/topics/preview/#{@topic.id}?version=1"
+      body_should_not_contain 'Preview revision #1'
+      body_should_contain 'There is currently no public version of this topic available.'
     end
 
   end
