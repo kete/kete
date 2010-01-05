@@ -871,8 +871,6 @@ en:
       updated: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_updated}}."
   configure:
     index:
-      Link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
-      Missing_software: "Missing Software:"
       advanced_options: "Advanced Options"
       change_password: "{{t.base.you.capitalize}} should {{t.base.change}} the {{t.base.default}} {{t.base.administrator}} account's password. Leaving it as the {{t.base.default}} is a security risk."
       change_password_button: "{{t.base.change.capitalize}} {{t.base.password}}"
@@ -886,6 +884,8 @@ en:
       finished_with_settings: "Finished with Settings?"
       install_missing_software: "Install missing software, restart {{t.base.your}} server, and reload this page to proceed."
       installation_complete: "Installation complete"
+      link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
+      missing_software: "Missing Software:"
       missing_software_gem: "{{gem_name}} gem"
       must_restart: "Before {{t.base.you}} continue, {{t.base.you}} must restart the kete application server and start backgroundrb!"
       prime_search_engine: "Prime {{t.base.search.capitalize}} Engine"
