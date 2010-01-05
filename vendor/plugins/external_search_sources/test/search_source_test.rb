@@ -80,13 +80,13 @@ class SearchSourceTest < ActiveSupport::TestCase
   end
 
   test "The Search Source model should contain a class var of acceptable limit params" do
-    assert_equal %w{ limit num_results count }, SearchSource.acceptable_limit_params
+    assert_equal %w{ count limit num_results }, SearchSource.acceptable_limit_params
   end
 
   test "The Search Source model should require that limit_param be in SearchSource.acceptable_limit_params or blank" do
     source = SearchSource.new(@@new_model.merge(:limit_param => 'invalid'))
     assert !source.valid?
-    assert_equal 'must be one of the following: limit, num_results, count', source.errors['limit_param']
+    assert_equal 'must be one of the following: count, limit, num_results', source.errors['limit_param']
 
     source = SearchSource.new(@@new_model.merge(:limit_param => nil))
     assert source.valid?
@@ -174,9 +174,16 @@ class SearchSourceTest < ActiveSupport::TestCase
     assert_equal 'http://example.com/?q=test', source.more_link
   end
 
+  test "Sort entries correctly determines an image from a link" do
+    source = SearchSource.create(@@new_model)
+    a,b,c,d = FeedEntry.new('fake_media'), FeedEntry.new, FeedEntry.new('false_image'), FeedEntry.new
+    expected = { :total => 4, :links => [a,b,c,d], :images => [] }
+    assert_equal expected, source.send(:sort_entries, [a,b,c,d])
+  end
+
   test "Sort entries returns a hash with expected values" do
     source = SearchSource.create(@@new_model)
-    a,b,c,d = FeedEntry.new('1'), FeedEntry.new, FeedEntry.new('1'), FeedEntry.new
+    a,b,c,d = FeedEntry.new('test.png'), FeedEntry.new, FeedEntry.new('test.jpg'), FeedEntry.new
     expected = { :total => 4, :links => [b,d], :images => [a,c] }
     assert_equal expected, source.send(:sort_entries, [a,b,c,d])
   end
