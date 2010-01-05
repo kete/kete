@@ -11,7 +11,7 @@ if @total_item_counts > 0
 end
 -%>
 
-<div id="related_items" <%= class_and_width_from(position) %>>
+<div id="related_items" <%= class_and_styles_from(position, @total_item_counts) %>>
 
 <%= render("topics/secondary_wrapper_start", :div_id => "related", :class_suffix => class_suffix_from(position)) -%>
 
