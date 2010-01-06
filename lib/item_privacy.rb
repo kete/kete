@@ -106,26 +106,26 @@ module ItemPrivacy
         def store_correct_versions_after_save
           if private?
             store_private!
-            
+
             # Store the basket id from the private version for future use..
             private_basket_id = basket_id
-            
+
             load_public!
-            
+
             # James - 2008-12-08
             # Ensure we keep the public verion of the item in sync if the basket of the private
             # version has changed.
             update_attribute(:basket_id, private_basket_id) if basket_id != private_basket_id
 
           elsif has_private_version?
-            
+
             # Ensure we keep the private version of the item in sync as well..
             public_basket_id = basket_id
-            
+
             private_version do
               update_attribute(:basket_id, public_basket_id) if basket_id != public_basket_id
             end
-            
+
           end
 
           ## Always return true to avoid halting the filter chain
@@ -237,11 +237,34 @@ module ItemPrivacy
 
     module InstanceMethods
 
-      # Transparently map tags for the current item to the tags of the correct
-      # privacy, and sort them according to raw_tag_list
-      def tags
-        tags_out_of_order = private? ? private_tags : public_tags
+      def public_tags
+        order_tags(super)
+      end
 
+      def private_tags
+        order_tags(super)
+      end
+
+      # Transparently map tags for the current item to the tags of the correct privacy
+      def tags
+        private? ? private_tags : public_tags
+      end
+
+      def tag_list
+        private? ? private_tag_list : public_tag_list
+      end
+
+      def tag_list=(new_tags)
+        if private?
+          self.private_tag_list = new_tags
+        else
+          self.public_tag_list = new_tags
+        end
+      end
+
+      private
+
+      def order_tags(tags_out_of_order)
         return tags_out_of_order if raw_tag_list.blank?
 
         # Get the raw tag list, split, squish (removed whitespace), and add each to raw_tag_array
@@ -258,18 +281,6 @@ module ItemPrivacy
           tags = tags_out_of_order.sort { |a, b| raw_tag_array.index(a.name).to_i <=> raw_tag_array.index(b.name).to_i }
         end
         tags
-      end
-
-      def tag_list
-        private? ? private_tag_list : public_tag_list
-      end
-
-      def tag_list=(new_tags)
-        if private?
-          self.private_tag_list = new_tags
-        else
-          self.public_tag_list = new_tags
-        end
       end
 
     end
