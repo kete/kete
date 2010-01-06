@@ -875,8 +875,6 @@ en:
       updated: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_updated}}."
   configure:
     index:
-      Link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
-      Missing_software: "Missing Software:"
       advanced_options: "Advanced Options"
       change_password: "{{t.base.you.capitalize}} should {{t.base.change}} the {{t.base.default}} {{t.base.administrator}} account's password. Leaving it as the {{t.base.default}} is a security risk."
       change_password_button: "{{t.base.change.capitalize}} {{t.base.password}}"
@@ -890,6 +888,8 @@ en:
       finished_with_settings: "Finished with Settings?"
       install_missing_software: "Install missing software, restart {{t.base.your}} server, and reload this page to proceed."
       installation_complete: "Installation complete"
+      link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
+      missing_software: "Missing Software:"
       missing_software_gem: "{{gem_name}} gem"
       must_restart: "Before {{t.base.you}} continue, {{t.base.you}} must restart the kete application server and start backgroundrb!"
       prime_search_engine: "Prime {{t.base.search.capitalize}} Engine"
@@ -1258,11 +1258,9 @@ en:
       getting_choices: "Getting {{t.base.choice.pluralize}}. "
       suggest_a: "OR suggest a {{field_name}}"
     extended_field_radio_editor:
-      ? "no"
-      : "No"
+      no: "No"
       no_value: "No {{t.base.value}}"
-      ? "yes"
-      : "Yes"
+      yes: "Yes"
     extended_field_topic_type_editor:
       checking_value: "Checking {{t.base.value}}. "
       getting_topics: "Getting {{t.base.zoom_types.topic.pluralize}}. "
@@ -2063,8 +2061,7 @@ en:
       description: Description
       name: "{{t.base.name.capitalize}}"
     generic_topic_fields:
-      ? "description_{{t.base.field}}"
-      : "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
+      description_field: "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
       note: "{{t.base.all.capitalize}} {{t.base.topic_type.pluralize}} inherit the following {{t.base.form}} {{t.base.field.pluralize}}:"
       present_in_all: "These {{t.base.form}} {{t.base.field.pluralize}} will be present in {{t.base.all}} {{t.base.topic_type.pluralize}}."
       short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
@@ -2138,7 +2135,7 @@ en:
       description_example: "Note: {{t.base.new}} {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons"
       description_example_exception: ", unless {{t.base.you}} check the box below"
       downloaded_by_everyone: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
-      downloaded_by_role: "{{t.base.can.capitilize}} {{t.base.only}} be {{t.base.downloaded}} {{t.base.by}} people who have {{role_name}} access."
+      downloaded_by_role: "{{t.base.can.capitalize}} {{t.base.only}} be {{t.base.downloaded}} {{t.base.by}} people who have {{role_name}} access."
       editing: "{{t.base.editing.capitalize}}"
       embedded_note: "If {{t.base.you}} fill out fields here as well, the embedded metadata will be {{t.base.added}} to it at the end."
       file_privacy: "Attached file privacy"

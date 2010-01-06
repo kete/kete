@@ -8,14 +8,14 @@ namespace :external_search_sources do
   end
 
   desc 'Import all Search Source fixture data'
-  task :import => ['external_search_sources:import:kete_horowhenua_images']
+  task :import => ['external_search_sources:import:dnz_generic_results']
 
   namespace :import do
 
     plugin_path = File.dirname(__FILE__).gsub('/tasks', '')
     Dir["#{plugin_path}/fixtures/*"].each do |fixture|
       name = fixture.split('/').last.split('.').first
-      desc "Import #{name.humanize} Search Source."
+      desc "Import #{name.humanize} Search Source (provide API_KEY for search sources that need it)."
       task name.to_sym => :environment do
         SearchSource.import_from_yaml(fixture, { :api_key => ENV['API_KEY'] })
       end
