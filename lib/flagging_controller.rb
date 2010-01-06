@@ -127,7 +127,7 @@ module FlaggingController
         # now that this item is approved by moderator
         # we get rid of pending flag
         # then flag it as reviewed
-        @item.change_pending_to_reviewed_flag(@version)
+        @item.strip_flags_and_mark_reviewed(@version)
 
         # Return to latest public version before changing flags..
         @item.send :store_correct_versions_after_save if @item.respond_to?(:store_correct_versions_after_save)
@@ -152,6 +152,19 @@ module FlaggingController
 
         redirect_to @item_url
       end
+    end
+
+    # for cases where a version is flagged, decided to be ok, and the mod
+    # doesn't want to make this the live version (restore) or reject it.
+    def review
+      setup_flagging_vars
+
+      @item.review_this(@version)
+
+      flash[:notice] = I18n.t('flagging_controller_lib.review.reviewed',
+                              :zoom_class => zoom_class_humanize(@item.class.name))
+
+      redirect_to @item_url
     end
 
     def reject

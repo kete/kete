@@ -99,13 +99,14 @@ class Topic < ActiveRecord::Base
     alias_method :tag_list, :flag_list
     alias_method :tag_list=, :flag_list=
     alias_method :tag_counts, :flag_counts
-    def basket
+    def latest_version
       @latest_version ||= Topic.find_by_id(self.topic_id)
-      @latest_version.basket
+    end
+    def basket
+      latest_version.basket
     end
     def first_related_image
-      @latest_version ||= Topic.find_by_id(self.topic_id)
-      @latest_version.first_related_image
+      latest_version.first_related_image
     end
     def disputed_or_not_available?
       (title == NO_PUBLIC_VERSION_TITLE) || (title == BLANK_TITLE)

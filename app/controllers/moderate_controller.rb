@@ -20,17 +20,27 @@ class ModerateController < ApplicationController
   def list
     @rss_tag_auto = rss_tag(:replace_page_with_rss => true)
     @rss_tag_link = rss_tag(:auto_detect => false, :replace_page_with_rss => true)
-
-    @items = @current_basket.all_disputed_revisions
+    fetch_revisions
   end
 
   def rss
     @cache_key_hash = { :rss => "#{@current_basket.urlified_name}_moderate_list" }
-    unless has_all_rss_fragments?(@cache_key_hash)
-      @items = @current_basket.all_disputed_revisions
-    end
+    fetch_revisions unless has_all_rss_fragments?(@cache_key_hash)
     respond_to do |format|
       format.xml
+    end
+  end
+
+  private
+
+  def fetch_revisions
+    case params[:type]
+    when 'reviewed'
+      @items = @current_basket.all_reviewed_revisions
+    when 'rejected'
+      @items = @current_basket.all_rejected_revisions
+    else
+      @items = @current_basket.all_disputed_revisions
     end
   end
 end

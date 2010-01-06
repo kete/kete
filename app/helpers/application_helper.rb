@@ -1218,6 +1218,9 @@ module ApplicationHelper
   end
 
   def link_to_preview_of(item, version, check_permission = true, options = {})
+    # if we got sent a version object, we need to link to the latest version
+    item = item.latest_version if item.class.name =~ /Version/
+
     version_number = 0
     link_text = 'preview'
     begin

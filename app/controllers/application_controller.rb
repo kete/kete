@@ -1085,6 +1085,9 @@ class ApplicationController < ActionController::Base
   end
 
   def history_url(item)
+    # if we got sent a version object, we need to link to the latest version
+    item = item.latest_version if item.class.name =~ /Version/
+
     url_for :controller => zoom_class_controller(item.class.name), :action => :history, :id => item
   end
 

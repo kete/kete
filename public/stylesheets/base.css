@@ -721,7 +721,9 @@ div#slideshow-controls div#slideshow-middle {
 /* ################################## Comments ################################## */
 /* see public/stylesheets/comment.css */
 
-
+.history-table {
+  width: 100%;
+}
 .history-table td {
     padding: 0.5em;
     border: 1px solid #ccc;

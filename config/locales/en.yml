@@ -121,11 +121,12 @@ en:
       change_password: "{{t.base.change.capitalize}} {{t.base.password}}"
       request_password: "{{t.base.request.capitalize}} {{t.base.password.downcase}}"
     please: please
-    please_try_again: "{{t.base.please}} try again"
+    please_try_again: "{{t.base.please.capitalize}} try again"
     please_try_again_later: "{{t.base.please_try_again}} later"
     portrait: portrait
     preview: preview
     private: private
+    privacy: privacy
     profile: profile
     public: public
     recent: recent
@@ -177,6 +178,7 @@ en:
     username: "user name"
     valid: valid
     value: value
+    version: version
     view: view
     viewed: viewed
     viewing: viewing
@@ -1306,12 +1308,14 @@ en:
     preview:
       no_public: "There is currently no {{t.base.public}} version of this {{controller}} available."
     reject:
-      rejected: "This version of this {{zoom_class}} {{t.base.has_been}} {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by email."
+      rejected: "This {{t.base.version}} of this {{zoom_class}} {{t.base.has_been}} {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by email."
     restore:
       approved: "The {{t.base.content}} of this {{zoom_class}} {{t.base.has_been}} {{t.base.approved}} {{t.base.from}} the selected revision."
       made_live: "{{t.base.your.capitalize}} {{t.base.contribution}} to {{site_name}} in {{basket_name}} {{t.base.has_been}} {{t.base.made}} the live version."
       missing_details: "The version you're reverting to is missing some compulsory {{t.base.content}}. {{t.base.please.capitalize}} {{t.base.contribute}} the missing details before continuing. You may need to {{t.base.contact}} the original author to collect additional information."
       version_comment: "{{t.base.content.capitalize}} {{t.base.from}} revision # {{version}}."
+    review:
+      reviewed: "This {{t.base.version}} of the {{zoom_class}} {{t.base.has_been}} marked as {{t.base.reviewed}}."
   google_map_lib:
     extended_field_map_editor:
       address: "Address:"
@@ -1676,14 +1680,15 @@ en:
       undo: (undo)
   moderate:
     list:
-      flagged_at: "{{t.base.flagged}} at"
-      flagged_with: "{{t.base.flagged}} with"
+      flagged_at: "{{t.base.flagged.capitalize}} at"
+      flagged_with: "{{t.base.flagged.capitalize}} with"
       full_history: "{{t.base.item}}'s full {{t.base.history}}"
+      item_title: "Title"
       no_items_needing_moderation: "Currently no {{t.base.item.pluralize}} needing {{t.base.moderation}}."
-      privacy: privacy
+      privacy: "{{t.base.privacy.capitalize}}"
       private: "{{t.base.private}}"
       public: "{{t.base.public}}"
-      revision: Revision
+      revision: "{{t.base.revision.capitalize}}"
       title: "{{t.base.moderate.capitalize}}"
     rss:
       description: "{{t.base.item.capitalize.pluralize}} needing {{t.base.moderation}}"
@@ -2196,6 +2201,8 @@ en:
       history: "{{t.base.history.capitalize}}"
       make_live: "Make this {{t.base.revision}} live"
       make_live_confirm: "{{t.base.are_you_sure}}"
+      mark_as_reviewed: "Mark as {{t.base.reviewed}}"
+      mark_as_reviewed_confirm: "{{t.base.are_you_sure}}"
       reject: "{{t.base.reject.capitalize}} this {{t.base.revision}}"
       reject_confirm: "{{t.base.are_you_sure}}"
       title: "Actions:"

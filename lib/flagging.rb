@@ -8,18 +8,43 @@ module Flagging
 
     def self.included(klass)
       klass.send :after_save, :do_moderation
+
+      # Each version has various statuses. Add conveniant checks for these.
+      # We have to add these in this method because we need access to klass
+      Module.class_eval("#{klass.name}::Version").class_eval <<-RUBY
+        attr_accessor :flagged_at # we store this versions most recent flagged date
+
+        def disputed?
+          undisputed_flags = [BLANK_FLAG, PENDING_FLAG, REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
+          tags.size > 0 && tags.join(',') !~ /(\#{undisputed_flags.join('|')})/
+        end
+
+        def reviewed?
+          tags.size > 0 && tags.join(',') =~ /(\#{REVIEWED_FLAG})/
+        end
+
+        def rejected?
+          tags.size > 0 && tags.join(',') =~ /(\#{REJECTED_FLAG})/
+        end
+
+        def disputed_flags
+          undisputed_flags = [BLANK_FLAG, PENDING_FLAG, REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
+          flags.select { |flag| !undisputed_flags.include?(flag.name) }
+        end
+      RUBY
+
       klass.extend(ClassMethods)
     end
 
     def flag_live_version_with(flag, message = nil)
-      
+
       # Keep track if we're working with a public or private version
-      show_serialized = self.respond_to?(:private) && self.private? 
-      
+      show_serialized = self.respond_to?(:private) && self.private?
+
       # Do the flagging and reversion
       just_flagged_version = flag_at_with(self.version, flag, message)
       revert_to_latest_unflagged_version_or_create_blank_version
-      
+
       # Return the private version if we were working with it before..
       show_serialized && !self.private? ? self.private_version! : self
     end
@@ -52,7 +77,7 @@ module Flagging
       version = self.versions.find_by_version(version_number)
       revert_to_version!(version)
       clear_flags_for(version)
-      
+
       # Make sure version in the model is public
       store_correct_versions_after_save if self.respond_to?(:store_correct_versions_after_save)
     end
@@ -63,13 +88,30 @@ module Flagging
       version.save_tags
     end
 
-    def change_pending_to_reviewed_flag(version_number)
-      remove_pending_flag(version_number)
+    # all moderator actions flags (reviewed, rejected, etc)
+    # not user action (incorrect, duplicate etc)
+    def remove_all_flags(version_number)
+      version = self.versions.find_by_version(version_number)
+      version.tag_list.remove(BLANK_FLAG)
+      version.tag_list.remove(PENDING_FLAG)
+      version.tag_list.remove(REVIEWED_FLAG)
+      version.tag_list.remove(REJECTED_FLAG)
+      version.tag_list.remove(RESTRICTED_FLAG)
+      version.save_tags
+    end
+
+    def strip_flags_and_mark_reviewed(version_number)
+      remove_all_flags(version_number)
       flag_at_with(version_number, REVIEWED_FLAG)
     end
 
+    def review_this(version_number, options = {})
+      remove_all_flags(version_number)
+      flag_at_with(version_number, REVIEWED_FLAG, options[:message])
+    end
+
     def reject_this(version_number, options = {})
-      remove_pending_flag(version_number)
+      remove_all_flags(version_number)
       flag_at_with(version_number, REJECTED_FLAG, options[:message])
       flag_at_with(version_number, RESTRICTED_FLAG, options[:message]) if options[:restricted]
     end
@@ -78,18 +120,18 @@ module Flagging
       return 1 if new_record?
       (versions.calculate(:max, :version) || 0)
     end
-    
+
     def latest_unflagged_version_with_condition(&block)
       last_version_number = self.max_version
-          
+
       last_version = self.versions.find_by_version(last_version_number)
       last_version_tags_count = last_version.tags.size
-      
+
       if last_version_number > 1
         while last_version_tags_count > 0 || !block.call(last_version)
           last_version_number = last_version_number - 1
           break if last_version_number == 0
-          
+
           last_version = self.versions.find_by_version(last_version_number)
           last_version_tags_count = last_version.tags.size
         end
@@ -107,38 +149,38 @@ module Flagging
     # Updated to handle private and public items
     def revert_to_latest_unflagged_version_or_create_blank_version
       last_version_number = self.max_version
-    
+
       logger.debug("what is last_version_number: " + last_version_number.to_s)
-    
+
       last_version = self.versions.find_by_version(last_version_number)
       last_version_tags_count = last_version.tags.size
-      
+
       if last_version_number > 1
         while last_version_tags_count > 0 || ( last_version.respond_to?(:private) && last_version.private? != self.private? )
           last_version_number = last_version_number - 1
           break if last_version_number == 0
-    
+
           last_version = self.versions.find_by_version(last_version_number)
           last_version_tags_count = last_version.tags.size
         end
       end
-      
+
       # prevents recursive moderating
       # from happening at the next save
       # which is triggered by either revert
       # or update to blank version below
       self.do_not_moderate = true
-    
+
       # if there isn't a unflagged version, we create a new blank one
       # that states that the item is pending
       # and return that version
       if last_version_tags_count == 0 && ( !last_version.respond_to?(:private?) || last_version.private? == self.private? )
-        
+
         if last_version.respond_to?(:private?) && last_version.private?
 
           # If the version if private, store instead of reverting.
           revert_to(last_version)
-          
+
           # No, doing this will cause duplicate versions.
           # save_without_revision
           # store_correct_versions_after_save
@@ -152,12 +194,12 @@ module Flagging
           :description => nil,
           :extended_content => nil,
           :tag_list => nil }
-          
+
         update_hash[:private] = self.private? if self.respond_to?(:private)
         update_hash[:description] = PENDING_FLAG if self.class.name == 'Comment'
 
         update_hash[:short_summary] = nil if self.can_have_short_summary?
-    
+
         if respond_to?(:without_saving_private)
           without_saving_private do
             update_attributes!(update_hash)
@@ -165,11 +207,11 @@ module Flagging
         else
           update_attributes!(update_hash)
         end
-        
+
         add_as_contributor(User.find(:first), self.version)
-        
+
       end
-      
+
       # Ensure we store the latest private version and load a public one if applicable.
       store_correct_versions_after_save if respond_to?(:store_correct_versions_after_save)
       reload
@@ -196,23 +238,15 @@ module Flagging
     def disputed?
       already_at_blank_version? or latest_version_of_this_privacy.tags.size > 0
     end
-    
+
     def disputed_or_not_available?
-      already_at_blank_version? or 
-        latest_version_of_this_privacy.tags.size > 0 or 
+      already_at_blank_version? or
+        latest_version_of_this_privacy.tags.size > 0 or
         at_placeholder_public_version?
     end
-    
+
     def latest_version_of_this_privacy
       versions.sort { |a, b| b.id <=> a.id }.find { |v| !v.respond_to?(:private?) || v.private? == private? }
-    end
-    
-    def disputed_version?
-      # Disputed is now used on a version by version basis.
-      # An item is disputed if it has one or more tags (flags).
-      this_version = self.versions.find_by_version(version)
-      undisputed_flags = [REVIEWED_FLAG, BLANK_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
-      this_version.tags.size > 0 && !this_version.tags.join(',') =~ /(#{undisputed_flags.join('|')})/
     end
 
     def reverted?
@@ -222,7 +256,7 @@ module Flagging
     def do_not_moderate?
       do_not_moderate.nil? ? false : do_not_moderate
     end
-    
+
     def at_placeholder_public_version?
       title == NO_PUBLIC_VERSION_TITLE
     end
@@ -272,7 +306,7 @@ module Flagging
     end
 
     protected
-    
+
       def do_moderation
         # if are we are using full moderation
         # where everything has to approved by an admin
@@ -287,56 +321,48 @@ module Flagging
         if should_moderate?
           flag_live_version_with(PENDING_FLAG)
         end
-      
+
       end
-    
+
       def should_moderate?
-        self.fully_moderated? and 
-          !self.do_not_moderate? and 
-          !self.already_at_blank_version? and 
+        self.fully_moderated? and
+          !self.do_not_moderate? and
+          !self.already_at_blank_version? and
           !self.at_placeholder_public_version?
       end
-    
+
   end
 
   module ClassMethods
+
+    # Returns a collection of item versions that have been flagged one way or another
+    # use find_(disputed/reviewed/rejected) rather than this method directly
     def find_flagged(basket_id)
-      not_applicable_tags = Tag.find(:all,
-                                     :conditions => ["name in (?)",
-                                                     [REVIEWED_FLAG, BLANK_FLAG]])
-      table_name = base_class.name.tableize
-      versions_table_name = self.versioned_table_name
-      class_fk = self.versioned_foreign_key
       full_version_class_name = base_class.name + '::' + self.versioned_class_name
 
-      select = "#{table_name}.id as id, #{versions_table_name}.title as title, #{versions_table_name}.description as description, #{versions_table_name}.version as version, #{versions_table_name}.id as version_id, #{versions_table_name}.basket_id, #{table_name}.basket_id, taggings.created_at, taggings.message, tags.name AS flag, taggings.created_at as flagged_at, taggings.message"
-      select += ", #{versions_table_name}.private as private" if self.columns.collect { |c| c.name }.include?("private")
-      
-      joins = "JOIN #{table_name} ON #{table_name}.id = #{versions_table_name}.#{class_fk} AND #{table_name}.basket_id = #{versions_table_name}.basket_id "
-      joins += "JOIN taggings ON taggings.taggable_id = #{versions_table_name}.id AND taggings.taggable_type = '#{full_version_class_name}' AND taggings.context = \"flags\""
-      joins += "JOIN tags ON tags.id = taggings.tag_id"
+      flaggings = Tagging.all(
+        :include => [:tag, { :taggable => [:flags] }],
+        :conditions => {
+          :basket_id => basket_id,
+          :context => 'flags',
+          :taggable_type => full_version_class_name
+        }
+      )
 
-      find_options = {
-        :select => select,
-        :joins => joins,
-        :order => 'flagged_at DESC',
-        :from => versions_table_name }
-  
-      if !not_applicable_tags.blank?
-        find_options[:conditions] = ["tags.id NOT IN (:not_applicable_tags)",
-                                     { :not_applicable_tags => not_applicable_tags }]
-      end
-
-      # Don't automatically load belongs_to conditions, i.e. documents.basket_id = parent_id
-      # This causes the query to only return one result per item, but we want all versions
-      # that match, not just the first.
-      with_exclusive_scope(:find => { :conditions => ["#{versions_table_name}.basket_id = ?", basket_id] }) do
-        find_by_sql(construct_finder_sql(find_options))
-      end
+      flaggings.collect do |flagging|
+        flagged_item = flagging.taggable
+        flagged_item.flagged_at = flagging.created_at
+        flagged_item
+      end.uniq
     end
 
-    def find_disputed(basket_id)
-      find_flagged(basket_id).select(&:disputed_version?)
+    # find_disputed(basket_id)
+    # find_reviewed(basket_id)
+    # find_rejected(basket_id)
+    %w{ disputed reviewed rejected }.each do |type|
+      define_method("find_#{type}") do |basket_id|
+        find_flagged(basket_id).select(&:"#{type}?")
+      end
     end
 
     def find_non_pending(type = :all, conditions_string = String.new)
