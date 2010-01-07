@@ -22,7 +22,7 @@ class RegisterTest < ActionController::IntegrationTest
       check 'user_agree_to_terms'
       click_button 'Sign up'
       body_should_contain '1 error prohibited this user from being saved'
-      body_should_contain 'Security code : Your security question answer failed - please try again.'
+      body_should_contain 'Security code : Your security question answer failed. Please try again.'
     end
   end
 

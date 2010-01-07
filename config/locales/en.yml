@@ -2244,7 +2244,7 @@ en:
       changed_topic_type: "You've {{t.base.changed}} the {{t.base.topic_type}} for this topic. {{t.base.please.capitalize}} {{t.base.review}} the available {{t.base.field.pluralize}}."
       updated: "{{t.base.zoom_types.topic.capitalize}} {{t.base.was_updated}}."
   user_model:
-    failed_security_answer: ": {{t.base.your.capitalize}} security question answer {{t.base.failed}} - {{t.base.please_try_again}}."
+    failed_security_answer: ": {{t.base.your.capitalize}} security question answer {{t.base.failed}}. {{t.base.please_try_again}}."
     locale_incorrect: ": Unrecognised {{t.base.language}}. Must be one of the following: {{locales}}"
   user_notifier:
     activation:

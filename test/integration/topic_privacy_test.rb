@@ -33,11 +33,11 @@ class TopicPrivacyTest < ActionController::IntegrationTest
           fill_in "topic[short_summary]", :with => "A test summary"
           fill_in "topic[description]", :with => "A test description"
         end
-        
+
         body_should_contain("Topic was successfully created.")
-        body_should_contain("Topic: Test Topic")
+        body_should_contain("Test Topic")
         body_should_contain("view-link")
-        
+
         # TODO: Update test to conform to new editor details
         # body_should_contain("Created by:")
         body_should_not_contain("Private version")
@@ -53,19 +53,19 @@ class TopicPrivacyTest < ActionController::IntegrationTest
         end
 
         body_should_contain("Topic was successfully created.")
-        body_should_contain("Topic: Test Topic")
+        body_should_contain("Test Topic")
         body_should_contain("A test description")
         body_should_contain("Public version (live)")
 
         click_link "Public version (live)"
 
-        body_should_contain "Topic: #{NO_PUBLIC_VERSION_TITLE}"
+        body_should_contain "#{NO_PUBLIC_VERSION_TITLE}"
         body_should_contain NO_PUBLIC_VERSION_DESCRIPTION
         body_should_contain "Private version"
 
         click_link "Private version"
 
-        body_should_contain("Topic: Test Topic")
+        body_should_contain("Test Topic")
         body_should_contain("A test description")
         body_should_contain("Public version (live)")
       end

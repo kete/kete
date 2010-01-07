@@ -15,7 +15,7 @@ module Flagging
         attr_accessor :flagged_at # we store this versions most recent flagged date
 
         def disputed?
-          undisputed_flags = [BLANK_FLAG, PENDING_FLAG, REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
+          undisputed_flags = [REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
           tags.size > 0 && tags.join(',') !~ /(\#{undisputed_flags.join('|')})/
         end
 
@@ -28,7 +28,7 @@ module Flagging
         end
 
         def disputed_flags
-          undisputed_flags = [BLANK_FLAG, PENDING_FLAG, REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
+          undisputed_flags = [REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
           flags.select { |flag| !undisputed_flags.include?(flag.name) }
         end
       RUBY
