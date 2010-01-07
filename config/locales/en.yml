@@ -1475,7 +1475,7 @@ en:
       transfer_is_done_manually: "<b>You will have to transfer the files involved to the server which houses your kete installation via a separate process.</b>  We do this separately since {{t.base.import.pluralize}} may involve a large amount of big files and the method necessary may vary depending on your installation."
       video: "{{t.base.zoom_types.video.capitalize}}"
       what_is_folder_name: "What is the {{t.base.name}} of your folder under the imports directory?"
-      xml_path_to_records: "XML Path to Record (only applicable to Simple XML {{t.base.topic_type.capitalize.pluralize}}):"
+      xml_path_to_records: "XML Path to Record:"
       xml_path_to_records_description: "What is the XML element path that specifies each record? For example 'Root/Record'.  For RSS 2.0, this would be 'rss/channel/{{t.base.item}}'."
     new_related_set_from_archive_file:
       add_related: "{{t.base.add.capitalize}} {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}"
