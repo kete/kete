@@ -45,6 +45,38 @@ class String
   end
 end
 
+class Array
+  # Pass in an attribute name that corresponds to a
+  # column in the database, but without the _id
+  # i.e.   basket_id     => :basket
+  # i.e.   topic_type_id => :topic_type
+  def collection_of_objects_and_counts_for(attr_name, ordered = false)
+    attr_name_id = "#{attr_name}_id"
+
+    if any? { |item| !item.respond_to?(attr_name_id) }
+      error_msg = "Trying to get hash of #{attr_name.humanize} names and counts, "
+      error_msg += "but Array contains an object that doesn't have that value."
+      raise error_msg
+    end
+
+    name_and_counts = Hash.new
+
+    attr_ids = collect { |item| item.send(attr_name_id) }
+    attr_types = attr_name.to_s.classify.constantize.all(:conditions => { :id => attr_ids })
+    attr_types.each do |attr_type|
+      name_and_counts[attr_type] = select { |item| item.send(attr_name_id) == attr_type.id }.size
+    end
+
+    if ordered
+      name_and_counts.sort_by do |attr_type, count|
+        attr_type.respond_to?(:lft) ? attr_type.lft : attr_type.id
+      end
+    else
+      name_and_counts
+    end
+  end
+end
+
 # Include extensions into Rails components here
 
 # Kieran Pilkington, 2009-07-09
@@ -180,7 +212,7 @@ module Nokogiri
   module XML
     class Builder
       def to_stripped_xml
-        @doc.to_xml.gsub(/(^\s*|\s*$)/, '').gsub(/>(\n*|\s*)</, '><').gsub('<?xml version="1.0"?>', '').gsub(/(<root>|<\/root>)/, '')
+        @doc.to_xml.gsub(/(^\s*|\s*$)/, '').gsub(/>(\n*|\s*)</, '><').gsub('<?xml version="1.0"?>', '').gsub(/(<root\/?>|<\/root>)/, '')
       end
     end
   end

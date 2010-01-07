@@ -137,8 +137,10 @@ function setupRelatedCollapsableSections() {
     });
   });
   // Show the contents of the first section in the related items inset
-  $$('.related-items-section')[0].down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
-  $$('.related-items-section')[0].down('ul').show();
+  if ($$('.related-items-section')[0]) {
+    $$('.related-items-section')[0].down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+    $$('.related-items-section')[0].down('ul').show();
+  }
 }
 
 function hideAllRelatedSections() {
@@ -272,6 +274,20 @@ function makeFooterLanguageSelectionClickable() {
   });
 }
 
+/*
+ * Show or hide the required or private only checkbox as needed on topic type or content type field mappings
+ */
+function showOrHideRequiredAsNeededFor(id) {
+ $(id).observe('change', function(event) {
+   this.up('.mapping_required_and_private_only').down('.mapping_private_only').toggle();
+ });
+}
+function showOrHidePrivateOnlyAsNeededFor(id) {
+  $(id).observe('change', function(event) {
+    this.up('.mapping_required_and_private_only').down('.mapping_required').toggle();
+  });
+}
+
 /**
  * Now setup everything to run when needed once the page is loaded
  */
@@ -280,7 +296,7 @@ document.observe('dom:loaded', function() {
   new SubMenu("user_baskets_list");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
   if ($('portrait_help_div')) { enabledPortraitHelpToggle(); }
-  if ($$('#related_items.inset').size() > 0) { setupRelatedCollapsableSections(); }
+  if ($$('#related_items').size() > 0) { setupRelatedCollapsableSections(); }
   makeSearchResultsDivClickable();
   if ($('footer_language_selection')) { makeFooterLanguageSelectionClickable(); }
 });

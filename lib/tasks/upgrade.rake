@@ -27,7 +27,9 @@ namespace :kete do
                     'kete:upgrade:set_default_locale_for_existing_users',
                     'kete:upgrade:add_basket_id_to_taggings',
                     'kete:upgrade:make_baskets_private_notification_do_not_email',
-                    'kete:upgrade:add_nested_values_to_comments']
+                    'kete:upgrade:add_nested_values_to_comments',
+                    'kete:upgrade:change_inset_to_position',
+                    'kete:upgrade:set_null_private_only_mappings_to_false']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -60,11 +62,20 @@ namespace :kete do
 
         if !SystemSetting.find_by_name(setting_hash['name'])
 
-          if setting_hash['name'].include?('Related Items Inset')
-            setting_hash['value'] = setting_hash['value'] == 'true' ? 'false' : 'true'
+          if setting_hash['name'].include?('Related Items Position')
+            # when we upgrade and add these new settings, we want to make sure
+            # we mimic behaviour of the site beforehand, so related content
+            # should be below and the option to change should be hidden
+            case setting_hash['name']
+            when 'Related Items Position Default'
+              setting_hash['value'] = 'below'
+            when 'Hide Related Items Position Field'
+              setting_hash['value'] = 'true'
+            end
+
             unless printed_related_items_notice
               puts ""
-              puts "- Related Items Inset setting -"
+              puts "- Related Items Position setting -"
               puts "If your existing site content tends to have images or tables in your descriptions of items you'll probably want to keep these settings as they are."
               puts "However, if your content descriptions don't have much of these you will like want to change them to the opposite to take advantage of the improved Related Items interface placement."
               puts ""
@@ -343,6 +354,59 @@ namespace :kete do
     desc "Add the parent_id, lft, and rgt values to comments that were created before acts_as_nested_set was put in place"
     task :add_nested_values_to_comments => :environment do
       Comment.renumber_all if (Comment.count(:conditions => { :lft => nil }) > 0)
+    end
+
+    desc "Migrate from older style related items inset booleans to newer related items position flags"
+    task :change_inset_to_position => :environment do
+      # Use Model.update_all({ changes }, { :id => id }) to get
+      # around time consuming validations and possible failures
+
+      conditions = ["related_items_position IS NULL OR related_items_position IN (?)", ['', 0, 1]]
+      topics = Topic::Version.all(:conditions => conditions)
+      topics.each do |topic|
+        Topic::Version.update_all({
+          :related_items_position => (topic.related_items_position == '1' ? 'inset' : 'below')
+        }, { :id => topic.id })
+      end
+
+      topics = Topic.all(:conditions => conditions)
+      topics.each do |topic|
+        Topic.update_all({
+          :related_items_position => (topic.related_items_position == '1' ? 'inset' : 'below')
+        }, { :id => topic.id })
+      end
+
+      topics = Topic.all(:conditions => "private_version_serialized LIKE '%related_items_inset%'")
+      topics.each do |topic|
+        private_data = YAML.load(topic.private_version_serialized)
+        private_data.each_with_index do |(key, value), index|
+          next unless key == 'related_items_inset'
+          private_data.delete_at(index)
+          private_data << ['related_items_position', (value == '1' ? 'inset' : 'below')]
+        end
+        private_data = YAML.dump(private_data)
+        Topic.update_all({ :private_version_serialized => private_data }, { :id => topic.id })
+      end
+
+      inset_default = SystemSetting.find_by_name('Related Items Inset Default')
+      if inset_default
+        position_default = SystemSetting.find_by_name('Related Items Position Default')
+        position_default.update_attribute(:value, (inset_default.value == 'true' ? 'inset' : 'below'))
+        inset_default.destroy
+      end
+
+      inset_hidden = SystemSetting.find_by_name('Hide Related Items Inset Field')
+      if inset_hidden
+        position_hidden = SystemSetting.find_by_name('Hide Related Items Position Field')
+        position_hidden.update_attribute(:value, inset_default.value)
+        inset_hidden.destroy
+      end
+    end
+
+    desc "Set all NULL value private_only values on topic type and content type field mappings to false."
+    task :set_null_private_only_mappings_to_false => :environment do
+      ContentTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
+      TopicTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

@@ -115,6 +115,12 @@ module ExtendedContentTestUnitHelper
           end
 
           @mapped_to_type_instance.form_fields << @extended_field
+
+          unless @base_class == 'Topic'
+            @mapping = @extended_field.content_type_to_field_mappings.last
+          else
+            @mapping = @extended_field.topic_type_to_field_mappings.last
+          end
         end
 
         should "have a method that will set its value" do
@@ -136,6 +142,31 @@ module ExtendedContentTestUnitHelper
         should "have a method that will set return its value" do
           @extended_item.update_attribute(:extended_content, '<some_tag>something</some_tag>')
           assert_equal @extended_item.xml_attributes_without_position['some_tag'], @extended_item.send(@extended_field.label_for_params)
+        end
+
+        should "build xml unless for private fields and the item isn't private" do
+          return if @base_class == 'User' # users do not have private fields
+
+          @extended_item.update_attributes(:extended_content_values => { "some_tag" => "something" })
+          assert @extended_item.extended_content.include?('<some_tag>something</some_tag>')
+
+          @mapping.update_attribute(:private_only, true)
+
+          @extended_item.update_attributes(:extended_content_values => { "some_tag" => "something" }, :private => false)
+          assert !@extended_item.extended_content.include?('<some_tag>something</some_tag>')
+
+          @extended_item.update_attributes(:extended_content_values => { "some_tag" => "something" }, :private => true)
+
+          if @base_class == 'Comment'
+            # comments don't have private_version_serialized
+            assert @extended_item.private?
+            assert @extended_item.extended_content.include?('<some_tag>something</some_tag>')
+          else
+            # public version shouldn't have this info
+            assert !@extended_item.extended_content.include?('<some_tag>something</some_tag>')
+            # private version should have the info
+            assert @extended_item.private_version_serialized.include?('<some_tag>something</some_tag>')
+          end
         end
       end
     end

@@ -7,3 +7,4 @@ dnz_generic_results:
   limit_param: num_results
   or_syntax: between_upper
   source_credit: "<div style='padding:0 0 15px 15px'>Powered by <a href='http://digitalnz.org/' title='Digital NZ'><img src='http://kete.digitalnz.org/themes/dnz/images/dnz_logo.png' style='border:0; position: relative; top: 10px; left: 10px;' /></a></div>"
+  url_for_api_key: "http://www.digitalnz.org/dashboard/api_key"

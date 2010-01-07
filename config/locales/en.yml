@@ -24,6 +24,7 @@ en:
     avatar: avatar
     back_to: "back to"
     basket: basket
+    below: below
     browse: browse
     by: by
     can: can
@@ -90,6 +91,7 @@ en:
     imported: imported
     importing: importing
     inherit: inherit
+    inside: inside
     invalid: invalid
     item: item
     join: join
@@ -109,6 +111,8 @@ en:
     moderator: moderator
     name: name
     new: new
+    not_acceptable: "not acceptable"
+    not_acceptable_size: "is {{t.base.not_acceptable}}. It should be less than {{max_size}} megabytes."
     not_available: "not available"
     only: only
     open: open
@@ -150,6 +154,7 @@ en:
     sent: sent
     show: show
     showing: showing
+    sidebar: sidebar
     site: site
     site_administrator: "{{t.base.site}} {{t.base.administrator}}"
     sort: sort
@@ -536,6 +541,10 @@ en:
       private: "{{t.base.private}}: "
     related_image_link_for:
       only_original: "{{t.base.only}} available as original"
+    related_items_positions:
+      below: "{{t.base.below.capitalize}} the {{t.base.item.capitalize}} Description"
+      inset: "{{t.base.inside.capitalize}} the {{t.base.item.capitalize}} Description"
+      sidebar: "In the {{t.base.item.capitalize.pluralize}} {{t.base.sidebar.capitalize}}"
     render_baskets_as_menu:
       more: More..
     search_sorting_controls_for:
@@ -571,7 +580,8 @@ en:
     update:
       updated: "{{t.base.zoom_types.audio.capitalize}} {{t.base.was_updated}}."
   audio_recording_model:
-    not_acceptable: "is not acceptable. It should be a .mp3, .m4a, or other sound file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .mp3, .m4a, or other {{t.base.zoom_types.audio}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   authenticated_system_lib:
     login_from_cookie:
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
@@ -861,8 +871,6 @@ en:
       updated: "{{t.base.zoom_types.comment.capitalize}} {{t.base.was_updated}}."
   configure:
     index:
-      Link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
-      Missing_software: "Missing Software:"
       advanced_options: "Advanced Options"
       change_password: "{{t.base.you.capitalize}} should {{t.base.change}} the {{t.base.default}} {{t.base.administrator}} account's password. Leaving it as the {{t.base.default}} is a security risk."
       change_password_button: "{{t.base.change.capitalize}} {{t.base.password}}"
@@ -876,6 +884,8 @@ en:
       finished_with_settings: "Finished with Settings?"
       install_missing_software: "Install missing software, restart {{t.base.your}} server, and reload this page to proceed."
       installation_complete: "Installation complete"
+      link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
+      missing_software: "Missing Software:"
       missing_software_gem: "{{gem_name}} gem"
       must_restart: "Before {{t.base.you}} continue, {{t.base.you}} must restart the kete application server and start backgroundrb!"
       prime_search_engine: "Prime {{t.base.search.capitalize}} Engine"
@@ -949,6 +959,7 @@ en:
       delete: "{{t.base.delete.capitalize}}"
       multiple: (multiple)
       none_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.content_type}}."
+      private_only: "{{t.base.private}} {{t.base.only}}?"
       reorder_button: "Reorder {{t.base.content_type.capitalize}} {{t.base.form.capitalize}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
@@ -1077,7 +1088,8 @@ en:
       second: Seconds
       year: Year
   document_model:
-    not_acceptable: "is not acceptable. It should be a .pdf, .doc, or other {{t.base.zoom_types.document}} file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .pdf, .doc, or other {{t.base.zoom_types.document}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   documents:
     details:
       filename: "Filename:"
@@ -1242,11 +1254,9 @@ en:
       getting_choices: "Getting {{t.base.choice.pluralize}}. "
       suggest_a: "OR suggest a {{field_name}}"
     extended_field_radio_editor:
-      ? "no"
-      : "No"
+      no: "No"
       no_value: "No {{t.base.value}}"
-      ? "yes"
-      : "Yes"
+      yes: "Yes"
     extended_field_topic_type_editor:
       checking_value: "Checking {{t.base.value}}. "
       getting_topics: "Getting {{t.base.zoom_types.topic.pluralize}}. "
@@ -1331,7 +1341,8 @@ en:
       data_corruption: "Possible data corruption. You should consider running rake kete:repair."
       no_contributor: "It looks like there is no {{t.base.contributor}} associated with version {{version}} of {{item_class}} {{item_id}}."
   image_file_model:
-    not_acceptable: "is not acceptable. It should be a .jpg, .gif, or other {{t.base.zoom_types.image}} file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .jpg, .gif, or other {{t.base.zoom_types.image}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   images:
     details:
       filename: "Original Filename:"
@@ -2034,6 +2045,7 @@ en:
       multiple: (multiple)
       no_fields_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.topic_type}}."
       no_more_allowed: "{{t.base.you.capitalize}} {{t.base.cannot}} {{t.base.add}} {{t.base.any}} additional {{t.base.field.pluralize}} to this {{t.base.topic_type}}, see above."
+      private_only: "{{t.base.private}} {{t.base.only}}?"
       reorder: "Reorder {{t.base.topic_type.capitalize}} {{t.base.form.capitalize}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
@@ -2045,8 +2057,7 @@ en:
       description: Description
       name: "{{t.base.name.capitalize}}"
     generic_topic_fields:
-      ? "description_{{t.base.field}}"
-      : "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
+      description_field: "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
       note: "{{t.base.all.capitalize}} {{t.base.topic_type.pluralize}} inherit the following {{t.base.form}} {{t.base.field.pluralize}}:"
       present_in_all: "These {{t.base.form}} {{t.base.field.pluralize}} will be present in {{t.base.all}} {{t.base.topic_type.pluralize}}."
       short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
@@ -2118,7 +2129,7 @@ en:
       description_example: "Note: {{t.base.new}} {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons"
       description_example_exception: ", unless {{t.base.you}} check the box below"
       downloaded_by_everyone: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
-      downloaded_by_role: "{{t.base.can.capitilize}} {{t.base.only}} be {{t.base.downloaded}} {{t.base.by}} people who have {{role_name}} access."
+      downloaded_by_role: "{{t.base.can.capitalize}} {{t.base.only}} be {{t.base.downloaded}} {{t.base.by}} people who have {{role_name}} access."
       editing: "{{t.base.editing.capitalize}}"
       embedded_note: "If {{t.base.you}} fill out fields here as well, the embedded metadata will be {{t.base.added}} to it at the end."
       file_privacy: "Attached file privacy"
@@ -2133,7 +2144,7 @@ en:
       private_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.only}} {{t.base.by}} {{t.base.basket}} {{t.base.member.pluralize}})"
       public: "{{t.base.public.capitalize}}"
       public_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.by}} {{t.base.everyone}})"
-      related_items_as_inset: "Insert {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} {{t.base.content}} into {{t.base.zoom_types.topic.capitalize}} description?"
+      related_items_position: "Where should the {{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}} {{t.base.content}} be inserted into the page?"
       required_fields: "* denotes a required {{t.base.field}}"
       short_summary: "Short Summary"
       skip_email_notification: "Skip {{t.base.email}} notification to other {{role_type}} for this {{t.base.private}} {{t.base.item}}?"
@@ -2346,7 +2357,8 @@ en:
     update:
       updated: "{{t.base.zoom_types.video.capitalize}} {{t.base.was_updated}}."
   video_model:
-    not_acceptable: "is not acceptable. It should be a .mov, .wmv, or other {{t.base.zoom_types.video}} file."
+    not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .mov, .wmv, or other {{t.base.zoom_types.video}} file."
+    not_acceptable_size: "{{t.base.not_acceptable_size}}"
   web_links:
     details:
       not_available: "no {{t.base.public}} version of this link available"

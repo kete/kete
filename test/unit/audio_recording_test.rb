@@ -33,7 +33,7 @@ class AudioRecordingTest < ActiveSupport::TestCase
   include FlaggingTestUnitHelper
   include RelatedItemsTestUnitHelper
 
-  # only inlude on one model
+  # only include in basket and audio unit tests
   include FriendlyUrlsTestUnitHelper
 
   include ItemPrivacyTestHelper::TestHelper

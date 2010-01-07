@@ -272,38 +272,53 @@ body.mceContentBody {
   float: right;
   margin-top: -12px;
 }
-#related_items.inset hr {
+#related_items.inset.no-items,
+#related_items.sidebar.no-items {
+  display: none;
+}
+
+#related_items.below .two-col {
+  float: left;
+  width: 48%;
+  padding-right: 10px;
+}
+
+#related_items hr {
   padding: 0;
   margin: 0;
 }
-#related_items.inset h4 {
+#related_items h4 {
   padding: 0;
   margin: 1px 0 5px 0;
 }
-#related_items.inset h4 img {
+#related_items h4 img {
   border: none;
   padding: 0;
   margin: 0;
   position: relative;
   top: 3px;
 }
-#related_items.inset #related_still_image_container {
+#related_items #related_still_image_container {
   text-align: center;
 }
-#related_items.inset .related-items-section {
+#related_items .related-items-section {
   margin-top: 10px;
 }
-#related_items.inset .two-col {
+#related_items .two-col {
     width: 100%;
     padding-right: 0;
     float: none;
 }
-#related_items.inset #related-items-tools {
-  margin: 30px auto 0 auto;
+#related_items #related-items-tools {
+  margin: 15px auto;
   font-size: .8em;
   text-align: center;
 }
-#related_items.inset #related-items-tools li {
+#related_items #related-items-tools ul {
+  margin: 0;
+  padding: 0;
+}
+#related_items #related-items-tools li {
   padding: 0 5px;
   margin: 0;
   width: 50px;
@@ -311,29 +326,29 @@ body.mceContentBody {
   float: none;
   display: inline;
 }
-#related_items.inset .no-items {
+#related_items .no-items {
   display: none;
 }
-#related_items.inset ul {
+#related_items ul {
   list-style: none;
 }
-#related_items.inset #detail-linked-toprow ul,
-#related_items.inset .two-col ul {
+#related_items #detail-linked-toprow ul,
+#related_items .two-col ul {
   padding-left: 5px;
   margin: 10px 1px 1px 1px;
 }
-#related_items.inset #detail-linked-toprow ul ul,
-#related_items.inset .two-col ul ul {
+#related_items #detail-linked-toprow ul ul,
+#related_items .two-col ul ul {
   padding-left: 10px;
 }
-#related_items.inset .results-list {
+#related_items .results-list {
   margin: 0;
   padding: 0;
 }
-#related_items.inset .results-list img {
+#related_items .results-list img {
   margin-right: 3px;
 }
-#related_items.inset .more {
+#related_items .more {
   display: block;
 }
 

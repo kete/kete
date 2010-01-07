@@ -99,9 +99,7 @@ zoom_class = zoom_class_from_controller(controller)
 
     <%= embedded_enabled_message("<p class='help'>#{t('topics.form.note')} ", " #{t('topics.form.embedded_note')}</p>") if ATTACHABLE_CLASSES.include?(zoom_class) && !@editing %>
 
-    <% if params[@item_type] && params[@item_type][:private]; item_private = params[@item_type][:private] == 'true' ? true : false
-       elsif @editing && !@item.private.nil?; item_private = @item.private?
-       else; item_private = @basket.private_default_with_inheritance?; end -%>
+    <% item_private = adding_or_editing_private_item? -%>
     <% if show_privacy_controls_for_basket?(@basket) -%>
       <%= form.radio_button :private,
                             [ [t('topics.form.public'), false, { :label_for => "#{@item_type.to_s}_private_false",
@@ -227,6 +225,14 @@ zoom_class = zoom_class_from_controller(controller)
                                 :item_key => @item_type.to_s }) -%>
       <% end %>
     <% end -%>
+    <%= javascript_tag "
+      $('#{@item_type.to_s}_private_true').observe('change', function(event) {
+        $$('.private_only').each(function(field) { field.show(); });
+      });
+      $('#{@item_type.to_s}_private_false').observe('change', function(event) {
+        $$('.private_only').each(function(field) { field.hide(); });
+      });
+    " %>
 
     <% if @editing -%>
       <%= form.text_field :version_comment, { :tabindex => '1',
@@ -237,18 +243,16 @@ zoom_class = zoom_class_from_controller(controller)
     <%= render :partial => 'topics/license_chooser_or_agreement',
                :locals => { :item => @item } -%>
 
-    <% if @item_type == :topic %>
-      <% if HIDE_RELATED_ITEMS_INSET_FIELD %>
-        <%= form.hidden_field :related_items_inset, :value => (RELATED_ITEMS_INSET_DEFAULT ? '1' : '0') -%>
-      <% else %>
-        <% if params[@item_type] && params[@item_type][:related_items_inset]; inset = params[@item_type][:related_items_inset] == '1' ? true : false
-           elsif @editing && !@item.related_items_inset.nil?; inset = @item.related_items_inset?
-           else; inset = RELATED_ITEMS_INSET_DEFAULT; end -%>
-        <%= form.check_box :related_items_inset, { :tabindex => '1',
-                                                   :label => t('topics.form.related_items_as_inset'),
-                                                   :checked => inset } %>
-      <% end %>
-    <% end -%>
+    <% if HIDE_RELATED_ITEMS_POSITION_FIELD %>
+      <%= form.hidden_field :related_items_position, :value => RELATED_ITEMS_POSITION_DEFAULT -%>
+    <% else %>
+      <% if params[@item_type] && params[@item_type][:related_items_position]; position = params[@item_type][:related_items_position]
+         elsif @editing && !@item.related_items_position.nil?; position = @item.related_items_position
+         else; position = RELATED_ITEMS_POSITION_DEFAULT; end -%>
+      <%= form.select :related_items_position, related_items_positions,
+                                               { :selected => position },
+                                               { :tabindex => '1', :label => t('topics.form.related_items_position') } %>
+    <% end %>
 
   </fieldset>
 

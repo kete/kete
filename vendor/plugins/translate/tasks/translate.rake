@@ -186,6 +186,43 @@ namespace :translate do
     puts "Sorted #{ENV['LOCALE']}."
   end
 
+  desc 'Merge a locale on top of another. Useful for bringing locales up to date with english.'
+  task :merge => :environment do
+    raise "BASE (two letter locale code) is not set." unless ENV['BASE']
+    raise "OTHER (two letter locale code) is not set." unless ENV['OTHER']
+
+    require 'ya2yaml'
+    $KCODE = 'u'
+
+    # Relies on i18n gem 0.3.3 or above to work
+    gem 'i18n', '>= 0.3.3'
+    require 'i18n/backend/helpers'
+    include I18n::Backend::Helpers
+
+    unless defined?(wind_keys) && defined?(unwind_keys)
+      msg = "wind_keys and unwind_keys are not available."
+      msg += " Please make sure you have i18n gem 0.3.3 or higher installed."
+      raise msg
+    end
+
+    base_path = File.join(Rails.root, "config", "locales", "#{ENV['BASE']}.yml")
+    base_hash = YAML::load(IO.read(base_path))[ENV['BASE']]
+
+    other_path = File.join(Rails.root, "config", "locales", "#{ENV['OTHER']}.yml")
+    other_hash = YAML::load(IO.read(other_path))[ENV['OTHER']]
+    other_hash = base_hash.deep_merge(other_hash)
+
+    base_hash, other_hash = wind_keys(base_hash, '.'), wind_keys(other_hash, '.')
+    other_hash = other_hash.delete_if { |key, value| !base_hash.has_key?(key) }
+    other_hash = unwind_keys(other_hash, '.')
+
+    File.open(other_path, "w") do |file|
+      file.puts({ ENV['OTHER'] => other_hash }.ya2yaml)
+    end
+
+    puts "#{ENV['OTHER']} has been updated."
+  end
+
   namespace :excel_2003 do
 
     desc 'Export translation to Microsoft Excel 2003 compatible format (pass in LOCALE key)'
@@ -292,8 +329,8 @@ namespace :translate do
         elsif v.is_a?(String)
           data = [
             '      <Row>',
-            "        <Cell><Data ss:Type=\"String\">#{h(@keys.join('.'))}</Data></Cell>",
-            "        <Cell><Data ss:Type=\"String\">#{h(v)}</Data></Cell>",
+            "        <Cell><Data ss:Type=\"String\">#{escape_for_xml(@keys.join('.'))}</Data></Cell>",
+            "        <Cell><Data ss:Type=\"String\">#{escape_for_xml(v)}</Data></Cell>",
             "        <Cell><Data ss:Type=\"String\"></Data></Cell>",
             '      </Row>' ]
           data.each { |d| (@keys.first == 'base' ? @base_keys : @result) << d }
@@ -394,7 +431,7 @@ namespace :translate do
     @output.puts text
   end
 
-  def h(text)
+  def escape_for_xml(text)
     text.gsub(/&/, '&amp;').gsub(/</, '&lt;').gsub(/>/, '&gt;')
   end
 

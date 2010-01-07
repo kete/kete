@@ -42,18 +42,22 @@ module FriendlyUrls
     def format_for_friendly_urls(topic_version=false)
       skip_titles = [NO_PUBLIC_VERSION_TITLE, BLANK_TITLE]
 
-      string = String.new
-
-      if !self.attributes.include?('title')
-        string = self.name
+      # we use self.attributes['title'] here rather than self.title
+      # because depending on how we selected this item, self.title
+      # may or may not be available, but self.attributes['title']
+      # always is (same goes with name)
+      string = if self.attributes.include?('title')
+        self.attributes['title']
+      elsif self.attributes.include?('name')
+        self.attributes['name']
       else
-        string = self.title
+        String.new
       end
 
       id_for_url = topic_version ? topic_id.to_s : id.to_s
       # eventually replace with unicode version
       # id_for_url += format_friendly_unicode_for(string) unless skip_titles.include?(string)
-      id_for_url += format_friendly_for(string) unless skip_titles.include?(string)
+      id_for_url += format_friendly_for(string) unless string.blank? || skip_titles.include?(string)
       id_for_url
     end
   end

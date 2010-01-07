@@ -354,7 +354,7 @@ module ExtendedContent
       values = structured_extended_content[extended_field_element_name]
       if values.size == 1
         values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
-      elsif field && ['map', 'map_address'].member?(field.ftype)
+      elsif field && ['map', 'map_address', 'topic_type'].member?(field.ftype)
         # do nothing with the data in this case
       else
         values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
@@ -572,6 +572,10 @@ module ExtendedContent
       builder.root do |xml|
 
         all_field_mappings.collect do |field_to_xml|
+
+          # we should not generate extended field content for mappings that
+          # are private_only but are submitted for a public version
+          next if field_to_xml.private_only? && self.respond_to?(:private) && !self.private?
 
           # label is unique, whereas xml_element_name is not
           # thus we use label for our internal (topic.extended_content) storage of arbitrary attributes

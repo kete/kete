@@ -14,10 +14,19 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :set_locale
+  # first take the locale in the url, then the session[:locale],
+  # then the users locale, finally the default site locale
   def set_locale
-    I18n.locale = I18n.default_locale
-    I18n.locale = current_user.locale if current_user != :false && User.locale_choices.include?(current_user.locale)
-    I18n.locale = params[:locale] if params[:locale] && User.locale_choices.include?(params[:locale])
+    if params[:locale] && User.locale_choices.include?(params[:locale])
+      I18n.locale = params[:locale]
+    elsif session[:locale] && User.locale_choices.include?(session[:locale])
+      I18n.locale = session[:locale]
+    elsif current_user != :false && User.locale_choices.include?(current_user.locale)
+      I18n.locale = current_user.locale
+    else
+      I18n.locale = I18n.default_locale
+    end
+    session[:locale] = I18n.locale # need to make sure this persists
   end
 
   # See lib/ssl_helpers.rb
@@ -369,7 +378,7 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
-  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]',
+  SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'dc_metadata_[privacy]',
                 'page_description_[privacy]', 'google_map_api_[privacy]', 'edit_[privacy]',
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',

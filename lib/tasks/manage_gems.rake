@@ -14,45 +14,65 @@ require 'yaml'
 require 'required_software'
 include RequiredSoftware
 
-desc "Tasks related to gems for Kete. Requires sudo privilege. See config/required_software.yml for list. Expect numerous warnings that can ignore."
+desc "Tasks related to gems for Kete. See config/required_software.yml for list."
 namespace :manage_gems do
   task :exec_action do
-    p "Requires sudo or root privileges.  You will be prompted for password if necessary."
     # default
     ENV['GEMS_ACTION'] ||= 'update'
+
+    if `echo $USER`.strip.downcase != 'root'
+      puts "\n/!\\ IMPORTANT /!\\\n\n"
+      puts "This script has detected you are trying to run this as either a non root account or using sudo."
+      puts "Please make sure you are installing these gems as a root user or as a user that will install gems in the system wide location."
+      puts "Installing them as anyone without permission to the gem paths will install to your user account, not system wide."
+      puts "This will cause issues later on with the web server being unable to locate gems."
+      puts "Some operating systems, such as Debian Lenny, also have issues installing to the right place when using sudo."
+      puts ""
+      puts "If you are sure that you have permission to write to the correct location, please continue."
+      puts "Otherwise press CTRL+C to abort, login as root, and run this task again. "
+      STDIN.gets
+    end
+
+    no_rdoc_or_ri = '--no-rdoc --no-ri'
 
     required = load_required_software
     required[ENV['GEMS_TO_GRAB']].each do |key,value|
       if !value.blank? && value.kind_of?(Hash)
+
+        # Pre install command (like clearing old gem versions)
         unless value['pre_command'].blank?
           p value['pre_command']
           `#{value['pre_command']}`
         end
+
+        # If this gem relies on dependancies it doesn't properly take care of, manually install them
+        unless value['gem_deps'].blank?
+          value['gem_deps'].each do |dependancy_key,dependancy_value|
+            p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{dependancy_key}"
+            `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{dependancy_key}`
+          end
+        end
+
         if !value['gem_repo'].blank?
           # we don't have a gem available for what we need, build it
-          unless value['gem_deps'].blank?
-            p "Install dependancies for building gem #{key} (#{value['gem_deps'].join(', ')})"
-            value['gem_deps'].each do |dependancy_key,dependancy_value|
-              `sudo gem install #{dependancy_key}`
-            end
-          end
           raise "rake_build_gem command not present" if value['rake_build_gem'].blank?
           raise "rake_install_gem command not present" if value['rake_install_gem'].blank?
           p "cd tmp && git clone #{value['gem_repo']} #{key} && cd #{key} && #{value['rake_build_gem']} && #{value['rake_install_gem']}"
           `cd tmp && git clone #{value['gem_repo']} #{key} && cd #{key} && #{value['rake_build_gem']} && #{value['rake_install_gem']}`
           p "Cleaning up #{key}"
-          `cd tmp && sudo rm -rf #{key}`
+          `cd tmp && rm -rf #{key}`
         else
           # we are installing a prebuilt gem
           gem_name = value['gem_name'] || key
-          version = " --version=#{value['version']}" unless value['version'].blank?
+          version = " --version='#{value['version']}'" unless value['version'].blank?
           source = " --source=#{value['source']}" unless value['source'].blank?
-          p "sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}"
-          `sudo gem #{ENV['GEMS_ACTION']} #{gem_name}#{version}#{source}`
+          p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{gem_name}#{version}#{source}"
+          `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{gem_name}#{version}#{source}`
         end
+
       else
-        p "sudo gem #{ENV['GEMS_ACTION']} #{key}"
-        `sudo gem #{ENV['GEMS_ACTION']} #{key}`
+        p "gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{key}"
+        `gem #{ENV['GEMS_ACTION']} #{no_rdoc_or_ri} #{key}`
       end
     end
   end
@@ -61,7 +81,7 @@ namespace :manage_gems do
     desc "Install required gems"
     task :install do
       ENV['GEMS_TO_GRAB'] = 'gems'
-      ENV['GEMS_ACTION'] = 'install -y'
+      ENV['GEMS_ACTION'] = 'install'
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
 
@@ -72,7 +92,7 @@ namespace :manage_gems do
     end
 
     desc "Check that you have required gems"
-    task :check do
+    task :check => :environment do
       required_software = load_required_software
       missing_lib_count = 0
       puts "Missing Gems or Libs:\n-----"
@@ -94,7 +114,7 @@ namespace :manage_gems do
     desc "Install management gems"
     task :install do
       ENV['GEMS_TO_GRAB'] = 'management_gems'
-      ENV['GEMS_ACTION'] = 'install -y'
+      ENV['GEMS_ACTION'] = 'install'
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
 
@@ -109,7 +129,7 @@ namespace :manage_gems do
     desc "Install testing gems"
     task :install do
       ENV['GEMS_TO_GRAB'] = 'testing_gems'
-      ENV['GEMS_ACTION'] = 'install -y'
+      ENV['GEMS_ACTION'] = 'install'
       Rake::Task['manage_gems:exec_action'].execute(ENV)
     end
 

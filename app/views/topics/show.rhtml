@@ -3,7 +3,10 @@
 <%= render(:partial => "content_wrapper_start") -%>
 
 <% cache_with_privacy(@topic, {:part => 'details_first'}) do -%>
-  <h2><%=t 'topics.show.topic' %> <%= h(@topic.title) %></h2>
+  <h2>
+    <span class='prefix'><%=t 'topics.show.topic' %></span>
+    <%= h(@topic.title) %>
+  </h2>
   <h4>
     <%=t 'topics.show.topic_type' %>
     <%= link_to(h(@topic.topic_type.name), url_for_topics_of_type(@topic.topic_type)) %>
@@ -11,7 +14,7 @@
   <p><b><%= @topic.short_summary %></b></p>
 <% end -%>
 
-<%= render(:partial => "related_items", :locals => { :item => @topic, :inset => true }) if @topic.related_items_inset? -%>
+<%= render(:partial => "related_items", :locals => { :item => @topic, :position => 'inset' }) if @topic.related_items_position == 'inset' -%>
 
 <% cache_with_privacy(@topic, {:part => 'details_second'}) do -%>
   <%= @topic.description %>
@@ -22,7 +25,7 @@
 
 <%= render(:partial => "flagging_contributor", :locals => { :item => @topic }) if current_user_can_see_flagging? -%>
 
-<%= render(:partial => "related_items", :locals => { :item => @topic }) unless @topic.related_items_inset? -%>
+<%= render(:partial => "related_items", :locals => { :item => @topic, :position => 'below' }) if @topic.related_items_position == 'below' -%>
 
 <%= render(:partial => "discussion" , :locals => { :item => @topic }) if current_user_can_see_discussion? -%>
 
@@ -30,6 +33,7 @@
   </div><!-- /main-content-wrapper -->
   <div id="secondary-content-wrapper">
     <%= render(:partial => "tags_div", :locals => { :item => @topic }) -%>
+    <%= render(:partial => "related_items", :locals => { :item => @topic, :position => 'sidebar' }) if @topic.related_items_position == 'sidebar' -%>
     <%= render(:partial => "extended_fields", :locals => { :item => @topic }) -%>
     <%= display_search_sources_for(@topic) %>
     <%= render(:partial => "license", :locals => { :item => @topic }) -%>

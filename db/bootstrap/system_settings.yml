@@ -536,21 +536,21 @@ system_settings_061:
   value: "medium"
   section: Images
 system_settings_062:
-  name: Related Items Inset Default
+  name: Related Items Position Default
   technically_advanced: true
   required_to_be_configured: true
-  explanation: "The default value for related items inset. Set to 'true' to have it enabled by default, 'false' to have it disabled by default."
+  explanation: "The default value for related items position. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages."
   id: "62"
-  value: "true"
-  section: Topics
+  value: "inset"
+  section: Related Items Display
 system_settings_063:
-  name: Hide Related Items Inset Field
+  name: Hide Related Items Position Field
   technically_advanced: true
   required_to_be_configured: true
-  explanation: "Should the option to change related items inset be hidden from users?"
+  explanation: "Should the option to change related items position be hidden from users?"
   id: "63"
   value: "true"
-  section: Topics
+  section: Related Items Display
 system_settings_064:
   name: Show Powered By Kete
   technically_advanced: true
@@ -592,3 +592,11 @@ system_settings_068:
   id: "68"
   value: "false"
   section: Results Display
+system_settings_069:
+  name: Display Related Topics as Topic Type counts
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "Should Related Topics be displayed as Topic Type counts instead?"
+  id: "69"
+  value: "false"
+  section: Related Items Display

@@ -49,7 +49,10 @@ class Document < ActiveRecord::Base
       if attr_name.to_s == 'content_type' && !enum.blank?
         logger.debug("what is received #{attr_name}: " + send(attr_name).inspect)
       end
-      errors.add attr_name, I18n.t('document_model.not_acceptable') unless enum.nil? || enum.include?(send(attr_name))
+      unless enum.nil? || enum.include?(send(attr_name))
+        errors.add attr_name, I18n.t("document_model.not_acceptable_#{attr_name}",
+                                     :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
+      end
     end
   end
 
