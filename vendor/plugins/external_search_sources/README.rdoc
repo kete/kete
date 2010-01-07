@@ -10,8 +10,8 @@ It is built upon work originally funded by Auckland City Libraries (http://www.a
 
 * Rails 2.3 or higher - Prior versions will not work because of incomplete engine support or missing I18n support
 * ActiveScaffold plugin installed for admin interface to work (http://github.com/activescaffold/active_scaffold)
-* Kete version of the Feedzirra gem (http://github.com/kete/feedzirra)
-  (source timeout support requires version 0.0.16.1 or higher)
+* Kete version of the Feedzirra gem (http://github.com/kete/feedzirra) (version 0.0.20.1 or higher)
+* Acts as List - For ordering the display of search sources (http://github.com/rails/acts_as_list)
 
 == Assumptions (configurable, see Configuration section for details)
 

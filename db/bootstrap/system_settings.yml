@@ -592,3 +592,11 @@ system_settings_068:
   id: "68"
   value: "false"
   section: Results Display
+system_settings_069:
+  name: Display Related Topics as Topic Type counts
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "Should Related Topics be displayed as Topic Type counts instead?"
+  id: "69"
+  value: "false"
+  section: Related Items Display
