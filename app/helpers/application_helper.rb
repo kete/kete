@@ -85,7 +85,7 @@ module ApplicationHelper
   end
 
   def short_summary_or_description_of(item)
-    description_text = (item.respond_to?(:short_summary) && !item.short_summary.blank?) ? item.short_summary : item.description
+    description_text = ((item.respond_to?(:short_summary) && !item.short_summary.blank?) ? item.short_summary : item.description) || String.new
     strip_tags(truncate(description_text, :length => 180, :omission => '...')).gsub("\"", "").squish
   end
 
@@ -588,17 +588,14 @@ module ApplicationHelper
     end
   end
 
-  def class_and_width_from(position)
-    case position
-    when 'inset'
-      " class='inset' style='width: #{(image_size_of(IMAGE_SLIDESHOW_SIZE)+30)}px;'"
-    when 'sidebar'
-      " class='sidebar'"
-    when 'below'
-      " class='below'"
-    else
-      ""
-    end
+  def class_and_styles_from(position = nil, count = nil)
+    class_names, styles = Array.new, Array.new
+
+    class_names << position if position
+    styles << "width: #{(image_size_of(IMAGE_SLIDESHOW_SIZE) + 30)}px;" if position && position == 'inset'
+    class_names << "no-items" if count && count == 0
+
+    " class='#{class_names.join(' ')}' style='#{styles.join}'"
   end
 
   def related_items_count_for_current_item

@@ -129,7 +129,7 @@ class SearchController < ApplicationController
     @extended_field = ExtendedField.from_label_for_params(params[:extended_field]).first if params[:extended_field]
     @all_choices = true unless @extended_field
 
-    @topic_type = TopicType.from_url_escaped_name(params[:topic_type]).first if params[:topic_type]
+    @topic_type = TopicType.from_urlified_name(params[:topic_type]).first if params[:topic_type]
 
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1

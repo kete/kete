@@ -13,7 +13,8 @@ class ConfigurationTest < ActiveSupport::TestCase
       :cache_results => false,
       :source_types => ['feed'],
       :source_targets => ["search", "homepage"],
-      :limit_params => %w{ limit num_results count }
+      :limit_params => %w{ count limit num_results },
+      :timeout => 2
     }
     assert_equal expected, ExternalSearchSources.settings
   end

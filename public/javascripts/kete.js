@@ -137,8 +137,10 @@ function setupRelatedCollapsableSections() {
     });
   });
   // Show the contents of the first section in the related items inset
-  $$('.related-items-section')[0].down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
-  $$('.related-items-section')[0].down('ul').show();
+  if ($$('.related-items-section')[0]) {
+    $$('.related-items-section')[0].down('img.expand_collapse_image').src = '/images/related_items_expanded.gif';
+    $$('.related-items-section')[0].down('ul').show();
+  }
 }
 
 function hideAllRelatedSections() {
