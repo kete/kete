@@ -272,6 +272,10 @@ body.mceContentBody {
   float: right;
   margin-top: -12px;
 }
+#related_items.inset.no-items,
+#related_items.sidebar.no-items {
+  display: none;
+}
 
 #related_items.below .two-col {
   float: left;
@@ -306,9 +310,13 @@ body.mceContentBody {
     float: none;
 }
 #related_items #related-items-tools {
-  margin: 30px auto 0 auto;
+  margin: 15px auto;
   font-size: .8em;
   text-align: center;
+}
+#related_items #related-items-tools ul {
+  margin: 0;
+  padding: 0;
 }
 #related_items #related-items-tools li {
   padding: 0 5px;

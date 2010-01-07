@@ -99,17 +99,19 @@ class SearchSource < ActiveRecord::Base
 
       begin
         or_syntax = attrs.delete('or_syntax').split('_')
-        puts attrs.inspect
         if attrs['base_url'].include?('[api_key]')
-          raise "No API key provided for search source that requires one." unless options[:api_key]
+          url_for_api_key = attrs.delete('url_for_api_key')
+          unless options[:api_key]
+            raise "API_KEY value not provided for search source that requires one. Get one at #{url_for_api_key}"
+          end
           attrs['base_url'].gsub!('[api_key]', options[:api_key])
         end
         ss = SearchSource.new(attrs)
         ss.or_syntax = { :position => or_syntax[0], :case => or_syntax[1] }
         ss.save!
-        p "Inserted search source: '#{attrs["title"]}'." if options[:verbose]
+        puts "Inserted search source: '#{attrs["title"]}'." if options[:verbose]
       rescue
-        p "Inserting search source '#{attrs["title"]} failed: #{$!}."
+        puts "Inserting search source '#{attrs["title"]}' failed: #{$!}"
       end
     end
   end

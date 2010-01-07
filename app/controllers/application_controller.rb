@@ -14,10 +14,19 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :set_locale
+  # first take the locale in the url, then the session[:locale],
+  # then the users locale, finally the default site locale
   def set_locale
-    I18n.locale = I18n.default_locale
-    I18n.locale = current_user.locale if current_user != :false && User.locale_choices.include?(current_user.locale)
-    I18n.locale = params[:locale] if params[:locale] && User.locale_choices.include?(params[:locale])
+    if params[:locale] && User.locale_choices.include?(params[:locale])
+      I18n.locale = params[:locale]
+    elsif session[:locale] && User.locale_choices.include?(session[:locale])
+      I18n.locale = session[:locale]
+    elsif current_user != :false && User.locale_choices.include?(current_user.locale)
+      I18n.locale = current_user.locale
+    else
+      I18n.locale = I18n.default_locale
+    end
+    session[:locale] = I18n.locale # need to make sure this persists
   end
 
   # See lib/ssl_helpers.rb

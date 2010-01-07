@@ -354,7 +354,7 @@ module ExtendedContent
       values = structured_extended_content[extended_field_element_name]
       if values.size == 1
         values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
-      elsif field && ['map', 'map_address'].member?(field.ftype)
+      elsif field && ['map', 'map_address', 'topic_type'].member?(field.ftype)
         # do nothing with the data in this case
       else
         values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
