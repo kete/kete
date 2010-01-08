@@ -89,6 +89,7 @@ en:
     import: import
     import_type: "{{t.base.import}} {{t.base.type}}"
     imported: imported
+    importer: importer
     importing: importing
     inherit: inherit
     inside: inside
@@ -1451,7 +1452,7 @@ en:
       record_identifier_extended_field: "{{t.base.related.capitalize}} {{t.base.topic_type.capitalize}} Identifier Extended Field?"
       record_identifier_extended_field_description: "Which extended field in the {{t.base.topic_type}} for {{t.base.related}} {{t.base.zoom_types.topic.pluralize}} contains the data to link {{t.base.imported}} records to the {{t.base.existing}} {{t.base.related}} {{t.base.zoom_types.topic}}? If not given, the importer will do it's best to sort out what should get {{t.base.related}}, but isn't always accurate."
       record_identifier_xml_field: "Record Identifier XML Field:"
-      record_identifier_xml_field_description: "Which field in the import data contains an identifier unique to each record? If left blank, the importer will use its default record identifier field. If it doesn't have one, not all {{t.base.relation.pluralize}} may be built {{t.base.successfully}}."
+      record_identifier_xml_field_description: "Which field in the {{t.base.import}} data contains an identifier unique to each record? Using this helps to prevent duplicate records. If left blank, the {{t.base.importer}} will use its default record identifier field. If it doesn't have one, some {{t.base.item.pluralize}} with the same title may be skipped during {{t.base.import}}."
       related_records_xml_field: "{{t.base.related.capitalize}} {{t.base.zoom_types.topic.pluralize.capitalize}} XML Field(s):"
       related_records_xml_field_description: "Which field in the import data contains a comma separated list of {{t.base.zoom_types.topic}} record identifiers that indicates a relationship between the imported record and an {{t.base.existing}} {{t.base.zoom_types.topic}}? If several exist, seperate them with commas. If not provided and the importer doesn't specify one itself, no {{t.base.relation.pluralize}} will be {{t.base.created}}."
       related_topic_type_all: "({{t.base.any}} {{t.base.topic_type}})"

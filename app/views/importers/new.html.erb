@@ -69,35 +69,35 @@
     <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
   </div>
 
+  <div class="form-element" id="import_record_identifier">
+    <label for="import_record_identifier_xml_field"><%=t 'importers.new.record_identifier_xml_field' %></label>
+    <%= form.text_field :record_identifier_xml_field, :size => 15 %>
+    <div class="form_example"><%=t 'importers.new.record_identifier_xml_field_description' %></div>
+  </div>
+
   <div class="form-element" id="import_related_items" style="display: none;">
     <label for="import_has_related_items_in_data"><%=t 'importers.new.has_related_items_in_data' %></label>
     <%= check_box_tag 'import_has_related_items_in_data', true %>
 
     <div id="import_related_items_fields" style="display: none; margin: 10px 10px 10px 190px;">
-      <div id="import_record_identifier">
-        <label for="import_record_identifier_xml_field"><%=t 'importers.new.record_identifier_xml_field' %></label>
-        <%= form.text_field :record_identifier_xml_field, :size => 15 %>
-        <div class="form_example"><%=t 'importers.new.record_identifier_xml_field_description' %></div>
-      </div>
-
       <fieldset>
-      <div id="import_related_records">
-        <label for="import_related_records_xml_field"><%=t 'importers.new.related_records_xml_field' %></label>
-        <%= form.text_field :related_records_xml_field, :size => 15 %>
-        <div class="form_example"><%=t 'importers.new.related_records_xml_field_description' %></div>
-      </div>
+        <div id="import_related_records">
+          <label for="import_related_records_xml_field"><%=t 'importers.new.related_records_xml_field' %></label>
+          <%= form.text_field :related_records_xml_field, :size => 15 %>
+          <div class="form_example"><%=t 'importers.new.related_records_xml_field_description' %></div>
+        </div>
 
-      <div id="import_related_topic_type">
-        <label for="import_related_topic_type_id"><%=t 'importers.new.applicable_related_topic_type' %></label>
-        <%= topic_type_select_with_indent('import', 'related_topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}, [[t('importers.new.related_topic_type_all'), ''], ['', '']]) %>
-        <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
-      </div>
+        <div id="import_related_topic_type">
+          <label for="import_related_topic_type_id"><%=t 'importers.new.applicable_related_topic_type' %></label>
+          <%= topic_type_select_with_indent('import', 'related_topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}, [[t('importers.new.related_topic_type_all'), ''], ['', '']]) %>
+          <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
+        </div>
 
-      <div id="import_record_identifier_extended_field">
-        <label for="import_record_identifier_extended_field_id"><%=t 'importers.new.record_identifier_extended_field' %></label>
-        <div id="import_record_identifier_extended_field_select"><%= render 'extended_field_selection' %></div>
-        <div class="form_example"><%=t 'importers.new.record_identifier_extended_field_description' %></div>
-      </div>
+        <div id="import_record_identifier_extended_field">
+          <label for="import_record_identifier_extended_field_id"><%=t 'importers.new.record_identifier_extended_field' %></label>
+          <div id="import_record_identifier_extended_field_select"><%= render 'extended_field_selection' %></div>
+          <div class="form_example"><%=t 'importers.new.record_identifier_extended_field_description' %></div>
+        </div>
       </fieldset>
     </div>
   </div>
