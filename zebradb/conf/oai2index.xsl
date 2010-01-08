@@ -24,8 +24,7 @@
 
   <!-- OAI indexing templates -->
   <!-- Walter McGinnis, 2009-04-04 (and way earlier)
-       Adding sorting and other indexes
-       TODO: need to figure out special index to put on identifier so that : aren't pulled out -->
+       Adding sorting and other indexes -->
   <xsl:template match="oai:record/oai:header/oai:identifier">
     <z:index name="oai_identifier:0 oai_identifier:w oai_identifier:s">
       <xsl:value-of select="."/>
