@@ -169,6 +169,54 @@ class ExtendedContentTest < ActionController::IntegrationTest
 
   end
 
+  context "Embedded extended field data" do
+
+    setup do
+      add_james_as_super_user
+      login_as(:james)
+
+      TopicTypeToFieldMapping.destroy_all
+
+      @extended_field = ExtendedField.create!(:label => 'Home Town', :ftype => 'choice', :user_choice_addition => true)
+      @topic_type = TopicType.first
+      @topic_type.form_fields << @extended_field
+      @field_mapping = TopicTypeToFieldMapping.last
+
+      # We need to set the topic_type first, because extended_content= depends on it.
+      @topic = Topic.new(:topic_type_id => @topic_type.id)
+      @topic.attributes = {
+        :title => 'Choice Linking Test',
+        :topic_type_id => @topic_type.id,
+        :basket_id => @@site_basket.id,
+        :extended_content_values => {
+          "home_town" => {
+            "1" => { "preset" => "", "custom" => "Somewhere way out there" }
+          }
+        }
+      }
+      @topic.save
+      @topic.creator = @james
+    end
+
+    should "show up where it is supposed to" do
+      @field_mapping.update_attribute(:embedded, nil)
+      visit "/#{@@site_basket.urlified_name}/topics/show/#{@topic.id}"
+      assert_have_selector("#secondary-content-wrapper .detail-extended-field-table")
+      assert_have_no_selector("#embedded_extended_field_data .detail-extended-field-table")
+
+      @field_mapping.update_attribute(:embedded, false)
+      visit "/#{@@site_basket.urlified_name}/topics/show/#{@topic.id}"
+      assert_have_selector("#secondary-content-wrapper .detail-extended-field-table")
+      assert_have_no_selector("#embedded_extended_field_data .detail-extended-field-table")
+
+      @field_mapping.update_attribute(:embedded, true)
+      visit "/#{@@site_basket.urlified_name}/topics/show/#{@topic.id}"
+      assert_have_selector("#embedded_extended_field_data .detail-extended-field-table")
+      assert_have_no_selector("#secondary-content-wrapper .detail-extended-field-table")
+    end
+
+  end
+
   context "A choice extended field" do
 
     setup do

@@ -37,11 +37,12 @@
                 ") %>
               <% end %>
             </span>
+            -<%= check_box("mapping[]", 'embedded', :checked => @mapping.embedded?) %> <%=t 'content_types.current_fields.embedded' %>
             <%= " - " + link_to(t('content_types.current_fields.delete'), { :action => 'remove_mapping', :id => params[:id], :mapping_id => @mapping.id },
               { :id => "mapping_#{@mapping.id}_delete" }) unless @mapping.used_by_items? %>
           </p>
         <% end %>
-        <div class="wrap"><%= submit_tag t('content_types.current_fields.reorder_button') %></div>
+        <div class="wrap"><%= submit_tag t('content_types.current_fields.update_fields') %></div>
       <% end %>
     <% else %>
       <p><%=t 'content_types.current_fields.none_mapped' %></p>

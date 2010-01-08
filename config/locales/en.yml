@@ -58,6 +58,7 @@ en:
     default: default
     delete: delete
     deleted: deleted
+    description: description
     disable: disable
     disabled: disabled
     disallow: disallow
@@ -850,7 +851,7 @@ en:
       button: "{{t.base.save.capitalize}}"
       title: "{{t.base.editing.capitalize}} {{t.base.zoom_types.comment}}"
     form:
-      description: "Description:"
+      description: "{{t.base.description.capitalize}}:"
       edit_comment: "{{t.base.zoom_types.comment.capitalize}} on this edit:"
       security_warning: "Note: {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons."
       security_warning_admin: "Unless {{t.base.you}} check the box below."
@@ -959,10 +960,11 @@ en:
       title: "Available {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
+      embedded: "display under {{t.base.description}}?"
       multiple: (multiple)
       none_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.content_type}}."
       private_only: "{{t.base.private}} {{t.base.only}}?"
-      reorder_button: "Reorder {{t.base.content_type.capitalize}} {{t.base.form.capitalize}}"
+      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     edit:
@@ -1096,15 +1098,15 @@ en:
     details:
       filename: "Filename:"
       not_available: "{{t.base.not_available}} for download"
-      replace_description: "{{t.base.replace.capitalize}} description with {{t.base.zoom_types.document}} text"
+      replace_description: "{{t.base.replace.capitalize}} {{t.base.description}} with {{t.base.zoom_types.document}} text"
       size: "Size:"
       type: "{{t.base.zoom_types.document.capitalize}} {{t.base.type}}:"
     edit:
       not_authorized: "Sorry - {{t.base.editing}} on this section of the {{t.base.site}} {{t.base.has_been}} {{t.base.disallowed}}"
   documents_controller:
     convert:
-      converted: "{{t.base.zoom_types.document.capitalize}} description {{t.base.was_updated}} with text of uploaded document."
-      not_converted: "There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's description.  {{t.base.please.capitalize}} {{t.base.edit}} the description manually."
+      converted: "{{t.base.zoom_types.document.capitalize}} {{t.base.description}} {{t.base.was_updated}} with text of uploaded document."
+      not_converted: "There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's {{t.base.description}}.  {{t.base.please.capitalize}} {{t.base.edit}} the {{t.base.description}} manually."
     make_theme:
       made_theme: "{{t.base.zoom_types.document.capitalize}} expanded to be {{t.base.new}} theme."
     update:
@@ -2039,11 +2041,12 @@ en:
       title: "Available {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
+      embedded: "display under {{t.base.description}}?"
       multiple: (multiple)
       no_fields_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.topic_type}}."
       no_more_allowed: "{{t.base.you.capitalize}} {{t.base.cannot}} {{t.base.add}} {{t.base.any}} additional {{t.base.field.pluralize}} to this {{t.base.topic_type}}, see above."
       private_only: "{{t.base.private}} {{t.base.only}}?"
-      reorder: "Reorder {{t.base.topic_type.capitalize}} {{t.base.form.capitalize}}"
+      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     edit:
@@ -2122,7 +2125,7 @@ en:
       comment_on_edit: "{{t.base.zoom_types.comment.capitalize}} on this {{t.base.edit}}"
       create: "{{t.base.create.capitalize}}"
       current_image: "Current Image:"
-      description: Description
+      description: "{{t.base.description.capitalize}}"
       description_example: "Note: {{t.base.new}} {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons"
       description_example_exception: ", unless {{t.base.you}} check the box below"
       downloaded_by_everyone: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
