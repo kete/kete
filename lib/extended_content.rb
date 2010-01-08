@@ -301,6 +301,19 @@ module ExtendedContent
 
         if ['map', 'map_address'].member?(extended_field.ftype)
           result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+
+        # if we are dealing with a multiple topic type
+        # we need to do things a bit differently
+        elsif extended_field.ftype == 'topic_type' && extended_field.multiple?
+          index = 1
+          result[field_param_name] = field.inject(Hash.new) do |multiple, value|
+            unless value.blank?
+              multiple[(index).to_s] = value
+              index += 1
+            end
+            multiple
+          end
+
         else
           if field.size > 1
             # We're dealing with a multiple field value.
@@ -351,7 +364,7 @@ module ExtendedContent
     # I.e. when selecting a singular choice value where hierarchical choices have been selected,
     # you would expect "parent choice -> child choice".
     def reader_for(extended_field_element_name, field = nil)
-      values = structured_extended_content[extended_field_element_name]
+      values = structured_extended_content[extended_field_element_name].to_a
       if values.size == 1
         values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
       elsif field && ['map', 'map_address', 'topic_type'].member?(field.ftype)
@@ -589,7 +602,7 @@ module ExtendedContent
             # we have multiple values for this field in the form
             # collect them in an outer tag
             # do an explicit key, so we end up with a hash
-            xml.send("#{field_name}_multiple") do
+            xml.safe_send("#{field_name}_multiple") do
               hash_of_values = params_hash[field_name]
 
               # Do not store empty values
@@ -602,7 +615,7 @@ module ExtendedContent
                   unless params_hash[field_name][key].to_s.blank? || \
                         ( params_hash[field_name][key].is_a?(Hash) && params_hash[field_name][key].values.to_s.blank? )
 
-                    xml.send(key) do
+                    xml.safe_send(key) do
                       extended_content_field_xml_tag(
                         :xml => xml,
                         :field => field_name,
@@ -620,7 +633,7 @@ module ExtendedContent
                 # and there isn't an existing value for this multiple
                 # generates empty xml elements for the field
                 key = 1.to_s
-                xml.send(key) do
+                xml.safe_send(key) do
                     extended_content_field_xml_tag(
                       :xml => xml,
                       :field => field_name,

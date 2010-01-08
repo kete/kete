@@ -7,10 +7,12 @@ require "xml_helpers"
 require "zoom_helpers"
 require "zoom_controller_helpers"
 require "extended_content_helpers"
+require "kete_url_for"
 # used by importer scripts  in lib/workers
 module Importer
   unless included_modules.include? Importer
     def self.included(klass)
+      klass.send :include, KeteUrlFor
       klass.send :include, OaiDcHelpers
       klass.send :include, ZoomHelpers
       klass.send :include, ZoomControllerHelpers
@@ -93,12 +95,16 @@ module Importer
         @current_basket = @import.basket
         logger.info("what is current basket: " + @current_basket.inspect)
         @import_topic_type = @import.topic_type
-        @related_topic_type = @import.related_topic_type
         @zoom_class_for_params = @zoom_class.tableize.singularize
         @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
         @record_interval = @import.interval_between_records
-        @record_identifier_extended_field ||= @import.record_identifier_extended_field
-        @record_identifier_xml_field ||= 'Record_Identifier'
+
+        # Values for relating records.
+        # Use ||= so they are only assigned if the importer worker doesn't specify one already
+        @related_topics_reference_in_record_xml_field ||= @import.related_topics_reference_in_record_xml_field
+        @record_identifier_xml_field ||= @import.record_identifier_xml_field
+        @related_topic_type ||= @import.related_topic_type
+        @extended_field_that_contains_record_identifier ||= @import.extended_field_that_contains_record_identifier
 
         params = args[:params]
 
@@ -130,10 +136,42 @@ module Importer
         @import_records_xml.xpath(@xml_path_to_record).each do |record|
           importer_process(record, params) unless record.content.blank?
         end
+
         importer_update_processing_vars_at_end
       rescue
         importer_update_processing_vars_if_rescue
       end
+    end
+
+    def importer_fetch_related_topics(related_topic_identifier, params, options = {})
+      related_topics = Array.new
+
+      related_topics += importer_locate_existing_items(options)
+
+      if related_topics.blank? && !@record_identifier_xml_field.blank?
+        # HACK, for horizons agency/series import, needs to be handled better
+        return [] if @import_dir == 'series'
+        matching_records = @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']")
+
+        # if no matches, try downcase and upcase searches
+        matching_records = @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip.downcase}']") unless matching_records.any?
+        matching_records = @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip.upcase}']") unless matching_records.any?
+
+        matching_records.each do |record|
+          # HACK, for horizons agency/series import, needs to be handled better
+          # remove agency.Successor and agency.Predecessor (causes infinite loop) for nodes for now
+          record.search("//agency.Successor").each do |node|
+            node.remove
+          end
+          record.search("//agency.Predecessor").each do |node|
+            node.remove
+          end
+
+          related_topics << importer_process(record, params) unless record.blank? || record.content.blank?
+        end
+      end
+
+      related_topics
     end
 
     def importer_prepare_extended_field(options = {})
@@ -148,8 +186,13 @@ module Importer
         if !@import_field_to_extended_field_map[field].nil?
           extended_field = @import_field_to_extended_field_map[field]
         else
-          extended_field = ExtendedField.find(:first,
-                                              :conditions => "import_synonyms like \'%#{field}%\'")
+          if @import_topic_type
+            extended_fields = @import_topic_type.mapped_fields
+          else
+            extended_fields = ExtendedField.all(:conditions => "import_synonyms like \'%#{field}%\'")
+          end
+          extended_field = extended_fields.select { |ext_field| ext_field.import_synonyms.split.include?(field) }.first
+
           if !extended_field.nil?
             @import_field_to_extended_field_map[field] = extended_field
           else
@@ -178,6 +221,33 @@ module Importer
                 params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][(choice_index + 1).to_s] = choice.strip
               end
             end
+
+
+          # Kieran Pilkington, 2009-10-28
+          # The following code does not work yet
+          # TODO: it looks like this still needs multiple support?
+          elsif extended_field.ftype == 'topic_type'
+            logger.info 'dealing with topic_type extended field'
+            logger.info 'what is value? ' + value.inspect
+            unless value =~ /http:\/\//
+              logger.info 'value does not include http://'
+              topic_type = TopicType.find_by_id(extended_field.topic_type)
+              logger.info 'finding topic in topic type: ' + topic_type.inspect
+
+              topics = importer_fetch_related_topics(value, params, {
+                                                       :item_type => 'topics',
+                                                       :extended_field_data => value,
+                                                       :topic_type => topic_type
+                                                     })
+              logger.info 'what is found topics? ' + topics.inspect
+              return params if topics.blank?
+              topic_url = url_for_dc_identifier(topics.first)
+              value = { 'label' => value, 'value' => topic_url }
+              logger.info 'what is resulting value? ' + value.inspect
+            end
+            params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value
+
+
           else
             if extended_field.multiple
               multiple_values = value.split(",")
@@ -211,9 +281,9 @@ module Importer
           if field_to_xml.extended_field_multiple
             hash_of_values = params[item_key]['extended_content_values'][field_name] rescue nil
             if !hash_of_values.nil?
-              xml.send("#{field_name}_multiple") do
+              xml.safe_send("#{field_name}_multiple") do
                 hash_of_values.keys.each do |key|
-                  xml.send(key.to_s) do
+                  xml.safe_send(key.to_s) do
                     logger.debug("inside hash: key: " + key.to_s)
                     m_value = hash_of_values[key]
                     extended_content_field_xml_tag(:xml => xml,
@@ -369,6 +439,47 @@ module Importer
       stop_worker
     end
 
+    def importer_locate_existing_items(options = {})
+      options = {
+        :item_type => @zoom_class_for_params.pluralize,
+        :title => nil,
+        :topic_type => nil,
+        :extended_field_data => nil
+      }.merge(options)
+
+      conditions = Array.new
+      params = Hash.new
+
+      unless options[:title].blank?
+        conditions << "(LOWER(title) = :title)"
+        params[:title] = options[:title].downcase
+      end
+
+      if options[:item_type] == 'topics' && !options[:topic_type].blank?
+        conditions << "(topic_type_id = :topic_type_id)"
+        params[:topic_type_id] = options[:topic_type].id
+      end
+
+      unless options[:extended_field_data].blank? || @extended_field_that_contains_record_identifier.blank?
+        regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
+        ext_field_id = @extended_field_that_contains_record_identifier.label_for_params
+        conditions << "(LOWER(extended_content) #{regexp} :ext_field_data)"
+        params[:ext_field_data] = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
+      end
+
+      # Select all topics where the id is within a subselect of topic versions matching criteria
+      # Adds a little complexity, but gets around privacy related import issues, as well as
+      # no longer adds the topic if the first version was the same title but was later changed
+      conditions = formulate_conditions(conditions.join(' AND '), options[:item_type].singularize)
+      conditions = [conditions, params] unless params.blank?
+      logger.debug("what are conditions: " + conditions.inspect)
+      @current_basket.send(options[:item_type]).find(:all, :conditions => conditions)
+    end
+
+    def formulate_conditions(conditions, item_type)
+      "id IN (SELECT #{item_type}_id FROM #{item_type}_versions WHERE #{conditions})"
+    end
+
     # override in your importer worker to customize
     # takes an xml element
     def importer_process(record, params)
@@ -389,10 +500,20 @@ module Importer
         title = record_hash[field_name].strip if field_name == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
       end
 
-      existing_item = @current_basket.send(@zoom_class_for_params.pluralize).find_by_title(title)
+      # In some cases, records may share the same name, but have a different code
+      # In order to accomodate for that, we check both title, extended field data
+      # and topic type if available
+      # Otherwise, do a very basic check againts items with the same title and topic type
+      options = {
+        :title => title,
+        :topic_type => @import_topic_type
+      }
+      options.merge!(:extended_field_data => record_hash[@record_identifier_xml_field]) unless record_hash[@record_identifier_xml_field].blank?
+
+      existing_item = importer_locate_existing_items(options).first
 
       new_record = nil
-      if existing_item.nil?
+      if existing_item.blank?
         description_end_template = @description_end_templates['default']
         new_record = create_new_item_from_record(record, @zoom_class, {:params => params, :record_hash => record_hash, :description_end_template => description_end_template })
       else
@@ -472,7 +593,9 @@ module Importer
         # HACK to seriously trim down accession records
         # and make them in a form we can search easily
         # only add non-fat to our fat_free_file
-        if !line.match(fatty_re) && !line.blank?
+        #  && !line.blank?
+        # keeping new lines only lines for redcloth formatting
+        if !line.match(fatty_re)
           if accession.nil?
             # replace double dotted version of maori vowels
             # with macrons
@@ -570,7 +693,7 @@ module Importer
       tag_list_array = Array.new
       # add support for all items during this import getting a set of tags
       # added to every item in addition to the specific ones for the item
-      tag_list_array = @import.base_tags.split(",") if !@import.base_tags.blank?
+      tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
 
       record_hash.keys.each do |record_field|
         logger.debug("record_field " + record_field.inspect)
@@ -613,7 +736,7 @@ module Importer
             end
 
             if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
-              tag_list_array << value.gsub("\n", " ")
+              tag_list_array += value.split(',').collect { |tag| tag.strip }
             end
 
             if zoom_class == 'WebLink' && record_field.upcase == 'URL'
@@ -720,6 +843,8 @@ module Importer
       # replace with something that isn't reliant on params
       replacement_zoom_item_hash = importer_extended_fields_replacement_params_hash(:item_key => zoom_class_for_params, :item_class => zoom_class, :params => params)
 
+      logger.info 'what is replacement_zoom_item_hash? ' + replacement_zoom_item_hash.inspect
+
       new_record = Module.class_eval(zoom_class).new(replacement_zoom_item_hash)
 
       # we need new_image_file's file, for our embedded metadata (if enabled)
@@ -745,7 +870,7 @@ module Importer
 
       # if we are making a topic, respect the Related Items Inset configurations
       if zoom_class == 'Topic'
-        new_record.related_items_inset = (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
+        new_record.related_items_position = (defined?(RELATED_ITEMS_POSITION_DEFAULT) ? RELATED_ITEMS_POSITION_DEFAULT : 'inset')
       end
 
       # if still image and new_image failed, fail
@@ -776,44 +901,50 @@ module Importer
 
     def importer_build_relations_to(new_record, record_hash, params)
       logger.info("building relations for new record")
-      if @related_topic_key_field.blank? || record_hash[@related_topic_key_field].blank?
+
+      if @related_topics_reference_in_record_xml_field.blank?
         logger.info("no relations to be made for new record")
         return
       end
 
-      record_hash[@related_topic_key_field].split(',').each do |related_topic_identifier|
-        related_topic_identifier = related_topic_identifier.strip
-
-        if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
-          related_topics = Array.new
-
-          if @record_identifier_extended_field
-            ext_field_id = @record_identifier_extended_field.label_for_params
-            ext_field_data = "<#{ext_field_id}>#{related_topic_identifier}</#{ext_field_id}>"
-            conditions = ["(extended_content like '%#{ext_field_data}%' OR private_version_serialized like '%#{ext_field_data}%')"]
-            conditions << "topic_type_id = #{@related_topic_type.id}" unless @related_topic_type.blank?
-            related_topics += Topic.all(:conditions => conditions.join(' AND '))
-          end
-
-          if related_topics.blank?
-            @import_records_xml.xpath("#{@xml_path_to_record}[#{@record_identifier_xml_field}='#{related_topic_identifier.strip}']").each do |accession_record|
-              related_topics << importer_process(accession_record, params) unless accession_record.blank? || accession_record.content.blank?
-            end
-          end
-        else
-          related_topics = @last_related_topics
-        end
-
-        next if related_topics.blank?
-
-        related_topics.uniq.flatten.compact.each do |related_topic|
-          next if related_topic == new_record
-          ContentItemRelation.new_relation_to_topic(related_topic, new_record)
-        end
-
-        @last_related_topic_identifier = related_topic_identifier
-        @last_related_topics = related_topics
+      # We need an array to loop over, but we also allow single values as strings, so convert as needed
+      # Split by commas incase mutliple ones are provided, and strip whitespace
+      if @related_topics_reference_in_record_xml_field.is_a?(String)
+        @related_topics_reference_in_record_xml_field = @related_topics_reference_in_record_xml_field.split(',').collect { |r| r.strip }
       end
+
+      @related_topics_reference_in_record_xml_field.each do |related_topics_reference_in_record_xml_field|
+        next if related_topics_reference_in_record_xml_field.blank?
+        if record_hash[related_topics_reference_in_record_xml_field].blank?
+          logger.info("no relational field found with name of #{related_topics_reference_in_record_xml_field}")
+          next
+        end
+
+        record_hash[related_topics_reference_in_record_xml_field].split(',').each do |related_topic_identifier|
+          related_topic_identifier = related_topic_identifier.strip
+
+          if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
+            related_topics = importer_fetch_related_topics(related_topic_identifier, params, {
+              :item_type => 'topics',
+              :extended_field_data => related_topic_identifier,
+              :topic_type => @related_topic_type
+            })
+          else
+            related_topics = @last_related_topics
+          end
+
+          next if related_topics.blank?
+
+          related_topics.uniq.flatten.compact.each do |related_topic|
+            next if related_topic == new_record
+            ContentItemRelation.new_relation_to_topic(related_topic, new_record)
+          end
+
+          @last_related_topic_identifier = related_topic_identifier
+          @last_related_topics = related_topics
+        end
+      end
+
       logger.info("finished building relations for new record")
     end
 
@@ -868,7 +999,7 @@ module Importer
                                     :license_id => topic_params[:topic][:license_id],
                                     :topic_type_id => topic_params[:topic][:topic_type_id],
                                     :do_not_moderate => true,
-                                    :related_items_inset => (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
+                                    :related_items_position => (defined?(RELATED_ITEMS_POSITION_DEFAULT) ? RELATED_ITEMS_POSITION_DEFAULT : 'inset')
                                     )
 
       related_topic.creator =  @contributing_user
