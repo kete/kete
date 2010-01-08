@@ -217,6 +217,49 @@ class ExtendedContentTest < ActionController::IntegrationTest
 
   end
 
+  context "A choice extended field" do
+
+    setup do
+      add_james_as_super_user
+      login_as(:james)
+
+      TopicTypeToFieldMapping.destroy_all
+
+      @extended_field = ExtendedField.create!(:label => 'Home Town', :ftype => 'choice', :user_choice_addition => true)
+      @topic_type = TopicType.first
+      @topic_type.form_fields << @extended_field
+
+      # We need to set the topic_type first, because extended_content= depends on it.
+      @topic = Topic.new(:topic_type_id => @topic_type.id)
+      @topic.attributes = {
+        :title => 'Choice Linking Test',
+        :topic_type_id => @topic_type.id,
+        :basket_id => @@site_basket.id,
+        :extended_content_values => {
+          "home_town" => {
+            "1" => { "preset" => "", "custom" => "Somewhere way out there" }
+          }
+        }
+      }
+      @topic.save
+      @topic.creator = @james
+    end
+
+    should "link the values only when supposed to" do
+      @extended_field.update_attribute(:dont_link_choice_values, false)
+      visit "/#{@@site_basket.urlified_name}/topics/show/#{@topic.id}"
+      body_should_contain 'Home Town:'
+      body_should_contain Regexp.new("<a .+>Somewhere way out there</a>")
+
+      @extended_field.update_attribute(:dont_link_choice_values, true)
+      visit "/#{@@site_basket.urlified_name}/topics/show/#{@topic.id}"
+      body_should_contain 'Home Town:'
+      body_should_not_contain Regexp.new("<a .+>Somewhere way out there</a>")
+      body_should_contain "Somewhere way out there"
+    end
+
+  end
+
   private
 
     def configure_new_topic_type_with_extended_field(options = {})
