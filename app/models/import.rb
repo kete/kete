@@ -5,7 +5,7 @@ class Import < ActiveRecord::Base
   belongs_to :basket
   belongs_to :topic_type
   belongs_to :related_topic_type, :class_name => 'TopicType'
-  belongs_to :record_identifier_extended_field, :class_name => 'ExtendedField'
+  belongs_to :extended_field_that_contains_record_identifier, :class_name => 'ExtendedField'
   # user is the person that added as the creator of items imported
   belongs_to :user
 

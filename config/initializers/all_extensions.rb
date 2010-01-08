@@ -211,6 +211,21 @@ end
 module Nokogiri
   module XML
     class Builder
+      # When importing, if any fields contain a reserved
+      # name (like 'id' or 'parent') the importer will fail.
+      # To avoid that, we add a quick method on the builder
+      # to escape it by appending an underscore, then sending
+      # it to the builder, which Nokogiri sees and removes
+      # before generating the XML.
+      # At the same time, make sure that the name is a valid
+      # XML name and escape common patterns (spaces to
+      # underscores) to prevent import errors
+      def safe_send(*args, &block)
+        args[0] = args[0].to_s.gsub(/\s/, '_')
+        args[0] = "#{args[0]}_" if self.respond_to?(args[0])
+        send(*args, &block)
+      end
+
       def to_stripped_xml
         @doc.to_xml.gsub(/(^\s*|\s*$)/, '').gsub(/>(\n*|\s*)</, '><').gsub('<?xml version="1.0"?>', '').gsub(/(<root\/?>|<\/root>)/, '')
       end

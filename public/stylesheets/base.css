@@ -836,7 +836,7 @@ div#notice, div#error {
                 width: 100%;
 }
 
-div#notice div, div#error div {
+.warning, div#notice div, div#error div {
     background-color: #f9f3cd;
     border: 1px solid #baae8b;
     padding: .5em;
@@ -1440,6 +1440,19 @@ a.disabled {
 
 .credits img {
   border: none;
+}
+
+/*
+ * Limit to choice dropdown
+ * Ensure that really long options are
+ * truncated to keep the page layout tidy
+ */
+#limit_to_choice {
+  max-width: 500px;
+}
+
+#limit_to_choice option {
+  max-width: 500px;
 }
 
 /*
