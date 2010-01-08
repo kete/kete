@@ -37,13 +37,13 @@ class ContentItemRelation < ActiveRecord::Base
         # Handle topic_id being passed in as Topic instead of Integer or String.
         :topic_id => topic_id.is_a?(Topic) ? topic_id.id : topic_id,
         :related_item => related_item
-      )
+      ) unless self.find_relation_to_topic(topic_id, related_item)
     end
   end
 
   def self.destroy_relation_to_topic(topic_id, related_item)
     relation = self.find_relation_to_topic(topic_id, related_item)
-    relation.destroy
+    relation.destroy unless relation.blank?
   end
 
   protected

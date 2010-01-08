@@ -115,7 +115,7 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
               end
 
               # add an element to our output XML for the value
-              xml.send(element_name, value) unless value.empty?
+              xml.safe_send(element_name, value) unless value.empty?
 
               cell_index += 1
             end
