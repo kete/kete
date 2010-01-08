@@ -1,17 +1,12 @@
+<% if can_moderate -%>
+
 <div id="moderator-tools" class="slim">
-
+  
   <ul>
+    
+    <li class="first"><h4><%=t 'topics.preview_actions.title' %></h4></li>
 
-    <li><h4><%=t 'topics.preview_actions.title' %></h4></li>
-
-    <li><%= link_to t('topics.preview_actions.history'),
-                      { :action => :history, :id => item },
-                      { :tabindex => '1' } %></li>
-
-    <% if can_moderate -%>
-
-      <%
-      location = { :id => item,  :authenticity_token => form_authenticity_token,
+      <%  location = { :id => item,  :authenticity_token => form_authenticity_token,
                    :version => item.version, :private => item.private? }
       options = { :method => :post, :tabindex => '1' }
       %>
@@ -27,14 +22,30 @@
       <li><%= link_to t('topics.preview_actions.reject'),
                         location.merge(:action => :flag_form, :flag => REJECTED_FLAG),
                         options.merge(:confirm => t('topics.preview_actions.reject_confirm')) %></li>
-
-      <li><%= link_to t('topics.preview_actions.delete_all_versions'),
-                        location.merge(:action => :destroy),
-                        options.merge(:confirm => t('topics.preview_actions.delete_confirm')) %></li>
-
-    <% end -%>
   </ul>
 
+    <div style="clear:both;"></div>
+
+</div>
+<% end -%>
+
+
+<div class="item-tools slim">
+
+  <ul>
+    <li  class="first"><h4><%=t 'topics.preview_actions.title_for_item' %></h4></li>
+
+    <% if can_moderate -%>
+    <li><%= link_to t('topics.preview_actions.delete_all_versions'),
+            location.merge(:action => :destroy),
+      options.merge(:confirm => t('topics.preview_actions.delete_confirm')) %></li>
+    <% end -%>
+    
+    <li><%= link_to t('topics.preview_actions.history'),
+            { :action => :history, :id => item },
+      { :tabindex => '1' } %></li>
+  </ul>
+  
   <div style="clear:both;"></div>
 
 </div>
