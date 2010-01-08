@@ -27,6 +27,10 @@
   <%= pending_review(@still_image) -%>
 <% end -%>
 
+<%= render(:partial => "topics/extended_fields", :locals => { :item => @still_image, :embedded => true }) -%>
+
+<div style="clear:both;"></div>
+
 <%= render(:partial => "topics/flagging_contributor" , :locals => { :item => @still_image }) if current_user_can_see_flagging? -%>
 
 <%= render(:partial => "topics/related_items", :locals => { :item => @still_image, :topics_only => true, :position => 'below' }) if @still_image.related_items_position == 'below' -%>
@@ -38,7 +42,7 @@
   <div id="secondary-content-wrapper">
     <%= render(:partial => "topics/tags_div", :locals => { :item => @still_image }) %>
     <%= render(:partial => "topics/related_items", :locals => { :item => @still_image, :topics_only => true, :position => 'sidebar' }) if @still_image.related_items_position == 'sidebar' -%>
-    <%= render(:partial => "topics/extended_fields", :locals => { :item => @still_image }) %>
+    <%= render(:partial => "topics/extended_fields", :locals => { :item => @still_image, :embedded => false }) %>
     <%= render(:partial => "portrait_controls", :locals => { :item => @still_image }) %>
     <%= display_search_sources_for(@still_image) %>
     <%= render(:partial => "topics/license" , :locals => { :item => @still_image }) -%>

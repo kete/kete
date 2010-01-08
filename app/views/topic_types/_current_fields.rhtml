@@ -34,11 +34,12 @@
               showOrHidePrivateOnlyAsNeededFor('mapping_#{@mapping.id}_private_only');
               ") %>
             </span>
+            -<%= check_box("mapping[]", 'embedded', :checked => @mapping.embedded?) %> <%=t 'topic_types.current_fields.embedded' %>
             <%= " - " + link_to(t('topic_types.current_fields.delete'), { :action => 'remove_mapping', :id => params[:id], :mapping_id => @mapping.id },
               { :id => "mapping_#{@mapping.id}_delete" }) unless @mapping.used_by_items? %>
           </p>
         <% end %>
-        <div class="wrap"><%= submit_tag t('topic_types.current_fields.reorder') %></div>
+        <div class="wrap"><%= submit_tag t('topic_types.current_fields.update_fields') %></div>
       <% end %>
     <% else %>
       <p><%=t 'topic_types.current_fields.no_fields_mapped' %></p>

@@ -383,6 +383,7 @@ class ApplicationController < ActionController::Base
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
+                'secondary_content_extended_fields_embedded_[privacy]',
                 'secondary_content_license_metadata_[privacy]', 'history_[privacy]']
 
   PUBLIC_SHOW_PARTS = ['comments-link_[privacy]', 'comments_[privacy]']
