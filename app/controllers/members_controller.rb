@@ -103,11 +103,13 @@ class MembersController < ApplicationController
                                 :joins => "join roles_users on users.id = roles_users.user_id",
                                 :conditions => ["roles_users.role_id in (?)", @current_basket.accepted_roles])
 
-    @potential_new_members = User.find(:all,
-                                       :conditions => ["id not in (:existing_users) and login like :searchtext or extended_content like :searchtext",
+    @potential_new_members = Array.new
+    unless params[:search_name].blank?
+      @potential_new_members = User.find(:all,
+                                       :conditions => ["id not in (:existing_users) and login like :searchtext or display_name like :searchtext",
                                                        { :existing_users => @existing_users,
                                                          :searchtext => '%' + params[:search_name] + '%' }])
-
+    end
   end
 
   def join
