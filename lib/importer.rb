@@ -101,10 +101,10 @@ module Importer
 
         # Values for relating records.
         # Use ||= so they are only assigned if the importer worker doesn't specify one already
-        @related_records_xml_field ||= @import.related_records_xml_field
+        @related_topics_reference_in_record_xml_field ||= @import.related_topics_reference_in_record_xml_field
         @record_identifier_xml_field ||= @import.record_identifier_xml_field
         @related_topic_type ||= @import.related_topic_type
-        @record_identifier_extended_field ||= @import.record_identifier_extended_field
+        @extended_field_that_contains_record_identifier ||= @import.extended_field_that_contains_record_identifier
 
         params = args[:params]
 
@@ -187,11 +187,11 @@ module Importer
           extended_field = @import_field_to_extended_field_map[field]
         else
           if @import_topic_type
-            extended_field = @import_topic_type.mapped_fields.select { |ef| ef.import_synonyms =~ /#{field}/ }.first
+            extended_fields = @import_topic_type.mapped_fields
           else
-            extended_field = ExtendedField.find(:first,
-                                                :conditions => "import_synonyms like \'%#{field}%\'")
+            extended_fields = ExtendedField.all(:conditions => "import_synonyms like \'%#{field}%\'")
           end
+          extended_field = extended_fields.select { |ext_field| ext_field.import_synonyms.split.include?(field) }.first
 
           if !extended_field.nil?
             @import_field_to_extended_field_map[field] = extended_field
@@ -460,9 +460,9 @@ module Importer
         params[:topic_type_id] = options[:topic_type].id
       end
 
-      unless options[:extended_field_data].blank? || @record_identifier_extended_field.blank?
+      unless options[:extended_field_data].blank? || @extended_field_that_contains_record_identifier.blank?
         regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
-        ext_field_id = @record_identifier_extended_field.label_for_params
+        ext_field_id = @extended_field_that_contains_record_identifier.label_for_params
         conditions << "(LOWER(extended_content) #{regexp} :ext_field_data)"
         params[:ext_field_data] = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
       end
@@ -870,7 +870,7 @@ module Importer
 
       # if we are making a topic, respect the Related Items Inset configurations
       if zoom_class == 'Topic'
-        new_record.related_items_inset = (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
+        new_record.related_items_position = (defined?(RELATED_ITEMS_POSITION_DEFAULT) ? RELATED_ITEMS_POSITION_DEFAULT : 'inset')
       end
 
       # if still image and new_image failed, fail
@@ -902,25 +902,25 @@ module Importer
     def importer_build_relations_to(new_record, record_hash, params)
       logger.info("building relations for new record")
 
-      if @related_records_xml_field.blank?
+      if @related_topics_reference_in_record_xml_field.blank?
         logger.info("no relations to be made for new record")
         return
       end
 
       # We need an array to loop over, but we also allow single values as strings, so convert as needed
       # Split by commas incase mutliple ones are provided, and strip whitespace
-      if @related_records_xml_field.is_a?(String)
-        @related_records_xml_field = @related_records_xml_field.split(',').collect { |r| r.strip }
+      if @related_topics_reference_in_record_xml_field.is_a?(String)
+        @related_topics_reference_in_record_xml_field = @related_topics_reference_in_record_xml_field.split(',').collect { |r| r.strip }
       end
 
-      @related_records_xml_field.each do |related_records_xml_field|
-        next if related_records_xml_field.blank?
-        if record_hash[related_records_xml_field].blank?
-          logger.info("no relational field found with name of #{related_records_xml_field}")
+      @related_topics_reference_in_record_xml_field.each do |related_topics_reference_in_record_xml_field|
+        next if related_topics_reference_in_record_xml_field.blank?
+        if record_hash[related_topics_reference_in_record_xml_field].blank?
+          logger.info("no relational field found with name of #{related_topics_reference_in_record_xml_field}")
           next
         end
 
-        record_hash[related_records_xml_field].split(',').each do |related_topic_identifier|
+        record_hash[related_topics_reference_in_record_xml_field].split(',').each do |related_topic_identifier|
           related_topic_identifier = related_topic_identifier.strip
 
           if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
@@ -999,7 +999,7 @@ module Importer
                                     :license_id => topic_params[:topic][:license_id],
                                     :topic_type_id => topic_params[:topic][:topic_type_id],
                                     :do_not_moderate => true,
-                                    :related_items_inset => (defined?(RELATED_ITEMS_INSET_DEFAULT) ? RELATED_ITEMS_INSET_DEFAULT : false)
+                                    :related_items_position => (defined?(RELATED_ITEMS_POSITION_DEFAULT) ? RELATED_ITEMS_POSITION_DEFAULT : 'inset')
                                     )
 
       related_topic.creator =  @contributing_user

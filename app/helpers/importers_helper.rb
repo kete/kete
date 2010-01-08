@@ -22,7 +22,7 @@ module ImportersHelper
             $('zoom_class').disabled = true;
             $('zoom').hide();
           }
-          // hide the related_topic_type and record_identifier_extended_field choices if this type doesn't need it
+          // hide the related_topic_type and extended_field_that_contains_record_identifier choices if this type doesn't need it
           if ( value == 'dfc_xml' || value == 'simple_xml' ) {
             $('import_related_items').show();
           } else {
@@ -68,7 +68,7 @@ module ImportersHelper
       });
 
       $('import_related_topic_type_id').observe('change', function() {
-        new Ajax.Updater('import_record_identifier_extended_field_select', '#{url_for(:action => 'fetch_applicable_extended_fields')}', {
+        new Ajax.Updater('import_extended_field_that_contains_record_identifier_select', '#{url_for(:action => 'fetch_applicable_extended_fields')}', {
           parameters: { topic_type_id: $('import_related_topic_type_id').value },
           onCreate: function() {
             $('extended_fields_spinner').show();

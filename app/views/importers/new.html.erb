@@ -82,9 +82,9 @@
     <div id="import_related_items_fields" style="display: none; margin: 10px 10px 10px 190px;">
       <fieldset>
         <div id="import_related_records">
-          <label for="import_related_records_xml_field"><%=t 'importers.new.related_records_xml_field' %></label>
-          <%= form.text_field :related_records_xml_field, :size => 15 %>
-          <div class="form_example"><%=t 'importers.new.related_records_xml_field_description' %></div>
+          <label for="import_related_topics_reference_in_record_xml_field"><%=t 'importers.new.related_topics_reference_in_record_xml_field' %></label>
+          <%= form.text_field :related_topics_reference_in_record_xml_field, :size => 15 %>
+          <div class="form_example"><%=t 'importers.new.related_topics_reference_in_record_xml_field_description' %></div>
         </div>
 
         <div id="import_related_topic_type">
@@ -93,10 +93,10 @@
           <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
         </div>
 
-        <div id="import_record_identifier_extended_field">
-          <label for="import_record_identifier_extended_field_id"><%=t 'importers.new.record_identifier_extended_field' %></label>
-          <div id="import_record_identifier_extended_field_select"><%= render 'extended_field_selection' %></div>
-          <div class="form_example"><%=t 'importers.new.record_identifier_extended_field_description' %></div>
+        <div id="import_extended_field_that_contains_record_identifier">
+          <label for="import_extended_field_that_contains_record_identifier_id"><%=t 'importers.new.extended_field_that_contains_record_identifier' %></label>
+          <div id="import_extended_field_that_contains_record_identifier_select"><%= render 'extended_field_selection' %></div>
+          <div class="form_example"><%=t 'importers.new.extended_field_that_contains_record_identifier_description' %></div>
         </div>
       </fieldset>
     </div>
