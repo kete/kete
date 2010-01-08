@@ -8,7 +8,11 @@
 <p>
   <h2 style="display:inline;"><%= h(@title) %></h2>
   [
-    <%= link_to_unless_current 'to review', params.merge(:type => 'to_review') %> |
+    <% if params[:type].blank? -%>
+    to review
+    <% else -%>
+    <%= link_to_unless_current 'to review', params.merge(:type => 'to_review') -%>
+    <% end -%> |
     <%= link_to_unless_current 'reviewed', params.merge(:type => 'reviewed') %> |
     <%= link_to_unless_current 'rejected', params.merge(:type => 'rejected') %>
   ]
