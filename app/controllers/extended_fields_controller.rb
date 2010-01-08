@@ -12,8 +12,8 @@ class ExtendedFieldsController < ApplicationController
 
   active_scaffold :extended_field do |config|
     # Default columns and column exclusions
-    config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition, :dont_link_choice_values]
-    config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition, :dont_link_choice_values]
+    config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition, :link_choice_values]
+    config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition, :link_choice_values]
 
     config.columns[:description].options = { :rows => 5 }
     config.columns[:import_synonyms].options = { :rows => 5 }
@@ -27,7 +27,7 @@ class ExtendedFieldsController < ApplicationController
     config.columns[:pseudo_choices].label = I18n.t('extended_fields_controller.available_choices')
     config.columns[:pseudo_choices].description = I18n.t('extended_fields_controller.available_choices_description')
     config.columns[:user_choice_addition].label = ''
-    config.columns[:dont_link_choice_values].label = ''
+    config.columns[:link_choice_values].label = ''
 
     config.columns << [:topic_type]
     config.columns[:topic_type].label = I18n.t('extended_fields_controller.topic_type_choices')
