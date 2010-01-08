@@ -836,7 +836,7 @@ div#notice, div#error {
                 width: 100%;
 }
 
-div#notice div, div#error div {
+.warning, div#notice div, div#error div {
     background-color: #f9f3cd;
     border: 1px solid #baae8b;
     padding: .5em;
