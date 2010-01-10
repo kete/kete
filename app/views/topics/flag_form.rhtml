@@ -1,14 +1,20 @@
 <% if current_user_can_see_flagging? -%>
-<% @user_type = 'moderator'
-   @submit_text = t('topics.flag_form.flag_button')
-   @instructions = t('topics.flag_form.flag_instructions')
-   if @flag != REJECTED_FLAG
-     @title = t('topics.flag_form.flag_item_title')
-   else
+<% case @flag
+   when REJECTED_FLAG
      @title = t('topics.flag_form.reject_revision_title')
      @user_type = 'user'
      @submit_text = t('topics.flag_form.reject_button')
      @instructions = t('topics.flag_form.reject_instructions')
+   when REVIEWED_FLAG
+     @title = t('topics.flag_form.review_revision_title')
+     @user_type = 'user'
+     @submit_text = t('topics.flag_form.review_button')
+     @instructions = t('topics.flag_form.review_instructions')
+   else
+     @title = t('topics.flag_form.flag_item_title')
+     @user_type = 'moderator'
+     @submit_text = t('topics.flag_form.flag_button')
+     @instructions = t('topics.flag_form.flag_instructions')
    end
 -%>
 
@@ -25,6 +31,13 @@
                         <%= text_area 'message', '', :tabindex => '1' %>
                         <p><%= @instructions -%></p>
                 </div>
+                <% if [REJECTED_FLAG, REVIEWED_FLAG].include?(@flag) %>
+                <div class="form-element">
+                  <label for="restricted"><%=t 'topics.flag_form.restricted' %></label>
+                  <%= check_box_tag 'restricted', true, false, :tabindex => '1' %>
+                  <p><%=t 'topics.flag_form.restricted_description' %></p>
+                </div>
+                <% end %>
         </fieldset>
         <div class="wrap"><%= submit_tag @submit_text, :tabindex => '1' %></div>
 <% end %>

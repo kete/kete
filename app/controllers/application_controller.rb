@@ -383,6 +383,7 @@ class ApplicationController < ActionController::Base
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
+                'secondary_content_extended_fields_embedded_[privacy]',
                 'secondary_content_license_metadata_[privacy]', 'history_[privacy]']
 
   PUBLIC_SHOW_PARTS = ['comments-link_[privacy]', 'comments_[privacy]']
@@ -1085,6 +1086,9 @@ class ApplicationController < ActionController::Base
   end
 
   def history_url(item)
+    # if we got sent a version object, we need to link to the latest version
+    item = item.latest_version if item.class.name =~ /Version/
+
     url_for :controller => zoom_class_controller(item.class.name), :action => :history, :id => item
   end
 

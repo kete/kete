@@ -12,9 +12,9 @@
               xml.cdata item.title
             }
             xml.description {
-              xml.cdata item.flag
+              xml.cdata item.disputed_flags.join(', ')
             }
-            xml.pubDate item.flagged_at.to_s
+            xml.pubDate item.flagged_at.to_s(:short)
             xml.link history_url(item)
             xml.guid history_url(item)
           }

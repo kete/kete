@@ -2,12 +2,12 @@
 # 2008-04-15
 
 module ItemPrivacyTestHelper
-  
+
   module Model
-    
+
     # Normally, testing attachment_fu methods will cause real files to be written into your
     # development and production environment file folders, as defined in the models.
-    # To work around this, this override forces the files to be saved into the 
+    # To work around this, this override forces the files to be saved into the
     # tmp/attachment_fu_test/.. folder instead of RAILS_ROOT/..
 
     # Based on work-around described here http://www.fngtps.com/2007/04/testing-with-attachment_fu
@@ -15,44 +15,44 @@ module ItemPrivacyTestHelper
       file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s.gsub("public", "")
       File.join(RAILS_ROOT, "tmp", "attachment_fu_test", attachment_path_prefix, file_system_path, *partitioned_path(thumbnail_name_for(thumbnail)))
     end
-    
+
   end
-  
+
   module TestHelper
-    
+
     # Generate a regex for us to test against to ensure the files are saved in the correct place.
     # Use this in your tests.
     def attachment_fu_test_path(base_folder, sub_folder)
       /^[a-zA-Z0-9\/\-_\s\.]+\/#{base_folder}\/#{sub_folder}\/[a-zA-Z0-9\/\-_\s\.]+$/
     end
-    
+
     private
-    
+
       # Generate a new record for a test
       # Returns the ID of the new record.
       def create_record(attributes = {}, user = :admin)
-      
+
         login_as(user)
         eval("post :create, :#{@base_class.singularize.downcase} => @new_model.merge(attributes), :urlified_name => 'site'")
 
         # Reload the test environment.
         load_test_environment
-      
+
         eval("#{@base_class.classify}.find(:first, :order => 'id DESC').id")
       end
-    
+
       def load_test_environment
         @controller = eval("#{@base_class.classify.pluralize}Controller.new")
         @request    = ActionController::TestRequest.new
         @response   = ActionController::TestResponse.new
       end
-    
+
   end
-  
+
   module Tests
-    
+
     module FilePrivate
-      
+
       def test_attachment_fu_uses_correct_path_prefix
         item = eval(@base_class).create(@new_model.merge({ :file_private => false }))
         assert_match(attachment_fu_test_path("public", @uploads_folder), item.full_filename)
@@ -122,11 +122,11 @@ module ItemPrivacyTestHelper
 
         assert !d.file_private?
       end
-      
+
       def create_user_with_permission(role, basket_instance)
-        raise "Unknown role" unless 
+        raise "Unknown role" unless
           ['member', 'moderator', 'administrator', 'site_admin', 'tech_admin'].member?(role)
-          
+
         user = User.create(
           :login => 'quire',
           :email => 'quire@example.com',
@@ -138,23 +138,23 @@ module ItemPrivacyTestHelper
           :locale => 'en'
         )
         basket_instance.accepts_role(role, user)
-        
+
         assert user.has_role?(role, basket_instance)
       end
-      
+
       def test_create_user_with_permission
         create_user_with_permission('member', Basket.find(:first))
       end
-      
+
     end
-    
+
     module VersioningAndModeration
-      
+
       def test_responds_to_private_and_is_set_properly_with_private_false
         doc = eval(@base_class).create(@new_model.merge({ :private => false }))
         assert_equal false, doc.private?
       end
-      
+
       def test_responds_to_private_and_is_set_properly_with_private_true
         doc = eval(@base_class).create(@new_model.merge({ :private => true }))
         assert_equal false, doc.private?
@@ -549,29 +549,29 @@ module ItemPrivacyTestHelper
         assert_equal 2, d.version
 
       end
-      
+
     end
-    
+
     module TaggingWithPrivacyContext
-      
+
       def test_class_responds_to_class_methods_as_expected
         klass = eval(@base_class)
-        
+
         should_respond_to = [
           :tag_counts,
           :private_tag_counts,
           :public_tag_counts
         ]
-        
+
         should_respond_to.each do |method|
           assert_respond_to klass, method
         end
       end
-      
+
       def test_class_tag_counts_accepts_an_required_argument_and_one_optional_one
         assert_equal -2, eval(@base_class).method(:tag_counts).arity
       end
-      
+
       def test_instances_respond_to_instance_methods_as_expected
         instance = eval(@base_class).create(@new_model)
 
@@ -588,16 +588,16 @@ module ItemPrivacyTestHelper
           :private_tag_list,
           :private_tag_list=
         ]
-        
+
         should_respond_to.each do |method|
           assert_respond_to instance, method
         end
       end
-      
+
       def test_tags_are_preserved_on_public_items
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
-        
+
         assert_equal 1, d.versions.size
         assert_equal "Version 1", d.description
         assert_equal 3, d.tags.size
@@ -605,12 +605,12 @@ module ItemPrivacyTestHelper
         assert_equal d.tags, d.public_tags
         assert d.private_tags.empty?
       end
-      
+
       def test_tags_are_preserved_on_private_items
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
-        
+
         assert_equal 0, d.tags.size
-        
+
         d.private_version do
           assert_equal true, d.private?
           assert_equal 3, d.tags.size
@@ -620,53 +620,53 @@ module ItemPrivacyTestHelper
           assert d.public_tags.empty?
         end
       end
-      
+
       def test_tags_on_private_items_are_kept_private
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
-        
+
         # Check there are no tags on public version
         assert_equal false, d.private?
         assert_equal 2, d.versions.size
         assert_equal NO_PUBLIC_VERSION_TITLE, d.title
         assert_equal 0, d.tags.size
-        
+
         # Topic#raw_tag_list is set in the controllers, so cannot be tested here.
         # assert_equal nil, d.raw_tag_list
-        
+
         # Check the original tags are present on the private version
         d.private_version do
           assert_equal true, d.private?
-          
+
           # Topic#raw_tag_list is set in the controllers, so cannot be tested here.
           # assert_equal "one, two, three", d.raw_tag_list
-          
+
           assert_equal 3, d.tags.size
           assert_equal "Version 1", d.description
           assert %w{one two three}.all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
         end
-        
+
         # Check there are no tags on public version upon restoration
         assert_equal false, d.private?
         assert_equal NO_PUBLIC_VERSION_TITLE, d.title
         assert_equal 0, d.tags.size
-        
+
         # Topic#raw_tag_list is set in the controllers, so cannot be tested here.
         # assert_equal nil, d.raw_tag_list
       end
-      
+
       def test_tags_on_private_items_are_kept_private_on_re_find
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
-        
+
         d = eval(@base_class).find(d.id)
-        
+
         # Check there are no tags on public version
         assert_equal false, d.private?
         assert_equal 2, d.versions.size
         assert_equal NO_PUBLIC_VERSION_TITLE, d.title
         assert_equal 0, d.tags.size
         # assert_equal nil, d.raw_tag_list
-        
+
         # Check the original tags are present on the private version
         d.private_version do
           assert_equal true, d.private?
@@ -675,40 +675,40 @@ module ItemPrivacyTestHelper
           assert_equal "Version 1", d.description
           assert %w{one two three}.all? { |t| d.tags.collect { |tag| tag.name }.member?(t) }
         end
-        
+
         # Check there are no tags on public version upon restoration
         assert_equal false, d.private?
         assert_equal NO_PUBLIC_VERSION_TITLE, d.title
         assert_equal 0, d.tags.size
         # assert_equal nil, d.raw_tag_list
       end
-      
+
       def test_tags_are_preserved_separately_by_privacy_setting
-        
+
         # Create a private version
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
-        
+
         # Create a public version with different tags
         d.update_attributes!(:private => false, :title => "A public version", :description => "Version 3", :tag_list => "four, five, six", :raw_tag_list => "four, five, six")
-        
+
         # Create a second private version without tags
         d.private_version!
         d.update_attributes!(:private => true, :title => "Another private version", :description => "Version 4")
-        
+
         # Check the public version has tags from public version
         assert_equal false, d.private?
         assert_equal 3, d.tags.size
         # assert_equal "four, five, six", d.raw_tag_list
         assert_equal "four, five, six", d.tags.collect { |t| t.name }.join(", ")
-        
+
         # Check the private version has tags from the private version
         d.private_version!
         assert_equal true, d.private?
         assert_equal 3, d.tags.size
         # assert_equal "one, two, three", d.raw_tag_list
         assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
-        
+
         # Check the public tags present on natural version
         e = eval(@base_class).find(d.id)
         assert_equal false, e.private?
@@ -716,31 +716,31 @@ module ItemPrivacyTestHelper
         # assert_equal "four, five, six", e.raw_tag_list
         assert_equal "four, five, six", e.tags.collect { |t| t.name }.join(", ")
       end
-      
+
       def test_tags_on_private_items_are_of_private_context
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => true, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
-        
+
         d.private_version!
-        
+
         assert_equal true, d.private?
         assert_equal d.tags, d.private_tags
         assert_equal 3, d.tags.size
         assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
         assert d.public_tags.empty?
       end
-      
+
       def test_tags_on_public_items_are_of_public_context
         d = eval(@base_class).create(@new_model.merge({ :description => "Version 1", :private => false, :tag_list => "one, two, three", :raw_tag_list => "one, two, three" }))
         d.reload
-        
+
         assert_equal false, d.private?
         assert_equal d.tags, d.public_tags
         assert_equal 3, d.tags.size
         assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
         assert d.private_tags.empty?
       end
-      
+
       protected
 
         def new_moderated_public_item
@@ -755,7 +755,7 @@ module ItemPrivacyTestHelper
           d.save!
           d.reload
 
-          d.change_pending_to_reviewed_flag(1)
+          d.strip_flags_and_mark_reviewed(1)
           d.revert_to(1)
           d.title = "Version 3"
           d.description = "Version 3"
@@ -770,7 +770,7 @@ module ItemPrivacyTestHelper
           d.do_not_sanitize = false
           d
         end
-        
+
     end
 
     module MovingItemsBetweenBasketsWithDifferentPrivacies
@@ -874,6 +874,6 @@ module ItemPrivacyTestHelper
     end
 
   end
-  
+
 end
 

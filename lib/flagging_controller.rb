@@ -8,7 +8,14 @@ module FlaggingController
     # user or moderater can add message with flagging
     def flag_form
       @flag = params[:flag]
-      @form_target = @flag != REJECTED_FLAG ? 'flag_version' : 'reject'
+      @form_target = case @flag
+      when REJECTED_FLAG
+        'reject'
+      when REVIEWED_FLAG
+        'review'
+      else
+        'flag_version'
+      end
 
       # use one form template for all controllers
       render :template => 'topics/flag_form'
@@ -127,7 +134,7 @@ module FlaggingController
         # now that this item is approved by moderator
         # we get rid of pending flag
         # then flag it as reviewed
-        @item.change_pending_to_reviewed_flag(@version)
+        @item.strip_flags_and_mark_reviewed(@version)
 
         # Return to latest public version before changing flags..
         @item.send :store_correct_versions_after_save if @item.respond_to?(:store_correct_versions_after_save)
@@ -154,10 +161,31 @@ module FlaggingController
       end
     end
 
+    # for cases where a version is flagged, decided to be ok, and the mod
+    # doesn't want to make this the live version (restore) or reject it.
+    def review
+      setup_flagging_vars
+
+      @item.review_this(@version, :message => @message,
+                                  :restricted => params[:restricted].present?)
+
+      # notify the contributor of this revision
+      UserNotifier.deliver_reviewing_of(@version,
+                                        correct_url_for(@item, @version),
+                                        @submitter,
+                                        @message)
+
+      flash[:notice] = I18n.t('flagging_controller_lib.review.reviewed',
+                              :zoom_class => zoom_class_humanize(@item.class.name))
+
+      redirect_to @item_url
+    end
+
     def reject
       setup_flagging_vars
 
-      @item.reject_this(@version, @message)
+      @item.reject_this(@version, :message => @message,
+                                  :restricted => params[:restricted].present?)
 
       # notify the contributor of this revision
       UserNotifier.deliver_rejection_of(@version,
@@ -232,8 +260,9 @@ module FlaggingController
         end
         @item.revert_to(@preview_version)
 
-        # Do not allow access to private item versions..
-        if @item.respond_to?(:private?) && @item.private? && !permitted_to_view_private_items?
+        # Do not allow access to restricted or private item versions..
+        if (@flags.include?(RESTRICTED_FLAG) && !@at_least_moderator) ||
+           (@item.respond_to?(:private?) && @item.private? && !permitted_to_view_private_items?)
           raise ActiveRecord::RecordNotFound
         end
 

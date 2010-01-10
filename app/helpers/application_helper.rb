@@ -842,7 +842,7 @@ module ApplicationHelper
   end
 
   #---- related to extended_fields for either topic_types or content_types
-  def display_xml_attributes(item)
+  def display_xml_attributes(item, options = {})
     raq = " &raquo; "
     html = []
 
@@ -852,6 +852,14 @@ module ApplicationHelper
     content = item.extended_content_pairs
 
     mappings.each do |mapping|
+      unless options[:embedded_only].nil?
+        if options[:embedded_only]
+          next unless mapping.embedded?
+        else
+          next if mapping.embedded?
+        end
+      end
+
       field = mapping.extended_field
       # value = content[qualified_name_for_field(field)]
       field_name = field.multiple? ? qualified_name_for_field(field) + "_multiple" : qualified_name_for_field(field)
@@ -968,7 +976,11 @@ module ApplicationHelper
         unless base_url.blank?
           link_to(l, base_url + v)
         else
-          link_to(l, send(method, url_hash.merge(:limit_to_choice => v.escape_for_url)))
+          if ef && ef.dont_link_choice_values?
+            l
+          else
+            link_to(l, send(method, url_hash.merge(:limit_to_choice => v.escape_for_url)))
+          end
         end
       end.join(" &raquo; ")
 
@@ -1224,6 +1236,9 @@ module ApplicationHelper
   end
 
   def link_to_preview_of(item, version, check_permission = true, options = {})
+    # if we got sent a version object, we need to link to the latest version
+    item = item.latest_version if item.class.name =~ /Version/
+
     version_number = 0
     link_text = 'preview'
     begin

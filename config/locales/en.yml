@@ -58,6 +58,7 @@ en:
     default: default
     delete: delete
     deleted: deleted
+    description: description
     disable: disable
     disabled: disabled
     disallow: disallow
@@ -122,11 +123,12 @@ en:
       change_password: "{{t.base.change.capitalize}} {{t.base.password}}"
       request_password: "{{t.base.request.capitalize}} {{t.base.password.downcase}}"
     please: please
-    please_try_again: "{{t.base.please}} try again"
+    please_try_again: "{{t.base.please.capitalize}} try again"
     please_try_again_later: "{{t.base.please_try_again}} later"
     portrait: portrait
     preview: preview
     private: private
+    privacy: privacy
     profile: profile
     public: public
     recent: recent
@@ -135,6 +137,7 @@ en:
     registering: registering
     reject: reject
     rejected: rejected
+    rejecting: rejecting
     relate: relate
     related: related
     relates: relates
@@ -146,9 +149,12 @@ en:
     request: request
     requested: requested
     reset: reset
+    restrict: restrict
+    restricted: restricted
     review: review
     reviewed: reviewed
     reviewing: reviewing
+    revision: revision
     save: save
     saved: saved
     search: search
@@ -175,6 +181,7 @@ en:
     username: "user name"
     valid: valid
     value: value
+    version: version
     view: view
     viewed: viewed
     viewing: viewing
@@ -850,7 +857,7 @@ en:
       button: "{{t.base.save.capitalize}}"
       title: "{{t.base.editing.capitalize}} {{t.base.zoom_types.comment}}"
     form:
-      description: "Description:"
+      description: "{{t.base.description.capitalize}}:"
       edit_comment: "{{t.base.zoom_types.comment.capitalize}} on this edit:"
       security_warning: "Note: {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons."
       security_warning_admin: "Unless {{t.base.you}} check the box below."
@@ -959,10 +966,11 @@ en:
       title: "Available {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
+      embedded: "display under {{t.base.description}}?"
       multiple: (multiple)
       none_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.content_type}}."
       private_only: "{{t.base.private}} {{t.base.only}}?"
-      reorder_button: "Reorder {{t.base.content_type.capitalize}} {{t.base.form.capitalize}}"
+      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     edit:
@@ -1096,15 +1104,15 @@ en:
     details:
       filename: "Filename:"
       not_available: "{{t.base.not_available}} for download"
-      replace_description: "{{t.base.replace.capitalize}} description with {{t.base.zoom_types.document}} text"
+      replace_description: "{{t.base.replace.capitalize}} {{t.base.description}} with {{t.base.zoom_types.document}} text"
       size: "Size:"
       type: "{{t.base.zoom_types.document.capitalize}} {{t.base.type}}:"
     edit:
       not_authorized: "Sorry - {{t.base.editing}} on this section of the {{t.base.site}} {{t.base.has_been}} {{t.base.disallowed}}"
   documents_controller:
     convert:
-      converted: "{{t.base.zoom_types.document.capitalize}} description {{t.base.was_updated}} with text of uploaded document."
-      not_converted: "There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's description.  {{t.base.please.capitalize}} {{t.base.edit}} the description manually."
+      converted: "{{t.base.zoom_types.document.capitalize}} {{t.base.description}} {{t.base.was_updated}} with text of uploaded document."
+      not_converted: "There were problems converting the text of the uploaded {{t.base.zoom_types.document}} to the document's {{t.base.description}}.  {{t.base.please.capitalize}} {{t.base.edit}} the {{t.base.description}} manually."
     make_theme:
       made_theme: "{{t.base.zoom_types.document.capitalize}} expanded to be {{t.base.new}} theme."
     update:
@@ -1288,6 +1296,9 @@ en:
       allow_user_choices_yes: "Yes"
       collapse_all: "Collapse {{t.base.all}}"
       expand_all: "Expand {{t.base.all}}"
+      link_choice_values: "{{t.base.choice.capitalize}} values are links to all other {{t.base.item.pluralize}} with the same value for that field?"
+      link_choice_values_no: "No"
+      link_choice_values_yes: "Yes"
   field_mappings_controller:
     create:
       created: "{{item_class}} {{t.base.was_created}}."
@@ -1304,12 +1315,14 @@ en:
     preview:
       no_public: "There is currently no {{t.base.public}} version of this {{controller}} available."
     reject:
-      rejected: "This version of this {{zoom_class}} {{t.base.has_been}} {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by email."
+      rejected: "This {{t.base.version}} of this {{zoom_class}} {{t.base.has_been}} {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by email."
     restore:
       approved: "The {{t.base.content}} of this {{zoom_class}} {{t.base.has_been}} {{t.base.approved}} {{t.base.from}} the selected revision."
       made_live: "{{t.base.your.capitalize}} {{t.base.contribution}} to {{site_name}} in {{basket_name}} {{t.base.has_been}} {{t.base.made}} the live version."
       missing_details: "The version you're reverting to is missing some compulsory {{t.base.content}}. {{t.base.please.capitalize}} {{t.base.contribute}} the missing details before continuing. You may need to {{t.base.contact}} the original author to collect additional information."
       version_comment: "{{t.base.content.capitalize}} {{t.base.from}} revision # {{version}}."
+    review:
+      reviewed: "This {{t.base.version}} of the {{zoom_class}} {{t.base.has_been}} marked as {{t.base.reviewed}}."
   google_map_lib:
     extended_field_map_editor:
       address: "Address:"
@@ -1666,14 +1679,15 @@ en:
       undo: (undo)
   moderate:
     list:
-      flagged_at: "{{t.base.flagged}} at"
-      flagged_with: "{{t.base.flagged}} with"
+      flagged_at: "{{t.base.flagged.capitalize}} at"
+      flagged_with: "{{t.base.flagged.capitalize}} with"
       full_history: "{{t.base.item}}'s full {{t.base.history}}"
+      item_title: "Title"
       no_items_needing_moderation: "Currently no {{t.base.item.pluralize}} needing {{t.base.moderation}}."
-      privacy: privacy
+      privacy: "{{t.base.privacy.capitalize}}"
       private: "{{t.base.private}}"
       public: "{{t.base.public}}"
-      revision: Revision
+      revision: "{{t.base.revision.capitalize}}"
       title: "{{t.base.moderate.capitalize}}"
     rss:
       description: "{{t.base.item.capitalize.pluralize}} needing {{t.base.moderation}}"
@@ -2036,11 +2050,12 @@ en:
       title: "Available {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     current_fields:
       delete: "{{t.base.delete.capitalize}}"
+      embedded: "display under {{t.base.description}}?"
       multiple: (multiple)
       no_fields_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.topic_type}}."
       no_more_allowed: "{{t.base.you.capitalize}} {{t.base.cannot}} {{t.base.add}} {{t.base.any}} additional {{t.base.field.pluralize}} to this {{t.base.topic_type}}, see above."
       private_only: "{{t.base.private}} {{t.base.only}}?"
-      reorder: "Reorder {{t.base.topic_type.capitalize}} {{t.base.form.capitalize}}"
+      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
     edit:
@@ -2108,8 +2123,13 @@ en:
       message_for: "Message for"
       not_authorized: "Sorry {{t.base.flagging}} {{t.base.has_been}} {{t.base.disabled}} on this section of the {{t.base.site}}"
       reject_button: "{{t.base.reject.capitalize}}"
-      reject_instructions: "{{t.base.please.capitalize}} {{t.base.add}} a message to the {{t.base.user}} telling the why {{t.base.you}} have passed over their submitted revision."
-      reject_revision_title: "{{t.base.reject.capitalize}} this revision"
+      reject_instructions: "{{t.base.please.capitalize}} {{t.base.add}} a message to the {{t.base.user}} telling them why {{t.base.you}} have passed over their submitted revision."
+      reject_revision_title: "{{t.base.reject.capitalize}} this {{t.base.revision}}"
+      restricted: "{{t.base.restrict.capitalize}} access to {{t.base.moderator.pluralize}} or higher role?"
+      restricted_description: "Leaving this unchecked will flag the {{t.base.revision}}, but {{t.base.user.pluralize}} will still be able to see the {{t.base.revision}} from the {{t.base.item}} {{t.base.history}} {{t.base.preview}}."
+      review_button: "{{t.base.review.capitalize}}"
+      review_instructions: "{{t.base.please.capitalize}} {{t.base.add}} a message to the {{t.base.user}} telling them why {{t.base.you}} have {{t.base.reviewed}} their submitted revision and left it as is."
+      review_revision_title: "{{t.base.review.capitalize}} this {{t.base.revision}}"
     flagging_contributor:
       created: "{{t.base.created}}"
       created_or_updated_on: "on"
@@ -2119,7 +2139,7 @@ en:
       comment_on_edit: "{{t.base.zoom_types.comment.capitalize}} on this {{t.base.edit}}"
       create: "{{t.base.create.capitalize}}"
       current_image: "Current Image:"
-      description: Description
+      description: "{{t.base.description.capitalize}}"
       description_example: "Note: {{t.base.new}} {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons"
       description_example_exception: ", unless {{t.base.you}} check the box below"
       downloaded_by_everyone: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
@@ -2179,14 +2199,17 @@ en:
       reasons_flagged: "Reasons {{t.base.flagged}}:"
       topic_type: "{{t.base.topic_type.capitalize}}:"
     preview_actions:
-      delete_all_versions: "{{t.base.delete}} this {{t.base.item}} completely"
+      delete_all_versions: "{{t.base.delete.capitalize}} completely"
       delete_confirm: "{{t.base.are_you_sure}}"
       history: "{{t.base.history.capitalize}}"
-      make_live: "Make this revision live"
+      make_live: "Make live"
       make_live_confirm: "{{t.base.are_you_sure}}"
-      reject: "{{t.base.reject}}"
+      mark_as_reviewed: "Mark as {{t.base.reviewed}}"
+      mark_as_reviewed_confirm: "{{t.base.are_you_sure}}"
+      reject: "{{t.base.reject.capitalize}}"
       reject_confirm: "{{t.base.are_you_sure}}"
-      title: "Actions:"
+      title: "Actions on this {{t.base.revision}}:"
+      title_for_item: "Actions for entire {{t.base.item}}:"
     privacy_chooser:
       private_version: "{{t.base.private.capitalize}} version"
       public_version: "{{t.base.public.capitalize}} version (live)"
@@ -2225,7 +2248,7 @@ en:
       changed_topic_type: "You've {{t.base.changed}} the {{t.base.topic_type}} for this topic. {{t.base.please.capitalize}} {{t.base.review}} the available {{t.base.field.pluralize}}."
       updated: "{{t.base.zoom_types.topic.capitalize}} {{t.base.was_updated}}."
   user_model:
-    failed_security_answer: ": {{t.base.your.capitalize}} security question answer {{t.base.failed}} - {{t.base.please_try_again}}."
+    failed_security_answer: ": {{t.base.your.capitalize}} security question answer {{t.base.failed}}. {{t.base.please_try_again}}."
     locale_incorrect: ": Unrecognised {{t.base.language}}. Must be one of the following: {{locales}}"
   user_notifier:
     activation:
@@ -2303,6 +2326,9 @@ en:
       please_review: "{{t.base.please.capitalize}} {{t.base.review}} the submitted {{t.base.content}} in {{basket_name}} and take the appropriate action."
       review_version: "{{t.base.review.capitalize}} this version:"
       view_item_history: "the full {{t.base.item}}'s {{t.base.history}}:"
+    reviewing_of:
+      description: "Revision # {{revision}} of this {{t.base.item}} {{t.base.has_been}} {{t.base.reviewed}} by a {{t.base.moderator}} and marked {{t.base.reviewed}}. If {{t.base.you}} would like to alter {{t.base.your}} submission, {{t.base.you}} {{t.base.can}} {{t.base.view}} it here:"
+      reason: "The {{t.base.moderator}} {{t.base.has}} provided these details about why the {{t.base.site}} decided to leave {{t.base.your}} contribution as is:"
     signup:
       activate_account: "Visit this url to {{t.base.activate}} {{t.base.your}} {{t.base.account}}:"
       code: "{{t.base.code.capitalize}}:"
@@ -2335,6 +2361,7 @@ en:
     private_item_edited: "A {{t.base.private}} {{t.base.item}} {{t.base.has_been}} {{t.base.edited}}."
     private_item_edited_with_title: "The {{t.base.private}} {{t.base.item}} '{{item_title}}' {{t.base.has_been}} {{t.base.edited}}."
     rejected_submission: "A {{t.base.moderator}} {{t.base.has}} {{flag}} {{t.base.your}} submission."
+    reviewed_submission: "A {{t.base.moderator}} {{t.base.has}} {{flag}} {{t.base.your}} submission."
     revision_live: "A {{t.base.moderator}} {{t.base.has}} {{t.base.made}} {{t.base.your}} submission the live revision."
     user_joined: "{{user_name}} {{t.base.has}} {{t.base.joined}} the {{basket_name}} {{t.base.basket}}"
     user_requested: "{{user_name}} {{t.base.has}} {{t.base.requested}} {{t.base.membership}} in {{basket_name}} {{t.base.basket}}"

@@ -112,6 +112,15 @@ class ExtendedField < ActiveRecord::Base
     ['autocomplete', 'choice'].include?(ftype)
   end
 
+  def link_choice_values
+    dont_link_choice_values.nil? || !dont_link_choice_values
+  end
+  alias link_choice_values? link_choice_values
+
+  def link_choice_values=(value)
+    self.dont_link_choice_values = !value.to_bool
+  end
+
   def is_required?(controller, topic_type_id=nil)
     raise "ERROR: You must specify a topic type id since controller is topics" if controller == 'topics' && topic_type_id.nil?
     if controller == 'topics'

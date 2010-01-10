@@ -1,0 +1,14 @@
+<%= @user.user_name %>,
+
+<%=t 'user_notifier.reviewing_of.description',
+     :revision => @revision,
+     :flag => REVIEWED_FLAG %>
+
+  <%= @url %>
+
+<% if !@message.blank? -%>
+  <%=t 'user_notifier.reviewing_of.reason' %>
+  <%= @message %>
+<% end -%>
+
+<%= render 'email_footer' %>

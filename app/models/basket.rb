@@ -430,17 +430,16 @@ class Basket < ActiveRecord::Base
     moderators.flatten.uniq
   end
 
-  def all_disputed_revisions
-    @all_disputed_revisions = Array.new
-
-    ZOOM_CLASSES.each do |zoom_class|
-      class_plural = zoom_class.tableize
-      these_class_items = self.send("#{class_plural}").find_disputed(self.id)
-      @all_disputed_revisions += these_class_items
+  # all_disputed_revisions
+  # all_reviewed_revisions
+  # all_rejected_revisions
+  %w{ disputed reviewed rejected }.each do |type|
+    define_method("all_#{type}_revisions") do
+      revisions = ZOOM_CLASSES.collect do |zoom_class|
+        self.send(zoom_class.tableize.to_sym).send("find_#{type}", self.id)
+      end.flatten.compact
+      revisions.sort_by { |item| item.flagged_at }
     end
-
-    # sort by flagged_at
-    @all_disputed_revisions.sort_by { |item| item.flagged_at }
   end
 
   def possible_themes

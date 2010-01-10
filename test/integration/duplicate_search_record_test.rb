@@ -32,12 +32,6 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
         # Check that no search results appear for each item type
         click_link "#{name} (0)"
 
-        # Exception specifically for video
-        name = "video" if name == "Videos"
-
-        # Exception specifically for discussion
-        name = "comments" if name == "Discussion"
-
         body_should_contain "Results in #{name.downcase}"
         body_should_contain "No results found."
 

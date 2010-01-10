@@ -273,7 +273,7 @@ class ActionController::IntegrationTest
       body_should_contain "Basket homepage was successfully created."
     elsif !relate_to.nil?
       body_should_contain "Related #{zoom_class_humanize(zoom_class)} was successfully created."
-      body_should_contain "Topic: #{relate_to.title}"
+      body_should_contain relate_to.title
       body_should_not_contain 'No Public Version Available'
       if item.latest_version_is_private?
         item.private_version!

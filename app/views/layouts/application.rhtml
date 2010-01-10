@@ -34,7 +34,7 @@
 
   <% if cached_controllers.include?(params[:controller]) && params[:action] == "show" %>
     <% cache_with_privacy(current_item, { :part => 'dc_metadata' }) do %>
-      <%= dc_metadata_for(current_item) unless current_item.private? %>
+      <%= dc_metadata_for(current_item) if current_item && !current_item.private? %>
     <% end %>
   <% end %>
 

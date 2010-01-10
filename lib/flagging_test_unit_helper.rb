@@ -50,4 +50,37 @@ module FlaggingTestUnitHelper
     assert_equal 0, model.versions.find_by_version(1).tags.size
   end
 
+  def test_version_class_contains_flagging_boolean_methods
+    @base_class.constantize.create!(@new_model)
+    @version = @base_class.constantize::Version.first
+
+    assert @version.respond_to?(:disputed?)
+    assert @version.respond_to?(:reviewed?)
+    assert @version.respond_to?(:rejected?)
+  end
+
+  def test_find_flagged_returns_as_expected
+    @basket = Basket.find(:first)
+
+    not_flagged = @base_class.constantize.create!(@new_model.merge(:title => 'not flagged'))
+
+    flagged_items = Array.new
+    %w{ flagged1 flagged2 flagged3 }.each do |title|
+      model = @base_class.constantize.create!(@new_model.merge(:title => title))
+      model.flag_at_with(1, 'bad title')
+      flagged_items << model
+    end
+
+    flagged_items[0].review_this(1)
+    flagged_items[2].reject_this(1)
+
+    result = @base_class.constantize.find_flagged(@basket)
+
+    assert_equal 3, result.size
+
+    assert result[0].reviewed?
+    assert result[1].disputed?
+    assert result[2].rejected?
+  end
+
 end

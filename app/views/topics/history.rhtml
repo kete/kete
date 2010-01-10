@@ -20,23 +20,25 @@
             <th abbr="Comments"><%=t 'topics.history.comments' %></th>
           </tr>
           <% @versions.each do |version| -%>
+          <% tag_names = Array.new %>
+          <% tag_names = @item_taggings[version.id].collect { |tag| tag.name } if @item_taggings[version.id] %>
           <tr valign="top" class="<%= cycle('table-row-odd', 'table-row-even') -%>">
             <td><%= "\# #{version.version}" %></td>
             <td>
               [
               <% if version.version != @current_public_version && version.version != @current_private_version -%>
-              <%= link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index]) %>
+                <% if tag_names.include?(RESTRICTED_FLAG) && !@at_least_moderator %>
+                  <b>restricted</b>
+                <% else %>
+                  <%= link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index]) %>
+                <% end %>
               <% else -%>
-              <b>current</b>
+                <b>current</b>
               <% end -%>
               ]
             </td>
             <td>
-              <% if @item_taggings[version.id] %>
-                <% @item_taggings[version.id].each do |tag| %>
-                  <%= tag.name %>
-                <% end %>
-              <% end %>
+              <%= tag_names.join(', ') %>
             </td>
             <td>
                                                         <% private_condition = case params[:controller]
