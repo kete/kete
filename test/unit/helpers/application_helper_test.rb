@@ -69,4 +69,23 @@ class ApplicationHelperTest < ActionView::TestCase
 
   end
 
+  context "The open_search_metadata" do
+
+    should "return correctly formatted XHTML" do
+      @current_class = "Topic"
+      @result_sets = { @current_class => [1,2,3] }
+      @current_page = 2
+      @number_per_page = 1
+
+      data = <<-DATA
+        <meta content="3" name="totalResults" />
+        <meta content="1" name="startIndex" />
+        <meta content="1" name="itemsPerPage" />
+      DATA
+
+      assert_equal data.squish, open_search_metadata.squish
+    end
+
+  end
+
 end

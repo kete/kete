@@ -134,6 +134,12 @@ module ApplicationHelper
     metadata
   end
 
+  def open_search_metadata
+    meta_tag(:name => "totalResults", :content => @result_sets[@current_class].size) +
+    meta_tag(:name => "startIndex", :content => ((@current_page - 1) * @number_per_page)) +
+    meta_tag(:name => "itemsPerPage", :content => @number_per_page)
+  end
+
   def header_links_to_baskets
     html = '<ul id="basket-list" class="nav-list">'
 
