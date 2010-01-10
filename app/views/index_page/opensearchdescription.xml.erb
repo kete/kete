@@ -3,6 +3,8 @@
   <ShortName><%= PRETTY_SITE_NAME %> Web Search</ShortName>
   <Description>Search combined results of <%= PRETTY_SITE_NAME %></Description>
   <Contact><%= CONTACT_EMAIL %></Contact>
-  <Url type="application/rss+xml"
-      template="<%= SITE_URL %>site/all/combined/rss.xml?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}"/>
+  <Url type="text/html" template="<%= SITE_URL %>site/search/topics/for/open_search?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}" method="GET"/>
+  <Url type="application/rss+xml" template="<%= SITE_URL %>site/all/combined/rss.xml?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}" method="GET"/>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <InputEncoding>UTF-8</InputEncoding>
 </OpenSearchDescription>
