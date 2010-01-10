@@ -8,7 +8,14 @@ module FlaggingController
     # user or moderater can add message with flagging
     def flag_form
       @flag = params[:flag]
-      @form_target = @flag != REJECTED_FLAG ? 'flag_version' : 'reject'
+      @form_target = case @flag
+      when REJECTED_FLAG
+        'reject'
+      when REVIEWED_FLAG
+        'review'
+      else
+        'flag_version'
+      end
 
       # use one form template for all controllers
       render :template => 'topics/flag_form'
@@ -159,7 +166,14 @@ module FlaggingController
     def review
       setup_flagging_vars
 
-      @item.review_this(@version)
+      @item.review_this(@version, :message => @message,
+                                  :restricted => params[:restricted].present?)
+
+      # notify the contributor of this revision
+      UserNotifier.deliver_reviewing_of(@version,
+                                        correct_url_for(@item, @version),
+                                        @submitter,
+                                        @message)
 
       flash[:notice] = I18n.t('flagging_controller_lib.review.reviewed',
                               :zoom_class => zoom_class_humanize(@item.class.name))

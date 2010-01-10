@@ -104,6 +104,12 @@ class UserNotifier < ActionMailer::Base
     setup_body_with(revision, url, approval_message)
   end
 
+  def reviewing_of(revision, url, submitter, rejection_message)
+    setup_email(submitter)
+    @subject += I18n.t('user_notifier_model.reviewed_submission', :flag => REVIEWED_FLAG)
+    setup_body_with(revision, url, rejection_message)
+  end
+
   # notications for baskets
   def basket_notification_to(recipient, sender, basket, type)
     setup_email(recipient)
@@ -150,7 +156,7 @@ class UserNotifier < ActionMailer::Base
 
       if basket.settings[:private_item_notification_show_title] == true
         @subject += I18n.t("user_notifier_model.private_#{type}_with_title", :basket_name => basket.name, :item_title => item.title)
-        @body[:title] = item.title 
+        @body[:title] = item.title
       else
         @subject += I18n.t("user_notifier_model.private_#{type}", :basket_name => basket.name)
         @body[:title] = nil
@@ -194,5 +200,5 @@ class UserNotifier < ActionMailer::Base
       false
     end
   end
-  
+
 end

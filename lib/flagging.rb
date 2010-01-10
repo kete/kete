@@ -108,6 +108,7 @@ module Flagging
     def review_this(version_number, options = {})
       remove_all_flags(version_number)
       flag_at_with(version_number, REVIEWED_FLAG, options[:message])
+      flag_at_with(version_number, RESTRICTED_FLAG, options[:message]) if options[:restricted]
     end
 
     def reject_this(version_number, options = {})

@@ -2123,10 +2123,13 @@ en:
       message_for: "Message for"
       not_authorized: "Sorry {{t.base.flagging}} {{t.base.has_been}} {{t.base.disabled}} on this section of the {{t.base.site}}"
       reject_button: "{{t.base.reject.capitalize}}"
-      reject_instructions: "{{t.base.please.capitalize}} {{t.base.add}} a message to the {{t.base.user}} telling the why {{t.base.you}} have passed over their submitted revision."
+      reject_instructions: "{{t.base.please.capitalize}} {{t.base.add}} a message to the {{t.base.user}} telling them why {{t.base.you}} have passed over their submitted revision."
       reject_revision_title: "{{t.base.reject.capitalize}} this {{t.base.revision}}"
       restricted: "{{t.base.restrict.capitalize}} access to {{t.base.moderator.pluralize}} or higher role?"
-      restricted_description: "Leaving this unchecked will {{t.base.reject}} the {{t.base.revision}} and it can never become live on the {{t.base.item}} detail page, but {{t.base.user.pluralize}} will still be able to see the {{t.base.revision}} from the {{t.base.item}} {{t.base.history}} {{t.base.preview}}."
+      restricted_description: "Leaving this unchecked will flag the {{t.base.revision}}, but {{t.base.user.pluralize}} will still be able to see the {{t.base.revision}} from the {{t.base.item}} {{t.base.history}} {{t.base.preview}}."
+      review_button: "{{t.base.review.capitalize}}"
+      review_instructions: "{{t.base.please.capitalize}} {{t.base.add}} a message to the {{t.base.user}} telling them why {{t.base.you}} have {{t.base.reviewed}} their submitted revision and left it as is."
+      review_revision_title: "{{t.base.review.capitalize}} this {{t.base.revision}}"
     flagging_contributor:
       created: "{{t.base.created}}"
       created_or_updated_on: "on"
@@ -2323,6 +2326,9 @@ en:
       please_review: "{{t.base.please.capitalize}} {{t.base.review}} the submitted {{t.base.content}} in {{basket_name}} and take the appropriate action."
       review_version: "{{t.base.review.capitalize}} this version:"
       view_item_history: "the full {{t.base.item}}'s {{t.base.history}}:"
+    reviewing_of:
+      description: "Revision # {{revision}} of this {{t.base.item}} {{t.base.has_been}} {{t.base.reviewed}} by a {{t.base.moderator}} and marked {{t.base.reviewed}}. If {{t.base.you}} would like to alter {{t.base.your}} submission, {{t.base.you}} {{t.base.can}} {{t.base.view}} it here:"
+      reason: "The {{t.base.moderator}} {{t.base.has}} provided these details about why the {{t.base.site}} decided to leave {{t.base.your}} contribution as is:"
     signup:
       activate_account: "Visit this url to {{t.base.activate}} {{t.base.your}} {{t.base.account}}:"
       code: "{{t.base.code.capitalize}}:"
@@ -2355,6 +2361,7 @@ en:
     private_item_edited: "A {{t.base.private}} {{t.base.item}} {{t.base.has_been}} {{t.base.edited}}."
     private_item_edited_with_title: "The {{t.base.private}} {{t.base.item}} '{{item_title}}' {{t.base.has_been}} {{t.base.edited}}."
     rejected_submission: "A {{t.base.moderator}} {{t.base.has}} {{flag}} {{t.base.your}} submission."
+    reviewed_submission: "A {{t.base.moderator}} {{t.base.has}} {{flag}} {{t.base.your}} submission."
     revision_live: "A {{t.base.moderator}} {{t.base.has}} {{t.base.made}} {{t.base.your}} submission the live revision."
     user_joined: "{{user_name}} {{t.base.has}} {{t.base.joined}} the {{basket_name}} {{t.base.basket}}"
     user_requested: "{{user_name}} {{t.base.has}} {{t.base.requested}} {{t.base.membership}} in {{basket_name}} {{t.base.basket}}"

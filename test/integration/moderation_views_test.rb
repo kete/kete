@@ -261,6 +261,8 @@ class ModerationViewsTest < ActionController::IntegrationTest
       @topic = update_item(@topic, :title => 'Version 2')
       visit "/site/topics/preview/#{@topic.id}?version=1"
       click_link 'Mark as reviewed'
+      fill_in 'message_', :with => 'Testing'
+      click_button 'Review'
       body_should_contain 'This version of the Topic has been marked as reviewed.'
     end
 

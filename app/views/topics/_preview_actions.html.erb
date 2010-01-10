@@ -1,9 +1,9 @@
 <% if can_moderate -%>
 
 <div id="moderator-tools" class="slim">
-  
+
   <ul>
-    
+
     <li class="first"><h4><%=t 'topics.preview_actions.title' %></h4></li>
 
       <%  location = { :id => item,  :authenticity_token => form_authenticity_token,
@@ -16,7 +16,7 @@
                       options.merge(:confirm => t('topics.preview_actions.make_live_confirm')) %></li>
 
       <li><%= link_to t('topics.preview_actions.mark_as_reviewed'),
-                      location.merge(:action => :review),
+                      location.merge(:action => :flag_form, :flag => REVIEWED_FLAG),
                       options.merge(:confirm => t('topics.preview_actions.mark_as_reviewed_confirm')) %></li>
 
       <li><%= link_to t('topics.preview_actions.reject'),
@@ -40,12 +40,12 @@
             location.merge(:action => :destroy),
       options.merge(:confirm => t('topics.preview_actions.delete_confirm')) %></li>
     <% end -%>
-    
+
     <li><%= link_to t('topics.preview_actions.history'),
             { :action => :history, :id => item },
       { :tabindex => '1' } %></li>
   </ul>
-  
+
   <div style="clear:both;"></div>
 
 </div>
