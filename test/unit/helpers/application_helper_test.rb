@@ -88,4 +88,19 @@ class ApplicationHelperTest < ActionView::TestCase
 
   end
 
+  context "The open_search_documents" do
+
+    should "return correctly formatted XHTML" do
+      data = <<-DATA
+        <link href="http://www.example.com/opensearchdescription.xml"
+              rel="search"
+              title="Kete Web Search"
+              type="application/opensearchdescription+xml" />
+      DATA
+
+      assert_equal opensearch_descriptions.squish, data.squish
+    end
+
+  end
+
 end

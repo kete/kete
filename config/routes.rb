@@ -18,6 +18,8 @@ ActionController::Routing::Routes.draw do |map|
     index_page.connect 'validate_kete_net_link.xml', :action => 'validate_kete_net_link'
     # for search engines, ask them not to go to certain places
     index_page.connect 'robots.txt', :action => 'robots'
+    # for opensearch compatible clients
+    index_page.connect 'opensearchdescription.xml', :action => 'opensearchdescription'
   end
 
   # Various RSS feeds not associated with search

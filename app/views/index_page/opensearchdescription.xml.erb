@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName><%= PRETTY_SITE_NAME %> Web Search</ShortName>
+  <Description>Search combined results of <%= PRETTY_SITE_NAME %></Description>
+  <Contact><%= CONTACT_EMAIL %></Contact>
+  <Url type="application/rss+xml"
+      template="<%= SITE_URL %>site/all/combined/rss.xml?search_terms={searchTerms}&amp;count={count?}&amp;page={startPage?}"/>
+</OpenSearchDescription>

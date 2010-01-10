@@ -205,4 +205,10 @@ class IndexPageController < ApplicationController
     render :action => 'robots', :layout => false, :content_type => 'text/plain'
   end
 
+  def opensearchdescription
+    respond_to do |format|
+      format.xml { render :layout => false }
+    end
+  end
+
 end

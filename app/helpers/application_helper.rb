@@ -134,6 +134,13 @@ module ApplicationHelper
     metadata
   end
 
+  def opensearch_descriptions
+    tag(:link, :rel => "search",
+               :type => "application/opensearchdescription+xml",
+               :href => "#{SITE_URL}opensearchdescription.xml",
+               :title => "#{PRETTY_SITE_NAME} Web Search")
+  end
+
   def open_search_metadata
     meta_tag(:name => "totalResults", :content => @result_sets[@current_class].size) +
     meta_tag(:name => "startIndex", :content => ((@current_page - 1) * @number_per_page)) +
