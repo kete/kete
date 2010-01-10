@@ -40,7 +40,7 @@
 
   <%= opensearch_descriptions %>
 
-  <%= open_search_metadata if params[:controller] == 'search' %>
+  <%= open_search_metadata if params[:controller] == 'search' && %w{ all for }.include?(params[:action]) %>
 
   <% if using_tiny_mce? -%>
     <% # Include TinyMCE before other JS to avoid problems,
