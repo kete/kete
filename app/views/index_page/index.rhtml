@@ -37,10 +37,10 @@
     </div>
   <% end -%>
 
-  <% if logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
+  <% if logged_in? && (permitted_to_edit_basket_homepage_topic? || (@current_basket.show_privacy_controls_with_inheritance? && permitted_to_view_private_items?)) -%>
     <div id="moderator-tools">
       <ul>
-        <% if permitted_to_edit_current_item? -%>
+        <% if permitted_to_edit_basket_homepage_topic? -%>
           <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
             <%= li_with_correct_class(tool_count) +
                 link_to(t('index_page.index.edit'), :action => 'edit',
