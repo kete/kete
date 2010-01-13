@@ -238,13 +238,41 @@ class HomepageTest < ActionController::IntegrationTest
 
       should "be able to create a homepage topic from the blank basket index" do
         visit "/#{@@homepage_basket.urlified_name}"
-        click_link 'Create homepage topic'
+        click_link 'Create basket homepage'
         click_button 'Choose Type'
         fill_in 'topic_title', :with => 'Test Homepage'
         click_button 'Create'
         body_should_contain 'Basket homepage was successfully created.'
         body_should_not_contain 'Create homepage topic'
         assert request.url =~ /\/#{@@homepage_basket.urlified_name}/
+      end
+
+    end
+
+    context "when a homepage topic exists" do
+
+      setup do
+        @@homepage_topic = new_topic :title => 'Custom Homepage Topic'
+        @@site_basket.update_index_topic(@@homepage_topic)
+
+        add_jack_as_admin_to(@@site_basket)
+        add_jill_as_regular_user
+      end
+
+      should "display edit and history links to only those who have access" do
+        visit "/#{@@site_basket.urlified_name}"
+        body_should_contain Regexp.new("<a .*/site/topics/edit/#{@@homepage_topic.id}.*>Edit</a>")
+        body_should_contain Regexp.new("<a .*/site/topics/history/#{@@homepage_topic.id}.*>History</a>")
+
+        login_as(:jack)
+        visit "/#{@@site_basket.urlified_name}"
+        body_should_contain Regexp.new("<a .*/site/topics/edit/#{@@homepage_topic.id}.*>Edit</a>")
+        body_should_contain Regexp.new("<a .*/site/topics/history/#{@@homepage_topic.id}.*>History</a>")
+
+        login_as(:jill)
+        visit "/#{@@site_basket.urlified_name}"
+        body_should_not_contain Regexp.new("<a .*/site/topics/edit/#{@@homepage_topic.id}.*>Edit</a>")
+        body_should_not_contain Regexp.new("<a .*/site/topics/history/#{@@homepage_topic.id}.*>History</a>")
       end
 
     end
