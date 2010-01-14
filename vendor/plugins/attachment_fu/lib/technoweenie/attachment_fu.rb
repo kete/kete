@@ -303,7 +303,7 @@ module Technoweenie # :nodoc:
         # (example x-download for a zip file that was download from the web)
         # so we run a check using the mimetype_fu plugin to get the real mimetype
         logger.debug("Original Mimetype: #{self.content_type}")
-        recheckable_content_types = ['application/octet-stream', 'application/x-download']
+        recheckable_content_types = ['application/octet-stream', 'application/x-download', 'image/x-png']
         if self.content_type.blank? || recheckable_content_types.include?(self.content_type)
           logger.debug("Rechecking mime type using #{self.temp_path}")
           self.content_type = File.mime_type?(File.open(self.temp_path)).split(';').first

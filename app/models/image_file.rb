@@ -26,6 +26,8 @@ class ImageFile < ActiveRecord::Base
 
   validates_as_attachment
 
+  before_save :width_and_height_present?
+
   # Modules override various aspects of attachment fu
   # order of includes is important
 
@@ -56,6 +58,14 @@ class ImageFile < ActiveRecord::Base
                                      :max_size => (MAXIMUM_UPLOADED_FILE_SIZE / 1.megabyte))
       end
     end
+  end
+
+  def width_and_height_present?
+    if width.nil? || width == 0 || height.nil? || height == 0
+      errors.add :content_type, I18n.t("image_file_model.unparsable_content_type")
+      return false
+    end
+    true
   end
 
   # for thumbnail privacy

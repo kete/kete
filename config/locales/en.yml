@@ -1358,6 +1358,7 @@ en:
   image_file_model:
     not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .jpg, .gif, or other {{t.base.zoom_types.image}} file."
     not_acceptable_size: "{{t.base.not_acceptable_size}}"
+    unparsable_content_type: "{{t.base.was}} {{t.base.accepted}}, but Kete had difficulty extracting the height and width of the {{t.base.zoom_types.image}}. {{t.base.please.capitalize}} try a different {{t.base.zoom_types.image}} format."
   images:
     details:
       filename: "Original Filename:"
