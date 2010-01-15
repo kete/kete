@@ -921,7 +921,9 @@ en:
       description: "Would {{t.base.you}} like to send {{t.base.your}} {{t.base.site}} {{t.base.name}}, {{t.base.site}} url and a short description of {{t.base.your}} {{t.base.site}} for to a {{t.base.public}} list of Kete installations?"
       send_information: "Send Information"
       site_description: "{{t.base.site.capitalize}} description:"
-      site_description_optional: (optional)
+      site_fields_optional: (optional)
+      site_publisher_address: "Publisher Address:"
+      site_publisher_address_description: "What is the physical address of the publisher or organisation this Kete installation is for?<br />Provide a full address (number, street name, town, country), or the region (town and country only)."
       title: "List {{t.base.your}} {{t.base.site}} on Kete.net.nz (optional)"
     section:
       cancel: "{{t.base.cancel.capitalize}}"
@@ -948,7 +950,7 @@ en:
       not_yet_completed: "Not yet completed."
     get_site_linking_progress:
       incorrect_fields: "Some {{t.base.field.pluralize}} were incorrect:"
-      site_registered: "{{t.base.your.capitalize}} Kete installation {{t.base.has_been}} {{t.base.registered}}. {{t.base.thank_you}}. {{t.base.you.capitalize}} {{t.base.can}} {{t.base.view}} the whole directory of Kete {{t.base.site.pluralize}} at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
+      site_registered: "{{t.base.your.capitalize}} Kete installation {{t.base.has_been}} {{t.base.registered}}. {{t.base.thank_you}}.<br />{{t.base.you.capitalize}} {{t.base.can}} {{t.base.view}} the whole directory of Kete {{t.base.site.pluralize}} at <a href='{{kete_sites_link}}'>{{kete_sites_link}}</a>."
     prime_zebra:
       primed_zebra: "{{t.base.search.capitalize}} Engine {{t.base.has_been}} primed."
     restart_server:

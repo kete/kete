@@ -101,10 +101,9 @@
     <%= javascript_include_tag 'kete' -%>
   <% end -%>
 
-  <% if params[:controller] == 'search' && ['all', 'for'].include?(params[:action]) && (!params[:view_as].blank? && params[:view_as] == 'map') && !@map.blank?-%>
-      <%= GMap.header %>
-
-   <%= @map.to_html %>
+  <% if initialize_gmap_headers? -%>
+    <%= GMap.header %>
+    <%= @map.to_html %>
   <% end -%>
 
   <% if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>
@@ -375,7 +374,7 @@
                 <%= link_to_unless_current t('layouts.application.add_link'),
                                            { :urlified_name => @site_basket.urlified_name,
                                              :controller => 'configure',
-                                             :action => 'add_link_from_kete_net' },
+                                             :action => 'add_link_to_kete_net' },
                                            :tabindex => '2' %>
                 <% if @tech_admin -%>
                   |

@@ -14,10 +14,15 @@
                          :href => url_for( :action => 'send_information' ) ) do -%>
       <div id="form_fields">
         <div id="linking_errors"></div>
-        <div>
-          <label for="site_description"><%=t 'configure.link_to_site.site_description' %> <small><%=t 'configure.link_to_site.site_description_optional' %></small></label><br />
+        <p>
+          <label for="site_description"><%=t 'configure.link_to_site.site_description' %> <small><%=t 'configure.link_to_site.site_fields_optional' %></small></label><br />
           <input type="text" id="site_description" name="site_description" size="45" />
-        </div>
+        </p>
+        <p>
+          <label for="site_publisher_address"><%=t 'configure.link_to_site.site_publisher_address' %> <small><%=t 'configure.link_to_site.site_fields_optional' %></small></label><br />
+          <input type="text" id="site_publisher_address" name="site_publisher_address" size="45" /><br />
+          <small><%=t 'configure.link_to_site.site_publisher_address_description' %></small>
+        </p>
         <div><%= submit_tag t('configure.link_to_site.send_information'), :id => 'data-button' -%></div>
       </div>
     <% end -%>

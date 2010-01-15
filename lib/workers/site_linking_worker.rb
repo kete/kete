@@ -19,7 +19,12 @@ class SiteLinkingWorker < BackgrounDRb::MetaWorker
     check_nessesary_constants_set
 
     begin
-      linking = SiteLinkingResource.create(:name => PRETTY_SITE_NAME, :url => SITE_URL, :description => params[:site_description])
+      linking = SiteLinkingResource.create(
+        :name => PRETTY_SITE_NAME,
+        :url => SITE_URL,
+        :description => params[:site_description],
+        :address => params[:site_publisher_address]
+      )
     rescue
       linking = nil
       kete_net_error = $!

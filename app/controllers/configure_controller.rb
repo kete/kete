@@ -10,8 +10,8 @@ class ConfigureController < ApplicationController
                                            :zoom_dbs_update, :start_zebra,
                                            :index]
 
-  permit "tech_admin of :site", :except => [:add_link_from_kete_net, :send_information, :get_site_linking_progress]
-  permit "site_admin or tech_admin of :site", :only => [:add_link_from_kete_net, :send_information, :get_site_linking_progress]
+  permit "tech_admin of :site"
+  permit "site_admin of :site", :only => [:add_link_to_kete_net, :send_information, :get_site_linking_progress]
 
   include SiteLinking
 
@@ -198,7 +198,7 @@ class ConfigureController < ApplicationController
   # basically a container action
   # to reuse the link_to_site partial
   # that we also at site configure in index
-  def add_link_from_kete_net
+  def add_link_to_kete_net
     # check to see if the site is already listed
     # loads variable used in the reload-site-index section
     site_listing
@@ -222,7 +222,7 @@ class ConfigureController < ApplicationController
           MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
           MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :params => params } )
           render :update do |page|
-            page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_site_linking_progress' }, :frequency => 3))
+            page.replace_html("updater", periodically_call_remote(:url => { :action => 'get_site_linking_progress' }, :frequency => 10))
           end
         else
           render :update do |page|
@@ -255,6 +255,7 @@ class ConfigureController < ApplicationController
                             :kete_sites_link => @kete_sites)
             render :update do |page|
               page.hide('spinner')
+              page.replace_html("updater", '')
               page.replace_html("top_message", top_message)
             end
           elsif !status[:linking_validation_errors].blank?
@@ -263,6 +264,7 @@ class ConfigureController < ApplicationController
               linking_errors += "&nbsp;&nbsp;#{field.humanize} #{error}<br />"
             end
             render :update do |page|
+              page.replace_html("updater", '')
               page.replace_html("linking_errors", linking_errors)
               page.hide('spinner')
               page.show('form_fields')
