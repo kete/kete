@@ -602,7 +602,7 @@ module ItemPrivacyTestHelper
         assert_equal "Version 1", d.description
         assert_equal 3, d.tags.size
         assert %w{one two three}.all? { |t| d.tags.map { |g| g.name }.member?(t) }
-        assert_equal d.tags, d.public_tags
+        assert_equal d.tags.sort_by(&:id), d.public_tags.sort_by(&:id)
         assert d.private_tags.empty?
       end
 
@@ -735,7 +735,7 @@ module ItemPrivacyTestHelper
         d.reload
 
         assert_equal false, d.private?
-        assert_equal d.tags, d.public_tags
+        assert_equal d.tags.sort_by(&:id), d.public_tags.sort_by(&:id)
         assert_equal 3, d.tags.size
         assert_equal "one, two, three", d.tags.collect { |t| t.name }.join(", ")
         assert d.private_tags.empty?

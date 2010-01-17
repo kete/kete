@@ -237,17 +237,9 @@ module ItemPrivacy
 
     module InstanceMethods
 
-      def public_tags
-        order_tags(super)
-      end
-
-      def private_tags
-        order_tags(super)
-      end
-
       # Transparently map tags for the current item to the tags of the correct privacy
       def tags
-        private? ? private_tags : public_tags
+        order_tags(private? ? private_tags : public_tags)
       end
 
       def tag_list
