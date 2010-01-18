@@ -18,6 +18,7 @@ class ImagesController < ApplicationController
     exclude = { :conditions => "user_portrait_relations.position != 1 AND user_portrait_relations.still_image_id != #{@still_image.id}" }
     @portraits_total_count = @still_image.creator.portraits.count(exclude)
     @viewer_portraits = @portraits_total_count > 0 ? @still_image.creator.portraits.all(exclude.merge(:limit => 12)) : nil
+    @still_image_is_portrait = @still_image.portrayed_user.present?
 
     respond_to do |format|
       format.html

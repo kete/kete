@@ -1,14 +1,14 @@
 <% if ENABLE_USER_PORTRAITS -%>
 <% selected_portrait = avatar_for(@still_image.creator, :return_portrait => true)
    @viewer_is_user = @still_image.created_by?(current_user) -%>
-<% if @viewer_is_user || (!@viewer_portraits.blank? && !selected_portrait.blank?) -%>
+<% if @viewer_is_user || (@still_image_is_portrait && !@viewer_portraits.blank? && !selected_portrait.blank?) -%>
 <%= render(:partial => "topics/secondary_wrapper_start",
            :locals => { :div_id => "portrait-controls-box", :class_suffix => nil }) -%>
   <% if @viewer_is_user -%>
   <h2><%=t 'images.portrait_controls.title' %></h2>
   <p>
     <ul>
-      <% unless @still_image.portrayed_user.nil? -%>
+      <% if @still_image_is_portrait -%>
         <% unless @still_image.user_portrait_relation.first? -%>
           <li><%= link_to t('images.portrait_controls.make_selected'), :controller => 'account',
                                                           :action => 'make_selected_portrait',
@@ -25,7 +25,7 @@
     </ul>
   </p>
   <% end -%>
-  <% if !@viewer_portraits.blank? -%>
+  <% if @still_image_is_portrait && !@viewer_portraits.blank? -%>
   <div style="clear:both;"></div>
   <h4><%=t 'images.portrait_controls.other_portraits' %></h4>
   <div id="portrait_images_static">

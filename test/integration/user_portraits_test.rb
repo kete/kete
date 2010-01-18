@@ -104,6 +104,7 @@ class AccountTest < ActionController::IntegrationTest
         @item1 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         @item2 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
         @item3 = new_still_image({ :portrait => true }) { attach_file "image_file_uploaded_data", "white.jpg" }
+        @item4 = new_still_image { attach_file "image_file_uploaded_data", "white.jpg" }
       end
 
       should "have an Other Portraits section on profile and image show pages" do
@@ -113,6 +114,11 @@ class AccountTest < ActionController::IntegrationTest
           visit "/site/images/show/#{item.to_param}"
           body_should_contain 'Other Portraits'
         end
+      end
+
+      should "not have an Other Portraits section on image show pages if the image is not a portrait" do
+        visit "/site/images/show/#{@item4.to_param}"
+        body_should_not_contain 'Other Portraits'
       end
 
       context "when controlling portraits with JS off" do
