@@ -46,6 +46,10 @@ ActionController::Routing::Routes.draw do |map|
       search_all.basket_all_private_related_to ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/'
       search_all.basket_all_tagged ':urlified_name/all/:controller_name_for_zoom_class/tagged/:tag/'
       search_all.basket_all_private_tagged ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/'
+      search_all.basket_all_on_or_before ':urlified_name/all/:controller_name_for_zoom_class/on_or_before/:date_on_or_before'
+      search_all.basket_all_private_on_or_before ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/on_or_before/:date_on_or_before'
+      search_all.basket_all_on_or_after ':urlified_name/all/:controller_name_for_zoom_class/on_or_after/:date_on_or_after'
+      search_all.basket_all_private_on_or_after ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/on_or_after/:date_on_or_after'
     end
 
     search.with_options :action => 'rss' do |search_rss|
@@ -61,6 +65,10 @@ ActionController::Routing::Routes.draw do |map|
       search_rss.basket_all_private_tagged_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/tagged/:tag/rss.xml'
       search_rss.basket_all_of_category_rss ':urlified_name/all/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
       search_rss.basket_all_private_of_category_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/rss.xml'
+      search_rss.basket_all_on_or_before_rss ':urlified_name/all/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/rss.xml'
+      search_rss.basket_all_private_on_or_before_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/rss.xml'
+      search_rss.basket_all_on_or_after_rss ':urlified_name/all/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/rss.xml'
+      search_rss.basket_all_private_on_or_after_rss ':urlified_name/all/:privacy_type/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/rss.xml'
       search_rss.basket_search_contributed_by_rss ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_private_contributed_by_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_related_to_rss ':urlified_name/search/:controller_name_for_zoom_class/related_to/:source_controller_singular/:source_item/for/:search_terms_slug/rss.xml'
@@ -73,6 +81,10 @@ ActionController::Routing::Routes.draw do |map|
       search_rss.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_of_category_rss ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
       search_rss.basket_search_private_of_category_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_on_or_before_rss ':urlified_name/search/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_on_or_before_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_on_or_after_rss ':urlified_name/search/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/for/:search_terms_slug/rss.xml'
+      search_rss.basket_search_private_on_or_after_rss ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/for/:search_terms_slug/rss.xml'
     end
 
     search.with_options :action => 'for' do |search_for|
@@ -88,6 +100,10 @@ ActionController::Routing::Routes.draw do |map|
       search_for.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for/:search_terms_slug'
       search_for.basket_search_of_category ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
       search_for.basket_search_private_of_category ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for/:search_terms_slug'
+      search_for.basket_search_on_or_before ':urlified_name/search/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/for/:search_terms_slug'
+      search_for.basket_search_private_on_or_before ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/for/:search_terms_slug'
+      search_for.basket_search_on_or_after ':urlified_name/search/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/for/:search_terms_slug'
+      search_for.basket_search_private_on_or_after ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/for/:search_terms_slug'
 
       search_for.with_options :search_terms => nil do |nil_search_terms|
         nil_search_terms.basket_search_contributed_by_empty ':urlified_name/search/:controller_name_for_zoom_class/contributed_by/user/:contributor/for/:search_terms_slug'
@@ -102,6 +118,10 @@ ActionController::Routing::Routes.draw do |map|
         nil_search_terms.basket_search_private_topic_type ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:topic_type/for'
         nil_search_terms.basket_search_of_category_empty ':urlified_name/search/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
         nil_search_terms.basket_search_private_of_category_empty ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/of/:extended_field/:limit_to_choice/for'
+        nil_search_terms.basket_search_on_or_before ':urlified_name/search/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/for'
+        nil_search_terms.basket_search_private_on_or_before ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/on_or_before/:date_on_or_before/for'
+        nil_search_terms.basket_search_on_or_after ':urlified_name/search/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/for'
+        nil_search_terms.basket_search_private_on_or_after ':urlified_name/search/:privacy_type/:controller_name_for_zoom_class/on_or_after/:date_on_or_after/for'
       end
     end
 

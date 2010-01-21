@@ -94,6 +94,23 @@ class SearchController < ApplicationController
     rescue_404 if @results.nil?
   end
 
+  # Time.parse doesn't support only a year, or only a year and month
+  # So we need to fill in these with 01 (beginning) values ourselves
+  # Then convert to UTC because this is what Zebra stores
+  def parse_date_into_zoom_compatible_format(value, look_from = :beginning)
+    value = value.strip
+    if value =~ /^(\d{4})-?(\d{1,2})?$/
+      default_month = look_from == :beginning ? 01 : 12
+      default_day = look_from == :beginning ? 01 : 31
+      time = Time.parse("#{$1}-#{$2 || default_month}-#{$3 || default_day}")
+    else
+      time = Time.parse(value)
+    end
+    time.strftime("%Y-%m-%d")
+  rescue ArgumentError
+    nil
+  end
+
   def search
     @search = Search.new
 
@@ -130,6 +147,9 @@ class SearchController < ApplicationController
     @all_choices = true unless @extended_field
 
     @topic_type = TopicType.from_urlified_name(params[:topic_type]).first if params[:topic_type]
+
+    @date_on_or_before = params[:date_on_or_before].blank? ? nil : parse_date_into_zoom_compatible_format(params[:date_on_or_before], :end)
+    @date_on_or_after = params[:date_on_or_after].blank? ? nil : parse_date_into_zoom_compatible_format(params[:date_on_or_after], :beginning)
 
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
@@ -315,6 +335,9 @@ class SearchController < ApplicationController
     end
 
     @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?
+
+    @search.pqf_query.date_on_or_before(@date_on_or_before) if !@date_on_or_before.nil?
+    @search.pqf_query.date_on_or_after(@date_on_or_after) if !@date_on_or_after.nil?
 
     # Normal search terms..
 
