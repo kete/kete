@@ -94,23 +94,6 @@ class SearchController < ApplicationController
     rescue_404 if @results.nil?
   end
 
-  # Time.parse doesn't support only a year, or only a year and month
-  # So we need to fill in these with 01 (beginning) values ourselves
-  # Then convert to UTC because this is what Zebra stores
-  def parse_date_into_zoom_compatible_format(value, look_from = :beginning)
-    value = value.strip
-    if value =~ /^(\d{4})-?(\d{1,2})?$/
-      default_month = look_from == :beginning ? 01 : 12
-      default_day = look_from == :beginning ? 01 : 31
-      time = Time.parse("#{$1}-#{$2 || default_month}-#{$3 || default_day}")
-    else
-      time = Time.parse(value)
-    end
-    time.strftime("%Y-%m-%d")
-  rescue ArgumentError
-    nil
-  end
-
   def search
     @search = Search.new
 
@@ -349,6 +332,13 @@ class SearchController < ApplicationController
       @search.pqf_query.add_web_link_specific_query if zoom_class == 'WebLink'
     end
 
+    # Date searching is a special thing. By default, we want so search
+    # by dates, and in reverse order, so we get closest -> oldest
+    if !@date_on_or_before.nil? || !@date_on_or_after.nil?
+      params[:sort_type] ||= 'date'
+      params[:sort_direction] ||= 'reverse'
+    end
+
     sort_type = @current_basket.settings[:sort_order_default]
     sort_direction = @current_basket.settings[:sort_direction_reversed_default]
     search_sort_type = (params[:sort_type].blank? and !sort_type.blank?) ? sort_type : params[:sort_type]
@@ -388,7 +378,11 @@ class SearchController < ApplicationController
 
     location_hash = { :controller_name_for_zoom_class => controller_name,
                       :existing_array_string => params[:existing_array_string],
-                      :sort_direction => params[:sort_direction],
+
+                      # sort_direction is a boolean, so we need to force a blank value if not
+                      # sent through to ensure the users choice of direction is maintained
+                      :sort_direction => params[:sort_direction] || '',
+
                       :sort_type => params[:sort_type],
                       :limit_to_choice => params[:limit_to_choice],
                       :extended_field => params[:extended_field],
@@ -437,6 +431,13 @@ class SearchController < ApplicationController
 
     if !params[:topic_type].blank?
       location_hash.merge!({ :topic_type => params[:topic_type] })
+    end
+
+    if !params[:date_on_or_before].blank?
+      location_hash.merge!({ :date_on_or_before => params[:date_on_or_before] })
+    end
+    if !params[:date_on_or_after].blank?
+      location_hash.merge!({ :date_on_or_after => params[:date_on_or_after] })
     end
 
     logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)

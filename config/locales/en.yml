@@ -1902,6 +1902,9 @@ en:
       title: "Zoom Index Rebuild {{t.base.from}} {{start}} to {{end}}"
     refine_by_choice:
       limit_to_category: "Limit it to category?"
+    refine_by_date:
+      date_on_or_after: "Date on or after: "
+      date_on_or_before: "Date on or before: "
     related:
       more_on: "More information on {{title}}"
       title: "{{t.base.related.capitalize}}:"
@@ -1985,6 +1988,8 @@ en:
       contributed_by: " {{t.base.contributed}} {{t.base.by}} {{contributor}}"
       extended_field: " with {{field_name}}"
       limit_to_choice: " of {{choice}}"
+      date_on_or_after: " on or after {{date}}"
+      date_on_or_before: " on or before {{date}}"
       privacy_type: " that are {{privacy}}"
       related_to: " {{t.base.related}} to {{source_item}}"
       tagged_as: " {{t.base.tagged}} as {{tag_name}}"

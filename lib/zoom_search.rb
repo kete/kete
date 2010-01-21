@@ -312,5 +312,22 @@ module ZoomSearch
       return result_hash
     end
 
+    # Time.parse doesn't support only a year, or only a year and month
+    # So we need to fill in these with 01 (beginning) values ourselves
+    # Then convert to UTC because this is what Zebra stores
+    def parse_date_into_zoom_compatible_format(value, look_from = :beginning)
+      value = value.strip
+      if value =~ /^(\d{4})-?(\d{1,2})?$/
+        default_month = look_from == :beginning ? 01 : 12
+        default_day = look_from == :beginning ? 01 : 31
+        time = Time.parse("#{$1}-#{$2 || default_month}-#{$3 || default_day}")
+      else
+        time = Time.parse(value)
+      end
+      time.strftime("%Y-%m-%d")
+    rescue ArgumentError
+      nil
+    end
+
   end
 end
