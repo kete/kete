@@ -161,6 +161,19 @@ namespace :kete do
           end
         end
       end
+
+      # Provide an option to make everything a certain type at once
+      namespace :all do
+        %w{ inset below sidebar }.each do |setting|
+          desc "Update all item types so that the related items section in each is positioned #{setting}."
+          task "position_to_#{setting}" => :environment do
+            %w(Topic StillImage AudioRecording Video WebLink Document).each do |item_class|
+              set_related_items_inset_to(item_class, setting)
+            end
+            puts "Finished. All item types now have their related items #{setting}."
+          end
+        end
+      end
     end
 
     private

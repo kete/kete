@@ -365,14 +365,14 @@ namespace :kete do
       topics = Topic::Version.all(:conditions => conditions)
       topics.each do |topic|
         Topic::Version.update_all({
-          :related_items_position => (topic.related_items_position == '1' ? 'inset' : 'below')
+          :related_items_position => (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
         }, { :id => topic.id })
       end
 
       topics = Topic.all(:conditions => conditions)
       topics.each do |topic|
         Topic.update_all({
-          :related_items_position => (topic.related_items_position == '1' ? 'inset' : 'below')
+          :related_items_position => (topic.related_items_position.to_i == 1 ? 'inset' : 'below')
         }, { :id => topic.id })
       end
 
@@ -382,7 +382,7 @@ namespace :kete do
         private_data.each_with_index do |(key, value), index|
           next unless key == 'related_items_inset'
           private_data.delete_at(index)
-          private_data << ['related_items_position', (value == '1' ? 'inset' : 'below')]
+          private_data << ['related_items_position', (value.to_i == 1 ? 'inset' : 'below')]
         end
         private_data = YAML.dump(private_data)
         Topic.update_all({ :private_version_serialized => private_data }, { :id => topic.id })
@@ -391,7 +391,7 @@ namespace :kete do
       inset_default = SystemSetting.find_by_name('Related Items Inset Default')
       if inset_default
         position_default = SystemSetting.find_by_name('Related Items Position Default')
-        position_default.update_attribute(:value, (inset_default.value == 'true' ? 'inset' : 'below'))
+        position_default.update_attribute(:value, (inset_default.value.to_s == 'true' ? 'inset' : 'below'))
         inset_default.destroy
       end
 
