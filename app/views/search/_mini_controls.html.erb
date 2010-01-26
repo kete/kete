@@ -1,5 +1,18 @@
 <div id="advanced_search_dropdown" style="display:none;">
 
+  <% if @basket_access_hash.keys.size > 0 %>
+    <div class="header"><%= t('search.mini_controls.basket_name') %></div>
+    <div class="fields">
+      <%
+      options = @basket_access_hash.collect do |basket_urlified_name, value|
+        [value[:basket_name], basket_urlified_name.to_s]
+      end
+      selected = params[:urlified_name]
+      %>
+      <%= select_tag('target_basket', options_for_select(options, selected)) %>
+    </div>
+  <% end %>
+
   <div class="header"><%= t('search.mini_controls.item_type') %></div>
   <div class="fields">
     <%

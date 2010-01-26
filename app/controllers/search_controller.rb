@@ -373,10 +373,14 @@ class SearchController < ApplicationController
   # takes search_terms from form
   # and redirects to .../for/seach-term1-and-search-term2 url
   def terms_to_page_url_redirect
+    basket_name = params[:target_basket].nil? ? \
+      params[:urlified_name] : params[:target_basket]
+
     controller_name = params[:controller_name_for_zoom_class].nil? ? \
       zoom_class_controller(DEFAULT_SEARCH_CLASS) : params[:controller_name_for_zoom_class]
 
-    location_hash = { :controller_name_for_zoom_class => controller_name,
+    location_hash = { :urlified_name => basket_name,
+                      :controller_name_for_zoom_class => controller_name,
                       :existing_array_string => params[:existing_array_string],
 
                       # sort_direction is a boolean, so we need to force a blank value if not
