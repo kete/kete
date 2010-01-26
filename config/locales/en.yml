@@ -1901,7 +1901,7 @@ en:
     link_related:
       linked: "Linked {{t.base.successfully}}"
     mini_controls:
-      basket_name: "Which {{t.base.basket}} to {{t.base.search}} in?"
+      basket_name: "Which {{t.base.basket}} to {{t.base.search}}?"
       date: "{{t.base.date.capitalize}}"
       in_reverse: "In reverse?"
       item_type: "{{t.base.display.capitalize}} {{t.base.results}} in?"

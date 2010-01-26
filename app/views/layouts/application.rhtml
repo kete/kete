@@ -177,7 +177,7 @@
                   <%= text_field_tag 'search_terms', params[:search_terms], { :accesskey => '3', :tabindex => '2' } %>
                   <%= submit_tag t('layouts.application.search_button'), :tabindex => '2' %>
                 </div>
-                <%= render 'search/mini_controls' %>
+                <%= render 'search/mini_controls', :display => [:baskets, :item_types, :privacy_type, :dates] %>
                 <% default_text = escape_javascript(t('layouts.application.search_value', :pretty_site_name => PRETTY_SITE_NAME.downcase)) %>
                 <%= javascript_tag("addDefaultValueTo('search_terms', '#{default_text}');") %>
               <% end %>

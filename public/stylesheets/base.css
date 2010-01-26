@@ -505,6 +505,12 @@ a:hover {
   margin-left: 12px;
   margin-top: 1px;
 }
+#advanced_search_dropdown table {
+  width: 100%;
+}
+#advanced_search_dropdown table tr {
+  vertical-align: top;
+}
 #advanced_search_dropdown .header {
   background-color: #eee;
   padding: 5px 10px;
@@ -513,10 +519,8 @@ a:hover {
   padding: 10px;
 }
 #advanced_search_dropdown .submit {
-  width: 100px;
-  margin: 20px auto 10px auto;
   text-align: center;
-  display: block;
+  padding: 10px;
 }
 
 #search-results{
