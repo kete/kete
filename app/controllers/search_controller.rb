@@ -131,8 +131,8 @@ class SearchController < ApplicationController
 
     @topic_type = TopicType.from_urlified_name(params[:topic_type]).first if params[:topic_type]
 
-    @date_on_or_before = params[:date_on_or_before].blank? ? nil : parse_date_into_zoom_compatible_format(params[:date_on_or_before], :end)
-    @date_on_or_after = params[:date_on_or_after].blank? ? nil : parse_date_into_zoom_compatible_format(params[:date_on_or_after], :beginning)
+    @date_on_or_before = params[:date_on_or_before].blank? ? nil : params[:date_on_or_before]
+    @date_on_or_after = params[:date_on_or_after].blank? ? nil : params[:date_on_or_after]
 
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
@@ -319,8 +319,8 @@ class SearchController < ApplicationController
 
     @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?
 
-    @search.pqf_query.date_on_or_before(@date_on_or_before) if !@date_on_or_before.nil?
-    @search.pqf_query.date_on_or_after(@date_on_or_after) if !@date_on_or_after.nil?
+    @search.pqf_query.date_on_or_before(parse_date_into_zoom_compatible_format(@date_on_or_before, :end)) if !@date_on_or_before.nil?
+    @search.pqf_query.date_on_or_after(parse_date_into_zoom_compatible_format(@date_on_or_after, :beginning)) if !@date_on_or_after.nil?
 
     # Normal search terms..
 
