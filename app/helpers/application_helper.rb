@@ -825,6 +825,25 @@ module ApplicationHelper
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
 
+  def toggle_in_reverse_field_js_helper
+    javascript_tag "
+    function toggleDisabledSortDirection(event) {
+      var element = Event.element(event);
+
+      $('sort_direction').checked = ( element.options[element.selectedIndex].value != \"none\" && $('sort_direction').checked );
+
+      $('sort_direction').disabled = ( element.options[element.selectedIndex].value == \"none\" );
+
+      if ( element.options[element.selectedIndex].value == \"none\" ) {
+        $('sort_direction_field').hide()
+      } else {
+        $('sort_direction_field').show()
+      }
+    }
+
+    $('sort_type').observe('change', toggleDisabledSortDirection);"
+  end
+
   # if extended_field is passed in, use that to limit choices
   # else if @all_choices is true, we provide them all
   def limit_search_to_choice_control

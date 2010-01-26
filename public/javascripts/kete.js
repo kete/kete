@@ -3,19 +3,17 @@
  */
 
 var SubMenu = Class.create({
-  initialize: function(li) {
-    if(!$(li)) return;
-    this.trigger = $(li).down('em');
-    if(!this.trigger) return;
-    this.menu = $(li).down('ul');
+  initialize: function(trigger, element) {
+    if($$(trigger).size() == 0 || $$(element).size() == 0) { return; }
+    this.trigger = $$(trigger).first();
+    this.menu = $$(element).first();
     this.trigger.observe('click', this.respondToClick.bind(this));
     document.observe('click', function(){ this.menu.hide() }.bind(this));
   },
 
   respondToClick: function(event) {
     event.stop();
-    $$('ul.submenu').without(this.menu).invoke('hide');
-    this.menu.toggle()
+    this.menu.toggle();
   }
 });
 
@@ -289,11 +287,30 @@ function showOrHidePrivateOnlyAsNeededFor(id) {
 }
 
 /**
+ * Add default value to a input field that hides when element gains focus
+ */
+function addDefaultValueTo(input_field, default_value) {
+  if($(input_field).value == '') {
+    $(input_field).value = default_value;
+  }
+  $(input_field).observe('focus', function() {
+    if($(input_field).value == default_value) {
+      $(input_field).value = '';
+    }
+  });
+  $(input_field).observe('blur', function() {
+    if($(input_field).value == '') {
+      $(input_field).value = default_value;
+    }
+  });
+}
+
+/**
  * Now setup everything to run when needed once the page is loaded
  */
 
 document.observe('dom:loaded', function() {
-  new SubMenu("user_baskets_list");
+  new SubMenu("#user_baskets_list em", "#user_baskets_list ul.submenu");
   if ($('portrait_images')) { enablePortraitDragAndDrop(); }
   if ($('portrait_help_div')) { enabledPortraitHelpToggle(); }
   if ($$('#related_items').size() > 0) { setupRelatedCollapsableSections(); }

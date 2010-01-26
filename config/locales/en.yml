@@ -55,6 +55,7 @@ en:
     create: create
     created: created
     creation: creation
+    date: date
     default: default
     delete: delete
     deleted: deleted
@@ -63,6 +64,7 @@ en:
     disabled: disabled
     disallow: disallow
     disallowed: disallowed
+    display: display
     do_not_reply: "This {{t.base.email}} was sent in bulk to authorized {{t.base.member.pluralize}}. Please don't reply to this {{t.base.email}}."
     downloaded: downloaded
     edit: edit
@@ -151,6 +153,7 @@ en:
     reset: reset
     restrict: restrict
     restricted: restricted
+    results: results
     review: review
     reviewed: reviewed
     reviewing: reviewing
@@ -166,6 +169,7 @@ en:
     site: site
     site_administrator: "{{t.base.site}} {{t.base.administrator}}"
     sort: sort
+    sorting: sorting
     sort_by: "{{t.base.sort}} {{t.base.by}}"
     successful: successful
     successfully: successfully
@@ -1579,6 +1583,7 @@ en:
       search_button: Go
       search_label: "{{t.base.search.capitalize}}"
       search_sources: "{{t.base.search}} sources"
+      search_value: "{{t.base.search}} {{pretty_site_name}}"
       site_members: "{{t.base.site}} {{t.base.member.pluralize}}"
       sitemap: Sitemap
       support: "Support:"
@@ -1895,6 +1900,16 @@ en:
       title: "{{t.base.search.capitalize}} {{basket_name}}"
     link_related:
       linked: "Linked {{t.base.successfully}}"
+    mini_controls:
+      date: "{{t.base.date.capitalize}}"
+      in_reverse: "In reverse?"
+      item_type: "{{t.base.display.capitalize}} {{t.base.results}} in?"
+      privacy: "{{t.base.display.capitalize}} {{t.base.results}} that are?"
+      private: "{{t.base.private.capitalize}}"
+      public: "{{t.base.public.capitalize}}"
+      search: "{{t.base.search.capitalize}}"
+      sort_by: "{{t.base.sort_by.capitalize}}:"
+      sorting: "{{t.base.sorting.capitalize}}"
     rebuild_zoom_index:
       completed: "Completed. "
       in_progress: "...in progress."

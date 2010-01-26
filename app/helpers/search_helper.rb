@@ -58,25 +58,6 @@ module SearchHelper
                       : zoom_class_humanized
   end
 
-  def toggle_in_reverse_field_js_helper
-    javascript_tag "
-    function toggleDisabledSortDirection(event) {
-      var element = Event.element(event);
-
-      $('sort_direction').checked = ( element.options[element.selectedIndex].value != \"none\" && $('sort_direction').checked );
-
-      $('sort_direction').disabled = ( element.options[element.selectedIndex].value == \"none\" );
-
-      if ( element.options[element.selectedIndex].value == \"none\" ) {
-        $('sort_direction_field').hide()
-      } else {
-        $('sort_direction_field').show()
-      }
-    }
-
-    $('sort_type').observe('change', toggleDisabledSortDirection);"
-  end
-
   # Used to check if an item is part of an existing relationship in related items search
   def related?(item)
     !@existing_ids.nil? && @existing_ids.member?(item.id)

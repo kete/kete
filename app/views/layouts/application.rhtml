@@ -170,12 +170,16 @@
               <% form_tag ({ :urlified_name => @site_basket.urlified_name,
                              :controller => 'search',
                              :action => 'terms_to_page_url_redirect' }) do %>
-                <div class="wrap">
-                  <label for="search_terms"><%=t 'layouts.application.search_label' %>:</label>
-                  <%= text_field_tag 'search_terms', nil, { :accesskey => '3',
-                                                            :tabindex => '2' } %>
+                <div class="search_fields">
+                  <div id="advanced_search_dropdown_link">
+                    <noscript><%= image_tag 'magnifier.png', :width => 16, :height => 16 %></noscript>
+                  </div>
+                  <%= text_field_tag 'search_terms', params[:search_terms], { :accesskey => '3', :tabindex => '2' } %>
                   <%= submit_tag t('layouts.application.search_button'), :tabindex => '2' %>
-                </div><!-- /wrap -->
+                </div>
+                <%= render 'search/mini_controls' %>
+                <% default_text = escape_javascript(t('layouts.application.search_value', :pretty_site_name => PRETTY_SITE_NAME.downcase)) %>
+                <%= javascript_tag("addDefaultValueTo('search_terms', '#{default_text}');") %>
               <% end %>
             </div><!-- /head-search-wrapper -->
             <%= header_links_to_baskets %>
