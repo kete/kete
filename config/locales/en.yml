@@ -1583,7 +1583,7 @@ en:
       search_button: Go
       search_label: "{{t.base.search.capitalize}}"
       search_sources: "{{t.base.search}} sources"
-      search_value: "{{t.base.search}} {{pretty_site_name}}"
+      search_value: "{{t.base.search.capitalize}} {{pretty_site_name}}"
       site_members: "{{t.base.site}} {{t.base.member.pluralize}}"
       sitemap: Sitemap
       support: "Support:"
@@ -1901,7 +1901,7 @@ en:
     link_related:
       linked: "Linked {{t.base.successfully}}"
     mini_controls:
-      basket_name: "Which {{t.base.basket}} to {{t.base.search}}?"
+      basket_name: "{{t.base.results.capitalize}} limited to?"
       date: "{{t.base.date.capitalize}}"
       in_reverse: "In reverse?"
       item_type: "{{t.base.display.capitalize}} {{t.base.results}} in?"

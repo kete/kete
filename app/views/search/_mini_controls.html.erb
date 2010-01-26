@@ -4,19 +4,30 @@
 
   <table>
 
-    <% if display.include?(:baskets) && @basket_access_hash.keys.size > 0 %>
+    <% if display.include?(:dates) %>
+    <tr>
+      <td colspan="2" class="header">
+        <label for="date_on_or_before"><%= t('search.mini_controls.date') %></label>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="fields"><%= render 'search/refine_by_date' %></td>
+    </tr>
+    <% end %>
+
+    <% if display.include?(:privacy_type) && logged_in? && Basket.privacy_exists %>
     <tr>
       <td class="header">
-        <label for="target_basket"><%= t('search.mini_controls.basket_name') %></label>
+        <label for="privacy_type"><%= t('search.mini_controls.privacy') %></label>
       </td>
       <td class="fields">
         <%
-        options = @basket_access_hash.collect do |basket_urlified_name, value|
-          [value[:basket_name], basket_urlified_name.to_s]
+        options = %w{ public private }.collect do |privacy_type|
+          [t("search.mini_controls.#{privacy_type}"), privacy_type]
         end
-        selected = params[:urlified_name]
+        selected = params[:privacy_type] || 'public'
         %>
-        <%= select_tag('target_basket', options_for_select(options, selected)) %>
+        <%= select_tag('privacy_type', options_for_select(options, selected)) %>
       </td>
     </tr>
     <% end %>
@@ -38,19 +49,21 @@
     </tr>
     <% end %>
 
-    <% if display.include?(:privacy_type) && logged_in? && Basket.privacy_exists %>
+    <% if display.include?(:baskets) && @basket_access_hash.keys.size > 0 %>
     <tr>
-      <td class="header">
-        <label for="privacy_type"><%= t('search.mini_controls.privacy') %></label>
+      <td colspan="2" class="header">
+        <label for="target_basket"><%= t('search.mini_controls.basket_name') %></label>
       </td>
-      <td class="fields">
+    </tr>
+    <tr>
+      <td colspan="2" class="fields">
         <%
-        options = %w{ public private }.collect do |privacy_type|
-          [t("search.mini_controls.#{privacy_type}"), privacy_type]
+        options = @basket_access_hash.collect do |basket_urlified_name, value|
+          [value[:basket_name], basket_urlified_name.to_s]
         end
-        selected = params[:privacy_type] || 'public'
+        selected = params[:urlified_name]
         %>
-        <%= select_tag('privacy_type', options_for_select(options, selected)) %>
+        <%= select_tag('target_basket', options_for_select(options, selected)) %>
       </td>
     </tr>
     <% end %>
@@ -72,17 +85,6 @@
         </div>
         <%= toggle_in_reverse_field_js_helper -%>
       </td>
-    </tr>
-    <% end %>
-
-    <% if display.include?(:dates) %>
-    <tr>
-      <td colspan="2" class="header">
-        <label for="date_on_or_before"><%= t('search.mini_controls.date') %></label>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="fields"><%= render 'search/refine_by_date' %></td>
     </tr>
     <% end %>
 
