@@ -94,6 +94,16 @@
 
   </table>
 
+  <hr />
+
+  <div class="close"><%= link_to('[x]', '#', :alt => t('search.mini_controls.close'),
+                                 :title => t('search.mini_controls.close'),
+                                 :onclick => "$('advanced_search_dropdown').hide();") %></div>
+
+  <div class="reset"><input type="reset" value="<%= t('search.mini_controls.clear') %>" /></div>
+
+  <div style="clear:both;"></div>
+
 </div>
 
 <% search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',

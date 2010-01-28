@@ -1902,6 +1902,8 @@ en:
       linked: "Linked {{t.base.successfully}}"
     mini_controls:
       basket_name: "{{t.base.results.capitalize}} limited to?"
+      clear: "clear {{t.base.search}} options"
+      close: "{{t.base.close.capitalize}}"
       date: "{{t.base.date.capitalize}}"
       in_reverse: "In reverse?"
       item_type: "{{t.base.display.capitalize}} {{t.base.results}} in?"

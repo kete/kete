@@ -522,6 +522,20 @@ a:hover {
   text-align: center;
   padding: 10px;
 }
+#advanced_search_dropdown .close {
+  float: right;
+  margin-right: 10px;
+}
+#advanced_search_dropdown .reset {
+  text-align: center;
+  margin-bottom: 5px;
+}
+#advanced_search_dropdown .reset input {
+  border: 0;
+  background: transparent;
+  color: gray;
+  text-decoration: underline;
+}
 
 #search-results{
     margin-left: 2em;
