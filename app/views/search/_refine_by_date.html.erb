@@ -1,10 +1,11 @@
+<% populate_values = @populate_values.nil? ? true : @populate_values %>
 <table>
 <tr>
-  <td><%= t('search.refine_by_date.date_on_or_before') %></td>
-  <td><%= text_field_tag 'date_on_or_before', params[:date_on_or_before], :size => 10 %></td>
+  <td><%= t('search.refine_by_date.date_since') %></td>
+  <td><%= text_field_tag 'date_since', (params[:date_since] if populate_values), :size => 10 %></td>
 </tr>
 <tr>
-  <td><%= t('search.refine_by_date.date_on_or_after') %></td>
-  <td><%= text_field_tag 'date_on_or_after', params[:date_on_or_after], :size => 10 %></td>
+  <td><%= t('search.refine_by_date.date_until') %></td>
+  <td><%= text_field_tag 'date_until', (params[:date_until] if populate_values), :size => 10 %></td>
 </tr>
 </table>

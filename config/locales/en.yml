@@ -169,13 +169,16 @@ en:
     site: site
     site_administrator: "{{t.base.site}} {{t.base.administrator}}"
     sort: sort
+    sorted: sorted
     sorting: sorting
     sort_by: "{{t.base.sort}} {{t.base.by}}"
+    sorted_by: "{{t.base.sorted}} {{t.base.by}}"
     successful: successful
     successfully: successfully
     tag: tag
     tagged: tagged
     technical_administrator: "technical {{t.base.administrator}}"
+    time: time
     thank_you: "Thank {{t.base.you}}"
     topic_type: "{{t.base.zoom_types.topic}} type"
     type: type
@@ -1902,18 +1905,18 @@ en:
     link_related:
       linked: "Linked {{t.base.successfully}}"
     mini_controls:
-      basket_name: "{{t.base.results.capitalize}} limited to?"
+      all_of: "{{t.base.all.capitalize}} of {{site_basket_name}}"
       clear: "Clear {{t.base.search.capitalize}} Options"
       close: "{{t.base.close.capitalize}}"
-      date: "{{t.base.date.capitalize}}"
+      date: "{{t.base.item.pluralize.capitalize}} that have a {{t.base.date}} or {{t.base.time}}"
       in_reverse: "In reverse?"
-      item_type: "{{t.base.display.capitalize}} {{t.base.results}} in?"
-      privacy: "{{t.base.display.capitalize}} {{t.base.results}} that are?"
       private: "{{t.base.private.capitalize}}"
       public: "{{t.base.public.capitalize}}"
-      search: "{{t.base.search.capitalize}}"
-      sort_by: "{{t.base.sort_by.capitalize}}:"
-      sorting: "{{t.base.sorting.capitalize}}"
+      results_display: "{{t.base.results.capitalize}} {{t.base.display.capitalize}}"
+      show: "{{t.base.show}}"
+      sorted_by: "{{t.base.sorted_by}}:"
+      that_are: "that are"
+      within: "within"
     rebuild_zoom_index:
       completed: "Completed. "
       in_progress: "...in progress."
@@ -1922,8 +1925,8 @@ en:
     refine_by_choice:
       limit_to_category: "Limit it to category?"
     refine_by_date:
-      date_on_or_after: "Date on or after: "
-      date_on_or_before: "Date on or before: "
+      date_since: "since"
+      date_until: "until"
     related:
       more_on: "More information on {{title}}"
       title: "{{t.base.related.capitalize}}:"
@@ -2005,10 +2008,10 @@ en:
       about_a: " about a {{topic_type_name}}"
       and: " and"
       contributed_by: " {{t.base.contributed}} {{t.base.by}} {{contributor}}"
+      date_since: " since {{date}}"
+      date_until: " until {{date}}"
       extended_field: " with {{field_name}}"
       limit_to_choice: " of {{choice}}"
-      date_on_or_after: " on or after {{date}}"
-      date_on_or_before: " on or before {{date}}"
       privacy_type: " that are {{privacy}}"
       related_to: " {{t.base.related}} to {{source_item}}"
       tagged_as: " {{t.base.tagged}} as {{tag_name}}"

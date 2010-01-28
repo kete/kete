@@ -507,19 +507,15 @@ a:hover {
 #advanced_search_dropdown table {
   width: 100%;
 }
-#advanced_search_dropdown table tr {
-  vertical-align: top;
-}
 #advanced_search_dropdown .header {
-  background-color: #eee;
+  color: gray;
   padding: 5px 10px;
 }
-#advanced_search_dropdown .fields {
-  padding: 10px;
+#advanced_search_dropdown .label {
+  padding: 3px 10px;
 }
-#advanced_search_dropdown .submit {
-  text-align: center;
-  padding: 10px;
+#advanced_search_dropdown .fields {
+  padding: 3px 10px;
 }
 #advanced_search_dropdown .close {
   float: right;

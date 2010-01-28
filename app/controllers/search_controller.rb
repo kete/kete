@@ -131,8 +131,8 @@ class SearchController < ApplicationController
 
     @topic_type = TopicType.from_urlified_name(params[:topic_type]).first if params[:topic_type]
 
-    @date_on_or_before = params[:date_on_or_before].blank? ? nil : params[:date_on_or_before]
-    @date_on_or_after = params[:date_on_or_after].blank? ? nil : params[:date_on_or_after]
+    @date_since = params[:date_since].blank? ? nil : params[:date_since]
+    @date_until = params[:date_until].blank? ? nil : params[:date_until]
 
     # calculate where to start and end based on page
     @current_page = (params[:page] && params[:page].to_i > 0) ? params[:page].to_i : 1
@@ -319,8 +319,8 @@ class SearchController < ApplicationController
 
     @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?
 
-    @search.pqf_query.date_on_or_before(parse_date_into_zoom_compatible_format(@date_on_or_before, :end)) if !@date_on_or_before.nil?
-    @search.pqf_query.date_on_or_after(parse_date_into_zoom_compatible_format(@date_on_or_after, :beginning)) if !@date_on_or_after.nil?
+    @search.pqf_query.date_on_or_after(parse_date_into_zoom_compatible_format(@date_since, :beginning)) if !@date_since.nil?
+    @search.pqf_query.date_on_or_before(parse_date_into_zoom_compatible_format(@date_until, :end)) if !@date_until.nil?
 
     # Normal search terms..
 
@@ -334,7 +334,7 @@ class SearchController < ApplicationController
 
     # Date searching is a special thing. By default, we want so search
     # by dates, and in reverse order, so we get closest -> oldest
-    if !@date_on_or_before.nil? || !@date_on_or_after.nil?
+    if !@date_since.nil? || !@date_until.nil?
       params[:sort_type] ||= 'date'
       params[:sort_direction] ||= 'reverse'
     end
@@ -437,11 +437,11 @@ class SearchController < ApplicationController
       location_hash.merge!({ :topic_type => params[:topic_type] })
     end
 
-    if !params[:date_on_or_before].blank?
-      location_hash.merge!({ :date_on_or_before => params[:date_on_or_before] })
+    if !params[:date_since].blank?
+      location_hash.merge!({ :date_since => params[:date_since] })
     end
-    if !params[:date_on_or_after].blank?
-      location_hash.merge!({ :date_on_or_after => params[:date_on_or_after] })
+    if !params[:date_until].blank?
+      location_hash.merge!({ :date_until => params[:date_until] })
     end
 
     logger.debug("terms_to_page_url_redirect hash: " + location_hash.inspect)

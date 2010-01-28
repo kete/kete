@@ -177,7 +177,7 @@
                   <%= text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' } %>
                   <%= submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2' } %>
                 </div>
-                <%= render 'search/mini_controls', :display => [:item_types, :privacy_type, :dates] %>
+                <%= render 'search/mini_controls', :display => [:dates, :privacy_type, :item_types, :baskets] %>
                 <%= javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');") %>
               <% end %>
             </div><!-- /head-search-wrapper -->

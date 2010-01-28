@@ -16,7 +16,7 @@ if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
     :controller => 'search', :urlified_name => @current_basket.urlified_name,
     :page => nil, :sort_type => nil, :sort_direction => nil,
     :search_terms => nil, :privacy_type => nil, :limit_to_choice => nil, :extended_field => nil,
-    :topic_type => nil, :date_on_or_before => nil, :date_on_or_after => nil } do %>
+    :topic_type => nil, :date_since => nil, :date_until => nil } do %>
 
     <% if !simple_layout && !@search.nil? -%>
 

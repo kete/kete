@@ -1,4 +1,5 @@
 <% display ||= Array.new %>
+<% @populate_values = populate_values rescue false %>
 
 <div id="advanced_search_dropdown" style="display:none;">
 
@@ -6,43 +7,41 @@
 
     <% if display.include?(:dates) %>
     <tr>
-      <td colspan="2" class="header">
-        <label for="date_on_or_before"><%= t('search.mini_controls.date') %></label>
+      <td colspan="3" class="header">
+        <label for="date_since"><%= t('search.mini_controls.date') %></label>
       </td>
     </tr>
     <tr>
-      <td colspan="2" class="fields"><%= render 'search/refine_by_date' %></td>
+      <td colspan="3" class="fields"><%= render 'search/refine_by_date' %></td>
     </tr>
     <% end %>
 
+    <tr>
+      <td colspan="3" class="header"><%= t('search.mini_controls.results_display') %></td>
+    </tr>
+
     <% if display.include?(:privacy_type) && logged_in? && Basket.privacy_exists %>
     <tr>
-      <td class="header">
-        <label for="privacy_type"><%= t('search.mini_controls.privacy') %></label>
-      </td>
-      <td class="fields">
-        <%
-        options = %w{ public private }.collect do |privacy_type|
-          [t("search.mini_controls.#{privacy_type}"), privacy_type]
-        end
-        selected = params[:privacy_type] || 'public'
-        %>
-        <%= select_tag('privacy_type', options_for_select(options, selected)) %>
-      </td>
+      <% selected = ((params[:privacy_type] if @populate_values) || 'public') %>
+      <td class="label"><%= t('search.mini_controls.that_are') %></td>
+      <% %w{ public private }.each do |privacy_type| %>
+        <td class="fields">
+          <%= radio_button_tag('privacy_type', privacy_type, (privacy_type == selected)) %>
+          <%= t("search.mini_controls.#{privacy_type}") %>
+        </td>
+      <% end %>
     </tr>
     <% end %>
 
     <% if display.include?(:item_types) %>
     <tr>
-      <td class="header">
-        <label for="controller_name_for_zoom_class"><%= t('search.mini_controls.item_type') %></label>
-      </td>
-      <td class="fields">
+      <td class="label"><%= t('search.mini_controls.show') %></td>
+      <td colspan="2" class="fields">
         <%
         options = %w{ topics images audio video web_links documents comments }.collect do |item_type|
           [zoom_class_plural_humanize(zoom_class_from_controller(item_type)), item_type]
         end
-        selected = params[:controller_name_for_zoom_class].blank? ? 'topics' : params[:controller_name_for_zoom_class]
+        selected = (params[:controller_name_for_zoom_class].blank? ? 'topics' : params[:controller_name_for_zoom_class]) if @populate_values
         %>
         <%= select_tag('controller_name_for_zoom_class', options_for_select(options, selected)) %>
       </td>
@@ -51,17 +50,15 @@
 
     <% if display.include?(:baskets) && @basket_access_hash.keys.size > 0 %>
     <tr>
-      <td colspan="2" class="header">
-        <label for="target_basket"><%= t('search.mini_controls.basket_name') %></label>
-      </td>
-    </tr>
-    <tr>
+      <td class="label"><%= t('search.mini_controls.within') %></td>
       <td colspan="2" class="fields">
         <%
-        options = @basket_access_hash.collect do |basket_urlified_name, value|
-          [value[:basket_name], basket_urlified_name.to_s]
+        options = [[t('search.mini_controls.all_of', :site_basket_name => @site_basket.name), 'site']]
+        @basket_access_hash.each do |basket_urlified_name, value|
+          next if basket_urlified_name == :site
+          options << [value[:basket_name], basket_urlified_name.to_s]
         end
-        selected = params[:urlified_name]
+        selected = params[:urlified_name] if @populate_values
         %>
         <%= select_tag('target_basket', options_for_select(options, selected)) %>
       </td>
@@ -70,27 +67,21 @@
 
     <% if display.include?(:sorting) %>
     <tr>
-      <td class="header">
-        <label for="sort_type"><%= t('search.mini_controls.sorting') %></label>
-      </td>
-      <td class="fields">
-        <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
+      <td class="label"><%= t('search.mini_controls.sorted_by') %></td>
+      <td colspan="2" class="fields">
+        <% sort_type = @current_basket.settings[:sort_order_default] %>
         <%= select_tag 'sort_type', Search.all_sort_types(sort_type, 'for')  %>
         <br />
-        <div id="sort_direction_field" <%= 'style="display:none"' if (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
+        <% currently_disabled = sort_type == 'none' %>
+        <div id="sort_direction_field" <%= 'style="display:none"' if currently_disabled -%>>
           <label for="sort_direction"><%=t 'search.mini_controls.in_reverse' %></label>
-          <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
-          <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
+          <% currently_reversed = sort_type != 'none' %>
           <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
         </div>
         <%= toggle_in_reverse_field_js_helper -%>
       </td>
     </tr>
     <% end %>
-
-    <tr>
-      <td colspan="2" class="submit"><%= submit_tag t('search.mini_controls.search') %></td>
-    </tr>
 
   </table>
 

@@ -34,8 +34,8 @@ module SearchHelper
       end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.related_to', :source_item => link_to_item(@source_item))
     end
 
-    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.date_on_or_before', :date => @date_on_or_before) unless @date_on_or_before.nil?
-    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.date_on_or_after', :date => @date_on_or_after) unless @date_on_or_after.nil?
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.date_since', :date => @date_since) unless @date_since.nil?
+    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.date_until', :date => @date_until) unless @date_until.nil?
 
     end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.privacy_type', :privacy => @privacy) if !@privacy.nil?
 
