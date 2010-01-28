@@ -289,18 +289,18 @@ function showOrHidePrivateOnlyAsNeededFor(id) {
 /**
  * Add default value to a input field that hides when element gains focus
  */
-function addDefaultValueTo(input_field, default_value) {
-  if($(input_field).value == '') {
-    $(input_field).value = default_value;
+function addDefaultValueToSearchTerms(default_value) {
+  if($('search_terms').value == '') {
+    $('search_terms').value = default_value;
   }
-  $(input_field).observe('focus', function() {
-    if($(input_field).value == default_value) {
-      $(input_field).value = '';
+  $('search_terms').observe('focus', function() {
+    if($('search_terms').value == default_value) {
+      $('search_terms').value = '';
     }
   });
-  $(input_field).observe('blur', function() {
-    if($(input_field).value == '') {
-      $(input_field).value = default_value;
+  $('search_terms').observe('blur', function() {
+    if($('search_terms').value == '' && !$('advanced_search_dropdown').visible()) {
+      $('search_terms').value = default_value;
     }
   });
 }

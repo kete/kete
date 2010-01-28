@@ -96,6 +96,7 @@
 
   <hr />
 
+  <%#TODO: Extract this out to unobtrusive JS %>
   <div class="close"><%= link_to('[x]', '#', :alt => t('search.mini_controls.close'),
                                  :title => t('search.mini_controls.close'),
                                  :onclick => "$('advanced_search_dropdown').hide();") %></div>
@@ -106,6 +107,10 @@
 
 </div>
 
+<%#TODO: Extract this out to unobtrusive JS %>
 <% search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',
-                                  :onclick => "$('advanced_search_dropdown').toggle();") %>
+                                  :onclick => "$('advanced_search_dropdown').toggle();
+                                              if($('search_terms').value == '#{@default_search_terms_text}') {
+                                                $('search_terms').value = '';
+                                              }") %>
 <%= javascript_tag("$('advanced_search_dropdown_link').insert('#{escape_javascript(search_dropdown_link)}');") %>
