@@ -1324,6 +1324,7 @@ div.gmnoprint {
   clear: right;
   padding: 5px 5px 25px 5px;
   border-left: 1px solid #bbb;
+  margin-left: 15px;
 }
 
 /*
