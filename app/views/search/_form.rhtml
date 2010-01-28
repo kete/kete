@@ -44,8 +44,8 @@ if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
           <label for="privacy_type"><%=t 'search.form.privacy_type' %></label>
           <%= select_tag 'privacy_type', options_for_select({ t('search.form.private') => 'private', t('search.form.public') => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1' %>
         <% end -%>
-        <%= render :partial => 'search/refine_by_choice' %>
-        <br /><%= render 'search/refine_by_date' %>
+        <%= render 'search/refine_by_choice' %><br />
+        <%= render 'search/refine_by_date' %><br />
         <input type="submit" name="update" id="update" value="<%=t 'search.form.update_results' %>" tabindex="1" />
       </div>
 
