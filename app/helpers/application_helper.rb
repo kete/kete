@@ -197,7 +197,7 @@ module ApplicationHelper
   end
 
   def default_search_terms
-    if params[:controller] == 'search' && params[:action] == 'for'
+    if params[:controller] == 'search'
       t('layouts.application.search_value_new', :pretty_site_name => PRETTY_SITE_NAME)
     else
       t('layouts.application.search_value', :pretty_site_name => PRETTY_SITE_NAME)
