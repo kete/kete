@@ -174,12 +174,11 @@
                   <div id="advanced_search_dropdown_link">
                     <noscript><%= image_tag 'magnifier.png', :width => 16, :height => 16 %></noscript>
                   </div>
-                  <%= text_field_tag 'search_terms', params[:search_terms], { :accesskey => '3', :tabindex => '2' } %>
+                  <%= text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' } %>
                   <%= submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2' } %>
                 </div>
-                <% @default_search_terms_text = escape_javascript(t('layouts.application.search_value', :pretty_site_name => PRETTY_SITE_NAME)) %>
                 <%= render 'search/mini_controls', :display => [:item_types, :privacy_type, :dates] %>
-                <%= javascript_tag("addDefaultValueToSearchTerms('#{@default_search_terms_text}');") %>
+                <%= javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');") %>
               <% end %>
             </div><!-- /head-search-wrapper -->
             <%= header_links_to_baskets %>

@@ -1584,6 +1584,7 @@ en:
       search_label: "{{t.base.search.capitalize}}"
       search_sources: "{{t.base.search}} sources"
       search_value: "{{t.base.search.capitalize}} {{pretty_site_name}}"
+      search_value_new: "{{t.base.new.capitalize}} {{t.base.search.capitalize}} of {{pretty_site_name}}"
       site_members: "{{t.base.site}} {{t.base.member.pluralize}}"
       sitemap: Sitemap
       support: "Support:"

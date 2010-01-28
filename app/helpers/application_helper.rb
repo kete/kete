@@ -196,6 +196,18 @@ module ApplicationHelper
     end
   end
 
+  def default_search_terms
+    if params[:controller] == 'search' && params[:action] == 'for'
+      t('layouts.application.search_value_new', :pretty_site_name => PRETTY_SITE_NAME)
+    else
+      t('layouts.application.search_value', :pretty_site_name => PRETTY_SITE_NAME)
+    end
+  end
+
+  def default_search_terms_for_js
+    escape_javascript(default_search_terms)
+  end
+
   def search_link_to_searched_basket
     html = String.new
     html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket

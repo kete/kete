@@ -110,7 +110,7 @@
 <%#TODO: Extract this out to unobtrusive JS %>
 <% search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',
                                   :onclick => "$('advanced_search_dropdown').toggle();
-                                              if($('search_terms').value == '#{@default_search_terms_text}') {
+                                              if($('search_terms').value == '#{default_search_terms_for_js}') {
                                                 $('search_terms').value = '';
                                               }") %>
 <%= javascript_tag("$('advanced_search_dropdown_link').insert('#{escape_javascript(search_dropdown_link)}');") %>
