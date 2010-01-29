@@ -171,14 +171,15 @@
                              :controller => 'search',
                              :action => 'terms_to_page_url_redirect' }) do %>
                 <div class="search_fields">
-                  <div id="advanced_search_dropdown_link">
+                  <div id="advanced_search_dropdown_trigger">
                     <noscript><%= image_tag 'magnifier.png', :width => 16, :height => 16 %></noscript>
                   </div>
                   <%= text_field_tag 'search_terms', nil, { :accesskey => '3', :tabindex => '2' } %>
                   <%= submit_tag t('layouts.application.search_button'), { :class => 'submit', :tabindex => '2' } %>
                 </div>
-                <%= render 'search/mini_controls', :display => [:dates, :privacy_type, :item_types, :baskets] %>
-                <%= javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');") %>
+                <%= render 'search/mini_controls', :id => 'advanced_search_dropdown',
+                           :display => [:dates, :privacy_type, :item_types, :baskets], :show_reset => true %>
+                <%= add_search_icon_and_default_text_to_search_box('advanced_search_dropdown', 'advanced_search_dropdown_trigger') %>
               <% end %>
             </div><!-- /head-search-wrapper -->
             <%= header_links_to_baskets %>

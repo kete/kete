@@ -5,19 +5,14 @@
      @title += t('search.for.refinements', :refinements => refinements) if !refinements.blank?
    end %>
 
-<% # switch for contributed_by and related_to appending to headline, extract to helper 
+<% # switch for contributed_by and related_to appending to headline, extract to helper
 
 basket_link = search_link_to_searched_basket
 basket_link = t('search.for.whole_site') if basket_link.nil?
 %>
 
-<%= render(:partial => "topics/content_wrapper_start",
-           :locals => { :style_classes => "full-width notabs" }) -%>
+<%= render 'form', :headline => t('search.for.refine_search',
+                                  :search_terms => h(@search_terms.to_s),
+                                  :basket_link => basket_link) %>
 
-  <%= render :partial => 'form', :locals => { :headline => t('search.for.refine_search',
-                                                             :search_terms => h(@search_terms.to_s),
-                                                             :basket_link => basket_link) } %>
-
-<%= render(:partial => "topics/content_wrapper_end" ) %>
-
-<%= render(:partial => 'results') if !@search_terms.blank? %>
+<%= render 'results' if !@search_terms.blank? %>

@@ -1,9 +1,26 @@
-<% display ||= Array.new %>
-<% @populate_values = populate_values rescue false %>
+<%
+display ||= Array.new
+show_button ||= false
+show_reset ||= false
+@populate_values = populate_values rescue false
+%>
 
-<div id="advanced_search_dropdown" style="display:none;">
+<div id="<%= id %>" class="search_dropdown" style="display:none;">
 
   <table>
+
+    <% if display.include?(:search_terms) %>
+    <tr>
+      <td colspan="3" class="header">
+        <label for="search_terms"><%= t('search.mini_controls.search_terms') %></label>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" class="fields">
+        <%= text_field_tag 'search_terms', h(@search_terms.to_s), :size => 30, :tabindex => '1' %>
+      </td>
+    </tr>
+    <% end %>
 
     <% if display.include?(:dates) %>
     <tr>
@@ -65,21 +82,38 @@
     </tr>
     <% end %>
 
+    <% if display.include?(:topic_types) && params[:controller_name_for_zoom_class] == 'topics' %>
+    <tr>
+      <td class="label"><%=t 'search.mini_controls.about_a' %></td>
+      <td colspan="2" class="fields">
+        <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
+                                          :name, :name, params[:topic_type], {},
+                                          [[t('search.mini_controls.any_topic_type'), '']]) %>
+      </td>
+    </tr>
+    <% end %>
+
     <% if display.include?(:sorting) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.sorted_by') %></td>
       <td colspan="2" class="fields">
-        <% sort_type = @current_basket.settings[:sort_order_default] %>
-        <%= select_tag 'sort_type', Search.all_sort_types(sort_type, 'for')  %>
+        <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
+        <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'  %>
         <br />
-        <% currently_disabled = sort_type == 'none' %>
-        <div id="sort_direction_field" <%= 'style="display:none"' if currently_disabled -%>>
+        <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
           <label for="sort_direction"><%=t 'search.mini_controls.in_reverse' %></label>
-          <% currently_reversed = sort_type != 'none' %>
+          <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
+          <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
           <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
         </div>
-        <%= toggle_in_reverse_field_js_helper -%>
+        <%= toggle_in_reverse_field_js_helper if params[:action] == 'for' -%>
       </td>
+    </tr>
+    <% end %>
+
+    <% if display.include?(:choices) %>
+    <tr>
+      <td colspan="3"><%= render 'search/refine_by_choice' %></td>
     </tr>
     <% end %>
 
@@ -87,21 +121,18 @@
 
   <hr />
 
-  <%#TODO: Extract this out to unobtrusive JS %>
   <div class="close"><%= link_to('[x]', '#', :alt => t('search.mini_controls.close'),
                                  :title => t('search.mini_controls.close'),
-                                 :onclick => "$('advanced_search_dropdown').hide();") %></div>
+                                 :onclick => "$('#{id}').hide();") %></div>
 
-  <div class="reset"><input type="reset" value="<%= t('search.mini_controls.clear') %>" /></div>
+  <% if show_button %>
+    <div class="submit"><input type="submit" value="<%= t('search.mini_controls.update') %>" /></div>
+  <% end %>
+
+  <% if show_reset %>
+    <div class="reset"><input type="reset" value="<%= t('search.mini_controls.clear') %>" /></div>
+  <% end %>
 
   <div style="clear:both;"></div>
 
 </div>
-
-<%#TODO: Extract this out to unobtrusive JS %>
-<% search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',
-                                  :onclick => "$('advanced_search_dropdown').toggle();
-                                              if($('search_terms').value == '#{default_search_terms_for_js}') {
-                                                $('search_terms').value = '';
-                                              }") %>
-<%= javascript_tag("$('advanced_search_dropdown_link').insert('#{escape_javascript(search_dropdown_link)}');") %>

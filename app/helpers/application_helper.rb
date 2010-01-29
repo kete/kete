@@ -208,6 +208,16 @@ module ApplicationHelper
     escape_javascript(default_search_terms)
   end
 
+  def add_search_icon_and_default_text_to_search_box(id, trigger_id)
+    search_dropdown_link = link_to(image_tag('search.png', :width => 20, :height => 13), '#',
+                                   :onclick => "$('#{id}').toggle();
+                                                if($('search_terms').value == '#{default_search_terms_for_js}') {
+                                                  $('search_terms').value = '';
+                                                }")
+    javascript_tag("$('#{trigger_id}').insert('#{escape_javascript(search_dropdown_link)}');") +
+    javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');")
+  end
+
   def search_link_to_searched_basket
     html = String.new
     html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket

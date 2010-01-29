@@ -1905,7 +1905,9 @@ en:
     link_related:
       linked: "Linked {{t.base.successfully}}"
     mini_controls:
+      about_a: "about a"
       all_of: "{{t.base.all.capitalize}} of {{site_basket_name}}"
+      any_topic_type: "- {{t.base.any}} {{t.base.topic_type}} - "
       clear: "Clear {{t.base.search.capitalize}} Options"
       close: "{{t.base.close.capitalize}}"
       date: "{{t.base.item.pluralize.capitalize}} that have a {{t.base.date}} or {{t.base.time}}"
@@ -1913,9 +1915,11 @@ en:
       private: "{{t.base.private.capitalize}}"
       public: "{{t.base.public.capitalize}}"
       results_display: "{{t.base.results.capitalize}} {{t.base.display.capitalize}}"
+      search_terms: "{{t.base.search.capitalize}} Terms"
       show: "{{t.base.show}}"
-      sorted_by: "{{t.base.sorted_by}}:"
+      sorted_by: "{{t.base.sorted_by}}"
       that_are: "that are"
+      update: "Update"
       within: "within"
     rebuild_zoom_index:
       completed: "Completed. "
@@ -1927,6 +1931,8 @@ en:
     refine_by_date:
       date_since: "since"
       date_until: "until"
+    refine_results:
+      refine: "Refine {{t.base.your}} {{t.base.results.capitalize}}"
     related:
       more_on: "More information on {{title}}"
       title: "{{t.base.related.capitalize}}:"
