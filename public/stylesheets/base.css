@@ -517,6 +517,9 @@ a:hover {
 #advanced_search_dropdown .fields {
   padding: 3px 10px;
 }
+#advanced_search_dropdown .fields select {
+  max-width: 140px;
+}
 #advanced_search_dropdown .close {
   float: right;
   margin-right: 10px;
