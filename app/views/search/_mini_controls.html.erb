@@ -2,12 +2,15 @@
 display ||= Array.new
 show_button ||= false
 show_reset ||= false
+horizontal ||= false
 @populate_values = populate_values rescue false
 %>
 
-<div id="<%= id %>" class="search_dropdown" style="display:none;">
+<div id="<%= id %>" class="search_dropdown<%= ' horizontal' if horizontal %>" style="display:none;">
 
   <table>
+
+    <%= "<tr><td valign='top'><table>" if horizontal %>
 
     <% if display.include?(:search_terms) %>
     <tr>
@@ -32,6 +35,8 @@ show_reset ||= false
       <td colspan="3" class="fields"><%= render 'search/refine_by_date', :in_table => true %></td>
     </tr>
     <% end %>
+
+    <%= "</table></td><td valign='top'><table>" if horizontal %>
 
     <tr>
       <td colspan="3" class="header"><%= t('search.mini_controls.results_display') %></td>
@@ -116,6 +121,8 @@ show_reset ||= false
       <td colspan="3"><%= render 'search/refine_by_choice' %></td>
     </tr>
     <% end %>
+
+    <%= "</table></td></tr>" if horizontal %>
 
   </table>
 

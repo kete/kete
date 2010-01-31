@@ -497,13 +497,12 @@ a:hover {
   padding: 3px 6px;
 }
 
-#refine_search_dropdown_container {
-  z-index: 1;
+#refine_search_dropdown_trigger {
+  display: inline;
 }
-#refine_search_dropdown {
-  position: absolute;
-  right: 15px;
-  text-align: left;
+
+#refine_search_dropdown_container {
+  margin-bottom: 15px;
 }
 
 .search_dropdown {
@@ -512,6 +511,9 @@ a:hover {
   width: 257px;
   border: 1px solid #000;
   margin-top: 1px;
+}
+.search_dropdown.horizontal {
+  width: 550px;
 }
 .search_dropdown table {
   width: 100%;
@@ -1370,13 +1372,6 @@ a.disabled {
 .secondary-content-section-wrapper-white .secondary-content-section-footer {
   background-color: white;
   width: auto; height: 13px; padding: 0; margin: 0;
-}
-
-/*
- * maplinks are used on results pages to switch view type
- */
-#maplinks {
-  margin-bottom: 10px;
 }
 
 /*
