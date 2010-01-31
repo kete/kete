@@ -320,7 +320,9 @@ class SearchController < ApplicationController
     @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?
 
     @search.pqf_query.date_on_or_after(parse_date_into_zoom_compatible_format(@date_since, :beginning)) if !@date_since.nil?
-    @search.pqf_query.date_on_or_before(parse_date_into_zoom_compatible_format(@date_until, :end)) if !@date_until.nil?
+    # until means "up to this date" so beginning of year or month is what we want
+    # previously this was "on or before", which really meant "through the end of this year or month"
+    @search.pqf_query.date_before(parse_date_into_zoom_compatible_format(@date_until, :beginning)) if !@date_until.nil?
 
     # Normal search terms..
 
@@ -332,11 +334,26 @@ class SearchController < ApplicationController
       @search.pqf_query.add_web_link_specific_query if zoom_class == 'WebLink'
     end
 
-    # Date searching is a special thing. By default, we want so search
-    # by dates, and in reverse order, so we get closest -> oldest
-    if !@date_since.nil? || !@date_until.nil?
-      params[:sort_type] ||= 'date'
-      params[:sort_direction] ||= 'reverse'
+    # Date searching is a special thing,
+    # but existing sort params take precendence
+    # then search term sorting 
+    if @date_since.present? || @date_until.present?
+      if @search_terms.blank?
+        params[:sort_type] ||= 'date'
+        
+        # date based search direction has some specific logic
+        # depending on combination of parameters
+        if @date_since.present?
+          # we want oldest first if since is specified
+          # either in combination with until
+          # or on its own
+          params[:sort_direction] ||= 'reverse'
+        elsif @date_since.blank? && @date_until.present?
+          # we want youngest results if only until is specified
+          # as they will be closest to the until parameter date
+          params[:sort_direction] ||= nil
+        end
+      end
     end
 
     sort_type = @current_basket.settings[:sort_order_default]
