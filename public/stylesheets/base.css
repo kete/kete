@@ -498,9 +498,6 @@ a:hover {
 }
 
 #refine_search_dropdown_container {
-  float: right;
-  text-align: right;
-  padding: 15px;
   z-index: 1;
 }
 #refine_search_dropdown {
@@ -1570,6 +1567,7 @@ a.disabled {
 
 /*
  * Embedded Extended Field Data
+ * embedded meaning in the main column below the description in this context
  */
 #embedded_extended_field_data {
   width: 98%;

@@ -9,7 +9,7 @@
         :populate_values => true, :show_button => true %>
   <% end %>
 
-  <% refine_search_dropdown_link = link_to(t('search.refine_results.refine'), '#', :onclick => "$('refine_search_dropdown').toggle();") %>
+  <% refine_search_dropdown_link = link_to(t('search.refine_results.refine'), '#', :onclick =>  "$('refine_search_dropdown').toggle();") -%> 
   <%= javascript_tag("$('refine_search_dropdown_trigger').insert('#{escape_javascript(refine_search_dropdown_link)}');") %>
 
 </div>

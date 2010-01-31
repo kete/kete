@@ -16,8 +16,6 @@
 <%= render(:partial => "topics/content_wrapper_start",
            :locals => { :style_classes => "full-width" }) -%>
 
-<%= render 'search/refine_results' %>
-
 <h3><%= @title %></h3>
 
 <div class="prev-next before-results"><%= will_paginate @results %></div>
@@ -44,6 +42,9 @@
          :finish => @end_record,
          :total => @result_sets[@current_class].size %>
 
+   [ <%= render 'search/refine_results' %>
+
+
     <% if @number_of_locations_count && @number_of_locations_count > 0 %>
       <div id="maplinks">
         <%=t 'search.results.x-y_have_z_locations',
@@ -51,13 +52,13 @@
              :finish => @end_record,
              :n_locations => @number_of_locations_count %>
         <% if params[:view_as] != 'map'-%>
-          [ <%= link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )%> ]
+          | <%= link_to(t('search.results.view_map'), { :overwrite_params => { :view_as => 'map' } }, { :tabindex => '1' } )%>
         <% elsif params[:view_as] == 'map' -%>
-          [ <%= link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )%> ]
+          | <%= link_to(t('search.results.view_list'), { :overwrite_params => { :view_as => nil } }, { :tabindex => '1' } )%>
         <% end -%>
       </div>
     <% end -%>
-
+    ]
   </div>
 
   <% @results.each_with_index do |result,index|  %>
@@ -110,7 +111,7 @@
 <% else %>
 
   <div id="result-show">
-    <%=t 'search.results.no_results_found' %>
+    <%=t 'search.results.no_results_found' %> [ <%= render 'search/refine_results' %> ]
   </div>
 
 <% end %>
