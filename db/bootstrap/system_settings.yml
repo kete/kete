@@ -608,3 +608,11 @@ system_settings_070:
   id: "70"
   value: restricted
   section: Flagging
+system_settings_071:
+  name: Add Date Created To Item Search Record
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "By default, Kete will add a Dublin Core Date element with the date that the item was created on the Kete site to the item's search record. This is not always appropriate for all sites. For example, site's that have imported a lot of archival material may find this data unimportant and distracting from real date data in archival record item. Change this value to \"false\" to stop Kete from automatically adding the item's creation date to search records."
+  id: "71"
+  value: "true"
+  section: Search

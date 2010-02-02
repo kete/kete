@@ -139,8 +139,14 @@ module OaiDcHelpers
     end
 
     def oai_dc_xml_dc_creators_and_date(xml)
-      item_created = created_at.utc.xmlschema
-      xml.send("dc:date", item_created)
+      # some sites, such as those that have lots of imported archival material,
+      # will find that the date created is not useful in their search record
+      # and will want to handle date data explicitly in their extended fields
+      # only turn it on if specified in the system setting
+      if ADD_DATE_CREATED_TO_ITEM_SEARCH_RECORD
+        item_created = created_at.utc.xmlschema
+        xml.send("dc:date", item_created)
+      end
       creators.each do |creator|
         user_name = creator.user_name
         xml.send("dc:creator", user_name)

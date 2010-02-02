@@ -12,13 +12,13 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
 
         if ATTACHABLE_CLASSES.include?(zoom_class)
           file_data = case zoom_class
-          when 'AudioRecording'
-            fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
-          when 'Document'
-            fixture_file_upload('/files/test.pdf', 'application/pdf')
-          when 'Video'
-            fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
-          end
+                      when 'AudioRecording'
+                        fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
+                      when 'Document'
+                        fixture_file_upload('/files/test.pdf', 'application/pdf')
+                      when 'Video'
+                        fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
+                      end
         end
 
         options = { :title => 'Child Item', :description => 'Child Description', :basket_id => 1 }
@@ -41,6 +41,50 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
       end
 
     end
+  end
+
+  context "The oai_dc_xml_dc_creators_and_date method" do
+
+    ZOOM_CLASSES.each do |zoom_class|
+      setup do
+        # TODO: DRY this up with helper
+        if ATTACHABLE_CLASSES.include?(zoom_class)
+          file_data = case zoom_class
+                      when 'AudioRecording'
+                        fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
+                      when 'Document'
+                        fixture_file_upload('/files/test.pdf', 'application/pdf')
+                      when 'Video'
+                        fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
+                      end
+        end
+
+        options = { :title => 'Item', :description => 'Description', :basket_id => 1 }
+        options[:topic_type_id] = 1 if zoom_class == 'Topic'
+        options[:url] = "http://google.co.nz/#{rand}" if zoom_class == 'WebLink'
+        options[:uploaded_data] = file_data if (ATTACHABLE_CLASSES - ['StillImage']).include?(zoom_class)
+        if zoom_class == 'Comment'
+          commentable_topic = Topic.create(:title => 'Commented Topic', :topic_type_id => 1, :basket_id => 1)
+          options.merge!(:commentable_type => 'Topic', :commentable_id => commentable_topic.id)
+        end
+
+        @item = zoom_class.constantize.create! options
+
+        user = User.find(1)
+        @item.creators << user
+      end
+
+      should "have xml for dc:date for #{zoom_class} when ADD_DATE_CREATED_TO_ITEM_SEARCH_RECORD is true" do
+        set_constant :ADD_DATE_CREATED_TO_ITEM_SEARCH_RECORD, true
+        assert oai_dc_xml_dc_creators_and_date_as_string.include?("dc:date")
+      end
+
+      should "not have xml for dc:date for #{zoom_class} when ADD_DATE_CREATED_TO_ITEM_SEARCH_RECORD is false" do
+        set_constant :ADD_DATE_CREATED_TO_ITEM_SEARCH_RECORD, false
+        assert !oai_dc_xml_dc_creators_and_date_as_string.include?("dc:date")
+      end
+
+    end
 
   end
 
@@ -48,6 +92,14 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
 
   def relate_child_item_to_parent_item(child_item, parent_item)
     ContentItemRelation.new_relation_to_topic(parent_item, child_item)
+  end
+
+  def oai_dc_xml_dc_creators_and_date_as_string
+    builder = Nokogiri::XML::Builder.new
+    builder.root do |xml|
+      @item.oai_dc_xml_dc_creators_and_date(xml)
+    end
+    builder.to_stripped_xml
   end
 
 end
