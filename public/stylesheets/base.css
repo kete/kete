@@ -1255,6 +1255,10 @@ div.extended_field_autocomplete ul li {
                           cursor: pointer;
 }
 
+select.extended_field_choice_dropdown {
+  max-width: 350px;
+}
+
 /*
  * Category List
  */
