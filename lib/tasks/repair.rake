@@ -258,7 +258,8 @@ namespace :kete do
     end
 
     desc "Run all extended field repair tasks"
-    task :extended_fields => ['kete:repair:extended_fields:legacy_google_map']
+    task :extended_fields => ['kete:repair:extended_fields:legacy_google_map',
+                              'kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices']
 
     namespace :extended_fields do
 
@@ -292,6 +293,40 @@ namespace :kete do
             end
           end
         end
+      end
+
+      desc "Repopulate related items from Topic Type choices extended field"
+      task :repopulate_related_items_from_topic_type_choices => :environment do
+        topic_type_extended_fields = ExtendedField.find_all_by_ftype('topic_type')
+        return unless topic_type_extended_fields.size > 0
+
+        any_updated_items = false
+
+        conditions = Array.new
+        topic_type_extended_fields.each { |field| conditions << "extended_content LIKE '%<#{field.label_for_params}%'" }
+
+        each_item_with_extended_fields("(#{conditions.join(' OR ')})") do |item|
+          topic_type_extended_fields.each do |field|
+            values = item.structured_extended_content[field.label_for_params]
+            next if values.blank?
+            values.each do |value|
+              value = value.first if value.is_a?(Array)
+              next if value.blank?
+
+              topic_id = value['value'].split('/').last.to_i
+              topic = Topic.find(topic_id) if topic_id > 0
+
+              if topic && ContentItemRelation.new_relation_to_topic(topic, item)
+                topic.prepare_and_save_to_zoom
+                item.prepare_and_save_to_zoom
+                any_updated_items = true
+                puts "Added related item between Topic #{topic.id} and #{item.class.name} #{item.id}"
+              end
+            end
+          end
+        end
+
+        puts "Please run 'rake tmp:cache:clear' to complete the process." if any_updated_items
       end
 
       private

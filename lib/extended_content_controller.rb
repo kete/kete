@@ -98,9 +98,7 @@ module ExtendedContentController
 
       def build_relations_from_topic_type_extended_field_choices(extended_values=nil)
         params_key = zoom_class_params_key_from_controller(params[:controller])
-        unless extended_values.blank?
-          extended_values = params[params_key][:extended_content_values] if !params[params_key].blank? && !params[params_key][:extended_content_values].blank?
-        end
+        extended_values ||= params[params_key][:extended_content_values] if !params[params_key].blank? && !params[params_key][:extended_content_values].blank?
 
         # no extended_values, nothing to do
         return if extended_values.blank?
@@ -116,7 +114,7 @@ module ExtendedContentController
 
       def skip_or_add_relation_for(key, value)
         # Check before any further queries are made that the field looks like a topic type string
-        return unless !value.blank? && value =~ /^.+ \((.+)\)$/
+        return unless value.present? && value =~ /^.+ \((.+)\)$/ && $1
 
         # Check if this extended content belongs to an extended field that is a topic type field type
         # TODO: limit this to content_type or topic type
@@ -127,7 +125,7 @@ module ExtendedContentController
 
         # Now we know this content is valid and meant for a topic type extended field,
         # make a relation if one doesn't already exist
-        topic_id = $1.split('/').last.split('-').first.to_i
+        topic_id = $1.dup.split('/').last.to_i
 
         if topic_id && topic_id > 0
           relation_already_exists = ContentItemRelation.count(:conditions => { :topic_id => topic_id,
