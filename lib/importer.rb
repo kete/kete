@@ -183,7 +183,7 @@ module Importer
         # look up the synonym for the field
         # check if it's been mapped locally
         extended_field = ''
-        if !@import_field_to_extended_field_map[field].nil?
+        if @import_field_to_extended_field_map[field].present?
           extended_field = @import_field_to_extended_field_map[field]
         else
           if @import_topic_type
@@ -191,16 +191,18 @@ module Importer
           else
             extended_fields = ExtendedField.all(:conditions => "import_synonyms like \'%#{field}%\'")
           end
-          extended_field = extended_fields.select { |ext_field| ext_field.import_synonyms.split.include?(field) }.first
 
-          if !extended_field.nil?
+          if extended_field.present?
+            extended_field = extended_fields.select { |ext_field| ext_field.import_synonyms.split.include?(field) }.first
+
             @import_field_to_extended_field_map[field] = extended_field
           else
+            logger.info("field in prepare: " + field.inspect)
             @import_field_to_extended_field_map[field] = I18n.t('importer_lib.importer_prepare_extended_field.not_available')
           end
         end
 
-        if !extended_field.nil? and extended_field != I18n.t('importer_lib.importer_prepare_extended_field.not_available')
+        if extended_field.present? and extended_field != I18n.t('importer_lib.importer_prepare_extended_field.not_available')
           # add some smarts for handling fields that are multiple
           # assumes comma separated values
 
