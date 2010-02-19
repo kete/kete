@@ -38,6 +38,15 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2010/02/19 - Fixing creation of related items from topic type extended fields
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      run "rake kete:repair:extended_fields:repopulate_related_items_from_topic_type_choices"
+4.      run "rake tmp:cache:clear"
+5.      Start your Kete server again (mongrels or mod_rails)
+6.      Restart backgroundrb
+
 == 2009/09/01 - Search Record Speed Optmizations
 
 1.      Stop your Kete server (mongrels or mod_rails).
