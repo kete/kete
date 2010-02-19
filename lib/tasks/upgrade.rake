@@ -361,7 +361,7 @@ namespace :kete do
       # Use Model.update_all({ changes }, { :id => id }) to get
       # around time consuming validations and possible failures
 
-      conditions = ["related_items_position IS NULL OR related_items_position IN (?)", ['', 0, 1]]
+      conditions = ["related_items_position IS NULL OR related_items_position IN (?)", ['', '0', '1']]
       topics = Topic::Version.all(:conditions => conditions)
       topics.each do |topic|
         Topic::Version.update_all({
