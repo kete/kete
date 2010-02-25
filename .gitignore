@@ -2,6 +2,7 @@
 *.sqlite3*
 mkmf.log
 *.tmproj
+*~
 config/database.yml
 config/backgroundrb.yml
 config/mongrel_cluster.yml
@@ -12,6 +13,7 @@ config/site_lockdown_auth_credentials.yml
 db/schema.rb
 public/blank.html
 public/robots.txt
+public/opensearchdescription.xml
 public/images/active_scaffold/DO_NOT_EDIT
 public/javascripts/cache/
 public/stylesheets/active_scaffold/DO_NOT_EDIT
