@@ -1,12 +1,9 @@
-<% horizontal ||= false %>
-
 <div id="refine_search_dropdown_container">
 
-  <% form_tag(:urlified_name => @current_basket.urlified_name,
-              :controller => 'search', :action => 'terms_to_page_url_redirect') do %>
+  <% form_tag(:overwrite_params => overwritten_search_params) do %>
     <%= render 'search/mini_controls', :id => 'refine_search_dropdown',
         :display => [:search_terms, :dates, :privacy_type, :sorting, :topic_types, :choices],
-        :populate_values => true, :show_button => true, :horizontal => horizontal %>
+        :populate_values => true, :show_button => true, :horizontal => true %>
   <% end %>
 
   <% refine_search_dropdown_link = link_to(t('search.refine_results.refine'), '#', :onclick =>  "$('refine_search_dropdown').toggle();") -%>

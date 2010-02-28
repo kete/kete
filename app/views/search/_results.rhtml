@@ -37,7 +37,7 @@
 
   <div id="result-show">
     <%= search_results_info_and_links %>
-    <%= render 'search/refine_results', :horizontal => true %>
+    <%= render 'search/refine_results' %>
   </div>
 
   <% @results.each_with_index do |result,index|  %>
@@ -92,7 +92,7 @@
   <div id="result-show">
     <%=t 'search.results.no_results_found' %>
     [ <div id="refine_search_dropdown_trigger"></div> ]
-    <%= render 'search/refine_results', :horizontal => true %>
+    <%= render 'search/refine_results' %>
   </div>
 
 <% end %>
