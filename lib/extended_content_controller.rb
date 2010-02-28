@@ -114,28 +114,30 @@ module ExtendedContentController
 
       def skip_or_add_relation_for(key, value)
         # Check before any further queries are made that the field looks like a topic type string
-        return unless value.present? && value =~ /^.+ \((.+)\)$/ && $1
+        return unless value.present? && value =~ /^.+ \(https?:\/\/(.+)\)$/ && $1
 
         # Check if this extended content belongs to an extended field that is a topic type field type
         # TODO: limit this to content_type or topic type
         # add condition to match key in query
         @extended_fields ||= ExtendedField.find_all_by_ftype('topic_type')
-        extended_field = @extended_fields.select { |extended_field| qualified_name_for_field(extended_field) == key }
-        return if extended_field.nil?
+        extended_field = @extended_fields.find { |ef| qualified_name_for_field(ef) == key }
+        return if extended_field.blank?
 
         # Now we know this content is valid and meant for a topic type extended field,
         # make a relation if one doesn't already exist
         topic_id = $1.dup.split('/').last.to_i
 
         if topic_id && topic_id > 0
-          relation_already_exists = ContentItemRelation.count(:conditions => { :topic_id => topic_id,
+          topic = Topic.find_by_id(topic_id)
+          if topic # incase the id is wrong, don't cause any errors
+            relation_already_exists = ContentItemRelation.count(:conditions => { :topic_id => topic.id,
                                                                 :related_item_id => current_item }) > 0
-          unless relation_already_exists
-            logger.debug("Add relation for #{value}, with id of #{topic_id}")
-            topic = Topic.find(topic_id)
-            ContentItemRelation.new_relation_to_topic(topic, current_item)
-            topic.prepare_and_save_to_zoom
-            expire_related_caches_for(topic, 'topics')
+            unless relation_already_exists
+              logger.debug("Add relation for #{value}, with id of #{topic.id}")
+              ContentItemRelation.new_relation_to_topic(topic, current_item)
+              topic.prepare_and_save_to_zoom
+              expire_related_caches_for(topic, 'topics')
+            end
           end
         end
       end
