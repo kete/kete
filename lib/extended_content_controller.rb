@@ -114,7 +114,7 @@ module ExtendedContentController
 
       def skip_or_add_relation_for(key, value)
         # Check before any further queries are made that the field looks like a topic type string
-        return unless value.present? && value =~ /^.+ \(https?:\/\/(.+)\)$/ && $1
+        return unless value.present? && value =~ /^.+ \(\w+:\/\/(.+)\)$/ && $1
 
         # Check if this extended content belongs to an extended field that is a topic type field type
         # TODO: limit this to content_type or topic type
