@@ -110,10 +110,13 @@
       <div id="right-search-box">
         <% @headline = t('index_page.index.keyword_search')
            @headline += (' ' + @title) if @current_basket != @site_basket -%>
-        <%= render :partial => '/search/form',
-                   :locals => { :headline => @headline,
-                                :search_terms => nil,
-                                :simple_layout => true } -%>
+        <% form_tag(:overwrite_params => overwritten_search_params) do %>
+          <h3><%= @headline -%></h3>
+          <div class="wrap">
+            <%= text_field_tag 'search_terms', nil, {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
+            <%= submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'} %>
+          </div>
+        <% end %>
       </div>
     <%= render(:partial => "topics/secondary_wrapper_end") -%>
   <% end -%>

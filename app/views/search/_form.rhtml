@@ -1,5 +1,3 @@
-<% simple_layout ||= false %>
-
 <% if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
 
   <%= render "topics/content_wrapper_start", :style_classes => "full-width notabs choices" %>
@@ -24,58 +22,46 @@
 
     <% form_tag(:overwrite_params => overwritten_search_params) do %>
 
-      <% if !simple_layout && !@search.nil? -%>
-
-        <div id="search-options-wrapper">
-          <h4><%=t 'search.form.options' %></h4>
-          <label for="sort_type"><%=t 'search.form.sort_by' %></label>
-          <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
-          <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'  %>
-          <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
-            <label for="sort_direction"><%=t 'search.form.in_reverse' %></label>
-            <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
-            <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
-            <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
-          </div>
-
-          <br />
-
-          <% if params[:controller_name_for_zoom_class] == 'topics' %>
-            <label for="topic_type"><%=t 'search.form.about_a' %></label>
-            <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set, :name, :name, params[:topic_type], {}, [[t('search.form.any_topic_type'), '']]) %>
-          <% end %>
-
-          <% # Only show private search control if allowed and we aren't relating something to a topic. %>
-          <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
-            <label for="privacy_type"><%=t 'search.form.privacy_type' %></label>
-            <%= select_tag 'privacy_type', options_for_select({ t('search.form.private') => 'private', t('search.form.public') => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1' %>
-          <% end -%>
-          <%= render 'search/refine_by_choice' %><br />
-          <%= render 'search/refine_by_date' %><br />
-          <input type="submit" name="update" id="update" value="<%=t 'search.form.update_results' %>" tabindex="1" />
+      <div id="search-options-wrapper">
+        <h4><%=t 'search.form.options' %></h4>
+        <label for="sort_type"><%=t 'search.form.sort_by' %></label>
+        <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
+        <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'  %>
+        <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
+          <label for="sort_direction"><%=t 'search.form.in_reverse' %></label>
+          <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
+          <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
+          <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
         </div>
 
-        <%= toggle_in_reverse_field_js_helper if params[:action] == 'for' -%>
+        <br />
 
-      <% end -%>
+        <% if params[:controller_name_for_zoom_class] == 'topics' %>
+          <label for="topic_type"><%=t 'search.form.about_a' %></label>
+          <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set, :name, :name, params[:topic_type], {}, [[t('search.form.any_topic_type'), '']]) %>
+        <% end %>
 
-      <% if !simple_layout %>
-        <div id="searchheader">
-          <div id="searchheader-results">
-            <h3><%= headline -%></h3>
-          </div>
-      <% else -%>
-        <h3><%= headline -%></h3>
-      <% end -%>
-
-      <div class="wrap">
-        <%= text_field_tag 'search_terms', h(@search_terms.to_s), {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
-        <%= submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'} %>
+        <% # Only show private search control if allowed and we aren't relating something to a topic. %>
+        <% if params[:relate_to_topic].blank? && show_privacy_search_controls? && permitted_to_view_private_items? -%>
+          <label for="privacy_type"><%=t 'search.form.privacy_type' %></label>
+          <%= select_tag 'privacy_type', options_for_select({ t('search.form.private') => 'private', t('search.form.public') => 'public' }, params[:privacy_type] || 'public'), :tabindex => '1' %>
+        <% end -%>
+        <%= render 'search/refine_by_choice' %><br />
+        <%= render 'search/refine_by_date' %><br />
+        <input type="submit" name="update" id="update" value="<%=t 'search.form.update_results' %>" tabindex="1" />
       </div>
 
-      <% if !simple_layout -%>
+      <%= toggle_in_reverse_field_js_helper if params[:action] == 'for' -%>
+
+      <div id="searchheader">
+        <div id="searchheader-results">
+          <h3><%= headline -%></h3>
         </div>
-      <% end -%>
+        <div class="wrap">
+          <%= text_field_tag 'search_terms', h(@search_terms.to_s), {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
+          <%= submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'} %>
+        </div>
+      </div>
 
     <% end -%>
 

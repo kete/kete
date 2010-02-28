@@ -218,6 +218,30 @@ module ApplicationHelper
     javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');")
   end
 
+  # Clear any values that shouldn't be there when we make a new search or refine a search
+  def overwritten_search_params
+    {
+      # set basic values for our search
+      :urlified_name => @current_basket.urlified_name,
+      :controller => 'search',
+      :action => 'terms_to_page_url_redirect',
+
+      # clear these from the params so the form fields take effect instead
+      :search_terms => nil,
+      :date_since => nil,
+      :date_until => nil,
+      :topic_type => nil,
+      :privacy_type => nil,
+      :sort_type => nil,
+      :sort_direction => nil,
+      :limit_to_choice => nil,
+      :extended_field => nil,
+
+      # no sense in keeping page number, new results could be much less causing 404's
+      :page => nil
+    }
+  end
+
   def search_link_to_searched_basket
     html = String.new
     html += ' ' + link_to_index_for(@current_basket, { :class => 'basket' }) if @current_basket != @site_basket
