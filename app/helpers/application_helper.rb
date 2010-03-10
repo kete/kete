@@ -142,6 +142,9 @@ module ApplicationHelper
   end
 
   def open_search_metadata
+    # only continue if we have results, which aren't available on a 404 or 500 page
+    return unless @result_sets && @current_class && @result_sets[@current_class]
+
     meta_tag(:name => "totalResults", :content => @result_sets[@current_class].size) +
     meta_tag(:name => "startIndex", :content => ((@current_page - 1) * @number_per_page)) +
     meta_tag(:name => "itemsPerPage", :content => @number_per_page)
