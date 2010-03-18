@@ -611,15 +611,18 @@ module ExtendedContent
               if !hash_of_values.blank?
                 hash_of_values.keys.sort.each do |key|
 
-                  # Do not store empty values of multiples for choices.
-                  unless params_hash[field_name][key].to_s.blank? || \
-                        ( params_hash[field_name][key].is_a?(Hash) && params_hash[field_name][key].values.to_s.blank? )
+                  value = params_hash[field_name][key]
 
+                  # for the year extended field types, skip unless the value is present
+                  next if value.is_a?(Hash) && value['circa'] && value['value'].blank?
+
+                  # Do not store empty values of multiples for choices.
+                  unless value.to_s.blank? || (value.is_a?(Hash) && value.values.to_s.blank?)
                     xml.safe_send(key) do
                       extended_content_field_xml_tag(
                         :xml => xml,
                         :field => field_name,
-                        :value => params_hash[field_name][key],
+                        :value => value,
                         :xml_element_name => field_to_xml.extended_field_xml_element_name,
                         :xsi_type => field_to_xml.extended_field_xsi_type,
                         :extended_field => field_to_xml.extended_field
@@ -650,6 +653,9 @@ module ExtendedContent
             # and there isn't an existing value
             # generates empty xml element for the field
             final_value = params_hash[field_name].nil? ? '' : params_hash[field_name]
+
+            # for the year extended field types, skip unless the value is present
+            next if final_value.is_a?(Hash) && final_value['circa'] && final_value['value'].blank?
 
             extended_content_field_xml_tag(
               :xml => xml,
@@ -710,6 +716,9 @@ module ExtendedContent
       # the rest can be left out which causes problems when saving items
       return [hash] if hash.keys.include?('no_map') || hash.keys.include?('coords') # map or map_address
 
+      # If we are dealing with a Year field, leave the data as is
+      return [hash] if hash.keys.include?('circa')
+
       hash.map do |k, v|
         # skip special keys
         next if k == 'xml_element_name'
@@ -759,12 +768,15 @@ module ExtendedContent
     # Generic validation methods
     def validate_extended_content_single_value(extended_field_mapping, value)
       # Handle required fields here..
+      no_map_enabled = (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value['no_map'] == "1")
+      no_year_provided = (extended_field_mapping.extended_field.ftype == 'year' && (!value || value['value'].blank?))
       if extended_field_mapping.required &&
-         (value.blank? || (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value['no_map'] == "1")) &&
+        (value.blank? || no_map_enabled || no_year_provided) &&
          extended_field_mapping.extended_field.ftype != "checkbox"
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_single_value.cannot_be_blank',
                                   :label => extended_field_mapping.extended_field.label)) unless \
+          extended_field_mapping.extended_field.ftype != 'year' && \
           xml_attributes_without_position[extended_field_mapping.extended_field.label_for_params].nil? && \
           allow_nil_values_for_extended_content
 
@@ -781,8 +793,12 @@ module ExtendedContent
     end
 
     def validate_extended_content_multiple_values(extended_field_mapping, values)
+      all_values_blank = values.all? do |v|
+        v = v['value'] if v.is_a?(Hash) && v['value']
+        v.to_s.blank?
+      end
 
-      if extended_field_mapping.required && values.all? { |v| v.to_s.blank? } && \
+      if extended_field_mapping.required && all_values_blank && \
         extended_field_mapping.extended_field.ftype != "checkbox"
 
         errors.add_to_base(I18n.t('extended_content_lib.validate_extended_content_multiple_values.need_at_least_one',
@@ -795,10 +811,12 @@ module ExtendedContent
         # Delegate to specialized method..
         error_array = values.map do |v|
           # if label is included, you get back a hash for value
-          v = v['value'] if v.is_a?(Hash) && v['value']
+          v = v['value'] if v.is_a?(Hash) && v['value'] && extended_field_mapping.extended_field.ftype != 'year'
+
+          v = v.to_s unless extended_field_mapping.extended_field.ftype == 'year'
 
           send("validate_extended_#{extended_field_mapping.extended_field.ftype}_field_content".to_sym, \
-            extended_field_mapping, v.to_s)
+            extended_field_mapping, v)
         end
 
         error_array.compact.each do |error|
@@ -832,6 +850,23 @@ module ExtendedContent
 
       unless value =~ /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/
         I18n.t('extended_content_lib.validate_extended_date_field_content.must_be_valid',
+               :label => extended_field_mapping.extended_field_label)
+      end
+    end
+
+    # The year field value is passed in as a hash, { :value => 'something', :circa => '1' }
+    def validate_extended_year_field_content(extended_field_mapping, values)
+      # Allow nil values. If this is required, the nil value will be caught earlier.
+      return nil if values.blank?
+      # the values passed in should form an array
+      return I18n.t('extended_content_lib.validate_extended_year_field_content.not_a_hash',
+                    :label => extended_field_mapping.extended_field_label,
+                    :class => values.class.name, :value => values.inspect) unless values.is_a?(Hash)
+      # allow the value to be blank
+      return nil if values['value'].blank?
+      # verify that we have a proper formatted value (YYYY)
+      unless values['value'] =~ /^[0-9]{4}$/
+        I18n.t('extended_content_lib.validate_extended_year_field_content.must_be_valid',
                :label => extended_field_mapping.extended_field_label)
       end
     end

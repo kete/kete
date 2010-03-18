@@ -1082,6 +1082,12 @@ module ApplicationHelper
         value = value['value']
       end
 
+      # append c. for circa for fields that are circa
+      if value.is_a?(Hash) && value['circa']
+        label = (value['circa'] == '1') ? "c.#{value['value']}" : value['value']
+        value = label
+      end
+
       # textboxes are different than other content types because they can have multiple links
       # or emails or such in the some field and we want to catch all those.
       if ef.ftype == 'textarea'
@@ -1696,12 +1702,12 @@ module ApplicationHelper
   # determine if we are editing a private version of something
   def adding_or_editing_private_item?
     if @comment
-      return params[:commentable_private].to_bool if params[:commentable_private]
-      return params[:comment][:commentable_private].to_bool if params[:comment] && params[:comment][:commentable_private]
+      return params[:commentable_private].param_to_obj_equiv if params[:commentable_private]
+      return params[:comment][:commentable_private].param_to_obj_equiv if params[:comment] && params[:comment][:commentable_private]
       return @comment.private?
     else
       if @item_type && params[@item_type] && params[@item_type][:private]
-        params[@item_type][:private].to_bool
+        params[@item_type][:private].param_to_obj_equiv
       elsif @item && !@item.new_record? && !@item.private.nil?
         @item.private?
       elsif @basket

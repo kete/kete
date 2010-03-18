@@ -324,7 +324,8 @@ module ZoomSearch
       else
         time = Time.parse(value)
       end
-      time.strftime("%Y-%m-%d")
+      # all times in zebra are stored as UTC, so compare against that for better results
+      time.utc.strftime("%Y-%m-%d")
     rescue ArgumentError
       nil
     end

@@ -32,6 +32,10 @@ class ExtendedFieldsController < ApplicationController
     config.columns << [:topic_type]
     config.columns[:topic_type].label = I18n.t('extended_fields_controller.topic_type_choices')
     config.columns[:topic_type].description = I18n.t('extended_fields_controller.topic_type_choices_description')
+
+    config.columns << [:circa]
+    config.columns[:circa].label = I18n.t('extended_fields_controller.circa')
+    config.columns[:circa].description = I18n.t('extended_fields_controller.circa_description')
   end
 
   def add_field_to_multiples

@@ -1242,6 +1242,9 @@ en:
     validate_extended_topic_type_field_content:
       must_be_valid: "{{label}} found the topic, but it is not a {{t.base.type}} of {{topic_type}}, nor one of it's sub-{{t.base.type.pluralize}}."
       no_such_topic: "{{label}} couldn't find the topic. Must be in the format of '{{t.base.zoom_types.topic}} title (URL)?'"
+    validate_extended_year_field_content:
+      must_be_valid: "{{label}} must be in the standard year format (YYYY)"
+      not_a_hash: "{{label}} data expected to be Hash, but was {{class}} containing {{value}}. Why?"
   extended_field_model:
     already_used: ": labels of {{invalid_label_names}} {{t.base.arent}} {{t.base.allowed}} because they already used be {{t.base.default}}"
     invalid_chars: ": the following characters {{t.base.arent}} {{t.base.allowed}} - {{invalid_chars}}"
@@ -1257,6 +1260,8 @@ en:
     available_choices_description: "Ftype must be a \"{{t.base.choice.pluralize}}\" option for these options to be available to {{t.base.user.pluralize}}."
     base_url: "Base URL"
     base_url_description: "Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the {{t.base.choice}} ftypes, Base URL + {{t.base.value}} will take over from normal linking to all results that match the {{t.base.value}} for the {{t.base.choice}} for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
+    circa: "{{t.base.accept.capitalize}} Circa?"
+    circa_description: "Ftype must be the \"Year\" option for this option to appear."
     title: "Extended Fields"
     topic_type_choices: "{{t.base.zoom_types.topic.capitalize}} {{t.base.type.capitalize}} {{t.base.choice.pluralize.capitalize}}"
     topic_type_choices_description: "Ftype must be a \"Pre-populated {{t.base.choice.pluralize.capitalize}} ({{t.base.topic_type}})\" option for these options to be available to {{t.base.user.pluralize}}."
@@ -1293,6 +1298,7 @@ en:
       radio_button: "Radio buttons"
       text: Text
       text_box: "Text box"
+      year: Year
     label_form_column:
       cannot_be_changed: "({{t.base.cannot_be_changed}})"
     multiple_form_column:

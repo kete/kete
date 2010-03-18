@@ -43,6 +43,16 @@ module ExtendedContentHelpers
         # now if it's available.
         @anonymous_fields << [original_field_key, data]
       elsif data.has_key?("value")
+        # We add a dc:date for 5 years before and after the value specified
+        # We also convert the single YYYY value to a format Zebra can search against
+        if data.has_key?("circa")
+          data['value'] = Time.parse("#{data['value']}-01-01").utc.xmlschema
+          if data['circa'] == '1'
+            five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
+            @builder_instance.safe_send("dc:date", Time.parse("#{five_years_before}-01-01").utc.xmlschema)
+            @builder_instance.safe_send("dc:date", Time.parse("#{five_years_after}-12-31").utc.xmlschema)
+          end
+        end
 
         # When xml_element_name is an attribute, the value is stored in a value key in a Hash.
         if data["xml_element_name"].blank?

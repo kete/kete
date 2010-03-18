@@ -12,6 +12,12 @@ module ExtendedFieldsHelper
     content_tag('div', select, { :id => "hidden_choices_topic_type_select_#{record.id.to_s}", :style => 'display:none;' })
   end
 
+  def circa_form_column(record, input_name)
+    checkbox = check_box('record', 'circa', { :checked => (!record.new_record? && record.circa?) })
+    content_tag('div', checkbox, :id => "hidden_choices_circa_#{record.id.to_s}",
+                :style => record.new_record? || record.ftype != 'year' ? 'display:none;' : '')
+  end
+
   # Using YUI TreeView
   def pseudo_choices_form_column(record, input_name)
     top_level = Choice.find_top_level
@@ -93,6 +99,7 @@ module ExtendedFieldsHelper
       [t('extended_fields_helper.ftype_form_column.check_box'), 'checkbox'],
       [t('extended_fields_helper.ftype_form_column.radio_button'), 'radio'],
       [t('extended_fields_helper.ftype_form_column.date'), 'date'],
+      [t('extended_fields_helper.ftype_form_column.year'), 'year'],
       [t('extended_fields_helper.ftype_form_column.text'), 'text'],
       [t('extended_fields_helper.ftype_form_column.text_box'), 'textarea'],
       [t('extended_fields_helper.ftype_form_column.choices_auto_complete'), 'autocomplete'],
@@ -147,6 +154,12 @@ module ExtendedFieldsHelper
             $('hidden_choices_topic_type_select_#{record.id.to_s}').show();
           } else {
             $('hidden_choices_topic_type_select_#{record.id.to_s}').hide();
+          }
+          // show the circa option when the ftype is year
+          if ( value == 'year' ) {
+            $('hidden_choices_circa_#{record.id.to_s}').show();
+          } else {
+            $('hidden_choices_circa_#{record.id.to_s}').hide();
           }
         });
       ")
@@ -267,6 +280,8 @@ module ExtendedFieldsHelper
       send(:extended_field_choice_editor, name, value, tag_options, extended_field)
     elsif extended_field.ftype == "topic_type"
       send(:extended_field_topic_type_editor, name, value, tag_options, extended_field)
+    elsif extended_field.ftype == "year"
+      send(:extended_field_year_editor, name, value, tag_options, extended_field)
     elsif %w(map map_address).member?(extended_field.ftype)
       send(builder, name, value, extended_field, tag_options)
     elsif respond_to?(builder)
@@ -463,6 +478,15 @@ module ExtendedFieldsHelper
     html
   end
 
+  def extended_field_year_editor(name, value, tag_options, extended_field)
+    html = text_field_tag(name+"[value]", value['value'], tag_options)
+    if extended_field.circa?
+      html += hidden_field_tag(name+"[circa]", "0")
+      html += (check_box_tag(name+"[circa]", "1", (value['circa'].to_s == '1')) + "Circa?")
+    end
+    html
+  end
+
   # Generates label XHTML
   def extended_field_label(extended_field, required = false)
     options = required ? { :class => "required" } : Hash.new
@@ -506,7 +530,7 @@ module ExtendedFieldsHelper
     field_values = hash[qualified_name_for_field(extended_field) + "_multiple"]
     field_values = field_values[position_in_set.to_s][qualified_name_for_field(extended_field)] || ""
 
-    if field_values.is_a?(Hash)
+    if field_values.is_a?(Hash) && extended_field.ftype != 'year'
       field_values.reject { |k, v| k == "xml_element_name" }.sort.collect { |v| v.last } || []
     else
       field_values

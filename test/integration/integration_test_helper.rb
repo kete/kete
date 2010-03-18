@@ -230,6 +230,7 @@ class ActionController::IntegrationTest
     relate_to = fields.delete(:relate_to)
     go_to_related = fields.delete(:go_to_related)
     topic_type = fields.delete(:topic_type)
+    should_fail_create = fields.delete(:should_fail)
 
     unless relate_to.nil? || relate_to.is_a?(Topic)
       raise "ERROR: You must relate an item to a Topic, not a #{relate_to.class.name}"
@@ -270,7 +271,11 @@ class ActionController::IntegrationTest
     # If we made a homepage, then we should gets text saying that we did so successfully,
     # otherwise we get test saying the Item was created successfully.
     if controller == 'topics' && is_homepage_topic
-      body_should_contain "Basket homepage was successfully created."
+      if should_fail_create
+        body_should_not_contain "Basket homepage was successfully created."
+      else
+        body_should_contain "Basket homepage was successfully created."
+      end
     elsif !relate_to.nil?
       body_should_contain "Related #{zoom_class_humanize(zoom_class)} was successfully created."
       body_should_contain relate_to.title
@@ -285,7 +290,11 @@ class ActionController::IntegrationTest
       end
       click_link "#{item.title}" if go_to_related.nil? || go_to_related
     else
-      body_should_contain success_message
+      if should_fail_create
+        body_should_not_contain success_message
+      else
+        body_should_contain success_message
+      end
     end
 
     # Finally, lets return the last item of this type made (we assigned item earlier)

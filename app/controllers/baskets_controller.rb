@@ -422,7 +422,7 @@ class BasketsController < ApplicationController
       # make sure we do not cause an SQL query if the value is the same
       next if basket_settings[name.to_sym] == value
       # convert the string to a boolean/nil value if it can be
-      value = value.to_bool if value.is_a?(String)
+      value = value.param_to_obj_equiv if value.is_a?(String)
       # save this new value to the baskets settings
       @basket.settings[name] = value
     end

@@ -260,6 +260,61 @@ class ExtendedContentTest < ActionController::IntegrationTest
 
   end
 
+  context "A year extended field type" do
+
+    setup do
+      add_james_as_super_user
+      login_as(:james)
+
+      TopicTypeToFieldMapping.destroy_all
+
+      options = { :ftype => 'year', :circa => true }
+      @year_non_multiple = ExtendedField.create!(options.merge(:label => 'Publishing Year', :multiple => false))
+      @year_multiple = ExtendedField.create!(options.merge(:label => 'Republishing Years', :multiple => true))
+      @topic_type = TopicType.first
+      @topic_type.form_fields << @year_non_multiple
+      @topic_type.form_fields << @year_multiple
+    end
+
+    should "should be correctly validated" do
+      new_topic(
+        :title => 'Year Extended Field Test',
+        :extended_content_values_publishing_year => 'not valid',
+        :extended_content_values_republishing_years_1 => 'not valid',
+        :should_fail => true
+      )
+      body_should_contain Regexp.new("Publishing Year must be in the standard year format \\(YYYY\\)")
+      body_should_contain Regexp.new("Republishing Years must be in the standard year format \\(YYYY\\)")
+    end
+
+    should "correctly store and display the year field for non-multiples and multiples alike" do
+      new_topic(
+        :title => 'Year Extended Field Test',
+        :extended_content_values_publishing_year => '1970',
+        :extended_content_values_republishing_years_1 => '2002'
+      )
+      body_should_contain Regexp.new("<td[^>]*>Publishing Year:</td><td>1970</td>")
+      body_should_contain Regexp.new("<td[^>]*>Republishing Years:</td><td>2002</td>")
+    end
+
+    context "when those extended fields are required" do
+
+      setup do
+        TopicTypeToFieldMapping.destroy_all
+        @topic_type.required_form_fields << @year_non_multiple
+        @topic_type.required_form_fields << @year_multiple
+      end
+
+      should "require the year field to be present for non-multiples and multiples alike" do
+        new_topic(:title => 'Year Extended Field Test', :should_fail => true)
+        body_should_contain Regexp.new("Publishing Year cannot be blank")
+        body_should_contain Regexp.new("Republishing Years must have at least one value")
+      end
+
+    end
+
+  end
+
   private
 
     def configure_new_topic_type_with_extended_field(options = {})

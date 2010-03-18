@@ -7,6 +7,19 @@
 
 # Include extensions into Ruby components here
 
+module ParamToObjEquiv
+  # converts "true", "1", "false", "0" and "nil" into their appropriate boolean/NilClass values
+  def param_to_obj_equiv
+    case self
+    when "1", "true", true then true
+    when "0", "false", false then false
+    when "nil", nil then nil
+    else self
+    end
+  end
+end
+[String, TrueClass, FalseClass, NilClass].each { |c| c.send(:include, ParamToObjEquiv) }
+
 class String
   # Add a quick escape method to all string instances
   # (for xml displays)
@@ -34,14 +47,6 @@ class String
   end
   def decode_from_url
     URI.decode(self)
-  end
-
-  # converts "true", "1", "false", "0" and "nil" into their appropriate boolean/NilClass values
-  def to_bool
-    return true if self == "true" || self == "1"
-    return false if self == "false" || self == "0"
-    return nil if self == "nil"
-    return self
   end
 end
 

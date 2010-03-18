@@ -32,6 +32,24 @@ class ExtendedField < ActiveRecord::Base
     self.settings[:topic_type] = @topic_type unless @topic_type.blank?
   end
 
+  after_save :store_circa
+
+  def circa
+    @circa ||= self.settings[:circa]
+  end
+
+  def circa?
+    circa && circa.param_to_obj_equiv
+  end
+
+  def circa=(value)
+    @circa = value
+  end
+
+  def store_circa
+    self.settings[:circa] = @circa unless @circa.blank?
+  end
+
   after_save :set_base_url
 
   def base_url
@@ -118,7 +136,7 @@ class ExtendedField < ActiveRecord::Base
   alias link_choice_values? link_choice_values
 
   def link_choice_values=(value)
-    self.dont_link_choice_values = !value.to_bool
+    self.dont_link_choice_values = !value.param_to_obj_equiv
   end
 
   def is_required?(controller, topic_type_id=nil)

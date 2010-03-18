@@ -186,7 +186,7 @@ module GoogleMap
     def validate_extended_map_field_content(extended_field_mapping, values)
       # Allow nil values. If this is required, the nil value will be caught earlier.
       return nil if values.blank?
-      # the values passed in should form an array
+      # the values passed in should form a Hash
       return I18n.t('google_map_lib.validate_extended_map_field_content.not_a_hash',
                     :class => values.class.name,
                     :value => values.inspect) unless values.is_a?(Hash)
