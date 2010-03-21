@@ -2,6 +2,7 @@
 display ||= Array.new
 show_button ||= false
 show_reset ||= false
+show_recent_searches ||= false
 horizontal ||= false
 @populate_values = populate_values rescue false
 %>
@@ -126,12 +127,6 @@ horizontal ||= false
 
   </table>
 
-  <hr />
-
-  <div class="close"><%= link_to('[x]', '#', :alt => t('search.mini_controls.close'),
-                                 :title => t('search.mini_controls.close'),
-                                 :onclick => "$('#{id}').hide();") %></div>
-
   <% if show_button %>
     <div class="submit"><input type="submit" value="<%= t('search.mini_controls.update') %>" /></div>
   <% end %>
@@ -140,6 +135,25 @@ horizontal ||= false
     <div class="reset"><input type="reset" value="<%= t('search.mini_controls.clear') %>" /></div>
   <% end %>
 
-  <div style="clear:left;"></div>
+  <% if show_recent_searches && users_previous_searches.size > 0 %>
+    <div id="recent_searches">
+      <div class="header"><%= t('search.mini_controls.recent_searches') %></div>
+      <ul class="searches">
+        <% users_previous_searches[0...5].each do |search| %>
+        <li><%= link_to truncate(search[:title], :length => 35), search[:url], :title => search[:title] %></li>
+        <% end %>
+      </ul>
+      <ul class="actions">
+        <li class="first"><%= link_to t('search.mini_controls.previous_searches'), :controller => 'search', :action => 'list' %></li>
+        <li><%= link_to t('search.mini_controls.clear_all_searches'), :controller => 'search', :action => 'clear' %></li>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="close"><%= link_to('[x]', '#', :alt => t('search.mini_controls.close'),
+                                 :title => t('search.mini_controls.close'),
+                                 :onclick => "$('#{id}').hide();") %></div>
+
+  <div style="clear:both;"></div>
 
 </div>

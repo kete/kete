@@ -1,7 +1,7 @@
 # Search class isn't an ActiveRecord descendent
 # refactoring to make search_controller stuff move to search model
 # has only just started, so this is limited
-class Search
+class Search < ActiveRecord::Base
   def self.view_as_types
     types = Array.new
     types << ['', I18n.t("search_model.browse_default")]
@@ -36,10 +36,27 @@ class Search
     self.new.sort_type_options_for(sort_type, action)
   end
 
+  # Each saved search belongs to a user. People who are logged
+  # out have theirs stored in the session until they login
+  belongs_to :user
+
+  # Each search needs a user, title, and url is work
+  validates_presence_of :user, :title, :url
+
+  # The URL should be unique. If it exists, we should be updating it instead
+  # Also, it should be scoped to the user, so that other users with the same search work ok
+  validates_uniqueness_of :url, :scope => :user_id
+
+  # First sort by the updated_at. This gets updated when a same search is made
+  # When updated_at values are identical (when you login, multiple ones are added
+  # at once), then sort by the id desc, the order they were entered
+  default_scope :order => "updated_at desc, id desc"
+
   attr_accessor :zoom_db, :pqf_query
 
-  def initialize
+  def initialize(*args)
     @pqf_query = PqfQuery.new
+    super
   end
 
   def sort_type_options_for(sort_type, action)
@@ -93,4 +110,5 @@ class Search
 
     @pqf_query.sort_spec = sort_type
   end
+
 end

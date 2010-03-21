@@ -39,6 +39,8 @@ en:
     changed: changed
     choice: choice
     choose: choose
+    clear: clear
+    cleared: cleared
     click: click
     close: close
     closed: closed
@@ -120,6 +122,7 @@ en:
     not_available: "not available"
     only: only
     open: open
+    option: option
     password: password
     phrases:
       change_password: "{{t.base.change.capitalize}} {{t.base.password}}"
@@ -129,8 +132,9 @@ en:
     please_try_again_later: "{{t.base.please_try_again}} later"
     portrait: portrait
     preview: preview
-    private: private
+    previous: previous
     privacy: privacy
+    private: private
     profile: profile
     public: public
     recent: recent
@@ -166,22 +170,24 @@ en:
     show: show
     showing: showing
     sidebar: sidebar
+    since: since
     site: site
     site_administrator: "{{t.base.site}} {{t.base.administrator}}"
     sort: sort
-    sorted: sorted
-    sorting: sorting
     sort_by: "{{t.base.sort}} {{t.base.by}}"
+    sorted: sorted
     sorted_by: "{{t.base.sorted}} {{t.base.by}}"
+    sorting: sorting
     successful: successful
     successfully: successfully
     tag: tag
     tagged: tagged
     technical_administrator: "technical {{t.base.administrator}}"
-    time: time
     thank_you: "Thank {{t.base.you}}"
+    time: time
     topic_type: "{{t.base.zoom_types.topic}} type"
     type: type
+    until: until
     update: update
     updated: updated
     user: user
@@ -979,9 +985,9 @@ en:
       multiple: (multiple)
       none_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.content_type}}."
       private_only: "{{t.base.private}} {{t.base.only}}?"
-      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
+      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
     edit:
       return_to_content_types: "Return to {{t.base.content_type.pluralize}}"
       title: "{{t.base.editing.capitalize}} {{t.base.content_type}}: {{controller}}"
@@ -1467,6 +1473,8 @@ en:
       dfc_xml: "DFC XML"
       document: "{{t.base.zoom_types.document.capitalize}}"
       excel_based: "Excel based"
+      extended_field_that_contains_record_identifier: "Extended Field containing the {{t.base.related.capitalize}} {{t.base.topic_type.capitalize.pluralize}} Identifier?"
+      extended_field_that_contains_record_identifier_description: "Which extended field in the {{t.base.topic_type}} for {{t.base.related}} {{t.base.zoom_types.topic.pluralize}} contains the data to link {{t.base.imported}} records to the {{t.base.existing}} {{t.base.related}} {{t.base.zoom_types.topic}}? If not given, the importer will do it's best to sort out what should get {{t.base.related}}, but isn't always accurate."
       filemaker_pro: "Filemaker Pro's FMPDSORESULT XML format (text records only, no associated images)"
       has_related_items_in_data: "Should records that refer to {{t.base.existing}} {{t.base.zoom_types.topic.pluralize}} have {{t.base.relation.pluralize}} added to those {{t.base.zoom_types.topic.pluralize}}?"
       image: "{{t.base.zoom_types.image.capitalize}}"
@@ -1478,13 +1486,11 @@ en:
       private_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.only}} {{t.base.by}} {{t.base.basket}} {{t.base.member.pluralize}})"
       public: "{{t.base.public.capitalize}}"
       public_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.by}} {{t.base.everyone}})"
-      extended_field_that_contains_record_identifier: "Extended Field containing the {{t.base.related.capitalize}} {{t.base.topic_type.capitalize.pluralize}} Identifier?"
-      extended_field_that_contains_record_identifier_description: "Which extended field in the {{t.base.topic_type}} for {{t.base.related}} {{t.base.zoom_types.topic.pluralize}} contains the data to link {{t.base.imported}} records to the {{t.base.existing}} {{t.base.related}} {{t.base.zoom_types.topic}}? If not given, the importer will do it's best to sort out what should get {{t.base.related}}, but isn't always accurate."
       record_identifier_xml_field: "XML Field containing Record Identifier:"
       record_identifier_xml_field_description: "Which field in the {{t.base.import}} data contains an identifier unique to each record? Using this helps to prevent duplicate records. If left blank, the {{t.base.importer}} will use its default record identifier field. If it doesn't have one, some {{t.base.item.pluralize}} with the same title may be skipped during {{t.base.import}}."
+      related_topic_type_all: "({{t.base.any}} {{t.base.topic_type}})"
       related_topics_reference_in_record_xml_field: "{{t.base.related.capitalize}} {{t.base.zoom_types.topic.pluralize.capitalize}} reference XML Field(s):"
       related_topics_reference_in_record_xml_field_description: "Which field in the import data contains a comma separated list of {{t.base.zoom_types.topic}} record identifiers that indicates a relationship between the imported record and an {{t.base.existing}} {{t.base.zoom_types.topic}}? If several exist, seperate them with commas. If not provided and the importer doesn't specify one itself, no {{t.base.relation.pluralize}} will be {{t.base.created}}."
-      related_topic_type_all: "({{t.base.any}} {{t.base.topic_type}})"
       simple_xml: "Simple XML"
       tags: "What {{t.base.tag.pluralize}} should we {{t.base.add}} to each {{t.base.imported}} {{t.base.item}} (separated by commas)?"
       tags_description: "These {{t.base.tag.pluralize}} will be {{t.base.added}} to every {{t.base.item}} in the {{t.base.import}} in addition to whatever is specified as a {{t.base.tag}} per record."
@@ -1700,7 +1706,7 @@ en:
       flagged_at: "{{t.base.flagged.capitalize}} at"
       flagged_with: "{{t.base.flagged.capitalize}} with"
       full_history: "{{t.base.item}}'s full {{t.base.history}}"
-      item_title: "Title"
+      item_title: Title
       no_items_needing_moderation: "Currently no {{t.base.item.pluralize}} needing {{t.base.moderation}}."
       privacy: "{{t.base.privacy.capitalize}}"
       private: "{{t.base.private}}"
@@ -1749,6 +1755,20 @@ en:
     invalid_chars: ": the following characters {{t.base.arent}} {{t.base.allowed}} - {{invalid_chars}}"
   oai_pmh_repository_sets_controller:
     title: "Oai Pmh Repository Sets"
+  previous_searches_lib:
+    short_search_title_from_params:
+      contributor: "{{t.base.by}} {{contributor_name}}"
+      date_since: "{{t.base.since}} {{since}}"
+      date_until: "{{t.base.until}} {{until}}"
+      extended_field: "{{extended_field}}"
+      in_reverse: "in reverse"
+      limit_to_choice: "{{choice_name}}"
+      search_terms: "for {{search_terms}}"
+      sort_type: "{{t.base.sorted_by}} {{sort_type}}"
+      source_item: "{{t.base.related}} to {{source_item_name}}"
+      tag: "{{t.base.tagged}} {{tag_name}}"
+      topic_type: "of {{t.base.type}} {{topic_type_name}}"
+      type_and_basket: "{{all}} {{privacy}} {{item_type}} in {{basket_name}}"
   privacy_controls_helper:
     privacy_controls_description:
       public_vs_private: "Note: Individual versions of this {{t.base.item}} {{t.base.can_be}} {{t.base.public}} or {{t.base.private}}. The {{t.base.latest}} {{t.base.public}} version will be shown to non-{{t.base.basket}} members if available.  Otherwise, this {{t.base.item}} is completely {{t.base.private}}."
@@ -1910,23 +1930,30 @@ en:
       title: "{{t.base.search.capitalize}} {{basket_name}}"
     link_related:
       linked: "Linked {{t.base.successfully}}"
+    list:
+      clear_all_searches: "{{t.base.clear}} {{t.base.all}} {{t.base.search.pluralize}}"
+      remove: "{{t.base.remove}}"
+      title: "{{t.base.previous.capitalize}} {{t.base.search.pluralize.capitalize}}"
     mini_controls:
       about_a: "about a"
       all_of: "{{t.base.all.capitalize}} of {{site_basket_name}}"
       any_topic_type: "- {{t.base.any}} {{t.base.topic_type}} - "
-      clear: "Clear {{t.base.search.capitalize}} Options"
+      clear: "{{t.base.clear.capitalize}} {{t.base.search.capitalize}} {{t.base.option.pluralize.capitalize}}"
+      clear_all_searches: "{{t.base.clear.capitalize}} {{t.base.all.capitalize}} {{t.base.search.pluralize.capitalize}}"
       close: "{{t.base.close.capitalize}}"
       date: "{{t.base.item.pluralize.capitalize}} that have a {{t.base.date}} or {{t.base.time}}"
       in_reverse: "In reverse?"
+      previous_searches: "{{t.base.previous.capitalize}} {{t.base.search.pluralize.capitalize}}"
       private: "{{t.base.private.capitalize}}"
       public: "{{t.base.public.capitalize}}"
+      recent_searches: "{{t.base.recent.capitalize}} {{t.base.search.pluralize.capitalize}}"
       results_display: "{{t.base.results.capitalize}} {{t.base.display.capitalize}}"
       search_terms: "{{t.base.search.capitalize}} Terms"
       show: "{{t.base.show}}"
       sorted_by: "{{t.base.sorted_by}}"
       that_are: "that are"
-      update: "Update"
-      within: "within"
+      update: "{{t.base.update.capitalize}}"
+      within: within
     rebuild_zoom_index:
       completed: "Completed. "
       in_progress: "...in progress."
@@ -1935,8 +1962,8 @@ en:
     refine_by_choice:
       limit_to_category: "Limit it to category?"
     refine_by_date:
-      date_since: "since"
-      date_until: "until"
+      date_since: "{{t.base.since}}"
+      date_until: "{{t.base.until}}"
     refine_results:
       refine: "Refine {{t.base.your}} {{t.base.results.capitalize}}"
     related:
@@ -2002,6 +2029,9 @@ en:
       return_to_rebuild: "Return to Rebuild Set up"
       started_at: "Started at {{start_time}}"
       working_on: "Working on {{zoom_class}}"
+    clear:
+      previous_searches_removed: "{{t.base.all.capitalize}} {{t.base.previous}} {{t.base.search.pluralize}} have been {{t.base.cleared}}."
+      selected_search_removed: "The selected {{t.base.previous}} {{t.base.search}} has been {{t.base.removed}}."
     find_index:
       changed: "Homepage {{t.base.zoom_types.topic}} {{t.base.changed}} {{t.base.successfully}}"
       failed: "Problem changing Homepage {{t.base.zoom_types.topic}}"
@@ -2097,9 +2127,9 @@ en:
       no_fields_mapped: "No {{t.base.form}} {{t.base.field.pluralize}} currently mapped to this {{t.base.topic_type}}."
       no_more_allowed: "{{t.base.you.capitalize}} {{t.base.cannot}} {{t.base.add}} {{t.base.any}} additional {{t.base.field.pluralize}} to this {{t.base.topic_type}}, see above."
       private_only: "{{t.base.private}} {{t.base.only}}?"
-      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
       required: required?
       title: "Current {{t.base.form.capitalize}} {{t.base.field.pluralize.capitalize}}"
+      update_fields: "{{t.base.update.capitalize}} {{t.base.form}}"
     edit:
       edit_button: "{{t.base.edit.capitalize}}"
       return_to_topic_types: "Return to {{t.base.topic_type.pluralize}}"

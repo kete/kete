@@ -145,4 +145,55 @@ class SearchTest < ActiveSupport::TestCase
   end
 
   define_tests_of_add_sort_to_query_if_needed_should_be
+
+  #
+  # Previous Search functionality
+  #
+
+  context "Previous search functionality" do
+
+    setup do
+      @search_options = { :title => 'Custom Search', :url => "http://something.com/#{rand}" }
+      @user1 = create_new_user(:login => 'User1')
+      @user2 = create_new_user(:login => 'User2')
+      assert (@user1 != @user2)
+    end
+
+    should "belong to a user" do
+      search = Search.create!(@search_options.merge(:user => @user1))
+      assert_equal @user1, search.user
+      assert @user1.searches.include?(search)
+    end
+
+    should "require user, title, and url be present" do
+      search = Search.create
+      ["User can't be blank", "Title can't be blank", "Url can't be blank"].each do |error|
+        assert search.errors.full_messages.include?(error)
+      end
+    end
+
+    should "require a unique url scoped to the current user" do
+      search1 = Search.create(@search_options.merge(:user => @user1))
+      assert search1.valid?
+
+      search2 = Search.create(@search_options.merge(:user => @user1))
+      assert !search2.valid?
+      assert search2.errors.full_messages.include?('Url has already been taken')
+
+      search3 = Search.create(@search_options.merge(:user => @user2))
+      assert search3.valid?
+    end
+
+    should "sort searches from most recent to oldest, using date, then ID" do
+      options = @search_options.merge(:user => @user1)
+
+      search1 = Search.create(options.merge(:url => "http://something.com/#{rand}"))
+      search2 = Search.create(options.merge(:url => "http://something.com/#{rand}"))
+      search3 = Search.create(options.merge(:url => "http://something.com/#{rand}"))
+
+      assert_equal [search3, search2, search1], @user1.searches.all
+    end
+
+  end
+
 end

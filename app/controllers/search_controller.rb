@@ -32,6 +32,21 @@ class SearchController < ApplicationController
   def index
   end
 
+  def list
+  end
+
+  def clear
+    if params[:search_id].to_i > 0
+      clear_users_previous_searches(params[:search_id].to_i)
+      flash[:notice] = t('search_controller.clear.selected_search_removed')
+      redirect_to :action => 'list'
+    else
+      clear_users_previous_searches
+      flash[:notice] = t('search_controller.clear.previous_searches_removed')
+      redirect_to "/" # go to the homepage to avoid another search
+    end
+  end
+
   # REFACTOR SCRATCH:
   # split search action into "all", "for", and "index"
   # index: where somone can enter search terms
@@ -71,6 +86,9 @@ class SearchController < ApplicationController
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
     rescue_404 if @results.nil?
+
+    # if everything went well, lets save this search for the current_user
+    save_current_search
   end
 
   # this action is the action that relies on search_terms being defined
@@ -80,7 +98,6 @@ class SearchController < ApplicationController
     # several of these are valid if nil
     @search_terms = params[:search_terms]
     if @search_terms.nil?
-      # TODO: have this message be derived from globalize
       flash[:notice] = t('search_controller.for.no_search_terms')
     else
       setup_rss
@@ -92,6 +109,9 @@ class SearchController < ApplicationController
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
     rescue_404 if @results.nil?
+
+    # if everything went well, lets save this search for the current_user
+    save_current_search
   end
 
   def search
@@ -336,11 +356,11 @@ class SearchController < ApplicationController
 
     # Date searching is a special thing,
     # but existing sort params take precendence
-    # then search term sorting 
+    # then search term sorting
     if @date_since.present? || @date_until.present?
       if @search_terms.blank?
         params[:sort_type] ||= 'date'
-        
+
         # date based search direction has some specific logic
         # depending on combination of parameters
         if @date_since.present?

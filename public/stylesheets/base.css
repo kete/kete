@@ -532,24 +532,51 @@ a:hover {
 .search_dropdown .fields select {
   max-width: 140px;
 }
-.search_dropdown .close {
-  float: right;
-  margin-right: 10px;
-}
 .search_dropdown .submit {
   text-align: center;
   margin-bottom: 5px;
 }
 .search_dropdown .reset {
   text-align: center;
-  margin-bottom: 5px;
+  margin: 5px;
+  background-color: #eee;
+  padding: 3px;
 }
 .search_dropdown .reset input {
   border: 0;
   background: transparent;
   color: gray;
+  display: block; /* makes the underline work in FF */
   text-decoration: underline;
+  margin: 0 auto 2px auto;
+  padding: 0;
 }
+.search_dropdown #recent_searches .searches {
+  margin: 3px auto 10px auto;
+}
+.search_dropdown #recent_searches .actions {
+  margin: 5px;
+  background-color: #eee;
+  padding: 3px;
+  text-align: center;
+}
+.search_dropdown #recent_searches .actions li {
+  display: inline;
+  border-left: 1px solid gray;
+  padding-left: 3px;
+}
+.search_dropdown #recent_searches .actions li.first {
+  border: none;
+}
+.search_dropdown .close {
+  float: right;
+  margin: 0 10px 10px 0;
+}
+
+#recent_searches_list li:hover {
+  background-color: #F7F7F7;
+}
+
 
 #search-results{
     margin-left: 2em;

@@ -58,6 +58,9 @@ class User < ActiveRecord::Base
   # users can create baskets if the system setting is enabled to do so
   has_many :baskets, :class_name => 'Basket', :foreign_key => :creator_id
 
+  # users can have many saved searches
+  has_many :searches, :dependent => :destroy
+
   # Virtual attribute for the contribution.version join model
   # a hack to be able to pass it in
   # see topics_controller update action for example

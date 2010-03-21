@@ -33,11 +33,12 @@ class AccountController < ApplicationController
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
+        move_session_searches_to_current_user
+        flash[:notice] = t('account_controller.login.logged_in')
         redirect_back_or_default({ :locale => current_user.locale,
                                    :urlified_name => @site_basket.urlified_name,
                                    :controller => 'account',
                                    :action => 'index' }, current_user.locale)
-        flash[:notice] = t('account_controller.login.logged_in')
       else
         flash[:notice] = t('account_controller.login.failed_login')
       end
@@ -104,6 +105,7 @@ class AccountController < ApplicationController
 
     if !REQUIRE_ACTIVATION
       self.current_user = @user
+      move_session_searches_to_current_user
       flash[:notice] = t('account_controller.signup.signed_up')
     else
       flash[:notice] = t('account_controller.signup.signed_up_with_email')

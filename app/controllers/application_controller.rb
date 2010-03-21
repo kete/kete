@@ -42,6 +42,8 @@ class ApplicationController < ActionController::Base
 
   include ZoomSearch
 
+  include PreviousSearches
+
   include KeteUrlFor
 
   # for the remember me functionality
