@@ -1,6 +1,7 @@
 ---
 en:
   base:
+    about_a: "about a"
     accept: accept
     accepted: accepted
     account: account
@@ -1898,7 +1899,7 @@ en:
       results_in: "Results in "
       whole_site: " whole {{t.base.site}}"
     form:
-      about_a: "About a:"
+      about_a: "{{t.base.about_a.capitalize}}:"
       any_topic_type: "- {{t.base.any}} {{t.base.type}} -"
       browse_by_category: "{{t.base.browse.capitalize}} {{t.base.by}} category"
       getting_categories: "Getting Categories. "
@@ -1935,7 +1936,7 @@ en:
       remove: "{{t.base.remove}}"
       title: "{{t.base.previous.capitalize}} {{t.base.search.pluralize.capitalize}}"
     mini_controls:
-      about_a: "about a"
+      about_a: "{{t.base.about_a}}"
       all_of: "{{t.base.all.capitalize}} of {{site_basket_name}}"
       and: "And"
       any_topic_type: "- {{t.base.any}} {{t.base.topic_type}} - "
@@ -2049,7 +2050,7 @@ en:
       zoom_rebuilt: "ZOOM indexes rebuilt"
   search_helper:
     last_part_of_title_if_refinement_of:
-      about_a: " about a {{topic_type_name}}"
+      about_a: " {{t.base.about_a}} {{topic_type_name}}"
       and: " and"
       contributed_by: " {{t.base.contributed}} {{t.base.by}} {{contributor}}"
       date_since: " since {{date}}"
@@ -2311,7 +2312,7 @@ en:
       sending_tags: "Sending {{t.base.tag.pluralize}}. "
       title: "{{t.base.tag.capitalize.pluralize}}"
     topic_types:
-      about_a: "About a?"
+      about_a: "{{t.base.about_a.capitalize}}?"
   topics_controller:
     create:
       created: "{{t.base.zoom_types.topic.capitalize}} {{t.base.was_created}}."
