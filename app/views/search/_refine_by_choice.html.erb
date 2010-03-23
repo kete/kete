@@ -1,7 +1,14 @@
-<% control = limit_search_to_choice_control -%>
+<%
+without_label ||= false
+clear_values ||= false
+control = limit_search_to_choice_control(clear_values)
+%>
 <% if @extended_field -%>
-<br /><%= content_tag("label", @extended_field.label) + control unless control.blank? %>
-<% elsif @all_choices && categories_field -%>
-<br /><%= content_tag("label", t('search.refine_by_choice.limit_to_category')) + control unless control.blank? %>
+  <br /><%= content_tag("label", @extended_field.label) + control unless control.blank? %>
+<% elsif categories_field -%>
+  <% unless without_label %>
+    <br /><%= content_tag("label", t('search.refine_by_choice.limit_to_category')) %>
+  <% end %>
+  <%= control unless control.blank? %>
 <% end -%>
 <%= hidden_field_tag 'extended_field', params[:extended_field] if params[:extended_field] %>

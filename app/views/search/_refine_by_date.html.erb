@@ -1,20 +1,11 @@
-<% in_table ||= false %>
-<% populate_values = @populate_values.nil? ? true : @populate_values %>
-<% if in_table %>
-  <table>
-  <tr>
-    <td><%= t('search.refine_by_date.date_since') %></td>
-    <td><%= text_field_tag 'date_since', (params[:date_since] if populate_values), :size => 10 %></td>
-  </tr>
-  <tr>
-    <td><%= t('search.refine_by_date.date_until') %></td>
-    <td><%= text_field_tag 'date_until', (params[:date_until] if populate_values), :size => 10 %></td>
-  </tr>
-  </table>
-<% else %>
-  <%= t('search.refine_by_date.date_since') %>
-  <%= text_field_tag 'date_since', (params[:date_since] if populate_values), :size => 10 %>
-
-  <%= t('search.refine_by_date.date_until') %>
-  <%= text_field_tag 'date_until', (params[:date_until] if populate_values), :size => 10 %>
-<% end %>
+<% clear_values ||= false %>
+<table>
+<tr>
+  <td><%= t('search.refine_by_date.date_since') %></td>
+  <td><%= text_field_tag 'date_since', (params[:date_since] unless clear_values), :size => 10 %></td>
+</tr>
+<tr>
+  <td><%= t('search.refine_by_date.date_until') %></td>
+  <td><%= text_field_tag 'date_until', (params[:date_until] unless clear_values), :size => 10 %></td>
+</tr>
+</table>

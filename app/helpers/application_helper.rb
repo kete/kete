@@ -874,35 +874,112 @@ module ApplicationHelper
                 #{form.text_field :tag_list, :tabindex => '1'}</div>"
   end
 
-  def toggle_in_reverse_field_js_helper
-    javascript_tag "
-    function toggleDisabledSortDirection(event) {
-      var element = Event.element(event);
+  #
+  # Start Search Control Dropdown Helpers
+  #
 
-      $('sort_direction').checked = ( element.options[element.selectedIndex].value != \"none\" && $('sort_direction').checked );
-
-      $('sort_direction').disabled = ( element.options[element.selectedIndex].value == \"none\" );
-
-      if ( element.options[element.selectedIndex].value == \"none\" ) {
-        $('sort_direction_field').hide()
-      } else {
-        $('sort_direction_field').show()
-      }
-    }
-
-    $('sort_type').observe('change', toggleDisabledSortDirection);"
+  def display_search_field_for?(field_type, setting_value)
+    ['all', field_type].include?(setting_value)
   end
+
+  def topic_type_useful_here?(type)
+    display_search_field_for?(type, DISPLAY_ITEM_TYPE_FIELD) || params[:controller_name_for_zoom_class] == 'topics'
+  end
+
+  def toggle_topic_types_field_js_helper_for(parent_id)
+    javascript_tag "
+    if ($$('##{parent_id} #controller_name_for_zoom_class').first() && $$('##{parent_id} #topic_type').first().up('tr')) {
+      if ($$('##{parent_id} #controller_name_for_zoom_class').first().value != 'topics') {
+        $$('##{parent_id} #topic_type').first().up('tr').hide();
+      }
+      $$('##{parent_id} #controller_name_for_zoom_class').first().observe('change', function(event) {
+        if (this.value == 'topics') {
+          $$('##{parent_id} #topic_type').first().up('tr').show();
+        } else {
+          $$('##{parent_id} #topic_type').first().up('tr').hide();
+        }
+      });
+    }
+    "
+  end
+
+  def current_sort_type
+    if params[:sort_type].present?
+      params[:sort_type]
+    elsif @current_basket.settings[:sort_order_default].present?
+      @current_basket.settings[:sort_order_default]
+    end
+  end
+
+  def current_sort_direction
+    if params[:sort_direction].present?
+      params[:sort_direction]
+    elsif @current_basket.settings[:sort_direction_reversed_default].present?
+      @current_basket.settings[:sort_direction_reversed_default]
+    end
+  end
+
+  def toggle_relevance_field_js_helper_for(parent_id)
+    js = "
+    function #{parent_id}_any_fields_provided() {
+      if ($$('##{parent_id} #search_terms').first() && $$('##{parent_id} #search_terms').first().value != '') { return true; }
+      if ($$('##{parent_id} #date_since').first() && $$('##{parent_id} #date_since').first().value != '') { return true; }
+      if ($$('##{parent_id} #date_until').first() && $$('##{parent_id} #date_until').first().value != '') { return true; }
+      return false;
+    }
+    function #{parent_id}_reset_relevance(force) {
+      if (!force && (#{parent_id}_any_fields_provided() || !$$('##{parent_id} #sort_type').first())) { return; }
+      if ($$('##{parent_id} #sort_type').first().down('.title')) { $$('##{parent_id} #sort_type').first().down('.title').selected = true; }
+      if ($$('##{parent_id} #sort_direction_field').first()) { $$('##{parent_id} #sort_direction_field').first().show(); }
+      if ($$('##{parent_id} #sort_type').first().down('.none')) { $$('##{parent_id} #sort_type').first().down('.none').hide(); }
+    }
+    function #{parent_id}_show_relevance(force) {
+      if (!force && (!#{parent_id}_any_fields_provided() || !$$('##{parent_id} #sort_type').first())) { return; }
+      if ($$('##{parent_id} #sort_type').first().down('.none')) { $$('##{parent_id} #sort_type').first().down('.none').show(); }
+    }
+    #{parent_id}_reset_relevance();
+    "
+    %w{ search_terms date_since date_until }.each do |field|
+      js += "
+      if ($$('##{parent_id} ##{field}').first()) { $$('##{parent_id} ##{field}').first().observe('change', function(event) {
+        if (this.value == '') { #{parent_id}_reset_relevance(); } else { #{parent_id}_show_relevance(); }
+      }); }
+      "
+    end
+    javascript_tag(js)
+  end
+
+  def toggle_in_reverse_field_js_helper_for(parent_id)
+    javascript_tag "
+    if ($$('##{parent_id} #sort_type').first() && $$('##{parent_id} #sort_direction_field').first()) {
+      if ($$('##{parent_id} #sort_type').first().value == 'none') {
+        $$('##{parent_id} #sort_direction_field').first().hide();
+      }
+      $$('##{parent_id} #sort_type').first().observe('change', function(event) {
+        if (this.value == 'none') {
+          $$('##{parent_id} #sort_direction_field').first().hide();
+        } else {
+          $$('##{parent_id} #sort_direction_field').first().show();
+        }
+      });
+    }
+    "
+  end
+
+  #
+  # End Search Control Dropdown Helpers
+  #
 
   # if extended_field is passed in, use that to limit choices
   # else if @all_choices is true, we provide them all
-  def limit_search_to_choice_control
+  def limit_search_to_choice_control(clear_values = false)
     options_array = Array.new
 
     if @extended_field
       options_array = @extended_field.choices.find_top_level.inject([]) do |memo, choice|
         memo + option_for_choice_control(choice, :level => 0)
       end
-    elsif @all_choices && categories_field
+    elsif categories_field
       options_array = categories_field.choices.find_top_level.reject { |c| c.extended_fields.empty? }.inject([]) do |memo, choice|
         memo + option_for_choice_control(choice, :level => 0)
       end
@@ -912,7 +989,7 @@ module ApplicationHelper
 
     html_options_for_select = ([['', '']] + options_array).map do |k, v|
       attrs = { :value => v }
-      attrs.merge!(:selected => "selected") if @limit_to_choice && @limit_to_choice == v
+      attrs.merge!(:selected => "selected") if !clear_values && @limit_to_choice && @limit_to_choice == v
       content_tag("option", k, attrs)
     end.join
 

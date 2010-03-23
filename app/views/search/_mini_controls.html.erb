@@ -1,19 +1,21 @@
 <%
-display ||= Array.new
-show_button ||= false
-show_reset ||= false
-show_recent_searches ||= false
-horizontal ||= false
-@populate_values = populate_values rescue false
+display_menu = (type == 'menu')
+display_refine = (type == 'refine')
+clear_values = display_menu
+horizontal = display_refine
 %>
 
 <div id="<%= id %>" class="search_dropdown<%= ' horizontal' if horizontal %>" style="display:none;">
+
+  <% if display_menu %>
+    <div class="header"><%= t('search.mini_controls.and') %></div>
+  <% end %>
 
   <table>
 
     <%= "<tr><td valign='top'><table>" if horizontal %>
 
-    <% if display.include?(:search_terms) %>
+    <% if display_search_field_for?(type, DISPLAY_SEARCH_TERMS_FIELD) %>
     <tr>
       <td colspan="3" class="header">
         <label for="search_terms"><%= t('search.mini_controls.search_terms') %></label>
@@ -21,19 +23,21 @@ horizontal ||= false
     </tr>
     <tr>
       <td colspan="3" class="fields">
-        <%= text_field_tag 'search_terms', h(@search_terms.to_s), :size => 30, :tabindex => '1' %>
+        <%= text_field_tag 'search_terms', (h(@search_terms.to_s) unless clear_values), :size => 30, :tabindex => '1' %>
       </td>
     </tr>
     <% end %>
 
-    <% if display.include?(:dates) %>
+    <% if display_search_field_for?(type, DISPLAY_DATE_RANGE_FIELDS) %>
     <tr>
       <td colspan="3" class="header">
         <label for="date_since"><%= t('search.mini_controls.date') %></label>
       </td>
     </tr>
     <tr>
-      <td colspan="3" class="fields"><%= render 'search/refine_by_date', :in_table => true %></td>
+      <td colspan="3" class="fields">
+        <%= render 'search/refine_by_date', :clear_values => clear_values %>
+      </td>
     </tr>
     <% end %>
 
@@ -43,9 +47,11 @@ horizontal ||= false
       <td colspan="3" class="header"><%= t('search.mini_controls.results_display') %></td>
     </tr>
 
-    <% if display.include?(:privacy_type) && logged_in? && Basket.privacy_exists %>
+    <% controls_permitted = display_menu || @current_basket.show_privacy_controls_with_inheritance? %>
+    <% if display_search_field_for?(type, DISPLAY_PRIVACY_FIELDS) && logged_in? && controls_permitted && Basket.privacy_exists %>
     <tr>
-      <% selected = ((params[:privacy_type] if @populate_values) || 'public') %>
+      <% default = @current_basket.private_default_with_inheritance? ? 'private' : 'public' %>
+      <% selected = ((params[:privacy_type] unless clear_values) || (DEFAULT_SEARCH_PRIVACY if display_menu) || default) %>
       <td class="label"><%= t('search.mini_controls.that_are') %></td>
       <% %w{ public private }.each do |privacy_type| %>
         <td class="fields">
@@ -56,7 +62,7 @@ horizontal ||= false
     </tr>
     <% end %>
 
-    <% if display.include?(:item_types) %>
+    <% if display_search_field_for?(type, DISPLAY_ITEM_TYPE_FIELD) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.show') %></td>
       <td colspan="2" class="fields">
@@ -64,14 +70,26 @@ horizontal ||= false
         options = %w{ topics images audio video web_links documents comments }.collect do |item_type|
           [zoom_class_plural_humanize(zoom_class_from_controller(item_type)), item_type]
         end
-        selected = (params[:controller_name_for_zoom_class].blank? ? 'topics' : params[:controller_name_for_zoom_class]) if @populate_values
+        selected = (params[:controller_name_for_zoom_class].blank? || clear_values ? 'topics' : params[:controller_name_for_zoom_class])
         %>
         <%= select_tag('controller_name_for_zoom_class', options_for_select(options, selected)) %>
       </td>
     </tr>
     <% end %>
 
-    <% if display.include?(:baskets) && @basket_access_hash.keys.size > 0 %>
+    <% if display_search_field_for?(type, DISPLAY_TOPIC_TYPE_FIELD) && topic_type_useful_here?(type) %>
+    <tr>
+      <td class="label"><%=t 'search.mini_controls.about_a' %></td>
+      <td colspan="2" class="fields">
+        <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
+                                          :name, :name, (params[:topic_type] unless clear_values), {},
+                                          [[t('search.mini_controls.any_topic_type'), '']]) %>
+        <%= toggle_topic_types_field_js_helper_for(id) -%>
+      </td>
+    </tr>
+    <% end %>
+
+    <% if display_search_field_for?(type, DISPLAY_BASKET_FIELD) && @basket_access_hash.keys.size > 0 %>
     <tr>
       <td class="label"><%= t('search.mini_controls.within') %></td>
       <td colspan="2" class="fields">
@@ -81,45 +99,37 @@ horizontal ||= false
           next if basket_urlified_name == :site
           options << [value[:basket_name], basket_urlified_name.to_s]
         end
-        selected = params[:urlified_name] if @populate_values
+        selected = clear_values ? 'site' : params[:urlified_name]
         %>
         <%= select_tag('target_basket', options_for_select(options, selected)) %>
       </td>
     </tr>
     <% end %>
 
-    <% if display.include?(:topic_types) && params[:controller_name_for_zoom_class] == 'topics' %>
-    <tr>
-      <td class="label"><%=t 'search.mini_controls.about_a' %></td>
-      <td colspan="2" class="fields">
-        <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
-                                          :name, :name, params[:topic_type], {},
-                                          [[t('search.mini_controls.any_topic_type'), '']]) %>
-      </td>
-    </tr>
-    <% end %>
-
-    <% if display.include?(:sorting) %>
+    <% if display_search_field_for?(type, DISPLAY_SORTING_FIELDS) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.sorted_by') %></td>
       <td colspan="2" class="fields">
-        <% sort_type = (params[:sort_type].blank? and !@current_basket.settings[:sort_order_default].blank?) ? @current_basket.settings[:sort_order_default] : params[:sort_type] %>
-        <%= select_tag 'sort_type', @search.sort_type_options_for(sort_type, params[:action]), :tabindex => '1'  %>
+        <% sort_type = clear_values ? '' : current_sort_type %>
+        <%= select_tag 'sort_type', Search.all_sort_types(sort_type, params[:action], true), :tabindex => '1' %>
         <br />
-        <div id="sort_direction_field" <%= 'style="display:none"' if params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none') -%>>
+        <div id="sort_direction_field">
           <label for="sort_direction"><%=t 'search.mini_controls.in_reverse' %></label>
-          <% currently_reversed = ((!params[:sort_direction].blank? && params[:sort_direction] == 'reverse') or (params[:sort_type].blank? && @current_basket.settings[:sort_direction_reversed_default] == 'reverse')) %>
-          <% currently_disabled = (params[:action] == 'for' && (params[:sort_type].blank? || params[:sort_type] == 'none')) %>
-          <input type="checkbox" name="sort_direction" id="sort_direction" value="reverse"<%= ' disabled="true"' if currently_disabled -%><%= ' checked="checked"' if currently_reversed -%> tabindex="1" />
+          <% sort_direction = clear_values ? '' : current_sort_direction %>
+          <%= check_box_tag 'sort_direction', 'reverse', (sort_direction == 'reverse'), :tabindex => '1' %>
         </div>
-        <%= toggle_in_reverse_field_js_helper if params[:action] == 'for' -%>
+        <%= toggle_relevance_field_js_helper_for(id) -%>
+        <%= toggle_in_reverse_field_js_helper_for(id) -%>
       </td>
     </tr>
     <% end %>
 
-    <% if display.include?(:choices) %>
+    <% if display_search_field_for?(type, DISPLAY_CHOICES_FIELD) && (@extended_field || categories_field) %>
     <tr>
-      <td colspan="3"><%= render 'search/refine_by_choice' %></td>
+      <td class="label"><%= t('search.mini_controls.categorised') %></td>
+      <td colspan="2" class="fields">
+        <%= render 'search/refine_by_choice', :without_label => true, :clear_values => clear_values %>
+      </td>
     </tr>
     <% end %>
 
@@ -127,15 +137,17 @@ horizontal ||= false
 
   </table>
 
-  <% if show_button %>
-    <div class="submit"><input type="submit" value="<%= t('search.mini_controls.update') %>" /></div>
+  <% if display_refine %>
+    <div class="submit">
+      <hr /><input type="submit" value="<%= t('search.mini_controls.update') %>" />
+    </div>
   <% end %>
 
-  <% if show_reset %>
+  <% if display_menu %>
     <div class="reset"><input type="reset" value="<%= t('search.mini_controls.clear') %>" /></div>
   <% end %>
 
-  <% if show_recent_searches && users_previous_searches.size > 0 %>
+  <% if display_menu && users_previous_searches.size > 0 %>
     <div id="recent_searches">
       <div class="header"><%= t('search.mini_controls.recent_searches') %></div>
       <ul class="searches">
@@ -154,6 +166,8 @@ horizontal ||= false
                                  :title => t('search.mini_controls.close'),
                                  :onclick => "$('#{id}').hide();") %></div>
 
-  <div style="clear:both;"></div>
+  <% if display_menu %>
+    <div style="clear:both;"></div>
+  <% end %>
 
 </div>

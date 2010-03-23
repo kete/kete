@@ -514,7 +514,7 @@ a:hover {
   position: relative;
 }
 .search_dropdown.horizontal {
-  width: 600px;
+  width: 580px;
 }
 .search_dropdown table {
   width: 100%;
@@ -571,6 +571,9 @@ a:hover {
 .search_dropdown .close {
   float: right;
   margin: 0 10px 10px 0;
+}
+.search_dropdown.horizontal .close {
+  margin-top: -25px;
 }
 
 #recent_searches_list li:hover {

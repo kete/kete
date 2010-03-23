@@ -1937,7 +1937,9 @@ en:
     mini_controls:
       about_a: "about a"
       all_of: "{{t.base.all.capitalize}} of {{site_basket_name}}"
+      and: "And"
       any_topic_type: "- {{t.base.any}} {{t.base.topic_type}} - "
+      categorised: "categorised"
       clear: "{{t.base.clear.capitalize}} {{t.base.search.capitalize}} {{t.base.option.pluralize.capitalize}}"
       clear_all_searches: "{{t.base.clear.capitalize}} {{t.base.all.capitalize}} {{t.base.search.pluralize.capitalize}}"
       close: "{{t.base.close.capitalize}}"

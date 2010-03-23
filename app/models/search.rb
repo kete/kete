@@ -31,9 +31,9 @@ class Search < ActiveRecord::Base
     ['title'] + date_types
   end
 
-  def self.all_sort_types(sort_type, action)
+  def self.all_sort_types(sort_type, action, with_relevance = false)
     # not ideal, but the only way to get access that I know of
-    self.new.sort_type_options_for(sort_type, action)
+    self.new.sort_type_options_for(sort_type, action, with_relevance)
   end
 
   # Each saved search belongs to a user. People who are logged
@@ -59,8 +59,8 @@ class Search < ActiveRecord::Base
     super
   end
 
-  def sort_type_options_for(sort_type, action)
-    with_relevance = action == 'for' ? true : false
+  def sort_type_options_for(sort_type, action, with_relevance = false)
+    with_relevance = with_relevance || (action == 'for' ? true : false)
 
     sort_type = sort_type(:action => action, :user_specified => sort_type, :default => 'none')
 
@@ -69,9 +69,9 @@ class Search < ActiveRecord::Base
 
     full_sort_types.each do |type|
       if type == 'relevance'
-        sort_type_options += "<option value=\"none\""
+        sort_type_options += "<option class=\"none\" value=\"none\""
       else
-        sort_type_options += "<option value=\"#{type}\""
+        sort_type_options += "<option class=\"#{type}\" value=\"#{type}\""
       end
       sort_type_options += " selected=\"selected\"" if !sort_type.nil? && type == sort_type
       sort_type_options += ">" + I18n.t("search_model.#{type}") + "</option>"

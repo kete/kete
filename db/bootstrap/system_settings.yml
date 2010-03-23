@@ -616,3 +616,75 @@ system_settings_071:
   id: "71"
   value: "true"
   section: Search
+system_settings_072:
+  name: Display Search Terms Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "72"
+  value: "refine"
+  section: Search
+system_settings_073:
+  name: Display Date Range Fields
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "73"
+  value: "all"
+  section: Search
+system_settings_074:
+  name: Display Privacy Fields
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "74"
+  value: "all"
+  section: Search
+system_settings_075:
+  name: Default Search Privacy
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Which privacy should be the default if the user hasn't supplied one yet? Choose one of the following: public, private"
+  id: "75"
+  value: "public"
+  section: Search
+system_settings_076:
+  name: Display Item Type Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "76"
+  value: "menu"
+  section: Search
+system_settings_077:
+  name: Display Topic Type Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "77"
+  value: "all"
+  section: Search
+system_settings_078:
+  name: Display Basket Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "78"
+  value: "menu"
+  section: Search
+system_settings_079:
+  name: Display Sorting Fields
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "79"
+  value: "refine"
+  section: Search
+system_settings_080:
+  name: Display Choices Field
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Choose one of the following: all, none, menu, refine. All will be shown on both the search menu and refine your results, menu will be just the search menu activated by the magnifying glass icon, refine will only be under refine your results link on results pages, and none hides the field altogether."
+  id: "80"
+  value: "refine"
+  section: Search

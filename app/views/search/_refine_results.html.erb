@@ -1,9 +1,7 @@
 <div id="refine_search_dropdown_container">
 
   <% form_tag(:overwrite_params => overwritten_search_params) do %>
-    <%= render 'search/mini_controls', :id => 'refine_search_dropdown',
-        :display => [:search_terms, :dates, :privacy_type, :sorting, :topic_types, :choices],
-        :populate_values => true, :show_button => true, :horizontal => true %>
+    <%= render 'search/mini_controls', :id => 'refine_search_dropdown', :type => 'refine' %>
   <% end %>
 
   <% refine_search_dropdown_link = link_to(t('search.refine_results.refine'), '#', :onclick =>  "$('refine_search_dropdown').toggle();") -%>
