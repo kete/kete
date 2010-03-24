@@ -768,7 +768,7 @@ module ExtendedContent
     # Generic validation methods
     def validate_extended_content_single_value(extended_field_mapping, value)
       # Handle required fields here..
-      no_map_enabled = (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && value['no_map'] == "1")
+      no_map_enabled = (%w(map map_address).member?(extended_field_mapping.extended_field.ftype) && (!value || value['no_map'] == "1"))
       no_year_provided = (extended_field_mapping.extended_field.ftype == 'year' && (!value || value['value'].blank?))
       if extended_field_mapping.required &&
         (value.blank? || no_map_enabled || no_year_provided) &&
