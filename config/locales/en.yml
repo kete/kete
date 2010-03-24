@@ -1276,7 +1276,7 @@ en:
     additional_extended_field_control:
       add_another: "{{t.base.add.capitalize}} another {{field_name}}"
     children_form_column:
-      Need_choice_for_children: "{{t.base.you.capitalize}} {{t.base.cannot}} select child {{t.base.choice.pluralize}} until the {{t.base.choice}} {{t.base.has_been}} {{t.base.created}}."
+      need_choice_for_children: "{{t.base.you.capitalize}} {{t.base.cannot}} select child {{t.base.choice.pluralize}} until the {{t.base.choice}} {{t.base.has_been}} {{t.base.created}}."
       add_more_sub_choices: "{{t.base.add}} more sub-{{t.base.choice.pluralize}}"
       existing_sub_choices: "{{t.base.existing.capitalize}} sub-{{t.base.choice.pluralize}}"
     extended_field_choice_autocomplete_editor:
