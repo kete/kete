@@ -249,6 +249,18 @@ module Importer
             end
             params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = value
 
+          elsif extended_field.ftype == 'year'
+            if extended_field.multiple
+              multiple_values = value.split(",")
+              m_field_count = 1
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
+              multiple_values.each do |m_field_value|
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = { :value => m_field_value.to_s.strip, :circa => '0' }
+                m_field_count += 1
+              end
+            else
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = { :value => value.to_s.strip, :circa => '0' }
+            end
 
           else
             if extended_field.multiple
