@@ -700,7 +700,7 @@ module Importer
         end
 
         if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
-          tag_list_array += record_value.split(',').collect { |tag| tag.strip }
+          @tag_list_array += record_value.split(',').collect { |tag| tag.strip }
         end
 
         if zoom_class == 'WebLink' && record_field.upcase == 'URL'
@@ -759,10 +759,10 @@ module Importer
       end
 
       field_count = 1
-      tag_list_array = Array.new
+      @tag_list_array = Array.new
       # add support for all items during this import getting a set of tags
       # added to every item in addition to the specific ones for the item
-      tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
+      @tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
 
       record_hash.each do |record_field, record_value|
         params = assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
@@ -802,7 +802,7 @@ module Importer
         params[zoom_class_for_params][:description] = description.to_html
       end
 
-      params[zoom_class_for_params][:tag_list] = tag_list_array.join(",")
+      params[zoom_class_for_params][:tag_list] = @tag_list_array.join(",")
       params[zoom_class_for_params][:raw_tag_list] = params[zoom_class_for_params][:tag_list]
 
       # set the chosen privacy
