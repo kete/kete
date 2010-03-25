@@ -1255,7 +1255,7 @@ en:
   extended_field_model:
     already_used: ": labels of {{invalid_label_names}} {{t.base.arent}} {{t.base.allowed}} because they already used be {{t.base.default}}"
     invalid_chars: ": the following characters {{t.base.arent}} {{t.base.allowed}} - {{invalid_chars}}"
-    label_cant_have: "{{t.base.cannot}} contain Form, Script, or Input because they are reserved starting words"
+    label_cant_have: "{{t.base.cannot}} be Form, Script, or Input because they are reserved words"
     no_spaces: ": spaces {{t.base.arent}} {{t.base.allowed}}"
   extended_fields:
     choice_autocomplete_editor:

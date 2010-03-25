@@ -156,7 +156,7 @@ class ExtendedField < ActiveRecord::Base
   protected
 
     def validate
-      errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label =~ /^(form|input|script)(.*)$/i
+      errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label && label.strip =~ /^(form|input|script)$/i
     end
 
 end

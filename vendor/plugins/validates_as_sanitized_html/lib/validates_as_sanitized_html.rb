@@ -18,7 +18,9 @@ module ActiveRecord
             # from rail's html/sanitize or helpers/sanitize_helper
             # very simple check for bad elements
             if !value.blank?
-              if !value.scan(/<form|<script|<input/).blank?
+              # Catches <form> and <form action="">
+              # But leaves things like <format> or <input_date> as valid
+              if value =~ /(<form|<script|<input)(\s|>)/i
                 record.errors.add(attr_name,
                                   ": we aren't currently allowing forms or javascript in submitted HTML for security reasons.")
               else
