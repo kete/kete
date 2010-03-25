@@ -192,7 +192,7 @@ module Importer
             extended_fields = ExtendedField.all(:conditions => "import_synonyms like \'%#{field}%\'")
           end
 
-          if extended_field.present?
+          if extended_fields.present?
             extended_field = extended_fields.select { |ext_field| ext_field.import_synonyms.split.include?(field) }.first
 
             @import_field_to_extended_field_map[field] = extended_field
@@ -764,6 +764,7 @@ module Importer
       # added to every item in addition to the specific ones for the item
       @tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
 
+      # Loops over each record value and assign the value to the appropriate fields
       record_hash.each do |record_field, record_value|
         params = assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
         field_count += 1
