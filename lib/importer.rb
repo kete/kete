@@ -661,6 +661,73 @@ module Importer
       return path_to_output
     end
 
+    def assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
+      return if IMPORT_FIELDS_TO_IGNORE.include?(record_field)
+      logger.debug("record_field " + record_field.inspect)
+
+      zoom_class_for_params = zoom_class.tableize.singularize
+
+      record_value = record_value.strip.gsub(/\r/, "\n") if record_value.present?
+
+      if record_value.present?
+        # if it's mapped to an extended field, params are updated
+        params = importer_prepare_extended_field(:value => record_value,
+                                                 :field => record_field,
+                                                 :zoom_class_for_params => zoom_class_for_params,
+                                                 :params => params)
+
+        # the field may also be mapped to non-extended fields
+        # such as tags, description, title
+        # the value maybe used multiple times, so case isn't appropriate
+        if record_field.upcase == 'TITLE' || (!TITLE_SYNONYMS.blank? && TITLE_SYNONYMS.include?(record_field))
+          params[zoom_class_for_params][:title] = record_value
+        end
+
+        if !DESCRIPTION_SYNONYMS.blank? && DESCRIPTION_SYNONYMS.include?(record_field)
+          if params[zoom_class_for_params][:description].nil?
+            params[zoom_class_for_params][:description] = record_value
+          else
+            params[zoom_class_for_params][:description] += "\n\n" + record_value
+          end
+        end
+
+        if !SHORT_SUMMARY_SYNONYMS.blank? && SHORT_SUMMARY_SYNONYMS.include?(record_field)
+          if params[zoom_class_for_params][:short_summary].nil?
+            params[zoom_class_for_params][:short_summary] = record_value
+          else
+            params[zoom_class_for_params][:short_summary] += "\n\n" + record_value
+          end
+        end
+
+        if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
+          tag_list_array += record_value.split(',').collect { |tag| tag.strip }
+        end
+
+        if zoom_class == 'WebLink' && record_field.upcase == 'URL'
+          params[zoom_class_for_params][:url] = record_value
+        end
+
+        # path_to_file is special case, we know we have an associated file that goes in uploaded_data
+        if record_field == 'path_to_file'
+          logger.debug("in path_to_file")
+          if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class) && File.exist?(record_value)
+            # we do a check earlier in the script for imagefile
+            # so we should have something to work with here
+            upload_hash = { :uploaded_data => copy_and_load_to_temp_file(record_value) }
+            if zoom_class == 'StillImage'
+              logger.debug("in image")
+              params[:image_file] = upload_hash
+            else
+              logger.debug("in not image")
+              params[zoom_class_for_params] = params[zoom_class_for_params].merge(upload_hash)
+            end
+          end
+        end
+      end
+
+      params
+    end
+
     # override in your importer worker to customize
     # expects an xml element of our record or a file with a simple record_hash
     # TODO: add support for zoom_classes that may have attachments
@@ -697,73 +764,9 @@ module Importer
       # added to every item in addition to the specific ones for the item
       tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
 
-      record_hash.keys.each do |record_field|
-        logger.debug("record_field " + record_field.inspect)
-        unless IMPORT_FIELDS_TO_IGNORE.include?(record_field)
-          value = record_hash[record_field]
-          if !value.nil?
-            value = value.strip
-            # replace \r with \n
-            value.gsub(/\r/, "\n")
-          end
-
-          if !value.blank?
-            # if it's mapped to an extended field, params are updated
-            params = importer_prepare_extended_field(:value => value,
-                                                     :field => record_field,
-                                                     :zoom_class_for_params => zoom_class_for_params,
-                                                     :params => params)
-
-            # the field may also be mapped to non-extended fields
-            # such as tags, description, title
-            # the value maybe used multiple times, so case isn't appropriate
-            if record_field.upcase == 'TITLE' || (!TITLE_SYNONYMS.blank? && TITLE_SYNONYMS.include?(record_field))
-              params[zoom_class_for_params][:title] = value
-            end
-
-            if !DESCRIPTION_SYNONYMS.blank? && DESCRIPTION_SYNONYMS.include?(record_field)
-              if params[zoom_class_for_params][:description].nil?
-                params[zoom_class_for_params][:description] = value
-              else
-                params[zoom_class_for_params][:description] += "\n\n" + value
-              end
-            end
-
-            if !SHORT_SUMMARY_SYNONYMS.blank? && SHORT_SUMMARY_SYNONYMS.include?(record_field)
-              if params[zoom_class_for_params][:short_summary].nil?
-                params[zoom_class_for_params][:short_summary] = value
-              else
-                params[zoom_class_for_params][:short_summary] += "\n\n" + value
-              end
-            end
-
-            if !TAGS_SYNONYMS.blank? && TAGS_SYNONYMS.include?(record_field)
-              tag_list_array += value.split(',').collect { |tag| tag.strip }
-            end
-
-            if zoom_class == 'WebLink' && record_field.upcase == 'URL'
-              params[zoom_class_for_params][:url] = value
-            end
-
-            # path_to_file is special case, we know we have an associated file that goes in uploaded_data
-            if record_field == 'path_to_file'
-              logger.debug("in path_to_file")
-              if ::Import::VALID_ARCHIVE_CLASSES.include?(zoom_class) && File.exist?(value)
-                # we do a check earlier in the script for imagefile
-                # so we should have something to work with here
-                upload_hash = { :uploaded_data => copy_and_load_to_temp_file(value) }
-                if zoom_class == 'StillImage'
-                  logger.debug("in image")
-                  params[:image_file] = upload_hash
-                else
-                  logger.debug("in not image")
-                  params[zoom_class_for_params] = params[zoom_class_for_params].merge(upload_hash)
-                end
-              end
-            end
-          end
-          field_count += 1
-        end
+      record_hash.each do |record_field, record_value|
+        params = assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
+        field_count += 1
       end
 
       logger.info("after fields")
