@@ -144,9 +144,9 @@ class SearchController < ApplicationController
 
     @contributor = params[:contributor] ? User.find(params[:contributor]) : nil
 
-    @limit_to_choice = params[:limit_to_choice].blank? ? nil : params[:limit_to_choice].decode_from_url
+    @limit_to_choice = Choice.from_id_or_value(params[:limit_to_choice]) if params[:limit_to_choice]
 
-    @extended_field = ExtendedField.from_label_for_params(params[:extended_field]).first if params[:extended_field]
+    @extended_field = ExtendedField.from_id_or_label(params[:extended_field]) if params[:extended_field]
     @all_choices = true unless @extended_field
 
     @topic_type = TopicType.from_urlified_name(params[:topic_type]).first if params[:topic_type]
@@ -327,14 +327,14 @@ class SearchController < ApplicationController
     if plural_aliased_dc_methods.member?(dc_element)
 
       # Since these attributes are mapped as plural, we need to ensure we use the correct method in the PqfQuery model.
-      @search.pqf_query.send("#{dc_element.pluralize}_include", "':#{@limit_to_choice}:'")
+      @search.pqf_query.send("#{dc_element.pluralize}_include", "':#{@limit_to_choice.value}:'") unless @limit_to_choice.blank?
 
     elsif PqfQuery::ATTRIBUTE_SPECS.member?(dc_element)
-      @search.pqf_query.send("#{dc_element}_include", "':#{@limit_to_choice}:'")
+      @search.pqf_query.send("#{dc_element}_include", "':#{@limit_to_choice.value}:'") unless @limit_to_choice.blank?
     else
 
       # Since the DC attribute is either bogus or non-existent, do the search against all search with demarcated terms
-      @search.pqf_query.any_text_include("':#{@limit_to_choice}:'") unless @limit_to_choice.blank?
+      @search.pqf_query.any_text_include("':#{@limit_to_choice.value}:'") unless @limit_to_choice.blank?
     end
 
     @search.pqf_query.coverage_equals_completely("#{@topic_type.name}") if !@topic_type.nil?

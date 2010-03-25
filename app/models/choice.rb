@@ -2,6 +2,15 @@ class Choice < ActiveRecord::Base
 
   ROOT = Choice.find(1) rescue nil
 
+  # find a choice based on params[:limit_to_choice]
+  def self.from_id_or_value(id_or_label)
+    if id_or_label =~ /^\d/ # starts with a number
+      self.find_by_id(id_or_label)
+    else
+      self.find_by_value(id_or_label)
+    end
+  end
+
   # Ensure any newly created choices become a child of root.
   # Without this, they will need be found when doing lookups against all choices, since we are depending entirely on
   # better_nested_set to provide choice hierachy and listings.
@@ -132,5 +141,9 @@ class Choice < ActiveRecord::Base
       choice.move_to_child_of(grandparent)
     end
   end
+
+  # turn pretty urls on or off here
+  include FriendlyUrls
+  alias :to_param :format_for_friendly_unicode_urls
 
 end

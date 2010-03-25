@@ -19,7 +19,7 @@ module FriendlyUrlsTestUnitHelper
     assert_equal 'something_wicked_this_way_comes_', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
 
     format_friendly = format_friendly_unicode_for('& it is āēīōū and in your 家!')
-    assert_equal '-it-is-āēīōū-and-in-your-家', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
+    assert_equal '-and-it-is-āēīōū-and-in-your-家', format_friendly, "#{@base_class}. format_friendly_unicode_for failed"
   end
 
   def test_format_for_friendly_urls

@@ -989,7 +989,7 @@ module ApplicationHelper
 
     html_options_for_select = ([['', '']] + options_array).map do |k, v|
       attrs = { :value => v }
-      attrs.merge!(:selected => "selected") if !clear_values && @limit_to_choice && @limit_to_choice == v
+      attrs.merge!(:selected => "selected") if !clear_values && @limit_to_choice && @limit_to_choice.value == v
       content_tag("option", k, attrs)
     end.join
 
@@ -1108,7 +1108,7 @@ module ApplicationHelper
         :urlified_name => @site_basket.urlified_name,
         :controller_name_for_zoom_class => item.nil? ? 'topics' : zoom_class_controller(item.class.name),
         :controller => 'search',
-        :extended_field => ef.label_for_params
+        :extended_field => ef
       }
 
       if item.respond_to?(:private?) && item.private?
@@ -1133,16 +1133,18 @@ module ApplicationHelper
           v = v['value']
         end
 
+        choice = Choice.from_id_or_value(v)
+
         # the extended field's base_url takes precedence over
         # normal behavior creating a link to results
         # limited to choice for an extended field (a.k.a category_url in method names)
         unless base_url.blank?
-          link_to(l, base_url + v)
+          link_to(l, base_url + choice.to_param)
         else
           if ef && ef.dont_link_choice_values?
             l
           else
-            link_to(l, send(method, url_hash.merge(:limit_to_choice => v.escape_for_url)))
+            link_to(l, send(method, url_hash.merge(:limit_to_choice => choice.to_param)))
           end
         end
       end.join(" &raquo; ")
@@ -1679,7 +1681,7 @@ module ApplicationHelper
     return '' if categories_field.nil? || !categories_field.is_a_choice?
 
     # Get the current choice from params (limit_to_choice is special because it also controls search results)
-    current_choice = categories_field.choices.select { |c| c.value == params[:limit_to_choice] }.first
+    current_choice = Choice.from_id_or_value(params[:limit_to_choice]) if params[:limit_to_choice]
     parent_choices = Array.new
     unless current_choice.blank?
       # Get all the ancestors and push them onto the parent_choices array

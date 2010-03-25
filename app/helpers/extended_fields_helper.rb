@@ -577,10 +577,6 @@ module ExtendedFieldsHelper
       :controller_name_for_zoom_class => params[:controller_name_for_zoom_class] || 'topics',
     }.merge(url_hash)
 
-    url_hash[:extended_field] = url_hash[:extended_field].is_a?(ExtendedField) ? \
-                                  url_hash[:extended_field].label_for_params : \
-                                  url_hash[:extended_field]
-
     if params[:privacy_type].blank?
       method = 'basket_all_of_category_url'
     else
@@ -588,7 +584,7 @@ module ExtendedFieldsHelper
       url_hash.merge!(:privacy_type => params[:privacy_type])
     end
 
-    base = content_tag("li", link_to(choice.label, send(method, url_hash.merge(:limit_to_choice => choice.value)),
+    base = content_tag("li", link_to(choice.label, send(method, url_hash.merge(:limit_to_choice => choice)),
                                                                 { :title => choice.value }),
                              { :class => (options[:current] ? 'current' : '') })
 

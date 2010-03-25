@@ -91,7 +91,7 @@ module PreviousSearches
       title_parts << libt(:tag, :tag_name => @tag.name) if @tag
       title_parts << libt(:contributor, :contributor_name => @contributor.user_name) if @contributor
       title_parts << libt(:extended_field, :extended_field => @extended_field.label.singularize.downcase) if @extended_field
-      title_parts << libt(:limit_to_choice, :choice_name => @limit_to_choice) if @limit_to_choice
+      title_parts << libt(:limit_to_choice, :choice_name => @limit_to_choice.label) if @limit_to_choice
       if @source_item
         @source_item.private_version! if permitted_to_view_private_items? && @source_item.latest_version_is_private?
         title_parts << libt(:source_item, :source_item_name => @source_item.title)

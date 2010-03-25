@@ -5,9 +5,14 @@ class ExtendedField < ActiveRecord::Base
   has_many :choice_mappings, :as => :field
   has_many :choices, :through => :choice_mappings
 
-  # find an extended field based on label_for_params
-  # TODO: not sure this is DB agnostic enough to work with PostgreSQL
-  named_scope :from_label_for_params, lambda { |label_for_params| { :conditions => ['UPPER(label) = ?', label_for_params.upcase.gsub('_', ' ')] } }
+  # find an extended field based on params[:extended_field]
+  def self.from_id_or_label(id_or_label)
+    if id_or_label =~ /^\d/ # starts with a number
+      self.find_by_id(id_or_label)
+    else
+      self.first(:conditions => ['UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')])
+    end
+  end
 
   # James - 2008-12-05
   # Ensure attributes that when changed could be potentially destructive on existing data cannot
@@ -152,6 +157,10 @@ class ExtendedField < ActiveRecord::Base
     end
     ef_mapping.required?
   end
+
+  # turn pretty urls on or off here
+  include FriendlyUrls
+  alias :to_param :format_for_friendly_unicode_urls
 
   protected
 
