@@ -1,0 +1,19 @@
+# Place methods that alter data during import here in the following format:
+#
+# [importer_name]:
+#   [field_name]: |-
+#     [lambda that takes the value, makes changes, and returns]
+#
+# The lambda is evaled and called, passing in the value for altering
+# You can return either a single value, which will replace the existing
+# value, or an array, the first key being a value, the second a hash of
+# extra values that need to be set. Using this method, you can erase the
+# original and make two new values from it. e.g.
+#
+# simple_xml:
+#   published_date: |-
+#     lambda do |value|
+#       first_published, last_published = value.first.split('-')
+#       [nil, { 'FirstPublished' => first_published, 'LastPublished' => last_published }]
+#     end
+#

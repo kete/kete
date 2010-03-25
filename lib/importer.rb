@@ -776,6 +776,27 @@ module Importer
       # added to every item in addition to the specific ones for the item
       @tag_list_array = @import.base_tags.split(",").collect { |tag| tag.strip } if !@import.base_tags.blank?
 
+      # Run each value through any importer field methods that exist
+      # and get back the value plus any other fields needing setting
+      import_field_methods_file = Rails.root.join('config/importers.yml').to_s
+      if File.exist?(import_field_methods_file)
+        importer_field_methods = YAML.load(File.read(import_field_methods_file))[@import_type.to_s]
+
+        if importer_field_methods.is_a?(Hash)
+          additional_fields_derived_from_processing_values = Hash.new
+          record_hash.each do |record_field, record_value|
+            if record_value.present? && importer_field_methods[record_field.downcase]
+              parsed_value = Array(eval(importer_field_methods[record_field.downcase]).call(record_value))
+              additional_fields_derived_from_processing_values.merge!(parsed_value.last) if parsed_value.last.is_a?(Hash)
+              record_hash[record_field] = parsed_value.first
+            end
+          end
+
+          # Combine the record_hash with the additional fields we need to assign
+          record_hash.merge!(additional_fields_derived_from_processing_values)
+        end
+      end
+
       # Loops over each record value and assign the value to the appropriate fields
       record_hash.each do |record_field, record_value|
         params = assign_value_to_appropriate_fields(record_field, record_value, params, zoom_class)
