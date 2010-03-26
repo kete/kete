@@ -99,12 +99,16 @@ module Importer
         @xml_path_to_record ||= @import.xml_path_to_record.blank? ? 'records/record' : @import.xml_path_to_record
         @record_interval = @import.interval_between_records
 
+        # These help prevent duplicate records
+        # Use ||= so they are only assigned if the importer worker doesn't specify one already
+        @record_identifier_xml_field ||= @import.record_identifier_xml_field
+        @extended_field_that_contains_record_identifier ||= @import.extended_field_that_contains_record_identifier
+
         # Values for relating records.
         # Use ||= so they are only assigned if the importer worker doesn't specify one already
         @related_topics_reference_in_record_xml_field ||= @import.related_topics_reference_in_record_xml_field
-        @record_identifier_xml_field ||= @import.record_identifier_xml_field
         @related_topic_type ||= @import.related_topic_type
-        @extended_field_that_contains_record_identifier ||= @import.extended_field_that_contains_record_identifier
+        @extended_field_that_contains_related_topics_reference ||= @import.extended_field_that_contains_related_topics_reference
 
         params = args[:params]
 
@@ -193,8 +197,7 @@ module Importer
           end
 
           if extended_fields.present?
-            extended_field = extended_fields.select { |ext_field| ext_field.import_synonyms.split.include?(field) }.first
-
+            extended_field = extended_fields.select { |ext_field| (ext_field.import_synonyms || '').split.include?(field) }.first
             @import_field_to_extended_field_map[field] = extended_field
           else
             logger.info("field in prepare: " + field.inspect)
@@ -228,7 +231,7 @@ module Importer
           # Kieran Pilkington, 2009-10-28
           # The following code does not work yet
           # TODO: it looks like this still needs multiple support?
-          elsif extended_field.ftype == 'topic_type'
+          elsif extended_field.ftype == 'topic_type' && @extended_field_that_contains_related_topics_reference.present?
             logger.info 'dealing with topic_type extended field'
             logger.info 'what is value? ' + value.inspect
             unless value =~ /http:\/\//
@@ -237,9 +240,12 @@ module Importer
               logger.info 'finding topic in topic type: ' + topic_type.inspect
 
               topics = importer_fetch_related_topics(value, params, {
-                                                       :item_type => 'topics',
-                                                       :extended_field_data => value,
-                                                       :topic_type => topic_type
+                                                      :item_type => 'topics',
+                                                      :topic_type => topic_type,
+                                                      :extended_field_data => {
+                                                        :label => @extended_field_that_contains_related_topics_reference.label_for_params,
+                                                        :value => value
+                                                      }
                                                      })
               logger.info 'what is found topics? ' + topics.inspect
               return params if topics.blank?
@@ -458,7 +464,7 @@ module Importer
         :item_type => @zoom_class_for_params.pluralize,
         :title => nil,
         :topic_type => nil,
-        :extended_field_data => nil
+        :extended_field_data => {}
       }.merge(options)
 
       conditions = Array.new
@@ -474,11 +480,12 @@ module Importer
         params[:topic_type_id] = options[:topic_type].id
       end
 
-      unless options[:extended_field_data].blank? || @extended_field_that_contains_record_identifier.blank?
+      unless options[:extended_field_data].blank?
         regexp = ActiveRecord::Base.connection.adapter_name.downcase =~ /postgres/ ? "~*" : "REGEXP"
-        ext_field_id = @extended_field_that_contains_record_identifier.label_for_params
+        ext_field_label = options[:extended_field_data][:label]
+        ext_field_value = options[:extended_field_data][:value]
         conditions << "(LOWER(extended_content) #{regexp} :ext_field_data)"
-        params[:ext_field_data] = "<#{ext_field_id}[^>]*>#{options[:extended_field_data]}</#{ext_field_id}>".downcase
+        params[:ext_field_data] = "<#{ext_field_label}[^>]*>#{ext_field_value}</#{ext_field_label}>".downcase
       end
 
       # Select all topics where the id is within a subselect of topic versions matching criteria
@@ -522,7 +529,13 @@ module Importer
         :title => title,
         :topic_type => @import_topic_type
       }
-      options.merge!(:extended_field_data => record_hash[@record_identifier_xml_field]) unless record_hash[@record_identifier_xml_field].blank?
+
+      unless record_hash[@record_identifier_xml_field].blank? || @extended_field_that_contains_record_identifier.blank?
+        options.merge!(:extended_field_data => {
+          :label => @extended_field_that_contains_record_identifier.label_for_params,
+          :value => record_hash[@record_identifier_xml_field]
+        })
+      end
 
       existing_item = importer_locate_existing_items(options).first
 
@@ -780,7 +793,7 @@ module Importer
       # and get back the value plus any other fields needing setting
       import_field_methods_file = Rails.root.join('config/importers.yml').to_s
       if File.exist?(import_field_methods_file)
-        importer_field_methods = YAML.load(File.read(import_field_methods_file))[@import_type.to_s]
+        importer_field_methods = (YAML.load(File.read(import_field_methods_file)) || {})[@import_type.to_s]
 
         if importer_field_methods.is_a?(Hash)
           additional_fields_derived_from_processing_values = Hash.new
@@ -972,9 +985,12 @@ module Importer
           if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
             related_topics = importer_fetch_related_topics(related_topic_identifier, params, {
               :item_type => 'topics',
-              :extended_field_data => related_topic_identifier,
-              :topic_type => @related_topic_type
-            })
+              :topic_type => @related_topic_type,
+              :extended_field_data => {
+                :label => @extended_field_that_contains_related_topics_reference.label_for_params,
+                :value => related_topic_identifier
+              }
+            }) if @extended_field_that_contains_related_topics_reference.present?
           else
             related_topics = @last_related_topics
           end

@@ -7,11 +7,7 @@ class ExtendedField < ActiveRecord::Base
 
   # find an extended field based on params[:extended_field]
   def self.from_id_or_label(id_or_label)
-    if id_or_label =~ /^\d/ # starts with a number
-      self.find_by_id(id_or_label)
-    else
-      self.first(:conditions => ['UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')])
-    end
+    self.first(:conditions => ['UPPER(label) = ?', id_or_label.upcase.gsub('_', ' ')]) || self.find_by_id(id_or_label)
   end
 
   # James - 2008-12-05
