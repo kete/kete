@@ -84,13 +84,24 @@ end
 
 # Include extensions into Rails components here
 
-# Kieran Pilkington, 2009-07-09
-# Adding a class_as_key method which returns a key for a model as used in params
+
 module ActiveRecord
   class Base
+    # Kieran Pilkington, 2009-07-09
+    # Adding a class_as_key method which returns a key for a model as used in params
     def class_as_key
       # self. is necessary in this case because class is a reserved word
       self.class.name.tableize.singularize.to_sym
+    end
+  end
+
+  class Errors
+    # Kieran Pilkington, 2010-03-26
+    # The ability to use I18n in validation messages. Exsits in Rails 3. Remove when we upgrade.
+    alias :add_orig :add
+    def add(attribute, message = nil, options = {})
+      options[:default] = options[:default].call if options[:default].is_a?(Proc)
+      add_orig(attribute, message, options)
     end
   end
 end
