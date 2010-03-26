@@ -15,8 +15,10 @@ class ExtendedFieldsController < ApplicationController
     config.columns = [:label, :description, :xml_element_name, :ftype, :import_synonyms, :example, :multiple, :user_choice_addition, :link_choice_values]
     config.list.columns.exclude [:updated_at, :created_at, :topic_type_id, :xsi_type, :user_choice_addition, :link_choice_values]
 
-    config.columns[:description].options = { :rows => 5 }
-    config.columns[:import_synonyms].options = { :rows => 5 }
+    config.columns[:description].options = { :rows => 4, :cols => 50 }
+
+    config.columns[:import_synonyms].description = I18n.t('extended_fields_controller.import_synonyms_description')
+    config.columns[:import_synonyms].options = { :rows => 4, :cols => 50 }
 
     config.columns << [:base_url]
     config.columns[:base_url].label = I18n.t('extended_fields_controller.base_url')

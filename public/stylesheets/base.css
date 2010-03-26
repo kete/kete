@@ -1385,6 +1385,9 @@ a.disabled {
 .active-scaffold textarea {
   width: 70%;
 }
+#extended_fields-active-scaffold textarea {
+  width: auto;
+}
 
 /*
  * Inset for Related Items with White background
