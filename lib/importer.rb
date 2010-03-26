@@ -792,8 +792,15 @@ module Importer
             end
           end
 
-          # Combine the record_hash with the additional fields we need to assign
-          record_hash.merge!(additional_fields_derived_from_processing_values)
+          # Loop over each result, add to record_hash if it doesn't exist yet,
+          # or append the value to what already exists in record_hash
+          additional_fields_derived_from_processing_values.each do |record_field, record_value|
+            if record_hash[record_field].present?
+              record_hash[record_field] += "\n\n" + record_value
+            else
+              record_hash[record_field] = record_value
+            end
+          end
         end
       end
 
