@@ -216,7 +216,7 @@ module ApplicationHelper
                                    :onclick => "$('#{id}').toggle();
                                                 if($('search_terms').value == '#{default_search_terms_for_js}') {
                                                   $('search_terms').value = '';
-                                                }")
+                                                }", :title => t('application_helper.add_search_icon_and_default_text_to_search_box.more_search_options'))
     javascript_tag("$('#{trigger_id}').insert('#{escape_javascript(search_dropdown_link)}');") +
     javascript_tag("addDefaultValueToSearchTerms('#{default_search_terms_for_js}');")
   end

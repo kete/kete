@@ -502,6 +502,8 @@ en:
     unlink_related:
       unlinked_relation: "{{t.base.successfully.capitalize}} {{t.base.removed}} {{t.base.item}} relationships"
   application_helper:
+    add_search_icon_and_default_text_to_search_box:
+      more_search_options: "More {{t.base.search}} {{t.base.option.pluralize}}"
     avatar_for:
       users_avatar: "{{user_name}}'s {{t.base.avatar.capitalize}}. "
     browse_by_category_columns:
