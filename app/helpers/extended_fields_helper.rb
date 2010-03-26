@@ -479,10 +479,10 @@ module ExtendedFieldsHelper
   end
 
   def extended_field_year_editor(name, value, tag_options, extended_field)
-    html = text_field_tag(name+"[value]", value['value'], tag_options)
+    html = text_field_tag(name+"[value]", (value['value'] if value), tag_options)
     if extended_field.circa?
       html += hidden_field_tag(name+"[circa]", "0")
-      html += (check_box_tag(name+"[circa]", "1", (value['circa'].to_s == '1')) + "Circa?")
+      html += (check_box_tag(name+"[circa]", "1", (value && value['circa'].to_s == '1')) + "Circa?")
     end
     html
   end
