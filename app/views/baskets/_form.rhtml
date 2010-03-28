@@ -2,7 +2,7 @@
 
   <%= error_messages_for 'basket' %>
 
-  <%= hidden_field_tag "basket_profile", @basket_profile -%>
+  <%= hidden_field_tag("basket_profile", @basket_profile) if @basket_profile -%>
 
   <div class="form-element">
     <label for="basket_name"><%=t 'baskets.form.name' %></label>
