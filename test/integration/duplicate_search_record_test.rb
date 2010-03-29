@@ -218,7 +218,7 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
       # Emulate clicking the "Create" link for related topics
       login_as(options[:member]) if is_fully_moderated?(basket)
 
-      @related_topic = new_item({ :new_path => "/#{basket.urlified_name}/topics/new?relate_to_topic=#{@topic.id}", :title => "A topic related to 'A topic'", :success_message => "Related Topic was successfully created." }, basket)
+      @related_topic = new_item({ :new_path => "/#{basket.urlified_name}/topics/new?relate_to_item=#{@topic.id}&relate_to_type=Topic", :title => "A topic related to 'A topic'", :success_message => "Related Topic was successfully created." }, basket)
 
       should_not_appear_in_search_results(@related_topic) if is_fully_moderated?(basket)
 

@@ -272,10 +272,6 @@ body.mceContentBody {
   float: right;
   margin-top: -12px;
 }
-#related_items.inset.no-items,
-#related_items.sidebar.no-items {
-  display: none;
-}
 
 #related_items.below .two-col {
   float: left;

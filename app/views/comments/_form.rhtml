@@ -11,10 +11,6 @@
                   <%= hidden_field_tag "parent_id", params[:parent_id] %>
                 <% end %>
 
-                <% if !params[:relate_to_topic].nil? %>
-                        <%= hidden_field_tag "relate_to_topic", params[:relate_to_topic] %>
-                <% end %>
-
                 <%= hidden_field_tag 'comment[commentable_private]', (adding_or_editing_private_item? ? '1' : '0') %>
 
                 <div class="form-element">

@@ -797,7 +797,7 @@ module ApplicationHelper
     disabled = false
     disabled = true if options[:function] == 'remove' && @total_item_counts < 1
     if options[:function] == 'restore'
-      restore_count = ContentItemRelation::Deleted.count(:conditions => { :topic_id => options[:relate_to_topic] })
+      restore_count = ContentItemRelation::Deleted.count(:conditions => { :topic_id => options[:relate_to_item] })
       disabled = true if restore_count < 1
       link_text += " (#{restore_count})"
     end
@@ -811,7 +811,7 @@ module ApplicationHelper
     link_text = options.delete(:link_text)
     link = link_to(link_text, { :controller => 'importers',
                                 :action => 'new_related_set_from_archive_file',
-                                :relate_to_topic => options[:relate_to_topic] })
+                                :relate_to_topic => options[:relate_to_item] })
     content_tag('li', link)
   end
 

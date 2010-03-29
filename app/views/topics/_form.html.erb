@@ -8,8 +8,9 @@ zoom_class = zoom_class_from_controller(controller)
 # helps here. We have to pass in the intended basket via an instance variable (used in ajax add item forms)
 @basket = (Basket.find_by_urlified_name(@new_item_basket) || @current_basket)
 
-@relate_to_topic = (@relate_to_topic || params[:relate_to_topic])
-@related_topic_private = (@related_topic_private || params[:related_topic_private])
+@relate_to_item = (@relate_to_item || params[:relate_to_item])
+@relate_to_type = (@relate_to_type || params[:relate_to_type])
+@related_item_private = (@related_item_private || params[:related_item_private])
 
 # @item is passed in from the ajax add item forms, so only set it if not already set
 @item ||= current_item
@@ -66,10 +67,11 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
-    <% unless @relate_to_topic.nil? -%>
-      <%= hidden_field_tag "relate_to_topic", @relate_to_topic -%>
-      <% unless @related_topic_private.nil? -%>
-        <%= hidden_field_tag "related_topic_private", @related_topic_private -%>
+    <% unless @relate_to_item.nil? -%>
+      <%= hidden_field_tag "relate_to_item", @relate_to_item -%>
+      <%= hidden_field_tag "relate_to_type", @relate_to_type -%>
+      <% unless @related_item_private.nil? -%>
+        <%= hidden_field_tag "related_item_private", @related_item_private -%>
       <% end -%>
     <% end -%>
 

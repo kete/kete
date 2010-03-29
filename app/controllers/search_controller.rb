@@ -696,7 +696,7 @@ class SearchController < ApplicationController
   # James - 2008-06-13
   # SLOW. Not sure why at this point, but it's 99% rendering, not DB.
   def find_related
-    @current_topic = Topic.find(params[:relate_to_topic])
+    @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
     @related_class = (params[:related_class] || "Topic")
     related_class_is_topic = @related_class == "Topic" ? true : false
     # this will throw exception if passed in related_class isn't valid
@@ -707,10 +707,10 @@ class SearchController < ApplicationController
     # that can be related to a topic through content_item_relations
     # topics related to topics are a special case
     # the method name is called 'related_topics'
-    method_name_for_related_items = related_class_is_topic ? 'related_topics' : related_class_name.tableize
+    method_name_for_related_items = (params[:relate_to_type] == 'Topic' && related_class_is_topic) ? 'related_topics' : related_class_name.tableize
 
     # Look up existing relationships, we use these in 2 out of three functions
-    existing = @current_topic.send(method_name_for_related_items) unless params[:function] == 'restore'
+    existing = @relate_to_item.send(method_name_for_related_items) unless params[:function] == 'restore'
 
     case params[:function]
     when "remove"
@@ -722,10 +722,10 @@ class SearchController < ApplicationController
       @next_action = "link"
 
       # Find resulting items through deleted relationships
-      @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@current_topic, related_class_name) \
+      @results = ContentItemRelation::Deleted.find_all_by_topic_id_and_related_item_type(@relate_to_item, related_class_name) \
                                              .collect { |r| related_class.find(r.related_item_id) }
       if related_class_is_topic
-        @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@current_topic, 'Topic') \
+        @results += ContentItemRelation::Deleted.find_all_by_related_item_id_and_related_item_type(@relate_to_item, 'Topic') \
                                                 .collect { |r| Topic.find(r.topic_id) }
       end
     when "add"
@@ -760,7 +760,7 @@ class SearchController < ApplicationController
         @results = related_class.find(valid_result_ids)
 
         # Don't include the current topic in the results
-        @results.reject! { |obj| obj == @current_topic } if related_class_is_topic
+        @results.reject! { |obj| obj == @relate_to_item } if params[:relate_to_type] == 'Topic' && related_class_is_topic
 
         # Define pagination methods in the array again.
         pagination_methods.each_key do |method_name|

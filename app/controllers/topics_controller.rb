@@ -71,17 +71,9 @@ class TopicsController < ApplicationController
     end
 
     where_to_redirect = 'show_self'
-    if !params[:relate_to_topic].blank? and @successful
-      @new_related_topic = Topic.find(params[:relate_to_topic])
-      ContentItemRelation.new_relation_to_topic(@new_related_topic, @topic)
-
-      # update the related topic
-      # so this new relationship is reflected in search
-      @new_related_topic.prepare_and_save_to_zoom
-
-      # make sure the related topics cache is cleared for related topic
-      expire_related_caches_for(@new_related_topic, 'topics')
-
+    if !params[:relate_to_item].blank? and @successful
+      @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
+      add_relation_and_update_zoom_and_related_caches_for(@relate_to_item, @topic)
       where_to_redirect = 'show_related'
     end
 
@@ -101,7 +93,7 @@ class TopicsController < ApplicationController
       case where_to_redirect
       when 'show_related'
         flash[:notice] = t('topics_controller.create.created_related')
-        redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
+        redirect_to_related_item(@relate_to_item, { :private => (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'basket'
         redirect_to :action => 'add_index_topic',
         :controller => 'baskets',
