@@ -22,10 +22,10 @@ namespace :horizons do
         :record_id_field => 'Code',
         :record_id_ext_field => agency_code_ext_field,
         :data => [
-          [ 'agency.Successor',   'successor_agency+=',    agency_code_ext_field ],
-          [ 'agency.Predecessor', 'predecessor_agency+=',  agency_code_ext_field ],
-          [ 'agency.Controlling', 'controlling_agency+=',  agency_code_ext_field ],
-          [ 'agency.Controlled',  'agencies_controlled+=', agency_code_ext_field ]
+          [ 'agency.Predecessor', 'predecessor_agencies+=', agency_code_ext_field ],
+          [ 'agency.Controlling', 'controlling_agencies+=', agency_code_ext_field ],
+          [ 'agency.Controlled',  'agencies_controlled+=',  agency_code_ext_field ],
+          [ 'agency.Successor',   'successor_agencies+=',   agency_code_ext_field ]
         ]
       })
     end
@@ -36,8 +36,9 @@ namespace :horizons do
       agencies = TopicType.find_by_name("Agency").topics
       create_table_of_contents_between(agencies, series_id, [
         ['Series', :title],
-        ['Date Range', :date_range]
-      ], :date_range)
+        ['Start Date', :start_date],
+        ['End Date', :end_date]
+      ], :start_date)
     end
 
   end
@@ -47,7 +48,7 @@ namespace :horizons do
     desc 'Update series with their successor, predecessor, and related series, and creator agencies.'
     task :add_skipped_data => :environment do
       records = Nokogiri::XML File.open(RAILS_ROOT + '/imports/series/records.xml')
-      series_number_ext_field = ExtendedField.find_by_label('Series Number')
+      series_number_ext_field = ExtendedField.find_by_label('Series No')
       agency_code_ext_field = ExtendedField.find_by_label('Agency Code')
 
       create_skipped_data_from({
@@ -59,7 +60,7 @@ namespace :horizons do
           [ 'related',     'related_series+=',    series_number_ext_field ],
           [ 'successor',   'subsequent_series+=', series_number_ext_field ],
           [ 'predecessor', 'previous_series+=',   series_number_ext_field ],
-          [ 'agencies',    'creating_agency+=',   agency_code_ext_field ]
+          [ 'agencies',    'creating_agencies+=', agency_code_ext_field ]
         ]
       })
     end
@@ -70,8 +71,9 @@ namespace :horizons do
       series = TopicType.find_by_name("Series").topics
       create_table_of_contents_between(series, item_id, [
         ['Item', :title],
-        ['Date Range', :date_range]
-      ], :date_range)
+        ['Start Date', :start_date],
+        ['End Date', :end_date]
+      ], :start_date)
     end
 
   end
@@ -83,7 +85,7 @@ namespace :horizons do
       records = Nokogiri::XML File.open(RAILS_ROOT + '/imports/items/records.xml')
       item_key_ext_field = ExtendedField.find_by_label('Item Key')
       agency_code_ext_field = ExtendedField.find_by_label('Agency Code')
-      series_number_ext_field = ExtendedField.find_by_label('Series Number')
+      series_number_ext_field = ExtendedField.find_by_label('Series No')
 
       create_skipped_data_from({
         :records => records,
@@ -156,6 +158,13 @@ namespace :horizons do
           value = { 'label' => pattern_topic.title,
                     'value' => url_for_dc_identifier(pattern_topic) }
 
+          # We should skip any topics that already have this data, to prevent entering it twice
+          ext_field_label = (setter_method =~ /(\w+)/ && $1)
+          if ext_field_label
+            existing_pattern = /<#{ext_field_label}[^>]*>.*#{Regexp.escape(value['value'])}.*<\/#{ext_field_label}>/i
+            next if record_topic.extended_content && record_topic.extended_content =~ existing_pattern
+          end
+
           record_topic.send(setter_method, value)
           ContentItemRelation.new_relation_to_topic(pattern_topic, record_topic)
 
@@ -167,7 +176,9 @@ namespace :horizons do
       if updated
         record_topic.save
         record_topic.add_as_contributor(User.first)
-        record_topic.prepare_and_save_to_zoom
+
+        # We need to do a full rebuild at the end anyway, so skip this for now
+        # record_topic.prepare_and_save_to_zoom
       end
 
     end
@@ -176,6 +187,8 @@ namespace :horizons do
   def create_table_of_contents_between(topics, contents_topic_type_id, columns = {}, sort_by = nil)
     topics.each do |topic|
       contents = topic.child_related_topics.find_all_by_topic_type_id(contents_topic_type_id)
+
+      next unless contents && contents.size > 0
 
       html = "<table>"
 
@@ -187,7 +200,13 @@ namespace :horizons do
       html += "</tr>"
 
       # If sort_by is present, sort all contents by that. Rescue from any errors that occur
-      contents = contents.sort_by { |s| s.send(sort_by) rescue nil } unless sort_by.nil?
+      unless sort_by.nil?
+        contents = contents.sort_by do |s|
+          value = s.send(sort_by) rescue nil
+          value = value['value'] if value.is_a?(Hash) && value['value'].present?
+          value || ''
+        end
+      end
 
       # Loop over contents
       contents.each do |content|
@@ -198,7 +217,9 @@ namespace :horizons do
             url = url_for_dc_identifier(content)
             html += "<td><a href=\"#{url}\">#{content.title}</a></td>"
           else
-            html += "<td>#{content.send(method) rescue ''}</td>"
+            value = content.send(method) rescue nil
+            value = value['value'] if value.is_a?(Hash) && value['value'].present?
+            html += "<td>#{value || ''}</td>"
           end
         end
         html += "</tr>"
@@ -209,6 +230,9 @@ namespace :horizons do
       topic.description = topic.description + ' ' + html
       topic.save
       topic.add_as_contributor(User.first)
+
+      # We need to do a full rebuild at the end anyway, so skip this for now
+      # topic.prepare_and_save_to_zoom
     end
   end
 
