@@ -799,7 +799,9 @@ module Importer
           additional_fields_derived_from_processing_values = Hash.new
           record_hash.each do |record_field, record_value|
             if record_value.present? && importer_field_methods[record_field.downcase]
-              parsed_value = Array(eval(importer_field_methods[record_field.downcase]).call(record_value))
+              field_modifier = eval(importer_field_methods[record_field.downcase])
+              args = (field_modifier.arity == 2) ? [record_value, record_hash] : [record_value]
+              parsed_value = Array(field_modifier.call(*args))
               additional_fields_derived_from_processing_values.merge!(parsed_value.last) if parsed_value.last.is_a?(Hash)
               record_hash[record_field] = parsed_value.first
             end
