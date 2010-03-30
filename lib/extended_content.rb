@@ -370,7 +370,13 @@ module ExtendedContent
     def reader_for(extended_field_element_name, field = nil)
       values = structured_extended_content[extended_field_element_name].to_a
       if values.size == 1
-        values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+        if field && field.ftype == 'year'
+          values = values.first if values.is_a?(Array)
+          values = values.first if values.is_a?(Array) && !field.multiple?
+          values
+        else
+          values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+        end
       elsif field && ['map', 'map_address', 'topic_type', 'year'].member?(field.ftype)
         # do nothing with the data in this case
       else
