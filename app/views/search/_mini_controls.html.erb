@@ -94,12 +94,12 @@ horizontal = display_refine
       <td class="label"><%= t('search.mini_controls.within') %></td>
       <td colspan="2" class="fields">
         <%
-        options = [[t('search.mini_controls.all_of', :site_basket_name => @site_basket.name), 'site']]
+        options = [[t('search.mini_controls.all_of', :site_basket_name => @site_basket.name), @site_basket.urlified_name]]
         @basket_access_hash.each do |basket_urlified_name, value|
-          next if basket_urlified_name == :site
+          next if basket_urlified_name == @site_basket.urlified_name.to_sym
           options << [value[:basket_name], basket_urlified_name.to_s]
         end
-        selected = clear_values ? 'site' : params[:urlified_name]
+        selected = clear_values ? @site_basket.urlified_name : params[:urlified_name]
         %>
         <%= select_tag('target_basket', options_for_select(options, selected)) %>
       </td>

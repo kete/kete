@@ -512,6 +512,7 @@ a:hover {
   border: 1px solid #000;
   margin-top: 1px;
   position: relative;
+  z-index: 1; /* above other elements like the menu bar */
 }
 .search_dropdown.horizontal {
   width: 580px;
