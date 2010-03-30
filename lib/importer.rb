@@ -929,8 +929,8 @@ module Importer
         end
       end
 
-      # if we are making a topic, respect the Related Items Inset configurations
-      if zoom_class == 'Topic'
+      # respect the Related Items Inset configurations
+      if new_record.respond_to?(:related_items_position)
         new_record.related_items_position = (defined?(RELATED_ITEMS_POSITION_DEFAULT) ? RELATED_ITEMS_POSITION_DEFAULT : 'inset')
       end
 
