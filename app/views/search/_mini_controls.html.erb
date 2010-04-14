@@ -156,8 +156,9 @@ horizontal = display_refine
         <% end %>
       </ul>
       <ul class="actions">
-        <li class="first"><%= link_to t('search.mini_controls.previous_searches'), :controller => 'search', :action => 'list' %></li>
-        <li><%= link_to t('search.mini_controls.clear_all_searches'), :controller => 'search', :action => 'clear' %></li>
+        <% options = { :urlified_name => @site_basket.urlified_name, :controller => 'search' } %>
+        <li class="first"><%= link_to t('search.mini_controls.previous_searches'), options.merge(:action => 'list') %></li>
+        <li><%= link_to t('search.mini_controls.clear_all_searches'), options.merge(:action => 'clear') %></li>
       </ul>
     </div>
   <% end %>
