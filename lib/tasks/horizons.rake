@@ -131,9 +131,9 @@ namespace :horizons do
       record_topic = find_topic_with_data_of(record_id, options[:record_id_ext_field])
 
       if record_topic
-        puts "Continuing: Found topic with record id #{record_id.upcase}: #{record_topic.title}"
+        puts "Continuing: Found item with record key #{record_id.upcase}: topic #{record_topic.id}"
       else
-        puts "Skipping: Topic with record id #{record_id.upcase} not found"; next
+        puts "Skipping: Item with record key #{record_id.upcase} not found"; next
       end
 
       updated = false
@@ -155,8 +155,7 @@ namespace :horizons do
             puts "Skipping #{xml_pattern}: Topic with pattern code of #{pattern_code.upcase} not found"; next
           end
 
-          value = { 'label' => pattern_topic.title,
-                    'value' => url_for_dc_identifier(pattern_topic) }
+          value = { 'label' => pattern_topic.title, 'value' => url_for_dc_identifier(pattern_topic) }
 
           # We should skip any topics that already have this data, to prevent entering it twice
           ext_field_label = (setter_method =~ /(\w+)/ && $1)
@@ -166,7 +165,7 @@ namespace :horizons do
           end
 
           record_topic.send(setter_method, value)
-          ContentItemRelation.new_relation_to_topic(pattern_topic, record_topic)
+          ContentItemRelation.new_relation_to_topic(record_topic, pattern_topic)
 
           puts "Added data for #{xml_pattern}: Relation from topic #{record_topic.id} to topic #{pattern_topic.id}"
           updated = true
