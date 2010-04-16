@@ -91,9 +91,8 @@
 
   <div id="result-show">
     <% if other_results.size > 0 %>
-      <%=t 'search.results.no_results_of_this_type_found',
-           :zoom_class => zoom_class_humanize(@current_class).downcase,
-           :other_results => other_results.to_sentence %>
+      <%=t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(@current_class).downcase %>
+      <ul><%= other_results.collect { |r| "<li>#{r.downcase}</li>" }.join %></ul>
     <% else %>
       <%=t 'search.results.no_results_of_any_type_found' %>
     <% end %>
