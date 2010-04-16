@@ -173,7 +173,7 @@ module SearchHelper
   def other_results
     other_results = Array.new
     (ZOOM_CLASSES - [@current_class]).each do |zoom_class|
-      next unless @result_sets[zoom_class].size > 0
+      next unless @result_sets && @result_sets[zoom_class] && @result_sets[zoom_class].size > 0
       other_results << link_to_zoom_class_results(zoom_class, nil, nil, zoom_class_humanize_after(@result_sets[zoom_class].size, zoom_class))
     end
     other_results
