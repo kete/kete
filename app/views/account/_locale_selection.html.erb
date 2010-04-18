@@ -1,11 +1,19 @@
+<%
+classes ||= Array.new
+classes << 'language_choices_display'
+%>
 <% if User.locale_choices.keys.size > 1 %>
-  <div id="footer_language_selection" class="footer_div">
-    <% form_tag({:controller => 'account', :action => 'change_locale'}, {:method => :get}) do %>
-      <div class="form-element">
-        <noscript><label><%=t 'account.locale_selection.language' %></label></noscript>
-        <%= locale_dropdown(nil, { :default => I18n.locale, :pre_text => t('account.locale_selection.choose_locale') }) -%>
-        <noscript><%= submit_tag t('account.locale_selection.change_locale') %></noscript>
-      </div>
+  <div id="language_choices_<%= LANGUAGE_CHOICES_DISPLAY_TYPE %>" class="<%= classes.join(' ') %>">
+    <% if LANGUAGE_CHOICES_DISPLAY_TYPE == 'links' %>
+      <div><%= locale_links :default => I18n.locale %></div>
+    <% else %>
+      <% form_tag({:controller => 'account', :action => 'change_locale'}, {:method => :get}) do %>
+        <div>
+          <noscript><label><%=t 'account.locale_selection.language' %></label></noscript>
+          <%= locale_dropdown(nil, { :default => I18n.locale, :pre_text => t('account.locale_selection.choose_locale') }) -%>
+          <noscript><%= submit_tag t('account.locale_selection.change_locale') %></noscript>
+        </div>
+      <% end %>
     <% end %>
   </div>
 <% end %>

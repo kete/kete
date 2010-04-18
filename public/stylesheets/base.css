@@ -1543,12 +1543,39 @@ a.disabled {
 /*
  * Language Dropdown Selection
  */
-#footer_language_selection {
-  float: right;
-  margin-top: -50px;
+#language_choices_links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-#footer_language_selection label {
-  width: auto;
+#language_choices_links ul li {
+  float: left;
+  margin: 0;
+  padding: 0 10px;
+  border-left: 1px solid #fff;
+}
+#language_choices_links.footer ul li {
+  border-left: 1px solid #000;
+}
+#language_choices_links ul li.first {
+  border-left: none;
+}
+#language_choices_links ul li a {
+  color: #fff;
+}
+#language_choices_links.footer ul li a {
+  color: #3168AB;
+}
+.language_choices_display.header {
+  float: right;
+  position: absolute;
+  top: 4em;
+  right: 1em;
+}
+.language_choices_display.footer {
+  float: right;
+  margin-top: -40px;
+  padding: 5px 15px;
 }
 
 /*

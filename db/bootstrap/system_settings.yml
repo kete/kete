@@ -688,3 +688,19 @@ system_settings_080:
   id: "80"
   value: "refine"
   section: Search
+system_settings_081:
+  name: Language Choices Position
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Where should the available language selection choices be displayed? Choose one of the following: header, menu, footer"
+  id: "81"
+  value: "footer"
+  section: System
+system_settings_082:
+  name: Language Choices Display Type
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "How should the available language selection choices be displayed? Choose one of the following: dropdown, links"
+  id: "82"
+  value: "dropdown"
+  section: System

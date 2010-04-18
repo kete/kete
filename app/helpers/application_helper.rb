@@ -1730,6 +1730,21 @@ module ApplicationHelper
 
   end
 
+  def locale_links(options = nil)
+    options ||= Hash.new
+    options[:default] ||= (current_user != :false ? current_user.locale : I18n.locale)
+    choices = ''
+    User.locale_choices.each_with_index do |(key,value), index|
+      choices << content_tag(:li, link_to(value, {
+        :urlified_name => @current_basket.urlified_name,
+        :controller => 'account',
+        :action => 'change_locale',
+        :override_locale => key
+      }), :class => ('first' if index == 0))
+    end
+    content_tag(:ul, choices)
+  end
+
   def locale_dropdown(form=nil, options=nil)
     options ||= Hash.new
     options[:default] ||= if params[:user]
