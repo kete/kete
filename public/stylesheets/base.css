@@ -55,14 +55,19 @@ ul.navlist {
 }
 ul.nav-list li{
                 display: inline;
-                padding: 2px;
-                padding-left: .5em;
+                padding: 2px 5px;
+}
+#top-menu ul.nav-list li {
+    display: block;
+    float: left;
+    padding: 2px 5px;
+}
+#top-menu ul.nav-list li.locale_selection {
+  padding: 0 0 0 5px;
 }
 
-#top-menu ul.nav-list li {
-                display: block;
-                float: left;
-    padding: 2px 4px;
+#top-menu ul.nav-list li.locale_selection .menu_center {
+  padding-right: 100px;
 }
 
 ul.nav-list a{
@@ -1551,7 +1556,7 @@ a.disabled {
 #language_choices_links ul li {
   float: left;
   margin: 0;
-  padding: 0 10px;
+  padding: 0 5px;
   border-left: 1px solid #fff;
 }
 #language_choices_links.footer ul li {

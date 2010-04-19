@@ -692,7 +692,7 @@ system_settings_081:
   name: Language Choices Position
   technically_advanced: true
   required_to_be_configured: true
-  explanation: "Where should the available language selection choices be displayed? Choose one of the following: header, menu, footer"
+  explanation: "Where should the available language selection choices be displayed? Choose one of the following: header, top_menu_center, top_menu_farthest_right, footer"
   id: "81"
   value: "footer"
   section: System

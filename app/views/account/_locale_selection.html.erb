@@ -2,7 +2,7 @@
 classes ||= Array.new
 classes << 'language_choices_display'
 %>
-<% if User.locale_choices.keys.size > 1 %>
+<% if I18n.available_locales_with_labels.keys.size > 1 %>
   <div id="language_choices_<%= LANGUAGE_CHOICES_DISPLAY_TYPE %>" class="<%= classes.join(' ') %>">
     <% if LANGUAGE_CHOICES_DISPLAY_TYPE == 'links' %>
       <div><%= locale_links :default => I18n.locale %></div>

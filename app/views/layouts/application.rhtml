@@ -203,6 +203,7 @@
 
         <div id="top-menu">
           <ul class="user-nav nav-list">
+            <%= ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_center' %>
             <% account_hash = { :urlified_name => @site_basket.urlified_name,
                                 :controller => 'account' } -%>
             <% if !logged_in? -%>
@@ -234,7 +235,7 @@
               <li><%= link_to_unless_current t('layouts.application.logout'),
                                              account_hash.merge({ :action => 'logout' }),
                                              :tabindex => '2' %></li>
-              <%= ("<li>" + render('account/locale_selection', :classes => ['menu']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'menu' %>
+              <%= ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_farthest_right' %>
             <% end -%>
           </ul>
 

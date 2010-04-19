@@ -1734,13 +1734,17 @@ module ApplicationHelper
     options ||= Hash.new
     options[:default] ||= (current_user != :false ? current_user.locale : I18n.locale)
     choices = ''
-    User.locale_choices.each_with_index do |(key,value), index|
-      choices << content_tag(:li, link_to(value, {
-        :urlified_name => @current_basket.urlified_name,
-        :controller => 'account',
-        :action => 'change_locale',
-        :override_locale => key
-      }), :class => ('first' if index == 0))
+    I18n.available_locales_with_labels.each_with_index do |(key,value), index|
+      if I18n.locale.to_sym == key.to_sym
+        choices << content_tag(:li, value, :class => "current #{'first' if index == 0}")
+      else
+        choices << content_tag(:li,   link_to(value, {
+          :urlified_name => @current_basket.urlified_name,
+          :controller => 'account',
+          :action => 'change_locale',
+          :override_locale => key
+        }), :class => ('first' if index == 0))
+      end
     end
     content_tag(:ul, choices)
   end
@@ -1754,7 +1758,7 @@ module ApplicationHelper
     else
       I18n.locale
     end
-    locales = User.locale_choices.collect { |key,value| [value,key] }
+    locales = I18n.available_locales_with_labels.collect { |key,value| [value,key] }
     locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]
     if form
       form.select :locale, locales, :selected => options[:default]
