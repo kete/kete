@@ -235,8 +235,8 @@
               <li><%= link_to_unless_current t('layouts.application.logout'),
                                              account_hash.merge({ :action => 'logout' }),
                                              :tabindex => '2' %></li>
-              <%= ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_farthest_right' %>
             <% end -%>
+            <%= ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_farthest_right' %>
           </ul>
 
           <ul id="main-nav" class="nav-list">
