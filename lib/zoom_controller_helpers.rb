@@ -131,12 +131,13 @@ module ZoomControllerHelpers
     end
 
     def zoom_class_humanize_after(count, zoom_class)
-      humanized = count + ' '
+      humanized = count.to_s + ' '
       if count.to_i != 1
         humanized += zoom_class_plural_humanize(zoom_class)
       else
         humanized += zoom_class_humanize(zoom_class)
       end
+      humanized
     end
 
     protected
