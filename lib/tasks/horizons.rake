@@ -60,7 +60,7 @@ namespace :horizons do
           [ 'related',     'related_series+=',    series_number_ext_field ],
           [ 'successor',   'subsequent_series+=', series_number_ext_field ],
           [ 'predecessor', 'previous_series+=',   series_number_ext_field ],
-          [ 'agencies',    'creating_agencies+=', agency_code_ext_field ]
+          [ 'agencies',    'creating_agency+=',   agency_code_ext_field ]
         ]
       })
     end
@@ -185,7 +185,7 @@ namespace :horizons do
 
   def create_table_of_contents_between(topics, contents_topic_type_id, columns = {}, sort_by = nil)
     topics.each do |topic|
-      contents = topic.child_related_topics.find_all_by_topic_type_id(contents_topic_type_id)
+      contents = topic.related_topics.select { |t| t.topic_type_id == contents_topic_type_id }.uniq
 
       next unless contents && contents.size > 0
 
