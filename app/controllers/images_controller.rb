@@ -32,6 +32,11 @@ class ImagesController < ApplicationController
 
   def create
     @still_image = StillImage.new
+
+    # There appears to be a bug in either Passenger or Rack that causes blank params with no
+    # decendant values to be removed from the params hash by the time it reaches Rails
+    params[:image_file] = Hash.new unless params[:image_file]
+
     # handle problems with image file first
     @image_file = ImageFile.new(params[:image_file].merge({ :file_private => params[:still_image][:file_private],
                                                             :item_private => params[:still_image][:private] }))
