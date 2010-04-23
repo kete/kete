@@ -13,7 +13,7 @@ display_num = 9 if are_still_images
 hide_headings ||= false
 -%>
 
-<div id="detail-linked-<%= controller -%>"<%= (total_items < 1) ? " class='no-items'" : " class='related-items-section'" -%>>
+<div id="detail-linked-<%= controller -%>"<%= (total_items < 1 && !display_no_item_text) ? " class='no-items'" : " class='related-items-section'" -%>>
   <% unless hide_headings %>
     <h4>
       <% collapsed_img = image_tag('related_items_collapsed.gif', :class => 'expand_collapse_image') %>

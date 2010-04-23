@@ -1,0 +1,7 @@
+<% form_tag(:overwrite_params => overwritten_search_params) do %>
+  <h3><%= title -%></h3>
+  <div class="wrap">
+    <%= text_field_tag 'search_terms', nil, {:class => 'searchheader-search', :size => '30', :tabindex => '1'} %>
+    <%= submit_tag t('search.form.search'), {:class => 'searchbutton', :tabindex => '1'} %>
+  </div>
+<% end %>
