@@ -90,7 +90,12 @@
 <% else %>
 
   <div id="result-show">
-    <%=t 'search.results.no_results_found' %>
+    <% if other_results.size > 0 %>
+      <%=t 'search.results.no_results_of_this_type_found', :zoom_class => zoom_class_humanize(@current_class).downcase %>
+      <ul><%= other_results.collect { |r| "<li>#{r.downcase}</li>" }.join %></ul>
+    <% else %>
+      <%=t 'search.results.no_results_of_any_type_found' %>
+    <% end %>
     [ <div id="refine_search_dropdown_trigger"></div> ]
     <%= render 'search/refine_results' %>
   </div>

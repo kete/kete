@@ -3,10 +3,11 @@ module SearchHelper
 
   # take current url, replace :controller_for_zoom_class
   # with passed with one for passed in zoom_class
-  def link_to_zoom_class_results(zoom_class, results_count, location = nil)
+  def link_to_zoom_class_results(zoom_class, results_count, location = nil, text = nil)
     location = location || params.merge(:controller_name_for_zoom_class => zoom_class_controller(zoom_class), :page => nil)
     location.merge!({ :trailing_slash => true }) if location.is_a?(Hash) && params[:action] == 'all'
-    link_to("#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})", location, :tabindex => '1')
+    text ||= "#{zoom_class_plural_humanize(zoom_class)} (#{number_with_delimiter(results_count)})"
+    link_to(text, location, :tabindex => '1')
   end
 
   # look in parameters for what this is a refinement of
@@ -169,6 +170,13 @@ module SearchHelper
     xml.send("atom:link", :rel => 'last', :href => derive_url_for_rss(:page => total_pages))
   end
 
+  def other_results
+    other_results = Array.new
+    (ZOOM_CLASSES - [@current_class]).each do |zoom_class|
+      next unless @result_sets && @result_sets[zoom_class] && @result_sets[zoom_class].size > 0
+      other_results << link_to_zoom_class_results(zoom_class, nil, nil, zoom_class_humanize_after(@result_sets[zoom_class].size, zoom_class))
+    end
+    other_results
+  end
+
 end
-
-
