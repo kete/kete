@@ -271,8 +271,33 @@ module GoogleMap
         html = javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}&amp;format=") + "\n"
         # This is where the real action happens. It's confusing so I've commented as much as possible.
         html += javascript_tag("
+          // TODO: These variables needs to be accessible here for clearing results
+          // Will need to come back to fix this for multiple maps on the same page
+          // Though at the moment, I'm only aware of sites that use one map anyway
+          var map;
+          var search_marker;
+
           // this initiates the Google Map API (version 2)
           google.load('maps', '2', {'other_params':'sensor=true'});
+
+          // Intercept search results, and adjust the info bubble to provide a hook for
+          // updating the currently chosen location on a Google Map
+          function adjustSearchResultBubble(marker, html, result) {
+            search_marker = marker;
+            html = '<p><strong>' + result.title + '</strong></p>';
+            html += \"<p>#{i18n_js('google_map_lib.load_google_map_api.correct_location')} \"
+            html += \"<a href='#' onclick=\\\"resetCurrentSearchAndSetMarker(); return false\\\">\"
+            html += \"#{i18n_js('google_map_lib.load_google_map_api.correct_location_yes')}</a></p>\";
+            return html;
+          }
+
+          // Clears the results (by disabling and reenabling the google map)
+          // And updates the map with the marker to point at the result chosen
+          function resetCurrentSearchAndSetMarker() {
+            map.disableGoogleBar();
+            map.enableGoogleBar();
+            update_map_data(map, search_marker.getLatLng());
+          }
 
           // the function run when the page finishes loading, to initiate the google map
           function initialize_google_map(map_id, map_type, latitude, longitude, zoom_lvl, address, latlng_text_field, zoom_text_field, address_text_field) {
@@ -310,11 +335,13 @@ module GoogleMap
                                                    $(map_id + \'_warning\').hide();
                                                    $(map_id + \'_fields\').hide();'}
             // initialize the google map
-            var map = new google.maps.Map2($(map_id));
+            map = new google.maps.Map2($(map_id), {
+              googleBarOptions: {
+                onGenerateMarkerHtmlCallback: adjustSearchResultBubble
+              }
+            });
             // disable dblclick for zoom because it conflicts with a click event
             map.disableDoubleClickZoom();
-            // enable the ability to use scroll wheel for zoom, because dblclick is disabled
-            map.enableScrollWheelZoom();
             // store the several objects/values in the map object for easy access
             // it also makes it possible to have different maps on the same page
             map.geocoder_obj = new google.maps.ClientGeocoder();
@@ -479,7 +506,7 @@ module GoogleMap
         ") + "\n"
         # We don't need the search controls and stylesheets on the index/show, only new/edit
         unless @google_map_on_index_or_show_page
-          html += javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}")
+          html += javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}?format=")
         end
         html
       end

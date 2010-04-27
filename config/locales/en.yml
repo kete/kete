@@ -1357,6 +1357,8 @@ en:
     load_google_map_api:
       accuracy: "Accuracy:"
       address: "Address:"
+      correct_location: "Is this the correct location?"
+      correct_location_yes: "Yes, it is."
       country_code: "Country {{t.base.code}}:"
       fields_dont_exist: "ERROR: The {{t.base.field.pluralize}} for latitude, longitude, zoom level and address don't exist on the page. Debug this!"
       hide_lat_lng: "{{t.base.hide.capitalize}} Latitude/Longitude"
