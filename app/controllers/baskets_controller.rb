@@ -349,7 +349,7 @@ class BasketsController < ApplicationController
     # give the user the option to add the item to any place the have access to
     @basket_list = Array.new
     if @site_admin
-      @basket_list = Basket.all(:select => 'name,urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
+      @basket_list = Basket.list_as_names_and_urlified_names
     else
       all_baskets_hash = Hash.new
       # get the add item setting for each of the baskets the user has access to
