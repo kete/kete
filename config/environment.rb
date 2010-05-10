@@ -3,6 +3,20 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.3.5' unless defined? RAILS_GEM_VERSION
 
+# Walter McGinnis, 2010-05-08
+# For holding info about the kete application instance
+class Kete
+  class << self
+    def extensions
+      @@extensions ||= { :blocks => nil }
+    end
+  
+    def extensions=(extensions)
+      @@extensions = extensions
+    end
+  end
+end
+
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
 # acts_as_zoom declarations in models
@@ -95,3 +109,16 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 # Walter McGinnis, 2007-12-03
 # most application specific configuration has moved to files
 # under config/initializers/
+
+# Load application extensions that have been registered by add-ons
+# WARNING:
+# in development mode, overridden methods in class extensions
+# will not take effect after first restart
+# as reloading of models then takes precedence
+if Kete.extensions[:blocks]
+  Kete.extensions[:blocks].keys.each do |key|
+    key_constantized = key.to_s.camelize.constantize
+    key_constantized.send(:include, KeteAddonSupport) unless key_constantized.included_modules.include? KeteAddonSupport
+    key_constantized.load_addon_extensions
+  end
+end

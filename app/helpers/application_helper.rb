@@ -1034,9 +1034,9 @@ module ApplicationHelper
 
       if field.ftype == 'map' || field.ftype == 'map_address'
         next if value.blank?
-        td = content_tag("td", "#{field.label}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
+        td = content_tag("td", "#{display_label_for(field)}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
       else
-        td = content_tag("td", "#{field.label}:", :class => "detail-extended-field-label") +
+        td = content_tag("td", "#{display_label_for(field)}:", :class => "detail-extended-field-label") +
              content_tag("td", value)
       end
 
@@ -1047,6 +1047,10 @@ module ApplicationHelper
       content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
     end
 
+  end
+
+  def display_label_for(field_or_choice)
+    field_or_choice.label
   end
 
   def formatted_extended_content_value(field, field_name, value, item)
