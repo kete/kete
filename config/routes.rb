@@ -139,7 +139,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # active_scaffold routes
   ACTIVE_SCAFFOLD_CONTROLLERS.each do |as_controller|
-    map.resources as_controller.to_sym, :active_scaffold => true
+    map.resources as_controller.to_sym, :active_scaffold => true, :path_prefix => ':urlified_name'
   end
 
   map.basket_index ':urlified_name', :controller => "index_page", :action => 'index'
