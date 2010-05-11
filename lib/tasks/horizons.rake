@@ -30,17 +30,6 @@ namespace :horizons do
       })
     end
 
-    desc 'Update an agency description with entry in table of contents for series.'
-    task :update_description_with_toc => :environment do
-      series_id = TopicType.find_by_name("Series").id
-      agencies = TopicType.find_by_name("Agency").topics
-      create_table_of_contents_between(agencies, series_id, [
-        ['Series', :title],
-        ['Start Date', :start_date],
-        ['End Date', :end_date]
-      ], :start_date)
-    end
-
   end
 
   namespace :series do
@@ -65,17 +54,6 @@ namespace :horizons do
       })
     end
 
-    desc 'Update the series descriptions with entry in table of contents of items.'
-    task :update_description_with_toc => :environment do
-      item_id = TopicType.find_by_name("Item").id
-      series = TopicType.find_by_name("Series").topics
-      create_table_of_contents_between(series, item_id, [
-        ['Item', :title],
-        ['Start Date', :start_date],
-        ['End Date', :end_date]
-      ], :start_date)
-    end
-
   end
 
   namespace :items do
@@ -83,7 +61,7 @@ namespace :horizons do
     desc 'Update items with their agency and series relations.'
     task :add_skipped_data => :environment do
       records = Nokogiri::XML File.open(RAILS_ROOT + '/imports/items/records.xml')
-      item_key_ext_field = ExtendedField.find_by_label('Item Key')
+      legacy_identifier_ext_field = ExtendedField.find_by_label('Legacy Identifier')
       agency_code_ext_field = ExtendedField.find_by_label('Agency Code')
       series_number_ext_field = ExtendedField.find_by_label('Series No')
 
@@ -91,7 +69,7 @@ namespace :horizons do
         :records => records,
         :record_path => 'dataroot/Item',
         :record_id_field => 'Key',
-        :record_id_ext_field => item_key_ext_field,
+        :record_id_ext_field => legacy_identifier_ext_field,
         :data => [
           [ 'Agency', 'agencies+=', agency_code_ext_field   ],
           [ 'Series', 'series+=',   series_number_ext_field ]
@@ -180,58 +158,6 @@ namespace :horizons do
         # record_topic.prepare_and_save_to_zoom
       end
 
-    end
-  end
-
-  def create_table_of_contents_between(topics, contents_topic_type_id, columns = {}, sort_by = nil)
-    topics.each do |topic|
-      contents = topic.related_topics.select { |t| t.topic_type_id == contents_topic_type_id }.uniq
-
-      next unless contents && contents.size > 0
-
-      html = "<table>"
-
-      html += "<tr>"
-      # Create the table headers
-      columns.each do |header, method|
-        html += "<th>#{header}</th>"
-      end
-      html += "</tr>"
-
-      # If sort_by is present, sort all contents by that. Rescue from any errors that occur
-      unless sort_by.nil?
-        contents = contents.sort_by do |s|
-          value = s.send(sort_by) rescue nil
-          value = value['value'] if value.is_a?(Hash) && value['value'].present?
-          value || ''
-        end
-      end
-
-      # Loop over contents
-      contents.each do |content|
-        html += "<tr>"
-        # Create the table data
-        columns.each do |header, method|
-          if method.to_sym == :title
-            url = url_for_dc_identifier(content)
-            html += "<td><a href=\"#{url}\">#{content.title}</a></td>"
-          else
-            value = content.send(method) rescue nil
-            value = value['value'] if value.is_a?(Hash) && value['value'].present?
-            html += "<td>#{value || ''}</td>"
-          end
-        end
-        html += "</tr>"
-      end
-
-      html += "</table>"
-
-      topic.description = topic.description + ' ' + html
-      topic.save
-      topic.add_as_contributor(User.first)
-
-      # We need to do a full rebuild at the end anyway, so skip this for now
-      # topic.prepare_and_save_to_zoom
     end
   end
 
