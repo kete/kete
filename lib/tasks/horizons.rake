@@ -128,9 +128,6 @@ namespace :horizons do
             puts "Skipping a #{xml_pattern}: Value is blank"; next
           end
 
-          # All series numbers have WDC prepended to them
-          pattern_code = "WDC #{pattern_code}" if xml_pattern == 'Series'
-
           pattern_topic = find_topic_with_data_of(pattern_code, related_id_ext_field)
           if pattern_topic.blank?
             puts "Skipping #{xml_pattern}: Topic with pattern code of #{pattern_code.upcase} not found"; next
