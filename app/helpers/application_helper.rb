@@ -1354,7 +1354,7 @@ module ApplicationHelper
 
   def flagging_links_for(item, first = false, controller = nil)
     html_string = String.new
-    if FLAGGING_TAGS.size > 0 and !item.already_at_blank_version?
+    if Kete.flagging_tags.size > 0 and !item.already_at_blank_version?
       if first
         html_string = "<ul><li class=\"first flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       else
@@ -1362,7 +1362,7 @@ module ApplicationHelper
       end
       html_string += "<li class=\"first\"><ul>\n"
       flag_count = 1
-      FLAGGING_TAGS.each do |flag|
+      Kete.flagging_tags.each do |flag|
         if flag_count == 1
           html_string += "<li class=\"first\">"
         else
