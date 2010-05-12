@@ -1448,10 +1448,10 @@ module ApplicationHelper
 
   def link_to_original_of(item, phrase=t('application_helper.link_to_original_of.phrase'), skip_warning=false)
     item_file_url = item.is_a?(StillImage) ? item.original_file.public_filename : item.public_filename
-    if DOWNLOAD_WARNING.blank? || skip_warning
+    if Kete.download_warning.blank? || skip_warning
       link_to phrase, item_file_url
     else
-      link_to phrase, item_file_url, :confirm => DOWNLOAD_WARNING
+      link_to phrase, item_file_url, :confirm => Kete.download_warning
     end
   end
 
