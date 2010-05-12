@@ -22,13 +22,17 @@ class Kete
     # see http://blog.jayfields.com/2007/10/ruby-defining-class-methods.html
     # and rails/activesupport/lib/active_support/core_exts/object/metaclass.rb
     def define_reader_method_for(setting)
-      # create the template code
-      code = Proc.new {
-        SystemSetting.find_by_name(setting.name).constant_value
-      }
-   
       method_name = setting.constant_name.downcase
 
+      class_variable_set('@@' + method_name, SystemSetting.find_by_name(setting.name).constant_value)
+
+      # create the template code
+      code = Proc.new {
+        method_name = method_name.sub('?', '') if method_name.include?('?')
+
+        class_variable_get('@@' + method_name)
+      }
+   
       metaclass.instance_eval { define_method(method_name, &code) }
 
       # create predicate method if boolean
