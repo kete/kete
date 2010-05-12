@@ -37,5 +37,19 @@ class Kete
         metaclass.instance_eval { define_method("#{method_name}?", &code) }
       end 
     end
+
+    def define_reader_method_as(method_name, value)
+      # create the template code
+      code = Proc.new {
+        value
+      }
+   
+      metaclass.instance_eval { define_method(method_name, &code) }
+
+      # create predicate method if boolean
+      if value.kind_of?(TrueClass) || value.kind_of?(FalseClass)
+        metaclass.instance_eval { define_method("#{method_name}?", &code) }
+      end 
+    end
   end
 end

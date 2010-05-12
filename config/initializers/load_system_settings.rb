@@ -9,6 +9,7 @@ if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.tabl
   SystemSetting.find(:all).each do |setting|
     if setting.name == 'Site URL' and setting.value.blank? and !site_name_setting.value.blank?
       SITE_URL = 'http://' + site_name_setting.value + '/'
+      Kete.define_reader_method_as('site_url', SITE_URL)
     else
       setting.to_constant
       Kete.define_reader_method_for(setting)
