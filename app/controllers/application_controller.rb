@@ -983,7 +983,7 @@ class ApplicationController < ActionController::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       # pending items aren't counted
-      private_conditions = "title != '#{BLANK_TITLE}' "
+      private_conditions = "title != '#{Kete.blank_title}' "
       local_public_conditions = PUBLIC_CONDITIONS
 
       # comments are a special case

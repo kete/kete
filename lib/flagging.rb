@@ -15,20 +15,20 @@ module Flagging
         attr_accessor :flagged_at # we store this versions most recent flagged date
 
         def disputed?
-          undisputed_flags = [REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
+          undisputed_flags = [Kete.reviewed_flag, Kete.rejected_flag, Kete.restricted_flag]
           tags.size > 0 && tags.join(',') !~ /(\#{undisputed_flags.join('|')})/
         end
 
         def reviewed?
-          tags.size > 0 && tags.join(',') =~ /(\#{REVIEWED_FLAG})/
+          tags.size > 0 && tags.join(',') =~ /(\#{Kete.reviewed_flag})/
         end
 
         def rejected?
-          tags.size > 0 && tags.join(',') =~ /(\#{REJECTED_FLAG})/
+          tags.size > 0 && tags.join(',') =~ /(\#{Kete.rejected_flag})/
         end
 
         def disputed_flags
-          undisputed_flags = [REVIEWED_FLAG, REJECTED_FLAG, RESTRICTED_FLAG]
+          undisputed_flags = [Kete.reviewed_flag, Kete.rejected_flag, Kete.restricted_flag]
           flags.select { |flag| !undisputed_flags.include?(flag.name) }
         end
       RUBY
@@ -84,7 +84,7 @@ module Flagging
 
     def remove_pending_flag(version_number)
       version = self.versions.find_by_version(version_number)
-      version.tag_list.remove(PENDING_FLAG)
+      version.tag_list.remove(Kete.pending_flag)
       version.save_tags
     end
 
@@ -92,29 +92,29 @@ module Flagging
     # not user action (incorrect, duplicate etc)
     def remove_all_flags(version_number)
       version = self.versions.find_by_version(version_number)
-      version.tag_list.remove(BLANK_FLAG)
-      version.tag_list.remove(PENDING_FLAG)
-      version.tag_list.remove(REVIEWED_FLAG)
-      version.tag_list.remove(REJECTED_FLAG)
-      version.tag_list.remove(RESTRICTED_FLAG)
+      version.tag_list.remove(Kete.blank_flag)
+      version.tag_list.remove(Kete.pending_flag)
+      version.tag_list.remove(Kete.reviewed_flag)
+      version.tag_list.remove(Kete.rejected_flag)
+      version.tag_list.remove(Kete.restricted_flag)
       version.save_tags
     end
 
     def strip_flags_and_mark_reviewed(version_number)
       remove_all_flags(version_number)
-      flag_at_with(version_number, REVIEWED_FLAG)
+      flag_at_with(version_number, Kete.reviewed_flag)
     end
 
     def review_this(version_number, options = {})
       remove_all_flags(version_number)
-      flag_at_with(version_number, REVIEWED_FLAG, options[:message])
-      flag_at_with(version_number, RESTRICTED_FLAG, options[:message]) if options[:restricted]
+      flag_at_with(version_number, Kete.reviewed_flag, options[:message])
+      flag_at_with(version_number, Kete.restricted_flag, options[:message]) if options[:restricted]
     end
 
     def reject_this(version_number, options = {})
       remove_all_flags(version_number)
-      flag_at_with(version_number, REJECTED_FLAG, options[:message])
-      flag_at_with(version_number, RESTRICTED_FLAG, options[:message]) if options[:restricted]
+      flag_at_with(version_number, Kete.rejected_flag, options[:message])
+      flag_at_with(version_number, Kete.restricted_flag, options[:message]) if options[:restricted]
     end
 
     def max_version
@@ -191,13 +191,13 @@ module Flagging
       else
         # we leave required fields alone
         # and let the view handle whether they should be shown
-        update_hash = { :title => BLANK_TITLE,
+        update_hash = { :title => Kete.blank_title,
           :description => nil,
           :extended_content => nil,
           :tag_list => nil }
 
         update_hash[:private] = self.private? if self.respond_to?(:private)
-        update_hash[:description] = PENDING_FLAG if self.class.name == 'Comment'
+        update_hash[:description] = Kete.pending_flag if self.class.name == 'Comment'
 
         update_hash[:short_summary] = nil if self.can_have_short_summary?
 
@@ -229,7 +229,7 @@ module Flagging
     end
 
     def already_at_blank_version?
-      title == BLANK_TITLE and (description.nil? or (self.class.name == 'Comment' and description == PENDING_FLAG)) and extended_content.nil? and (!self.can_have_short_summary? or short_summary.nil?)
+      title == Kete.blank_title and (description.nil? or (self.class.name == 'Comment' and description == Kete.pending_flag)) and extended_content.nil? and (!self.can_have_short_summary? or short_summary.nil?)
     end
 
     def fully_moderated?
@@ -259,11 +259,11 @@ module Flagging
     end
 
     def at_placeholder_public_version?
-      title == NO_PUBLIC_VERSION_TITLE
+      title == Kete.no_public_version_title
     end
 
     def notify_moderators_immediatelly_if_necessary(options = { })
-      if FREQUENCY_OF_MODERATION_EMAIL.is_a?(String) and FREQUENCY_OF_MODERATION_EMAIL == 'instant'
+      if Kete.frequency_of_moderation_email.is_a?(String) and Kete.frequency_of_moderation_email == 'instant'
         # if histor_url is blank it will be figured out in view
         history_url = if !options[:history_url].blank?
           options[:history_url]
@@ -295,12 +295,12 @@ module Flagging
       # make sure the version is flagged as pending
       version = self.versions.find_by_version(version)
 
-      if version.tags.include?(Tag.find_by_name(PENDING_FLAG))
+      if version.tags.include?(Tag.find_by_name(Kete.pending_flag))
         # notify user and moderators that a revision is pending review
         UserNotifier.deliver_pending_review_for(version.version, submitter)
 
         # if instant moderator notifcation
-        notify_moderators_immediatelly_if_necessary(:flag => PENDING_FLAG,
+        notify_moderators_immediatelly_if_necessary(:flag => Kete.pending_flag,
                                                     :version => version.version,
                                                     :submitter => submitter)
       end
@@ -320,7 +320,7 @@ module Flagging
 
         self.reload # make sure we have the latest attribute values (specifically version)
         if should_moderate?
-          flag_live_version_with(PENDING_FLAG)
+          flag_live_version_with(Kete.pending_flag)
         end
 
       end
@@ -371,11 +371,11 @@ module Flagging
         conditions_string = "title != :pending_title"
         conditions_string += " or description is not null" if name != 'Comment'
       end
-      find(type, :conditions => [conditions_string, { :pending_title => BLANK_TITLE }])
+      find(type, :conditions => [conditions_string, { :pending_title => Kete.blank_title }])
     end
 
     def find_all_public_non_pending
-      find_non_pending(:all, PUBLIC_CONDITIONS)
+      find_non_pending(:all, Kete.public_conditions)
     end
 
     def find_all_non_pending

@@ -441,8 +441,8 @@
         <div id="footer_links" class="footer_div">
           <% unless @current_basket.replace_existing_footer_with_inheritance? -%>
             <ul>
-              <% unless GOVERNMENT_WEBSITE.blank? -%>
-                <li><%= link_to GOVERNMENT_WEBSITE.first, GOVERNMENT_WEBSITE.last, :accesskey => '/', :tabindex => '2' -%></li>
+              <% unless Kete.government_website.blank? -%>
+                <li><%= link_to Kete.government_website.first, Kete.government_website.last, :accesskey => '/', :tabindex => '2' -%></li>
               <% end -%>
               <% cache({:part => 'accessibility'}) do -%>
                 <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>

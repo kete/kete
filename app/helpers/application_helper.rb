@@ -80,7 +80,7 @@ module ApplicationHelper
   end
 
   def page_keywords
-    return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
+    return Kete.default_page_keywords if current_item.nil? || current_item.tags.blank?
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
   end
 
@@ -90,9 +90,9 @@ module ApplicationHelper
   end
 
   def page_description
-    return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
+    return Kete.default_page_description if current_item.nil?
     description_text = short_summary_or_description_of(current_item)
-    return DEFAULT_PAGE_DESCRIPTION if description_text.blank?
+    return Kete.default_page_description if description_text.blank?
     description_text
   end
 

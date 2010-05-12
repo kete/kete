@@ -27,7 +27,7 @@
             <td>
               [
               <% if version.version != @current_public_version && version.version != @current_private_version -%>
-                <% if tag_names.include?(RESTRICTED_FLAG) && !@at_least_moderator %>
+                <% if tag_names.include?(Kete.restricted_flag) && !@at_least_moderator %>
                   <b>restricted</b>
                 <% else %>
                   <%= link_to_preview_of(@item, version, true, :submitter => @item_contributors[@contributor_index]) %>
