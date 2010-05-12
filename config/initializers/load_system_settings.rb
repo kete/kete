@@ -1,6 +1,8 @@
 # if SystemSetting model doesn't exist, set IS_CONFIGURED to false
 if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.table_exists?('system_settings')
   # make each setting a global constant
+  # as well as accessable as reader method from Kete application object
+  #  (constants use to be eventually to be phased out in favor of Kete application object)
   # see reference for Module for more details about constant setting, etc.
   site_name_setting = SystemSetting.find_by_name('Site Name')
   SystemSetting.find(:all).each do |setting|
@@ -8,6 +10,7 @@ if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.tabl
       SITE_URL = 'http://' + site_name_setting.value + '/'
     else
       setting.to_constant
+      Kete.define_reader_method_for(setting)
     end
   end
 

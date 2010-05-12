@@ -5,17 +5,7 @@ RAILS_GEM_VERSION = '2.3.5' unless defined? RAILS_GEM_VERSION
 
 # Walter McGinnis, 2010-05-08
 # For holding info about the kete application instance
-class Kete
-  class << self
-    def extensions
-      @@extensions ||= { :blocks => nil }
-    end
-  
-    def extensions=(extensions)
-      @@extensions = extensions
-    end
-  end
-end
+require File.join(File.dirname(__FILE__), '../lib/kete')
 
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
