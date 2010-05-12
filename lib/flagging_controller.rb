@@ -144,7 +144,7 @@ module FlaggingController
         clear_caches_and_update_zoom_for_commented_item(@item)
 
         approval_message = I18n.t('flagging_controller_lib.restore.made_live',
-                                  :site_name => PRETTY_SITE_NAME,
+                                  :site_name => Kete.pretty_site_name,
                                   :basket_name => @current_basket.name)
 
         # notify the contributor of this revision

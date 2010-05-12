@@ -1,7 +1,7 @@
 require 'oai'
-if IS_CONFIGURED && defined?(PROVIDE_OAI_PMH_REPOSITORY) && PROVIDE_OAI_PMH_REPOSITORY
+if IS_CONFIGURED && defined?(Kete.provide_oai_pmh_repository?) && Kete.provide_oai_pmh_repository?
   class OaiPmhRepositoryProvider < OAI::Provider::Base
-    repository_name PRETTY_SITE_NAME
+    repository_name Kete.pretty_site_name
     repository_url "#{SITE_URL}oai_pmh_repository"
     record_prefix '' # this may need to be ZoomDb.zoom_id_stub.chop
     admin_email User.find(1).email

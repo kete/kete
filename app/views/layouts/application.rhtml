@@ -164,7 +164,7 @@
           <div id="header">
             <!-- this would be a good place for your logo -->
             <h1>
-              <%= link_to PRETTY_SITE_NAME,
+              <%= link_to Kete.pretty_site_name,
                           basket_index_url({ :urlified_name => @site_basket.urlified_name }),
                           :tabindex => '2' %>
               <%= header_link_to_current_basket %>
@@ -475,7 +475,7 @@
 
         <div id="header-wrapper">
           <div id="header">
-            <h1><%= PRETTY_SITE_NAME -%></h1>
+            <h1><%= Kete.pretty_site_name -%></h1>
           </div><!-- /header -->
         </div><!-- /header-wrapper -->
 

@@ -18,9 +18,9 @@ module ApplicationHelper
 
   def title_with_context
     if @current_basket == @site_basket
-      "#{stripped_title} - #{PRETTY_SITE_NAME}"
+      "#{stripped_title} - #{Kete.pretty_site_name}"
     else
-      "#{stripped_title} - #{@current_basket.name} - #{PRETTY_SITE_NAME}"
+      "#{stripped_title} - #{@current_basket.name} - #{Kete.pretty_site_name}"
     end
   end
 
@@ -118,7 +118,7 @@ module ApplicationHelper
 
     metadata += meta_tag(:name => 'DC.creator', :content => h(item.creator.user_name))
     metadata += meta_tag(:name => 'DC.contributor', :content => h(item.contributors.last.user_name) + ", et al") if item.contributors.size > 1
-    metadata += meta_tag(:name => 'DC.publisher', :content => h(PRETTY_SITE_NAME))
+    metadata += meta_tag(:name => 'DC.publisher', :content => h(Kete.pretty_site_name))
     metadata += meta_tag(:name => 'DC.type', :content => 'Text')
     metadata += meta_tag(:name => 'DC.rights', :content => h(item.license.name + " (" + item.license.url + ")")) if item.license
 
@@ -138,7 +138,7 @@ module ApplicationHelper
     tag(:link, :rel => "search",
                :type => "application/opensearchdescription+xml",
                :href => "#{SITE_URL}opensearchdescription.xml",
-               :title => "#{PRETTY_SITE_NAME} Web Search")
+               :title => "#{Kete.pretty_site_name} Web Search")
   end
 
   def open_search_metadata
@@ -201,9 +201,9 @@ module ApplicationHelper
 
   def default_search_terms
     if params[:controller] == 'search'
-      t('layouts.application.search_value_new', :pretty_site_name => PRETTY_SITE_NAME)
+      t('layouts.application.search_value_new', :pretty_site_name => Kete.pretty_site_name)
     else
-      t('layouts.application.search_value', :pretty_site_name => PRETTY_SITE_NAME)
+      t('layouts.application.search_value', :pretty_site_name => Kete.pretty_site_name)
     end
   end
 
