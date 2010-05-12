@@ -3,6 +3,7 @@ if Object.const_defined?('SystemSetting') and ActiveRecord::Base.connection.tabl
   # make each setting a global constant
   # as well as accessable as reader method from Kete application object
   #  (constants use to be eventually to be phased out in favor of Kete application object)
+  # exceptions (will remain constants) are IS_CONFIGURED and SITE_URL
   # see reference for Module for more details about constant setting, etc.
   site_name_setting = SystemSetting.find_by_name('Site Name')
   SystemSetting.find(:all).each do |setting|
