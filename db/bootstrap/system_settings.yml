@@ -704,3 +704,19 @@ system_settings_082:
   id: "82"
   value: "dropdown"
   section: System
+system_settings_083:
+  name: Search Selected Topic Type
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Requires 'Display Topic Type Field' be set to 'all' or 'menu'. Choose the topic type selected by default when users use the search menu. Enter the id of the topic type (refer to the id primary key in your database) or leave blank for no default selected."
+  id: "83"
+  value: ""
+  section: Search
+system_settings_084:
+  name: Search Select Current Basket
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should the current basket be selected when no current search has been made? If false, it'll search the site basket by default."
+  id: "84"
+  value: "false"
+  section: Search

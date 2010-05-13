@@ -200,10 +200,14 @@ module ApplicationHelper
   end
 
   def default_search_terms
+    search_location_name = Kete.pretty_site_name
+    search_location_name = @current_basket.name if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
+    search_text_key = (SEARCH_SELECT_CURRENT_BASKET ? 'search_value_within' : 'search_value')
+
     if params[:controller] == 'search'
-      t('layouts.application.search_value_new', :pretty_site_name => Kete.pretty_site_name)
+      t("layouts.application.new_#{search_text_key}", :search_location_name => search_location_name)
     else
-      t('layouts.application.search_value', :pretty_site_name => Kete.pretty_site_name)
+      t("layouts.application.#{search_text_key}", :search_location_name => search_location_name)
     end
   end
 
@@ -1471,7 +1475,7 @@ module ApplicationHelper
       indent_string = String.new
       element.level.times { indent_string += "&nbsp;" }
       escaped_value = element.send(value_method).to_s.strip.downcase.gsub(/\s/, '_')
-      selected = current_value == escaped_value ? " selected='selected'" : ''
+      selected = (current_value == escaped_value || current_value.to_i == element.id) ? " selected='selected'" : ''
       result << "<option value='#{escaped_value}'#{selected}>#{indent_string}#{element.send(text_method)}</option>\n"
     end
     result << "</select>\n"
