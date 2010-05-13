@@ -26,7 +26,7 @@
   <div class="form_example"><%=t 'account.edit.user_name_example' %></div>
 </div>
 
-<% if User.locale_choices.keys.size > 1 %>
+<% if I18n.available_locales_with_labels.keys.size > 1 %>
 <div class="form-element">
   <label><%=t 'account.edit.language' %></label>
   <%= locale_dropdown(f) -%>

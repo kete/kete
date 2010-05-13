@@ -97,9 +97,7 @@ class User < ActiveRecord::Base
   validates_format_of       :login, :with => /^[^\s]+$/
   validates_uniqueness_of   :login, :case_sensitive => false
 
-  cattr_accessor :locale_choices
-  @@locale_choices ||= YAML.load(IO.read(File.join(RAILS_ROOT, 'config/locales.yml')))
-  validates_inclusion_of :locale, :in => @@locale_choices.keys, :message => lambda { I18n.t('user_model.locale_incorrect', :locales => @@locale_choices.keys.join(', ')) }
+  validates_inclusion_of :locale, :in => I18n.available_locales_with_labels.keys, :message => lambda { I18n.t('user_model.locale_incorrect', :locales => I18n.available_locales_with_labels.keys.join(', ')) }
 
   before_save :encrypt_password
 
