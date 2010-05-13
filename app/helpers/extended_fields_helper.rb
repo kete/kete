@@ -7,7 +7,7 @@ module ExtendedFieldsHelper
 
   def topic_type_form_column(record, input_name)
     topic_types = TopicType.find(1).full_set
-    select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, {},
+    select = topic_type_select_with_indent('record', 'topic_type', topic_types, :id, :name, nil,
                                           { :class=>"select", :tabindex => '1' })
     content_tag('div', select, { :id => "hidden_choices_topic_type_select_#{record.id.to_s}", :style => 'display:none;' })
   end
