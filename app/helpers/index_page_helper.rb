@@ -12,7 +12,7 @@ module IndexPageHelper
 
     @skip_controllers = %w(account baskets members extended_fields  topic_types content_types zoom_dbs importers search)
 
-    rule_bases = User.locale_choices.keys.collect { |key| '/' + key + '/' }
+    rule_bases = I18n.available_locales_with_labels.keys.collect { |key| '/' + key + '/' }
     rule_bases << '/'
     @rule_specs = rule_bases.collect { |base| "Disallow: " + base }
   end

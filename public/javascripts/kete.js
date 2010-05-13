@@ -265,9 +265,9 @@ function makeSearchResultsDivClickable() {
  */
 
 function makeFooterLanguageSelectionClickable() {
-  $('footer_language_selection').down('select').observe('change', function(event) {
-    if ($('footer_language_selection').down('select').value != '') {
-      $('footer_language_selection').down('form').submit();
+  $('language_choices_dropdown').down('select').observe('change', function(event) {
+    if ($('language_choices_dropdown').down('select').value != '') {
+      $('language_choices_dropdown').down('form').submit();
     }
   });
 }
@@ -315,5 +315,5 @@ document.observe('dom:loaded', function() {
   if ($('portrait_help_div')) { enabledPortraitHelpToggle(); }
   if ($$('#related_items').size() > 0) { setupRelatedCollapsableSections(); }
   makeSearchResultsDivClickable();
-  if ($('footer_language_selection')) { makeFooterLanguageSelectionClickable(); }
+  if ($('language_choices_dropdown')) { makeFooterLanguageSelectionClickable(); }
 });

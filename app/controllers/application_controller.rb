@@ -17,11 +17,12 @@ class ApplicationController < ActionController::Base
   # first take the locale in the url, then the session[:locale],
   # then the users locale, finally the default site locale
   def set_locale
-    if params[:locale] && User.locale_choices.include?(params[:locale])
+    available_locales = I18n.available_locales_with_labels
+    if params[:locale] && available_locales.key?(params[:locale])
       I18n.locale = params[:locale]
-    elsif session[:locale] && User.locale_choices.include?(session[:locale])
+    elsif session[:locale] && available_locales.key?(session[:locale])
       I18n.locale = session[:locale]
-    elsif current_user != :false && User.locale_choices.include?(current_user.locale)
+    elsif current_user != :false && available_locales.key?(current_user.locale)
       I18n.locale = current_user.locale
     else
       I18n.locale = I18n.default_locale

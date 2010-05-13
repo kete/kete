@@ -1955,7 +1955,7 @@ en:
       show: "{{t.base.show}}"
       sorted_by: "{{t.base.sorted_by}}"
       that_are: "that are"
-      update: "{{t.base.update.capitalize}}"
+      update: "{{t.base.update.capitalize}} {{t.base.results.capitalize}}"
       within: within
     rebuild_zoom_index:
       completed: "Completed. "
