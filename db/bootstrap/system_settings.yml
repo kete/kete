@@ -712,3 +712,11 @@ system_settings_083:
   id: "83"
   value: ""
   section: Search
+system_settings_084:
+  name: Search Select Current Basket
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should the current basket be selected when no current search has been made? If false, it'll search the site basket by default."
+  id: "84"
+  value: "false"
+  section: Search

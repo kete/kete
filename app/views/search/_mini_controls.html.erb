@@ -99,7 +99,8 @@ horizontal = display_refine
           next if basket_urlified_name == @site_basket.urlified_name.to_sym
           options << [value[:basket_name], basket_urlified_name.to_s]
         end
-        selected = clear_values ? @site_basket.urlified_name : params[:urlified_name]
+        selected = params[:urlified_name]
+        selected = (SEARCH_SELECT_CURRENT_BASKET ? @current_basket.urlified_name : @site_basket.urlified_name) if clear_values
         %>
         <%= select_tag('target_basket', options_for_select(options, selected)) %>
       </td>
