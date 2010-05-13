@@ -42,6 +42,9 @@
 
   <%= open_search_metadata if params[:controller] == 'search' && %w{ all for }.include?(params[:action]) %>
 
+  <%# this goes before other css and javascript incase we want to overwrite the definitions locally in themes %>
+  <%= yield :add_on_scripts_and_links %>
+
   <% if using_tiny_mce? -%>
     <% # Include TinyMCE before other JS to avoid problems,
        # tinymce not compatible with bundle_fu -%>
