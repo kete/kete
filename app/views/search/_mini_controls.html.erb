@@ -82,7 +82,7 @@ horizontal = display_refine
       <td class="label"><%=t 'search.mini_controls.about_a' %></td>
       <td colspan="2" class="fields">
         <%= topic_type_select_with_indent('topic_type', nil, TopicType.find(1).full_set,
-                                          :name, :name, (params[:topic_type] unless clear_values), {},
+                                          :name, :name, (clear_values ? SEARCH_SELECTED_TOPIC_TYPE : params[:topic_type]), {},
                                           [[t('search.mini_controls.any_topic_type'), '']]) %>
         <%= toggle_topic_types_field_js_helper_for(id) -%>
       </td>
