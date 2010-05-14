@@ -24,7 +24,7 @@ class Kete
     def define_reader_method_for(setting)
       method_name = setting.constant_name.downcase
 
-      class_variable_set('@@' + method_name, SystemSetting.find_by_name(setting.name).constant_value)
+      class_variable_set('@@' + method_name, setting.constant_value)
 
       # create the template code
       code = Proc.new {
