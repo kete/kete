@@ -50,7 +50,8 @@
                 <% if form_fields.size > 0 %>
                         <%= render(:partial => 'extended_fields/extended_field_mapping',
                                    :collection => form_fields,
-                                   :locals => { :edit => edit,
+                                   :locals => { :form_fields => form_fields,
+                                                :edit => edit,
                                                 :extended_item => @comment,
                                                 :item_key => 'comment'}) %>
                 <% end %>
