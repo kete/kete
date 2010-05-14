@@ -2091,6 +2091,9 @@ en:
       last_word_connector: ", and "
       two_words_connector: " and "
       words_connector: ", "
+  system_settings:
+    form:
+      value: "{{t.base.value}}"
   tagging_controller_lib:
     add_tags:
       error_adding_tags: "There was an error {{t.base.adding}} the {{t.base.new}} {{t.base.tag.pluralize}} to {{item_title}}: {{t.base.tag.capitalize.pluralize}} {{errors}}"
