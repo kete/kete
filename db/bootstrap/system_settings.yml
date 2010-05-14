@@ -707,7 +707,7 @@ system_settings_082:
 system_settings_083:
   name: Search Selected Topic Type
   technically_advanced: true
-  required_to_be_configured: true
+  required_to_be_configured: false
   explanation: "Requires 'Display Topic Type Field' be set to 'all' or 'menu'. Choose the topic type selected by default when users use the search menu. Enter the id of the topic type (refer to the id primary key in your database) or leave blank for no default selected."
   id: "83"
   value: ""
