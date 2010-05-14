@@ -2,9 +2,11 @@
   * edit => Boolean: whether not or not this is an edit
   * extended_item => ?: object extended fields will be bound to (i.e. instance of Topic)
   * item_key => String: Name for params hash key (i.e. 'topic' or 'user')
-  * extended_field_mapping => Mapping we're working on %>
+  * extended_field_mapping => Mapping we're working on
+  * form_fields => Array: the full collection of extended field mappings %>
 
-<% ef = extended_field_mapping.extended_field %>
+<% @extended_fields ||= ExtendedField.find(form_fields.collect { |ff| ff.extended_field_id }) %>
+<% ef = @extended_fields.find { |ef| ef.id == extended_field_mapping.extended_field_id } %>
 <% content = extended_item.extended_content_pairs %>
 <% @item_type_for_params = item_key %>
 <% hide_field = extended_field_mapping.private_only? && !adding_or_editing_private_item? %>
