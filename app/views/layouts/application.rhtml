@@ -92,6 +92,12 @@
     </style>
   <% end -%>
 
+  <% if LANGUAGE_CHOICES_POSITION == 'header' %>
+    <style type="text/css">
+      #header { padding-top: 3em; padding-bottom: 1em; }
+    </style>
+  <% end %>
+
   <% bundle :name => "rails_defaults" do -%>
     <%= javascript_include_tag :defaults %>
     <%= javascript_include_tag 'redbox' %>
@@ -169,6 +175,7 @@
                           :tabindex => '2' %>
               <%= header_link_to_current_basket %>
             </h1>
+            <%= render 'account/locale_selection', :classes => ['header'] if LANGUAGE_CHOICES_POSITION == 'header' %>
             <div id="head-search-wrapper">
               <% form_tag ({ :urlified_name => @site_basket.urlified_name,
                              :controller => 'search',
@@ -199,6 +206,7 @@
 
         <div id="top-menu">
           <ul class="user-nav nav-list">
+            <%= ("<li class='locale_selection first'>" + render('account/locale_selection', :classes => ['menu_center']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_center' %>
             <% account_hash = { :urlified_name => @site_basket.urlified_name,
                                 :controller => 'account' } -%>
             <% if !logged_in? -%>
@@ -231,6 +239,7 @@
                                              account_hash.merge({ :action => 'logout' }),
                                              :tabindex => '2' %></li>
             <% end -%>
+            <%= ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_farthest_right' %>
           </ul>
 
           <ul id="main-nav" class="nav-list">
@@ -464,12 +473,12 @@
               </li>
               <li class="last"><%= link_to t('layouts.application.to_content'), '#content', :accesskey => '[', :tabindex => '2' -%></li>
             </ul>
-	    <%= render 'index_page/credits' %>
+            <%= render 'index_page/credits' %>
           <% end -%>
           <div style="clear:both;"></div>
         </div>
 
-        <%= render 'account/locale_selection' %>
+        <%= render 'account/locale_selection', :classes => ['footer'] if LANGUAGE_CHOICES_POSITION == 'footer' %>
 
       <% else -%>
 

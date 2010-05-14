@@ -1591,6 +1591,8 @@ en:
       members: "{{t.base.member.pluralize}}"
       moderate: "{{t.base.moderate}} {{t.base.content.pluralize}}"
       my_baskets: "my {{t.base.basket.pluralize}}"
+      new_search_value: "{{t.base.new.capitalize}} {{t.base.search.capitalize}} of {{search_location_name}}"
+      new_search_value_within: "{{t.base.new.capitalize}} {{t.base.search.capitalize}} within {{search_location_name}}"
       oai_pmh: "OAI PMH Sets"
       preferences: preferences
       rebuild: "Rebuild {{t.base.search}} databases"
@@ -1599,8 +1601,8 @@ en:
       search_button: Go
       search_label: "{{t.base.search.capitalize}}"
       search_sources: "{{t.base.search}} sources"
-      search_value: "{{t.base.search.capitalize}} {{pretty_site_name}}"
-      search_value_new: "{{t.base.new.capitalize}} {{t.base.search.capitalize}} of {{pretty_site_name}}"
+      search_value: "{{t.base.search.capitalize}} {{search_location_name}}"
+      search_value_within: "{{t.base.search.capitalize}} within {{search_location_name}}"
       site_members: "{{t.base.site}} {{t.base.member.pluralize}}"
       sitemap: Sitemap
       support: "Support:"
@@ -1955,7 +1957,7 @@ en:
       show: "{{t.base.show}}"
       sorted_by: "{{t.base.sorted_by}}"
       that_are: "that are"
-      update: "{{t.base.update.capitalize}}"
+      update: "{{t.base.update.capitalize}} {{t.base.results.capitalize}}"
       within: within
     rebuild_zoom_index:
       completed: "Completed. "
