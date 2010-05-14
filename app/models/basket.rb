@@ -71,14 +71,19 @@ class Basket < ActiveRecord::Base
   # remove the roles from a basket before destroying it to prevent problems later on
   before_destroy :remove_users_and_roles
 
+  # Kieran Pilkington, 2010-05-14
+  # Make a quick class level var for some assignments below (to prevent multiple queries)
+  # Note: NOT to be used outside this class! Used only when the application is loaded
+  all_baskets = all
+
   # Kieran Pilkington, 2008/08/19
   # setup our default baskets on application load, rather than each request
   cattr_accessor :site_basket, :help_basket, :about_basket, :documentation_basket, :standard_baskets
-  @@site_basket = find(1)
-  @@help_basket = find(HELP_BASKET)
-  @@about_basket = find(ABOUT_BASKET)
-  @@documentation_basket = find(DOCUMENTATION_BASKET)
   @@standard_baskets = [1, HELP_BASKET, ABOUT_BASKET, DOCUMENTATION_BASKET]
+  @@site_basket = all_baskets.find { |basket| basket.id == 1 }
+  @@help_basket = all_baskets.find { |basket| basket.id == HELP_BASKET }
+  @@about_basket = all_baskets.find { |basket| basket.id == ABOUT_BASKET }
+  @@documentation_basket = all_baskets.find { |basket| basket.id == DOCUMENTATION_BASKET }
   after_save :reset_basket_class_variables
   before_destroy :reset_basket_class_variables
 
@@ -86,10 +91,10 @@ class Basket < ActiveRecord::Base
   # Store how many baskets have privacy controls enabled to determine
   # whether Site basket should keep its privacy browsing controls on
   # putting in the wrapper respond_to? logic so that upgrades of older Kete sites works
-  if Basket.columns.collect { |c| c.name }.include?('show_privacy_controls')
+  if Basket.columns.any? { |c| c.name == 'show_privacy_controls' }
     named_scope :should_show_privacy_controls, :conditions => { :show_privacy_controls => true }
     cattr_accessor :privacy_exists
-    @@privacy_exists = (Basket.should_show_privacy_controls.count > 0)
+    @@privacy_exists = all_baskets.any? { |basket| basket.show_privacy_controls? }
     after_save :any_privacy_enabled_baskets?
     after_destroy :any_privacy_enabled_baskets?
   end
