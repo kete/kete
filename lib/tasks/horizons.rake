@@ -30,6 +30,17 @@ namespace :horizons do
       })
     end
 
+    desc 'Find which agencies are not in the database.'
+    task :find_missing_records => :environment do
+      find_missing_records_for({
+        :records => Nokogiri::XML(File.open(RAILS_ROOT + '/imports/agencies/records.xml')),
+        :records_path => 'dataroot/XML2',
+        :record_id_field => 'Code',
+        :record_id_ext_field => ExtendedField.find_by_label('Agency Code'),
+        :record_topic_type => TopicType.find_by_name('Agency')
+      })
+    end
+
   end
 
   namespace :series do
@@ -54,6 +65,17 @@ namespace :horizons do
       })
     end
 
+    desc 'Find which series are not in the database.'
+    task :find_missing_records => :environment do
+      find_missing_records_for({
+        :records => Nokogiri::XML(File.open(RAILS_ROOT + '/imports/series/records.xml')),
+        :records_path => 'dataroot/series',
+        :record_id_field => 'Code',
+        :record_id_ext_field => ExtendedField.find_by_label('Series No'),
+        :record_topic_type => TopicType.find_by_name('Series')
+      })
+    end
+
   end
 
   namespace :items do
@@ -74,6 +96,17 @@ namespace :horizons do
           [ 'Agency', 'agencies+=', agency_code_ext_field   ],
           [ 'Series', 'series+=',   series_number_ext_field ]
         ]
+      })
+    end
+
+    desc 'Find which items are not in the database.'
+    task :find_missing_records => :environment do
+      find_missing_records_for({
+        :records => Nokogiri::XML(File.open(RAILS_ROOT + '/imports/items/records.xml')),
+        :records_path => 'dataroot/Item',
+        :record_id_field => 'Key',
+        :record_id_ext_field => ExtendedField.find_by_label('Legacy Identifier'),
+        :record_topic_type => TopicType.find_by_name('Item')
       })
     end
 
@@ -158,6 +191,29 @@ namespace :horizons do
         # record_topic.prepare_and_save_to_zoom
       end
 
+    end
+  end
+
+  # Options:
+  #  - :records              <- A Nokogiri parsed XML file
+  #  - :record_path          <- XML Path to each record
+  #  - :record_id_field      <- The XML field contain the record identifier
+  #  - :record_id_ext_field  <- The extended field that links the record id to kete
+  #  - :record_topic_type    <- The topic type that each of records is imported as
+  def find_missing_records_for(options)
+    ext_field_id = options[:record_id_ext_field].label_for_params
+    ext_field_pattern = /<#{ext_field_id}[^>]*>(.*)<\/#{ext_field_id}>/i
+
+    inserted_topics = Topic.find_all_by_topic_type_id(options[:record_topic_type].id)
+    inserted_keys = inserted_topics.collect { |t| t.extended_content =~ ext_field_pattern ? $1 : nil }.compact
+    all_keys = options[:records].xpath("#{options[:records_path]}/#{options[:record_id_field]}").collect { |record| record.inner_text }
+
+    (all_keys - inserted_keys).each do |id|
+      record = options[:records].xpath("#{options[:records_path]}[#{options[:record_id_field]}='#{id}']")
+      record = Hash.from_xml(record.to_s).values.first
+      puts "#{options[:record_id_field]} #{id}:"
+      puts record.collect { |k,v| "  #{k} = #{v}" unless k == options[:record_id_field] }.compact.join("\n")
+      puts ""
     end
   end
 
