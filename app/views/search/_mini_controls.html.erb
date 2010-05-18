@@ -94,27 +94,15 @@ horizontal = display_refine
       <td class="label"><%= t('search.mini_controls.within') %></td>
       <td colspan="2" class="fields">
         <%
-        options = content_tag(:option, t('search.mini_controls.all_of', :site_basket_name => @site_basket.name), :value => @site_basket.urlified_name,
-          :class => ('not_member' unless @basket_access_hash.key?(@site_basket.urlified_name.to_sym)))
         selected = params[:urlified_name]
         selected = (SEARCH_SELECT_CURRENT_BASKET ? @current_basket.urlified_name : @site_basket.urlified_name) if clear_values
-        Basket.all.each do |basket|
-          next if basket == @site_basket
-          options += content_tag(:option, basket.name, :value => basket.urlified_name,
-            :class => ('not_member' unless @basket_access_hash.key?(basket.urlified_name.to_sym)))
-        end
+        options = basket_option_for(@site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => @site_basket.name))
+        baskets = Basket.all(:conditions => ["id NOT IN (?)", @standard_baskets]) +
+                  [@help_basket, @about_basket, @documentation_basket]
+        baskets.each { |basket| options += basket_option_for(basket, :selected => selected) }
         %>
         <%= select_tag('target_basket', options) %>
-
-        <% if @current_privacy %>
-          <%= javascript_tag("
-            function show_all_target_baskets() { $$('#target_basket option').each(function(element) { element.show(); }); }
-            function hide_all_non_member_target_baskets() { $$('#target_basket option.not_member').each(function(element) { element.hide(); }); }
-            $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
-            $('privacy_type_private').observe('click', function() { hide_all_non_member_target_baskets(); });
-          ") %>
-          <%= javascript_tag("hide_all_non_member_target_baskets();") if @current_privacy.to_sym == :private %>
-        <% end %>
+        <%= adjust_target_basket_options_for_privacy(@current_privacy) %>
       </td>
     </tr>
     <% end %>
