@@ -51,11 +51,11 @@ horizontal = display_refine
     <% if display_search_field_for?(type, DISPLAY_PRIVACY_FIELDS) && logged_in? && controls_permitted && Basket.privacy_exists %>
     <tr>
       <% default = @current_basket.private_default_with_inheritance? ? 'private' : 'public' %>
-      <% selected = ((params[:privacy_type] unless clear_values) || (DEFAULT_SEARCH_PRIVACY if display_menu) || default) %>
+      <% @current_privacy = ((params[:privacy_type] unless clear_values) || (DEFAULT_SEARCH_PRIVACY if display_menu) || default) %>
       <td class="label"><%= t('search.mini_controls.that_are') %></td>
       <% %w{ public private }.each do |privacy_type| %>
         <td class="fields">
-          <%= radio_button_tag('privacy_type', privacy_type, (privacy_type == selected)) %>
+          <%= radio_button_tag('privacy_type', privacy_type, (privacy_type == @current_privacy)) %>
           <%= t("search.mini_controls.#{privacy_type}") %>
         </td>
       <% end %>
@@ -89,20 +89,20 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_BASKET_FIELD) && @basket_access_hash.keys.size > 0 %>
+    <% if display_search_field_for?(type, DISPLAY_BASKET_FIELD) %>
     <tr>
       <td class="label"><%= t('search.mini_controls.within') %></td>
       <td colspan="2" class="fields">
         <%
-        options = [[t('search.mini_controls.all_of', :site_basket_name => @site_basket.name), @site_basket.urlified_name]]
-        @basket_access_hash.each do |basket_urlified_name, value|
-          next if basket_urlified_name == @site_basket.urlified_name.to_sym
-          options << [value[:basket_name], basket_urlified_name.to_s]
-        end
         selected = params[:urlified_name]
         selected = (SEARCH_SELECT_CURRENT_BASKET ? @current_basket.urlified_name : @site_basket.urlified_name) if clear_values
+        options = basket_option_for(@site_basket, :label => t('search.mini_controls.all_of', :site_basket_name => @site_basket.name))
+        baskets = Basket.all(:conditions => ["id NOT IN (?)", @standard_baskets]) +
+                  [@help_basket, @about_basket, @documentation_basket]
+        baskets.each { |basket| options += basket_option_for(basket, :selected => selected) }
         %>
-        <%= select_tag('target_basket', options_for_select(options, selected)) %>
+        <%= select_tag('target_basket', options) %>
+        <%= adjust_target_basket_options_for_privacy(@current_privacy) %>
       </td>
     </tr>
     <% end %>

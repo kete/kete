@@ -970,6 +970,34 @@ module ApplicationHelper
     "
   end
 
+  def basket_option_for(basket, options = {})
+    content_tag(:option, (options[:label] || basket.name), {
+      :value => (options[:value] || basket.urlified_name),
+      :class => ('not_member' unless @basket_access_hash.key?(basket.urlified_name.to_sym)),
+      :selected => ('selected' if options[:selected] && basket.urlified_name.to_sym == options[:selected].to_sym)
+    })
+  end
+
+  def adjust_target_basket_options_for_privacy(privacy)
+    return unless privacy
+    html = javascript_tag("
+      function show_all_target_baskets() {
+        $$('#target_basket option').each(function(element) { element.show(); });
+      }
+
+      function hide_all_non_member_target_baskets() {
+        $$('#target_basket option.not_member').each(function(element) { element.hide(); });
+        var current_selection = $('target_basket').options[$('target_basket').selectedIndex];
+        if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
+      }
+
+      $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
+      $('privacy_type_private').observe('click', function() { hide_all_non_member_target_baskets(); });
+    ")
+    html += javascript_tag("hide_all_non_member_target_baskets();") if privacy.to_sym == :private
+    html
+  end
+
   #
   # End Search Control Dropdown Helpers
   #
