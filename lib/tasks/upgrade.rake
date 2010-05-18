@@ -138,7 +138,9 @@ namespace :kete do
         # drop id from hash, as we want to determine it dynamically
         basket_hash.delete('id')
 
-        if !Basket.find_by_name(basket_hash['name'])
+        basket_id = 1 if basket_hash['urlified_name'] == 'site'
+        basket_id ||= "#{basket_hash['urlified_name']}_basket".upcase.constantize
+        if !Basket.find_by_id(basket_id)
           basket = Basket.create!(basket_hash)
           basket.accepts_role('admin', admin_user)
           p "added " + basket_hash['name']
