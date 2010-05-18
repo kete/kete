@@ -24,7 +24,7 @@
     </div>
 
     <div id="depth3" <%= 'style="display:none;"' unless current_value_for('index_page_topic_is_entire_page').blank? %>>
-      
+
       <div class="form-element">
         <%= rules_allowed_check_box('index_page_number_of_recent_topics') %>
         <label><%=t 'profiles.homepage_options.recent_topics' %></label>
@@ -82,26 +82,22 @@
       </div>
 
       <div class="form-element">
-        <%= rules_allowed_check_box('feeds_url_list') %>
+        <%= rules_allowed_check_box('feeds_attributes') %>
         <label><%=t 'profiles.homepage_options.rss_or_atom_feeds' %></label>
-        <%= rules_fieldset_tag('feeds_url_list') %>
-          <%= rules_text_area_tag('feeds_url_list') %>
-          <div class="form_example">
-            <p><%=t 'profiles.homepage_options.rss_or_atom_feeds_description_part1' %></p>
-            <p><%=t 'profiles.homepage_options.rss_or_atom_feeds_description_part2' %></p>
-          </div>
+        <%= rules_fieldset_tag('feeds_attributes') %>
+          <%= render 'baskets/basket_feeds_fields', :field_name_prefix => "#{@rule_locals[:values_field_prefix]}[feeds_attributes]" %>
         </fieldset>
       </div>
-      
+
     </div>
-    
+
   </div>
 
 </fieldset>
 
 <%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_redirect_to_all', '==', '', 'depth1', false, false) %>
 <%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_topic_is_entire_page', '!', '', 'depth2', true, false) %>
-<%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_topic_is_entire_page', '!', '', 'depth3', true, false) %> 
+<%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_topic_is_entire_page', '!', '', 'depth3', true, false) %>
 <%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_number_of_recent_topics', '>', '0', 'depth4', false, false) %>
 <%= toggle_elements_applicable('record_rules_homepage_options_values_index_page_number_of_tags', '>', '0', 'depth5', false, false) %>
 
