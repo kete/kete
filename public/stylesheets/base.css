@@ -1651,3 +1651,23 @@ a.disabled {
 #embedded_extended_field_data #detail-extended-heading {
   display: none;
 }
+
+/*
+ * Basket RSS Feeds
+ */
+.basket_rss_feed {
+  margin-bottom: 20px;
+}
+.basket_rss_feed table {
+  width: 100%;
+}
+.basket_rss_feed table th,
+.basket_rss_feed table td {
+  padding: 0 10px 3px 0;
+}
+.remove_feed_link {
+  margin-left: 10px;
+}
+#basket_rss_feeds_add {
+  text-align: center;
+}

@@ -690,6 +690,9 @@ en:
       show_flagging_to_example: "({{t.base.who_can}} {{t.base.flag}} {{t.base.item.pluralize}})"
       theme: "Theme:"
       title: "{{basket_name}} Appearance"
+    basket_feeds_fields:
+      add_another_feed: Add Another Feed
+      how_to_remove_feed: "(to delete a feed, remove the value of the Feed URL field and save)"
     choose_type:
       add_a: "{{t.base.add.capitalize}} a?"
       add_in: "{{t.base.add.capitalize}} in?"
@@ -783,8 +786,6 @@ en:
       recent_topics_type: "List {{t.base.basket.pluralize}} {{t.base.zoom_types.topic.pluralize}} as?"
       redirect_to: "Redirect to results of?"
       rss_feeds: "RSS or Atom Feeds"
-      rss_feeds_example1: "A new-line separated list of URLs in the following format per line:"
-      rss_feeds_example2: "Feed Title|Feed URL|(Maximum number of entries to display - optional)|({{t.base.update.capitalize}} frequency in minutes - optional)"
       search: "{{t.base.search.capitalize}}"
       security_exception_example: "{{t.base.allow.capitalize}} {{t.base.form.pluralize}} and other possible insecure elements and attributes in the HTML?"
       security_warning: "Note: {{t.base.form.pluralize}} and javascript are not {{t.base.allowed}} for security reasons."
@@ -835,6 +836,18 @@ en:
     rss:
       description: "{{t.base.latest.capitalize}} {{t.base.basket.pluralize}}"
       title: "{{site_name}} - {{t.base.latest.capitalize}} {{amount}} {{t.base.basket.pluralize}}"
+    rss_feed:
+      in_minutes: "in minutes"
+      limit: "Display Limit:"
+      limit_description: "Maximum number of entries to display - optional"
+      optional: "optional"
+      remove_feed: "(remove)"
+      title: "Feed Title:"
+      title_description: "The title of the feed to be displayed on the homepage"
+      update_frequency: "Update Frequency:"
+      update_frequency_description: "Update frequency in minutes - optional"
+      url: "Feed URL:"
+      url_description: "The RSS 1, RSS 2, or Atom feed that you want displayed"
     show:
       back: Back
       edit: "{{t.base.edit.capitalize}}"
@@ -849,7 +862,7 @@ en:
     redirect_if_current_user_cant_add_or_request_basket:
       not_authorized: "{{t.base.you.capitalize}} need to have the right permissions to {{t.base.add}} or {{t.base.request}} a {{t.base.basket}}"
     update:
-      feed_problem: "there was a problem {{t.base.adding}} {{t.base.your}} feeds. Is the format you {{t.base.entered}} correct and you haven't {{t.base.entered}} a feed twice?"
+      feed_problem: "there was a problem {{t.base.adding}} {{t.base.your}} feeds. {{error}}"
       updated: "{{t.base.basket.capitalize}} {{t.base.was_updated}}."
     update_appearance:
       sanitized: "{{t.base.your.capitalize}} submitted footer {{t.base.content}} was {{t.base.changed}} for security reasons."
@@ -1869,8 +1882,6 @@ en:
       order_tags_by: "{{t.baskets.homepage_form.tags_ordered_by}}"
       recent_topics: "{{t.baskets.homepage_form.recent_topics}}"
       rss_or_atom_feeds: "{{t.baskets.homepage_form.rss_feeds}}"
-      rss_or_atom_feeds_description_part1: "{{t.baskets.homepage_form.rss_feeds_example1}}"
-      rss_or_atom_feeds_description_part2: "{{t.baskets.homepage_form.rss_feeds_example2}}"
       search: "{{t.baskets.homepage_form.search}}"
       search_description: "{{t.baskets.homepage_form.include_search}}"
       selected_image: "{{t.baskets.homepage_form.selected_image}}"

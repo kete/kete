@@ -40,7 +40,7 @@ class Basket < ActiveRecord::Base
     index_page_tags_as index_page_number_of_tags index_page_order_tags_by
     index_page_recent_topics_as index_page_number_of_recent_topics index_page_archives_as
     index_page_extra_side_bar_html private_default file_private_default allow_non_member_comments
-    show_privacy_controls do_not_sanitize }
+    show_privacy_controls do_not_sanitize feeds_attributes }
 
   # Editable Basket Settings
   EDITABLE_SETTINGS = %w{ fully_moderated moderated_except private_file_visibility browse_view_as
@@ -130,6 +130,7 @@ class Basket < ActiveRecord::Base
 
   # each basket can have multiple feeds displayed in the sidebar
   has_many :feeds, :dependent => :destroy
+  accepts_nested_attributes_for :feeds, :reject_if => proc { |attributes| attributes['url'].blank? }
 
   # each basket may have a profile (or in the future, possibly more than one)
   # that declares the rules of what options a basket admin may see/set

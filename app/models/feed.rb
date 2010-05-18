@@ -5,17 +5,16 @@ class Feed < ActiveRecord::Base
 
   belongs_to :basket
 
+  before_validation :add_missing_values
+  before_validation :convert_feed_to_http
+  before_destroy :destroy_feed_workers
+
   validates_presence_of :title
   validates_presence_of :url
-  validates_presence_of :basket_id
   validates_presence_of :update_frequency
+  validates_presence_of :limit
 
   serialize :serialized_feed
-
-  def entries
-    feed_limit = self.limit || 5
-    self.serialized_feed[0..(feed_limit - 1)]
-  end
 
   def self.fetch(url, escape=true)
     Rails.logger.debug("Original feed url: #{url}")
@@ -25,6 +24,11 @@ class Feed < ActiveRecord::Base
     # In the case that the feed can't be parsed, it returns a Fixnum, so check
     # if the output is a Feedzirra object, and if not, return a blank array
     feed.class.name =~ /Feedzirra/ ? feed.entries : []
+  end
+
+  def entries
+    feed_limit = self.limit
+    self.serialized_feed[0..(feed_limit - 1)]
   end
 
   def update_feed
@@ -45,4 +49,21 @@ class Feed < ActiveRecord::Base
   def to_worker_key
     @feed_worker_key ||= id.to_s + "_feed_worker"
   end
+
+  private
+
+  def add_missing_values
+    self.update_frequency = self.update_frequency.present? ? self.update_frequency.to_i : 1
+    self.limit = self.limit.present? ? self.limit.to_i : 5
+  end
+
+  def convert_feed_to_http
+    self.url = self.url.strip.gsub("feed:", "http:") if self.url.present?
+  end
+
+  include WorkerControllerHelpers # for deleting bgrb workers
+  def destroy_feed_workers
+    delete_existing_workers_for(:feeds_worker, self.to_worker_key, false)
+  end
+
 end
