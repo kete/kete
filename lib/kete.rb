@@ -12,7 +12,7 @@ class Kete
     def extensions
       @@extensions ||= { :blocks => nil }
     end
-  
+
     def extensions=(extensions)
       @@extensions = extensions
     end
@@ -27,19 +27,24 @@ class Kete
       class_variable_set('@@' + method_name, setting.constant_value)
 
       # create the template code
-      code = Proc.new {
-        method_name = method_name.sub('?', '') if method_name.include?('?')
+      code = reader_proc_for(setting)
 
-        class_variable_get('@@' + method_name)
-      }
-   
       metaclass.instance_eval { define_method(method_name, &code) }
 
       # create predicate method if boolean
       eval_value = setting.constant_value
       if eval_value.kind_of?(TrueClass) || eval_value.kind_of?(FalseClass)
         metaclass.instance_eval { define_method("#{method_name}?", &code) }
-      end 
+      end
+    end
+
+    def reader_proc_for(setting)
+      method_name = setting.constant_name.downcase
+
+      Proc.new {
+        method_name = method_name.sub('?', '') if method_name.include?('?')
+        class_variable_get('@@' + method_name)
+      }
     end
 
     def define_reader_method_as(method_name, value)
@@ -47,13 +52,13 @@ class Kete
       code = Proc.new {
         value
       }
-   
+
       metaclass.instance_eval { define_method(method_name, &code) }
 
       # create predicate method if boolean
       if value.kind_of?(TrueClass) || value.kind_of?(FalseClass)
         metaclass.instance_eval { define_method("#{method_name}?", &code) }
-      end 
+      end
     end
   end
 end
