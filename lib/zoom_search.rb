@@ -241,6 +241,9 @@ module ZoomSearch
         result_hash[field_name.to_sym] = field_value
       end
 
+      fields = oai_dc.xpath(".//dc:date", "xmlns:dc" => "http://purl.org/dc/elements/1.1/")
+      result_hash[:dc_dates] = fields.collect { |f| f.content }
+
       # determine the topic type(s)
       topic_type_names = TopicType.all(:select => 'name').collect { |topic_type| topic_type.name }
       result_hash[:topic_types] = Array.new

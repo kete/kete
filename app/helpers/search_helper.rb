@@ -179,4 +179,7 @@ module SearchHelper
     other_results
   end
 
+  # provides methods to determine which dc date values be displayed
+  include SearchDcDateFormulator
+
 end
