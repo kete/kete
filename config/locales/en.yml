@@ -2007,7 +2007,7 @@ en:
       latest: "{{t.base.latest.capitalize}}"
       next: Next
       related: "{{t.base.related.capitalize}}:"
-      results_in: "50 Results in"
+      x_results_in: "{{amount}} Results in"
       showing_x-y_of_z: "{{t.base.showing.capitalize}} {{start}} - {{end}} results of {{total}}"
     setup_rebuild:
       all_types: "{{t.base.all}} {{t.base.type.pluralize}}"

@@ -1,6 +1,6 @@
 <% cache(@cache_key_hash) do -%>
 <% blather = params[:page] && params[:page].to_i > 1 ? t('search.rss.next') : t('search.rss.latest')
-   @title = title_setup_first_part(SITE_NAME + " - #{blather} #{t('search.rss.results_in')} ") + last_part_of_title_for_rss_if_refinement_of -%>
+   @title = title_setup_first_part(SITE_NAME + " - #{blather} #{t('search.rss.x_results_in', :amount => @number_per_page)} ") + last_part_of_title_for_rss_if_refinement_of -%>
 <%= Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
     xml.rss(:version => '2.0',
             "xmlns:media" => "http://search.yahoo.com/mrss",
