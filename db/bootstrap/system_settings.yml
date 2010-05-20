@@ -720,3 +720,27 @@ system_settings_084:
   id: "84"
   value: "false"
   section: Search
+system_settings_085:
+  name: DC Date Display On Search Results
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Should a results DC Date values be displayed on a search result? Either 'true' or 'false'."
+  id: "85"
+  value: "false"
+  section: Results Display
+system_settings_086:
+  name: DC Date Display Detail Level
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "How much detail should the DC Date values show? Choose one of the following: year, year_and_month, year_month_and_day"
+  id: "86"
+  value: "year_month_and_day"
+  section: Results Display
+system_settings_087:
+  name: DC Date Display Formulator
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "Which method is used to determine the dates to display? If none is provided, all DC dates will be displayed."
+  id: "87"
+  value: ""
+  section: Results Display

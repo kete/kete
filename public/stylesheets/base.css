@@ -670,6 +670,10 @@ h3 b{
   color: #888;
 }
 
+.generic-result-dc-dates {
+  float: right;
+}
+
 #bottomlinks {
   margin-top: 15px;
 }
