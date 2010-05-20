@@ -10,9 +10,11 @@
   <div class="generic-result-description">
     <%= strip_tags(short_summary) %>
     <div class="generic-result-more">
+      <%= dc_date_display_of(dc_dates) unless related %>
       <%= link_to(t('search.generic.more'), source_url, { :title => t('search.generic.more_on', :title => title), :tabindex => '1' }) %>
     </div>
   </div>
+  <%= dc_date_display_of(dc_dates) if related %>
   <%= render('related', :related => related,
                         :source_url => source_url,
                         :title => title) if related -%>
