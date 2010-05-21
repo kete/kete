@@ -20,9 +20,9 @@ module SearchDcDateFormulator
 
     def format_date_from(dc_date)
       # if it's anything else, assume it's been formatted by another formulator
-      return dc_date unless dc_date.is_a?(Time)
-      # convert it to local time
-      dc_date = dc_date.localtime
+      return dc_date unless [Time, DateTime].include?(dc_date.class)
+      # convert it to local time if the method is available (not available on dates < 1900)
+      dc_date = dc_date.localtime if dc_date.respond_to?(:localtime)
       date_bits = Array.new
       I18n.t('date.order').each do |order|
         case order
