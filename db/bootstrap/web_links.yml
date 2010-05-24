@@ -6,5 +6,6 @@ one:
   url: http://kete.net.nz/
   basket_id: 1
   version: 1
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
