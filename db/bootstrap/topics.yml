@@ -9,6 +9,7 @@ topics_001:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id: "3"
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -27,6 +28,7 @@ topics_002:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -63,6 +65,7 @@ topics_003:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -108,6 +111,7 @@ topics_004:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -219,6 +223,7 @@ topics_005:
   basket_id: "3"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -288,6 +293,7 @@ topics_006:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id: "2"
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -358,6 +364,7 @@ topics_007:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -427,6 +434,7 @@ topics_008:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -584,6 +592,7 @@ topics_009:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -618,6 +627,7 @@ topics_010:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -646,6 +656,7 @@ topics_011:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -741,6 +752,7 @@ topics_012:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -782,6 +794,7 @@ topics_013:
   basket_id: "1"
   topic_type_id: "1"
   index_for_basket_id: "1"
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -812,6 +825,7 @@ topics_014:
   basket_id: "4"
   topic_type_id: "1"
   index_for_basket_id: "4"
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+
@@ -967,6 +981,7 @@ topics_015:
   basket_id: "2"
   topic_type_id: "1"
   index_for_basket_id:
+  related_items_position: inset
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   description: |+

@@ -59,7 +59,7 @@ class Array
     attr_name_id = "#{attr_name}_id"
 
     if any? { |item| !item.respond_to?(attr_name_id) }
-      error_msg = "Trying to get hash of #{attr_name.humanize} names and counts, "
+      error_msg = "Trying to get hash of #{attr_name.to_s.humanize} names and counts, "
       error_msg += "but Array contains an object that doesn't have that value."
       raise error_msg
     end
