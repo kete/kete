@@ -6,6 +6,8 @@ module SearchDcDateFormulator
       content_tag(:div, select_and_format_dc_dates_from(dc_dates), :class => 'generic-result-dc-dates')
     end
 
+    def dc_date_separator; ", "; end
+
     def select_and_format_dc_dates_from(dc_dates)
       # The dates are strings containing a UTC timestamp
       # We want these to be Time objects
@@ -14,8 +16,8 @@ module SearchDcDateFormulator
       DC_DATE_DISPLAY_FORMULATOR.split(',').each do |formulator|
         dc_dates = send(formulator.strip.to_sym, dc_dates)
       end
-      # collect all the dc dates and format any that haven't been yet, then join with ,
-      dc_dates.collect { |d| format_date_from(d) }.join(', ')
+      # collect all the dc dates and format any that haven't been yet, then join with the dc_date_separator
+      dc_dates.collect { |d| format_date_from(d) }.join(dc_date_separator)
     end
 
     def format_date_from(dc_date)
@@ -48,6 +50,19 @@ module SearchDcDateFormulator
         if ((dc_dates.size >= 2 && (date+11.years).year == dc_dates[0].year && (date+6.years).year == dc_dates[1].year) rescue false)
           dates << "c.#{format_date_from(dc_dates[1])}" # the last one is the circa date
           2.times { dc_dates.shift } # pop the dates 10 & 6 years ahead
+        else
+          dates << date
+        end
+      end
+      dates
+    end
+
+    def format_to_locales_specification(dc_dates)
+      dates = Array.new
+      while dc_dates.size > 0 do
+        date = dc_dates.shift
+        if [Time, DateTime].include?(date.class)
+          dates << date.localtime.to_s(:long)
         else
           dates << date
         end
