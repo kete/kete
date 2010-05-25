@@ -32,6 +32,7 @@ class TagsController < ApplicationController
 
   def show
     @tag = Tag.find(params[:id])
+    @title = t('tags.show.title', :tag_name => @tag.name)
   end
 
   def rss

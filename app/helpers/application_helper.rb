@@ -619,9 +619,9 @@ module ApplicationHelper
             :action => :show, :id => user, :only_path => false)
   end
 
-  def link_to_profile_for(user, phrase = nil)
+  def link_to_profile_for(user, phrase = nil, link_options = {})
     phrase ||= h(user.user_name)
-    link_to phrase, url_for_profile_of(user)
+    link_to phrase, url_for_profile_of(user), link_options
   end
 
   def link_to_add_item(options={})
