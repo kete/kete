@@ -44,12 +44,12 @@ module SearchDcDateFormulator
       while dc_dates.size > 0 do
         date = dc_dates.shift
         # if we have a circa date, 2 dc:dates are added. One 5 years before, one 5 years after, and the
-        # date in the middle. Including the year itself, from the first date, there is 11 years in total
-        # So if the next dc:date is 11 years away, and the one after that 6 years, we are dealing with a circa
+        # date in the middle. Including the year itself, from the first date, there is 10 years in total
+        # So if the next dc:date is 10 years away, and the one after that 5 years, we are dealing with a circa
         # Rescue false incase any of the three dates doesn't respond to #year (like a string)
-        if ((dc_dates.size >= 2 && (date+11.years).year == dc_dates[0].year && (date+6.years).year == dc_dates[1].year) rescue false)
+        if ((dc_dates.size >= 2 && (date+10.years).year == dc_dates[0].year && (date+5.years).year == dc_dates[1].year) rescue false)
           dates << "c.#{format_date_from(dc_dates[1])}" # the last one is the circa date
-          2.times { dc_dates.shift } # pop the dates 10 & 6 years ahead
+          2.times { dc_dates.shift } # remove the dates 10 & 5 years ahead (convered in circa)
         else
           dates << date
         end
