@@ -45,12 +45,13 @@ module ExtendedContentHelpers
       elsif data.has_key?("value")
         # We add a dc:date for 5 years before and after the value specified
         # We also convert the single YYYY value to a format Zebra can search against
+        # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
         if data.has_key?("circa")
-          data['value'] = Date.parse("#{data['value']}-01-01").to_time.utc.xmlschema
+          data['value'] = DateTime.parse("#{data['value']}-01-01").xmlschema
           if data['circa'] == '1'
             five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
-            @builder_instance.safe_send("dc:date", Date.parse("#{five_years_before}-01-01").to_time.utc.xmlschema)
-            @builder_instance.safe_send("dc:date", Date.parse("#{five_years_after}-12-31").to_time.utc.xmlschema)
+            @builder_instance.safe_send("dc:date", DateTime.parse("#{five_years_before}-01-01").xmlschema)
+            @builder_instance.safe_send("dc:date", DateTime.parse("#{five_years_after}-12-31").xmlschema)
           end
         end
 
