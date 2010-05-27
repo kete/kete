@@ -825,10 +825,11 @@ module ApplicationHelper
 
 
   # tag related helpers
-  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
+  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket, options = {})
     zoom_class = zoom_class || tag[:zoom_class]
     tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
-    link_to h(tag[:name]),
+    link_text = options[:link_text] || tag[:name]
+    link_to h(link_text),
             { :controller => 'search',
               :action => 'all',
               :tag => tag_for_url,

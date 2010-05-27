@@ -1,5 +1,7 @@
 <%= render "topics/content_wrapper_start", :style_classes =>"full-width notabs" %>
 
-<h2><%= @tag.name %></h2>
+<h3><%= @title %></h3>
+
+<%= link_to_tagged(@tag, 'Topic', @site_basket, :link_text => t('base.back').capitalize) %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

@@ -23,7 +23,8 @@ en:
     are_you_sure: "Are {{t.base.you}} sure?"
     arent: aren't
     avatar: avatar
-    back_to: "back to"
+    back: back
+    back_to: "{{t.base.back}} to"
     basket: basket
     below: below
     browse: browse
