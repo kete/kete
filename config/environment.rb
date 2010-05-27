@@ -101,14 +101,4 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 # under config/initializers/
 
 # Load application extensions that have been registered by add-ons
-# WARNING:
-# in development mode, overridden methods in class extensions
-# will not take effect after first restart
-# as reloading of models then takes precedence
-if Kete.extensions[:blocks]
-  Kete.extensions[:blocks].keys.each do |key|
-    key_constantized = key.to_s.camelize.constantize
-    key_constantized.send(:include, KeteAddonSupport) unless key_constantized.included_modules.include? KeteAddonSupport
-    key_constantized.load_addon_extensions
-  end
-end
+Kete.setup_extensions!

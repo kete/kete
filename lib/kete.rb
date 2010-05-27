@@ -17,6 +17,20 @@ class Kete
       @@extensions = extensions
     end
 
+    def setup_extensions!
+      # setup so extensions are loaded once in production, but each request in development
+      ActionController::Dispatcher.to_prepare { Kete.load_extensions! }
+      # then setup initially so that script/console works
+      Kete.load_extensions!
+    end
+
+    def load_extensions!
+      return if @@extensions[:blocks].nil?
+      @@extensions[:blocks].each do |key, procs|
+        procs.each { |proc| proc.call }
+      end
+    end
+
     # dynamically define reader methods for system settings
     # for background on metaclass method definition
     # see http://blog.jayfields.com/2007/10/ruby-defining-class-methods.html
