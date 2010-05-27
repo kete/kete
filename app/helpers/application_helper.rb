@@ -1748,7 +1748,7 @@ module ApplicationHelper
       html += "<ul>"
       # If we're in the first column, provide a link to go back to all results
       html += content_tag('li', link_to(t('application_helper.browse_by_category_columns.all_items',
-                                          :item_type => @controller_name_for_zoom_class.gsub(/_/, " ")),
+                                          :item_type => zoom_class_plural_humanize(@current_class)),
                                         {:view_as => 'choice_hierarchy'}),
                                 {:class => (params[:limit_to_choice] ? '' : 'current' )}) if time == 0
       # For every choice in the current choice, lets add a list item
