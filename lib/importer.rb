@@ -572,7 +572,7 @@ module Importer
       # that is a title synonym, we go with last match just in case
       title = nil
       record_hash.keys.each do |field_name|
-        title = record_hash[field_name].strip if field_name == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
+        title = record_hash[field_name].strip if field_name.downcase == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
       end
 
       # In some cases, records may share the same name, but have a different code
