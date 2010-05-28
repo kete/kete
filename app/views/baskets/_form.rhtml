@@ -370,13 +370,15 @@
     $('basket_show_privacy_controls_false').observe('change', function(event) {
       $('private_item_notification').hide();
     });
-    #{@site_basket.show_privacy_controls? ?
-    "$('basket_show_privacy_controls_').observe('change', function(event) {
-      $('private_item_notification').show();
-    });" :
-    "$('basket_show_privacy_controls_').observe('change', function(event) {
-      $('private_item_notification').hide();
-    });"}
+    if ($('basket_show_privacy_controls_')) {
+      #{@site_basket.show_privacy_controls? ?
+      "$('basket_show_privacy_controls_').observe('change', function(event) {
+        $('private_item_notification').show();
+      });" :
+      "$('basket_show_privacy_controls_').observe('change', function(event) {
+        $('private_item_notification').hide();
+      });"}
+    }
   }" %>
 
   <strong><%= basket_preferences_inheritance_message %></strong>
