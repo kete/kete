@@ -22,22 +22,23 @@ namespace :horizons do
         :record_id_field => 'Code',
         :record_id_ext_field => agency_code_ext_field,
         :data => [
-          [ 'agency.Successor',   'successor_agency+=',    agency_code_ext_field ],
-          [ 'agency.Predecessor', 'predecessor_agency+=',  agency_code_ext_field ],
-          [ 'agency.Controlling', 'controlling_agency+=',  agency_code_ext_field ],
-          [ 'agency.Controlled',  'agencies_controlled+=', agency_code_ext_field ]
+          [ 'agency.Predecessor', 'predecessor_agencies+=', agency_code_ext_field ],
+          [ 'agency.Controlling', 'controlling_agencies+=', agency_code_ext_field ],
+          [ 'agency.Controlled',  'agencies_controlled+=',  agency_code_ext_field ],
+          [ 'agency.Successor',   'successor_agencies+=',   agency_code_ext_field ]
         ]
       })
     end
 
-    desc 'Update an agency description with entry in table of contents for series.'
-    task :update_description_with_toc => :environment do
-      series_id = TopicType.find_by_name("Series").id
-      agencies = TopicType.find_by_name("Agency").topics
-      create_table_of_contents_between(agencies, series_id, [
-        ['Series', :title],
-        ['Date Range', :date_range]
-      ], :date_range)
+    desc 'Find which agencies are not in the database.'
+    task :find_missing_records => :environment do
+      find_missing_records_for({
+        :records => Nokogiri::XML(File.open(RAILS_ROOT + '/imports/agencies/records.xml')),
+        :records_path => 'dataroot/XML2',
+        :record_id_field => 'Code',
+        :record_id_ext_field => ExtendedField.find_by_label('Agency Code'),
+        :record_topic_type => TopicType.find_by_name('Agency')
+      })
     end
 
   end
@@ -47,7 +48,7 @@ namespace :horizons do
     desc 'Update series with their successor, predecessor, and related series, and creator agencies.'
     task :add_skipped_data => :environment do
       records = Nokogiri::XML File.open(RAILS_ROOT + '/imports/series/records.xml')
-      series_number_ext_field = ExtendedField.find_by_label('Series Number')
+      series_number_ext_field = ExtendedField.find_by_label('Series No')
       agency_code_ext_field = ExtendedField.find_by_label('Agency Code')
 
       create_skipped_data_from({
@@ -64,14 +65,15 @@ namespace :horizons do
       })
     end
 
-    desc 'Update the series descriptions with entry in table of contents of items.'
-    task :update_description_with_toc => :environment do
-      item_id = TopicType.find_by_name("Item").id
-      series = TopicType.find_by_name("Series").topics
-      create_table_of_contents_between(series, item_id, [
-        ['Item', :title],
-        ['Date Range', :date_range]
-      ], :date_range)
+    desc 'Find which series are not in the database.'
+    task :find_missing_records => :environment do
+      find_missing_records_for({
+        :records => Nokogiri::XML(File.open(RAILS_ROOT + '/imports/series/records.xml')),
+        :records_path => 'dataroot/series',
+        :record_id_field => 'Code',
+        :record_id_ext_field => ExtendedField.find_by_label('Series No'),
+        :record_topic_type => TopicType.find_by_name('Series')
+      })
     end
 
   end
@@ -81,19 +83,30 @@ namespace :horizons do
     desc 'Update items with their agency and series relations.'
     task :add_skipped_data => :environment do
       records = Nokogiri::XML File.open(RAILS_ROOT + '/imports/items/records.xml')
-      item_key_ext_field = ExtendedField.find_by_label('Item Key')
+      legacy_identifier_ext_field = ExtendedField.find_by_label('Legacy Identifier')
       agency_code_ext_field = ExtendedField.find_by_label('Agency Code')
-      series_number_ext_field = ExtendedField.find_by_label('Series Number')
+      series_number_ext_field = ExtendedField.find_by_label('Series No')
 
       create_skipped_data_from({
         :records => records,
         :record_path => 'dataroot/Item',
         :record_id_field => 'Key',
-        :record_id_ext_field => item_key_ext_field,
+        :record_id_ext_field => legacy_identifier_ext_field,
         :data => [
           [ 'Agency', 'agencies+=', agency_code_ext_field   ],
           [ 'Series', 'series+=',   series_number_ext_field ]
         ]
+      })
+    end
+
+    desc 'Find which items are not in the database.'
+    task :find_missing_records => :environment do
+      find_missing_records_for({
+        :records => Nokogiri::XML(File.open(RAILS_ROOT + '/imports/items/records.xml')),
+        :records_path => 'dataroot/Item',
+        :record_id_field => 'Key',
+        :record_id_ext_field => ExtendedField.find_by_label('Legacy Identifier'),
+        :record_topic_type => TopicType.find_by_name('Item')
       })
     end
 
@@ -129,9 +142,9 @@ namespace :horizons do
       record_topic = find_topic_with_data_of(record_id, options[:record_id_ext_field])
 
       if record_topic
-        puts "Continuing: Found topic with record id #{record_id.upcase}: #{record_topic.title}"
+        puts "Continuing: Found item with record key #{record_id.upcase}: topic #{record_topic.id}"
       else
-        puts "Skipping: Topic with record id #{record_id.upcase} not found"; next
+        puts "Skipping: Item with record key #{record_id.upcase} not found"; next
       end
 
       updated = false
@@ -153,11 +166,17 @@ namespace :horizons do
             puts "Skipping #{xml_pattern}: Topic with pattern code of #{pattern_code.upcase} not found"; next
           end
 
-          value = { 'label' => pattern_topic.title,
-                    'value' => url_for_dc_identifier(pattern_topic) }
+          value = { 'label' => pattern_topic.title, 'value' => url_for_dc_identifier(pattern_topic) }
+
+          # We should skip any topics that already have this data, to prevent entering it twice
+          ext_field_label = (setter_method =~ /(\w+)/ && $1)
+          if ext_field_label
+            existing_pattern = /<#{ext_field_label}[^>]*>.*#{Regexp.escape(value['value'])}.*<\/#{ext_field_label}>/i
+            next if record_topic.extended_content && record_topic.extended_content =~ existing_pattern
+          end
 
           record_topic.send(setter_method, value)
-          ContentItemRelation.new_relation_to_topic(pattern_topic, record_topic)
+          ContentItemRelation.new_relation_to_topic(record_topic, pattern_topic)
 
           puts "Added data for #{xml_pattern}: Relation from topic #{record_topic.id} to topic #{pattern_topic.id}"
           updated = true
@@ -167,48 +186,34 @@ namespace :horizons do
       if updated
         record_topic.save
         record_topic.add_as_contributor(User.first)
-        record_topic.prepare_and_save_to_zoom
+
+        # We need to do a full rebuild at the end anyway, so skip this for now
+        # record_topic.prepare_and_save_to_zoom
       end
 
     end
   end
 
-  def create_table_of_contents_between(topics, contents_topic_type_id, columns = {}, sort_by = nil)
-    topics.each do |topic|
-      contents = topic.child_related_topics.find_all_by_topic_type_id(contents_topic_type_id)
+  # Options:
+  #  - :records              <- A Nokogiri parsed XML file
+  #  - :record_path          <- XML Path to each record
+  #  - :record_id_field      <- The XML field contain the record identifier
+  #  - :record_id_ext_field  <- The extended field that links the record id to kete
+  #  - :record_topic_type    <- The topic type that each of records is imported as
+  def find_missing_records_for(options)
+    ext_field_id = options[:record_id_ext_field].label_for_params
+    ext_field_pattern = /<#{ext_field_id}[^>]*>(.*)<\/#{ext_field_id}>/i
 
-      html = "<table>"
+    inserted_topics = Topic.find_all_by_topic_type_id(options[:record_topic_type].id)
+    inserted_keys = inserted_topics.collect { |t| t.extended_content =~ ext_field_pattern ? $1 : nil }.compact
+    all_keys = options[:records].xpath("#{options[:records_path]}/#{options[:record_id_field]}").collect { |record| record.inner_text }
 
-      html += "<tr>"
-      # Create the table headers
-      columns.each do |header, method|
-        html += "<th>#{header}</th>"
-      end
-      html += "</tr>"
-
-      # If sort_by is present, sort all contents by that. Rescue from any errors that occur
-      contents = contents.sort_by { |s| s.send(sort_by) rescue nil } unless sort_by.nil?
-
-      # Loop over contents
-      contents.each do |content|
-        html += "<tr>"
-        # Create the table data
-        columns.each do |header, method|
-          if method.to_sym == :title
-            url = url_for_dc_identifier(content)
-            html += "<td><a href=\"#{url}\">#{content.title}</a></td>"
-          else
-            html += "<td>#{content.send(method) rescue ''}</td>"
-          end
-        end
-        html += "</tr>"
-      end
-
-      html += "</table>"
-
-      topic.description = topic.description + ' ' + html
-      topic.save
-      topic.add_as_contributor(User.first)
+    (all_keys - inserted_keys).each do |id|
+      record = options[:records].xpath("#{options[:records_path]}[#{options[:record_id_field]}='#{id}']")
+      record = Hash.from_xml(record.to_s).values.first
+      puts "#{options[:record_id_field]} #{id}:"
+      puts record.collect { |k,v| "  #{k} = #{v}" unless k == options[:record_id_field] }.compact.join("\n")
+      puts ""
     end
   end
 

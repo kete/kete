@@ -4,11 +4,7 @@ class Choice < ActiveRecord::Base
 
   # find a choice based on params[:limit_to_choice]
   def self.from_id_or_value(id_or_label)
-    if id_or_label =~ /^\d/ # starts with a number
-      self.find_by_id(id_or_label)
-    else
-      self.find_by_value(id_or_label)
-    end
+    self.find_by_value(id_or_label) || self.find_by_id(id_or_label)
   end
 
   # Ensure any newly created choices become a child of root.

@@ -1,9 +1,17 @@
 <%
+  zoom_class ||= nil
   topic_type_id ||= nil
-  fields = !topic_type_id.blank? ? TopicType.find(topic_type_id).mapped_fields : ExtendedField.all
+
+  if topic_type_id.present?
+    fields = TopicType.find(topic_type_id).mapped_fields
+  elsif zoom_class && zoom_class != 'Topic'
+    fields = ContentType.find_by_class_name(zoom_class).mapped_fields
+  else
+    fields = ExtendedField.all
+  end
 %>
 
-<select id="import_extended_field_that_contains_record_identifier_id" name="import[extended_field_that_contains_record_identifier_id]">
+<select id="import_<%= id %>" name="import[<%= id %>]">
 
   <option value=""></option>
 
@@ -13,4 +21,4 @@
 
 </select>
 
-<img src="/images/indicator.gif" width="16" height="16" id="extended_fields_spinner" style="display:none;" />
+<img src="/images/indicator.gif" width="16" height="16" id="extended_fields_spinner_for_<%= id %>" style="display:none;" />
