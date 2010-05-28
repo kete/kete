@@ -166,7 +166,7 @@ module Importer
     # to find extracted files to be imported
     def importer_records_from_directory_at(path, params)
       # files or directories to ignore
-      not_wanted_patterns = ['Thumbs.db', '__MACOSX']
+      not_wanted_patterns = ['Thumbs.db', 'ehthumbs.db', '__MACOSX']
       Dir.foreach(path) do |record|
         full_path_to_record = path + '/' + record
         not_wanted = File.basename(full_path_to_record).first == "." || not_wanted_patterns.include?(record)
