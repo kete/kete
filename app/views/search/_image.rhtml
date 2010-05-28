@@ -23,5 +23,6 @@
   <%= render('related', :related => related,
                         :source_url => source_url,
                         :title => title) if related -%>
+  <%= dc_date_display_of(dc_dates) %>
   <div style="clear:left;"></div>
 </div>
