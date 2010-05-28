@@ -75,16 +75,7 @@ module Importer
       cache[:results] = @results
     end
 
-    # override this in your importer worker
-    # if you need something more complex
-    # this is what we call from the importers controller
-    # for our particular importer worker
-    # create method per importer worker
-    # should do the setup specific to our type of importer
-    # most importantly the @xml_path_to_record
-    def do_work(args = nil)
-      logger.info('in work')
-      begin
+    def importer_setup_initial_instance_vars(args)
         @zoom_class = args[:zoom_class]
         @import = Import.find(args[:import])
         @import_type = @import.xml_type
@@ -105,6 +96,19 @@ module Importer
         @record_identifier_xml_field ||= @import.record_identifier_xml_field
         @related_topic_type ||= @import.related_topic_type
         @extended_field_that_contains_record_identifier ||= @import.extended_field_that_contains_record_identifier
+    end
+
+    # override this in your importer worker
+    # if you need something more complex
+    # this is what we call from the importers controller
+    # for our particular importer worker
+    # create method per importer worker
+    # should do the setup specific to our type of importer
+    # most importantly the @xml_path_to_record
+    def do_work(args = nil)
+      logger.info('in work')
+      begin
+        importer_setup_initial_instance_vars(args)
 
         params = args[:params]
 
@@ -113,33 +117,69 @@ module Importer
         # this is done simply by defining a records_pre_processor method in worker class
         records_pre_processor if defined?(records_pre_processor)
 
-        # trimming of file
-        @path_to_trimmed_records = "#{@import_dir_path}/records_trimmed.xml"
-        # @skip_trimming is set in records_pre_processor (or not if it is not run)
-        # just use records.xml if we should skip trimming
-        records_xml_path = "#{@import_dir_path}/records.xml"
-        if @skip_trimming
-          @path_to_trimmed_records = records_xml_path
-        else
-          @path_to_trimmed_records = importer_trim_fat_from_xml_import_file(records_xml_path, @path_to_trimmed_records)
-        end
-
-        @import_records_xml = Nokogiri::XML File.open(@path_to_trimmed_records)
-
-        # variables assigned, files good to go, we're started
-        @import.update_attributes(:status => I18n.t('importer_lib.do_work.in_progress'))
-
         # work through records and add topics for each
         # if they don't already exist
         @results[:records_processed] = 0
         cache[:results] = @results
-        @import_records_xml.xpath(@xml_path_to_record).each do |record|
-          importer_process(record, params) unless record.content.blank?
+
+        # if there was an uploaded archive file (zip, tar, etc.)
+        # process the extracted records
+        # otherwise we expect a XML file describing the records
+        if @import.import_archive_file.present? && params[:related_topic].present?
+
+          @related_topic = Topic.find(params[:related_topic])
+
+          # variables assigned, files good to go, we're started
+          @import.update_attributes(:status => I18n.t('importer_lib.do_work.in_progress'))
+
+          importer_records_from_directory_at(@import_dir_path, params)
+
+        else
+          # trimming of file
+          @path_to_trimmed_records = "#{@import_dir_path}/records_trimmed.xml"
+          # @skip_trimming is set in records_pre_processor (or not if it is not run)
+          # just use records.xml if we should skip trimming
+          records_xml_path = "#{@import_dir_path}/records.xml"
+          if @skip_trimming
+            @path_to_trimmed_records = records_xml_path
+          else
+            @path_to_trimmed_records = importer_trim_fat_from_xml_import_file(records_xml_path, @path_to_trimmed_records)
+          end
+          
+          @import_records_xml = Nokogiri::XML File.open(@path_to_trimmed_records)
+          
+          # variables assigned, files good to go, we're started
+          @import.update_attributes(:status => I18n.t('importer_lib.do_work.in_progress'))
+
+          @import_records_xml.xpath(@xml_path_to_record).each do |record|
+            importer_process(record, params) unless record.content.blank?
+          end
         end
 
         importer_update_processing_vars_at_end
       rescue
         importer_update_processing_vars_if_rescue
+      end
+    end
+
+    # recursively work through import directory
+    # to find extracted files to be imported
+    def importer_records_from_directory_at(path, params)
+      # files or directories to ignore
+      not_wanted_patterns = ['Thumbs.db', '__MACOSX']
+      Dir.foreach(path) do |record|
+        full_path_to_record = path + '/' + record
+        not_wanted = File.basename(full_path_to_record).first == "." || not_wanted_patterns.include?(record)
+
+        unless not_wanted
+          # descend directories
+          # else process files
+          if File.directory?(full_path_to_record)
+            importer_records_from_directory_at(full_path_to_record, params)
+          else
+            importer_process(full_path_to_record, params)
+          end
+        end
       end
     end
 
@@ -442,6 +482,9 @@ module Importer
     end
 
     def importer_locate_existing_items(options = {})
+      # not applicable to related_topic imports, at least for the moment
+      return [] if @related_topic.present?
+
       options = {
         :item_type => @zoom_class_for_params.pluralize,
         :title => nil,
@@ -488,7 +531,18 @@ module Importer
       current_record = @results[:records_processed] + 1
       logger.info("starting record #{current_record}")
 
-      record_hash = importer_xml_record_to_hash(record)
+      record_hash = Hash.new
+      # if a file is passed in, we assume embedded metadata
+      # (or filename and form settings)
+      # will be what we derive our hash values from
+      # otherwise, we expect xml to derive hash values from
+      if File.exist?(record)
+        record_hash['placeholder_title'] = File.basename(record, File.extname(record)).gsub('_', ' ')
+        record_hash['path_to_file'] = record
+      else
+        record_hash = importer_xml_record_to_hash(record)
+      end
+
       reason_skipped = nil
 
       logger.info("record #{current_record} : looking for topic")
@@ -904,49 +958,63 @@ module Importer
     def importer_build_relations_to(new_record, record_hash, params)
       logger.info("building relations for new record")
 
-      if @related_topics_reference_in_record_xml_field.blank?
+      if @related_topics_reference_in_record_xml_field.blank? && @related_topic.blank?
         logger.info("no relations to be made for new record")
         return
       end
 
-      # We need an array to loop over, but we also allow single values as strings, so convert as needed
-      # Split by commas incase mutliple ones are provided, and strip whitespace
-      if @related_topics_reference_in_record_xml_field.is_a?(String)
-        @related_topics_reference_in_record_xml_field = @related_topics_reference_in_record_xml_field.split(',').collect { |r| r.strip }
-      end
+      # two options to build relations
+      # single @related_topic exists
+      # or more complex mapping in the data to topic to relate to
+      if @related_topic.present?
+        # add relation to related_topic
+        ContentItemRelation.new_relation_to_topic(@related_topic.id, new_record)
 
-      @related_topics_reference_in_record_xml_field.each do |related_topics_reference_in_record_xml_field|
-        next if related_topics_reference_in_record_xml_field.blank?
-        if record_hash[related_topics_reference_in_record_xml_field].blank?
-          logger.info("no relational field found with name of #{related_topics_reference_in_record_xml_field}")
-          next
+        # it would be faster to do this just once afte all new records
+        # were related
+        # but doing this for each new record
+        # means that if import fails
+        # each related record up to the failure is has relationship
+        # reflected in related topic
+        @related_topic.prepare_and_save_to_zoom
+      else
+
+        # We need an array to loop over, but we also allow single values as strings, so convert as needed
+        # Split by commas incase mutliple ones are provided, and strip whitespace
+        if @related_topics_reference_in_record_xml_field.is_a?(String)
+          @related_topics_reference_in_record_xml_field = @related_topics_reference_in_record_xml_field.split(',').collect { |r| r.strip }
         end
 
-        record_hash[related_topics_reference_in_record_xml_field].split(',').each do |related_topic_identifier|
-          related_topic_identifier = related_topic_identifier.strip
-
-          if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
-            related_topics = importer_fetch_related_topics(related_topic_identifier, params, {
-              :item_type => 'topics',
-              :extended_field_data => related_topic_identifier,
-              :topic_type => @related_topic_type
-            })
-          else
-            related_topics = @last_related_topics
+        @related_topics_reference_in_record_xml_field.each do |related_topics_reference_in_record_xml_field|
+          next if related_topics_reference_in_record_xml_field.blank?
+          if record_hash[related_topics_reference_in_record_xml_field].blank?
+            logger.info("no relational field found with name of #{related_topics_reference_in_record_xml_field}")
+            next
           end
 
-          next if related_topics.blank?
+          record_hash[related_topics_reference_in_record_xml_field].split(',').each do |related_topic_identifier|
+            related_topic_identifier = related_topic_identifier.strip
 
-          related_topics.uniq.flatten.compact.each do |related_topic|
-            next if related_topic == new_record
-            ContentItemRelation.new_relation_to_topic(related_topic, new_record)
+            if @last_related_topic_identifier.blank? || @last_related_topic_identifier != related_topic_identifier
+              related_topics = importer_fetch_related_topics(related_topic_identifier, params, { :item_type => 'topics',
+                 :extended_field_data => related_topic_identifier,
+                 :topic_type => @related_topic_type })
+            else
+              related_topics = @last_related_topics
+            end
+            
+            next if related_topics.blank?
+            
+            related_topics.uniq.flatten.compact.each do |related_topic|
+              next if related_topic == new_record
+              ContentItemRelation.new_relation_to_topic(related_topic, new_record)
+            end
+            
+            @last_related_topic_identifier = related_topic_identifier
+            @last_related_topics = related_topics
           end
-
-          @last_related_topic_identifier = related_topic_identifier
-          @last_related_topics = related_topics
         end
       end
-
       logger.info("finished building relations for new record")
     end
 
