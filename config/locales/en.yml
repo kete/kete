@@ -503,6 +503,8 @@ en:
     unlink_related:
       unlinked_relation: "{{t.base.successfully.capitalize}} {{t.base.removed}} {{t.base.item}} relationships"
   application_helper:
+    add_search_icon_and_default_text_to_search_box:
+      more_search_options: "More {{t.base.search}} {{t.base.option.pluralize}}"
     avatar_for:
       users_avatar: "{{user_name}}'s {{t.base.avatar.capitalize}}. "
     browse_by_category_columns:
@@ -1283,6 +1285,7 @@ en:
     base_url_description: "Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the {{t.base.choice}} ftypes, Base URL + {{t.base.value}} will take over from normal linking to all results that match the {{t.base.value}} for the {{t.base.choice}} for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
     circa: "{{t.base.accept.capitalize}} Circa?"
     circa_description: "Ftype must be the \"Year\" option for this option to appear."
+    import_synonyms_description: "{{t.base.new.capitalize}} line seperated list of {{t.base.import}} synonyms."
     title: "Extended Fields"
     topic_type_choices: "{{t.base.zoom_types.topic.capitalize}} {{t.base.type.capitalize}} {{t.base.choice.pluralize.capitalize}}"
     topic_type_choices_description: "Ftype must be a \"Pre-populated {{t.base.choice.pluralize.capitalize}} ({{t.base.topic_type}})\" option for these options to be available to {{t.base.user.pluralize}}."
@@ -1488,8 +1491,10 @@ en:
       dfc_xml: "DFC XML"
       document: "{{t.base.zoom_types.document.capitalize}}"
       excel_based: "Excel based"
-      extended_field_that_contains_record_identifier: "Extended Field containing the {{t.base.related.capitalize}} {{t.base.topic_type.capitalize.pluralize}} Identifier?"
-      extended_field_that_contains_record_identifier_description: "Which extended field in the {{t.base.topic_type}} for {{t.base.related}} {{t.base.zoom_types.topic.pluralize}} contains the data to link {{t.base.imported}} records to the {{t.base.existing}} {{t.base.related}} {{t.base.zoom_types.topic}}? If not given, the importer will do it's best to sort out what should get {{t.base.related}}, but isn't always accurate."
+      extended_field_that_contains_record_identifier: "Extended Field containing each Records Identifier?"
+      extended_field_that_contains_record_identifier_description: "Which extended field is configured the store the above Record Identifier?"
+      extended_field_that_contains_related_topics_reference: "Extended Field containing the related items record identifier?"
+      extended_field_that_contains_related_topics_reference_description: "Which extended field is configured to store the record identifier of the related record?"
       filemaker_pro: "Filemaker Pro's FMPDSORESULT XML format (text records only, no associated images)"
       has_related_items_in_data: "Should records that refer to {{t.base.existing}} {{t.base.zoom_types.topic.pluralize}} have {{t.base.relation.pluralize}} added to those {{t.base.zoom_types.topic.pluralize}}?"
       image: "{{t.base.zoom_types.image.capitalize}}"
@@ -1523,8 +1528,6 @@ en:
       edit_after_import: "Alternatively, {{t.base.you}} may also {{t.base.edit}} {{t.base.any}} uploaded {{t.base.item}}'s title or other details after it {{t.base.has_been}} {{t.base.added}} to the {{t.base.site}}."
       folder_containing_items: "The archive file should be of a folder containing the {{t.base.item.pluralize}} to be {{t.base.added}}.  {{t.base.please.capitalize}} do not uses spaces in the folder {{t.base.name}} and {{t.base.name}} the archive file after the folder.  For example \"the_images\" folder would become the \"the_images.zip\" archive file."
       license: "{{t.base.you.capitalize}} may also {{t.base.choose}} to have {{t.base.all}} {{t.base.imported}} {{t.base.item.pluralize}} be under one of these {{t.base.license.pluralize}}."
-      no_ampersands_in_filenames: "IMPORTANT NOTE: {{t.base.please}} do not use &amp; in file names, use an \"and\" instead.  {{t.base.item.capitalize.pluralize}} with ampersands in filenames will not be {{t.base.added}}."
-      no_spaces_in_filenames: "IMPORTANT NOTE: {{t.base.please}} do not use spaces in file names, use an underscore instead.  \"_\" will be {{t.base.replaced}} with a space in the final title for the {{t.base.item}}."
       tags: "What {{t.base.tag.pluralize}} should we {{t.base.add}} to each {{t.base.imported}} {{t.base.item}} (separated by commas, no &amp;s {{t.base.allowed}} in {{t.base.tag.pluralize}}.)?"
       tags_description: "This is a good way to group things (by subject or category) so that they can be found later, for example, if had a series of photos of my home, I might use 'Island Bay, Wellington, New Zealand'."
       title: "{{t.base.add.capitalize}} {{t.base.related}} set of {{t.base.item.pluralize}} to {{related_topic_title}} {{t.base.from}} uploaded archive file"

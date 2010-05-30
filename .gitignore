@@ -8,6 +8,7 @@ config/backgroundrb.yml
 config/mongrel_cluster.yml
 config/gmaps_api_key.yml
 config/google_map_api.yml
+config/importers.yml
 config/locales.yml
 config/site_lockdown_auth_credentials.yml
 db/schema.rb

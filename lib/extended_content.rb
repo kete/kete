@@ -349,6 +349,10 @@ module ExtendedContent
         end
       elsif ['map', 'map_address'].member?(extended_field.ftype)
         value_array.is_a?(Array) ? value_array.first : value_array
+      elsif extended_field.ftype == 'year'
+        value_array = value_array.first if value_array.is_a?(Array)
+        value_array = value_array.first if value_array.is_a?(Array) && !extended_field.multiple?
+        value_array
       elsif value_array.is_a?(Array) && value_label_hash?(value_array.first)
         value_array
       else
@@ -366,8 +370,14 @@ module ExtendedContent
     def reader_for(extended_field_element_name, field = nil)
       values = structured_extended_content[extended_field_element_name].to_a
       if values.size == 1
-        values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
-      elsif field && ['map', 'map_address', 'topic_type'].member?(field.ftype)
+        if field && field.ftype == 'year'
+          values = values.first if values.is_a?(Array)
+          values = values.first if values.is_a?(Array) && !field.multiple?
+          values
+        else
+          values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+        end
+      elsif field && ['map', 'map_address', 'topic_type', 'year'].member?(field.ftype)
         # do nothing with the data in this case
       else
         values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
@@ -706,8 +716,8 @@ module ExtendedContent
     def array_of_values(hash)
       # there is one instant where we just want to return the hash
       # if it has a label, we want a hash of label and value
-      if value_label_hash?(hash)
-        hash.keys.each { |key| hash.delete(key) unless %w(value label).include?(key) }
+      if value_label_hash?(hash) || hash.keys.include?('circa')
+        hash.keys.each { |key| hash.delete(key) unless %w(value label circa).include?(key) }
         return [hash]
       end
 
@@ -715,9 +725,6 @@ module ExtendedContent
       # however, we need to fallback to coords incase we are working with legacy data
       # the rest can be left out which causes problems when saving items
       return [hash] if hash.keys.include?('no_map') || hash.keys.include?('coords') # map or map_address
-
-      # If we are dealing with a Year field, leave the data as is
-      return [hash] if hash.keys.include?('circa')
 
       hash.map do |k, v|
         # skip special keys

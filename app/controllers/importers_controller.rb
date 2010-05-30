@@ -225,6 +225,10 @@ class ImportersController < ApplicationController
   end
 
   def fetch_applicable_extended_fields
-    render :partial => "extended_field_selection", :locals => { :topic_type_id => params[:topic_type_id] }
+    render :partial => "extended_field_selection", :locals => {
+      :id => params[:id],
+      :zoom_class => params[:zoom_class],
+      :topic_type_id => params[:topic_type_id]
+    }
   end
 end
