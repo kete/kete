@@ -739,7 +739,7 @@ system_settings_086:
 system_settings_087:
   name: DC Date Display Formulator
   technically_advanced: true
-  required_to_be_configured: true
+  required_to_be_configured: false
   explanation: "Which method is used to determine the dates to display? If none is provided, all DC dates will be displayed."
   id: "87"
   value: ""
