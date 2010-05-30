@@ -201,14 +201,15 @@ module ApplicationHelper
 
   def default_search_terms
     search_location_name = PRETTY_SITE_NAME
-    search_location_name = @current_basket.name if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
-    search_text_key = (SEARCH_SELECT_CURRENT_BASKET ? 'search_value_within' : 'search_value')
+    search_text_key = 'search_value'
 
-    if params[:controller] == 'search'
-      t("layouts.application.new_#{search_text_key}", :search_location_name => search_location_name)
-    else
-      t("layouts.application.#{search_text_key}", :search_location_name => search_location_name)
+    if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
+      search_location_name = @current_basket.name
+      search_text_key = 'search_value_within'
     end
+
+    search_text_key = "new_#{search_text_key}" if params[:controller] == 'search'
+    t("layouts.application.#{search_text_key}", :search_location_name => search_location_name)
   end
 
   def default_search_terms_for_js
