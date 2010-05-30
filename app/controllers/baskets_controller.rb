@@ -136,18 +136,10 @@ class BasketsController < ApplicationController
   end
 
   def homepage_options
-    edit
+    appropriate_basket
+    @topics = @basket.topics
+    @index_topic = @basket.index_topic
     prepare_and_validate_profile_for(:homepage_options)
-
-    @feeds_list = Array.new
-    if @basket.feeds.count > 0
-      @basket.feeds.each do |feed|
-        limit = !feed.limit.nil? ? feed.limit.to_s : ''
-        frequency = !feed.update_frequency.nil? ? feed.update_frequency.to_s.gsub('.0', '') : ''
-        @feeds_list << "#{feed.title}|#{feed.url}|#{limit}|#{frequency}"
-      end
-      @feeds_list = @feeds_list.join("\n")
-    end
   end
 
   def update
@@ -187,43 +179,15 @@ class BasketsController < ApplicationController
     # to prevent changes in edit from being locked out
     params[:basket][:do_not_sanitize] = true if params[:source_form] == 'edit'
 
-    @feeds_successful = true
-    # it is important this is not nil, rather than not blank
-    # empty feeds_url_list may mean to delete all existing feeds
-    if !params[:feeds_url_list].nil?
-      # clear out existing feeds
-      # and their workers
-      # we will recreate them below if they are to be kept
-      @basket.feeds.each do |feed|
-        delete_existing_workers_for(:feeds_worker, feed.to_worker_key)
-        feed.destroy
-      end
-
-      begin
-        new_feeds = Array.new
-        params[:feeds_url_list].split("\n").each do |feed|
-          feed_parts = feed.split('|')
-          feed_url = feed_parts[1].strip.gsub("feed:", "http:")
-          new_feeds << Feed.create({ :title => feed_parts[0].strip,
-                                     :url => feed_url,
-                                     :limit => feed_parts[2],
-                                     :update_frequency => (feed_parts[3] || 1),
-                                     :basket_id => @basket.id })
-        end
-        @basket.feeds = new_feeds if new_feeds.size > 0
-      rescue
-        # if there is a problem adding feeds, raise an error the user
-        # chances are that they didn't format things correctly
-        @basket.errors.add('Feeds', t('baskets_controller.update.feed_problem'))
-        @feeds_successful = false
-      end
-    end
-
     convert_text_fields_to_boolean if params[:source_form] == 'edit'
 
     prepare_and_validate_profile_for(params[:source_form].to_sym)
 
-    if @feeds_successful && @basket.update_attributes(params[:basket])
+    # clear out existing feeds before looping over the new set
+    # it is important this only run if the source form was the homepage options
+    @basket.feeds.destroy_all if params[:source_form].to_sym == :homepage_options
+
+    if @basket.update_attributes(params[:basket])
       # Reload to ensure basket.name is updated and not the previous
       # basket name.
       @basket.reload
@@ -459,11 +423,11 @@ class BasketsController < ApplicationController
   # as well as the @basket object for basket settings
   # don't do this if the user is a site admin though
   def prepare_and_validate_profile_for(form_type)
-    # we don't run this method is we don't have profile rules
-    return if profile_rules.blank?
-
     # this var is used in form helpers
     @form_type = form_type
+
+    # we don't run this method is we don't have profile rules, or nothing is submitted
+    return if profile_rules.blank? || (params[:basket].blank? && params[:settings].blank?)
 
     # we need to check all form types for the values
     form_types = [:edit, :appearance, :homepage_options]

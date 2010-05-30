@@ -134,17 +134,11 @@
         </div>
       <% end %>
 
-      <% if allowed_field?('feeds_url_list') %>
+      <% if allowed_field?('feeds_attributes') %>
         <div class="form-element">
           <label><%=t 'baskets.homepage_form.rss_feeds' %></label>
           <fieldset>
-            <div class="form-element">
-              <%= text_area_tag 'feeds_url_list', (params[:feeds_url_list] || @feeds_list || current_value_of('feeds_url_list')), :cols => 80, :rows => 5, :wrap => 'off' -%>
-            </div>
-            <div class="form_example">
-              <p><%=t 'baskets.homepage_form.rss_feeds_example1' %></p>
-              <p><%=t 'baskets.homepage_form.rss_feeds_example2' %></p>
-            </div>
+            <%= render 'basket_feeds_fields', :feeds => @basket.feeds %>
           </fieldset>
         </div>
       <% end %>

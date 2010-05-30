@@ -1,0 +1,21 @@
+<%
+feeds ||= Array.new
+field_name_prefix ||= 'basket[feeds_attributes]'
+blank_rss_feed = render('baskets/rss_feed', :field_name_prefix => field_name_prefix)
+%>
+
+<div id="basket_rss_feeds">
+  <% if feeds.size > 0 %>
+    <%= render :partial => 'baskets/rss_feed', :collection => feeds,
+               :locals => { :field_name_prefix => field_name_prefix } %>
+  <% else %>
+    <%= blank_rss_feed %>
+  <% end %>
+  <noscript><%= blank_rss_feed %></noscript>
+</div>
+
+<div id="basket_rss_feeds_add"></div>
+<% add_feed_link = link_to_function(t('baskets.basket_feeds_fields.add_another_feed'), "Element.insert(\"basket_rss_feeds\", { bottom: #{::ActiveSupport::JSON.encode(blank_rss_feed)} })") %>
+<%= javascript_tag("Element.insert(\"basket_rss_feeds_add\", { bottom: #{::ActiveSupport::JSON.encode(add_feed_link)} })") %>
+
+<noscript><%= t('baskets.basket_feeds_fields.how_to_remove_feed') %></noscript>

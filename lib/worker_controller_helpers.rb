@@ -22,11 +22,11 @@ module WorkerControllerHelpers
       is_running
     end
 
-    def delete_existing_workers_for(worker_type, worker_key = nil)
+    def delete_existing_workers_for(worker_type, worker_key = nil, with_delay = true)
       worker_key = worker_key || worker_key_for(worker_type)
       if backgroundrb_is_running?(worker_type, worker_key)
         MiddleMan.worker(worker_type.to_sym, worker_key.to_s).delete
-        sleep 5 # give it time to kill the worker
+        sleep 5 if with_delay # give it time to kill the worker
       end
     end
 

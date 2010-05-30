@@ -31,10 +31,10 @@ module ImportersHelper
           // hide the related_records_field and record_identifier_field values for all but simple xml
           if ( value == 'simple_xml' ) {
             $('import_related_records').show();
-            $('import_record_identifier').show();
+            $('record_identifier_fields').show();
           } else {
             $('import_related_records').hide();
-            $('import_record_identifier').hide();
+            $('record_identifier_fields').hide();
           }
         });
       ")
@@ -57,6 +57,28 @@ module ImportersHelper
       ")
   end
 
+  def record_identifier_js_observer
+    javascript_tag("
+      $('zoom_class').observe('change', function() {
+        zoom_class = $('zoom_class').value;
+        new Ajax.Updater('import_extended_field_that_contains_record_identifier_select', '#{url_for(:action => 'fetch_applicable_extended_fields')}', {
+          parameters: { id: 'extended_field_that_contains_record_identifier_id', zoom_class: zoom_class },
+          onCreate: function() { $('extended_fields_spinner_for_extended_field_that_contains_record_identifier_id').show(); },
+          onComplete: function() { $('extended_fields_spinner_for_extended_field_that_contains_record_identifier_id').hide(); }
+        });
+      });
+
+      $('import_topic_type_id').observe('change', function() {
+        topic_type_id = $('import_topic_type_id').value;
+        new Ajax.Updater('import_extended_field_that_contains_record_identifier_select', '#{url_for(:action => 'fetch_applicable_extended_fields')}', {
+          parameters: { id: 'extended_field_that_contains_record_identifier_id', zoom_class: 'Topic', topic_type_id: topic_type_id },
+          onCreate: function() { $('extended_fields_spinner_for_extended_field_that_contains_record_identifier_id').show(); },
+          onComplete: function() { $('extended_fields_spinner_for_extended_field_that_contains_record_identifier_id').hide(); }
+        });
+      });
+    ")
+  end
+
   def related_topics_js_observer
     javascript_tag("
       $('import_has_related_items_in_data').observe('change', function() {
@@ -68,14 +90,10 @@ module ImportersHelper
       });
 
       $('import_related_topic_type_id').observe('change', function() {
-        new Ajax.Updater('import_extended_field_that_contains_record_identifier_select', '#{url_for(:action => 'fetch_applicable_extended_fields')}', {
-          parameters: { topic_type_id: $('import_related_topic_type_id').value },
-          onCreate: function() {
-            $('extended_fields_spinner').show();
-          },
-          onComplete: function() {
-            $('extended_fields_spinner').hide();
-          }
+        new Ajax.Updater('import_extended_field_that_contains_related_topics_reference_select', '#{url_for(:action => 'fetch_applicable_extended_fields')}', {
+          parameters: { id: 'extended_field_that_contains_related_topics_reference_id', zoom_class: 'Topic', topic_type_id: $('import_related_topic_type_id').value },
+          onCreate: function() { $('extended_fields_spinner_for_extended_field_that_contains_related_topics_reference_id').show(); },
+          onComplete: function() { $('extended_fields_spinner_for_extended_field_that_contains_related_topics_reference_id').hide(); }
         });
       });
     ")
