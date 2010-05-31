@@ -25,8 +25,8 @@ class Kete
     end
 
     def load_extensions!
-      return if @@extensions[:blocks].nil?
-      @@extensions[:blocks].each do |key, procs|
+      return if extensions[:blocks].nil?
+      extensions[:blocks].each do |key, procs|
         procs.each { |proc| proc.call }
       end
     end
