@@ -310,11 +310,36 @@ module GoogleMap
                                                    $(map_id + \'_warning\').hide();
                                                    $(map_id + \'_fields\').hide();'}
             // initialize the google map
-            var map = new google.maps.Map2($(map_id));
+            var map = new google.maps.Map2($(map_id), {
+              googleBarOptions: {
+                onGenerateMarkerHtmlCallback: function(marker, html, result) {
+                  // Intercept search results, and adjust the info bubble to provide a hook for
+                  // updating the currently chosen location on a Google Map
+
+                  var title = new Element('p').update('<strong>' + result.title + '</strong>');
+
+                  var link = new Element('a', { href: '#' }).observe('click', function(event) {
+                    resetCurrentSearchAndSetMarker(this);
+                    event.stop();
+                  });
+                  link.update(\"#{i18n_js('google_map_lib.load_google_map_api.correct_location_yes')}\");
+                  link.map = map;
+                  link.marker = marker;
+
+                  var confirmation = new Element('p').update('#{i18n_js('google_map_lib.load_google_map_api.correct_location')} ');
+                  confirmation.appendChild(link);
+
+                  var container = new Element('div');
+                  container.appendChild(title);
+                  container.appendChild(confirmation);
+
+                  return container;
+                }
+              }
+            });
+
             // disable dblclick for zoom because it conflicts with a click event
             map.disableDoubleClickZoom();
-            // enable the ability to use scroll wheel for zoom, because dblclick is disabled
-            map.enableScrollWheelZoom();
             // store the several objects/values in the map object for easy access
             // it also makes it possible to have different maps on the same page
             map.geocoder_obj = new google.maps.ClientGeocoder();
@@ -365,6 +390,14 @@ module GoogleMap
                 "alert('#{i18n_js('google_map_lib.load_google_map_api.fields_dont_exist')}');" :
                 "// do nothing"}
             }
+          }
+
+          // Clears the results (by disabling and reenabling the google map)
+          // And updates the map with the marker to point at the result chosen
+          function resetCurrentSearchAndSetMarker(link) {
+            link.map.disableGoogleBar();
+            link.map.enableGoogleBar();
+            update_map_data(link.map, link.marker.getLatLng());
           }
 
           // make sure the fields are filled in, and error out if they arn't at the end
@@ -479,7 +512,7 @@ module GoogleMap
         ") + "\n"
         # We don't need the search controls and stylesheets on the index/show, only new/edit
         unless @google_map_on_index_or_show_page
-          html += javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}")
+          html += javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}&format=")
         end
         html
       end
