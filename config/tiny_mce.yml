@@ -1,0 +1,30 @@
+# Here you can specify default options for TinyMCE across all controllers
+
+# advanced theme settings
+theme: advanced
+theme_advanced_toolbar_location: top
+theme_advanced_toolbar_align: left
+theme_advanced_statusbar_location: bottom
+theme_advanced_buttons1: [
+  bold, italic, underline, strikethrough, separator, justifyleft, justifycenter, justifyright,
+  justifyfull, separator, indent, outdent, separator, bullist, numlist, forecolor, backcolor,
+  separator, link, unlink, image, separator, undo, redo, separator, code
+]
+theme_advanced_buttons2: [
+  formatselect, fontselect, fontsizeselect, separator, pastetext, pasteword, selectal
+]
+theme_advanced_buttons3_add: [ tablecontrols, fullscreen ]
+theme_advanced_resizing: true
+theme_advanced_resize_horizontal: false
+
+# link / image path conversions
+convert_urls: false
+content_css: "/stylesheets/base.css"
+
+# which plugins we are enabling
+plugins: [ contextmenu, paste, table, fullscreen ]
+
+# paste plugin specific settings
+paste_auto_cleanup_on_paste: true
+paste_convert_middot_lists: false
+paste_convert_headers_to_strong: true

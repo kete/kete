@@ -45,15 +45,12 @@
   <%# this goes before other css and javascript incase we want to overwrite the definitions locally in themes %>
   <%= yield :add_on_scripts_and_links %>
 
-  <% if using_tiny_mce? -%>
-    <% # Include TinyMCE before other JS to avoid problems,
-       # tinymce not compatible with bundle_fu -%>
-    <%= include_tiny_mce_js -%>
-    <% # point tinymce at the correct css file -%>
-    <% @tiny_mce_options[:content_css] = "/stylesheets/cache/#{@theme}_theme.css" -%>
-    <% @tiny_mce_options[:extended_valid_elements] = EXTENDED_VALID_ELEMENTS if @site_admin -%>
-    <%= tiny_mce_init -%>
-  <% end -%>
+  <%# Include TinyMCE before other JS to avoid problems
+    # TinyMCE is not compatible with bundle_fu %>
+  <%= include_tiny_mce_if_needed({
+    :content_css => "/stylesheets/cache/#{@theme}_theme.css",
+    :extended_valid_elements => (EXTENDED_VALID_ELEMENTS if @site_admin)
+  }) %>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
 

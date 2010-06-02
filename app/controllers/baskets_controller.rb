@@ -1,7 +1,6 @@
 class BasketsController < ApplicationController
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
-                :only => VALID_TINYMCE_ACTIONS
+  uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   permit "site_admin or admin of :current_basket", :only => [:edit, :update, :homepage_options, :destroy,
