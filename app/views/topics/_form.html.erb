@@ -131,7 +131,7 @@ zoom_class = zoom_class_from_controller(controller)
 
     <% unless [:topic, :web_link].include?(@item_type) -%>
       <% if params[@item_type] && params[@item_type][:file_private]; file_private = params[@item_type][:file_private] == 'true' ? true : false
-         elsif @editing && !@item.file_private.nil?; file_private = @item.file_private?
+         elsif @editing; file_private = @item.file_private?
          else; file_private = @basket.file_private_default_with_inheritance?; end -%>
       <% if show_privacy_controls_for?(@item, @basket) %>
         <%= form.radio_button :file_private,
@@ -160,7 +160,7 @@ zoom_class = zoom_class_from_controller(controller)
     <% if show_notification_controls?(@basket) %>
       <div id="skip_email_notification_div"<%= "style='display:none;'" unless item_private %>>
         <% if params[@item_type] && params[@item_type][:skip_email_notification]; skip = (params[@item_type][:skip_email_notification] == '1' ? true : false)
-           elsif @editing && !@item.skip_email_notification.nil?; skip = @item.skip_email_notification?
+           elsif @editing; skip = @item.skip_email_notification?
            else; skip = false; end -%>
         <%= form.check_box :skip_email_notification, { :tabindex => '1',
                                                        :label => t('topics.form.skip_email_notification',
