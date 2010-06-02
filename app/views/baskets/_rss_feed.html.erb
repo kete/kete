@@ -6,9 +6,13 @@
       <th title="<%= t('baskets.rss_feed.title_description') %>"><%= t('baskets.rss_feed.title') %></th>
       <td colspan="3">
         <%= text_field_tag "#{field_name_prefix}[][title]", (rss_feed.title if rss_feed), :size => 45 %>
-        <span class="remove_feed_link"></span>
-        <% remove_feed_link = link_to_function(t('baskets.rss_feed.remove_feed'), "this.up('div').remove()") %>
-        <%= javascript_tag("$$('.remove_feed_link').last().update(#{::ActiveSupport::JSON.encode(remove_feed_link)})")%>
+        <span class="remove_feed_link_span"></span>
+        <% remove_feed_link = link_to(t('baskets.rss_feed.remove_feed'), '#', :class => 'remove_feed_link') %>
+        <%= javascript_tag("
+        $$('.remove_feed_link_span').last().update(#{::ActiveSupport::JSON.encode(remove_feed_link)});
+        $$('.remove_feed_link').last().observe('click', function(event) {
+          this.up('div.basket_rss_feed').remove(); event.stop();
+        });") %>
       </td>
     </tr>
     <tr>
