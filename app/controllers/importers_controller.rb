@@ -10,7 +10,7 @@ class ImportersController < ApplicationController
 
   permit "site_admin or admin of :current_basket or tech_admin of :site", :except => [:new_related_set_from_archive_file, :create]
 
-  permit "site_admin or admin of :current_basket or tech_admin of :site or member of :current_basket or moderater of :current_basket", :only => [:new_related_set_from_archive_file, :create]
+  before_filter :permitted_to_create_imports, :only => [:new_related_set_from_archive_file, :create]
 
   ### TinyMCE WYSIWYG editor stuff
   uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
@@ -34,11 +34,8 @@ class ImportersController < ApplicationController
   end
 
   def choose_contributing_user
-    @potential_contributing_users = User.find(:all,
-                                              :joins => "join roles_users on users.id = roles_users.user_id",
-                                              :conditions => ["roles_users.role_id in (?) and users.id <> #{@current_user.id}",
-                                                              @current_basket.accepted_roles])
-
+    @potential_contributing_users = User.all(:joins => "join roles_users on users.id = roles_users.user_id",
+                                             :conditions => ["roles_users.role_id in (?)", @current_basket.accepted_roles])
     @user_options = @potential_contributing_users.map { |u| [u.user_name, u.id] }
   end
 
@@ -48,64 +45,56 @@ class ImportersController < ApplicationController
   end
 
   def new_related_set_from_archive_file
-    new
-    @import.interval_between_records = 5
+    @import = Import.new
     @import.import_archive_file = ImportArchiveFile.new
+
     @related_topic = Topic.find(params[:relate_to_topic])
-    @zoom_class_name = (params[:zoom_class] || 'StillImage')
-    @zoom_class = only_valid_zoom_class(@zoom_class_name).name
   end
 
   def create
     @import = Import.new(params[:import])
+    @import.basket_id = @current_basket.id
 
-    if !params[:import_archive_file].nil? && !params[:import_archive_file][:uploaded_data].blank? && !params[:related_topic].blank?
-      # this a related set of items from archive file import
-      # we decompress the files into a directory named after the timestamp
-      # for example imports/20080509160835
-      # prep the directory, but we'll decompress into it further down the track
+    if importing_archive_file?
+      # this a related set of items from archive file import so set some defaults
       @related_topic = Topic.find(params[:related_topic])
-
-      # we'll update this with actual directory after we unpack import_archive_file
+      @import.topic_type_id = @related_topic.topic_type_id
       @import.xml_type = 'related_set_from_archive_file'
-      @import.topic_type = @related_topic.topic_type
-      @zoom_class = only_valid_zoom_class(params[:zoom_class]).name
-    else
-      params[:related_topic] ||= nil
+      @import.directory = Time.now.utc.xmlschema
+      @import.interval_between_records = 5
     end
 
-    if @import.save
-      import_request = { :host => request.host,
-        :protocol => request.protocol,
-        :request_uri => request.request_uri }
+    # because the import archive file import can be used non-admins with cetain settings
+    # we cannot simply rely on what we get in params, we need to check/override it
+    @import.user_id = (@site_admin && params[:contributing_user].present?) ? User.find(params[:contributing_user]).id : current_user.id
+    @import.private = false unless @import.private.present? && @current_basket.show_privacy_controls_with_inheritance?
 
-      unless params[:import_archive_file].nil? || params[:import_archive_file][:uploaded_data].blank?
-        @import.reload
-        @import_archive_file = ImportArchiveFile.new(params[:import_archive_file].merge(:import_id => @import.id))
+    if @import.save
+      if importing_archive_file?
         # mkdir the target directory
+        # we decompress the files into a directory named after the timestamp
+        # for example imports/20080509160835
         import_directory_path = ::Import::IMPORTS_DIR + @import.directory
         Dir.mkdir(import_directory_path) unless File.exist?(import_directory_path)
-        @import_archive_file.save!
-        # now that we have creatd the import_archive_file object, delete marshalled data from params
-        # otherwise we can pass it to the import worker
-        params.delete(:import_archive_file)
+
+        @import.reload
+        @import_archive_file = ImportArchiveFile.create!(params.delete(:import_archive_file).merge(:import_id => @import.id))
       end
 
       @worker_type = "#{@import.xml_type}_importer_worker".to_sym
       @worker_key = worker_key_for(@worker_type)
 
-      case @import.xml_type
-      when 'past_perfect4'
-        @zoom_class = 'StillImage'
-      when 'fmpdsoresult_no_images'
-        @zoom_class = 'Topic'
+      @zoom_class = case @import.xml_type
+      when 'past_perfect4'          then 'StillImage'
+      when 'fmpdsoresult_no_images' then 'Topic'
       else
-        @zoom_class = params[:zoom_class]
+        (only_valid_zoom_class(params[:zoom_class]).name || 'StillImage')
       end
 
       # only run one import at a time for the moment
       unless backgroundrb_is_running?(@worker_type)
         MiddleMan.new_worker( :worker => @worker_type, :worker_key => @worker_key )
+        import_request = { :host => request.host, :protocol => request.protocol, :request_uri => request.request_uri }
         MiddleMan.worker(@worker_type, @worker_key).async_do_work( :arg => { :zoom_class => @zoom_class,
                                                                                    :import => @import.id,
                                                                                    :params => params,
@@ -115,24 +104,17 @@ class ImportersController < ApplicationController
         @do_not_use_tiny_mce = true
       else
         flash[:notice] = t('importers_controller.create.already_running')
-        if !params[:related_topic].blank?
+        if @related_topic
           redirect_to_show_for(@related_topic)
         else
           redirect_to :action => 'list'
         end
       end
     else
-      if !params[:related_topic].blank?
-        @related_topic = Topic.find(params[:related_topic])
-        @zoom_class_name = (params[:zoom_class] || 'StillImage')
-        @zoom_class = only_valid_zoom_class(@zoom_class_name).name
-        render(:action => 'new_related_set_from_archive_file',
-               :contributing_user => params[:import][:user_id],
-               :related_topic => params[:related_topic],
-               :zoom_class => params[:zoom_class]
-               )
+      if importing_archive_file?
+        render :action => 'new_related_set_from_archive_file'
       else
-        render :action => 'new', :contributing_user => params[:import][:user_id]
+        render :action => 'new'
       end
     end
   end
@@ -231,4 +213,25 @@ class ImportersController < ApplicationController
       :topic_type_id => params[:topic_type_id]
     }
   end
+
+  private
+
+  def importing_archive_file?
+    (params[:related_topic].present? && params[:import_archive_file].present? && params[:import_archive_file][:uploaded_data].present?)
+  end
+
+  def permitted_to_create_imports
+    if params[:action] == 'create' && !importing_archive_file?
+      # if we aren't creating an import for archive sets, the rules of who can access the 'new' action apply
+      user_is_authorized = permit?("site_admin or admin of :current_basket or tech_admin of :site")
+    else
+      user_is_authorized = current_user_can_import_archive_sets?
+    end
+
+    unless user_is_authorized
+      flash[:error] = t('importers_controller.permitted_to_create_imports.not_authorized')
+      redirect_to DEFAULT_REDIRECTION_HASH
+    end
+  end
+
 end

@@ -302,6 +302,20 @@
     </div>
   <% end %>
 
+  <% if allowed_field?('import_archive_set_policy') %>
+    <div class="form-element">
+      <label><%=t 'baskets.form.import_archive_set_policy' %></label>
+      <fieldset>
+
+        <div class="form-element">
+          <label for="settings_import_archive_set_policy" style="width: 100%"><%=t 'baskets.form.import_archive_set_policy_example' %></label>
+          <div style="clear: left"><%= select_tag 'settings[import_archive_set_policy]', @basket.import_archive_set_policy_or_default(current_value_of('import_archive_set_policy')) %></div>
+        </div>
+
+      </fieldset>
+    </div>
+  <% end %>
+
   <% if allowed_field?('allow_basket_admin_contact') %>
     <div class="form-element">
       <label><%=t 'baskets.form.admin_contact' %></label>

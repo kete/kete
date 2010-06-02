@@ -7,158 +7,116 @@
 
 <h2><%= h(@title) -%></h2>
 
-<fieldset>
-  <div class="warning">
-    <p><%=t 'importers.new.conventions_note' %>
-      <%=t 'importers.new.consult_guides' %></p>
-  </div>
+<div class="warning">
+  <p>
+    <%=t 'importers.new.conventions_note' %>
+    <%=t 'importers.new.consult_guides' %>
+  </p>
+</div>
 
-  <% if @site_admin -%>
-  <%= render :partial => "contributing_user_form" %>
-  <% else -%>
-  <% @contributing_user = @current_user -%>
-  <% end -%>
+<%= render 'contributing_user_form' if @site_admin %>
 
-<% form_for :import,
-            :url => { :action => 'create'},
-            :html => { :multipart => true } do |form| %>
+<% form_for :import, :url => { :action => 'create' }, :html => { :multipart => true } do |form| %>
+  <fieldset>
 
-  <%= error_messages_for 'import' %>
+    <%= error_messages_for 'import' %>
 
-  <%= hidden_field_tag 'import[basket_id]', @current_basket.id %>
-  <%= hidden_field_tag 'import[user_id]', @contributing_user.id %>
+    <%= hidden_field_tag 'contributing_user', params[:contributing_user] %>
 
-  <div class="form-element">
-    <label for="import_directory"><%=t 'importers.new.what_is_folder_name' %></label>
-    <%= form.text_field :directory %>
-  </div>
-
-  <div class="form-element">
-    <label class="required" for="import_interval_between_records"><%=t 'importers.new.delay_between_records' %></label>
-    <%= form.text_field :interval_between_records, :size => 3 %>
-    <div class="form_example"><%=t 'importers.new.delay_between_records_explaination' %></div>
-  </div>
-
-  <% @type_options = [[t('importers.new.excel_based'), 'excel_based'],
-     [t('importers.new.dfc_xml'), 'dfc_xml'],
-     [t('importers.new.past_perfect'), 'past_perfect4'],
-     [t('importers.new.filemaker_pro'), 'fmpdsoresult_no_images'],
-     [t('importers.new.simple_xml'), 'simple_xml']
-     ] -%>
-
-  <div class="form-element">
-    <label class="required" for="import_xml_type"><%=t 'importers.new.import_type' %></label>
-    <%= form.select :xml_type, @type_options %>
-  </div>
-
-  <div class="form-element" style="display:none" id="import_xml_path">
-    <label for="import_xml_path_to_record"><%=t 'importers.new.xml_path_to_records' %></label>
-    <%= form.text_field :xml_path_to_record %>
-    <div class="form_example"><%=t 'importers.new.xml_path_to_records_description' %></div>
-  </div>
-
-  <div class="form-element" id="zoom">
-    <label for="zoom_class"><%= t 'importers.new.applicable_zoom_class'  -%></label>
-    <%= select_tag 'zoom_class', item_classes_as_options, { :id => 'zoom_class', :tabindex => '1' } %>
-    <div class="form_example"><%=t 'importers.new.applicable_zoom_class_description' -%></div>
-  </div>
-
-  <div class="form-element" id="import_topic_type">
-    <label for="import_topic_type_id"><%=t 'importers.new.applicable_topic_type' %></label>
-    <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}) %>
-    <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
-  </div>
-
-  <div class="form-element" id="record_identifier_fields" style="display: none;">
-    <div id="import_record_identifier">
-      <label for="import_record_identifier_xml_field"><%=t 'importers.new.record_identifier_xml_field' %></label>
-      <%= form.text_field :record_identifier_xml_field, :size => 15 %>
-      <div class="form_example"><%=t 'importers.new.record_identifier_xml_field_description' %></div>
-    </div>
-
-    <div id="import_extended_field_that_contains_record_identifier">
-      <label for="import_extended_field_that_contains_record_identifier_id"><%=t 'importers.new.extended_field_that_contains_record_identifier' %></label>
-      <div id="import_extended_field_that_contains_record_identifier_select"><%= render 'extended_field_selection', :id => 'extended_field_that_contains_record_identifier_id' %></div>
-      <div class="form_example"><%=t 'importers.new.extended_field_that_contains_record_identifier_description' %></div>
-    </div>
-  </div>
-
-  <div class="form-element" id="import_related_items" style="display: none;">
-    <label for="import_has_related_items_in_data"><%=t 'importers.new.has_related_items_in_data' %></label>
-    <%= check_box_tag 'import_has_related_items_in_data', true %>
-
-    <div id="import_related_items_fields" style="display: none; margin: 10px 10px 10px 190px;">
-      <fieldset>
-        <div id="import_related_records">
-          <label for="import_related_topics_reference_in_record_xml_field"><%=t 'importers.new.related_topics_reference_in_record_xml_field' %></label>
-          <%= form.text_field :related_topics_reference_in_record_xml_field, :size => 15 %>
-          <div class="form_example"><%=t 'importers.new.related_topics_reference_in_record_xml_field_description' %></div>
-        </div>
-
-        <div id="import_related_topic_type">
-          <label for="import_related_topic_type_id"><%=t 'importers.new.applicable_related_topic_type' %></label>
-          <%= topic_type_select_with_indent('import', 'related_topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}, [[t('importers.new.related_topic_type_all'), ''], ['', '']]) %>
-          <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
-        </div>
-
-        <div id="import_extended_field_that_contains_related_topics_reference">
-          <label for="import_extended_field_that_contains_related_topics_reference_id"><%=t 'importers.new.extended_field_that_contains_related_topics_reference' %></label>
-          <div id="import_extended_field_that_contains_related_topics_reference_select"><%= render 'extended_field_selection', :id => 'extended_field_that_contains_related_topics_reference_id' %></div>
-          <div class="form_example"><%=t 'importers.new.extended_field_that_contains_related_topics_reference_description' %></div>
-        </div>
-      </fieldset>
-    </div>
-  </div>
-
-  <%= xml_type_js_observer -%>
-  <%= zoom_class_js_observer -%>
-  <%= record_identifier_js_observer -%>
-  <%= related_topics_js_observer -%>
-
-  <% if show_privacy_controls? %>
     <div class="form-element">
-      <label><%=t 'importers.new.default_privacy_setting' %></label>
-      <ul class="option-list">
-        <li><%= radio_button 'import', :private, false, { :id => "import_private_false" }.merge((@current_basket.private_default?) ? Hash.new : { "checked" => "checked" }) %><label for="import_private_false" class="privacy-label"><%=t 'importers.new.public' %></label> <%=t 'importers.new.public_description' %></li>
-        <li><%= radio_button 'import', :private, true, { :id => "import_private_true" }.merge((@current_basket.private_default?) ? { "checked" => "checked" } : Hash.new) %><label for="import_private_true"><%=t 'importers.new.private' %></label> <%=t 'importers.new.private_description' %></li>
-      </ul>
+      <label for="import_directory"><%=t 'importers.new.what_is_folder_name' %></label>
+      <%= form.text_field :directory %>
     </div>
+
     <div class="form-element">
-      <%= privacy_controls_description -%>
+      <label class="required" for="import_interval_between_records"><%=t 'importers.new.delay_between_records' %></label>
+      <%= form.text_field :interval_between_records, :size => 3 %>
+      <div class="form_example"><%=t 'importers.new.delay_between_records_explaination' %></div>
     </div>
-  <% else %>
-    <%# Use the default %>
-    <%= hidden_field 'import', :private, :value => false -%>
-  <% end %>
 
-  <div class="form-element">
-    <label for="import_base_tags"><%=t 'importers.new.tags' %></label>
-    <%= form.text_field :base_tags %>
-    <div class="form_example"><%=t 'importers.new.tags_description' %></div>
-  </div>
+    <% @type_options = [[t('importers.new.excel_based'), 'excel_based'],
+       [t('importers.new.dfc_xml'), 'dfc_xml'],
+       [t('importers.new.past_perfect'), 'past_perfect4'],
+       [t('importers.new.filemaker_pro'), 'fmpdsoresult_no_images'],
+       [t('importers.new.simple_xml'), 'simple_xml']
+       ] -%>
 
-  <div class="form-element">
-    <label for="import_description_beginning_template"><%=t 'importers.new.description_template_start' %></label>
-    <%= form.text_area :description_beginning_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
-    <div class="form_example"><%=t 'importers.new.description_template_start_description' %></div>
-  </div>
+    <div class="form-element">
+      <label class="required" for="import_xml_type"><%=t 'importers.new.import_type' %></label>
+      <%= form.select :xml_type, @type_options %>
+    </div>
 
-  <div class="form-element">
-    <label for="import_default_description_end_template"><%=t 'importers.new.description_template_end' %></label>
-    <%= form.text_area :default_description_end_template, :class => "mceEditor", :cols => 120, :rows => 10 %>
-    <div class="form_example"><%=t 'importers.new.description_template_end_description' %></div>
-  </div>
+    <div class="form-element" style="display:none" id="import_xml_path">
+      <label for="import_xml_path_to_record"><%=t 'importers.new.xml_path_to_records' %></label>
+      <%= form.text_field :xml_path_to_record %>
+      <div class="form_example"><%=t 'importers.new.xml_path_to_records_description' %></div>
+    </div>
 
-  <% if licenses_are_available? -%>
-    <h3><%=t 'importers.new.license' %></h3>
-    <%= render :partial => 'topics/license_chooser_or_agreement',:locals => {:item => Import.new} %>
-  <% end -%>
+    <div class="form-element" id="zoom">
+      <label for="zoom_class"><%= t 'importers.new.applicable_zoom_class'  -%></label>
+      <%= select_tag 'zoom_class', item_classes_as_options, { :id => 'zoom_class', :tabindex => '1' } %>
+      <div class="form_example"><%=t 'importers.new.applicable_zoom_class_description' -%></div>
+    </div>
 
-  <div class="form-element">
-    <%= submit_tag t('importers.new.import_button') %>
-  </div>
+    <div class="form-element" id="import_topic_type">
+      <label for="import_topic_type_id"><%=t 'importers.new.applicable_topic_type' %></label>
+      <%= topic_type_select_with_indent('import', 'topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}) %>
+      <div class="form_example"><%=t 'importers.new.applicable_topic_type_description' %></div>
+    </div>
 
-</fieldset>
+    <div class="form-element" id="record_identifier_fields" style="display: none;">
+      <div id="import_record_identifier">
+        <label for="import_record_identifier_xml_field"><%=t 'importers.new.record_identifier_xml_field' %></label>
+        <%= form.text_field :record_identifier_xml_field, :size => 15 %>
+        <div class="form_example"><%=t 'importers.new.record_identifier_xml_field_description' %></div>
+      </div>
+
+      <div id="import_extended_field_that_contains_record_identifier">
+        <label for="import_extended_field_that_contains_record_identifier_id"><%=t 'importers.new.extended_field_that_contains_record_identifier' %></label>
+        <div id="import_extended_field_that_contains_record_identifier_select"><%= render 'extended_field_selection', :id => 'extended_field_that_contains_record_identifier_id' %></div>
+        <div class="form_example"><%=t 'importers.new.extended_field_that_contains_record_identifier_description' %></div>
+      </div>
+    </div>
+
+    <div class="form-element" id="import_related_items" style="display: none;">
+      <label for="import_has_related_items_in_data"><%=t 'importers.new.has_related_items_in_data' %></label>
+      <%= check_box_tag 'import_has_related_items_in_data', true %>
+
+      <div id="import_related_items_fields" style="display: none; margin: 10px 10px 10px 190px;">
+        <fieldset>
+          <div id="import_related_records">
+            <label for="import_related_topics_reference_in_record_xml_field"><%=t 'importers.new.related_topics_reference_in_record_xml_field' %></label>
+            <%= form.text_field :related_topics_reference_in_record_xml_field, :size => 15 %>
+            <div class="form_example"><%=t 'importers.new.related_topics_reference_in_record_xml_field_description' %></div>
+          </div>
+
+          <div id="import_related_topic_type">
+            <label for="import_related_topic_type_id"><%=t 'importers.new.applicable_related_topic_type' %></label>
+            <%= topic_type_select_with_indent('import', 'related_topic_type_id', TopicType.find(1).full_set, :id, :name, nil, {:class=>"select"}, [[t('importers.new.related_topic_type_all'), ''], ['', '']]) %>
+            <div class="form_example"><%=t 'importers.new.applicable_related_topic_type_description' %></div>
+          </div>
+
+          <div id="import_extended_field_that_contains_related_topics_reference">
+            <label for="import_extended_field_that_contains_related_topics_reference_id"><%=t 'importers.new.extended_field_that_contains_related_topics_reference' %></label>
+            <div id="import_extended_field_that_contains_related_topics_reference_select"><%= render 'extended_field_selection', :id => 'extended_field_that_contains_related_topics_reference_id' %></div>
+            <div class="form_example"><%=t 'importers.new.extended_field_that_contains_related_topics_reference_description' %></div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <%= xml_type_js_observer -%>
+    <%= zoom_class_js_observer -%>
+    <%= record_identifier_js_observer -%>
+    <%= related_topics_js_observer -%>
+
+    <%= render 'common_import_fields', :form => form %>
+
+    <div class="form-element">
+      <%= submit_tag t('importers.new.import_button') %>
+    </div>
+
+  </fieldset>
 <% end %>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

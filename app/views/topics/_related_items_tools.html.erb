@@ -26,7 +26,7 @@
                                               :relate_to_item => item, :relate_to_type => zoom_class) -%>
           <% end -%>
         <% end -%>
-        <% if @site_admin %>
+        <% if current_user_can_import_archive_sets? %>
           <% cache({ :related => 'related-tools-import', :id => @cache_id }) do -%>
             <%= link_to_add_set_of_related_items(:link_text => t('topics.related_items.import_set'),
                                                  :relate_to_item => item, :relate_to_type => zoom_class) -%>

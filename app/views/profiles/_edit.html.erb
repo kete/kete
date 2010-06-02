@@ -115,6 +115,15 @@
   </div>
 
   <div class="form-element">
+    <%= rules_allowed_check_box('import_archive_set_policy') %>
+    <label><%=t 'profiles.edit.import_archive_set_policy' %></label>
+    <%= rules_fieldset_tag('import_archive_set_policy') %>
+      <%= rules_select_tag('import_archive_set_policy', @basket.import_archive_set_policy_or_default(current_value_for('import_archive_set_policy')),
+                           t('profiles.edit.import_archive_set_policy_description')) %>
+    </fieldset>
+  </div>
+
+  <div class="form-element">
     <%= rules_allowed_check_box('allow_basket_admin_contact') %>
     <label><%=t 'profiles.edit.administrator_contact' %></label>
     <%= rules_fieldset_tag('allow_basket_admin_contact') %>

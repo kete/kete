@@ -45,7 +45,7 @@ class Basket < ActiveRecord::Base
   # Editable Basket Settings
   EDITABLE_SETTINGS = %w{ fully_moderated moderated_except private_file_visibility browse_view_as
     sort_order_default sort_direction_reversed_default disable_site_recent_topics_display
-    basket_join_policy memberlist_policy allow_basket_admin_contact private_item_notification
+    basket_join_policy memberlist_policy import_archive_set_policy allow_basket_admin_contact private_item_notification
     private_item_notification_show_title private_item_notification_show_short_summary
     theme_font_family header_image theme show_action_menu show_discussion show_flagging
     show_add_links side_menu_number_of_topics side_menu_ordering_of_topics side_menu_direction_of_topics
@@ -307,8 +307,8 @@ class Basket < ActiveRecord::Base
   end
 
   def memberlist_policy_or_default(default=nil)
-    current_value = default || self.settings[:memberlist_policy] || self.site_basket.settings[:memberlist_policy] || 'at least admin'
-    select_options = self.array_to_options_list_with_defaults(Basket.all_level_options, current_value, false)
+    current_value = default || memberlist_policy_with_inheritance
+    self.array_to_options_list_with_defaults(Basket.all_level_options, current_value, false)
   end
 
   def memberlist_policy_with_inheritance
@@ -316,6 +316,21 @@ class Basket < ActiveRecord::Base
       self.settings[:memberlist_policy]
     elsif !self.site_basket.settings[:memberlist_policy].blank?
       self.site_basket.settings[:memberlist_policy]
+    else
+      'at least admin'
+    end
+  end
+
+  def import_archive_set_policy_or_default(default=nil)
+    current_value = default || import_archive_set_policy_with_inheritance
+    self.array_to_options_list_with_defaults(Basket.member_level_options, current_value, false)
+  end
+
+  def import_archive_set_policy_with_inheritance
+    if !self.settings[:import_archive_set_policy].blank?
+      self.settings[:import_archive_set_policy]
+    elsif !self.site_basket.settings[:import_archive_set_policy].blank?
+      self.site_basket.settings[:import_archive_set_policy]
     else
       'at least admin'
     end
