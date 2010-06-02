@@ -165,6 +165,30 @@ class BasketTest < ActiveSupport::TestCase
     assert_equal expected, result
   end
 
+  def test_import_archive_set_policy_or_default
+    about_basket = Basket.find_by_id(3) # about
+    expected = "<option value=\"at least member\">Basket member</option><option value=\"at least moderator\">Basket moderator</option><option value=\"at least admin\" selected=\"selected\">Basket admin</option>"
+    assert_equal expected, about_basket.import_archive_set_policy_or_default
+  end
+
+  def test_import_archive_set_policy_with_inheritance
+    site_basket = Basket.find(1) # site
+    about_basket = Basket.find(3) # about
+
+    # it should have a default
+    site_basket.settings[:import_archive_set_policy] = nil
+    about_basket.settings[:import_archive_set_policy] = nil
+    assert_equal 'at least admin', about_basket.import_archive_set_policy_with_inheritance
+
+    # it should inherit from site basket
+    site_basket.settings[:import_archive_set_policy] = 'at least moderator'
+    assert_equal 'at least moderator', about_basket.import_archive_set_policy_with_inheritance
+
+    # finally, it should use its own value
+    about_basket.settings[:import_archive_set_policy] = 'at least member'
+    assert_equal 'at least member', about_basket.import_archive_set_policy_with_inheritance
+  end
+
   def test_allows_join_requests_with_inheritance
     site_basket = Basket.site_basket # site
     about_basket = Basket.about_basket # about

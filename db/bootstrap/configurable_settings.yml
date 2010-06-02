@@ -108,3 +108,32 @@ configurable_settings_011:
   name: browse_view_as
   value_type: String
   value: "--- inherit\n"
+# Make basket import archive set policy at least member for new Kete installations
+configurable_settings_016:
+  id: "16"
+  configurable_id: 1
+  configurable_type: Basket
+  name: import_archive_set_policy
+  value_type: String
+  value: "--- at least admin\n"
+configurable_settings_017:
+  id: "17"
+  configurable_id: 2
+  configurable_type: Basket
+  name: import_archive_set_policy
+  value_type: String
+  value: "--- at least admin\n"
+configurable_settings_018:
+  id: "18"
+  configurable_id: 3
+  configurable_type: Basket
+  name: import_archive_set_policy
+  value_type: String
+  value: "--- at least admin\n"
+configurable_settings_019:
+  id: "19"
+  configurable_id: 4
+  configurable_type: Basket
+  name: import_archive_set_policy
+  value_type: String
+  value: "--- at least admin\n"

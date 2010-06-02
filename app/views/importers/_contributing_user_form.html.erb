@@ -1,26 +1,28 @@
-<h4><%=t 'importers.contributing_user_form.title' %></h4>
-<fieldset>
-<div class="form-element" style="display:inline">
-  <% # placing this in here for form reloading if validation fails
-     @contributing_user = !params[:contributing_user].blank? ? User.find(params[:contributing_user]) : current_user -%>
+<%
+# placing this in here for form reloading if validation fails
+contributing_user = params[:contributing_user].present? ? User.find(params[:contributing_user]) : current_user
+%>
 
-  <p>
-  <%=t 'importers.contributing_user_form.current_choice' %>
-    <% if @current_user == @contributing_user -%>
-    <%=t 'importers.contributing_user_form.self' %>
-    <% else -%>
-    <%= h(@contributing_user.user_name) -%>
-    <% end -%>
-  </p>
-    <% form_tag({ :action => 'choose_contributing_user', :target => params[:action]}, {:style => "display:inline"}) do %>
-    <label for="contributing_user"><%=t 'importers.contributing_user_form.new_user' %></label>
-    <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' %>
+<% form_tag(:action => 'choose_contributing_user', :target => params[:action]) do %>
+  <fieldset style="margin-bottom: 10px;">
 
-    <%= hidden_field_tag('relate_to_topic', params[:relate_to_topic]) unless params[:relate_to_topic].blank?%>
-    <%= hidden_field_tag('zoom_class', params[:zoom_class]) unless params[:zoom_class].blank?%>
+    <h4><%=t 'importers.contributing_user_form.title' %></h4>
 
-    <%= submit_tag t('importers.contributing_user_form.search'), :class => 'searchbutton' %>
-    <% end %>
-</div>
-</fieldset>
+    <p style="margin:5px 0 0 0;">
+      <%=t 'importers.contributing_user_form.current_choice' %>
+      <% if current_user == contributing_user -%>
+        <%=t 'importers.contributing_user_form.self' %>
+      <% else -%>
+        <%= h(contributing_user.user_name) -%>
+      <% end -%>
+    </p>
 
+    <div class="form-element">
+      <label for="contributing_user"><%=t 'importers.contributing_user_form.new_user' %></label>
+      <%= text_field_tag 'search_name', '', :class => 'searchheader-search', :size => '30' %>
+      <%= hidden_field_tag('relate_to_topic', params[:relate_to_topic]) if params[:relate_to_topic].present? %>
+      <%= submit_tag t('importers.contributing_user_form.search'), :class => 'searchbutton' %>
+    </div>
+
+  </fieldset>
+<% end %>

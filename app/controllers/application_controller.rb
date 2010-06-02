@@ -296,6 +296,12 @@ class ApplicationController < ActionController::Base
     current_user_is?(basket.memberlist_policy_with_inheritance, basket)
   end
 
+  # Test for import archive set visibility for the given user in the current basket
+  def current_user_can_import_archive_sets_for?(basket = @current_basket)
+    current_user_is?(basket.import_archive_set_policy_with_inheritance, basket)
+  end
+  alias :current_user_can_import_archive_sets? :current_user_can_import_archive_sets_for?
+
   # Walter McGinnis, 2006-04-03
   # bug fix for when site admin moves an item from one basket to another
   # if params[:topic][basket_id] exists and site admin
@@ -1374,7 +1380,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
                 :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :show_notification_controls?, :path_to_show_for,
-                :permitted_to_edit_basket_homepage_topic?
+                :permitted_to_edit_basket_homepage_topic?, :current_user_can_import_archive_sets?, :current_user_can_import_archive_sets_for?
 
   protected
 

@@ -29,7 +29,8 @@ namespace :kete do
                     'kete:upgrade:make_baskets_private_notification_do_not_email',
                     'kete:upgrade:add_nested_values_to_comments',
                     'kete:upgrade:change_inset_to_position',
-                    'kete:upgrade:set_null_private_only_mappings_to_false']
+                    'kete:upgrade:set_null_private_only_mappings_to_false',
+                    'kete:upgrade:set_default_import_archive_set_policy']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -409,6 +410,13 @@ namespace :kete do
     task :set_null_private_only_mappings_to_false => :environment do
       ContentTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
       TopicTypeToFieldMapping.update_all({ :private_only => false }, "private_only IS NULL")
+    end
+
+    desc 'Make all baskets import archive set functionality at least member.'
+    task :set_default_import_archive_set_policy => :environment do
+      Basket.all.each do |basket|
+        basket.settings[:import_archive_set_policy] = 'at least admin' if basket.settings[:import_archive_set_policy].class == NilClass
+      end
     end
 
     desc 'Checks for mimetypes an adds them if needed.'

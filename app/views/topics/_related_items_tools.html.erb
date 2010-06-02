@@ -11,7 +11,7 @@
           <%= link_to_related_item_function(:link_text => t('topics.related_items.restore'), :function => 'restore', :relate_to_topic => item) -%>
         <% end -%>
       <% end -%>
-      <% if @site_admin -%>
+      <% if current_user_can_import_archive_sets? -%>
         <% cache({ :related => 'related-tools-import', :id => @cache_id }) do -%>
           <%= link_to_add_set_of_related_items(:link_text => t('topics.related_items.import_set'), :relate_to_topic => item) -%>
         <% end -%>
