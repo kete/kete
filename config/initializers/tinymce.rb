@@ -13,28 +13,3 @@ EXTENDED_VALID_ELEMENTS = fields.collect { |k,v| "#{k}#{v}" }.join(',')
 INSECURE_EXTENDED_VALID_ELEMENTS = [:form, :input, :select, :option, :script]
 
 VALID_TINYMCE_ACTIONS = ['new', 'create', 'edit', 'update', 'homepage_options', 'appearance', 'choose_type', 'render_item_form', 'new_related_set_from_archive_file', 'restore']
-
-DEFAULT_TINYMCE_SETTINGS = {
-  # advanced theme settings
-  :theme => 'advanced',
-  :theme_advanced_toolbar_location => "top",
-  :theme_advanced_toolbar_align => "left",
-  :theme_advanced_statusbar_location => "bottom",
-  :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright justifyfull separator indent outdent separator bullist numlist forecolor backcolor separator link unlink image separator undo redo separator code},
-  :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect separator pastetext pasteword selectall },
-  :theme_advanced_buttons3_add => %w{ tablecontrols fullscreen },
-  :theme_advanced_resizing => true,
-  :theme_advanced_resize_horizontal => false,
-
-  # link / image path conversions
-  :convert_urls => false,
-  :content_css => "/stylesheets/base.css",
-
-  # paste plugin specific settings
-  :paste_auto_cleanup_on_paste => true,
-  :paste_convert_middot_lists => false,
-  :paste_convert_headers_to_strong => true,
-
-  # which plugins we are enabling
-  :plugins => %w{ contextmenu paste table fullscreen }
-}

@@ -13,8 +13,7 @@ class ImportersController < ApplicationController
   before_filter :permitted_to_create_imports, :only => [:new_related_set_from_archive_file, :create]
 
   ### TinyMCE WYSIWYG editor stuff
-  uses_tiny_mce :options => DEFAULT_TINYMCE_SETTINGS,
-                :only => VALID_TINYMCE_ACTIONS
+  uses_tiny_mce :only => VALID_TINYMCE_ACTIONS
   ### end TinyMCE WYSIWYG editor stuff
 
   # Get the Privacy Controls helper
