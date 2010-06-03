@@ -49,7 +49,7 @@
     # TinyMCE is not compatible with bundle_fu %>
   <%= include_tiny_mce_if_needed({
     :content_css => "/stylesheets/cache/#{@theme}_theme.css",
-    :extended_valid_elements => (EXTENDED_VALID_ELEMENTS if @site_admin)
+    :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '')
   }) %>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
