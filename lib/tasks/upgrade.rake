@@ -535,7 +535,7 @@ namespace :kete do
     task :add_file_mime_type_variants => :environment do
       new_mime_types =  [
                           [ 'Image Content Types',    [ 'image/quicktime', 'image/x-quicktime', 'image/x-ms-bmp' ] ],
-                          [ 'Document Content Types', [ 'application/x-zip', 'application/x-zip-compressed', 'application/x-compressed-tar' ] ],
+                          [ 'Document Content Types', [ 'application/x-zip', 'application/x-zip-compressed', 'application/x-compressed-tar', 'application/xml' ] ],
                           [ 'Video Content Types',    [ 'application/flash-video', 'application/x-flash-video', 'video/x-flv', 'video/mp4', 'video/x-m4v', 'video/ogg', 'application/ogg', 'video/theora'] ],
                           [ 'Audio Content Types',    [ 'audio/mpg', 'audio/x-mpeg', 'audio/wav', 'audio/x-vorbis+ogg', 'audio/ogg', 'application/ogg', 'audio/vorbis', 'audio/speex', 'audio/flac'] ]
                         ]

@@ -50,6 +50,7 @@ gems:
     gem_name: kete-feedzirra
     lib_name: feedzirra
   tiny_mce:
+  http_url_validation_improved:
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems

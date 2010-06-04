@@ -423,8 +423,8 @@ class BasketsController < ApplicationController
     # this var is used in form helpers
     @form_type = form_type
 
-    # we don't run this method is we don't have profile rules, or nothing is submitted
-    return if profile_rules.blank? || (params[:basket].blank? && params[:settings].blank?)
+    # we don't run this method is we don't have profile rules
+    return if profile_rules.blank?
 
     # we need to check all form types for the values
     form_types = [:edit, :appearance, :homepage_options]
@@ -446,6 +446,7 @@ class BasketsController < ApplicationController
         # if we run this, it means that the current user is not allowed
         # to set this field, or they are but the field has no value
         value = current_value_of(setting, true, form_types)
+        next if setting.to_sym == :feeds_attributes && value.nil?
         params[:basket][setting.to_sym] = value
         @basket.send("#{setting}=", value)
       end
