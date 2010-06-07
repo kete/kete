@@ -1,60 +1,59 @@
 module ImportersHelper
   def xml_type_js_observer
     javascript_tag("
-        $('import_xml_type').observe('change', function() {
-          value = $('import_xml_type').value;
-          // hide the xml_path_to_record text field if this type doesn't need it
-          if ( value == 'simple_xml' ) {
-            $('import_xml_path').show();
-            $('import_xml_path_to_record').disabled = false;
-          } else {
-            $('import_xml_path_to_record').value = '';
-            $('import_xml_path_to_record').disabled = true;
-            $('import_xml_path').hide();
-          }
-          // hide the zoom_class choice if this type doesn't need it
-          if ( value == 'excel_based' || value == 'dfc_xml' || value == 'simple_xml' ) {
-            $('zoom_class').disabled = false;
-            $('zoom_class').value = 'Topic';
-            $('zoom').show();
-          } else {
-            $('zoom_class').value = '';
-            $('zoom_class').disabled = true;
-            $('zoom').hide();
-          }
-          // hide the related_topic_type and extended_field_that_contains_record_identifier choices if this type doesn't need it
-          if ( value == 'dfc_xml' || value == 'simple_xml' ) {
-            $('import_related_items').show();
-          } else {
-            $('import_related_items').hide();
-          }
-          // hide the related_records_field and record_identifier_field values for all but simple xml
-          if ( value == 'simple_xml' ) {
-            $('import_related_records').show();
-            $('record_identifier_fields').show();
-          } else {
-            $('import_related_records').hide();
-            $('record_identifier_fields').hide();
-          }
-        });
-      ")
+      function display_applicable_import_fields() {
+        var value = $('import_xml_type').value;
+
+        // hide the xml_path_to_record text field if this type doesn't need it
+        if ( value == 'simple_xml' ) {
+          $('import_xml_path').show();
+          $('import_xml_path_to_record').disabled = false;
+        } else {
+          $('import_xml_path_to_record').value = '';
+          $('import_xml_path_to_record').disabled = true;
+          $('import_xml_path').hide();
+        }
+
+        // hide the zoom_class choice if this type doesn't need it
+        // hide the related_topic_type and extended_field_that_contains_record_identifier choices if this type doesn't need it
+        // hide the related_records_field and record_identifier_field values if this type doesn't need it
+        if ( value == 'excel_based' || value == 'dfc_xml' || value == 'simple_xml' ) {
+          $('zoom_class').disabled = false;
+          $('zoom_class').value = 'Topic';
+          $('zoom').show();
+          $('import_related_items').show();
+          $('import_related_records').show();
+          $('record_identifier_fields').show();
+        } else {
+          $('zoom_class').value = '';
+          $('zoom_class').disabled = true;
+          $('zoom').hide();
+          $('import_related_items').hide();
+          $('import_related_records').hide();
+          $('record_identifier_fields').hide();
+        }
+      }
+
+      $('import_xml_type').observe('change', function() { display_applicable_import_fields(); });
+      display_applicable_import_fields();
+    ")
   end
 
   def zoom_class_js_observer
     javascript_tag("
-        $('zoom_class').observe('change', function() {
-          value = $('zoom_class').value;
-          // hide the topic_type field if this class doesn't need it
-          if ( value == 'Topic' ) {
-            $('import_topic_type').show();
-            $('import_topic_type_id').disabled = false;
-          } else {
-            $('import_topic_type_id').value = '';
-            $('import_topic_type_id').disabled = true;
-            $('import_topic_type').hide();
-          }
-        });
-      ")
+      $('zoom_class').observe('change', function() {
+        value = $('zoom_class').value;
+        // hide the topic_type field if this class doesn't need it
+        if ( value == 'Topic' ) {
+          $('import_topic_type').show();
+          $('import_topic_type_id').disabled = false;
+        } else {
+          $('import_topic_type_id').value = '';
+          $('import_topic_type_id').disabled = true;
+          $('import_topic_type').hide();
+        }
+      });
+    ")
   end
 
   def record_identifier_js_observer
