@@ -65,7 +65,12 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
                 value << data.inner_text
               end
 
-              element_name = names_array[cell_index].gsub(' ', '_')
+              element_name = names_array[cell_index]
+
+              # If the data has extra fields without column headers, ignore them (most likely notes)
+              next unless element_name.present?
+
+              element_name = element_name.gsub(' ', '_').strip
 
               unless value[0].blank? || has_path_to_file
                 case element_name.downcase
@@ -115,7 +120,7 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
               end
 
               # add an element to our output XML for the value
-              xml.safe_send(element_name, value) unless value.empty?
+              xml.safe_send(element_name, value[0].strip) unless value[0].blank?
 
               cell_index += 1
             end
