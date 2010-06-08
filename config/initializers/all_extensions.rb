@@ -247,7 +247,7 @@ module Nokogiri
       # XML name and escape common patterns (spaces to
       # underscores) to prevent import errors
       def safe_send(*args, &block)
-        args[0] = args[0].to_s.gsub(/\s/, '_') + "_"
+        args[0] = args[0].to_s.gsub(/\W/, '_').gsub(/(^_*|_*$)/, '') + "_"
         send(*args, &block)
       end
 
