@@ -129,7 +129,10 @@ module ExtendedContentHelpers
         if value.is_a?(Hash)
           xml.safe_send(field, options) do |tag|
             value.each_pair do |k, v|
-              next if v.to_s.blank?
+              # convert to string so we don't get errors when running match later
+              v = v.to_s
+
+              next if v.blank?
 
               # splits a value into label and value
               # if it has a pattern of "label (value)"
