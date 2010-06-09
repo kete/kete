@@ -3,8 +3,17 @@ require "importer"
 require "nokogiri"
 class ExcelPreProcessor < Nokogiri::XML::SAX::Document
   def initialize(path_to_xl_xml_file)
+    excel_xml = File.read(path_to_xl_xml_file)
+
+    # Wrap all data in CData tags to prevent parsing issues unless they already have one
+    excel_xml.gsub!(/<(?:ss\:)?Data[^>]*>(.*)<\/(?:ss\:)?Data>/i) do |match|
+      value = $1
+      value = "<![CDATA[#{value.gsub('&amp;', '&')}]]>" unless value =~ /^<\!\[CDATA\[/i
+      "<Data>#{value}</Data>"
+    end
+
     parser = Nokogiri::XML::SAX::Parser.new(self)
-    parser.parse(File.read(path_to_xl_xml_file))
+    parser.parse(excel_xml)
     self
   end
 
@@ -35,8 +44,14 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
       self.current_row += 1
       self.records << Hash.new
     when :Cell
-      self.current_cell += 1
-    when :Data
+      # ss:Index helps compact filesize but causes issues with our column header
+      # allocation so make use of it to prevent any issues from popping up
+      if attributes.include?("ss:Index")
+        self.current_cell = attributes[attributes.index("ss:Index") + 1].to_i
+      else
+        self.current_cell += 1
+      end
+    when :Data, :"ss:Data"
       self.within_data = true
     end
   end
@@ -58,7 +73,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
       self.within_row = false
       self.current_cell = 0
       self.records.pop if self.records.last.empty?
-    when :Data
+    when :Data, :"ss:Data"
       self.within_data = false
     end
   end
