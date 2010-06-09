@@ -301,11 +301,15 @@ module Importer
               m_field_count = 1
               params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = Hash.new
               multiple_values.each do |m_field_value|
-                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = { :value => m_field_value.to_s.strip, :circa => '0' }
+                circa = m_field_value =~ /(circa|c.?\d+)/ # circa 2010, c 2010, c.2010
+                m_field_value = (m_field_value =~ /(\d+)/ && $1) if circa
+                params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params][m_field_count] = { :value => m_field_value.to_s.strip, :circa => (circa ? '1' : '0') }
                 m_field_count += 1
               end
             else
-              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = { :value => value.to_s.strip, :circa => '0' }
+              circa = value =~ /(circa|c.?\d+)/ # circa 2010, c 2010, c.2010
+              value = (value =~ /(\d+)/ && $1) if circa
+              params[zoom_class_for_params]['extended_content_values'][extended_field.label_for_params] = { :value => value.to_s.strip, :circa => (circa ? '1' : '0') }
             end
 
           else
