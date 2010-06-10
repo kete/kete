@@ -162,12 +162,9 @@ module ExtendedContent
     # Example output:
     # => { "1" => { "first_names" => "Joe" }, "2" => { "last_name" => "Bloggs" }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }
     def xml_attributes
-      # TODO: replace rexml with nokogiri
-      # we use rexml for better handling of the order of the hash
-      extended_content = REXML::Document.new("<dummy_root>#{self.extended_content}</dummy_root>")
+      extended_content_hash = XmlSimple.xml_in("<dummy>#{extended_content}</dummy>", "contentkey" => "value", "forcearray" => false)
 
-      temp_hash = Hash.new
-      root = extended_content.root
+      ordered_hash = Hash.new
       position = 1
 
       form_fields = all_field_mappings
@@ -176,20 +173,26 @@ module ExtendedContent
         form_fields.each do |extended_field_mapping|
           f_id = extended_field_mapping.extended_field_label.downcase.gsub(/\s/, '_')
           f_multiple = "#{f_id}_multiple"
-          field_xml = root.elements[f_multiple]
+          f_key = f_multiple
+
+          # because of the structure extended content xml
+          # we try multiple field name first
+          field_value = extended_content_hash[f_multiple]
           # if we didn't match a multiple
           # then we are all clear to use the plain f_id
-          if field_xml.blank?
-            field_xml = root.elements[f_id]
+          if field_value.blank?
+            field_value = extended_content_hash[f_id]
+            f_key = f_id
           end
-          if !field_xml.blank?
-            temp_hash[position.to_s] = Hash.from_xml(field_xml.to_s)
+
+          if field_value.present?
+            ordered_hash[position.to_s] = { f_key => field_value }
             position += 1
           end
         end
       end
 
-      return temp_hash
+      ordered_hash
     end
 
     # Refer to #xml_attributes.

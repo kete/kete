@@ -9,19 +9,22 @@ module ExtendedContentHelpers
 
       @anonymous_fields = []
 
-      item.xml_attributes_without_position.each_pair do |field_key, field_data|
-        # If this is google map contents, and no_map is '1', then do not use this data
-        next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+      fields_with_position = item.xml_attributes
 
-        if field_key =~ /_multiple$/
-
-          # We are dealing with multiple instances of an attribute
-          field_data.each_pair do |index, data|
-            oai_dc_xml_for_field_dataset(field_key, data.values.first)
+      fields_in_sorted_array = fields_with_position.keys.sort_by { |s| s.to_s }.map { |key| fields_with_position[key] }
+      fields_in_sorted_array.each do |field_hash|
+          field_hash.each_pair do |field_key, field_data|
+          # If this is google map contents, and no_map is '1', then do not use this data
+          next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+          
+          if field_key =~ /_multiple$/
+            # We are dealing with multiple instances of an attribute
+            field_data.each_pair do |index, data|
+              oai_dc_xml_for_field_dataset(field_key, data.values.first)
+            end
+          else
+            oai_dc_xml_for_field_dataset(field_key, field_data)
           end
-
-        else
-          oai_dc_xml_for_field_dataset(field_key, field_data)
         end
       end
 
@@ -31,7 +34,6 @@ module ExtendedContentHelpers
           nested.safe_send(k, v)
         end
       end
-
     end
 
     def oai_dc_xml_for_field_dataset(field_key, data)
