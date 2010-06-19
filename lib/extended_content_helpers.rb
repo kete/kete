@@ -49,11 +49,11 @@ module ExtendedContentHelpers
         # We also convert the single YYYY value to a format Zebra can search against
         # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
         if data.has_key?("circa")
-          data['value'] = DateTime.parse("#{data['value']}-01-01").xmlschema
+          data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
           if data['circa'] == '1'
             five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
-            @builder_instance.safe_send("dc:date", DateTime.parse("#{five_years_before}-01-01").xmlschema)
-            @builder_instance.safe_send("dc:date", DateTime.parse("#{five_years_after}-12-31").xmlschema)
+            @builder_instance.send("dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema)
+            @builder_instance.send("dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema)
           end
         end
 
@@ -61,7 +61,13 @@ module ExtendedContentHelpers
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, data["value"]]
         else
-          @builder_instance.safe_send(data["xml_element_name"], data["value"])
+          # safe_send will drop the namespace from the element and therefore our dc elements
+          # will not be parsed by zebra, only use safe_send on non-dc elements
+          if data["xml_element_name"].include?("dc:")
+            @builder_instance.send(data["xml_element_name"], data["value"])
+          else
+            @builder_instance.safe_send(data["xml_element_name"], data["value"])
+          end
         end
       else
 

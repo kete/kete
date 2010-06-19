@@ -87,4 +87,16 @@ namespace :zebra do
       end
     end
   end
+
+  # Walter McGinnis, 2010-06-17
+  # use zebra index tool rather than ZOOM External services
+  # to add search records
+  desc "Zebra index records for this Kete"
+  task :index do
+    ['public', 'private'].each do |db|
+      # have to run the command from inside #{Rails.root}/zebradb/#{db}
+      `cd #{Rails.root}/zebradb/#{db}; zebraidx -c ../conf/zebra-#{db}.cfg -l #{Rails.root}/log/zebra.log update data; zebraidx -c ../conf/zebra-#{db}.cfg commit` unless ENV['SKIP_PRIVATE'] && db == 'private'
+    end
+    puts "Zebra index completed. See #{Rails.root}/log/zebra.log for details."
+  end
 end
