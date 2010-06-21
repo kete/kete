@@ -454,7 +454,7 @@ class BasketsController < ApplicationController
 
     # for each basket setting, reset to the default value if not an allowed field
     Basket::EDITABLE_SETTINGS.each do |setting|
-      unless (@site_admin || allowed_field?(setting)) && params[:basket].has_key?(setting.to_sym)
+      if !(@site_admin || allowed_field?(setting)) && !params[:basket].has_key?(setting.to_sym)
         # if we run this, it means that the current user is not allowed
         # to set this field, or they are but the field has no value
         params[:settings][setting.to_sym] = current_value_of(setting, true, form_types)
