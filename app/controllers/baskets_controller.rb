@@ -296,7 +296,7 @@ class BasketsController < ApplicationController
     do_not_sanitize = (params[:settings][:do_not_sanitize_footer_content] == 'true')
     original_html = params[:settings][:additional_footer_content]
     sanitized_html = original_html
-    unless do_not_sanitize && @site_admin
+    unless do_not_sanitize && @site_admin || original_html.blank?
       sanitized_html = original_html.sanitize
       params[:settings][:additional_footer_content] = sanitized_html
     end
