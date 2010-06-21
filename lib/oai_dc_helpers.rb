@@ -38,7 +38,17 @@ module OaiDcHelpers
       if self.is_a?(Topic)
         # topics can be on either side of the content_item_relation join model
         # so to get all possible relations, you have to combine them
-        all_relations = content_item_relations + child_content_item_relations
+        all_relations = Array.new
+
+        # we only need the last from normal content relations and child content relations
+        # to compare, not all of each
+        if content_item_relations.count > 0 
+          all_relations << content_item_relations.last
+        end
+
+        if child_content_item_relations.count > 0 
+          all_relations << child_content_item_relations.last
+        end
 
         if all_relations.size > 0
           all_relations.sort! { |a,b| a.updated_at <=> b.updated_at }
@@ -186,10 +196,18 @@ module OaiDcHelpers
         } unless [Kete.blank_title, Kete.no_public_version_title].include?(commented_on_item.title)
         xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }.merge(passed_request)))
       else
+        related_count = related_items.count
         related_items.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
           } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
+          # we skip subject if there are a large amount of related items
+          # as zebra has a maximum record size
+          if related_count < 500
+            xml.send("dc:subject") {
+              xml.cdata related.title
+            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+          end
           xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(passed_request)))
         end
       end
