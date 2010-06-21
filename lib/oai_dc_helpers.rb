@@ -198,15 +198,12 @@ module OaiDcHelpers
       else
         related_count = related_items.count
         related_items.each do |related|
-          xml.send("dc:subject") {
-            xml.cdata related.title
-          } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
           # we skip subject if there are a large amount of related items
           # as zebra has a maximum record size
           if related_count < 500
             xml.send("dc:subject") {
               xml.cdata related.title
-            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
           end
           xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(passed_request)))
         end
