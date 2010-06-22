@@ -16,6 +16,13 @@ body {
     padding: 1em 0 1em 1em;
 }
 
+/* Walter McGinnis, 2010-06-22
+provides a margin between main content and side bar content,
+otherwise text butts up against sidebar */
+#main-content-container {
+    margin-right: 1em;
+}
+
 #secondary-content-wrapper {
     width: 30%;
     float: right;
