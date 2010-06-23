@@ -989,7 +989,13 @@ module ApplicationHelper
       function hide_all_non_member_target_baskets() {
         $$('#target_basket option.not_member').each(function(element) { element.hide(); });
         var current_selection = $('target_basket').options[$('target_basket').selectedIndex];
-        if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
+        // TODO: take this IE specific code out when it is no longer needed
+        var agent = navigator.userAgent.toLowerCase ();
+        if (agent.search ('msie') > -1) {
+          if (!current_selection.style.visibility == 'hidden') { $('target_basket').options[0].selected = true; }
+        } else {
+          if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
+        }
       }
 
       $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
