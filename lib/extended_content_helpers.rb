@@ -183,11 +183,9 @@ module ExtendedContentHelpers
                   extended_field.choices << choice
                   extended_field.save!
 
-                  if choice.value != choice.label
-                    tag.safe_send(k, choice.value, :label => choice.label)
-                  else
-                    tag.safe_send(k, choice.value)
-                  end
+                  # for possible translation purposes, we always specify label now
+                  tag.safe_send(k, choice.value, :label => choice.label)
+
                 rescue
                   next
                 end
