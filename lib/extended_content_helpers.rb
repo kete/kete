@@ -192,14 +192,12 @@ module ExtendedContentHelpers
 
               # Handle the normal case
               else
-                if matching_choice && matching_choice.value != matching_choice.label
+                if matching_choice
                   tag.safe_send(k, matching_choice.value, :label => matching_choice.label)
                 else
-                  # if there is a matching choice, use its value
                   # otherwise leave value to handled by validation
                   # will likely fail, but they will get error feedback and can modify
-                  final_value = matching_choice ? matching_choice.value : v
-                  tag.safe_send(k, final_value)
+                  tag.safe_send(k, v)
                 end
               end
             end
