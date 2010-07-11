@@ -38,6 +38,14 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2010/07/12 - #284 - System Setting for basket list under site name.
+
+1.      Stop your Kete server (mongrels or mod_rails).
+2.      Upgrade your code base
+3.      run "rake kete:upgrade"
+4.      Start your Kete server again (mongrels or mod_rails)
+5.      Restart backgroundrb
+
 == 2010/07/12 - #283 - Adding ability to change Attached File Privacy for imports.
 
 1.      Stop your Kete server (mongrels or mod_rails).

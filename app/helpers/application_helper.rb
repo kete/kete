@@ -158,14 +158,15 @@ module ApplicationHelper
   end
 
   def header_links_to_baskets
+    baskets_limit = LIST_BASKETS_NUMBER
+    return unless baskets_limit > 0
+
     html = '<ul id="basket-list" class="nav-list">'
 
     except_certain_baskets = @standard_baskets
     except_certain_baskets += [@current_basket] if @current_basket != @site_basket
 
     except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", except_certain_baskets] }
-
-    baskets_limit = 2
 
     total_baskets_count = Basket.count(except_certain_baskets_args)
 
