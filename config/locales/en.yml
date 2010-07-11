@@ -1461,6 +1461,10 @@ en:
        private_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.only}} {{t.base.by}} {{t.base.basket}} {{t.base.member.pluralize}})"
        public: "{{t.base.public.capitalize}}"
        public_description: "({{t.base.can_be_viewed.capitalize}} {{t.base.by}} {{t.base.everyone}})"
+       downloaded_by_everyone: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
+       downloaded_by_role: "{{t.base.can.capitalize}} {{t.base.only}} be {{t.base.downloaded}} {{t.base.by}} people who have {{role_name}} access."
+       imported_items_file_privacy: "Imported Items Attached file privacy"
+       imported_items_file_privacy_example: "{{t.base.please.capitalize}} note that once {{t.base.public}}, an attached file {{t.base.cannot_be}} {{t.base.made}} {{t.base.private}}."
        tags: "What {{t.base.tag.pluralize}} should we {{t.base.add}} to each {{t.base.imported}} {{t.base.item}} (separated by commas)?"
        tags_description: "These {{t.base.tag.pluralize}} will be {{t.base.added}} to every {{t.base.item}} in the {{t.base.import}} in addition to whatever is specified as a {{t.base.tag}} per record."
     contributing_user_form:

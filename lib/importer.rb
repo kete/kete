@@ -924,6 +924,10 @@ module Importer
       logger.debug("private = " + private_setting.to_s)
       params[zoom_class_for_params][:private] = private_setting
 
+      # set the chosen file privacy
+      file_private_setting = @import.file_private
+      params[zoom_class_for_params][:file_private] = file_private_setting
+
       # add the uniform license chosen at import to this item
       params[zoom_class_for_params][:license_id] = @import.license.id if !@import.license.blank?
 

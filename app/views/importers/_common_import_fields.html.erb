@@ -15,6 +15,33 @@
     </ul>
     <div class="form_example"><%=t 'importers.common_import_fields.imported_items_privacy_example' %></div>
   </div>
+
+  <% file_private = @current_basket.file_private_default_with_inheritance? -%>
+  <% if params[:relate_to_topic] .present? -%>
+    <%# limited to import set related to a topic for now
+        # normal imports would need javascript logic to determine
+        # if file_private was needed for current zoom_class
+	# however, even if normal import, does honor basket's default  file_private value-%>
+      
+    <div class="form-element">
+      <label><%=t 'importers.common_import_fields.imported_items_file_privacy' %></label>
+      <ul class="option-list">
+	<li>
+          <%= radio_button 'import', :file_private, false, { :id => "import_file_private_false", :checked => !@current_basket.file_private_default_with_inheritance?, :tabindex => '1' } %>
+          <label for="import_file_private_false" class="privacy-label"><%=t 'importers.common_import_fields.downloaded_by_everyone' %></label>
+	</li>
+	<li>
+          <%= radio_button 'import', :file_private, true, { :id => "import_file_private_true", :checked => @current_basket.private_default_with_inheritance?, :tabindex => '1' } %>
+          <label for="import_file_private_true"><%=t('importers.common_import_fields.downloaded_by_role',
+						   :role_name => @current_basket.private_file_visibility_with_inheritance) %></label>
+	</li>
+      </ul>
+      <div class="form_example"><%=t 'importers.common_import_fields.imported_items_file_privacy_example' %></div>
+    </div>
+  <% else -%>
+    <%= form.hidden_field :file_private, :value => file_private -%>
+  <% end -%>
+  
 <% end %>
 
 <div class="form-element">
