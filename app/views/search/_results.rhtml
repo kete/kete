@@ -18,7 +18,7 @@
 
 <h3><%= @title %></h3>
 
-<div class="prev-next before-results"><%= will_paginate @results %></div>
+<div class="prev-next before-results"><%= will_paginate @results, :next_label => t('slideshows_helper.next'), :previous_label => t('slideshows_helper.previous') %></div>
 
 <% search_source_result = ''
    search_sources_amount = SearchSource.count(:conditions => ["source_target IN (?)", ['all', 'search']]) %>
@@ -107,7 +107,7 @@
 
 <div style="clear:both;"></div>
 
-<div class="prev-next after-results"><%= will_paginate @results  %></div>
+<div class="prev-next after-results"><%= will_paginate @results, :next_label => t('slideshows_helper.next'), :previous_label => t('slideshows_helper.previous') %></div>
 
 <div id="bottomlinks">
   <div id="addnew">
