@@ -9,17 +9,17 @@
 <p>
   <h2 style="display:inline;"><%= @title %></h2>
   [ <%= link_to_membership_request_of(@current_basket, :plus_divider => ' | ', :as_list_element => false) -%>
-  <%= link_to_unless_current pluralize(@members_count, t('members.list.member')), :type => 'member' %>
+  <%= link_to_unless_current pluralize(@members_count, t('members.list.member'), t('members.list.members')), :type => 'member' %>
   <% if @admins_count && @admins_count > 0 -%>
-    | <%= link_to_unless_current pluralize(@admins_count, t('members.list.admin')), :type => 'admin' %>
+    | <%= link_to_unless_current pluralize(@admins_count, t('members.list.admin'), t('members.list.admins')), :type => 'admin' %>
   <% end -%>
   <% if @moderators_count && @moderators_count > 0 -%>
-    | <%= link_to_unless_current pluralize(@moderators_count, t('members.list.moderator')), :type => 'moderator' %>
+    | <%= link_to_unless_current pluralize(@moderators_count, t('members.list.moderator'), t('members.list.moderators')), :type => 'moderator' %>
   <% end -%>
   <% if @site_admin && @current_basket == @site_basket -%>
     <%# there should always be at least one site admin and one tech admins -%>
-    | <%= link_to_unless_current pluralize(@site_admins_count, t('members.list.site_admin')), :type => 'site_admin' %>
-    | <%= link_to_unless_current pluralize(@tech_admins_count, t('members.list.tech_admin')), :type => 'tech_admin' %>
+    | <%= link_to_unless_current pluralize(@site_admins_count, t('members.list.site_admin'), t('members.list.site_admins')), :type => 'site_admin' %>
+    | <%= link_to_unless_current pluralize(@tech_admins_count, t('members.list.tech_admin'), t('members.list.tech_admins')), :type => 'tech_admin' %>
   <% end -%>
   <% if @basket_admin && @membership_requesteds_count && @membership_requesteds_count > 0 -%>
     | <%= link_to_unless_current pluralize(@membership_requesteds_count, t('members.list.request')), :type => 'membership_requested' %>
