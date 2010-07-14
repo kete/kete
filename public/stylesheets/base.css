@@ -15,14 +15,12 @@ body {
 #main-content-container, #search-content-container {
     padding: 1em 0 1em 1em;
 }
-
 /* Walter McGinnis, 2010-06-22
 provides a margin between main content and side bar content,
 otherwise text butts up against sidebar */
 #main-content-container {
     margin-right: 1em;
 }
-
 #secondary-content-wrapper {
     width: 30%;
     float: right;
@@ -83,7 +81,7 @@ ul.nav-list a{
     text-decoration: none;
 }
 ul.nav-list a:hover{
-    text-decoration: underline;;
+    text-decoration: underline;
     color: #333;
 }
 ul.nav-list a img {
@@ -91,17 +89,17 @@ ul.nav-list a img {
 }
 
 #top-menu {
-                clear: both;
-                float: left;
-                width: 100%;
-                margin-bottom: 2em;
-                padding: 0;
+    clear: both;
+    float: left;
+    width: 100%;
+    margin-bottom: 2em;
+    padding: 0;
     background-color: #838383;
 }
 
 #top-menu ul {
-                margin: 0;
-                padding: 7px;
+    margin: 0;
+    padding: 7px;
 }
 #top-menu ul.user-nav {
     background-image: none;
@@ -109,8 +107,8 @@ ul.nav-list a img {
     margin-right: 15px;
 }
 ul#main-nav {
-                float: left;
-                padding-left: 15px;
+    float: left;
+    padding-left: 15px;
 }
 #basket-list{
     margin: 0;
@@ -144,10 +142,10 @@ ul#main-nav {
   padding: 2px 4px;
   font-size: .6em;
   /* quick way to get rounded corners, doesn't work in IE */
-  -moz-border-radius-topleft:2px;
-  -moz-border-radius-topright:2px;
-  -moz-border-radius-bottomright:2px;
-  -moz-border-radius-bottomleft:2px;
+  -moz-border-radius-topleft: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -moz-border-radius-bottomleft: 2px;
 }
 #top-menu #user_baskets_list ul {
   position: absolute;
@@ -427,7 +425,7 @@ label{
 }
 .form-element label.inline{
     display: inline;
-    float:none;
+    float: none;
 }
 .form-element{
     padding: .5em;
@@ -588,12 +586,9 @@ a:hover {
 .search_dropdown.horizontal .close {
   margin-top: -25px;
 }
-
 #recent_searches_list li:hover {
   background-color: #F7F7F7;
 }
-
-
 #search-results{
     margin-left: 2em;
     padding: 0;
@@ -627,6 +622,9 @@ h3.search-description {
 h3 b{
     color: black;
 }
+h3 a {
+  font-style: italic;
+}
 
 /* --- Images search results --- */
 .image-result-thumb {
@@ -643,12 +641,10 @@ h3 b{
 .image-result-thumb a img:hover {
     border: solid 1px;
 }
-
 /* --- Both Search Results --- */
 #result-show {
   margin-bottom: 15px;
 }
-
 .generic-result-wrapper,
 .image-result-wrapper {
   clear: left;
@@ -656,36 +652,29 @@ h3 b{
   border-bottom: 1px dashed #bbb;
   margin-right: 15px;
 }
-
 .generic-result-wrapper:hover,
 .image-result-wrapper:hover {
   background-color: #F7F7F7;
 }
-
 .generic-result-wrapper h4,
 .image-result-header h4 {
   margin: 0;
 }
-
 .generic-result-wrapper.first,
 .image-result-wrapper.first {
   border-top: 1px dashed #bbb;
 }
-
 .generic-result-topic-type {
   float: right;
   color: #888;
 }
-
 .generic-result-dc-dates {
   float: right;
   margin-top: -17px;
 }
-
 #bottomlinks {
   margin-top: 15px;
 }
-
 /* #################################### General Content Elements #################################### */
 .results-list{
     list-style-type: square;
@@ -791,7 +780,7 @@ p.feed a{
 }
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> working <<<<<<<<<<<<<<<<<<<<<< */
 th {
-    text-align:left;
+    text-align: left;
     vertical-align: top;
     font-weight: bold;
 }
@@ -1611,7 +1600,7 @@ a.disabled {
 .credits {
   padding-top: 1em;
   text-align: center;
-  font-size:0.75em;
+  font-size: 0.75em;
 }
 
 .credits img {

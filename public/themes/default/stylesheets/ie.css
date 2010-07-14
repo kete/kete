@@ -1,0 +1,11 @@
+/* Rounded Corners Support for IE Browsers */
+#top-menu {
+    background-image: url(/images/top-menu-btrt-bg.gif);
+    background-position: 100% 100%;
+    background-repeat: no-repeat;
+}
+#top-menu ul {
+    background-image: url(/images/top-menu-btlf-bg.gif);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+}

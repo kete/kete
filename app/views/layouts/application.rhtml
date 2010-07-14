@@ -1,7 +1,8 @@
 <!DOCTYPE html
      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="<%= I18n.locale -%>"<%= " dir=\"" + t('dir') + "\"" if t('dir') != 'ltr' -%>>
 <head>
   <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -45,17 +46,23 @@
   <%# this goes before other css and javascript incase we want to overwrite the definitions locally in themes %>
   <%= yield :add_on_scripts_and_links %>
 
+  <% theme_name = "#{@theme}_theme" -%>
+  <% theme_name = theme_name + '_' + t('dir') if t('dir') != 'ltr' -%>
+
   <%# Include TinyMCE before other JS to avoid problems
     # TinyMCE is not compatible with bundle_fu %>
   <%= include_tiny_mce_if_needed({
-    :content_css => "/stylesheets/cache/#{@theme}_theme.css",
+    :content_css => "/stylesheets/cache/#{@theme_name}.css",
     :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '')
   }) %>
 
   <%= stylesheet_link_tag 'kete-print', :media => 'print' %>
 
-  <% bundle :name => "#{@theme}_theme" do -%>
+  <% bundle :name => theme_name do -%>
     <%= stylesheet_link_tag 'base', :media => 'screen' %>
+    <% if t('dir') != 'ltr' -%>
+      <%= stylesheet_link_tag('base-' + t('dir'), :media => 'screen') -%>
+    <% end -%>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>
     <%= stylesheet_link_tag 'redbox' %>
     <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>

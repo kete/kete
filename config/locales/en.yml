@@ -1130,6 +1130,7 @@ en:
       month: Month
       second: Seconds
       year: Year
+  dir: ltr
   document_model:
     not_acceptable_content_type: "is {{t.base.not_acceptable}}. It should be a .pdf, .doc, or other {{t.base.zoom_types.document}} file."
     not_acceptable_size: "{{t.base.not_acceptable_size}}"

@@ -3,6 +3,10 @@
         background-position: top left;
         background-repeat: no-repeat;
 }
+/* don't use a background image for this div when rtl presentation */
+html[dir="rtl"] .notabs #main-content-wrapper {
+        background-image: none;
+}
 #search-content-wrapper {
 	background-image: url(/images/content-tab-sel-lf.gif);
 	background-position: top left;
@@ -10,16 +14,6 @@
 }
 .main-content-footer-wrapper {
         margin: 0 0 -1em -1em;
-}
-#top-menu {
-        background-image: url(/images/top-menu-btrt-bg.gif);
-        background-position: 100% 100%;
-        background-repeat: no-repeat;
-}
-#top-menu ul {
-        background-image: url(/images/top-menu-btlf-bg.gif);
-        background-position: 0 100%;
-        background-repeat: no-repeat;
 }
 #content-tabs ul li{
         background-image: url(/images/content-tab-unsel-lf.gif);
@@ -44,6 +38,16 @@
         background-image: url(/images/content-tab-sel-rt.gif);
         background-repeat: no-repeat;
         background-position: 100% 0;
+}
+/* tabs are on opposite side with rtl, switch rounded corner */
+html[dir="rtl"] #content-wrapper, #search-wrapper {
+    background-image: none;
+}
+#top-menu {
+    -moz-border-radius-bottomleft: 7px;
+    -moz-border-radius-bottomright: 7px;
+    -webkit-border-bottom-left-radius: 7px;
+    -webkit-border-bottom-right-radius: 7px;
 }
 
 /*

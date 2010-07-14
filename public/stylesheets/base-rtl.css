@@ -1,0 +1,220 @@
+/* ################################## Right to Left language support ############################## */
+/* Walter McGinnis, 2010-7-09 
+   use html[dir="rtl"] #class_name for rules that need to be modified to support right to left languages
+   basically any selector that has a float: left rule will likely (but not definitely) need to be switched
+   to float:right
+   thanks to KnowledgeWare Technologies for the CSS for Right to Left languages
+   note that this doesn't work with IE6 browsers, but does for all major browsers after that
+*/
+
+/* we override the default text alignment and direction */
+html[dir="rtl"] body {
+    text-align: right;
+    direction: rtl;
+}
+/* #################################### Content Structural Items #################################### */
+html[dir="rtl"] #main-content-wrapper {
+    float: right;
+}
+html[dir="rtl"] .full-width #main-content-wrapper {
+    width: 95%;
+    float: right;
+}
+html[dir="rtl"] #main-content-container {
+    margin-right: 0;
+    margin-left: 1em;
+}
+html[dir="rtl"] #main-content-container, #search-content-container {
+    padding: 1em 2em 1em 1em; 
+    float: right;
+    width: 95%;
+}
+/* #################################### Header #################################### */
+html[dir="rtl"] #header {
+    float: right;
+}
+/* #################################### Top Navigation #################################### */
+html[dir="rtl"] ul.nav-list li {
+    float: right;
+}
+html[dir="rtl"] #top-menu ul.nav-list li {
+    float: right;
+    clear: left;
+}
+html[dir="rtl"] #top-menu {
+    float: right;
+}
+html[dir="rtl"] #top-menu ul.user-nav {
+    float: right;
+}
+html[dir="rtl"] ul#main-nav {
+    float: right;
+}
+html[dir="rtl"] #top-menu li,
+#basket-list li {
+    border-left: none;
+    border-right: 2px solid white;
+}
+html[dir="rtl"] #top-menu .nav-list li.first,
+#basket-list li.first{
+    border-right: none;
+    padding-right: 0em;
+}
+/* #################################### User Basket Navigation #################################### */
+html[dir="rtl"] #top-menu #user_baskets_list ul {
+  left: 70px;
+  /* TODO: reset left */
+}
+html[dir="rtl"] #top-menu .user_basket_list_row1 {
+  float: right;
+}
+html[dir="rtl"] #top-menu .user_basket_list_row2 {
+  float: right;
+}
+/* #################################### Content Navigation Tabs #################################### */
+html[dir="rtl"] #content-tabs li a span,
+#related-content h2,
+#related h2,
+#tags-box h2,
+#extended-fields h2{
+    background-position: center right;
+}
+/* #################################### item_class_choices #################################### */
+html[dir="rtl"] #related-items-tools ul, .item_class_choices {
+  float: right;
+}
+html[dir="rtl"] #related-items-tools ul li, .item_class_choices li {
+  float: left;
+}
+/* #################################### Related Items #################################### */
+#related_items.inset {
+  float: left;
+}
+#related_items.below .two-col {
+  float: right;
+}
+/* #################################### Secondary Content #################################### */
+html[dir="rtl"] .secondary-content-section-wrapper{
+    margin: 1em 0em 1em 1em;
+}
+/* #################################### General Content Elements #################################### */
+html[dir="rtl"] .form-element label{
+    float: left;
+}
+html[dir="rtl"] .form-element{
+    float: left;
+}
+html[dir="rtl"] input, textarea {
+    padding-left: 0;
+    padding-right: .5em;
+}
+/* #################################### Search Results #################################### */
+#head-search-wrapper{
+    float: left;
+    position: static;
+    left: 1em;
+}
+html[dir="rtl"] #head-search-wrapper .search_fields {
+  padding: 0 0 0 0px;
+}
+html[dir="rtl"] .search_dropdown .close {
+  float: left;
+  margin-left: 5px;
+}
+html[dir="rtl"] #search-results .thumb {
+    float: left;
+}
+/* --- Images search results --- */
+html[dir="rtl"] .image-result-thumb {
+    float: right;
+}
+html[dir="rtl"] .generic-result-wrapper, .image-result-wrapper {
+    clear: right;
+    float: right;
+}
+html[dir="rtl"] .generic-result-topic-type {
+  float: left;
+}
+html[dir="rtl"] .generic-result-dc-dates {
+  float: left;
+}
+/* #################################### General Content Elements #################################### */
+html[dir="rtl"] .flag{
+    background-position: center right;
+    padding-left: 0 !important;
+    padding-right: 20px !important;
+}
+html[dir="rtl"] .search-prev-next {
+    float: right;
+}
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> working <<<<<<<<<<<<<<<<<<<<<< */
+html[dir="rtl"] th {
+    text-align: right;
+}
+html[dir="rtl"] #basket-toolbox, #adminToolbox{
+    float: right;
+}
+html[dir="rtl"] #basket-toolbox{
+    width: 93.75%;
+}
+html[dir="rtl"] div#slideshow-controls {
+    float: left;
+}
+html[dir="rtl"] div#slideshow-controls div#slideshow-previous-button {
+    float: left;
+}
+/* ################################## Comments ################################## */
+/*
+ * FOOTER
+ */
+html[dir="rtl"] #footer_links ul li {
+    border-right: 0;
+    border-left: 1px solid #000;
+}
+html[dir="rtl"] #footer_links ul li.last {
+    border-right: 0;
+    border-left: 0px;
+}
+/* ############################### User Profiles ################################ */
+html[dir="rtl"] .created_link {
+    float: right;
+}
+html[dir="rtl"] .stylish_user_contribution_link_avatar {
+    float: right;
+}
+/*
+ * Category List
+ */
+html[dir="rtl"] .category_list {
+    float: right;
+}
+/*
+ * Search Sources
+ */
+html[dir="rtl"] #search_sources .images .image-result-wrapper img {
+    float: right;
+}
+#search_page_search_sources {
+    float: left;
+    border-left: 0;
+    margin-left: 0;
+    border-right: 1px solid #bbb;
+    margin-right: 10px;
+}
+/*
+ * Basket Homepages
+ */
+html[dir="rtl"] .item-tools ul li, #moderator-tools ul li {
+    float: right;
+}
+/*
+ * Language Dropdown Selection
+ */
+html[dir="rtl"] .language_choices_display.header {
+  float: left;
+  right: 0;
+  left: 1em;
+}
+html[dir="rtl"] .language_choices_display.footer {
+  float: left;
+}
