@@ -47,10 +47,16 @@ module ImportersHelper
         if ( value == 'Topic' ) {
           $('import_topic_type').show();
           $('import_topic_type_id').disabled = false;
+          $('import_file_private').hide();
         } else {
           $('import_topic_type_id').value = '';
           $('import_topic_type_id').disabled = true;
           $('import_topic_type').hide();
+          if ( value != 'WebLink' ) {
+            $('import_file_private').show();
+          } else {
+            $('import_file_private').hide();
+          }
         }
       });
     ")

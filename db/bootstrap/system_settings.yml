@@ -744,3 +744,11 @@ system_settings_087:
   id: "87"
   value: ""
   section: Results Display
+system_settings_088:
+  name: List Baskets Number
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "How many baskets should we list under the Pretty Site Name at the top of the page? If 0, no baskets will be listed. Note that large basket names or a large number here may result in the basket list breaking over two lines or crowding other aspects of the header area. You may need to adjust your CSS in a theme, accordingly."
+  id: "88"
+  value: "2"
+  section: Server

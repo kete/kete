@@ -158,14 +158,15 @@ module ApplicationHelper
   end
 
   def header_links_to_baskets
+    baskets_limit = LIST_BASKETS_NUMBER
+    return unless baskets_limit > 0
+
     html = '<ul id="basket-list" class="nav-list">'
 
     except_certain_baskets = @standard_baskets
     except_certain_baskets += [@current_basket] if @current_basket != @site_basket
 
     except_certain_baskets_args = { :conditions => ["id not in (?) AND status = 'approved'", except_certain_baskets] }
-
-    baskets_limit = 2
 
     total_baskets_count = Basket.count(except_certain_baskets_args)
 
@@ -990,7 +991,13 @@ module ApplicationHelper
       function hide_all_non_member_target_baskets() {
         $$('#target_basket option.not_member').each(function(element) { element.hide(); });
         var current_selection = $('target_basket').options[$('target_basket').selectedIndex];
-        if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
+        // TODO: take this IE specific code out when it is no longer needed
+        var agent = navigator.userAgent.toLowerCase ();
+        if (agent.search ('msie') > -1) {
+          if (!current_selection.style.visibility == 'hidden') { $('target_basket').options[0].selected = true; }
+        } else {
+          if (!current_selection.visible()) { $('target_basket').options[0].selected = true; }
+        }
       }
 
       $('privacy_type_public').observe('click', function() { show_all_target_baskets(); });
