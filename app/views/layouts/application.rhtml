@@ -153,7 +153,7 @@
     <% end -%>
     <% @ie_stylesheet_paths.each do |ie_version,css_paths| -%>
       <% unless ie_version == :all -%>
-        <!--[if IE #{ie_version}]>
+        <%= "<!--[if IE #{ie_version}]>" -%>
         <% css_paths.each do |stylesheet| -%>
           <%= stylesheet_link_tag stylesheet, :media => 'screen' -%>
         <% end -%>
