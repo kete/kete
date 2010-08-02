@@ -157,8 +157,9 @@
         <% css_paths.each do |stylesheet| -%>
           <%= stylesheet_link_tag stylesheet, :media => 'screen' -%>
         <% end -%>
-      "<![endif]-->"
+      <![endif]-->
     <% end -%>
+  <% end -%>
   <% end -%>
 </head>
 <body id="<%= @current_basket.urlified_name -%>">
