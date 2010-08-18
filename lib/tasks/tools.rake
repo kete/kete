@@ -176,6 +176,31 @@ namespace :kete do
       end
     end
 
+    # tools supporting things like data massaging in imports
+    namespace :imports do
+      desc "Takes a RegExp pattern (no escape \s necessary, but must be wrapped in single quotes) to match and replaces it with either another pattern (also in single quotes), variables (\1, \2, etc.) can be used. File paths to file are relative to Rails.root directory."
+      task :replace_pattern_in_file do
+        source_file = pwd + '/' + ENV['SOURCE_FILE']
+
+        output_file = File.new(pwd + '/' + ENV['TO_FILE'],'w+')
+
+        pattern = Regexp.new(ENV['PATTERN'])
+
+        p pattern.inspect
+
+        replacement = ENV['REPLACEMENT']
+
+        p replacement.inspect
+
+        # iterate over each line and apply the substitution
+        IO.foreach(source_file) do |line|
+          line = line.gsub(pattern, replacement)
+          output_file << line
+        end
+        output_file.close
+      end
+    end
+
     private
 
     def set_related_items_inset_to(item_class, position)
