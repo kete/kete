@@ -192,12 +192,19 @@ namespace :kete do
 
         p replacement.inspect
 
+        changed_lines_count = 0
         # iterate over each line and apply the substitution
         IO.foreach(source_file) do |line|
+          original_line = line
+
           line = line.gsub(pattern, replacement)
           output_file << line
+
+          changed_lines_count += 1 if original_line != line
         end
         output_file.close
+
+        puts "#{changed_lines_count.to_s} lines changed."
       end
     end
 
