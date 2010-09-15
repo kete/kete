@@ -18,7 +18,7 @@ class ExtendedFieldTest < ActiveSupport::TestCase
 
   # format of label - can't have special characters
   def test_format_of_label_no_special_characters
-    special_chars = ["\'", "\"", "\\", "/", "&", "?", "<", ">"]
+    special_chars = ["\'", "\"", "\\", "/", "&", "?", "<", ">", "-"]
 
     special_chars.each do |sp|
       extended_field = ExtendedField.new(:label => sp,
