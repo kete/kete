@@ -49,6 +49,14 @@ class ExtendedFieldTest < ActiveSupport::TestCase
     assert extended_field.errors.invalid?(:xml_element_name)
   end
 
+  def test_label_does_not_begin_or_end_with_spaces
+    extended_field = ExtendedField.create!(:label => ' ends and begins with spaces ',
+                                       :description => "yyy")
+
+
+    assert_equal "ends and begins with spaces", extended_field.label
+  end
+
   def setup
     @person_type = TopicType.find_by_name('Person')
     @place_type = TopicType.find_by_name('Place')
