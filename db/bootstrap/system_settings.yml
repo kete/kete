@@ -539,7 +539,7 @@ system_settings_062:
   name: Related Items Position Default
   technically_advanced: true
   required_to_be_configured: true
-  explanation: "The default value for related items position. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages."
+  explanation: "The default value for related items position. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages. IMPORTANT NOTE: this only effects NEW items. To change existing items, see the applicable rake tasks by running 'rake -T kete:tools:related_items'."
   id: "62"
   value: "inset"
   section: Related Items Display

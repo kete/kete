@@ -19,6 +19,10 @@ class ExtendedField < ActiveRecord::Base
 
   acts_as_configurable
 
+  # some input mechanisms for different languages can add whitespace
+  # which messes with our label_for_params, etc.
+  before_save :strip_extra_spaces_from_label
+
   after_save :store_topic_type
 
   def topic_type
@@ -98,9 +102,6 @@ class ExtendedField < ActiveRecord::Base
   invalid_label_names = TopicType.column_names + ContentType.column_names
   validates_exclusion_of :label, :in => invalid_label_names, :message => lambda { I18n.t('extended_field_model.already_used', :invalid_label_names => invalid_label_names.join(", ")) }
 
-  # TODO: globalize stuff, uncomment later
-  # translates :label, :description
-
   # TODO: might want to reconsider using subselects here
   def self.find_available_fields(type,type_of)
     if type_of == 'TopicType'
@@ -159,6 +160,9 @@ class ExtendedField < ActiveRecord::Base
   alias :to_param :format_for_friendly_unicode_urls
 
   protected
+    def strip_extra_spaces_from_label
+      self.label = self.label.strip
+    end
 
     def validate
       errors.add('label', I18n.t('extended_field_model.label_cant_have')) if label && label.strip =~ /^(form|input|script)$/i

@@ -155,13 +155,18 @@
   <!--[if IE]><%= stylesheet_link_tag 'kete-ie', :media => 'screen' %><![endif]-->
 
   <% unless @ie_stylesheet_paths.blank? -%>
-    <% @ie_stylesheet_paths.each do |ie_version,css_paths| -%>
-      <%= ie_version == :all ? "<!--[if IE]>" : "<!--[if IE #{ie_version}]>" %>
-      <% css_paths.each do |stylesheet| -%>
-        <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
-      <% end -%>
-      <%= "<![endif]-->" %>
+    <% if @ie_stylesheet_paths[:all].present? -%>
+      <!--[if IE]><%= stylesheet_link_tag @ie_stylesheet_paths[:all].first, :media => 'screen' -%><![endif]-->
     <% end -%>
+    <% @ie_stylesheet_paths.each do |ie_version,css_paths| -%>
+      <% unless ie_version == :all -%>
+        <%= "<!--[if IE #{ie_version}]>" -%>
+        <% css_paths.each do |stylesheet| -%>
+          <%= stylesheet_link_tag stylesheet, :media => 'screen' -%>
+        <% end -%>
+      <![endif]-->
+    <% end -%>
+  <% end -%>
   <% end -%>
 </head>
 <body id="<%= @current_basket.urlified_name -%>">
