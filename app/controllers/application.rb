@@ -1125,6 +1125,11 @@ class ApplicationController < ActionController::Base
   end
   alias permitted_to_edit_current_item? permitted_to_view_private_items?
 
+  def permitted_to_edit_basket_homepage_topic?
+    @permitted_to_edit_basket_homepage_topic ||= logged_in? &&
+        permit?("site_admin of :site_basket or admin of :site_basket")
+  end
+
   # checks if the user is requesting a private version of an item, and see
   # if they are allowed to do so
   def allowed_to_access_private_version_of?(item)
@@ -1252,7 +1257,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_add_or_request_basket?, :basket_policy_request_with_permissions?, :current_user_can_see_action_menu?,
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
-                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss
+                :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :permitted_to_edit_basket_homepage_topic?
 
   protected
 
