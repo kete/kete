@@ -179,7 +179,7 @@ module ApplicationHelper
     end
 
     if baskets_limit < total_baskets_count
-      html += '<li>' + link_to_unless_current(t('application_helper.header_links_to_baskets.more_baskets'),
+      html += '<li class="more-baskets">' + link_to_unless_current(t('application_helper.header_links_to_baskets.more_baskets'),
                                               url_for(:urlified_name => @site_basket.urlified_name,
                                                       :controller => 'baskets' ), {:tabindex => '2'}) + '</li>'
     end
