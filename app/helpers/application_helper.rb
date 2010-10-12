@@ -1861,4 +1861,16 @@ module ApplicationHelper
     end
   end
 
+  def topic_types_counts_for(item)
+    html = "<ul>"
+    topics = item.is_a?(Topic) ? item.related_topics : item.topics
+    topic_types_and_counts = topics.collection_of_objects_and_counts_for(:topic_type, true)
+    topic_types_and_counts.each do |topic_type, count|
+      title = "#{h(topic_type.name.pluralize)} (#{count})"
+      html += "<li>" + link_to_related_items_of(item, 'Topic', { :link_text => title },
+                                                { :topic_type => topic_type.urlified_name }) + "</li>"
+    end
+    html += "</ul>"
+    html
+  end
 end

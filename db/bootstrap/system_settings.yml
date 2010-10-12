@@ -54,6 +54,8 @@ system_settings_006:
     What email address should be linked to in the 'Contact' link, normally on the top right bar of navigation on every page.
 
     For example: kete@kete.net.nz
+
+    IMPORTANT: Contact URL will take precedence over Contact Email! This must have a value, but may not be used if Contact URL is present.
   id: "6"
   value:
   section: Server
@@ -539,7 +541,7 @@ system_settings_062:
   name: Related Items Position Default
   technically_advanced: true
   required_to_be_configured: true
-  explanation: "The default value for related items position. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages."
+  explanation: "The default value for related items position. Set to 'below' to have it displayed below the topic, 'inset' to have it displayed within the topic description, or 'sidebar' to have it displayed in the sidebar of topic pages. IMPORTANT NOTE: this only effects NEW items. To change existing items, see the applicable rake tasks by running 'rake -T kete:tools:related_items'."
   id: "62"
   value: "inset"
   section: Related Items Display
@@ -751,4 +753,17 @@ system_settings_088:
   explanation: "How many baskets should we list under the Pretty Site Name at the top of the page? If 0, no baskets will be listed. Note that large basket names or a large number here may result in the basket list breaking over two lines or crowding other aspects of the header area. You may need to adjust your CSS in a theme, accordingly."
   id: "88"
   value: "2"
+  section: Server
+system_settings_089:
+  name: Contact URL
+  technically_advanced: false
+  required_to_be_configured: false
+  explanation: |-
+    Rather than Contact Email, should we link to a URL in the 'Contact' link, normally on the top right bar of navigation on every page.
+
+    For example: http://your_site/about/ and then you alter the About basket's homepage topic to contain your contact details.
+    
+    IMPORTANT: this will take precedence over Contact Email!
+  id: "89"
+  value:
   section: Server
