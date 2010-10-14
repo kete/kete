@@ -225,6 +225,34 @@ namespace :kete do
       end
     end
 
+    # this is not a standard repair, but useful for some legacy sites with bad attached file privacy setting for specific files
+    desc "Move original files that have been mistakenly made publicly downloadable to private original files, specify still images ids with IDS= or a basket with the still images with BASKET_ID="
+    task :fix_still_image_originals_privacies => :environment do
+      puts "Getting specified StillImages and updating their originals to be file_private\n"
+      still_images = Array.new
+      if ENV['BASKET_ID']
+        basket = Basket.find(ENV['BASKET_ID'])
+        still_images = basket.still_images
+      else
+        ids = ENV['IDS'].to_s.split(',')
+        still_images = StillImage.find(ids)
+      end
+      still_images.each do |still_image|
+        any_incorrect_originals = false
+        unless still_image.file_private?
+          still_image.force_privacy = true
+          still_image.file_private = true
+          still_image.save_without_revision!
+          still_image.image_files.find_all_by_file_private(false).each do |image_file|
+            next unless image_file == still_image.original_file
+            any_incorrect_originals = true
+            move_image_from_to(image_file, true)
+          end
+        end
+        puts "Moving original for still image #{still_image.id} to the correct directory." if any_incorrect_originals
+      end
+    end
+
     def move_image_from_to(image_file, to_be_private)
       file_path = image_file.public_filename
       if to_be_private

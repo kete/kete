@@ -15,6 +15,22 @@
     </ul>
     <div class="form_example"><%=t 'importers.common_import_fields.imported_items_privacy_example' %></div>
   </div>
+
+  <div class="form-element" id="import_file_private"<%= " style=\"display: none;\"" unless params[:relate_to_topic] .present? -%>>
+    <label><%=t 'importers.common_import_fields.imported_items_file_privacy' %></label>
+      <ul class="option-list">
+        <li>
+          <%= radio_button 'import', :file_private, false, { :id => "import_file_private_false", :checked => !@current_basket.file_private_default_with_inheritance? } %>
+          <label for="import_file_private_false" class="privacy-label"><%=t 'importers.common_import_fields.downloaded_by_everyone' %></label>
+	</li>
+	<li>
+          <%= radio_button 'import', :file_private, true, { :id => "import_file_private_true", :checked => @current_basket.file_private_default_with_inheritance? } %>
+          <label for="import_file_private_true"><%=t('importers.common_import_fields.downloaded_by_role',
+						   :role_name => @current_basket.private_file_visibility_with_inheritance) %></label>
+	</li>
+      </ul>
+      <div class="form_example"><%=t 'importers.common_import_fields.imported_items_file_privacy_example' %></div>
+  </div>
 <% end %>
 
 <div class="form-element">

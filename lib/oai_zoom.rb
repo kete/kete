@@ -112,14 +112,22 @@ module OaiZoom
       import_private = options[:import_private]
       @import_request = options[:import_request]
       skip_private = options[:skip_private]
-
+      write_files = options[:write_files]
+      
       was_private = private? # store whether the item was private or not before the reload
 
       reload # get the the most up to date version of self
 
       # This is always the public version..
       unless already_at_blank_version? || at_placeholder_public_version?
-        zoom_save(public_existing_connection) unless is_a?(Comment) && commentable_private
+        unless is_a?(Comment) && commentable_private
+          if write_files
+            # write oai_record to appropriate directory for later indexing by zebraidx
+            write_oai_record_file("public")
+          else
+            zoom_save(public_existing_connection)
+          end
+        end
       end
 
       # Redo the save for the private version
@@ -131,7 +139,12 @@ module OaiZoom
         @oai_record = nil
         self.private_version do
           unless already_at_blank_version?
-            zoom_save(private_existing_connection)
+            if write_files
+              # write oai_record to appropriate directory for later indexing by zebraidx
+              write_oai_record_file("private")
+            else
+              zoom_save(private_existing_connection)
+            end
           end
         end
 
@@ -141,8 +154,7 @@ module OaiZoom
 
       private_version! if was_private # restore the privacy before we reloaded
     end
-
-
+    
     # TODO: this may not be needed anymore
     def importer_oai_dc_xml_dc_identifier(xml,item, passed_request = nil)
       if !passed_request.nil?
@@ -212,5 +224,19 @@ module OaiZoom
       xml.send("dc:rights", rights)
     end
 
+    def write_oai_record_file(root_dir)
+      directory_path = oai_record_file_dirs(root_dir)
+      FileUtils.mkdir_p directory_path unless File.directory?(directory_path)
+      File.open(oai_record_file_path(root_dir), 'w') { |f| f.syswrite(oai_record) }
+    end
+
+    def oai_record_file_dirs(root_dir)
+      "#{Rails.root}/zebradb/#{root_dir}/data/#{self.class.name.tableize}/" +
+        ("%012d" % id).scan(/..../).join('/')
+    end
+
+    def oai_record_file_path(root_dir)
+      oai_record_file_dirs(root_dir) + "/record.xml"
+    end
   end
 end

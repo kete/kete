@@ -57,3 +57,4 @@ set_constant(:DEFAULT_PAGE_DESCRIPTION, "Kete is a knowledge basket of topics, i
 set_constant(:ENABLE_USER_PORTRAITS, false)
 set_constant(:ENABLE_GRAVATAR_SUPPORT, false)
 set_constant(:BASKET_CREATION_POLICY, "closed")
+set_constant(:CONTACT_URL, SITE_URL + "about/")

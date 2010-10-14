@@ -18,7 +18,7 @@ class ExtendedFieldTest < ActiveSupport::TestCase
 
   # format of label - can't have special characters
   def test_format_of_label_no_special_characters
-    special_chars = ["\'", "\"", "\\", "/", "&", "?", "<", ">"]
+    special_chars = ["\'", "\"", "\\", "/", "&", "?", "<", ">", "-"]
 
     special_chars.each do |sp|
       extended_field = ExtendedField.new(:label => sp,
@@ -47,6 +47,14 @@ class ExtendedFieldTest < ActiveSupport::TestCase
                                        :description => "yyy")
     assert !extended_field.valid?
     assert extended_field.errors.invalid?(:xml_element_name)
+  end
+
+  def test_label_does_not_begin_or_end_with_spaces
+    extended_field = ExtendedField.create!(:label => ' ends and begins with spaces ',
+                                       :description => "yyy")
+
+
+    assert_equal "ends and begins with spaces", extended_field.label
   end
 
   def setup
