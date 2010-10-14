@@ -3,6 +3,10 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.3.5' unless defined? RAILS_GEM_VERSION
 
+# Walter McGinnis, 2010-05-08
+# For holding info about the kete application instance
+require File.join(File.dirname(__FILE__), '../lib/kete')
+
 # Walter McGinnis, 2007-10-18
 # moving this up before other things that need it
 # acts_as_zoom declarations in models
@@ -95,3 +99,6 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 # Walter McGinnis, 2007-12-03
 # most application specific configuration has moved to files
 # under config/initializers/
+
+# Load application extensions that have been registered by add-ons
+Kete.setup_extensions!

@@ -7,7 +7,7 @@ module SiteLinking
     end
 
     def check_nessesary_constants_set
-      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SITE_URL.blank? || PRETTY_SITE_NAME.blank?
+      raise "Pretty Site Name and Site URL constants are not set, are you sure you restarted your server after you configured your Kete site?" if SITE_URL.blank? || Kete.pretty_site_name.blank?
     end
 
     def site_listing

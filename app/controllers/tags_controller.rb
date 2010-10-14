@@ -2,7 +2,7 @@ class TagsController < ApplicationController
   def index
     redirect_to :action => 'list'
   end
-  
+
   def list
     @type = @current_basket.index_page_tags_as || 'categories'
     @default_order = @current_basket.index_page_order_tags_by || 'latest'
@@ -28,6 +28,11 @@ class TagsController < ApplicationController
       format.html
       format.js { render :file => File.join(RAILS_ROOT, 'app/views/tags/tags_list.js.rjs') }
     end
+  end
+
+  def show
+    @tag = Tag.find(params[:id])
+    @title = t('tags.show.title', :tag_name => @tag.name)
   end
 
   def rss

@@ -23,7 +23,8 @@ en:
     are_you_sure: "Are {{t.base.you}} sure?"
     arent: aren't
     avatar: avatar
-    back_to: "back to"
+    back: back
+    back_to: "{{t.base.back}} to"
     basket: basket
     below: below
     browse: browse
@@ -2080,6 +2081,8 @@ en:
     rebuild_zoom_for_items:
       zoom_rebuilt: "ZOOM indexes rebuilt"
   search_helper:
+    contributor_show_link_options:
+      title: "More information about the {{t.base.contributor}} {{user_name}}. "
     last_part_of_title_if_refinement_of:
       about_a: " {{t.base.about_a}} {{topic_type_name}}"
       and: " and"
@@ -2091,6 +2094,8 @@ en:
       privacy_type: " that are {{privacy}}"
       related_to: " {{t.base.related}} to {{source_item}}"
       tagged_as: " {{t.base.tagged}} as {{tag_name}}"
+    tag_show_link_options:
+      title: "More information about the {{t.base.tag}} {{tag_name}}. "
   search_model:
     browse_default: "{{t.base.browse.capitalize}} {{t.base.default.capitalize}}"
     choice_hierarchy: "{{t.base.choice.capitalize}} Hierarchy"
@@ -2134,6 +2139,8 @@ en:
     rss:
       description: "{{t.base.tag.capitalize.pluralize}} in {{basket_name}}"
       title: "{{site_name}} - {{basket_name}} - {{t.base.latest.capitalize}} {{count}} {{t.base.tag.capitalize.pluralize}}"
+    show:
+      title: "{{t.base.tag.capitalize}}: {{tag_name}}"
     tags_list:
       no_tags: "No {{t.base.tag.pluralize}} to display."
   time:

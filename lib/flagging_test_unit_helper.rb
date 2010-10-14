@@ -25,11 +25,11 @@ module FlaggingTestUnitHelper
     # version should be 2 since a new blank version should be automatically added
     # it shouldn't have any flags on the live version
     assert_equal 2, model.version
-    assert_equal BLANK_TITLE, model.title
+    assert_equal Kete.blank_title, model.title
     assert_equal 0, model.versions.find_by_version(model.version).tags.size
 
     # first version should be flagged as pending
-    assert model.versions.find_by_version(1).tags.include?(Tag.find_by_name(PENDING_FLAG))
+    assert model.versions.find_by_version(1).tags.include?(Tag.find_by_name(Kete.pending_flag))
   end
 
   def test_fully_moderated_basket_but_excepted_class_add_succeeds

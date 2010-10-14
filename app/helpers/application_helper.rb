@@ -18,9 +18,9 @@ module ApplicationHelper
 
   def title_with_context
     if @current_basket == @site_basket
-      "#{stripped_title} - #{PRETTY_SITE_NAME}"
+      "#{stripped_title} - #{Kete.pretty_site_name}"
     else
-      "#{stripped_title} - #{@current_basket.name} - #{PRETTY_SITE_NAME}"
+      "#{stripped_title} - #{@current_basket.name} - #{Kete.pretty_site_name}"
     end
   end
 
@@ -80,7 +80,7 @@ module ApplicationHelper
   end
 
   def page_keywords
-    return DEFAULT_PAGE_KEYWORDS if current_item.nil? || current_item.tags.blank?
+    return Kete.default_page_keywords if current_item.nil? || current_item.tags.blank?
     current_item.tags.join(",").gsub(" ", "_").gsub("\"", "")
   end
 
@@ -90,9 +90,9 @@ module ApplicationHelper
   end
 
   def page_description
-    return DEFAULT_PAGE_DESCRIPTION if current_item.nil?
+    return Kete.default_page_description if current_item.nil?
     description_text = short_summary_or_description_of(current_item)
-    return DEFAULT_PAGE_DESCRIPTION if description_text.blank?
+    return Kete.default_page_description if description_text.blank?
     description_text
   end
 
@@ -118,7 +118,7 @@ module ApplicationHelper
 
     metadata += meta_tag(:name => 'DC.creator', :content => h(item.creator.user_name))
     metadata += meta_tag(:name => 'DC.contributor', :content => h(item.contributors.last.user_name) + ", et al") if item.contributors.size > 1
-    metadata += meta_tag(:name => 'DC.publisher', :content => h(PRETTY_SITE_NAME))
+    metadata += meta_tag(:name => 'DC.publisher', :content => h(Kete.pretty_site_name))
     metadata += meta_tag(:name => 'DC.type', :content => 'Text')
     metadata += meta_tag(:name => 'DC.rights', :content => h(item.license.name + " (" + item.license.url + ")")) if item.license
 
@@ -138,7 +138,7 @@ module ApplicationHelper
     tag(:link, :rel => "search",
                :type => "application/opensearchdescription+xml",
                :href => "#{SITE_URL}opensearchdescription.xml",
-               :title => "#{PRETTY_SITE_NAME} Web Search")
+               :title => "#{Kete.pretty_site_name} Web Search")
   end
 
   def open_search_metadata
@@ -201,7 +201,7 @@ module ApplicationHelper
   end
 
   def default_search_terms
-    search_location_name = PRETTY_SITE_NAME
+    search_location_name = Kete.pretty_site_name
     search_text_key = 'search_value'
 
     if SEARCH_SELECT_CURRENT_BASKET && @current_basket != @site_basket
@@ -621,9 +621,9 @@ module ApplicationHelper
             :action => :show, :id => user, :only_path => false)
   end
 
-  def link_to_profile_for(user, phrase = nil)
+  def link_to_profile_for(user, phrase = nil, link_options = {})
     phrase ||= h(user.user_name)
-    link_to phrase, url_for_profile_of(user)
+    link_to phrase, url_for_profile_of(user), link_options
   end
 
   def link_to_add_item(options={})
@@ -827,10 +827,11 @@ module ApplicationHelper
 
 
   # tag related helpers
-  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket)
+  def link_to_tagged(tag, zoom_class = nil, basket = @site_basket, options = {})
     zoom_class = zoom_class || tag[:zoom_class]
     tag_for_url = !tag[:to_param].blank? ? tag[:to_param] : tag.to_param
-    link_to h(tag[:name]),
+    link_text = options[:link_text] || tag[:name]
+    link_to h(link_text),
             { :controller => 'search',
               :action => 'all',
               :tag => tag_for_url,
@@ -1074,9 +1075,9 @@ module ApplicationHelper
 
       if field.ftype == 'map' || field.ftype == 'map_address'
         next if value.blank?
-        td = content_tag("td", "#{field.label}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
+        td = content_tag("td", "#{display_label_for(field)}:<br />#{value}", :class => "detail-extended-field-label", :colspan => 2)
       else
-        td = content_tag("td", "#{field.label}:", :class => "detail-extended-field-label") +
+        td = content_tag("td", "#{display_label_for(field)}:", :class => "detail-extended-field-label") +
              content_tag("td", value)
       end
 
@@ -1087,6 +1088,10 @@ module ApplicationHelper
       content_tag("table", content_tag("tbody", html.join), :class => "detail-extended-field-table", :summary => "Extended details")
     end
 
+  end
+
+  def display_label_for(field_or_choice)
+    field_or_choice.label
   end
 
   def formatted_extended_content_value(field, field_name, value, item)
@@ -1390,7 +1395,7 @@ module ApplicationHelper
 
   def flagging_links_for(item, first = false, controller = nil)
     html_string = String.new
-    if FLAGGING_TAGS.size > 0 and !item.already_at_blank_version?
+    if Kete.flagging_tags.size > 0 and !item.already_at_blank_version?
       if first
         html_string = "<ul><li class=\"first flag\">#{t('application_helper.flagging_links_for.flag_as')}</li>\n"
       else
@@ -1398,7 +1403,7 @@ module ApplicationHelper
       end
       html_string += "<li class=\"first\"><ul>\n"
       flag_count = 1
-      FLAGGING_TAGS.each do |flag|
+      Kete.flagging_tags.each do |flag|
         if flag_count == 1
           html_string += "<li class=\"first\">"
         else
@@ -1484,10 +1489,10 @@ module ApplicationHelper
 
   def link_to_original_of(item, phrase=t('application_helper.link_to_original_of.phrase'), skip_warning=false)
     item_file_url = item.is_a?(StillImage) ? item.original_file.public_filename : item.public_filename
-    if DOWNLOAD_WARNING.blank? || skip_warning
+    if Kete.download_warning.blank? || skip_warning
       link_to phrase, item_file_url
     else
-      link_to phrase, item_file_url, :confirm => DOWNLOAD_WARNING
+      link_to phrase, item_file_url, :confirm => Kete.download_warning
     end
   end
 
@@ -1751,7 +1756,7 @@ module ApplicationHelper
       html += "<ul>"
       # If we're in the first column, provide a link to go back to all results
       html += content_tag('li', link_to(t('application_helper.browse_by_category_columns.all_items',
-                                          :item_type => @controller_name_for_zoom_class.gsub(/_/, " ")),
+                                          :item_type => zoom_class_plural_humanize(@current_class)),
                                         {:view_as => 'choice_hierarchy'}),
                                 {:class => (params[:limit_to_choice] ? '' : 'current' )}) if time == 0
       # For every choice in the current choice, lets add a list item

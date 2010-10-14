@@ -627,6 +627,9 @@ h3.search-description {
 h3 b{
     color: black;
 }
+h3 a {
+  font-style: italic;
+}
 
 /* --- Images search results --- */
 .image-result-thumb {

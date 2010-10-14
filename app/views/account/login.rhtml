@@ -1,5 +1,5 @@
 
-<% @title = t('account.login.title', :site_name => PRETTY_SITE_NAME) -%>
+<% @title = t('account.login.title', :site_name => Kete.pretty_site_name) -%>
 
 <% if !IS_CONFIGURED and ( !MISSING_SOFTWARE['Gems'].blank? or
    !MISSING_SOFTWARE['Commands'].blank? ) -%>

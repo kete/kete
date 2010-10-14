@@ -109,7 +109,7 @@ class Topic < ActiveRecord::Base
       latest_version.first_related_image
     end
     def disputed_or_not_available?
-      (title == NO_PUBLIC_VERSION_TITLE) || (title == BLANK_TITLE)
+      (title == Kete.no_public_version_title) || (title == Kete.blank_title)
     end
     include FriendlyUrls
     def to_param; format_for_friendly_urls(true); end
@@ -151,7 +151,7 @@ class Topic < ActiveRecord::Base
     args = (args.first || {})
     { :order => 'created_at desc', :limit => 5 }.merge(args)
   }
-  named_scope :public, :conditions => ['title != ?', NO_PUBLIC_VERSION_TITLE]
+  named_scope :public, :conditions => ['title != ?', Kete.no_public_version_title]
 
   after_save :update_taggings_basket_id
 
