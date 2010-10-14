@@ -164,6 +164,12 @@ class UserTest < ActiveSupport::TestCase
 
   end
 
+  context "After a site is configured there" do
+    should "be an anonymous user account" do 
+      assert User.find_by_login('anonymous')
+    end
+  end
+
   protected
 
     def create_user(options = {})

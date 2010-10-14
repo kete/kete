@@ -767,3 +767,24 @@ system_settings_089:
   id: "89"
   value:
   section: Server
+system_settings_090:
+  name: Allowed Anonymous Actions
+  technically_advanced: true
+  required_to_be_configured: false
+  explanation: |-
+    What actions on the site will you allow people to do as a non-registered user. They will still be required to submit an email address and user name, but no permanent account will be created for them.
+
+    Each action that you want to allow, must be in following format where the allowed_for is the first page (say a comment form) of the action you allow and the finished_after is the second URL that the allowed_for form submits to: { :allowed_for => 'controller_name/action_name', :finished_after => 'controller_name/action_name' }. An anonymous action description should then be wrappe in square brackets []. A setting with a single anonymous action for allowing anoymous comments (i.e. discussion) would have this value:
+
+    [{ :allowed_for => 'comments/new', :finished_after => 'comments/create' }]
+
+    You can multiple actions, in which case their declarations should be comma separated, like so:
+
+    [{ :allowed_for => 'comments/new', :finished_after => 'comments/create' }, { :allowed_for => 'baskets/contact', :finished_after => 'baskets/send_email' }]
+
+    At this time, these two actions (comments and contact form) are the only two actions we recommend. If you want to do more, you should discuss it on http://kete.net.nz.
+
+    IMPORTANT: this HAS to be in correct format. Be very careful using this.
+  id: "90"
+  value:
+  section: Server
