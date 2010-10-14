@@ -77,7 +77,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_TOPIC_TYPE_FIELD) && topic_type_useful_here?(type) %>
+    <% if topic_type_useful_here?(type) %>
     <tr>
       <td class="label"><%=t 'search.mini_controls.about_a' %></td>
       <td colspan="2" class="fields">
