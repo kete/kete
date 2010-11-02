@@ -26,6 +26,7 @@ en:
     back_to: "back to"
     basket: basket
     below: below
+    breadcrumb_delimiter: " &raquo; "
     browse: browse
     by: by
     can: can
