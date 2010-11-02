@@ -890,7 +890,7 @@ module ApplicationHelper
   end
 
   def topic_type_useful_here?(type)
-    display_search_field_for?(type, DISPLAY_ITEM_TYPE_FIELD) || params[:controller_name_for_zoom_class] == 'topics'
+    display_search_field_for?(type, DISPLAY_TOPIC_TYPE_FIELD) || params[:controller_name_for_zoom_class] == 'topics'
   end
 
   def toggle_topic_types_field_js_helper_for(parent_id)

@@ -91,6 +91,10 @@ end
 # warnings and continue to run it anyway. Should be used within the block of
 # <tt>configure_environment</tt>
 def set_constant(constant, value)
+  # Walter McGinnis, 2010-10-15
+  # update to also update Kete object with value via redefining getter method
+  Kete.define_reader_method_as(constant.to_s.downcase, value)
+
   if respond_to?(:silence_warnings)
     silence_warnings do
       Object.send(:remove_const, constant) if Object.const_defined?(constant)
