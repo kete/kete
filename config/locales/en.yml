@@ -27,6 +27,7 @@ en:
     back_to: "{{t.base.back}} to"
     basket: basket
     below: below
+    breadcrumb_delimiter: " &raquo; "
     browse: browse
     by: by
     can: can

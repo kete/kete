@@ -323,9 +323,9 @@ module ZoomSearch
       if value =~ /^(\d{4})-?(\d{1,2})?$/
         default_month = look_from == :beginning ? 01 : 12
         default_day = look_from == :beginning ? 01 : 31
-        time = Time.parse("#{$1}-#{$2 || default_month}-#{$3 || default_day}")
+        time = Time.zone.parse("#{$1}-#{$2 || default_month}-#{$3 || default_day}")
       else
-        time = Time.parse(value)
+        time = Time.zone.parse(value)
       end
       # all times in zebra are stored as UTC, so compare against that for better results
       time.utc.strftime("%Y-%m-%d")
