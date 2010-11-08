@@ -9,7 +9,7 @@
       <% fields_for "setting[]" do |f| %>
       <%= f.text_field :value %>
       <div class="form_example">
-        <%= @setting.explanation %>
+        <%= RedCloth.new(@setting.explanation).to_html %>
       </div>
       <% end -%>
     </div>
