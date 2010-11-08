@@ -768,13 +768,13 @@ system_settings_089:
   value:
   section: Server
 system_settings_090:
-  name: Allowed Anonymous Actions
+  name: Allowed Public Actions
   technically_advanced: true
   required_to_be_configured: false
   explanation: |-
     What actions on the site will you allow people to do as a non-registered user. They will still be required to submit an email address and user name, but no permanent account will be created for them.
 
-    Each action that you want to allow, must be in following format where the allowed_for is the first page (say a comment form) of the action you allow and the finished_after is the second URL that the allowed_for form submits to: { :allowed_for => 'controller_name/action_name', :finished_after => 'controller_name/action_name' }. An anonymous action description should then be wrappe in square brackets []. A setting with a single anonymous action for allowing anoymous comments (i.e. discussion) would have this value:
+    Each action that you want to allow, must be in following format where the allowed_for is the first page (say a comment form) of the action you allow and the finished_after is the second URL that the allowed_for form submits to: { :allowed_for => 'controller_name/action_name', :finished_after => 'controller_name/action_name' }. An public action description should then be wrappe in square brackets []. A setting with a single public action for allowing anoymous comments (i.e. discussion) would have this value:
 
     [{ :allowed_for => 'comments/new', :finished_after => 'comments/create' }]
 
