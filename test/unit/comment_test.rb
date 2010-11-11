@@ -22,8 +22,13 @@ class CommentTest < ActiveSupport::TestCase
   include ExtendedContentTestUnitHelper
   include FlaggingTestUnitHelper
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+
+  context "A comment created by an anonymous user" do
+    setup do
+      
+    end
+    should "have an email address stored for the contribution that resolves to user address" do
+    end
   end
+
 end

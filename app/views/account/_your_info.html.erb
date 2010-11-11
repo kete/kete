@@ -1,0 +1,30 @@
+<div id="or-divider"><%= t 'account.your_info.or' %></div>
+
+<div id="your-info-wrapper">
+  <h2><%= t('account.your_info.enter_your_information') -%></h2>
+
+  <fieldset>
+    <div class="form-element">
+      <label for="name"><%=t 'account.your_info.name' %></label>
+      <%= text_field_tag 'name', nil, :tabindex => '1' %>
+    </div>
+
+    <div class="form-element">
+      <label for="website"><%=t 'account.your_info.website' %></label>
+      <%= text_field_tag 'website', nil, :tabindex => '1' %>
+    </div>
+
+    <div class="form-element">
+      <label for="email"><%=t 'account.your_info.email' %></label>
+      <%= text_field_tag 'email', nil, :tabindex => '1' %>
+      <% if session[:return_to].include?('contact') -%>
+      <div class="form_example"><%=t 'account.your_info.email_will_only_be_shared_with_person_emailed' %></div>
+      <% else -%>
+      <div class="form_example"><%=t 'account.your_info.email_will_not_be_shared' %></div>
+      <% end -%>
+    </div>
+
+    <%= render :partial => "captcha_wrapper" -%>
+
+  </fieldset>
+</div>

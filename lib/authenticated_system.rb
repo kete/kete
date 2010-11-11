@@ -1,5 +1,17 @@
 module AuthenticatedSystem
   protected
+
+  def deauthenticate
+    logger.debug("what is current user from deauthenticate: " + current_user.inspect)
+    current_user.forget_me if logged_in?
+    cookies.delete :auth_token
+    # Walter McGinnis, 2008-03-16
+    # added to support brain_buster plugin captcha
+    cookies.delete :captcha_status
+    reset_session
+  end
+
+
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
     def logged_in?
@@ -9,6 +21,22 @@ module AuthenticatedSystem
     # Accesses the current user from the session.
     def current_user
       @current_user ||= (session[:user] && User.find_by_id(session[:user])) || :false
+
+      if @current_user != :false && @current_user.anonymous? && session[:anonymous_user].present?
+        if session[:anonymous_user][:email].present?
+          @current_user.email = session[:anonymous_user][:email]
+        end
+
+        if session[:anonymous_user][:name].present?
+          @current_user.display_name = session[:anonymous_user][:name]
+        end
+
+        if session[:anonymous_user][:website].present?
+          @current_user.website = session[:anonymous_user][:website]
+        end
+      end
+
+      @current_user
     end
 
     # Store the given user in the session.

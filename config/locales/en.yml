@@ -52,6 +52,7 @@ en:
     contact: contact
     content: content
     content_type: "{{t.base.content}} {{t.base.type}}"
+    continue: continue
     contribute: contribute
     contributed: contributed
     contributing: contributing
@@ -99,6 +100,7 @@ en:
     imported: imported
     importer: importer
     importing: importing
+    information: information
     inherit: inherit
     inside: inside
     invalid: invalid
@@ -169,6 +171,8 @@ en:
     saved: saved
     search: search
     searching: searching
+    send: send
+    send: sending
     sent: sent
     show: show
     showing: showing
@@ -234,6 +238,11 @@ en:
       your_avatar: "{{t.base.your.capitalize}} Gravatar. "
     baskets:
       title: "{{t.base.your.capitalize}} {{t.base.basket.pluralize}}"
+    captcha_wrapper:
+      case_sensitive: "Text is case sensitive"
+      security_code: "Security {{t.base.code.capitalize}}: {{t.base.please.capitalize}} {{t.base.enter}} the text {{t.base.from}} the {{t.base.zoom_types.image}} to the right"
+      text_captcha: "or use a {{text_captcha_link}}"
+      text_captcha_link: "non-{{t.base.zoom_types.image}} security question"
     change_password:
       button: "{{t.base.phrases.change_password}}"
       confirm_pass: "{{t.base.confirm.capitalize}} {{t.base.password}}"
@@ -263,13 +272,15 @@ en:
       choose_locale: "-{{t.base.choose}} {{t.base.language}}-"
       language: "{{t.base.language.capitalize}}:"
     login:
-      admin_details: "{{t.base.please.capitalize}} {{t.base.enter}} the {{t.base.default}} {{t.base.administrator}} {{t.base.account}} {{t.base.login}} and {{t.base.password}} to continue to configuration of the {{t.base.site}}."
+      admin_details: "{{t.base.please.capitalize}} {{t.base.enter}} the {{t.base.default}} {{t.base.administrator}} {{t.base.account}} {{t.base.login}} and {{t.base.password}} to {{t.base.continue}} to configuration of the {{t.base.site}}."
       button: "{{t.base.login.capitalize}}"
+      continue: "{{t.base.continue.capitalize}}"
       forgot_password: "Forgot {{t.base.your}} {{t.base.password}}? {{forgot_password_link}}"
       forgot_password_link: "{{t.base.click.capitalize}} here"
       login: "{{t.base.login.capitalize}}:"
       missing_explaination: "Kete requires {{t.base.you}} to install the following software and restart {{t.base.your}} server."
       missing_software: "Missing Software!"
+      or_enter_your_info: "or {{t.base.enter}} {{t.base.your}} {{t.base.information}}"
       password: "{{t.base.password.capitalize}}:"
       register: "Are {{t.base.you}} {{t.base.registered}}? {{t.base.you.capitalize}} will need to {{register_link}} first before {{t.base.you}} can {{t.base.login}}."
       register_link: "{{t.base.register}}"
@@ -324,7 +335,6 @@ en:
     signup:
       agree_to: "I agree that I have read and {{t.base.accept}} the {{terms_and_conditions_link}}, {{privacy_policy_link}}, and {{house_rules_link}}."
       button: "Sign up"
-      case_sensitive: "Text is case sensitive"
       confirm_password: "{{t.base.confirm.capitalize}} {{t.base.password}}:"
       email: "{{t.base.email.capitalize}}:"
       house_rules_link: "House Rules"
@@ -335,13 +345,19 @@ en:
       password: "{{t.base.password.capitalize}}:"
       preferred_license: "Preferred {{t.base.license.capitalize}}:"
       privacy_policy_link: "Privacy policy"
-      security_code: "Security {{t.base.code.capitalize}}: {{t.base.please.capitalize}} {{t.base.enter}} the text {{t.base.from}} the {{t.base.zoom_types.image}} to the right"
       terms_and_conditions_link: "Terms and conditions"
-      text_captcha: "or use a {{text_captcha_link}}"
-      text_captcha_link: "non-{{t.base.zoom_types.image}} security question"
       title: Registration
       user_name: "{{t.base.username.capitalize}}:"
       user_name_example: "This is the {{t.base.name}} others will see on {{t.base.your}} {{t.base.profile}} and when you make {{t.base.contribution.pluralize}} to the {{t.base.site}}. If you do not supply one, {{t.base.your}} {{t.base.login}} will be used instead. {{t.base.your.capitalize}} {{t.base.username}} can contain spaces. E.g if {{t.base.your}} {{t.base.login}} was \"jsmith\" {{t.base.your}} screen {{t.base.name}} could be \"John Smith\"."
+    your_info:
+      email: "{{t.base.email.capitalize}}"
+      email_will_only_be_shared_with_person_emailed: "{{t.base.your.capitalize}} {{t.base.email}} will only be shared with the person {{t.base.your}} are contacting."
+      email_will_not_be_shared: "{{t.base.your.capitalize}} {{t.base.email}} will not be shared."
+      enter_your_information: "{{t.base.enter.capitalize}} {{t.base.your.capitalize}} {{t.base.information.capitalize}}"
+      name: "{{t.base.your.capitalize}} {{t.base.name}}"
+      or: OR
+      your_information: "{{t.base.your.capitalize}} {{t.base.information.capitalize}}"
+      website: Website
   account_controller:
     activate:
       activated: "{{t.base.your.capitalize}} {{t.base.account}} {{t.base.has_been}} {{t.base.activated}}.  {{t.base.please.capitalize}} {{t.base.login}}."
@@ -366,7 +382,10 @@ en:
       no_such_login: "Could not find a {{t.base.user}} with that {{t.base.login}}"
     login:
       failed_login: "{{t.base.your.capitalize}} {{t.base.password}} or {{t.base.login}} do not match our records. {{t.base.please_try_again}}."
+      failed_security_answer: "{{t.base.your.capitalize}} security question answer {{t.base.failed}}. {{t.base.please_try_again}}."
+      invalid_email: "{{t.base.invalid.capitalize}} {{t.base.email}}"
       logged_in: "{{t.base.logged_in}} {{t.base.successfully}}"
+      or: " or "
     logout:
       logged_out: "{{t.base.you.capitalize}} have been logged out."
     make_selected_portrait:
@@ -640,7 +659,7 @@ en:
     only_comments: "{{t.base.only.capitalize}} {{t.base.zoom_types.comment.pluralize}}"
     only_details: "{{t.base.only.capitalize}} full details"
     private_item_notification_or_default:
-      dont_send_notification: "Don't send {{t.base.email}} notification"
+      dont_send_notification: "Don't {{t.base.send}} {{t.base.email}} notification"
     recent_as_headlines: "Headlines (news style)"
     recent_as_summaries: "Summaries (blog style)"
     recent_dont_show: "Don't {{t.base.show}} them"
@@ -718,7 +737,7 @@ en:
     form:
       admin_contact: "{{t.base.administrator.capitalize}} {{t.base.contact}}?"
       admin_contact_disabled_example: "{{t.base.user.capitalize.pluralize}} will not be able to {{t.base.contact}} {{t.base.administrator.pluralize}}."
-      admin_contact_enabled_example: "A link will be provided that {{t.base.allows}} {{t.base.user.pluralize}} to send a message to {{t.base.administrator.pluralize}}."
+      admin_contact_enabled_example: "A link will be provided that {{t.base.allows}} {{t.base.user.pluralize}} to {{t.base.send}} a message to {{t.base.administrator.pluralize}}."
       admin_contain_current_inheritance: "The {{t.base.site.capitalize}} {{t.base.has}} <strong>{{current_inheritance}}</strong> use of the {{t.base.administrator}} {{t.base.contact}} {{t.base.form}}."
       browse_order: "{{t.base.default.capitalize}} {{t.base.browse.capitalize}} Results Order:"
       browse_order_default: "use software {{t.base.default}}"
@@ -737,7 +756,7 @@ en:
       enabled: "{{t.base.enabled.capitalize}}"
       file_privacy: "{{t.base.default.capitalize}} Original File Privacy:"
       file_privacy_current_inheritance: "The {{t.base.site.capitalize}} {{t.base.has}} files <strong>{{current_inheritance}}</strong> {{t.base.by}} {{t.base.default}}"
-      file_privacy_example: "{{t.base.you.capitalize}} may use this to restrict the download of an {{t.base.item}}'s original file.  For example, {{t.base.you}} may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the information about it, but limit downloading the actual {{t.base.zoom_types.document}} file to {{t.base.basket}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
+      file_privacy_example: "{{t.base.you.capitalize}} may use this to restrict the download of an {{t.base.item}}'s original file.  For example, {{t.base.you}} may set a {{t.base.zoom_types.document}} to be '{{t.base.public}}' and {{t.base.show}} the {{t.base.information}} about it, but limit downloading the actual {{t.base.zoom_types.document}} file to {{t.base.basket}} {{t.base.member.pluralize}}.  Note this applies across all versions of an {{t.base.item}}."
       file_privacy_private_example: "{{t.base.can_be_downloaded.capitalize}} {{t.base.only}} {{t.base.by}} authorized {{t.base.basket}} {{t.base.member.pluralize}}"
       file_privacy_public_example: "{{t.base.can_be_downloaded.capitalize}} {{t.base.by}} {{t.base.everyone}}"
       file_visibility: "{{t.base.private.capitalize}} Original Files Visibility:"
@@ -835,7 +854,7 @@ en:
       part2: "If you are using a shared computer, make sure you're {{t.base.logged_in.downcase}} with the {{t.base.account}} that has access to this area. Try {{login_link}} again before revisiting the page."
       part3: "{{t.base.you.capitalize}} {{t.base.can}} {{t.base.join}}, or apply to {{t.base.join}}, the {{t.base.basket}} by visiting the {{basket_join_link}}. If {{t.base.join.pluralize}} need to be {{t.base.approved}}, you'll receive an {{t.base.email}} when you're let in. Otherwise, you should be able to access the {{t.base.basket}} {{t.base.content}} instantly."
       part4: "If you should have permission to access this part of the {{t.base.site}}, you can try {{basket_contact_link}}"
-      part5: "Use {{email_link}} to {{t.base.email}} a {{t.base.site_administrator}} to report the issue. {{t.base.please.capitalize}} specify that what page you tried to access in the email."
+      part5: "Use {{email_link}} to {{t.base.email}} a {{t.base.site_administrator}} to report the issue. {{t.base.please.capitalize}} specify that what page you tried to access in the {{t.base.email}}."
       part6: "Or simply proceed on to another page via the {{t.base.browse.capitalize}} or {{t.base.search.capitalize}} functions at the top of this page."
       thank_you: "{{t.base.thank_you}},"
       title: "Permission Denied"
@@ -929,13 +948,13 @@ en:
       link_site_later: "{{t.base.you.capitalize}} may do this later by visiting the {{t.layouts.application.toolbox_label}} and using the \"List {{t.base.site}} on Kete.net.nz\" link."
       missing_software: "Missing Software:"
       missing_software_gem: "{{gem_name}} gem"
-      must_restart: "Before {{t.base.you}} continue, {{t.base.you}} must restart the kete application server and start backgroundrb!"
+      must_restart: "Before {{t.base.you}} {{t.base.continue}}, {{t.base.you}} must restart the kete application server and start backgroundrb!"
       prime_search_engine: "Prime {{t.base.search.capitalize}} Engine"
       regular_options: "Regular Options"
       reload_site: "Reload {{t.base.site.capitalize}}"
       restart_server: "Restart Server"
       search_engine: "{{t.base.search.capitalize}} Engine"
-      search_engine_needs_bootstrapping: "<i>After you have restarted the server</i>, the {{t.base.search.capitalize}} Engine needs to have the initial {{t.base.content.pluralize}} of Kete {{t.base.added}} to it.  {{t.base.please.capitalize}} {{t.base.click}} 'Prime {{t.base.search.capitalize}} Engine' to continue."
+      search_engine_needs_bootstrapping: "<i>After you have restarted the server</i>, the {{t.base.search.capitalize}} Engine needs to have the initial {{t.base.content.pluralize}} of Kete {{t.base.added}} to it.  {{t.base.please.capitalize}} {{t.base.click}} 'Prime {{t.base.search.capitalize}} Engine' to {{t.base.continue}}."
       search_engine_not_complete: "Not yet complete."
       search_engine_primed: "{{t.base.search.capitalize}} Engine primed."
       security_title: "Security:"
@@ -951,8 +970,8 @@ en:
     link_to_site:
       already_listed: "Kete.net.nz already lists the {{t.base.site}}. {{t.base.you.capitalize}} can see details at {{listing_link}}."
       completed: "Completed. "
-      description: "Would {{t.base.you}} like to send {{t.base.your}} {{t.base.site}} {{t.base.name}}, {{t.base.site}} url and a short description of {{t.base.your}} {{t.base.site}} for to a {{t.base.public}} list of Kete installations?"
-      send_information: "Send Information"
+      description: "Would {{t.base.you}} like to {{t.base.send}} {{t.base.your}} {{t.base.site}} {{t.base.name}}, {{t.base.site}} url and a short description of {{t.base.your}} {{t.base.site}} for to a {{t.base.public}} list of Kete installations?"
+      send_information: "{{t.base.send.capitalize}} {{t.base.information.capitalize}}"
       site_description: "{{t.base.site.capitalize}} description:"
       site_fields_optional: (optional)
       site_publisher_address: "Publisher Address:"
@@ -1154,10 +1173,10 @@ en:
       updated: "{{t.base.zoom_types.document.capitalize}} {{t.base.was_updated}}."
   email:
     contact:
-      send: Send
+      send: "{{t.base.send.capitalize}}"
       title: "{{t.base.contact.capitalize}} {{recipient}}"
     contact_form:
-      email_shared: "Note: {{t.base.your.capitalize}} {{t.base.email}} address will be shown to the person/people who receive this email."
+      email_shared: "Note: {{t.base.your.capitalize}} {{t.base.email}} address will be shown to the person/people who receive this {{t.base.email}}."
       message: "Message:"
       subject: "Subject:"
   email_controller_lib:
@@ -1176,7 +1195,7 @@ en:
           <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
           <h3>Still getting this error?</h3>
           <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-          <p>Please send an email via the "{{t.layouts.application.contact}}" link at the top of the page.</p>
+          <p>Please {{t.base.send}} an {{t.base.email}} via the "{{t.layouts.application.contact}}" link at the top of the page.</p>
           <p>Include details about what you were trying to do.</p>
           <p><span style="font-weight: bold;">Example </span></p>
           <p>"I was trying to {{t.base.import}} a set of {{t.base.zoom_types.topic.pluralize}} using the Simple XML importer and I got this error."</p>
@@ -1193,7 +1212,7 @@ en:
           <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
           <h3>Still getting this error?</h3>
           <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-          <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
+          <p>Please {{t.base.send}} an {{t.base.email}} via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
           <p>Include details about what you were trying to do.</p>
           <p><span style="font-weight: bold;">Example </span></p>
           <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got a number of results. When I clicked on the result "Foxton Beach" I got this error."</p>
@@ -1223,7 +1242,7 @@ en:
           </ol>
           <h3>Still getting this error?</h3>
           <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-          <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
+          <p>Please {{t.base.send}} an {{t.base.email}} via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
           <p>Include details about what you were trying to do.</p>
           <p><span style="font-weight: bold;">Example </span></p>
           <p>"I was trying to edit the topic 'Introduction' and I got the Authenticity Token problem."</p>
@@ -1242,7 +1261,7 @@ en:
           <p>Try pressing the back button in your browser. Then try to do whatever you were doing again.</p>
           <h3>Still getting this error?</h3>
           <p>Sorry about that. You can either try again a bit later on or help us out by reporting the problem.</p>
-          <p>Please send an email via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
+          <p>Please {{t.base.send}} an {{t.base.email}} via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
           <p>Include details about what you were trying to do.</p>
           <p><span style="font-weight: bold;">Example </span></p>
           <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got this error."</p>
@@ -1357,7 +1376,7 @@ en:
     preview:
       no_public: "There is currently no {{t.base.public}} version of this {{controller}} available."
     reject:
-      rejected: "This {{t.base.version}} of this {{zoom_class}} {{t.base.has_been}} {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by email."
+      rejected: "This {{t.base.version}} of this {{zoom_class}} {{t.base.has_been}} {{t.base.rejected}}.  The {{t.base.user}} who submitted the revision will be notified by {{t.base.email}}."
     restore:
       approved: "The {{t.base.content}} of this {{zoom_class}} {{t.base.has_been}} {{t.base.approved}} {{t.base.from}} the selected revision."
       made_live: "{{t.base.your.capitalize}} {{t.base.contribution}} to {{site_name}} in {{basket_name}} {{t.base.has_been}} {{t.base.made}} the live version."
@@ -1567,7 +1586,7 @@ en:
       categories_title: Categories
       comments: "{{count}} {{t.base.zoom_types.comment.pluralize}}"
       contents_by_type: "{{t.base.content.pluralize.capitalize}} {{t.base.by}} {{t.base.type}}"
-      continue_to_topic: "{{t.base.click.capitalize}} here to continue to {{t.base.zoom_types.topic}} and its links"
+      continue_to_topic: "{{t.base.click.capitalize}} here to {{t.base.continue}} to {{t.base.zoom_types.topic}} and its links"
       create_homepage_topic: "{{t.base.create.capitalize}} {{t.base.basket}} homepage"
       edit: "{{t.base.edit.capitalize}}"
       history: "{{t.base.history.capitalize}}"
@@ -2348,7 +2367,7 @@ en:
     tags:
       click_to_add: "{{t.base.click}} to {{t.base.add}} {{t.base.tag}}(s)"
       getting_tags: "Getting {{t.base.tag.pluralize}}. "
-      sending_tags: "Sending {{t.base.tag.pluralize}}. "
+      sending_tags: "{{t.base.sending.capitalize}} {{t.base.tag.pluralize}}. "
       title: "{{t.base.tag.capitalize.pluralize}}"
     topic_types:
       about_a: "{{t.base.about_a.capitalize}}?"
@@ -2384,9 +2403,9 @@ en:
     email_footer:
       thanks: "{{t.base.thank_you}},"
     email_to:
-      create_new_email: "If not, {{t.base.you}} {{t.base.can}} {{t.base.create}} a {{t.base.new}} message and send it to"
+      create_new_email: "If not, {{t.base.you}} {{t.base.can}} {{t.base.create}} a {{t.base.new}} message and {{t.base.send}} it to"
       on_behalf_of: "This {{t.base.email}} {{t.base.was}} {{t.base.sent}} by {{site_name}} on behalf of {{user_name}}."
-      replying_to_sender: "Replying to this message should send an {{t.base.email}} to {{user_name}}'s {{t.base.email}} address."
+      replying_to_sender: "Replying to this message should {{t.base.send}} an {{t.base.email}} to {{user_name}}'s {{t.base.email}} address."
       sent_from_basket_on_site: "{{user_name}} {{t.base.has}} sent you a message {{t.base.from}} the {{basket_name}} {{t.base.basket}} on {{site_name}}."
       sent_from_site: "{{user_name}} {{t.base.has}} sent you a message {{t.base.from}} {{site_name}}."
     forgot_password:

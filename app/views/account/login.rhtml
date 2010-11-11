@@ -1,7 +1,9 @@
+<% @title = t('account.login.title', :site_name => Kete.pretty_site_name)
+   @button_text = t('account.login.button')
+   @button_classes = ['login-button']
+-%>
 
-<% @title = t('account.login.title', :site_name => Kete.pretty_site_name) -%>
-
-<% if !IS_CONFIGURED and ( !MISSING_SOFTWARE['Gems'].blank? or
+<% if !Kete.is_configured? and ( !MISSING_SOFTWARE['Gems'].blank? or
    !MISSING_SOFTWARE['Commands'].blank? ) -%>
 
 <div id="required-software">
@@ -18,15 +20,21 @@
 </div>
 <% else -%>
 
-<% if IS_CONFIGURED -%>
+<div id="login-your-info-wrapper">
+<div id="login-wrapper">
+
+<% if Kete.is_configured? && !anonymous_ok_for?(session[:return_to]) -%>
   <h2><%= h(@title) -%></h2>
 <% end -%>
 
-<% form_tag do -%>
+<% form_tag({}, {:id => 'login'}) do -%>
+<% if Kete.is_configured? && anonymous_ok_for?(session[:return_to]) -%>
+  <h2><%= h(@title) -%></h2>
+<% end -%>
 
 <fieldset>
   <!--[form:login]-->
-  <% if IS_CONFIGURED -%>
+  <% if Kete.is_configured? -%>
   <p><%=t 'account.login.register',
           :register_link => link_to(t('account.login.register_link'),
                                     { :controller => 'account',
@@ -47,9 +55,9 @@
     <%= password_field_tag 'password', nil, :tabindex => '1' %>
   </div>
 
-  <% if IS_CONFIGURED -%>
+  <% if Kete.is_configured? -%>
   <div class="form-element">
-    <label for="remember_me"><%=t 'account.login.remember_me' %></label>
+    <label for="remember_me"><%=t 'account.login.remember_me' -%></label>
     <%= check_box_tag 'remember_me', "1", false, :tabindex => '1' %>
   </div>
 
@@ -62,8 +70,23 @@
   <% end -%>
 </fieldset>
 
-<div class="wrap"><%= submit_tag t('account.login.button'), { :class => "login-button", :tabindex => '1'} %></div>
+</div>
+
+<% if Kete.is_configured? && anonymous_ok_for?(session[:return_to]) -%>
+  <% @title = @title + ' ' +t('account.login.or_enter_your_info')
+  @button_text = t('account.login.continue')
+  @button_classes << 'center'
+  -%>
+
+  <%=  render :partial => "your_info" -%>
+
 <% end -%>
+
+</div>
+<div style="clear:both;"></div>
+<div class="wrap"><%= submit_tag @button_text, { :class => @button_classes.join(' '), :tabindex => '1'} %></div>
+<% end -%>
+
 <% end -%>
 
 <%= render(:partial => "topics/content_wrapper_end" ) %>

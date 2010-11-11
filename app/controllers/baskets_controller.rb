@@ -24,6 +24,8 @@ class BasketsController < ApplicationController
 
   include TaggingController
 
+  include AnonymousFinishedAfterFilter
+
   def index
     redirect_to :action => 'list'
   end

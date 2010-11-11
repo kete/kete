@@ -170,6 +170,29 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  context "A user" do
+    should "be able to be tested whether the user is anonymous" do
+      assert !User.first.anonymous?
+      assert User.find_by_login('anonymous').anonymous?
+    end
+
+    should "have a virtual attribute for website that is only available to anonymous user" do
+      website = 'http://kete.net.nz'
+
+      non_anonymous = User.first
+      assert_nil non_anonymous.website
+      
+      non_anonymous.website = website
+      assert_nil non_anonymous.website
+
+      anonymous = User.find_by_login('anonymous')
+
+      anonymous.website = website
+      assert_equal anonymous.website, website
+    end
+  end
+
+
   protected
 
     def create_user(options = {})
