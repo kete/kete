@@ -223,7 +223,7 @@ module FlaggingController
       # lets do some queries here and store values in an array/hash for access later
       # rather than getting them each iteration (which can result in 100's of queries)
 
-      select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email'
+      select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login'
       @item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
       @contributor_index = 0
 

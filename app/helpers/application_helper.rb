@@ -584,6 +584,7 @@ module ApplicationHelper
   end
 
   def link_to_contributions_of(user, zoom_class = 'Topic', options = {})
+    display_html = String.new
     if options[:with_avatar]
       display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
       display_html += h(user.user_name)
@@ -592,9 +593,10 @@ module ApplicationHelper
       display_html = h(user.user_name)
     end
 
-    not_contributions_for_anonymous = true unless options[:show_anonymous_contribs].present? && options[:show_anonymous_contribs]
+    contributions_instead_of_website_for_anonymous = options[:show_anonymous_contribs].present? ? options[:show_anonymous_contribs] : false
 
-    url = user.anonymous? && not_contributions_for_anonymous ? user.website : url_for_contributions_of(user, zoom_class)
+    url = user.anonymous? && !contributions_instead_of_website_for_anonymous ? user.website : url_for_contributions_of(user, zoom_class)
+
     url.blank? ? display_html : link_to(display_html, url)
   end
 

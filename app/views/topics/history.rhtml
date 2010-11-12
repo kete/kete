@@ -61,8 +61,8 @@
                   <%= link_to_contributions_of(contributor, @item.class.name, :with_avatar => true) if @item_contributors.size > 0 %>
                   <% @contributor_index += 1 -%>
                 <% end -%>
-              <% rescue -%>
-                <%
+              <% rescue => exception -%>
+                <% Rails.logger.info("history error: " + exception.message)
                 # catch the ugly error message and display something nicer
                 message = "It looks like there is no contributor associated with version #{version.version.to_s} of #{@item.class.name} #{@item.id}.\n"
                 message += "Possible data corruption. You should consider running 'rake kete:repair:all'."
