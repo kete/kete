@@ -10,7 +10,7 @@ class MemberListTest < ActionController::IntegrationTest
       add_joe_as_member_to(@@site_basket)
       add_john
 
-      login_as('admin')
+      login_as('admin', 'test', { :logout_first => true })
     end
 
     should 'have an RSS feed' do
@@ -35,7 +35,7 @@ class MemberListTest < ActionController::IntegrationTest
       should 'have links to various role types' do
         visit '/site/members/list'
         body_should_contain 'Site Members'
-        body_should_contain '1 member'
+        body_should_contain '2 members'
         body_should_contain '1 moderator'
         body_should_contain '1 site administrator'
         body_should_contain '1 technical administrator'
@@ -79,13 +79,13 @@ class MemberListTest < ActionController::IntegrationTest
           @@site_basket.settings[:memberlist_policy] = "#{at_least}"
         end
         should "allow #{title} access" do
-          !user.nil? ? login_as(user) : logout
+          !user.nil? ? login_as(user, 'test', { :logout_first => true }) : logout
           visit '/site/members/list'
           body_should_contain 'Site Members'
         end
         if !member_roles[(index + 1)].blank? && !member_roles[(index + 1)][2].blank?
           should "deny less than #{title} access" do
-            login_as(member_roles[(index + 1)][2])
+            login_as(member_roles[(index + 1)][2], 'test', { :logout_first => true })
             visit '/site/members/list'
             body_should_contain 'Permission Denied'
           end
@@ -97,7 +97,7 @@ class MemberListTest < ActionController::IntegrationTest
       @@site_basket.settings[:memberlist_policy] = 'at least member'
       visit "/site/members/list"
       body_should_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
-      login_as('joe')
+      login_as('joe', 'test', { :logout_first => true })
       visit "/site/members/list"
       body_should_not_contain Regexp.new("<a (.+)>User name</a>(\s+)or(\s+)<a (.+)>Login</a>")
       body_should_contain Regexp.new("<a (.+)>User name</a>")

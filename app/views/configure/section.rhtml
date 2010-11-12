@@ -9,7 +9,7 @@
       <% fields_for "setting[]" do |f| %>
       <%= f.text_field :value %>
       <div class="form_example">
-        <%= @setting.explanation %>
+        <%= RedCloth.new(@setting.explanation).to_html.gsub("&#8220;", "\"").gsub("&#8221;", "\"").gsub("&#8217;", "'").gsub("&#8216;", "'").gsub("‘", "'").gsub("’", "'") -%>
       </div>
       <% end -%>
     </div>

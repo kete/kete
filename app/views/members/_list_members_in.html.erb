@@ -7,7 +7,7 @@
     <tr>
       <td class="member_avatar"><%= avatar_for user -%></td>
       <td class="member_username">
-        <%= link_to_contributions_of(user,'Topic') -%>
+        <%= link_to_contributions_of(user,'Topic', :show_anonymous_contribs => true) -%>
         <%= "<br />(#{user.login})" if @site_admin && user.user_name != user.login -%>
       </td>
       <td class="member_joined">

@@ -39,4 +39,49 @@ class TopicsHelperTest < ActionView::TestCase
 
   end
 
+  context "A topic" do
+    setup do 
+      @topic_type_list_to_first_item = "<ul class=\"breadcrumb\">" +
+        "<li class=\"first selected-topic-type\">" +
+        "<a href=\"/en/site/all/topics/of/topic\">Topic</a>" +
+        "</li>"
+
+      # define method and basket var that some of our dependent helpers expect
+      def params
+        Hash.new
+      end
+      
+      @site_basket = Basket.first
+    end
+
+    should "return list of single topic type if it is of root level topic type" do 
+      topic_with_root_topic_type = Factory(:topic)
+
+      single_topic_type_list = @topic_type_list_to_first_item + "</ul>"
+      assert_equal single_topic_type_list, topic_type_breadcrumb_for(topic_with_root_topic_type)
+    end
+
+    should "return list of hierarchy of topic types if it is of topic type that is a sub topic" do
+      topic_type_list_sans_end_tag = @topic_type_list_to_first_item.sub("selected", "ancestor") +
+        "<li class=\"selected-topic-type\">" +
+        "<span class=\"breadcrumb-delimiter\"> &raquo; </span>" +
+        "<a href=\"/en/site/all/topics/of/person\">Person</a></li>"
+
+      parent_id = 2
+      assert_equal topic_type_list_sans_end_tag + "</ul>", topic_type_breadcrumb_for(Factory(:topic, :topic_type_id => parent_id))
+
+      # create new topic type below person
+      added_topic_type = TopicType.create!(:name => "Subsubtype", :description => "test", :parent_id => parent_id)
+      added_topic_type.move_to_child_of TopicType.find(parent_id)
+
+      topic_type_list_sans_end_tag = topic_type_list_sans_end_tag.sub("selected", "ancestor") +
+        "<li class=\"selected-topic-type\">" +
+        "<span class=\"breadcrumb-delimiter\"> &raquo; </span>" +
+        "<a href=\"/en/site/all/topics/of/subsubtype\">Subsubtype</a>" +
+        "</li>" +
+        "</ul>"
+
+      assert_equal topic_type_list_sans_end_tag, topic_type_breadcrumb_for(Factory(:topic, :topic_type_id => added_topic_type.id))
+    end
+  end
 end

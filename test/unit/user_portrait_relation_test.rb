@@ -6,7 +6,7 @@ class UserPortraitRelationTest < ActiveSupport::TestCase
     new_image_with_creator
     assert_not_nil @relation.user
     assert_kind_of User, @relation.user
-    assert_equal User.last, @relation.user
+    assert_equal User.first, @relation.user
   end
 
   def test_relation_should_belong_to_still_image

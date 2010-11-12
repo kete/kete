@@ -584,6 +584,7 @@ module ApplicationHelper
   end
 
   def link_to_contributions_of(user, zoom_class = 'Topic', options = {})
+    display_html = String.new
     if options[:with_avatar]
       display_html = avatar_for(user, { :class => 'user_contribution_link_avatar' })
       display_html += h(user.user_name)
@@ -591,7 +592,12 @@ module ApplicationHelper
     else
       display_html = h(user.user_name)
     end
-    link_to display_html, url_for_contributions_of(user, zoom_class)
+
+    contributions_instead_of_website_for_anonymous = options[:show_anonymous_contribs].present? ? options[:show_anonymous_contribs] : false
+
+    url = user.anonymous? && !contributions_instead_of_website_for_anonymous ? user.website : url_for_contributions_of(user, zoom_class)
+
+    url.blank? ? display_html : link_to(display_html, url)
   end
 
   def stylish_link_to_contributions_of(user, zoom_class, options = {})
@@ -602,7 +608,7 @@ module ApplicationHelper
       avatar = avatar_for(user)
       display_html += '<div class="stylish_user_contribution_link_avatar">' + avatar_for(user) + '</div>' unless avatar.blank?
     end
-    user_link = link_to(h(user.user_name), url_for_contributions_of(user, zoom_class))
+    user_link = link_to_contributions_of(user, zoom_class)
     link_text = (options[:link_text] || user_link).gsub('|user_name_link|', user_link)
     display_html += content_tag('div', link_text, :class => 'stylish_user_contribution_link_extra')
     display_html += options[:additional_html] if options[:additional_html]
@@ -1351,7 +1357,7 @@ module ApplicationHelper
         comment_string += "</div>" # comment-wrapper
 
         html_string += "<div class='comment-outer-wrapper #{comment_depth_div_classes_for(comment)}'>"
-        html_string += stylish_link_to_contributions_of(comment.creators.first, 'Comment',
+        html_string += stylish_link_to_contributions_of(comment.creator, 'Comment',
                                                         :link_text => "<h3>|user_name_link|</h3><div class=\"stylish_user_contribution_link_extra\"><h3>&nbsp;#{t('application_helper.show_comments_for.said')} <a href=\"##{comment.to_anchor}\" name=\"#{comment.to_anchor}\">#{h(comment.title)}</a></h3></div>",
                                                         :additional_html => comment_string)
         html_string += '</div>' # comment-outer-wrapper

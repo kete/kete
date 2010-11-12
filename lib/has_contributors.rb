@@ -37,16 +37,30 @@ module HasContributors
     # method definitions
     def add_as_contributor(user, version = nil)
       user.version = version.nil? ? self.version : version
-      logger.debug("Adding contributor to version #{user.version} of item #{self.id}")
       self.contributors << user
     end
 
     def creator=(user)
       self.creators << user
+      if user.present? && user.anonymous?
+        contribution = contributions.find_by_version(1)
+        contribution.email_for_anonymous = user.email
+        contribution.name_for_anonymous = user.display_name if user.display_name
+        contribution.website_for_anonymous = user.website if user.website
+        contribution.save
+      end
     end
 
     def creator
-      creators.first
+      creator = creators.first
+
+      if creator.present? && creator.anonymous?
+        contribution =  contributions.find_by_version(1)
+        creator.email = contribution.email_for_anonymous
+        creator.resolved_name = contribution.name_for_anonymous if contribution.name_for_anonymous
+        creator.website = contribution.website_for_anonymous if contribution.website_for_anonymous
+      end
+      creator
     end
 
     def submitter_of(version)

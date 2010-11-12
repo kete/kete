@@ -72,19 +72,35 @@ class ActionController::IntegrationTest
   # header. Then fill in fields and click "Log in" Takes required username, and optional password, whether to
   # navigate to login (not needed if we're there already) and whether we are expecting this login to fail
   def login_as(username, password='test', options = {})
-    options = { :navigate_to_login => true,
+    options = { :navigate_to_login => false,
+                :by_form => false,
+                :logout_first => false,
+                :test_success => false,
                 :should_fail_login => false }.merge(options)
-    if options[:navigate_to_login]
+  
+    options[:logout_first] = true if options[:navigate_to_login]
+    options[:test_success] = true if options[:navigate_to_login]
+
+    if options[:logout_first]
       logout # make sure we arn't logged in first
+    end
+
+    if options[:navigate_to_login]
       visit "/site/account/login"
     end
 
-    body_should_contain "Login to Kete"
-    fill_in "login", :with => username.to_s
-    fill_in "password", :with => password
-    click_button "Login"
+    if options[:by_form]
+      body_should_contain "Login to Kete"
+      fill_in "login", :with => username.to_s
+      fill_in "password", :with => password
+      submit_form "login"
+    else
+      # we just want the user to have an authenticated state
+      # no need to go through all the requests, etc.
+      visit "/site/account/login", :post, { :login => username.to_s, :password => password }
+    end
 
-    body_should_contain("Logged in successfully") unless options[:should_fail_login]
+    body_should_contain("Logged in successfully") if options[:test_success] && !options[:should_fail_login]
   end
 
   # Asserts whether the supplied text is within the response body returned from a visit request.

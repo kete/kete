@@ -16,11 +16,13 @@ class HistoryTest < ActionController::IntegrationTest
         @item = new_item({ :title => 'History Test v1' }, nil, nil, item_class) do
           fill_in_needed_information_for(item_class)
         end
-        login_as('angela')
+        login_as('angela', 'test', { :logout_first => true})
         @item = update_item(@item, { :title => 'History Test v2' })
-        login_as('rach')
+
+        login_as('rach', 'test', { :logout_first => true})
         @item = update_item(@item, { :title => 'History Test v3' })
-        login_as('admin')
+
+        login_as('admin', 'test', { :logout_first => true})
       end
 
       should "show all versions and have correct contributors" do
@@ -46,4 +48,20 @@ class HistoryTest < ActionController::IntegrationTest
 
   end
 
+  private
+  def old_login_as(username, password='test', options = {})
+    options = { :navigate_to_login => true,
+                :should_fail_login => false }.merge(options)
+    if options[:navigate_to_login]
+      logout # make sure we arn't logged in first
+      visit "/site/account/login"
+    end
+
+    body_should_contain "Login to Kete"
+    fill_in "login", :with => username.to_s
+    fill_in "password", :with => password
+    click_button "Login"
+
+    body_should_contain("Logged in successfully") unless options[:should_fail_login]
+  end
 end
