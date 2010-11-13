@@ -289,17 +289,16 @@ class CachingTest < ActionController::IntegrationTest
         @topic = new_topic({ :title => 'Topic 3 Title',
                              :description => 'Topic 3 Description' }, @@cache_basket)
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
-        @old_topic = @topic
+        controller = zoom_class_controller(@topic.class.name)
+        @topic_url = "/#{@topic.basket.urlified_name}/#{controller}/show/#{@topic.id}"
         @topic = delete_item(@topic)
       end
 
       should "not contain traces of the old topic" do
         assert @topic.nil? # check the topic was deleted
-        controller = zoom_class_controller(@old_topic.class.name)
-        visit "/#{@old_topic.basket.urlified_name}/#{controller}/show/#{@old_topic.id}"
-        check_cache_current_for(@old_topic, { :on_topic_already => true, :check_should_not => true })
-        body_should_not_contain "Topic 3 Title"
-        body_should_not_contain "Topic 3 Description"
+        visit @topic_url
+        # we should get a 404 back for this page
+        assert !response.ok?
       end
 
     end
