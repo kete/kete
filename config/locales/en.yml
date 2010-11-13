@@ -739,7 +739,7 @@ en:
       admin_contact_disabled_example: "{{t.base.user.capitalize.pluralize}} will not be able to {{t.base.contact}} {{t.base.administrator.pluralize}}."
       admin_contact_enabled_example: "A link will be provided that {{t.base.allows}} {{t.base.user.pluralize}} to {{t.base.send}} a message to {{t.base.administrator.pluralize}}."
       admin_contain_current_inheritance: "The {{t.base.site.capitalize}} {{t.base.has}} <strong>{{current_inheritance}}</strong> use of the {{t.base.administrator}} {{t.base.contact}} {{t.base.form}}."
-      browse_order: "{{t.base.default.capitalize}} {{t.base.browse.capitalize}} Results Order:"
+      browse_order: "{{t.base.default.capitalize}} {{t.base.browse.capitalize}} {{t.base.results.capitalize}} Order:"
       browse_order_default: "use software {{t.base.default}}"
       browse_order_in_reverse: "in reverse?"
       browse_order_sort_by: "{{t.base.sort_by.capitalize}}:"
@@ -795,7 +795,7 @@ en:
       private_item_notification_show_title: "{{t.base.show.capitalize}} {{t.base.private}} {{t.base.item}} title in {{t.base.email}} notifications?"
       public: "{{t.base.public.capitalize}}"
       recent_topics: "{{t.base.disable.capitalize}} {{t.base.site.capitalize}} {{t.base.recent.capitalize}} {{t.base.zoom_types.topic.capitalize.pluralize}} Display:"
-      recent_topics_example: "Do not {{t.base.show}} {{t.base.new}}/{{t.base.edited}} {{t.base.zoom_types.topic.pluralize}} in {{t.base.recent}} results on the {{t.base.site.capitalize}} {{t.base.basket}}?"
+      recent_topics_example: "Do not {{t.base.show}} {{t.base.new}}/{{t.base.edited}} {{t.base.zoom_types.topic.pluralize}} in {{t.base.recent}} {{t.base.results}} on the {{t.base.site.capitalize}} {{t.base.basket}}?"
     homepage_form:
       archives: Archives
       archives_as: "List {{t.base.basket.pluralize}} archive {{t.base.content.pluralize}} as?"
@@ -809,7 +809,7 @@ en:
       recent_topics_amount: "List how many {{t.base.recent}} {{t.base.zoom_types.topic.pluralize}}?"
       recent_topics_example: "Including a rolling list of {{t.base.recent}} {{t.base.zoom_types.topic.pluralize}} is an excellent way to present this {{t.base.basket}} as a blog or a news site."
       recent_topics_type: "List {{t.base.basket.pluralize}} {{t.base.zoom_types.topic.pluralize}} as?"
-      redirect_to: "Redirect to results of?"
+      redirect_to: "Redirect to {{t.base.results}} of?"
       rss_feeds: "RSS or Atom Feeds"
       search: "{{t.base.search.capitalize}}"
       security_exception_example: "{{t.base.allow.capitalize}} {{t.base.form.pluralize}} and other possible insecure elements and attributes in the HTML?"
@@ -1041,7 +1041,7 @@ en:
       description_field: "Description: Describe the {{t.base.content}}."
       note: "{{t.base.all.capitalize}} {{t.base.content_type.pluralize}} have the following {{t.base.field.pluralize}} to start:"
       present_in_all: "These {{t.base.form}} {{t.base.field.pluralize}} will be present in {{t.base.all}} {{t.base.content_type.pluralize}}."
-      short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
+      short_summary_field: "Short Summary: This is a brief blurb suitable for lists of {{t.base.results}}.  It should be plain text."
       title: "Generic {{t.base.content.capitalize}} {{t.base.field.pluralize}}"
       title_field: "Title: What should we call this {{t.base.content}}?"
     list:
@@ -1215,7 +1215,7 @@ en:
           <p>Please {{t.base.send}} an {{t.base.email}} via the "{{t.base.contact.capitalize}}" link at the top of the page.</p>
           <p>Include details about what you were trying to do.</p>
           <p><span style="font-weight: bold;">Example </span></p>
-          <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got a number of results. When I clicked on the result "Foxton Beach" I got this error."</p>
+          <p>"I was trying to find information on Foxton Beach. I typed 'Foxton Beach' into the {{t.base.search}} and got a number of {{t.base.results}}. When I clicked on the result "Foxton Beach" I got this error."</p>
           <p>Please include the URL of the page that gave you the error. The URL is in the address bar of your browser and will start with http://. Please include the entire URL.</p>
           <p><span style="font-weight: bold;">Example</span></p>
           <p>http://horowhenua.kete.net.nz/site/topics/show/44</p>
@@ -1304,7 +1304,7 @@ en:
     available_choices: "Available {{t.base.choice.pluralize}}"
     available_choices_description: "Ftype must be a \"{{t.base.choice.pluralize}}\" option for these options to be available to {{t.base.user.pluralize}}."
     base_url: "Base URL"
-    base_url_description: "Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the {{t.base.choice}} ftypes, Base URL + {{t.base.value}} will take over from normal linking to all results that match the {{t.base.value}} for the {{t.base.choice}} for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
+    base_url_description: "Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the {{t.base.choice}} ftypes, Base URL + {{t.base.value}} will take over from normal linking to all {{t.base.results}} that match the {{t.base.value}} for the {{t.base.choice}} for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
     circa: "{{t.base.accept.capitalize}} Circa?"
     circa_description: "Ftype must be the \"Year\" option for this option to appear."
     import_synonyms_description: "{{t.base.new.capitalize}} line seperated list of {{t.base.import}} synonyms."
@@ -1942,12 +1942,12 @@ en:
   search:
     all:
       all: "{{t.base.all.capitalize}} "
-      results_in: "Results in "
+      results_in: "{{t.base.results.capitalize}} in "
     for:
       current_search: " for {{t.base.your}} {{t.base.search}} '{{search_terms}}'"
       refine_search: "Refine {{t.base.your}} {{t.base.search}} for '{{search_terms}}' {{t.base.searching}} in {{basket_link}}"
       refinements: " and {{refinements}}"
-      results_in: "Results in "
+      results_in: "{{t.base.results.capitalize}} in "
       whole_site: " whole {{t.base.site}}"
     form:
       about_a: "{{t.base.about_a.capitalize}}:"
@@ -2040,19 +2040,19 @@ en:
       coordinates: "Coordinates:"
       no_results_of_any_type_found: "No {{t.base.results}} of any {{t.base.type}} were found."
       no_results_of_this_type_found: "No {{zoom_class}} {{t.base.results}} found, but there are other {{t.base.results}}:"
-      results_on_this_page: "results on this page"
+      results_on_this_page: "{{t.base.results}} on this page"
       search_source_title: "More Resources"
       show: "{{t.base.show.capitalize}}"
-      showing_x-y_of_z: "{{t.base.showing}} {{start}}-{{finish}} results of {{total}}"
+      showing_x-y_of_z: "{{t.base.showing}} {{start}}-{{finish}} {{t.base.results}} of {{total}}"
       view_list: "List {{t.base.view.capitalize}}"
       view_map: "{{t.base.view.capitalize}} on map"
-      x-y_have_z_locations: "{{start}}-{{finish}} results have {{n_locations}} locations"
+      x-y_have_z_locations: "{{start}}-{{finish}} {{t.base.results}} have {{n_locations}} locations"
     rss:
       latest: "{{t.base.latest.capitalize}}"
       next: Next
       related: "{{t.base.related.capitalize}}:"
-      x_results_in: "{{amount}} Results in"
-      showing_x-y_of_z: "{{t.base.showing.capitalize}} {{start}} - {{end}} results of {{total}}"
+      x_results_in: "{{amount}} {{t.base.results.capitalize}} in"
+      showing_x-y_of_z: "{{t.base.showing.capitalize}} {{start}} - {{end}} {{t.base.results}} of {{total}}"
     setup_rebuild:
       all_types: "{{t.base.all}} {{t.base.type.pluralize}}"
       clear_search_engine: "Clear and restart {{t.base.search}} engine first?"
@@ -2137,10 +2137,10 @@ en:
       error_occured: "There was an error linking to {{t.base.your}} {{t.base.site}}. "
       manual_linking: "You can do it manually at <a href='{{new_kete_site}}'>{{new_kete_site}}</a>."
   slideshows_helper:
-    all_results: "{{t.base.back_to.capitalize}} results"
+    all_results: "{{t.base.back_to.capitalize}} {{t.base.results}}"
     next: "Next &raquo;"
     previous: "&laquo; Previous"
-    stop: "Stop results slideshow"
+    stop: "Stop {{t.base.results}} slideshow"
   support:
     array:
       last_word_connector: ", and "
@@ -2202,7 +2202,7 @@ en:
       description_field: "Description: this is where users put the body of their {{t.base.zoom_types.topic}}."
       note: "{{t.base.all.capitalize}} {{t.base.topic_type.pluralize}} inherit the following {{t.base.form}} {{t.base.field.pluralize}}:"
       present_in_all: "These {{t.base.form}} {{t.base.field.pluralize}} will be present in {{t.base.all}} {{t.base.topic_type.pluralize}}."
-      short_summary_field: "Short Summary: This is a brief blurb suitable for lists of results.  It should be plain text."
+      short_summary_field: "Short Summary: This is a brief blurb suitable for lists of {{t.base.results}}.  It should be plain text."
       title: "Generic {{t.base.zoom_types.topic.capitalize}} {{t.base.field.pluralize.capitalize}}"
       title_field: "Title: What shoule we this topic?  This will also be used to generate a URL for this topic."
     inherited_fields:
