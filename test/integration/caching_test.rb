@@ -276,6 +276,9 @@ class CachingTest < ActionController::IntegrationTest
       end
 
       should "be populated with the updated topic" do
+        # NOTE: this will fail if you are running only this file's tests
+        # and the test from with test directory
+        # cd .. and run tests again
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
         body_should_not_contain "Topic 2 Title"
         body_should_not_contain "Topic 2 Description"
