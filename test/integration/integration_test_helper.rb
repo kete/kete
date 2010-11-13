@@ -462,7 +462,7 @@ class ActionController::IntegrationTest
     visit "/#{item.basket.urlified_name}/#{controller}/preview/#{item.id}?version=#{version}"
     save_and_open_page unless response.body.include?("Preview revision")
     body_should_contain 'Preview revision'
-    click_link 'Make this revision live'
+    click_link I18n.t('topics.preview_actions.make_live')
     body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved
                          from the selected revision."
     item.reload # get the new version
