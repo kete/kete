@@ -397,13 +397,17 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
+  # TODO: this isn't having it fragment file named properly for show pages
+  # see ticket #297
+  LAYOUT_PARTS = ['accessibility']
+
   SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'dc_metadata_[privacy]',
                 'page_description_[privacy]', 'google_map_api_[privacy]', 'edit_[privacy]',
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
                 'secondary_content_extended_fields_embedded_[privacy]',
-                'secondary_content_license_metadata_[privacy]', 'history_[privacy]']
+                'secondary_content_license_metadata_[privacy]', 'history_[privacy]'] + LAYOUT_PARTS
 
   PUBLIC_SHOW_PARTS = ['comments-link_[privacy]', 'comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
@@ -413,7 +417,7 @@ class ApplicationController < ActionController::Base
   INDEX_PARTS = ['page_keywords_[privacy]', 'page_description_[privacy]', 'google_map_api_[privacy]',
                  'details_[privacy]', 'license_[privacy]', 'extended_fields_[privacy]', 'edit_[privacy]',
                  'privacy_chooser_[privacy]', 'tools_[privacy]', 'recent_topics_[privacy]', 'search',
-                 'extra_side_bar_html', 'archives_[privacy]', 'tags_[privacy]', 'contact']
+                 'extra_side_bar_html', 'archives_[privacy]', 'tags_[privacy]', 'contact'] + LAYOUT_PARTS
 
   # the following method is used when clearing show caches
   def all_show_parts
