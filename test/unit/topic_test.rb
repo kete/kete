@@ -479,7 +479,7 @@ class TopicTest < ActiveSupport::TestCase
 
       assert_equal(expected_hash, t.structured_extended_content)
 
-      expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><marital_status xml_element_name="dc:description"><1>Married</1><2>Dating</2></marital_status>'
+      expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><marital_status xml_element_name="dc:description"><1 label="Married">Married</1><2 label="Dating">Dating</2></marital_status>'
 
       assert_equal expected_value, t.extended_content
     end
@@ -518,7 +518,7 @@ class TopicTest < ActiveSupport::TestCase
 
       assert_equal(expected_hash, t.structured_extended_content)
 
-      expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><marital_status_multiple><1><marital_status xml_element_name="dc:description"><1>Married</1><2>Dating</2></marital_status></1><2><marital_status xml_element_name="dc:description"><1>Single</1></marital_status></2></marital_status_multiple>'
+      expected_value = '<first_names xml_element_name="dc:description">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name="dc:subject"></place_of_birth><marital_status_multiple><1><marital_status xml_element_name="dc:description"><1 label="Married">Married</1><2 label="Dating">Dating</2></marital_status></1><2><marital_status xml_element_name="dc:description"><1 label="Single">Single</1></marital_status></2></marital_status_multiple>'
 
       assert_equal expected_value, t.extended_content
     end
@@ -598,7 +598,7 @@ class TopicTest < ActiveSupport::TestCase
       t.marital_status = "Single"
       assert_equal "Single", t.marital_status
 
-      assert t.extended_content.include?("<marital_status xml_element_name=\"dc:description\"><1>Single</1></marital_status>")
+      assert t.extended_content.include?('<marital_status xml_element_name="dc:description"><1 label="Single">Single</1></marital_status>')
     end
   end
 
