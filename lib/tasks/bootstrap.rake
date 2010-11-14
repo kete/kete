@@ -26,7 +26,12 @@ namespace :db do
     task :load => :environment do
       if ENV['RAILS_ENV'] == 'test'
         # assumes that migrations have been run previous to testing
-        Rake::Task["db:schema:load"].invoke
+        # Rake::Task["db:schema:load"].invoke
+        # there is some data population in the migrations themselves
+        # which schema:load doesn't take care of
+        # until we find a way of harvesting data population from migrations and running them
+        # revert to db:migrate
+        Rake::Task["db:migrate"].invoke
       else
         Rake::Task["db:migrate"].invoke
       end
