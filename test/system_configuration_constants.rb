@@ -11,3 +11,9 @@ set_constant(:CONTACT_EMAIL, "user@changeme.com")
 set_constant(:MAXIMUM_UPLOADED_FILE_SIZE, 52428800)
 set_constant(:CONTACT_URL, SITE_URL + "about/")
 
+ZoomDb.zoom_id_stub = "oai:" + SITE_NAME + ":"
+ZoomDb.zoom_id_element_name = "identifier"
+# in case your zoom_id is in a nested element
+# separated by /'s
+# no preceding / necessary
+ZoomDb.zoom_id_xml_path_up_to_element = "record/header"
