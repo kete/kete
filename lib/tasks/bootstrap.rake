@@ -24,7 +24,12 @@ namespace :db do
 
     desc "Migrate clean db (no tables) to current VERSION and load specified or default fixtures for Kete."
     task :load => :environment do
-      Rake::Task["db:migrate"].invoke
+      if ENV['RAILS_ENV'] == 'test'
+        # assumes that migrations have been run previous to testing
+        Rake::Task["db:schema:load"].invoke
+      else
+        Rake::Task["db:migrate"].invoke
+      end
       require 'active_record/fixtures'
       ActiveRecord::Base.establish_connection
       default_fixtures = "zoom_dbs.yml,topic_types.yml,extended_fields.yml,topic_type_to_field_mappings.yml,baskets.yml,web_links.yml,web_link_versions.yml,users.yml,roles.yml,roles_users.yml,topics.yml,topic_versions.yml,contributions.yml,content_types.yml,content_type_to_field_mappings.yml,system_settings.yml,configurable_settings.yml"
