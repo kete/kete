@@ -1389,7 +1389,7 @@ class ApplicationController < ActionController::Base
 
   # check to see if url is something that can be done anonymously
   def anonymous_ok_for?(url)
-    return false unless Kete.is_configured? &&
+    return false unless url.present? && Kete.is_configured? &&
       Kete.allowed_anonymous_actions.present? &&
       Kete.allowed_anonymous_actions.size > 0
 
