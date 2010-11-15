@@ -33,7 +33,7 @@ class DuplicateSearchRecordTest < ActionController::IntegrationTest
         click_link "#{name} (0)"
 
         body_should_contain "Results in #{name.downcase}"
-        body_should_contain "No results found."
+        body_should_contain I18n.t('search.results.no_results_of_any_type_found')
 
       end
     end
