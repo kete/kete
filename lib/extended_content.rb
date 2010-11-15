@@ -261,17 +261,32 @@ module ExtendedContent
           elsif ['map', 'map_address'].member?(extended_field.ftype)
             values = field.first # pull the hash out of the array it's been put into
           else
-
+            
             # For singular values we expect something like:
             # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
             # So, we need to adjust the format to be consistent with the expected output..
             values = field.first.is_a?(Array) || value_label_hash?(field.first) ? field : [field]
           end
 
+          #We strip hashes back to arrays for compatibility with old REXML formatted queries.
+          values = hashes_to_arrays(values)
           hash[field_name] = values
         end
 
         hash
+      end
+    end
+
+    #turns hashes into arrays
+    def hashes_to_arrays(values)
+      values.collect do |value|
+        if value.is_a?(Hash)
+          value["label"]
+        elsif value.is_a?(Array)
+          hashes_to_arrays(value)
+        else
+          value
+        end
       end
     end
 
@@ -492,6 +507,10 @@ module ExtendedContent
         # Confirm new values
         reader_for(extended_field_element_name)
       end
+    end
+
+    def all_fields
+      all_field_mappings.map { |mapping| mapping.extended_field }.flatten
     end
 
     private
@@ -751,9 +770,6 @@ module ExtendedContent
       ContentType.find_by_class_name(self.class.name).content_type_to_field_mappings
     end
 
-    def all_fields
-      all_field_mappings.map { |mapping| mapping.extended_field }.flatten
-    end
 
     # Validation methods..
     def validate
