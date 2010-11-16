@@ -6,8 +6,7 @@ require 'xmlsimple'
 # ExtendedContent provides a way to access additional, extended content directly on a model. (ExtendedContent is included in all
 # Kete content types.)
 #
-# Extended Content definitions are configured separately by users with ExtendedField records which are mapped to topic types or
-# content types via the TopicTypeToFieldMapping and ContentTypeToFieldMapping relationship models. So, the relationships between
+# Extended Content definitions are configured separately by users with ExtendedField records which are mapped to topic types or # content types via the TopicTypeToFieldMapping and ContentTypeToFieldMapping relationship models. So, the relationships between
 # item classes and extended fields is something like AudioRecording -> ContentTypeToFieldMapping(s) -> ExtendedField. In the case
 # of Topics the relations are Topic -> TopicType -> TopicTypeToFieldMapping(s) -> ExtendedField. Refer to the individual classes
 # for more information.
@@ -268,8 +267,6 @@ module ExtendedContent
             values = field.first.is_a?(Array) || value_label_hash?(field.first) ? field : [field]
           end
 
-          #We strip hashes back to arrays for compatibility with old REXML formatted queries.
-          values = hashes_to_arrays(values)
           hash[field_name] = values
         end
 
@@ -277,10 +274,10 @@ module ExtendedContent
       end
     end
 
-    #turns hashes into arrays
+    #turns choice hashes into arrays
     def hashes_to_arrays(values)
       values.collect do |value|
-        if value.is_a?(Hash)
+        if value.is_a?(Hash) && value.keys.include?('value') && value.keys.include?('label')
           value["label"]
         elsif value.is_a?(Array)
           hashes_to_arrays(value)
@@ -387,6 +384,7 @@ module ExtendedContent
     # you would expect "parent choice -> child choice".
     def reader_for(extended_field_element_name, field = nil)
       values = structured_extended_content[extended_field_element_name].to_a
+      values = hashes_to_arrays(values).to_a
       if values.size == 1
         if field && field.ftype == 'year'
           values = values.first if values.is_a?(Array)
