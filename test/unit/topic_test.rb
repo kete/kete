@@ -2,6 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class TopicTest < ActiveSupport::TestCase
   # fixtures preloaded
+  include KeteUrlFor
 
   def setup
     @base_class = "Topic"
@@ -205,6 +206,8 @@ class TopicTest < ActiveSupport::TestCase
     end
   end
 
+  # TODO: add year and circa validation testing
+
   def test_extended_field_checkbox_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Deceased", :ftype => "checkbox" }) do |t|
       compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
@@ -258,6 +261,30 @@ class TopicTest < ActiveSupport::TestCase
 
       ExtendedField.last.choices.each { |c| c.destroy }
       assert_equal 0, ExtendedField.last.choices.size
+    end
+  end
+
+  def test_extended_field_topic_type_fields_are_validated
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => "topic_type" }) do |t|
+      # set which topic type (Person) for the father field
+      ef = ExtendedField.find_by_label('Father')
+      ef.settings[:topic_type] = 2
+
+      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+
+      # create a potential father record
+      father = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+      father.extended_content_values = { "first_names" => "Papa", "last_name" => "Bloggs" }
+      father.save!
+      
+      t.extended_content_values = compulsory_content.merge("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
+      assert t.valid?
+      assert_equal 0, t.errors.size
+
+      t.extended_content_values = compulsory_content.merge("father" => "barf")
+      assert !t.valid?
+      assert_equal 1, t.errors.size
+      assert t.errors.full_messages.join(", ").include?(I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic', :label => "Father"))
     end
   end
 
