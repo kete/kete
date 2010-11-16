@@ -268,8 +268,6 @@ module ExtendedContent
             values = field.first.is_a?(Array) || value_label_hash?(field.first) ? field : [field]
           end
 
-          #We strip hashes back to arrays for compatibility with old REXML formatted queries.
-          values = hashes_to_arrays(values)
           hash[field_name] = values
         end
 
@@ -387,6 +385,10 @@ module ExtendedContent
     # you would expect "parent choice -> child choice".
     def reader_for(extended_field_element_name, field = nil)
       values = structured_extended_content[extended_field_element_name].to_a
+      #Strip out the hashes.
+      values = hashes_to_arrays(values).to_a
+      require 'ruby-debug'
+      debugger
       if values.size == 1
         if field && field.ftype == 'year'
           values = values.first if values.is_a?(Array)
