@@ -634,7 +634,7 @@ class TopicTest < ActiveSupport::TestCase
       father_hash_2 = { 'label' => f_2_title, 'value' => f_2_url} 
       assert_equal father_hash_2, t.father
 
-      assert t.extended_content.include?("<father xml_element_name=\"dc:description\" label=\"#{f_2_title}\">#{f_2_url}</1></father>")
+      assert t.extended_content.include?("<father xml_element_name=\"dc:description\" label=\"#{f_2_title}\">#{f_2_url}</father>")
     end
   end
 
@@ -657,7 +657,12 @@ class TopicTest < ActiveSupport::TestCase
 
       assert_equal "Joe", t.first_names
       assert_equal "", t.place_of_birth
-      relatives = [{ 'label' => f_title, 'value' => f_url}, { 'label' => m_title, 'value' => m_url}]
+      relatives = [[{ 'label' => f_title,
+                      'xml_element_name' => 'dc:description',
+                      'value' => f_url}],
+                   [{ 'label' => m_title,
+                      'xml_element_name' => 'dc:description',
+                      'value' => m_url}]]
 
       assert_equal relatives, t.relatives
 
@@ -670,7 +675,13 @@ class TopicTest < ActiveSupport::TestCase
                                             url_for_dc_identifier(step_bro)]
 
       t.relatives = ["#{sd_title} (#{sd_url})", "#{sb_title} (#{sb_url})"]
-      relatives_2 = [{ 'label' => sd_title, 'value' => sd_url}, { 'label' => sb_title, 'value' => sb_url}]
+      relatives_2 = [[{ 'label' => sd_title,
+                        'xml_element_name' => 'dc:description',
+                        'value' => sd_url}],
+                     [{ 'label' => sb_title,
+                        'xml_element_name' => 'dc:description',
+                        'value' => sb_url}]]
+
       assert_equal relatives_2, t.relatives
 
       assert t.extended_content.include?("<relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{sd_title}\">#{sd_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{sb_title}\">#{sb_url}</relatives></2></relatives_multiple>")
