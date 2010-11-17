@@ -193,6 +193,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   # TODO: add year and circa validation testing
+  # TODO: seems we are missing choices tests that have a value that is different than label
 
   def test_extended_field_checkbox_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Deceased", :ftype => "checkbox" }) do |t|
@@ -237,12 +238,7 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_field_topic_type_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => "topic_type" }) do |t|
-      # set which topic type (Person) for the father field
-      ef = ExtendedField.find_by_label('Father')
-      ef.settings[:topic_type] = 2
-
-      # create a potential father record
-      father = create_person('first_names' => 'Papa')
+      father = set_up_father_for_father_field
 
       t.extended_content_values = default_extended_values_plus("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
       assert t.valid?
@@ -364,19 +360,16 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_structured_extended_content_getter_with_ftype_topic_type
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => 'topic_type'}) do |t|
-      # set which topic type (Person) for the father field
-      ef = ExtendedField.find_by_label('Father')
-      ef.settings[:topic_type] = 2
+      father = set_up_father_for_father_field
 
-      # create a potential father record
-      father = create_person('first_names' => 'Papa')
+      title, url = father.title, url_for_dc_identifier(father)
 
-      t.extended_content_values = default_extended_values_plus("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
+      t.extended_content_values = default_extended_values_plus("father" => "#{title} (#{url})")
 
       assert t.valid?
 
-      expected_hash = default_expected_hash_plus({ "father"=> [{"label" => father.title,
-                                                                 "value" => url_for_dc_identifier(father)}] })
+      expected_hash = default_expected_hash_plus({ "father"=> [{"label" => title,
+                                                                 "value" => url}] })
       assert_equal expected_hash, t.structured_extended_content
     end
   end
@@ -385,25 +378,24 @@ class TopicTest < ActiveSupport::TestCase
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Relatives",
                      :ftype => 'topic_type',
                      :multiple => true }) do |t|
-      # set which topic type (Person) for the father field
-      ef = ExtendedField.find_by_label('Relatives')
-      ef.settings[:topic_type] = 2
+      father, mother = set_up_relatives_for_relatives_field
 
-      # create our relatives
-      father = create_person('first_names' => 'Papa')
-      mother = create_person('first_names' => 'Mama')
+      f_title, f_url, m_title, m_url = [father.title,
+                                        url_for_dc_identifier(father),
+                                        mother.title,
+                                        url_for_dc_identifier(mother)]
 
-      t.extended_content_values = default_extended_values_plus("relatives" => { "1" => "#{father.title} (#{url_for_dc_identifier(father)})",
-                                                                 "2" => "#{mother.title} (#{url_for_dc_identifier(mother)})"})
+      t.extended_content_values = default_extended_values_plus("relatives" => { "1" => "#{f_title} (#{f_url})",
+                                                                 "2" => "#{m_title} (#{m_url})"})
 
       assert t.valid?
 
       expected_hash = default_expected_hash_plus({ "relatives"=> [[{"xml_element_name" => "dc:description",
-                                                                     "label" => father.title,
-                                                                     "value" => url_for_dc_identifier(father)}],
+                                                                     "label" => f_title,
+                                                                     "value" => f_url}],
                                                                   [{"xml_element_name"=>"dc:description",
-                                                                     "label" => mother.title,
-                                                                     "value" => url_for_dc_identifier(mother)}]] })
+                                                                     "label" => m_title,
+                                                                     "value" => m_url}]] })
       assert_equal expected_hash, t.structured_extended_content
     end
   end
@@ -497,6 +489,102 @@ class TopicTest < ActiveSupport::TestCase
     end
   end
 
+  def test_structured_extended_content_setter_with_ftype_topic_type
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => "topic_type" }) do |t|
+      father = set_up_father_for_father_field
+
+      title, url = father.title, url_for_dc_identifier(father)
+
+      t.structured_extended_content = default_expected_hash_plus("father"=> [{"label" => title,
+                                                                               "value" => url}])
+                                                    
+      expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><father xml_element_name=\"dc:description\" label=\"#{title}\">#{url}</father>"
+
+      assert_equal expected_value, t.extended_content
+    end
+  end
+
+  def test_structured_extended_content_setter_with_ftype_topic_type_multiple
+    for_topic_with(TopicType.find_by_name("Person"),
+                   { :label => "Relatives",
+                     :ftype => "topic_type",
+                     :multiple => true }) do |t|
+
+      father, mother = set_up_relatives_for_relatives_field
+
+      f_title, f_url, m_title, m_url = [father.title,
+                                        url_for_dc_identifier(father),
+                                        mother.title,
+                                        url_for_dc_identifier(mother)]
+
+      t.structured_extended_content = default_expected_hash_plus("relatives"=> [[{"label" => f_title,
+                                                                                   "value" => f_url}],
+                                                                                [{"label" => m_title,
+                                                                                   "value" => m_url}]])
+                                                    
+      expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{f_title}\">#{f_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{m_title}\">#{m_url}</relatives></2></relatives_multiple>"
+
+      assert_equal expected_value, t.extended_content
+    end
+  end
+
+  # TODO: need accessor tests for date, year (including circa), map ftypes, etc.
+
+  def test_extended_content_accessors_with_text
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Job",
+                     :ftype => "text" }) do |t|
+      t.structured_extended_content = default_expected_hash_plus("job" => [["tester"]])
+
+      assert_equal "Joe", t.first_names
+      assert_equal "", t.place_of_birth
+      assert_equal "tester", t.job
+
+      t.job = "Software Engineer"
+      assert_equal "Software Engineer", t.job
+
+      assert t.extended_content.include?('<job xml_element_name="dc:description">Software Engineer</job>')
+    end
+  end
+
+  def test_extended_content_accessors_with_multiple_text
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Past Jobs",
+                     :ftype => "text",
+                     :multiple => true}) do |t|
+      t.extended_content_values = default_extended_values_plus("past_jobs" => { "1" => "Janitor",
+                                                                 "2" => "Garbageman" })
+
+
+      assert_equal "Joe", t.first_names
+      assert_equal "", t.place_of_birth
+      past_jobs = ['Janitor', 'Garbageman']
+      assert_equal past_jobs, t.past_jobs
+
+      past_jobs = ['Gas Station Attendant', 'Paper Shuffler']
+      t.past_jobs = past_jobs
+      assert_equal past_jobs, t.past_jobs
+
+      assert t.extended_content.include?("<past_jobs_multiple><1><past_jobs xml_element_name=\"dc:description\">Gas Station Attendant</past_jobs></1><2><past_jobs xml_element_name=\"dc:description\">Paper Shuffler</past_jobs></2></past_jobs_multiple>")
+    end
+  end
+
+  def test_extended_content_accessors_with_choices
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
+      set_up_choices
+
+      t.structured_extended_content = default_expected_hash_plus("marital_status" => [["Married",
+                                                                                       "Dating"]])
+
+      assert_equal "Joe", t.first_names
+      assert_equal "Married -> Dating", t.marital_status
+      assert_equal "", t.place_of_birth
+
+      t.marital_status = "Single"
+      assert_equal "Single", t.marital_status
+
+      assert t.extended_content.include?('<marital_status xml_element_name="dc:description"><1 label="Single">Single</1></marital_status>')
+    end
+  end
+
   def test_extended_content_accessors_with_multiple_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
       set_up_choices
@@ -524,21 +612,68 @@ class TopicTest < ActiveSupport::TestCase
     end
   end
 
-  def test_extended_content_accessors_with_choices
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
-      set_up_choices
+  def test_extended_content_accessors_with_ftype_topic_type
+    for_topic_with(TopicType.find_by_name("Person"),
+                   { :label => "Father",
+                     :ftype => "topic_type" }) do |t|
+      father = set_up_father_for_father_field
 
-      t.structured_extended_content = default_expected_hash_plus("marital_status" => [["Married",
-                                                                                       "Dating"]])
+      title, url = father.title, url_for_dc_identifier(father)
+
+      t.structured_extended_content = default_expected_hash_plus("father"=> [{"label" => title,
+                                                                               "value" => url}])
+      assert_equal "Joe", t.first_names
+      assert_equal "", t.place_of_birth
+      father_hash = { 'label' => title, 'value' => url} 
+      assert_equal father_hash, t.father
+
+      father_2 = create_person('first_names' => 'Step Dad')
+      f_2_title, f_2_url = father_2.title, url_for_dc_identifier(father_2)
+
+      t.father = "#{f_2_title} (#{f_2_url})"
+      father_hash_2 = { 'label' => f_2_title, 'value' => f_2_url} 
+      assert_equal father_hash_2, t.father
+
+      assert t.extended_content.include?("<father xml_element_name=\"dc:description\" label=\"#{f_2_title}\">#{f_2_url}</1></father>")
+    end
+  end
+
+  def test_extended_content_accessors_with_ftype_topic_type_multiple
+    for_topic_with(TopicType.find_by_name("Person"),
+                   { :label => "Relatives",
+                     :ftype => "topic_type",
+                     :multiple => true }) do |t|
+      father, mother = set_up_relatives_for_relatives_field
+
+      f_title, f_url, m_title, m_url = [father.title,
+                                        url_for_dc_identifier(father),
+                                        mother.title,
+                                        url_for_dc_identifier(mother)]
+
+      t.structured_extended_content = default_expected_hash_plus("relatives"=> [[{"label" => f_title,
+                                                                                   "value" => f_url}],
+                                                                                [{"label" => m_title,
+                                                                                   "value" => m_url}]])
 
       assert_equal "Joe", t.first_names
-      assert_equal "Married -> Dating", t.marital_status
       assert_equal "", t.place_of_birth
+      relatives = [{ 'label' => f_title, 'value' => f_url}, { 'label' => m_title, 'value' => m_url}]
 
-      t.marital_status = "Single"
-      assert_equal "Single", t.marital_status
+      assert_equal relatives, t.relatives
 
-      assert t.extended_content.include?('<marital_status xml_element_name="dc:description"><1 label="Single">Single</1></marital_status>')
+      step_dad = create_person('first_names' => 'Step Dad')
+      step_bro = create_person('first_names' => 'Step Brother')
+
+      sd_title, sd_url, sb_title, sb_url = [step_dad.title,
+                                            url_for_dc_identifier(step_dad),
+                                            step_bro.title,
+                                            url_for_dc_identifier(step_bro)]
+
+      t.relatives = ["#{sd_title} (#{sd_url})", "#{sb_title} (#{sb_url})"]
+      relatives_2 = [{ 'label' => sd_title, 'value' => sd_url}, { 'label' => sb_title, 'value' => sb_url}]
+      assert_equal relatives_2, t.relatives
+
+      assert t.extended_content.include?("<relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{sd_title}\">#{sd_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{sb_title}\">#{sb_url}</relatives></2></relatives_multiple>")
     end
   end
 
@@ -590,6 +725,24 @@ class TopicTest < ActiveSupport::TestCase
       person
     end
     
+    def set_up_father_for_father_field
+      # set which topic type (Person) for the father field
+      ef = ExtendedField.find_by_label('Father')
+      ef.settings[:topic_type] = 2
+
+      # create a potential father record
+      father = create_person('first_names' => 'Papa')
+    end
+
+    def set_up_relatives_for_relatives_field
+      # set which topic type (Person) for the father field
+      ef = ExtendedField.find_by_label('Relatives')
+      ef.settings[:topic_type] = 2
+
+      # create and return our relatives
+      [create_person('first_names' => 'Papa'), create_person('first_names' => 'Mama')]
+    end
+
     def standard_names
       { "first_names" => "Joe", "last_name" => "Bloggs" }
     end
