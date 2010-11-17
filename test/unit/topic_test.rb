@@ -73,12 +73,8 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_xml_attributes_without_position_with_multiple_field_values
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
-      t.extended_content_values = {
-        "first_names" => "Joe",
-        "last_name" => "Bloggs",
-        "address" => { "1" => "The Parade", "2" => "Island Bay" }
-      }
-
+      t.extended_content_values = default_extended_values_plus("address" => { "1" => "The Parade",
+                                                                 "2" => "Island Bay" })
       assert t.valid?
       assert_equal({
         "first_names"=> { "xml_element_name" => "dc:description", "value" => "Joe" },
@@ -144,9 +140,7 @@ class TopicTest < ActiveSupport::TestCase
 
     assert model.valid?
 
-    model.extended_content_values = { "first_names" => "Joe",
-      "last_name" => "Bloggs",
-      "address" => { "1" => "", "2" => "" } }
+    model.extended_content_values = default_extended_values_plus("address" => { "1" => "", "2" => "" })
 
     assert !model.valid?
     assert_equal 1, model.errors.size
@@ -157,7 +151,7 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_helpers_work
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
-      t.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      t.extended_content_values = standard_names
       assert t.valid?
       assert_kind_of Topic, t
     end
@@ -171,7 +165,7 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_field_textarea_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :ftype => "textarea" }) do |t|
-      t.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => "New\n Line" }
+      t.extended_content_values = default_extended_values_plus("address" => "New\n Line")
       assert t.valid?
     end
   end
@@ -183,17 +177,15 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_field_date_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Birthdate", :ftype => "date" }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
-
-      t.extended_content_values = compulsory_content.merge("birthdate" => "1960-01-01")
+      t.extended_content_values = default_extended_values_plus("birthdate" => "1960-01-01")
       assert t.valid?
 
-      t.extended_content_values = compulsory_content.merge("birthdate" => "In 1960")
+      t.extended_content_values = default_extended_values_plus("birthdate" => "In 1960")
       assert !t.valid?
       assert_equal 1, t.errors.size
       assert_equal "Birthdate must be in the standard date format (YYYY-MM-DD)", t.errors.full_messages.join(", ")
 
-      t.extended_content_values = compulsory_content.merge("birthdate" => "1960-1-1")
+      t.extended_content_values = default_extended_values_plus("birthdate" => "1960-1-1")
       assert !t.valid?
       assert_equal 1, t.errors.size
       assert_equal "Birthdate must be in the standard date format (YYYY-MM-DD)", t.errors.full_messages.join(", ")
@@ -204,16 +196,14 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_field_checkbox_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Deceased", :ftype => "checkbox" }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
-
       ["Yes", "No", "yes", "no", ""].each do |value|
-        t.extended_content_values = compulsory_content.merge("deceased" => value)
+        t.extended_content_values = default_extended_values_plus("deceased" => value)
         assert t.valid?
         assert_equal 0, t.errors.size
       end
 
       [1, 0].each do |value|
-        t.extended_content_values = compulsory_content.merge("deceased" => value)
+        t.extended_content_values = default_extended_values_plus("deceased" => value)
         assert !t.valid?
         assert_equal "Deceased must be a valid checkbox value (Yes or No)", t.errors.full_messages.join(", ")
       end
@@ -222,32 +212,19 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_field_choice_fields_are_validated
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice" }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
-
-      # Set up choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
-
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
+      set_up_choices
 
       assert_equal 4, t.all_field_mappings.last.extended_field.choices.size
 
       # Run the tests
       ["", "Married", "Defacto Relationship", "Dating", "Single"].each do |value|
-        t.extended_content_values = compulsory_content.merge("marital_status" => value)
+        t.extended_content_values = default_extended_values_plus("marital_status" => value)
         assert t.valid?
         assert_equal 0, t.errors.size
       end
 
       ["married", "something else", "123", "Defacto", "Defacto relationship"].each do |v|
-        t.extended_content_values = compulsory_content.merge("marital_status" => v)
+        t.extended_content_values = default_extended_values_plus("marital_status" => v)
         assert !t.valid?
         assert_equal 1, t.errors.size
         assert_equal "Marital status must be a valid choice", t.errors.full_messages.join(", ")
@@ -264,16 +241,14 @@ class TopicTest < ActiveSupport::TestCase
       ef = ExtendedField.find_by_label('Father')
       ef.settings[:topic_type] = 2
 
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
-
       # create a potential father record
       father = create_person('first_names' => 'Papa')
 
-      t.extended_content_values = compulsory_content.merge("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
+      t.extended_content_values = default_extended_values_plus("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
       assert t.valid?
       assert_equal 0, t.errors.size
 
-      t.extended_content_values = compulsory_content.merge("father" => "barf")
+      t.extended_content_values = default_extended_values_plus("father" => "barf")
       assert !t.valid?
       assert_equal 1, t.errors.size
       assert t.errors.full_messages.join(", ").include?(I18n.t('extended_content_lib.validate_extended_topic_type_field_content.no_such_topic', :label => "Father"))
@@ -377,20 +352,12 @@ class TopicTest < ActiveSupport::TestCase
   end
   def test_structured_extended_content_getter
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
-      t.extended_content_values = {
-        "first_names" => "Joe",
-        "last_name" => "Bloggs",
-        "address" => { "1" => "The Parade", "2" => "Island Bay" }
-      }
+      t.extended_content_values = default_extended_values_plus("address" => { "1" => "The Parade",
+                                                                 "2" => "Island Bay" })
 
       assert t.valid?
 
-      expected_hash = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "place_of_birth" => [[nil]],
-        "address" => [["The Parade"], ["Island Bay"]]
-      }
+      expected_hash = default_expected_hash_plus({ "address" => [["The Parade"], ["Island Bay"]] })
       assert_equal expected_hash, t.structured_extended_content
     end
   end
@@ -404,21 +371,12 @@ class TopicTest < ActiveSupport::TestCase
       # create a potential father record
       father = create_person('first_names' => 'Papa')
 
-      t.extended_content_values = {
-        "first_names" => "Joe",
-        "last_name" => "Bloggs",
-        "father" => "#{father.title} (#{url_for_dc_identifier(father)})"
-      }
+      t.extended_content_values = default_extended_values_plus("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
 
       assert t.valid?
 
-      expected_hash = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "place_of_birth"=> [[nil]],
-        "father"=> [{"label"=> father.title,
-                      "value"=> url_for_dc_identifier(father)}]
-      }
+      expected_hash = default_expected_hash_plus({ "father"=> [{"label" => father.title,
+                                                                 "value" => url_for_dc_identifier(father)}] })
       assert_equal expected_hash, t.structured_extended_content
     end
   end
@@ -435,82 +393,44 @@ class TopicTest < ActiveSupport::TestCase
       father = create_person('first_names' => 'Papa')
       mother = create_person('first_names' => 'Mama')
 
-      t.extended_content_values = {
-        "first_names" => "Joe",
-        "last_name" => "Bloggs",
-        "relatives" => { "1" => "#{father.title} (#{url_for_dc_identifier(father)})",
-          "2" => "#{mother.title} (#{url_for_dc_identifier(mother)})"}
-      }
+      t.extended_content_values = default_extended_values_plus("relatives" => { "1" => "#{father.title} (#{url_for_dc_identifier(father)})",
+                                                                 "2" => "#{mother.title} (#{url_for_dc_identifier(mother)})"})
 
       assert t.valid?
 
-      expected_hash = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "place_of_birth"=> [[nil]],
-        "relatives"=> [[{"xml_element_name"=>"dc:description",
-                          "label" => father.title,
-                          "value" => url_for_dc_identifier(father)}],
-                       [{"xml_element_name"=>"dc:description",
-                          "label" => mother.title,
-                          "value" => url_for_dc_identifier(mother)}]]
-      }
+      expected_hash = default_expected_hash_plus({ "relatives"=> [[{"xml_element_name" => "dc:description",
+                                                                     "label" => father.title,
+                                                                     "value" => url_for_dc_identifier(father)}],
+                                                                  [{"xml_element_name"=>"dc:description",
+                                                                     "label" => mother.title,
+                                                                     "value" => url_for_dc_identifier(mother)}]] })
       assert_equal expected_hash, t.structured_extended_content
     end
   end
 
   def test_structured_extended_content_getter_with_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      set_up_choices
 
-      # Set up choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
+      t.extended_content_values = default_extended_values_plus("marital_status" => { "1" => "Married",
+                                                                 "2" => "Dating" })
 
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
-
-      t.extended_content_values = compulsory_content.merge("marital_status" => { "1" => "Married", "2" => "Dating" })
-
-      assert_equal({ "first_names" => [["Joe"]],
-                     "last_name" => [["Bloggs"]],
-                     "marital_status" => [[{"label"=>"Married", "value"=>"Married"},
-                                           {"label"=>"Dating", "value"=>"Dating"}]],
-                     "place_of_birth" => [[nil]] }, t.structured_extended_content)
+      assert_equal(default_expected_hash_plus("marital_status" => [[{"label"=>"Married", "value"=>"Married"},
+                                                                    {"label"=>"Dating", "value"=>"Dating"}]]),
+                   t.structured_extended_content)
     end
   end
 
   def test_structured_extended_content_getter_with_multiple_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      set_up_choices
 
-      # Set up choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
+      t.extended_content_values = default_extended_values_plus("marital_status" => { "1" => { "1" => "Married", "2" => "Dating" }, "2" => { "1" => "Single" } })
 
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
-
-      t.extended_content_values = compulsory_content.merge("marital_status" => { "1" => { "1" => "Married", "2" => "Dating" }, "2" => { "1" => "Single" } })
-
-      assert_equal({ "first_names" => [["Joe"]],
-                     "last_name" => [["Bloggs"]],
-                     "marital_status" => [[{"label"=>"Married", "value"=>"Married"},
-                                           {"label"=>"Dating", "value"=>"Dating"}],
-                                          [{"label"=>"Single", "value"=>"Single"}]],
-                     "place_of_birth" => [[nil]] }, t.structured_extended_content)
+      assert_equal(default_expected_hash_plus("marital_status" => [[{"label"=>"Married", "value"=>"Married"},
+                                                                    {"label"=>"Dating", "value"=>"Dating"}],
+                                                                   [{"label"=>"Single", "value"=>"Single"}]]),
+                   t.structured_extended_content)
     end
   end
 
@@ -524,12 +444,8 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_structured_extended_content_setter
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true}) do |t|
-      t.structured_extended_content = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "place_of_birth" => [[nil]],
-        "address" => [["The Parade"], ["Island Bay"]]
-      }
+      t.structured_extended_content = default_expected_hash_plus("address" => [["The Parade"],
+                                                                               ["Island Bay"]])
 
       assert t.valid?
 
@@ -540,37 +456,15 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_structured_extended_content_setter_with_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      set_up_choices
 
-      # Set up choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
+      t.structured_extended_content = default_expected_hash_plus("marital_status" => [["Married",
+                                                                                       "Dating"]])
 
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
-
-      t.structured_extended_content = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "marital_status" => [["Married", "Dating"]],
-        "place_of_birth" => [[nil]]
-      }
-
-      expected_hash = {
-        "first_names" => [["Joe"]],
-        "marital_status" => [[{"label"=>"Married",
-                                "value"=>"Married"},
-                              {"label"=>"Dating",
-                                "value"=>"Dating"}]],
-        "place_of_birth" => [[nil]],
-        "last_name" => [["Bloggs"]]
-      }
+      expected_hash = default_expected_hash_plus({ "marital_status" => [[{"label"=>"Married",
+                                                                           "value"=>"Married"},
+                                                                         {"label"=>"Dating",
+                                                                           "value"=>"Dating"}]] })
 
       assert_equal(expected_hash, t.structured_extended_content)
 
@@ -582,39 +476,18 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_structured_extended_content_setter_with_multiple_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      set_up_choices
 
-      # Set up choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
+      t.structured_extended_content = default_expected_hash_plus("marital_status" => [["Married",
+                                                                                       "Dating"],
+                                                                                      ["Single"]])
 
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
-
-      t.structured_extended_content = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "marital_status" => [["Married", "Dating"], ["Single"]],
-        "place_of_birth" => [[nil]]
-      }
-
-      expected_hash = {
-        "first_names" => [["Joe"]],
-        "marital_status" => [[{"label"=>"Married",
-                                "value"=>"Married"},
-                              {"label"=>"Dating",
-                                "value"=>"Dating"}],
-                             [{"label"=>"Single",
-                                "value"=>"Single"}]],
-        "place_of_birth" => [[nil]],
-        "last_name" => [["Bloggs"]]
-      }
+      expected_hash = default_expected_hash_plus({ "marital_status" => [[{"label"=>"Married",
+                                                                           "value"=>"Married"},
+                                                                         {"label"=>"Dating",
+                                                                           "value"=>"Dating"}],
+                                                                        [{"label"=>"Single",
+                                                                           "value"=>"Single"}]] })
 
       assert_equal(expected_hash, t.structured_extended_content)
 
@@ -626,27 +499,11 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_content_accessors_with_multiple_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => true }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      set_up_choices
 
-      # Set up choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
-
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
-
-      t.structured_extended_content = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "marital_status" => [["Married", "Dating"], ["Single"]],
-        "place_of_birth" => [[nil]]
-      }
+      t.structured_extended_content = default_expected_hash_plus("marital_status" => [["Married",
+                                                                                       "Dating"],
+                                                                                      ["Single"]])
 
       assert_equal "Joe", t.first_names
       assert_equal ["Married -> Dating", "Single"], t.marital_status
@@ -669,27 +526,10 @@ class TopicTest < ActiveSupport::TestCase
 
   def test_extended_content_accessors_with_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
-      compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
+      set_up_choices
 
-      # Set up choices
-      choice_content = [
-        ["Married", "Married"],
-        ["Defacto relationship", "Defacto Relationship"],
-        ["Dating", "Dating"],
-        ["Single", "Single"]
-      ]
-
-      choice_content.each do |l, v|
-        c = Choice.create!(:label => l, :value => v)
-        ExtendedField.last.choices << c
-      end
-
-      t.structured_extended_content = {
-        "first_names" => [["Joe"]],
-        "last_name" => [["Bloggs"]],
-        "marital_status" => [["Married", "Dating"]],
-        "place_of_birth" => [[nil]]
-      }
+      t.structured_extended_content = default_expected_hash_plus("marital_status" => [["Married",
+                                                                                       "Dating"]])
 
       assert_equal "Joe", t.first_names
       assert_equal "Married -> Dating", t.marital_status
@@ -740,14 +580,41 @@ class TopicTest < ActiveSupport::TestCase
     def create_person(options = {})
       do_not_save = options.delete(:do_not_save)
 
-      values = { 'first_names' => "Joe",
-        'last_name' => "Bloggs",
-        'place_of_birth' => nil }.merge(options)
+      values = standard_names
+      values['place_of_birth'] = nil
+      values = values.merge(options)
 
       person = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
       person.extended_content_values = values
       person.save! unless do_not_save
       person
     end
-end
+    
+    def standard_names
+      { "first_names" => "Joe", "last_name" => "Bloggs" }
+    end
 
+    def default_extended_values_plus(options = {})
+      standard_names.merge(options)
+    end
+
+    def set_up_choices
+      choice_content = [
+        ["Married", "Married"],
+        ["Defacto relationship", "Defacto Relationship"],
+        ["Dating", "Dating"],
+        ["Single", "Single"]
+      ]
+
+      choice_content.each do |l, v|
+        c = Choice.create!(:label => l, :value => v)
+        ExtendedField.last.choices << c
+      end
+    end
+
+    def default_expected_hash_plus(options = {})
+      { "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "place_of_birth" => [[nil]] }.merge(options)
+    end
+end
