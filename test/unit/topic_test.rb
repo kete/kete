@@ -46,9 +46,7 @@ class TopicTest < ActiveSupport::TestCase
   # Topic specific extended content tests
 
   def test_extended_content_setter
-    model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
-    model.save!
+    model = create_person(:do_not_save => false)
 
     assert model.valid?
 
@@ -65,7 +63,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_xml_attributes_without_data
-    model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+    model = create_person
     model.update_attribute(:extended_content, '')
 
     assert model.valid?
@@ -106,8 +104,7 @@ class TopicTest < ActiveSupport::TestCase
     topic_type.form_fields << field
     topic_type.save!
 
-    model = Topic.new(@new_model.merge(:topic_type => topic_type))
-    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "Nelson" } }
+    model = create_person("address" => { "1" => "Wollaston St.", "2" => "Nelson" }, :do_not_save => true )
 
     assert_nothing_raised do
       model.save!
@@ -121,8 +118,7 @@ class TopicTest < ActiveSupport::TestCase
   def test_extended_field_required_fields_are_validated
 
     # Test with valid fields
-    model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "city" => "Wellington" }
+    model = create_person("city" => "Wellington")
 
     assert model.valid?
 
@@ -131,8 +127,7 @@ class TopicTest < ActiveSupport::TestCase
     end
 
     # Test with invalid fields
-    model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content_values = { "first_names" => "", "last_name" => "Bloggs Fam." }
+    model = create_person("first_names" => "", "last_name" => "Bloggs Fam.", :do_not_save => true )
     assert_equal [["first_names", nil], ["last_name", "Bloggs Fam."], ["place_of_birth", nil]].sort, model.extended_content_pairs.sort
     assert !model.valid?
     assert_equal 1, model.errors.size
@@ -145,12 +140,13 @@ class TopicTest < ActiveSupport::TestCase
   def test_extended_field_required_fields_are_validated_with_multiples
     topic_type = add_field_to(TopicType.find_by_name("Person"), { :label => "Address", :multiple => true }, { :required => true })
 
-    model = Topic.new(@new_model.merge(:topic_type => topic_type))
-    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "Wollaston St.", "2" => "" } }
+    model = create_person("address" => { "1" => "Wollaston St.", "2" => "" })
 
     assert model.valid?
 
-    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs", "address" => { "1" => "", "2" => "" } }
+    model.extended_content_values = { "first_names" => "Joe",
+      "last_name" => "Bloggs",
+      "address" => { "1" => "", "2" => "" } }
 
     assert !model.valid?
     assert_equal 1, model.errors.size
@@ -168,9 +164,7 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_extended_field_text_fields_are_validated
-    model = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-    model.extended_content_values = { "first_names" => "Joe", "last_name" => "Bloggs" }
-
+    model = create_person
     assert model.valid?
     assert_equal 0, model.errors.size
   end
@@ -273,10 +267,8 @@ class TopicTest < ActiveSupport::TestCase
       compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
 
       # create a potential father record
-      father = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-      father.extended_content_values = { "first_names" => "Papa", "last_name" => "Bloggs" }
-      father.save!
-      
+      father = create_person('first_names' => 'Papa')
+
       t.extended_content_values = compulsory_content.merge("father" => "#{father.title} (#{url_for_dc_identifier(father)})")
       assert t.valid?
       assert_equal 0, t.errors.size
@@ -410,9 +402,7 @@ class TopicTest < ActiveSupport::TestCase
       ef.settings[:topic_type] = 2
 
       # create a potential father record
-      father = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
-      father.extended_content_values = { "first_names" => "Papa", "last_name" => "Bloggs" }
-      father.save!
+      father = create_person('first_names' => 'Papa')
 
       t.extended_content_values = {
         "first_names" => "Joe",
@@ -426,7 +416,40 @@ class TopicTest < ActiveSupport::TestCase
         "first_names" => [["Joe"]],
         "last_name" => [["Bloggs"]],
         "place_of_birth"=> [[nil]],
-        "father"=> [{"label"=>"test item", "value"=>"http://www.example.com/site/topics/show/134-test-item"}]
+        "father"=> [{"label"=> father.title,
+                      "value"=> url_for_dc_identifier(father)}]
+      }
+      assert_equal expected_hash, t.structured_extended_content
+    end
+  end
+
+  def test_structured_extended_content_getter_with_multiple_ftype_topic_type
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Relatives", :ftype => 'topic_type'}) do |t|
+      # set which topic type (Person) for the father field
+      ef = ExtendedField.find_by_label('Relatives')
+      ef.settings[:topic_type] = 2
+
+      # create our relatives
+      father = create_person('first_names' => 'Papa')
+      mother = create_person('first_names' => 'Mama')
+
+      t.extended_content_values = {
+        "first_names" => "Joe",
+        "last_name" => "Bloggs",
+        "relatives" => ["#{father.title} (#{url_for_dc_identifier(father)})",
+                        "#{mother.title} (#{url_for_dc_identifier(mother)})"]
+      }
+
+      assert t.valid?
+
+      expected_hash = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "place_of_birth"=> [[nil]],
+        "relatives"=> [{"label"=> father.title,
+                         "value"=> url_for_dc_identifier(father)},
+                       {"label"=> mother.title,
+                         "value"=> url_for_dc_identifier(mother)}]
       }
       assert_equal expected_hash, t.structured_extended_content
     end
@@ -709,6 +732,18 @@ class TopicTest < ActiveSupport::TestCase
       ExtendedField.last.destroy
       TopicTypeToFieldMapping.last.destroy
     end
+    
+    def create_person(options = {})
+      do_not_save = options.delete(:do_not_save)
 
+      values = { 'first_names' => "Joe",
+        'last_name' => "Bloggs",
+        'place_of_birth' => nil }.merge(options)
+
+      person = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+      person.extended_content_values = values
+      person.save! unless do_not_save
+      person
+    end
 end
 
