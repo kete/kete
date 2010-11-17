@@ -403,6 +403,35 @@ class TopicTest < ActiveSupport::TestCase
     end
   end
 
+  def test_structured_extended_content_getter_with_ftype_topic_type
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Father", :ftype => 'topic_type'}) do |t|
+      # set which topic type (Person) for the father field
+      ef = ExtendedField.find_by_label('Father')
+      ef.settings[:topic_type] = 2
+
+      # create a potential father record
+      father = Topic.new(@new_model.merge(:topic_type => TopicType.find_by_name("Person")))
+      father.extended_content_values = { "first_names" => "Papa", "last_name" => "Bloggs" }
+      father.save!
+
+      t.extended_content_values = {
+        "first_names" => "Joe",
+        "last_name" => "Bloggs",
+        "father" => "#{father.title} (#{url_for_dc_identifier(father)})"
+      }
+
+      assert t.valid?
+
+      expected_hash = {
+        "first_names" => [["Joe"]],
+        "last_name" => [["Bloggs"]],
+        "place_of_birth"=> [[nil]],
+        "father"=> [{"label"=>"test item", "value"=>"http://www.example.com/site/topics/show/134-test-item"}]
+      }
+      assert_equal expected_hash, t.structured_extended_content
+    end
+  end
+
   def test_structured_extended_content_getter_with_choices
     for_topic_with(TopicType.find_by_name("Person"), { :label => "Marital status", :ftype => "choice", :multiple => false }) do |t|
       compulsory_content = { "first_names" => "Joe", "last_name" => "Bloggs" }
@@ -422,7 +451,11 @@ class TopicTest < ActiveSupport::TestCase
 
       t.extended_content_values = compulsory_content.merge("marital_status" => { "1" => "Married", "2" => "Dating" })
 
-      assert_equal({ "first_names" => [["Joe"]], "last_name" => [["Bloggs"]], "marital_status" => [["Married", "Dating"]], "place_of_birth" => [[nil]] }, t.structured_extended_content)
+      assert_equal({ "first_names" => [["Joe"]],
+                     "last_name" => [["Bloggs"]],
+                     "marital_status" => [[{"label"=>"Married", "value"=>"Married"},
+                                           {"label"=>"Dating", "value"=>"Dating"}]],
+                     "place_of_birth" => [[nil]] }, t.structured_extended_content)
     end
   end
 
@@ -445,7 +478,12 @@ class TopicTest < ActiveSupport::TestCase
 
       t.extended_content_values = compulsory_content.merge("marital_status" => { "1" => { "1" => "Married", "2" => "Dating" }, "2" => { "1" => "Single" } })
 
-      assert_equal({ "first_names" => [["Joe"]], "last_name" => [["Bloggs"]], "marital_status" => [["Married", "Dating"], ["Single"]], "place_of_birth" => [[nil]] }, t.structured_extended_content)
+      assert_equal({ "first_names" => [["Joe"]],
+                     "last_name" => [["Bloggs"]],
+                     "marital_status" => [[{"label"=>"Married", "value"=>"Married"},
+                                           {"label"=>"Dating", "value"=>"Dating"}],
+                                          [{"label"=>"Single", "value"=>"Single"}]],
+                     "place_of_birth" => [[nil]] }, t.structured_extended_content)
     end
   end
 
@@ -499,7 +537,10 @@ class TopicTest < ActiveSupport::TestCase
 
       expected_hash = {
         "first_names" => [["Joe"]],
-        "marital_status" => [["Married", "Dating"]],
+        "marital_status" => [[{"label"=>"Married",
+                                "value"=>"Married"},
+                              {"label"=>"Dating",
+                                "value"=>"Dating"}]],
         "place_of_birth" => [[nil]],
         "last_name" => [["Bloggs"]]
       }
@@ -538,7 +579,12 @@ class TopicTest < ActiveSupport::TestCase
 
       expected_hash = {
         "first_names" => [["Joe"]],
-        "marital_status" => [["Married", "Dating"], ["Single"]],
+        "marital_status" => [[{"label"=>"Married",
+                                "value"=>"Married"},
+                              {"label"=>"Dating",
+                                "value"=>"Dating"}],
+                             [{"label"=>"Single",
+                                "value"=>"Single"}]],
         "place_of_birth" => [[nil]],
         "last_name" => [["Bloggs"]]
       }
