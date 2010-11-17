@@ -424,7 +424,9 @@ class TopicTest < ActiveSupport::TestCase
   end
 
   def test_structured_extended_content_getter_with_multiple_ftype_topic_type
-    for_topic_with(TopicType.find_by_name("Person"), { :label => "Relatives", :ftype => 'topic_type'}) do |t|
+    for_topic_with(TopicType.find_by_name("Person"), { :label => "Relatives",
+                     :ftype => 'topic_type',
+                     :multiple => true }) do |t|
       # set which topic type (Person) for the father field
       ef = ExtendedField.find_by_label('Relatives')
       ef.settings[:topic_type] = 2
@@ -436,8 +438,8 @@ class TopicTest < ActiveSupport::TestCase
       t.extended_content_values = {
         "first_names" => "Joe",
         "last_name" => "Bloggs",
-        "relatives" => ["#{father.title} (#{url_for_dc_identifier(father)})",
-                        "#{mother.title} (#{url_for_dc_identifier(mother)})"]
+        "relatives" => { "1" => "#{father.title} (#{url_for_dc_identifier(father)})",
+          "2" => "#{mother.title} (#{url_for_dc_identifier(mother)})"}
       }
 
       assert t.valid?
@@ -446,10 +448,12 @@ class TopicTest < ActiveSupport::TestCase
         "first_names" => [["Joe"]],
         "last_name" => [["Bloggs"]],
         "place_of_birth"=> [[nil]],
-        "relatives"=> [{"label"=> father.title,
-                         "value"=> url_for_dc_identifier(father)},
-                       {"label"=> mother.title,
-                         "value"=> url_for_dc_identifier(mother)}]
+        "relatives"=> [[{"xml_element_name"=>"dc:description",
+                          "label" => father.title,
+                          "value" => url_for_dc_identifier(father)}],
+                       [{"xml_element_name"=>"dc:description",
+                          "label" => mother.title,
+                          "value" => url_for_dc_identifier(mother)}]]
       }
       assert_equal expected_hash, t.structured_extended_content
     end
