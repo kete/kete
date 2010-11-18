@@ -21,9 +21,3 @@ config.action_mailer.smtp_settings = {
   :domain               => 'localhost.localdomain',
   :enable_starttls_auto => false
 }
-if File.exists?(File.join(RAILS_ROOT,'tmp', 'debug.txt'))
-  require 'ruby-debug'
-  Debugger.wait_connection = true
-  Debugger.start_remote
-  File.delete(File.join(RAILS_ROOT,'tmp', 'debug.txt'))
-end
