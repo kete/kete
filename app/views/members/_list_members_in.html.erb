@@ -23,6 +23,7 @@
         # tech admin view, ineffecient, but probably not a big deal, also
         # probably too much logic in view!-%>
       <% users_possible_roles = possible_roles
+            users_admin_actions = admin_actions
          unless @listing_type == 'admin'
            if ['site_admin', 'tech_admin'].include?(@listing_type) && @current_basket == @site_basket
              users_possible_roles.delete('tech_admin') if user.has_role?('tech_admin')
@@ -30,7 +31,14 @@
            end
          else
            # we don't want to allow admins to change roles if they are the only one
-           users_possible_roles = Hash.new if @current_basket != @site_basket && !@current_basket.more_than_one_basket_admin?
+           if @current_basket != @site_basket && !@current_basket.more_than_one_basket_admin?
+             users_possible_roles = Hash.new
+	   end
+         end
+	 if user.anonymous?
+	    # we also don't want anonymous users to be able to have more than member role
+            users_possible_roles = Hash.new
+	    users_admin_actions = Hash.new
          end
          -%>
       <%= render :partial =>'possible_roles',
@@ -40,7 +48,7 @@
       <%= render :partial =>'admin_actions',
                  :locals => { :user => user,
                               :role_key => @listing_type,
-                              :admin_actions => admin_actions } -%>
+                              :admin_actions => users_admin_actions } -%>
       <% else -%>
         <td></td>
         <td></td>
