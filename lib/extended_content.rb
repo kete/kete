@@ -278,7 +278,11 @@ module ExtendedContent
     def hashes_to_arrays(values)
       values.collect do |value|
         if value.is_a?(Hash) && value.keys.include?('value') && value.keys.include?('label')
-          value["label"]
+          if value['label'] == value['value']
+            value["label"]
+          else
+            value
+          end
         elsif value.is_a?(Array)
           hashes_to_arrays(value)
         else
@@ -391,12 +395,14 @@ module ExtendedContent
           values = values.first if values.is_a?(Array) && !field.multiple?
           values
         else
-          values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+          value = values.first
+          if value.is_a?(Array)
+            if value.size == 1
+              value = value.first
+            end
+          end
+          values = value
         end
-      elsif field && ['map', 'map_address', 'topic_type', 'year'].member?(field.ftype)
-        # do nothing with the data in this case
-      else
-        values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
       end
       values
     end
@@ -485,7 +491,7 @@ module ExtendedContent
       end
 
       # Confirm new values
-      reader_for(extended_field_element_name)
+      reader_for(extended_field_element_name, field)
     end
 
     # Append a new multiple value to an extended field which supports multiple values
@@ -503,7 +509,7 @@ module ExtendedContent
       unless additional_value.blank?
         replace_value_for(extended_field_element_name, current_values + additional_value, field)
         # Confirm new values
-        reader_for(extended_field_element_name)
+        reader_for(extended_field_element_name, field)
       end
     end
 
