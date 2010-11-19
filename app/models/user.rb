@@ -152,12 +152,18 @@ class User < ActiveRecord::Base
 
   # These create and unset the fields required for remembering users between browser closes
   def remember_me
+    # don't inadvertantly save temporary settings for anonymous user
+    self.reload if anonymous?
+
     self.remember_token_expires_at = 2.weeks.from_now.utc
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
     save(false)
   end
 
   def forget_me
+    # don't inadvertantly save temporary settings for anonymous user
+    self.reload if anonymous?
+
     self.remember_token_expires_at = nil
     self.remember_token            = nil
     save(false)

@@ -2,7 +2,6 @@ module AuthenticatedSystem
   protected
 
   def deauthenticate
-    logger.debug("what is current user from deauthenticate: " + current_user.inspect)
     current_user.forget_me if logged_in?
     cookies.delete :auth_token
     # Walter McGinnis, 2008-03-16
@@ -28,7 +27,7 @@ module AuthenticatedSystem
         end
 
         if session[:anonymous_user][:name].present?
-          @current_user.display_name = session[:anonymous_user][:name]
+          @current_user.resolved_name = session[:anonymous_user][:name]
         end
 
         if session[:anonymous_user][:website].present?

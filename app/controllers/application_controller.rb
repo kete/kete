@@ -1409,8 +1409,9 @@ class ApplicationController < ActionController::Base
         current_user.anonymous?
       
       session[:anonymous_user] = nil
+
       current_user.reload
-      
+
       deauthenticate
     end
   end
