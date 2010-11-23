@@ -124,4 +124,39 @@ class SearchControllerTest < ActionController::TestCase
 
   end
 
+  context "Parsing a date in preparation for searching on it" do
+    setup do
+      @beginning_date = "2010-01-01"
+      @ending_date = "2010-12-31"
+      @controller = SearchController.new
+    end
+
+    should "transform a full date value to properly formatted utc date that zebra can understand" do
+      assert_equal Time.zone.parse("2010-10-17 00:00:01").utc.strftime("%Y-%m-%d"), @controller.send(:parse_date_into_zoom_compatible_format, "2010-10-17 00:00:01")
+    end
+
+    should "populate month and day from beginning of year when not specified" do
+      assert_equal @beginning_date, @controller.send(:parse_date_into_zoom_compatible_format, "2010")
+    end
+
+    should "populate day from beginning of year when not specified" do
+      assert_equal @beginning_date, @controller.send(:parse_date_into_zoom_compatible_format, "2010-01")
+    end
+
+    should "populate month and day from end of year when specified" do
+      assert_equal @ending_date, @controller.send(:parse_date_into_zoom_compatible_format, "2010", :ending)
+    end
+
+    should "populate day from end of year when specified" do
+      assert_equal @ending_date, @controller.send(:parse_date_into_zoom_compatible_format, "2010-12", :ending)
+    end
+
+    should "handle dates before 1900 when year, month, and day given" do
+      assert_equal "1848-02-21", @controller.send(:parse_date_into_zoom_compatible_format, "1848-02-21 00:00:01")
+    end
+
+    should "handle dates before 1900 when month and day not given" do
+      assert_equal "1848-01-01", @controller.send(:parse_date_into_zoom_compatible_format, "1848")
+    end
+  end
 end

@@ -1,8 +1,17 @@
 require "importer"
 
 require "nokogiri"
+require "logger"
 class ExcelPreProcessor < Nokogiri::XML::SAX::Document
-  def initialize(path_to_xl_xml_file)
+  def initialize(path_to_xl_xml_file, options = {})
+    # maybe TODO: refactor assignment from options
+    # this fixes cut and paste error when code was moved to separate class
+    # but ExcelPreProcessor may know too much about the calling environment
+    @zoom_class = options[:zoom_class]
+    @import_dir_path = options[:import_dir_path]
+    @record_interval = options[:record_interval]
+
+    @logger = Logger.new("/home/kete/excel-parse.log")
     excel_xml = File.read(path_to_xl_xml_file)
 
     # Wrap all data in CData tags to prevent parsing issues unless they already have one
@@ -13,7 +22,9 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
     end
 
     parser = Nokogiri::XML::SAX::Parser.new(self)
+    @logger.info "after new sax parser"
     parser.parse(excel_xml)
+    @logger.info "after parsing"
     self
   end
 
@@ -81,6 +92,7 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
   private
 
   def process_value(value)
+  @logger.info "in process_value: #{value}"
     return unless self.within_table && self.within_data
 
     if self.current_row == 1
@@ -97,7 +109,8 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
           # we use "path_to_file" internally, but "File" or "file" are likely the column name
           # change those to path_to_file element_name. Resolve the absolute path of file too
           element_name = 'path_to_file'
-          value = @import_dir_path + '/files/' + value[0]
+	  value = value[0] if value.is_a?(Array)
+          value = @import_dir_path + '/files/' + value
           has_path_to_file = true
         when 'folder'
           if @zoom_class == 'Document'
@@ -137,7 +150,6 @@ class ExcelPreProcessor < Nokogiri::XML::SAX::Document
           end
         end
       end
-
       self.records.last[element_name] = value.strip
     end
   end
@@ -171,7 +183,7 @@ class ExcelBasedImporterWorker < BackgrounDRb::MetaWorker
 
     return if File.exist?(path_to_records_file_output)
 
-    rows = ExcelPreProcessor.new(path_to_xl_xml_file).records
+    rows = ExcelPreProcessor.new(path_to_xl_xml_file, :zoom_class => @zoom_class, :import_dir_path => @import_dir_path, :record_interval => @record_interval).records
 
     builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') { |xml|
       xml.records {

@@ -174,6 +174,7 @@ class SearchSource < ActiveRecord::Base
   end
 
   def looks_like_image_url?(link)
+    return false unless link.present?
     %w{ jpg png gif tif bmp }.include?(link.split('.').last.downcase)
   end
 

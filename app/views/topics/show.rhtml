@@ -8,8 +8,8 @@
     <%= h(@topic.title) %>
   </h2>
   <h4>
-    <%=t 'topics.show.topic_type' %>
-    <%= link_to(h(@topic.topic_type.name), url_for_topics_of_type(@topic.topic_type)) %>
+    <span class="topic-type-prefix"><%=t 'topics.show.topic_type' %></span>
+    <%= topic_type_breadcrumb_for(@topic) %>
   </h4>
   <p><b><%= @topic.short_summary %></b></p>
 <% end -%>

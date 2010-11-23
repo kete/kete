@@ -9,19 +9,22 @@ module ExtendedContentHelpers
 
       @anonymous_fields = []
 
-      item.xml_attributes_without_position.each_pair do |field_key, field_data|
-        # If this is google map contents, and no_map is '1', then do not use this data
-        next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+      fields_with_position = item.xml_attributes
 
-        if field_key =~ /_multiple$/
-
-          # We are dealing with multiple instances of an attribute
-          field_data.each_pair do |index, data|
-            oai_dc_xml_for_field_dataset(field_key, data.values.first)
+      fields_in_sorted_array = fields_with_position.keys.sort_by { |s| s.to_s }.map { |key| fields_with_position[key] }
+      fields_in_sorted_array.each do |field_hash|
+          field_hash.each_pair do |field_key, field_data|
+          # If this is google map contents, and no_map is '1', then do not use this data
+          next if field_data.is_a?(Hash) && field_data['no_map'] && field_data['no_map'] == '1'
+          
+          if field_key =~ /_multiple$/
+            # We are dealing with multiple instances of an attribute
+            field_data.each_pair do |index, data|
+              oai_dc_xml_for_field_dataset(field_key, data.values.first)
+            end
+          else
+            oai_dc_xml_for_field_dataset(field_key, field_data)
           end
-
-        else
-          oai_dc_xml_for_field_dataset(field_key, field_data)
         end
       end
 
@@ -31,7 +34,6 @@ module ExtendedContentHelpers
           nested.safe_send(k, v)
         end
       end
-
     end
 
     def oai_dc_xml_for_field_dataset(field_key, data)
@@ -47,11 +49,11 @@ module ExtendedContentHelpers
         # We also convert the single YYYY value to a format Zebra can search against
         # Note: We use DateTime instead of just Date/Time so that we can get dates before 1900
         if data.has_key?("circa")
-          data['value'] = DateTime.parse("#{data['value']}-01-01").xmlschema
+          data['value'] = Time.zone.parse("#{data['value']}-01-01").xmlschema
           if data['circa'] == '1'
             five_years_before, five_years_after = (data['value'].to_i - 5), (data['value'].to_i + 5)
-            @builder_instance.safe_send("dc:date", DateTime.parse("#{five_years_before}-01-01").xmlschema)
-            @builder_instance.safe_send("dc:date", DateTime.parse("#{five_years_after}-12-31").xmlschema)
+            @builder_instance.send("dc:date", Time.zone.parse("#{five_years_before}-01-01").xmlschema)
+            @builder_instance.send("dc:date", Time.zone.parse("#{five_years_after}-12-31").xmlschema)
           end
         end
 
@@ -59,7 +61,13 @@ module ExtendedContentHelpers
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, data["value"]]
         else
-          @builder_instance.safe_send(data["xml_element_name"], data["value"])
+          # safe_send will drop the namespace from the element and therefore our dc elements
+          # will not be parsed by zebra, only use safe_send on non-dc elements
+          if data["xml_element_name"].include?("dc:")
+            @builder_instance.send(data["xml_element_name"], data["value"])
+          else
+            @builder_instance.safe_send(data["xml_element_name"], data["value"])
+          end
         end
       else
 

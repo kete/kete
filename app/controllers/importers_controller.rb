@@ -68,6 +68,8 @@ class ImportersController < ApplicationController
     @import.user_id = (@site_admin && params[:contributing_user].present?) ? User.find(params[:contributing_user]).id : current_user.id
     @import.private = false unless @import.private.present? && @current_basket.show_privacy_controls_with_inheritance?
 
+    @import.file_private = false unless @import.file_private.present? && @current_basket.show_privacy_controls_with_inheritance?
+
     if @import.save
       if importing_archive_file?
         # mkdir the target directory

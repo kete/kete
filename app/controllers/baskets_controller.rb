@@ -296,7 +296,7 @@ class BasketsController < ApplicationController
     do_not_sanitize = (params[:settings][:do_not_sanitize_footer_content] == 'true')
     original_html = params[:settings][:additional_footer_content]
     sanitized_html = original_html
-    unless do_not_sanitize && @site_admin
+    unless do_not_sanitize && @site_admin || original_html.blank?
       sanitized_html = original_html.sanitize
       params[:settings][:additional_footer_content] = sanitized_html
     end
@@ -456,7 +456,7 @@ class BasketsController < ApplicationController
 
     # for each basket setting, reset to the default value if not an allowed field
     Basket::EDITABLE_SETTINGS.each do |setting|
-      unless (@site_admin || allowed_field?(setting)) && params[:basket].has_key?(setting.to_sym)
+      if !(@site_admin || allowed_field?(setting)) && !params[:basket].has_key?(setting.to_sym)
         # if we run this, it means that the current user is not allowed
         # to set this field, or they are but the field has no value
         params[:settings][setting.to_sym] = current_value_of(setting, true, form_types)

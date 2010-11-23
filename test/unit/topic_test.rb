@@ -60,7 +60,7 @@ class TopicTest < ActiveSupport::TestCase
 
     assert model.valid?
 
-    assert_equal({ "1" => { "first_names" => "Joe" }, "2" => { "last_name" => "Bloggs" }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }, model.xml_attributes)
+    assert_equal({ "1" => { "first_names" => {"xml_element_name"=>"dc:description", "value"=>"Joe"} }, "2" => { "last_name" => "Bloggs" }, "3" => { "place_of_birth" => { "xml_element_name" => "dc:subject" } } }, model.xml_attributes)
   end
 
   def test_xml_attributes_without_data
