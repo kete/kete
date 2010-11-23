@@ -9,4 +9,16 @@ default:
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
   resolved_name: admin
-  locale: en
+  locale: <%= I18n.default_locale.to_s %>
+anonymous:
+  id: 2
+  login: anonymous
+  email: anonymous@kete
+  salt: <%= @anon_salt = ActiveSupport::SecureRandom.hex(8) %>
+  crypted_password: <%= User.encrypt(ActiveSupport::SecureRandom.hex(8), @anon_salt) %>
+  activation_code: anonymouscode
+  activated_at: <%= Time.now.utc.to_s :db %>
+  created_at: <%= Time.now.utc.to_s :db %>
+  updated_at: <%= Time.now.utc.to_s :db %>
+  resolved_name: anonymous
+  locale: <%= I18n.default_locale.to_s %>

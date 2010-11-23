@@ -16,10 +16,13 @@ module SearchHelper
 
     end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.about_a', :topic_type_name => @topic_type.name) if !@topic_type.nil?
 
-    end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.tagged_as', :tag_name => @tag.name) if !@tag.nil?
+    if @tag.present?
+      tag_link = link_to(@tag.name, { :controller => 'tags', :action => 'show', :id => @tag }, tag_show_link_options(@tag))
+      end_of_title_parts << t('search_helper.last_part_of_title_if_refinement_of.tagged_as', :tag_name => tag_link)
+    end
 
     if !@contributor.nil?
-      contributor = add_links ? link_to_profile_for(@contributor) : @contributor.user_name
+      contributor = add_links ? link_to_profile_for(@contributor, nil, contributor_show_link_options(@contributor)) : @contributor.user_name
       contributor_string = t('search_helper.last_part_of_title_if_refinement_of.contributed_by', :contributor => contributor)
       contributor_string += ' ' + avatar_for(@contributor) if ENABLE_USER_PORTRAITS || ENABLE_GRAVATAR_SUPPORT
       end_of_title_parts << contributor_string
@@ -181,5 +184,13 @@ module SearchHelper
 
   # provides methods to determine which dc date values be displayed
   include SearchDcDateFormulator
+
+  def tag_show_link_options(tag)
+    { :title => t('search_helper.tag_show_link_options.title', :tag_name => tag.name) }
+  end
+
+  def contributor_show_link_options(contributor)
+    { :title => t('search_helper.contributor_show_link_options.title', :user_name => contributor.user_name) }
+  end
 
 end

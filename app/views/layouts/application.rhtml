@@ -179,7 +179,7 @@
           <div id="header">
             <!-- this would be a good place for your logo -->
             <h1>
-              <%= link_to PRETTY_SITE_NAME,
+              <%= link_to Kete.pretty_site_name,
                           basket_index_url({ :urlified_name => @site_basket.urlified_name }),
                           :tabindex => '2' %>
               <%= header_link_to_current_basket %>
@@ -268,8 +268,12 @@
                                          basket_index_url(:urlified_name => @help_basket.urlified_name),
                                          :tabindex => '2' %>
             </li>
-            <%= content_tag('li', mail_to(CONTACT_EMAIL, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact') %>
-            <%= header_add_links %>
+	    <% if CONTACT_URL.present? -%>
+ 	      <%= content_tag('li', link_to(t('layouts.application.contact'), CONTACT_URL, :accesskey => '9', :tabindex => '2'), :id => 'header_contact' ) %>
+	    <% else -%>
+              <%= content_tag('li', mail_to(CONTACT_EMAIL, t('layouts.application.contact'), :encode => "hex", :accesskey => '9', :tabindex => '2'), :id => 'header_contact') %>
+	    <% end -%>
+	    <%= header_add_links %>
             <% add_basket_link = header_add_basket_link -%>
             <%= content_tag('li', add_basket_link, :id => 'header_add_basket') unless add_basket_link.blank? %>
           </ul>
@@ -459,8 +463,8 @@
         <div id="footer_links" class="footer_div">
           <% unless @current_basket.replace_existing_footer_with_inheritance? -%>
             <ul>
-              <% unless GOVERNMENT_WEBSITE.blank? -%>
-                <li><%= link_to GOVERNMENT_WEBSITE.first, GOVERNMENT_WEBSITE.last, :accesskey => '/', :tabindex => '2' -%></li>
+              <% unless Kete.government_website.blank? -%>
+                <li><%= link_to Kete.government_website.first, Kete.government_website.last, :accesskey => '/', :tabindex => '2' -%></li>
               <% end -%>
               <% cache({:part => 'accessibility'}) do -%>
                 <% accessibility_topic = @help_basket.topics.find_by_title('Accessibility') -%>
@@ -493,7 +497,7 @@
 
         <div id="header-wrapper">
           <div id="header">
-            <h1><%= PRETTY_SITE_NAME -%></h1>
+            <h1><%= Kete.pretty_site_name -%></h1>
           </div><!-- /header -->
         </div><!-- /header-wrapper -->
 

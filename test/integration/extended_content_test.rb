@@ -126,7 +126,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
         visit "/site/content_types/edit/#{content_type_ids[class_name]}"
 
         verb = options[:extended_field_value_required] ? "required" : "add"
-        check "extended_field_#{ExtendedField.last.id.to_s}_#{verb}_checkbox"
+        check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
 
         click_button "Add to Content Type"
 
@@ -139,7 +139,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
       end
 
       teardown do
-        ContentTypeToFieldMapping.last.destroy
+        ContentTypeToFieldMapping.last.destroy if ContentTypeToFieldMapping.last
         @extended_field.destroy
       end
 
@@ -234,13 +234,8 @@ class ExtendedContentTest < ActionController::IntegrationTest
       @topic.attributes = {
         :title => 'Choice Linking Test',
         :topic_type_id => @topic_type.id,
-        :basket_id => @@site_basket.id,
-        :extended_content_values => {
-          "home_town" => {
-            "1" => { "preset" => "", "custom" => "Somewhere way out there" }
-          }
-        }
-      }
+        :basket_id => @@site_basket.id }
+      @topic.home_town = "Somewhere way out there"
       @topic.save
       @topic.creator = @james
     end
@@ -345,7 +340,7 @@ class ExtendedContentTest < ActionController::IntegrationTest
       click_button "Create"
 
       verb = options[:extended_field_value_required] ? "required" : "add"
-      check "extended_field_#{ExtendedField.last.id.to_s}_#{verb}_checkbox"
+      check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
       click_button "Add to Topic Type"
 
       body_should_contain "#{options[:extended_field_label]}"

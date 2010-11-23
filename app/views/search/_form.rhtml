@@ -1,19 +1,21 @@
 <% if params[:view_as] && params[:view_as] == 'choice_hierarchy' %>
 
-  <%= render "topics/content_wrapper_start", :style_classes => "full-width notabs choices" %>
-
   <% category_columns = browse_by_category_columns -%>
   <% unless category_columns.blank? %>
+
+    <%= render "topics/content_wrapper_start", :style_classes => "full-width notabs choices" %>
+
     <h3>
       <%=t 'search.form.browse_by_category' %>
       <img src='/images/indicator.gif' width='16' height='16' alt='<%=t 'search.form.getting_categories' %>' id='categories_spinner' style='display:none;' />
     </h3>
     <div id='category_selections'><%= category_columns %></div>
+
+    <div class="main-content-footer-wrapper"><div class="main-content-footer">&nbsp;</div></div>
+
+    <%= render "topics/content_wrapper_end" %>
+
   <% end -%>
-
-  <div class="main-content-footer-wrapper"><div class="main-content-footer">&nbsp;</div></div>
-
-  <%= render "topics/content_wrapper_end" %>
 
 <% else %>
 

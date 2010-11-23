@@ -212,18 +212,19 @@ class HomepageTest < ActionController::IntegrationTest
       context "by linking to an existing topic" do
 
         should "successfully replace homepage" do
+          bootstrap_zebra_with_initial_records(true)
           visit "/#{@@about_basket.urlified_name}/baskets/homepage_options/#{@@about_basket.id}"
           click_link "Link to new basket homepage topic"
           fill_in 'search_terms', :with => 'a'
           click_button 'Search for Topics'
           body_should_not_contain 'No Topics found'
           body_should_contain '(current homepage topic)'
-          topic_id = Topic.find_by_title('Finding Things').id
-          select "homepage_topic_id_#{topic_id}"
+          topic_id = Topic.find_by_title('House Rules').id
+          chooses "homepage_topic_id_#{topic_id}"
           click_button 'Change Homepage Topic'
           body_should_contain 'Homepage topic changed successfully'
           visit "/#{@@about_basket.urlified_name}/baskets/homepage_options/#{@@about_basket.id}"
-          body_should_contain Regexp.new("Finding Things")
+          body_should_contain Regexp.new("House Rules")
         end
 
       end

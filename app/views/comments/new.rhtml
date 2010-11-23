@@ -21,7 +21,7 @@
             <a name="original"></a>
             <%= link_to t('comments.new.view_original'), path_to_show_for(@parent_comment, :anchor => @parent_comment.to_anchor) %>
           </div>
-          <h2><%= t('comments.new.in_response_to', :user_name => link_to_contributions_of(@parent_comment.creators.first)) %></h2>
+          <h2><%= t('comments.new.in_response_to', :user_name => link_to_contributions_of(@parent_comment.creator)) %></h2>
           <h4><%=h @parent_comment.title %></h4>
           <p><%= quoted_description_of(@parent_comment) %></p>
         </div>

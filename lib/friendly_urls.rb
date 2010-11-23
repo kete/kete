@@ -42,7 +42,7 @@ module FriendlyUrls
     # rails strips the non integers after the id
     # has to be in a model
     def format_for_friendly_urls(topic_version=false, unicode = false)
-      skip_titles = [NO_PUBLIC_VERSION_TITLE, BLANK_TITLE]
+      skip_titles = [Kete.no_public_version_title, Kete.blank_title]
 
       # we use self.attributes['title'] here rather than self.title
       # because depending on how we selected this item, self.title

@@ -128,6 +128,12 @@ class ExtendedField < ActiveRecord::Base
     self.label.downcase.gsub(/ /, '_')
   end
 
+  def self.params_to_label(attribute_key)
+     match_keyword = ActiveRecord::Base.connection.adapter_name == "PostgreSQL" ? "ILIKE" : "LIKE"
+     #TODO make this handle _ in the original label.
+     ExtendedField.find(:first, :conditions => ["label #{match_keyword} ?", attribute_key.to_s.gsub(/_/, ' ')]).label
+  end
+
   def is_a_choice?
     ['autocomplete', 'choice'].include?(ftype)
   end

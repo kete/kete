@@ -1675,3 +1675,39 @@ a.disabled {
 #basket_rss_feeds_add {
   text-align: center;
 }
+/*
+ * Topic specific prefixes
+ */
+#content-wrapper h2 .prefix{
+    display: none;
+}
+.topic-type-prefix{
+    display: none;
+}
+ul.breadcrumb {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul.breadcrumb li {
+    display: inline;
+}
+/*
+ * Login page specific
+ */
+#login-wrapper{
+    float: left;
+    width: 48%;
+}
+#login-wrapper form{
+    display:inline;
+}
+#or-divider{
+    display:inline;
+}
+#your-info-wrapper{
+    float: right;
+    width: 48%;
+    display:inline;
+}
