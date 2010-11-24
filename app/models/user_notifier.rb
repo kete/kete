@@ -81,7 +81,7 @@ class UserNotifier < ActionMailer::Base
 
   def pending_review_for(revision, submitter)
     setup_email(submitter)
-    @subject += I18n.t('user_notifier_model.pending_moderation', :flag => PENDING_FLAG)
+    @subject += I18n.t('user_notifier_model.pending_moderation', :flag => Kete.pending_flag)
     @body[:revision] = revision
   end
 
@@ -94,7 +94,7 @@ class UserNotifier < ActionMailer::Base
 
   def rejection_of(revision, url, submitter, rejection_message)
     setup_email(submitter)
-    @subject += I18n.t('user_notifier_model.rejected_submission', :flag => REJECTED_FLAG)
+    @subject += I18n.t('user_notifier_model.rejected_submission', :flag => Kete.rejected_flag)
     setup_body_with(revision, url, rejection_message)
   end
 
@@ -106,7 +106,7 @@ class UserNotifier < ActionMailer::Base
 
   def reviewing_of(revision, url, submitter, rejection_message)
     setup_email(submitter)
-    @subject += I18n.t('user_notifier_model.reviewed_submission', :flag => REVIEWED_FLAG)
+    @subject += I18n.t('user_notifier_model.reviewed_submission', :flag => Kete.reviewed_flag)
     setup_body_with(revision, url, rejection_message)
   end
 

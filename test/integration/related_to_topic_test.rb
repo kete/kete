@@ -84,6 +84,19 @@ class RelatedToTopicTest < ActionController::IntegrationTest
             end
 
             should "be able to link existing related #{class_name}" do
+              # HACK: lingering items for relating polluting our tests
+              # Clean the zebra instance to give us a clean state to check against
+              # this gets repeated 6 times (at this point)
+              # so will slow performance of our tests...
+              # TODO: figure out why old instances of item_for_relating
+              # 4 or them when there should be 1
+              # are showing up as a side effect of other tests
+              # explicit teardown zoom_destroy calls may be necessary
+              # for the other tests
+              bootstrap_zebra_with_initial_records
+              @topic.prepare_and_save_to_zoom
+              @item_for_relating.prepare_and_save_to_zoom
+
               visit "/site/topics/show/#{@topic.to_param}"
               click_link 'Link Existing'
               click_link @item_type unless class_name == 'Topic' # Topic is already the default
@@ -95,13 +108,15 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               fill_in "search_terms", :with => @item_for_relating.title
               click_button "Search"
 
-              body_should_contain "Select which #{lower_case_name} to add, then click \"add\"."
+              body_should_contain I18n.t('search.related_form.select_items',
+                                         :item_class => lower_case_name,
+                                         :action => 'Add')
               body_should_contain @item_for_relating.title
 
               check "item_#{@item_for_relating.id.to_s}"
               click_button "Add"
 
-              body_should_contain "Successfully added item relationships"
+              body_should_contain I18n.t('application_controller.link_related.added_relation')
 
               visit "/site/topics/show/#{@topic.to_param}"
 
@@ -123,7 +138,6 @@ class RelatedToTopicTest < ActionController::IntegrationTest
 
               body_should_contain @topic.title
             end
-
           end
 
           context "which has been added to a topic" do
@@ -144,13 +158,16 @@ class RelatedToTopicTest < ActionController::IntegrationTest
               click_link @item_type unless class_name == 'Topic' # Topic is already the default
 
               lower_case_name = @humanized_plural.downcase
-              body_should_contain "Existing related #{lower_case_name}"
+
+              body_should_contain I18n.t('search.related_form.title',
+                                         :action => 'Remove',
+                                         :zoom_class_plural => lower_case_name)
               body_should_contain @item_for_relating.title
 
               check "item_#{@item_for_relating.id.to_s}"
               click_button "Remove"
 
-              body_should_contain 'Successfully removed item relationships.'
+              body_should_contain I18n.t('application_controller.unlink_related.unlinked_relation')
 
               visit "/site/topics/show/#{@topic.to_param}"
 

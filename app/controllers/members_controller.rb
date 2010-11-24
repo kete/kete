@@ -83,12 +83,19 @@ class MembersController < ApplicationController
       # no members
       @members = User.paginate_by_id(0, :page => 1)
     else
+      not_anonymous_condition = "login != 'anonymous'"
       if params[:action] == 'rss'
-        @members = @role.users.find(:all, { :order => 'roles_users.created_at desc', :limit => 50 })
+        options = { :order => 'roles_users.created_at desc', :limit => 50 }
+        options[:conditions] = not_anonymous_condition unless site_admin?
+
+        @members = @role.users.find(:all, options)
       else
-        @members = @role.users.paginate(:include => :contributions, :order => order,
-                                        :page => params[:page], :per_page => 20)
+        options = { :include => :contributions, :order => order, :page => params[:page], :per_page => 20 }
+        options[:conditions] = not_anonymous_condition unless site_admin?
+
+        @members = @role.users.paginate(options)
       end
+
       @all_roles = UserRole.all(:conditions => ["role_id = ? AND user_id IN (?)", @role, @members])
       @role_creations = Hash.new
       @members.each do |member|
@@ -102,6 +109,12 @@ class MembersController < ApplicationController
     @existing_users = User.find(:all,
                                 :joins => "join roles_users on users.id = roles_users.user_id",
                                 :conditions => ["roles_users.role_id in (?)", @current_basket.accepted_roles])
+
+    # don't allow, at least for now, anonymous users to be added to other baskets
+    # besides site
+    # may change in the future if there is a use case
+    @users_to_exclude = User.find_all_by_login('anonymous')
+    @existing_users = @existing_users + @users_to_exclude
 
     @potential_new_members = Array.new
     unless params[:search_name].blank?

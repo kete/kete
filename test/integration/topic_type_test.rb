@@ -18,7 +18,7 @@ class TopicTypeTest < ActionController::IntegrationTest
       field_with_id("mapping_#{@mappings.first.id}_required").check
       field_with_id("mapping_#{@mappings.last.id}_required").uncheck
 
-      click_button 'Reorder Topic Type Form'
+      click_button I18n.t('topic_types.current_fields.update_fields')
 
       assert field_with_id("mapping_#{@mappings.first.id}_required").checked?
       assert !field_with_id("mapping_#{@mappings.last.id}_required").checked?

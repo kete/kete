@@ -14,6 +14,8 @@ module ExtendedContentController
       # Instantiation of Google Map code for location settings
       klass.send :include, GoogleMap::Mapper
 
+      klass.send :include, AnonymousFinishedAfterFilter
+
       if klass.name == 'CommentsController'
         klass.send :before_filter, :is_authorized?, :only => [ :new, :create, :edit, :update ]
       else

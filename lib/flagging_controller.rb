@@ -9,9 +9,9 @@ module FlaggingController
     def flag_form
       @flag = params[:flag]
       @form_target = case @flag
-      when REJECTED_FLAG
+      when Kete.rejected_flag
         'reject'
-      when REVIEWED_FLAG
+      when Kete.reviewed_flag
         'review'
       else
         'flag_version'
@@ -106,7 +106,7 @@ module FlaggingController
         # if version we are about to supersede
         # is blank, flag it as blank for clarity in the history
         # this doesn't do the reversion in itself
-        @item.flag_at_with(current_version, BLANK_FLAG) if @item.already_at_blank_version?
+        @item.flag_at_with(current_version, Kete.blank_flag) if @item.already_at_blank_version?
 
         @item.tag_list = @item.raw_tag_list
         @item.version_comment = I18n.t('flagging_controller_lib.restore.version_comment',
@@ -144,7 +144,7 @@ module FlaggingController
         clear_caches_and_update_zoom_for_commented_item(@item)
 
         approval_message = I18n.t('flagging_controller_lib.restore.made_live',
-                                  :site_name => PRETTY_SITE_NAME,
+                                  :site_name => Kete.pretty_site_name,
                                   :basket_name => @current_basket.name)
 
         # notify the contributor of this revision
@@ -223,7 +223,7 @@ module FlaggingController
       # lets do some queries here and store values in an array/hash for access later
       # rather than getting them each iteration (which can result in 100's of queries)
 
-      select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email'
+      select = 'contributions.version, contributions.created_at as version_created_at, users.id, users.resolved_name, users.email, users.login'
       @item_contributors = @item.contributors.all(:select => select, :order => 'contributions.version ASC', :group => 'contributions.version')
       @contributor_index = 0
 
@@ -261,7 +261,7 @@ module FlaggingController
         @item.revert_to(@preview_version)
 
         # Do not allow access to restricted or private item versions..
-        if (@flags.include?(RESTRICTED_FLAG) && !@at_least_moderator) ||
+        if (@flags.include?(Kete.restricted_flag) && !@at_least_moderator) ||
            (@item.respond_to?(:private?) && @item.private? && !permitted_to_view_private_items?)
           raise ActiveRecord::RecordNotFound
         end

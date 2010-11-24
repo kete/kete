@@ -79,9 +79,19 @@ class ApplicationController < ActionController::Base
                                             :choose_type, :render_item_form,
                                             :setup_rebuild,
                                             :rebuild_zoom_index,
-                                            :add_portrait, :remove_portrait, :make_selected_portrait,
+                                            :add_portrait, :remove_portrait,
+                                            :make_selected_portrait,
                                             :contact, :send_email,
                                             :join ]
+
+  # doesn't work for redirects, those are handled by
+  # after filters on registered on specific controllers
+  # based on Kete.allowed_anonymous_actions specs
+  # this should prevent url surgery to subvert logging out of anonymous user though
+  before_filter :logout_anonymous_user_unless_allowed, :except => [:logout,
+                                                                   :login,
+                                                                   :signup,
+                                                                   :show_captcha]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -387,13 +397,17 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
+  # TODO: this isn't having it fragment file named properly for show pages
+  # see ticket #297
+  LAYOUT_PARTS = ['accessibility']
+
   SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'dc_metadata_[privacy]',
                 'page_description_[privacy]', 'google_map_api_[privacy]', 'edit_[privacy]',
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
                 'secondary_content_extended_fields_embedded_[privacy]',
-                'secondary_content_license_metadata_[privacy]', 'history_[privacy]']
+                'secondary_content_license_metadata_[privacy]', 'history_[privacy]'] + LAYOUT_PARTS
 
   PUBLIC_SHOW_PARTS = ['comments-link_[privacy]', 'comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
@@ -403,7 +417,7 @@ class ApplicationController < ActionController::Base
   INDEX_PARTS = ['page_keywords_[privacy]', 'page_description_[privacy]', 'google_map_api_[privacy]',
                  'details_[privacy]', 'license_[privacy]', 'extended_fields_[privacy]', 'edit_[privacy]',
                  'privacy_chooser_[privacy]', 'tools_[privacy]', 'recent_topics_[privacy]', 'search',
-                 'extra_side_bar_html', 'archives_[privacy]', 'tags_[privacy]', 'contact']
+                 'extra_side_bar_html', 'archives_[privacy]', 'tags_[privacy]', 'contact'] + LAYOUT_PARTS
 
   # the following method is used when clearing show caches
   def all_show_parts
@@ -817,6 +831,7 @@ class ApplicationController < ActionController::Base
         flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.created', :zoom_class => zoom_class_humanize(item.class.name))
         redirect_to_show_for(item, options)
       end
+
     else
       render :action => 'new'
     end
@@ -1000,7 +1015,7 @@ class ApplicationController < ActionController::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       # pending items aren't counted
-      private_conditions = "title != '#{BLANK_TITLE}' "
+      private_conditions = "title != '#{Kete.blank_title}' "
       local_public_conditions = PUBLIC_CONDITIONS
 
       # comments are a special case
@@ -1382,6 +1397,39 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # check to see if url is something that can be done anonymously
+  def anonymous_ok_for?(url)
+    return false unless url.present? && Kete.is_configured? &&
+      Kete.allowed_anonymous_actions.present? &&
+      Kete.allowed_anonymous_actions.size > 0
+
+    # get controller and action from url
+    # strip off query string before submitting to routing
+    url = url.split("?")[0]
+    from_url = ActionController::Routing::Routes.recognize_path(url, :method => :get)
+    
+    value = from_url[:controller] + '/' + from_url[:action]
+
+    # check if it is an allowed for or finished after controller/action combo
+    Kete.allowed_anonymous_actions.collect { |h| h.values }.flatten.include?(value)
+  end
+
+  def logout_anonymous
+    if logged_in? &&
+        current_user.anonymous?
+      
+      session[:anonymous_user] = nil
+
+      current_user.reload
+
+      deauthenticate
+    end
+  end
+
+  def finished_as_anonymous_after
+    logout_anonymous
+  end
+
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
                 :permitted_to_edit_current_item?, :allowed_to_access_private_version_of?, :accessing_private_search_and_allowed?,
@@ -1390,7 +1438,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
                 :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :show_notification_controls?, :path_to_show_for,
-                :permitted_to_edit_basket_homepage_topic?, :current_user_can_import_archive_sets?, :current_user_can_import_archive_sets_for?
+                :permitted_to_edit_basket_homepage_topic?, :current_user_can_import_archive_sets?, :current_user_can_import_archive_sets_for?, :anonymous_ok_for?
 
   protected
 
@@ -1477,4 +1525,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def logout_anonymous_user_unless_allowed
+    if !anonymous_ok_for?(request.path)
+      logout_anonymous
+    end
+  end
 end

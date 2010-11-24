@@ -183,7 +183,8 @@ class CachingTest < ActionController::IntegrationTest
           login_as('john')
           check_viewing_public_version_of(@topic, { :check_all_links => false })
           login_as('joe')
-          check_viewing_private_version_of(@topic)
+          check_viewing_private_version_of(@topic, { :check_all_links => false,
+                                             :check_show_link => true })
         end
 
         should "default to public version when non member tries to access private version" do
@@ -197,7 +198,9 @@ class CachingTest < ActionController::IntegrationTest
           check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
           login_as('joe')
           visit "/#{@topic.basket.urlified_name}/index_page?private=true"
-          check_viewing_private_version_of(@topic, { :on_topic_already => true })
+          check_viewing_private_version_of(@topic, { :on_topic_already => true,
+                                             :check_all_links => false,
+                                             :check_show_link => true })
         end
 
         context "and when basket has private as default privacy" do
@@ -221,7 +224,9 @@ class CachingTest < ActionController::IntegrationTest
             check_viewing_public_version_of(@topic, { :on_topic_already => true, :check_all_links => false })
             login_as('joe')
             visit "/#{@topic.basket.urlified_name}"
-            check_viewing_private_version_of(@topic, { :on_topic_already => true })
+            check_viewing_private_version_of(@topic, { :on_topic_already => true,
+                                               :check_all_links => false,
+                                               :check_show_link => true })
           end
 
         end
@@ -271,6 +276,9 @@ class CachingTest < ActionController::IntegrationTest
       end
 
       should "be populated with the updated topic" do
+        # NOTE: this will fail if you are running only this file's tests
+        # and the test from with test directory
+        # cd .. and run tests again
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
         body_should_not_contain "Topic 2 Title"
         body_should_not_contain "Topic 2 Description"
@@ -284,17 +292,16 @@ class CachingTest < ActionController::IntegrationTest
         @topic = new_topic({ :title => 'Topic 3 Title',
                              :description => 'Topic 3 Description' }, @@cache_basket)
         check_cache_current_for(@topic, { :on_topic_already => true, :check_show_link => false })
-        @old_topic = @topic
+        controller = zoom_class_controller(@topic.class.name)
+        @topic_url = "/#{@topic.basket.urlified_name}/#{controller}/show/#{@topic.id}"
         @topic = delete_item(@topic)
       end
 
       should "not contain traces of the old topic" do
         assert @topic.nil? # check the topic was deleted
-        controller = zoom_class_controller(@old_topic.class.name)
-        visit "/#{@old_topic.basket.urlified_name}/#{controller}/show/#{@old_topic.id}"
-        check_cache_current_for(@old_topic, { :on_topic_already => true, :check_should_not => true })
-        body_should_not_contain "Topic 3 Title"
-        body_should_not_contain "Topic 3 Description"
+        visit @topic_url
+        # we should get a 404 back for this page
+        assert !response.ok?
       end
 
     end

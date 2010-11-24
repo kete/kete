@@ -38,8 +38,8 @@ class ModerationViewsTest < ActionController::IntegrationTest
         body_should_contain "Topic: #{@item.versions.find_by_version(i).title}"
         body_should_contain @item.versions.find_by_version(i).description
         body_should_contain "Actions"
-        body_should_not_contain "Make this revision live"
-        body_should_not_contain "Reject this revision"
+        body_should_not_contain I18n.t('topics.preview_actions.make_live')
+        body_should_not_contain I18n.t('topics.preview_actions.reject')
       end
     end
 
@@ -59,8 +59,8 @@ class ModerationViewsTest < ActionController::IntegrationTest
           body_should_contain "Actions"
 
           # Should have controls for making versions live or not
-          body_should_contain "Make this revision live"
-          body_should_contain "Reject this revision"
+          body_should_contain I18n.t('topics.preview_actions.make_live')
+          body_should_contain I18n.t('topics.preview_actions.reject')
         end
       end
 
@@ -223,7 +223,7 @@ class ModerationViewsTest < ActionController::IntegrationTest
       @topic = new_topic(:title => 'Version 1')
       @topic = update_item(@topic, :title => 'Version 2')
       visit "/site/topics/preview/#{@topic.id}?version=1"
-      click_link 'Reject this revision'
+      click_link I18n.t('topics.preview_actions.reject')
       fill_in 'message_', :with => 'Testing'
       check 'restricted'
       click_button 'Reject'
@@ -245,8 +245,8 @@ class ModerationViewsTest < ActionController::IntegrationTest
       body_should_contain 'restricted' # rev 1
       body_should_contain 'current'    # rev 2
       visit "/site/topics/preview/#{@topic.id}?version=1"
-      body_should_not_contain 'Preview revision #1'
-      body_should_contain 'There is currently no public version of this topic available.'
+      # should get redirected, as this is permission denied since it is restricted
+      assert !response.ok?
     end
 
   end
@@ -309,8 +309,8 @@ class ModerationViewsTest < ActionController::IntegrationTest
         body_should_contain item.versions.find_by_version(i).description
         body_should_contain "Actions"
         if super_user
-          body_should_contain "Make this revision live"
-          body_should_contain "reject"
+          body_should_contain I18n.t('topics.preview_actions.make_live')
+          body_should_contain I18n.t('topics.preview_actions.reject')
         end
       end
 

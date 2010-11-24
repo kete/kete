@@ -3,9 +3,6 @@ require File.dirname(__FILE__) + '/../test_helper'
 # Require stubs
 require File.dirname(__FILE__) + '/../stubs/captcha'
 
-# TODO: fix the use of users (no fixture loaded in to set it up)
-# TODO: look at approx. 6 failing tests
-
 set_constant('ENABLE_USER_PORTRAITS', true)
 
 class AccountControllerTest < ActionController::TestCase

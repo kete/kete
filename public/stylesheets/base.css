@@ -623,6 +623,9 @@ h3.search-description {
 h3 b{
     color: black;
 }
+h3 a {
+  font-style: italic;
+}
 
 /* --- Images search results --- */
 .image-result-thumb {
@@ -1682,7 +1685,6 @@ a.disabled {
 #basket_rss_feeds_add {
   text-align: center;
 }
-
 /*
  * Topic specific prefixes
  */
@@ -1701,4 +1703,21 @@ ul.breadcrumb {
 ul.breadcrumb li {
     display: inline;
 }
-
+/*
+ * Login page specific
+ */
+#login-wrapper{
+    float: left;
+    width: 48%;
+}
+#login-wrapper form{
+    display:inline;
+}
+#or-divider{
+    display:inline;
+}
+#your-info-wrapper{
+    float: right;
+    width: 48%;
+    display:inline;
+}

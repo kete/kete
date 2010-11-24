@@ -53,7 +53,7 @@ require 'tasks/rails'
 # start zebra, and load in some initial records ready for testing. If after
 # that, Zebra has not loaded properly, raise an exception to inform the person
 # running the tests
-def bootstrap_zebra_with_initial_records
+def bootstrap_zebra_with_initial_records(prime_records = false)
   # both of the silencers are need to supress the two types of messages Zebra
   # outputs to the console
   silence_stream(STDERR) do
@@ -65,6 +65,15 @@ def bootstrap_zebra_with_initial_records
       Rake::Task['zebra:init'].execute(ENV)
       Rake::Task['zebra:start'].execute(ENV)
       Rake::Task['zebra:load_initial_records'].execute(ENV)
+
+      # put in the default records, if specified
+      if prime_records
+        ZOOM_CLASSES.each do |name|
+          name.constantize.all.each do |record|
+            record.prepare_and_save_to_zoom
+          end
+        end
+      end
     end
   end
   unless zebra_running?('public') && zebra_running?('private')
@@ -91,6 +100,10 @@ end
 # warnings and continue to run it anyway. Should be used within the block of
 # <tt>configure_environment</tt>
 def set_constant(constant, value)
+  # Walter McGinnis, 2010-10-15
+  # update to also update Kete object with value via redefining getter method
+  Kete.define_reader_method_as(constant.to_s.downcase, value)
+
   if respond_to?(:silence_warnings)
     silence_warnings do
       Object.send(:remove_const, constant) if Object.const_defined?(constant)
