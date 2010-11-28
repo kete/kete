@@ -59,7 +59,7 @@ class AccountTest < ActionController::IntegrationTest
         @@site_basket.update_attribute(:index_page_image_as, '')
       end
 
-      should "not have the slideshow overide their return_to when logging in" do
+      should "not have the slideshow override their return_to when logging in" do
         logout
         visit "/"
         visit "/site/account/login"
@@ -83,7 +83,7 @@ class AccountTest < ActionController::IntegrationTest
         @@site_basket.update_attribute(:show_privacy_controls, false)
       end
 
-      should "not have the private item overide their return_to when logging in" do
+      should "not have the private item override their return_to when logging in" do
         logout
         visit "/site/images/show/#{@item.to_param}"
         body_should_contain 'No Public Version Available'
