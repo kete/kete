@@ -63,8 +63,66 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
       should "have xml for dc:title for #{zoom_class}" do
         builder = Nokogiri::XML::Builder.new
         builder.root do |xml|
-          @item.oai_dc_xml_dc_title(xml).include?("dc:title")
+          @item.oai_dc_xml_dc_title(xml)
         end
+        assert builder.to_stripped_xml.include?("<dc:title>Item</dc:title>")
+      end
+
+      should "have xml for xml:lang as attribute on dc:title element for #{zoom_class}, if xml:lang is passed in" do
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          @item.oai_dc_xml_dc_title(xml, "xml:lang" => I18n.default_locale)
+        end
+
+        assert builder.to_stripped_xml.include?("<dc:title xml:lang=\"#{I18n.default_locale}\">Item</dc:title>")
+      end
+    end
+  end
+
+  context "The oai_dc_xml_dc_description method" do
+
+    ZOOM_CLASSES.each do |zoom_class|
+      setup do
+        item_for(zoom_class)
+      end
+
+      should "have xml for dc:description for #{zoom_class}" do
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          oai_dc_xml_dc_description(xml, @item.description)
+        end
+        assert builder.to_stripped_xml.include?("<dc:description><![CDATA[Description]]></dc:description>")
+      end
+
+      should "have xml for xml:lang as attribute on dc:description element for #{zoom_class}, if xml:lang is passed in" do
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          oai_dc_xml_dc_description(xml, @item.description, "xml:lang" => I18n.default_locale)
+        end
+
+        assert builder.to_stripped_xml.include?("<dc:description xml:lang=\"#{I18n.default_locale}\"><![CDATA[Description]]></dc:description>")
+      end
+    end
+  end
+
+  context "The oai_dc_xml_tags_to_dc_subjects method" do
+
+    ZOOM_CLASSES.each do |zoom_class|
+      setup do
+        item_for(zoom_class)
+
+        @item.tag_list << "tag"
+        @item.save
+        @item.reload
+        @item.add_as_contributor(User.first, @item.version)
+      end
+
+      should "have xml for dc:subject for an item's tags for #{zoom_class}" do
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          @item.oai_dc_xml_tags_to_dc_subjects(xml)
+        end
+        assert builder.to_stripped_xml.include?("<dc:subject><![CDATA[tag]]></dc:subject>")
       end
     end
   end

@@ -124,8 +124,8 @@ module OaiDcHelpers
                                                              :locale => false)))
     end
 
-    def oai_dc_xml_dc_title(xml)
-      xml.send("dc:title", title)
+    def oai_dc_xml_dc_title(xml, options = {})
+      xml.send("dc:title", title, options)
     end
 
     def oai_dc_xml_dc_publisher(xml, publisher = nil)
@@ -137,12 +137,12 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_description(xml, description)
+    def oai_dc_xml_dc_description(xml, description, options = {})
       unless description.blank?
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
-        xml.send("dc:description") {
+        xml.send("dc:description", options) {
           xml.cdata description.strip_tags
         }
       end
