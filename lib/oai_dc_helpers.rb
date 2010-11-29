@@ -137,14 +137,25 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_description(xml, description, options = {})
-      unless description.blank?
+    def oai_dc_xml_dc_description(xml, passed_description = nil, options = {})
+      unless passed_description.blank?
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
         xml.send("dc:description", options) {
-          xml.cdata description.strip_tags
+          xml.cdata passed_description.strip_tags
         }
+      else
+        # if description is blank, we should do all descriptions for this zoom_class
+        
+        # topic/document specific
+        # order is important, first description will be used as blurb
+        # in result list
+        if [Topic, Document].include?(self.class) && short_summary.present?
+          oai_dc_xml_dc_description(xml, short_summary, options)
+        end
+
+        oai_dc_xml_dc_description(xml, description, options) if description.present?
       end
     end
 

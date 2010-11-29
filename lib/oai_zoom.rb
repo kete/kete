@@ -49,10 +49,9 @@ module OaiZoom
                   oai_dc_xml_dc_title(xml)
                   oai_dc_xml_dc_publisher(xml, request[:host])
 
-                  # topic/document specific
-                  oai_dc_xml_dc_description(xml, short_summary) if [Topic, Document].include?(self.class)
-
-                  oai_dc_xml_dc_description(xml, description)
+                  # appropriate description(s) elements will be determined
+                  # since we call it without specifying
+                  oai_dc_xml_dc_description(xml)
 
                   xml.send("dc:subject") {
                     xml.cdata item.url
