@@ -287,7 +287,7 @@ namespace :kete do
 
               # load up to batch_size results into memory at a time
               batch_count = 1
-              batch_size = 2 # 1000 is default in find_in_batches
+              batch_size = 500 # 1000 is default in find_in_batches
               last_id = 0
 
               # find_in_batches messes up oai_record call for some reason, cobblying our own offset system
