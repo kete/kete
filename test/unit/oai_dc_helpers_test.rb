@@ -58,7 +58,8 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_dc_title(xml)
         end
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_xml)
+
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_xml(binding))
       end
 
       should "have xml for xml:lang as attribute on dc:title element for #{zoom_class}, if xml:lang is passed in" do
@@ -67,7 +68,7 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
           @item.oai_dc_xml_dc_title(xml, "xml:lang" => I18n.default_locale)
         end
 
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_with_lang_xml)
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_with_lang_xml(binding))
       end
     end
 
@@ -81,7 +82,7 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_dc_description(xml, @item.description)
         end
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml)
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml(binding))
       end
 
       should "output correct dc:description for #{zoom_class} when given only xml argument" do
@@ -97,8 +98,9 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_dc_description(xml)
         end
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml_when_only_xml)
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_short_summary_xml_when_only_xml) if has_short_summary
+
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml_when_only_xml(binding))
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_short_summary_xml_when_only_xml(binding)) if has_short_summary
       end
 
       should "have xml for xml:lang as attribute on dc:description element for #{zoom_class}, if xml:lang is passed in" do
@@ -126,7 +128,7 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_tags_to_dc_subjects(xml)
         end
-        assert builder.to_stripped_xml.include?("<dc:subject><![CDATA[tag]]></dc:subject>")
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_tags_xml(binding))
       end
     end
   end
