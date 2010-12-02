@@ -131,6 +131,40 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_tags_xml(binding))
       end
     end
+
+    context "In #{zoom_class}, the oai_dc_xml_dc_extended_content method" do
+      setup do
+        item_for(zoom_class)
+
+        # add an extended field to the top most topic_type (if topic)
+        # or this content_type
+        create_extended_field(:label => 'An extended field',
+                              :ftype => 'text',
+                              :xml_element_name => 'dc:description')
+
+        @type = zoom_class == 'Topic' ? TopicType.first : ContentType.find_by_class_name(zoom_class)
+
+        if zoom_class == 'Topic'
+          @extended_field.topic_type_to_field_mappings.create(:topic_type_id => @type.id)
+        else
+          @extended_field.content_type_to_field_mappings.create(:content_type_id => @type.id)
+        end
+
+        # add a value for this extended field
+        @item.an_extended_field = "some text"
+        @item.save
+        @item.reload
+        @item.add_as_contributor(User.first, @item.version)
+      end
+
+      should "have xml for dc:description for an item's extended field mapped to dc:description for #{zoom_class}" do
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          @item.oai_dc_xml_dc_extended_content(xml)
+        end
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_extended_content_xml(binding))
+      end
+    end
   end
 
   private
