@@ -1879,4 +1879,9 @@ module ApplicationHelper
     html += "</ul>"
     html
   end
+
+  # a placeholder method that can be overridden in your add-on
+  # it appears just after title on show page for zoom_classes (except for comments)
+  def extras_after_title_headline
+  end
 end
