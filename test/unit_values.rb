@@ -14,3 +14,4 @@ HasValue.oai_dc_helpers_description_xml = "<dc:description><![CDATA[Description]
 HasValue.oai_dc_helpers_description_xml_when_only_xml = "<dc:description><![CDATA[Description]]></dc:description>"
 HasValue.oai_dc_helpers_short_summary_xml_when_only_xml = "<dc:description><![CDATA[Short Summary]]></dc:description>"
 HasValue.oai_dc_helpers_tags_xml = "<dc:subject><![CDATA[tag]]></dc:subject>"
+HasValue.oai_dc_helpers_extended_content_xml = "<dc:description>some text</dc:description>"
