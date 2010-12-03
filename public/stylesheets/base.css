@@ -1740,3 +1740,15 @@ ul.horizontal-list li {
     padding: 2px 5px;
     display: inline;
 }
+/*
+ * generic badge class for sup elements
+ */
+sup.badge {
+    color: white;
+    text-transform:lowercase;
+    padding: 2px;
+    background-color: #7a0203;
+    -moz-border-radius: 45%;
+    -webkit-border-radius: 45%;
+    border-radius: 45%;
+}
