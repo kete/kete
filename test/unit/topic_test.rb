@@ -484,7 +484,7 @@ class TopicTest < ActiveSupport::TestCase
       t.structured_extended_content = default_expected_hash_plus("father"=> [{"label" => title,
                                                                                "value" => url}])
                                                     
-      expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><father xml_element_name=\"dc:description\" label=\"#{title}\">#{url}</father>"
+      expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><father label=\"#{title}\" xml_element_name=\"dc:description\">#{url}</father>"
 
       assert_equal expected_value, t.extended_content
     end
@@ -508,7 +508,7 @@ class TopicTest < ActiveSupport::TestCase
                                                                                 [{"label" => m_title,
                                                                                    "value" => m_url}]])
                                                     
-      expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{f_title}\">#{f_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{m_title}\">#{m_url}</relatives></2></relatives_multiple>"
+      expected_value = "<first_names xml_element_name=\"dc:description\">Joe</first_names><last_name>Bloggs</last_name><place_of_birth xml_element_name=\"dc:subject\"></place_of_birth><relatives_multiple><1><relatives label=\"#{f_title}\" xml_element_name=\"dc:description\">#{f_url}</relatives></1><2><relatives label=\"#{m_title}\" xml_element_name=\"dc:description\">#{m_url}</relatives></2></relatives_multiple>"
 
       assert_equal expected_value, t.extended_content
     end
@@ -652,7 +652,7 @@ class TopicTest < ActiveSupport::TestCase
       father_hash_2 = { 'label' => f_2_title, 'value' => f_2_url} 
       assert_equal father_hash_2, t.father
 
-      assert t.extended_content.include?("<father xml_element_name=\"dc:description\" label=\"#{f_2_title}\">#{f_2_url}</father>")
+      assert t.extended_content.include?("<father label=\"#{f_2_title}\" xml_element_name=\"dc:description\">#{f_2_url}</father>")
     end
   end
 
@@ -702,7 +702,7 @@ class TopicTest < ActiveSupport::TestCase
 
       assert_equal relatives_2, t.relatives
 
-      assert t.extended_content.include?("<relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{sd_title}\">#{sd_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{sb_title}\">#{sb_url}</relatives></2></relatives_multiple>")
+      assert t.extended_content.include?("<relatives_multiple><1><relatives label=\"#{sd_title}\" xml_element_name=\"dc:description\">#{sd_url}</relatives></1><2><relatives label=\"#{sb_title}\" xml_element_name=\"dc:description\">#{sb_url}</relatives></2></relatives_multiple>")
     end
   end
 
