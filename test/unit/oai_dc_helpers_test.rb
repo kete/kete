@@ -58,7 +58,8 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_dc_title(xml)
         end
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_xml)
+
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_xml(binding))
       end
 
       should "have xml for xml:lang as attribute on dc:title element for #{zoom_class}, if xml:lang is passed in" do
@@ -67,7 +68,7 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
           @item.oai_dc_xml_dc_title(xml, "xml:lang" => I18n.default_locale)
         end
 
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_with_lang_xml)
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_title_with_lang_xml(binding))
       end
     end
 
@@ -81,7 +82,7 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_dc_description(xml, @item.description)
         end
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml)
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml(binding))
       end
 
       should "output correct dc:description for #{zoom_class} when given only xml argument" do
@@ -97,8 +98,9 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_dc_description(xml)
         end
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml_when_only_xml)
-        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_short_summary_xml_when_only_xml) if has_short_summary
+
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_description_xml_when_only_xml(binding))
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_short_summary_xml_when_only_xml(binding)) if has_short_summary
       end
 
       should "have xml for xml:lang as attribute on dc:description element for #{zoom_class}, if xml:lang is passed in" do
@@ -126,7 +128,41 @@ class OaiDcHelpersTest < ActiveSupport::TestCase
         builder.root do |xml|
           @item.oai_dc_xml_tags_to_dc_subjects(xml)
         end
-        assert builder.to_stripped_xml.include?("<dc:subject><![CDATA[tag]]></dc:subject>")
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_tags_xml(binding))
+      end
+    end
+
+    context "In #{zoom_class}, the oai_dc_xml_dc_extended_content method" do
+      setup do
+        item_for(zoom_class)
+
+        # add an extended field to the top most topic_type (if topic)
+        # or this content_type
+        create_extended_field(:label => 'An extended field',
+                              :ftype => 'text',
+                              :xml_element_name => 'dc:description')
+
+        @type = zoom_class == 'Topic' ? TopicType.first : ContentType.find_by_class_name(zoom_class)
+
+        if zoom_class == 'Topic'
+          @extended_field.topic_type_to_field_mappings.create(:topic_type_id => @type.id)
+        else
+          @extended_field.content_type_to_field_mappings.create(:content_type_id => @type.id)
+        end
+
+        # add a value for this extended field
+        @item.an_extended_field = "some text"
+        @item.save
+        @item.reload
+        @item.add_as_contributor(User.first, @item.version)
+      end
+
+      should "have xml for dc:description for an item's extended field mapped to dc:description for #{zoom_class}" do
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          @item.oai_dc_xml_dc_extended_content(xml)
+        end
+        assert builder.to_stripped_xml.include?(HasValue.oai_dc_helpers_extended_content_xml(binding))
       end
     end
   end

@@ -39,28 +39,39 @@ class HasValue
     # which will eval booleans, etc.
     def method_missing(method_sym, *args, &block)
       method_name = method_sym.to_s
+      var_name = method_name.sub(/\=$/, "")
+      
+      # test if class variable exists
+      begin
+        var_value = class_variable_get('@@' + var_name)
+      rescue
+        var_exist = false
+      else
+        var_exist = true
+      end
+
       if method_name =~ /\=$/
-        var_name = method_name.sub(/\=$/, "")
-
         class_variable_set('@@' + var_name, args[0])
-
-        # create the template code
-        code = reader_proc_for(var_name)
-
-        metaclass.instance_eval { define_method(var_name, &code) }
+      elsif var_exist
+        value = var_value
+        has_substitution = value.present? && value.include?('#{')
+        if value.present? && (value.match(/^([0-9\{\[]|true|false)/) || has_substitution)
+          # see if hash of key/values to declare as variable in a binding exist
+          the_binding = args[0]
+          
+          if the_binding
+            raise "This should be a binding object." unless the_binding.is_a?(Binding)
+            value = eval(value, the_binding)
+          else
+            value = eval(value)
+          end
+        end
+        value
+      else
+        super
       end
     end
 
-    def reader_proc_for(var_name)
-      Proc.new {
-        value = class_variable_get('@@' + var_name)
-        has_substitution = value.present? && value.include?('#{')
-        if value.present? && (value.match(/^([0-9\{\[]|true|false)/) || has_substitution)
-          value = eval(value)
-        end
-        value
-      }
-    end
   end
 end
 
