@@ -133,7 +133,7 @@ class ExtendedFieldsController < ApplicationController
                                                                           :controller => 'topics',
                                                                           :action => 'show',
                                                                           :id => entry,
-                                                                          :only_path => false)})")
+                                                                          :only_path => false).sub("/#{I18n.locale}/", '/')})")
     }
     render :inline => @template.content_tag("ul", topics.uniq)
   end
