@@ -511,20 +511,34 @@ module Importer
         :item_type => @zoom_class_for_params.pluralize,
         :title => nil,
         :topic_type => nil,
-        :extended_field_data => {}
+        :extended_field_data => {},
+        :filename => nil
       }.merge(options)
 
       conditions = Array.new
       params = Hash.new
 
-      unless options[:title].blank?
+      if options[:title].present?
         conditions << "(LOWER(title) = :title)"
         params[:title] = options[:title].downcase
       end
 
-      if options[:item_type] == 'topics' && !options[:topic_type].blank?
+      if options[:item_type] == 'topics' && options[:topic_type].present?
         conditions << "(topic_type_id = :topic_type_id)"
         params[:topic_type_id] = options[:topic_type].id
+      end
+
+      if options[:filename].present?
+        # if zoom_class is StillImage
+        # we need to do a join on ImageFile
+        # to check filename
+        filename_condition = "LOWER(filename) = :filename"
+        if options[:item_type] == 'still_images'
+          image_file_conditions = "id IN (SELECT still_image_id FROM image_files WHERE #{filname_condition})"
+        else
+          conditions << "(#{filename_condition})"
+        end
+        params[:filename] = options[:filename].downcase
       end
 
       unless options[:extended_field_data].blank?
@@ -539,6 +553,7 @@ module Importer
       # Adds a little complexity, but gets around privacy related import issues, as well as
       # no longer adds the topic if the first version was the same title but was later changed
       conditions = formulate_conditions(conditions.join(' AND '), options[:item_type].singularize)
+      conditions = conditions + " AND " + image_file_conditions if options[:item_type] == 'still_images'
       conditions = [conditions, params] unless params.blank?
       logger.debug("what are conditions: " + conditions.inspect)
       @current_basket.send(options[:item_type]).find(:all, :conditions => conditions)
@@ -593,6 +608,15 @@ module Importer
           :label => @extended_field_that_contains_record_identifier.label_for_params,
           :value => record_hash[@record_identifier_xml_field]
         })
+      end
+
+      # attachable classes may have an upload file specified in file xml element
+      # if file exists, we know we are uploading files for an attachable class
+      if File.exist?(record_hash['path_to_file']) &&
+          @record_identifier_xml_field.downcase == 'path_to_file' &&
+          record_hash[@record_identifier_xml_field].present?
+        logger.info("setting filename check")
+        options[:filename] = File.basename(record_hash[@record_identifier_xml_field])
       end
 
       existing_item = importer_locate_existing_items(options).first
