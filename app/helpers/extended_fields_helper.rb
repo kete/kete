@@ -466,7 +466,7 @@ module ExtendedFieldsHelper
     # Use Javascript to send a request which checks on the server if the value is valid or not
     html += javascript_tag("
     $('#{id}').observe('blur', function(){
-      new Ajax.Request('#{url_for(:controller => 'extended_fields', :action => 'validate_topic_type_entry')}', {
+      new Ajax.Request('#{url_for(:controller => 'extended_fields', :action => 'validate_topic_type_entry', :id => id)}', {
         method: 'get',
         parameters: { field_id: '#{id}', extended_field_id: #{extended_field.id}, value: $('#{id}').value },
         onCreate: function(create) { $('#{id}_valid').hide(); $('#{id}_invalid').hide(); $('#{spinner_id}_checker').show(); },
