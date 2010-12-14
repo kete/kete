@@ -1752,3 +1752,11 @@ sup.badge {
     -webkit-border-radius: 45%;
     border-radius: 45%;
 }
+/*
+ * generic submenu for start of content-wrapper
+ */
+.content-wrapper-submenu {
+    display: inline;
+    float: right;
+    margin-top: -8px;
+}
