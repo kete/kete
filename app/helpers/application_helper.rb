@@ -1882,6 +1882,7 @@ module ApplicationHelper
 
   # a placeholder method that can be overridden in your add-on
   # it appears just after title on show page for zoom_classes (except for comments)
+  # must be able to handle bing cached (i.e. not good for things that rely on permissions)
   def extras_after_title_headline
   end
 end
