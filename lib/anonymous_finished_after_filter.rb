@@ -5,7 +5,7 @@ module AnonymousFinishedAfterFilter
       class_key = class_key.singularize if %w(audio video).include?(class_key.singularize)
 
       specs = Array.new
-      if Kete.allowed_anonymous_actions.present?
+      if Kete.respond_to?(:allowed_anonymous_actions) && Kete.allowed_anonymous_actions.present?
         specs = Kete.allowed_anonymous_actions.collect do |h|
           h[:finished_after]
         end.flatten.select do |s|

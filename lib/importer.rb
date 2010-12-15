@@ -512,7 +512,7 @@ module Importer
         :title => nil,
         :topic_type => nil,
         :extended_field_data => {},
-        :upload_file => nil
+        :filename => nil
       }.merge(options)
 
       conditions = Array.new
@@ -613,9 +613,10 @@ module Importer
       # attachable classes may have an upload file specified in file xml element
       # if file exists, we know we are uploading files for an attachable class
       if File.exist?(record_hash['path_to_file']) &&
-          @record_identifier_xml_field.downcase == 'file' &&
+          @record_identifier_xml_field.downcase == 'path_to_file' &&
           record_hash[@record_identifier_xml_field].present?
-        options[:filename] = record_hash[@record_identifier_xml_field]
+        logger.info("setting filename check")
+        options[:filename] = File.basename(record_hash[@record_identifier_xml_field])
       end
 
       existing_item = importer_locate_existing_items(options).first
