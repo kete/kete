@@ -612,7 +612,8 @@ module Importer
 
       # attachable classes may have an upload file specified in file xml element
       # if file exists, we know we are uploading files for an attachable class
-      if File.exist?(record_hash['path_to_file']) &&
+      if record_hash['path_to_file'].present? &&
+          File.exist?(record_hash['path_to_file']) &&
           @record_identifier_xml_field.downcase == 'path_to_file' &&
           record_hash[@record_identifier_xml_field].present?
         logger.info("setting filename check")
