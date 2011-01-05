@@ -9,7 +9,7 @@
 # <%= item.version %>: <%= h(item.title) %>
 
 <%=t 'user_notifier.review_flagged_for.marked_as',
-     :flag => h(item.flag),
+     :flag => h(item.flags.first),
      :time => item.flagged_at %>
 
 <%=t 'user_notifier.review_flagged_for.review_version' %>
