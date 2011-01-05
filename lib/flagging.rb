@@ -15,8 +15,7 @@ module Flagging
         attr_accessor :flagged_at # we store this versions most recent flagged date
 
         def disputed?
-          undisputed_flags = [Kete.reviewed_flag, Kete.rejected_flag, Kete.restricted_flag]
-          tags.size > 0 && tags.join(',') !~ /(\#{undisputed_flags.join('|')})/
+          tags.size > 0 && tags.join(',') !~ /(\#{already_moderated_flags.join('|')})/
         end
 
         def reviewed?
@@ -27,9 +26,12 @@ module Flagging
           tags.size > 0 && tags.join(',') =~ /(\#{Kete.rejected_flag})/
         end
 
+        def already_moderated_flags
+          #{klass.name}.already_moderated_flags
+        end
+
         def disputed_flags
-          undisputed_flags = [Kete.reviewed_flag, Kete.rejected_flag, Kete.restricted_flag]
-          flags.select { |flag| !undisputed_flags.include?(flag.name) }
+          flags.select { |flag| !already_moderated_flags.include?(flag.name) }
         end
       RUBY
 
@@ -336,18 +338,41 @@ module Flagging
 
   module ClassMethods
 
+    def already_moderated_flags
+      [Kete.reviewed_flag, Kete.rejected_flag, Kete.restricted_flag, Kete.blank_flag]
+    end
+
     # Returns a collection of item versions that have been flagged one way or another
     # use find_(disputed/reviewed/rejected) rather than this method directly
-    def find_flagged(basket_id)
+    def find_flagged(basket_id, flagging_type = nil)
       full_version_class_name = base_class.name + '::' + self.versioned_class_name
+
+      conditions = {
+        :basket_id => basket_id,
+        :context => 'flags',
+        :taggable_type => full_version_class_name
+      }
+
+      case flagging_type
+      when 'disputed'
+        already_moderated_flag_ids = Tag.find_all_by_name(already_moderated_flags).collect { |f| f.id }
+
+        # only change conditions if there are tagging instances of already_moderated_flags
+        # otherwise all taggings that are flags are disputed
+        if already_moderated_flag_ids.size > 0
+          # have to do a more complex set of conditions to get "tag_id not in" into the where clause
+          conditions_sql_array = conditions.keys.collect { |k| "#{k.to_s} = :#{k.to_s}"}
+          conditions_sql = conditions_sql_array.join(' AND ')
+          conditions_sql += " AND tag_id not in (#{already_moderated_flag_ids.join(',')})"
+          conditions = [conditions_sql, conditions]
+        end
+      when 'reviewed', 'rejected'
+        conditions[:tag_id] = Tag.find_by_name(Kete.send("#{flagging_type}_flag")).id
+      end
 
       flaggings = Tagging.all(
         :include => [:tag, { :taggable => [:flags] }],
-        :conditions => {
-          :basket_id => basket_id,
-          :context => 'flags',
-          :taggable_type => full_version_class_name
-        }
+        :conditions => conditions
       )
 
       flaggings.collect do |flagging|
@@ -362,7 +387,9 @@ module Flagging
     # find_rejected(basket_id)
     %w{ disputed reviewed rejected }.each do |type|
       define_method("find_#{type}") do |basket_id|
-        find_flagged(basket_id).select(&:"#{type}?")
+        # the select with the predicate method covers versions
+        # that have multiple flaggings on them
+        find_flagged(basket_id, type).select(&:"#{type}?")
       end
     end
 
