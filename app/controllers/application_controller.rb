@@ -1530,4 +1530,8 @@ class ApplicationController < ActionController::Base
       logout_anonymous
     end
   end
+
+  def item_controllers
+    @item_controllers ||= ITEM_CLASSES.collect { |c| zoom_class_controller(c) }
+  end
 end
