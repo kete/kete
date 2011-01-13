@@ -514,7 +514,7 @@ module ExtendedContent
     end
 
     def all_fields
-      all_field_mappings.map { |mapping| mapping.extended_field }.flatten
+      @all_fields ||= all_field_mappings.map { |mapping| mapping.extended_field }.flatten
     end
 
     private

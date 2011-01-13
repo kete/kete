@@ -113,13 +113,24 @@ class AccountController < ApplicationController
         end
       end
     else
-      if !session[:return_to].blank? && session[:return_to].include?('find_related')
-        render :layout => "simple"
-      end
-      
+
+      render_layout_simple_if_necessary
+
       set_captcha_type if anonymous_ok_for?(session[:return_to])
       create_brain_buster if @captcha_type == 'question'
     end
+  end
+
+  def simple_return_tos
+      ['find_related']
+  end
+
+  def render_layout_simple_if_necessary
+    return if session[:return_to].blank?
+    
+    simple_return_tos_regexp = Regexp.new(simple_return_tos.join('|'))
+
+    render :layout => "simple" if session[:return_to] =~ simple_return_tos_regexp
   end
 
   # override brain_buster method to suit our UI
