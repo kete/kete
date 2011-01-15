@@ -133,6 +133,9 @@ class Topic < ActiveRecord::Base
   # convenience methods for a topics relations
   include RelatedItems
 
+  # methods for merging values from versions together
+  include Merge
+
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload

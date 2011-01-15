@@ -22,6 +22,7 @@ class CommentTest < ActiveSupport::TestCase
   include ExtendedContentTestUnitHelper
   include FlaggingTestUnitHelper
 
+  include MergeTestUnitHelper
 
   context "A comment created by an anonymous user" do
     setup do
