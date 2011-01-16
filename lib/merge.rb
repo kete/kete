@@ -49,7 +49,11 @@ module Merge
         extended_values = structured_extended_content
         unless extended_values.blank?
           extended_values.each do |k,v|
-            structured_extended_content_thus_far[k] = v
+            if (v.present? && !v.is_a?(Array)) ||
+                (v.is_a?(Array) && v.present? && v.size > 0 && v.first.present?)
+
+              structured_extended_content_thus_far[k] = v
+            end
           end
         end
       end
