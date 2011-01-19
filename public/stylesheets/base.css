@@ -1752,6 +1752,10 @@ sup.badge {
     -webkit-border-radius: 45%;
     border-radius: 45%;
 }
+#content-wrapper .badge a {
+    color: white;
+}
+
 /*
  * generic submenu for start of content-wrapper
  */

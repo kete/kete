@@ -49,6 +49,9 @@ module TaggingController
 
         @successful = @item.update_attributes(params[item_key])
         if @successful
+          after_tags_added(:starting_version => version_after_update - 1,
+                           :ending_version => version_after_update)
+
           @item = public_or_private_version_of(@item) # make sure we are back to private item if needed
           after_successful_zoom_item_update(@item, version_after_update)
           respond_to do |format|
@@ -76,6 +79,10 @@ module TaggingController
         end
         return false
       end
+    end
+
+    # method that add-ons can define to do something after tags added
+    def after_tags_added(options)
     end
   end
 end
