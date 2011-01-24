@@ -1812,7 +1812,10 @@ module ApplicationHelper
     locales = I18n.available_locales_with_labels.collect { |key,value| [value,key] }
     locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]
     if form
-      form.select :locale, locales, :selected => options[:default]
+      # empty string is valid label value
+      label = !options[:label].nil? ? options[:label] : t('application_helper.locale_dropdown.label')
+
+      form.select :locale, locales, { :selected => options[:default] }, { :tabindex => '1', :label => label }
     else
       select_tag :override_locale, options_for_select(locales, options[:default])
     end
@@ -1880,9 +1883,16 @@ module ApplicationHelper
     html
   end
 
+  ### begin add-ons methods
+
   # a placeholder method that can be overridden in your add-on
   # it appears just after title on show page for zoom_classes (except for comments)
   # must be able to handle bing cached (i.e. not good for things that rely on permissions)
   def extras_after_title_headline
+  end
+
+  # three helpers for ITEM_CLASSES form that can be redefined in add-ons
+  %w(beginning mid end).each do |location|
+    define_method('add_ons_item_form_' + location, Proc.new { |form| })
   end
 end
