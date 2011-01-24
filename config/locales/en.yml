@@ -579,6 +579,8 @@ en:
       link_text: "{{function}} an {{t.base.existing.capitalize}} {{t.base.related.capitalize}} {{t.base.item.capitalize}}"
     link_to_related_items_of:
       link_text: "{{t.base.view.capitalize}} {{t.base.item.pluralize}} {{t.base.related}} to {{item_title}}"
+    locale_dropdown:
+      label: "{{t.base.choose.capitalize}} {{t.base.language}}" 
     pending_review:
       no_safe_version: "currently no non-disputed {{privacy_type}} versions of this {{t.base.item}}. Details of the {{privacy_type}} version of this {{t.base.item}} are not being displayed at this time."
       pending: "{{t.base.review.capitalize}} Pending:"

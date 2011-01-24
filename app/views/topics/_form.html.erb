@@ -115,6 +115,8 @@ zoom_class = zoom_class_from_controller(controller)
       <%= form.hidden_field :private, :value => item_private -%>
     <% end %>
 
+    <%= add_ons_item_form_beginning(form) -%>
+
     <%= form.text_field :title, { :tabindex => '1', :label => t('topics.form.title'), :required => true } -%>
 
     <% if [:document, :topic].include?(@item_type) -%>
@@ -204,6 +206,8 @@ zoom_class = zoom_class_from_controller(controller)
       <% end -%>
     <% end -%>
 
+    <%= add_ons_item_form_mid(form) -%>
+
     <% if @item_type == :topic -%>
       <% @self_topic_type_and_ancestors = @editing ? @item.topic_type.self_and_ancestors :
                                                      TopicType.find(params[:topic][:topic_type_id]).self_and_ancestors -%>
@@ -247,16 +251,18 @@ zoom_class = zoom_class_from_controller(controller)
     <%= render :partial => 'topics/license_chooser_or_agreement',
                :locals => { :item => @item } -%>
 
-    <% if HIDE_RELATED_ITEMS_POSITION_FIELD %>
-      <%= form.hidden_field :related_items_position, :value => RELATED_ITEMS_POSITION_DEFAULT -%>
+    <% if Kete.hide_related_items_position_field %>
+      <%= form.hidden_field :related_items_position, :value => Kete.related_items_position_default -%>
     <% else %>
       <% if params[@item_type] && params[@item_type][:related_items_position]; position = params[@item_type][:related_items_position]
          elsif @editing && !@item.related_items_position.nil?; position = @item.related_items_position
-         else; position = RELATED_ITEMS_POSITION_DEFAULT; end -%>
+         else; position = Kete.related_items_position_default; end -%>
       <%= form.select :related_items_position, related_items_positions,
                                                { :selected => position },
                                                { :tabindex => '1', :label => t('topics.form.related_items_position') } %>
     <% end %>
+
+    <%= add_ons_item_form_end(form) -%>
 
   </fieldset>
 
