@@ -67,8 +67,10 @@ module Merge
       end
 
       unless structured_extended_content_thus_far.blank?
-        structured_extended_content = structured_extended_content_thus_far
+        self.structured_extended_content = structured_extended_content_thus_far
       end
+
+      self
     end
   end
 end
