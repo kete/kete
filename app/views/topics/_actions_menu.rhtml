@@ -2,14 +2,10 @@
   <ul class="nav-list">
     <li class="first selected"><a href="#" tabindex="1"><span class="view-link"><%=t 'topics.actions_menu.item_details' %></span></a></li>
     <% cache_with_privacy(item, {:part => 'edit'}) do -%>
-    <li><%= link_to "<span class=\"edit-link\">#{t('topics.actions_menu.edit')}</span>",
-            {:action => :edit,
-      :id => item, :private => params[:private]}, :tabindex => '1' %></li>
+    <li><%= link_to_edit_for(item) -%></li>
     <% end %>
     <% cache_with_privacy(item, {:part => 'history'}) do -%>
-    <li><%= link_to "<span class=\"history-link\">#{t('topics.actions_menu.history')}</span>",
-            {:action => :history,
-      :id => item}, :tabindex => '1' %></li>
+    <li><%= link_to_history_for(item) -%></li>
     <% end %>
     <% unless params[:controller] == 'comments' %>
       <% cache_with_privacy(item, {:part => 'comments-link'}) do -%>

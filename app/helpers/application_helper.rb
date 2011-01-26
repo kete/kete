@@ -1502,6 +1502,25 @@ module ApplicationHelper
     end
   end
 
+  # link to action menu helper methods
+  # destroy skipped, as it is more of a special case
+  %w(edit history).each do |action|
+    code = lambda { |item|
+      args = { :action => action.to_sym,
+        :id => item }
+
+      args[:private] = params[:private] if action == 'edit'
+
+      t_key = t("topics.actions_menu.#{action}")
+
+      link_to("<span class=\"#{action}-link\">#{t_key}</span>",
+              args,
+              :tabindex => '1')  
+    }
+
+    define_method('link_to_' + action + '_for', &code)
+  end
+
   # we use this in imports, too
   def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options=Hash.new, pre_options=Array.new)
     if method
