@@ -370,6 +370,9 @@ module ExtendedContent
 
       # If the extended field is a choice, make sure it's values properly indexed in XML.
       if ['autocomplete', 'choice'].member?(extended_field.ftype)
+        # gives some flexibility when value is being swapped in from add-ons (read translations)
+        value_array = [value_array] if value_array.is_a?(String)
+
         value_array.flatten!
         value_array.inject(Hash.new) do |hash, value|
           value_index = (value_array.index(value) + 1).to_s
