@@ -122,7 +122,6 @@ module ImageSlideshow
       # We have populated results by now hopefully
       if slideshow_has_results?
         # Get the current still image
-        logger.debug("what is result of look up of selected_still_image: " + still_image_collection.find_by_id(@current_id).inspect)
         @selected_still_image = still_image_collection.find_by_id(@current_id)
         # At this point, we have a valid still image we should be displaying. Get the ImageFile for it
         @selected_image_file = @selected_still_image.send("#{IMAGE_SLIDESHOW_SIZE.to_s}_file") if !@selected_still_image.nil?

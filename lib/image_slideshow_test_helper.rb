@@ -3,17 +3,16 @@ module ImageSlideshowTestHelper
     def self.included(base)
       base.class_eval do
 
-        if @base_class == 'IndexPage'
-        else
+        if base.name == 'IndexPageControllerTest'
           context "The index page" do
 
             setup do
-              3.times { |i| create_new_still_image_with(:title => "site basket image #{i}") }
+              3.times { |i| create_new_still_image_with(:title => "site basket image #{i + 1}") }
 
               @different_basket = create_new_basket({ :name => "different basket" })
 
               3.times do |i|
-                create_new_still_image_with(:title => "different basket image #{i}",
+                create_new_still_image_with(:title => "different basket image #{i + 1}",
                                             :basket_id => @different_basket.id)
               end
             end
@@ -26,9 +25,11 @@ module ImageSlideshowTestHelper
 
             should "have slideshow be populated in the session on selected image visit when it is not for the site basket, but another basket limited to just the basket images" do
               run_through_selected_images(:selected_image_params => {
-                                            :urlified_name => @different_basket.urlified_name })
+                                            :urlified_name => @different_basket.urlified_name,
+                                            :controller => 'index_page' })
             end
           end
+        else
 
           context "The topic related image slideshow" do
 
@@ -43,7 +44,7 @@ module ImageSlideshowTestHelper
 
               context "and the images are in the same basket" do 
                 setup do
-                  3.times { |i| create_new_image_relation_to(@topic, :title => 'Child Image ' + i.to_s)}
+                  3.times { |i| create_new_image_relation_to(@topic, :title => "Child Image #{i + 1}") }
                 end
 
                 should "have slideshow be populated in the session on selected image visit" do
@@ -55,7 +56,7 @@ module ImageSlideshowTestHelper
                 setup do
                   3.times { |i| create_new_image_relation_to(@topic,
                                                              :basket_id => create_new_basket({ :name => "basket #{i + 1}" }).id,
-                                                             :title => 'Child Image in Another Basket ' + i.to_s)}
+                                                             :title => "Child Image in Another Basket #{i + 1}" )}
                 end
 
                 should "have slideshow be populated in the session on selected image visit" do
@@ -68,7 +69,6 @@ module ImageSlideshowTestHelper
         private
 
         def run_through_selected_images(options = {})
-          p options.inspect
           options[:current] = options[:current].blank? ? 1 : options[:current].blank?
           selected_image_params = options.delete(:selected_image_params)
 
@@ -82,14 +82,17 @@ module ImageSlideshowTestHelper
           get :selected_image, selected_image_params
           check_slideshow_values_correct(options.merge({ :current => 0 }))
 
-          # simulate auto slideshow progression (used by slideshow via JS)
-          get :selected_image, selected_image_params
-          check_slideshow_values_correct(options)
-          get :selected_image, selected_image_params
-          check_slideshow_values_correct(options.merge({ :current => 0 }))
-          # check it loops back to the first one
-          get :selected_image, selected_image_params
-          check_slideshow_values_correct(options.merge({ :current => 0 }))
+          unless options[:total]
+            # simulate auto slideshow progression (used by slideshow via JS)
+            get :selected_image, selected_image_params
+            check_slideshow_values_correct(options)
+
+            get :selected_image, selected_image_params
+            check_slideshow_values_correct(options.merge({ :current => nil }))
+            # check it loops back to the first one
+            get :selected_image, selected_image_params
+            check_slideshow_values_correct(options.merge({ :current => 0 }))
+          end
 
           # test next button
           session['image_slideshow'] = nil
