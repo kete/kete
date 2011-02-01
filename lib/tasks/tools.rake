@@ -45,6 +45,45 @@ namespace :kete do
       Rake::Task["kete:tools:set_locales"].invoke
     end
 
+    namespace :locales do
+
+      desc 'Make a timestamped copy of specified locale if there are changes from last backup. THIS=[language_code] e.g. rake kete:tools:locales:backup_for THIS=zh'
+      task :backup_for do
+        locale = ENV['THIS']
+        path_stub = "#{Rails.root}/config/locales/"
+        path = path_stub + locale + '.yml'
+        timestamped_path = path + '.' + Time.now.utc.xmlschema
+
+        unless File.exist?(path)
+          puts "ERROR: #{locale} locale doesn't exist."
+          exit
+        end
+
+        last_backup_filename = Dir.entries(path_stub).select { |entry| entry.include?(locale + '.yml.')}.last
+
+        do_backup = false
+
+        if last_backup_filename.blank?
+          do_backup = true
+        else
+          full_last_backup_filename = path_stub + last_backup_filename
+
+          diff_output = `diff #{path} #{full_last_backup_filename}`
+
+          do_backup = true if diff_output.present?
+        end
+
+        if do_backup
+          require 'ftools'
+          File.cp(path, timestamped_path)
+          puts "Backup of #{locale}.yml created."
+        else
+          puts "No backup needed. Last backup matches current #{locale}.yml."
+        end
+      end
+    
+    end
+
     desc 'Resets the database and zebra to their preconfigured state.'
     task :reset => ['kete:tools:reset:zebra', 'db:bootstrap', 'kete:tools:restart']
     namespace :reset do
