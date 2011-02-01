@@ -72,19 +72,35 @@ class ActionController::IntegrationTest
   # header. Then fill in fields and click "Log in" Takes required username, and optional password, whether to
   # navigate to login (not needed if we're there already) and whether we are expecting this login to fail
   def login_as(username, password='test', options = {})
-    options = { :navigate_to_login => true,
+    options = { :navigate_to_login => false,
+                :by_form => false,
+                :logout_first => false,
+                :test_success => false,
                 :should_fail_login => false }.merge(options)
-    if options[:navigate_to_login]
+  
+    options[:logout_first] = true if options[:navigate_to_login]
+    options[:test_success] = true if options[:navigate_to_login]
+
+    if options[:logout_first]
       logout # make sure we arn't logged in first
+    end
+
+    if options[:navigate_to_login]
       visit "/site/account/login"
     end
 
-    body_should_contain "Login to Kete"
-    fill_in "login", :with => username.to_s
-    fill_in "password", :with => password
-    click_button "Login"
+    if options[:by_form]
+      body_should_contain "Login to Kete"
+      fill_in "login", :with => username.to_s
+      fill_in "password", :with => password
+      submit_form "login"
+    else
+      # we just want the user to have an authenticated state
+      # no need to go through all the requests, etc.
+      visit "/site/account/login", :post, { :login => username.to_s, :password => password }
+    end
 
-    body_should_contain("Logged in successfully") unless options[:should_fail_login]
+    body_should_contain("Logged in successfully") if options[:test_success] && !options[:should_fail_login]
   end
 
   # Asserts whether the supplied text is within the response body returned from a visit request.
@@ -242,7 +258,7 @@ class ActionController::IntegrationTest
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/topics/new?index_for_basket=#{basket.id}"
     elsif !relate_to.nil?
-      visit "/#{relate_to.basket.urlified_name}/#{controller}/new?relate_to_topic=#{relate_to.to_param}"
+      visit "/#{relate_to.basket.urlified_name}/#{controller}/new?relate_to_item=#{relate_to.to_param}&relate_to_type=Topic"
     else
       visit new_path
     end
@@ -446,7 +462,7 @@ class ActionController::IntegrationTest
     visit "/#{item.basket.urlified_name}/#{controller}/preview/#{item.id}?version=#{version}"
     save_and_open_page unless response.body.include?("Preview revision")
     body_should_contain 'Preview revision'
-    click_link 'Make this revision live'
+    click_link I18n.t('topics.preview_actions.make_live')
     body_should_contain "The content of this #{zoom_class_humanize(item_class)} has been approved
                          from the selected revision."
     item.reload # get the new version
@@ -728,7 +744,7 @@ class ActionController::IntegrationTest
   def add_relation_between(topic, zoom_class, *relation_candidate_ids)
     topic = topic.id.to_s if topic.is_a?(Topic)
     item_checkbox_hash = item_checkbox_hash_from(relation_candidate_ids)
-    post '/site/search/link_related', :relate_to_topic => topic, :related_class => zoom_class, :item => item_checkbox_hash
+    post '/site/search/link_related', :relate_to_item => topic, :relate_to_type => 'Topic', :related_class => zoom_class, :item => item_checkbox_hash
     assert_response :redirect
     # body_should_contain "Successfully added item relationships"
   end
@@ -737,7 +753,7 @@ class ActionController::IntegrationTest
   def unlink_relation_between(topic, zoom_class, *relation_candidate_ids)
     topic = topic.id.to_s if topic.is_a?(Topic)
     item_checkbox_hash = item_checkbox_hash_from(relation_candidate_ids)
-    post '/site/search/unlink_related', :relate_to_topic => topic, :related_class => zoom_class, :item => item_checkbox_hash
+    post '/site/search/unlink_related', :relate_to_item => topic, :relate_to_type => 'Topic', :related_class => zoom_class, :item => item_checkbox_hash
     assert_response :redirect
     # body_should_contain "Successfully removed item relationships."
   end

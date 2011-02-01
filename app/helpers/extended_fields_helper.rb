@@ -358,10 +358,10 @@ module ExtendedFieldsHelper
 
     # Build OPTION tags
     if choices.size > 0
-      option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']] +
+      option_tags = options_for_select([["- choose #{"sub-" if level > 1}#{display_label_for(extended_field).singularize.downcase} -", '']] +
                                        choices.map { |c| [c.label, c.value] }, value)
     else
-      option_tags = options_for_select([["- no #{"sub-" if level > 1}#{extended_field.label.singularize.downcase} -", '']])
+      option_tags = options_for_select([["- no #{"sub-" if level > 1}#{display_label_for(extended_field).singularize.downcase} -", '']])
     end
 
     default_options = {
@@ -379,7 +379,7 @@ module ExtendedFieldsHelper
     if extended_field.user_choice_addition?
       user_supplied_id = "#{id_for_extended_field(extended_field)}_level_#{level}_custom"
       html += " #{t('extended_fields_helper.extended_field_choice_select_editor.suggest_a',
-                    :field_name => extended_field.label.singularize.downcase)} "
+                    :field_name => display_label_for(extended_field).singularize.downcase)} "
       html += text_field_tag("#{name}[#{level}][custom]", nil, :size => 10, :id => user_supplied_id, :class => "#{extended_field.label_for_params}_choice_custom", :tabindex => 1)
       html += javascript_tag("clearCorrespondingFieldWhenEdited('#{user_supplied_id}', '#{extended_field.label_for_params}_choice_custom', '#{default_options[:id]}', '#{default_options[:class]}');")
     end
@@ -466,7 +466,7 @@ module ExtendedFieldsHelper
     # Use Javascript to send a request which checks on the server if the value is valid or not
     html += javascript_tag("
     $('#{id}').observe('blur', function(){
-      new Ajax.Request('#{url_for(:controller => 'extended_fields', :action => 'validate_topic_type_entry')}', {
+      new Ajax.Request('#{url_for(:controller => 'extended_fields', :action => 'validate_topic_type_entry', :id => id)}', {
         method: 'get',
         parameters: { field_id: '#{id}', extended_field_id: #{extended_field.id}, value: $('#{id}').value },
         onCreate: function(create) { $('#{id}_valid').hide(); $('#{id}_invalid').hide(); $('#{spinner_id}_checker').show(); },
@@ -492,14 +492,18 @@ module ExtendedFieldsHelper
     options = required ? { :class => "required" } : Hash.new
     required_icon = required ? ' <em>*</em>' : ''
 
-    label_tag(id_for_extended_field(extended_field), extended_field.label + required_icon, options)
+    label_tag(id_for_extended_field(extended_field), display_label_for(extended_field) + required_icon, options)
+  end
+
+  def extended_field_example(extended_field)
+    h(extended_field.example)
   end
 
   def additional_extended_field_control(extended_field, n)
     id = id_for_extended_field(extended_field) + "_additional"
 
     link_to_remote(t('extended_fields_helper.additional_extended_field_control.add_another',
-                     :field_name => extended_field.label.singularize.downcase),
+                     :field_name => display_label_for(extended_field).singularize.downcase),
                    :url => { :controller => 'extended_fields',
                              :action => 'add_field_to_multiples',
                              :extended_field_id => extended_field.id,

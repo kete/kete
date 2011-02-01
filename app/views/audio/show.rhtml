@@ -4,6 +4,7 @@
 
 <% cache_with_privacy(@audio_recording, {:part => 'details_first'}) do -%>
   <h2><%= h(@audio_recording.title) %></h2>
+  <%= extras_after_title_headline -%>
 <% end -%>
 
 <%= render(:partial => "topics/related_items", :locals => { :item => @audio_recording, :topics_only => true, :position => 'inset' }) if @audio_recording.related_items_position == 'inset' -%>

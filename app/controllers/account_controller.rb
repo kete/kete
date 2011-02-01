@@ -27,34 +27,121 @@ class AccountController < ApplicationController
 
   def login
     if request.post?
-      self.current_user = User.authenticate(params[:login], params[:password])
+
+      # check for login/password
+      # else anonymous user
+      # and check captcha
+      # store name, email, website in session
+      if params[:login].present? && params[:password].present?
+        self.current_user = User.authenticate(params[:login], params[:password])
+      else
+        case @captcha_type
+        when 'image'
+          if simple_captcha_valid?
+            @security_code = params[:security_code]
+          end
+          
+          if simple_captcha_confirm_valid?
+            @res = Captcha.find(session[:captcha_id])
+            @security_code_confirmation = @res.text
+          else
+            @security_code_confirmation = false
+          end
+        when 'question'
+          if validate_brain_buster
+            @security_code = true
+            @security_code_confirmation = true
+          end
+        end
+
+        if anonymous_ok_for?(session[:return_to]) &&
+            @security_code == @security_code_confirmation &&
+            params[:email].present? && params[:email] =~ /^[^@\s]+@[^@\s]+$/i
+
+          @anonymous_user = User.find_by_login('anonymous')
+
+          anonymous_name = params[:name].blank? ? @anonymous_user.user_name : params[:name]
+
+          session[:anonymous_user] = { :name => anonymous_name,
+            :email => params[:email]}
+          
+          # see if the submitted website is valid
+          # append protocol if they have left it off
+          website = params[:website]
+          website = "http://" + website unless website.include?('http')
+
+          temp_weblink = WebLink.new(:title => 'placeholder', :url => website)
+
+          session[:anonymous_user][:website] = website if temp_weblink.valid?
+
+          self.current_user = @anonymous_user
+        end
+      end
+
       if logged_in?
-        if params[:remember_me] == "1"
+        # anonymous users can't use remember me, check for login password
+        if @anonymous_user.blank? && params[:remember_me] == "1"
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
-        move_session_searches_to_current_user
-        flash[:notice] = t('account_controller.login.logged_in')
+        unless @anonymous_user
+          move_session_searches_to_current_user 
+          flash[:notice] = t('account_controller.login.logged_in')
+        end
         redirect_back_or_default({ :locale => current_user.locale,
                                    :urlified_name => @site_basket.urlified_name,
                                    :controller => 'account',
                                    :action => 'index' }, current_user.locale)
       else
-        flash[:notice] = t('account_controller.login.failed_login')
+        if params[:login].present? && params[:password].present?
+          flash[:notice] = t('account_controller.login.failed_login')
+        else
+          error_msgs = Array.new
+
+          if params[:email].blank? || !params[:email].include?("@")
+            error_msgs << t('account_controller.login.invalid_email')
+          end
+
+          if @security_code != @security_code_confirmation || @security_code.blank?
+            error_msgs << t('account_controller.login.failed_security_answer')
+          end
+
+          flash[:notice] = error_msgs.join("#{t('account_controller.login.or')}")
+
+          set_captcha_type if anonymous_ok_for?(session[:return_to])
+          create_brain_buster if @captcha_type == 'question'
+        end
       end
     else
-      logger.debug("what is return_to: " + session[:return_to].inspect)
-      if !session[:return_to].blank? && session[:return_to].include?('find_related')
-        render :layout => "simple"
-      end
+
+      render_layout_simple_if_necessary
+
+      set_captcha_type if anonymous_ok_for?(session[:return_to])
+      create_brain_buster if @captcha_type == 'question'
     end
+  end
+
+  def simple_return_tos
+      ['find_related']
+  end
+
+  def render_layout_simple_if_necessary
+    return if session[:return_to].blank?
+    
+    simple_return_tos_regexp = Regexp.new(simple_return_tos.join('|'))
+
+    render :layout => "simple" if session[:return_to] =~ simple_return_tos_regexp
   end
 
   # override brain_buster method to suit our UI
   # and working in conjunction with simple_captcha
   def captcha_failure
-    @user.security_code = 'failed'
-    @user.security_code_confirmation = false
+    if @user
+      @user.security_code = 'failed'
+      @user.security_code_confirmation = false
+    else
+      # TODO: do something here for login case
+    end
   end
 
 
@@ -63,12 +150,8 @@ class AccountController < ApplicationController
     load_content_type
 
     @user = User.new
-
-    # Walter McGinnis, 2008-03-16
-    # making it so that system setting
-    # determines which type of captcha method we use
-    @captcha_type = params[:captcha_type] || CAPTCHA_TYPE
-    @captcha_type = 'image' if @captcha_type == 'all'
+    
+    set_captcha_type
 
     create_brain_buster if @captcha_type == 'question'
 
@@ -119,6 +202,14 @@ class AccountController < ApplicationController
     render :action => 'signup'
   end
 
+  # Walter McGinnis, 2008-03-16
+  # making it so that system setting
+  # determines which type of captcha method we use
+  def set_captcha_type
+    @captcha_type = params[:captcha_type] || Kete.captcha_type
+    @captcha_type = 'image' if @captcha_type == 'all'
+  end
+
   def fetch_gravatar
     respond_to do |format|
       format.js do
@@ -133,9 +224,9 @@ class AccountController < ApplicationController
   end
 
   def simple_captcha_valid?
-    if params[:user][:security_code] != ''
-      return true
-    end
+    (params[:user].present? && params[:user][:security_code].present? &&
+     params[:security_code].nil?) ||
+      (params[:user].nil? && params[:security_code].present?)
   end
 
   def agreed_terms?
@@ -145,25 +236,18 @@ class AccountController < ApplicationController
   end
 
   def simple_captcha_confirm_valid?
-    if params[:user][:security_code]
-      @res = Captcha.find(session[:captcha_id])
-      if @res.text == params[:user][:security_code]
-        return true
-      else
-        return false
-      end
-    else
-      return false
-    end
+    return false unless simple_captcha_valid?
+    
+    @res = Captcha.find(session[:captcha_id])
+    
+    (params[:user].present? &&
+     @res.text == params[:user][:security_code]) ||
+      (params[:security_code].present? &&
+       @res.text == params[:security_code])
   end
 
   def logout
-    self.current_user.forget_me if logged_in?
-    cookies.delete :auth_token
-    # Walter McGinnis, 2008-03-16
-    # added to support brain_buster plugin captcha
-    cookies.delete :captcha_status
-    reset_session
+    deauthenticate
     flash[:notice] = t('account_controller.logout.logged_out')
     redirect_back_or_default(:controller => '/account', :action => 'index')
   end
@@ -439,14 +523,5 @@ class AccountController < ApplicationController
       @content_type = ContentType.find_by_class_name('User')
     end
 
-    def ssl_required?
-      FORCE_HTTPS_ON_RESTRICTED_PAGES || false
-    end
-
-    # If ssl_allowed? returns true, the SSL requirement is not enforced,
-    # so ensure it is not set in this controller.
-    def ssl_allowed?
-      nil
-    end
-
+    include SslControllerHelpers
 end

@@ -49,10 +49,9 @@ module OaiZoom
                   oai_dc_xml_dc_title(xml)
                   oai_dc_xml_dc_publisher(xml, request[:host])
 
-                  # topic/document specific
-                  oai_dc_xml_dc_description(xml, short_summary) if [Topic, Document].include?(self.class)
-
-                  oai_dc_xml_dc_description(xml, description)
+                  # appropriate description(s) elements will be determined
+                  # since we call it without specifying
+                  oai_dc_xml_dc_description(xml)
 
                   xml.send("dc:subject") {
                     xml.cdata item.url
@@ -186,7 +185,7 @@ module OaiZoom
           related_items.each do |related|
             xml.send("dc:subject") {
               xml.cdata related.title
-            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
             xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(zoom_class), :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
           end
         end
@@ -195,13 +194,13 @@ module OaiZoom
         commented_on_item = item.commentable
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
-        } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
+        } unless [Kete.blank_title, Kete.no_public_version_title].include?(commented_on_item.title)
         xml.send("dc:relation", importer_item_url({:host => host, :controller => zoom_class_controller(commented_on_item.class.name), :item => commented_on_item, :urlified_name => commented_on_item.basket.urlified_name, :locale => false}, true))
       else
         item.topics.each do |related|
           xml.send("dc:subject") {
             xml.cdata related.title
-          } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+          } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
           xml.send("dc:relation", importer_item_url({:host => host, :controller => :topics, :item => related, :urlified_name => related.basket.urlified_name, :locale => false}, true))
         end
       end
@@ -218,7 +217,7 @@ module OaiZoom
       if item.respond_to?(:license) && !item.license.blank?
         rights = item.license.url
       else
-        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(ABOUT_BASKET).urlified_name, :id => 4, :locale => false})
+        rights = importer_item_url({:host => host, :controller => 'topics', :item => item, :urlified_name => Basket.find(Kete.about_basket).urlified_name, :id => 4, :locale => false})
       end
 
       xml.send("dc:rights", rights)

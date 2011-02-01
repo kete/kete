@@ -67,8 +67,8 @@ horizontal = display_refine
       <td class="label"><%= t('search.mini_controls.show') %></td>
       <td colspan="2" class="fields">
         <%
-        options = %w{ topics images audio video web_links documents comments }.collect do |item_type|
-          [zoom_class_plural_humanize(zoom_class_from_controller(item_type)), item_type]
+        options = ZOOM_CLASSES.collect do |zoom_class|
+          [zoom_class_plural_humanize(zoom_class), zoom_class_controller(zoom_class)]
         end
         selected = (params[:controller_name_for_zoom_class].blank? || clear_values ? 'topics' : params[:controller_name_for_zoom_class])
         %>
@@ -77,7 +77,7 @@ horizontal = display_refine
     </tr>
     <% end %>
 
-    <% if display_search_field_for?(type, DISPLAY_TOPIC_TYPE_FIELD) && topic_type_useful_here?(type) %>
+    <% if topic_type_useful_here?(type) %>
     <tr>
       <td class="label"><%=t 'search.mini_controls.about_a' %></td>
       <td colspan="2" class="fields">

@@ -6,8 +6,7 @@ require 'xmlsimple'
 # ExtendedContent provides a way to access additional, extended content directly on a model. (ExtendedContent is included in all
 # Kete content types.)
 #
-# Extended Content definitions are configured separately by users with ExtendedField records which are mapped to topic types or
-# content types via the TopicTypeToFieldMapping and ContentTypeToFieldMapping relationship models. So, the relationships between
+# Extended Content definitions are configured separately by users with ExtendedField records which are mapped to topic types or # content types via the TopicTypeToFieldMapping and ContentTypeToFieldMapping relationship models. So, the relationships between
 # item classes and extended fields is something like AudioRecording -> ContentTypeToFieldMapping(s) -> ExtendedField. In the case
 # of Topics the relations are Topic -> TopicType -> TopicTypeToFieldMapping(s) -> ExtendedField. Refer to the individual classes
 # for more information.
@@ -261,7 +260,7 @@ module ExtendedContent
           elsif ['map', 'map_address'].member?(extended_field.ftype)
             values = field.first # pull the hash out of the array it's been put into
           else
-
+            
             # For singular values we expect something like:
             # ['field_name', 'value'] (in normal cases), or [['field_name', 'value']] (in the case of hierarchical choices)
             # So, we need to adjust the format to be consistent with the expected output..
@@ -272,6 +271,23 @@ module ExtendedContent
         end
 
         hash
+      end
+    end
+
+    #turns choice hashes into arrays
+    def hashes_to_arrays(values)
+      values.collect do |value|
+        if value.is_a?(Hash) && value.keys.include?('value') && value.keys.include?('label')
+          if value['label'] == value['value']
+            value["label"]
+          else
+            value
+          end
+        elsif value.is_a?(Array)
+          hashes_to_arrays(value)
+        else
+          value
+        end
       end
     end
 
@@ -316,9 +332,18 @@ module ExtendedContent
             end
             multiple
           end
-
-        else
+        elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
           if field.size > 1
+            # We're dealing with a multiple field value.
+            result[field_param_name] = field.inject(Hash.new) do |multiple, value|
+              multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
+              multiple
+            end
+          else
+            result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+          end
+        else
+          if (extended_field.multiple && field.size > 0) || field.size > 1
             # We're dealing with a multiple field value.
             result[field_param_name] = field.inject(Hash.new) do |multiple, value|
               multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
@@ -345,9 +370,19 @@ module ExtendedContent
 
       # If the extended field is a choice, make sure it's values properly indexed in XML.
       if ['autocomplete', 'choice'].member?(extended_field.ftype)
+        # gives some flexibility when value is being swapped in from add-ons (read translations)
+        value_array = [value_array] if value_array.is_a?(String)
+
         value_array.flatten!
         value_array.inject(Hash.new) do |hash, value|
-          hash[(value_array.index(value) + 1).to_s] = value.to_s
+          value_index = (value_array.index(value) + 1).to_s
+          if !value.is_a?(Hash)
+            value = value.to_s
+          elsif value_label_hash?(value) && value['label'] == value['value']
+            value = value['label']
+          end
+
+          hash[value_index] = value
           hash
         end
       elsif ['map', 'map_address'].member?(extended_field.ftype)
@@ -372,18 +407,21 @@ module ExtendedContent
     # you would expect "parent choice -> child choice".
     def reader_for(extended_field_element_name, field = nil)
       values = structured_extended_content[extended_field_element_name].to_a
+      values = hashes_to_arrays(values).to_a
       if values.size == 1
         if field && field.ftype == 'year'
           values = values.first if values.is_a?(Array)
           values = values.first if values.is_a?(Array) && !field.multiple?
           values
         else
-          values = values.first.is_a?(Array) ? values.first.join(" -> ") : values.first
+          value = values.first
+          if value.is_a?(Array)
+            if value.size == 1
+              value = value.first
+            end
+          end
+          values = value
         end
-      elsif field && ['map', 'map_address', 'topic_type', 'year'].member?(field.ftype)
-        # do nothing with the data in this case
-      else
-        values = values.collect { |v| v.is_a?(Array) ? v.join(" -> ") : v }
       end
       values
     end
@@ -472,7 +510,7 @@ module ExtendedContent
       end
 
       # Confirm new values
-      reader_for(extended_field_element_name)
+      reader_for(extended_field_element_name, field)
     end
 
     # Append a new multiple value to an extended field which supports multiple values
@@ -490,8 +528,12 @@ module ExtendedContent
       unless additional_value.blank?
         replace_value_for(extended_field_element_name, current_values + additional_value, field)
         # Confirm new values
-        reader_for(extended_field_element_name)
+        reader_for(extended_field_element_name, field)
       end
+    end
+
+    def all_fields
+      @all_fields ||= all_field_mappings.map { |mapping| mapping.extended_field }.flatten
     end
 
     private
@@ -751,9 +793,6 @@ module ExtendedContent
       ContentType.find_by_class_name(self.class.name).content_type_to_field_mappings
     end
 
-    def all_fields
-      all_field_mappings.map { |mapping| mapping.extended_field }.flatten
-    end
 
     # Validation methods..
     def validate

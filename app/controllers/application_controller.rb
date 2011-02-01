@@ -79,9 +79,19 @@ class ApplicationController < ActionController::Base
                                             :choose_type, :render_item_form,
                                             :setup_rebuild,
                                             :rebuild_zoom_index,
-                                            :add_portrait, :remove_portrait, :make_selected_portrait,
+                                            :add_portrait, :remove_portrait,
+                                            :make_selected_portrait,
                                             :contact, :send_email,
                                             :join ]
+
+  # doesn't work for redirects, those are handled by
+  # after filters on registered on specific controllers
+  # based on Kete.allowed_anonymous_actions specs
+  # this should prevent url surgery to subvert logging out of anonymous user though
+  before_filter :logout_anonymous_user_unless_allowed, :except => [:logout,
+                                                                   :login,
+                                                                   :signup,
+                                                                   :show_captcha]
 
   # all topics and content items belong in a basket
   # and will always be specified in our routes
@@ -387,13 +397,17 @@ class ApplicationController < ActionController::Base
   end
 
   # caching related
+  # TODO: this isn't having it fragment file named properly for show pages
+  # see ticket #297
+  LAYOUT_PARTS = ['accessibility']
+
   SHOW_PARTS = ['page_title_[privacy]', 'page_keywords_[privacy]', 'dc_metadata_[privacy]',
                 'page_description_[privacy]', 'google_map_api_[privacy]', 'edit_[privacy]',
                 'details_first_[privacy]', 'details_second_[privacy]',
                 'contributor_[privacy]', 'flagging_[privacy]',
                 'secondary_content_tags_[privacy]', 'secondary_content_extended_fields_[privacy]',
                 'secondary_content_extended_fields_embedded_[privacy]',
-                'secondary_content_license_metadata_[privacy]', 'history_[privacy]']
+                'secondary_content_license_metadata_[privacy]', 'history_[privacy]'] + LAYOUT_PARTS
 
   PUBLIC_SHOW_PARTS = ['comments-link_[privacy]', 'comments_[privacy]']
   MODERATOR_SHOW_PARTS = ['delete', 'comments-moderators_[privacy]']
@@ -403,7 +417,7 @@ class ApplicationController < ActionController::Base
   INDEX_PARTS = ['page_keywords_[privacy]', 'page_description_[privacy]', 'google_map_api_[privacy]',
                  'details_[privacy]', 'license_[privacy]', 'extended_fields_[privacy]', 'edit_[privacy]',
                  'privacy_chooser_[privacy]', 'tools_[privacy]', 'recent_topics_[privacy]', 'search',
-                 'extra_side_bar_html', 'archives_[privacy]', 'tags_[privacy]', 'contact']
+                 'extra_side_bar_html', 'archives_[privacy]', 'tags_[privacy]', 'contact'] + LAYOUT_PARTS
 
   # the following method is used when clearing show caches
   def all_show_parts
@@ -716,9 +730,8 @@ class ApplicationController < ActionController::Base
 
   end
 
-  def redirect_to_related_topic(topic, options={})
-    topic = topic.is_a?(Topic) ? topic : Topic.find(topic)
-    redirect_to_show_for(topic, options)
+  def redirect_to_related_item(item, options={})
+    redirect_to_show_for(item, options)
   end
 
   def update_zoom_and_related_caches_for(item, controller = nil)
@@ -734,30 +747,38 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def add_relation_and_update_zoom_and_related_caches_for(item, new_related_topic)
+  def add_relation_and_update_zoom_and_related_caches_for(item1, item2)
+    raise "ERROR: Neither item 1 or 2 was a Topic" unless item1.is_a?(Topic) || item2.is_a?(Topic)
+    topic, related = (item1.is_a?(Topic) ? [item1, item2] : [item2, item1])
+
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
-    zoom_destroy_for(item)
-    zoom_destroy_for(new_related_topic)
+    zoom_destroy_for(topic)
+    zoom_destroy_for(related)
 
-    successful = ContentItemRelation.new_relation_to_topic(new_related_topic.id, item)
+    successful = ContentItemRelation.new_relation_to_topic(topic, related)
 
-    update_zoom_and_related_caches_for(new_related_topic, zoom_class_controller(item.class.name))
+    update_zoom_and_related_caches_for(topic, zoom_class_controller(related.class.name))
+    update_zoom_and_related_caches_for(related, ('topics' if related.is_a?(Topic)))
 
     return successful
   end
 
-  def remove_relation_and_update_zoom_and_related_caches_for(item, new_related_topic)
+  def remove_relation_and_update_zoom_and_related_caches_for(item1, item2)
+    raise "ERROR: Neither item 1 or 2 was a Topic" unless item1.is_a?(Topic) || item2.is_a?(Topic)
+    topic, related = (item1.is_a?(Topic) ? [item1, item2] : [item2, item1])
+
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
-    zoom_destroy_for(item)
-    zoom_destroy_for(new_related_topic)
+    zoom_destroy_for(topic)
+    zoom_destroy_for(related)
 
-    successful = ContentItemRelation.destroy_relation_to_topic(new_related_topic.id, item)
+    successful = ContentItemRelation.destroy_relation_to_topic(topic, related)
 
-    update_zoom_and_related_caches_for(new_related_topic, zoom_class_controller(item.class.name))
+    update_zoom_and_related_caches_for(topic, zoom_class_controller(related.class.name))
+    update_zoom_and_related_caches_for(related, ('topics' if related.is_a?(Topic)))
 
     return successful
   end
@@ -767,10 +788,9 @@ class ApplicationController < ActionController::Base
     if !commented_item.nil? and @successful
       update_zoom_and_related_caches_for(commented_item)
       where_to_redirect = 'commentable'
-    elsif !params[:relate_to_topic].blank? and @successful
-      @new_related_topic = Topic.find(params[:relate_to_topic])
-
-      add_relation_and_update_zoom_and_related_caches_for(item, @new_related_topic)
+    elsif !params[:relate_to_item].blank? and @successful
+      @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
+      add_relation_and_update_zoom_and_related_caches_for(@relate_to_item, item)
 
       # reset the related images slideshow if realted image was added
       session[:image_slideshow] = nil if item.is_a?(StillImage)
@@ -794,7 +814,7 @@ class ApplicationController < ActionController::Base
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.related_item', :zoom_class => zoom_class_humanize(item.class.name))
-        redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
+        redirect_to_related_item(@relate_to_item, { :private => (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'commentable'
         redirect_to_show_for(commented_item, options)
       when 'appearance'
@@ -811,26 +831,27 @@ class ApplicationController < ActionController::Base
         flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.created', :zoom_class => zoom_class_humanize(item.class.name))
         redirect_to_show_for(item, options)
       end
+
     else
       render :action => 'new'
     end
   end
 
   def link_related
-    @related_to_topic = Topic.find(params[:relate_to_topic])
+    @related_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
 
     unless params[:item].blank?
       for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
-        if params[:related_class] == 'Topic'
-          @existing_relation = @related_to_topic.related_topics.include?(item)
+        if params[:relate_to_type] == 'Topic' && params[:related_class] == 'Topic'
+          @existing_relation = @related_to_item.related_topics.include?(item)
         else
-          @existing_relation = @related_to_topic.send(params[:related_class].tableize).include?(item)
+          @existing_relation = @related_to_item.send(params[:related_class].tableize).include?(item)
         end
 
         if !@existing_relation
-          @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
+          @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_item)
 
           if @successful
             # in this context, the item being related needs updating, too
@@ -842,17 +863,19 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
+    redirect_to :controller => 'search', :action => 'find_related',
+                :relate_to_item => params[:relate_to_item], :relate_to_type => params[:relate_to_type],
+                :related_class => params[:related_class], :function => 'remove'
   end
 
   def unlink_related
-    @related_to_topic = Topic.find(params[:relate_to_topic])
+    @related_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
 
     unless params[:item].blank?
       for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
-        remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
+        remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_item)
 
         update_zoom_and_related_caches_for(item)
         flash[:notice] = t('application_controller.unlink_related.unlinked_relation')
@@ -860,7 +883,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
+    redirect_to :controller => 'search', :action => 'find_related',
+                :relate_to_item => params[:relate_to_item], :relate_to_type => params[:relate_to_type],
+                :related_class => params[:related_class], :function => 'remove'
   end
 
   # overriding here, to grab title of page, too
@@ -990,7 +1015,7 @@ class ApplicationController < ActionController::Base
 
     ZOOM_CLASSES.each do |zoom_class|
       # pending items aren't counted
-      private_conditions = "title != '#{BLANK_TITLE}' "
+      private_conditions = "title != '#{Kete.blank_title}' "
       local_public_conditions = PUBLIC_CONDITIONS
 
       # comments are a special case
@@ -1372,6 +1397,39 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # check to see if url is something that can be done anonymously
+  def anonymous_ok_for?(url)
+    return false unless url.present? && Kete.is_configured? &&
+      Kete.allowed_anonymous_actions.present? &&
+      Kete.allowed_anonymous_actions.size > 0
+
+    # get controller and action from url
+    # strip off query string before submitting to routing
+    url = url.split("?")[0]
+    from_url = ActionController::Routing::Routes.recognize_path(url, :method => :get)
+    
+    value = from_url[:controller] + '/' + from_url[:action]
+
+    # check if it is an allowed for or finished after controller/action combo
+    Kete.allowed_anonymous_actions.collect { |h| h.values }.flatten.include?(value)
+  end
+
+  def logout_anonymous
+    if logged_in? &&
+        current_user.anonymous?
+      
+      session[:anonymous_user] = nil
+
+      current_user.reload
+
+      deauthenticate
+    end
+  end
+
+  def finished_as_anonymous_after
+    logout_anonymous
+  end
+
   # methods that should be available in views as well
   helper_method :prepare_short_summary, :history_url, :render_full_width_content_wrapper?, :permitted_to_view_private_items?,
                 :permitted_to_edit_current_item?, :allowed_to_access_private_version_of?, :accessing_private_search_and_allowed?,
@@ -1380,7 +1438,7 @@ class ApplicationController < ActionController::Base
                 :current_user_can_see_discussion?, :current_user_can_see_private_files_for?, :current_user_can_see_private_files_in_basket?,
                 :current_user_can_see_memberlist_for?, :show_attached_files_for?, :slideshow, :append_options_to_url, :current_item,
                 :show_basket_list_naviation_menu?, :url_for_dc_identifier, :derive_url_for_rss, :show_notification_controls?, :path_to_show_for,
-                :permitted_to_edit_basket_homepage_topic?, :current_user_can_import_archive_sets?, :current_user_can_import_archive_sets_for?
+                :permitted_to_edit_basket_homepage_topic?, :current_user_can_import_archive_sets?, :current_user_can_import_archive_sets_for?, :anonymous_ok_for?
 
   protected
 
@@ -1467,4 +1525,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def logout_anonymous_user_unless_allowed
+    if !anonymous_ok_for?(request.path)
+      logout_anonymous
+    end
+  end
+
+  def item_controllers
+    @item_controllers ||= ITEM_CLASSES.collect { |c| zoom_class_controller(c) }
+  end
 end

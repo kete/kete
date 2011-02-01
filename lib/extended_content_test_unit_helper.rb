@@ -104,23 +104,7 @@ module ExtendedContentTestUnitHelper
       context "An extended field mapped to a type" do
 
         setup do
-          # add a extended field to the base class or topic type in the case of topics
-          create_extended_field(:label => 'Some tag')
-          @extended_item = Module.class_eval(@base_class).create! @new_model
-
-          unless @base_class == 'Topic'
-            @mapped_to_type_instance = ContentType.find_by_class_name(@base_class)
-          else
-            @mapped_to_type_instance = @extended_item.topic_type
-          end
-
-          @mapped_to_type_instance.form_fields << @extended_field
-
-          unless @base_class == 'Topic'
-            @mapping = @extended_field.content_type_to_field_mappings.last
-          else
-            @mapping = @extended_field.topic_type_to_field_mappings.last
-          end
+          create_and_map_extended_field_to_type(:label => 'Some tag')
         end
 
         should "have a method that will set its value" do
@@ -169,6 +153,9 @@ module ExtendedContentTestUnitHelper
           end
         end
       end
+
+      private
+      include ExtendedContentHelpersForTestSetUp
     end
   end
 

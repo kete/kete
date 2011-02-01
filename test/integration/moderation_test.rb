@@ -10,7 +10,7 @@ class ModerationTest < ActionController::IntegrationTest
 
       # Create a super-user account to perform moderator actions
       add_sarah_as_super_user
-      login_as('sarah')
+      login_as('sarah', 'test', { :logout_first => true })
 
       # Add a new basket to test moderation in
       @basket = new_basket
@@ -20,14 +20,14 @@ class ModerationTest < ActionController::IntegrationTest
       User.find_by_login('paul').add_as_member_to_default_baskets
 
       # Switch basket to the super-user to continue..
-      login_as('sarah')
+      login_as('sarah', 'test', { :logout_first => true })
     end
 
     context "a fully moderated basket" do
 
       setup do
         turn_on_full_moderation(@basket)
-        login_as('paul')
+        login_as('paul', 'test', { :logout_first => true })
       end
 
       should "create a new item and have it moderated" do
@@ -86,7 +86,7 @@ class ModerationTest < ActionController::IntegrationTest
 
         visit "/site/topic_types/edit/#{@topic_type.id.to_s}"
 
-        check "extended_field_#{@extended_field.id.to_s}_required_checkbox"
+        check "extended_field_#{@extended_field.to_param.to_s}_required_checkbox"
         click_button "Add to Topic Type"
         
         update_item @topic do
@@ -115,7 +115,7 @@ class ModerationTest < ActionController::IntegrationTest
       
       should "force content update when reverting to the first version" do
         visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
-        click_link "Make this revision live"
+        click_link I18n.t('topics.preview_actions.make_live')
         body_should_contain "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
         
         fill_in "topic[extended_content_values][required_field]", :with => "Value for required field after moderation"
@@ -130,7 +130,7 @@ class ModerationTest < ActionController::IntegrationTest
         end
         
         visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=2"
-        click_link "Make this revision live"
+        click_link I18n.t('topics.preview_actions.make_live')
         
         body_should_contain "The content of this Topic has been approved from the selected revision."
         body_should_contain "Value for required field"
@@ -140,12 +140,12 @@ class ModerationTest < ActionController::IntegrationTest
 
         setup do
           add_jenny_as_moderator_to(@basket)
-          login_as('jenny')
+          login_as('jenny', 'test', { :logout_first => true })
         end
         
         should "revert to first version, supply additional content and have version made live immediately" do
           visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
-          click_link "Make this revision live"
+          click_link I18n.t('topics.preview_actions.make_live')
           
           body_should_contain "The version you're reverting to is missing some compulsory content. Please contribute the missing details before continuing. You may need to contact the original author to collect additional information."
           
@@ -161,7 +161,7 @@ class ModerationTest < ActionController::IntegrationTest
 
         should "be able to delete all versions of item from preview of version" do
           visit "/#{@basket.urlified_name}/topics/preview/#{@topic.id}?version=1"
-          click_link "delete this item completely"
+          click_link I18n.t('topics.preview_actions.delete_all_versions')
           assert_equal "http://www.example.com/en/moderation_test_basket/all/topics/", current_url
         end
         
@@ -189,7 +189,7 @@ class ModerationTest < ActionController::IntegrationTest
       should_not_appear_in_search_results(@topic)
 
       # Login as a super-user and moderate (accept) the version.
-      login_as('sarah')
+      login_as('sarah', 'test', { :logout_first => true })
       moderate_restore(@topic, :version => 1)
 
       @topic.reload
@@ -200,13 +200,13 @@ class ModerationTest < ActionController::IntegrationTest
     def create_a_new_topic_with_several_approved_versions
       create_a_new_pending_topic_and_accept_it
 
-      login_as('paul')
+      login_as('paul', 'test', { :logout_first => true })
 
       update_item(@topic, :title => "Title has been changed.")
       assert_equal @topic.versions.find_by_version(1).title, @topic.title
       should_appear_once_in_search_results(@topic, :title => @topic.versions.find_by_version(1).title)
 
-      login_as('sarah')
+      login_as('sarah', 'test', { :logout_first => true })
       moderate_restore(@topic, :version => 4)
 
       @topic.reload
@@ -254,7 +254,7 @@ class ModerationTest < ActionController::IntegrationTest
       click_button "Create"
 
       verb = options[:extended_field_value_required] ? "required" : "add"
-      check "extended_field_#{ExtendedField.last.id.to_s}_#{verb}_checkbox"
+      check "extended_field_#{ExtendedField.last.to_param.to_s}_#{verb}_checkbox"
       click_button "Add to Topic Type"
 
       text_verb = options[:extended_field_value_required] ? "required" : "optional"

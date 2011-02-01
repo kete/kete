@@ -36,6 +36,8 @@ class StillImageTest < ActiveSupport::TestCase
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
+  include MergeTestUnitHelper
+
   # TODO: more testing of image_file population?
   # TODO: find_with
 

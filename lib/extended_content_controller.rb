@@ -14,6 +14,8 @@ module ExtendedContentController
       # Instantiation of Google Map code for location settings
       klass.send :include, GoogleMap::Mapper
 
+      klass.send :include, AnonymousFinishedAfterFilter
+
       if klass.name == 'CommentsController'
         klass.send :before_filter, :is_authorized?, :only => [ :new, :create, :edit, :update ]
       else
@@ -102,9 +104,28 @@ module ExtendedContentController
         # no extended_values, nothing to do
         return if extended_values.blank?
 
+        # extended_values can be hash of hashes
+        # e.g. {"relatives"=>{"1"=>"Joe Bob (http://kete/end/topics/show/16-joe-bob)"}, "place_of_birth"=>""}
+        # where field keys are the outermost keys and there may be non-topic_type field values
+        # or on second recursive call if value is a hash
+        # it might include position as key
+        # e.g. {"1"=>"Joe Bob (http://kete/end/topics/show/16-joe-bob)"}
+        # in which case we need to replace position with qualified field label for params
+        # lastly value is just a string
+        # e.g. "Joe Bob (http://kete/end/topics/show/16-joe-bob)"
+        @extended_fields ||= ExtendedField.find_all_by_ftype('topic_type')
         extended_values.each_pair do |key,value|
           if value.is_a?(Hash)
-            build_relations_from_topic_type_extended_field_choices(value)
+            # check for multiple with nested position keys
+            extended_field = @extended_fields.find { |ef| qualified_name_for_field(ef) == key }
+            if extended_field.present?
+              field_key = key
+              value.values.each do |value|
+                skip_or_add_relation_for(field_key, value)
+              end
+            else
+              build_relations_from_topic_type_extended_field_choices(value)
+            end
           else
             skip_or_add_relation_for(key, value)
           end
@@ -118,7 +139,6 @@ module ExtendedContentController
         # Check if this extended content belongs to an extended field that is a topic type field type
         # TODO: limit this to content_type or topic type
         # add condition to match key in query
-        @extended_fields ||= ExtendedField.find_all_by_ftype('topic_type')
         extended_field = @extended_fields.find { |ef| qualified_name_for_field(ef) == key }
         return if extended_field.blank?
 

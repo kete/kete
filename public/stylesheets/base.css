@@ -284,10 +284,6 @@ body.mceContentBody {
   float: right;
   margin-top: -12px;
 }
-#related_items.inset.no-items,
-#related_items.sidebar.no-items {
-  display: none;
-}
 
 #related_items.below .two-col {
   float: left;
@@ -626,6 +622,9 @@ h3.search-description {
 }
 h3 b{
     color: black;
+}
+h3 a {
+  font-style: italic;
 }
 
 /* --- Images search results --- */
@@ -1685,4 +1684,83 @@ a.disabled {
 }
 #basket_rss_feeds_add {
   text-align: center;
+}
+/*
+ * Topic specific prefixes
+ */
+#content-wrapper h2 .prefix{
+    display: none;
+}
+.topic-type-prefix{
+    display: none;
+}
+ul.breadcrumb {
+    display: inline;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul.breadcrumb li {
+    display: inline;
+}
+/*
+ * Login page specific
+ */
+#login-wrapper{
+    float: left;
+    width: 48%;
+}
+#login-wrapper form{
+    display:inline;
+}
+#or-divider{
+    display:inline;
+}
+#your-info-wrapper{
+    float: right;
+    width: 48%;
+    display:inline;
+}
+/*
+ * Horizontal list (generic)
+ * reuse this and don't create your own!!!
+ * unless absolutely necessary
+ */
+ul.horizontal-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+ul.horizontal-list li.first{
+    border-left: none;
+}
+ul.horizontal-list li {
+    border-left: 1px solid #000;
+    padding: 2px 5px;
+    display: inline;
+}
+/*
+ * generic badge class for sup elements
+ */
+sup.badge {
+    color: white;
+    text-transform:lowercase;
+    padding: 2px;
+    background-color: #7a0203;
+    -moz-border-radius: 45%;
+    -webkit-border-radius: 45%;
+    border-radius: 45%;
+}
+#content-wrapper .badge a {
+    color: white;
+}
+
+/*
+ * generic submenu for start of content-wrapper
+ */
+.content-wrapper-submenu {
+    display: inline;
+    float: right;
+    margin-top: -8px;
 }

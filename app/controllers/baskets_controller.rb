@@ -24,6 +24,8 @@ class BasketsController < ApplicationController
 
   include TaggingController
 
+  include AnonymousFinishedAfterFilter
+
   def index
     redirect_to :action => 'list'
   end
@@ -312,7 +314,7 @@ class BasketsController < ApplicationController
     # give the user the option to add the item to any place the have access to
     @basket_list = Array.new
     if @site_admin
-      @basket_list = Basket.all(:select => 'name,urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
+      @basket_list = Basket.list_as_names_and_urlified_names
     else
       all_baskets_hash = Hash.new
       # get the add item setting for each of the baskets the user has access to
@@ -336,15 +338,17 @@ class BasketsController < ApplicationController
     redirect_to :urlified_name => params[:new_item_basket],
                 :controller => params[:new_item_controller],
                 :action => 'new',
-                :relate_to_topic => params[:relate_to_topic],
-                :related_topic_private => params[:related_topic_private]
+                :relate_to_item => params[:relate_to_item],
+                :relate_to_type => params[:relate_to_type],
+                :related_item_private => params[:related_item_private]
   end
 
   def render_item_form
     @new_item_basket = params[:new_item_basket]
     @new_item_controller = params[:new_item_controller]
-    @relate_to_topic = params[:relate_to_topic]
-    @related_topic_private = params[:related_topic_private]
+    @relate_to_item = params[:relate_to_item]
+    @relate_to_type = params[:relate_to_type]
+    @related_item_private = params[:related_item_private]
     params[:topic] = Hash.new
     params[:topic][:topic_type_id] = params[:new_item_topic_type]
 

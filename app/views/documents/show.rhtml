@@ -4,6 +4,7 @@
 
 <% cache_with_privacy(@document, { :part => 'details_first' }) do -%>
   <h2><%= h(@document.title) %></h2>
+  <%= extras_after_title_headline -%>
   <p><b><%= @document.short_summary %></b></p>
 <% end -%>
 

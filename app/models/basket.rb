@@ -559,6 +559,10 @@ class Basket < ActiveRecord::Base
                                                      :at_end => false)
   end
 
+  def self.list_as_names_and_urlified_names
+    all(:select => 'name, urlified_name').collect { |basket| [basket.name, basket.urlified_name] }
+  end
+
   private
 
   # when a basket is to be deleted

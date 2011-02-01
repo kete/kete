@@ -12,15 +12,5 @@ class SystemSettingsController < ApplicationController
   end
   
   private
-  
-    def ssl_required?
-      FORCE_HTTPS_ON_RESTRICTED_PAGES || false
-    end
-    
-    # If ssl_allowed? returns true, the SSL requirement is not enforced,
-    # so ensure it is not set in this controller.
-    def ssl_allowed?
-      nil
-    end
-  
+  include SslControllerHelpers
 end

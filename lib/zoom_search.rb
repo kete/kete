@@ -221,7 +221,7 @@ module ZoomSearch
         # make xpath request to get first instance of the desired field's value
         # (dc elements may be used more than once)
         # we use a hardcoded xml path because oai_dc.namescapes doesn't return the one we need in Nokogiri 1.4.0 or later
-        field_value = oai_dc.xpath(".//dc:#{field[0]}", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
+        field_value = oai_dc_first_element_for(field[0], oai_dc)
         next if field_value.nil?
         field_value = field_value.content
 
@@ -323,9 +323,9 @@ module ZoomSearch
       if value =~ /^(\d{4})-?(\d{1,2})?$/
         default_month = look_from == :beginning ? 01 : 12
         default_day = look_from == :beginning ? 01 : 31
-        time = Time.parse("#{$1}-#{$2 || default_month}-#{$3 || default_day}")
+        time = Time.zone.parse("#{$1}-#{$2 || default_month}-#{$3 || default_day}")
       else
-        time = Time.parse(value)
+        time = Time.zone.parse(value)
       end
       # all times in zebra are stored as UTC, so compare against that for better results
       time.utc.strftime("%Y-%m-%d")
@@ -333,5 +333,8 @@ module ZoomSearch
       nil
     end
 
+    def oai_dc_first_element_for(field_name, oai_dc)
+      oai_dc.xpath(".//dc:#{field_name}", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
+    end
   end
 end

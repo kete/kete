@@ -71,19 +71,7 @@
         <div class="form-element">
           <label for="basket_index_page_extra_side_bar_html"><%=t 'baskets.homepage_form.sidebar_content' %></label>
           <fieldset>
-            <div class="form-element">
-              <%= homepage_form.text_area :index_page_extra_side_bar_html, {:class => "mceEditor", :cols => 120, :rows => 10, :tabindex => '1'} %>
-            </div>
-            <div class="form_example">
-              <%=t 'baskets.homepage_form.security_warning' %>
-              <%=t 'baskets.homepage_form.security_warning_admin' if @site_admin %>
-            </div>
-            <% if @site_admin -%>
-            <div class="form-element">
-              <%= homepage_form.check_box :do_not_sanitize, :tabindex => '1' %>
-              <label for="basket_do_not_sanitize" class="inline"><%=t 'baskets.homepage_form.security_exception_example' %></label><br />
-            </div>
-            <% end -%>
+            <%= render 'side_bar_html', :form => homepage_form %>
           </fieldset>
         </div>
       <% end %>

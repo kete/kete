@@ -124,8 +124,8 @@ module OaiDcHelpers
                                                              :locale => false)))
     end
 
-    def oai_dc_xml_dc_title(xml)
-      xml.send("dc:title", title)
+    def oai_dc_xml_dc_title(xml, options = {})
+      xml.send("dc:title", title, options)
     end
 
     def oai_dc_xml_dc_publisher(xml, publisher = nil)
@@ -137,14 +137,25 @@ module OaiDcHelpers
       end
     end
 
-    def oai_dc_xml_dc_description(xml, description)
-      unless description.blank?
+    def oai_dc_xml_dc_description(xml, passed_description = nil, options = {})
+      unless passed_description.blank?
         # strip out embedded html
         # it only adds clutter at this point and fails oai_dc validation, too
         # also pulling out some entities that sneak in
-        xml.send("dc:description") {
-          xml.cdata description.strip_tags
+        xml.send("dc:description", options) {
+          xml.cdata passed_description.strip_tags
         }
+      else
+        # if description is blank, we should do all descriptions for this zoom_class
+        
+        # topic/document specific
+        # order is important, first description will be used as blurb
+        # in result list
+        if [Topic, Document].include?(self.class) && short_summary.present?
+          oai_dc_xml_dc_description(xml, short_summary, options)
+        end
+
+        oai_dc_xml_dc_description(xml, description, options) if description.present?
       end
     end
 
@@ -153,7 +164,7 @@ module OaiDcHelpers
       # will find that the date created is not useful in their search record
       # and will want to handle date data explicitly in their extended fields
       # only turn it on if specified in the system setting
-      if ADD_DATE_CREATED_TO_ITEM_SEARCH_RECORD
+      if Kete.add_date_created_to_item_search_record?
         item_created = created_at.utc.xmlschema
         xml.send("dc:date", item_created)
       end
@@ -193,7 +204,7 @@ module OaiDcHelpers
         commented_on_item = self.commentable
         xml.send("dc:subject") {
           xml.cdata commented_on_item.title
-        } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(commented_on_item.title)
+        } unless [Kete.blank_title, Kete.no_public_version_title].include?(commented_on_item.title)
         xml.send("dc:relation", url_for_dc_identifier(commented_on_item, { :force_http => true, :minimal => true }.merge(passed_request)))
       else
         related_count = related_items.count
@@ -203,7 +214,7 @@ module OaiDcHelpers
           if related_count < 500
             xml.send("dc:subject") {
               xml.cdata related.title
-            } unless [BLANK_TITLE, NO_PUBLIC_VERSION_TITLE].include?(related.title)
+            } unless [Kete.blank_title, Kete.no_public_version_title].include?(related.title)
           end
           xml.send("dc:relation", url_for_dc_identifier(related, { :force_http => true, :minimal => true }.merge(passed_request)))
         end

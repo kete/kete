@@ -4,8 +4,11 @@ BASE_PRIVATE_PATH = 'private'
 # these are commonly used across models / controllers / libs
 # So we define them here so they are available in all those areas
 # (needs to be run after load_system_settings.rb)
-if Object.const_defined?(:BLANK_TITLE) && Object.const_defined?(:NO_PUBLIC_VERSION_TITLE)
-  PUBLIC_CONDITIONS = "title != '#{BLANK_TITLE}' AND title != '#{NO_PUBLIC_VERSION_TITLE}'"
-else
-  PUBLIC_CONDITIONS = "title IS NOT NULL"
+value = "title IS NOT NULL"
+if Object.const_defined?(:Kete) && Kete.respond_to?(:blank_title) && Kete.respond_to?(:no_public_version_title)
+  value = "title != '#{Kete.blank_title}' AND title != '#{Kete.no_public_version_title}'"
+  Kete.define_reader_method_as('public_conditions', value)
 end
+
+PUBLIC_CONDITIONS = value
+

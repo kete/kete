@@ -1,7 +1,7 @@
 module SslHelpers
 
   def self.included(klass)
-    if defined?(FORCE_HTTPS_ON_RESTRICTED_PAGES) && FORCE_HTTPS_ON_RESTRICTED_PAGES
+    if defined?(Kete.force_https_on_restricted_pages) && Kete.force_https_on_restricted_pages
       ActionView::Base.send(:include, SslHelpers::FormTagHelper)
       ActionView::Base.send(:include, SslHelpers::PrototypeHelper)
       ActionController::UrlWriter.send(:include, SslHelpers::UrlWriter)

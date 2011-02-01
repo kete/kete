@@ -1,11 +1,11 @@
 <% if current_user_can_see_flagging? -%>
 <% case @flag
-   when REJECTED_FLAG
+   when Kete.rejected_flag
      @title = t('topics.flag_form.reject_revision_title')
      @user_type = 'user'
      @submit_text = t('topics.flag_form.reject_button')
      @instructions = t('topics.flag_form.reject_instructions')
-   when REVIEWED_FLAG
+   when Kete.reviewed_flag
      @title = t('topics.flag_form.review_revision_title')
      @user_type = 'user'
      @submit_text = t('topics.flag_form.review_button')
@@ -31,7 +31,7 @@
                         <%= text_area 'message', '', :tabindex => '1' %>
                         <p><%= @instructions -%></p>
                 </div>
-                <% if [REJECTED_FLAG, REVIEWED_FLAG].include?(@flag) %>
+                <% if [Kete.rejected_flag, Kete.reviewed_flag].include?(@flag) %>
                 <div class="form-element">
                   <label for="restricted"><%=t 'topics.flag_form.restricted' %></label>
                   <%= check_box_tag 'restricted', true, false, :tabindex => '1' %>

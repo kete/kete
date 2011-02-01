@@ -45,7 +45,7 @@ hide_field = extended_field_mapping.private_only? && !adding_or_editing_private_
 
     <%# Print out a control for a single field instance %>
     <%= extended_field_editor(ef, field_value_from_hash(ef, content)) %>
-    <div class="form-example"><%=h ef.example %></div>
+    <div class="form-example"><%= extended_field_example(ef) %></div>
   <% end %>
   </div>
 </div>

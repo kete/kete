@@ -53,7 +53,7 @@ require 'tasks/rails'
 # start zebra, and load in some initial records ready for testing. If after
 # that, Zebra has not loaded properly, raise an exception to inform the person
 # running the tests
-def bootstrap_zebra_with_initial_records
+def bootstrap_zebra_with_initial_records(prime_records = false)
   # both of the silencers are need to supress the two types of messages Zebra
   # outputs to the console
   silence_stream(STDERR) do
@@ -65,6 +65,15 @@ def bootstrap_zebra_with_initial_records
       Rake::Task['zebra:init'].execute(ENV)
       Rake::Task['zebra:start'].execute(ENV)
       Rake::Task['zebra:load_initial_records'].execute(ENV)
+
+      # put in the default records, if specified
+      if prime_records
+        ZOOM_CLASSES.each do |name|
+          name.constantize.all.each do |record|
+            record.prepare_and_save_to_zoom
+          end
+        end
+      end
     end
   end
   unless zebra_running?('public') && zebra_running?('private')
@@ -91,6 +100,10 @@ end
 # warnings and continue to run it anyway. Should be used within the block of
 # <tt>configure_environment</tt>
 def set_constant(constant, value)
+  # Walter McGinnis, 2010-10-15
+  # update to also update Kete object with value via redefining getter method
+  Kete.define_reader_method_as(constant.to_s.downcase, value)
+
   if respond_to?(:silence_warnings)
     silence_warnings do
       Object.send(:remove_const, constant) if Object.const_defined?(constant)
@@ -201,3 +214,30 @@ def populate_extended_field_data_for(zoom_class, ef_data, options={})
   end
 end
 
+def item_for(zoom_class, options = {})
+  if ATTACHABLE_CLASSES.include?(zoom_class)
+    file_data = case zoom_class
+                when 'AudioRecording'
+                  fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
+                when 'Document'
+                  fixture_file_upload('/files/test.pdf', 'application/pdf')
+                when 'Video'
+                  fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
+                end
+  end
+
+  options = { :title => 'Item', :description => 'Description', :basket_id => 1 }.merge(options)
+  options[:topic_type_id] = options[:topic_type_id] || 1 if zoom_class == 'Topic'
+  options[:url] = options[:url] || "http://google.co.nz/#{rand}" if zoom_class == 'WebLink'
+  options[:uploaded_data] = file_data if (ATTACHABLE_CLASSES - ['StillImage']).include?(zoom_class)
+  if zoom_class == 'Comment' && options[:commentable_type].blank? && options[:commentable_id].blank?
+    commentable_topic = Topic.create(:title => 'Commented Topic', :topic_type_id => 1, :basket_id => 1)
+    options.merge!(:commentable_type => 'Topic', :commentable_id => commentable_topic.id)
+  end
+
+  @item = zoom_class.constantize.create! options
+
+  user = User.find(1)
+  @item.creators << user
+  @item
+end

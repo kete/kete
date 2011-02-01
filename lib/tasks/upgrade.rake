@@ -22,15 +22,16 @@ namespace :kete do
                     'zebra:load_initial_records',
                     'kete:upgrade:update_existing_comments_commentable_private',
                     'kete:tools:remove_robots_txt',
+                    'kete:upgrade:set_default_locale_for_existing_users',
                     'kete:upgrade:ensure_logins_all_valid',
                     'kete:upgrade:move_user_name_to_display_and_resolved_name',
-                    'kete:upgrade:set_default_locale_for_existing_users',
                     'kete:upgrade:add_basket_id_to_taggings',
                     'kete:upgrade:make_baskets_private_notification_do_not_email',
                     'kete:upgrade:add_nested_values_to_comments',
                     'kete:upgrade:change_inset_to_position',
                     'kete:upgrade:set_null_private_only_mappings_to_false',
-                    'kete:upgrade:set_default_import_archive_set_policy']
+                    'kete:upgrade:set_default_import_archive_set_policy',
+                    'kete:upgrade:add_missing_users']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -416,6 +417,44 @@ namespace :kete do
     task :set_default_import_archive_set_policy => :environment do
       Basket.all.each do |basket|
         basket.settings[:import_archive_set_policy] = 'at least admin' if basket.settings[:import_archive_set_policy].class == NilClass
+      end
+    end
+
+    desc 'Add any default users that have not been added already.'
+    task :add_missing_users => :environment do
+      users_from_yml = YAML.load(ERB.new(File.read("#{Rails.root}/db/bootstrap/users.yml")).result)
+
+      # for each system_setting from yml
+      # check if it's in the db
+      # if not, add it
+      # system settings have unique names
+      users_from_yml.each do |setting_array|
+        setting_hash = setting_array[1]
+
+        # we have template values in the hash
+        # get the values final form
+        
+        # if there are existing system settings
+        # drop id from hash, as we want to determine it dynamically
+        # else we want to use the bootstap versions
+        setting_hash.delete('id') if User.count > 0
+
+        setting_hash.delete('salt')
+        setting_hash.delete('crypted_password')
+
+        random_password = ActiveSupport::SecureRandom.hex(8)
+        setting_hash[:password] = random_password
+        setting_hash[:password_confirmation] = random_password
+        setting_hash[:agree_to_terms] = '1'
+        setting_hash[:security_code] = true
+        setting_hash[:security_code_confirmation] = true
+
+        if !User.find_by_login(setting_hash['login'])
+          user = User.create!(setting_hash)
+          user.has_role('member', Basket.first)
+
+          p "added " + setting_hash['login']
+        end
       end
     end
 
