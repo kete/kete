@@ -37,8 +37,10 @@ class Feed < ActiveRecord::Base
       if self.serialized_feed != entries # is there something different
         self.update_attributes({ :serialized_feed => entries,
                                  :last_downloaded => Time.now.utc.to_s(:db) })
-        file_path = "#{Rails.root}/tmp/cache/views/feeds/#{self.basket.urlified_name}/feed_#{self.id}.cache"
-        File.delete(file_path) if File.exists?(file_path)
+        I18n.available_locales_with_labels.values.each do |locale|
+          file_path = "#{Rails.root}/tmp/cache/views/feeds/#{locale}/#{self.basket.urlified_name}/feed_#{self.id}.cache"
+          File.delete(file_path) if File.exists?(file_path)
+        end
       end
     rescue
       # fail silently - make sure nothing causes errors to output
