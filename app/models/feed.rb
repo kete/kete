@@ -8,6 +8,7 @@ class Feed < ActiveRecord::Base
   before_validation :add_missing_values
   before_validation :convert_feed_to_http
   before_destroy :destroy_feed_workers
+  before_destroy :destroy_caches
 
   validates_presence_of :title
   validates_presence_of :url
@@ -31,16 +32,24 @@ class Feed < ActiveRecord::Base
     self.serialized_feed[0..(feed_limit - 1)]
   end
 
+  def clear_caches
+    I18n.available_locales_with_labels.values.each do |locale|
+      file_path = "#{Rails.root}/tmp/cache/views/feeds/#{locale}/#{basket.urlified_name}/feed_#{id}.cache"
+      File.delete(file_path) if File.exists?(file_path)
+    end
+  end
+  
+  def destroy_caches
+    clear_caches
+  end
+
   def update_feed
     begin
       entries = Feed.fetch(self.url)
       if self.serialized_feed != entries # is there something different
         self.update_attributes({ :serialized_feed => entries,
                                  :last_downloaded => Time.now.utc.to_s(:db) })
-        I18n.available_locales_with_labels.values.each do |locale|
-          file_path = "#{Rails.root}/tmp/cache/views/feeds/#{locale}/#{self.basket.urlified_name}/feed_#{self.id}.cache"
-          File.delete(file_path) if File.exists?(file_path)
-        end
+        clear_caches
       end
     rescue
       # fail silently - make sure nothing causes errors to output
