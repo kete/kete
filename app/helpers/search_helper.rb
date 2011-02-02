@@ -130,12 +130,17 @@ module SearchHelper
     number_to_display = options[:number_to_display] ? options[:number_to_display] : NUMBER_OF_RELATED_IMAGES_TO_DISPLAY
     number_to_display = number_of_all_images > number_to_display ? number_to_display : number_of_all_images
 
+    # even if we know that locally_hosted is almost always true
+    # assume false if not specified in case search is opened up to non-local results in future
+    locally_hosted = options[:locally_hosted].present? ? options[:locally_hosted] : false
+
     1.upto(number_to_display) do |key|
       key = key.to_s
 
       image_hash = still_images_hash[key][:thumbnail]
       image_hash[:alt] = altify(still_images_hash[key][:title])
       src = image_hash[:src]
+      src = src.sub(Kete.site_url, '/') if locally_hosted
       image_hash.delete(:size)
       image_hash.delete(:src)
 

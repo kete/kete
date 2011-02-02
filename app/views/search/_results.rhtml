@@ -73,13 +73,13 @@
                     :short_summary => result[:short_summary],
                     :related => result[:related],
                     :result => result[:id],
+		    :locally_hosted => result[:locally_hosted],
                     :first_result => (index == 0),
                     :topic_types => result[:topic_types],
                     :dc_dates => result[:dc_dates] } -%>
 
       <% if result[:class] == 'StillImage' %>
-        <%= render(:partial => "image", :locals => locals.merge({ :locally_hosted => result[:locally_hosted],
-                                                                  :thumbnail => result[:thumbnail] })) %>
+        <%= render(:partial => "image", :locals => locals.merge({ :thumbnail => result[:thumbnail] })) %>
       <% else %>
         <%= render(:partial => "generic", :locals => locals) %>
       <% end %>

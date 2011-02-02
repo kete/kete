@@ -6,6 +6,7 @@
     <div class="topic-result-related-images">
       <%= topic_related_thumbs_from(related[:still_images],
                                     :link_to => source_url,
+                                    :locally_hosted => locally_hosted,
                                     :title => t('search.related.more_on', :title => title),
                                     :tabindex => '1' ) -%>
     </div>
