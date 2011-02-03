@@ -268,7 +268,7 @@ module GoogleMap
         end
 
         # This works, but rails tries to add a .js on the end, which invalidated the api key, so we add the format= to hackishly fix this
-        html = javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}&amp;format=") + "\n"
+        html = javascript_include_tag("//www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}&amp;format=") + "\n"
         # This is where the real action happens. It's confusing so I've commented as much as possible.
         html += javascript_tag("
           // this initiates the Google Map API (version 2)
@@ -512,7 +512,7 @@ module GoogleMap
         ") + "\n"
         # We don't need the search controls and stylesheets on the index/show, only new/edit
         unless @google_map_on_index_or_show_page
-          html += javascript_include_tag("http://www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}&format=")
+          html += javascript_include_tag("//www.google.com/jsapi?key=#{@gma_config[:google_map_api][:api_key]}&format=")
         end
         html
       end
