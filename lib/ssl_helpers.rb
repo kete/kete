@@ -6,7 +6,7 @@ module SslHelpers
       ActionView::Base.send(:include, SslHelpers::PrototypeHelper)
       ActionController::UrlWriter.send(:include, SslHelpers::UrlWriter)
 
-      klass.send :before_filter, :redirect_to_https_if_needed
+      klass.send :before_filter, :redirect_to_proper_protocol_if_needed
 
       # Ensure SSL is allowed on all controllers
       klass.class_eval do
@@ -109,9 +109,19 @@ module SslHelpers
 
   private
 
-  def redirect_to_https_if_needed
-    if (params[:privacy_type] == 'private' || params[:private] == 'true') && request.port == 80
+  # changed to redirect to http if not private
+  def redirect_to_proper_protocol_if_needed
+    if request.port == 80 && (params[:privacy_type] == 'private' ||
+                              params[:private] == 'true')
       redirect_to params.merge(:protocol => 'https')
+      return false
+    elsif request.port == 443 && !ssl_required? &&
+        (params[:privacy_type].blank? && params[:private].blank?) ||
+        ( (params[:privacy_type].present? || params[:private].present?) &&
+          (params[:privacy_type].blank? || params[:privacy_type] != 'private') &&
+          (params[:private].blank? || params[:private] != 'true') )
+        
+      redirect_to params.merge(:protocol => 'http')
       return false
     end
     true
