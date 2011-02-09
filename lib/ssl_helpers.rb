@@ -36,7 +36,9 @@ module SslHelpers
             url_for_options[:overwrite_params]
         end
 
-        merge_into.merge!(:protocol => 'https://', :only_path => false)
+        # was causing problems with circular redirects
+        # no longer all forms are under https (at least for the moment)
+        # merge_into.merge!(:protocol => 'https://', :only_path => false)
       end
 
       super(url_for_options, options, *parameters_for_url, &block)
