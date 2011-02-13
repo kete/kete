@@ -118,10 +118,10 @@ module SslHelpers
       redirect_to params.merge(:protocol => 'https')
       return false
     elsif request.port == 443 && !ssl_required? &&
-        (params[:privacy_type].blank? && params[:private].blank?) ||
-        ( (params[:privacy_type].present? || params[:private].present?) &&
-          (params[:privacy_type].blank? || params[:privacy_type] != 'private') &&
-          (params[:private].blank? || params[:private] != 'true') )
+        ( (params[:privacy_type].blank? && params[:private].blank?) ||
+          ( (params[:privacy_type].present? || params[:private].present?) &&
+            (params[:privacy_type].blank? || params[:privacy_type] != 'private') &&
+            (params[:private].blank? || params[:private] != 'true') ) )
         
       redirect_to params.merge(:protocol => 'http')
       return false
