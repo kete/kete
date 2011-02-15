@@ -708,6 +708,37 @@ class TopicTest < ActiveSupport::TestCase
     end
   end
 
+  context "A Topic has oembed providable functionality and" do
+    setup do
+      @topic = Topic.new(@new_model)
+      @topic.save
+      @topic.creator = User.first
+    end
+    
+    should "have an oembed_response" do
+      assert @topic.respond_to?(:oembed_response)
+      assert @topic.oembed_response
+    end
+
+    context "supports the required methods needed by oembed and" do
+
+      should "have ability to answer to title and have oembed_response.title" do
+        assert @topic.oembed_response.title
+        assert_equal @topic.title, @topic.oembed_response.title
+      end
+
+      should "have ability to answer to author_name and have oembed_response.author_name" do
+        assert @topic.oembed_response.author_name
+        assert_equal @topic.author_name, @topic.oembed_response.author_name
+      end
+
+      should "have ability to answer to author_url and have oembed_response.author_url" do
+        assert @topic.oembed_response.author_url
+        assert_equal @topic.author_url, @topic.oembed_response.author_url
+      end
+    end
+  end
+
   protected
 
     # Some helpers for extended field tests
