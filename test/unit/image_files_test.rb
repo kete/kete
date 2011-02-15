@@ -116,6 +116,10 @@ class ImageFilesTest < ActiveSupport::TestCase
       image = ImageFile.create(@new_model)
       assert image.respond_to?(:bigger_than?)
 
+      # nil means no maximum dimension
+      dimensions = { :height => nil, :width => nil }
+      assert !image.bigger_than?(dimensions)
+
       dimensions = { :height => 100, :width => 100 }
       assert !image.bigger_than?(dimensions)
 

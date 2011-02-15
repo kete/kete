@@ -99,7 +99,7 @@ class ImageFile < ActiveRecord::Base
 
   # expects a hash of :height and :width
   def bigger_than?(max_dimensions)
-    return true if max_dimensions.values.compact.blank?
+    return false if max_dimensions.values.compact.blank?
 
     maxheight = max_dimensions[:height].present? ? max_dimensions[:height].to_i : nil
     maxwidth = max_dimensions[:width].present? ? max_dimensions[:width].to_i : nil
