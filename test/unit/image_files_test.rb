@@ -110,5 +110,20 @@ class ImageFilesTest < ActiveSupport::TestCase
     assert_not_nil image.basket
     assert_kind_of Basket, image.basket
   end
-        
+
+  context "An Image file" do
+    should "respond to bigger_than? method when given max dimensions, with true or false if it fits within bounds of dimensions" do
+      image = ImageFile.create(@new_model)
+      assert image.respond_to?(:bigger_than?)
+
+      dimensions = { :height => 100, :width => 100 }
+      assert !image.bigger_than?(dimensions)
+
+      dimensions = { :height => 56, :width => 56 }
+      assert !image.bigger_than?(dimensions)
+
+      dimensions = { :height => 50, :width => 50 }
+      assert image.bigger_than?(dimensions)
+    end
+  end
 end
