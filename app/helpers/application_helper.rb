@@ -12,6 +12,8 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  include OembedProviderHelper
+
   def stripped_title
     h(strip_tags(@title))
   end
