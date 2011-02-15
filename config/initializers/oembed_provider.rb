@@ -7,4 +7,4 @@ else
   OembedProvider.provider_url = Kete.site_url
 end
 
-OembedProvider.controller_model_maps = { 'images' => 'StillImage'}
+OembedProvider.controller_model_maps = { 'images' => 'StillImage' }
