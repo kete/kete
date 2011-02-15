@@ -50,6 +50,11 @@ Rails::Initializer.run do |config|
   # and place it under vendor/gems
   # specifying it here allows this to work
   config.gem "oai"
+  
+  # Walter McGinnis, 2011-02-15
+  # because this is a Rails engine gem
+  # it needs to be declared here as well as config/required_software.rb
+  config.gem "oembed_provider"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -102,3 +107,9 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 
 # Load application extensions that have been registered by add-ons
 Kete.setup_extensions!
+
+# Walter McGinnis, 2011-02-15
+# because of load order, these can't be added to config/initializers
+require 'oembed_provider'
+OembedProvider.provider_name = Kete.pretty_site_name
+OembedProvider.provider_url = Kete.site_url
