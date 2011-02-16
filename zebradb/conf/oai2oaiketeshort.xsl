@@ -6,6 +6,19 @@
   exclude-result-prefixes="oai_dc dc z oai"
   version="1.0">
 
+  <!-- want to test this while making changes?
+       1) make full zebra oai dc record and save it to a file:
+       $ script/console
+       >> ZoomDb.first.records_identified_by(Topic.last.zoom_id)[0]
+       copy and save output to sample.xml file
+       exit
+       2) mv sample.xml zebradb/conf/
+       3) cd zebradb/conf/
+       4) xsltproc oai2oaiketeshort.xsl sample.xml -->
+
+  <!-- used later to get first description for a lang -->
+  <xsl:key name="description-by-lang" match="dc:description" use="@xml:lang"/>
+
   <!-- switch to non-indented version after debugging -->
   <xsl:output indent="no" method="xml" version="1.0" encoding="UTF-8"/>
   <!-- <xsl:output indent="yes" method="xml" version="1.0" encoding="UTF-8"/> -->
@@ -64,11 +77,33 @@
 	  <dc:identifier><xsl:value-of select="."/></dc:identifier>
 	</xsl:for-each>
 	<xsl:for-each select="dc:title">
-	  <dc:title><xsl:value-of select="."/></dc:title>
+	  <dc:title>
+	    <xsl:if test="@xml:lang">
+	      <xsl:attribute name="xml:lang"><xsl:value-of select="@xml:lang"/></xsl:attribute>
+	    </xsl:if>
+	    <xsl:value-of select="."/>
+	  </dc:title>
 	</xsl:for-each>
-	<!-- dc:description, we only need the first one -->
-	<xsl:for-each select="dc:description">
+	<!-- dc:description, we only need the first one
+	     per distinct xml:lang (not having xml:lang counts as distinct xml:lang value)
+	     holds distinct xml:lang values for dc:description
+	     xsl:key voodoo to get only the first dc:description per xml:lang
+	     cribs from http://sources.redhat.com/ml/xsl-list/2000-07/msg00458.html
+	-->
+	<xsl:for-each select="dc:description[generate-id(.) = generate-id(key('description-by-lang', @xml:lang)[1])]">
+	    <dc:description>
+	      <xsl:attribute name="xml:lang"><xsl:value-of select="@xml:lang"/></xsl:attribute>
+	      <xsl:call-template  name="FirstNWords">
+		<xsl:with-param name="TextData" select="."/>
+		<xsl:with-param name="WordCount" select="100"/>
+		<xsl:with-param name="MoreText" select="'...'"/>
+	      </xsl:call-template>
+	    </dc:description>
+	</xsl:for-each>
+	<!-- dc:description, cover any that don't have xml:lang -->
+	<xsl:for-each select="dc:description[not(@xml:lang)]">
 	  <xsl:if test="position()=1 and count(child::*)=0">
+	    <xsl:if test="text()">
 	    <dc:description>
 	      <xsl:call-template  name="FirstNWords">
 	        <xsl:with-param name="TextData" select="."/>
@@ -76,6 +111,7 @@
 	        <xsl:with-param name="MoreText" select="'...'"/>
 	      </xsl:call-template>
 	    </dc:description>
+	    </xsl:if>
 	  </xsl:if>
 	</xsl:for-each>
 	<xsl:for-each select="dc:date">

@@ -2,6 +2,12 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
+# a registry of expected values
+require File.expand_path(File.dirname(__FILE__) + "/has_value")
+
+# add-ons may overwrite expected values
+HasValue.load_overwrites!
+
 require File.expand_path(File.dirname(__FILE__) + "/common_test_methods")
 
 load_testing_libs({ :exclude => ['webrat'] })

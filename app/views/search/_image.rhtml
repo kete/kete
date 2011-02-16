@@ -1,5 +1,6 @@
 <% unless thumbnail.nil?
      @thumb_src = thumbnail[:src]
+     @thumb_src = @thumb_src.sub(Kete.site_url, '/') if locally_hosted
      thumbnail.delete(:src)
      thumbnail.delete(:size)
      @thumb_options = thumbnail

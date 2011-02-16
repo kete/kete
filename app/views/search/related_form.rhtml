@@ -2,21 +2,23 @@
 item_class_plural = zoom_class_plural_humanize(@related_class).downcase
 @title = t('search.related_form.title', :action => @verb, :zoom_class_plural => item_class_plural) -%>
 
-<p><strong><%=t 'search.related_form.function_a', :action => @verb %></strong></p>
-<ul class="item_class_choices">
-  <% ITEM_CLASSES.each_with_index do |item_class_name,index| -%>
-    <li class="<%= (index == 0 ? 'first' : '') -%>">
-      <%# link_to_unless_current is not working in this case so we use our own conditional -%>
-      <% humanized_item_class_name = zoom_class_humanize(item_class_name) -%>
-      <% if @related_class == item_class_name -%>
-        <%= humanized_item_class_name -%>
-      <% else -%>
-        <%= link_to_unless_current(humanized_item_class_name, params.merge({ :related_class => item_class_name })) -%>
-      <% end -%>
-    </li>
-  <% end -%>
-</ul>
-<div style="clear:both;"></div>
+<% if params[:relate_to_type] == 'Topic' %>
+  <p><strong><%=t 'search.related_form.function_a', :action => @verb %></strong></p>
+  <ul class="item_class_choices">
+    <% ITEM_CLASSES.each_with_index do |item_class_name,index| -%>
+      <li class="<%= (index == 0 ? 'first' : '') -%>">
+        <%# link_to_unless_current is not working in this case so we use our own conditional -%>
+        <% humanized_item_class_name = zoom_class_humanize(item_class_name) -%>
+        <% if @related_class == item_class_name -%>
+          <%= humanized_item_class_name -%>
+        <% else -%>
+          <%= link_to_unless_current(humanized_item_class_name, params.merge({ :related_class => item_class_name })) -%>
+        <% end -%>
+      </li>
+    <% end -%>
+  </ul>
+  <div style="clear:both;"></div>
+<% end %>
 
 <fieldset>
 
@@ -46,7 +48,8 @@ item_class_plural = zoom_class_plural_humanize(@related_class).downcase
   <%= form_tag(
     :controller => 'search',
     :action => "#{@next_action}_related",
-    :relate_to_topic => params[:relate_to_topic],
+    :relate_to_item => params[:relate_to_item],
+    :relate_to_type => params[:relate_to_type],
     :urlified_name => params[:urlified_name],
     :related_class => @related_class
   ) %>

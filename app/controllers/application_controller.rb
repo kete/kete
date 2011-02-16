@@ -730,9 +730,8 @@ class ApplicationController < ActionController::Base
 
   end
 
-  def redirect_to_related_topic(topic, options={})
-    topic = topic.is_a?(Topic) ? topic : Topic.find(topic)
-    redirect_to_show_for(topic, options)
+  def redirect_to_related_item(item, options={})
+    redirect_to_show_for(item, options)
   end
 
   def update_zoom_and_related_caches_for(item, controller = nil)
@@ -748,30 +747,38 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def add_relation_and_update_zoom_and_related_caches_for(item, new_related_topic)
+  def add_relation_and_update_zoom_and_related_caches_for(item1, item2)
+    raise "ERROR: Neither item 1 or 2 was a Topic" unless item1.is_a?(Topic) || item2.is_a?(Topic)
+    topic, related = (item1.is_a?(Topic) ? [item1, item2] : [item2, item1])
+
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
-    zoom_destroy_for(item)
-    zoom_destroy_for(new_related_topic)
+    zoom_destroy_for(topic)
+    zoom_destroy_for(related)
 
-    successful = ContentItemRelation.new_relation_to_topic(new_related_topic.id, item)
+    successful = ContentItemRelation.new_relation_to_topic(topic, related)
 
-    update_zoom_and_related_caches_for(new_related_topic, zoom_class_controller(item.class.name))
+    update_zoom_and_related_caches_for(topic, zoom_class_controller(related.class.name))
+    update_zoom_and_related_caches_for(related, ('topics' if related.is_a?(Topic)))
 
     return successful
   end
 
-  def remove_relation_and_update_zoom_and_related_caches_for(item, new_related_topic)
+  def remove_relation_and_update_zoom_and_related_caches_for(item1, item2)
+    raise "ERROR: Neither item 1 or 2 was a Topic" unless item1.is_a?(Topic) || item2.is_a?(Topic)
+    topic, related = (item1.is_a?(Topic) ? [item1, item2] : [item2, item1])
+
     # clear out old zoom records before we change the items
     # sometimes zoom updates are confused and create a duplicate new record
     # instead of updating existing one
-    zoom_destroy_for(item)
-    zoom_destroy_for(new_related_topic)
+    zoom_destroy_for(topic)
+    zoom_destroy_for(related)
 
-    successful = ContentItemRelation.destroy_relation_to_topic(new_related_topic.id, item)
+    successful = ContentItemRelation.destroy_relation_to_topic(topic, related)
 
-    update_zoom_and_related_caches_for(new_related_topic, zoom_class_controller(item.class.name))
+    update_zoom_and_related_caches_for(topic, zoom_class_controller(related.class.name))
+    update_zoom_and_related_caches_for(related, ('topics' if related.is_a?(Topic)))
 
     return successful
   end
@@ -781,10 +788,9 @@ class ApplicationController < ActionController::Base
     if !commented_item.nil? and @successful
       update_zoom_and_related_caches_for(commented_item)
       where_to_redirect = 'commentable'
-    elsif !params[:relate_to_topic].blank? and @successful
-      @new_related_topic = Topic.find(params[:relate_to_topic])
-
-      add_relation_and_update_zoom_and_related_caches_for(item, @new_related_topic)
+    elsif !params[:relate_to_item].blank? and @successful
+      @relate_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
+      add_relation_and_update_zoom_and_related_caches_for(@relate_to_item, item)
 
       # reset the related images slideshow if realted image was added
       session[:image_slideshow] = nil if item.is_a?(StillImage)
@@ -808,7 +814,7 @@ class ApplicationController < ActionController::Base
       when 'show_related'
         # TODO: replace with translation stuff when we get globalize going
         flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.related_item', :zoom_class => zoom_class_humanize(item.class.name))
-        redirect_to_related_topic(@new_related_topic, { :private => (params[:related_topic_private] && params[:related_topic_private] == 'true' && permitted_to_view_private_items?) })
+        redirect_to_related_item(@relate_to_item, { :private => (params[:related_item_private] && params[:related_item_private] == 'true' && permitted_to_view_private_items?) })
       when 'commentable'
         redirect_to_show_for(commented_item, options)
       when 'appearance'
@@ -832,20 +838,20 @@ class ApplicationController < ActionController::Base
   end
 
   def link_related
-    @related_to_topic = Topic.find(params[:relate_to_topic])
+    @related_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
 
     unless params[:item].blank?
       for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
-        if params[:related_class] == 'Topic'
-          @existing_relation = @related_to_topic.related_topics.include?(item)
+        if params[:relate_to_type] == 'Topic' && params[:related_class] == 'Topic'
+          @existing_relation = @related_to_item.related_topics.include?(item)
         else
-          @existing_relation = @related_to_topic.send(params[:related_class].tableize).include?(item)
+          @existing_relation = @related_to_item.send(params[:related_class].tableize).include?(item)
         end
 
         if !@existing_relation
-          @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
+          @successful = add_relation_and_update_zoom_and_related_caches_for(item, @related_to_item)
 
           if @successful
             # in this context, the item being related needs updating, too
@@ -857,17 +863,19 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
+    redirect_to :controller => 'search', :action => 'find_related',
+                :relate_to_item => params[:relate_to_item], :relate_to_type => params[:relate_to_type],
+                :related_class => params[:related_class], :function => 'remove'
   end
 
   def unlink_related
-    @related_to_topic = Topic.find(params[:relate_to_topic])
+    @related_to_item = params[:relate_to_type].constantize.find(params[:relate_to_item])
 
     unless params[:item].blank?
       for id in params[:item].reject { |k, v| v != "true" }.collect { |k, v| k }
         item = only_valid_zoom_class(params[:related_class]).find(id)
 
-        remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_topic)
+        remove_relation_and_update_zoom_and_related_caches_for(item, @related_to_item)
 
         update_zoom_and_related_caches_for(item)
         flash[:notice] = t('application_controller.unlink_related.unlinked_relation')
@@ -875,7 +883,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    redirect_to :controller => 'search', :action => 'find_related', :relate_to_topic => params[:relate_to_topic], :related_class => params[:related_class], :function => 'remove'
+    redirect_to :controller => 'search', :action => 'find_related',
+                :relate_to_item => params[:relate_to_item], :relate_to_type => params[:relate_to_type],
+                :related_class => params[:related_class], :function => 'remove'
   end
 
   # overriding here, to grab title of page, too
@@ -1519,5 +1529,9 @@ class ApplicationController < ActionController::Base
     if !anonymous_ok_for?(request.path)
       logout_anonymous
     end
+  end
+
+  def item_controllers
+    @item_controllers ||= ITEM_CLASSES.collect { |c| zoom_class_controller(c) }
   end
 end

@@ -332,9 +332,18 @@ module ExtendedContent
             end
             multiple
           end
-
-        else
+        elsif ['autocomplete', 'choice'].member?(extended_field.ftype)
           if field.size > 1
+            # We're dealing with a multiple field value.
+            result[field_param_name] = field.inject(Hash.new) do |multiple, value|
+              multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
+              multiple
+            end
+          else
+            result[field_param_name] = convert_value_from_structured_hash(field, extended_field)
+          end
+        else
+          if (extended_field.multiple && field.size > 0) || field.size > 1
             # We're dealing with a multiple field value.
             result[field_param_name] = field.inject(Hash.new) do |multiple, value|
               multiple[(field.index(value) + 1).to_s] = convert_value_from_structured_hash(value, extended_field)
@@ -361,9 +370,19 @@ module ExtendedContent
 
       # If the extended field is a choice, make sure it's values properly indexed in XML.
       if ['autocomplete', 'choice'].member?(extended_field.ftype)
+        # gives some flexibility when value is being swapped in from add-ons (read translations)
+        value_array = [value_array] if value_array.is_a?(String)
+
         value_array.flatten!
         value_array.inject(Hash.new) do |hash, value|
-          hash[(value_array.index(value) + 1).to_s] = value.to_s
+          value_index = (value_array.index(value) + 1).to_s
+          if !value.is_a?(Hash)
+            value = value.to_s
+          elsif value_label_hash?(value) && value['label'] == value['value']
+            value = value['label']
+          end
+
+          hash[value_index] = value
           hash
         end
       elsif ['map', 'map_address'].member?(extended_field.ftype)
@@ -514,7 +533,7 @@ module ExtendedContent
     end
 
     def all_fields
-      all_field_mappings.map { |mapping| mapping.extended_field }.flatten
+      @all_fields ||= all_field_mappings.map { |mapping| mapping.extended_field }.flatten
     end
 
     private

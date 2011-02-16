@@ -42,4 +42,5 @@ class AudioRecordingTest < ActiveSupport::TestCase
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
+  include MergeTestUnitHelper
 end

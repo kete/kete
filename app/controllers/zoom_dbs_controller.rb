@@ -14,19 +14,10 @@ class ZoomDbsController < ApplicationController
   end
   
   private
-  
-    def ssl_required?
-      FORCE_HTTPS_ON_RESTRICTED_PAGES || false
-    end
-    
-    # If ssl_allowed? returns true, the SSL requirement is not enforced,
-    # so ensure it is not set in this controller.
-    def ssl_allowed?
-      nil
-    end
 
-    def set_page_title
-      @title = t('zoom_dbs_controller.title')
-    end
-    
+  include SslControllerHelpers  
+
+  def set_page_title
+    @title = t('zoom_dbs_controller.title')
+  end
 end

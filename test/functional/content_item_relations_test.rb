@@ -16,7 +16,7 @@ class ContentItemRelationsTest < ActionController::TestCase
 
   def test_find_related_add
     for class_name in @class_names
-      get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "add", :related_class => class_name
+      get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "add", :related_class => class_name
 
       assert_not_nil assigns(:results)
       assert_equal "link", assigns(:next_action)
@@ -29,7 +29,7 @@ class ContentItemRelationsTest < ActionController::TestCase
   # Zebra is blank at this stage, so checking for existing topics won't work
   # We could rebuild zebra but it would take a while.
   #def test_find_related_add_with_terms
-  #  get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "add", :related_class => "Topic", :search_terms => "register"
+  #  get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "add", :related_class => "Topic", :search_terms => "register"
   #
   #  assert_not_nil assigns(:results)
   #  assert_equal 4, assigns(:results).size
@@ -40,7 +40,7 @@ class ContentItemRelationsTest < ActionController::TestCase
   #end
 
   def test_find_related_add_with_terms_no_results
-    get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "add", :related_class => "Topic", :search_terms => "The Art Of Computer Programming"
+    get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "add", :related_class => "Topic", :search_terms => "The Art Of Computer Programming"
 
     assert_not_nil assigns(:results)
     assert_equal 0, assigns(:results).size
@@ -51,7 +51,7 @@ class ContentItemRelationsTest < ActionController::TestCase
 
   def test_find_related_remove_with_no_relationships
     for class_name in @class_names
-      get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "remove", :related_class => class_name
+      get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "remove", :related_class => class_name
 
       assert_not_nil assigns(:results)
       assert_equal 0, assigns(:results).size
@@ -70,7 +70,7 @@ class ContentItemRelationsTest < ActionController::TestCase
     assert_equal 1, Topic.find(1).related_topics.size
     assert_equal 2, Topic.find(1).related_topics.first.id
 
-    get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "remove", :related_class => "Topic"
+    get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "remove", :related_class => "Topic"
 
     assert_not_nil assigns(:results)
     assert_equal 1, assigns(:results).size
@@ -80,7 +80,7 @@ class ContentItemRelationsTest < ActionController::TestCase
     assert_template 'search/related_form'
 
     # Test the relationship from the other side.
-    get :find_related, :urlified_name => "about", :relate_to_topic => "2-house-rules", :function => "remove", :related_class => "Topic"
+    get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "2-house-rules", :function => "remove", :related_class => "Topic"
 
     assert_not_nil assigns(:results)
     assert_equal 1, assigns(:results).size
@@ -92,7 +92,7 @@ class ContentItemRelationsTest < ActionController::TestCase
 
   def test_find_related_restore
     for class_name in @class_names
-      get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "restore", :related_class => class_name
+      get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "restore", :related_class => class_name
 
       assert_not_nil assigns(:results)
       assert_equal 0, assigns(:results).size
@@ -113,7 +113,7 @@ class ContentItemRelationsTest < ActionController::TestCase
     c.destroy
     assert_equal 0, Topic.find(1).related_topics.size
 
-    get :find_related, :urlified_name => "about", :relate_to_topic => "1-about-kete", :function => "restore", :related_class => "Topic"
+    get :find_related, :urlified_name => "about", :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :function => "restore", :related_class => "Topic"
 
     assert_not_nil assigns(:results)
     assert_equal 1, assigns(:results).size
@@ -127,20 +127,20 @@ class ContentItemRelationsTest < ActionController::TestCase
 
   def test_link_without_items
     for class_name in @class_names
-      get :link_related, :relate_to_topic => "1-about-kete", :urlified_name => "about", :related_class => class_name, :item => {}
+      get :link_related, :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :urlified_name => "about", :related_class => class_name, :item => {}
 
-      assert_equal 1, assigns(:related_to_topic).id
+      assert_equal 1, assigns(:related_to_item).id
       assert_nil assigns(:successful)
 
       assert_response :redirect
-      assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_topic => "1-about-kete", :related_class => class_name, :function => 'remove'
+      assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :related_class => class_name, :function => 'remove'
     end
   end
 
   def test_link_with_items
-    get :link_related, :relate_to_topic => "1-about-kete", :urlified_name => "about", :related_class => "Topic", :item => { "2" => "true", "3" => "false" }
+    get :link_related, :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :urlified_name => "about", :related_class => "Topic", :item => { "2" => "true", "3" => "false" }
 
-    assert_equal 1, assigns(:related_to_topic).id
+    assert_equal 1, assigns(:related_to_item).id
     assert_not_nil assigns(:successful)
 
     assert_equal 1, Topic.find(1).related_topics.size
@@ -149,18 +149,18 @@ class ContentItemRelationsTest < ActionController::TestCase
     assert_equal "Successfully added item relationships", flash[:notice]
 
     assert_response :redirect
-    assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_topic => "1-about-kete", :related_class => "Topic", :function => 'remove'
+    assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :related_class => "Topic", :function => 'remove'
   end
 
   def test_unlink_without_items
     for class_name in @class_names
-      get :unlink_related, :relate_to_topic => "1-about-kete", :urlified_name => "about", :related_class => class_name, :item => {}
+      get :unlink_related, :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :urlified_name => "about", :related_class => class_name, :item => {}
 
-      assert_equal 1, assigns(:related_to_topic).id
+      assert_equal 1, assigns(:related_to_item).id
       assert_nil assigns(:successful)
 
       assert_response :redirect
-      assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_topic => "1-about-kete", :related_class => class_name, :function => 'remove'
+      assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :related_class => class_name, :function => 'remove'
     end
   end
 
@@ -171,16 +171,16 @@ class ContentItemRelationsTest < ActionController::TestCase
     assert_equal 1, Topic.find(3).related_topics.size
     assert_equal 4, Topic.find(3).related_topics.first.id
 
-    get :unlink_related, :relate_to_topic => "3-registration", :urlified_name => "about", :related_class => "Topic", :item => { "4" => "true" }
+    get :unlink_related, :relate_to_type => 'Topic', :relate_to_item => "3-registration", :urlified_name => "about", :related_class => "Topic", :item => { "4" => "true" }
 
-    assert_equal 3, assigns(:related_to_topic).id
+    assert_equal 3, assigns(:related_to_item).id
     assert_not_nil assigns(:successful)
 
     assert_equal 0, Topic.find(3).content_item_relations.size
     assert_equal "Successfully removed item relationships", flash[:notice]
 
     assert_response :redirect
-    assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_topic => "3-registration", :related_class => "Topic", :function => 'remove'
+    assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_type => 'Topic', :relate_to_item => "3-registration", :related_class => "Topic", :function => 'remove'
   end
 
   def test_link_with_deleted_items
@@ -194,9 +194,9 @@ class ContentItemRelationsTest < ActionController::TestCase
     c.destroy
     assert_equal 0, Topic.find(1).related_topics.size
 
-    get :link_related, :relate_to_topic => "1-about-kete", :urlified_name => "about", :related_class => "Topic", :item => { "2" => "true", "3" => "false" }
+    get :link_related, :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :urlified_name => "about", :related_class => "Topic", :item => { "2" => "true", "3" => "false" }
 
-    assert_equal 1, assigns(:related_to_topic).id
+    assert_equal 1, assigns(:related_to_item).id
     assert_not_nil assigns(:successful)
 
     assert_equal 1, Topic.find(1).related_topics.size
@@ -206,7 +206,7 @@ class ContentItemRelationsTest < ActionController::TestCase
     assert_equal "Successfully added item relationships", flash[:notice]
 
     assert_response :redirect
-    assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_topic => "1-about-kete", :related_class => "Topic", :function => 'remove'
+    assert_redirected_to :controller => 'search', :action => 'find_related', :relate_to_type => 'Topic', :relate_to_item => "1-about-kete", :related_class => "Topic", :function => 'remove'
   end
 
   protected

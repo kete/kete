@@ -26,6 +26,9 @@ module ConfigureAsKeteContentItem
       # these convenience methods actually work for comments, too
       # and are conceptually the same to end user
       klass.send :include, RelatedItems
+      
+      # methods for merging values from versions together
+      klass.send :include, Merge
 
       # sanitize our descriptions and extended_content for security
       # see validate_as_sanitized_html below, too
@@ -110,6 +113,7 @@ module ConfigureAsKeteContentItem
     def author_url_for_license
       "/#{Basket.find(1).urlified_name}/account/show/#{creator.to_param}"
     end
+
 
     # turn pretty urls on or off here
     include FriendlyUrls

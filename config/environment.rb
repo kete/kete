@@ -50,6 +50,11 @@ Rails::Initializer.run do |config|
   # and place it under vendor/gems
   # specifying it here allows this to work
   config.gem "oai"
+  
+  # Walter McGinnis, 2011-02-15
+  # because this is a Rails engine gem
+  # it needs to be declared here as well as config/required_software.rb
+  config.gem "oembed_provider"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named

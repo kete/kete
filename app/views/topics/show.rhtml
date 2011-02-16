@@ -7,6 +7,7 @@
     <span class='prefix'><%=t 'topics.show.topic' %></span>
     <%= h(@topic.title) %>
   </h2>
+  <%= extras_after_title_headline -%>
   <h4>
     <span class="topic-type-prefix"><%=t 'topics.show.topic_type' %></span>
     <%= topic_type_breadcrumb_for(@topic) %>

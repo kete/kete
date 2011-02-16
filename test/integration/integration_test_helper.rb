@@ -258,7 +258,7 @@ class ActionController::IntegrationTest
     if controller == 'topics' && is_homepage_topic
       visit "/#{basket.urlified_name}/topics/new?index_for_basket=#{basket.id}"
     elsif !relate_to.nil?
-      visit "/#{relate_to.basket.urlified_name}/#{controller}/new?relate_to_topic=#{relate_to.to_param}"
+      visit "/#{relate_to.basket.urlified_name}/#{controller}/new?relate_to_item=#{relate_to.to_param}&relate_to_type=Topic"
     else
       visit new_path
     end
@@ -744,7 +744,7 @@ class ActionController::IntegrationTest
   def add_relation_between(topic, zoom_class, *relation_candidate_ids)
     topic = topic.id.to_s if topic.is_a?(Topic)
     item_checkbox_hash = item_checkbox_hash_from(relation_candidate_ids)
-    post '/site/search/link_related', :relate_to_topic => topic, :related_class => zoom_class, :item => item_checkbox_hash
+    post '/site/search/link_related', :relate_to_item => topic, :relate_to_type => 'Topic', :related_class => zoom_class, :item => item_checkbox_hash
     assert_response :redirect
     # body_should_contain "Successfully added item relationships"
   end
@@ -753,7 +753,7 @@ class ActionController::IntegrationTest
   def unlink_relation_between(topic, zoom_class, *relation_candidate_ids)
     topic = topic.id.to_s if topic.is_a?(Topic)
     item_checkbox_hash = item_checkbox_hash_from(relation_candidate_ids)
-    post '/site/search/unlink_related', :relate_to_topic => topic, :related_class => zoom_class, :item => item_checkbox_hash
+    post '/site/search/unlink_related', :relate_to_item => topic, :relate_to_type => 'Topic', :related_class => zoom_class, :item => item_checkbox_hash
     assert_response :redirect
     # body_should_contain "Successfully removed item relationships."
   end

@@ -14,6 +14,7 @@
     </div>
   </div>
   <%= render('related', :related => related,
+      			:locally_hosted => locally_hosted,
                         :source_url => source_url,
                         :title => title) if related -%>
   <%= dc_date_display_of(dc_dates) %>

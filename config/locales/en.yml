@@ -172,7 +172,7 @@ en:
     search: search
     searching: searching
     send: send
-    send: sending
+    sending: sending
     sent: sent
     show: show
     showing: showing
@@ -579,6 +579,8 @@ en:
       link_text: "{{function}} an {{t.base.existing.capitalize}} {{t.base.related.capitalize}} {{t.base.item.capitalize}}"
     link_to_related_items_of:
       link_text: "{{t.base.view.capitalize}} {{t.base.item.pluralize}} {{t.base.related}} to {{item_title}}"
+    locale_dropdown:
+      label: "{{t.base.choose.capitalize}} {{t.base.language}}"
     pending_review:
       no_safe_version: "currently no non-disputed {{privacy_type}} versions of this {{t.base.item}}. Details of the {{privacy_type}} version of this {{t.base.item}} are not being displayed at this time."
       pending: "{{t.base.review.capitalize}} Pending:"
@@ -725,7 +727,7 @@ en:
       no_baskets_available_description: "There are no {{t.base.basket.pluralize}} that {{t.base.you}} have access to {{t.base.add}} {{t.base.item.pluralize}} to."
       no_baskets_available_try_later: "Find a {{t.base.basket}} to {{t.base.join}}, or {{t.base.please_try_again_later}}."
       spinner_working: "Working... "
-      that_relates_to: "that {{t.base.relates}} to {{topic_title}}"
+      that_relates_to: "that {{t.base.relates}} to {{item_title}}"
       what_to_add: "What would {{t.base.you}} like to {{t.base.add}}"
       where_to_add: "Where would {{t.base.you}} like to {{t.base.add}} it?"
     edit:
@@ -2352,7 +2354,7 @@ en:
       import_set: "{{t.base.import.capitalize}} Set"
       link_existing: "Link {{t.base.existing.capitalize}}"
       related_items: "{{t.base.related.capitalize}} {{t.base.item.capitalize.pluralize}}"
-      related_topics: "{{t.base.related.capitalize}} {{t.base.zoom_types.topic.pluralize.capitalize}}:"
+      related_topics: "{{t.base.related.capitalize}} {{t.base.zoom_types.topic.pluralize.capitalize}}"
       remove: "{{t.base.remove.capitalize}}"
       restore: Restore
     related_items_section:

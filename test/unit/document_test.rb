@@ -42,6 +42,8 @@ class DocumentTest < ActiveSupport::TestCase
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
+  include MergeTestUnitHelper
+
   # TODO: attachment_attributes_valid?
 
   # Test attachment_fu overrides

@@ -214,3 +214,30 @@ def populate_extended_field_data_for(zoom_class, ef_data, options={})
   end
 end
 
+def item_for(zoom_class, options = {})
+  if ATTACHABLE_CLASSES.include?(zoom_class)
+    file_data = case zoom_class
+                when 'AudioRecording'
+                  fixture_file_upload('/files/Sin1000Hz.mp3', 'audio/mpeg')
+                when 'Document'
+                  fixture_file_upload('/files/test.pdf', 'application/pdf')
+                when 'Video'
+                  fixture_file_upload('/files/teststrip.mpg', 'video/mpeg')
+                end
+  end
+
+  options = { :title => 'Item', :description => 'Description', :basket_id => 1 }.merge(options)
+  options[:topic_type_id] = options[:topic_type_id] || 1 if zoom_class == 'Topic'
+  options[:url] = options[:url] || "http://google.co.nz/#{rand}" if zoom_class == 'WebLink'
+  options[:uploaded_data] = file_data if (ATTACHABLE_CLASSES - ['StillImage']).include?(zoom_class)
+  if zoom_class == 'Comment' && options[:commentable_type].blank? && options[:commentable_id].blank?
+    commentable_topic = Topic.create(:title => 'Commented Topic', :topic_type_id => 1, :basket_id => 1)
+    options.merge!(:commentable_type => 'Topic', :commentable_id => commentable_topic.id)
+  end
+
+  @item = zoom_class.constantize.create! options
+
+  user = User.find(1)
+  @item.creators << user
+  @item
+end

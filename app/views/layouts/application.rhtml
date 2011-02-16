@@ -43,6 +43,10 @@
 
   <%= open_search_metadata if params[:controller] == 'search' && %w{ all for }.include?(params[:action]) %>
 
+  <% if %w(images topics).include?(params[:controller]) && params[:action] == "show" -%>
+    <%= oembed_provider_links -%>
+  <% end %>
+
   <%# this goes before other css and javascript incase we want to overwrite the definitions locally in themes %>
   <%= yield :add_on_scripts_and_links %>
 

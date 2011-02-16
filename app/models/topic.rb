@@ -133,6 +133,9 @@ class Topic < ActiveRecord::Base
   # convenience methods for a topics relations
   include RelatedItems
 
+  # methods for merging values from versions together
+  include Merge
+
   # Private Item mixin
   include ItemPrivacy::ActsAsVersionedOverload
   include ItemPrivacy::TaggingOverload
@@ -163,6 +166,21 @@ class Topic < ActiveRecord::Base
 
   def clear_basket_homepage_cache
     self.basket.send(:reset_basket_class_variables) if self.basket.index_topic == self
+  end
+
+  # Walter McGinnis, 2011-02-15
+  # oEmbed Functionality
+  include OembedProvidable
+  oembed_providable_as :link
+  include KeteCommonOembedSupport
+
+  # perhaps in the future we will store thumbnails for links (i.e. webpage previews)
+  # for topics, but not at the moment
+  # return nil for these
+  %w(url height width).each do |method_stub|
+    define_method('thumbnail_' + method_stub) do
+      nil
+    end
   end
 
   private :clear_basket_homepage_cache

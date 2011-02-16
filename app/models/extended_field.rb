@@ -128,10 +128,35 @@ class ExtendedField < ActiveRecord::Base
     self.label.downcase.gsub(/ /, '_')
   end
 
-  def self.params_to_label(attribute_key)
-     match_keyword = ActiveRecord::Base.connection.adapter_name == "PostgreSQL" ? "ILIKE" : "LIKE"
-     #TODO make this handle _ in the original label.
-     ExtendedField.find(:first, :conditions => ["label #{match_keyword} ?", attribute_key.to_s.gsub(/_/, ' ')]).label
+  def self.clauses_for_has_label_that_matches(params_key)
+    params_key_words = params_key.to_s.gsub('_', ' ').split(' ')
+
+    match_keyword = "LIKE"
+    label_sql = "LOWER(label)"
+
+    if ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
+      match_keyword = "ILIKE"
+      label_sql = "label"
+    end
+
+    clauses = Array.new
+    if params_key_words.size == 1
+      clauses << "#{label_sql} #{match_keyword} '#{params_key_words.first}'"
+    else
+      # could make this sensitive to first and last
+      # and adjust use of % accordingly
+      # but "and" seems sufficient
+      clauses = params_key_words.collect do |w|
+        "#{label_sql} #{match_keyword} '%#{w}%'"
+      end
+    end
+
+    clauses.join(' AND ')
+  end
+
+  def self.params_to_label(params_key)
+    find(:first,
+         :conditions => ExtendedField.clauses_for_has_label_that_matches(params_key)).label
   end
 
   def is_a_choice?

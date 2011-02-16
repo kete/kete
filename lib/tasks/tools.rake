@@ -45,8 +45,47 @@ namespace :kete do
       Rake::Task["kete:tools:set_locales"].invoke
     end
 
+    namespace :locales do
+
+      desc 'Make a timestamped copy of specified locale if there are changes from last backup. THIS=[language_code] e.g. rake kete:tools:locales:backup_for THIS=zh'
+      task :backup_for do
+        locale = ENV['THIS']
+        path_stub = "#{Rails.root}/config/locales/"
+        path = path_stub + locale + '.yml'
+        timestamped_path = path + '.' + Time.now.utc.xmlschema
+
+        unless File.exist?(path)
+          puts "ERROR: #{locale} locale doesn't exist."
+          exit
+        end
+
+        last_backup_filename = Dir.entries(path_stub).select { |entry| entry.include?(locale + '.yml.')}.last
+
+        do_backup = false
+
+        if last_backup_filename.blank?
+          do_backup = true
+        else
+          full_last_backup_filename = path_stub + last_backup_filename
+
+          diff_output = `diff #{path} #{full_last_backup_filename}`
+
+          do_backup = true if diff_output.present?
+        end
+
+        if do_backup
+          require 'ftools'
+          File.cp(path, timestamped_path)
+          puts "Backup of #{locale}.yml created."
+        else
+          puts "No backup needed. Last backup matches current #{locale}.yml."
+        end
+      end
+    
+    end
+
     desc 'Resets the database and zebra to their preconfigured state.'
-    task :reset => ['kete:tools:reset:zebra', 'db:bootstrap']
+    task :reset => ['kete:tools:reset:zebra', 'db:bootstrap', 'kete:tools:restart']
     namespace :reset do
 
       desc 'Stops and clears zebra'
@@ -205,6 +244,168 @@ namespace :kete do
         output_file.close
 
         puts "#{changed_lines_count.to_s} lines changed."
+      end
+    end
+
+    # tools for data massaging of existing items
+    namespace :topics do
+      desc "Given a passed in CONDITIONS string (conditions in sql form), move topics that fit CONDITIONS to TARGET (as specified by passed in id) and also USER for id that should be attributed with the move actions. E.g. 'rake kete:tools:topics:move_to_basket TARGET=6 CONDITIONS=\"topic_type_id = 4\" USER=1'. You can optionally specify whether zoom records should be built progressively with ZOOM=true (false by default). If you have a large number of topics that match CONDITIONS, you may want to alter this task to handle batches (otherwise you risk memory issues). Other thing to keep in mind is that this doesn't currently leave any sort of redirect behind for a moved item. Best done before you have a public site. Also Comments are not currently dealt with here."
+      task :move_to_basket => :environment do
+        to_basket = Basket.find(ENV['TARGET'])
+        target_basket_path = to_basket.urlified_name
+
+        # gather topics
+        topics = Topic.find(:all, :conditions => ENV['CONDITIONS'])
+        
+        raise "No matching topics." unless topics.size > 0
+
+        user = User.find(ENV['USER'])
+
+        should_rebuild = ENV['ZOOM'].present? && ENV['ZOOM'] == 'true' ? true : false
+
+        raise "ZOOM option current broken. Feel free to fix and submit a patch!" if should_rebuild
+
+        log_file = "#{Rails.root}/log/move_to_basket_#{Time.now.strftime('%Y-%m-%d_%H:%M:%S')}.log"
+        @logger = Logger.new(log_file)
+
+        puts "Opened logging in #{log_file}"
+
+        @logger.info("Target basket is:" + to_basket.id.to_s)
+        @logger.info("User is: #{user.id} " + user.login)
+
+        relationships_no_change_count = 0
+        relationships_changed_count = 0
+        topics_moved_count = 0
+
+        topics.each do |topic|
+          @logger.info("Topic: " + topic.id.to_s)
+
+          show_path_stub = "/topics/show/" + topic.id.to_s + "-"
+          old_basket = topic.basket
+          old_basket_path = old_basket.urlified_name
+          old_topic_url_stub = old_basket_path + show_path_stub
+          new_topic_url_stub = target_basket_path + show_path_stub
+
+          # changing the basket changes the zoom_id and thus
+          # when we go to update the zoom search record
+          # it doesn't update the old one, but add a new one
+          # zoom_destroy here before zoom_id is changed
+          topic.zoom_destroy if should_rebuild
+
+          # update basket_id
+          topic.basket = to_basket
+          topic.do_not_moderate = true
+          topic.do_not_sanitize = true
+          topic.version_comment = "Moved from #{old_basket.name} to #{to_basket.name}"
+
+          successful = topic.save
+
+          if successful
+            @logger.info("moved topic")
+
+            topic.reload
+
+            topic.add_as_contributor(user, topic.version)
+
+            # split things up into different types
+            class_names = ZOOM_CLASSES - ['Topic', 'Comment']
+            
+            kinds_to_process = ['child_related_topics'] + ['parent_related_topics'] + class_names.collect { |n| n.tableize }
+            kinds_to_process.each do |kind|
+              kind_count = topic.send(kind.to_sym).count
+              @logger.info("number of related #{kind}: " + kind_count.to_s)
+              next if kind_count == 0
+
+              table_name = kind
+              table_name = "topics" if kind.include?("child") || kind.include?("parent")
+
+              clause = "#{table_name}.id >= :start_id"
+              clause_values = Hash.new
+              clause_values[:start_id] = topic.send(kind.to_sym).find(:first,
+                                                                      :order => "#{table_name}.id").id
+
+              # load up to batch_size results into memory at a time
+              batch_count = 1
+              batch_size = 500 # 1000 is default in find_in_batches
+              last_id = 0
+
+              # find_in_batches messes up oai_record call for some reason, cobblying our own offset system
+              kind_count_so_far = 0
+              while kind_count > kind_count_so_far
+                if kind_count_so_far > 0
+                  clause_values[:start_id] = topic.send(kind.to_sym).find(:first,
+                                                                          :conditions => "#{table_name}.id > #{last_id}",
+                                                                          :order => "#{table_name}.id").id
+                end
+
+                related_items = topic.send(kind.to_sym).find(:all,
+                                                             :conditions => [clause, clause_values],
+                                                             :limit => batch_size,
+                                                             :order => "#{table_name}.id")
+              
+                @logger.info("number to do in batch: " + related_items.size.to_s)
+                
+                related_items.each do |item|
+                  kind_count_so_far += 1
+                  # update extended_content references for this topic to new url
+                  if item.extended_content.include?(old_topic_url_stub)
+                    before = item.extended_content
+                    after = before.gsub(old_topic_url_stub, new_topic_url_stub)
+
+                    item.extended_content = after
+                    item.do_not_moderate = true
+                    item.do_not_sanitize = true
+                    item.version_comment = "Updated links to \"#{topic.title}\""
+
+                    item_successful = item.save
+
+                    if item_successful
+                      item.reload
+                      item.add_as_contributor(user, item.version)
+
+                      # update search record for related item
+                      item.prepare_and_save_to_zoom if should_rebuild
+
+                      relationships_changed_count += 1
+                    end
+                  else
+                    relationships_no_change_count += 0
+                  end
+                  if batch_count < batch_size
+                    # track count of where we are in the batch
+                    batch_count += 1
+                  elsif batch_count == batch_size
+                    # reset the next record to first in batch
+                    batch_count = 1
+                    @logger.info("last_id of batch: " + item.id.to_s)
+                  end
+                  last_id = item.id
+                end
+                if batch_count < batch_size && batch_count != 1
+                  batch_count = 1
+                  @logger.info("last_id of batch: " + last_id.to_s)
+                end
+              end
+            end
+            
+            topic.prepare_and_save_to_zoom if should_rebuild
+
+            topics_moved_count += 1
+
+          else
+            raise "Topic #{topic.id.to_s} failed to be moved. Stopping. You may need to rebuild that topic's search record."
+          end
+        end
+
+        # rebuild search records for queued topics
+
+        @logger.info("#{topics_moved_count.to_s} topics moved.")
+        @logger.info("#{relationships_no_change_count.to_s} relationships no change necessary.")
+        @logger.info("#{relationships_changed_count.to_s} relationships updated.")
+
+        puts "#{topics_moved_count.to_s} topics moved."
+        puts "#{relationships_changed_count.to_s} relationships updated."
+        puts "#{relationships_no_change_count.to_s} relationships no change necessary."
       end
     end
 

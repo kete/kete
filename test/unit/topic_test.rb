@@ -36,6 +36,8 @@ class TopicTest < ActiveSupport::TestCase
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
+  include MergeTestUnitHelper
+
   def test_does_not_respond_to_file_private
     topic = Topic.create
 
@@ -703,6 +705,37 @@ class TopicTest < ActiveSupport::TestCase
       assert_equal relatives_2, t.relatives
 
       assert t.extended_content.include?("<relatives_multiple><1><relatives xml_element_name=\"dc:description\" label=\"#{sd_title}\">#{sd_url}</relatives></1><2><relatives xml_element_name=\"dc:description\" label=\"#{sb_title}\">#{sb_url}</relatives></2></relatives_multiple>")
+    end
+  end
+
+  context "A Topic has oembed providable functionality and" do
+    setup do
+      @topic = Topic.new(@new_model)
+      @topic.save
+      @topic.creator = User.first
+    end
+    
+    should "have an oembed_response" do
+      assert @topic.respond_to?(:oembed_response)
+      assert @topic.oembed_response
+    end
+
+    context "supports the required methods needed by oembed and" do
+
+      should "have ability to answer to title and have oembed_response.title" do
+        assert @topic.oembed_response.title
+        assert_equal @topic.title, @topic.oembed_response.title
+      end
+
+      should "have ability to answer to author_name and have oembed_response.author_name" do
+        assert @topic.oembed_response.author_name
+        assert_equal @topic.author_name, @topic.oembed_response.author_name
+      end
+
+      should "have ability to answer to author_url and have oembed_response.author_url" do
+        assert @topic.oembed_response.author_url
+        assert_equal @topic.author_url, @topic.oembed_response.author_url
+      end
     end
   end
 

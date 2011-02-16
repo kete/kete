@@ -12,6 +12,8 @@ module ApplicationHelper
 
   include ZoomHelpers
 
+  include OembedProviderHelper
+
   def stripped_title
     h(strip_tags(@title))
   end
@@ -809,7 +811,7 @@ module ApplicationHelper
     disabled = false
     disabled = true if options[:function] == 'remove' && @total_item_counts < 1
     if options[:function] == 'restore'
-      restore_count = ContentItemRelation::Deleted.count(:conditions => { :topic_id => options[:relate_to_topic] })
+      restore_count = ContentItemRelation::Deleted.count(:conditions => { :topic_id => options[:relate_to_item] })
       disabled = true if restore_count < 1
       link_text += " (#{restore_count})"
     end
@@ -823,7 +825,7 @@ module ApplicationHelper
     link_text = options.delete(:link_text)
     link = link_to(link_text, { :controller => 'importers',
                                 :action => 'new_related_set_from_archive_file',
-                                :relate_to_topic => options[:relate_to_topic] })
+                                :relate_to_topic => options[:relate_to_item] })
     content_tag('li', link)
   end
 
@@ -1502,6 +1504,25 @@ module ApplicationHelper
     end
   end
 
+  # link to action menu helper methods
+  # destroy skipped, as it is more of a special case
+  %w(edit history).each do |action|
+    code = lambda { |item|
+      args = { :action => action.to_sym,
+        :id => item }
+
+      args[:private] = params[:private] if action == 'edit'
+
+      t_key = t("topics.actions_menu.#{action}")
+
+      link_to("<span class=\"#{action}-link\">#{t_key}</span>",
+              args,
+              :tabindex => '1')  
+    }
+
+    define_method('link_to_' + action + '_for', &code)
+  end
+
   # we use this in imports, too
   def topic_type_select_with_indent(object, method, collection, value_method, text_method, current_value, html_options=Hash.new, pre_options=Array.new)
     if method
@@ -1812,7 +1833,10 @@ module ApplicationHelper
     locales = I18n.available_locales_with_labels.collect { |key,value| [value,key] }
     locales = ([[options[:pre_text], '']] + locales) if options[:pre_text]
     if form
-      form.select :locale, locales, :selected => options[:default]
+      # empty string is valid label value
+      label = !options[:label].nil? ? options[:label] : t('application_helper.locale_dropdown.label')
+
+      form.select :locale, locales, { :selected => options[:default] }, { :tabindex => '1', :label => label }
     else
       select_tag :override_locale, options_for_select(locales, options[:default])
     end
@@ -1878,5 +1902,18 @@ module ApplicationHelper
     end
     html += "</ul>"
     html
+  end
+
+  ### begin add-ons methods
+
+  # a placeholder method that can be overridden in your add-on
+  # it appears just after title on show page for zoom_classes (except for comments)
+  # must be able to handle bing cached (i.e. not good for things that rely on permissions)
+  def extras_after_title_headline
+  end
+
+  # three helpers for ITEM_CLASSES form that can be redefined in add-ons
+  %w(beginning mid end).each do |location|
+    define_method('add_ons_item_form_' + location, Proc.new { |form| })
   end
 end

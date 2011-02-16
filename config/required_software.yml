@@ -51,6 +51,7 @@ gems:
     lib_name: feedzirra
   tiny_mce:
   http_url_validation_improved:
+  oembed_provider:
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems

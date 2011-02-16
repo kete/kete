@@ -4,6 +4,7 @@
 
 <% cache_with_privacy(@video, {:part => 'details_first'}) do -%>
   <h2><%= h(@video.title) %></h2>
+  <%= extras_after_title_headline -%>
 <% end -%>
 
 <%= render(:partial => "topics/related_items", :locals => { :item => @video, :topics_only => true, :position => 'inset' }) if @video.related_items_position == 'inset' -%>

@@ -36,6 +36,8 @@ class StillImageTest < ActiveSupport::TestCase
   include ItemPrivacyTestHelper::Tests::TaggingWithPrivacyContext
   include ItemPrivacyTestHelper::Tests::MovingItemsBetweenBasketsWithDifferentPrivacies
 
+  include MergeTestUnitHelper
+
   # TODO: more testing of image_file population?
   # TODO: find_with
 
@@ -114,24 +116,103 @@ class StillImageTest < ActiveSupport::TestCase
   end
 
   def test_should_have_relation_and_user_when_in_portraits
-    user = User.first
-    new_image_with_creator user
-    UserPortraitRelation.new_portrait_for(user, @still_image)
+    new_image_with_creator
+    UserPortraitRelation.new_portrait_for(@creator, @still_image)
     @still_image.reload
 
     assert_not_nil @still_image.user_portrait_relation
     assert_not_nil @still_image.portrayed_user
     assert_kind_of User, @still_image.portrayed_user
-    assert_equal User.first, @still_image.portrayed_user
+    assert_equal @creator, @still_image.portrayed_user
   end
 
   def test_should_check_whether_user_is_image_uploader
-    user = User.first
-    new_image_with_creator user
+    new_image_with_creator
 
-    assert_equal true, @still_image.created_by?(user)
+    assert_equal true, @still_image.created_by?(@creator)
   end
 
+  context "A Still Image has oembed providable functionality and" do
+    setup do
+      @still_image = new_still_image({}, {})
+      @still_image.creator = User.first
+    end
+    
+    should "have an oembed_response" do
+      assert @still_image.respond_to?(:oembed_response)
+      assert @still_image.oembed_response
+    end
+
+    should "have an oembed_file and limit it to correct size based on maxheight/maxwidth" do
+      assert @still_image.respond_to?(:oembed_response)
+
+      assert @still_image.oembed_response
+      assert_equal @still_image.original_file, @still_image.oembed_file
+
+      # reset @still_image
+      @still_image = new_still_image({}, {})
+      @still_image.creator = User.first
+
+      assert @still_image.oembed_response(:maxheight => 50, :maxwidth => 50)
+      assert_equal @still_image.small_file, @still_image.oembed_file
+    end
+
+    context "supports the required methods needed by oembed and" do
+
+      should "have ability to answer to title and have oembed_response.title" do
+        assert @still_image.oembed_response.title
+        assert_equal @still_image.title, @still_image.oembed_response.title
+      end
+
+      should "have ability to answer to author_name and have oembed_response.author_name" do
+        assert @still_image.oembed_response.author_name
+        assert_equal @still_image.author_name, @still_image.oembed_response.author_name
+      end
+
+      should "have ability to answer to author_url and have oembed_response.author_url" do
+        assert @still_image.oembed_response.author_url
+        assert_equal @still_image.author_url, @still_image.oembed_response.author_url
+      end
+
+      should "have ability to answer to oembed_url and have oembed_response.url" do
+        assert @still_image.respond_to?(:oembed_url)
+        assert @still_image.oembed_response.url
+        assert @still_image.oembed_url
+      end
+
+      should "have ability to answer to oembed_height and have oembed_response.height" do
+        assert @still_image.respond_to?(:oembed_height)
+        assert @still_image.oembed_response.height
+        assert @still_image.oembed_height
+      end
+
+      should "have ability to answer to oembed_width and have oembed_response.width" do
+        assert @still_image.respond_to?(:oembed_width)
+        assert @still_image.oembed_response.width
+        assert @still_image.oembed_width
+      end
+
+      should "have ability to answer to oembed_thumbnail_url and have oembed_response.thumbnail_url" do
+        assert @still_image.respond_to?(:oembed_thumbnail_url)
+        assert @still_image.oembed_response.thumbnail_url
+        assert @still_image.oembed_thumbnail_url
+      end
+
+      should "have ability to answer to oembed_thumbnail_height and have oembed_response.thumbnail_height" do
+        assert @still_image.respond_to?(:oembed_thumbnail_height)
+        assert @still_image.oembed_response.thumbnail_height
+        assert @still_image.oembed_thumbnail_height
+      end
+
+      should "have ability to answer to oembed_thumbnail_width and have oembed_response.thumbnail_width" do
+        assert @still_image.respond_to?(:oembed_thumbnail_width)
+        assert @still_image.oembed_response.thumbnail_width
+        assert @still_image.oembed_thumbnail_width
+      end
+
+    end
+
+  end
   private
 
     def new_still_image(still_image_options, image_file_options)
@@ -168,9 +249,11 @@ class StillImageTest < ActiveSupport::TestCase
       assert_equal boolean, original_of(still_image).file_private?
     end
 
-    def new_image_with_creator(user)
+    def new_image_with_creator(user = nil)
       @still_image = StillImage.create(@new_model)
-      @still_image.creator = user
+      @still_image.creator = user || User.first
+      @creator = @still_image.creator
       @still_image.save
+      @still_image
     end
 end

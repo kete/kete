@@ -8,8 +8,9 @@ fields[:label] = '[accesskey|class|dir<ltr?rtl|for|id|lang|onblur|onclick|ondblc
 fields[:object] = '[classid|codebase|width|height|align|data|type]'
 fields[:param] = '[name|value]'
 fields[:embed] = '[quality|type|pluginspage|width|height|src|align|wmode|flashvars|allowfullscreen]'
+fields[:iframe] = '[src|style|width|height|scrolling|marginwidth|marginheight|frameborder]'
 EXTENDED_VALID_ELEMENTS_HASH = fields
 EXTENDED_VALID_ELEMENTS = fields.collect { |k,v| "#{k}#{v}" }.join(',')
-INSECURE_EXTENDED_VALID_ELEMENTS = [:form, :input, :select, :option, :script]
+INSECURE_EXTENDED_VALID_ELEMENTS = [:form, :input, :select, :option, :script, :iframe]
 
 VALID_TINYMCE_ACTIONS = ['new', 'create', 'edit', 'update', 'homepage_options', 'appearance', 'choose_type', 'render_item_form', 'new_related_set_from_archive_file', 'restore']

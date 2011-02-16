@@ -221,7 +221,7 @@ module ZoomSearch
         # make xpath request to get first instance of the desired field's value
         # (dc elements may be used more than once)
         # we use a hardcoded xml path because oai_dc.namescapes doesn't return the one we need in Nokogiri 1.4.0 or later
-        field_value = oai_dc.xpath(".//dc:#{field[0]}", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
+        field_value = oai_dc_first_element_for(field[0], oai_dc)
         next if field_value.nil?
         field_value = field_value.content
 
@@ -333,5 +333,8 @@ module ZoomSearch
       nil
     end
 
+    def oai_dc_first_element_for(field_name, oai_dc)
+      oai_dc.xpath(".//dc:#{field_name}", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
+    end
   end
 end
