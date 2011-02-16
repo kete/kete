@@ -1,0 +1,9 @@
+/* ################################## Left to Right specific rules ############################## */
+/* Walter McGinnis, 2011-02-16
+   These rules can't be declared in base.css, as it is always loaded, and if they are declared
+   they will make base-rtl.css in effective for certain rules.
+
+   In other words, these are rules that once defined, can't be reset. So we separate them out
+   so that they only get declared if needed.
+*/
+

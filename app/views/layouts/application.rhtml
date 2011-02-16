@@ -4,7 +4,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xml:lang="<%= I18n.locale -%>"<%= " dir=\"" + t('dir') + "\"" if t('dir') != 'ltr' -%>>
 <head>
-  <!-- TODO: helper for content type? -->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
   <% cached_controllers = ['audio', 'documents', 'images', 'topics', 'video', 'web_links'] %>
@@ -64,9 +63,7 @@
 
   <% bundle :name => theme_name do -%>
     <%= stylesheet_link_tag 'base', :media => 'screen' %>
-    <% if t('dir') != 'ltr' -%>
-      <%= stylesheet_link_tag('base-' + t('dir'), :media => 'screen') -%>
-    <% end -%>
+    <%= stylesheet_link_tag('base-' + t('dir'), :media => 'screen') -%>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>
     <%= stylesheet_link_tag 'redbox' %>
     <%= stylesheet_link_tag 'dan_webb_code_highlighter/styles' if !AVAILABLE_SYNTAX_HIGHLIGHTERS.empty? %>
