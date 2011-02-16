@@ -107,9 +107,3 @@ require File.join(File.dirname(__FILE__), '/../lib/error_handler')
 
 # Load application extensions that have been registered by add-ons
 Kete.setup_extensions!
-
-# Walter McGinnis, 2011-02-15
-# because of load order, these can't be added to config/initializers
-require 'oembed_provider'
-OembedProvider.provider_name = Kete.pretty_site_name
-OembedProvider.provider_url = Kete.site_url
