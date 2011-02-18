@@ -58,10 +58,9 @@ gems:
 #  oai: oai
 
 # these are problematic as gems depending on platform
-# for example, rmagick on debian is best installed with
-# sudo apt-get install librmagick-ruby1.8
+# at the moment we want version 2.12.2 for RMagick
 libs:
-  RMagick: RMagick
+  RMagick: RMagick 
 
 # memcached is truncated to "memcache" for compatibility with
 # some systems' (Solaris10?) ps -c truncation amount
