@@ -29,7 +29,7 @@
       logged_in? && (permitted_to_edit_current_item? || (@current_basket.show_privacy_controls_with_inheritance? &&  permitted_to_view_private_items?)) -%>
   <div id="moderator-tools">
   <ul>
-    <% if permitted_to_edit_current_item? -%>
+    <% if permitted_to_edit_basket_homepage_topic? -%>
       <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
         <li class="first">
           <%= link_to t('index_page.topic_as_full_page.edit'), :action => 'edit',
