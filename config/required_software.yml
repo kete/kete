@@ -52,6 +52,7 @@ gems:
   tiny_mce:
   http_url_validation_improved:
   oembed_provider:
+  ya2yaml:
 
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems
