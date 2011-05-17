@@ -71,7 +71,7 @@ system_settings_008:
   name: Default Records Per Page
   technically_advanced: false
   required_to_be_configured: true
-  explanation:
+  explanation: How many records do we display if no preference is set.
   id: "8"
   value: "5"
   section: Results Display
