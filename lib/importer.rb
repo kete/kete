@@ -594,6 +594,8 @@ module Importer
         title = record_hash[field_name].strip if field_name.downcase == 'title' || (TITLE_SYNONYMS && TITLE_SYNONYMS.include?(field_name))
       end
 
+      logger.info("after record field_name loop")
+
       # In some cases, records may share the same name, but have a different code
       # In order to accomodate for that, we check both title, extended field data
       # and topic type if available
@@ -614,6 +616,7 @@ module Importer
       # if file exists, we know we are uploading files for an attachable class
       if record_hash['path_to_file'].present? &&
           File.exist?(record_hash['path_to_file']) &&
+          @record_identifier_xml_field.present? &&
           @record_identifier_xml_field.downcase == 'path_to_file' &&
           record_hash[@record_identifier_xml_field].present?
         logger.info("setting filename check")
