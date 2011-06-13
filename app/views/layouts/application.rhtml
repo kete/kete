@@ -178,8 +178,8 @@
             <h1>
               <%= link_to Kete.pretty_site_name,
                           basket_index_url({ :urlified_name => @site_basket.urlified_name }),
-                          :tabindex => '2' %>
-              <%= header_link_to_current_basket %>
+                          :tabindex => '2' -%>
+              <%= header_link_to_current_basket -%>
             </h1>
             <%= render 'account/locale_selection', :classes => ['header'] if LANGUAGE_CHOICES_POSITION == 'header' %>
             <div id="head-search-wrapper">
