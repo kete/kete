@@ -1063,8 +1063,12 @@ class ApplicationController < ActionController::Base
     # get controller and action from url
     # strip off query string before submitting to routing
     url = url.split("?")[0]
-    from_url = ActionController::Routing::Routes.recognize_path(url, :method => :get)
-    
+    from_url = String.new
+    begin
+      from_url = ActionController::Routing::Routes.recognize_path(url, :method => :get)
+    rescue
+      from_url = ActionController::Routing::Routes.recognize_path(url, :method => :post)
+    end
     value = from_url[:controller] + '/' + from_url[:action]
 
     # check if it is an allowed for or finished after controller/action combo
