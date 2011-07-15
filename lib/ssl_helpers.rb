@@ -113,6 +113,7 @@ module SslHelpers
 
   # changed to redirect to http if not private
   def redirect_to_proper_protocol_if_needed
+    return true unless request.get?
     if request.port == 80 && (params[:privacy_type] == 'private' ||
                               params[:private] == 'true')
       redirect_to params.merge(:protocol => 'https')
