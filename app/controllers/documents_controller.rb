@@ -1,5 +1,6 @@
 class DocumentsController < ApplicationController
   include ExtendedContentController
+  include MayBeUploadAsServiceController
 
   def index
     redirect_to_search_for('Document')

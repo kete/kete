@@ -19,6 +19,15 @@ zoom_class = zoom_class_from_controller(controller)
 @item_type = zoom_class.underscore.to_sym
 
 @editing = !@item.new_record?
+
+if @item.new_record? && %w(StillImage Document Video AudioRecording).include?(zoom_class)
+   @as_service = params[:as_service].present? && params[:as_service] == 'true'
+ 
+   if @as_service
+     @service_target = params[:service_target]
+     @append_show_url = params[:append_show_url].present?  && params[:append_show_url] == 'true'
+   end
+end
 -%>
 
 <% if @editing -%>
@@ -45,6 +54,12 @@ zoom_class = zoom_class_from_controller(controller)
     <%= form.error_messages -%>
 
     <p class="required"><em><%=t 'topics.form.required_fields' %></em></p>
+
+      <% if @as_service -%>
+        <%= hidden_field_tag 'as_service', @as_service -%>
+        <%= hidden_field_tag 'service_target', @service_target -%>
+        <%= hidden_field_tag 'append_show_url', @append_show_url -%>
+     <% end -%>
 
     <% if @item_type == :still_image -%>
       <%= error_messages_for 'image_file' -%>

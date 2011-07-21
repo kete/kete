@@ -1,5 +1,6 @@
 class AudioController < ApplicationController
   include ExtendedContentController
+  include MayBeUploadAsServiceController
 
   def index
     redirect_to_search_for('AudioRecording')

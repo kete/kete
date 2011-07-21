@@ -16,6 +16,8 @@ class AccountController < ApplicationController
 
   before_filter :redirect_if_user_portraits_arnt_enabled, :only => [:add_portrait, :remove_portrait, :make_selected_portrait]
 
+  layout :simple_or_application
+
   # say something nice, you goof!  something sweet.
   def index
     if logged_in? || User.count > 0
@@ -114,8 +116,6 @@ class AccountController < ApplicationController
       end
     else
 
-      render_layout_simple_if_necessary
-
       set_captcha_type if anonymous_ok_for?(session[:return_to])
       create_brain_buster if @captcha_type == 'question'
     end
@@ -123,14 +123,6 @@ class AccountController < ApplicationController
 
   def simple_return_tos
       ['find_related']
-  end
-
-  def render_layout_simple_if_necessary
-    return if session[:return_to].blank?
-    
-    simple_return_tos_regexp = Regexp.new(simple_return_tos.join('|'))
-
-    render :layout => "simple" if session[:return_to] =~ simple_return_tos_regexp
   end
 
   # override brain_buster method to suit our UI
@@ -503,25 +495,39 @@ class AccountController < ApplicationController
 
   private
 
-    def redirect_if_user_portraits_arnt_enabled
-      unless ENABLE_USER_PORTRAITS
-        flash[:notice] = t('account_controller.redirect_if_user_portraits_arnt_enabled.not_enabled')
-        @still_image = StillImage.find(params[:id])
-        redirect_to_show_for(@still_image)
-      end
-    end
+  def simple_or_application
+    return 'application' if session[:return_to].blank?
+    
+    simple_return_tos_regexp = Regexp.new(simple_return_tos.join('|'))
 
-    def redirect_to_image_or_profile
-      if session[:return_to].blank?
-        redirect_to_show_for(@still_image)
-      else
-        redirect_to url_for(session[:return_to])
-      end
+    if session[:return_to] =~ simple_return_tos_regexp ||
+        (params[:as_service].present? && params[:as_service] == 'true')
+      'simple'
+    else
+      'application'
     end
+  end
 
-    def load_content_type
-      @content_type = ContentType.find_by_class_name('User')
+
+  def redirect_if_user_portraits_arnt_enabled
+    unless ENABLE_USER_PORTRAITS
+      flash[:notice] = t('account_controller.redirect_if_user_portraits_arnt_enabled.not_enabled')
+      @still_image = StillImage.find(params[:id])
+      redirect_to_show_for(@still_image)
     end
+  end
 
-    include SslControllerHelpers
+  def redirect_to_image_or_profile
+    if session[:return_to].blank?
+      redirect_to_show_for(@still_image)
+    else
+      redirect_to url_for(session[:return_to])
+    end
+  end
+
+  def load_content_type
+    @content_type = ContentType.find_by_class_name('User')
+  end
+
+  include SslControllerHelpers
 end
