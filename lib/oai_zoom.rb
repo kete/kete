@@ -41,10 +41,8 @@ module OaiZoom
               xml.metadata do
                 xml.send("oai_dc:dc",
                          "xmlns:oai_dc" => "http://www.openarchives.org/OAI/2.0/oai_dc/",
-                         "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                          "xmlns:dc" => "http://purl.org/dc/elements/1.1/",
-                         "xmlns:dcterms" => "http://purl.org/dc/terms/",
-                         "xsi:schemaLocation" => "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd") do
+                         "xmlns:dcterms" => "http://purl.org/dc/terms/") do
                   oai_dc_xml_dc_identifier(xml, request)
                   oai_dc_xml_dc_title(xml)
                   oai_dc_xml_dc_publisher(xml, request[:host])
