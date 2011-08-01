@@ -21,14 +21,12 @@
     <config>../conf/zebra-private.cfg</config>
     <!-- location of CQL-to-PQF file
          see: http://www.indexdata.com/yaz/doc/tools.tkl#tools.cql.map -->
-    <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
 </server>
 
 <!-- PRIVATE KETE SERVER UNIX SOCKET
 <server id="privateserver-unix"  listenref="privateserver-unix">
     <directory>./private</directory>
     <config>../conf/zebra-private.cfg</config>
-    <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
 </server> -->
 
 <!-- PUBLIC KETE SERVER -->
@@ -37,14 +35,12 @@
     <config>../conf/zebra-public.cfg</config>
     <!-- location of CQL-to-PQF file
          see: http://www.indexdata.com/yaz/doc/tools.tkl#tools.cql.map -->
-    <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
 </server>
 
 <!-- PUBLIC KETE SERVER UNIX SOCKET
 <server id="publicserver-unix"  listenref="publicserver-unix">
     <directory>./public</directory>
     <config>../conf/zebra-public.cfg</config>
-    <cql2rpn>../conf/cql2pqf.txt</cql2rpn>
 </server>  -->
 
 </yazgfs>
