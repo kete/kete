@@ -594,14 +594,29 @@ namespace :kete do
       dbs = ZoomDb.find(:all, :conditions => { :host => 'localhost' })
 
       # only necessary if localhost specified
-      return unless dbs.size > 0
+      if dbs.size > 0
 
-      dbs.each do |db|
-        db.host = '127.0.0.1' if db.host == 'localhost'
-        db.save!
-      end
+        zebra_version_rake_value = `rake zebra:version`
+
+        zebra_version = zebra_version_rake_value.lines.to_a.last
+        
+        version_parts = zebra_version.split('.')
       
-      p "changed zoom db hosts updated to 127.0.0.1"
+        if version_parts[0].to_i < 2 ||
+            (version_parts[0].to_i < 3 &&
+             version_parts[1].to_i == 0 &&
+             version_parts[2].to_i < 48)
+          p "no need to update zebra hosts"
+        else 
+      
+          dbs.each do |db|
+            db.host = '127.0.0.1' if db.host == 'localhost'
+            db.save!
+          end
+      
+          p "changed zoom db hosts updated to 127.0.0.1"
+        end
+      end
     end
 
   end
