@@ -367,8 +367,41 @@ namespace :kete do
           end
         end
       end
-
     end
 
+    namespace :zebra do
+      desc 'Update Zebra hosts to 127.0.0.1 if localhost and ONLY if Debian Lenny/YAZ combination make your Zebra unresponsive. You will likely need to run update_hosts_to_localhost at some point in the future if you upgrade your OS/YAZ.'
+      task :update_hosts_to_ip => :environment do
+        dbs = ZoomDb.find(:all, :conditions => { :host => 'localhost' })
+
+        # only necessary if localhost specified
+        if dbs.size > 0
+          dbs.each do |db|
+            db.host = '127.0.0.1' if db.host == 'localhost'
+            db.save!
+          end
+            
+          p "changed zoom db hosts updated to 127.0.0.1"
+        else
+          p "no change to zoom db host necessary"
+        end
+      end
+
+      desc 'Update Zebra hosts to localhost if 127.0.0.1 and ONLY if Debian OS version/YAZ combination make your Zebra unresponsive (i.e. you upgrade to Squeeze).'
+      task :update_hosts_to_localhost => :environment do
+        dbs = ZoomDb.find(:all, :conditions => { :host => '127.0.0.1' })
+
+        # only necessary if localhost specified
+        if dbs.size > 0
+          dbs.each do |db|
+            db.host = 'localhost' if db.host == '127.0.0.1'
+            db.save!
+          end
+          p "changed zoom db hosts updated to localhost"
+        else
+          p "no change to zoom db host necessary"
+        end
+      end
+    end
   end
 end

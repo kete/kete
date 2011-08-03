@@ -31,8 +31,7 @@ namespace :kete do
                     'kete:upgrade:change_inset_to_position',
                     'kete:upgrade:set_null_private_only_mappings_to_false',
                     'kete:upgrade:set_default_import_archive_set_policy',
-                    'kete:upgrade:add_missing_users',
-                    'kete:upgrade:update_zebra_hosts']
+                    'kete:upgrade:add_missing_users']
   namespace :upgrade do
     desc 'Privacy Controls require that Comment#commentable_private be set.  Update existing comments to have this data.'
     task :update_existing_comments_commentable_private => :environment do
@@ -588,36 +587,5 @@ namespace :kete do
         end
       end
     end
-
-    desc 'Update Zebra hosts to 127.0.0.1 if localhost'
-    task :update_zebra_hosts => :environment do
-      dbs = ZoomDb.find(:all, :conditions => { :host => 'localhost' })
-
-      # only necessary if localhost specified
-      if dbs.size > 0
-
-        zebra_version_rake_value = `rake zebra:version`
-
-        zebra_version = zebra_version_rake_value.lines.to_a.last
-        
-        version_parts = zebra_version.split('.')
-      
-        if version_parts[0].to_i < 2 ||
-            (version_parts[0].to_i < 3 &&
-             version_parts[1].to_i == 0 &&
-             version_parts[2].to_i < 48)
-          p "no need to update zebra hosts"
-        else 
-      
-          dbs.each do |db|
-            db.host = '127.0.0.1' if db.host == 'localhost'
-            db.save!
-          end
-      
-          p "changed zoom db hosts updated to 127.0.0.1"
-        end
-      end
-    end
-
   end
 end
