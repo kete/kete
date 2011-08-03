@@ -6,7 +6,7 @@ zoom_dbs_001:
   id: "1"
   description: Where we store our publicly searchable records (about topics, images, videos, etc.).
   zoom_password: k3t3r0ck5
-  host: localhost
+  host: "127.0.0.1"
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
 zoom_dbs_002:
@@ -16,6 +16,6 @@ zoom_dbs_002:
   id: "2"
   description: Where we store records that are only searchable to privileged Kete users (about topics, images, video, etc.).
   zoom_password: k3t3r0ck5
-  host: localhost
+  host: "127.0.0.1"
   created_at: <%= Time.now.utc.to_s :db %>
   updated_at: <%= Time.now.utc.to_s :db %>
