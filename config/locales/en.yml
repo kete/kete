@@ -1597,6 +1597,8 @@ en:
       latest: "{{t.base.latest.capitalize}}"
       show_x_of_x: "{{t.base.showing}} {{count}} of {{total}}"
       tags_title: "{{t.base.tag.capitalize.pluralize}}"
+      topic: "{{t.base.zoom_types.topic}}"
+      topics: "{{t.base.zoom_types.topic.pluralize}}"
       view: "{{t.base.view.capitalize}} "
     post_headline:
       read_more: "read more &gt;&gt;"

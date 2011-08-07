@@ -25,12 +25,12 @@
   <% cache_with_privacy(@topic, {:part => 'tools'}) do -%>
     <div class="detail-tools">
     <% if !@url_to_full_topic.nil? -%>
-      <ul><%= li_with_correct_class(tool_count) + link_to(t('index_page.index.continue_to_topic'), @url_to_full_topic) %></li></ul>
+      <ul><%= li_with_correct_class(tool_count) + link_to(t('.continue_to_topic'), @url_to_full_topic) %></li></ul>
       <% tool_count += 1 -%>
       <% end -%>
       <% if !@url_to_comments.nil? -%>
       <% if @comments.size > 0 -%>
-        <ul><%= li_with_correct_class(tool_count) + t('index_page.index.view') + link_to( t('index_page.index.comments', :count => @comments.size), @url_to_comments) -%></li></ul>
+        <ul><%= li_with_correct_class(tool_count) + t('.view') + link_to( t('.comments', :count => @comments.size), @url_to_comments) -%></li></ul>
         <% tool_count += 1 -%>
       <% end -%>
     <% end -%>
@@ -43,13 +43,13 @@
         <% if permitted_to_edit_basket_homepage_topic? -%>
           <% cache_with_privacy(@topic, {:part => 'edit'}) do -%>
             <%= li_with_correct_class(tool_count) +
-                link_to(t('index_page.index.edit'), :action => 'edit',
+                link_to(t('.edit'), :action => 'edit',
                                 :urlified_name => @topic.basket.urlified_name,
                                 :controller => 'topics',
                                 :id => @topic,
                                 :private => @topic.private? ) %></li>
             <% tool_count += 1 -%>
-            <li><%= link_to t('index_page.index.history'), :action => 'history',
+            <li><%= link_to t('.history'), :action => 'history',
                                        :urlified_name => @topic.basket.urlified_name,
                                        :controller => 'topics',
                                        :id => @topic,
@@ -68,7 +68,7 @@
   <% if @basket_admin %>
     <div id="moderator-tools">
       <ul>
-        <li><%= link_to t('index_page.index.create_homepage_topic'),
+        <li><%= link_to t('.create_homepage_topic'),
                         :urlified_name => @current_basket.urlified_name,
                         :controller => 'topics',
                         :action => 'new',
@@ -86,7 +86,8 @@
         @recent_topics_items.size > 0 &&
         !@current_basket.index_page_recent_topics_as.blank? -%>
     <div class="home-feature-wrapper">
-      <h3><%=t 'index_page.index.latest' %> <%= @recent_topics_items.size.to_s if @recent_topics_items.size > 1 -%> topic<%= 's' if @recent_topics_items.size > 1 -%></h3>
+      <h3><%=t '.latest' %> <%= @recent_topics_items.size.to_s if @recent_topics_items.size > 1 -%>
+      <% if @recent_topics_items.size > 1 -%><%= t '.topics' -%><% else -%><%= t '.topic' -%><% end -%></h3>
       <% case @current_basket.index_page_recent_topics_as
          when 'summaries' -%>
         <%= render :partial => 'post_summary',
@@ -108,7 +109,7 @@
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "search-box", :class_suffix => nil }) -%>
       <div id="right-search-box">
-        <% @headline = t('index_page.index.keyword_search')
+        <% @headline = t('.keyword_search')
            @headline += (' ' + @title) if @current_basket != @site_basket -%>
         <%= render 'search/search_field', :title => @headline %>
       </div>
@@ -146,7 +147,7 @@
 <% if !@current_basket.index_page_archives_as.blank? && @current_basket.index_page_archives_as == 'by type' %>
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "contents-by-type", :class_suffix => nil }) -%>
-    <h3><%=t 'index_page.index.contents_by_type' %></h3>
+    <h3><%=t '.contents_by_type' %></h3>
     <%= render :partial => 'archive_by_type' -%>
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
@@ -176,7 +177,7 @@
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "selected-image-box", :class_suffix => nil }) -%>
     <div id="selected-image-headline">
-      <h3><%=t "basket_model.image_#{@current_basket.index_page_image_as}" -%> <%=t 'index_page.index.image_from_archive' %></h3>
+      <h3><%=t "basket_model.image_#{@current_basket.index_page_image_as}" -%> <%=t '.image_from_archive' %></h3>
     </div>
     <%= slideshow_div %>
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
@@ -190,19 +191,19 @@
     <%= render(:partial => "topics/secondary_wrapper_start",
                :locals => { :div_id => "tags-box", :class_suffix => nil }) -%>
       <% tag_counts = @tag_counts_total > @tag_counts_array.size ?
-                       "( #{t('index_page.index.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_total)} | " +
-                        link_to(t('index_page.index.all_tags'),
+                       "( #{t('.show_x_of_x', :count => @tag_counts_array.size, :total => @tag_counts_total)} | " +
+                        link_to(t('.all_tags'),
                                 :controller => 'tags',
                                 :action => 'list') + " )" : '' -%>
       <% if @current_basket.index_page_tags_as == 'tag cloud' -%>
         <div id="tags-headline">
-          <h3 style="display:inline;"><%=t 'index_page.index.tags_title' %></h3>
+          <h3 style="display:inline;"><%=t '.tags_title' %></h3>
           <span><%= tag_counts -%></span>
         </div>
         <%= render :partial => 'tags/tags_by_tag_cloud', :locals => { :tags => @tag_counts_array } -%>
       <% else -%>
         <div id="tags-headline">
-          <h3 style="display:inline;"><%=t 'index_page.index.categories_title' %></h3>
+          <h3 style="display:inline;"><%=t '.categories_title' %></h3>
           <span><%= tag_counts -%></span>
         </div>
         <%= render :partial => 'tags/tags_by_categories', :locals => { :tags => @tag_counts_array } -%>
