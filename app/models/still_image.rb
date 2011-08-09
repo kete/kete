@@ -85,7 +85,7 @@ class StillImage < ActiveRecord::Base
         raise ActiveRecord::RecordNotFound if the_file.nil?
       end
     elsif max_dimensions.values.compact.present?
-      image_files.each do |image_file|
+      image_files.find(:all, :order => 'size DESC').each do |image_file|
         unless image_file.bigger_than?(max_dimensions)
           the_file = image_file
           break
