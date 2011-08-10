@@ -501,7 +501,7 @@ class ApplicationController < ActionController::Base
         if params[:append_show_url].present? &&
             params[:append_show_url] == 'true'
         
-          service_target += url_for_dc_identifier(item).sub('://', '%3A//')
+          service_target += url_for_dc_identifier(item).sub('://', '%3A%2F%2F').gsub('/', '%2F')
         end
         redirect_to service_target
       else
