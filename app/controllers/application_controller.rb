@@ -468,8 +468,8 @@ class ApplicationController < ActionController::Base
       where_to_redirect = 'user_account'
     elsif params[:as_service].present? &&
         params[:as_service] == 'true' &&
-        params[:target_service].present?
-      where_to_redirect = 'target_service'
+        params[:service_target].present?
+      where_to_redirect = 'service_target'
     end
 
     if @successful
@@ -495,15 +495,15 @@ class ApplicationController < ActionController::Base
           flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.portrait', :zoom_class => zoom_class_humanize(item.class.name))
         end
         redirect_to :action => :show, :controller => 'account', :id => @current_user
-      when 'target_service'
-        target_service = params[:target_service]
+      when 'service_target'
+        service_target = params[:service_target]
 
         if params[:append_show_url].present? &&
             params[:append_show_url] == 'true'
         
-          target_service += url_for_dc_identifier(item).sub('://', '%3A//')
+          service_target += url_for_dc_identifier(item).sub('://', '%3A//')
         end
-        redirect_to target_service
+        redirect_to service_target
       else
         flash[:notice] = t('application_controller.setup_related_topic_and_zoom_and_redirect.created', :zoom_class => zoom_class_humanize(item.class.name))
         redirect_to_show_for(item, options)
