@@ -91,7 +91,12 @@ module ExtendedContentHelpers
         if data["xml_element_name"].blank?
           @anonymous_fields << [original_field_key, ":#{data_for_values.join(":")}:"]
         else
-          @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+          if data["xml_element_name"].include?("dc:")
+            # we want the namespace for dc xml_element_name
+            @builder_instance.send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+          else
+            @builder_instance.safe_send(data["xml_element_name"], ":#{data_for_values.join(":")}:")
+          end
         end
       end
 
