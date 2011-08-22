@@ -81,8 +81,6 @@ class SearchController < ApplicationController
       # TODO: redirect_to search form of the same url
     end
 
-    setup_map if params[:view_as] == 'map'
-
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
     rescue_404 if @results.nil?
@@ -103,8 +101,6 @@ class SearchController < ApplicationController
       setup_rss
       search
     end
-
-    setup_map if params[:view_as] == 'map'
 
     # if zoom class isn't valid, @results is nil,
     # so lets rescue with a 404 in this case
@@ -929,21 +925,6 @@ class SearchController < ApplicationController
         end
       end
 
-    end
-  end
-
-  # create and configure our map object using ym4r
-  # requires the div "map" in view
-  def setup_map
-    if @results
-      @map = GMap.new("map")
-      # Use the larger pan/zoom control but disable the map type
-      # selector
-      @map.control_init(:large_map => true, :map_type => true)
-
-      # * is essential for this to work
-      @map.center_zoom_on_points_init(*@coordinates_for_results)
-      logger.debug("what is map:" + @map.inspect)
     end
   end
 

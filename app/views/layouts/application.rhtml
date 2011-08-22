@@ -112,8 +112,8 @@
   <% end -%>
 
   <% if initialize_gmap_headers? -%>
-    <%= GMap.header %>
-    <%= @map.to_html %>
+    <%= yield :gmap4rails_head %>
+    <%= yield :gmap4rails_scripts %>
   <% end -%>
 
   <% if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>

@@ -1,3 +1,16 @@
+# this does:
+# * prepares google map accordingly for request type
+#  (form for baskets_controller#choose_type with empty map, display for index_page_controller#index,
+#   all other controllers#show, new, etc.)
+# * adds view helpers for loading api js lib and initializing google map js and escaping js (i18n_js(key))
+# * adds helpers for ExtendedFieldsHelper editor (including geocoding address form) and display
+# * validates extended field ftype for map or map with address
+
+# work steps:
+# * get gmaps4rails working for location display on browse/search
+# * test we can have an empty gmap
+# * test if we can have a search gmap
+# * test if we can get it to set a marker from info window
 module GoogleMap
 
   module Mapper
@@ -526,3 +539,10 @@ module GoogleMap
   end
 
 end
+
+require 'gmaps4rails/base'
+# require 'gmaps4rails/acts_as_gmappable'
+require 'gmaps4rails/extensions/array'
+require 'gmaps4rails/extensions/hash'
+require 'gmaps4rails/helper/gmaps4rails_helper'
+ActionController::Base.send :helper, Gmaps4railsHelper

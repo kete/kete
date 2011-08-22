@@ -56,6 +56,8 @@ Rails::Initializer.run do |config|
   # it needs to be declared here as well as config/required_software.rb
   config.gem "oembed_provider"
 
+  config.gem "gmaps4rails"
+
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]

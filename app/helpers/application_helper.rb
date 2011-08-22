@@ -153,10 +153,9 @@ module ApplicationHelper
   end
 
   def initialize_gmap_headers?
-    @map.present? &&
-      (params[:controller] == 'search' &&
-      ['all', 'for'].include?(params[:action]) &&
-      (!params[:view_as].blank? && params[:view_as] == 'map'))
+    (params[:controller] == 'search' &&
+     ['all', 'for'].include?(params[:action]) &&
+     (!params[:view_as].blank? && params[:view_as] == 'map'))
   end
 
   def header_links_to_baskets
