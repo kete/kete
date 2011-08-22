@@ -45,7 +45,8 @@
     <% if params[:view_as] == 'map' && !@map.blank? -%>
 
       <% marker_options = { :title => result[:title] }
-      marker_options[:info_window] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + result[:short_summary]
+      summary_for_info_window = result[:short_summary].present? ? result[:short_summary] : String.new
+      marker_options[:info_window] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + summary_for_info_window
       if result[:class] == 'StillImage'
         marker_options[:info_window] += '<br />' + image_tag(result[:thumbnail][:src], result[:thumbnail])
       end
@@ -55,10 +56,10 @@
       logger.debug("what is associated_locations:" + result[:associated_locations].inspect)
       result[:associated_locations].each do |location|
         marker_options[:info_window] += '<br />'
-        marker_options[:info_window] += '<br />' + t('search.results.address') + ' ' + location[3] unless location[3].blank?
-        marker_options[:info_window] += '<br />' + t('search.results.coordinates') + ' ' + location[2].join(", ")
+        marker_options[:info_window] += '<br />' + t('search.results.address') + ' ' + location[:address] unless location[:address].blank?
+        marker_options[:info_window] += '<br />' + t('search.results.coordinates') + ' ' + location[:latlng]
         marker_options[:info_window] += '<br /><br />' + related_items if related_items
-        marker = GMarker.new(location[2], marker_options)
+        marker = GMarker.new(location[:latlng], marker_options)
         @map.overlay_init(marker)
       end -%>
 

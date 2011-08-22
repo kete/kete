@@ -257,18 +257,51 @@ module ZoomSearch
       # we use a hardcoded xml path because oai_dc.namescapes doesn't return the one we need in Nokogiri 1.4.0 or later
       location_or_temporal_nodes = oai_dc.xpath(".//dc:coverage", "xmlns:dc" => "http://purl.org/dc/elements/1.1/").select { |node| !node.content.scan(":").blank? }
 
-      # we only want values you like "-41.336899,174.772512"
-      # TODO: this is a tad brittle, see if we can improve this
+      # we only want values that have latitude and longitude specified
       location_arrays = location_or_temporal_nodes.collect do |node|
         values = node.content.split(":").reject { |i| i.blank? }
-        # this tells us we have coordinates and this is a location
-        # 2 (3 spot) is always coordinates in location, even if place name info is in the values
-        if !values[2] || values[2].split(",").size != 2
+
+        values_test = values.select { |v| v.present? && v.include?(',') && v.split(',').size == 2 }
+        if values_test.blank?
           values = Array.new
         end
         values
       end.reject { |array| array.empty?}
 
+      # transform location arrays to an array of hashes
+      # we have two possible formats for location info:
+      # [address string, zoom_level, no_map, latlng string]
+      # or
+      # [zoom_level, latlng string, no_map]
+      # no map, by the time it gets to search results should always be 0 (false)
+      # we can drop it from location_hash
+      array_of_location_hashes = Array.new
+      location_arrays.each do |location_array|
+        location_hash = Hash.new
+        last_value = location_array.last
+        coords = Array.new
+        
+        if last_value.is_a?(String) &&
+            last_value.include?(',') &&
+            last_value.split(',').size == 2
+          coords = last_value
+          location_hash = { :address => location_array[0],
+            :zoom_level => location_array[1] }
+        else
+          coords = location_array[1]
+          location_hash = { :address => nil,
+            :zoom_level => location_array[0]
+          }
+        end
+
+        # assign coordinates, change coordinates to fixnums
+        coords = coords.split(',')
+        location_hash[:latitude] = coords[0].to_f
+        location_hash[:longitude] = coords[1].to_f
+        location_hash[:latlng] = coords.join(',')
+
+        array_of_location_hashes << location_hash
+      end
       # we need the lat/lngs when we initialize the map
       # separate from results_hash
       # this covers all locations for a give set of results
@@ -277,16 +310,9 @@ module ZoomSearch
       # this is the set of location JUST FOR THIS RESULT
       result_hash[:associated_locations] = Array.new
 
-      # change coordinates to fixnums
-      location_arrays.each do |l|
-        # we just want a string version of the coordinates for this
-        # so grab l[2] before it is transformed
-
-        pair = l[2].split(",")
-        coordinate_array = [pair[0].to_f, pair[1].to_f]
-        l[2] = coordinate_array
-
-        @coordinates_for_results << pair
+      # add our locations to appropriate instance variables
+      array_of_location_hashes.each do |l|
+        @coordinates_for_results << l[:latlng].split(',')
 
         result_hash[:associated_locations] << l
         @number_of_locations_count = @number_of_locations_count.blank? ? 1 : @number_of_locations_count + 1
