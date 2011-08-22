@@ -38,6 +38,10 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2011/08/22 - Locations on search/browse results map fix (only necessary if your data has geolocation data)
+
+1.      visit Administrator's Toolbox > Rebuild search databases and submit the form to rebuild all your search records
+
 == 2011/08/03 - Zebra/YAZ compatibility
 
 1.      Stop your Zebra server by running "rake zebra:stop"
