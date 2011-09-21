@@ -32,28 +32,19 @@ if enable_css == true %>
       <%= javascript_include_tag 'gmaps4rails/gmaps4rails.googlemaps.js' %>
     <% end %>
   <% end %>
-
-<script type="text/javascript" charset="utf-8">
-function gmaps4rails_init() {
-  <% #true is passed here to trigger map initialization %>
-  <%=raw options.to_gmaps4rails(true) %>
-};
-
-window.onload = gmaps4rails_init;
-
-</script>
 <% end %>
 
+<% Rails.logger.debug("What is gmaps4rails: " + raw(options.to_gmaps4rails)) %>
+<%= javascript_tag(raw(options.to_gmaps4rails)) -%>
 
 <% case @provider
    when "mapquest" %>
 <div id="mapQuest" style="width:750px; height:475px;">
-  <!-- TODO: change this style dynamically -->  
 </div>
 <% else  %>
 <% container_id = options['map_options'] &&  options['map_options']['container_id'] ? options['map_options']['container_id'] : 'map_container' -%>
-<% inner_id = options['map_options'] && options['map_options']['id'] ?  options['map_options']['id'] : 'gmaps4rails_map' -%>
-<div id="<%= container_id -%>" > 
-  <div id="<%= inner_id  -%>"<%= ' class="bing_map"'  if @provider == 'bing' -%>></div>
+<div class="<%= gmaps_container_class(options) %>" id="<%= container_id -%>">
+  <div id="<%= gmaps_map_id(options) %>" class="<%= gmaps_map_class(options) %>"><small><%= t('.need_javascript') -%></small></div>
 </div>
 <% end %>
+

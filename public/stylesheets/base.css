@@ -1335,6 +1335,15 @@ select.extended_field_choice_dropdown {
 .google_map_container {
   overflow: hidden;
 }
+
+.extended_field_form_map {
+    width: 550px;
+}
+
+.extended_field_sidebar_map {
+    width: 220px;
+}
+
 div.gmnoprint {
   white-space: normal !important;
 }
@@ -1764,3 +1773,4 @@ sup.badge {
     float: right;
     margin-top: -8px;
 }
+

@@ -27,6 +27,19 @@
         <%= javascript_include_tag 'redbox' %>
    <% end -%>
 
+  <% if Kete.enable_maps? && initialize_gmap_headers? -%>
+    <%= yield :gmap4rails_head %>
+    <% if params[:action] == 'choose_type' -%>
+      <%= load_maps_javascript_files -%>
+    <% else -%>
+      <%= yield :gmap4rails_scripts %>
+      <%= javascript_tag("window.onload = Gmaps.loadMaps;") -%>
+    <% end -%>
+
+    <%# useful when loading functions in ajax request later -%>
+    <%= javascript_tag("keteMaps = new Object();") -%>
+  <% end -%>
+
 </head>
 <body>
 <div id="body-outer-wrapper">

@@ -44,18 +44,21 @@
 
   <% @results.each_with_index do |result,index|  %>
 
-    <% if params[:view_as] == 'map' -%>
+    <% if Kete.enable_maps? && params[:view_as] == 'map' -%>
 
       <% marker_options = { 'title' => result[:title] }
       summary_for_info_window = result[:short_summary].present? ? result[:short_summary] : String.new
       marker_options['description'] = link_to(h(result[:title]), result[:url], :tabindex => '1') + '<br />' + summary_for_info_window
       if result[:class] == 'StillImage'
         marker_options['description'] += '<br />' + image_tag(result[:thumbnail][:src], result[:thumbnail])
+	marker_options['picture'] = result[:thumbnail][:src]
+	marker_options['width'] = 50
+	marker_options['height'] = 50
       end
       related_items = render('related', :related => result[:related],
                                         :source_url => result[:url],
                                         :title => result[:title]) if result[:related]
-      logger.debug("what is associated_locations:" + result[:associated_locations].inspect)
+
       result[:associated_locations].each do |location|
         marker_options['description'] += '<br />'
         marker_options['description'] += '<br />' + t('search.results.address') + ' ' + location[:address] unless location[:address].blank?
@@ -66,10 +69,6 @@
 	
 	@markers << marker_options
       end -%>
-
-      <% unless search_source_result.blank? %>
-        <style type="text/css">#gmaps4rails_map { width: 600px !important; }</style>
-      <% end %>
 
     <% else -%>
 

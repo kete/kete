@@ -154,8 +154,12 @@ module ApplicationHelper
 
   def initialize_gmap_headers?
     (params[:controller] == 'search' &&
-     ['all', 'for'].include?(params[:action]) &&
-     (!params[:view_as].blank? && params[:view_as] == 'map'))
+     %w{all for}.include?(params[:action]) &&
+     (!params[:view_as].blank? && params[:view_as] == 'map')) ||
+      (params[:controller] == 'index_page' && params[:action] == "show")||
+      (CACHES_CONTROLLERS.include?(params[:controller]) &&
+       GoogleMap::Mapper::ITEM_ACTIONS.include?(params[:action])) ||
+      (params[:controller] == 'baskets' && params[:action] == "choose_type")
   end
 
   def header_links_to_baskets
@@ -1118,9 +1122,13 @@ module ApplicationHelper
     values.each do |value_input|
       value_output = \
       if field.ftype == 'map'
-        extended_field_map_editor(field_name, value_input, field, { :style => 'width:220px;' }, { :style => 'width:220px;' }, false, true, false)
+        # TODO: move passed in style to class for width
+        # change class value accordingly
+        extended_field_map_editor(field_name, value_input, field, { :class => 'extended_field_sidebar_map' }, { :class => 'extended_field_sidebar_map' }, false, true, false)
       elsif field.ftype == 'map_address'
-        extended_field_map_editor(field_name, value_input, field, { :style => 'width:220px;' }, { :style => 'width:220px;' }, false, true, true)
+        # TODO: move passed in style to class for width
+        # change class value accordingly
+        extended_field_map_editor(field_name, value_input, field, { :class => 'extended_field_sidebar_map' }, { :class => 'extended_field_sidebar_map' }, false, true, true)
       else
         formatted_value_from_xml(value_input, field, item)
       end

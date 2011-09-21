@@ -107,8 +107,7 @@ module ExtendedFieldsHelper
       [t('extended_fields_helper.ftype_form_column.choices_topic_type'), 'topic_type']
     ]
 
-    @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-    if File.exists?(@gma_config_path)
+    if Kete.enable_maps?
       options_for_select << [t('extended_fields_helper.ftype_form_column.location_map'), 'map']
       options_for_select << [t('extended_fields_helper.ftype_form_column.location_map_address'), 'map_address']
     end

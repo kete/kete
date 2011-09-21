@@ -789,3 +789,36 @@ system_settings_090:
   id: "90"
   value:
   section: Server
+system_settings_091:
+  name: Enable Maps
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If enabled, maps will be available to be used to set and display location data (must be set up via extended fields) and when there is location data for a set of results, viewing on a map will be given to users as an option."
+  id: "91"
+  value: "false"
+  section: System
+system_settings_092:
+  name: Default Latitude
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If maps are enabled and the user's current location cannot be determined, this will be used to center a new item's map. Be careful to enter a well-formed and valid latitude value in floating point format."
+  id: "92"
+  value: "-41.3368981"
+  section: System
+system_settings_093:
+  name: Default Longitude
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If maps are enabled and the user's current location cannot be determined, this will be used to center a new item's map. Be careful to enter a well-formed and valid longitude value in floating point format."
+  id: "93"
+  value: "174.7725319"
+  section: System
+system_settings_094:
+  name: Default Zoom Level
+  technically_advanced: false
+  required_to_be_configured: true
+  explanation: "If maps are enabled, how zoomed in should the default map be."
+  id: "93"
+  value: "5"
+  section: System
+

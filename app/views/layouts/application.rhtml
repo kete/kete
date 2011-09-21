@@ -111,9 +111,17 @@
     <%= javascript_include_tag 'kete' -%>
   <% end -%>
 
-  <% if initialize_gmap_headers? -%>
+  <% if Kete.enable_maps? && initialize_gmap_headers? -%>
     <%= yield :gmap4rails_head %>
-    <%= yield :gmap4rails_scripts %>
+    <% if params[:action] == 'choose_type' -%>
+      <%= load_maps_javascript_files -%>
+    <% else -%>
+      <%= yield :gmap4rails_scripts %>
+      <%= javascript_tag("window.onload = Gmaps.loadMaps;") -%>
+    <% end -%>
+
+    <%# useful when loading functions in ajax request later -%>
+    <%= javascript_tag("keteMaps = new Object();") -%>
   <% end -%>
 
   <% if ACTIVE_SCAFFOLD_CONTROLLERS.include?(params[:controller]) -%>
@@ -129,14 +137,6 @@
     <% bundle :name => "yui_css" do -%>
       <%= stylesheet_link_tag 'yui/treeview'%>
     <% end -%>
-  <% end -%>
-
-  <% if params[:controller] == 'index_page' || (cached_controllers.include?(params[:controller]) && params[:action] == "show") %>
-    <% cache_with_privacy(current_item, {:part => 'google_map_api'}) do -%>
-      <%= load_google_map_api if defined?(load_google_map_api) -%>
-    <% end -%>
-  <% else %>
-    <%= load_google_map_api if defined?(load_google_map_api) -%>
   <% end -%>
 
   <% rss_tag_links = @rss_tag_link.blank? ? Array.new : @rss_tag_link.to_a

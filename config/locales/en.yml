@@ -1306,7 +1306,7 @@ en:
     available_choices: "Available {{t.base.choice.pluralize}}"
     available_choices_description: "Ftype must be a \"{{t.base.choice.pluralize}}\" option for these options to be available to {{t.base.user.pluralize}}."
     base_url: "Base URL"
-    base_url_description: "Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the {{t.base.choice}} ftypes, Base URL + {{t.base.value}} will take over from normal linking to all {{t.base.results}} that match the {{t.base.value}} for the {{t.base.choice}} for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parametres (for ease of use with Google Maps - configurable in config/google_map_api.yml)"
+    base_url_description: "Whatever the {{t.base.user}} inputs will be appended to this base url (e.g. http://site.com/~[user_input]).</p><p>&nbsp;</p><p><b>NOTE:</b> in the case of any of the {{t.base.choice}} ftypes, Base URL + {{t.base.value}} will take over from normal linking to all {{t.base.results}} that match the {{t.base.value}} for the {{t.base.choice}} for the extended field. In the case of Location on map ftypes, supplying a base url will link the coordinates on display to the url, appending an ll (latitude/longitude) and z (zoom level) parameters."
     circa: "{{t.base.accept.capitalize}} Circa?"
     circa_description: "Ftype must be the \"Year\" option for this option to appear."
     import_synonyms_description: "{{t.base.new.capitalize}} line seperated list of {{t.base.import}} synonyms."
@@ -1386,28 +1386,30 @@ en:
       version_comment: "{{t.base.content.capitalize}} {{t.base.from}} revision # {{version}}."
     review:
       reviewed: "This {{t.base.version}} of the {{zoom_class}} {{t.base.has_been}} marked as {{t.base.reviewed}}."
+  gmaps4rails:
+    gmaps4rails:
+      need_javascript: "{{t.google_map_lib.extended_field_map_editor.need_javascript}}"
   google_map_lib:
+    define_supporting_functions:
+      address: "{{t.google_map_lib.load_google_map_api.address}}"
+      something_went_wrong: "{{t.google_map_lib.load_google_map_api.something_went_wrong}}"
+      something_went_wrong_602: "{{t.google_map_lib.load_google_map_api.something_went_wrong_602}}"
     extended_field_map_editor:
       address: "Address:"
       lat_lng: "Latitude and Longitude coordinates:"
       need_exact_data: "This feature requires exact data to function properly."
       need_javascript: "javascript needs to be on to use Google Maps"
       no_location: "don't record a location"
+      search_for_location: "To set click on map, drag pin, or"
+      search_for_location_placeholder: "search for {{field_label}}"
       show_lat_lng: "{{t.base.show.capitalize}} Latitude/Longitude"
       zoom_lvl: "Zoom level for map:"
+    set_display_state_for:
+      show_lat_lng: "{{t.google_map_lib.load_google_map_api.show_lat_lng}}"
+      hide_lat_lng: "{{t.google_map_lib.load_google_map_api.hide_lat_lng}}"
     load_google_map_api:
-      accuracy: "Accuracy:"
       address: "Address:"
-      correct_location: "Is this the correct location?"
-      correct_location_yes: "Yes, it is."
-      country_code: "Country {{t.base.code}}:"
-      fields_dont_exist: "ERROR: The {{t.base.field.pluralize}} for latitude, longitude, zoom level and address don't exist on the page. Debug this!"
       hide_lat_lng: "{{t.base.hide.capitalize}} Latitude/Longitude"
-      lat_lng_not_floats: "ERROR: One of latitude, longitude, or zoom level are not of the correct type. Debug this!"
-      lat_lng_not_set: "ERROR: One of latitude, longitude, or zoom level has not been set. Debug this!"
-      non_existant_div: "You are trying to initiate the google map api on a non-existant div. Debug this!"
-      not_close_enough: "Error: The marker was not close enough to a<br />road to determine the street address. {{t.base.please_try_again.capitalize}}."
-      not_compatible: "Google Maps is not compatible with this browser. Try using Firefox 3, Internet Explorer 7, or Safari 3."
       show_lat_lng: "{{t.base.show.capitalize}} Latitude/Longitude"
       something_went_wrong: "Error: Something has happened. {{t.base.please_try_again.capitalize}}."
       something_went_wrong_602: "Error: Something has happened.<br />Google Maps cannot determine the location where you placed the marker.<br />Try repositioning it nearer to a road."
