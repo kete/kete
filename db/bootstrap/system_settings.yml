@@ -818,7 +818,7 @@ system_settings_094:
   technically_advanced: false
   required_to_be_configured: true
   explanation: "If maps are enabled, how zoomed in should the default map be."
-  id: "93"
+  id: "94"
   value: "5"
   section: System
 
