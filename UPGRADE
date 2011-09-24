@@ -38,6 +38,19 @@ GENERAL NOTE: if you are upgrading your production Kete instance rather than dev
 GENERAL NOTE: if you are running in production mode, you may also want to do a "rake tmp:cache:clear" as your last step to any of these.
 However, if you updated your code via a Capistrano deploy, this is probably not necessary.
 
+== 2011/09/24 - TinyMCE needs to be version 0.1.7 or greater and new imageselector plugin needs to be installed.
+
+1.      gem uninstall tiny_mce
+2.	gem install tiny_mce
+3.	gem install tiny_mce_plugin_imageselector
+4.      run "rake kete:tools:tiny_mce:write_default_imageselector_providers_json"
+5.	restart your rails instance
+
+== 2011/09/20 - New dependency on Google-Maps-for-Rails
+
+1.      gem install gmaps4rails
+2. 	restart your rails instance
+
 == 2011/08/22 - Locations on search/browse results map fix (only necessary if your data has geolocation data)
 
 1.      visit Administrator's Toolbox > Rebuild search databases and submit the form to rebuild all your search records
