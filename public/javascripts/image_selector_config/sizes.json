@@ -1,0 +1,14 @@
+[
+  { "name": "small",
+    "width": 100,
+    "height": 100
+  },
+  { "name": "medium",
+    "width": 200,
+    "height": 200
+  },
+  { "name": "large",
+    "width": 400,
+    "height": 400
+  }
+]

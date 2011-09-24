@@ -8,7 +8,7 @@ theme_advanced_statusbar_location: bottom
 theme_advanced_buttons1: [
   bold, italic, underline, strikethrough, separator, justifyleft, justifycenter, justifyright,
   justifyfull, separator, indent, outdent, separator, bullist, numlist, forecolor, backcolor,
-  separator, link, unlink, image, separator, undo, redo, separator, code
+  separator, link, unlink, imageselector, separator, undo, redo, separator, code
 ]
 theme_advanced_buttons2: [
   formatselect, fontselect, fontsizeselect, separator, pastetext, pasteword, selectal
@@ -22,7 +22,7 @@ convert_urls: false
 content_css: "/stylesheets/base.css"
 
 # which plugins we are enabling
-plugins: [ contextmenu, paste, table, fullscreen ]
+plugins: [ imageselector, contextmenu, paste, table, fullscreen ]
 
 # paste plugin specific settings
 paste_auto_cleanup_on_paste: true

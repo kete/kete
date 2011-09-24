@@ -50,6 +50,8 @@ gems:
     gem_name: kete-feedzirra
     lib_name: feedzirra
   tiny_mce:
+  tiny_mce_plugin_imageselector:
+    version: '>= 0.0.2'
   http_url_validation_improved:
   oembed_provider:
   ya2yaml:

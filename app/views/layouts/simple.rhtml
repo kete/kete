@@ -6,6 +6,17 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title><%= h(@title) -%></title>
 
+  <%# Include TinyMCE before other JS to avoid problems
+    # TinyMCE is not compatible with bundle_fu %>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+  <%= javascript_tag('jQuery.noConflict();') -%>
+
+  <%= include_tiny_mce_if_needed({
+    :content_css => "/stylesheets/cache/#{@theme}_theme.css",
+    :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '')
+  }) %>
+
   <% bundle :name => "#{@theme}_theme" do -%>
    <%= stylesheet_link_tag 'base', :media => 'screen' %>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>

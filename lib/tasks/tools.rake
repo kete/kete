@@ -247,6 +247,49 @@ namespace :kete do
       end
     end
 
+    namespace :tiny_mce do
+      desc 'Write javascripts/image_selector_config/providers.json file that reflects this site. Will replace file if it exists.'
+      task :write_default_imageselector_providers_json => :environment do
+        return unless Kete.is_configured?
+
+        this_site_config = {
+          :title => Kete.pretty_site_name,
+          :domain => Kete.site_name,
+          :oembed_endpoint => Kete.site_url + 'oembed',
+          :upload_startpoint => { :label => 'Upload New Image',
+            :url => Kete.site_url + 'site/images/new?as_service=true&append_show_url=true' },
+          :insertIntoEditor => { :editor => 'TinyMCE' },
+          :sources => [
+                       { :name => 'Latest',
+                         :media_type => 'image',
+                         :media_type_plural => 'images',
+                         :url => Kete.site_url + 'site/all/images/rss.xml',
+                         :searchable_stub => false,
+                         :limit_parameter => '?count=',
+                         :display_limit => 4,
+                         :page_parameter => '&page='
+                       },
+                       { :name =>'Search',
+                         :media_type => 'image',
+                         :media_type_plural => 'images',
+                         :url => Kete.site_url + 'site/search/images/for/terms/rss.xml?search_terms=',
+                         :searchable_stub => true,
+                         :limit_parameter => '&count=',
+                         :display_limit => 4,
+                         :page_parameter => '&page='
+                       }
+                      ]
+        }
+        
+        
+        # write out new file content
+        conf_file_path = "#{Rails.root}/public/javascripts/image_selector_config/providers.json"
+        dest = File.new(conf_file_path,'w+')
+        dest << [this_site_config].to_json
+        dest.close
+      end
+    end
+
     # tools for data massaging of existing items
     namespace :topics do
       desc "Given a passed in CONDITIONS string (conditions in sql form), move topics that fit CONDITIONS to TARGET (as specified by passed in id) and also USER for id that should be attributed with the move actions. E.g. 'rake kete:tools:topics:move_to_basket TARGET=6 CONDITIONS=\"topic_type_id = 4\" USER=1'. You can optionally specify whether zoom records should be built progressively with ZOOM=true (false by default). If you have a large number of topics that match CONDITIONS, you may want to alter this task to handle batches (otherwise you risk memory issues). Other thing to keep in mind is that this doesn't currently leave any sort of redirect behind for a moved item. Best done before you have a public site. Also Comments are not currently dealt with here."
