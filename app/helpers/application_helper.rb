@@ -156,7 +156,7 @@ module ApplicationHelper
     (params[:controller] == 'search' &&
      %w{all for}.include?(params[:action]) &&
      (!params[:view_as].blank? && params[:view_as] == 'map')) ||
-      (params[:controller] == 'index_page' && params[:action] == "show")||
+      (params[:controller] == 'index_page' && params[:action] == 'index')||
       (CACHES_CONTROLLERS.include?(params[:controller]) &&
        GoogleMap::Mapper::ITEM_ACTIONS.include?(params[:action])) ||
       (params[:controller] == 'baskets' && params[:action] == "choose_type")
