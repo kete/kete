@@ -56,6 +56,9 @@ Rails::Initializer.run do |config|
   # it needs to be declared here as well as config/required_software.rb
   config.gem "oembed_provider"
 
+  config.gem "tiny_mce"
+  config.gem "tiny_mce_plugin_imageselector"
+
   config.gem "gmaps4rails"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
