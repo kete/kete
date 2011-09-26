@@ -57,6 +57,7 @@
       end
       related_items = render('related', :related => result[:related],
                                         :source_url => result[:url],
+					:locally_hosted => result[:locally_hosted],
                                         :title => result[:title]) if result[:related]
 
       result[:associated_locations].each do |location|
