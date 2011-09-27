@@ -310,7 +310,7 @@ namespace :kete do
 
           if specs.size == 1
             height = width
-            height = 3 * height unless specs.first.last == '>'
+            height = 3 * height if specs.first.last == '>'
           else
             height = specs[1].to_i
           end
