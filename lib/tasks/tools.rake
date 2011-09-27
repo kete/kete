@@ -248,6 +248,11 @@ namespace :kete do
     end
 
     namespace :tiny_mce do
+
+      desc "Do everything that we need done, like adding data to the db, for an upgrade."
+      task :configure_imageselector => ['kete:tools:tiny_mce:write_default_imageselector_providers_json',
+                          'kete:tools:tiny_mce:write_default_imageselector_sizes_json']
+
       desc 'Write javascripts/image_selector_config/providers.json file that reflects this site. Will replace file if it exists.'
       task :write_default_imageselector_providers_json => :environment do
         return unless Kete.is_configured?
@@ -286,6 +291,41 @@ namespace :kete do
         conf_file_path = "#{Rails.root}/public/javascripts/image_selector_config/providers.json"
         dest = File.new(conf_file_path,'w+')
         dest << [this_site_config].to_json
+        dest.close
+      end
+
+      desc 'Write javascripts/image_selector_config/sizes.json file that reflects this site settings. Will replace file if it exists.'
+      task :write_default_imageselector_sizes_json => :environment do
+        return unless Kete.is_configured?
+
+        this_site_sizes_config = Array.new
+        
+        Kete.image_sizes.each do |size_array|
+          # decypher imagemagick rules
+          width = nil
+          height = nil
+          specs = size_array.last.split('x')
+
+          width = specs.first.to_i
+
+          if specs.size == 1
+            height = width
+            height = 3 * height unless specs.first.last == '>'
+          else
+            height = specs[1].to_i
+          end
+
+          new_size = { 'name' => size_array.first.to_s }
+          new_size['width'] = width if width
+          new_size['height'] = height if height
+
+          this_site_sizes_config << new_size
+        end
+
+        # write out new file content
+        conf_file_path = "#{Rails.root}/public/javascripts/image_selector_config/sizes.json"
+        dest = File.new(conf_file_path,'w+')
+        dest << this_site_sizes_config.to_json
         dest.close
       end
     end
