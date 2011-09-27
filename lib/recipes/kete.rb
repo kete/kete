@@ -32,6 +32,7 @@ namespace :deploy do
     deploy.gems.update if (ENV['UPDATE_GEMS'] || false)
     deploy.migrate
     deploy.kete.upgrade
+    deploy.kete.configure_imageselector
     deploy.backgroundrb.start
     deploy.restart
   end
@@ -128,6 +129,11 @@ namespace :deploy do
       begin; app_environment; rescue; set(:app_environment, 'production'); end
     end
 
-  end
+    desc 'Update Kete TinyMCE imageselector plugin configuration to reflect Kete system settings'
+    task :configure_imageselector, :role => :app do
+      set_app_environment
+      run "cd #{current_path} && RAILS_ENV=#{app_environment} rake kete:tools:tiny_mce:configure_imageselector"
+    end
 
+  end
 end
