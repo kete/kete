@@ -43,7 +43,7 @@ However, if you updated your code via a Capistrano deploy, this is probably not 
 1.      gem uninstall tiny_mce
 2.	gem install tiny_mce
 3.	gem install tiny_mce_plugin_imageselector
-4.      run "rake kete:tools:tiny_mce:write_default_imageselector_providers_json"
+4.      run "rake kete:tools:tiny_mce:configure_imageselector"
 5.	restart your rails instance
 
 == 2011/09/20 - New dependency on Google-Maps-for-Rails
