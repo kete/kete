@@ -1415,8 +1415,8 @@ en:
       something_went_wrong_602: "Error: Something has happened.<br />Google Maps cannot determine the location where you placed the marker.<br />Try repositioning it nearer to a road."
     validate_extended_map_field_content:
       not_a_hash: "is not an hash containing zoom_lvl, no_map, coords, and optional address. Currently {{class}} {{value}}. Why?"
-      not_present_optional: "is not present. If you don't want to include one, select 'don't record a location'."
-      not_present_required: "is not present. This {{t.base.field}} is required so you must {{t.base.enter}} something before saving."
+      not_present_optional: "{{label}} is not present. If you don't want to include one, select 'don't record a location'."
+      not_present_required: "{{label}} is not present. This {{t.base.field}} is required so you must {{t.base.enter}} something before saving."
       wrong_format: "is not in the right format (zoom (>=0), coords (lat,lng), no_map (0|1), address (string)). Currently {{class}} {{value}}. Why?"
   has_contributors_lib:
     submitter_of:

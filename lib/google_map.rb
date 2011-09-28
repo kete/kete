@@ -372,9 +372,11 @@ module GoogleMap
       # check if this field is required and not set
       if values['coords'].nil? || values['zoom_lvl'].nil?
         if extended_field_mapping.required
-          return I18n.t('google_map_lib.validate_extended_map_field_content.not_present_required')
+          return I18n.t('google_map_lib.validate_extended_map_field_content.not_present_required',
+                        :label => extended_field_mapping.extended_field.label)
         else
-          return I18n.t('google_map_lib.validate_extended_map_field_content.not_present_optional')
+          return I18n.t('google_map_lib.validate_extended_map_field_content.not_present_optional',
+                        :label => extended_field_mapping.extended_field.label)
         end
       end
       # check here that [0] is the zoom, [1] is the coords, [2] is the hide/no map option, and [3] is the address
