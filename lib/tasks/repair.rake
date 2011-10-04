@@ -296,10 +296,6 @@ namespace :kete do
         map_types = ['map', 'map_address']
         map_fields = ExtendedField.all(:conditions => ["ftype IN (?)", map_types]).collect { |f| f.label_for_params }
         if map_fields.size > 0
-          @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-          raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)" unless File.exists?(@gma_config_path)
-          gma_config = YAML.load(IO.read(@gma_config_path))
-
           map_sql = map_fields.collect { |f| "extended_content LIKE '%<#{f}%'" }.join(' OR ')
           each_item_with_extended_fields("(#{map_sql})") do |item|
             original_extended_content = item.extended_content.dup
@@ -309,10 +305,20 @@ namespace :kete do
               rescue
                 next
               end
-              value = { 'zoom_lvl' => (map_data['zoom_lvl'] || gma_config[:google_map_api][:default_zoom_lvl].to_s),
-                        'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] }
-              value['address'] = map_data['address'] if map_data['address']
-              item.send("#{field}=", value)
+              if map_data.present?
+                if map_data.is_a?(Array)
+                  map_data_as_hash = Hash.new
+                  map_data.each do |pair|
+                    map_data_as_hash[pair[0]] = pair[1]
+                  end
+                  map_data = map_data_as_hash
+                end
+
+                value = { 'zoom_lvl' => (map_data['zoom_lvl'] || Kete.default_zoom_level.to_s),
+                  'no_map' => (map_data['no_map'] || '0'), 'coords' => map_data['coords'] }
+                value['address'] = map_data['address'] if map_data['address']
+                item.send("#{field}=", value)
+              end
             end
             if item.extended_content != original_extended_content
               # make sure we set 'do_not_sanitize' to true or update_attribute will strip some HTML
@@ -388,7 +394,8 @@ namespace :kete do
       end
 
       desc 'Update Zebra hosts to localhost if 127.0.0.1 and ONLY if Debian OS version/YAZ combination make your Zebra unresponsive (i.e. you upgrade to Squeeze).'
-      task :update_hosts_to_localhost => :environment do
+      task :update_hosts_to_localhost
+ => :environment do
         dbs = ZoomDb.find(:all, :conditions => { :host => '127.0.0.1' })
 
         # only necessary if localhost specified
