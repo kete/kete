@@ -249,6 +249,7 @@
                   </li>
                 </ul>
               </li>
+	      <%= add_ons_logged_in_user_list if respond_to?(:add_ons_logged_in_user_list) -%>
               <li><%= link_to_unless_current t('layouts.application.logout'),
                                              account_hash.merge({ :action => 'logout' }),
                                              :tabindex => '2' %></li>
@@ -338,6 +339,7 @@
 	      { :controller => 'members',
 	      :action => 'list' },
 	      :tabindex => '2' %>
+	      <%= add_ons_basket_admin_list if respond_to?(:add_ons_basket_admin_list) -%>
 	      <% # when this is more refined, may open this up to non-tech-admins -%>
 	      <% if @tech_admin -%>
 	      |
@@ -418,6 +420,7 @@
                                              :controller => 'configure',
                                              :action => 'add_link_to_kete_net' },
                                            :tabindex => '2' %>
+                <%= add_ons_site_admin_list if respond_to?(:add_ons_site_admin_list) -%>
                 <% if @tech_admin -%>
                   |
                   <%= link_to_unless_current t('layouts.application.configure'),
