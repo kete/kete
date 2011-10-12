@@ -21,8 +21,12 @@ theme_advanced_resize_horizontal: false
 convert_urls: false
 content_css: "/stylesheets/base.css"
 
-# which plugins we are enabling
-plugins: [ imageselector, contextmenu, paste, table, fullscreen ]
+# which plugins we are enabling, inlinepopups switches to lightbox style rather than popups
+# prevents scrolling problems with IE and FireFox with some plugins (e.g. imageselector)
+plugins: [ inlinepopups, imageselector, contextmenu, paste, table, fullscreen ]
+
+# switches to lightbox modal dialogs rather popups
+dialog_type: "modal"
 
 # paste plugin specific settings
 paste_auto_cleanup_on_paste: true
