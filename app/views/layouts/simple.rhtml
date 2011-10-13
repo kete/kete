@@ -17,12 +17,12 @@
     :extended_valid_elements => (@site_admin ? EXTENDED_VALID_ELEMENTS : '')
   }) %>
 
-  <% bundle :name => "#{@theme}_theme" do -%>
+  <% bundle :name => "#{@theme}_theme_simple" do -%>
    <%= stylesheet_link_tag 'base', :media => 'screen' %>
     <%= stylesheet_link_tag 'comment', :media => 'screen' %>
      <%= stylesheet_link_tag 'redbox' %>
       <% load_styles(@theme).each do |stylesheet| -%>
-        <%= stylesheet_link_tag stylesheet, :media => 'screen' %>
+        <%= stylesheet_link_tag stylesheet, :media => 'screen' if stylesheet == 'simple' %>
          <% end -%>
   <% end -%>
 
