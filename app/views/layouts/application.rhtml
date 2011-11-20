@@ -116,11 +116,21 @@
   <% end -%>
 
   <% if Kete.enable_maps? && initialize_gmap_headers? -%>
-    <%= yield :gmap4rails_head %>
+    <% if CACHES_CONTROLLERS.include?(params[:controller]) -%>
+      <%= stylesheet_link_tag 'gmaps4rails' -%>
+    <% else -%>
+      <%= yield :gmap4rails_head %>
+    <% end -%>
+
     <% if params[:action] == 'choose_type' -%>
       <%= load_maps_javascript_files -%>
     <% else -%>
-      <%= yield :gmap4rails_scripts %>
+      <% if CACHES_CONTROLLERS.include?(params[:controller]) -%>
+        <%= load_maps_javascript_files -%>
+      <% else -%>
+        <%= yield :gmap4rails_scripts %>
+      <% end -%>
+
       <%= javascript_tag("window.onload = Gmaps.loadMaps;") -%>
     <% end -%>
 
