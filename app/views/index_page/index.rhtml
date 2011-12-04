@@ -156,7 +156,6 @@
   <%= render(:partial => "topics/secondary_wrapper_start",
              :locals => { :div_id => "homepage-rss-feeds", :class_suffix => nil }) -%>
     <% @current_basket.feeds(true).each do |feed| -%>
-      <% cache("feeds/#{I18n.locale}/#{@current_basket.urlified_name}/feed_#{feed.id}") do -%>
         <h4><%=h feed.title %></h4>
         <ul>
           <% feed.entries.each do |entry| -%>
@@ -168,7 +167,6 @@
             <% end %>
           <% end -%>
         </ul>
-      <% end -%>
     <% end -%>
   <%= render(:partial => "topics/secondary_wrapper_end") -%>
 <% end -%>
