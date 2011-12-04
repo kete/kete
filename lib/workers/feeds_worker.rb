@@ -20,6 +20,7 @@ class FeedsWorker < BackgrounDRb::MetaWorker
     rescue
       # if the update above fails for any reason, we dont want the worker stopping completely
       # so rescue from it and make sure it doesn't execute a raise!
+      logger.info("issue with updating feed #{feed_id}: #{$!}")
     end
   end
 
