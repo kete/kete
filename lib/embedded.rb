@@ -132,13 +132,11 @@ module Embedded
 
         matching_extended_fields.each do |field|
           if %{ map map_address }.include?(field.ftype)
-            @gma_config_path = File.join(RAILS_ROOT, 'config/google_map_api.yml')
-            unless File.exists?(@gma_config_path)
+            unless Kete.enable_maps?
               raise "Error: Trying to use Google Maps without configuation (config/google_map_api.yml)"
             end
-            gma_config = YAML.load(IO.read(@gma_config_path))
             coords = convert_dms_to_decimal_degree(value)
-            value = { 'zoom_lvl' => gma_config[:google_map_api][:default_zoom_lvl].to_s,
+            value = { 'zoom_lvl' => Kete.default_zoom_level.to_s,
                       'no_map' => '0',
                       'coords' => "#{coords[:latitude]},#{coords[:longitude]}" }
             self.send("#{field.label_for_params}=", value)
