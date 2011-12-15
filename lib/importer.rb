@@ -970,7 +970,7 @@ module Importer
 
         ancestors = TopicType.find(@import_topic_type).ancestors
 
-        if ancestors.size > 1
+        if ancestors.size > 0
           ancestors.each do |ancestor|
             @fields = @fields + ancestor.topic_type_to_field_mappings
           end
