@@ -1524,7 +1524,7 @@ en:
       applicable_zoom_class: "Applicable {{t.base.item.capitalize}} {{t.base.type.capitalize}}?"
       applicable_zoom_class_description: "What {{t.base.type}} of {{t.base.item}} should we create per row?"
       audio: "{{t.base.zoom_types.audio.capitalize}}"
-      consult_guides: "Before proceeding you will want to consult the appropriate guide for your Import Type on <a href=\"http://kete.net.nz\">Kete.net.nz</a>."
+      consult_guides: "Before proceeding you will want to consult the appropriate guide for your Import Type on <a href=\"http://kete.net.nz/en/documentation/topics/show/346-import-guide\">Kete.net.nz</a>."
       conventions_note: "To start an {{t.base.import}}, you must follow several conventions."
       delay_between_records: "How long should we wait in seconds between processing records?"
       delay_between_records_explaination: "To protect against an {{t.base.import}} overwhelming your server's resources and affecting the response time of your website, we recommend an interval between processing each record.  If your server has a lot of computing power, feel free to lower this number or even put in '0'."
