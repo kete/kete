@@ -1,8 +1,8 @@
-== Welcome to Kete 1.2
+== Welcome to Kete 1.3
 
 Kete is software that enables communities, whether the community is a town or a company, to collaboratively build their own digital libraries, archives and repositories.  Kete combines features from Knowledge and Content Management Systems as well as collaboration tools such as wikis, blogs, tags, and online forums to make it easy to add and relate content on a Kete site.
 
-* Kete 1.2 features and bug fixes are outlined at http://kete.net.nz/documentation/topics/show/260-kete-12-features.
+* Kete 1.3 features and bug fixes are outlined at http://kete.net.nz/documentation/topics/show/353-kete-13-features
 * Technical Requirements can be found at http://kete.net.nz/documentation/topics/show/19.
 * Information about how to download Kete can be found at http://kete.net.nz/site/topics/show/25.
 
@@ -14,7 +14,7 @@ A detailed and up to date Installation Guide can be found at http://kete.net.nz/
 
 == Upgrading
 
-If you have an existing Kete site, you can find upgrade instructions at http://kete.net.nz/documentation/topics/show/258-upgrading-to-kete-12-release.
+If you have an existing Kete site, you can find upgrade instructions at http://kete.net.nz/documentation/topics/show/342-upgrading-to-kete-13.
 
 == Promoting Your New Kete Site
 
@@ -32,8 +32,16 @@ Kete 1.2's major work was funded by Auckland City Libraries, Te Reo o Taranaki, 
 
 Kete is a Ruby on Rails application, so huge thanks go to those that have worked on Ruby and Ruby on Rails for providing a great foundation to build an application on top of.  Thanks also go to the team at IndexData (http://www.indexdata.com/) for their work on Zebra which Kete uses as the basis for its search and browsing functionality.
 
+Kete 1.3's major work was funded by Auckland City Libraries and New Zealand Chinese Association Auckland Branch, Te Reo o Taranaki, Katipo, and Manawatu Wanganui LASS. Several smaller bits were funded by Friends of Pukekura Park, Horowhenua Library Trust, Aotearoa Peoples Network Kaharoa, Te Arai Beach Preservation Society, EESI, and others. 
+
+In addition, we had our first public fundraising drive for the Image Selector in the Rich Text Editor. We received donations from many of the above, as well as including Wellington City Libraries, John Billings, CALYX, KnowledgeWare Technologies, and Bill Howard.
+
+Work was done by a number of people, but Kieran Pilkington and myself did most of the coding. Breccan McCleod-Lundy also helped out on the Mongo Translatable and Kete Translatable Content sub-projects.
+
+New Relic again provided their services to identify areas that needed optimization as we prepared for the Kete 1.3 release.
+
 Kete also benefits from numerous plugin and gem developers, see vendor/plugins and config/required_software.yml for details.  Thank you for the great software libraries!
 
-Kete is Copyright (C) 2006-2009 Horowhenua Library Trust and Others under the GPL version 2 license.  See license.txt for details.
+Kete is Copyright (C) 2006-2012 Horowhenua Library Trust and Others under the GPL version 2 license.  See license.txt for details.
 
-This document originally written by Walter McGinnis, Kete Project Lead, Katipo Communications, Ltd. on August 29th, 2008.  Updated for the 1.2 release on May 13th, 2009.
+This document originally written by Walter McGinnis, Kete Project Lead, Katipo Communications, Ltd. on August 29th, 2008.  Updated for the 1.2 release on May 13th, 2009 and again for the 1.3 release on January 11th, 2012.

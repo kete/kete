@@ -1,4 +1,4 @@
-Copyright (C) 2006-2009 Horowhenua Library Trust and Others
+Copyright (C) 2006-2012 Horowhenua Library Trust and Others
 
 This program (Kete) is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
