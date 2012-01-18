@@ -534,7 +534,7 @@ module Importer
         # to check filename
         filename_condition = "LOWER(filename) = :filename"
         if options[:item_type] == 'still_images'
-          image_file_conditions = "id IN (SELECT still_image_id FROM image_files WHERE #{filname_condition})"
+          image_file_conditions = "id IN (SELECT still_image_id FROM image_files WHERE #{filename_condition})"
         else
           conditions << "(#{filename_condition})"
         end
