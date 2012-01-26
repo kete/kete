@@ -605,7 +605,7 @@ module Importer
         :topic_type => @import_topic_type
       }
 
-      unless record_hash[@record_identifier_xml_field].blank? || @extended_field_that_contains_record_identifier.blank?
+      if record_hash[@record_identifier_xml_field].present? && @extended_field_that_contains_record_identifier.present?
         options.merge!(:extended_field_data => {
           :label => @extended_field_that_contains_record_identifier.label_for_params,
           :value => record_hash[@record_identifier_xml_field]
@@ -615,13 +615,11 @@ module Importer
       # attachable classes may have an upload file specified in file xml element
       # if file exists, we know we are uploading files for an attachable class
       if record_hash['path_to_file'].present? &&
-          File.exist?(record_hash['path_to_file']) &&
-          @record_identifier_xml_field.present? &&
-          @record_identifier_xml_field.downcase == 'path_to_file' &&
-          record_hash[@record_identifier_xml_field].present?
+          File.exist?(record_hash['path_to_file'])
         logger.info("setting filename check")
-        options[:filename] = File.basename(record_hash[@record_identifier_xml_field])
+        options[:filename] = File.basename(record_hash['path_to_file'])
       end
+      logger.info("after path_to_file present")
 
       existing_item = importer_locate_existing_items(options).first
 
