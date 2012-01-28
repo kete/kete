@@ -45,22 +45,8 @@ Rails::Initializer.run do |config|
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
 
-  # Walter McGinnis, 2008-07-02
-  # we currently use a hacked version of oai gem
-  # and place it under vendor/gems
-  # specifying it here allows this to work
-  config.gem "oai"
-  
-  # Walter McGinnis, 2011-02-15
-  # because this is a Rails engine gem
-  # it needs to be declared here as well as config/required_software.rb
-  config.gem "oembed_provider"
-
-  config.gem "tiny_mce"
-  config.gem "tiny_mce_plugin_imageselector"
-
-  config.gem "gmaps4rails"
-
+  #Gems moved to Gemfile
+ 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
