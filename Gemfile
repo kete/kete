@@ -24,6 +24,7 @@ gem "rmagick", "2.12.2", :require => false
 
 gem "mini_exiftool"
 
+gem "avatar"
 gem "zoom"
 gem "nokogiri"
 gem "packet"
@@ -31,3 +32,11 @@ gem "RedCloth"
 gem "hpricot"
 gem "xml-simple"
 gem "http_url_validation_improved"
+
+gem "unicode"
+gem "htmlentities"
+gem "chronic"
+gem "libxml-ruby"
+gem "feedzirra"
+gem "mime-types"
+gem "ya2yaml" 
