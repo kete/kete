@@ -11,7 +11,6 @@ config/google_map_api.yml
 config/importers.yml
 config/locales.yml
 config/site_lockdown_auth_credentials.yml
-config/initializers/send_file_options.rb
 db/schema.rb
 public/blank.html
 public/robots.txt

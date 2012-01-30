@@ -19,7 +19,7 @@ gem "tiny_mce_plugin_imageselector"
 gem "gmaps4rails"
 
 gem "passenger"
-gem "mysql"
+gem "mysql", "2.8.1"
 gem "rmagick", "2.12.2", :require => false
 
 gem "mini_exiftool"

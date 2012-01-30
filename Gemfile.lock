@@ -84,7 +84,7 @@ DEPENDENCIES
   libxml-ruby
   mime-types
   mini_exiftool
-  mysql
+  mysql (= 2.8.1)
   nokogiri
   oai
   oembed_provider
