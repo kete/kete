@@ -59,6 +59,8 @@ def bootstrap_zebra_with_initial_records(prime_records = false)
   silence_stream(STDERR) do
     silence_stream(STDOUT) do
       Rake::Task['zebra:stop'].execute(ENV) if zebra_running?('public') || zebra_running?('private')
+      ENV['ZEBRA_PASSWORD'] = 'k3t3r0ck5'
+      Rake::Task['zebra:set_keteaccess'].execute(ENV)
       ENV['ZEBRA_DB'] = 'public'
       Rake::Task['zebra:init'].execute(ENV)
       ENV['ZEBRA_DB'] = 'private'

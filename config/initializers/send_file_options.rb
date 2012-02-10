@@ -74,7 +74,7 @@ Notes:
 # Select which send_file method to use to send private files to a browser from a Kete instance.
 # Valid values are "", "nginx", or "apache".
 
-SENDFILE_METHOD = ""
+SENDFILE_METHOD = "apache"
 
 
 
