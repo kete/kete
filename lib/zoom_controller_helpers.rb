@@ -55,9 +55,7 @@ module ZoomControllerHelpers
       end
 
       if @successful
-        # TODO: look into whether this works or throws a multiple render calls error
-        # if destroy went ok, we want to trigger zoom rebuild for related items
-        # should be moved to backgroundrb worker
+        # TODO: should be moved to backgroundrb worker
         related_items.each do |related_item|
           related_item.prepare_and_save_to_zoom
         end
@@ -138,6 +136,36 @@ module ZoomControllerHelpers
         humanized += zoom_class_humanize(zoom_class)
       end
       humanized
+    end
+
+    # a method for use by generic_muted_worker
+    # to do zoom rebuilds via backgroundrb
+    # unless in test environement
+    # meant to be used in place of direct item.prepare_and_save_to_zoom
+    # as that is synchronous and can hold up request responses significantly for items that have large zoom records
+    # this moves the prepare_and_save_to_zoom process to asynchronous backgroundrb process
+    def update_search_record_for(item, options = { })
+      # general test env, can't handle bdrb calls for the moment, so just do inline item.prepare_and_save_zoom
+      # if not test, we are good to use bdrb to run asynchronously
+      if Rails.env == 'test'
+        item.prepare_and_save_to_zoom
+      else
+        options = options.merge({ :method_name => "worker_prepare_and_save_to_zoom_for",
+                                  :class_key => item.class_as_key,
+                                  :object => item,
+                                  :item => item})
+
+        call_generic_muted_worker_with(options)
+      end
+    end
+
+    def worker_prepare_and_save_to_zoom_for(options)
+      item = options[:item]
+      unless item
+        Rails.logger.info("Error in worker_prepare_and_save_to_zoom_for call, item not specified. Passed in options are: " + options.inspect)
+        raise ArguementError
+      end
+      item.prepare_and_save_to_zoom
     end
 
     protected

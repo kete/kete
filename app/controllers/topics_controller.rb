@@ -61,7 +61,6 @@ class TopicsController < ApplicationController
       @topic.attributes = params[:topic]
       @successful = @topic.save
 
-
       # add this to the user's empire of creations
       # TODO: allow current_user whom is at least moderator to pick another user
       # as creator
@@ -83,7 +82,9 @@ class TopicsController < ApplicationController
 
     if @successful
       build_relations_from_topic_type_extended_field_choices
-      @topic.prepare_and_save_to_zoom
+      # @topic.prepare_and_save_to_zoom
+      # switched to async backgroundrb worker for search record set up
+      update_search_record_for(@topic)
 
       @topic.do_notifications_if_pending(1, current_user)
 
@@ -133,6 +134,7 @@ class TopicsController < ApplicationController
 
       # reload, get the correct privacy and return the user to the topic form
       @topic.reload
+
       public_or_private_version_of(@topic)
       flash[:notice] = t('topics_controller.update.changed_topic_type')
       @successful = false
@@ -143,7 +145,9 @@ class TopicsController < ApplicationController
 
       @successful = ensure_no_new_insecure_elements_in('topic')
       @topic.attributes = params[:topic]
+      logger.debug("before topic save")
       @successful = @topic.save if @successful
+      logger.debug("after topic save")
     else
       # they don't have permission
       # this will redirect them to edit
@@ -155,6 +159,7 @@ class TopicsController < ApplicationController
     if @successful
 
       after_successful_zoom_item_update(@topic, version_after_update)
+      logger.debug("after zoom item update")
       flash[:notice] = t('topics_controller.update.updated')
 
       redirect_to_show_for @topic, :private => (params[:topic][:private] == "true")

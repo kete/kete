@@ -154,7 +154,9 @@ module ExtendedContentController
             unless relation_already_exists
               logger.debug("Add relation for #{value}, with id of #{topic.id}")
               ContentItemRelation.new_relation_to_topic(topic, current_item)
-              topic.prepare_and_save_to_zoom
+              # use async backgroundrb worker rather than slowing down response to request to wait for related topic rebuild
+              # topic.prepare_and_save_to_zoom
+              update_search_record_for(topic)
               expire_related_caches_for(topic, 'topics')
             end
           end
