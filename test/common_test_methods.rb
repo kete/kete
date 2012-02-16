@@ -16,7 +16,7 @@ def load_testing_libs(args = {})
   missing_gems = missing_libs(load_required_software, 'testing_gems', args)
   unless missing_gems.blank?
     puts "ERROR: Not all the nessesary gems are installed for these Tests to run."
-    puts "Please run 'rake manage_gems:testing:install' to install them then try again."
+    puts "Please run 'bundle install' to install them then try again."
     puts "Missing #{missing_gems.join(', ')}"
     exit
   end

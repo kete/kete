@@ -6,8 +6,8 @@ How to Run and Write Integration Tests for Kete
 Setup
 -----
 
-Run the following rake command to install the necessary gems
-  rake manage_gems:testing:install
+Run the following command to install the necessary gems
+  bundle install
 
 -------------
 Running Tests
