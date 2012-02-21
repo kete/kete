@@ -138,6 +138,8 @@ module ZoomControllerHelpers
       humanized
     end
 
+    include WorkerControllerHelpers
+
     # a method for use by generic_muted_worker
     # to do zoom rebuilds via backgroundrb
     # unless in test environement
@@ -145,17 +147,33 @@ module ZoomControllerHelpers
     # as that is synchronous and can hold up request responses significantly for items that have large zoom records
     # this moves the prepare_and_save_to_zoom process to asynchronous backgroundrb process
     def update_search_record_for(item, options = { })
-      # general test env, can't handle bdrb calls for the moment, so just do inline item.prepare_and_save_zoom
-      # if not test, we are good to use bdrb to run asynchronously
-      if Rails.env == 'test'
-        item.prepare_and_save_to_zoom
-      else
-        options = options.merge({ :method_name => "worker_prepare_and_save_to_zoom_for",
-                                  :class_key => item.class_as_key,
-                                  :object => item,
-                                  :item => item})
+      options = options.merge({ :method_name => "worker_prepare_and_save_to_zoom_for",
+                                :class_key => item.class_as_key,
+                                :object => item,
+                                :item => item})
 
+      worker_type = :generic_muted_worker
+      worker_key = worker_key_for(:stub => "#{worker_type}_#{options[:method_name]}",
+                                  :key => key_parts_from(options))
+
+      if backgroundrb_started? && Rails.env != 'test'
+        # we want the last triggered (i.e. latest information) worker only
+        # kill any earlier instances of the worker for this item's search record update
+        if backgroundrb_is_running?(worker_type, worker_key)
+          delete_existing_workers_for(worker_type, worker_key)
+        end
+      
+        # run the search record build in a backgroundrb worker
         call_generic_muted_worker_with(options)
+      else
+        # unless we are in test
+        # we log that backgroundrb is not running
+        unless Rails.env == 'test'
+          logger.info("update_search_record_for: Backgroundrb is not running when it should be. Make sure to get it going again!")
+        end
+
+        # fallback to normal search engine rebuildxs
+        item.prepare_and_save_to_zoom
       end
     end
 

@@ -8,6 +8,39 @@ module WorkerControllerHelpers
       SITE_URL.split('//')[1].chomp('/').gsub(/\W/, '_') + "_" + worker_type.to_s
     end
 
+    def key_parts_from(options)
+      if options[:class_key]
+        [options[:class_key], options[:object].id]
+      else
+        Time.now.to_i.to_s
+      end
+    end
+
+    def worker_name_for(options)
+      stub = options[:stub]
+      key = options[:key]
+
+      parts = stub.present? ? [stub] : Array.new
+
+      if key.is_a?(Array)
+        parts += key
+      else
+        parts << key
+      end
+
+      parts.join('_')
+    end
+
+    def backgroundrb_started?
+      started = true
+      begin
+        MiddleMan.new_worker
+      rescue
+        started = false
+      end
+      started
+    end
+
     def backgroundrb_is_running?(worker_type, worker_key = nil)
       worker_key = worker_key || worker_key_for(worker_type)
       is_running = false

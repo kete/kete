@@ -140,6 +140,8 @@ class ApplicationController < ActionController::Base
   before_filter :expire_show_caches_on_destroy, :only => [ :destroy ]
   # everything else we do after the action is completed
   after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
+
+  # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
   after_filter :update_zoom_record_for_related_items, :only => [ :update ]
 
