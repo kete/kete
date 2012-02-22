@@ -157,9 +157,7 @@ module CacheControllerHelpers
           # expire any related topics related caches
           # comments don't have related topics, so skip it for them
           if item_class != 'Comment'
-            item.topics.each do |topic|
-              expire_related_caches_for(topic, controller)
-            end
+            expire_related_caches_for_batch_of(item.topics, controller)
           end
         else
           # topics need all it's related things expired
@@ -171,11 +169,43 @@ module CacheControllerHelpers
             else
               related_items += item.send(zoom_class.tableize)
             end
-            related_items.each do |related_item|
-              expire_related_caches_for(related_item, 'topics')
-            end
+            expire_related_caches_for_batch_of(related_items, 'topics')
           end
         end
+      end
+    end
+
+    def expire_group_of_related_caches(items, controller)
+      items.each do |related_item|
+        expire_related_caches_for(related_item, controller)
+      end
+    end
+
+    def worker_expire_related_caches_for_batch_of(options)
+      items = options[:items]
+      controller = options[:controller]
+      unless items
+        Rails.logger.info("Error in worker_expire_related_caches_for_batch_of call, items not specified. Passed in options are: " + options.inspect)
+        raise ArguementError
+      end
+      unless controller
+        Rails.logger.info("Error in worker_expire_related_caches_for_batch_of call, controller not specified. Passed in options are: " + options.inspect)
+        raise ArguementError
+      end
+      expire_group_of_related_caches(items, controller)
+    end
+
+    def expire_related_caches_for_batch_of(items, controller, options = { })
+      if Rails.env != 'test' && backgroundrb_started?
+        # we want to flush related items cachennas incase they updated something we display
+        options = options.merge({ :method_name => "worker_expire_related_caches_for_batch_of",
+                                  :items => items,
+                                  :controller => controller})
+
+        call_generic_muted_worker_with(options)
+      else
+        # general test env, can't handle bdrb calls
+        expire_group_of_related_caches(items, controller)
       end
     end
 
