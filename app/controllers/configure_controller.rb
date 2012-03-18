@@ -166,7 +166,7 @@ class ConfigureController < ApplicationController
   # from the 'Rebuild search databases' administrator toolbox link
 
   # actions for rebuilding search records
-  include WorkerControllerHelpers
+  include ZoomControllerActions
 
   def prime_zebra
     # consolidating the code to do this work by using existing worker

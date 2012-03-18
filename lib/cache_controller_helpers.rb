@@ -156,7 +156,7 @@ module CacheControllerHelpers
           expire_related_caches_for(item, 'topics')
           # expire any related topics related caches
           # comments don't have related topics, so skip it for them
-          if item_class != 'Comment'
+          if item_class != 'Comment' && item.topics.count > 0
             expire_related_caches_for_batch_of(item.topics, controller)
           end
         else
@@ -169,7 +169,7 @@ module CacheControllerHelpers
             else
               related_items += item.send(zoom_class.tableize)
             end
-            expire_related_caches_for_batch_of(related_items, 'topics')
+            expire_related_caches_for_batch_of(related_items, 'topics') if related_items.count > 0
           end
         end
       end
@@ -196,15 +196,11 @@ module CacheControllerHelpers
     end
 
     def expire_related_caches_for_batch_of(items, controller, options = { })
-      if Rails.env != 'test' && backgroundrb_started?
-        # we want to flush related items cachennas incase they updated something we display
-        options = options.merge({ :method_name => "worker_expire_related_caches_for_batch_of",
-                                  :items => items,
-                                  :controller => controller})
-
-        call_generic_muted_worker_with(options)
-      else
-        # general test env, can't handle bdrb calls
+      # we want to flush related items caches incase they updated something we display
+      unless call_generic_muted_worker_with(options.merge({ :method_name => "worker_expire_related_caches_for_batch_of",
+                                                            :items => items,
+                                                            :controller => controller}))
+        # fallback to inline if worker fails
         expire_group_of_related_caches(items, controller)
       end
     end
@@ -264,17 +260,12 @@ module CacheControllerHelpers
 
     def expire_contributions_caches_for(item_or_user, options = {})
       if item_or_user.kind_of?(User)
-        unless Rails.env == 'test'
-          # we want to flush contribution caches incase they updated something we display
-          # we also want to update zoom for all items they have contributed to
-          options = options.merge({ :method_name => "clear_caches_and_search_records_for",
-                                    :class_key => :user,
-                                    :object => item_or_user })
+        # we want to flush contribution caches incase they updated something we display
+        # we also want to update zoom for all items they have contributed to
+        unless call_generic_muted_worker_with(options.merge({ :method_name => "clear_caches_and_search_records_for",
+                                                              :class_key => :user,
+                                                              :object => item_or_user }))
 
-          call_generic_muted_worker_with(options)
-        else
-          # general test env, can't handle bdrb calls for the moment
-          # TODO: figure out to test actual bdrb call like what would be used in dev or production
           clear_caches_and_search_records_for(options.merge({ :user => item_or_user }))
         end
       else

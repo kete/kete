@@ -138,7 +138,7 @@ module ZoomControllerHelpers
       humanized
     end
 
-    include WorkerControllerHelpers
+    include GenericMutedWorkerCallingHelpers
 
     # a method for use by generic_muted_worker
     # to do zoom rebuilds via backgroundrb
@@ -147,43 +147,29 @@ module ZoomControllerHelpers
     # as that is synchronous and can hold up request responses significantly for items that have large zoom records
     # this moves the prepare_and_save_to_zoom process to asynchronous backgroundrb process
     def update_search_record_for(item, options = { })
-      options = options.merge({ :method_name => "worker_prepare_and_save_to_zoom_for",
+      options = options.merge({ :method_name => "worker_zoom_for",
                                 :class_key => item.class_as_key,
                                 :object => item,
-                                :item => item})
+                                :zoom_items => [{ item.class.name => item.id }]})
 
-      worker_type = :generic_muted_worker
-      worker_key = worker_key_for(:stub => "#{worker_type}_#{options[:method_name]}",
-                                  :key => key_parts_from(options))
+      logger.debug("what are worker options " + options.inspect)
 
-      if backgroundrb_started? && Rails.env != 'test'
-        # we want the last triggered (i.e. latest information) worker only
-        # kill any earlier instances of the worker for this item's search record update
-        if backgroundrb_is_running?(worker_type, worker_key)
-          delete_existing_workers_for(worker_type, worker_key)
-        end
-      
-        # run the search record build in a backgroundrb worker
-        call_generic_muted_worker_with(options)
-      else
-        # unless we are in test
-        # we log that backgroundrb is not running
-        unless Rails.env == 'test'
-          logger.info("update_search_record_for: Backgroundrb is not running when it should be. Make sure to get it going again!")
-        end
-
-        # fallback to normal search engine rebuildxs
+      # run the search record build in a backgroundrb worker
+      unless call_generic_muted_worker_with(options)
+        # fallback to normal search engine rebuilds if worker fails
         item.prepare_and_save_to_zoom
       end
     end
 
-    def worker_prepare_and_save_to_zoom_for(options)
-      item = options[:item]
-      unless item
-        Rails.logger.info("Error in worker_prepare_and_save_to_zoom_for call, item not specified. Passed in options are: " + options.inspect)
+    def worker_zoom_for(options)
+      if options[:zoom_items].blank? || options[:zoom_items].size < 1
+        Rails.logger.info("Error in worker_zoom_for call, item not specified. Passed in options are: " + options.inspect)
         raise ArguementError
       end
-      item.prepare_and_save_to_zoom
+
+      options[:zoom_items].each do |item_pair|
+        item_pair.keys.first.constantize.find(item_pair.values.first).prepare_and_save_to_zoom
+      end
     end
 
     protected
