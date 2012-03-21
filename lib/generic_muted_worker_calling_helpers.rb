@@ -49,9 +49,6 @@ module GenericMutedWorkerCallingHelpers
                                                       } )
 
         backgroundrb_worker_started = true
-      else
-        # we log that backgroundrb is not running
-        logger.info("#{method_name}: Backgroundrb is not running when it should be. Make sure to get it going again!")
       end
       
       backgroundrb_worker_started
