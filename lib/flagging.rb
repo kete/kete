@@ -270,7 +270,8 @@ module Flagging
         history_url = if !options[:history_url].blank?
           options[:history_url]
         else
-          url_for(:urlified_name => basket.urlified_name,
+          url_for(:host => Kete.site_name,
+                  :urlified_name => basket.urlified_name,
                   :controller => zoom_class_controller(self.class.name),
                   :action => 'history', :id => self, :locale => false)
         end
