@@ -193,6 +193,14 @@ class IndexPageController < ApplicationController
     render(:text => "success")
   end
 
+  # let's check to make sure backgroundrb is responding
+  # this will only return success if backgroundrb is responsive
+  include BackgroundrbHelpers
+  def bdrb_uptime
+    raise "Backgroundrb not running!" unless backgroundrb_started?
+    render(:text => "success") 
+  end
+
   def validate_kete_net_link
     render(:xml => { :url => SITE_URL, :datetime => "#{Time.new.utc.xmlschema}" })
   end
