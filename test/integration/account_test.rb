@@ -12,8 +12,7 @@ class AccountTest < ActionController::IntegrationTest
       login_as('paul', 'test', { :navigate_to_login => true,
                  :by_form => true })
       body_should_contain "Logged in successfully"
-      url_should_contain "/site/all/topics"
-      body_should_contain "Results in topics"
+      should_be_on_site_homepage
     end
 
     should "should have details displayed on the menu" do
@@ -34,8 +33,7 @@ class AccountTest < ActionController::IntegrationTest
       login_as('paul')
       body_should_contain "Logged in successfully"
       logout
-      url_should_contain "/site/all/topics"
-      body_should_contain "Results in topics"
+      should_be_on_site_homepage
     end
 
     should "be redirected back to last tried location when logged in" do
@@ -167,4 +165,12 @@ class AccountTest < ActionController::IntegrationTest
     end
   end
 
+  private
+  # current basket homepage is now the default redirect
+  def should_be_on_site_homepage
+    request_params = response.request.parameters
+    assert_equal request_params[:action].to_s, 'index'
+    assert_equal request_params[:controller].to_s, 'index_page'
+    assert_equal request_params[:urlified_name].to_s, 'site'
+  end
 end

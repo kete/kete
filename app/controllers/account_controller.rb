@@ -241,7 +241,9 @@ class AccountController < ApplicationController
   def logout
     deauthenticate
     flash[:notice] = t('account_controller.logout.logged_out')
-    redirect_back_or_default(:controller => '/account', :action => 'index')
+    redirect_back_or_default(:controller => 'index_page',
+                             :urlified_name => @current_basket.urlified_name,
+                             :action => 'index')
   end
 
   def show

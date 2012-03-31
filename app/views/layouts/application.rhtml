@@ -261,7 +261,8 @@
               </li>
 	      <%= add_ons_logged_in_user_list if respond_to?(:add_ons_logged_in_user_list) -%>
               <li><%= link_to_unless_current t('layouts.application.logout'),
-                                             account_hash.merge({ :action => 'logout' }),
+                                             account_hash.merge({ :action => 'logout',
+	      :urlified_name => @current_basket.urlified_name }),
                                              :tabindex => '2' %></li>
             <% end -%>
             <%= ("<li class='locale_selection'>" + render('account/locale_selection', :classes => ['menu_right']) + "</li>") if LANGUAGE_CHOICES_POSITION == 'top_menu_farthest_right' %>
