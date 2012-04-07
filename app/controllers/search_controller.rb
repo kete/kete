@@ -545,7 +545,7 @@ class SearchController < ApplicationController
 
   # actions for rebuilding search records
   # see filters and permissions for security towards top of code
-  include WorkerControllerHelpers
+  include ZoomControllerActions
   # this is the form for tech admins
   # to configure the rebuild_zoom_index action
   def setup_rebuild
@@ -564,6 +564,7 @@ class SearchController < ApplicationController
       @worker_type = 'zoom_index_rebuild_worker'
       @worker_key = params[:worker_key]
       status = MiddleMan.worker(@worker_type, @worker_key).ask_result(:results)
+      logger.debug("status: " + status.inspect)
       begin
         if !status.blank?
           current_zoom_class = status[:current_zoom_class] || 'Topic'

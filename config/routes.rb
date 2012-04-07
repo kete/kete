@@ -12,8 +12,10 @@ ActionController::Routing::Routes.draw do |map|
     index_page.connect 'uptime.txt', :action => 'uptime'
     # to make sure that the db is answering
     index_page.connect 'db_uptime.txt', :action => 'db_uptime'
-    # to make sure that the db is answering
+    # to make sure that the zebra is answering
     index_page.connect 'zebra_uptime.txt', :action => 'zebra_uptime'
+    # to make sure that the backgroundrb is answering
+    index_page.connect 'bdrb_uptime.txt', :action => 'bdrb_uptime'
     # to make sure that registration is valid
     index_page.connect 'validate_kete_net_link.xml', :action => 'validate_kete_net_link'
     # for search engines, ask them not to go to certain places

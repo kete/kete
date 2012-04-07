@@ -5,7 +5,8 @@ module MethodsForGenericMutedWorker
   unless included_modules.include? MethodsForGenericMutedWorker
     include ActionController::Caching::Fragments
     include CacheControllerHelpers
-    include WorkerControllerHelpers
+    # include WorkerControllerHelpers
+    include ZoomControllerHelpers
 
     def self.included(klass)
       klass.extend DefaultUrlOptions

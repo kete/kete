@@ -156,10 +156,8 @@ module CacheControllerHelpers
           expire_related_caches_for(item, 'topics')
           # expire any related topics related caches
           # comments don't have related topics, so skip it for them
-          if item_class != 'Comment'
-            item.topics.each do |topic|
-              expire_related_caches_for(topic, controller)
-            end
+          if item_class != 'Comment' && item.topics.count > 0
+            expire_related_caches_for_batch_of(item.topics, controller)
           end
         else
           # topics need all it's related things expired
@@ -171,11 +169,39 @@ module CacheControllerHelpers
             else
               related_items += item.send(zoom_class.tableize)
             end
-            related_items.each do |related_item|
-              expire_related_caches_for(related_item, 'topics')
-            end
+            expire_related_caches_for_batch_of(related_items, 'topics') if related_items.count > 0
           end
         end
+      end
+    end
+
+    def expire_group_of_related_caches(items, controller)
+      items.each do |related_item|
+        expire_related_caches_for(related_item, controller)
+      end
+    end
+
+    def worker_expire_related_caches_for_batch_of(options)
+      items = options[:items]
+      controller = options[:controller]
+      unless items
+        Rails.logger.info("Error in worker_expire_related_caches_for_batch_of call, items not specified. Passed in options are: " + options.inspect)
+        raise ArguementError
+      end
+      unless controller
+        Rails.logger.info("Error in worker_expire_related_caches_for_batch_of call, controller not specified. Passed in options are: " + options.inspect)
+        raise ArguementError
+      end
+      expire_group_of_related_caches(items, controller)
+    end
+
+    def expire_related_caches_for_batch_of(items, controller, options = { })
+      # we want to flush related items caches incase they updated something we display
+      unless call_generic_muted_worker_with(options.merge({ :method_name => "worker_expire_related_caches_for_batch_of",
+                                                            :items => items,
+                                                            :controller => controller}))
+        # fallback to inline if worker fails
+        expire_group_of_related_caches(items, controller)
       end
     end
 
@@ -234,17 +260,12 @@ module CacheControllerHelpers
 
     def expire_contributions_caches_for(item_or_user, options = {})
       if item_or_user.kind_of?(User)
-        unless Rails.env == 'test'
-          # we want to flush contribution caches incase they updated something we display
-          # we also want to update zoom for all items they have contributed to
-          options = options.merge({ :method_name => "clear_caches_and_search_records_for",
-                                    :class_key => :user,
-                                    :object => item_or_user })
+        # we want to flush contribution caches incase they updated something we display
+        # we also want to update zoom for all items they have contributed to
+        unless call_generic_muted_worker_with(options.merge({ :method_name => "clear_caches_and_search_records_for",
+                                                              :class_key => :user,
+                                                              :object => item_or_user }))
 
-          call_generic_muted_worker_with(options)
-        else
-          # general test env, can't handle bdrb calls for the moment
-          # TODO: figure out to test actual bdrb call like what would be used in dev or production
           clear_caches_and_search_records_for(options.merge({ :user => item_or_user }))
         end
       else

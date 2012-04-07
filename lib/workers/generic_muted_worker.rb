@@ -33,6 +33,11 @@ class GenericMutedWorker < BackgrounDRb::MetaWorker
 
     cache[:results] = cache[:results].merge(:done_with_do_work => true,
                                             :done_with_do_work_time => Time.now.utc.to_s)
+    stop_worker
+  end
+
+  def stop_worker
+    exit
   end
 end
 

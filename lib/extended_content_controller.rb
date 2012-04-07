@@ -149,12 +149,14 @@ module ExtendedContentController
         if topic_id && topic_id > 0
           topic = Topic.find_by_id(topic_id)
           if topic # incase the id is wrong, don't cause any errors
-            relation_already_exists = ContentItemRelation.count(:conditions => { :topic_id => topic.id,
-                                                                :related_item_id => current_item }) > 0
+            relation_already_exists = ContentItemRelation.find_relation_to_topic(topic.id, current_item).present?
+
             unless relation_already_exists
               logger.debug("Add relation for #{value}, with id of #{topic.id}")
               ContentItemRelation.new_relation_to_topic(topic, current_item)
-              topic.prepare_and_save_to_zoom
+              # use async backgroundrb worker rather than slowing down response to request to wait for related topic rebuild
+              # topic.prepare_and_save_to_zoom
+              update_search_record_for(topic)
               expire_related_caches_for(topic, 'topics')
             end
           end

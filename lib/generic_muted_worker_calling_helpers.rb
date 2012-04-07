@@ -3,33 +3,55 @@ module GenericMutedWorkerCallingHelpers
   unless included_modules.include? GenericMutedWorkerCallingHelpers
     include WorkerControllerHelpers
 
-    # the convention is that object
     def call_generic_muted_worker_with(options)
+      logger.debug("what are worker options " + options.inspect)
+
+      return false if Rails.env == 'test'
+
       method_name = options.delete(:method_name)
       raise unless method_name
+
+      worker_type = :generic_muted_worker
+
+      the_worker_name = worker_name_for(:stub => method_name,
+                                        :key => key_parts_from(options))
 
       class_key = options.delete(:class_key)
       the_object = options.delete(:object)
 
-      worker_type = :generic_muted_worker
+      options = options.merge({ class_key => the_object }) if class_key
 
-      the_worker_name = "generic_muted_worker_#{method_name}"
+      logger.debug("what are worker options " + options.inspect)
 
-      if class_key
-        the_worker_name += "_#{class_key}_#{the_object.id}"
-        options = options.merge({ class_key => the_object })
-      else
-        the_worker_name += "_#{Time.now.to_i}"
+      worker_key = worker_key_for(the_worker_name).to_s
+      
+      options.delete(class_key)
+
+      # TODO: replace this by queueing
+      # we want the latest call to run, delete previous calls
+      if backgroundrb_is_running?(worker_type, worker_key)
+        delete_existing_workers_for(worker_type, worker_key)
       end
 
-      worker_key = worker_key_for(the_worker_name)
+      backgroundrb_worker_started = false
+      if backgroundrb_started?
+        # only allow a single generic worker called with the same key to happen at once
+        MiddleMan.new_worker( :worker => worker_type,
+                              :worker_key => worker_key)
 
-      # only allow a single cache clearing to happen at once
-      MiddleMan.new_worker( :worker => worker_type,
-                            :worker_key => worker_key )
-    
-      MiddleMan.worker(worker_type, worker_key).async_do_work( :arg => { :method_name => method_name, :options => options } )
-      true
+        logger.debug("what is worker_key: " + worker_key.inspect)
+        logger.debug("what are worker options last " + options.inspect)
+
+        MiddleMan.worker( worker_type,
+                          worker_key ).async_do_work( :arg => {
+                                                        :method_name => method_name,
+                                                        :options => options
+                                                      } )
+
+        backgroundrb_worker_started = true
+      end
+      
+      backgroundrb_worker_started
     end
   end
 end

@@ -140,6 +140,8 @@ class ApplicationController < ActionController::Base
   before_filter :expire_show_caches_on_destroy, :only => [ :destroy ]
   # everything else we do after the action is completed
   after_filter :expire_show_caches, :only => [ :update, :convert, :add_tags ]
+
+  # TODO: NOT USED, delete code here and in lib/zoom_controller_helpers.rb
   # related items only track title and url, therefore only update will change those attributes
   after_filter :update_zoom_record_for_related_items, :only => [ :update ]
 
@@ -403,7 +405,9 @@ class ApplicationController < ActionController::Base
     # refresh data for the item
     item = Module.class_eval(item.class.name).find(item)
 
-    item.prepare_and_save_to_zoom
+    # item.prepare_and_save_to_zoom
+    # use async backgroundrb process instead
+    update_search_record_for(item)
 
     if controller.nil?
       expire_related_caches_for(item)
@@ -775,7 +779,10 @@ class ApplicationController < ActionController::Base
     build_relations_from_topic_type_extended_field_choices unless params[:controller] == 'search'
 
     # finally, sync up our search indexes
-    item.prepare_and_save_to_zoom if !item.already_at_blank_version?
+
+    # item.prepare_and_save_to_zoom if !item.already_at_blank_version?
+    # switched to async backgroundrb worker version
+    update_search_record_for(item) if !item.already_at_blank_version?
 
     # send notifications if needed
     item.do_notifications_if_pending(version_after_update, current_user) if version_created
