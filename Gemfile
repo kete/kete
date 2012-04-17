@@ -30,7 +30,7 @@ gem "http_url_validation_improved"
 # it needs to be declared here as well as config/required_software.rb
 gem "oembed_provider"
 gem "ya2yaml"
-gem "gmaps4rails",'>= 1.1.7'
+gem "gmaps4rails",'1.4.3'
 
 # Walter McGinnis, 2008-07-02
 # we currently use a hacked version of oai gem
