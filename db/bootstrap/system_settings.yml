@@ -821,4 +821,19 @@ system_settings_094:
   id: "94"
   value: "5"
   section: System
-
+system_settings_095:
+  name: Use Backgroundrb For Cache Expirations
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "If true, search records and cache clearing will be scheduled as a backgroundrb process and results may not be updated right away. Only use if you very big records or lots of related items."
+  id: "95"
+  value: "false"
+  section: System
+system_settings_096:
+  name: Use Backgroundrb For Search Record Updates
+  technically_advanced: true
+  required_to_be_configured: true
+  explanation: "If true, search records and cache clearing will be scheduled as a backgroundrb process and results may not be updated right away. Only use if you very big records or lots of related items."
+  id: "96"
+  value: "false"
+  section: System
