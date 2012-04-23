@@ -56,7 +56,7 @@ gems:
   oembed_provider:
   ya2yaml:
   gmaps4rails:
-    version: '1.4.3'
+    version: '1.4.2'
     
 # we use a hacked version of oai gem for the timebeing
 # included under vendor/gems
